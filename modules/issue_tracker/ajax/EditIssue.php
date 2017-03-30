@@ -192,19 +192,23 @@ function validateInput($values)
                   ];
 
     if (isset($result['PSCID'], $result['centerID'])) {
-        $valid_center = $db->pselectOne("
+        $valid_center = $db->pselectOne(
+            "
             SELECT
                 CenterID = :center_id
             FROM
                 candidate
             WHERE
                 PSCID = :psc_id
-        ", array(
+        ",
+            array(
              "center_id" => $result['centerID'],
              "psc_id"    => $result['PSCID'],
-        ));
+            )
+        );
         if (!$valid_center) {
-            $valid_center = $db->pselectOne("
+            $valid_center = $db->pselectOne(
+                "
                 SELECT
                     EXISTS (
                         SELECT
@@ -219,10 +223,12 @@ function validateInput($values)
                             s.CenterID = :center_id AND
                             c.PSCID = :psc_id
                     )
-            ", array(
+            ",
+                array(
                  "center_id" => $result['centerID'],
                  "psc_id"    => $result['PSCID'],
-            ));
+                )
+            );
         }
         if (!$valid_center) {
             $message = "PSCID and Center ID do not match a valid session!";
