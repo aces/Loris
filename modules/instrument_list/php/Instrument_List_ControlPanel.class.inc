@@ -64,12 +64,14 @@ Class Instrument_List_ControlPanel extends TimePoint
         // send to DCC
         $this->tpl_data['access']['send_to_dcc'] = $this->_displaySendToDCC();
         if (!$this->tpl_data['access']['send_to_dcc']) {
-            $this->tpl_data['access']['send_to_dcc_status_message'] =$this->_getSendToDCCStatusMessage();// @codingStandardsIgnoreLine
+            $this->tpl_data['access']['send_to_dcc_status_message']
+                = $this->_getSendToDCCStatusMessage();
         }
 
         // BVLQC - get permission and set the tpl element
         $user =& User::singleton();
-        $this->tpl_data['access']['bvl_qc'] = $user->hasPermission('bvl_feedback');// @codingStandardsIgnoreLine
+        $this->tpl_data['access']['bvl_qc']
+            = $user->hasPermission('bvl_feedback');
 
         // BVLQCType
         $success = $this->_displayBVLQCType();
@@ -114,8 +116,10 @@ Class Instrument_List_ControlPanel extends TimePoint
             $config    =& NDB_Config::singleton();
             $study     = $config->getSetting('study');
             $sessionID = $this->getData('SessionID');
-            if ($study['timepointFlagCheck_send2dcc'] && $this->getVisitStatus()=='Pass') {// @codingStandardsIgnoreLine
-                include_once __DIR__ . "../../modules/timepoint_flag/php/TimePoint_Flag.class.inc";// @codingStandardsIgnoreLine
+            $condition = $study['timepointFlagCheck_send2dcc'];
+            if ($condition && $this->getVisitStatus() == 'Pass') {
+                include_once __DIR__ .
+                    "../../modules/timepoint_flag/php/TimePoint_Flag.class.inc";
                 // object instance
                 $timepointFlagObject =& TimePoint_Flag::singleton($sessionID);
                 // flag types
@@ -126,15 +130,28 @@ Class Instrument_List_ControlPanel extends TimePoint
                 // the data entry errors
                 foreach ($flagList as $flagName=>$flagStatus) {
                     // check if the flag exists, i.e. previously triggered
-                    if ($timepointFlagObject->timepointFlagExists($this->getData('SessionID'), $flagName)) { continue;// @codingStandardsIgnoreLine
+                    if ($timepointFlagObject->timepointFlagExists(
+                        $this->getData('SessionID'),
+                        $flagName
+                    )
+                    ) {
+                        continue;
                     }
                     // raise flags - except missing data flags - INSERT into DB
-                    if ($flagStatus != $timepointFlagObject->showConstant('TIMEPOINT_FLAG_MISSING_DATA')) {// @codingStandardsIgnoreLine
+                    if ($flagStatus != $timepointFlagObject->showConstant(
+                        'TIMEPOINT_FLAG_MISSING_DATA'
+                    )
+                    ) {
                         // get type
                         $flagType = $timepointFlagObject->getFlagType($flagName);
                         // assign status according to type
-                        if ($flagStatus == $timepointFlagObject->showConstant('TIMEPOINT_FLAG_NA_INSTRUMENT')) { $newFlagTypeID = $flagTypeIDs[$flagStatus];// @codingStandardsIgnoreLine
-                        } else { $newFlagTypeID = $flagTypeIDs[$flagType];
+                        $condition = $timepointFlagObject->showConstant(
+                            'TIMEPOINT_FLAG_NA_INSTRUMENT'
+                        );
+                        if ($flagStatus == $condition) {
+                            $newFlagTypeID = $flagTypeIDs[$flagStatus];
+                        } else {
+                            $newFlagTypeID = $flagTypeIDs[$flagType];
                         }
                         $timepointFlagObject->insertFlag($flagName, $newFlagTypeID);
                     }
@@ -162,14 +179,18 @@ Class Instrument_List_ControlPanel extends TimePoint
                 $battery = new NDB_BVL_Battery();
 
                 // set the SessionID for the battery
-                $success = $battery->selectBattery($this->getData('SessionID'));// @codingStandardsIgnoreLine
+                $success = $battery->selectBattery(
+                    $this->getData('SessionID')
+                );
 
                 // get the list of instruments
                 $batteryList = $battery->getBatteryVerbose();
 
                 // Get the list of DDE instruments
                 $config         =& NDB_Config::singleton();
-                $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');// @codingStandardsIgnoreLine
+                $ddeInstruments = $config->getSetting(
+                    'DoubleDataEntryInstruments'
+                );
 
                 // clear the unresolved conflicts for all the instruments
                 foreach ($batteryList as $instrument) {
@@ -177,7 +198,9 @@ Class Instrument_List_ControlPanel extends TimePoint
                     // If the instrument requires double data entry, check that
                     // DDE is also done
                     if (in_array($instrument['Test_name'], $ddeInstruments)) {
-                        ConflictDetector::clearConflictsForInstance($instrument['CommentID']);// @codingStandardsIgnoreLine
+                        ConflictDetector::clearConflictsForInstance(
+                            $instrument['CommentID']
+                        );
                     }
                 }
 
@@ -185,51 +208,83 @@ Class Instrument_List_ControlPanel extends TimePoint
 
             return;
         }
-
+        $condition1 = isset($_REQUEST['setSubmitted']);
+        $condition2 = $_REQUEST['setSubmitted'] == 'N';
+        $condition3 = $this->_hasAccess_SendToDCC();
+        $condition4 = !in_array(
+            $currentStage,
+            array(
+             null,
+             'Not Started',
+             'Visit',
+             'Screening',
+            )
+        );
         // un-submit to dcc
-        if (isset($_REQUEST['setSubmitted']) && $_REQUEST['setSubmitted'] == 'N' && $this->_hasAccess_SendToDCC() && !in_array($currentStage, array(null, 'Not Started', 'Visit', 'Screening'))) {// @codingStandardsIgnoreLine
+        if ($condition1 && $condition2 && $condition3 && $condition4) {
+
                 $this->setData('Submitted', $_REQUEST['setSubmitted']);
 
                 // revert from approval (or the bin)
             if ($currentStage == 'Approval') {
-                $this->setData(array('Approval' => null, 'Date_approval' => null));// @codingStandardsIgnoreLine
+                $this->setData(
+                    array(
+                     'Approval'      => null,
+                     'Date_approval' => null,
+                    )
+                );
             }
                 $previousStage = $this->_determinePreviousStage();
                 $this->startStage($previousStage);
 
                 $battery = new NDB_BVL_Battery();
                 // set the SessionID for the battery
-                $success = $battery->selectBattery($this->getData('SessionID'));// @codingStandardsIgnoreLine
+                $success = $battery->selectBattery(
+                    $this->getData('SessionID')
+                );
                 // get the list of instruments
                 $batteryList = $battery->getBatteryVerbose();
                 // Get the list of DDE instruments
                 $config         =& NDB_Config::singleton();
-                $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');// @codingStandardsIgnoreLine
+                $ddeInstruments = $config->getSetting(
+                    'DoubleDataEntryInstruments'
+                );
 
                 // detect conflicts for all the instruments
 
-            foreach ($batteryList as $instrument) {
+                foreach ($batteryList as $instrument) {
+                    // If the instrument requires double data entry,
+                    // detect conflicts
+                    if (in_array($instrument['Test_name'], $ddeInstruments)) {
+                        // ConflictDetector::
+                        //clearConflictsForInstance($instrument['CommentID']);
+                        ConflictDetector::clearConflictsForInstance(
+                            $instrument['CommentID']
+                        );
+                        $diff =ConflictDetector::detectConflictsForCommentIds(
+                            $instrument['Test_name'],
+                            $instrument['CommentID'],
+                            $instrument['DDECommentID']
+                        );
+                        ConflictDetector::recordUnresolvedConflicts($diff);
 
-                // If the instrument requires double data entry, detect conflicts
-                if (in_array($instrument['Test_name'], $ddeInstruments)) {
-                    // ConflictDetector::clearConflictsForInstance($instrument['CommentID']);// @codingStandardsIgnoreLine
-                    ConflictDetector::clearConflictsForInstance($instrument['CommentID']);// @codingStandardsIgnoreLine
-                    $diff =ConflictDetector::detectConflictsForCommentIds($instrument['Test_name'], $instrument['CommentID'], $instrument['DDECommentID']);// @codingStandardsIgnoreLine
-                    ConflictDetector::recordUnresolvedConflicts($diff);
-
+                    }
                 }
-            }
 
                 return;
         }
 
         // set the BVLQC flag
         $user =& User::singleton();
-        if (isset($_REQUEST['setBVLQCStatus']) && $user->hasPermission('bvl_feedback')) {// @codingStandardsIgnoreLine
+        if (isset($_REQUEST['setBVLQCStatus'])
+            && $user->hasPermission('bvl_feedback')
+        ) {
             $this->setData('BVLQCStatus', $_REQUEST['setBVLQCStatus']);
             return;
         }
-        if (isset($_REQUEST['setBVLQCType']) && $user->hasPermission('bvl_feedback')) {// @codingStandardsIgnoreLine
+        if (isset($_REQUEST['setBVLQCType'])
+            && $user->hasPermission('bvl_feedback')
+        ) {
             $this->setData('BVLQCType', $_REQUEST['setBVLQCType']);
             return;
         }
@@ -315,7 +370,10 @@ Class Instrument_List_ControlPanel extends TimePoint
                 }
 
                 // Pretend data entry is not complete if there are conflicts
-                if (ConflictDetector::isInstrumentInstanceInConflictState($instrument['CommentID'])) {// @codingStandardsIgnoreLine
+                if (ConflictDetector::isInstrumentInstanceInConflictState(
+                    $instrument['CommentID']
+                )
+                ) {
                     $ddeConflictDetected =true;
                     break;
                 }
@@ -327,7 +385,11 @@ Class Instrument_List_ControlPanel extends TimePoint
         foreach ($this->_statusOptions AS $option) {
             // skip the null case and do not show Withdrawal option
             // for Approval stage
-            if (is_null($option) || ($option == 'Withdrawal' && $currentStage == 'Approval')) { continue;// @codingStandardsIgnoreLine
+            if (is_null($option)
+                || ($option == 'Withdrawal'
+                && $currentStage == 'Approval')
+            ) {
+                continue;
             }
 
             $this->tpl_data['status'][$i]['label'] = $option;
@@ -335,18 +397,25 @@ Class Instrument_List_ControlPanel extends TimePoint
             // highlight the current option if it's the current status
             if ($currentStatus == $option) {
                 $this->tpl_data['status'][$i]['icon'] = 'selected';
-            }
-            // if the current stage is dynamic AND the Timepoint
-            //is not sent to DCC (all PSC users can press buttons)
-            // OR if the stage is dynamic (Approval),
-            //the Timepoint IS submitted and the user can QC behavioral data
-            elseif (in_array($currentStage, $this->_dynamicStageOptions) && (!$this->isSubmitted() || ($this->isSubmitted() && $hasAccess))) {// @codingStandardsIgnoreLine
+            } elseif (in_array($currentStage, $this->_dynamicStageOptions)
+                && (!$this->isSubmitted()
+                || ($this->isSubmitted() && $hasAccess)                )
+            ) {
+                // if the current stage is dynamic AND the Timepoint
+                //is not sent to DCC (all PSC users can press buttons)
+                // OR if the stage is dynamic (Approval),
+                //the Timepoint IS submitted and the user can QC behavioral data
 
                 if ($option == 'In Progress') {
                     $this->tpl_data['status'][$i]['showlink'] = true;
-                } elseif ($option == 'Pass' && $dataEntry == 'Complete' && !$ddeConflictDetected) {// @codingStandardsIgnoreLine
+                } elseif ($option == 'Pass'
+                    && $dataEntry == 'Complete'
+                    && !$ddeConflictDetected
+                ) {
                     $this->tpl_data['status'][$i]['showlink'] = true;
-                } elseif (($option == 'Failure' || $option == 'Withdrawal') && $dataEntry == 'Complete') {// @codingStandardsIgnoreLine
+                } elseif (($option == 'Failure' || $option == 'Withdrawal')
+                    && $dataEntry == 'Complete'
+                ) {
                     $this->tpl_data['status'][$i]['showlink'] = true;
                 } else {
                     $this->tpl_data['status'][$i]['icon'] = 'locked';
@@ -376,7 +445,9 @@ Class Instrument_List_ControlPanel extends TimePoint
             return ($user->hasPermission('bvl_feedback'));
         }
 
-        return ($user->hasPermission('data_entry') && in_array($this->getData('CenterID'), $user->getData('CenterIDs')));// @codingStandardsIgnoreLine
+        return ($user->hasPermission('data_entry') &&
+                in_array($this->getData('CenterID'), $user->getData('CenterIDs'))
+               );
     }
     /**
      * DisplayStatus function
@@ -399,7 +470,10 @@ Class Instrument_List_ControlPanel extends TimePoint
             }
             //If a BVLQC status is not selected,
             // and this type is not already chosen, show the link.
-            if (!$isSelected && empty($qcStatus) && $this->tpl_data['access']['bvl_qc']) {// @codingStandardsIgnoreLine
+            if (!$isSelected
+                && empty($qcStatus)
+                && $this->tpl_data['access']['bvl_qc']
+            ) {
                 $this->tpl_data['bvl_qc_type_'.$type]['showlink'] =true;
             }
         }
@@ -428,7 +502,10 @@ Class Instrument_List_ControlPanel extends TimePoint
             }
             //If a BVLQC type is selected,
             // and this status is not already chosen, show the link.
-            if (!empty($qcType) && !$isSelected && $this->tpl_data['access']['bvl_qc']) {// @codingStandardsIgnoreLine
+            if (!empty($qcType)
+                && !$isSelected
+                && $this->tpl_data['access']['bvl_qc']
+            ) {
                 $this->tpl_data['bvl_qc_status_'.$status]['showlink'] =true;
             }
         }
@@ -451,7 +528,10 @@ Class Instrument_List_ControlPanel extends TimePoint
         // This is a toggle button.
         if ($this->getData('Submitted')=='Y') {
             $this->tpl_data['send_to_dcc']['set_submitted'] = 'N';
-        } elseif (isset($study['timepointFlagCheck_send2dcc']) && $study['timepointFlagCheck_send2dcc'] && $this->getVisitStatus()=='Pass' ) {// @codingStandardsIgnoreLine
+        } elseif (isset($study['timepointFlagCheck_send2dcc'])
+            && $study['timepointFlagCheck_send2dcc']
+            && $this->getVisitStatus()=='Pass'
+        ) {
             $this->tpl_data['send_to_dcc']['set_submitted'] = 'Check';
         } else {
             $this->tpl_data['send_to_dcc']['set_submitted'] = 'Y';
@@ -522,19 +602,48 @@ Class Instrument_List_ControlPanel extends TimePoint
         if (!$user->hasPermission('send_to_dcc')) {
             return "User does not have permission to send to DCC";
         }
-        if (!in_array($this->getData('CenterID'), $user->getData('CenterIDs'))) {// @codingStandardsIgnoreLine
-            return "Users must belong to the same site as the candidate to submit to DCC.";// @codingStandardsIgnoreLine
+        if (!in_array(
+            $this->getData('CenterID'),
+            $user->getData('CenterIDs')
+        )
+        ) {
+            $returnStr = "Users must belong to the same site".
+                         " as the candidate to submit to DCC.";
+            return $returnStr;
         }
         if ($this->getData('Submitted')!='N') {
-            return "This timepoint has already been sent to DCC.  Try refreshing your page.";// @codingStandardsIgnoreLine
+            $returnStr = "This timepoint has already been sent to DCC.".
+                         "  Try refreshing your page.";
+            return $returnStr;
         }
-        if (!in_array($this->getData('Current_stage'), array('Screening', 'Visit'))) {// @codingStandardsIgnoreLine
-            return "This stage is not a Screening or Visit stage.  Only Screening or Visit stages can be sent to DCC.";// @codingStandardsIgnoreLine
+        if (!in_array(
+            $this->getData('Current_stage'),
+            array(
+             'Screening',
+             'Visit',
+            )
+        )
+        ) {
+            $returnStr = "This stage is not a Screening or Visit stage.".
+                         "  Only Screening or Visit stages can be sent to DCC.";
+            return $returnStr;
         }
-        if (in_array($this->getData($this->getData('Current_stage')), array(null, 'In Progress'))) {// @codingStandardsIgnoreLine
-            return "The status of this stage is either In Progress or has not been set.";
+        if (in_array(
+            $this->getData($this->getData('Current_stage')),
+            array(
+             null,
+             'In Progress',
+            )
+        )
+        ) {
+            $returnStr = "The status of this stage is either".
+                         " In Progress or has not been set.";
+            return $returnStr;
         }
-        if ($config->getSetting("useScanDone")==="false" || ($this->getData('Current_stage') != 'Screening' && empty($scanDone))) {// @codingStandardsIgnoreLine
+        if ($config->getSetting("useScanDone")==="false"
+            || ($this->getData('Current_stage') !=            'Screening'
+            && empty($scanDone))
+        ) {
             return "The Scan done field must be entered for the Visit stage";
         }
 
@@ -595,14 +704,33 @@ Class Instrument_List_ControlPanel extends TimePoint
         // make the option available is the Stage/Status is Sendable to DCC
         // or if its Superuser and option was Sent (to unsend i.e. set to N)
 
-        if ($user->hasPermission('unsend_to_dcc') && $this->getData('Submitted')=='Y') {// @codingStandardsIgnoreLine
+        if ($user->hasPermission('unsend_to_dcc')
+            && $this->getData('Submitted')=='Y'
+        ) {
             return true;
         } elseif ($user->hasPermission('send_to_dcc')
-            && in_array($this->getData('CenterID'), $user->getData('CenterIDs'))// @codingStandardsIgnoreLine
+            && in_array(
+                $this->getData('CenterID'),
+                $user->getData('CenterIDs')
+            )
             && $this->getData('Submitted')=='N'
-            && in_array($this->getData('Current_stage'), array('Screening', 'Visit'))// @codingStandardsIgnoreLine
-            && !in_array($this->getData($this->getData('Current_stage')), array(null, 'In Progress'))// @codingStandardsIgnoreLine
-            && ($config->getSetting("useScanDone")==="false" || ($this->getData('Current_stage') == 'Screening' || !empty($scanDone)))// @codingStandardsIgnoreLine
+            && in_array(
+                $this->getData('Current_stage'),
+                array(
+                 'Screening',
+                 'Visit',
+                )
+            )
+            && !in_array(
+                $this->getData($this->getData('Current_stage')),
+                array(
+                 null,
+                 'In Progress',
+                )
+            )
+            && ($config->getSetting("useScanDone")==="false"
+            || ($this->getData('Current_stage') == 'Screening'
+            || !empty($scanDone)            )            )
         ) {
             return true;
         }
