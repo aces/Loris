@@ -26,7 +26,7 @@ ADD CONSTRAINT `fk_LorisMenuPermissions_2`
   ON DELETE CASCADE
   ON UPDATE CASCADE;
 
-INSERT INTO LorisMenuPermissions SELECT MenuID, PermID FROM tmp_lmp;
+INSERT IGNORE INTO LorisMenuPermissions SELECT MenuID, PermID FROM tmp_lmp;
 DROP TABLE tmp_lmp;
 
 -- Remove duplicates in the LorisMenu

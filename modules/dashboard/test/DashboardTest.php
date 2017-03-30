@@ -552,7 +552,9 @@ class DashboardTest extends LorisIntegrationTest
      */
     public function testIncompleteForm()
     {
-
+        $this->markTestSkipped(
+            'Skipping tests until removing test_instrument'
+        );
         $this->setupPermissions(
             array(
              "data_entry",
