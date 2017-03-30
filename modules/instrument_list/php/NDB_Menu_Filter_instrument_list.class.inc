@@ -45,7 +45,18 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
         $candidate =& Candidate::singleton($candID);
 
         // check user permissions
-        return ($user->hasPermission('access_all_profiles') || (in_array($candidate->getData('CenterID'), $user->getData('CenterIDs'))) || (in_array($timepoint->getData('CenterID'), $user->getData('CenterIDs'))));// @codingStandardsIgnoreLine
+        return ($user->hasPermission('access_all_profiles')
+                || (in_array(
+                    $candidate->getData('CenterID'),
+                    $user->getData('CenterIDs')
+                )
+                   )
+                || (in_array(
+                    $timepoint->getData('CenterID'),
+                    $user->getData('CenterIDs')
+                )
+                   )
+        );
 
     }
     /**
@@ -55,7 +66,9 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
     */
     function getControlPanel()
     {
-        $controlPanel = new Instrument_List_ControlPanel($_REQUEST['sessionID']);// @codingStandardsIgnoreLine
+        $controlPanel = new Instrument_List_ControlPanel(
+            $_REQUEST['sessionID']
+        );
         // save possible changes from the control panel...
         $success = $controlPanel->save();
 
@@ -83,11 +96,18 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
         $battery = new NDB_BVL_Battery;
         $success = $battery->selectBattery($_REQUEST['sessionID']);
 
-        $this->tpl_data['stage']        = Utility::getStageUsingCandID($this->tpl_data['candID']);// @codingStandardsIgnoreLine
-        $this->tpl_data['subprojectID'] = Utility::getSubprojectIDUsingCandID($this->tpl_data['candID']);// @codingStandardsIgnoreLine
+        $this->tpl_data['stage']        = Utility::getStageUsingCandID(
+            $this->tpl_data['candID']
+        );
+        $this->tpl_data['subprojectID'] = Utility::getSubprojectIDUsingCandID(
+            $this->tpl_data['candID']
+        );
 
         // get the list of instruments
-        $listOfInstruments = $this->getBatteryInstrumentList($this->tpl_data['stage'], $this->tpl_data['subprojectID']);// @codingStandardsIgnoreLine
+        $listOfInstruments = $this->getBatteryInstrumentList(
+            $this->tpl_data['stage'],
+            $this->tpl_data['subprojectID']
+        );
 
         // display list of instruments
         if (!empty($listOfInstruments)) {
@@ -106,7 +126,8 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
                 if ($instrument['Sub_group'] != $prevSubgroup) {
                     $x++;
                     $i = 0;
-                    $this->tpl_data['instrument_groups'][$x]['title'] = $instrument['Sub_group'];// @codingStandardsIgnoreLine
+                    $this->tpl_data['instrument_groups'][$x]['title']
+                        = $instrument['Sub_group'];
                 }
                 $prevSubgroup = $instrument['Sub_group'];
 
@@ -116,37 +137,71 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
 
                 $ddeStatus = new NDB_BVL_InstrumentStatus;
                 $success   = $ddeStatus->select($instrument['DDECommentID']);
-                 // @codingStandardsIgnoreStart
-                $this->tpl_data['instruments'][$x][$i]['fullName']        = $instrument['Full_name'];
-                $this->tpl_data['instruments'][$x][$i]['dataEntryStatus'] = $status->getDataEntryStatus();
-                $this->tpl_data['instruments'][$x][$i]['administrationStatus'] = $status->getAdministrationStatus();
-                $this->tpl_data['instruments'][$x][$i]['testName']           = $instrument['Test_name'];
-                $this->tpl_data['instruments'][$x][$i]['commentID']          = $instrument['CommentID'];
-                $this->tpl_data['instruments'][$x][$i]['isDdeEnabled']       = NDB_BVL_Battery::isDoubleDataEntryEnabledForInstrument($instrument['Test_name']);
-                $this->tpl_data['instruments'][$x][$i]['ddeCommentID']       = $instrument['DDECommentID'];
-                $this->tpl_data['instruments'][$x][$i]['ddeDataEntryStatus'] = $ddeStatus->getDataEntryStatus();
-                $this->tpl_data['instruments'][$x][$i]['isDirectEntry']      = $instrument['isDirectEntry'];
-                $this->tpl_data['instruments'][$x][$i]['instrumentOrder']    = $instrument['instrument_order'];
+
+                $Ins = "instruments";
+
+                $ins = $instrument['Full_name'];
+                $this->tpl_data[$Ins][$x][$i]['fullName'] = $ins;
+
+                $ins = $status->getDataEntryStatus();
+                $this->tpl_data[$Ins][$x][$i]['dataEntryStatus'] = $ins;
+
+                $ins = $status->getAdministrationStatus();
+                $adm = "administrationStatus";
+                $this->tpl_data[$Ins][$x][$i][$adm] = $ins;
+
+                $ins = $instrument['Test_name'];
+                $this->tpl_data[$Ins][$x][$i]['testName'] = $ins;
+
+                $ins = $instrument['CommentID'];
+                $this->tpl_data[$Ins][$x][$i]['commentID'] = $ins;
+
+                $ins = NDB_BVL_Battery::isDoubleDataEntryEnabledForInstrument(
+                    $instrument['Test_name']
+                );
+                $this->tpl_data[$Ins][$x][$i]['isDdeEnabled'] = $ins;
+
+                $ins = $instrument['DDECommentID'];
+                $this->tpl_data[$Ins][$x][$i]['ddeCommentID'] = $ins;
+
+                $ins = $ddeStatus->getDataEntryStatus();
+                $this->tpl_data[$Ins][$x][$i]['ddeDataEntryStatus'] =  $ins;
+
+                $ins = $instrument['isDirectEntry'];
+                $this->tpl_data[$Ins][$x][$i]['isDirectEntry'] = $ins;
+
+                $ins =  $instrument['instrument_order'];
+                $this->tpl_data[$Ins][$x][$i]['instrumentOrder'] = $ins;
 
                 // create feedback object for the time point
-                $feedback = NDB_BVL_Feedback::singleton($username, null, null, $instrument['CommentID']);
+                $feedback = NDB_BVL_Feedback::singleton(
+                    $username,
+                    null,
+                    null,
+                    $instrument['CommentID']
+                );
 
-                $feedback_status = $feedback->getMaxThreadStatus($feedback_select_inactive);
+                $feedback_status = $feedback->getMaxThreadStatus(
+                    $feedback_select_inactive
+                );
 
                 $feedback_count = $feedback->getThreadCount();
 
-                $this->tpl_data['instruments'][$x][$i]['feedbackCount'] = (empty($feedback_count)) ? $feedback_status : $feedback_count;
+                $this->tpl_data[$Ins][$x][$i]['feedbackCount']
+                    =       (empty($feedback_count))
+                             ? $feedback_status : $feedback_count;
                 if (!empty($feedback_status)) {
-                    $this->tpl_data['instruments'][$x][$i]['feedbackStatus'] = $feedback_status;
+                    $this->tpl_data[$Ins][$x][$i]['feedbackStatus']
+                        = $feedback_status;
                     if ($feedback_count > 0) {
-                        $this->tpl_data['instruments'][$x][$i]['feedbackColor'] = $feedback->getThreadColor($feedback_status);
+                        $this->tpl_data[$Ins][$x][$i]['feedbackColor']
+                            = $feedback->getThreadColor($feedback_status);
                     }
                 } else {
-                    $this->tpl_data['instruments'][$x][$i]['feedbackStatus'] = "-";
+                    $this->tpl_data[$Ins][$x][$i]['feedbackStatus'] = "-";
                 }
 
                 $i++;
-                 // @codingStandardsIgnoreEnd
             }
         }
 
@@ -155,7 +210,8 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
 
         $candidate =& Candidate::singleton($candID);
 
-        $this->tpl_data['display'] = array_merge($candidate->getData(), $timePoint->getData());// @codingStandardsIgnoreLine
+        $this->tpl_data['display']
+            = array_merge($candidate->getData(), $timePoint->getData());
     }
     /**
      * Used by the NDB_caller class when loading a page.
