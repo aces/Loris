@@ -231,10 +231,7 @@ function validateInput($values)
             );
         }
         if (!$valid_center) {
-            $message = "PSCID and Center ID do not match a valid session!";
-            $result['isValidSubmission'] = false;
-            $result['invalidMessage']    = $message;
-            return $result;
+            showError("PSCID and Center ID do not match a valid session!");
         }
     }
     // If both are set, return SessionID and CandID
