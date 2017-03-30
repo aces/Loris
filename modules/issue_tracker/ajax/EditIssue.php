@@ -215,8 +215,9 @@ function validateInput($values)
             )
         );
         if (!$visited_center) {
+            $message = "PSCID and Center ID do not match a valid session!";
             $result['isValidSubmission'] = false;
-            $result['invalidMessage']    = "PSCID and Center ID do not match a valid candidate session!";
+            $result['invalidMessage']    = $message;
             return $result;
         }
     }
