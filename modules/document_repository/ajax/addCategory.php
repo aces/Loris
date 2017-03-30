@@ -54,7 +54,9 @@ if ($_POST['comments'] !== '') {
 
 $user =& User::singleton();
 //if user has document repository permission
-if ($user->hasPermission('document_repository_view') || $user->hasPermission('document_repository_delete')) {// @codingStandardsIgnoreLine
+if ($user->hasPermission('document_repository_view')
+    || $user->hasPermission('document_repository_delete')
+) {
     $DB->insert(
         "document_repository_categories",
         array(
@@ -68,9 +70,12 @@ if ($user->hasPermission('document_repository_view') || $user->hasPermission('do
     $msg_data['newCategory'] = $baseURL . "/document_repository/";
     $msg_data['category']    = $category_name;
     $msg_data['study']       = $config->getSetting('title');
-
+    $sqlSelect = "SELECT Email".
+                 " from users".
+                 " where Active='Y' and".
+                 " Doc_Repo_Notifications='Y' and UserID<>:uid";
     $Doc_Repo_Notification_Emails = $DB->pselect(
-        "SELECT Email from users where Active='Y' and Doc_Repo_Notifications='Y' and UserID<>:uid",// @codingStandardsIgnoreLine
+        $sqlSelect,
         array("uid" => $user->getUsername())
     );
     foreach ($Doc_Repo_Notification_Emails as $email) {
