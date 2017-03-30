@@ -49,15 +49,14 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
      */
     function display()
     {
-        if ($_SERVER['REQUEST_METHOD'] === "GET") {
-            return parent::display();
-        }
-
+        // If POST request received, process it as a form submission
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $stdin = file_get_contents('php://input');
             $req   = json_decode($stdin, true);
             $this->_insertDataFlag($req);
         }
+
+        return parent::display();
     }
 
     /**
@@ -82,30 +81,26 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
             return "Error";
         }
 
-        try {
-            $db->update(
-                'data_integrity_flag',
-                ['latest_entry' => 0],
-                [
-                 'dataflag_instrument' => $req['instrument'],
-                 'dataflag_visitlabel' => $req['visitLabel'],
-                ]
-            );
-            $db->insert(
-                "data_integrity_flag",
-                [
-                 'dataflag_instrument' => $req['instrument'],
-                 'dataflag_visitlabel' => $req['visitLabel'],
-                 'dataflag_comment'    => $req['comment'],
-                 'dataflag_date'       => $req['date'],
-                 'dataflag_status'     => $req['flagStatus'],
-                 'latest_entry'        => 1,
-                 'dataflag_userid'     => $user->getUsername(),
-                ]
-            );
-        } catch (\DatabaseException $e) {
-
-        }
+        $db->update(
+            'data_integrity_flag',
+            ['latest_entry' => 0],
+            [
+             'dataflag_instrument' => $req['instrument'],
+             'dataflag_visitlabel' => $req['visitLabel'],
+            ]
+        );
+        $db->insert(
+            "data_integrity_flag",
+            [
+             'dataflag_instrument' => $req['instrument'],
+             'dataflag_visitlabel' => $req['visitLabel'],
+             'dataflag_comment'    => $req['comment'],
+             'dataflag_date'       => $req['date'],
+             'dataflag_status'     => $req['flagStatus'],
+             'latest_entry'        => 1,
+             'dataflag_userid'     => $user->getUsername(),
+            ]
+        );
     }
 
     /**
