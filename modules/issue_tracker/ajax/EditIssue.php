@@ -192,7 +192,8 @@ function validateInput($values)
                   ];
 
     if (isset($result['PSCID'], $result['centerID'])) {
-        $valid_center = $db->pselectOne("
+        $valid_center = $db->pselectOne(
+            "
             SELECT
                 CenterID = :center_id
             FROM
@@ -206,7 +207,8 @@ function validateInput($values)
             )
         );
         if (!$valid_center) {
-            $valid_center = $db->pselectOne("
+            $valid_center = $db->pselectOne(
+                "
                 SELECT
                     EXISTS (
                         SELECT
