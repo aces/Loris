@@ -1,7 +1,21 @@
 <?php
 
 /**
- * inititalize
+ * This script fixes all candidate ages in the database by recalculating the
+ * difference between the saved DOB and the saved Date_taken fields. The script uses
+ * the NDB_BVL_Instrument::_saveValues() function to safely make changes to ages.
+ *
+ * Usage
+ *  - php fix_candidate_age.php;
+ *  - php fix_candidate_age.php confirm;
+ *
+ * PHP Version 7
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Various <example@example.com>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 require_once 'generic_includes.php';
 
@@ -10,7 +24,7 @@ $database = $config->getSetting('database');
 
 $instruments = Utility::getAllInstruments();
 
-$confirm=false;
+$confirm =false;
 if (!empty($argv[1]) && $argv[1] == 'confirm') {
     $confirm = true;
 }
@@ -53,32 +67,35 @@ foreach ($instruments as $inst=>$fullName) {
         $commentID = $row['CommentID'];
 
         // Flag for problem with date
-        $trouble=false;
+        $trouble =false;
         if (!empty($row['Date_taken'])) {
             // Check if age is null OR if wrong age
             if (empty($row['Candidate_Age'])) {
                 // Null age
                 $nullAges[$inst][$commentID] = $row;
-                $trouble=true;
+                $trouble =true;
             } else {
                 // get Age from instrument class
-                $calculatedAge = $instrument->getCandidateAge();
-                $agemonths = $calculatedAge['year'] * 12 + $calculatedAge['mon'] + ($calculatedAge['day'] / 30);
+                $calculatedAge       = $instrument->getCandidateAge();
+                $agemonths           = $calculatedAge['year'] * 12 + $calculatedAge['mon'] + ($calculatedAge['day'] / 30);
                 $calculatedAgeMonths = (round($agemonths*10) / 10.0);
                 //Compare age to value saved in the instrument table
                 $DBAge = $instrument->getFieldValue('Candidate_Age');
 
                 if ($calculatedAgeMonths != $DBAge) {
                     //$incorrectAges[] = $row;
-                    $incorrectAges[$inst][$commentID] = array('cal'=>$calculatedAgeMonths, 'db'=>$DBAge);
-                    $trouble=true;
+                    $incorrectAges[$inst][$commentID] = array(
+                                                         'cal' => $calculatedAgeMonths,
+                                                         'db'  => $DBAge,
+                                                        );
+                    $trouble =true;
                 }
             }
 
             //Fix the saved values if confirm and trouble flags enabled
             if ($trouble && $confirm) {
-//                $date = explode('-', $row['Date_taken']);
-//                $dateArray = array ('Y' => $date[0], 'M' => $date[1], 'd' => $date[2]);
+                //                $date = explode('-', $row['Date_taken']);
+                //                $dateArray = array ('Y' => $date[0], 'M' => $date[1], 'd' => $date[2]);
                 $instrument->_saveValues(array('Date_taken' => $dateTaken));
             }
         }
