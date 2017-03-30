@@ -88,8 +88,15 @@ class NDB_Config
             }
 
             // Load the file
-            $config  = new NDB_Config();
+            $config = new NDB_Config();
             $success = $config->load($configFile);
+
+            // Load all includes found in the config
+            foreach (Utility::toArray($config->_settings['include']) as $k=>$path) {
+                if (file_exists($path)) {
+                    $success = $config->load($path);
+                }
+            }
         }
 
         return $config;
@@ -100,7 +107,9 @@ class NDB_Config
      *
      * @param string $configFile the neurodb config.xml config file
      *
-     * @return none, but as side-effect loads $this->_settings
+     * @return void, but as side-effect loads $this->_settings
+     *
+     * @throws Exception
      */
     function load($configFile = "../project/config.xml")
     {
@@ -113,7 +122,7 @@ class NDB_Config
             );
         }
 
-        $this->_settings = NDB_Config::convertToArray($newroot);
+        $this->_settings += NDB_Config::convertToArray($newroot);
     }
 
     /**
