@@ -35,7 +35,9 @@ if (isset($_REQUEST['QueryName'])) {
 if ($_REQUEST['SharedQuery'] === "true") {
     error_log("IN HERE");
     $baseDocument['Meta']['user'] = 'global';
-    $baseDocument['Meta']['name'] = $user->getUserName() . ': ' . $_REQUEST['QueryName'];// @codingStandardsIgnoreLine
+    $baseDocument['Meta']['name'] = $user->getUserName() .
+                                    ': ' .
+                                    $_REQUEST['QueryName'];
 }
 $fields = $_REQUEST['Fields'];
 $cond   = $_REQUEST['Filters'];
