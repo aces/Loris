@@ -73,9 +73,9 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                         } else {
                             // user input doesn't match DB, so we update the DB
                             $setArray   = array(
-                                'Resolved'   => (string)$val,
-                                'ChangeDate' => date("Y-m-d H:i:s"),
-                            );
+                                           'Resolved'   => (string)$val,
+                                           'ChangeDate' => date("Y-m-d H:i:s"),
+                                          );
                             $whereArray = array('hash' => $hash);
                             $DB->update(
                                 'violations_resolved',
@@ -170,32 +170,32 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
         }
         $dir_path      = $config->getSetting("imagePath");
         $this->columns = array(
-            'v.PatientName',
-            'site.Name as Site',
-            'v.TimeRun',
-            'v.MincFile',
-            'v.MincFileViolated',
-            'v.Series_Description as Series_Description_Or_Scan_Type',
-            'v.Problem',
-            'v.SeriesUID',
-            'v.hash',
-            'v.join_id',
-            'v.Resolved',
-        );
+                          'v.PatientName',
+                          'site.Name as Site',
+                          'v.TimeRun',
+                          'v.MincFile',
+                          'v.MincFileViolated',
+                          'v.Series_Description as Series_Description_Or_Scan_Type',
+                          'v.Problem',
+                          'v.SeriesUID',
+                          'v.hash',
+                          'v.join_id',
+                          'v.Resolved',
+                         );
 
         $this->headers = array(
-            'PatientName',
-            'Site',
-            'TimeRun',
-            'MincFile',
-            'MincFileViolated',
-            'Series_Description_Or_Scan_Type',
-            'Problem',
-            'SeriesUID',
-            'Hash',
-            'JoinID',
-            'Resolution_status',
-        );
+                          'PatientName',
+                          'Site',
+                          'TimeRun',
+                          'MincFile',
+                          'MincFileViolated',
+                          'Series_Description_Or_Scan_Type',
+                          'Problem',
+                          'SeriesUID',
+                          'Hash',
+                          'JoinID',
+                          'Resolution_status',
+                         );
 
         if ($useProjects) {
             array_splice($this->columns, 1, 0, 'pjct.Name as Project');
@@ -205,9 +205,9 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
         }
         $this->tpl_data['hiddenHeaders'] = json_encode(
             [
-                'SeriesUID',
-                'Hash',
-                'JoinID',
+             'SeriesUID',
+             'Hash',
+             'JoinID',
             ]
         );
         // Recreating the path (MincFileViolated field) to the minc file
@@ -336,28 +336,28 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
-            'PatientName' => 'v.PatientName',
-            'Project'     => 'v.Project',
-            'Subproject'  => 'v.Subproject',
-            'TimeRun'     => 'v.TimeRun',
-            'ProblemType' => 'v.Problem',
-            'Filename'    => 'v.MincFile',
-            'Description' => 'v.Series_Description',
-            'SeriesUID'   => 'v.SeriesUID',
-            'Site'        => 'v.Site',
-        );
+                               'PatientName' => 'v.PatientName',
+                               'Project'     => 'v.Project',
+                               'Subproject'  => 'v.Subproject',
+                               'TimeRun'     => 'v.TimeRun',
+                               'ProblemType' => 'v.Problem',
+                               'Filename'    => 'v.MincFile',
+                               'Description' => 'v.Series_Description',
+                               'SeriesUID'   => 'v.SeriesUID',
+                               'Site'        => 'v.Site',
+                              );
 
         $this->validFilters = array(
-            'v.PatientName',
-            'v.Project',
-            'v.Subproject',
-            'v.TimeRun',
-            'v.MincFile',
-            'v.Problem',
-            'v.Series_Description',
-            'v.SeriesUID',
-            'v.Site',
-        );
+                               'v.PatientName',
+                               'v.Project',
+                               'v.Subproject',
+                               'v.TimeRun',
+                               'v.MincFile',
+                               'v.Problem',
+                               'v.Series_Description',
+                               'v.SeriesUID',
+                               'v.Site',
+                              );
         return true;
     }
     /**
@@ -368,18 +368,18 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
     function _setFilterForm()
     {
         // create user object
-        $user           =& User::singleton();
-        $config         =& NDB_Config::singleton();
-        $study          = $config->getSetting('study');
-        $minYear        = $study['startYear'] - $study['ageMax'];
-        $maxYear        = $study['endYear'] - $study['ageMin'];
-        $dateOptions    = array(
-            'language'       => 'en',
-            'format'         => 'YMd',
-            'addEmptyOption' => true,
-            'minYear'        => $minYear,
-            'maxYear'        => $maxYear,
-        );
+        $user        =& User::singleton();
+        $config      =& NDB_Config::singleton();
+        $study       = $config->getSetting('study');
+        $minYear     = $study['startYear'] - $study['ageMax'];
+        $maxYear     = $study['endYear'] - $study['ageMin'];
+        $dateOptions = array(
+                        'language'       => 'en',
+                        'format'         => 'YMd',
+                        'addEmptyOption' => true,
+                        'minYear'        => $minYear,
+                        'maxYear'        => $maxYear,
+                       );
 
         $problemOptions = ['' => 'Any'];
 
@@ -387,7 +387,8 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
         $problemTypes = $db->pselect(
             "SELECT DISTINCT MRICandidateErrors.Reason FROM MRICandidateErrors
             UNION 
-            SELECT DISTINCT 'Could not identify scan type' FROM mri_protocol_violated_scans
+            SELECT DISTINCT 'Could not identify scan type' 
+            FROM mri_protocol_violated_scans
             UNION
             SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log"
         );
@@ -456,7 +457,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
         return array_merge(
             $deps,
             array(
-                $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
+             $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
 
             )
         );
