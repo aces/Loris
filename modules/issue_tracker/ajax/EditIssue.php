@@ -192,29 +192,39 @@ function validateInput($values)
                   ];
 
     if (isset($result['PSCID'], $result['centerID'])) {
-        $visited_center = $db->pselectOne(
-            "
+        $valid_center = $db->pselectOne("
             SELECT
-                EXISTS (
-                    SELECT
-                        *
-                    FROM
-                        session s
-                    JOIN
-                        candidate c
-                    ON
-                        c.CandID = s.CandID
-                    WHERE
-                        s.CenterID = :center_id AND
-                        c.PSCID = :psc_id
-                )
-        ",
-            array(
+                CenterID = :center_id
+            FROM
+                candidate
+            WHERE
+                PSCID = :psc_id
+        ", array(
              "center_id" => $result['centerID'],
              "psc_id"    => $result['PSCID'],
-            )
-        );
-        if (!$visited_center) {
+        ));
+        if (!$valid_center) {
+            $valid_center = $db->pselectOne("
+                SELECT
+                    EXISTS (
+                        SELECT
+                            *
+                        FROM
+                            session s
+                        JOIN
+                            candidate c
+                        ON
+                            c.CandID = s.CandID
+                        WHERE
+                            s.CenterID = :center_id AND
+                            c.PSCID = :psc_id
+                    )
+            ", array(
+                 "center_id" => $result['centerID'],
+                 "psc_id"    => $result['PSCID'],
+            ));
+        }
+        if (!$valid_center) {
             $message = "PSCID and Center ID do not match a valid session!";
             $result['isValidSubmission'] = false;
             $result['invalidMessage']    = $message;
