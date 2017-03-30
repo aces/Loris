@@ -21,7 +21,7 @@ vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php module
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/brainbrowser 
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/bvl_feedback
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/candidate_list
-# vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/candidate_parameters
+vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/candidate_parameters
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/configuration
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/conflict_resolver
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/create_timepoint
@@ -39,13 +39,13 @@ vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php module
 # vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/help_editor 
 # vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/imaging_browser
 # vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/imaging_uploader
-# vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/instrument_builder
+vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/instrument_builder
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/instrument_list 
-# vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/instrument_manager
+vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/instrument_manager
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/issue_tracker
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/media 
-# vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/mri_violations
-# vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/new_profile 
+vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/mri_violations
+vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/new_profile 
 # vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/next_stage
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/reliability
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/server_processes_manager
