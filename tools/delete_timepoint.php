@@ -80,28 +80,31 @@ $DB =& Database::singleton();
  */
 
 $candExists = $DB->pselectOne(
-    "SELECT COUNT(*) FROM candidate WHERE CandID = :cid AND PSCID = :pid ",
+    "SELECT COUNT(*) 
+      FROM candidate 
+      WHERE CandID = :cid AND PSCID = :pid AND Active ='Y'",
     array(
-     'cid' => $CandID,
-     'pid' => $PSCID,
+        'cid' => $CandID,
+        'pid' => $PSCID,
     )
 );
-
 if ($candExists == 0) {
-    echo "The Candid : $CandID  AND PSCID : $PSCID Doesn't Exist in " .
-        "the database\n";
+    echo "\nThe candidate with CandID : $CandID  and PSCID : $PSCID either does ".
+        "not exist in the database or is set to Active='N' state.\n\n";
     die();
 }
 
 if ($sessionID != null) {
-    if ($DB->pselectOne(
-        'SELECT COUNT(*) FROM session WHERE ID=:sid and CandID=:cid',
+    $sessionExists = $DB->pselectOne(
+        "SELECT COUNT(*) FROM session WHERE ID=:sid AND CandID=:cid AND Active ='Y'",
         array(
-         'sid' => $sessionID,
-         'cid' => $CandID,
+            'sid' => $sessionID,
+            'cid' => $CandID,
         )
-    ) == 0) {
-        echo "Session ID $sessionID for candidate $CandID does not exist in the database\n";
+    );
+    if ($sessionExists == 0) {
+        echo "Session ID $sessionID for candidate $CandID either does not exist ".
+            "in the database or is set to Active='N' state.\n\n";
         die();
     }
 }
@@ -135,26 +138,32 @@ function showHelp()
 
 function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $output)
 {
+    echo "\n#########################################################################\n";
+    echo "Deleting timepoint data for candidate $CandID and session $sessionID.";
+    echo "\n#########################################################################\n";
 
     $instruments = $DB->pselect('SELECT Test_name, CommentID FROM flag WHERE SessionID=:sid', array('sid' => $sessionID));
 
     // Print each instrument instance
     foreach ($instruments as $instrument) {
         $result = $DB->pselect(
-            'SELECT * FROM ' . $DB->escape($instrument['Test_name']) . ' WHERE CommentID=:cid',
+            'SELECT CommentID FROM ' . $DB->escape($instrument['Test_name']) . ' WHERE CommentID=:cid',
             array('cid' => $instrument['CommentID'])
         );
-        echo "{$instrument['Test_name']}\n";
+        echo "\n{$instrument['Test_name']}\n";
+        echo "-----------------------------------------\n";
         print_r($result);
 
         // Print from conflicts
-        echo "Conflicts Unresolved\n";
+        echo "\nConflicts Unresolved\n";
+        echo "----------------------\n";
         $result = $DB->pselect(
             'SELECT * FROM conflicts_unresolved WHERE CommentId1=:cid OR CommentId2=:cid',
             array('cid' => $instrument['CommentID'])
         );
         print_r($result);
-        echo "Conflicts Resolved\n";
+        echo "\nConflicts Resolved\n";
+        echo "--------------------\n";
         $result = $DB->pselect(
             'SELECT * FROM conflicts_resolved WHERE CommentId1=:cid OR CommentId2=:cid',
             array('cid' => $instrument['CommentID'])
@@ -162,22 +171,26 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
         print_r($result);
     }
     // Print from flag
-    echo "Flag\n";
+    echo "\nFlag\n";
+    echo "------\n";
     $result = $DB->pselect('SELECT * FROM flag WHERE SessionID=:sid', array('sid' => $sessionID));
     print_r($result);
 
     // Print from media
-    echo "Media\n";
+    echo "\nMedia\n";
+    echo "-------\n";
     $result = $DB->pselect('SELECT * FROM media WHERE session_id=:sid', array('sid' => $sessionID));
     print_r($result);
 
     // Print from session
-    echo "Session\n";
+    echo "\nSession\n";
+    echo "---------\n";
     $result = $DB->pselect('SELECT * FROM session WHERE ID=:id', array('id' => $sessionID));
     print_r($result);
 
     // Print from feedback
-    echo "Behavioural Feedback\n";
+    echo "\nBehavioural Feedback\n";
+    echo "----------------------\n";
     $result = $DB->pselect(
         'SELECT * from feedback_bvl_thread WHERE SessionID =:sid',
         array('sid' => $sessionID)

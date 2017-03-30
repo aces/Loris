@@ -81,15 +81,17 @@ $DB =& Database::singleton();
  */
 
 $candExists = $DB->pselectOne(
-    "SELECT COUNT(*) FROM candidate WHERE CandID = :cid AND PSCID = :pid ",
+    "SELECT COUNT(*) 
+      FROM candidate 
+      WHERE CandID = :cid AND PSCID = :pid AND Active ='Y'",
     array(
         'cid' => $CandID,
         'pid' => $PSCID,
     )
 );
 if ($candExists == 0) {
-    echo "\nThe Candid : $CandID  AND PSCID : $PSCID Doesn't Exist in " .
-        "the database\n\n";
+    echo "\nThe candidate with CandID : $CandID  and PSCID : $PSCID either does ".
+        "not exist in the database or is set to Active='N' state.\n\n";
     die();
 }
 
@@ -126,7 +128,6 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, $output)
     //Find candidate...
     $candidate = new Candidate();
     $candidate->select($CandID); //find the candidate with the given CandID
-    $sessionExists = true;
 
     // Passing argument to delete session script
     $outputType ="";
@@ -139,42 +140,44 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, $output)
     //find sessions
     $sessions = $candidate->getListOfTimePoints();
     if (is_null($sessions) || empty($sessions)) {
-        echo "There are no corresponding session for Candid : $CandID \n";
-        $sessionExists = false;
+        echo "There are no corresponding sessions for CandID: $CandID \n";
     } else {
         foreach ($sessions as $sid) {
             $out = shell_exec(
                 "php ".__DIR__."/delete_timepoint.php delete_timepoint".
                 " $CandID $PSCID $sid $outputType"
             );
-
             echo $out;
         }
     }
 
     // Print participant_status
-    echo "Participant Status\n";
+    echo "\nParticipant Status\n";
+    echo "--------------------\n";
     $result = $DB->pselect('SELECT * FROM participant_status WHERE CandID=:cid', array('cid' => $CandID));
     print_r($result);
 
     // Print participant_status_history
-    echo "Participant Status History\n";
+    echo "\nParticipant Status History\n";
+    echo "----------------------------\n";
     $result = $DB->pselect('SELECT * FROM participant_status_history WHERE CandID=:cid', array('cid' => $CandID));
     print_r($result);
 
     // Print parameter_candidate
-    echo "Parameter Candidate\n";
+    echo "\nParameter Candidate\n";
+    echo "---------------------\n";
     $result = $DB->pselect('SELECT * FROM parameter_candidate WHERE CandID=:cid', array('cid' => $CandID));
     print_r($result);
 
     // Print candidate
-    echo "Candidate\n";
+    echo "\nCandidate\n";
+    echo "-----------\n";
     $result = $DB->pselect('SELECT * FROM candidate WHERE CandID=:cid', array('cid' => $CandID));
     print_r($result);
 
     // IF CONFIRMED, DELETE CANDIDATE
     if ($confirm) {
-        echo "Dropping all DB entries for candidate CandID: " . $CandID . "And PSCID: " .
+        echo "\nDropping all DB entries for candidate CandID: " . $CandID . "And PSCID: " .
             $PSCID . "\n";
 
         //delete from the participant_status table
