@@ -223,10 +223,12 @@ function validateInput($values)
                             s.CenterID = :center_id AND
                             c.PSCID = :psc_id
                     )
-            ", array(
-                "center_id" => $result['centerID'],
-                "psc_id"    => $result['PSCID'],
-            ));
+            ",
+                array(
+                 "center_id" => $result['centerID'],
+                 "psc_id"    => $result['PSCID'],
+                )
+            );
         }
         if (!$valid_center) {
             $message = "PSCID and Center ID do not match a valid session!";
