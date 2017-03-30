@@ -107,7 +107,7 @@ function uploadFile()
         showError("Please fill in all required fields!");
         return;
     }
-    $fileName  = str_replace(' ', '_', trim($_FILES["file"]["name"]));
+    $fileName  = trim($_FILES["file"]["name"]);
     $fileType  = $_FILES["file"]["type"];
     $extension = pathinfo($fileName)['extension'];
 
