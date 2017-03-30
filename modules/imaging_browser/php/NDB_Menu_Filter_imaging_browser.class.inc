@@ -63,8 +63,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         foreach ($scan_types as $type) {
             $id = $DB->pselectOne(
                 "SELECT ID FROM mri_scan_type mst
-                     WHERE mst.Scan_type='" . $type . "'",
-                array()
+                     WHERE mst.Scan_type=:ScanType",
+                array('ScanType' => $type)
             );
             $scan_id_types[$id]=$type;
         }
