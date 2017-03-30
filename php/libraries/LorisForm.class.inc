@@ -799,23 +799,32 @@ class LorisForm
         $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
         $required = isset($el['required']) ? "this.value === '' ? '$msg':''" : "''";
         $value    = $this->getValue($el['name']);
-        if (array_key_exists('options', $el)
-            && ((strtolower($el['options']['format']) == 'my')
-            || (strtolower($el['options']['format']) == 'ym'))
-        ) {
-            $format = 'month';
-            if ($value) {
-                $value = explode("-", $value);
-                $value = sprintf("%s-%s", $value[0], $value[1]);
+        $format   = 'date';
+
+        if (array_key_exists('options', $el)) {
+            $elOptions = $el['options'];
+            $elFormat  = strtolower($elOptions['format']);
+
+            if ($elFormat == 'my' || $elFormat == 'ym') {
+                $format = 'month';
+                if ($value) {
+                    $value = explode("-", $value);
+                    $value = sprintf("%s-%s", $value[0], $value[1]);
+                }
+                if ($elOptions['maxYear']) {
+                    $minYear = "min=\"" . $elOptions['minYear'] . "-01\"";
+                }
+                if ($elOptions['maxYear']) {
+                    $maxYear = "max=\"" . $elOptions['maxYear'] . "-12\"";
+                }
             }
-        } else {
-            $format = 'date';
         }
+
         $elmnt = "<input name=\"$el[name]\" type=\"$format\" $cls "
             . "$minYear $maxYear "
-            . "onChange=\"this.setCustomValidity($required)\""
-            . (isset($el['required']) ? "required" : '')
-            . (!empty($disabled) ? "disabled" : '')
+            . "onChange=\"this.setCustomValidity($required)\" "
+            . (isset($el['required']) ? "required " : '')
+            . (!empty($disabled) ? "disabled " : '')
             . (
             !empty($value)
                 ? ' value="' . $value . '" '
@@ -1163,12 +1172,16 @@ class LorisForm
                     }
                 }
             } else {
-                $value = $this->getValue($el['name']);
+                if ($el['type'] === 'file') {
+                    $value = $_FILES[$el['name']]['name'];
+                } else {
+                    $value = $this->getValue($el['name']);
+                }
+
                 if (isset($el['required'])
                     && $el['required'] === true
                     && empty($value)
                 ) {
-                    //$this->setElementError($el['name'], "$el[name] required.");
                     $errors[$el['name']] = "required fail";
                 }
 
@@ -1223,6 +1236,27 @@ class LorisForm
 
                     $errors[$el['name']] = "maxlength fail";
                 }
+
+                // Check if date fields have errors and add them to error list
+                if ($el['type'] === 'date') {
+                    $date = (
+                        $values[$elName] ?
+                            $values[$elName] :
+                        $this->getValue($el['name'])
+                    );
+                    if (empty($date)) {
+                        continue;
+                    }
+                    $dt          = DateTime::createFromFormat('Y-m-d', $date);
+                    $isValidDate = $dt && $dt->format('Y-m-d') == $date;
+                    if (!$isValidDate) {
+                        $this->setElementError(
+                            $el['name'],
+                            "Please input a valid date in '" . $el['label'] . "'!"
+                        );
+                        $errors[$el['name']] = "date fail";
+                    }
+                }
             }
         }
         foreach ($this->formRules as $rule) {
@@ -1247,7 +1281,6 @@ class LorisForm
                 }
             }
         }
-
         return empty($errors);
     }
 
@@ -1956,31 +1989,29 @@ class LorisForm
                 continue;
             }
 
-            if ($el['type'] === 'date'
-                && array_key_exists('options', $el)
-                && ((strtolower($el['options']['format']) == 'y'))
-            ) {
-                    $value = $this->getValue($name);
-                if ($value) {
-                    $arr[$name] = sprintf("%s-00-00", $value);
-                } else {
-                    $arr[$name] = '';
-                }
-                    continue;
-            }
+            if ($el['type'] === 'date' && array_key_exists('options', $el)) {
+                $value = $this->getValue($name);
+                $date  = $value;
 
-            if ($el['type'] === 'date'
-                && array_key_exists('options', $el)
-                && ((strtolower($el['options']['format']) == 'my')
-                || (strtolower($el['options']['format']) == 'ym'))
-            ) {
-                    $value = $this->getValue($name);
-                if ($value) {
-                    $arr[$name] = sprintf("%s-00", $value);
-                } else {
+                if (!$value) {
                     $arr[$name] = '';
-                }
                     continue;
+                }
+
+                // Convert year to a valid SQL format (i.e yyyy-mm-dd)
+                if (strtolower($el['options']['format']) === 'y') {
+                    $date = sprintf("%s-01-01", $value);
+                }
+                // Convert month-year to a valid SQL format (i.e yyyy-mm-dd)
+                if ((strtolower($el['options']['format']) === 'my')
+                    || (strtolower($el['options']['format']) === 'ym')
+                ) {
+                    $date = sprintf("%s-01", $value);
+                }
+
+                $arr[$name] = $date;
+
+                continue;
             }
 
             // Check to see it the element type is a header or is a static
