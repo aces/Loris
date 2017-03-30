@@ -88,7 +88,7 @@ class NDB_Config
             }
 
             // Load the file
-            $config = new NDB_Config();
+            $config  = new NDB_Config();
             $success = $config->load($configFile);
 
             // Load all includes found in the config
