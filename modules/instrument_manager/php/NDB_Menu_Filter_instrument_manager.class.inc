@@ -61,7 +61,9 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
         $this->formToFilter = array();
 
         $writable = true;
-        if (!is_writable($this->path . "project/instruments") || !is_writable($this->path . "project/tables_sql")) {// @codingStandardsIgnoreLine
+        if (!is_writable($this->path . "project/instruments")
+            || !is_writable($this->path . "project/tables_sql")
+        ) {
             $writable = false;
         } else {
             $writable = true;
@@ -73,12 +75,17 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
             $db       = Database::singleton();
             $instname = basename($_FILES['install_file']['name'], '.linst');
 
-            $new_file = $this->path . "project/instruments/" . $_FILES['install_file']['name'];// @codingStandardsIgnoreLine
+            $new_file = $this->path . "project/instruments/" .
+                        $_FILES['install_file']['name'];
             move_uploaded_file($_FILES['install_file']['tmp_name'], $new_file);
             chmod($new_file, 0644);
             chdir($this->path . "/tools");
-
-            $exists = $db->pselectOne("SELECT count(*) FROM test_names WHERE Test_name=:testname", array('testname' => $_FILES['install_file']['name']));// @codingStandardsIgnoreLine
+            $sqlSelectOne = "SELECT count(*)".
+                            " FROM test_names WHERE Test_name=:testname";
+            $exists       = $db->pselectOne(
+                $sqlSelectOne,
+                array('testname' => $_FILES['install_file']['name'])
+            );
             if ($exists <= 0) {
                 $db_config = $config->getSetting('database');
                 exec("php generate_tables_sql_and_testNames.php < $new_file");
@@ -90,10 +97,11 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
                 );
 
                 exec(
-                    "mysql -u" . escapeshellarg($db_config['quatUser'])
-                    . " -p" . escapeshellarg($db_config['quatPassword'])
-                    . " " . escapeshellarg($db_config['database'])
-                    . " < " . $this->path . "project/tables_sql/".$instrument->table.".sql"// @codingStandardsIgnoreLine
+                    "mysql -u" . escapeshellarg($db_config['quatUser']).
+                    " -p" . escapeshellarg($db_config['quatPassword']).
+                    " " . escapeshellarg($db_config['database']).
+                    " < " . $this->path . "project/tables_sql/".
+                    $instrument->table.".sql"
                 );
 
             }
@@ -127,21 +135,39 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
             foreach ($item as $key => $val) {
                 $this->tpl_data['items'][$x][$i]['name'] = $key;
                 if ($key == 'Instrument_Type') {
-                    if (file_exists($this->path . "/project/instruments/" . $this->tpl_data['items'][$x]['instrument_name'] . ".linst")) {// @codingStandardsIgnoreLine
-                        $this->tpl_data['items'][$x][$i]['value'] = "Instrument Builder";// @codingStandardsIgnoreLine
-                    } else if (file_exists($this->path . "project/instruments/NDB_BVL_Instrument_" . $this->tpl_data['items'][$x]['instrument_name'] . ".class.inc")) {// @codingStandardsIgnoreLine
-                        $this->tpl_data['items'][$x][$i]['value'] = "PHP";
+                    if (file_exists(
+                        $this->path .
+                        "/project/instruments/" .
+                                    $this->tpl_data['items'][$x]['instrument_name'] .
+                        ".linst"
+                    )
+                    ) {
+                        $this->tpl_data['items'][$x][$i]['value']
+                            = "Instrument Builder";
+                    } else if (file_exists(
+                        $this->path .
+                        "project/instruments/NDB_BVL_Instrument_" .
+                                    $this->tpl_data['items'][$x]['instrument_name'] .
+                        ".class.inc"
+                    )
+                    ) {
+                              $this->tpl_data['items'][$x][$i]['value'] = "PHP";
                     } else {
                         $this->tpl_data['items'][$x][$i]['value'] = "Missing";
                     }
                 } else if ($key == "Table_Installed") {
                     // This should also check that all the columns exist and
                     // have the right type, for new style instruments
-                    $exists = $db->pselectOne(
-                        "SELECT count(*) FROM information_schema.tables WHERE TABLE_SCHEMA=:dbname AND TABLE_NAME=:tablename",// @codingStandardsIgnoreLine
+                    $sqlSelectOne = "SELECT count(*)".
+                                    " FROM information_schema.tables".
+                                    " WHERE TABLE_SCHEMA=:dbname".
+                                    " AND TABLE_NAME=:tablename";
+                    $tableName    = $this->tpl_data['items'][$x]['instrument_name'];
+                    $exists       = $db->pselectOne(
+                        $sqlSelectOne,
                         array(
                          'dbname'    => $factory->settings()->dbName(),
-                         'tablename' => $this->tpl_data['items'][$x]['instrument_name'],// @codingStandardsIgnoreLine
+                         'tablename' => $tableName,
                         )
                     );
                     if ($exists > 0) {
@@ -150,16 +176,34 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
                         $this->tpl_data['items'][$x][$i]['value'] = 'Missing';
                     }
                 } else if ($key == "Table_Valid") {
-                    if (!file_exists($this->path . "project/instruments/" . $this->tpl_data['items'][$x]['instrument_name'] . ".linst")) {// @codingStandardsIgnoreLine
+                    if (!file_exists(
+                        $this->path .
+                           "project/instruments/" .
+                           $this->tpl_data['items'][$x]['instrument_name'] .
+                           ".linst"
+                    )
+                    ) {
                         $this->tpl_data['items'][$x][$i]['value'] = '?';
                     } else {
-                        $this->tpl_data['items'][$x][$i]['value'] = $this->checkTable($this->tpl_data['items'][$x]['instrument_name']);// @codingStandardsIgnoreLine
+                        $this->tpl_data['items'][$x][$i]['value']
+                            = $this->checkTable(
+                                $this->tpl_data['items'][$x]['instrument_name']
+                            );
                     }
                 } else if ($key == 'Pages_Valid') {
-                    if (!file_exists($this->path . "/project/instruments/" . $this->tpl_data['items'][$x]['instrument_name'] . ".linst")) {// @codingStandardsIgnoreLine
+                    if (!file_exists(
+                        $this->path .
+                        "/project/instruments/" .
+                        $this->tpl_data['items'][$x]['instrument_name'] .
+                        ".linst"
+                    )
+                    ) {
                         $this->tpl_data['items'][$x][$i]['value'] = '?';
                     } else {
-                        $this->tpl_data['items'][$x][$i]['value'] = $this->checkPages($this->tpl_data['items'][$x]['instrument_name']);// @codingStandardsIgnoreLine
+                        $this->tpl_data['items'][$x][$i]['value']
+                            = $this->checkPages(
+                                $this->tpl_data['items'][$x]['instrument_name']
+                            );
                     }
 
                 } else {
@@ -184,10 +228,16 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
     */
     function checkType($tablename, $columnname, $type)
     {
-        $factory = NDB_Factory::singleton();
-        $db      = Database::singleton();
-        $exists  = $db->pselectOne(
-            "SELECT count(*) FROM information_schema.columns WHERE TABLE_SCHEMA=:dbname AND TABLE_NAME=:tablename AND COLUMN_NAME=:columnname AND DATA_TYPE=:typename",// @codingStandardsIgnoreLine
+        $factory      = NDB_Factory::singleton();
+        $db           = Database::singleton();
+        $sqlSelectOne = "SELECT count(*)".
+                        " FROM information_schema.columns".
+                        " WHERE TABLE_SCHEMA=:dbname".
+                        " AND TABLE_NAME=:tablename".
+                        " AND COLUMN_NAME=:columnname".
+                        " AND DATA_TYPE=:typename";
+        $exists       = $db->pselectOne(
+            $sqlSelectOne,
             array(
              'dbname'     => $factory->settings()->dbName(),
              'columnname' => $columnname,
@@ -250,16 +300,22 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
             case 'select':
                 // Enums can't just check the type, they also need to
                 // check the values in the enum
-                $enums   = explode("{-}", $pieces[3]);
-                $db_enum = $db->pselectOne(
-                    "SELECT COLUMN_TYPE FROM information_schema.columns WHERE TABLE_SCHEMA=:dbname AND TABLE_NAME=:tablename AND COLUMN_NAME=:columnname AND DATA_TYPE='enum'",// @codingStandardsIgnoreLine
+                $enums        = explode("{-}", $pieces[3]);
+                $sqlSelectOne = "SELECT COLUMN_TYPE".
+                                " FROM information_schema.columns".
+                                " WHERE TABLE_SCHEMA=:dbname".
+                                " AND TABLE_NAME=:tablename".
+                                " AND COLUMN_NAME=:columnname".
+                                " AND DATA_TYPE='enum'";
+                $db_enum      = $db->pselectOne(
+                    $sqlSelectOne,
                     array(
                      'dbname'     => $factory->settings()->dbName(),
                      'columnname' => $name,
                      'tablename'  => $instname,
                     )
                 );
-                $options = array();
+                $options      = array();
                 foreach ($enums as $enum) {
                     $enum_split = explode("=>", $enum);
                     $key        = $enum_split[0];
@@ -294,13 +350,17 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
         $db       = Database::singleton();
 
         while (($line = fgets($fp, 4096)) !== false) {
-            $pieces = explode("{@}", $line);
-            $type   = $pieces[0];
-            $name   = $pieces[1];
+            $pieces       = explode("{@}", $line);
+            $type         = $pieces[0];
+            $name         = $pieces[1];
+            $sqlSelectOne = "SELECT count(*)".
+                            " FROM instrument_subtests".
+                            " WHERE Test_name=:testname".
+                            " AND Description=:testdesc";
             switch($type) {
             case 'page':
                 $exists = $db->pselectOne(
-                    "SELECT count(*) FROM instrument_subtests WHERE Test_name=:testname AND Description=:testdesc",// @codingStandardsIgnoreLine
+                    $sqlSelectOne,
                     array(
                      'testname' => $instname,
                      'testdesc' => trim($pieces[2]),
