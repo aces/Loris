@@ -79,8 +79,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @return null
      * @throws DatabaseException
      */
-// @codingStandardsIgnoreStart
-    function data_team_helper()
+    function data_team_helper()// @codingStandardsIgnoreLine
     {
         //initializations
         $DB        =& Database::singleton();
@@ -131,44 +130,43 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
 
             $incompleteCandidates = $this->
                  getIncompleteCandidates(
-                        $instrument,
-                        $_REQUEST['visit_label'],
-                        $candID
+                     $instrument,
+                     $_REQUEST['visit_label'],
+                     $candID
+                 );
+
+            $this->tpl_data['Incomplete_candidates']
+                = json_encode($incompleteCandidates);
+
+            $this->tpl_data['Incomplete_candidates_length']
+                = count($incompleteCandidates);
+
+            $conflicts = $this->
+            instrumentInConflict(
+                $instrument,
+                $_REQUEST['visit_label'],
+                $candID
             );
 
-        $this->tpl_data['Incomplete_candidates']
-            = json_encode($incompleteCandidates);
+            $this->tpl_data['Conflicts'] =  json_encode($conflicts);
 
-        $this->tpl_data['Incomplete_candidates_length']
-            = count($incompleteCandidates);
+            $this->tpl_data['Conflicts_length'] = count($conflicts);
 
-        $conflicts = $this->
-            InstrumentInConflict(
+            $bvlFeedback = $this
+            ->getFeedbacks($instrument, $candID, $_REQUEST['visit_label']);
+
+            $this->tpl_data['Bvl_Feedback'] = json_encode($bvlFeedback);
+
+            $this->tpl_data['Bvl_Feedback_length'] = count($bvlFeedback);
+
+            $this->tpl_data['percent_complete'] = $this
+                ->_getPercentCompleted(
                     $instrument,
                     $_REQUEST['visit_label'],
                     $candID
-        );
-
-        $this->tpl_data['Conflicts'] =  json_encode($conflicts);
-
-        $this->tpl_data['Conflicts_length'] = count($conflicts);
-
-        $bvlFeedback = $this
-            ->getFeedbacks($instrument, $candID, $_REQUEST['visit_label']);
-
-
-        $this->tpl_data['Bvl_Feedback'] = json_encode($bvlFeedback);
-
-        $this->tpl_data['Bvl_Feedback_length'] = count($bvlFeedback);
-
-        $this->tpl_data['percent_complete'] = $this
-            ->_getPercentCompleted(
-                   $instrument, $_REQUEST['visit_label'],
-                   $candID
-        );
+                );
 
     }
-// @codingStandardsIgnoreEnd
     /**
      * GetFeedbacks
      * Return all the existing feedbackid threads for the given fieldname
@@ -238,7 +236,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
 
         // Search for null instruments and remove them
         foreach ($flattened_result as $k => $v) {
-            if ($v['Feedback_level'] == 'instrument' && !isset($v['Test_name'])) {// @codingStandardsIgnoreLine
+            if ($v['Feedback_level'] == 'instrument'
+                && !isset($v['Test_name'])
+            ) {
                 unset($flattened_result[$k]);
             }
         }
@@ -266,7 +266,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         ) {
             global $DB;
             if ($Filter == 'instrument') {
-                $test_name = $this->getTestNameusingMappedName($_REQUEST[$Filter]);// @codingStandardsIgnoreLine
+                $test_name = $this->getTestNameusingMappedName(
+                    $_REQUEST[$Filter]
+                );
                 return " AND $Column LIKE " . $DB->quote($test_name);
             }
             if ($_REQUEST[$Filter] == 'not_sent_to_dcc') {
@@ -287,8 +289,11 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      *
      * @return unknown
      */
-    function InstrumentInConflict($test_name, $visit_label=null, $candidate=null) // @codingStandardsIgnoreLine
-    {
+    function instrumentInConflict($test_name,
+        $visit_label=null,
+        $candidate=null
+    ) {
+
         global $DB;
         $conflicts = array();
         //if test_name exists and candidate is not set
@@ -345,8 +350,15 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         $conflicts = $DB->pselect($query, $qparams);
         return $conflicts;
     }
-
-    function FieldInConflict($test_name,$field_name) // @codingStandardsIgnoreLine
+    /**
+     * FieldInConflict function
+     *
+     * @param unknown_type $test_name  the value of test name
+     * @param string       $field_name the value of field name
+     *
+     * @return array
+     */
+    function fieldInConflict($test_name,$field_name)
     {
         //Do for each instrument....one shot....
         //And then extract the specific info through template..
@@ -385,13 +397,30 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
                 AND psc.Centerid!= '1'
                 AND ca.Entity_type != 'Scanner'";
         }
-        $conflicts = $DB->pselect($query, array('TN' => $test_name, 'FN' => $field_name));// @codingStandardsIgnoreLine
+        $conflicts = $DB->pselect(
+            $query,
+            array(
+             'TN' => $test_name,
+             'FN' => $field_name,
+            )
+        );
         return $conflicts;
     }
 
+    /**
+     * GetIncompleteCandidates function
+     *
+     * @param unknown_type $test_name   the value of test name
+     * @param string       $visit_label the value of visit label
+     * @param string       $candidate   the value of candidate
+     *
+     * @return unknown
+     */
+    function getIncompleteCandidates($test_name,
+        $visit_label=null,
+        $candidate=null
+    ) {
 
-    function getIncompleteCandidates($test_name,$visit_label=null, $candidate=null)// @codingStandardsIgnoreLine
-    {
         global $DB;
         $query = "SELECT DISTINCT s.ID, s.visit_label, c.PSCID,s.candid,".
                  " f.SessionID, f.test_name,f.data_entry,f.commentid,".
@@ -431,8 +460,16 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
     }
 
 
-
-    function getInstrumentCount($test_name, $visit_label=null, $candidate=null)// @codingStandardsIgnoreLine
+    /**
+     * GetInstrumentCount function
+     *
+     * @param unknown_type $test_name   the value of test name
+     * @param string       $visit_label the value of visit label
+     * @param string       $candidate   the value of candidate
+     *
+     * @return unknown
+     */
+    function getInstrumentCount($test_name, $visit_label=null, $candidate=null)
     {
         global $DB;
 
@@ -473,8 +510,16 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         return $count;
     }
 
-
-    function getCompleteInstrumentCount($test_name,$visit_label=null, $candidate=null)// @codingStandardsIgnoreLine
+    /**
+     * GetCompleteInstrumentCount function
+     *
+     * @param unknown_type $test_name   the value of test name
+     * @param string       $visit_label the value of visit label
+     * @param string       $candidate   the value of candidate
+     *
+     * @return unknown
+     */
+    function getCompleteInstrumentCount($test_name,$visit_label=null,$candidate=null)
     {
         global $DB;
         if ($test_name != null) {
@@ -527,16 +572,24 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      *
      * @return unknown
      */
-    function _getPercentCompleted($instrument,$visit_label=null, $candidate=null)// @codingStandardsIgnoreLine
-    {
+    function _getPercentCompleted($instrument,
+        $visit_label=null,
+        $candidate=null
+    ) {
+
         $percent_completed =0;
         $total_count       = $this
             ->getInstrumentCount($instrument, $visit_label, $candidate);
 
-        $complete_count    = $this->getCompleteInstrumentCount($instrument, $visit_label, $candidate);// @codingStandardsIgnoreLine
+        $complete_count = $this->getCompleteInstrumentCount(
+            $instrument,
+            $visit_label,
+            $candidate
+        );
 
         if ($complete_count !=0) {
-            $percent_completed = round($complete_count / $total_count, 2) * 100 ;// @codingStandardsIgnoreLine
+            $percent_completed
+                = round($complete_count / $total_count, 2) * 100;
         }
         return $percent_completed;
     }
@@ -558,7 +611,13 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         $values = array();
         if ((!(is_null($full_name)))) {
             if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
-                $test_name = $DB->pselectOne("SELECT Test_name FROM test_battery WHERE Test_name_display=:display", array('display' => $full_name)); // @codingStandardsIgnoreLine
+                $sqlSelectOne = "SELECT Test_name".
+                                " FROM test_battery".
+                                " WHERE Test_name_display=:display";
+                $test_name    = $DB->pselectOne(
+                    $sqlSelectOne,
+                    array('display' => $full_name)
+                );
             } else {
                 $test_name = Utility::getTestNameUsingFullName($full_name);
             }
@@ -580,7 +639,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         $DB =& Database::singleton();
 
         if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
-            $test_names = $DB->pselect("SELECT distinct Test_name_display from test_battery where Visit_label =:vl", array('vl' => $visit_label));// @codingStandardsIgnoreLine
+            $sqlSelect  = "SELECT distinct Test_name_display".
+                         " from test_battery where Visit_label =:vl";
+            $test_names = $DB->pselect($sqlSelect, array('vl' => $visit_label));
         } else {
             $test_names = $DB->pselect(
                 "SELECT DISTINCT t.Full_name as Test_name_display 
