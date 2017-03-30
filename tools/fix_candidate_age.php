@@ -38,7 +38,12 @@ foreach ($instruments as $inst=>$fullName) {
 
     foreach ($DBInstTable as $k => $row) {
         // Get Instrument Instance
-        $instrument = NDB_BVL_Instrument::factory($inst, $row['CommentID'], null, false);
+        try {
+            $instrument = NDB_BVL_Instrument::factory($inst, $row['CommentID'], null, false);
+        } catch (LorisException $e) {
+            echo "$inst instrument row with CommentID: ".$row['CommentID']." was skipped since Candidate is not active!\n";
+            continue;
+        }
         if (!$instrument) {
             // instrument does not exist
             continue;
