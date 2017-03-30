@@ -539,7 +539,7 @@ class Utility
      */
     static function toArray($var)
     {
-        if (!array_key_exists(0,$var)) {
+        if (!array_key_exists(0, $var)) {
             $var = array($var);
         }
         return $var;
