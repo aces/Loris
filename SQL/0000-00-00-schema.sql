@@ -262,6 +262,7 @@ CREATE TABLE `candidate` (
   `flagged_reason` int(6) DEFAULT NULL,
   `flagged_other` varchar(255) DEFAULT NULL,
   `flagged_other_status` enum('not_answered') DEFAULT NULL,
+  `flagged_date` date DEFAULT NULL,
   `Testdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `Entity_type` enum('Human','Scanner') NOT NULL DEFAULT 'Human',
   `ProbandGender` enum('Male','Female') DEFAULT NULL,
