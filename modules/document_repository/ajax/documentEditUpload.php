@@ -11,12 +11,17 @@
   * @link     https://github.com/aces/Loris
   */
 $userSingleton =& User::singleton();
-if (!$userSingleton->hasPermission('document_repository_view') && !$userSingleton->hasPermission('document_repository_delete')) {// @codingStandardsIgnoreLine
+if (!$userSingleton->hasPermission('document_repository_view')
+    && !$userSingleton->hasPermission('document_repository_delete')
+) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
 
-set_include_path(get_include_path().":../../project/libraries:../../php/libraries:");// @codingStandardsIgnoreLine
+set_include_path(
+    get_include_path().
+    ":../../project/libraries:../../php/libraries:"
+);
 require_once "NDB_Client.class.inc";
 require_once "NDB_Config.class.inc";
 require_once "Email.class.inc";
@@ -33,7 +38,9 @@ $DB =& Database::singleton();
 $action = $_POST['action'];
 
 //if user has document repository permission
-if ($userSingleton->hasPermission('document_repository_view') || $userSingleton->hasPermission('document_repository_delete')) {// @codingStandardsIgnoreLine
+if ($userSingleton->hasPermission('document_repository_view')
+    || $userSingleton->hasPermission('document_repository_delete')
+) {
     if ($action == 'upload') {
         $puser      = $_POST['user'];
         $category   = $_POST['category'];
@@ -80,15 +87,29 @@ if ($userSingleton->hasPermission('document_repository_view') || $userSingleton-
                  'File_type'     => $fileType,
                 )
             );
-                            $msg_data['newDocument'] = $baseURL . "/document_repository/";// @codingStandardsIgnoreLine
-                            $msg_data['document']    = $fileName;
-                            $msg_data['study']       = $config->getSetting('title');
-                            $query_Doc_Repo_Notification_Emails = "SELECT Email from users where Active='Y' and Doc_Repo_Notifications='Y' and UserID<>:uid";// @codingStandardsIgnoreLine
-                            $Doc_Repo_Notification_Emails       = $DB->pselect($query_Doc_Repo_Notification_Emails, array("uid" => $userSingleton->getUsername()));// @codingStandardsIgnoreLine
+            $msg_data['newDocument']
+                = $baseURL . "/document_repository/";
+            $msg_data['document']    = $fileName;
+            $msg_data['study']       = $config->getSetting('title');
+            $query_Doc_Repo          = "SELECT Email".
+                                       " from users".
+                                       " where Active='Y'".
+                                       " and Doc_Repo_Notifications='Y'".
+                                       " and UserID<>:uid";
+            $Doc_Repo_Notification_Emails = $DB->pselect(
+                $query_Doc_Repo,
+                array("uid" => $userSingleton->getUsername())
+            );
             foreach ($Doc_Repo_Notification_Emails as $email) {
-                Email::send($email['Email'], 'document_repository.tpl', $msg_data);
+                         Email::send(
+                             $email['Email'],
+                             'document_repository.tpl',
+                             $msg_data
+                         );
             }
-                            header("Location: $baseURL/document_repository/?uploadSuccess=true");// @codingStandardsIgnoreLine
+            $header = "Location:".
+                      " $baseURL/document_repository/?uploadSuccess=true";
+            header($header);
         } else {
             echo "There was an error uploading the file";
         }
@@ -124,8 +145,15 @@ if ($userSingleton->hasPermission('document_repository_view') || $userSingleton-
         );
         $msg_data['updatedDocument'] = $baseURL . "/document_repository/";
         $msg_data['document']        = $fileName;
-        $query_Doc_Repo_Notification_Emails = "SELECT Email from users where Active='Y' and Doc_Repo_Notifications='Y' and UserID<>:uid";// @codingStandardsIgnoreLine
-        $Doc_Repo_Notification_Emails       = $DB->pselect($query_Doc_Repo_Notification_Emails, array("uid" => $userSingleton->getUsername()));// @codingStandardsIgnoreLine
+        $query_Doc_Repo = "SELECT Email".
+                          " from users".
+                          " where Active='Y'".
+                          " and Doc_Repo_Notifications='Y' and UserID<>:uid";
+
+        $Doc_Repo_Notification_Emails = $DB->pselect(
+            $query_Doc_Repo,
+            array("uid" => $userSingleton->getUsername())
+        );
         foreach ($Doc_Repo_Notification_Emails as $email) {
             Email::send($email['Email'], 'document_repository.tpl', $msg_data);
         }
