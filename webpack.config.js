@@ -13,7 +13,7 @@ var config = {
     './modules/media/js/mediaIndex.js': './modules/media/jsx/mediaIndex.js',
     './modules/media/js/editFormIndex.js': './modules/media/jsx/editFormIndex.js',
     './modules/issue_tracker/js/columnFormatter.js': './modules/issue_tracker/jsx/columnFormatter.js',
-    './modules/issue_tracker/js/editIssue.js': './modules/issue_tracker/jsx/editIssue.js',
+    './modules/issue_tracker/js/issueIndex.js': './modules/issue_tracker/jsx/issueIndex.js',
     './modules/candidate_parameters/js/candidateInfo.js': './modules/candidate_parameters/jsx/candidateInfo.js',
     './modules/candidate_parameters/js/consentStatus.js': './modules/candidate_parameters/jsx/consentStatus.js',
     './modules/candidate_parameters/js/familyInfo.js': './modules/candidate_parameters/jsx/familyInfo.js',
