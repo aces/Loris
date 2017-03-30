@@ -38,7 +38,8 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         //create user object
         $user =& User::singleton();
 
-        return $user->hasPermission('document_repository_view') || $user->hasPermission('document_repository_delete');// @codingStandardsIgnoreLine
+        return $user->hasPermission('document_repository_view')
+               || $user->hasPermission('document_repository_delete');
 
     }
     /**
@@ -131,7 +132,8 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
            // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
-            if (is_array($list_of_sites)) { $list_of_sites = array(null => 'Any') + $list_of_sites;// @codingStandardsIgnoreLine
+            if (is_array($list_of_sites)) {
+                $list_of_sites = array(null => 'Any') + $list_of_sites;
             }
         } else {
             // allow only to view own site data
@@ -142,22 +144,27 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
                 if ($site[$key]->isStudySite()) {
                     $list_of_sites[$val] = $site[$key]->getCenterName();
                 }
-                $list_of_sites = array('' => 'All User Sites') + $list_of_sites;// @codingStandardsIgnoreLine
+                $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
             }
         }
 
         $list_of_instruments = Utility::getAllInstruments();
 
-        $list_of_visit_labels = array_merge(array(null => "Any") + Utility::getVisitList());// @codingStandardsIgnoreLine
+        $list_of_visit_labels = array_merge(
+            array(null => "Any") + Utility::getVisitList()
+        );
         $subproject_options   = Utility::getSubprojectList();
         $subproject_options   = array(null => 'Any') + $subproject_options;
 
         $DB = Database::singleton();
 
         //There's no dropdown filter for file names?
-        //$fileNames = $DB->pselect("Select File_name from document_repository", array());// @codingStandardsIgnoreLine
+        //$fileNames = $DB->pselect(
+        //"Select File_name from document_repository", array());
         $fileTypes = array();
-        $fileT     = $DB->pselect("SELECT DISTINCT File_type FROM document_repository ORDER BY File_type", array());// @codingStandardsIgnoreLine
+        $sqlSelect = "SELECT DISTINCT File_type".
+                     " FROM document_repository ORDER BY File_type";
+        $fileT     = $DB->pselect($sqlSelect, array());
         foreach ($fileT as $fileType) {
             $fileTypes[$fileType['File_type']] = $fileType['File_type'];
         }
@@ -236,7 +243,9 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
             if ($value['parent_id'] != 0) {
                 $depth       += 1;
                 $parent_id    = $value['parent_id'];
-                $value        = $DB->pselectRow("SELECT * FROM document_repository_categories where id=$parent_id", array());// @codingStandardsIgnoreLine
+                $query        = "SELECT * FROM document_repository_categories".
+                                " where id=$parent_id";
+                $value        = $DB->pselectRow($query, array());
                 $categoryName = $value['category_name'] . ">" . $categoryName;
             }
         } while ($value['parent_id'] != 0);
@@ -296,7 +305,9 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
     {
         $DB       = Database::singleton();
         $results  = array();
-        $dbresult = $DB->pselect("SELECT * FROM document_repository_categories ORDER BY parent_id ASC", array());// @codingStandardsIgnoreLine
+        $query    = "SELECT * FROM document_repository_categories".
+                    " ORDER BY parent_id ASC";
+        $dbresult = $DB->pselect($query, array());
         foreach ($dbresult as $row) {
             $results[] =$row;
             $tree      = null;
@@ -312,13 +323,15 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
                 if ($result['parent_id'] == 0) {
                     $tree->{$result['id']} = &$thisref;
                 } else {
-                    $refs->{$result['parent_id']}->children->{$result['id']} = &$thisref;// @codingStandardsIgnoreLine
+                    $refs->{$result['parent_id']}->children->{$result['id']}
+                        = &$thisref;
                 }
             }
             $tree; // contains the newly sorted tree.
         }
-
-        $IDCategories    = $DB->pselect("SELECT id,category_name,parent_id,comments FROM document_repository_categories ORDER BY parent_id", array());// @codingStandardsIgnoreLine
+        $query           ="SELECT id,category_name,parent_id,comments".
+                         " FROM document_repository_categories ORDER BY parent_id";
+        $IDCategories    = $DB->pselect($query, array());
         $tmpIDCategories = $IDCategories;
 
         //$tree is an object with references, so here we are encoding it
@@ -330,12 +343,13 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
             foreach ($IDCategories as $key=>$value) {
                 $CategoryID = $value['id'];
                 if ($CategoryID == $order) {
-                    $fileCategories[$CategoryID] = array(
-                                                    'CategoryName' => $this->parseCategory($value),// @codingStandardsIgnoreLine
-                                                    'Comment'      => $value['comments'],// @codingStandardsIgnoreLine
-                                                    'Files'        => array(),
-                                                    'ParentID'     => $value['parent_id'],// @codingStandardsIgnoreLine
-                                                   );
+                    $fileCategories[$CategoryID]
+                        = array(
+                           'CategoryName' => $this->parseCategory($value),
+                           'Comment'      => $value['comments'],
+                           'Files'        => array(),
+                           'ParentID'     => $value['parent_id'],
+                          );
                 }
             }
         }
@@ -353,10 +367,13 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         foreach ($this->headers as $header) {
             $this->tpl_data['headers'][$i]['name'] = $header;
             // format header
-            $this->tpl_data['headers'][$i]['displayName'] = ucwords(str_replace('_', ' ', $header));// @codingStandardsIgnoreLine
+            $this->tpl_dta['headers'][$i]['displayName']
+                = ucwords(str_replace('_', ' ', $header));
             // set field ordering
             if (isset($this->filter['order'])) {
-                $this->tpl_data['headers'][$i]['fieldOrder'] = ($this->filter['order']['fieldOrder'] == 'ASC') ? 'DESC' : 'ASC';// @codingStandardsIgnoreLine
+                $this->tpl_data['headers'][$i]['fieldOrder']
+                    = ($this->filter['order']['fieldOrder'] == 'ASC')
+                       ? 'DESC' : 'ASC';
             }
             $i++;
         }
@@ -383,10 +400,11 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         // print out
         $x = 0;
         while ($item = $prepared->fetch(PDO::FETCH_ASSOC)) {
-            $FileCategory =& $this->tpl_data['File_categories'][$item['File_category']];// @codingStandardsIgnoreLine
+            $FileCategory
+                =& $this->tpl_data['File_categories'][$item['File_category']];
             $DisplayItem  = $item;
             $DisplayItem['File_name'] = utf8_encode($item['File_name']);
-            $DisplayItem['File_size'] = $this->format_size($item['File_size']);
+            $DisplayItem['File_size'] = $this->formatSize($item['File_size']);
             $DisplayItem['For_site']  = $site_names[$item['For_site']];
 
             if (is_array($FileCategory['Files'])) {
@@ -399,13 +417,13 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
     }
 
     /**
-     * Format_size function
+     * FormatSize function
      *
      * @param string $value the value
      *
      * @return string
      */
-    function format_size($value)// @codingStandardsIgnoreLine
+    function formatSize($value)
     {
         if (is_null($value)) {
             return null;
