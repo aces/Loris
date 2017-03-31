@@ -240,7 +240,7 @@ class HelpFile
 
         $result = $DB->pselectOne(
             "SELECT COUNT(*) FROM help WHERE parentID = :HID",
-            array('HID' => $this->helpID),
+            array('HID' => $this->helpID)
         );
         return ($result > 0);
     }
