@@ -236,32 +236,51 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
                                'r.Final_Exclusionary',
                                $conflict_condition1,
                                $conflict_condition2,
-                               'r.Finalized',
+                               "COALESCE(r.Finalized, 'no')",
                                'c.CenterID',
                                'c.ProjectID',
                                'keyword',
                               );
-
+        $this->tpl_data['hiddenHeaders']
+            = json_encode(['CommentID', 'Conflict2', 'SessionID', 'CandID']);
+        $this->validFilters    = array(
+                                  'c.CandID',
+                                  'r.DICOM_ID',
+                                  's.visit_label',
+                                  'c.PSCID',
+                                  'r.Final_Review_Results',
+                                  "COALESCE(r.Review_Done, 'no')",
+                                  'r.sas',
+                                  'r.pvs',
+                                  'r.Final_Exclusionary',
+                                  $conflict_condition1,
+                                  $conflict_condition2,
+                                  'r.Finalized',
+                                  'c.CenterID',
+                                  'c.ProjectID',
+                                  'keyword',
+                                 );
         $this->EqualityFilters = array('r.Final_Exclusionary');
-        $Review_Done           = "COALESCE(r.Review_Done, 0)";
+        $Review_Done           = "COALESCE(r.Review_Done, 'no')";
+        $Finalized          = "COALESCE(r.Finalized, 'no')";
         $keyword            = 'r.Final_Incidental_Findings';
-        $this->formToFilter =  array(
-                                'dccid'                => 'c.CandID',
-                                'site'                 => 'c.CenterID',
-                                'Visit_label'          => 's.visit_label',
-                                'Project'              => 'c.ProjectID',
-                                'pscid'                => 'c.PSCID',
-                                'Review_Done'          => $Review_Done,
-                                'Results'              => 'r.Final_Review_Results',
-                                'Final_Review_Results' => 'r.Final_Review_Results',
-                                'Exclusionary_Status'  => 'r.Final_Exclusionary',
-                                'PVS'                  => 'r.pvs',
-                                'SAS'                  => 'r.sas',
-                                'Conflict'             => $conflict_condition1,
-                                'Conflict2'            => $conflict_condition2,
-                                'Finalized'            => 'r.Finalized',
-                                'keyword'              => $keyword,
-                               );
+        $this->formToFilter = array(
+                               'dccid'                => 'c.CandID',
+                               'site'                 => 'c.CenterID',
+                               'Visit_label'          => 's.visit_label',
+                               'Project'              => 'c.ProjectID',
+                               'pscid'                => 'c.PSCID',
+                               'Review_Done'          => $Review_Done,
+                               'Results'              => 'r.Final_Review_Results',
+                               'Final_Review_Results' => 'r.Final_Review_Results',
+                               'Exclusionary_Status'  => 'r.Final_Exclusionary',
+                               'PVS'                  => 'r.pvs',
+                               'SAS'                  => 'r.sas',
+                               'Conflict'             => $conflict_condition1,
+                               'Conflict2'            => $conflict_condition2,
+                               'Finalized'            => $Finalized,
+                               'keyword'              => $keyword,
+                              );
         $this->searchKeyword = array('r.Final_Incidental_Findings');
     }
     /**
@@ -301,9 +320,9 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
                                       'no'  => 'No',
                                      );
         $options_boolean_finalized = array(
-                                      null => 'All',
-                                      '1'  => 'Yes',
-                                      '0'  => 'No',
+                                      null  => 'All',
+                                      'yes' => 'Yes',
+                                      'no'  => 'No',
                                      );
         $conflict_options1         = array(
                                       null    => 'All',
@@ -334,20 +353,6 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
                               'atypical' => 'Atypical',
                               'normal'   => 'Normal',
                              );
-        $exclude           = array(
-                              null               => 'All',
-                              'exclusionary'     => 'Exclusionary',
-                              'non_exclusionary' => 'Non Exclusionary',
-                             );
-
-        $this->addBasicText(
-            'dicomid',
-            'DICOM ID:',
-            array(
-             "size"      => 9,
-             "maxlength" => 20,
-            )
-        );
         $this->addBasicText(
             'pscid',
             'PSCID:',
@@ -421,3 +426,4 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
         );
     }
 }
+
