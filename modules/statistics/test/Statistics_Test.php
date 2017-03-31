@@ -25,11 +25,10 @@ require_once __DIR__ .
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 class Statistics_Test extends LorisIntegrationTest
 {
-    
-   /**
+
+    /**
      * Tests that, when loading the Statistics module, some
      * text appears in the body.
      *
@@ -38,7 +37,9 @@ class Statistics_Test extends LorisIntegrationTest
     function testLoadPage()
     {
         $this->safeGet($this->url . "/statistics/");
-        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->assertContains("General Description", $bodyText);
 
     }
@@ -57,7 +58,10 @@ class Statistics_Test extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertContains(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
 
@@ -74,30 +78,45 @@ class Statistics_Test extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->assertNotContains(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
 
-    /** Tests that, when loading the Statistics module behavioural tab, some
+    /**
+ * Tests that, when loading the Statistics module behavioural tab, some
      * text appears in the body.
      *
      * @return void
      */
     function testBehaviouralTab()
     {
-        $this->safeGet($this->url . "/statistics/stats_behavioural/?dynamictabs=dynamictabs");
-        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector(".statsH2"))->getText();
+        $this->safeGet(
+            $this->url .
+            "/statistics/stats_behavioural/?dynamictabs=dynamictabs"
+        );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector(".statsH2")
+        )->getText();
         $this->assertContains("Data Entry Statistics", $bodyText);
     }
-   /** Tests that, when loading the Reliability Statistics Tab in Statistics module, some
-     * text appears in the body.
+    /**
+     * Tests that, when loading the Reliability Statistics Tab in Statistics
+     * module, some text appears in the body.
      *
      * @return void
      */
     function testReliabilityStatisticsTab()
     {
-        $this->safeGet($this->url . "/statistics/stats_reliability/?dynamictabs=dynamictabs");
-        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector(".statsH2"))->getText();
+        $this->safeGet(
+            $this->url .
+            "/statistics/stats_reliability/?dynamictabs=dynamictabs"
+        );
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector(".statsH2")
+        )->getText();
         $this->assertContains("Reliability Statistics", $bodyText);
     }
    /** Tests that, when loading the Demographic Statistics Tab in Statistics module, some
