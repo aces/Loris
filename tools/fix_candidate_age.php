@@ -55,7 +55,10 @@ foreach ($instruments as $inst=>$fullName) {
         try {
             $instrument = NDB_BVL_Instrument::factory($inst, $row['CommentID'], null, false);
         } catch (LorisException $e) {
-            echo "$inst instrument row with CommentID: ".$row['CommentID']." was skipped since Candidate is not active!\n";
+            echo "$inst instrument row with CommentID: ".$row['CommentID']." was ".
+                " Ignored for one of the following reasons:\n".
+                "  - The candidate is inactive.\n".
+                "  - The session is inactive.\n\n";
             continue;
         }
         if (!$instrument) {
