@@ -699,6 +699,9 @@ class NDB_Menu_Filter extends NDB_Menu
                 return $this->toJSON();
             }
         }
+        if ($this->skipTemplate) {
+            return "";
+        }
         // Set the csvFile links
         $uri    = ltrim($_SERVER['REQUEST_URI'], "/");
         $suffix = strpos($uri, '?') ? '&format=csv' : '?&format=csv';
