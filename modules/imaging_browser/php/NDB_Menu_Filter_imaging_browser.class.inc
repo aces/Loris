@@ -62,16 +62,23 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
     {
         $config = NDB_Config::singleton();
         $DB = Database::singleton();
-        $scan_types = $config->getSetting('tblScanTypes');
+        $toTable_scan_types = $config->getSetting('tblScanTypes');
 
-        foreach ($scan_types as $type) {
-            $id = $DB->pselectOne(
-                "SELECT ID FROM mri_scan_type mst
-                     WHERE mst.Scan_type=:ScanType",
-                array('ScanType' => $type)
-            );
-            $scan_id_types[$id]=$type;
+        $all_scan_types = $DB->pselect(
+            "SELECT ID, Scan_type FROM mri_scan_type mri",
+            array()
+        );
+        foreach ($all_scan_types as $row) {
+            $type = $row['Scan_type'];
+            $all_scan_types[$row['ID']] = $type;
         }
+        
+        $scan_id_types=array_flip(
+                            array_intersect_key(
+                                array_flip($all_scan_types), 
+                                array_flip($toTable_scan_types)
+                            )
+                       );
 
         $NewDataSubquery = "CASE 
             COALESCE(nd.QCLastChangeTime, 'new')
