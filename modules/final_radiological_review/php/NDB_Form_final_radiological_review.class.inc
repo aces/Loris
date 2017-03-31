@@ -286,6 +286,7 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
                     '</td><td>' .
                     _makePretty($history_item['col'], $history_item['new']) .
                     '</td></tr>';
+
             }
             $defaults   = array_merge(
                 $final_review,

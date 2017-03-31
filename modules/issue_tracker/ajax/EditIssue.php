@@ -87,16 +87,15 @@ function editIssue()
     $issueValues['lastUpdatedBy'] = $user->getData('UserID');
 
     $validatedInput = validateInput($validateValues);
-    if ($validatedInput['isValidSubmission']) {
-        if (array_key_exists('sessionID', $validatedInput)) {
-            $issueValues['sessionID'] = $validatedInput['sessionID'];
-        }
-        if (array_key_exists('candID', $validatedInput)) {
-            $issueValues['candID'] = $validatedInput['candID'];
-        }
-    } else {
-        return $validatedInput;
-    } //aka when it's not valid
+    if (array_key_exists('sessionID', $validatedInput)) {
+        $issueValues['sessionID'] = $validatedInput['sessionID'];
+    }
+    if (array_key_exists('candID', $validatedInput)) {
+        $issueValues['candID'] = $validatedInput['candID'];
+    }
+
+    // Get changed values to save in history
+    $historyValues = getChangedValues($issueValues, $issueID);
 
     if (!empty($issueID) || $issueID != 0) {
         $db->update('issues', $issueValues, ['issueID' => $issueID]);
@@ -107,19 +106,10 @@ function editIssue()
         $issueID = $db->getLastInsertId();
     }
 
-    updateHistory($issueValues, $issueID);
+    updateHistory($historyValues, $issueID);
+    updateComments($_POST['comment'], $issueID);
 
-    //adding comment in now that I have an issueID for both new and old.
-    if ($_POST['comment'] != null) {
-        $commentValues = array(
-                          'issueComment' => $_POST['comment'],
-                          'addedBy'      => $user->getData('UserID'),
-                          'issueID'      => $issueID,
-                         );
-        $db->insert('issues_comments', $commentValues);
-    }
-
-    //adding new assignee to watching
+    // Adding new assignee to watching
     if (isset($issueValues['assignee'])) {
         $nowWatching = array(
                         'userID'  => $issueValues['assignee'],
@@ -128,7 +118,7 @@ function editIssue()
         $db->replace('issues_watching', $nowWatching);
     }
 
-    //adding editor to the watching table unless they don't want to be added.
+    // Adding editor to the watching table unless they don't want to be added.
     if ($_POST['watching'] == 'Yes') {
         $nowWatching = array(
                         'userID'  => $user->getData('UserID'),
@@ -145,7 +135,7 @@ function editIssue()
         );
     }
 
-    //adding others from multiselect to watching table.
+    // Adding others from multiselect to watching table.
     if (isset($_POST['othersWatching'])) {
 
         // Clear the list of current watchers
@@ -172,10 +162,7 @@ function editIssue()
     //sending email
     emailUser($issueID, $issueValues['assignee']);
 
-    return array(
-            'isValidSubmission' => true,
-            'issueID'           => $issueID,
-           );
+    return ['issueID' => $issueID];
 }
 
 /**
@@ -193,12 +180,10 @@ function validateInput($values)
     $pscid      = (isset($values['PSCID']) ? $values['PSCID'] : null);
     $visitLabel = (isset($values['visitLabel']) ? $values['visitLabel'] : null);
     $result     = [
-                   'PSCID'             => $pscid,
-                   'visit'             => $visitLabel,
-                   'candID'            => null,
-                   'sessionID'         => null,
-                   'isValidSubmission' => true,
-                   'invalidMessage'    => null,
+                   'PSCID'     => $pscid,
+                   'visit'     => $visitLabel,
+                   'candID'    => null,
+                   'sessionID' => null,
                   ];
 
     // If both are set, return SessionID and CandID
@@ -217,9 +202,9 @@ function validateInput($values)
             $result['sessionID'] = $session[0]['sessionID'];
             $result['candID']    = $session[0]['candID'];
         } else {
-            $result['isValidSubmission'] = false;
-            $result['invalidMessage']    = "PSCID and Visit Label do not " .
-                "match a valid candidate session!";
+            showError(
+                "PSCID and Visit Label do not match a valid candidate session!"
+            );
         }
 
         return $result;
@@ -240,8 +225,7 @@ function validateInput($values)
         if ($candidate) {
             $result['candID'] = $candidate;
         } else {
-            $result['isValidSubmission'] = false;
-            $result['invalidMessage']    = "PSCID does not match a valid candidate!";
+            showError("PSCID does not match a valid candidate!");
         }
 
         return $result;
@@ -249,39 +233,52 @@ function validateInput($values)
 
     // If only visit label is set, return an error
     if (isset($result['visit'])) {
-        $result['isValidSubmission'] = false;
-        $result['invalidMessage']    = "Visit Label must be accompanied by a PSCID";
-        return $result;
+        showError("Visit Label must be accompanied by a PSCID");
     }
 
     return $result;
 }
 
 /**
+ * Iterates through submitted values and filters only values that have changed
+ *
+ * @param array  $issueValues new values
+ * @param string $issueID     issue ID
+ *
+ * @throws DatabaseException
+ *
+ * @return array array of changed values
+ */
+function getChangedValues($issueValues, $issueID)
+{
+    $issueData     = getIssueData($issueID);
+    $changedValues = [];
+    foreach ($issueValues as $key => $value) {
+        // Only include fields that have changed
+        if ($issueValues[$key] != $issueData[$key] && !empty($value)) {
+            $changedValues[$key] = $value;
+        }
+    }
+    return $changedValues;
+}
+
+/**
  * Puts updated fields into the issues_history table.
  *
- * @param array  $issueValues the new values
- * @param string $issueID     the issue ID
+ * @param array  $values  the new values
+ * @param string $issueID the issue ID
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function updateHistory($issueValues, $issueID)
+function updateHistory($values, $issueID)
 {
     $user =& User::singleton();
     $db   =& Database::singleton();
-    $undesiredFields = array(
-                        'lastUpdatedBy',
-                        'reporter',
-                        'dateCreated',
-                       );
 
-    foreach ($issueValues as $key => $value) {
-        if (in_array($key, $undesiredFields)) {
-            continue;
-        }
-        if (!empty($value)) { //check that all kinds of nulls are being dealt with
+    foreach ($values as $key => $value) {
+        if (!empty($value)) {
             $changedValues = [
                               'newValue'     => $value,
                               'fieldChanged' => $key,
@@ -290,6 +287,31 @@ function updateHistory($issueValues, $issueID)
                              ];
             $db->insert('issues_history', $changedValues);
         }
+    }
+}
+
+/**
+ * Puts updated fields into the issues_comments table.
+ *
+ * @param string $comment new issue comment
+ * @param string $issueID the issue ID
+ *
+ * @throws DatabaseException
+ *
+ * @return void
+ */
+function updateComments($comment, $issueID)
+{
+    $user =& User::singleton();
+    $db   =& Database::singleton();
+
+    if (isset($comment) && $comment != "null") {
+        $commentValues = array(
+                          'issueComment' => $comment,
+                          'addedBy'      => $user->getData('UserID'),
+                          'issueID'      => $issueID,
+                         );
+        $db->insert('issues_comments', $commentValues);
     }
 }
 
@@ -426,7 +448,7 @@ function emailUser($issueID, $changed_assignee)
     );
 
     $msg_data['url']         = $baseurl .
-        "/issue_tracker/edit/?backURL=/issue_tracker/&issueID=" . $issueID;
+        "/issue_tracker/issue/?backURL=/issue_tracker/&issueID=" . $issueID;
     $msg_data['issueID']     = $issueID;
     $msg_data['currentUser'] = $user->getUsername();
     $msg_data['title']       = $title;
@@ -464,7 +486,7 @@ function emailUser($issueID, $changed_assignee)
     );
 
     $msg_data['url']         = $baseurl .
-        "/issue_tracker/edit/?backURL=/issue_tracker/&issueID=" . $issueID;
+        "/issue_tracker/issue/?backURL=/issue_tracker/&issueID=" . $issueID;
     $msg_data['issueID']     = $issueID;
     $msg_data['currentUser'] = $user->getUsername();
 
@@ -590,52 +612,28 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
     }
 
     //Now get issue values
-    $issueData = null;
+    $issueData = getIssueData();
     if (!empty($_GET['issueID'])) { //if an existing issue
-        $issueID   = $_GET['issueID'];
-        $issueData = $db->pselectRow(
-            "SELECT i.*, c.PSCID, s.Visit_label as visitLabel FROM issues as i " .
-            "LEFT JOIN candidate c ON (i.candID=c.CandID)" .
-            "LEFT JOIN session s ON (i.sessionID=s.ID) " .
-            "WHERE issueID=:issueID",
-            array('issueID' => $issueID)
-        );
-
-        $isWatching            = $db->pselectOne(
-            "SELECT * FROM issues_watching WHERE 
-                issueID=:issueID AND userID=:userID",
+        $issueID    = $_GET['issueID'];
+        $issueData  = getIssueData($issueID);
+        $isWatching = $db->pselectOne(
+            "SELECT userID, issueID FROM issues_watching 
+            WHERE issueID=:issueID AND userID=:userID",
             array(
              'issueID' => $issueID,
              'userID'  => $user->getData('UserID'),
             )
         );
-        $issueData['watching'] = is_array($isWatching) ? "No" : "Yes";
+        $issueData['watching']       = is_array($isWatching) ? "No" : "Yes";
         $issueData['commentHistory'] = getComments($issueID);
-        $issueData['whoIsWatching']  = getWatching($issueID);
+        $issueData['othersWatching'] = getWatching($issueID);
         $issueData['desc']           = $db->pSelectOne(
             "SELECT issueComment 
 FROM issues_comments WHERE issueID=:issueID 
 ORDER BY dateAdded",
             array('issueID' => $issueID)
         );
-    } else { //just setting the default values
-        $issueData['reporter']      = $user->getData('UserID');
-        $issueData['dateCreated']   = date('Y-m-d H:i:s');
-        $issueData['centerID']      = $user->getData('CenterID');
-        $issueData['status']        = "new";
-        $issueData['priority']      = "normal";
-        $issueData['issueID']       = 0; //TODO: this is dumb
-        $issueData['title']         = null;
-        $issueData['lastUpdate']    = null;
-        $issueData['PSCID']         = null;
-        $issueData['assignee']      = null;
-        $issueData['history']       = null;
-        $issueData['watching']      = "Yes";
-        $issueData['visitLabel']    = null;
-        $issueData['category']      = null;
-        $issueData['lastUpdatedBy'] = null;
     }
-
     $issueData['comment'] = null;
 
     if ($issueData['reporter'] == $user->getData('UserID')) {
@@ -660,4 +658,64 @@ ORDER BY dateAdded",
               ];
 
     return $result;
+}
+
+/**
+ * If issueID is passed retrieves issue data from database,
+ * othewise return empty issue data object
+ *
+ * @param string $issueID the ID of the requested issue
+ *
+ * @return array
+ */
+function getIssueData($issueID)
+{
+
+    $user =& User::singleton();
+    $db   =& Database::singleton();
+
+    if ($issueID) {
+        return $db->pselectRow(
+            "SELECT i.*, c.PSCID, s.Visit_label as visitLabel FROM issues as i " .
+            "LEFT JOIN candidate c ON (i.candID=c.CandID)" .
+            "LEFT JOIN session s ON (i.sessionID=s.ID) " .
+            "WHERE issueID=:issueID",
+            ['issueID' => $issueID]
+        );
+    }
+
+    return [
+            'reporter'      => $user->getData('UserID'),
+            'dateCreated'   => date('Y-m-d H:i:s'),
+            'centerID'      => $user->getData('CenterID'),
+            'status'        => "new",
+            'priority'      => "normal",
+            'issueID'       => 0, //TODO: this is dumb
+            'title'         => null,
+            'lastUpdate'    => null,
+            'PSCID'         => null,
+            'assignee'      => null,
+            'history'       => null,
+            'watching'      => "Yes",
+            'visitLabel'    => null,
+            'category'      => null,
+            'lastUpdatedBy' => null,
+           ];
+}
+
+/**
+ * Utility function to return errors from the server
+ *
+ * @param string $message error message to display
+ *
+ * @return void
+ */
+function showError($message)
+{
+    if (!isset($message)) {
+        $message = 'An unknown error occurred!';
+    }
+    header('HTTP/1.1 400 Bad Request');
+    header('Content-Type: application/json; charset=UTF-8');
+    die(json_encode(['message' => $message]));
 }
