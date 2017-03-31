@@ -55,7 +55,7 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
      * @return  boolean Whether the user has said permission
      * @private
      */
-    function _has_perm($perm)// @codingStandardsIgnoreLine
+    function _hasPerm($perm)
     {
         $user =& User::singleton();
         return $user->hasPermission($perm);
@@ -188,7 +188,7 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
 
         $this->form->addElement('static', 'history', '', '');
 
-        if ($this->_has_perm('edit_final_radiological_review') == false) {
+        if ($this->_hasPerm('edit_final_radiological_review') == false) {
             $this->form->freeze();
         }
 
@@ -347,7 +347,7 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
     {
         if (!is_array($values)
             || count($values) == 0
-            || $this->_has_perm('edit_final_radiological_review') == false
+            || $this->_hasPerm('edit_final_radiological_review') == false
         ) {
             return true;
         }
