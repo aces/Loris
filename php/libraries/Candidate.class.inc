@@ -729,6 +729,13 @@ class Candidate
                 $pscid = Candidate::generateRandomStringFromArrays($pscidArrays);
             }
 
+            if ($pscid == '') {
+                throw new LorisException(
+                    "Well this is embarrassing, our automated PSCID generator "
+                    . "is about to enter an infinite loop."
+                );
+            }
+
             // check if the pscid is used
         } while (
             $db->pselectOne(
@@ -865,6 +872,14 @@ class Candidate
     static function generateArrays($idStructure, $siteAbbrev=null)
     {
         $idStructure = $idStructure['structure']['seq'];
+
+        if (!$idStructure[0]) {
+            // There's only one seq tag so the param format
+            // needs to be fixed
+            $temp        = array();
+            $temp[]      = $idStructure;
+            $idStructure = $temp;
+        }
 
         $arrays = array();
         foreach ($idStructure AS $seq) {
