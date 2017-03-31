@@ -1,3 +1,13 @@
+/**
+ * Imaging Upload Form
+ *
+ * Form component allowing to upload MRI images to LORIS
+ *
+ * @author Alex Ilea
+ * @version 1.0.0
+ * @since 2017/04/01
+ *
+ */
 class UploadForm extends React.Component {
 
   constructor(props) {
@@ -14,7 +24,7 @@ class UploadForm extends React.Component {
   }
 
   componentDidMount() {
-    let form = this.state.form;
+    const form = this.state.form;
     form.IsPhantom.required = true;
 
     // Disable fields on initial load
@@ -22,8 +32,8 @@ class UploadForm extends React.Component {
   }
 
   onFormChange(field, value) {
-    let form = this.state.form;
-    let formData = this.state.formData;
+    const form = JSON.parse(JSON.stringify(this.state.form));
+    const formData = JSON.parse(JSON.stringify(this.state.formData));
 
     if (field === 'IsPhantom') {
       if (value === 'N') {
@@ -53,7 +63,7 @@ class UploadForm extends React.Component {
    in order to get the percentage uploaded as value for the progress bar
    */
   uploadFile() {
-    let formData = new FormData(this.state.formData);
+    const formData = new FormData(this.state.formData);
     formData.append("fire_away", "Upload");
 
     $.ajax({
@@ -64,10 +74,10 @@ class UploadForm extends React.Component {
       contentType: false,
       processData: false,
       xhr: function() {
-        let xhr = new window.XMLHttpRequest();
+        const xhr = new window.XMLHttpRequest();
         xhr.upload.addEventListener("progress", function(evt) {
           if (evt.lengthComputable) {
-            let percentage = Math.round((evt.loaded / evt.total) * 100);
+            const percentage = Math.round((evt.loaded / evt.total) * 100);
             this.setState({uploadProgress: percentage});
           }
         }.bind(this), false);
@@ -76,6 +86,8 @@ class UploadForm extends React.Component {
       success: function(data) {
         const errMessage = "The following errors occured while " +
           "attempting to display this page:";
+        // Last remaining part of the old module.
+        // Need to update to use proper AJAX request/response
         if (data.indexOf(errMessage) > -1) {
           document.open();
           document.write(data);
@@ -93,7 +105,7 @@ class UploadForm extends React.Component {
 
   render() {
     // Bind form elements to formData
-    let form = this.state.form;
+    const form = this.state.form;
     form.IsPhantom.value = this.state.formData.IsPhantom;
     form.candID.value = this.state.formData.candID;
     form.pSCID.value = this.state.formData.pSCID;

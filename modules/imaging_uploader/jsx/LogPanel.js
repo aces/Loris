@@ -1,5 +1,16 @@
 /* global UploadProgress */
 
+/**
+ * Log Panel Component
+ *
+ * Panel component that displays logs for a selected MRI upload whether it is
+ * in progress or already completed or failed.
+ *
+ * @author Alex Ilea
+ * @version 1.0.0
+ * @since 2017/04/01
+ *
+ */
 class LogPanel extends React.Component {
 
   constructor(props) {
@@ -21,7 +32,7 @@ class LogPanel extends React.Component {
   }
 
   initHelper() {
-    let uploadProgress = new UploadProgress();
+    const uploadProgress = new UploadProgress();
     this.uploadProgress = uploadProgress;
 
     $('#mri_upload_table').on('click', 'tbody tr', function(event) {
@@ -57,9 +68,9 @@ class LogPanel extends React.Component {
    * @param {string} logType - summary or details
    */
   monitorProgress(logType) {
-    let summary = (logType === "summary");
-    let uploadProgress = this.uploadProgress;
-    let uploadId = uploadProgress.getUploadId();
+    const summary = (logType === "summary");
+    const uploadProgress = this.uploadProgress;
+    const uploadId = uploadProgress.getUploadId();
 
     // If no row was selected
     if (!uploadId) {
@@ -85,7 +96,7 @@ class LogPanel extends React.Component {
    * @param {bool} poll - pool boolean
    */
   setServerPolling(poll) {
-    let uploadProgress = this.uploadProgress;
+    const uploadProgress = this.uploadProgress;
 
     if (poll) {
       // START POLLING
@@ -140,7 +151,7 @@ class LogPanel extends React.Component {
   }
 
   render() {
-    let logTypes = {
+    const logTypes = {
       summary: 'Summary',
       detailed: 'Detailed'
     };

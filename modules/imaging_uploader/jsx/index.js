@@ -1,6 +1,6 @@
 /* global ReactDOM */
 
-import ImagingUploader from './imaging_uploader';
+import ImagingUploader from './ImagingUploader';
 
 /**
  * Render imaging_uploader on page load

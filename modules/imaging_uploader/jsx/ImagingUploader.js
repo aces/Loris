@@ -1,7 +1,7 @@
 /* global formatColumn */
 
-import LogPanel from './log_panel';
-import UploadForm from './upload_form';
+import LogPanel from './LogPanel';
+import UploadForm from './UploadForm';
 import formatColumn from './columnFormatter';
 
 class ImagingUploader extends React.Component {
@@ -60,7 +60,7 @@ class ImagingUploader extends React.Component {
       );
     }
 
-    let tabList = [
+    const tabList = [
       {id: "browse", label: "Browse"},
       {id: "upload", label: "Upload"}
     ];
