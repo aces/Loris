@@ -46,7 +46,7 @@ class NDB_Form_Training extends NDB_Form
     {
         $instruments = $this->getCertificationInstruments();
 
-        $certifications = array();
+        $certifications = [];
 
         $user         = User::singleton();
         $userFullName = $user->getFullname();
@@ -92,10 +92,10 @@ class NDB_Form_Training extends NDB_Form
             "SELECT examinerID 
              FROM examiners
              WHERE full_name=:FN AND centerID=:CID",
-            array(
+            [
              'FN'  => $fullName,
              'CID' => $site,
-            )
+            ]
         );
 
         if (!empty($examinerID)) {
@@ -121,7 +121,7 @@ class NDB_Form_Training extends NDB_Form
         $certificationInstruments = $certificationConfig['CertificationInstruments'];
         $certificationInstruments['test']
             = Utility::toArray($certificationInstruments['test']);
-        $instruments = array();
+        $instruments = [];
 
         foreach ($certificationInstruments['test'] as $certificationInstrument) {
             $test_key = $certificationInstrument['@']['value'];
@@ -156,11 +156,11 @@ class NDB_Form_Training extends NDB_Form
              FROM certification c
              LEFT JOIN examiners e ON (c.examinerID=e.examinerID) 
              WHERE e.full_name=:name AND e.centerID=:CID AND c.testID=:TID",
-            array(
+            [
              'name' => $userFullName,
              'CID'  => $userCenter,
              'TID'  => $instrumentID,
-            )
+            ]
         );
 
         return $certificationStatus;
@@ -181,7 +181,7 @@ class NDB_Form_Training extends NDB_Form
             "SELECT certification_training.TestID
              FROM certification_training
              WHERE TestID=:TID",
-            array('TID' => $instrumentID)
+            ['TID' => $instrumentID]
         );
 
         if (empty($trainingContent)) {
@@ -203,9 +203,9 @@ class NDB_Form_Training extends NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
              $baseURL . "/training/js/training_helper.js",
-            )
+            ]
         );
     }
 
@@ -221,9 +221,9 @@ class NDB_Form_Training extends NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
              $baseURL . "/training/css/training.css",
-            )
+            ]
         );
     }
 }

@@ -53,7 +53,7 @@ class NDB_Menu_Filter_Server_Processes_Manager extends NDB_Menu_Filter
         $serverProcessesMonitor->getProcessesState();
 
         // Columns displayed in the result table
-        $this->columns = array(
+        $this->columns = [
                           'pid',
                           'type',
                           'stdout_file',
@@ -64,23 +64,23 @@ class NDB_Menu_Filter_Server_Processes_Manager extends NDB_Menu_Filter
                           'start_time',
                           'end_time',
                           'exit_text',
-                         );
+                         ];
 
         // Allow to sort on pid, type and userid
-        $this->validFilters = array(
+        $this->validFilters = [
                                'pid',
                                'type',
                                'userid',
-                              );
+                              ];
 
         $this->query = " FROM server_processes 
                          WHERE 1=1";
 
-        $this->formToFilter = array(
+        $this->formToFilter = [
                                'pid'    => 'pid',
                                'type'   => 'type',
                                'userid' => 'userid',
-                              );
+                              ];
 
         return true;
     }
@@ -111,7 +111,7 @@ class NDB_Menu_Filter_Server_Processes_Manager extends NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/server_processes_manager/js/columnFormatter.js")
+            [$baseURL . "/server_processes_manager/js/columnFormatter.js"]
         );
     }
 

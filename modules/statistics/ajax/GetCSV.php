@@ -14,7 +14,7 @@ $client->initialize();
 
 header("Content-type: text/plain");
 $DB = Database::singleton();
-$ConditionBindings = array();
+$ConditionBindings = [];
 if(isset($_REQUEST['InstrumentY'])) {
     $Instrument = $_REQUEST['InstrumentY'];
 }

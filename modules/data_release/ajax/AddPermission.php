@@ -19,10 +19,10 @@ if ($_POST['action'] == 'addpermission') {
     $data_release_id = $_POST['data_release_id'];
     $success         = $DB->insert(
         'data_release_permissions',
-        array(
+        [
          'userid'          => $userid,
          'data_release_id' => $data_release_id,
-        )
+        ]
     );
 
     $factory  = NDB_Factory::singleton();

@@ -17,14 +17,14 @@ ini_set('default_charset', 'utf-8');
 
 $DB = Database::singleton();
 
-$recruitmentData      = array();
+$recruitmentData      = [];
 $recruitmentStartDate = $DB->pselectOne(
     "SELECT MIN(Date_registered) FROM candidate",
-    array()
+    []
 );
 $recruitmentEndDate   = $DB->pselectOne(
     "SELECT MAX(Date_registered) FROM candidate",
-    array()
+    []
 );
 
 $recruitmentData['labels']
@@ -33,13 +33,13 @@ $recruitmentData['labels']
 $list_of_sites = Utility::getAssociativeSiteList(true, false);
 
 foreach ($list_of_sites as $siteID => $siteName) {
-    $recruitmentData['datasets'][] = array(
+    $recruitmentData['datasets'][] = [
                                       "name" => $siteName,
                                       "data" => getRecruitmentData(
                                           $siteID,
                                           $recruitmentData['labels']
                                       ),
-                                     );
+                                     ];
 }
 
 print json_encode($recruitmentData);
@@ -60,7 +60,7 @@ function createChartLabels($startDate, $endDate)
     $endDateYear    = substr($endDate, 0, 4);
     $startDateMonth = substr($startDate, 5, 2);
     $endDateMonth   = substr($endDate, 5, 2);
-    $labels         = array();
+    $labels         = [];
 
     for ($year = (int)$startDateYear; $year <= (int)$endDateYear; $year++) {
         $startMonth = ($year == (int)$startDateYear) ? (int)$startDateMonth : 1;
@@ -85,7 +85,7 @@ function createChartLabels($startDate, $endDate)
 function getRecruitmentData($siteID, $labels)
 {
     $DB   = Database::singleton();
-    $data = array();
+    $data = [];
 
     foreach ($labels as $label) {
         $month  = (strlen($label) == 6)
@@ -98,11 +98,11 @@ function getRecruitmentData($siteID, $labels)
              AND MONTH(c.Date_registered)=:Month
              AND YEAR(c.Date_registered)=:Year
              AND c.Entity_type='Human'",
-            array(
+            [
              'Site'  => $siteID,
              'Month' => $month,
              'Year'  => $year,
-            )
+            ]
         );
     }
     return $data;

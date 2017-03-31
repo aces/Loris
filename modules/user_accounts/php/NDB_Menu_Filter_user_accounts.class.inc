@@ -58,17 +58,17 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
         }
 
         // set the class variables
-        $this->columns      = array(
+        $this->columns      = [
                                "COALESCE(psc.Name,'Not Assigned') AS PSC",
                                'users.UserID AS Username',
                                'Real_name AS Full_name',
                                'Email',
                                'Active',
                                'Pending_approval',
-                              );
+                              ];
         $this->query        = $query;
         $this->order_by     = 'Username';
-        $this->validFilters = array(
+        $this->validFilters = [
                                'user_psc_rel.CenterID',
                                'users.UserID',
                                'users.Real_name',
@@ -76,16 +76,16 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
                                'users.Active',
                                'users.Examiner',
                                'users.Pending_approval',
-                              );
+                              ];
 
-        $this->formToFilter = array(
+        $this->formToFilter = [
                                'centerID'  => 'user_psc_rel.CenterID',
                                'active'    => 'users.Active',
                                'userID'    => 'users.UserID',
                                'real_name' => 'users.Real_name',
                                'email'     => 'users.Email',
                                'pending'   => 'users.Pending_approval',
-                              );
+                              ];
         return true;
     }
     /**
@@ -105,7 +105,7 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = Utility::getSiteList(false);
             if (is_array($list_of_sites)) {
-                $list_of_sites = array('' => 'All') + $list_of_sites;
+                $list_of_sites = ['' => 'All'] + $list_of_sites;
             }
         } else {
             // allow only to view own site data
@@ -114,18 +114,18 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
                 $site[$key]          = & Site::singleton($val);
                 $list_of_sites[$val] = $site[$key]->getCenterName();
             }
-            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
+            $list_of_sites = ['' => 'All User Sites'] + $list_of_sites;
         }
         // add form elements
         $this->addSelect('centerID', 'Site:', $list_of_sites);
         $this->addSelect(
             'active',
             'Active:',
-            array(
+            [
              ''  => 'All',
              'Y' => 'Y',
              'N' => 'N',
-            )
+            ]
         );
         $this->addBasicText('userID', 'Username:');
         $this->addBasicText('real_name', 'Full name:');
@@ -133,11 +133,11 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
         $this->addSelect(
             'pending',
             'Pending Approval:',
-            array(
+            [
              ''  => 'All',
              'N' => 'N',
              'Y' => 'Y',
-            )
+            ]
         );
 
         return true;
@@ -154,7 +154,7 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/user_accounts/js/columnFormatter.js")
+            [$baseURL . "/user_accounts/js/columnFormatter.js"]
         );
     }
 }

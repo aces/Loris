@@ -14,21 +14,23 @@ $client->initialize(__DIR__ . "/../../../project/config.xml");
 
 $cdb = CouchDB::singleton();
 
-$category = $_REQUEST['category'];
+$category  = $_REQUEST['category'];
 $fieldName = $_REQUEST['field'];
-$value = $_REQUEST['value'];
+$value     = $_REQUEST['value'];
 
 $results = $cdb->queryView(
     "DQG-2.0",
     "search",
-    array("reduce" => "false",
-          "startkey" => "[\"$category\", \"$fieldName\"]",
-          "endkey" => "[\"$category\", \"$fieldName\", {} ]"
-      )
+    [
+     "reduce"   => "false",
+     "startkey" => "[\"$category\", \"$fieldName\"]",
+     "endkey"   => "[\"$category\", \"$fieldName\", {} ]",
+    ]
 );
 
-$sessionResults = array_filter($results,
-    function($element) use ($value) {
+$sessionResults = array_filter(
+    $results,
+    function ($element) use ($value) {
         /* Element is of the form:
         Array
             (
@@ -39,21 +41,26 @@ $sessionResults = array_filter($results,
                     [1] => Administration
                     [2] => All
                 )
-
-                [value] => Array
+                    [value] => Array
                 (
                     [0] => STL0138
                     [1] => V06
                 )
-
-            );
+                );
          */
         $fieldVal = $element['key'][2];
 
         return strpos($fieldVal, $value) !== false;
     }
 );
-$sessionResults = array_values(array_map(function($element) { return $element['value']; }, $sessionResults));
+$sessionResults = array_values(
+    array_map(
+        function ($element) {
+            return $element['value'];
+        },
+        $sessionResults
+    )
+);
 
 print json_encode($sessionResults);
 ?>

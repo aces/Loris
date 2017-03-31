@@ -74,16 +74,16 @@ class DirectDataEntryMainPage
         $this->TestName  = $DB->pselectOne(
             "SELECT Test_name FROM participant_accounts
             WHERE OneTimePassword=:key AND Status <> 'Complete'",
-            array('key' => $this->key)
+            ['key' => $this->key]
         );
         $this->CommentID = $DB->pselectOne(
             "SELECT CommentID FROM participant_accounts 
             WHERE OneTimePassword=:key AND Status <> 'Complete'",
-            array('key' => $this->key)
+            ['key' => $this->key]
         );
         $this->NumPages  = $DB->pselectOne(
             "SELECT COUNT(*) FROM instrument_subtests WHERE Test_name=:TN",
-            array('TN' => $this->TestName)
+            ['TN' => $this->TestName]
         );
 
         if (empty($this->TestName) && empty($this->CommentID)) {
@@ -102,29 +102,29 @@ class DirectDataEntryMainPage
                 "SELECT Subtest_name
                 FROM instrument_subtests
                 WHERE Test_name=:TN AND Order_number=:PN",
-                array(
+                [
                  'TN' => $this->TestName,
                  'PN' => $pageNum,
-                )
+                ]
             );
         }
 
         $totalPages        = $DB->pselectOne(
             "SELECT COUNT(*)+1 from instrument_subtests WHERE Test_name=:TN",
-            array('TN' => $this->TestName)
+            ['TN' => $this->TestName]
         );
         $this->NextPageNum = $this->getNextPageNum($pageNum);
         $this->PrevPageNum = $this->getPrevPageNum($pageNum);
 
         $this->CommentID = $this->getCommentID();
-        $this->tpl_data  = array(
+        $this->tpl_data  = [
                             'nextpage'    => $this->NextPageNum,
                             'prevpage'    => $this->PrevPageNum,
                             'pageNum'     => $pageNum ? $pageNum + 1: 1,
                             'totalPages'  => $totalPages,
                             'key'         => $this->key,
                             'study_title' => $config->getSetting('title'),
-                           );
+                           ];
     }
 
 
@@ -146,10 +146,10 @@ class DirectDataEntryMainPage
             "SELECT Order_number FROM instrument_subtests
             WHERE Test_name=:TN AND Order_number > :PN 
             ORDER BY Order_number",
-            array(
+            [
              'TN' => $this->TestName,
              'PN' => $currentPage,
-            )
+            ]
         );
     }
 
@@ -179,16 +179,16 @@ class DirectDataEntryMainPage
                 "SELECT MAX(Order_number) 
                 FROM instrument_subtests 
                 WHERE Test_name=:TN",
-                array('TN' => $this->TestName)
+                ['TN' => $this->TestName]
             );
         }
         return $DB->pselectOne(
             "SELECT Order_number FROM instrument_subtests 
             WHERE Test_name=:TN AND Order_number < :PN ORDER BY Order_number DESC",
-            array(
+            [
              'TN' => $this->TestName,
              'PN' => $currentPage,
-            )
+            ]
         );
     }
 
@@ -218,9 +218,9 @@ class DirectDataEntryMainPage
         return $DB->pselectOne(
             "SELECT CommentID FROM participant_accounts
             WHERE OneTimePassword=:key AND Status <> 'Complete'",
-            array(
+            [
              'key' => $this->key,
-            )
+            ]
         );
     }
 
@@ -265,7 +265,7 @@ class DirectDataEntryMainPage
         $currentStatus = $DB->pselectOne(
             'SELECT Status FROM participant_accounts
             WHERE OneTimePassword=:key',
-            array('key' => $this->key)
+            ['key' => $this->key]
         );
 
         if ($currentStatus === 'Complete') {
@@ -276,8 +276,8 @@ class DirectDataEntryMainPage
 
         $DB->update(
             "participant_accounts",
-            array('Status' => $status),
-            array('OneTimePassword' => $this->key)
+            ['Status' => $status],
+            ['OneTimePassword' => $this->key]
         );
 
         return true;
@@ -298,11 +298,11 @@ class DirectDataEntryMainPage
         $DB = Database::singleton();
         $DB->update(
             "participant_accounts",
-            array(
+            [
              'UserEaseRating' => $ease,
              'UserComments'   => $comments,
-            ),
-            array('OneTimePassword' => $this->key)
+            ],
+            ['OneTimePassword' => $this->key]
         );
     }
 
@@ -384,22 +384,22 @@ class DirectDataEntryMainPage
             $this->updateStatus('Complete');
             $Responses      = $DB->update(
                 $this->TestName,
-                array(
+                [
                  'Date_taken' => date('Y-m-d'),
-                ),
-                array(
+                ],
+                [
                  'CommentID' => $this->CommentID,
-                )
+                ]
             );
             $Responses_flag = $DB->update(
                 'flag',
-                array(
+                [
                  'Data_entry'     => 'Complete',
                  'Administration' => 'All',
-                ),
-                array(
+                ],
+                [
                  'CommentID' => $this->CommentID,
-                )
+                ]
             );
 
         } else {

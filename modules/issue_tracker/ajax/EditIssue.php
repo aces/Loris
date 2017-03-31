@@ -52,9 +52,9 @@ function editIssue()
     $db   =& Database::singleton();
     $user =& User::singleton();
 
-    $issueValues    = array();
-    $validateValues = array();
-    $fields         = array(
+    $issueValues    = [];
+    $validateValues = [];
+    $fields         = [
                        'assignee',
                        'status',
                        'priority',
@@ -62,11 +62,11 @@ function editIssue()
                        'title',
                        'category',
                        'module',
-                      );
-    $fieldsToValidateFirst = array(
+                      ];
+    $fieldsToValidateFirst = [
                               'PSCID',
                               'visitLabel',
-                             );
+                             ];
 
     foreach ($fields as $field) {
         $value = $_POST[$field];
@@ -111,27 +111,27 @@ function editIssue()
 
     // Adding new assignee to watching
     if (isset($issueValues['assignee'])) {
-        $nowWatching = array(
+        $nowWatching = [
                         'userID'  => $issueValues['assignee'],
                         'issueID' => $issueID,
-                       );
+                       ];
         $db->replace('issues_watching', $nowWatching);
     }
 
     // Adding editor to the watching table unless they don't want to be added.
     if ($_POST['watching'] == 'Yes') {
-        $nowWatching = array(
+        $nowWatching = [
                         'userID'  => $user->getData('UserID'),
                         'issueID' => $issueID,
-                       );
+                       ];
         $db->replace('issues_watching', $nowWatching);
     } else if ($_POST['watching'] == "No") {
         $db->delete(
             'issues_watching',
-            array(
+            [
              'issueID' => $issueID,
              'userID'  => $user->getData('UserID'),
-            )
+            ]
         );
     }
 
@@ -306,11 +306,11 @@ function updateComments($comment, $issueID)
     $db   =& Database::singleton();
 
     if (isset($comment) && $comment != "null") {
-        $commentValues = array(
+        $commentValues = [
                           'issueComment' => $comment,
                           'addedBy'      => $user->getData('UserID'),
                           'issueID'      => $issueID,
-                         );
+                         ];
         $db->insert('issues_comments', $commentValues);
     }
 }
@@ -330,11 +330,11 @@ function updateCommentHistory($issueCommentID, $newCommentValue)
     $user =& User::singleton();
     $db   =& Database::singleton();
 
-    $changedValue = array(
+    $changedValue = [
                      'issueCommentID' => $issueCommentID,
                      'newValue'       => $newCommentValue,
                      'editedBy'       => $user->getData('UserID'),
-                    );
+                    ];
 
     $db->insert('issues_comments_history', $changedValue);
 }
@@ -354,10 +354,10 @@ function getWatching($issueID)
 
     $watching = $db->pselect(
         "SELECT userID from issues_watching WHERE issueID=:issueID",
-        array('issueID' => $issueID)
+        ['issueID' => $issueID]
     );
 
-    $whoIsWatching = array();
+    $whoIsWatching = [];
     foreach ($watching as $watcher) {
         $whoIsWatching[] = $watcher['userID'];
     }
@@ -383,7 +383,7 @@ function getComments($issueID)
         "SELECT issueComment, 'comment', dateAdded, addedBy " .
         "FROM issues_comments where issueID=:issueID " .
         "ORDER BY dateAdded DESC",
-        array('issueID' => $issueID)
+        ['issueID' => $issueID]
     );
 
     //looping by reference so can edit in place
@@ -391,14 +391,14 @@ function getComments($issueID)
         if ($comment['fieldChanged'] === 'module') {
             $module = $db->pselectOne(
                 "SELECT Label FROM LorisMenu WHERE ID=:module",
-                array('module' => $comment['newValue'])
+                ['module' => $comment['newValue']]
             );
             $comment['newValue'] = $module;
             continue;
         } else if ($comment['fieldChanged'] === 'centerID') {
             $site = $db->pselectOne(
                 "SELECT Name FROM psc WHERE CenterID=:centerID",
-                array('centerID' => $comment['newValue'])
+                ['centerID' => $comment['newValue']]
             );
             $comment['newValue']     = $site;
             $comment['fieldChanged'] = 'site';
@@ -406,7 +406,7 @@ function getComments($issueID)
         } else if ($comment['fieldChanged'] === 'candID') {
             $PSCID = $db->pselectOne(
                 "SELECT PSCID FROM candidate WHERE CandID=:candID",
-                array('candID' => $comment['newValue'])
+                ['candID' => $comment['newValue']]
             );
             $comment['newValue']     = $PSCID;
             $comment['fieldChanged'] = 'PSCID';
@@ -414,7 +414,7 @@ function getComments($issueID)
         } else if ($comment['fieldChanged'] === 'sessionID') {
             $visitLabel          = $db->pselectOne(
                 "SELECT Visit_label FROM session WHERE ID=:sessionID",
-                array('sessionID' => $comment['newValue'])
+                ['sessionID' => $comment['newValue']]
             );
             $comment['newValue'] = $visitLabel;
             $comment['fieldChanged'] = 'Visit Label';
@@ -444,7 +444,7 @@ function emailUser($issueID, $changed_assignee)
     $title = $db->pSelectOne(
         "SELECT title FROM issues 
         WHERE issueID=:issueID",
-        array('issueID' => $issueID)
+        ['issueID' => $issueID]
     );
 
     $msg_data['url']         = $baseurl .
@@ -458,10 +458,10 @@ function emailUser($issueID, $changed_assignee)
             "SELECT u.Email as Email, u.First_name as firstname " .
             "FROM users u WHERE u.UserID=:assignee
             AND u.UserID<>:currentUser",
-            array(
+            [
              'assignee'    => $changed_assignee,
              'currentUser' => $user->getUserName(),
-            )
+            ]
         );
         $msg_data['firstname']     = $issueChangeEmailsAssignee[0]['firstname'];
 
@@ -478,11 +478,11 @@ function emailUser($issueID, $changed_assignee)
         "SELECT u.Email as Email, u.First_name as firstname " .
         "FROM users u INNER JOIN issues_watching w ON (w.userID = u.userID) WHERE ".
         "w.issueID=:issueID AND u.UserID<>:uid AND u.UserID<>:assignee",
-        array(
+        [
          'issueID'  => $issueID,
          'uid'      => $user->getUsername(),
          'assignee' => $changed_assignee,
-        )
+        ]
     );
 
     $msg_data['url']         = $baseurl .
@@ -524,25 +524,25 @@ function getIssueFields()
     }
 
     //not yet ideal permissions
-    $assignees = array();
+    $assignees = [];
     if ($user->hasPermission('access_all_profiles')) {
         $assignee_expanded = $db->pselect(
             "SELECT Real_name, UserID FROM users",
-            array()
+            []
         );
     } else {
         $CenterID = $user->getCenterID();
         $DCCID    = $db->pselectOne(
             "SELECT CenterID from psc where Name='DCC'",
-            array()
+            []
         );
         $assignee_expanded = $db->pselect(
             "SELECT u.Real_name, u.UserID FROM users u 
 WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
-            array(
+            [
              'CenterID' => $CenterID,
              'DCC'      => $DCCID,
-            )
+            ]
         );
     }
 
@@ -550,10 +550,10 @@ WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
         $assignees[$a_row['UserID']] = $a_row['Real_name'];
     }
 
-    $otherWatchers = array();
+    $otherWatchers = [];
     $potential_watchers_expanded = $db->pselect(
         "SELECT Real_name, UserID FROM users",
-        array()
+        []
     );
     foreach ($potential_watchers_expanded as $w_row) {
         if ($w_row['UserID'] != $user->getData('UserID')) {
@@ -563,31 +563,31 @@ WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
 
     //can't set to closed if not developer.
     if ($user->hasPermission('issue_tracker_developer')) {
-        $statuses = array(
+        $statuses = [
                      'new'          => 'New',
                      'acknowledged' => 'Acknowledged',
                      'assigned'     => 'Assigned',
                      'feedback'     => 'Feedback',
                      'resolved'     => 'Resolved',
                      'closed'       => 'Closed',
-                    );
+                    ];
     } else {
-        $statuses = array(
+        $statuses = [
                      'new'          => 'New',
                      'acknowledged' => 'Acknowledged',
                      'assigned'     => 'Assigned',
                      'feedback'     => 'Feedback',
                      'resolved'     => 'Resolved',
-                    );
+                    ];
     }
 
-    $priorities = array(
+    $priorities = [
                    'low'       => 'Low',
                    'normal'    => 'Normal',
                    'high'      => 'High',
                    'urgent'    => 'Urgent',
                    'immediate' => 'Immediate',
-                  );
+                  ];
 
     $unorgCategories = $db->pselect(
         "SELECT categoryName FROM issues_categories",
@@ -601,7 +601,7 @@ WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
         }
     }
 
-    $modules          = array();
+    $modules          = [];
     $modules_expanded = $db->pselect(
         "SELECT DISTINCT Label, ID FROM LorisMenu 
 WHERE Parent IS NOT NULL ORDER BY Label ",
@@ -619,10 +619,10 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
         $isWatching = $db->pselectOne(
             "SELECT userID, issueID FROM issues_watching 
             WHERE issueID=:issueID AND userID=:userID",
-            array(
+            [
              'issueID' => $issueID,
              'userID'  => $user->getData('UserID'),
-            )
+            ]
         );
         $issueData['watching']       = is_array($isWatching) ? "No" : "Yes";
         $issueData['commentHistory'] = getComments($issueID);
@@ -631,7 +631,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
             "SELECT issueComment 
 FROM issues_comments WHERE issueID=:issueID 
 ORDER BY dateAdded",
-            array('issueID' => $issueID)
+            ['issueID' => $issueID]
         );
     }
     $issueData['comment'] = null;

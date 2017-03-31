@@ -68,7 +68,7 @@ if ($file) {
 
 
 /**
- * Get the last changed log file using in the 
+ * Get the last changed log file using in the
  * $paths['base'] . "/" . $paths['log']."/MRI_upload" directory
 
  * @return String latest log file

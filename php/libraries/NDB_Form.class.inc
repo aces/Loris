@@ -48,7 +48,7 @@ class NDB_Form extends NDB_Page
     /**
     * Additional template data
     */
-    var $tpl_data = array();
+    var $tpl_data = [];
 
 
     /**
@@ -127,7 +127,7 @@ class NDB_Form extends NDB_Page
     function save()
     {
         if ($this->form->validate()) {
-            $success = $this->form->process(array(&$this, "_save"), false);
+            $success = $this->form->process([$this, "_save"], false);
         }
     }
 

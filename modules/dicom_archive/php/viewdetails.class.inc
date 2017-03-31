@@ -85,17 +85,17 @@ class ViewDetails extends \NDB_Form
         switch ($table) {
         case "tarchive":
             $query = "SELECT * FROM $table WHERE TarchiveID =:ID";
-            $array = $this->DB->pselectRow($query, array('ID' => $tarchiveID));
+            $array = $this->DB->pselectRow($query, ['ID' => $tarchiveID]);
             break;
         case "tarchive_series":
             $query = "SELECT * FROM $table WHERE TarchiveID =:ID 
                 ORDER BY :OField";
             $array = $this->DB->pselect(
                 $query,
-                array(
+                [
                  'ID'     => $tarchiveID,
                  "OField" => $order,
-                )
+                ]
             );
 
             if ($this->_setProtocols()) {
@@ -121,10 +121,10 @@ class ViewDetails extends \NDB_Form
                 ORDER BY :OField";
             $array = $this->DB->pselect(
                 $query,
-                array(
+                [
                  'ID'     => $tarchiveID,
                  'OField' => $order,
-                )
+                ]
             );
             break;
         }
@@ -180,7 +180,7 @@ class ViewDetails extends \NDB_Form
         try {
             $query           = "SELECT Scan_type, TR_range, TE_range, TI_range, 
                 slice_thickness_range FROM mri_protocol";
-            $this->protocols = $this->DB->pselect($query, array());
+            $this->protocols = $this->DB->pselect($query, []);
             return true;
         } catch(LorisException $e) {
             return false;
@@ -272,7 +272,7 @@ class ViewDetails extends \NDB_Form
     {
         try {
             $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
-            $array = $this->DB->pselectRow($query, array('ID' => $id));
+            $array = $this->DB->pselectRow($query, ['ID' => $id]);
             return $array['Scan_type'];
         } catch (LorisException $e) {
             return "Unknown";
@@ -307,9 +307,9 @@ class ViewDetails extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
              $baseURL . "/dicom_archive/js/view_details_link.js",
-            )
+            ]
         );
     }
 }

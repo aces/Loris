@@ -42,29 +42,29 @@ class Issue_TrackerTest extends LorisIntegrationTest
         $window->setSize($size);
          $this->DB->insert(
              "psc",
-             array(
+             [
               'CenterID'  => '55',
               'Name'      => 'TESTinPSC',
               'Alias'     => 'tst',
               'MRI_alias' => 'test',
-             )
+             ]
          );
          $this->DB->insert(
              "users",
-             array(
+             [
               'ID'     => '999998',
               'UserID' => 'TestUser',
-             )
+             ]
          );
          $this->DB->insert(
              "issues",
-             array(
+             [
               'issueID'  => '999999',
               'title'    => 'Test Issue',
               'status'   => 'new',
               'priority' => 'low',
               'reporter' => 'TestUser',
-             )
+             ]
          );
     }
 
@@ -76,9 +76,9 @@ class Issue_TrackerTest extends LorisIntegrationTest
     function tearDown()
     {
         parent::tearDown();
-        $this->DB->delete("issues", array('issueID' => '999999'));
-        $this->DB->delete("users", array('ID' => '999998'));
-        $this->DB->delete("psc", array('CenterID' => '55'));
+        $this->DB->delete("issues", ['issueID' => '999999']);
+        $this->DB->delete("users", ['ID' => '999998']);
+        $this->DB->delete("psc", ['CenterID' => '55']);
     }
 
     /**
@@ -103,7 +103,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
      */
     function testIssueTrackerDoespageLoadWithPermission()
     {
-        $this->setupPermissions(array("issue_tracker_reporter"));
+        $this->setupPermissions(["issue_tracker_reporter"]);
         $this->webDriver->get($this->url . "/issue_tracker/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")

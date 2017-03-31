@@ -68,7 +68,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
     function _setupVariables()
     {
         // set the class variables
-        $this->columns = array(
+        $this->columns = [
                           'psc.Name AS PSC',
                           'LPAD(candidate.CandID, 6, "0") AS DCCID',
                           'candidate.PSCID',
@@ -80,7 +80,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                           'S.SNPCount as SNPs',
                           'C.CNVCount as CNVs',
                           'M.CPGCount as CPGs',
-                         );
+                         ];
 
         // This variable will be used by the columnFormatter javascript
         // to set the default hidden columns in the data table.
@@ -89,12 +89,12 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                 function ($header) {
                         return ucwords(str_replace('_', ' ', $header));
                 },
-                array(
+                [
                  'PSC',
                  'DCCID',
                  'externalID',
                  'DoB',
-                )
+                ]
             )
         );
 
@@ -131,7 +131,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
 
         $this->group_by     = '';
         $this->order_by     = 'psc.Name, candidate.CandID DESC';
-        $this->validFilters = array(
+        $this->validFilters = [
                                'candidate.CenterID',
                                'candidate.CandID',
                                'candidate.PSCID',
@@ -144,9 +144,9 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                                'C.CNVCount',
                                'S.SNPCount',
                                'M.CPGCount',
-                              );
+                              ];
 
-        $ftf = array(
+        $ftf = [
                 'centerID'           => 'candidate.CenterID',
                 'DCCID'              => 'candidate.CandID',
                 'PSCID'              => 'candidate.PSCID',
@@ -158,7 +158,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                 'SNPs'               => 'S.SNPCount',
                 'CNVs'               => 'C.CNVCount',
                 'CPGs'               => 'M.CPGCount',
-               );
+               ];
 
         $this->formToFilter = $ftf;
 
@@ -182,7 +182,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = Utility::getSiteList();
             if (is_array($list_of_sites)) {
-                $list_of_sites = array('' => 'Any') + $list_of_sites;
+                $list_of_sites = ['' => 'Any'] + $list_of_sites;
             }
         } else {
             // allow only to view own site data
@@ -192,7 +192,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                 if ($site[$key]->isStudySite()) {
                     $list_of_sites[$val] = $site[$key]->getCenterName();
                 }
-                $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
+                $list_of_sites = ['' => 'All User Sites'] + $list_of_sites;
             }
         }
 
@@ -207,33 +207,33 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
         $this->addSelect(
             'gender',
             'Gender:',
-            array(
+            [
              ''       => 'All',
              'Male'   => 'Male',
              'Female' => 'Female',
-            )
+            ]
         );
         $this->addSelect(
             'SubprojectID',
             'Subproject:',
-            array('' => 'Any') + $list_of_subprojects
+            ['' => 'Any'] + $list_of_subprojects
         );
-        $this->addBasicText('dob', 'Date of Birth:', array('maxlength' => 10));
+        $this->addBasicText('dob', 'Date of Birth:', ['maxlength' => 10]);
 
-        $any_options = array(
+        $any_options = [
                         ''  => null,
                         '1' => 'Any',
                         '0' => 'None',
-                       );
+                       ];
         $this->addSelect('Files', 'Files:', $any_options);
         $this->addSelect('SNPs', 'SNPs found:', $any_options);
         $this->addSelect('CNVs', 'CNVs found:', $any_options);
         $this->addSelect('CPGs', 'CPGs found:', $any_options);
 
-        $show_results_options = array(
+        $show_results_options = [
                                  'brief' => 'Summary fields',
                                  'full'  => 'All fields',
-                                );
+                                ];
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
         return true;
@@ -302,9 +302,9 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
              $baseURL . "/genomic_browser/js/profileColumnFormatter.js",
-            )
+            ]
         );
     }
 }

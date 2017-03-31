@@ -132,12 +132,12 @@ class Project extends \Loris\API\APIBase
             if ($this->ProjectID === 0) {
                 $rows = $this->DB->pselect(
                     "SELECT CandID FROM candidate",
-                    array()
+                    []
                 );
             } else {
                 $rows = $this->DB->pselect(
                     "SELECT CandID FROM candidate WHERE ProjectID=:projID",
-                    array("projID" => $this->ProjectID)
+                    ["projID" => $this->ProjectID]
                 );
             }
             $CandIDs = [];
@@ -165,7 +165,7 @@ class Project extends \Loris\API\APIBase
                             FROM test_names tn
                             LEFT JOIN test_subgroups sg ON (tn.Sub_group=sg.ID)
                         WHERE tn.Test_name=:inst",
-                        array('inst' => $instrument)
+                        ['inst' => $instrument]
                     );
 
                     $DDEEn = in_array($instrument, $DDE);

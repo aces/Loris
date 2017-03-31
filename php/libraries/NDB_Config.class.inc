@@ -36,14 +36,14 @@ class NDB_Config
      *
      * @access private
      */
-    var $_settings = array();
+    var $_settings = [];
 
     /**
      * The merged array of study and site-specific settings
      *
      * @access private
      */
-    var $_siteSettings = array();
+    var $_siteSettings = [];
 
     /**
      * An optional override for the location of the config file.
@@ -129,7 +129,7 @@ class NDB_Config
      */
     static function convertToArray(SimpleXMLElement $xml)
     {
-        $retVal   = array();
+        $retVal   = [];
         $children = $xml->children();
         if (count($children) > 0) {
             foreach ($children as $child) {
@@ -147,7 +147,7 @@ class NDB_Config
                         // be stored in an array. Create a new array and replace
                         // the tag with what was already parsed before appending
                         // the child
-                        $newArray = array();
+                        $newArray = [];
 
                         $Extant        = $retVal[$name];
                         $newArray[]    = $Extant;
@@ -160,9 +160,9 @@ class NDB_Config
                     $attributes = $child->attributes();
                     if (count($attributes) > 0) {
                         if (!is_array($Converted)) {
-                            $Converted = array($Converted);
+                            $Converted = [$Converted];
                         }
-                        $Converted['@'] = array();
+                        $Converted['@'] = [];
                         foreach ($attributes as $atname => $val) {
                             $Converted['@'][$atname] = $val->__toString();
                         }
@@ -174,9 +174,9 @@ class NDB_Config
 
                     if (count($attributes) > 0) {
                         if (!is_array($retVal[$name])) {
-                            $retVal[$name] = array($retVal[$name]);
+                            $retVal[$name] = [$retVal[$name]];
                         }
-                        $retVal[$name]['@'] = array();
+                        $retVal[$name]['@'] = [];
                         foreach ($attributes as $atname => $val) {
                             $retVal[$name]['@'][$atname] = $val->__toString();
 
@@ -188,10 +188,10 @@ class NDB_Config
             $retVal     = $xml->__toString();
             $attributes = $xml->attributes();
             if (count($attributes) > 0) {
-                $retVal = array(
+                $retVal = [
                            '#' => $retVal,
-                           '@' => array(),
-                          );
+                           '@' => [],
+                          ];
                 foreach ($attributes as $name => $val) {
                     $retVal['@'][$name] = $val->__toString();
 
@@ -281,7 +281,7 @@ class NDB_Config
                 FROM ConfigSettings cs
                     LEFT JOIN ConfigSettings child ON (child.Parent=cs.ID)
                 WHERE cs.Name=:nm",
-                array("nm" => $name)
+                ["nm" => $name]
             );
 
             if (count($configSetting) === 0) {
@@ -296,7 +296,7 @@ class NDB_Config
                 FROM ConfigSettings cs
                     LEFT JOIN ConfigSettings child ON (child.Parent=cs.ID)
                 WHERE cs.ID=:nm",
-                array("nm" => $id)
+                ["nm" => $id]
             );
         }
 
@@ -311,7 +311,7 @@ class NDB_Config
             if ($configSetting['AllowMultiple'] == '0') {
                 $val = $db->pselectOne(
                     "SELECT Value FROM Config WHERE ConfigID=:CID",
-                    array('CID' => $configSetting['ParentID'])
+                    ['CID' => $configSetting['ParentID']]
                 );
                 if (empty($val)) {
                     return null;
@@ -322,9 +322,9 @@ class NDB_Config
                 // as ie. $config->getSetting("DoubleDataEntryInstruments")
                 $val = $db->pselect(
                     "SELECT Value FROM Config WHERE ConfigID=:CID",
-                    array('CID' => $configSetting['ParentID'])
+                    ['CID' => $configSetting['ParentID']]
                 );
-                $ret = array();
+                $ret = [];
                 foreach ($val as $item) {
                     $ret[] = $item['Value'];
                 }
@@ -332,7 +332,7 @@ class NDB_Config
             }
         } else if (count($configSetting) > 1) {
             // This was a parent element, so construct the children.
-            $tree = array();
+            $tree = [];
             foreach ($configSetting as $childSetting) {
                 $childName        = $childSetting['Name'];
                 $childID          = $childSetting['ChildID'];
@@ -429,18 +429,18 @@ class NDB_Config
         {
              $info =$DB->pselectRow(
                  "SELECT * FROM Project WHERE ProjectID=:sp",
-                 array('sp' => $ProjectID)
+                 ['sp' => $ProjectID]
              );
         } catch (DatabaseException $e)
         {
             return null;
         }
         //Format the result into config.xml format.
-        return array(
+        return [
                 'id'                => $info['ProjectID'],
                 'Name'              => $info['Name'],
                 'recruitmentTarget' => $info['recruitmentTarget'],
-               );
+               ];
     }
 
     /**
@@ -462,7 +462,7 @@ class NDB_Config
         try {
             $info = $DB->pselectRow(
                 "SELECT * FROM subproject WHERE SubprojectID=:sp",
-                array('sp' => $subprojectID)
+                ['sp' => $subprojectID]
             );
         } catch(DatabaseException $e) {
             return null;
@@ -472,15 +472,15 @@ class NDB_Config
         // a way around this, please correct it
         if (!empty($info)) {
             $x = $info['WindowDifference'];
-            return array(
+            return [
                     'id'                => $info['SubprojectID'],
                     'title'             => $info['title'],
-                    'options'           => array(
+                    'options'           => [
                                             'useEDC'           => $info['useEDC'],
                                             'WindowDifference' => $x,
-                                           ),
+                                           ],
                     'RecruitmentTarget' => $info['RecruitmentTarget'],
-                   );
+                   ];
         }
     }
 
@@ -501,7 +501,7 @@ class NDB_Config
         $perms = $DB->pselect(
             "SELECT code FROM LorisMenuPermissions
                 JOIN permissions using (permID) WHERE MenuID=:MID",
-            array('MID' => $menuID)
+            ['MID' => $menuID]
         );
 
         if (empty($perms)) {
@@ -540,7 +540,7 @@ class NDB_Config
                        ID
                   FROM LorisMenu
                   WHERE Parent IS NULL ORDER BY OrderNumber",
-                array()
+                []
             );
         } else {
             $thisLevel = $DB->pselect(
@@ -550,7 +550,7 @@ class NDB_Config
                         ID
                   FROM LorisMenu
                   WHERE Parent=:ParentID ORDER BY OrderNumber",
-                array('ParentID' => $parent)
+                ['ParentID' => $parent]
             );
 
             $LevelWithPerm = array_filter(
@@ -596,10 +596,10 @@ class NDB_Config
                 FROM ExternalLinks l JOIN ExternalLinkTypes lt
                     ON (l.LinkTypeID=lt.LinkTypeID)
                 WHERE lt.LinkType=:name",
-            array('name' => $type)
+            ['name' => $type]
         );
 
-        $mapped = array();
+        $mapped = [];
         foreach ($results as $row) {
             $mapped[$row['LinkText']] = $row['LinkURL'];
         }

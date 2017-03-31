@@ -56,13 +56,13 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             $useProjects = false;
         }
 
-        $this->columns = array(
+        $this->columns = [
                           'conflicts_resolved.TableName as Instrument',
                           'session.CandID as CandID',
                           'candidate.PSCID as PSCID',
                           'session.Visit_label as Visit_Label',
                           'conflicts_resolved.ResolutionTimestamp as Timestamp',
-                         );
+                         ];
 
         if ($useProjects) {
             $this->columns[] = 'Project.Name as Project';
@@ -70,13 +70,13 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
 
         $this->columns = array_merge(
             $this->columns,
-            array(
+            [
              'conflicts_resolved.FieldName as Question',
              'conflicts_resolved.OldValue1 as CorrectAnswer',
              'conflicts_resolved.NewValue  as New_Value',
              'conflicts_resolved.OldValue2 as OldValue2',
              'session.CenterID as CenterID',
-            )
+            ]
         );
         $this->query   = " FROM conflicts_resolved
             LEFT JOIN flag ON (conflicts_resolved.CommentId1=flag.CommentID)
@@ -94,12 +94,12 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
 
         $this->group_by     = '';
         $this->order_by     = 'conflicts_resolved.TableName, session.Visit_label';
-        $this->validFilters = array(
+        $this->validFilters = [
                                'conflicts_resolved.TableName',
                                'session.CenterID',
                                'session.Visit_label',
                                'conflicts_resolved.ResolutionTimestamp',
-                              );
+                              ];
 
         if ($useProjects) {
             $this->validFilters[] = 'candidate.ProjectID';
@@ -107,36 +107,36 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
 
         $this->validFilters = array_merge(
             $this->validFilters,
-            array(
+            [
              'candidate.PSCID',
              'session.CandID',
              'conflicts_resolved.Fieldname',
-            )
+            ]
         );
 
-        $this->headers = array(
+        $this->headers = [
                           'Instrument',
                           'CandID',
                           'PSCID',
                           'Visit_label',
                           'Resolution_Timestamp',
-                         );
+                         ];
 
         if ($useProjects) {
             $this->headers = array_merge(
                 $this->headers,
-                array('Project')
+                ['Project']
             );
         }
         $this->headers =array_merge(
             $this->headers,
-            array(
+            [
              'Question',
              'Correct_Answer',
              'New_Value',
              'OldValue2',
              'CenterID',
-            )
+            ]
         );
         $this->tpl_data['hiddenHeaders'] = json_encode(
             [
@@ -147,27 +147,27 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         );
         $con = "conflicts_resolved";
 
-        $this->formToFilter = array(
+        $this->formToFilter = [
                                'Instrument'          => "$con.TableName",
                                'site'                => 'session.CenterID',
                                'visit'               => 'session.Visit_label',
                                'ResolutionTimestamp' => "$con.ResolutionTimestamp",
-                              );
+                              ];
 
         if ($useProjects) {
             $this->formToFilter = array_merge(
                 $this->formToFilter,
-                array('Project' => 'candidate.ProjectID')
+                ['Project' => 'candidate.ProjectID']
             );
         }
 
         $this->formToFilter = array_merge(
             $this->formToFilter,
-            array(
+            [
              'CandID'   => 'session.CandID',
              'PSCID'    => 'candidate.PSCID',
              'Question' => 'conflicts_resolved.Fieldname',
-            )
+            ]
         );
         return true;
     }
@@ -185,18 +185,18 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
 
         // Get instruments
         $instruments = Utility::getAllInstruments();
-        $instruments = array_merge(array('' => 'All Instruments'), $instruments);
+        $instruments = array_merge(['' => 'All Instruments'], $instruments);
 
         // Get visits
         $visits = Utility::getVisitList();
-        $visits = array_merge(array('' => 'All'), $visits);
+        $visits = array_merge(['' => 'All'], $visits);
 
         // Get sites
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $sites = Utility::getSiteList();
             if (is_array($sites)) {
-                $sites = array('' => 'All') + $sites;
+                $sites = ['' => 'All'] + $sites;
             }
         } else {
             // allow only to view own site data
@@ -207,7 +207,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
                     $sites[$val] = $site[$key]->getCenterName();
                 }
             }
-            $sites = array('' => 'All User Sites') + $sites;
+            $sites = ['' => 'All User Sites'] + $sites;
         }
 
         // Add form elements
@@ -217,25 +217,25 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         $this->addBasicText(
             'CandID',
             'DCCID:',
-            array(
+            [
              "size"      => 9,
              "maxlength" => 6,
-            )
+            ]
         );
         $this->addBasicText(
             'PSCID',
             'PSCID:',
-            array(
+            [
              "size"      => 9,
              "maxlength" => 7,
-            )
+            ]
         );
         $this->addBasicText('Question', 'Search keyword:');
         $this->addBasicText('ResolutionTimestamp', 'Resolution Timestamp:');
 
         // Project list, if applicable
         if ($config->getSetting("useProjects")==="true") {
-            $list_of_projects = array(null => 'All');
+            $list_of_projects = [null => 'All'];
             $projectList      = Utility::getProjectList();
             foreach ($projectList as $key => $value) {
                 $list_of_projects[$key] = $value;
@@ -259,7 +259,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         $urls    = "/conflict_resolver/js/resolved_conflicts_columnFormatter.js";
         return array_merge(
             $deps,
-            array($baseURL . $urls)
+            [$baseURL . $urls]
         );
     }
 }

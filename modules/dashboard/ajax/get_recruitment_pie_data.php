@@ -16,7 +16,7 @@ ini_set('default_charset', 'utf-8');
 
 $DB = Database::singleton();
 
-$recruitmentBySiteData = array();
+$recruitmentBySiteData = [];
 $list_of_sites         = Utility::getAssociativeSiteList(true, false);
 
 foreach ($list_of_sites as $siteID => $siteName) {
@@ -25,13 +25,13 @@ foreach ($list_of_sites as $siteID => $siteName) {
         "SELECT COUNT(c.CandID)
          FROM candidate c
          WHERE c.CenterID=:Site AND c.Active='Y' AND c.Entity_type='Human'",
-        array('Site' => $siteID)
+        ['Site' => $siteID]
     );
 
-    $recruitmentBySiteData[] = array(
+    $recruitmentBySiteData[] = [
                                 "label" => $siteName,
                                 "total" => $totalRecruitment,
-                               );
+                               ];
 }
 
 print json_encode($recruitmentBySiteData);

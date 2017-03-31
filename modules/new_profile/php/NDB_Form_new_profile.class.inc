@@ -119,13 +119,13 @@ class NDB_Form_New_Profile extends NDB_Form
         $endYear        = $config->getSetting('endYear');
         $ageMax         = $config->getSetting('ageMax');
         $ageMin         = $config->getSetting('ageMin');
-        $dateOptions    = array(
+        $dateOptions    = [
                            'language'       => 'en',
                            'format'         => 'YMd',
                            'addEmptyOption' => true,
                            'minYear'        => $startYear - $ageMax,
                            'maxYear'        => $endYear - $ageMin,
-                          );
+                          ];
         $dateAttributes = ['class' => 'form-control input-sm input-date'];
 
         // add date of birth
@@ -142,10 +142,10 @@ class NDB_Form_New_Profile extends NDB_Form
             $dateAttributes
         );
         $this->addRule(
-            array(
+            [
              'dob1',
              'dob2',
-            ),
+            ],
             'Date of birth fields must match',
             'compare'
         );
@@ -175,10 +175,10 @@ class NDB_Form_New_Profile extends NDB_Form
 
             // expected date of confinement rules
             $this->addRule(
-                array(
+                [
                  'edc1',
                  'edc2',
-                ),
+                ],
                 'EDC fields must match',
                 'compare'
             );
@@ -186,7 +186,7 @@ class NDB_Form_New_Profile extends NDB_Form
 
         if ($config->getSetting("useProjects") == "true") {
             $projects = Utility::getProjectList();
-            $projList = array('' => '');
+            $projList = ['' => ''];
             foreach ($projects as $projectID => $projectName) {
                 $projList[$projectID] = $projectName;
             }
@@ -194,11 +194,11 @@ class NDB_Form_New_Profile extends NDB_Form
         }
 
         // add gender
-        $genderOptions = array(
+        $genderOptions = [
                           ''       => '',
                           'Male'   => 'Male',
                           'Female' => 'Female',
-                         );
+                         ];
         $this->addSelect('gender', 'Gender', $genderOptions);
 
         // gender rules
@@ -211,11 +211,11 @@ class NDB_Form_New_Profile extends NDB_Form
         $num_sites          = count($user_list_of_sites);
 
         if ($num_sites >1) {
-            $psc_labelOptions = array(null => '');
+            $psc_labelOptions = [null => ''];
             foreach ($user_list_of_sites as $key => $siteID) {
                 $center = $DB->pselectRow(
                     "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
-                    array('cid' => $siteID)
+                    ['cid' => $siteID]
                 );
                 $psc_labelOptions[$siteID] = $center['Name'];
             }
@@ -230,7 +230,7 @@ class NDB_Form_New_Profile extends NDB_Form
             $this->addBasicText('PSCID', 'PSCID');
         }
 
-        $this->form->addFormRule(array(&$this, '_validate'));
+        $this->form->addFormRule([$this, '_validate']);
     }
     /**
      * Validate function
@@ -241,7 +241,7 @@ class NDB_Form_New_Profile extends NDB_Form
      */
     function _validate($values)
     {
-        $errors = array();
+        $errors = [];
 
         $config =& NDB_Config::singleton();
 
@@ -287,7 +287,7 @@ class NDB_Form_New_Profile extends NDB_Form
                 $errors['PSCID'] = 'PSCID does not match the required structure';
             } elseif ($db->pselectOne(
                 "SELECT count(PSCID) FROM candidate WHERE PSCID=:V_PSCID",
-                array('V_PSCID' => $values[PSCID])
+                ['V_PSCID' => $values[PSCID]]
             ) > 0
             ) {
                     $errors['PSCID'] = 'PSCID has already been registered';

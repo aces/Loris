@@ -80,7 +80,7 @@ class Candidate
         $config  = $factory->config();
 
         $candID    = trim($candID);
-        $CandArray = array('Candidate' => $candID);
+        $CandArray = ['Candidate' => $candID];
 
         // make a local reference to the Database object
         $db = $factory->database();
@@ -114,10 +114,10 @@ class Candidate
 
         $headerSetting = $config->getSetting('HeaderTable');
         if (!empty($headerSetting)) {
-            $params = array();
+            $params = [];
             $parameterCandSettings = $headerSetting['parameter_candidate'];
             if (!is_array($parameterCandSettings)) {
-                $parameterCandSettings = array($parameterCandSettings);
+                $parameterCandSettings = [$parameterCandSettings];
             }
             foreach ($parameterCandSettings as $parameter_type) {
                 $row = $db->pselectRow(
@@ -127,10 +127,10 @@ class Candidate
                     LEFT JOIN parameter_type pt ON
                     (pc.ParameterTypeID=pt.ParameterTypeID)
                     WHERE c.CandID=:Candidate AND pt.Name=:PTName",
-                    array(
+                    [
                      'Candidate' => $candID,
                      'PTName'    => $parameter_type,
-                    )
+                    ]
                 );
                 if (!empty($row['Value'])) {
                     $params[$row['Description']] = $row['Value'];
@@ -224,7 +224,7 @@ class Candidate
             // check pscid uniqueness
             if ($db->pselectOne(
                 "SELECT count(PSCID) FROM candidate WHERE PSCID=:PID",
-                array('PID' => $PSCID)
+                ['PID' => $PSCID]
             ) > 0
             ) {
                 throw new Exception("PSCID not unique", PSCID_NOT_UNIQUE);
@@ -234,7 +234,7 @@ class Candidate
         }
 
         // insert the new candidate into the database
-        $setArray = array(
+        $setArray = [
                      'CandID'          => $candID,
                      'CenterID'        => $centerID,
                      'PSCID'           => $PSCID,
@@ -246,7 +246,7 @@ class Candidate
                      'Entity_type'     => 'Human',
                      'RegisteredBy'    => $user->getUsername(),
                      'UserID'          => $user->getUsername(),
-                    );
+                    ];
 
         if ($config->getSetting('useExternalID') === 'true') {
             $externalID = Candidate::_generateExternalID();
@@ -276,10 +276,10 @@ class Candidate
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
-        $candidateIDs = array(
+        $candidateIDs = [
                          ':candidate_id' => $candID,
                          ':pscid'        => $PSCID,
-                        );
+                        ];
 
         // get candidate data from database
         $query = "SELECT CandID
@@ -358,7 +358,7 @@ class Candidate
     public function setData($var, $value=null)
     {
         if (!is_array($var)) {
-            $setData = array($var => $value);
+            $setData = [$var => $value];
         } else {
             $setData = $var;
         }
@@ -371,7 +371,7 @@ class Candidate
         $db->update(
             'candidate',
             $setData,
-            array('CandID' => $this->getData('CandID'))
+            ['CandID' => $this->getData('CandID')]
         );
         return true;
     }
@@ -523,7 +523,7 @@ class Candidate
     {
         $factory = NDB_Factory::singleton();
         //make sure it returns an array
-        $visitLabelArray = array();
+        $visitLabelArray = [];
 
         $candID = $this->getCandID();
 
@@ -533,7 +533,7 @@ class Candidate
 
         $query  = "SELECT ID, Visit_label FROM session
             WHERE CandID=:Candidate AND Active='Y' ORDER BY ID";
-        $result = $db->pselect($query, array('Candidate' => $candID));
+        $result = $db->pselect($query, ['Candidate' => $candID]);
 
         // map the array [VisitNo]=>Visit_label
         foreach ($result as $row) {
@@ -561,7 +561,7 @@ class Candidate
             FROM session
             WHERE CandID=:CaID AND (Active='Y' OR Active is null)
             GROUP BY CandID";
-        $result = $db->pselectRow($query, array('CaID' => $candID));
+        $result = $db->pselectRow($query, ['CaID' => $candID]);
 
         //return the next visit No
         return $result["nextVisitNo"];
@@ -595,7 +595,7 @@ class Candidate
                 FROM session
                 WHERE CandID=:CaID AND (Active='Y' OR Active is null)
                 GROUP BY CandID";
-            $result = $db->pselectRow($query, array('CaID' => $candID));
+            $result = $db->pselectRow($query, ['CaID' => $candID]);
 
             $nextVisitLabel = $result['nextVisitLabel'];
             if (!empty($existingVisitLabels)) {
@@ -636,7 +636,7 @@ class Candidate
 
         $projID  = $this->getProjectID();
         $query   = "SELECT SubprojectID from project_rel where ProjectID = :prj";
-        $params  = array('prj' => $projID);
+        $params  = ['prj' => $projID];
         $subproj = $db->pselect($query, $params);
 
         foreach ($subproj as $row) {
@@ -665,7 +665,7 @@ class Candidate
             FROM session s JOIN candidate c ON (c.CandID = s.CandID)
             WHERE c.CandID=:cid AND Date_Visit IS NOT NULL
             ORDER BY Date_Visit";
-        $where  = array('cid' => $candID);
+        $where  = ['cid' => $candID];
         $vLabel = $db->pselectOne($query, $where);
 
         return $vLabel;
@@ -689,7 +689,7 @@ class Candidate
         // make sure the cand id is not used
         while ($db->pselectOne(
             "SELECT count(CandID) FROM candidate WHERE CandID=:CaID",
-            array('CaID' => $candID)
+            ['CaID' => $candID]
         ) > 0) {
             // pick a new candidate id
             $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
@@ -733,7 +733,7 @@ class Candidate
         } while (
             $db->pselectOne(
                 "SELECT count(PSCID) FROM candidate WHERE PSCID=:PID",
-                array('PID' => $pscid)
+                ['PID' => $pscid]
             ) > 0
         );
 
@@ -776,7 +776,7 @@ class Candidate
         } while (
             $db->pselectOne(
                 "SELECT count(ExternalID) FROM candidate WHERE ExternalID=:EID",
-                array('EID' => $externalID)
+                ['EID' => $externalID]
             )  > 0
         );
 
@@ -866,7 +866,7 @@ class Candidate
     {
         $idStructure = $idStructure['structure']['seq'];
 
-        $arrays = array();
+        $arrays = [];
         foreach ($idStructure AS $seq) {
             if (isset($seq['@']['length'])) {
                 $length = $seq['@']['length'];
@@ -891,7 +891,7 @@ class Candidate
                     break;
 
                 case 'static':
-                    $arrays[] = array($seq['#']);
+                    $arrays[] = [$seq['#']];
                     break;
 
                 case 'set':
@@ -903,7 +903,7 @@ class Candidate
                     break;
 
                 case 'siteAbbrev':
-                    $arrays[] = array($siteAbbrev);
+                    $arrays[] = [$siteAbbrev];
                     break;
                 }
             }

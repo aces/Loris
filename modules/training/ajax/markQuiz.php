@@ -41,23 +41,23 @@ if ($quizCorrect == false) {
         "SELECT examinerID 
          FROM examiners
          WHERE full_name=:FN AND centerID=:CID",
-        array(
+        [
          'FN'  => $userFullName,
          'CID' => $userCenter,
-        )
+        ]
     );
 
-    $dateArray = array(
+    $dateArray = [
                   'Y' => date('Y'),
                   'M' => date('m'),
                   'd' => date('d'),
-                 );
+                 ];
 
-    $values = array(
-               'pass'      => array($instrumentID => 'certified'),
-               'date_cert' => array($instrumentID => $dateArray),
+    $values = [
+               'pass'      => [$instrumentID => 'certified'],
+               'date_cert' => [$instrumentID => $dateArray],
                'examiner'  => $examinerID,
-              );
+              ];
 
     process($values);
 
@@ -83,10 +83,10 @@ function correct($instrumentID, $question, $answer)
          LEFT JOIN certification_training_quiz_answers a
          ON (q.ID=a.QuestionID)
          WHERE q.TestID=:TID AND a.Correct=1 AND q.OrderNumber=:QNO",
-        array(
+        [
          'TID' => $instrumentID,
          'QNO' => $question,
-        )
+        ]
     );
     if ($correctAnswer == $answer) {
         return true;
@@ -151,10 +151,10 @@ function process($values)
             "SELECT certID 
              FROM certification
              WHERE examinerID=:EID AND testID=:TID",
-            array(
+            [
              'EID' => $examinerID,
              'TID' => $testID,
-            )
+            ]
         );
 
          // if certification for new instrument for the examiner
@@ -162,27 +162,27 @@ function process($values)
             // insert a new certification entry
             $DB->insert(
                 'certification',
-                array(
+                [
                  'examinerID' => $examinerID,
                  'date_cert'  => $date_cert,
                  'testID'     => $testID,
                  'pass'       => $pass,
                  'comment'    => $comment,
-                )
+                ]
             );
             $certID = $DB->pselectOne(
                 "SELECT certID 
                  FROM certification
                  WHERE examinerID =:EID and testID=:TID",
-                array(
+                [
                  'EID' => $examinerID,
                  'TID' => $testID,
-                )
+                ]
             );
             // Add a new entry to the certification history table
             $DB->insert(
                 'certification_history',
-                array(
+                [
                  'col'         => 'pass',
                  'new'         => $pass,
                  'new_date'    => $date_cert,
@@ -192,7 +192,7 @@ function process($values)
                  'changeDate'  => date("Y-m-d H:i:s"),
                  'userID'      => $_SESSION['State']->getUsername(),
                  'type'        => 'I',
-                )
+                ]
             );
         } else { // update to a test certification for the examiner
 
@@ -203,10 +203,10 @@ function process($values)
                  LEFT JOIN certification c ON (c.certID=ch.primaryVals)
                  WHERE c.examinerID=:EID AND ch.testID=:TID
                  ORDER BY changeDate DESC",
-                array(
+                [
                  'EID' => $examinerID,
                  'TID' => $testID,
-                )
+                ]
             );
 
             $oldVal  = $oldVals['new'];
@@ -216,10 +216,10 @@ function process($values)
                 "SELECT pass, date_cert, comment
                  FROM certification
                  WHERE examinerID=:EID AND testID=:TID",
-                array(
+                [
                  'EID' => $examinerID,
                  'TID' => $testID,
-                )
+                ]
             );
 
             // If one of the values was changed
@@ -230,22 +230,22 @@ function process($values)
                 // Update the certification entry
                 $DB->update(
                     'certification',
-                    array(
+                    [
                      'date_cert' => $date_cert,
                      'pass'      => $pass,
                      'comment'   => $comment,
-                    ),
-                    array(
+                    ],
+                    [
                      'examinerID' => $examinerID,
                      'testID'     => $testID,
-                    )
+                    ]
                 );
 
                 // Add a new entry to the certification history table
                 if ($oldDate != $date_cert || $oldVal != $pass) {
                     $DB->insert(
                         'certification_history',
-                        array(
+                        [
                          'col'         => 'pass',
                          'old'         => $oldVal,
                          'old_date'    => $oldDate,
@@ -257,7 +257,7 @@ function process($values)
                          'changeDate'  => date("Y-m-d H:i:s"),
                          'userID'      => $_SESSION['State']->getUsername(),
                          'type'        => 'U',
-                        )
+                        ]
                     );
                 }
             }

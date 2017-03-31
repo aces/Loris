@@ -10,6 +10,10 @@
     <!-- Make sure there's no weird spacing for array brackets -->
     <rule ref="Squiz.Arrays.ArrayBracketSpacing" />
 
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax.Found">
+       <type>warning</type>
+    </rule>
+
     <!-- Pick up any calls to deprecated functions. -->
     <rule ref="Generic.PHP.DeprecatedFunctions"/>
 

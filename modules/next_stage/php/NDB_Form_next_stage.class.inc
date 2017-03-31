@@ -1,6 +1,7 @@
 <?php
 /**
  * The forms for the start next stage menu
+ *
  * @package main
  */
 class NDB_Form_next_stage extends NDB_Form
@@ -13,7 +14,7 @@ class NDB_Form_next_stage extends NDB_Form
         $timePoint =& TimePoint::singleton($this->identifier);
 
         // check user permissions
-    	if (!$user->hasPermission('data_entry') || !in_array($timePoint->getData('CenterID'), $user->getData('CenterIDs'))) {
+        if (!$user->hasPermission('data_entry') || !in_array($timePoint->getData('CenterID'), $user->getData('CenterIDs'))) {
             return false;
         }
         return $timePoint->isStartable();
@@ -44,12 +45,12 @@ class NDB_Form_next_stage extends NDB_Form
         }
 
         // create a new battery object && new battery
-        $battery = new NDB_BVL_Battery;
-        $candidate =& Candidate::singleton($timePoint->getCandID() );
+        $battery   = new NDB_BVL_Battery;
+        $candidate =& Candidate::singleton($timePoint->getCandID());
 
         $firstVisit = false;
-        $vLabel = $candidate->getFirstVisit();//get first visit for candidate
-        if($vLabel ==  $timePoint->getVisitLabel()){
+        $vLabel     = $candidate->getFirstVisit();//get first visit for candidate
+        if($vLabel ==  $timePoint->getVisitLabel()) {
             $firstVisit = true; //if current visit label is same as visit label returned must be first visit
         }
 
@@ -57,14 +58,19 @@ class NDB_Form_next_stage extends NDB_Form
         $battery->selectBattery($timePoint->getData('SessionID'));
 
         // add instruments to the time point (lower case stage)
-        $battery->createBattery($timePoint->getSubprojectID(), $newStage, $timePoint->getVisitLabel(),
-                                $timePoint->getCenterID(), $firstVisit);
+        $battery->createBattery(
+            $timePoint->getSubprojectID(),
+            $newStage,
+            $timePoint->getVisitLabel(),
+            $timePoint->getCenterID(),
+            $firstVisit
+        );
 
         //------------------------------------------------------------
 
-        $this->tpl_data['success'] = true;
+        $this->tpl_data['success']   = true;
         $this->tpl_data['sessionID'] = $this->identifier;
-        $this->tpl_data['candID'] = $timePoint->getCandID();
+        $this->tpl_data['candID']    = $timePoint->getCandID();
 
         // freeze it, just in case
         //$this->form->freeze();
@@ -73,16 +79,16 @@ class NDB_Form_next_stage extends NDB_Form
     function next_stage()
     {
         $timePoint =& TimePoint::singleton($this->identifier);
-        $config =& NDB_Config::singleton();
+        $config    =& NDB_Config::singleton();
 
-        $study = $config->getSetting('study');
-        $dateOptions = array(
-                             'language'        => 'en',
-                             'format'          => 'YMd',
-                             'addEmptyOption'  => true,
-                             'minYear'         => $study['startYear'],
-                             'maxYear'         => $study['endYear']
-                             );
+        $study       = $config->getSetting('study');
+        $dateOptions = [
+                        'language'       => 'en',
+                        'format'         => 'YMd',
+                        'addEmptyOption' => true,
+                        'minYear'        => $study['startYear'],
+                        'maxYear'        => $study['endYear'],
+                       ];
 
         $this->addHidden('candID', $timePoint->getData('CandID'));
         $this->addHidden('sessionID', $timePoint->getData('SessionID'));
@@ -92,7 +98,7 @@ class NDB_Form_next_stage extends NDB_Form
 
         // add form elements
         if ($stage == 'Visit' && $config->getSetting('useScanDone')!='false') {
-            $this->addSelect('scan_done', 'Scan Done', array(null => null, 'Y' => 'Yes', 'N' => 'No'));
+            $this->addSelect('scan_done', 'Scan Done', [null => null, 'Y' => 'Yes', 'N' => 'No']);
             $this->addRule('scan_done', 'Scan done is required', 'required');
         }
 
@@ -105,15 +111,15 @@ class NDB_Form_next_stage extends NDB_Form
         // let user select subproject *only* if subprojectid is not > 0
         if(!($timePoint->getSubprojectID() > 0)) {
             $list_of_objectives =& Utility::getSubprojectList();
-            $this->addSelect('SubprojectID', 'Objective', array('' => '') + $list_of_objectives);
+            $this->addSelect('SubprojectID', 'Objective', ['' => ''] + $list_of_objectives);
             $this->addRule('SubprojectID', 'Required', 'required');
         }
 
         // add date rules
         $this->addRule('date1', 'Date is required', 'required');
-        $this->addRule(array('date1', 'date2'), 'Date fields must match', 'compare');
+        $this->addRule(['date1', 'date2'], 'Date fields must match', 'compare');
 
-        $this->form->addFormRule(array(&$this, '_validate'));
+        $this->form->addFormRule([&$this, '_validate']);
     }
 
     function _validate($values)
@@ -121,11 +127,11 @@ class NDB_Form_next_stage extends NDB_Form
         $config =& NDB_Config::singleton();
 
         $timePoint =& TimePoint::singleton($this->identifier);
-        $candID = $timePoint->getCandID();
+        $candID    = $timePoint->getCandID();
 
         $candidate =& Candidate::singleton($candID);
 
-        $errors = array();
+        $errors = [];
         // check date pairs
         if (empty($values['date1'])) {
             $errors['date1'] .= "Date is required. \n";
@@ -145,7 +151,7 @@ class NDB_Form_next_stage extends NDB_Form
         $stage = $timePoint->getNextStage();
         if ($stage == 'Visit') {
             // compare the dates date of MRI must be > DOB - ONLY WHEN starting Visit stage
-            $date = $values['date1']; 
+            $date = $values['date1'];
 
             if (empty($values['scan_done']) && $config->getSetting('useScanDone')!='false') {
                 $errors['scan_done'] = 'Scan done is required';
@@ -158,7 +164,8 @@ class NDB_Form_next_stage extends NDB_Form
             }
         }
 
-        if(empty($errors)) return true;
+        if(empty($errors)) { return true;
+        }
         return $errors;
     }
 }

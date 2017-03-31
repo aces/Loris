@@ -27,20 +27,20 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
     {
         parent::setUp();
         $window = new WebDriverWindow($this->webDriver);
-        $size   = new WebDriverDimension(1024,1768);
+        $size   = new WebDriverDimension(1024, 1768);
         $window->setSize($size);
         $this->DB->insert(
             "document_repository_categories",
-            array(
+            [
              'id'            => '9999999',
              'category_name' => 'TESTTESTTESTTEST',
              'parent_id'     => '0',
              'comments'      => 'Test Comment',
-            )
+            ]
         );
         $this->DB->insert(
             "document_repository",
-            array(
+            [
              'record_id'     => '9999999',
              'Date_uploaded' => '2016-05-16 15:34:35',
              'Data_dir'      => 'admin/README.md',
@@ -53,7 +53,7 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
              'EARLI'         => '0',
              'hide_video'    => '0',
              'File_category' => '9999999',
-            )
+            ]
         );
 
     }
@@ -62,19 +62,19 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
     {
         $this->DB->delete(
             "document_repository_categories",
-            array('category_name' => 'TestTestTest')
+            ['category_name' => 'TestTestTest']
         );
         $this->DB->delete(
             "document_repository_categories",
-            array('category_name' => 'test')
+            ['category_name' => 'test']
         );
         $this->DB->delete(
             "document_repository",
-            array('record_id' => '9999999')
+            ['record_id' => '9999999']
         );
         $this->DB->delete(
             "document_repository_categories",
-            array('id' => '9999999')
+            ['id' => '9999999']
         );
         parent::tearDown();
     }
@@ -85,7 +85,7 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
       */
     public function testSuperUserPermission()
     {
-         $this->setupPermissions(array("superuser"));
+         $this->setupPermissions(["superuser"]);
          $this->safeGet($this->url . "/document_repository/");
          $bodyText = $this->webDriver->findElement(
              WebDriverBy::cssSelector("body")
@@ -125,7 +125,8 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/document_repository/");
         $this->safeFindElement(
             WebDriverBy::Name("addCategory"),
-            3000)->click();
+            3000
+        )->click();
         sleep(10);
         $this->safeFindElement(
             WebDriverBy::Name(
@@ -186,7 +187,8 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
      * @return void
      */
     function testDocumentRepositoryUploadFileEditDeleteComment()
-    {    $this->markTestSkipped("This method isn't working properly on travis.");
+    {
+        $this->markTestSkipped("This method isn't working properly on travis.");
          $this->safeGet($this->url . "/document_repository/");
          $this->safeFindElement(
              WebDriverBy::Xpath("//*[@id='TESTTESTTESTTESTa']/td/span")

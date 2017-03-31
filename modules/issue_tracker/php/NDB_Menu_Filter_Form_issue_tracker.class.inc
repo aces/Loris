@@ -56,7 +56,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         }
 
         //note that this needs to be in the same order as the headers array
-        $this->columns = array(
+        $this->columns = [
                           'i.issueID as Issue_ID',
                           'i.title as Title',
                           'l.Label as Module',
@@ -71,13 +71,13 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
                           'i.lastUpdate as Last_Update',
                           's.ID as SessionID',
                           'c.CandID as CandID',
-                         );
+                         ];
 
         $this->order_by = 'i.issueID DESC';
         $this->group_by = 'i.issueID';
 
         //NDB filter will remove underscores
-        $this->headers = array(
+        $this->headers = [
                           'Issue_ID',
                           'Title',
                           'Module',
@@ -92,7 +92,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
                           'Last_Update',
                           'SessionID',
                           'CandID',
-                         );
+                         ];
         $this->tpl_data['hiddenHeaders'] = json_encode(
             [
              'SessionID',
@@ -100,7 +100,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             ]
         );
 
-        $this->validFilters = array(
+        $this->validFilters = [
                                'i.issueID',
                                'l.Label',
                                'i.category',
@@ -116,9 +116,9 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
                                'keyword',
                                'minDate',
                                'maxDate',
-                              );
+                              ];
 
-        $this->formToFilter = array(
+        $this->formToFilter = [
                                'issueID'                => 'i.issueID',
                                'category'               => 'i.category',
                                'module'                 => 'l.Label',
@@ -134,17 +134,17 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
                                'minDate'                => 'minDate',
                                'maxDate'                => 'maxDate',
                                $user->getData('UserID') => 'watching',
-                              );
+                              ];
 
-        $this->EqualityFilters = array(
+        $this->EqualityFilters = [
                                   'i.issueID',
                                   'i.centerID',
                                   'i.status',
-                                 );
-        $this->searchKeyword   = array(
+                                 ];
+        $this->searchKeyword   = [
                                   'ic.issueComment',
                                   'i.title',
-                                 );
+                                 ];
     }
 
     /**
@@ -161,7 +161,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         if ($user->hasPermission('access_all_profiles')) {
             $list_of_sites = Utility::getSiteList();
             if (is_array($list_of_sites)) {
-                $list_of_sites = array('' => 'All') + $list_of_sites;
+                $list_of_sites = ['' => 'All'] + $list_of_sites;
             }
         } else {// allow only to view own site data
             $site_arr = $user->getData('CenterIDs');
@@ -171,26 +171,26 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
                     $list_of_sites[$val] = $site[$key]->getCenterName();
                 }
             }
-            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
+            $list_of_sites = ['' => 'All User Sites'] + $list_of_sites;
         }
 
         //reporters
-        $reporters         = array('' => 'All');
+        $reporters         = ['' => 'All'];
         $reporter_expanded = $db->pselect(
             "SELECT u.UserID, u.Real_name FROM issues i " .
             "INNER JOIN users u ON(i.assignee=u.UserID)",
-            array()
+            []
         );
         foreach ($reporter_expanded as $r_row) {
             $reporters[$r_row['UserID']] = $r_row['Real_name'];
         }
 
         //assignees
-        $assignees         = array('' => 'All');
+        $assignees         = ['' => 'All'];
         $assignee_expanded = $db->pselect(
             "SELECT u.UserID, u.Real_name FROM issues i " .
             "INNER JOIN users u ON(i.assignee=u.UserID)",
-            array()
+            []
         );
         foreach ($assignee_expanded as $a_row) {
             $assignees[$a_row['UserID']] = $a_row['Real_name'];
@@ -207,16 +207,16 @@ WHERE Parent IS NOT NULL ORDER BY Label",
             'Label'
         );
 
-        $priorities = array(
+        $priorities = [
                        ''          => 'All',
                        'low'       => 'Low',
                        'normal'    => 'Normal',
                        'high'      => 'High',
                        'urgent'    => 'Urgent',
                        'immediate' => 'Immediate',
-                      );
+                      ];
 
-        $statuses = array(
+        $statuses = [
                      ''             => 'All',
                      'new'          => 'New',
                      'acknowledged' => 'Acknowledged',
@@ -224,14 +224,14 @@ WHERE Parent IS NOT NULL ORDER BY Label",
                      'assigned'     => 'Assigned',
                      'resolved'     => 'Resolved',
                      'closed'       => 'Closed',
-                    );
+                    ];
 
         $unorgCategories = $db -> pselect(
             "SELECT categoryName
         FROM issues_categories",
             []
         );
-        $categories      = array('' => "All");
+        $categories      = ['' => "All"];
         foreach ($unorgCategories as $r_row) {
             $categoryName = $r_row['categoryName'];
             if ($categoryName) {
@@ -239,45 +239,45 @@ WHERE Parent IS NOT NULL ORDER BY Label",
             }
         }
 
-        $dateOptions = array(
+        $dateOptions = [
                         'language'       => 'en',
                         'format'         => 'YMdHis',
                         'addEmptyOption' => true,
-                       );
+                       ];
 
         $this->addBasicText(
             'keyword',
             'Keyword',
-            array(
+            [
              "size"      => 10,
              "maxlength" => 50,
-            )
+            ]
         );
         $this->addBasicText(
             'issueID',
             'Issue ID',
-            array(
+            [
              "size"      => 10,
              "maxlength" => 25,
-            )
+            ]
         );
         $this->addSelect('module', 'Module', $modules);
         $this->addSelect('category', 'Category', $categories);
         $this->addBasicText(
             'PSCID',
             'PSCID',
-            array(
+            [
              "size"      => 10,
              "maxlength" => 25,
-            )
+            ]
         );
         $this->addBasicText(
             'visitLabel',
             'Visit Label',
-            array(
+            [
              'size'      => "5",
              "maxlength" => "15",
-            )
+            ]
         );
         $this->addSelect('site', 'Site', $list_of_sites);
         $this->addSelect('reporter', 'Reporter', $reporters);
@@ -286,7 +286,7 @@ WHERE Parent IS NOT NULL ORDER BY Label",
         $this->addSelect('status', 'Status', $statuses);
         $this->addBasicDate('minDate', 'Created After', $dateOptions);
         $this->addBasicDate('maxDate', 'Created Before', $dateOptions);
-        $this->addCheckbox('watching', 'Watching', array('value' => '1'));
+        $this->addCheckbox('watching', 'Watching', ['value' => '1']);
 
         $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
     }
@@ -370,7 +370,7 @@ WHERE Parent IS NOT NULL ORDER BY Label",
      */
     function reorganizeQueryResults($queryResult, $key)
     {
-        $result = array('' => "All");
+        $result = ['' => "All"];
         foreach ($queryResult as $r_row) {
             $resultValue = $r_row[$key];
             if ($resultValue) {
@@ -391,7 +391,7 @@ WHERE Parent IS NOT NULL ORDER BY Label",
         $baseurl = $factory->settings()->getBaseURL();
         return array_merge(
             parent::getJSDependencies(),
-            array($baseurl . "/issue_tracker/js/columnFormatter.js")
+            [$baseurl . "/issue_tracker/js/columnFormatter.js"]
         );
     }
 }

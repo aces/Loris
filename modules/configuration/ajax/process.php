@@ -32,12 +32,12 @@ $DB =& Database::singleton();
 foreach ($_POST as $key => $value) {
     if (is_numeric($key)) { //update
         if ($value == "") {
-            $DB->delete('Config', array('ID' => $key));
+            $DB->delete('Config', ['ID' => $key]);
         } else {
             $DB->update(
                 'Config',
-                array('Value' => $value),
-                array('ID' => $key)
+                ['Value' => $value],
+                ['ID' => $key]
             );
         }
     } else { //add new or remove
@@ -47,14 +47,14 @@ foreach ($_POST as $key => $value) {
             if ($value !== "") {
                 $DB->insert(
                     'Config',
-                    array(
+                    [
                      'ConfigID' => $keySplit[1],
                      'Value'    => $value,
-                    )
+                    ]
                 );
             }
         } elseif ($valueSplit[0] == 'remove') {
-            $DB->delete('Config', array('ID' => $valueSplit[1]));
+            $DB->delete('Config', ['ID' => $valueSplit[1]]);
         }
     }
 }

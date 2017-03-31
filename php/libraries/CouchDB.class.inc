@@ -162,7 +162,7 @@ class CouchDB
      * Array of documents to be commited when the current bulk transaction
      * ends.
      */
-    var $bulkDocuments = array();
+    var $bulkDocuments = [];
 
     /**
      * Returns one and only one CouchDB database wrapper object.
@@ -209,7 +209,7 @@ class CouchDB
      *
      * @return string A string representation of the JSON returned by CouchDB
      */
-    function _getURL($url, $op = 'GET', $headers = array())
+    function _getURL($url, $op = 'GET', $headers = [])
     {
         $config      = NDB_Config::singleton();
         $couchconfig = $config->getSetting('CouchDB');
@@ -305,7 +305,7 @@ class CouchDB
      *
      * @return string A string representation of the JSON return value from CouchDB
      */
-    function _postURL($url, $data, $headers = array(), $printValue = false)
+    function _postURL($url, $data, $headers = [], $printValue = false)
     {
         $config      = NDB_Config::singleton();
         $couchconfig = $config->getSetting('CouchDB');
@@ -377,7 +377,7 @@ class CouchDB
         return $this->_postURL(
             $this->_constructURL($op, $url),
             $data,
-            array(),
+            [],
             $printValue
         );
     }
@@ -390,7 +390,7 @@ class CouchDB
      *
      * @return array An associative array representing the document
      */
-    function getDoc($id, $options = array())
+    function getDoc($id, $options = [])
     {
         $json = $this->_getRelativeURL($id);
 
@@ -407,7 +407,7 @@ class CouchDB
         $data = json_decode($json, true);
 
         if (isset($data['error']) && $data['error'] === 'not_found') {
-            return array();
+            return [];
         }
 
         return $data;
@@ -517,7 +517,7 @@ class CouchDB
     function replaceDoc($id, $doc)
     {
         $original_doc = $this->getDoc($id);
-        if ($original_doc === array() ) {
+        if ($original_doc === [] ) {
             $this->putDoc($id, $doc);
             return "new";
         }
@@ -564,7 +564,7 @@ class CouchDB
 
             $query = $this->_postRelativeURL(
                 $url,
-                json_encode(array('keys' => $keys)),
+                json_encode(['keys' => $keys]),
                 'POST',
                 $full_json
             );
@@ -581,7 +581,7 @@ class CouchDB
         $data = json_decode($query, true);
 
         if (isset($data['error']) && $data['error'] == 'not_found') {
-            return array();
+            return [];
         }
         return $data['rows'];
     }
@@ -614,10 +614,10 @@ class CouchDB
         if ($this->bulk !== true) {
             return false;
         }
-        $docs = json_encode(array('docs' => $this->bulkDocuments));
+        $docs = json_encode(['docs' => $this->bulkDocuments]);
 
         $this->bulk          = false;
-        $this->bulkDocuments = array();
+        $this->bulkDocuments = [];
 
         return $this->_postRelativeURL('_bulk_docs', $docs);
     }

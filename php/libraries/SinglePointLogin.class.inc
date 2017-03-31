@@ -55,7 +55,7 @@ class SinglePointLogin
      */
     function showLoginScreen()
     {
-        $tpl_data = array();
+        $tpl_data = [];
         if (isset($_POST['username'])) {
             $tpl_data['username'] = $_POST['username'];
         } else {
@@ -70,7 +70,7 @@ class SinglePointLogin
             parse_str($_SERVER['QUERY_STRING'], $params);
             unset($params['logout']);
         } else {
-            $params = array();
+            $params = [];
         }
 
         $config =& NDB_Config::singleton();
@@ -84,11 +84,11 @@ class SinglePointLogin
         $study_links = $config->getExternalLinks('Studylinks');
         foreach ($study_links as $label => $url) {
             $WindowName = md5($url);
-            $tpl_data['studylinks'][] = array(
+            $tpl_data['studylinks'][] = [
                                          'url'        => $url,
                                          'label'      => $label,
                                          'windowName' => $WindowName,
-                                        );
+                                        ];
         }
 
         $study_title       = $config->getSetting('title');
@@ -200,16 +200,16 @@ class SinglePointLogin
         // check password strength
         if (!User::isPasswordStrong(
             $_POST['password'],
-            array(
+            [
              $_POST['confirm'],
              $data['UserID'],
              $data['Email'],
-            ),
-            array(
+            ],
+            [
              '==',
              '!=',
              '!=',
-            )
+            ]
         )
         ) {
             $this->_lastError = 'The password is weak, or'
@@ -314,7 +314,7 @@ class SinglePointLogin
 
         //$jwt = \Firebase\JWT\JWT::encode($token, $sharedKey);
         try {
-            $decoded = \Firebase\JWT\JWT::decode($token, $sharedKey, array("HS256"));
+            $decoded = \Firebase\JWT\JWT::decode($token, $sharedKey, ["HS256"]);
         } catch(Exception $e) {
             return false;
         }
@@ -350,7 +350,7 @@ class SinglePointLogin
          //////////////////////////
         $this->_username = isset($username) ? $username : 'Unknown';
 
-        $setArray = array(
+        $setArray = [
                      'userID'          => $this->_username,
                      'Success'         => 'Y',
                      'Failcode'        => null,
@@ -361,7 +361,7 @@ class SinglePointLogin
                      'Page_requested'  => isset($_SERVER['REQUEST_URI'])
                                               ? $_SERVER['REQUEST_URI']
                                               : 'Unknown',
-                    );
+                    ];
         // save the new password if the last password expired
         if (isset($_POST['expiry'])) {
             $success = $this->save();
@@ -407,7 +407,7 @@ class SinglePointLogin
                     FROM users
                   WHERE UserID = :username
                   GROUP BY UserID";
-        $row   = $DB->pselectRow($query, array('username' => $username));
+        $row   = $DB->pselectRow($query, ['username' => $username]);
 
         if ($row['User_count'] == 1) {
             // validate passsword
@@ -537,7 +537,7 @@ class SinglePointLogin
                   FROM user_login_history 
                   WHERE UserID = :username";
 
-        $row        = $DB->pselectRow($query, array('username' => $username));
+        $row        = $DB->pselectRow($query, ['username' => $username]);
         $last_login = new DateTime($row['Login_timestamp']);
         $time_now   = new DateTime("now");
         $interval   = $last_login->diff($time_now);
@@ -545,8 +545,8 @@ class SinglePointLogin
         if ($interval->days > $maximumDaysInactive) {
             $DB->update(
                 'users',
-                array('Active' => 'N'),
-                array('UserID' => $username)
+                ['Active' => 'N'],
+                ['UserID' => $username]
             );
             return true;
         }

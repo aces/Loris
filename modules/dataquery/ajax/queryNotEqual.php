@@ -12,10 +12,10 @@ $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
 
 
-$cdb = CouchDB::singleton();
-$category = $_REQUEST['category'];
+$cdb       = CouchDB::singleton();
+$category  = $_REQUEST['category'];
 $fieldName = $_REQUEST['field'];
-$value = $_REQUEST['value'];
+$value     = $_REQUEST['value'];
 
 // There's no way to do "not" in an index, so we need to
 // get all the values of the field name, and then iterate
@@ -24,14 +24,15 @@ $value = $_REQUEST['value'];
 $results = $cdb->queryView(
     "DQG-2.0",
     "search",
-    array("reduce" => "false",
-          "startkey" => "[\"$category\", \"$fieldName\"]",
-          "endkey" => "[\"$category\", \"$fieldName\", {}]",
-      )
+    [
+     "reduce"   => "false",
+     "startkey" => "[\"$category\", \"$fieldName\"]",
+     "endkey"   => "[\"$category\", \"$fieldName\", {}]",
+    ]
 );
 
 // TODO: Rewrite this using array_filter and array_map.
-$sessionResults = array();
+$sessionResults = [];
 foreach($results as $row) {
     if($row['key'][2] == $value) {
         continue;

@@ -44,12 +44,12 @@ class Notify
             );
         }
 
-        $setArray = array(
+        $setArray = [
                      'NotificationTypeID' => $typeID,
                      'TimeSpooled'        => time(),
                      'Message'            => $message,
                      'CenterID'           => $centerID,
-                    );
+                    ];
         $db->insert('notification_spool', $setArray);
     }
 
@@ -65,7 +65,7 @@ class Notify
         $db     =& Database::singleton();
         $typeID = $db->pselectOne(
             "SELECT NotificationTypeID FROM notification_types WHERE Type=:TP",
-            array('TP' => $type)
+            ['TP' => $type]
         );
         return $typeID;
     }

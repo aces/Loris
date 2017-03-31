@@ -38,11 +38,11 @@ class NDB_Menu_Filter_Data_Release extends NDB_Menu_Filter
         $DB      = $Factory->Database();
 
         // set the class variables
-        $this->columns      = array(
+        $this->columns      = [
                                'file_name',
                                'version',
                                'upload_date',
-                              );
+                              ];
         $this->query        = " FROM data_release dr JOIN"
                                . " data_release_permissions drp"
                                . " ON (dr.id=drp.data_release_id)"
@@ -51,47 +51,47 @@ class NDB_Menu_Filter_Data_Release extends NDB_Menu_Filter
                                . $DB->quote($user->getUsername());
         $this->group_by     = '';
         $this->order_by     = 'upload_date';
-        $this->headers      = array(
+        $this->headers      = [
                                'file_name',
                                'version',
                                'upload_date',
-                              );
-        $this->validFilters = array(
+                              ];
+        $this->validFilters = [
                                'file_name',
                                'version',
                                'upload_date',
-                              );
-        $this->formToFilter = array(
+                              ];
+        $this->formToFilter = [
                                'file_name'   => 'file_name',
                                'version'     => 'version',
                                'upload_date' => 'upload_date',
-                              );
+                              ];
 
         $user_ID   = $DB->pselectOne(
             "SELECT ID FROM users WHERE userid=:UserID",
-            array('UserID' => $user->getUsername())
+            ['UserID' => $user->getUsername()]
         );
         $superuser = $DB->pselectOne(
             "SELECT true FROM users WHERE ID IN "
             . "(SELECT userid FROM user_perm_rel WHERE "
             . "permid=1 AND userid=:UserID)",
-            array('UserID' => $user_ID)
+            ['UserID' => $user_ID]
         );
 
         $results = $DB->pselect(
             "SELECT ID, UserID FROM users",
-            array()
+            []
         );
-        $userids = array();
+        $userids = [];
         foreach ($results as $row) {
             $userids[$row['ID']] =$row['UserID'];
         }
 
         $results          = $DB->pselect(
             "SELECT id, file_name FROM data_release",
-            array()
+            []
         );
-        $data_release_ids = array();
+        $data_release_ids = [];
         foreach ($results as $row) {
             $data_release_ids[$row['id']] =$row['file_name'];
         }

@@ -13,26 +13,30 @@ $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
 
 
-$cdb = CouchDB::singleton();
+$cdb      = CouchDB::singleton();
 $category = $_REQUEST['DocType'];
 $sessions = json_decode($_REQUEST['Sessions']);
 
-$keys = array_map(function($row) use ($category) {
-    return array_merge(array($category), $row);
-}, $sessions);
+$keys = array_map(
+    function ($row) use ($category) {
+        return array_merge([$category], $row);
+    },
+    $sessions
+);
 
 $results = $cdb->queryView(
     "DQG-2.0",
     "instruments",
-    array("reduce" => "false",
-        "include_docs" => "true",
-        "keys" =>  $keys,
-    ),
+    [
+     "reduce"       => "false",
+     "include_docs" => "true",
+     "keys"         => $keys,
+    ],
     true
 );
 
-$keys = null;
-$cdb = null;
+$keys   = null;
+$cdb    = null;
 $client = null;
 //print $results;
 /*

@@ -55,7 +55,7 @@ class NDB_Reliability extends NDB_Form
         $this->page       = $page;
         $this->identifier = $identifier;
         $this->commentID  = $commentID;
-        $this->defaults   = array();
+        $this->defaults   = [];
     }
 
 
@@ -133,7 +133,7 @@ class NDB_Reliability extends NDB_Form
         // get the defaults
         $localDefaults = $this->_getDefaults();
         if (!is_array($localDefaults)) {
-            $localDefaults = array();
+            $localDefaults = [];
         }
         // set the quickform object defaults
         $this->form->setDefaults(array_merge($this->defaults, $localDefaults));
@@ -157,7 +157,7 @@ class NDB_Reliability extends NDB_Form
     function save()
     {
         if ($this->form->validate()) {
-            $success = $this->form->process(array(&$this, "_save"), false);
+            $success = $this->form->process([$this, "_save"], false);
         }
     }
 
@@ -209,10 +209,10 @@ class NDB_Reliability extends NDB_Form
         $group[] = $this->createSelect(
             $name . "_date_status",
             null,
-            array(
+            [
              null           => "",
              'not_answered' => "Not Answered",
-            )
+            ]
         );
 
         $this->dateTimeFields[] = $name . "_date"; //add to array of dates and times.
@@ -227,7 +227,7 @@ class NDB_Reliability extends NDB_Form
         unset($group);
         $this->XINRegisterRule(
             $name . "_date",
-            array($name . "_date_status{@}=={@}"),
+            [$name . "_date_status{@}=={@}"],
             "A Date, or Not Answered is required.",
             $name . "_date_group"
         );
@@ -275,18 +275,18 @@ class NDB_Reliability extends NDB_Form
     function addTextElement(
         $field,
         $label,
-        $rules = array(),
+        $rules = [],
         $rule_message = 'This field is required.',
-        $refusals = array(
+        $refusals = [
                      ''             => '',
                      'not_answered' => 'Not Answered',
-                    )
+                    ]
     ) {
         $group[] =&$this->createText($field);
         $group[] =&$this->createSelect($field."_status", "", $refusals);
         $this->addGroup($group, $field.'_group', $label, null, false);
         unset($group);
-        $rules_array =array_merge(array($field.'_status{@}=={@}'), $rules);
+        $rules_array =array_merge([$field.'_status{@}=={@}'], $rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
     }
 
@@ -304,29 +304,29 @@ class NDB_Reliability extends NDB_Form
     function addTextAreaElement(
         $field,
         $label,
-        $rules = array(),
+        $rules = [],
         $rule_message = 'This field is required.'
     ) {
         $group[] =& $this->form->createElement(
             "textarea",
             $field,
             null,
-            array(
+            [
              'cols' => 25,
              'rows' => 4,
-            )
+            ]
         );
         $group[] =& $this->createSelect(
             $field."_status",
             "",
-            array(
+            [
              null           => '',
              'not_answered' => 'Not Answered',
-            )
+            ]
         );
         $this->addGroup($group, $field.'_group', $label, null, false);
         unset($group);
-        $rules_array =array_merge(array($field.'_status{@}=={@}'), $rules);
+        $rules_array =array_merge([$field.'_status{@}=={@}'], $rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
     }
 
@@ -345,7 +345,7 @@ class NDB_Reliability extends NDB_Form
     function addLargeTextAreaElement(
         $field,
         $label        = "&nbsp;&nbsp;&nbsp;&nbsp;Describe:",
-        $rules        = array(),
+        $rules        = [],
         $rule_message = 'This field must be completed or marked as not answered.'
     ) {
         //removed all free form comment text boxes.
@@ -361,14 +361,14 @@ class NDB_Reliability extends NDB_Form
     function _addMetadataFields()
     {
           $config      =& NDB_Config::singleton();
-          $dateOptions = array(
+          $dateOptions = [
                           'language'         => 'en',
                           'format'           => 'YMd',
                           'minYear'          => $config->getSetting('startYear'),
                           'maxYear'          => $config->getSetting('endYear'),
                           'addEmptyOption'   => true,
                           'emptyOptionValue' => null,
-                         );
+                         ];
 
           $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
 
@@ -378,10 +378,10 @@ class NDB_Reliability extends NDB_Form
           $this->addSelect(
               'invalid',
               '<font color="red">Mark as invalid</font>',
-              array(
+              [
                "no"  => "No",
                "yes" => "YES",
-              )
+              ]
           );
           $this->addRule('invalid', 'Invalid flag is required.', 'required');
 
@@ -407,10 +407,10 @@ class NDB_Reliability extends NDB_Form
                 FROM examiners
             WHERE centerID IN (:CentID, 6)
                 ORDER BY full_name",
-            array('CentID' => $centerID)
+            ['CentID' => $centerID]
         );
 
-        $examiners = array('' => '');
+        $examiners = ['' => ''];
 
         if (is_array($results) && !empty($results)) {
             foreach ($results AS $row) {

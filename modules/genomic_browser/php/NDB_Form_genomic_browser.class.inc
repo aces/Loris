@@ -83,14 +83,14 @@ class NDB_Form_Genomic_Browser extends NDB_Form
             $files = $this->DB->pselect(
                 "SELECT g.GenomicFileID
                 FROM genomic_candidate_files_rel g WHERE g.CandID=:cid ",
-                array('cid' => $this->candID)
+                ['cid' => $this->candID]
             );
         } else {
-            $files = array(
-                      array('GenomicFileID' => $this->genomic_file_id),
-                     );
+            $files = [
+                      ['GenomicFileID' => $this->genomic_file_id],
+                     ];
         }
-        $this->tpl_data['files'] = array();
+        $this->tpl_data['files'] = [];
         foreach ($files as $fileRow) {
             $FileObj = new GenomicFile($fileRow['GenomicFileID']);
 
@@ -102,7 +102,7 @@ class NDB_Form_Genomic_Browser extends NDB_Form
             $paramQCDate           = $FileObj->getParameter('QCLastChangeTime');
 
             // load $file array
-            $file = array(
+            $file = [
                      'FileID'           => $fileRow['GenomicFileID'],
                      'Filename'         => $paramFileName,
                      'FullFilename'     => $FileObj->getParameter('FileName'),
@@ -135,7 +135,7 @@ class NDB_Form_Genomic_Browser extends NDB_Form
                      'Selected'         => $FileObj->getParameter('Selected'),
                      'QCStatus'         => $FileObj->getParameter('QCStatus'),
                      'QCDate'           => $paramQCDate,
-                    );
+                    ];
 
             $this->tpl_data['files'][] = $file;
         }

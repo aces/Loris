@@ -15,13 +15,15 @@ $client->initialize(__DIR__ . "/../../../project/config.xml");
 
 $user = User::singleton();
 
-$baseDocument = array(
-    'Meta' => array('DocType' => 'SavedQuery',
-        'user' => $user->getUserName()),
+$baseDocument = [
+                 'Meta'       => [
+                                  'DocType' => 'SavedQuery',
+                                  'user'    => $user->getUserName(),
+                                 ],
 
-    'Fields' => array(),
-    'Conditions' => array(),
-);
+                 'Fields'     => [],
+                 'Conditions' => [],
+                ];
 if(isset($_REQUEST['QueryName'])) {
     $baseDocument['Meta']['name'] = $_REQUEST['QueryName'];
 }
@@ -36,7 +38,7 @@ $fields = $_REQUEST['Fields'];
 $cond = $_REQUEST['Filters'];
 
 $baseDocument['Conditions'] = $cond;
-$baseDocument['Fields'] = $fields;
+$baseDocument['Fields']     = $fields;
 
 $cdb = CouchDB::singleton();
 print $cdb->postDoc($baseDocument);

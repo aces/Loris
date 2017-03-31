@@ -26,7 +26,7 @@ $client->initialize();
 
 require_once "Email.class.inc";
 
-$tpl_data = array();
+$tpl_data = [];
 
 // create an instance of the config object
 $config          =& NDB_Config::singleton();

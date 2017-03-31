@@ -206,7 +206,7 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = Utility::getSiteList(false);
             if (is_array($list_of_sites)) {
-                $new_list = array('' => 'All');
+                $new_list = ['' => 'All'];
                 foreach ($list_of_sites as $key => $val) {
                     $new_list[$key] = $val;
                 }
@@ -223,30 +223,30 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
                     $list_of_sites[$key] = $site[$key]->getCenterName();
                 //    }
             }
-            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
+            $list_of_sites = ['' => 'All User Sites'] + $list_of_sites;
         }
 
         // hack for Visit Labels... maybe get all the real visit labels from DB?
-        $list_of_visit_labels = array(null => 'All');
+        $list_of_visit_labels = [null => 'All'];
         $visitLabel           = Utility::getVisitList();
         foreach ($visitLabel as $key => $value) {
             $list_of_visit_labels[$key] = $value;
         }
         $list_of_visit_labels_only = $visitLabel;
         $projects         = Utility::getProjectList();
-        $list_of_projects = array(null => 'All');
+        $list_of_projects = [null => 'All'];
         foreach ($projects as $key=>$value) {
              $list_of_projects[$key] = $value;
         }
         $subproject_options = Utility::getSubprojectList();
 
-        $subproject_options  = array('' => 'All') + $subproject_options;
-        $gender_options      = array(
+        $subproject_options  = ['' => 'All'] + $subproject_options;
+        $gender_options      = [
                                 null     => 'All',
                                 'Male'   => 'Male',
                                 'Female' => 'Female',
-                               );
-        $list_of_instruments = array(null => 'All');
+                               ];
+        $list_of_instruments = [null => 'All'];
         $config            =& NDB_Config::singleton();
         $reliabilityConfig = $config->getSetting("ReliabilityInstruments");
         $reliabilityInstruments = $reliabilityConfig['Instrument'];
@@ -256,11 +256,11 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
             $list_of_instruments_only[$reliabilityInstrument['Testname']] = $reliabilityInstrument['Displayname'];// @codingStandardsIgnoreLine
         }
 
-        $lock_options = array(
+        $lock_options = [
                          null       => '',
                          'Locked'   => 'Locked',
                          'Unlocked' => 'Unlocked',
-                        );
+                        ];
 
         // Form Elements
         $this->addSelect('SubprojectID', 'Subproject:', $subproject_options);
@@ -273,18 +273,18 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
         $this->addBasicText(
             'DCCID',
             'DCCID:',
-            array(
+            [
              "size"      => 9,
              "maxlength" => 6,
-            )
+            ]
         );
         $this->addBasicText(
             'PSCID',
             'PSCID:',
-            array(
+            [
              "size"      => 9,
              "maxlength" => 7,
-            )
+            ]
         );
         $this->addSelect('Gender', 'Gender:', $gender_options);
         $this->addSelect('Visit_label', 'Visit Label:', $list_of_visit_labels);
@@ -292,11 +292,11 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
         $this->addSelect(
             'Invalid',
             'Invalid Candidate:',
-            array(
+            [
              ''    => 'All',
              'yes' => 'Yes',
              'no'  => 'No',
-            )
+            ]
         );
         // $this->form->addElement('select', 'Lock_record',
         //'Lock_record:', $lock_options);
@@ -669,22 +669,22 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
     {
         $user   =& User::singleton();
         $DB     =& Database::singleton();
-        $params = array();
+        $params = [];
         $params['Instrument']  = $_POST['AddInstrument'];
         $params['Visit_label'] = $_POST['AddVisit_label'];
         $params['PSCID']       = $_POST['AddPSCID'];
         if (!$params['Visit_label']) {
-            return array("error" => "You must specify a visit label");
+            return ["error" => "You must specify a visit label"];
         }
 
         if (!$params['Instrument']) {
-            return array("error" => "You must specify an instrument");
+            return ["error" => "You must specify an instrument"];
         }
         if (!$params['CenterID']) {
-            return array(
+            return [
                     "error" => "You must specify a center for".
                          " reliability testing",
-                   );
+                   ];
         }
 
         $CommentID = $DB->pselectOne(
@@ -697,23 +697,23 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
         if (!$CommentID) {
             $error_msg = $params['PSCID']."/".$params['Visit_label'].
                 " does not have data entered for".$params['Instrument'];
-            return array("error" => $error_msg);
+            return ["error" => $error_msg];
 
         }
         $params['CenterID'] = $_POST['AddReliabilityCenter'];
         $DB->insert(
             'reliability',
-            array(
+            [
              'CommentID'             => $CommentID,
              'reliability_center_id' => $params['CenterID'],
              'Instrument'            => $params['Instrument'],
              'Manual_Swap'           => 'no',
-            )
+            ]
         );
-        return array(
+        return [
                 "message" => "Inserted new reliability candidate".
                     $params['PSCID']."/".$params['Visit_label'],
-               );
+               ];
     }
 
     /**
@@ -765,10 +765,10 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
              $baseURL . "/reliability/js/reliability_helper.js",
              $baseURL . "/reliability/js/columnFormatter.js",
-            )
+            ]
         );
     }
 }

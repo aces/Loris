@@ -40,36 +40,36 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
          $window->setSize($size);
         $this->DB->insert(
             "psc",
-            array(
+            [
              'CenterID'  => '55',
              'Name'      => 'TESTinPSC',
              'Alias'     => 'test',
              'MRI_alias' => 'test',
-            )
+            ]
         );
         $this->DB->insert(
             "candidate",
-            array(
+            [
              'CandID'    => '999888',
              'CenterID'  => '55',
              'UserID'    => '1',
              'PSCID'     => '8888',
              'ProjectID' => '7777',
-            )
+            ]
         );
         $this->DB->insert(
             "session",
-            array(
+            [
              'CandID'       => '999888',
              'CenterID'     => '55',
              'UserID'       => '1',
              'MRIQCStatus'  => 'Pass',
              'SubprojectID' => '6666',
-            )
+            ]
         );
         $this->DB->insert(
             "mri_protocol_violated_scans",
-            array(
+            [
              'ID'                 => '1001',
              'CandID'             => '999888',
              'PatientName'        => '[Test]PatientName',
@@ -77,11 +77,11 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
              'minc_location'      => 'assembly/test/test/mri/test/test.mnc',
              'series_description' => 'Test Series Description',
              'SeriesUID'          => '5555',
-            )
+            ]
         );
         $this->DB->insert(
             "mri_protocol_violated_scans",
-            array(
+            [
              'ID'                 => '1002',
              'CandID'             => '999888',
              'PatientName'        => '[Test]PatientName',
@@ -89,32 +89,32 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
              'minc_location'      => 'assembly/test2/test2/mri/test2/test2.mnc',
              'series_description' => 'Test Series Description',
              'SeriesUID'          => '5556',
-            )
+            ]
         );
         $this->DB->insert(
             "violations_resolved",
-            array(
+            [
              'ExtID'     => '1001',
              'TypeTable' => 'mri_protocol_violated_scans',
              'Resolved'  => 'other',
-            )
+            ]
         );
         $this->DB->insert(
             "violations_resolved",
-            array(
+            [
              'ExtID'     => '1002',
              'TypeTable' => 'MRICandidateErrors',
              'Resolved'  => 'unresolved',
-            )
+            ]
         );
         $this->DB->insert(
             "MRICandidateErrors",
-            array(
+            [
              'ID'          => '1002',
              'PatientName' => '[Test]PatientName',
              'MincFile'    => 'assembly/test2/test2/mri/test2/test2.mnc',
              'SeriesUID'   => '5556',
-            )
+            ]
         );
 
     }
@@ -128,56 +128,56 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
 
         $this->DB->delete(
             "session",
-            array(
+            [
              'CandID'   => '999888',
              'CenterID' => '55',
-            )
+            ]
         );
         $this->DB->delete(
             "candidate",
-            array(
+            [
              'CandID'   => '999888',
              'CenterID' => '55',
-            )
+            ]
         );
         $this->DB->delete(
             "mri_protocol_violated_scans",
-            array(
+            [
              'ID'     => '1001',
              'CandID' => '999888',
-            )
+            ]
         );
         $this->DB->delete(
             "mri_protocol_violated_scans",
-            array(
+            [
              'ID'     => '1002',
              'CandID' => '999888',
-            )
+            ]
         );
         $this->DB->delete(
             "violations_resolved",
-            array(
+            [
              'ExtID'     => '1001',
              'TypeTable' => 'mri_protocol_violated_scans',
-            )
+            ]
         );
         $this->DB->delete(
             "MRICandidateErrors",
-            array('ID' => '1002')
+            ['ID' => '1002']
         );
         $this->DB->delete(
             "violations_resolved",
-            array(
+            [
              'ExtID'     => '1002',
              'TypeTable' => 'mri_protocol_violated_scans',
-            )
+            ]
         );
         $this->DB->delete(
             "psc",
-            array(
+            [
              'CenterID' => '55',
              'Name'     => 'TESTinPSC',
-            )
+            ]
         );
         parent::tearDown();
     }
@@ -240,7 +240,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     function testLoginWithPermission()
     {
-         $this->setupPermissions(array("violated_scans_view_allsites"));
+         $this->setupPermissions(["violated_scans_view_allsites"]);
          $this->safeGet($this->url . "/mri_violations/");
          $bodyText = $this->safeFindElement(
              WebDriverBy::cssSelector("body")
@@ -258,7 +258,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     function testLoginWithoutPermission()
     {
-         $this->setupPermissions(array(""));
+         $this->setupPermissions([""]);
          $this->safeGet($this->url . "/mri_violations/");
          $bodyText = $this->safeFindElement(
              WebDriverBy::cssSelector("body")

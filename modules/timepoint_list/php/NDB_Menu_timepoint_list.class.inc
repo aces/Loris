@@ -118,7 +118,7 @@ class NDB_Menu_Timepoint_List extends NDB_Menu
                 $centerID = $timePoint->getData('CenterID');
                 $center   = $DB->pselectRow(
                     "SELECT CenterID as ID, Alias FROM psc WHERE CenterID =:cid",
-                    array('cid' => $centerID)
+                    ['cid' => $centerID]
                 );
                 $this->tpl_data['timePoints'][$x]['CenterName'] = $center['Alias'];
 
@@ -148,12 +148,12 @@ class NDB_Menu_Timepoint_List extends NDB_Menu
 
                 if (!in_array(
                     $timePoint->getCurrentStage(),
-                    array(
+                    [
                      null,
                      'Not Started',
                      'Visit',
                      'Screening',
-                    )
+                    ]
                 )) {
                     // for static stages, don't bother showing current status
                     $this->tpl_data['timePoints'][$x]['staticStage'] = true;
@@ -258,9 +258,9 @@ class NDB_Menu_Timepoint_List extends NDB_Menu
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
              $baseURL . "/timepoint_list/js/timepoint_list_helper.js",
-            )
+            ]
         );
     }
 }

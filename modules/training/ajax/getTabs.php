@@ -36,7 +36,7 @@ $tabs = $DB->pselect(
      FROM certification_training
      WHERE TestID=:TID
      ORDER BY OrderNumber",
-    array('TID' => $instrumentID)
+    ['TID' => $instrumentID]
 );
 
 $tpl_data['instrumentName'] = $instrumentName;

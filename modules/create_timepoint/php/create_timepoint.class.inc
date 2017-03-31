@@ -122,7 +122,7 @@ class Create_Timepoint extends \NDB_Form
         // Loop through the subprojects to get an id out and to create
         // the subproject drop down.
         $allSubprojects  = \Utility::getSubprojectList();
-        $sp_labelOptions = array(null => '');
+        $sp_labelOptions = [null => ''];
 
         foreach ($allSubprojects as $subprojectID => $title) {
             if (! empty($subprojList)) {
@@ -134,12 +134,12 @@ class Create_Timepoint extends \NDB_Form
             }
         }
 
-        $attributes = array(
+        $attributes = [
                        "onchange" => "location.href='?test_name=create_timepoint" .
                         "&candID=" . $this->identifier .
                         "&identifier=" . $this->identifier .
                         "&subprojectID='+this[this.selectedIndex].value;",
-                      );
+                      ];
         $this->addSelect(
             'subprojectID',
             'Subproject',
@@ -147,7 +147,7 @@ class Create_Timepoint extends \NDB_Form
             $attributes
         );
         $this->addRule('subprojectID', 'A Subproject ID is required', 'required');
-        $this->_setDefaults(array("subprojectID" => $this->subprojectID));
+        $this->_setDefaults(["subprojectID" => $this->subprojectID]);
 
         // visit label
         $visitLabelSettings = $config->getSetting('visitLabel');
@@ -165,10 +165,10 @@ class Create_Timepoint extends \NDB_Form
                     $this->addBasicText(
                         'visitLabel',
                         'Visit label',
-                        array(
+                        [
                          'size'      => $visitLabel['length'] + 1,
                          'maxlength' => $visitLabel['length'],
-                        )
+                        ]
                     );
                     $visitLabelAdded = true;
                 } elseif ($visitLabel['generation'] == 'sequence') {
@@ -197,12 +197,12 @@ class Create_Timepoint extends \NDB_Form
             if ($num_sites >1) {
                 $pscLabelAdded =true;
                 $this->tpl_data['pscLabelAdded'] = true;
-                $psc_labelOptions = array(null => '');
+                $psc_labelOptions = [null => ''];
                 foreach ($user_list_of_sites as $key => $siteID) {
                         $center = $DB->pselectRow(
                             "SELECT CenterID as ID, Name FROM psc 
                         WHERE CenterID =:cid",
-                            array('cid' => $siteID)
+                            ['cid' => $siteID]
                         );
                         $psc_labelOptions[$siteID] = $center['Name'];
                 }
@@ -210,7 +210,7 @@ class Create_Timepoint extends \NDB_Form
             $this->addSelect('psc', 'Site', $psc_labelOptions);
         }
 
-        $this->form->addFormRule(array(&$this, '_validate'));
+        $this->form->addFormRule([$this, '_validate']);
 
     }
 
@@ -233,7 +233,7 @@ class Create_Timepoint extends \NDB_Form
             }
         }
 
-        $errors = array();
+        $errors = [];
 
         // This can happen if the user quickly clicks "Create Time Point" before the
         // page has loaded and the Visit Label dropdown hasn't been selected yet.

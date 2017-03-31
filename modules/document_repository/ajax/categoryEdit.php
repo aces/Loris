@@ -40,8 +40,8 @@ $user =& User::singleton();
 if ($user->hasPermission('document_repository_view') || $user->hasPermission('document_repository_delete')) {
     $DB->update(
         'document_repository_categories',
-        array('comments'=>$comments),
-        array('id'=>$_REQUEST['id'])
+        ['comments' => $comments],
+        ['id' => $_REQUEST['id']]
     );
 }
 

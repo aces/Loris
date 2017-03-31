@@ -54,32 +54,32 @@ class NDB_Menu_Filter_Datadict extends NDB_Menu_Filter
 
         // set the class variables
 
-        $this->columns = array(
+        $this->columns = [
                           'pt.sourceFrom',
                           'pt.Name',
                           'pt.sourceField',
                           'coalesce(pto.description,pt.description)'.
                                                    ' as description',
-                         );
+                         ];
         $config        =&NDB_Config::singleton();
-        $this->validFilters = array(
+        $this->validFilters = [
                                'pt.sourceFrom',
                                'pt.Description',
-                              );
+                              ];
         $this->query        = " FROM parameter_type pt LEFT JOIN 
                                 parameter_type_override pto USING (Name)
                  		WHERE pt.Queryable=1";
 
-        $this->formToFilter = array(
+        $this->formToFilter = [
                                'sourceFrom'  => 'pt.sourceFrom',
                                'Description' => 'pt.Description',
-                              );
+                              ];
 
-        $this->searchKeyword = array(
+        $this->searchKeyword = [
                                 'pt.Name',
                                 'pt.sourceField',
                                 'pto.description',
-                               );
+                               ];
         return true;
     }
     /**
@@ -95,19 +95,19 @@ class NDB_Menu_Filter_Datadict extends NDB_Menu_Filter
         // list of feedback statuses
         $instruments = Utility::getAllInstruments();
         $instruments = array_merge(
-            array('' => 'All Instruments'),
+            ['' => 'All Instruments'],
             $instruments
         );
         $this->addSelect('sourceFrom', 'Instruments', $instruments);
         $this->addSelect(
             'Description',
             'Description',
-            array(
+            [
              ''           => 'All',
              'empty'      => 'Empty',
              'modified'   => 'Modified',
              'unmodified' => 'Unmodified',
-            )
+            ]
         );
                  $this->addBasicText('keyword', 'Search keyword');
                  return true;
@@ -228,10 +228,10 @@ class NDB_Menu_Filter_Datadict extends NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
              $baseURL . "/datadict/js/columnFormatter.js",
              $baseURL . "/datadict/js/datadict_helper.js",
-            )
+            ]
         );
     }
 

@@ -131,7 +131,7 @@ class NDB_Menu extends NDB_Page
         $this->page       = $page;
         $this->identifier = $identifier;
         $this->commentID  = $commentID;
-        $this->defaults   = array();
+        $this->defaults   = [];
 
     }
     /**

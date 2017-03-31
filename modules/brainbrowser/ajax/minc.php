@@ -20,14 +20,14 @@ require_once "Utility.class.inc";
 require_once "NDB_Config.class.inc";
 require_once "MincEnv.php.inc";
 
-$headers = array();
+$headers = [];
 
 $query = "select File from files where FileID = :MincID";
 
 if (isset($_REQUEST['minc_location'])) {
     $minc_file =  ($_REQUEST['minc_location']);
 } else {
-    $minc_file = $DB->pselectOne($query, array('MincID' => $_REQUEST['minc_id']));
+    $minc_file = $DB->pselectOne($query, ['MincID' => $_REQUEST['minc_id']]);
     $minc_file = getMincLocation() . $minc_file;
 }
 
@@ -51,7 +51,7 @@ if ($header=='true' && $minc_file !=null) {
  */
 function extractDimension($dimension, $minc_file)
 {
-    return array(
+    return [
             'start'        => exec("mincinfo -attval $dimension:start $minc_file"),
             'space_length' => exec("mincinfo -dimlength $dimension $minc_file"),
             'step'         => exec("mincinfo -attval $dimension:step $minc_file"),
@@ -61,7 +61,7 @@ function extractDimension($dimension, $minc_file)
                     "mincinfo -attval $dimension:direction_cosines $minc_file"
                 )
             ),
-           );
+           ];
 }
 
 /**
@@ -73,12 +73,12 @@ function extractDimension($dimension, $minc_file)
  */
 function initialize($minc_file)
 {
-    $headers = array(
+    $headers = [
                 'xspace'   => extractDimension("xspace", $minc_file),
                 'yspace'   => extractDimension("yspace", $minc_file),
                 'zspace'   => extractDimension("zspace", $minc_file),
                 'datatype' => 'float64',
-               );
+               ];
 
     //minc2.0, if there's a time component
     $order = explode(",", exec("mincinfo -attval image:dimorder  $minc_file"));

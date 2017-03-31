@@ -23,22 +23,22 @@ require_once __DIR__
  */
 class UserAccountsIntegrationTest extends LorisIntegrationTest
 {
-    private static $_UNIT_TESTER = array(
+    private static $_UNIT_TESTER = [
                                     'Data Coordinating Center',
                                     'UnitTester',
                                     'Unit Tester',
                                     'tester@example.com',
                                     'Y',
                                     'N',
-                                   );
-    private static $_ADMIN       = array(
+                                   ];
+    private static $_ADMIN       = [
                                     'Data Coordinating Center',
                                     'admin',
                                     'Admin account',
                                     'admin@example.com',
                                     'Y',
                                     'N',
-                                   );
+                                   ];
     /**
      * Tests that, when loading the User accounts module, some
      * text appears in the body.
@@ -327,7 +327,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                 $elements      = $actualRows[$i-1]->findElements(
                     WebDriverBy::xpath('.//td')
                 );
-                $actualColumns = array();
+                $actualColumns = [];
                 foreach ($elements as $e) {
                     $actualColumns[] = $e->getText();
                 }
@@ -369,7 +369,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function tearDown()
     {
-        $this->DB->delete("users", array("UserID" => 'userid'));
+        $this->DB->delete("users", ["UserID" => 'userid']);
         parent::tearDown();
     }
 }

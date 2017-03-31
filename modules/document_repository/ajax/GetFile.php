@@ -11,7 +11,6 @@
  *  @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  *  @license  Loris license
  *  @link     https://github.com/aces/Loris-Trunk
- *
  */
 
 $user =& User::singleton();

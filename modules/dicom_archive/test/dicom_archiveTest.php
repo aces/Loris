@@ -39,7 +39,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $window->setSize($size);
         $this->DB->insert(
             "tarchive",
-            array(
+            [
              'DicomArchiveID'         => '9999999999',
              'PatientID'              => '9999999999',
              'PatientName'            => 'TestTestTest',
@@ -69,7 +69,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
              'uploadAttempt'          => '0',
              'CreateInfo'             => 'NULL',
              'AcquisitionMetadata'    => 'A really long text that can not be null.',
-            )
+            ]
         );
     }
     /**
@@ -80,7 +80,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     function tearDown()
     {
         parent::tearDown();
-        $this->DB->delete("tarchive", array('PatientName' => 'TestTestTest'));
+        $this->DB->delete("tarchive", ['PatientName' => 'TestTestTest']);
     }
     /**
      * Tests that, when loading the dicom_archive module, some
@@ -116,7 +116,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testDicomArchivePermission()
     {
-         $this->setupPermissions(array("dicom_archive_view_allsites"));
+         $this->setupPermissions(["dicom_archive_view_allsites"]);
          $this->safeGet($this->url . "/dicom_archive/");
          $bodyText = $this->safeFindElement(
              WebDriverBy::cssSelector("body")

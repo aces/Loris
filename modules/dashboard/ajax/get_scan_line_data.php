@@ -25,23 +25,23 @@ $client->initialize();
 
 $DB = Database::singleton();
 
-$scanData           = array();
+$scanData           = [];
 $scanStartDate      = $DB->pselectOne(
     "SELECT MIN(AcquisitionDate) FROM mri_acquisition_dates",
-    array()
+    []
 );
 $scanEndDate        = $DB->pselectOne(
     "SELECT MAX(AcquisitionDate) FROM mri_acquisition_dates",
-    array()
+    []
 );
 $scanData['labels']
     = createChartLabels($scanStartDate, $scanEndDate);
 $list_of_sites      = Utility::getAssociativeSiteList(true, false);
 foreach ($list_of_sites as $siteID => $siteName) {
-    $scanData['datasets'][] = array(
+    $scanData['datasets'][] = [
                                "name" => $siteName,
                                "data" => getScanData($siteID, $scanData['labels']),
-                              );
+                              ];
 }
 
 print json_encode($scanData);
@@ -62,7 +62,7 @@ function createChartLabels($startDate, $endDate)
     $endDateYear    = substr($endDate, 0, 4);
     $startDateMonth = substr($startDate, 5, 2);
     $endDateMonth   = substr($endDate, 5, 2);
-    $labels         = array();
+    $labels         = [];
     for ($year = (int)$startDateYear; $year <= (int)$endDateYear; $year++) {
         $startMonth = ($year == (int)$startDateYear) ? (int)$startDateMonth : 1;
         $endMonth   = ($year == (int)$endDateYear) ? (int)$endDateMonth : 12;
@@ -84,7 +84,7 @@ function createChartLabels($startDate, $endDate)
 function getScanData($siteID, $labels)
 {
     $DB   = Database::singleton();
-    $data = array();
+    $data = [];
     foreach ($labels as $label) {
         $month  = (strlen($label) == 6)
             ? substr($label, 0, 1) : substr($label, 0, 2);
@@ -97,11 +97,11 @@ function getScanData($siteID, $labels)
              WHERE s.CenterID=:Site
              AND MONTH(mad.AcquisitionDate)=:Month 
              AND YEAR(mad.AcquisitionDate)=:Year",
-            array(
+            [
              'Site'  => $siteID,
              'Month' => $month,
              'Year'  => $year,
-            )
+            ]
         );
     }
     return $data;

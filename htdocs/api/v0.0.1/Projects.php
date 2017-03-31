@@ -77,7 +77,7 @@ class Projects extends APIBase
             $this->JSON = ["Projects" => $projArray];
         } else {
             $this->JSON = [
-                           "Projects" => array("loris" => $settings),
+                           "Projects" => ["loris" => $settings],
                           ];
         }
     }

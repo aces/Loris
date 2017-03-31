@@ -71,7 +71,7 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
                 LEFT JOIN parameter_type pt 
                     ON (pf.ParameterTypeID=pt.ParameterTypeID AND pt.Name='Selected')
                 WHERE f.File LIKE CONCAT('%', :FName)",
-            array('FName' => $this->Filename)
+            ['FName' => $this->Filename]
         );
         $this->JSON = [
                        'Meta'     => [
@@ -171,7 +171,7 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
                  FROM files f 
                     LEFT JOIN mri_scan_type mst ON (f.AcquisitionProtocolID=mst.ID)
                  WHERE f.File LIKE CONCAT('%', :FName)",
-                array('FName' => $this->Filename)
+                ['FName' => $this->Filename]
             );
 
         }
@@ -197,11 +197,11 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         $FileID  = $DB->pselectOne(
             "SELECT f.FileID FROM files f
                 WHERE f.File LIKE CONCAT('%', :FName)",
-            array('FName' => $this->Filename)
+            ['FName' => $this->Filename]
         );
         $AlreadySavedQC = $DB->pselectOne(
             "SELECT COUNT(*) FROM files_qcstatus WHERE FileID=:FID",
-            array('FID' => $FileID)
+            ['FID' => $FileID]
         );
         if ($AlreadySavedQC > 0) {
             $DB->update(

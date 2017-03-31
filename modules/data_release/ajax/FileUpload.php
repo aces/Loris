@@ -25,34 +25,34 @@ if ($_POST['action'] == 'upload') {
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {
         $success = $DB->insert(
             'data_release',
-            array(
+            [
              'file_name'   => $fileName,
              'version'     => $version,
              'upload_date' => $upload_date,
-            )
+            ]
         );
 
         $user_ID = $DB->pselectOne(
             "SELECT ID FROM users WHERE userid=:UserID",
-            array('UserID' => $user->getUsername())
+            ['UserID' => $user->getUsername()]
         );
         $ID      = $DB->pselectOne(
             "SELECT id FROM data_release WHERE "
             . "file_name=:file_name AND "
             . "version=:version AND "
             . "upload_date=:upload_date",
-            array(
+            [
              'file_name'   => $fileName,
              'version'     => $version,
              'upload_date' => $upload_date,
-            )
+            ]
         );
         $success = $DB->insert(
             'data_release_permissions',
-            array(
+            [
              'userid'          => $user_ID,
              'data_release_id' => $ID,
-            )
+            ]
         );
     }
 

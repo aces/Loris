@@ -36,7 +36,7 @@ class UserPermissions
      * @var    array
      * @access private
      */
-    var $permissions = array();
+    var $permissions = [];
 
 
     /**
@@ -55,7 +55,7 @@ class UserPermissions
 
         // get the proper ID from the database
         $query  = "SELECT ID FROM users WHERE UserID =:UName";
-        $params = array('UName' => $username);
+        $params = ['UName' => $username];
 
         $this->userID = $DB->pselectOne($query, $params);
 
@@ -82,10 +82,10 @@ class UserPermissions
             LEFT JOIN user_perm_rel pr
             ON (p.permID=pr.permID AND pr.userID=:UID)";
 
-        $results = $DB->pselect($query, array('UID' => $this->userID));
+        $results = $DB->pselect($query, ['UID' => $this->userID]);
 
         // reset the array
-        $this->permissions = array();
+        $this->permissions = [];
 
         // fill the array
         foreach ($results AS $row) {
@@ -156,10 +156,10 @@ class UserPermissions
         foreach ($set as $value) {
             $success = $DB->insert(
                 'user_perm_rel',
-                array(
+                [
                  'userID' => $this->userID,
                  'permID' => $value,
-                )
+                ]
             );
         }
 
@@ -186,17 +186,17 @@ class UserPermissions
             // remove all permissions
             $success = $DB->delete(
                 'user_perm_rel',
-                array('userID' => $this->userID)
+                ['userID' => $this->userID]
             );
         } else {
             // remove the permissions
             foreach ($set as $value) {
                 $success = $DB->delete(
                     'user_perm_rel',
-                    array(
+                    [
                      'userID' => $this->userID,
                      'permID' => $value,
-                    )
+                    ]
                 );
             }
         }
@@ -224,7 +224,7 @@ class UserPermissions
             FROM permissions, user_perm_rel
             WHERE permissions.permID = user_perm_rel.permID AND userID = :UID";
 
-        $results = $DB->pselect($query, array('UID' => $this->userID));
+        $results = $DB->pselect($query, ['UID' => $this->userID]);
 
         return Utility::reduce($results);
     }
@@ -247,7 +247,7 @@ class UserPermissions
                 LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
             WHERE up.userID = :UID
                 ORDER BY p.categoryID, p.description";
-        $results = $DB->pselect($query, array('UID' => $this->userID));
+        $results = $DB->pselect($query, ['UID' => $this->userID]);
 
         return $results;
     }
@@ -270,11 +270,11 @@ class UserPermissions
         //insert into the login_history
         $sucess =  $DB->insert(
             'user_account_history',
-            array(
+            [
              'userID'     => $this->userID,
              'PermID'     => $PermID,
              'PermAction' => $permAction,
-            )
+            ]
         );
     }
 

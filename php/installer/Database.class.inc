@@ -210,6 +210,6 @@ class Database
      */
     public function pselect()
     {
-        return array();
+        return [];
     }
 }

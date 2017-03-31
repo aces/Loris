@@ -32,16 +32,16 @@ class dataTeamHelperTestIntegrationTest extends LorisIntegrationTest
       *
       * @return void
       */
-     function testDataTeamHelperWithoutPermission()
-     {
-          $this->setupPermissions(array());
-          $this->safeGet($this->url . "/data_team_helper/");
-          $bodyText = $this->safeFindElement(
-              WebDriverBy::cssSelector("body")
-          )->getText();
-          $this->assertContains("You do not have access to this page.", $bodyText);
-          $this->resetPermissions();
-     }
+    function testDataTeamHelperWithoutPermission()
+    {
+         $this->setupPermissions([]);
+         $this->safeGet($this->url . "/data_team_helper/");
+         $bodyText = $this->safeFindElement(
+             WebDriverBy::cssSelector("body")
+         )->getText();
+         $this->assertContains("You do not have access to this page.", $bodyText);
+         $this->resetPermissions();
+    }
     /**
      * Tests that help editor loads with the permission
      *
@@ -49,14 +49,14 @@ class dataTeamHelperTestIntegrationTest extends LorisIntegrationTest
      */
     function testDataTeamHelperPermission()
     {
-         $this->setupPermissions(array("data_team_helper"));
+         $this->setupPermissions(["data_team_helper"]);
          $this->safeGet($this->url . "/data_team_helper/");
          $bodyText = $this->safeFindElement(
-              WebDriverBy::cssSelector("body")
-          )->getText();
+             WebDriverBy::cssSelector("body")
+         )->getText();
           $this->assertNotContains("You do not have access to this page.", $bodyText);
           $this->resetPermissions();
-     }
+    }
 
 }
 ?>

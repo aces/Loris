@@ -40,7 +40,7 @@ ob_end_flush();
 header('Content-Type: application/json; charset=UTF-8');
 
 $fileToUpload
-    = (object) array(
+    = (object) [
                 'file_type'         => $_FILES["fileData"]["type"],
                 'file_name'         => $_FILES["fileData"]["name"],
                 'tmp_name'          => $_FILES["fileData"]["tmp_name"],
@@ -49,7 +49,7 @@ $fileToUpload
                 'genomic_file_type' => empty($_POST['fileType']) ?
                     null : str_replace('_', ' ', $_POST['fileType']),
                 'description'       => $_POST['description'],
-               );
+               ];
 
 switch ($fileToUpload->genomic_file_type) {
 case 'Methylation beta-values':
@@ -65,11 +65,11 @@ case 'Other':
 default:
     die(
         json_encode(
-            array(
+            [
              'message'  => "Unsupported filetype: $fileToUpload->genomic_file_type",
              'progress' => 100,
              'error'    => true,
-            )
+            ]
         )
     );
 }
@@ -92,11 +92,11 @@ function validateRequest()
     ) {
         die(
             json_encode(
-                array(
+                [
                  'message'  => 'Validation failed : Missing inputs',
                  'progress' => 100,
                  'error'    => true,
-                )
+                ]
             )
         );
         // This require some more work
@@ -131,11 +131,11 @@ function moveFileToFS(&$fileToUpload)
     } else {
         die(
             json_encode(
-                array(
+                [
                  'message'  => 'File copy failed',
                  'progress' => 100,
                  'error'    => true,
-                )
+                ]
             )
         );
     }
@@ -155,7 +155,7 @@ function registerFile(&$fileToUpload)
     $config = NDB_Config::singleton();
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
 
-    $values = array(
+    $values = [
                'FileName'         => $genomic_data_dir
                    . 'genomic_uploader/' . $fileToUpload->file_name,
                'Description'      => $fileToUpload->description,
@@ -164,7 +164,7 @@ function registerFile(&$fileToUpload)
                'FileSize'         => $fileToUpload->size,
                'Date_inserted'    => date("Y-m-d h:i:s", time()),
                'InsertedByUserID' => $fileToUpload->inserted_by,
-              );
+              ];
     try {
         $DB->replace('genomic_files', $values);
         //TODO :: This should select using date_insert and
@@ -172,7 +172,7 @@ function registerFile(&$fileToUpload)
         $last_id = $DB->pselectOne(
             'SELECT MAX(GenomicFileID) AS last_id
            FROM genomic_files',
-            array()
+            []
         );
         $fileToUpload->GenomicFileID = $last_id;
 
@@ -181,11 +181,11 @@ function registerFile(&$fileToUpload)
     } catch (DatabaseException $e) {
         die(
             json_encode(
-                array(
+                [
                  'message'  => 'File registration failed',
                  'progress' => 100,
                  'error'    => true,
-                )
+                ]
             )
         );
     }
@@ -214,7 +214,7 @@ function createSampleCandidateRelations(&$fileToUpload)
 
     $stmt = 'INSERT IGNORE INTO genomic_sample_candidate_rel (sample_label, CandID)
              VALUES ';
-    $rows = array();
+    $rows = [];
 
     $f = fopen(
         $genomic_data_dir . 'genomic_uploader/'
@@ -255,18 +255,18 @@ function createSampleCandidateRelations(&$fileToUpload)
     $stmt .= join(',', $rows);
     try {
         $prep   = $DB->prepare($stmt);
-        $result = $DB->execute($prep, array(), array('nofetch' => true));
+        $result = $DB->execute($prep, [], ['nofetch' => true]);
         // Report number on relation created (candidate founded)
         reportProgress(90, "Relation created");
 
     } catch (Exception $e) {
         die(
             json_encode(
-                array(
+                [
                  'message'  => 'Can`t insert into the database.',
                  'progress' => 100,
                  'error'    => true,
-                )
+                ]
             )
         );
     }
@@ -334,7 +334,7 @@ function insertBetaValues(&$fileToUpload)
             // TODO validate probe value
 
             array_shift($values);
-            $rows = array();
+            $rows = [];
             foreach ($values as $key => $value) {
                 $row = "('$headers[$key]', '$probe_id', $value)";
                 array_push($rows, $row);
@@ -344,15 +344,15 @@ function insertBetaValues(&$fileToUpload)
 
             try {
                 $prep   = $DB->prepare($stmt_prefix . $stmt);
-                $result = $DB->execute($prep, array(), array('nofetch' => true));
+                $result = $DB->execute($prep, [], ['nofetch' => true]);
             } catch (Exception $e) {
                 die(
                     json_encode(
-                        array(
+                        [
                          'message'  => 'Insertion failed',
                          'progress' => 100,
                          'error'    => true,
-                        )
+                        ]
                     )
                 );
             }
@@ -361,11 +361,11 @@ function insertBetaValues(&$fileToUpload)
     } else {
         die(
             json_encode(
-                array(
+                [
                  'message'  => 'Beta value file can`t be opened',
                  'progress' => 100,
                  'error'    => true,
-                )
+                ]
             )
         );
     }
@@ -404,7 +404,7 @@ function createCandidateFileRelations(&$fileToUpload)
         $headers = explode(',', $line);
         array_shift($headers);
 
-        $rows = array();
+        $rows = [];
         foreach ($headers as $pscid) {
             $pscid = trim($pscid);
             $row   = "(
@@ -418,27 +418,27 @@ function createCandidateFileRelations(&$fileToUpload)
         try {
 
             $prep   = $DB->prepare($stmt_prefix . $stmt);
-            $result = $DB->execute($prep, array(), array('nofetch' => true));
+            $result = $DB->execute($prep, [], ['nofetch' => true]);
 
         } catch (DatabaseException $e) {
             die(
                 json_encode(
-                    array(
+                    [
                      'message'  => 'File registration failed',
                      'progress' => 100,
                      'error'    => true,
-                    )
+                    ]
                 )
             );
         }
     } else {
         die(
             json_encode(
-                array(
+                [
                  'message'  => 'Beta value file can`t be opened',
                  'progress' => 100,
                  'error'    => true,
-                )
+                ]
             )
         );
     }
@@ -472,10 +472,10 @@ function insertMethylationData(&$fileToUpload)
  */
 function reportProgress($progress, $message)
 {
-    $response = array(
+    $response = [
                  'message'  => $message,
                  'progress' => $progress,
-                );
+                ];
     echo json_encode($response);
     sleep(1);
 }
@@ -496,7 +496,7 @@ function candidateExists($pscid)
 
     $CandID = $DB->pselectOne(
         "SELECT CandID from candidate WHERE PSCID = $pscid",
-        array()
+        []
     );
 
     return !empty($CandID);
