@@ -94,14 +94,21 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
                         );
 
         $DB =& Database::singleton();
-        $radiologists_q = $DB->pselect("SELECT * FROM examiners WHERE radiologist=True", array());// @codingStandardsIgnoreLine
+        $radiologists_q = $DB->pselect(
+            "SELECT * FROM examiners WHERE radiologist=True",
+            array()
+        );
 
         $radiologists[''] = '';
         foreach ($radiologists_q as &$row) {
             $radiologists[$row['examinerID']] = $row['full_name'];
         }
 
-        $this->addSelect('Final_Examiner', 'Radiologist/Reviewer:', $radiologists);// @codingStandardsIgnoreLine
+        $this->addSelect(
+            'Final_Examiner',
+            'Radiologist/Reviewer:',
+            $radiologists
+        );
         $this->addScoreColumn('CandID', 'DCCID:', 'Unknown');
         $this->addScoreColumn('PSCID', 'PSCID:', 'Unknown');
         $this->addScoreColumn('SessionID', 'Session ID:', '');
@@ -112,26 +119,72 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
         $this->addScoreColumn('DICOM_ID', 'DICOM ID:', 'Unknown');
 
         $this->addSelect('Review_Done', 'Review Done:', $yes_no);
-        $this->addSelect('Final_Review_Results', 'Results of Radiology Review:', $results);// @codingStandardsIgnoreLine
-        $this->addSelect('Final_Exclusionary', 'Exclusionary Status:', $exclusionary);// @codingStandardsIgnoreLine
+        $this->addSelect(
+            'Final_Review_Results',
+            'Results of Radiology Review:',
+            $results
+        );
+        $this->addSelect(
+            'Final_Exclusionary',
+            'Exclusionary Status:',
+            $exclusionary
+        );
         $this->addSelect('SAS', 'SAS Score:', $abnormality);
         $this->addSelect('PVS', 'PVS Score:', $abnormality);
-        $this->addBasicTextArea('Final_Incidental_Findings', 'Description of Incidental Findings (Comments):');// @codingStandardsIgnoreLine
+        $this->addBasicTextArea(
+            'Final_Incidental_Findings',
+            'Description of Incidental Findings (Comments):'
+        );
         $this->addSelect('Finalized', 'Is review finalized?', $yes_no);
 
-        $this->addSelect('Final_Examiner2', 'Radiologist/Reviewer:', $radiologists);// @codingStandardsIgnoreLine
+        $this->addSelect(
+            'Final_Examiner2',
+            'Radiologist/Reviewer:',
+            $radiologists
+        );
         $this->addSelect('Review_Done2', 'Review Done:', $yes_no);
-        $this->addSelect('Final_Review_Results2', 'Results of Radiology Review:', $results);// @codingStandardsIgnoreLine
-        $this->addSelect('Final_Exclusionary2', 'Exclusionary Status:', $exclusionary);// @codingStandardsIgnoreLine
+        $this->addSelect(
+            'Final_Review_Results2',
+            'Results of Radiology Review:',
+            $results
+        );
+        $this->addSelect(
+            'Final_Exclusionary2',
+            'Exclusionary Status:',
+            $exclusionary
+        );
         $this->addSelect('SAS2', 'SAS Score:', $abnormality);
         $this->addSelect('PVS2', 'PVS Score:', $abnormality);
-        $this->addBasicTextArea('Final_Incidental_Findings2', 'Description of Incidental Findings (Comments):');// @codingStandardsIgnoreLine
+        $this->addBasicTextArea(
+            'Final_Incidental_Findings2',
+            'Description of Incidental Findings (Comments):'
+        );
         // Original review, this might move
-        $this->addScoreColumn('Original_Scan_Done', 'Original Scan Done:', 'Unknown');// @codingStandardsIgnoreLine
-        $this->addScoreColumn('Original_Review_Results', 'Original Results:', 'Unknown');// @codingStandardsIgnoreLine
-        $this->addScoreColumn('Original_Exclusionary', 'Original Exclusionary Results:', '');// @codingStandardsIgnoreLine
-        $this->addScoreColumn('Original_Incidental_Findings', 'Original Incidental Findings:', '');// @codingStandardsIgnoreLine
-        $this->addScoreColumn('Original_Examiner', 'Original Radiologist/Reviewer:', 'Unknown');// @codingStandardsIgnoreLine
+        $this->addScoreColumn(
+            'Original_Scan_Done',
+            'Original Scan Done:',
+            'Unknown'
+        );
+        $this->addScoreColumn(
+            'Original_Review_Results',
+            'Original Results:',
+            'Unknown'
+        );
+        $this->addScoreColumn(
+            'Original_Exclusionary',
+            'Original Exclusionary Results:',
+            ''
+        );
+        $this->addScoreColumn(
+            'Original_Incidental_Findings',
+            'Original Incidental Findings:',
+            ''
+        );
+        $this->addScoreColumn(
+            'Original_Examiner',
+            'Original Radiologist/Reviewer:',
+            'Unknown'
+        );
 
         $this->form->addElement('static', 'history', '', '');
 
@@ -229,27 +282,35 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
                     $history_item['changeDate'] . '</td><td>' .
                     $history_item['userID'] . '</td><td>' .
                     $history_item['col'] . '</td><td>' .
-                    _makePretty($history_item['col'], $history_item['old']) . '</td><td>'// @codingStandardsIgnoreLine
-                    . _makePretty($history_item['col'], $history_item['new'])
-                    . '</td></tr>';
+                    _makePretty($history_item['col'], $history_item['old']) .
+                    '</td><td>' .
+                    _makePretty($history_item['col'], $history_item['new']) .
+                    '</td></tr>';
             }
-            $defaults = array_merge(
+            $defaults   = array_merge(
                 $final_review,
                 $original_review,
                 array( 'history' => $history_display)
             );
+            $condition1 = $defaults['Final_Review_Results']
+                              !=  $defaults['Final_Review_Results2'];
+            $condition2 = $defaults['Final_Exclusionary']
+                              != $defaults['Final_Exclusionary2'];
+            $condition3 = $defaults['SAS'] != $defaults['SAS2'];
 
-            if ($defaults['Final_Review_Results'] !=  $defaults['Final_Review_Results2']// @codingStandardsIgnoreLine
-                || $defaults['Final_Exclusionary'] != $defaults['Final_Exclusionary2']// @codingStandardsIgnoreLine
-                || $defaults['SAS'] != $defaults['SAS2']
-                || $defaults['PVS'] != $defaults['PVS2']
-            ) {
-                $this->tpl_data['conflicts'][] = "Conflict between final and extra review";// @codingStandardsIgnoreLine
+            $condition4 = $defaults['PVS'] != $defaults['PVS2'];
+            if ($condition1 || $condition2 || $condition3 || $condition4) {
+                $this->tpl_data['conflicts'][]
+                    = "Conflict between final and extra review";
             }
-            if ($defaults['Final_Review_Results'] != $defaults['Original_Review_Results']// @codingStandardsIgnoreLine
-                || $defaults['Original_Exclusionary'] != $defaults['Final_Exclusionary']// @codingStandardsIgnoreLine
-            ) {
-                $this->tpl_data['conflicts'][] = "Conflict between original and final review";// @codingStandardsIgnoreLine
+
+            $condition1 = $defaults['Final_Review_Results']
+                              != $defaults['Original_Review_Results'];
+            $condition2 = $defaults['Original_Exclusionary']
+                              != $defaults['Final_Exclusionary'];
+            if ($condition1 || $condition2) {
+                $this->tpl_data['conflicts'][]
+                    = "Conflict between original and final review";
             }
 
             return $defaults;
@@ -264,11 +325,10 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
      * @param array  $arr   A reference to the array being cleaned
      * @param string $field The field being cleaned
      *
-     * @return  array $arr Modified so that empty strings are instead
+     * @return array $arr Modified so that empty strings are instead
      *                    null
-     * @private
      */
-    function stripEmpty(&$arr, $field)// @codingStandardsIgnoreLine
+    function stripEmpty(&$arr, $field)
     {
         if ($arr[$field] === '') {
             $arr[$field] = null;
@@ -333,7 +393,10 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
                                         'userID'    => $userID,
                                        );
 
-                        $DB->insert("final_radiological_review_history", $update_vals);// @codingStandardsIgnoreLine
+                        $DB->insert(
+                            "final_radiological_review_history",
+                            $update_vals
+                        );
                     }
                 }
                 $DB->update(
