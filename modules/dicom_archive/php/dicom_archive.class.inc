@@ -54,14 +54,14 @@ class Dicom_Archive extends \NDB_Menu_Filter
             LEFT JOIN session s ON (s.ID=t.SessionID)
             LEFT JOIN candidate c ON (c.CandID=s.CandID) WHERE 1=1";
 
-        $colsFirst = array();
+        $colsFirst = [];
 
         $TransferStatus = $this->_getTransferStatusFromQuery();
-        $arrayTransfer  = array($TransferStatus . " as Transfer_Status");
+        $arrayTransfer  = [$TransferStatus . " as Transfer_Status"];
 
         $colsFirst = array_merge($colsFirst, $arrayTransfer);
 
-        $colsLast = array(
+        $colsLast = [
                      't.PatientID as Patient_ID',
                      't.PatientName as Patient_Name',
                      't.PatientGender as Gender',
@@ -76,7 +76,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
                      's.CenterID as site',
                      't.TarchiveID as TarchiveID',
                      's.ID as SessionID',
-                    );
+                    ];
 
         $this->columns = array_merge($colsFirst, $colsLast);
 
@@ -116,7 +116,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
             ]
         );
 
-        $this->validFilters = array(
+        $this->validFilters = [
                                'c.CenterID',
                                't.PatientID',
                                't.PatientGender',
@@ -124,9 +124,9 @@ class Dicom_Archive extends \NDB_Menu_Filter
                                't.PatientName',
                                't.PatientDoB',
                                't.ArchiveLocation',
-                              );
+                              ];
 
-        $this->formToFilter = array(
+        $this->formToFilter = [
                                'SiteID'      => 'c.CenterID',
                                'PatientID'   => 't.PatientID',
                                'Gender'      => 't.PatientGender',
@@ -134,7 +134,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
                                'PatientName' => 't.PatientName',
                                'DoB'         => 't.PatientDoB',
                                'Location'    => 't.ArchiveLocation',
-                              );
+                              ];
 
     }
     /**
@@ -204,10 +204,10 @@ class Dicom_Archive extends \NDB_Menu_Filter
     function toArray()
     {
         $unanonymized = parent::toArray();
-        $retVal       = array(
+        $retVal       = [
                          'Headers' => $unanonymized['Headers'],
-                        );
-        $data         = array();
+                        ];
+        $data         = [];
 
         foreach ($unanonymized['Data'] as &$row) {
             $val = $row[2];
@@ -233,10 +233,10 @@ class Dicom_Archive extends \NDB_Menu_Filter
 
             $data[] = $row;
         }
-        return array(
+        return [
                 'Headers' => $unanonymized['Headers'],
                 'Data'    => $data,
-               );
+               ];
 
     }
 
@@ -253,9 +253,9 @@ class Dicom_Archive extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
              $baseURL . "/dicom_archive/js/dicom_archive.js",
-            )
+            ]
         );
     }
 }

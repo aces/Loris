@@ -2,6 +2,7 @@
 
 /**
  * The timepoint details menu
+ *
  * @package behavioural
  */
 require_once __DIR__ ."/Instrument_List_ControlPanel.class.inc";
@@ -13,7 +14,7 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         $user =& User::singleton();
 
         $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-        $candID = $timePoint->getCandID();
+        $candID    = $timePoint->getCandID();
 
         $candidate =& Candidate::singleton($candID);
 
@@ -22,7 +23,8 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
 
     }
 
-    function getControlPanel() {
+    function getControlPanel()
+    {
         $controlPanel = new Instrument_List_ControlPanel($_REQUEST['sessionID']);
         // save possible changes from the control panel...
         $success = $controlPanel->save();
@@ -38,7 +40,7 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
     function setup()
     {
         // set template data
-        $this->tpl_data['candID'] = $_REQUEST['candID'];
+        $this->tpl_data['candID']    = $_REQUEST['candID'];
         $this->tpl_data['sessionID'] = $_REQUEST['sessionID'];
 
         $this->_setupPage(null, null, null, null, 'filter');
@@ -46,7 +48,7 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         $battery = new NDB_BVL_Battery;
         $success = $battery->selectBattery($_REQUEST['sessionID']);
 
-        $this->tpl_data['stage'] = Utility::getStageUsingCandID($this->tpl_data['candID']);
+        $this->tpl_data['stage']        = Utility::getStageUsingCandID($this->tpl_data['candID']);
         $this->tpl_data['subprojectID'] = Utility::getSubprojectIDUsingCandID($this->tpl_data['candID']);
 
         // get the list of instruments
@@ -54,7 +56,7 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
 
         // display list of instruments
         if (!empty($listOfInstruments)) {
-            $user =& User::singleton();
+            $user     =& User::singleton();
             $username = $user->getData('UserID');
 
             $feedback_select_inactive = null;
@@ -62,7 +64,7 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
                 $feedback_select_inactive = 'Y';
             }
 
-            $x = -1;
+            $x            = -1;
             $prevSubgroup = null;
             foreach($listOfInstruments as $instrument) {
                 // print the sub group header row
@@ -74,35 +76,36 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
                 $prevSubgroup = $instrument['Sub_group'];
 
                 // make an instrument status object
-                $status = new NDB_BVL_InstrumentStatus;
+                $status  = new NDB_BVL_InstrumentStatus;
                 $success = $status->select($instrument['CommentID']);
 
                 $ddeStatus = new NDB_BVL_InstrumentStatus;
-                $success = $ddeStatus->select($instrument['DDECommentID']);
+                $success   = $ddeStatus->select($instrument['DDECommentID']);
 
-                $this->tpl_data['instruments'][$x][$i]['fullName'] = $instrument['Full_name'];
+                $this->tpl_data['instruments'][$x][$i]['fullName']        = $instrument['Full_name'];
                 $this->tpl_data['instruments'][$x][$i]['dataEntryStatus'] = $status->getDataEntryStatus();
                 $this->tpl_data['instruments'][$x][$i]['administrationStatus'] = $status->getAdministrationStatus();
-                $this->tpl_data['instruments'][$x][$i]['testName'] = $instrument['Test_name'];
-                $this->tpl_data['instruments'][$x][$i]['commentID'] = $instrument['CommentID'];
-                $this->tpl_data['instruments'][$x][$i]['isDdeEnabled'] = NDB_BVL_Battery::isDoubleDataEntryEnabledForInstrument($instrument['Test_name']);
-                $this->tpl_data['instruments'][$x][$i]['ddeCommentID'] = $instrument['DDECommentID'];
+                $this->tpl_data['instruments'][$x][$i]['testName']           = $instrument['Test_name'];
+                $this->tpl_data['instruments'][$x][$i]['commentID']          = $instrument['CommentID'];
+                $this->tpl_data['instruments'][$x][$i]['isDdeEnabled']       = NDB_BVL_Battery::isDoubleDataEntryEnabledForInstrument($instrument['Test_name']);
+                $this->tpl_data['instruments'][$x][$i]['ddeCommentID']       = $instrument['DDECommentID'];
                 $this->tpl_data['instruments'][$x][$i]['ddeDataEntryStatus'] = $ddeStatus->getDataEntryStatus();
-                $this->tpl_data['instruments'][$x][$i]['isDirectEntry'] = $instrument['isDirectEntry'];
-                $this->tpl_data['instruments'][$x][$i]['instrumentOrder'] = $instrument['instrument_order'];
+                $this->tpl_data['instruments'][$x][$i]['isDirectEntry']      = $instrument['isDirectEntry'];
+                $this->tpl_data['instruments'][$x][$i]['instrumentOrder']    = $instrument['instrument_order'];
 
                 // create feedback object for the time point
                 $feedback = NDB_BVL_Feedback::singleton($username, null, null, $instrument['CommentID']);
-		
+
                 $feedback_status = $feedback->getMaxThreadStatus($feedback_select_inactive);
 
                 $feedback_count = $feedback->getThreadCount();
 
                 $this->tpl_data['instruments'][$x][$i]['feedbackCount'] = (empty($feedback_count)) ? $feedback_status : $feedback_count;
-                if(!empty($feedback_status)){
+                if(!empty($feedback_status)) {
                     $this->tpl_data['instruments'][$x][$i]['feedbackStatus'] = $feedback_status;
-                    if($feedback_count > 0) $this->tpl_data['instruments'][$x][$i]['feedbackColor'] =
+                    if($feedback_count > 0) { $this->tpl_data['instruments'][$x][$i]['feedbackColor'] =
                         $feedback->getThreadColor($feedback_status);
+                    }
                 } else {
                     $this->tpl_data['instruments'][$x][$i]['feedbackStatus'] = "-";
                 }
@@ -112,14 +115,14 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         }
 
         $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-        $candID = $timePoint->getCandID();
+        $candID    = $timePoint->getCandID();
 
         $candidate =& Candidate::singleton($candID);
 
         $this->tpl_data['display'] = array_merge($candidate->getData(), $timePoint->getData());
     }
     /**
-     * Used by the NDB_caller class when loading a page. 
+     * Used by the NDB_caller class when loading a page.
      * Call the display function of the appropriate modules feedback panel.
      *
      * @author Evan McIlroy <evanmcilroy@gmail.com>
@@ -128,7 +131,7 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
     function getFeedbackPanel($candID, $sessionID)
     {
         $feedbackPanel = new BVL_Feedback_Panel($candID, $sessionID);
-        $html =  $feedbackPanel->display();
+        $html          =  $feedbackPanel->display();
         return $html;
     }
 
@@ -168,7 +171,7 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
             	JOIN test_names t ON (f.Test_name=t.Test_name)
             	JOIN test_subgroups ts ON (ts.ID = t.Sub_group)
             	LEFT JOIN session s ON (s.ID=f.SessionID) ";
-        $qparams = array('SID' => $_REQUEST['sessionID']);
+        $qparams = ['SID' => $_REQUEST['sessionID']];
 
         if (!is_null($stage)) {
             $query .= "
@@ -198,7 +201,7 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         // return all the data selected
         return $rows;
     } // end getBatteryInstrumentList()
-    
+
     /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu
@@ -212,9 +215,9 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
              $baseURL . "/instrument_list/js/instrument_list_helper.js",
-            )
+            ]
         );
     }
 }

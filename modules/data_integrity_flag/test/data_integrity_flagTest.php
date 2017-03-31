@@ -44,7 +44,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
         parent::setUp();
         $this->DB->insert(
             "data_integrity_flag",
-            array(
+            [
              'dataflag_id'         => '9999999',
              'dataflag_visitlabel' => 'V_test',
              'dataflag_instrument' => 'test_instrument',
@@ -57,7 +57,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
              'dataflag_fbcomment'  => '0',
              'dataflag_fbdeleted'  => '0',
              'dataflag_userid'     => 'test_user',
-            )
+            ]
         );
     }
     /**
@@ -70,7 +70,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
         parent::tearDown();
         $this->DB->delete(
             "data_integrity_flag",
-            array('dataflag_id' => '9999999')
+            ['dataflag_id' => '9999999']
         );
     }
     /**
@@ -112,7 +112,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
     function testDataIntegrityFlagWithoutPermissions()
     {
 
-         $this->setupPermissions(array());
+         $this->setupPermissions([]);
           $this->safeGet($this->url . "/data_integrity_flag/");
           $bodyText = $this->webDriver->findElement(
               WebDriverBy::cssSelector("body")
@@ -148,7 +148,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
     function testDataIntegrityFlagWithPermissions()
     {
 
-         $this->setupPermissions(array("data_integrity_flag"));
+         $this->setupPermissions(["data_integrity_flag"]);
           $this->safeGet($this->url . "/data_integrity_flag/");
           $bodyText = $this->webDriver->findElement(
               WebDriverBy::cssSelector("body")

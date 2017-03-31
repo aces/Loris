@@ -50,7 +50,7 @@ class DefaultProcessMonitor implements IProcessMonitor
         }
 
         // Get the list of running processes
-        $runningProcesses = array();
+        $runningProcesses = [];
         foreach ($psCommandOutput as $psInfo) {
             if (preg_match('^(0-9]+)', $psInfo, $pid)) {
                 $runningProcesses[] = $pid[1];

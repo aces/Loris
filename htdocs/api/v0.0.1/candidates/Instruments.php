@@ -63,10 +63,10 @@ class Instruments extends Visit
             .    " FROM flag f"
             .       " JOIN session s ON (s.ID=f.SessionID)"
             . " WHERE s.CandID=:CID AND s.Active='Y' AND s.Visit_label=:VL",
-            array(
+            [
              'CID' => $this->CandID,
              'VL'  => $this->VisitLabel,
-            )
+            ]
         );
 
         //array_column only exists in PHP 5.5+, need to use array_map

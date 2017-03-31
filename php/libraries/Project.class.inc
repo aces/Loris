@@ -23,7 +23,7 @@
  */
 class Project
 {
-    private static $_instances = array();
+    private static $_instances = [];
 
     private $_projectId;
     private $_projectName;
@@ -63,7 +63,7 @@ class Project
                   Project
                 WHERE name = :v_project_name
                 ",
-                array('v_project_name' => $projectName)
+                ['v_project_name' => $projectName]
             );
 
             if (empty($projectData)) {
@@ -116,7 +116,7 @@ class Project
             WHERE
               name = :v_project_name
             ",
-            array('v_project_name' => $projectName)
+            ['v_project_name' => $projectName]
         );
         if (!empty($projectId)) {
             throw new \LorisException("The project $projectName already exists");
@@ -124,10 +124,10 @@ class Project
 
         $factory->database()->insert(
             'Project',
-            array(
+            [
              'name'              => $projectName,
              'recruitmentTarget' => $recruitmentTarget,
-            )
+            ]
         );
 
         $project = $factory->project($projectName);
@@ -203,18 +203,18 @@ class Project
             WHERE
               pr.projectId = :v_project_id
             ",
-            array('v_project_id' => $this->projectId)
+            ['v_project_id' => $this->projectId]
         );
 
         return array_map(
             function ($row) {
-                return (object) array(
+                return (object) [
                                  'subprojectId'      => $row['subprojectId'],
                                  'title'             => $row['title'],
                                  'useEDC'            => $row['useEDC'],
                                  'windowDifference'  => $row['windowDifference'],
                                  'recruitmentTarget' => $row['recruitmentTarget'],
-                                );
+                                ];
             },
             $subProjectData
         );
@@ -229,7 +229,7 @@ class Project
     {
         $factory = \NDB_Factory::singleton();
 
-        $p = array($this->projectId);
+        $p = [$this->projectId];
         if ($factory->config()->getSetting('useProjects') !== 'true') {
             array_push($p, '-1');
         }
@@ -243,7 +243,7 @@ class Project
               active = 'Y' AND
               FIND_IN_SET(IFNULL(projectId, '-1'), :v_project_id)
             ",
-            array('v_project_id' => implode(',', $p))
+            ['v_project_id' => implode(',', $p)]
         );
         return array_map(
             function ($row) {

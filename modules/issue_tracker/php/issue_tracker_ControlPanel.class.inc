@@ -126,7 +126,7 @@ class IssueNavigation
             ->getProperty('issuesListed');
 
         if (!is_array($this->FilteredSessionList)) {
-            $this->FilteredSessionList = array();
+            $this->FilteredSessionList = [];
         }
         $this->currentListIndex = array_search(
             $this->issueID,

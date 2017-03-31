@@ -32,10 +32,10 @@ if ($_POST['ProjectID'] === 'new') {
     if (!in_array($_POST['Name'], $ProjectList) && !empty($_POST['Name'])) {
         $db->insert(
             "Project",
-            array(
+            [
              "Name"              => $_POST['Name'],
              "recruitmentTarget" => $_POST['recruitmentTarget'],
-            )
+            ]
         );
     } else {
         header("HTTP/1.1 409 Conflict");
@@ -45,11 +45,11 @@ if ($_POST['ProjectID'] === 'new') {
 } else {
     $db->update(
         "Project",
-        array(
+        [
          "Name"              => $_POST['Name'],
          "recruitmentTarget" => $_POST['recruitmentTarget'],
-        ),
-        array("ProjectID" => $_POST['ProjectID'])
+        ],
+        ["ProjectID" => $_POST['ProjectID']]
     );
 }
 header("HTTP/1.1 200 OK");

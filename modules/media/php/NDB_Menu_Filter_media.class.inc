@@ -97,7 +97,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
                     $siteList[$val] = $site[$key]->getCenterName();
                 }
             }
-            $siteList = array('' => 'All User Sites') + $siteList;
+            $siteList = ['' => 'All User Sites'] + $siteList;
         }
 
         $instrumentList   = [];

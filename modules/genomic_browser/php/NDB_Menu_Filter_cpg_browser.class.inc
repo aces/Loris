@@ -67,7 +67,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
     {
         // set the class variables
         $this->_displayBrief = !(isset($_REQUEST['format']));
-        $this->columns       = array(
+        $this->columns       = [
                                 'psc.Name AS PSC',
                                 'LPAD(candidate.CandID, 6, "0") AS DCCID',
                                 'candidate.PSCID',
@@ -101,7 +101,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                 'gca.reg_feature_group as Reg_Feature_Grp',
                                 'gca.dhs as DHS',
                                 'platform.Name as Platform',
-                               );
+                               ];
 
         // This variable will be used by the columnFormatter javascript
         // to set the default hidden columns in the data table.
@@ -110,7 +110,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                 function ($header) {
                         return ucwords(str_replace('_', ' ', $header));
                 },
-                array(
+                [
                  'PSC',
                  'DCCID',
                  'Subproject',
@@ -137,7 +137,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                  'Reg_Feature_Grp',
                  'DHS',
                  'Platform',
-                )
+                ]
             )
         );
 
@@ -171,7 +171,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         }
 
         $this->order_by     = 'psc.Name, candidate.CandID DESC';
-        $this->validFilters = array(
+        $this->validFilters = [
                                'candidate.CenterID',
                                'candidate.CandID',
                                'candidate.PSCID',
@@ -201,9 +201,9 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                'gca.reg_feature_group',
                                'gca.dhs',
                                'platform.Name',
-                              );
+                              ];
 
-        $this->formToFilter = array(
+        $this->formToFilter = [
                                'centerID'           => 'candidate.CenterID',
                                'DCCID'              => 'candidate.CandID',
                                'PSCID'              => 'candidate.PSCID',
@@ -234,15 +234,15 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                'Reg_Feature_Loc'    => 'gca.reg_feature_loc',
                                'Reg_Feature_Grp'    => 'gca.reg_feature_group',
                                'DHS'                => 'gca.dhs',
-                              );
+                              ];
 
-        $this->EqualityFilters = array(
+        $this->EqualityFilters = [
                                   'candidate.Gender',
                                   'cpg.cpg_name',
                                   'gca.genome_build',
                                   'gca.design_type',
                                   'genome_loc.Strand',
-                                 );
+                                 ];
 
         return true;
     }
@@ -264,7 +264,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = Utility::getSiteList();
             if (is_array($list_of_sites)) {
-                $list_of_sites = array('' => 'Any') + $list_of_sites;
+                $list_of_sites = ['' => 'Any'] + $list_of_sites;
             }
         } else {
             // allow only to view own site data
@@ -274,7 +274,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                 if ($site[$key]->isStudySite()) {
                     $list_of_sites[$val] = $site[$key]->getCenterName();
                 }
-                $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
+                $list_of_sites = ['' => 'All User Sites'] + $list_of_sites;
             }
         }
 
@@ -291,24 +291,24 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         $this->addSelect(
             'gender',
             'Gender:',
-            array(
+            [
              ''       => 'All',
              'Male'   => 'Male',
              'Female' => 'Female',
-            )
+            ]
         );
         $this->addSelect(
             'SubprojectID',
             'Subproject:',
-            array('' => 'Any') + $list_of_subprojects
+            ['' => 'Any'] + $list_of_subprojects
         );
-        $this->addBasicText('dob', 'Date of Birth:', array('maxlength' => 10));
+        $this->addBasicText('dob', 'Date of Birth:', ['maxlength' => 10]);
 
         $show_results_options
-            = array(
+            = [
                'brief' => 'Summary fields',
                'full'  => 'All fields',
-              );
+              ];
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
         // ------------------------------------------------------------
@@ -317,16 +317,16 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
 
         $this->addBasicText('Gene_Symbol', 'Gene:');
         $this->addBasicText('genomic_range', 'Genomic Range:');
-        $Base_options = array(
+        $Base_options = [
                          null => 'Any',
                          '37' => 'GRCh37',
-                        );
+                        ];
         $this->addSelect('Assembly', 'Build:', $Base_options);
-        $Base_options = array(
+        $Base_options = [
                          null => 'Any',
                          'F'  => 'Forward',
                          'R'  => 'Reverse',
-                        );
+                        ];
         $this->addSelect('Strand', 'Strand:', $Base_options);
 
         // ------------------------------------------------------------
@@ -350,7 +350,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         $this->addSelect('Platform', 'Platform:', $Base_options);
 
         // Gene_Grp
-        $Base_options = array(
+        $Base_options = [
                          null      => 'Any',
                          '1stExon' => '1st Exon',
                          '3`UTR'   => '3`UTR',
@@ -358,38 +358,38 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                          'Body'    => 'Body',
                          'TSS1500' => 'TSS1500',
                          'TSS200'  => 'TSS200',
-                        );
+                        ];
         $this->addSelect('Gene_Grp', 'Position:', $Base_options);
 
         // Design
-        $Base_options = array(
+        $Base_options = [
                          null => 'Any',
                          'I'  => 'I',
                          'II' => 'II',
-                        );
+                        ];
         $this->addSelect('Design', 'Infinium design:', $Base_options);
 
         // Color
-        $Base_options = array(
+        $Base_options = [
                          null  => 'Any',
                          'Grn' => 'Green',
                          'Red' => 'Red',
-                        );
+                        ];
         $this->addSelect('Color', 'Color:', $Base_options);
 
         // Enhancer
-        $Base_options = array(
+        $Base_options = [
                          null => 'Any',
                          '1'  => 'Yes',
-                        );
+                        ];
         $this->addSelect('Enhancer', 'Enhancer:', $Base_options);
 
         // SNP_10
-        $Base_options = array(
+        $Base_options = [
                          null   => 'Any',
                          'NULL' => 'No',
                          '_'    => 'Yes',
-                        );
+                        ];
         $this->addSelect('SNP_10', 'SNP:', $Base_options);
 
         // Reg_Feature_Grp
@@ -400,27 +400,27 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         $this->addSelect('Reg_Feature_Grp', 'Regulatory feat.:', $Base_options);
 
         // Fantom_Prom
-        $Base_options = array(
+        $Base_options = [
                          null       => 'Any',
                          'NULL'     => 'No',
                          'NOT_NULL' => 'Yes',
-                        );
+                        ];
         $this->addSelect('Fantom_Prom', 'Promoter:', $Base_options);
 
         // HMM_Island
-        $Base_options = array(
+        $Base_options = [
                          null       => 'Any',
                          'NULL'     => 'No',
                          'NOT_NULL' => 'Yes',
-                        );
+                        ];
         $this->addSelect('HMM_Island', 'HMM Island:', $Base_options);
 
         // DHS
-        $Base_options = array(
+        $Base_options = [
                          null   => 'Any',
                          '1'    => 'Yes',
                          'NULL' => 'No',
-                        );
+                        ];
         $this->addSelect('DHS', 'DHS:', $Base_options);
 
         // DMR
@@ -509,10 +509,10 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
              $baseURL . "/genomic_browser/js/genomic_browser.js",
              $baseURL . "/genomic_browser/js/cpgColumnFormatter.js",
-            )
+            ]
         );
     }
 
@@ -531,7 +531,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         $DB      = Database::singleton();
         $results = $DB->pselect(
             "SELECT DISTINCT $column FROM $table ",
-            array()
+            []
         );
         return array_reduce(
             $results,
@@ -542,7 +542,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                 }
                 return $carry;
             },
-            array(null => 'Any')
+            [null => 'Any']
         );
 
     }

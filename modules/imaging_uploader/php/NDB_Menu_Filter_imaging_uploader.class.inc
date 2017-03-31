@@ -66,7 +66,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             . "IF(InsertionComplete=0, 'Failure', 'Success'))) as Progress";
 
         // set the class variables
-        $this->columns = array(
+        $this->columns = [
                           'UploadID',
                           $progressSelectPart,
                           's.CandID',
@@ -78,24 +78,24 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                           'TarchiveID AS Tarchive_Info',
                           'number_of_mincCreated',
                           'number_of_mincInserted',
-                         );
+                         ];
 
-        $this->validFilters = array(
+        $this->validFilters = [
                                's.CandID',
                                'c.PSCID',
                                's.Visit_label',
                                'mu.IsPhantom',
-                              );
+                              ];
         $this->query        = " FROM mri_upload mu LEFT JOIN session".
                               " s ON (s.ID = mu.SessionID)".
                               " LEFT JOIN candidate c ON (c.CandID = s.CandID)".
                               " WHERE 1=1 ";
-        $this->formToFilter = array(
+        $this->formToFilter = [
                                'CandID'      => 's.CandID',
                                'PSCID'       => 'c.PSCID',
                                'Visit_label' => 's.Visit_label',
                                'IsPhantom'   => 'mu.IsPhantom',
-                              );
+                              ];
         return true;
     }
 
@@ -123,7 +123,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $this->addBasicText('CandID', 'CandID:');
         $this->addBasicText('PSCID', 'PSCID:');
         $visitlabels = array_merge(
-            array(null => ''),
+            [null => ''],
             Utility::getExistingVisitLabels()
         );
         $this->addSelect(
@@ -131,11 +131,11 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             'VisitLabel:',
             $visitlabels
         );
-        $phantom_options = array(
+        $phantom_options = [
                             null => '',
                             'N'  => 'No',
                             'Y'  => 'Yes',
-                           );
+                           ];
         $this->addSelect(
             'IsPhantom',
             'Are these Phantom Scans:',
@@ -145,19 +145,19 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $this->addSelect(
             'LogType',
             '',
-            array(
+            [
              'summary'  => 'Summary',
              'detailed' => 'Detailed',
-            )
+            ]
         );
 
         $this->form->addTextArea(
             'UploadLogs',
             '',
-            array(
+            [
              'class' => 'upload-logs-table',
              'id'    => 'mri_upload_logs',
-            )
+            ]
         );
 
         ///////////////////////////////////////////////////////////////////////
@@ -254,7 +254,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
 
         $user = User::singleton();
         //set the the IDs to the handler functions.
-        $file->setHandlerArgs(array("values" => $values));
+        $file->setHandlerArgs(["values" => $values]);
 
         //proccesses them (including verify, move, and import steps)
         $file->processFiles();
@@ -290,13 +290,13 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $temp_file = $file->fileInfo['tmp_name'];
         $temp_dir  = $this->tempdir();
         $db        = Database::singleton();
-        $errors    = array();
+        $errors    = [];
         $config    = NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
             'dicom_archive'
         );
         $corect_name            = $dicom_archive_settings['patientNameRegex'];
-        $header_patient_name    = array();
+        $header_patient_name    = [];
         $file_name = $file->fileInfo['name'];
         $file_path = $temp_dir. "/". $file_name;
         $isPhantom = $args['values']['IsPhantom'];
@@ -345,11 +345,11 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                      JOIN candidate c ON (c.candid=s.candid)
                      WHERE s.Visit_label = :vlabel
                      AND c.pscid = :pid AND c.candid = :cid",
-                    array(
+                    [
                      ':cid'    => $candid,
                      ':vlabel' => $visit_label,
                      ':pid'    => $pscid,
-                    )
+                    ]
                 )==0) {
                         $errors[] = "Make sure you enter the CandID: $candid,".
                                     " PSCID: $pscid and the corresponding".
@@ -401,7 +401,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function importFile($file, $args)
     {
-        $feedbacks = array();
+        $feedbacks = [];
         $db        = Database::singleton();
         $file_name =  $file->fileInfo['name'];
 
@@ -437,10 +437,10 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                 $sessionid   = $db->pselectOne(
                     "SELECT ID FROM  session WHERE CandID = :cid
                      AND Visit_label =:vlabel",
-                    array(
+                    [
                      'cid'    => $candid,
                      'vlabel' => $visit_label,
-                    )
+                    ]
                 );
             }
         }
@@ -463,14 +463,14 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         } else {
                 $this->uploaded_file_path = $this->getTempPath();
         }
-        $values = array(
+        $values = [
                    'UploadedBy'     => $user_name,
                    'UploadDate'     => $date,
                    'UploadLocation' => $this->uploaded_file_path,
                    'SessionID'      => $sessionid,
                    'PatientName'    => $pname,
                    'IsPhantom'      => $IsPhantom,
-                  );
+                  ];
         $db->Insert(
             'mri_upload',
             $values
@@ -604,12 +604,12 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
              $baseURL . "/imaging_uploader/js/index.js",
              $baseURL . "/imaging_uploader/js/columnFormatter.js",
              $baseURL . "/imaging_uploader/js/imaging_uploader.js",
              $baseURL . "/imaging_uploader/js/imaging_uploader_helper.js",
-            )
+            ]
         );
     }
 

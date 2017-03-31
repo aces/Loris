@@ -36,7 +36,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         parent::setUp();
         $this->DB->insert(
             "parameter_type",
-            array(
+            [
              'Name'        => 'TestParameterNotRealMAGICNUMBER335',
              'Type'        => 'varchar(255)',
              'Description' => 'I am a fake description used only for testing'.
@@ -45,7 +45,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
              'SourceField' => 'imaginary',
              'Queryable'   => true,
              'IsFile'      => 0,
-            )
+            ]
         );
     }
     /**
@@ -58,7 +58,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         parent::tearDown();
         $this->DB->delete(
             'parameter_type',
-            array('Name' => 'TestParameterNotRealMAGICNUMBER335')
+            ['Name' => 'TestParameterNotRealMAGICNUMBER335']
         );
     }
     /**

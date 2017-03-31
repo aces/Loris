@@ -113,12 +113,12 @@ class BrainBrowser extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
             WHERE c.Active='Y' AND s.Active='Y' 
                 AND c.CandID=:CID and s.Visit_label=:VL
                 AND f.File LIKE CONCAT('%', :Fname) AND pt.Name = :Header",
-            array(
+            [
              'CID'    => $this->CandID,
              'VL'     => $this->VisitLabel,
              'Fname'  => $this->Filename,
              'Header' => $headerName,
-            )
+            ]
         );
 
     }

@@ -52,17 +52,17 @@ class NDB_Menu_Filter_Survey_Accounts extends NDB_Menu_Filter
             JOIN candidate c ON (c.CandID=s.CandID)";
 
         // set the class variables
-        $this->columns      = array(
+        $this->columns      = [
                                'c.PSCID AS PSCID',
                                's.Visit_label AS Visit',
                                'p.Email as Email',
                                'p.Test_name as SurveyName',
                                'p.OneTimePassword as URL',
                                'p.Status',
-                              );
+                              ];
         $this->query        = $query;
         $this->order_by     = 'PSCID';
-        $this->validFilters = array(
+        $this->validFilters = [
                                'c.PSCID',
                                's.Visit_label',
                                'p.Email',
@@ -70,14 +70,14 @@ class NDB_Menu_Filter_Survey_Accounts extends NDB_Menu_Filter
                                'p.OneTimePassword',
                                'p.Status',
                                'p.Test_name',
-                              );
-        $this->formToFilter = array(
+                              ];
+        $this->formToFilter = [
                                'PSCID'      => 'c.PSCID',
                                'VisitLabel' => 's.Visit_label',
                                'Email'      => 'p.Email',
                                'key'        => 'p.OneTimePassword',
                                'Instrument' => 'p.Test_name',
-                              );
+                              ];
         return true;
     }
 
@@ -96,12 +96,12 @@ class NDB_Menu_Filter_Survey_Accounts extends NDB_Menu_Filter
         $this->addSelect(
             'VisitLabel',
             'Visit:',
-            array_merge(array('' => 'All'), Utility::getVisitList())
+            array_merge(['' => 'All'], Utility::getVisitList())
         );
         $this->addSelect(
             'Instrument',
             'Instrument:',
-            array_merge(array('' => 'All'), Utility::getDirectInstruments())
+            array_merge(['' => 'All'], Utility::getDirectInstruments())
         );
         $this->addBasicText('Email', 'Email:');
         $this->addBasicText('key', 'Key:');
@@ -121,10 +121,10 @@ class NDB_Menu_Filter_Survey_Accounts extends NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
              $baseURL . "/survey_accounts/js/survey_accounts_helper.js",
              $baseURL . "/survey_accounts/js/columnFormatter.js",
-            )
+            ]
         );
     }
 }

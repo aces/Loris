@@ -1,5 +1,6 @@
 <?php
-/** Help editor automated integration tests
+/**
+ * Help editor automated integration tests
  *
  * PHP Version 5
  *
@@ -34,18 +35,18 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     {
         parent::setUp();
         $md5String = md5("TestTestTest");
-        $window = new WebDriverWindow($this->webDriver);
+        $window    = new WebDriverWindow($this->webDriver);
         $window->maximize();
         $this->DB->insert(
             "help",
-            array(
+            [
              'helpID'   => '999999',
              'parentID' => '-1',
              'hash'     => $md5String,
              'topic'    => 'Test Topic',
              'content'  => 'This is a test content.',
              'created'  => '2013-04-05 00:00:00',
-            )
+            ]
         );
     }
     /**
@@ -56,7 +57,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     function tearDown()
     {
         parent::tearDown();
-        $this->DB->delete("help", array('helpID' => '999999'));
+        $this->DB->delete("help", ['helpID' => '999999']);
     }
 
     /**
@@ -103,7 +104,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorPermission()
     {
-         $this->setupPermissions(array("context_help"));
+         $this->setupPermissions(["context_help"]);
          $this->safeGet($this->url . "/help_editor/");
          $bodyText = $this->safeFindElement(
              WebDriverBy::cssSelector("body")
@@ -118,7 +119,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorWithoutPermission()
     {
-         $this->setupPermissions(array());
+         $this->setupPermissions([]);
          $this->safeGet($this->url . "/help_editor/");
          $bodyText = $this->safeFindElement(
              WebDriverBy::cssSelector("body")

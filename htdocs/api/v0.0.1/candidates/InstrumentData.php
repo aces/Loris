@@ -75,11 +75,11 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
                 LEFT JOIN candidate c USING (CandID)
             WHERE Test_name=:TN AND s.CandID=:CID AND
                   s.Active='Y' AND c.Active='Y' AND f.CommentID NOT LIKE 'DDE%'",
-            array(
+            [
              'VL'  => $this->VisitLabel,
              'TN'  => $Instrument,
              'CID' => $this->CandID,
-            )
+            ]
         );
 
         if (empty($CommentID)) {
@@ -178,16 +178,16 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
         if ($this->Instrument->validate($data)) {
             $this->Instrument->clearInstrument();
             $this->Instrument->_save($data[$this->Instrument->testName]);
-            $this->JSON = array("success" => "Updated");
+            $this->JSON = ["success" => "Updated"];
         } else {
             $this->Header("HTTP/1.1 403 Forbidden");
             if (!$this->Instrument->determineDataEntryAllowed()) {
                 $msg = "Can not update instruments that"
                        . " are flagged as complete";
 
-                $this->JSON = array('error' => $msg);
+                $this->JSON = ['error' => $msg];
             } else {
-                $this->JSON = array("error" => "Could not update.");
+                $this->JSON = ["error" => "Could not update."];
             }
         }
     }
@@ -209,16 +209,16 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
         parse_str(urldecode($data), $data);
         if ($this->Instrument->validate($data)) {
             $this->Instrument->_save($data[$this->Instrument->testName]);
-            $this->JSON = array("success" => "Updated");
+            $this->JSON = ["success" => "Updated"];
         } else {
             $this->Header("HTTP/1.1 403 Forbidden");
             if (!$this->Instrument->determineDataEntryAllowed()) {
                 $msg = "Can not update instruments that"
                        . " are flagged as complete";
 
-                $this->JSON = array('error' => $msg);
+                $this->JSON = ['error' => $msg];
             } else {
-                $this->JSON = array("error" => "Could not update.");
+                $this->JSON = ["error" => "Could not update."];
             }
         }
     }

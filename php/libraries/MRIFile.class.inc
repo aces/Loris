@@ -22,9 +22,9 @@
  */
 class MRIFile
 {
-    var $fileData   = array();
-    var $parameters = array();
-    var $QCData     = array();
+    var $fileData   = [];
+    var $parameters = [];
+    var $QCData     = [];
 
     /**
      * Construct an MRIFile
@@ -34,7 +34,7 @@ class MRIFile
     function __construct($fileID)
     {
         $db     =& Database::singleton();
-        $params = array('FID' => $fileID);
+        $params = ['FID' => $fileID];
 
         $query    = "SELECT * FROM files WHERE FileID=:FID";
         $fileData = $db->pselectRow($query, $params);
@@ -118,7 +118,7 @@ class MRIFile
         $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ProtoID";
         $acquisitionProtocol = $db->pselectOne(
             $query,
-            array('ProtoID' => $this->fileData['AcquisitionProtocolID'])
+            ['ProtoID' => $this->fileData['AcquisitionProtocolID']]
         );
         return $acquisitionProtocol;
     }

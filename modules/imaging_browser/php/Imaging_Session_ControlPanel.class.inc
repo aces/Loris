@@ -71,7 +71,7 @@ class Imaging_Session_ControlPanel
         $qresult = $DB->pselectOne(
             "SELECT CommentID FROM flag 
             WHERE Test_name='mri_parameter_form' AND SessionID = :v_sessions_id",
-            array('v_sessions_id' => $this->sessionID)
+            ['v_sessions_id' => $this->sessionID]
         );
         $subjectData['ParameterFormCommentID'] = (empty($qresult)) ? "" : $qresult;
 
@@ -79,13 +79,13 @@ class Imaging_Session_ControlPanel
             "SELECT CommentID 
             FROM flag WHERE Test_name='radiology_review' 
             AND SessionID = :v_sessions_id",
-            array('v_sessions_id' => $this->sessionID)
+            ['v_sessions_id' => $this->sessionID]
         );
         $subjectData['RadiologyReviewCommentID'] = (empty($qresult)) ? "" : $qresult;
 
         $candidate =& Candidate::singleton($timePoint->getCandID());
 
-        $params     = array();
+        $params     = [];
         $EntityType = $candidate->getData('Entity_type');
         if ($EntityType == 'Scanner') {
             $ID = ":PPSCID";
@@ -108,33 +108,32 @@ class Imaging_Session_ControlPanel
 
         //if table is not in database return false to not display in the template
         $this->tpl_data['mri_param_form_table_exists'] = $DB->tableExists('mri_parameter_form');
-        $this->tpl_data['rad_review_table_exists'] = $DB->tableExists('radiology_review');
+        $this->tpl_data['rad_review_table_exists']     = $DB->tableExists('radiology_review');
         $this->tpl_data['mantis']       = $config->getSetting('mantis_url');
         $subjectData['mantis']          = $config->getSetting('mantis_url');
         $subjectData['has_permission']  = $this->_hasAccess();
-        $subjectData['status_options']  = array(
+        $subjectData['status_options']  = [
                                            'Unrated' => '',
                                            'Pass'    => 'Pass',
                                            'Fail'    => 'Fail',
-                                          );
-        $subjectData['pending_options'] = array(
+                                          ];
+        $subjectData['pending_options'] = [
                                            'Y' => 'Yes',
                                            'N' => 'No',
-                                          );
-        $subjectData['caveat_options'] = array(
-                                           'true' => 'True',
+                                          ];
+        $subjectData['caveat_options']  = [
+                                           'true'  => 'True',
                                            'false' => 'False',
-                                          );
+                                          ];
 
         $qcstatus = $DB->pselectRow(
             "SELECT MRIQCStatus, MRIQCPending, MRICaveat FROM session WHERE ID=:sid",
-            array("sid" => $this->sessionID)
+            ["sid" => $this->sessionID]
         );
 
         $subjectData['mriqcstatus']  = $qcstatus['MRIQCStatus'];
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
-        $subjectData['mricaveat'] = $qcstatus['MRICaveat'];
-
+        $subjectData['mricaveat']    = $qcstatus['MRICaveat'];
 
         $factory = NDB_Factory::singleton();
         $subjectData['backURL'] = $factory->settings()->getBaseURL()
@@ -194,7 +193,7 @@ class MRINavigation
             ->getProperty('mriSessionsListed');
 
         if (!is_array($this->FilteredSessionList)) {
-            $this->FilteredSessionList = array();
+            $this->FilteredSessionList = [];
         }
         $this->currentListIndex = array_search(
             $this->sessionID,

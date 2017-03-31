@@ -18,14 +18,15 @@ class finalRadiologicalReviewTestIntegrationTest extends LorisIntegrationTest
      * Tests that the final Radiological Review loads if the user has the correct
      * permissions (edit_final_radiological_review or view_final_radiological_review)
      * It should only be able to see the menu item.
+     *
      * @return void
      */
     function testFinalRadiologicalReviewLoadsWithPermission()
     {
-        $this->setupPermissions(array("view_final_radiological_review"));
+        $this->setupPermissions(["view_final_radiological_review"]);
         $this->safeGet($this->url . "/final_radiological_review/");
 
-    // Test that the Imaging menu appears in the first row
+        // Test that the Imaging menu appears in the first row
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -35,4 +36,3 @@ class finalRadiologicalReviewTestIntegrationTest extends LorisIntegrationTest
     }
 }
 ?>
-

@@ -29,7 +29,7 @@ class User extends UserPermissions
      * @var    array
      * @access private
      */
-    var $userInfo = array();
+    var $userInfo = [];
 
     /**
      * Constructor
@@ -63,13 +63,13 @@ class User extends UserPermissions
             WHERE users.UserID = :UID
             GROUP BY users.ID";
 
-        $row = $DB->pselectRow($query, array('UID' => $username));
+        $row = $DB->pselectRow($query, ['UID' => $username]);
 
         // get user sites
         $user_centerID_query =  $DB->pselect(
             "SELECT CenterID FROM user_psc_rel upr 
                         WHERE upr.UserID= :UID",
-            array('UID' => $row['ID'])
+            ['UID' => $row['ID']]
         );
 
         foreach ($user_centerID_query as $key=>$val) {
@@ -82,21 +82,21 @@ class User extends UserPermissions
                   FROM examiners 
                   WHERE full_name=:fn 
                     AND (active='Y' OR (active='N' AND pending_approval='Y'))",
-            array(
+            [
              "fn" => $row['Real_name'],
-            )
+            ]
         );
 
-        $examiner_info =array();
+        $examiner_info =[];
         if (!empty($examiner_check) && !is_null($examiner_check)) {
             foreach ($examiner_check as $rw=>$val) {
                 if ($val['active'] == 'Y') {
                     $examiner_info['pending'] = $val['pending_approval'];
                 }
-                $examiner_info[$val['centerID']] =array(
+                $examiner_info[$val['centerID']] =[
                                                    $val['active'],
                                                    $val['radiologist'],
-                                                  );
+                                                  ];
             }
         }
         // store user data in object property
@@ -163,7 +163,7 @@ class User extends UserPermissions
         $success = $DB->update(
             'users',
             $set,
-            array('UserID' => $this->userInfo['UserID'])
+            ['UserID' => $this->userInfo['UserID']]
         );
 
         return true;
@@ -321,7 +321,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    function isPasswordStrong($password, $values = array(), $operators = array())
+    function isPasswordStrong($password, $values = [], $operators = [])
     {
         $CharTypes = 0;
         // less than 6 characters
@@ -391,7 +391,7 @@ class User extends UserPermissions
             );
         }
 
-        $updateArray = array('Password_expiry' => $expiry);
+        $updateArray = ['Password_expiry' => $expiry];
 
         $updateArray['Password_hash'] = password_hash(
             $password,
@@ -431,7 +431,7 @@ class User extends UserPermissions
             . $c_config['adminpass']
         );
 
-        $auth     = array('Authorization' => 'Basic ' . $authkey);
+        $auth     = ['Authorization' => 'Basic ' . $authkey];
         $userjson = $cdb->_getURL(
             "/_users/org.couchdb.user:" . $username,
             'GET',
@@ -439,15 +439,15 @@ class User extends UserPermissions
         );
         $userobj  = json_decode($userjson, true);
         if (isset($userobj['error']) && $userobj['error'] == 'not_found') {
-            $userobj = array(
+            $userobj = [
                         '_id'   => 'org.couchdb.user:' . $username,
                         'type'  => 'user',
                         'name'  => $username,
-                        'roles' => array(
+                        'roles' => [
                                     'dqg',
                                     $c_config['database'],
-                                   ),
-                       );
+                                   ],
+                       ];
         }
         $userobj['password'] = $password;
 

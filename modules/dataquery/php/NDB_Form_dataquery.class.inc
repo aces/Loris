@@ -15,31 +15,31 @@ class NDB_Form_dataquery extends NDB_Form
 
     function dataquery()
     {
-        $user = User::singleton();
+        $user     = User::singleton();
         $username = $user->getUsername();
-        $couch = CouchDB::singleton();
+        $couch    = CouchDB::singleton();
 
         $update = $couch->queryView(
             "DQG-2.0",
             "runlog",
-            array(
-             "reduce" => "false",
-             "limit" => "1",
-             "descending" => "true"
-            )
+            [
+             "reduce"     => "false",
+             "limit"      => "1",
+             "descending" => "true",
+            ]
         );
         $this->tpl_data['updatetime'] = $update[0]['key'];
 
         $categories = $couch->queryView(
             "DQG-2.0",
             "datadictionary",
-            array(
-             "reduce" => "true",
-             "group_level" => "1"
-            )
+            [
+             "reduce"      => "true",
+             "group_level" => "1",
+            ]
         );
 
-        $cat_tpl = array();
+        $cat_tpl = [];
         foreach($categories as $row) {
             if ($row['value']) {
                 $cat_tpl[$row['key'][0]] = $row['value'];
@@ -52,44 +52,48 @@ class NDB_Form_dataquery extends NDB_Form
         $usersaved = $couch->queryView(
             "DQG-2.0",
             "savedqueries",
-            array(
-             "key" => "\"$username\"",
+            [
+             "key"    => "\"$username\"",
              "reduce" => "false",
-            )
+            ]
         );
-
 
         $globalsaved = $couch->queryView(
             "DQG-2.0",
             "savedqueries",
-            array(
-             "key" => "\"global\"",
+            [
+             "key"    => "\"global\"",
              "reduce" => "false",
-            )
+            ]
         );
 
-        $IDMapCallback = function($row) {
+        $IDMapCallback = function ($row) {
             return $row['id'];
         };
 
-        $usersavedNames = array_map($IDMapCallback, $usersaved);
+        $usersavedNames   = array_map($IDMapCallback, $usersaved);
         $globalsavedNames = array_map($IDMapCallback, $globalsaved);
 
-        $this->tpl_data['savedqueries'] = array(
-            'user'   => $usersavedNames,
-            'shared' => $globalsavedNames
-        );
-        $sessionResults = $couch->queryView(
+        $this->tpl_data['savedqueries'] = [
+                                           'user'   => $usersavedNames,
+                                           'shared' => $globalsavedNames,
+                                          ];
+        $sessionResults           = $couch->queryView(
             "DQG-2.0",
             "sessions",
-            array(
-                "reduce" => "true",
-                "group" => "true",
-            )
+            [
+             "reduce" => "true",
+             "group"  => "true",
+            ]
         );
         $this->tpl_data['visits'] = Utility::getExistingVisitLabels();
 
-        $sessions = array_map(function($element) { return $element['key']; }, $sessionResults);
+        $sessions = array_map(
+            function ($element) {
+                return $element['key'];
+            },
+            $sessionResults
+        );
 
         $this->tpl_data['sessions'] = $sessions;
     }
@@ -107,7 +111,7 @@ class NDB_Form_dataquery extends NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
              $baseURL . "/dataquery/js/arrayintersect.js",
              $baseURL . "/dataquery/js/react.fieldselector.js",
              $baseURL . "/dataquery/js/react.filterBuilder.js",
@@ -119,8 +123,8 @@ class NDB_Form_dataquery extends NDB_Form
              $baseURL . "/js/flot/jquery.flot.min.js",
              $baseURL . '/js/components/PaginationLinks.js',
              $baseURL . "/js/jszip/jszip.min.js",
-             $baseURL . "/js/components/MultiSelectDropdown.js"
-            )
+             $baseURL . "/js/components/MultiSelectDropdown.js",
+            ]
         );
     }
 
@@ -137,9 +141,9 @@ class NDB_Form_dataquery extends NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
              $baseURL . "/dataquery/css/dataquery.css",
-            )
+            ]
         );
     }
 }

@@ -33,15 +33,15 @@ $tabInformation = $DB->pselectRow(
     "SELECT Title, Content, TrainingType
      FROM certification_training 
      WHERE TestID=:TID AND OrderNumber=:TNO",
-    array(
+    [
      'TID' => $instrumentID,
      'TNO' => $tabID,
-    )
+    ]
 );
 
 $instrument = $DB->pselectOne(
     "SELECT Test_name FROM test_names WHERE ID=:IID",
-    array('IID' => $instrumentID)
+    ['IID' => $instrumentID]
 );
 
 // Create the html based on the tab type
@@ -95,7 +95,7 @@ function getQuizData($instrumentID)
          FROM certification_training_quiz_questions 
          WHERE TestID=:TID 
          ORDER BY OrderNumber",
-        array('TID' => $instrumentID)
+        ['TID' => $instrumentID]
     );
 
     // Add the array of answers to each question
@@ -107,10 +107,10 @@ function getQuizData($instrumentID)
              ON (a.QuestionID=q.ID) 
              WHERE q.TestID=:TID AND a.QuestionID=:QID
              ORDER BY OrderNumber",
-            array(
+            [
              'TID' => $instrumentID,
              'QID' => $question['ID'],
-            )
+            ]
         );
     }
 

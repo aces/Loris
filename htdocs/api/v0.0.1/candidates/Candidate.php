@@ -108,7 +108,7 @@ class Candidate extends \Loris\API\APIBase
                 COUNT(s.Visit_label) as VisitCount
             FROM candidate c JOIN session s ON (c.CandID=s.CandID)
             WHERE c.CandID=:candidate",
-            array("candidate" => $this->CandID)
+            ["candidate" => $this->CandID]
         );
         return md5(
             'Candidate:' . $this->CandID . ':'

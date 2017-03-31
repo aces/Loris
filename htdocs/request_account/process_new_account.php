@@ -35,15 +35,15 @@ $client->initialize($configFile);
 
 $DB = Database::singleton();
 session_start();
-$tpl_data = array();
+$tpl_data = [];
 
 // create an instance of the config object
 $config = NDB_Config::singleton();
 $DB     = Database::singleton();
 
-$res = array();
+$res = [];
 $DB->select("SELECT Name, CenterID FROM psc", $res);
-$site_list = array();
+$site_list = [];
 foreach ($res as $elt) {
     $site_list[$elt["CenterID"]] = $elt["Name"];
 }
@@ -85,16 +85,16 @@ try {
         }
         $LinkLabel  = $link['#'];
         $WindowName = md5($link['@']['url']);
-        $tpl_data['studylinks'][] = array(
+        $tpl_data['studylinks'][] = [
                                      'url'        => $BaseURL . $LinkArgs,
                                      'label'      => $LinkLabel,
                                      'windowName' => $WindowName,
-                                    );
+                                    ];
     }
 } catch(ConfigurationException $e) {
 }
 
-$err = array();
+$err = [];
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     // Verify reCAPTCHA
@@ -130,11 +130,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $err[] = 'The verification code is incorrect';
     }
 
-    $fields = array(
+    $fields = [
                'name'     => 'First Name',
                'lastname' => 'Last Name',
                'from'     => 'Email',
-              );
+              ];
 
     // For each fields, check if quotes or if some HTML/PHP
     // tags have been entered
@@ -162,14 +162,14 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         // check to see if verification code was correct
         // if verification code was correct send the message and show this page
         $fullname = $name." ".$lastname;
-        $vals     = array(
+        $vals     = [
                      'UserID'           => $from,
                      'Real_name'        => $fullname,
                      'First_name'       => $name,
                      'Last_name'        => $lastname,
                      'Pending_approval' => 'Y',
                      'Email'            => $from,
-                    );
+                    ];
 
         if ($_REQUEST['examiner']=='on') {
             $rad =0;
@@ -179,20 +179,20 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             //insert in DB as inactive until account approved
             $DB->insert(
                 'examiners',
-                array(
+                [
                  'full_name'        => $fullname,
                  'centerID'         => $site,
                  'radiologist'      => $rad,
                  'active'           => 'N',
                  'pending_approval' => 'Y',
-                )
+                ]
             );
         }
 
         // check email address' uniqueness
         $result = $DB->pselectOne(
             "SELECT COUNT(*) FROM users WHERE Email = :VEmail",
-            array('VEmail' => $from)
+            ['VEmail' => $from]
         );
 
         if ($result == 0) {
@@ -205,15 +205,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         // Get the ID of the new user and insert into user_psc_rel
         $user_id = $DB->pselectOne(
             "SELECT ID FROM users WHERE Email = :VEmail",
-            array('VEmail' => $from)
+            ['VEmail' => $from]
         );
 
         $DB->insert(
             'user_psc_rel',
-            array(
+            [
              'UserID'   => $user_id,
              'CenterID' => $site,
-            )
+            ]
         );
 
         unset($_SESSION['tntcon']);

@@ -47,21 +47,21 @@ if ($user->hasPermission('data_dict_edit')) { //if user has edit permission
     if ($DB->pselectOne(
         "SELECT COUNT(*) FROM parameter_type_override " .
         "WHERE Name =:id",
-        array('id' => $name)
+        ['id' => $name]
     )==0) {  //if it doesn't exist
         // unsafeinsert is needed to allow '<TEST_NAME>_Date_taken' to be inserted
         $DB->unsafeinsert(
             'parameter_type_override',
-            array(
+            [
              'Name'        => $name,
              'Description' => $description,
-            )
+            ]
         ); //insert it
     } else {
         $DB->update(
             'parameter_type_override',
-            array('Description' => $description),
-            array('Name' => $name)
+            ['Description' => $description],
+            ['Name' => $name]
         ); //else update it
     }
 }

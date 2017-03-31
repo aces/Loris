@@ -19,7 +19,7 @@ require "bvl_panel_ajax.php";
 $user     =& User::singleton();
 $username = $user->getUsername();
 
-$newEntryValues = array();
+$newEntryValues = [];
 
 if (isset($_POST['comment']) && isset($_POST['feedbackID'])) {
     $newEntryValues = $feedbackThread->createEntry(

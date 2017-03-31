@@ -52,7 +52,7 @@ class NDB_Page
     /**
      * Form defaults
      */
-    var $defaults = array();
+    var $defaults = [];
 
     /**
      * Does the setup required for this page. By default, sets up elements
@@ -74,7 +74,7 @@ class NDB_Page
         $this->page       = $page;
         $this->identifier = $identifier;
         $this->commentID  = $commentID;
-        $this->defaults   = array();
+        $this->defaults   = [];
     }
 
 
@@ -88,13 +88,13 @@ class NDB_Page
      *
      * @return none
      */
-    function addFile($name, $label, $options=array())
+    function addFile($name, $label, $options=[])
     {
         $this->form->addElement(
             'file',
             $name,
             $label,
-            array_merge(array('class' => 'fileUpload'), $options)
+            array_merge(['class' => 'fileUpload'], $options)
         );
     }
 
@@ -122,10 +122,10 @@ class NDB_Page
      *
      * @return none
      */
-    function addSelect($name, $label, $options, $optional=array())
+    function addSelect($name, $label, $options, $optional=[])
     {
         $optional = array_merge(
-            array('class' => 'form-control input-sm'),
+            ['class' => 'form-control input-sm'],
             $optional
         );
         $this->form->addElement('select', $name, $label, $options, $optional);
@@ -167,9 +167,9 @@ class NDB_Page
      *
      * @return none
      */
-    function addBasicText($field, $label, $options=array())
+    function addBasicText($field, $label, $options=[])
     {
-        $options = array_merge(array('class' => 'form-control input-sm'), $options);
+        $options = array_merge(['class' => 'form-control input-sm'], $options);
         $this->form->addElement('text', $field, $label, $options);
     }
 
@@ -186,10 +186,10 @@ class NDB_Page
     function addBasicTextArea(
         $field,
         $label,
-        $specifications=array()
+        $specifications=[]
     ) {
         $specifications = array_merge(
-            array('class' => 'form-control input-sm'),
+            ['class' => 'form-control input-sm'],
             $specifications
         );
         $this->form->addElement('textarea', $field, $label, $specifications);
@@ -209,11 +209,11 @@ class NDB_Page
     function addBasicDate(
         $field,
         $label,
-        $options=array(),
-        $attr=array(
+        $options=[],
+        $attr=[
                'class' => 'form-control input-sm',
                'style' => 'max-width:33%; display:inline-block;',
-              )
+              ]
     ) {
         $this->form->addElement('date', $field, $label, $options, $attr);
     }
@@ -230,10 +230,10 @@ class NDB_Page
      *
      * @return none
      */
-    function addCheckbox($name, $label, $options, $optional=array())
+    function addCheckbox($name, $label, $options, $optional=[])
     {
         $optional = array_merge(
-            array('class' => 'form-control input-sm'),
+            ['class' => 'form-control input-sm'],
             $optional
         );
         $this->form->addElement('advcheckbox', $name, $label, $options, $optional);
@@ -249,7 +249,7 @@ class NDB_Page
      *
      * @return none
      */
-    function addHidden($name, $value=null, $attributes=array())
+    function addHidden($name, $value=null, $attributes=[])
     {
         $this->form->addElement('hidden', $name, $value, $attributes);
     }
@@ -268,18 +268,18 @@ class NDB_Page
     function addTextAreaGroup(
         $field,
         $label,
-        $not_answered_options=array(
+        $not_answered_options=[
                                ''             => '',
                                'not_answered' => 'Not Answered',
-                              )
+                              ]
     ) {
-        $group   = array();
+        $group   = [];
         $group[] = $this->createTextArea($field, '');
         $group[] = $this->createSelect(
             $field . '_status',
             '',
             $not_answered_options,
-            array('class' => 'form-control input-sm not-answered')
+            ['class' => 'form-control input-sm not-answered']
         );
 
         $this->addGroup($group, $field . '_group', $label, null, false);
@@ -298,7 +298,7 @@ class NDB_Page
     function addPassword(
         $field,
         $label=null,
-        $attr=array('class' => 'form-control input-sm')
+        $attr=['class' => 'form-control input-sm']
     ) {
         $this->form->addElement('password', $field, $label, $attr);
     }
@@ -365,7 +365,7 @@ class NDB_Page
         $field,
         $label,
         $options=null,
-        $attr=array('class' => 'form-control input-sm')
+        $attr=['class' => 'form-control input-sm']
     ) {
         return $this->form->createElement("select", $field, $label, $options, $attr);
     }
@@ -399,7 +399,7 @@ class NDB_Page
     function createText(
         $field,
         $label=null,
-        $attr=array('class' => 'form-control input-sm')
+        $attr=['class' => 'form-control input-sm']
     ) {
         return $this->form->createElement("text", $field, $label, $attr);
     }
@@ -418,7 +418,7 @@ class NDB_Page
             "textarea",
             $field,
             $label,
-            array('class' => 'form-control input-sm')
+            ['class' => 'form-control input-sm']
         );
     }
 
@@ -437,10 +437,10 @@ class NDB_Page
         $field,
         $label,
         $dateOptions=null,
-        $attr=array(
+        $attr=[
                'class' => 'form-control input-sm',
                'style' => 'max-width:33%; display:inline-block;',
-              )
+              ]
     ) {
         return $this->form->createElement(
             "date",
@@ -468,7 +468,7 @@ class NDB_Page
             $field,
             $label,
             $options,
-            array()
+            []
         );
     }
 
@@ -484,7 +484,7 @@ class NDB_Page
     function createPassword(
         $field,
         $label=null,
-        $attr=array('class' => 'form-control input-sm')
+        $attr=['class' => 'form-control input-sm']
     ) {
         return $this->form->createElement('password', $field, $label, $attr);
     }
@@ -511,7 +511,7 @@ class NDB_Page
         // get the defaults
         $localDefaults = $this->_getDefaults();
         if (!is_array($localDefaults)) {
-            $localDefaults = array();
+            $localDefaults = [];
         }
         // set the quickform object defaults
         $this->_setDefaults(array_merge($this->defaults, $localDefaults));
@@ -549,7 +549,7 @@ class NDB_Page
      *
      * @return array The defaults
      */
-    function _setDefaults($defaults = array())
+    function _setDefaults($defaults = [])
     {
         $this->defaults = $defaults;
         $this->form->setDefaults($defaults);
@@ -576,7 +576,7 @@ class NDB_Page
         // In the future release, dialogs should be replaced with bootstrap dialogs
         // and datepickers only created by modernizr
 
-        $files = array(
+        $files = [
                   $baseurl . '/js/jquery/jquery-1.11.0.min.js',
                   $baseurl . '/js/helpHandler.js',
                   $baseurl . '/js/modernizr/modernizr.min.js',
@@ -592,7 +592,7 @@ class NDB_Page
                   $baseurl . "/js/util/queryString.js",
                   $baseurl . '/js/components/Form.js',
                   $baseurl . '/js/components/Markdown.js',
-                 );
+                 ];
         return $files;
     }
 
@@ -612,12 +612,12 @@ class NDB_Page
         $www     = $config->getSetting('www');
         $baseurl = $www['url'];
 
-        $files = array(
+        $files = [
                   $baseurl . "/bootstrap/css/bootstrap.min.css",
                   $baseurl . "/bootstrap/css/custom-css.css",
                   $baseurl . "/js/jquery/datepicker/datepicker.css",
                   $baseurl . '/vendor/sweetalert/sweetalert.css',
-                 );
+                 ];
         return $files;
     }
 

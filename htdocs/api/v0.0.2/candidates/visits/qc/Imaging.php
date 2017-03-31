@@ -71,10 +71,10 @@ class Imaging extends \Loris\API\Candidates\Candidate\Visit
              FROM session s JOIN candidate c ON (c.CandID=s.CandID) 
              WHERE c.Active='Y' AND s.Active='Y'
              AND s.Visit_label=:VL AND c.CandID=:CID",
-             array(
+             [
               'VL'  => $this->VisitLabel,
               'CID' => $this->CandID,
-             )
+             ]
          );
 
          $this->JSON = [
@@ -191,10 +191,10 @@ class Imaging extends \Loris\API\Candidates\Candidate\Visit
                  JOIN candidate c ON (c.CandID=s.CandID) 
                WHERE c.Active='Y' AND s.Active='Y'
                  AND s.Visit_label=:VL AND c.CandID=:CID",
-             array(
+             [
               'VL'  => $this->VisitLabel,
               'CID' => $this->CandID,
-             )
+             ]
          );
          $qcstatus   = $DB->update(
              'session',

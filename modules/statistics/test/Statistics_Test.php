@@ -28,8 +28,8 @@ require_once __DIR__ .
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 class Statistics_Test extends LorisIntegrationTest
 {
-    
-   /**
+
+    /**
      * Tests that, when loading the Statistics module, some
      * text appears in the body.
      *
@@ -50,7 +50,7 @@ class Statistics_Test extends LorisIntegrationTest
      */
     function testLoadPageWithoutPermission()
     {
-        $this->setupPermissions(array(""));
+        $this->setupPermissions([""]);
         $this->safeGet($this->url . "/statistics/");
 
         // Test that the Imaging menu appears in the first row
@@ -69,7 +69,7 @@ class Statistics_Test extends LorisIntegrationTest
      */
     function testLoadPageWithPermission()
     {
-        $this->setupPermissions(array("data_entry"));
+        $this->setupPermissions(["data_entry"]);
         $this->safeGet($this->url . "/statistics/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -78,7 +78,8 @@ class Statistics_Test extends LorisIntegrationTest
         $this->resetPermissions();
     }
 
-    /** Tests that, when loading the Statistics module behavioural tab, some
+    /**
+ * Tests that, when loading the Statistics module behavioural tab, some
      * text appears in the body.
      *
      * @return void
@@ -89,7 +90,8 @@ class Statistics_Test extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector(".statsH2"))->getText();
         $this->assertContains("Data Entry Statistics", $bodyText);
     }
-   /** Tests that, when loading the Reliability Statistics Tab in Statistics module, some
+    /**
+ * Tests that, when loading the Reliability Statistics Tab in Statistics module, some
      * text appears in the body.
      *
      * @return void
@@ -100,7 +102,8 @@ class Statistics_Test extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector(".statsH2"))->getText();
         $this->assertContains("Reliability Statistics", $bodyText);
     }
-   /** Tests that, when loading the Demographic Statistics Tab in Statistics module, some
+    /**
+ * Tests that, when loading the Demographic Statistics Tab in Statistics module, some
      * text appears in the body.
      *
      * @return void
@@ -111,7 +114,8 @@ class Statistics_Test extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector(".statsH2"))->getText();
         $this->assertContains("General Demographic Statistics", $bodyText);
     }
-   /** Tests that, when loading the Imaging Statistics Tab in Statistics module, some
+    /**
+ * Tests that, when loading the Imaging Statistics Tab in Statistics module, some
      * text appears in the body.
      *
      * @return void
@@ -122,7 +126,8 @@ class Statistics_Test extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector(".statsH2"))->getText();
         $this->assertContains("General Statistics with QC Status", $bodyText);
     }
-   /** Tests that, when loading the General Statistics Tab in Statistics module, some
+    /**
+ * Tests that, when loading the General Statistics Tab in Statistics module, some
      * text appears in the body.
      *
      * @return void

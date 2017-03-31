@@ -2,13 +2,15 @@
 
 /**
  * HelpFile class
- * @package main
+ *
+ * @package    main
  * @subpackage unused
  */
 class HelpFile
 {
     /**
      * Identifies the help file
+     *
      * @var    array
      * @access private
      */
@@ -16,6 +18,7 @@ class HelpFile
 
     /**
      * The help file's data
+     *
      * @var    array
      * @access private
      */
@@ -41,8 +44,9 @@ class HelpFile
         $obj->helpID = $helpID;
         $result      = $DB->pselectRow(
             "SELECT helpID, parentID, hash, topic, COALESCE(projectContent, content) AS content,
-                                   created, updated FROM help WHERE helpID = :HID", array('HID' => $helpID)
-                       );
+                                   created, updated FROM help WHERE helpID = :HID",
+            ['HID' => $helpID]
+        );
         // set the help file
         $obj->data = $result;
 
@@ -83,7 +87,7 @@ class HelpFile
         $DB =& Database::singleton();
 
         // update the help file
-        $success = $DB->update('help', $set, array('helpID' => $this->helpID));
+        $success = $DB->update('help', $set, ['helpID' => $this->helpID]);
 
         return true;
     }
@@ -99,7 +103,7 @@ class HelpFile
         // create DB object
         $DB =& Database::singleton();
 
-        $result = $DB->pselectOne("SELECT COUNT(*) FROM help WHERE parentID = :HID", array('HID' => $this->helpID));
+        $result = $DB->pselectOne("SELECT COUNT(*) FROM help WHERE parentID = :HID", ['HID' => $this->helpID]);
         return ($result > 0);
     }
 
@@ -120,11 +124,11 @@ class HelpFile
         // see if it has a child
         $hasChild = $this->hasChild();
 
-        $childIDs = array();
+        $childIDs = [];
 
         // get its children
         if ($hasChild) {
-            $result = $DB->pselect("SELECT helpID FROM help WHERE parentID = :HID", array('HID' => $this->helpID));
+            $result = $DB->pselect("SELECT helpID FROM help WHERE parentID = :HID", ['HID' => $this->helpID]);
             // add the children to the array
             $childIDs = Utility::reduce($result);
 
@@ -150,8 +154,8 @@ class HelpFile
     /**
      * Returns an array of its subtopics's IDs and topics
      *
-     * @param  int $stopat Stop at this depth
-     * @param  int $level  Depth
+     * @param int $stopat Stop at this depth
+     * @param int $level  Depth
      *
      * @return array
      */
@@ -163,7 +167,7 @@ class HelpFile
         // see if it has a child
         $hasChild = $this->hasChild();
 
-        $childData = array();
+        $childData = [];
 
         // get its children
         if ($hasChild) {
@@ -171,7 +175,7 @@ class HelpFile
                 "SELECT helpID, topic, $level as level
                 FROM help
                 WHERE parentID = :HID",
-                array('HID' => $this->helpID)
+                ['HID' => $this->helpID]
             );
 
             // add the children to the array
@@ -206,7 +210,7 @@ class HelpFile
      */
     function parentIDs($stopat = 1, $level = 1)
     {
-        $parentIDs = array();
+        $parentIDs = [];
 
         if ($this->data['parentID'] > 0) {
             // add the parent to the array
@@ -241,14 +245,14 @@ class HelpFile
         // create DB object
         $DB =& Database::singleton();
 
-        $parentData = array();
+        $parentData = [];
 
         if ($this->data['parentID'] > 0) {
             $result = $DB->pselectRow(
                 "SELECT helpID, topic, $level as level
                  FROM help
                  WHERE helpID = :HID",
-                array('HID' => $this->data['parentID'])
+                ['HID' => $this->data['parentID']]
             );
 
             // add the parent to the array
@@ -299,7 +303,7 @@ class HelpFile
 
         $helpID = $DB->pselectOne(
             "SELECT helpID FROM help WHERE hash = :HID",
-            array('HID' => $hash)
+            ['HID' => $hash]
         );
 
         return $helpID;

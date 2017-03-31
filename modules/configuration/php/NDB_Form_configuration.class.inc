@@ -47,7 +47,7 @@ class NDB_Form_Configuration extends NDB_Form
         $config =& NDB_Config::singleton();
 
         $instruments = Utility::getAllInstruments();
-        $instruments = array_merge(array('' => ''), $instruments);
+        $instruments = array_merge(['' => ''], $instruments);
 
         $this->tpl_data['useProjects']     = $config->getSetting("useProjects");
         $this->tpl_data['parentMenuItems'] = $this->_getParentConfigLabels();
@@ -71,7 +71,7 @@ class NDB_Form_Configuration extends NDB_Form
             "SELECT Label, Name 
              FROM ConfigSettings 
              WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber",
-            array()
+            []
         );
 
         return $parentConfigItems;
@@ -92,7 +92,7 @@ class NDB_Form_Configuration extends NDB_Form
         // Get the names and meta-information for the config settings in the database
         $configs = $this->DB->pselect(
             "SELECT * FROM ConfigSettings WHERE Visible=1 ORDER BY OrderNumber",
-            array()
+            []
         );
 
         // Check whether any setting is overwritten in the config.xml
@@ -120,7 +120,7 @@ class NDB_Form_Configuration extends NDB_Form
             if ($setting['Disabled'] == 'No') {
                 $value = $this->DB->pselect(
                     "SELECT ID, Value FROM Config WHERE ConfigID=:ID",
-                    array('ID' => $setting{'ID'})
+                    ['ID' => $setting{'ID'}]
                 );
                 if ($value) {
                     foreach ($value as $subvalue) {
@@ -132,7 +132,7 @@ class NDB_Form_Configuration extends NDB_Form
 
         // build a tree from configs array
         foreach ($configs as &$node) {
-            $node['Children']  = array();
+            $node['Children']  = [];
             $tree[$node['ID']] = &$node;
 
         }
@@ -154,7 +154,7 @@ class NDB_Form_Configuration extends NDB_Form
         $config  = $factory->config();
 
         $subprojectList = Utility::getSubprojectList();
-        $subprojects    = array();
+        $subprojects    = [];
         foreach ($subprojectList as $subprojectID => $title) {
             $subprojects[$subprojectID]
                 = $config->getSubprojectSettings($subprojectID);
@@ -162,16 +162,16 @@ class NDB_Form_Configuration extends NDB_Form
         $this->tpl_data['subprojects'] = $subprojects;
 
         $this->tpl_data['useEDCOptions']
-            = array(
+            = [
                '1' => 'Yes',
                '0' => 'No',
-              );
+              ];
 
         $this->tpl_data['WindowDifferenceOptions']
-            = array(
+            = [
                'battery' => 'Closest Test Battery',
                'optimal' => 'Optimal Visit Window for Visit Label',
-              );
+              ];
     }
 
     /**
@@ -187,7 +187,7 @@ class NDB_Form_Configuration extends NDB_Form
         $useProjects = $config->getSetting("useProjects");
         if ($useProjects === "true") {
             $projectList = Utility::getProjectList();
-            $projects    = array();
+            $projects    = [];
             foreach ($projectList as $ProjectID => $Name) {
                 $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
                 $projects[$ProjectID]['subprojects']
@@ -212,9 +212,9 @@ class NDB_Form_Configuration extends NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
              $baseURL . "/configuration/js/configuration_helper.js",
-            )
+            ]
         );
     }
 

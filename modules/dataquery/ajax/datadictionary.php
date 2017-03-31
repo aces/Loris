@@ -12,16 +12,17 @@ $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
 
 
-$cdb = CouchDB::singleton();
+$cdb      = CouchDB::singleton();
 $category = $_REQUEST['category'];
 
 $results = $cdb->queryView(
     "DQG-2.0",
     "datadictionary",
-    array("reduce" => "false",
-          "startkey" => "[\"$category\"]",
-          "endkey" =>  "[\"$category\", \"ZZZZZZZZ\"]"
-      )
+    [
+     "reduce"   => "false",
+     "startkey" => "[\"$category\"]",
+     "endkey"   => "[\"$category\", \"ZZZZZZZZ\"]",
+    ]
 );
 
 

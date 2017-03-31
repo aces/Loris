@@ -114,11 +114,11 @@ class Full extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
                     'jiv_path'
                 )
                 ",
-            array(
+            [
              'CID'   => $this->CandID,
              'VL'    => $this->VisitLabel,
              'Fname' => $this->Filename,
-            )
+            ]
         );
 
     }

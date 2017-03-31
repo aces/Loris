@@ -56,7 +56,7 @@ class Candidates extends APIBase
             "SELECT MAX(TestDate) as Time,
                     COUNT(DISTINCT CandID) as NumCandidates
              FROM candidate WHERE Active='Y'",
-            array()
+            []
         );
         return md5(
             'Candidates:'

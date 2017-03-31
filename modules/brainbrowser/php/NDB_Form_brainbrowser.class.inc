@@ -58,14 +58,14 @@ class NDB_Form_Brainbrowser extends NDB_Form
         $deps = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
              $baseURL . "/brainbrowser/js/Brainbrowser.js",
              $baseURL . "/brainbrowser/js/jquery.mousewheel.min.js",
              $baseURL . "/brainbrowser/js/three.min.js",
              $baseURL . "/brainbrowser/js/brainbrowser.volume-viewer.min.js",
              $baseURL . "/brainbrowser/js/brainbrowser.config.js",
              $baseURL . "/brainbrowser/js/brainbrowser.loris.js",
-            )
+            ]
         );
     }
 

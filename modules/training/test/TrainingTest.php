@@ -50,7 +50,7 @@ class TrainingTest extends LorisIntegrationTest
      */
     function testLoadsWithPermission()
     {
-        $this->setupPermissions(array("training"));
+        $this->setupPermissions(["training"]);
         $this->safeGet($this->url . "/training/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::id("training-options")
@@ -67,7 +67,7 @@ class TrainingTest extends LorisIntegrationTest
      */
     function testDoesNotLoadWithoutPermission()
     {
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->safeGet($this->url . "/training/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -84,7 +84,7 @@ class TrainingTest extends LorisIntegrationTest
      */
     function testMenuItemPresentWithPermission()
     {
-        $this->setupPermissions(array("training"));
+        $this->setupPermissions(["training"]);
         $this->safeGet($this->url . "/training/");
         $this->assertTrue(
             $this->isMenuItemPresent('Clinical', 'Training')
@@ -100,7 +100,7 @@ class TrainingTest extends LorisIntegrationTest
      */
     function testMenuItemNotPresentWithoutPermission()
     {
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->safeGet($this->url . "/training/");
         $this->assertFalse(
             $this->isMenuItemPresent('Clinical', 'Training')

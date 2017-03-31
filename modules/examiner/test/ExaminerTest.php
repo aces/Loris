@@ -42,14 +42,14 @@ class ExaminerTest extends LorisIntegrationTest
          $window->setSize($size);
         $this->DB->insert(
             "psc",
-            array(
+            [
              'CenterID'   => '99',
              'Name'       => 'TEST_Site',
              'Study_site' => 'Y',
              'StateID'    => '0',
              'Alias'      => 'DDD',
              'MRI_alias'  => 'TEST',
-            )
+            ]
         );
     }
     /**
@@ -61,12 +61,12 @@ class ExaminerTest extends LorisIntegrationTest
     {
         $this->DB->delete(
             "examiners",
-            array('full_name' => 'Test_Examiner')
+            ['full_name' => 'Test_Examiner']
         );
 
         $this->DB->delete(
             "psc",
-            array('Name' => 'TEST_Site')
+            ['Name' => 'TEST_Site']
         );
          parent::tearDown();
     }
@@ -92,7 +92,7 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testSelectionFilterLoadsWithPermission()
     {
-        $this->setupPermissions(array("examiner_view"));
+        $this->setupPermissions(["examiner_view"]);
         $this->safeGet($this->url . "/examiner/");
 
         // Test that the selection filter appears
@@ -140,7 +140,7 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testAddExaminerFormLoadsWithPermission()
     {
-        $this->setupPermissions(array("examiner_view"));
+        $this->setupPermissions(["examiner_view"]);
         $this->safeGet($this->url . "/examiner/");
 
         // Test that the selection filter appears
@@ -177,7 +177,7 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testResultTableLoadsWithPermission()
     {
-        $this->setupPermissions(array("examiner_view"));
+        $this->setupPermissions(["examiner_view"]);
         $this->safeGet($this->url . "/examiner/?format=json");
 
         // Check the table column headers
@@ -240,7 +240,7 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testExaminerDoesNotLoadWithoutPermission()
     {
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->safeGet($this->url . "/examiner/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")

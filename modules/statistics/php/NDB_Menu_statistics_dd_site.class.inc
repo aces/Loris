@@ -10,7 +10,7 @@ class NDB_Menu_statistics_dd_site extends NDB_Menu_statistics_site
 {
 
     var $query_criteria = '';
-    var $query_vars     = array();
+    var $query_vars     = [];
 
     function _checkCriteria($centerID, $projectID)
     {
@@ -28,7 +28,7 @@ class NDB_Menu_statistics_dd_site extends NDB_Menu_statistics_site
     {
         $config            =& NDB_Config::singleton();
         $statisticsConfig  = $config->getSetting('statistics');
-        $excluded_measures = array($statisticsConfig['excludedMeasures']);
+        $excluded_measures = [$statisticsConfig['excludedMeasures']];
 
         $key = array_search($var, $excluded_measures);
         foreach ($excluded_measures as $key=>$val) {
@@ -46,7 +46,7 @@ class NDB_Menu_statistics_dd_site extends NDB_Menu_statistics_site
             $this->instruments[$k] = $k;
         }
 
-        $this->instruments = array_filter($this->instruments, array(&$this, 'notexcluded'));
+        $this->instruments = array_filter($this->instruments, [&$this, 'notexcluded']);
     }
 
     function _CompleteCount($centerID, $projectID, $instrument)
@@ -73,9 +73,9 @@ class NDB_Menu_statistics_dd_site extends NDB_Menu_statistics_site
     function _GetResults($centerID, $projectID, $instrument)
     {
         $this->_checkCriteria($centerID, $projectID);
-        $DB     =& Database::singleton();
+        $DB =& Database::singleton();
         $safe_instrument = $DB->escape($instrument);
-        $result = $DB->pselect(
+        $result          = $DB->pselect(
             "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID, lower(s.Visit_label) as Visit_label  FROM session s, candidate c, flag f, $safe_instrument i
                 WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID AND 
                 s.CandID=c.CandID  AND s.Active='Y' 
@@ -100,9 +100,7 @@ class NDB_Menu_statistics_dd_site extends NDB_Menu_statistics_site
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array(
-                $baseURL . "/statistics/css/statistics.css"
-            )
+            [$baseURL . "/statistics/css/statistics.css"]
         );
     }
 } // End class

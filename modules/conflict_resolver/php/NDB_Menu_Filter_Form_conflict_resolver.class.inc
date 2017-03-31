@@ -73,20 +73,20 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                     JOIN candidate c ON (c.CandID=s.CandID)
                     WHERE MD5(CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1,
                         ExtraKey2, FieldName, CommentId1, CommentId2)) = :hash",
-                    array('hash' => $hash)
+                    ['hash' => $hash]
                 );
                 if (!empty($row)) {
 
                     // insert into conflicts_resolved
                     $user1         = $DB->pselectOne(
                         "SELECT UserID FROM flag WHERE CommentID=:CID",
-                        array('CID' => $row['CommentId1'])
+                        ['CID' => $row['CommentId1']]
                     );
                     $user2         = $DB->pselectOne(
                         "SELECT UserID FROM flag WHERE CommentID=:CID",
-                        array('CID' => $row['CommentId2'])
+                        ['CID' => $row['CommentId2']]
                     );
-                    $resolutionLog = array(
+                    $resolutionLog = [
                                       'UserID'         => $user->getUsername(),
                                       'User1'          => $user1,
                                       'User2'          => $user2,
@@ -101,18 +101,18 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                                       'OldValue2'      => $row['Value2'],
                                       'NewValue'       => $val,
                                       'ConflictID'     => $row['ConflictID'],
-                                     );
+                                     ];
 
                     $DB->insert('conflicts_resolved', $resolutionLog);
 
                     // update the source tables
-                    $setArray    = array(
+                    $setArray    = [
                                     $row['FieldName'] => (
                         $val == '1' ? $row['Value1'] : $row['Value2']
                                     ),
-                                   );
-                    $whereArray1 = array('CommentID' => $row['CommentId1']);
-                    $whereArray2 = array('CommentID' => $row['CommentId2']);
+                                   ];
+                    $whereArray1 = ['CommentID' => $row['CommentId1']];
+                    $whereArray2 = ['CommentID' => $row['CommentId2']];
                     if ($row['ExtraKeyColumn'] != null) {
                         $whereArray1[$row['ExtraKeyColumn']] = $row['ExtraKey1'];
                         $whereArray2[$row['ExtraKeyColumn']] = $row['ExtraKey2'];
@@ -131,11 +131,11 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
 
                     $TableName = $row['TableName'];
                     $date      = explode('-', $setArray['Date_taken']);
-                    $dateArray = array(
+                    $dateArray = [
                                   'Y' => $date[0],
                                   'M' => $date[1],
                                   'd' => $date[2],
-                                 );
+                                 ];
 
                     $Instrument = NDB_BVL_Instrument::factory(
                         $TableName,
@@ -147,7 +147,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                         //calculate candidate age if Date_taken was changed
                         if ($row['FieldName'] == 'Date_taken') {
                             $Instrument->_saveValues(
-                                array('Date_taken' => $dateArray)
+                                ['Date_taken' => $dateArray]
                             );
                         }
 
@@ -169,7 +169,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                         //calculate candidate age if Date_taken was changed
                         if ($row['FieldName'] == 'Date_taken') {
                             $Instrument->_saveValues(
-                                array('Date_taken' => $dateArray)
+                                ['Date_taken' => $dateArray]
                             );
                         }
 
@@ -205,12 +205,12 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
         }
 
         // set the class variables
-        $this->columns = array(
+        $this->columns = [
                           'conflicts_unresolved.TableName as Instrument',
                           'session.CandID as CandID',
                           'candidate.PSCID as PSCID',
                           'session.Visit_label as Visit_Label',
-                         );
+                         ];
 
         if ($useProjects) {
             $this->columns[] = 'Project.Name as Project';
@@ -218,7 +218,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
 
         $this->columns = array_merge(
             $this->columns,
-            array(
+            [
              'conflicts_unresolved.FieldName as Question',
              '"" as Correct_Answer',
              'conflicts_unresolved.Value1 as Value1',
@@ -236,7 +236,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                     )
                 )
                 as Hash",
-            )
+            ]
         );
 
         $this->query = " FROM conflicts_unresolved
@@ -255,11 +255,11 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
 
         $this->group_by     = '';
         $this->order_by     = 'conflicts_unresolved.TableName, session.Visit_label';
-        $this->validFilters = array(
+        $this->validFilters = [
                                'conflicts_unresolved.TableName',
                                'session.CenterID',
                                'session.Visit_label',
-                              );
+                              ];
 
         if ($useProjects) {
             $this->validFilters[] = 'candidate.ProjectID';
@@ -267,57 +267,57 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
 
         $this->validFilters = array_merge(
             $this->validFilters,
-            array(
+            [
              'candidate.PSCID',
              'session.CandID',
              'conflicts_unresolved.Fieldname',
-            )
+            ]
         );
-        $this->headers      = array(
+        $this->headers      = [
                                'Instrument',
                                'CandID',
                                'PSCID',
                                'Visit_label',
-                              );
+                              ];
 
         if ($useProjects) {
             $this->headers = array_merge(
                 $this->headers,
-                array('Project')
+                ['Project']
             );
         }
 
         $this->headers =array_merge(
             $this->headers,
-            array(
+            [
              'Question',
              'Correct Answer',
              'Value1',
              'Value2',
              'Hash',
-            )
+            ]
         );
         $this->tpl_data['hiddenHeaders'] = json_encode(['Value1', 'Value2', 'Hash']);
-        $this->formToFilter = array(
+        $this->formToFilter = [
                                'Instrument' => 'conflicts_unresolved.TableName',
                                'site'       => 'session.CenterID',
                                'visit'      => 'session.Visit_label',
-                              );
+                              ];
 
         if ($useProjects) {
             $this->formToFilter = array_merge(
                 $this->formToFilter,
-                array('Project' => 'candidate.ProjectID')
+                ['Project' => 'candidate.ProjectID']
             );
         }
 
         $this->formToFilter = array_merge(
             $this->formToFilter,
-            array(
+            [
              'CandID'   => 'session.CandID',
              'PSCID'    => 'candidate.PSCID',
              'Question' => 'conflicts_unresolved.Fieldname',
-            )
+            ]
         );
 
         return true;
@@ -337,18 +337,18 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
 
         // Get instruments
         $instruments = Utility::getAllInstruments();
-        $instruments = array_merge(array('' => 'All Instruments'), $instruments);
+        $instruments = array_merge(['' => 'All Instruments'], $instruments);
 
         // Get visits
         $visits = Utility::getVisitList();
-        $visits = array_merge(array('' => 'All'), $visits);
+        $visits = array_merge(['' => 'All'], $visits);
 
         // Get sites
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $sites = Utility::getSiteList();
             if (is_array($sites)) {
-                $sites = array('' => 'All') + $sites;
+                $sites = ['' => 'All'] + $sites;
             }
         } else {
             // allow only to view own site data
@@ -359,7 +359,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                     $sites[$val] = $site[$key]->getCenterName();
                 }
             }
-            $sites = array('' => 'All User Sites') + $sites;
+            $sites = ['' => 'All User Sites'] + $sites;
         }
 
         // Add form elements
@@ -369,24 +369,24 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
         $this->addBasicText(
             'CandID',
             'DCCID:',
-            array(
+            [
              "size"      => 9,
              "maxlength" => 6,
-            )
+            ]
         );
         $this->addBasicText(
             'PSCID',
             'PSCID:',
-            array(
+            [
              "size"      => 9,
              "maxlength" => 7,
-            )
+            ]
         );
         $this->addBasicText('Question', 'Search keyword:');
 
         // Project list, if applicable
         if ($config->getSetting("useProjects")==="true") {
-            $list_of_projects = array(null => 'All');
+            $list_of_projects = [null => 'All'];
             $projectList      = Utility::getProjectList();
             foreach ($projectList as $key => $value) {
                 $list_of_projects[$key] = $value;
@@ -409,7 +409,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/conflict_resolver/js/unresolved_columnFormatter.js")
+            [$baseURL . "/conflict_resolver/js/unresolved_columnFormatter.js"]
         );
     }
 }

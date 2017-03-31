@@ -9,7 +9,7 @@ require_once 'NDB_Menu_statistics_site.class.inc';
 class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
 {
     var $query_criteria = '';
-    var $query_vars     = array();
+    var $query_vars     = [];
 
     function _checkCriteria($centerID, $projectID)
     {
@@ -134,26 +134,26 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
 
     function setup()
     {
-        $this->issues = array(
+        $this->issues = [
                          "Tarchive_Missing",
                          "Files_Missing",
                          "PF_Missing",
-                        );
+                        ];
         if(isset($_GET['subtest'])) {
             header("Location: ?test_name=statistics#data_entry");
         }
         $DB     =& Database::singleton();
-        $center = $DB->pselectRow("SELECT CenterID as ID, PSCArea as Name FROM psc WHERE CenterID=:cid", array('cid' => $_REQUEST['CenterID']));
+        $center = $DB->pselectRow("SELECT CenterID as ID, PSCArea as Name FROM psc WHERE CenterID=:cid", ['cid' => $_REQUEST['CenterID']]);
         $id     = $center['ID'];
         $name   = $center['Name'];
         // List of all visits. Add to it any time a new one is seen, so
         // that we can iterate over it to display later, and leave blank
         // cells for ones that are missing for a given issue in the
         // template
-        $visits = array();
+        $visits = [];
 
         //$this->_setIssueName();
-        $data = array();
+        $data = [];
         foreach($this->issues as $issue){
             $complete_count = $this->_CompleteCount($centerID, $projectID, $issue);
 
@@ -164,19 +164,19 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
                 if(!in_array($row['Visit_label'], $visits)) {
                     $visits[] = $row['Visit_label'];
                 }
-                $results[$row['Visit_label']][] = array(
+                $results[$row['Visit_label']][] = [
                                                    'test_url'  => $test_url,
                                                    'CandID'    => $row['CandID'],
                                                    'SessionID' => $row['SessionID'],
                                                    'CommentID' => $row['CommentID'],
                                                    'PSCID'     => $row['PSCID'],
-                                                  );
+                                                  ];
             }
-            $data[] = array(
+            $data[] = [
                        'name'        => $this->_getIssueName($issue),
                        'count'       => $complete_count,
                        'incompletes' => $results,
-                      );
+                      ];
         }
 
         $this->tpl_data["data"]     = $data;
@@ -201,9 +201,7 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array(
-                $baseURL . "/statistics/css/statistics.css"
-            )
+            [$baseURL . "/statistics/css/statistics.css"]
         );
     }
 } // End class

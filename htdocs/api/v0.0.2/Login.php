@@ -34,9 +34,9 @@ class Login extends APIBase
      * @param array  $data   The array-encode JSON posted to
      *                       the URL.
      */
-    function __construct($method, $data = array())
+    function __construct($method, $data = [])
     {
-        $this->AllowedMethods = array('POST');
+        $this->AllowedMethods = ['POST'];
         $this->RequestData    = $data;
 
         if (!in_array($method, $this->AllowedMethods)) {
@@ -65,7 +65,7 @@ class Login extends APIBase
             || empty($this->RequestData['password'])
         ) {
             $this->header("HTTP/1.1 400 Bad Request");
-            $this->JSON = array("error" => "Missing username or password");
+            $this->JSON = ["error" => "Missing username or password"];
             return;
 
         }
@@ -75,15 +75,15 @@ class Login extends APIBase
         $login = $this->getLoginAuthenticator();
 
         if ($login->passwordAuthenticate($user, $password, false)) {
-            $this->JSON = array(
+            $this->JSON = [
                            "token" => $this->getEncodedToken($user),
-                          );
+                          ];
         } else {
             $this->header("HTTP/1.1 401 Unauthorized");
             if (!empty($login->_lastError)) {
-                $this->JSON = array(
+                $this->JSON = [
                                "error" => $login->_lastError,
-                              );
+                              ];
             }
 
         }
@@ -115,7 +115,7 @@ class Login extends APIBase
         $www     = $config->getSetting("www");
         $baseURL = $www['url'];
 
-        $token = array(
+        $token = [
             // JWT related tokens to for the JWT library to validate
                   "iss"  => $baseURL,
                   "aud"  => $baseURL,
@@ -126,7 +126,7 @@ class Login extends APIBase
                   "exp"  => time() + 86400,
             // Additional payload data
                   "user" => $user,
-                 );
+                 ];
 
         $key = $config->getSetting("JWTKey");
         return \Firebase\JWT\JWT::encode($token, $key, "HS256");

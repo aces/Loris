@@ -127,12 +127,12 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
             WHERE c.Active='Y' AND s.Active='Y' AND c.CandID=:CID 
                 AND s.Visit_label=:VL 
                 AND f.File LIKE CONCAT('%', :Fname) AND pt.Name = :Header",
-            array(
+            [
              'CID'    => $this->CandID,
              'VL'     => $this->VisitLabel,
              'Fname'  => $this->Filename,
              'Header' => $headerName,
-            )
+            ]
         );
 
     }
@@ -188,11 +188,11 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
                 WHERE c.Active='Y' AND s.Active='Y' 
                     AND c.CandID=:CID AND s.Visit_label=:VL
                     AND f.File LIKE CONCAT('%', :Fname)",
-            array(
+            [
              'CID'   => $this->CandID,
              'VL'    => $this->VisitLabel,
              'Fname' => $this->Filename,
-            )
+            ]
         );
     }
 }

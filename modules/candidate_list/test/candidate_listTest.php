@@ -29,7 +29,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      *  All items represent the text of each column in the displayed HTML
      *  candidate table.
      */
-    private static $_TST0001 = array(
+    private static $_TST0001 = [
                                 '1',
                                 'Data Coordinating Center',
                                 '900000',
@@ -43,7 +43,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
                                 '1',
                                 'Not Started',
                                 'None',
-                               );
+                               ];
     /**
      * Backs up the useEDC config value and sets the value to a known
      * value (true) for testing.
@@ -146,33 +146,33 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         // Enter something that does not even make sense in the PSCID field
         // Verify that no candidates are returned
         $this->_assertSearchBy(
-            array('PSCID' => 'PSCID that does not exist'),
+            ['PSCID' => 'PSCID that does not exist'],
             null
         );
         // Search using a PSCID that does not exist
         // Verify that no candidates are returned
         $this->_assertSearchBy(
-            array('PSCID' => 'TST0003'),
+            ['PSCID' => 'TST0003'],
             null
         );
         // Search using PSCID TST0001
         // Verify that only one candidate is returned: TST0001
         $this->_assertSearchBy(
-            array('PSCID' => 'TST0001'),
-            array(self::$_TST0001)
+            ['PSCID' => 'TST0001'],
+            [self::$_TST0001]
         );
         // Search for candidate with PSCID tst0001
         // Verify that candidate TST0001 is returned (checks that searches
         // are case-insensitive)
         $this->_assertSearchBy(
-            array('PSCID' => 'tst0001'),
-            array(self::$_TST0001)
+            ['PSCID' => 'tst0001'],
+            [self::$_TST0001]
         );
         // Search for PSCID that contains string t0
         // Verify that candidate TST0001 is returned
         $this->_assertSearchBy(
-            array('PSCID' => 't0'),
-            array(self::$_TST0001)
+            ['PSCID' => 't0'],
+            [self::$_TST0001]
         );
     }
     /**
@@ -190,26 +190,26 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         // Search using an invalid DCCID
         // Verify that no candidates are returned
         $this->_assertSearchBy(
-            array('DCCID' => 'Not even a DCCID'),
+            ['DCCID' => 'Not even a DCCID'],
             null
         );
         // Search using a valid DCCID that does not exist
         // Verify that no candidates are returned
         $this->_assertSearchBy(
-            array('DCCID' => '666666'),
+            ['DCCID' => '666666'],
             null
         );
         // Search using a valid DCCID substring that does not exist
         // Verify that no candidates are returned
         $this->_assertSearchBy(
-            array('DCCID' => '800'),
+            ['DCCID' => '800'],
             null
         );
         // Search for candidate with a DCCID substring that exists
         // Verify that candidate TST0001 is returned
         $this->_assertSearchBy(
-            array('DCCID' => '0'),
-            array(self::$_TST0001)
+            ['DCCID' => '0'],
+            [self::$_TST0001]
         );
     }
     /**
@@ -292,7 +292,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
                 $elements      = $actualRows[$i]->findElements(
                     WebDriverBy::xpath('.//td')
                 );
-                $actualColumns = array();
+                $actualColumns = [];
                 foreach ($elements as $e) {
                     $actualColumns[] = $e->getText();
                 }

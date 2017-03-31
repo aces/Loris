@@ -39,7 +39,7 @@ class NDB_Form_final_radiological_review extends NDB_Form
      *
      * @return boolean page access
      */
-    function _hasAccess() 
+    function _hasAccess()
     {
         $user =& User::singleton();
         return (
@@ -54,7 +54,7 @@ class NDB_Form_final_radiological_review extends NDB_Form
      *
      * @param string $perm Name of the permission to check
      *
-     * @return boolean Whether the user has said permission
+     * @return  boolean Whether the user has said permission
      * @private
      */
     function _has_perm($perm)
@@ -70,24 +70,33 @@ class NDB_Form_final_radiological_review extends NDB_Form
      */
     function final_radiological_review()
     {
-        $yes_no = array('' => '', 'yes' => 'Yes', 'no' => 'No');
-        $exclusionary = array('' => '',
-                'exclusionary' => 'Exclusionary',
-                'non_exclusionary' => 'Non-Exclusionary'
-        );
-        $results = array('' => '',
-                         'normal' => 'Normal',
+        $yes_no       = [
+                         ''    => '',
+                         'yes' => 'Yes',
+                         'no'  => 'No',
+                        ];
+        $exclusionary = [
+                         ''                 => '',
+                         'exclusionary'     => 'Exclusionary',
+                         'non_exclusionary' => 'Non-Exclusionary',
+                        ];
+        $results      = [
+                         ''         => '',
+                         'normal'   => 'Normal',
                          'abnormal' => 'Abnormal',
-                         'atypical' => 'Atypical');
-        $abnormality = array(null => '',
-                            '0' => 'None',
-                            '1' => 'Minimal',
-                            '2' => 'Mild',
-                            '3' => 'Moderate',
-                            '4' => 'Marked');
+                         'atypical' => 'Atypical',
+                        ];
+        $abnormality  = [
+                         null => '',
+                         '0'  => 'None',
+                         '1'  => 'Minimal',
+                         '2'  => 'Mild',
+                         '3'  => 'Moderate',
+                         '4'  => 'Marked',
+                        ];
 
         $DB =& Database::singleton();
-        $radiologists_q = $DB->pselect("SELECT * FROM examiners WHERE radiologist=True", array());
+        $radiologists_q = $DB->pselect("SELECT * FROM examiners WHERE radiologist=True", []);
 
         $radiologists[''] = '';
         foreach ($radiologists_q as &$row) {
@@ -134,7 +143,7 @@ class NDB_Form_final_radiological_review extends NDB_Form
 
     }
 
-    /** 
+    /**
      * Overrides the base class getDefaults to get the needed
      * information from the final_radiological_review table for
      * smarty
@@ -148,27 +157,27 @@ class NDB_Form_final_radiological_review extends NDB_Form
             // Get the basics for the final radiological review
             $final_review = $DB->pselectRow(
                 "SELECT * FROM $this->__table WHERE CommentID=:CID",
-                array('CID' => $this->identifier)
+                ['CID' => $this->identifier]
             );
             if(empty($final_review)) {
-                $final_review = array(
-                    'CommentID' => '',
-                    'Review_Done' => '',
-                    'Final_Review_Results' => '',
-                    'Final_Exclusionary' => '',
-                    'SAS' => '',
-                    'PVS' => '',
-                    'Final_Incidental_Findings' => '',
-                    'Final_Examiner' => '',
-                    'Final_Review_Results2' => '',
-                    'Final_Examiner2' => '',
-                    'Final_Exclusionary2' => '',
-                    'Review_Done2' => '',
-                    'SAS2' => '',
-                    'PVS2' => '',
-                    'Final_Incidental_Findings2' => '',
-                    'Finalized' => ''
-                );
+                $final_review = [
+                                 'CommentID'                  => '',
+                                 'Review_Done'                => '',
+                                 'Final_Review_Results'       => '',
+                                 'Final_Exclusionary'         => '',
+                                 'SAS'                        => '',
+                                 'PVS'                        => '',
+                                 'Final_Incidental_Findings'  => '',
+                                 'Final_Examiner'             => '',
+                                 'Final_Review_Results2'      => '',
+                                 'Final_Examiner2'            => '',
+                                 'Final_Exclusionary2'        => '',
+                                 'Review_Done2'               => '',
+                                 'SAS2'                       => '',
+                                 'PVS2'                       => '',
+                                 'Final_Incidental_Findings2' => '',
+                                 'Finalized'                  => '',
+                                ];
             }
 
             $original_review = $DB->pselectRow(
@@ -191,58 +200,55 @@ class NDB_Form_final_radiological_review extends NDB_Form
                 LIKE CONCAT(upper(c.PSCID), '_', upper(s.CandID), '_', upper(s.visit_label), '%')) 
                 WHERE r.CommentID=:CID 
                 GROUP by CandID, PSCID, Visit_label, SessionID, CommentID,
-                r.Scan_done, r.review_results, r.abnormal_atypical_exclusionary, r.Incidental_findings, e.full_name", 
-                array('CID' => $this->identifier)
+                r.Scan_done, r.review_results, r.abnormal_atypical_exclusionary, r.Incidental_findings, e.full_name",
+                ['CID' => $this->identifier]
             );
             if(empty($original_review)) {
-                $original_review = array(
-                    'Original_Scan_Done' => '',
-                    'Original_Review_Results' => '',
-                    'Original_Exclusionary' => '',
-                    'Original_Incidental_Findings' => '',
-                    'Original_Examiner' => ''
-                );
+                $original_review = [
+                                    'Original_Scan_Done'           => '',
+                                    'Original_Review_Results'      => '',
+                                    'Original_Exclusionary'        => '',
+                                    'Original_Incidental_Findings' => '',
+                                    'Original_Examiner'            => '',
+                                   ];
             }
-
 
             $history = $DB->pselect(
                 'SELECT userID, changeDate, col, old, new FROM final_radiological_review_history 
                 WHERE CommentID= :primKey ORDER BY changeDate DESC',
-                array('primKey' => $this->identifier)
+                ['primKey' => $this->identifier]
             );
 
             $history_display = '';
             foreach ($history as &$history_item) {
-                $history_display .= '<tr><td>' . 
-                    $history_item['changeDate'] . '</td><td>' . 
-                    $history_item['userID'] . '</td><td>' . 
-                    $history_item['col'] . '</td><td>' . 
+                $history_display .= '<tr><td>' .
+                    $history_item['changeDate'] . '</td><td>' .
+                    $history_item['userID'] . '</td><td>' .
+                    $history_item['col'] . '</td><td>' .
                     _makePretty($history_item['col'], $history_item['old']) . '</td><td>'
                     . _makePretty($history_item['col'], $history_item['new'])
                     . '</td></tr>';
             }
             $defaults = array_merge(
-                $final_review, 
-                $original_review, 
-                array( 'history' => $history_display)
+                $final_review,
+                $original_review,
+                [ 'history' => $history_display]
             );
 
-            if ($defaults['Final_Review_Results'] !=  $defaults['Final_Review_Results2'] 
-                || $defaults['Final_Exclusionary'] != $defaults['Final_Exclusionary2'] 
-                || $defaults['SAS'] != $defaults['SAS2'] 
-                || $defaults ['PVS'] != $defaults['PVS2']
+            if ($defaults['Final_Review_Results'] !=  $defaults['Final_Review_Results2']
+                || $defaults['Final_Exclusionary'] != $defaults['Final_Exclusionary2']
+                || $defaults['SAS'] != $defaults['SAS2']
+                || $defaults['PVS'] != $defaults['PVS2']
             ) {
                 $this->tpl_data['conflicts'][] = "Conflict between final and extra review";
             }
-            if ($defaults['Final_Review_Results'] != $defaults['Original_Review_Results']
-         
-            ) {
+            if ($defaults['Final_Review_Results'] != $defaults['Original_Review_Results']                ) {
                 $this->tpl_data['conflicts'][] = "Conflict between original and final review";
             }
 
             return $defaults;
         }
-        return array();
+        return [];
     }
 
     /**
@@ -252,7 +258,7 @@ class NDB_Form_final_radiological_review extends NDB_Form
      * @param array  &$arr  A reference to the array being cleaned
      * @param string $field The field being cleaned
      *
-     * @return array $arr Modified so that empty strings are instead
+     * @return  array $arr Modified so that empty strings are instead
      *                    null
      * @private
      */
@@ -273,8 +279,8 @@ class NDB_Form_final_radiological_review extends NDB_Form
      */
     function _process($values)
     {
-        if (!is_array($values) 
-            || count($values) == 0 
+        if (!is_array($values)
+            || count($values) == 0
             || $this->_has_perm('edit_final_radiological_review') == false
         ) {
             return true;
@@ -291,20 +297,20 @@ class NDB_Form_final_radiological_review extends NDB_Form
         $this->stripEmpty($values, 'Finalized');
 
         if (!(is_null($_SESSION['State']))) {
-            $currentUser           = User::singleton($_SESSION['State']->getUsername());
-            $userID                = $currentUser->getData("UserID");
+            $currentUser = User::singleton($_SESSION['State']->getUsername());
+            $userID      = $currentUser->getData("UserID");
         }
 
         $DB =& Database::singleton();
         if (isset($this->identifier)) {
             $exists = $DB->pselectRow(
                 "SELECT * FROM " . $this->__table . " WHERE CommentID=:CID",
-                array('CID' => $this->identifier)
+                ['CID' => $this->identifier]
             );
 
-            if ($exists == array()) {
+            if ($exists == []) {
                 $insert_values = array_merge(
-                    array('CommentID' => $this->identifier),
+                    ['CommentID' => $this->identifier],
                     $values
                 );
                 $DB->insert($this->__table, $insert_values);
@@ -313,19 +319,22 @@ class NDB_Form_final_radiological_review extends NDB_Form
                  * if any field was updated */
                 foreach($values as $key=>$val) {
                     if ($exists[$key] != $val) {
-                        $update_vals = array('col'=>$key,
-                                'new'=>$val,
-                                'old'=>$exists[$key],
-                                'CommentID'=>$this->identifier,
-                                'userID'=>$userID );
+                        $update_vals = [
+                                        'col'       => $key,
+                                        'new'       => $val,
+                                        'old'       => $exists[$key],
+                                        'CommentID' => $this->identifier,
+                                        'userID'    => $userID,
+                                       ];
 
                         $DB->insert("final_radiological_review_history", $update_vals);
                     }
                 }
                 $DB->update(
-                        $this->__table, $values,
-                        array('CommentID' => $this->identifier)
-                        );
+                    $this->__table,
+                    $values,
+                    ['CommentID' => $this->identifier]
+                );
             }
 
         }

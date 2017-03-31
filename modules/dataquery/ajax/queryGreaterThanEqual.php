@@ -12,22 +12,28 @@ $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
 
 
-$cdb = CouchDB::singleton();
-$category = $_REQUEST['category'];
+$cdb       = CouchDB::singleton();
+$category  = $_REQUEST['category'];
 $fieldName = $_REQUEST['field'];
-$value = $_REQUEST['value'];
-$value = is_numeric($value) ? $value : "\"$value\"";
+$value     = $_REQUEST['value'];
+$value     = is_numeric($value) ? $value : "\"$value\"";
 
 $results = $cdb->queryView(
     "DQG-2.0",
     "search",
-    array("reduce" => "false",
-          "startkey" => "[\"$category\", \"$fieldName\", $value]",
-          "endkey" => "[\"$category\", \"$fieldName\", {}]",
-      )
+    [
+     "reduce"   => "false",
+     "startkey" => "[\"$category\", \"$fieldName\", $value]",
+     "endkey"   => "[\"$category\", \"$fieldName\", {}]",
+    ]
 );
 
-$sessionResults = array_map(function($element) { return $element['value']; }, $results);
+$sessionResults = array_map(
+    function ($element) {
+        return $element['value'];
+    },
+    $results
+);
 
 print json_encode($sessionResults);
 ?>

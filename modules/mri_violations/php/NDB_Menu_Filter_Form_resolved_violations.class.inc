@@ -58,7 +58,7 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
             $hash = $key;
             $row  = $DB->pselectRow(
                 "SELECT * FROM violations_resolved WHERE hash = :hash",
-                array('hash' => $hash)
+                ['hash' => $hash]
             );
             //if row is found, check value and update if needed
             if (!empty($row)) {
@@ -70,8 +70,8 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
                             break;
                         } else { // user input doesn't match DB,
                                  // so we update the DB
-                            $setArray   = array('Resolved' => (string)$val2);
-                            $whereArray = array('hash' => $hash);
+                            $setArray   = ['Resolved' => (string)$val2];
+                            $whereArray = ['hash' => $hash];
                             $DB->update(
                                 'violations_resolved',
                                 $setArray,
@@ -86,7 +86,7 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
                 if ($val==0) {
                     continue;
                 }
-                $newlyResolved         = array();
+                $newlyResolved         = [];
                 $newlyResolved['hash'] = $key;
                 $newlyResolved['Resolved']   = (string)$val;
                 $newlyResolved['User']       = $user->getUsername();
@@ -100,7 +100,7 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
                                 "SeriesUID,time_run)))";
                 $ID_mri_protocol_violated_scans = $DB->pselectOne(
                     $sqlSelectOne,
-                    array('hash' => $key)
+                    ['hash' => $key]
                 );
                 if (!empty($ID_mri_protocol_violated_scans)) {
                     $newlyResolved['TypeTable'] = 'mri_protocol_violated_scans';
@@ -113,7 +113,7 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
                                 "MincFile,PatientName,SeriesUID,TimeRun)))";
                 $ID_mri_violations_log = $DB->pselectOne(
                     $sqlSelectOne,
-                    array('hash' => $key)
+                    ['hash' => $key]
                 );
                 if (!empty($ID_mri_violations_log)) {
                     $newlyResolved['TypeTable'] = 'mri_violations_log';
@@ -127,7 +127,7 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
                                 "MincFile,PatientName,SeriesUID,TimeRun)))";
                 $ID_MRICandidateErrors = $DB->pselectOne(
                     $sqlSelectOne,
-                    array('hash' => $key)
+                    ['hash' => $key]
                 );
                 if (!empty($ID_MRICandidateErrors)) {
                     $newlyResolved['TypeTable'] = 'MRICandidateErrors';
@@ -156,7 +156,7 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
             $useProjects = true;
         }
 
-        $this->columns = array(
+        $this->columns = [
                           'v.Resolved as Resolution_status',
                           'v.PatientName as PatientName',
                           'site.Name as Site',
@@ -168,8 +168,8 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
                           'v.hash as Hash',
                           'v.join_id as JoinID',
                           'v.Site as SiteID',
-                         );
-        $this->headers = array(
+                         ];
+        $this->headers = [
                           'Resolution_status',
                           'PatientName',
                           'Site',
@@ -181,7 +181,7 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
                           'Hash',
                           'JoinID',
                           'SiteID',
-                         );
+                         ];
         if ($useProjects) {
             array_splice($this->columns, 1, 0, 'pjct.Name as Project');
             array_splice(
@@ -292,7 +292,7 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
             WHERE 1=1";
         $this->order_by = 'v.TimeRun DESC';
 
-        $this->formToFilter = array(
+        $this->formToFilter = [
                                'PatientName' => 'v.PatientName',
                                'Site'        => 'v.Site',
                                'TimeRun'     => 'v.TimeRun',
@@ -303,8 +303,8 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
                                'Description' => 'v.Series_Description',
                                'SeriesUID'   => 'v.SeriesUID',
                                'Resolved'    => 'v.Resolved',
-                              );
-        $this->validFilters = array(
+                              ];
+        $this->validFilters = [
                                'v.PatientName',
                                'v.Site',
                                'v.TimeRun',
@@ -315,7 +315,7 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
                                'v.Series_Description',
                                'v.SeriesUID',
                                'v.Resolved',
-                              );
+                              ];
         return true;
     }
     /**
@@ -331,13 +331,13 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
         $study       = $config->getSetting('study');
         $minYear     = $study['startYear'] - $study['ageMax'];
         $maxYear     = $study['endYear'] - $study['ageMin'];
-        $dateOptions = array(
+        $dateOptions = [
                         'language'       => 'en',
                         'format'         => 'YMd',
                         'addEmptyOption' => true,
                         'minYear'        => $minYear,
                         'maxYear'        => $maxYear,
-                       );
+                       ];
         $this->addBasicText('PatientName', 'Patient Name');
         $this->addBasicText('Description', 'Series Description or Scan Type');
         $this->addBasicDate('TimeRun', 'Time Run', $dateOptions);
@@ -347,18 +347,18 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
         $this->addSelect(
             "ProblemType",
             "Type of problem",
-            array(
+            [
              ''                             => 'Any',
              $notMatchString                => 'Candidate Mismatch',
              'Could not identify scan type' => 'Could not identify scan type',
              'Protocol Violation'           => 'MRI Protocol Check violation',
-            )
+            ]
         );
         // violation resolved
         $this->addSelect(
             'Resolved',
             'Violation resolved',
-            array(
+            [
              ''              => 'Any',
              'reran'         => 'Reran',
              'emailed'       => 'Emailed site/pending',
@@ -366,14 +366,14 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
              'rejected'      => 'Rejected',
              'inserted_flag' => 'Inserted with flag',
              'other'         => 'Other',
-            )
+            ]
         );
         // project
         $list_of_projects = Utility::getProjectList();
         $this->addSelect(
             'Project',
             'Project',
-            array('' => 'All') + $list_of_projects
+            ['' => 'All'] + $list_of_projects
         );
 
         // Subproject
@@ -381,7 +381,7 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
         $this->addSelect(
             'Subproject',
             'Subproject',
-            array('' => 'All') + $list_of_subprojects
+            ['' => 'All'] + $list_of_subprojects
         );
 
         // Get sites
@@ -389,7 +389,7 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
             // get the list of study sites - to be replaced by the Site object
             $sites = Utility::getSiteList();
             if (is_array($sites)) {
-                $sites = array('' => 'All') + $sites;
+                $sites = ['' => 'All'] + $sites;
             }
         } else {
             // allow only to view own site data
@@ -400,7 +400,7 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
                     $sites[$val] = $site[$key]->getCenterName();
                 }
             }
-            $sites = array('' => 'All User Sites') + $sites;
+            $sites = ['' => 'All User Sites'] + $sites;
         }
         $this->addSelect('Site', 'Site', $sites);
 
@@ -418,7 +418,7 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/mri_violations/js/columnFormatter.js")
+            [$baseURL . "/mri_violations/js/columnFormatter.js"]
         );
     }
 }

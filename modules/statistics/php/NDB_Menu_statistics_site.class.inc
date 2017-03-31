@@ -7,10 +7,10 @@
 class NDB_Menu_statistics_site extends NDB_Menu
 {
 
-    var $instruments    = array();
-    var $issues         = array();
+    var $instruments    = [];
+    var $issues         = [];
     var $query_criteria = '';
-    var $query_vars     = array();
+    var $query_vars     = [];
 
     function _checkCriteria($centerID, $projectID)
     {
@@ -97,7 +97,7 @@ class NDB_Menu_statistics_site extends NDB_Menu
         }
         $DB =& Database::singleton();
         if (!empty($_REQUEST['CenterID'])) {
-            $center   = $DB->pselectRow("SELECT CenterID as ID, PSCArea as Name FROM psc WHERE CenterID =:cid", array('cid' => $_REQUEST['CenterID']));
+            $center   = $DB->pselectRow("SELECT CenterID as ID, PSCArea as Name FROM psc WHERE CenterID =:cid", ['cid' => $_REQUEST['CenterID']]);
             $centerID = $center['ID'];
             $name     = $center['Name'];
         }
@@ -115,10 +115,10 @@ class NDB_Menu_statistics_site extends NDB_Menu
         // that we can iterate over it to display later, and leave blank
         // cells for ones that are missing for a given instrument in the
         // template
-        $visits = array();
+        $visits = [];
 
         $this->_setInstrumentName();
-        $data = array();
+        $data = [];
         foreach($this->instruments as $instrument=>$label){
 
             if ($DB->tableExists($instrument)) {
@@ -132,19 +132,19 @@ class NDB_Menu_statistics_site extends NDB_Menu
                     if (!in_array($row['Visit_label'], $visits)) {
                         $visits[] = $row['Visit_label'];
                     }
-                    $results[$row['Visit_label']][] = array(
-                        'test_url' => $test_url,
-                        'CandID' => $row['CandID'],
-                        'SessionID' => $row['SessionID'],
-                        'CommentID' => $row['CommentID'],
-                        'PSCID' => $row['PSCID'],
-                    );
+                    $results[$row['Visit_label']][] = [
+                                                       'test_url'  => $test_url,
+                                                       'CandID'    => $row['CandID'],
+                                                       'SessionID' => $row['SessionID'],
+                                                       'CommentID' => $row['CommentID'],
+                                                       'PSCID'     => $row['PSCID'],
+                                                      ];
                 }
-                $data[] = array(
-                    'name' => $label,
-                    'count' => $complete_count,
-                    'incompletes' => $results,
-                );
+                $data[] = [
+                           'name'        => $label,
+                           'count'       => $complete_count,
+                           'incompletes' => $results,
+                          ];
             }
         }
 
@@ -167,9 +167,7 @@ class NDB_Menu_statistics_site extends NDB_Menu
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array(
-                $baseURL . "/statistics/css/statistics.css"
-            )
+            [$baseURL . "/statistics/css/statistics.css"]
         );
     }
 

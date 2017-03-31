@@ -13,7 +13,7 @@ $client->initialize(__DIR__ . "/../../../project/config.xml");
 header("Content-Type: application/json");
 
 
-$cdb = CouchDB::singleton();
+$cdb   = CouchDB::singleton();
 $docID = urlencode($_REQUEST['DocID']);
 
 $results = $cdb->getDoc(

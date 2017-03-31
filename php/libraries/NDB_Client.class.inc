@@ -96,7 +96,7 @@ class NDB_Client
 		FROM Config c
 			JOIN ConfigSettings cs ON (c.ConfigID=cs.ID)
 		WHERE cs.Name=:nm",
-            array("nm" => "CSPAdditionalHeaders")
+            ["nm" => "CSPAdditionalHeaders"]
         );
         if (empty($config_additions)) {
             $config_additions = "";

@@ -84,9 +84,9 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
             "SELECT ID,Description
             FROM participant_status_options
             WHERE parentID IS NULL",
-            array()
+            []
         );
-        $option_array = array();
+        $option_array = [];
         foreach ($options as $option) {
             $option_array[$option['ID']] = $option['Description'];
         }
@@ -109,9 +109,9 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
             "SELECT ID,Description 
             FROM participant_status_options 
             WHERE parentID=:pid",
-            array('pid' => $parentID)
+            ['pid' => $parentID]
         );
-        $option_array = array();
+        $option_array = [];
         foreach ($options as $option) {
             $option_array[$option['ID']] = $option['Description'];
         }
@@ -153,13 +153,13 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
              $baseURL . "/candidate_parameters/js/candidateInfo.js",
              $baseURL . "/candidate_parameters/js/probandInfo.js",
              $baseURL . "/candidate_parameters/js/familyInfo.js",
              $baseURL . "/candidate_parameters/js/participantStatus.js",
              $baseURL . "/candidate_parameters/js/consentStatus.js",
-            )
+            ]
         );
     }
 }

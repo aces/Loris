@@ -379,7 +379,7 @@ function editConsentStatusFields($db, $user)
     $consent_details =Utility::asArray($consent['Consent']);
     if (!$consent_details[0]) {
         // If only one consent, need to put in an array
-        $temp            = array();
+        $temp            = [];
         $temp[]          = $consent_details;
         $consent_details = $temp;
     }

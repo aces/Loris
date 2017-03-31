@@ -36,7 +36,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     */
     private function _getCNVFilters()
     {
-        return array(
+        return [
                 'centerID',
                 'SubprojectID',
                 'DCCID',
@@ -54,7 +54,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                 'Copy_Num_Change',
                 'Inheritance',
                 'CNV_Description',
-               );
+               ];
     }
 
     /**
@@ -64,7 +64,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     */
     private function _getSNPFilters()
     {
-        return array(
+        return [
                 'centerID',
                 'DCCID',
                 'PSCID',
@@ -91,7 +91,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                 'Chromosome',
                 'Gene_Symbol',
                 'Platform',
-               );
+               ];
     }
 
     /**
@@ -104,33 +104,33 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     {
         $this->DB->insert(
             "candidate",
-            array(
+            [
              'CandID'      => '000771',
              'PSCID'       => 'TST9779',
              'CenterID'    => 1,
              'Active'      => 'Y',
              'UserID'      => 1,
              'Entity_type' => 'Human',
-            )
+            ]
         );
 
-        $this->DB->insert("psc", array("CenterID" => 92));
+        $this->DB->insert("psc", ["CenterID" => 92]);
 
         $this->DB->insert(
             "candidate",
-            array(
+            [
              'CandID'      => '000772',
              'PSCID'       => 'TST9778',
              'CenterID'    => 92,
              'Active'      => 'Y',
              'UserID'      => 1,
              'Entity_type' => 'Human',
-            )
+            ]
         );
 
         $this->DB->insert(
             "CNV",
-            array(
+            [
              'CNVID'             => 9999999999,
              'CandID'            => '000771',
              'Description'       => 'CNV 1',
@@ -144,11 +144,11 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
              'Markers'           => 'Marker 1',
              'ArrayReportDetail' => 'Array report detail 1',
              'ValidationMethod'  => 'Validation method 1',
-            )
+            ]
         );
         $this->DB->insert(
             "CNV",
-            array(
+            [
              'CNVID'             => 9999999998,
              'CandID'            => '000771',
              'Description'       => 'CNV 2',
@@ -162,11 +162,11 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
              'Markers'           => 'Marker 1',
              'ArrayReportDetail' => 'Array report detail 1',
              'ValidationMethod'  => 'Validation method 1',
-            )
+            ]
         );
         $this->DB->insert(
             "CNV",
-            array(
+            [
              'CNVID'             => 9999999997,
              'CandID'            => '000771',
              'Description'       => 'CNV 3',
@@ -180,11 +180,11 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
              'Markers'           => 'Marker 1',
              'ArrayReportDetail' => 'Array report detail 1',
              'ValidationMethod'  => 'Validation method 1',
-            )
+            ]
         );
         $this->DB->insert(
             "CNV",
-            array(
+            [
              'CNVID'             => 9999999996,
              'CandID'            => '000772',
              'Description'       => 'CNV 4',
@@ -198,11 +198,11 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
              'Markers'           => 'Marker 1',
              'ArrayReportDetail' => 'Array report detail 1',
              'ValidationMethod'  => 'Validation method 1',
-            )
+            ]
         );
         $this->DB->insert(
             "CNV",
-            array(
+            [
              'CNVID'             => 9999999995,
              'CandID'            => '000772',
              'Description'       => 'CNV 5',
@@ -216,83 +216,83 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
              'Markers'           => 'Marker 1',
              'ArrayReportDetail' => 'Array report detail 1',
              'ValidationMethod'  => 'Validation method 1',
-            )
+            ]
         );
 
         $this->DB->insert(
             "SNP",
-            array(
+            [
              'SNPID' => 9999999999,
              'rsID'  => 'rs0000001',
-            )
+            ]
         );
         $this->DB->insert(
             "SNP",
-            array(
+            [
              'SNPID' => 9999999998,
              'rsID'  => 'rs0000002',
-            )
+            ]
         );
         $this->DB->insert(
             "SNP",
-            array(
+            [
              'SNPID' => 9999999997,
              'rsID'  => 'rs0000003',
-            )
+            ]
         );
         $this->DB->insert(
             "SNP",
-            array(
+            [
              'SNPID' => 9999999996,
              'rsID'  => 'rs0000001',
-            )
+            ]
         );
         $this->DB->insert(
             "SNP",
-            array(
+            [
              'SNPID' => 9999999995,
              'rsID'  => 'rs0000002',
-            )
+            ]
         );
 
         $this->DB->insert(
             "SNP_candidate_rel",
-            array(
+            [
              'SNPID'  => 9999999999,
              'CandID' => '000771',
-            )
+            ]
         );
 
         $this->DB->insert(
             "SNP_candidate_rel",
-            array(
+            [
              'SNPID'  => 9999999998,
              'CandID' => '000771',
-            )
+            ]
         );
 
         $this->DB->insert(
             "SNP_candidate_rel",
-            array(
+            [
              'SNPID'  => 9999999997,
              'CandID' => '000771',
-            )
+            ]
         );
 
         $this->DB->insert(
             "SNP_candidate_rel",
-            array(
+            [
              'SNPID'  => 9999999999,
              'CandID' => '000772',
-            )
+            ]
         );
 
         $this->DB->insert(
             "SNP_candidate_rel",
-            array(
+            [
              'SNPID'  => 9999999998,
              'CandID' => '000772',
-            )
+            ]
         );
 
     }
@@ -305,22 +305,22 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     public function deleteData()
     {
-        $this->DB->delete("CNV", array("CNVID" => '9999999999'));
-        $this->DB->delete("CNV", array("CNVID" => '9999999998'));
-        $this->DB->delete("CNV", array("CNVID" => '9999999997'));
-        $this->DB->delete("CNV", array("CNVID" => '9999999996'));
-        $this->DB->delete("CNV", array("CNVID" => '9999999995'));
-        $this->DB->delete("SNP_candidate_rel", array("SNPID" => '9999999999'));
-        $this->DB->delete("SNP_candidate_rel", array("SNPID" => '9999999998'));
-        $this->DB->delete("SNP_candidate_rel", array("SNPID" => '9999999997'));
-        $this->DB->delete("SNP", array("SNPID" => '9999999999'));
-        $this->DB->delete("SNP", array("SNPID" => '9999999998'));
-        $this->DB->delete("SNP", array("SNPID" => '9999999997'));
-        $this->DB->delete("SNP", array("SNPID" => '9999999996'));
-        $this->DB->delete("SNP", array("SNPID" => '9999999995'));
-        $this->DB->delete("candidate", array('CandID' => '000771'));
-        $this->DB->delete("candidate", array('CandID' => '000772'));
-        $this->DB->delete("psc", array('CenterID' => 92));
+        $this->DB->delete("CNV", ["CNVID" => '9999999999']);
+        $this->DB->delete("CNV", ["CNVID" => '9999999998']);
+        $this->DB->delete("CNV", ["CNVID" => '9999999997']);
+        $this->DB->delete("CNV", ["CNVID" => '9999999996']);
+        $this->DB->delete("CNV", ["CNVID" => '9999999995']);
+        $this->DB->delete("SNP_candidate_rel", ["SNPID" => '9999999999']);
+        $this->DB->delete("SNP_candidate_rel", ["SNPID" => '9999999998']);
+        $this->DB->delete("SNP_candidate_rel", ["SNPID" => '9999999997']);
+        $this->DB->delete("SNP", ["SNPID" => '9999999999']);
+        $this->DB->delete("SNP", ["SNPID" => '9999999998']);
+        $this->DB->delete("SNP", ["SNPID" => '9999999997']);
+        $this->DB->delete("SNP", ["SNPID" => '9999999996']);
+        $this->DB->delete("SNP", ["SNPID" => '9999999995']);
+        $this->DB->delete("candidate", ['CandID' => '000771']);
+        $this->DB->delete("candidate", ['CandID' => '000772']);
+        $this->DB->delete("psc", ['CenterID' => 92]);
     }
 
     /**
@@ -502,7 +502,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     {
 
         // Without permissions
-        $this->setupPermissions(array(''));
+        $this->setupPermissions(['']);
         $this->webDriver->navigate()->refresh();
         $this->safeGet($this->url . "/genomic_browser/");
         $errorText = $this->webDriver->findElement(
@@ -523,7 +523,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         // With permission genomic_browser_view_site
-        $this->setupPermissions(array('genomic_browser_view_site'));
+        $this->setupPermissions(['genomic_browser_view_site']);
         $this->webDriver->navigate()->refresh();
         $this->safeGet($this->url . "/genomic_browser/");
         $breadcrumbText = $this->webDriver->findElement(
@@ -541,7 +541,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->assertEquals("Genomic Browser", $breadcrumbText);
 
         // With permission genomic_browser_view_allsites
-        $this->setupPermissions(array('genomic_browser_view_allsites'));
+        $this->setupPermissions(['genomic_browser_view_allsites']);
         $this->webDriver->navigate()->refresh();
         $this->safeGet($this->url . "/genomic_browser/");
         $breadcrumbText = $this->webDriver->findElement(
@@ -573,7 +573,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         // Without permissions
-        $this->setupPermissions(array(''));
+        $this->setupPermissions(['']);
         $this->webDriver->navigate()->refresh();
         $this->assertFalse(
             $this->isMenuItemPresent('Tools', 'Genomic Browser'),
@@ -581,7 +581,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         // With permission genomic_browser_view_site
-        $this->setupPermissions(array('genomic_browser_view_site'));
+        $this->setupPermissions(['genomic_browser_view_site']);
         $this->webDriver->navigate()->refresh();
         $this->assertTrue(
             $this->isMenuItemPresent('Tools', 'Genomic Browser'),
@@ -589,7 +589,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         // With permission genomic_browser_view_allsites
-        $this->setupPermissions(array('genomic_browser_view_allsites'));
+        $this->setupPermissions(['genomic_browser_view_allsites']);
         $this->webDriver->navigate()->refresh();
         $this->assertTrue(
             $this->isMenuItemPresent('Tools', 'Genomic Browser'),
@@ -695,7 +695,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testGenomicBrowserCNVDataSortableBrief()
     {
-        $expected_headers = array(
+        $expected_headers = [
                              'No.',
                              'DCCID',
                              'PSCID',
@@ -709,7 +709,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                              'CNV Description',
                              'Copy Num Change',
                              'Common CNV',
-                            );
+                            ];
 
         $this->safeGet($this->url . "/genomic_browser/?submenu=cnv_browser");
 
@@ -761,7 +761,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testGenomicBrowserCNVSitePermission()
     {
-        $this->setupPermissions(array('genomic_browser_view_site'));
+        $this->setupPermissions(['genomic_browser_view_site']);
         $this->safeGet($this->url . "/genomic_browser/?submenu=cnv_browser");
 
         $message = $this->webDriver->findElement(
@@ -813,7 +813,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             'Test should be updated for new main genomic browser tab.'
         );
 
-        $expected_headers = array(
+        $expected_headers = [
                              'No.',
                              'PSC',
                              'DCCID',
@@ -840,7 +840,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                              'Array Report',
                              'Markers',
                              'Validation Method',
-                            );
+                            ];
 
         $this->safeGet($this->url . "/genomic_browser/?submenu=cnv_browser");
 
@@ -975,7 +975,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testGenomicBrowserSNPSitePermission()
     {
-        $this->setupPermissions(array('genomic_browser_view_site'));
+        $this->setupPermissions(['genomic_browser_view_site']);
         $this->safeGet($this->url . "/genomic_browser/?submenu=snp_browser");
 
         $message = $this->webDriver->findElement(
@@ -995,7 +995,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testGenomicBrowserSNPDataSortableBrief()
     {
-        $expected_headers = array(
+        $expected_headers = [
                              'No.',
                              'DCCID',
                              'PSCID',
@@ -1008,7 +1008,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                              'SNP Name',
                              'SNP Description',
                              'Function Prediction',
-                            );
+                            ];
 
         $this->safeGet($this->url . "/genomic_browser/?submenu=snp_browser");
         $headers = $this->webDriver->findElements(
@@ -1085,7 +1085,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             'Test should be updated for new main genomic browser tab.'
         );
 
-        $expected_headers = array(
+        $expected_headers = [
                              'No.',
                              'PSC',
                              'DCCID',
@@ -1118,7 +1118,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                              'Damaging',
                              'Genotype Quality',
                              'Exonic Function',
-                            );
+                            ];
 
         $this->safeGet($this->url . "/genomic_browser/?submendu=snp_browser");
 

@@ -48,7 +48,7 @@ class Email
     static function send(
         $to,
         $template,
-        $tpl_data = array(),
+        $tpl_data = [],
         $reply_to = '',
         $from = '',
         $cc = '',

@@ -46,7 +46,7 @@ class NDB_Form_Dashboard extends NDB_Form
                 FROM user_login_history
                 WHERE userID=:UserID AND Success='Y')
              AND userID=:UserID AND Success='Y'",
-            array('UserID' => $userID)
+            ['UserID' => $userID]
         );
 
         $siteID = implode(',', $user->getCenterID());
@@ -65,11 +65,11 @@ class NDB_Form_Dashboard extends NDB_Form
         if (!empty($dashboard_links)) {
             foreach ($dashboard_links as $text => $url) {
                 $this->tpl_data['dashboard_links'][]
-                    = array(
+                    = [
                        'url'        => $url,
                        'label'      => $text,
                        'WindowName' => md5($url),
-                      );
+                      ];
             }
         }
 
@@ -103,7 +103,7 @@ class NDB_Form_Dashboard extends NDB_Form
 		LEFT JOIN candidate c ON (s.CandID=c.CandID)
 		WHERE s.Active='Y' AND c.Active='Y'
 			AND s.CenterID <> 1",
-            array()
+            []
         );
 
         // Tasks
@@ -119,7 +119,7 @@ class NDB_Form_Dashboard extends NDB_Form
                  WHERE fqc.QCStatus IS NULL
 			AND s.Active='Y' AND c.Active='Y'
 			AND s.CenterID <> 1",
-                array()
+                []
             );
             $this->tpl_data['new_scans_site'] = 'Sites: all';
         }
@@ -134,7 +134,7 @@ class NDB_Form_Dashboard extends NDB_Form
 			LEFT JOIN candidate c ON (s.CandID=c.CandID)
                       WHERE s.CenterID <> 1
 			AND s.Active='Y' AND c.Active='Y'",
-                    array()
+                    []
                 );
                 $this->tpl_data['conflicts_site'] = 'Sites: all';
             } else {
@@ -146,7 +146,7 @@ class NDB_Form_Dashboard extends NDB_Form
                      LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
                      WHERE FIND_IN_SET(psc.CenterID, :siteID) 
 			            AND s.Active='Y' AND c.Active='Y'",
-                    array('siteID' => $siteID)
+                    ['siteID' => $siteID]
                 );
                 $this->tpl_data['conflicts_site'] = 'Sites: ' . $site;
             }
@@ -161,7 +161,7 @@ class NDB_Form_Dashboard extends NDB_Form
 			LEFT JOIN candidate c ON (s.CandID=c.CandID)
 		     WHERE flag.Data_entry='In Progress'
 			AND s.Active='Y' AND c.Active='Y' AND s.CenterID <> 1",
-                    array()
+                    []
                 );
                 $this->tpl_data['incomplete_forms_site'] = 'Sites: all';
             } else {
@@ -173,7 +173,7 @@ class NDB_Form_Dashboard extends NDB_Form
                     WHERE Data_entry='In Progress' 
                     AND FIND_IN_SET(psc.CenterID, :siteID)
 			          AND s.Active='Y' AND c.Active='Y'",
-                    array('siteID' => $siteID)
+                    ['siteID' => $siteID]
                 );
                 $this->tpl_data['incomplete_forms_site'] = 'Sites: ' . $site;
             }
@@ -190,7 +190,7 @@ class NDB_Form_Dashboard extends NDB_Form
 			LEFT JOIN candidate c ON (c.CandID=s.CandID)
                 WHERE Review_Done IS NULL
 			AND c.Active='Y' AND s.Active='Y'",
-                array()
+                []
             );
             $this->tpl_data['radiology_review_site'] = 'Sites: all';
         }
@@ -204,7 +204,7 @@ class NDB_Form_Dashboard extends NDB_Form
                 LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)
 		        WHERE users.Pending_approval='Y' 
                 AND (upr.CenterID <> 1 OR upr.CenterID IS NULL)",
-                array()
+                []
             );
             $this->tpl_data['pending_users_site'] = 'Sites: all';
         } elseif ($user->hasPermission('user_accounts')) {
@@ -213,7 +213,7 @@ class NDB_Form_Dashboard extends NDB_Form
                 "SELECT COUNT(*) FROM users 
                 LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)
 		        WHERE users.Pending_approval='Y' AND upr.CenterID IN (:CID)",
-                array('CID' => implode(",", $site_arr))
+                ['CID' => implode(",", $site_arr)]
             );
 
             $this->tpl_data['pending_users_site'] = 'Sites: ' . $site;
@@ -227,7 +227,7 @@ class NDB_Form_Dashboard extends NDB_Form
 		WHERE COALESCE(c.CenterID, 0) <> 1",
                 /* include null CenterIDs so we don't accidentally
                 filter things out */
-                array()
+                []
             );
             $this->tpl_data['violated_scans_site'] = 'Sites: all';
         }
@@ -239,7 +239,7 @@ class NDB_Form_Dashboard extends NDB_Form
             $document_repository = $DB->pselect(
                 "SELECT File_name, Date_uploaded, Data_dir FROM document_repository 
                  ORDER BY Date_uploaded DESC LIMIT 4",
-                array()
+                []
             );
             for ($i=0; $i < sizeof($document_repository); $i++) {
                 if ($document_repository[$i]['Date_uploaded'] > $last_login) {
@@ -258,7 +258,7 @@ class NDB_Form_Dashboard extends NDB_Form
                 "SELECT COUNT(*) FROM issues
                  WHERE status !='closed'
                  AND assignee=:userID",
-                array('userID' => $user->getData('UserID'))
+                ['userID' => $user->getData('UserID')]
             );
             $this->tpl_data['issues_assigned']
                 = $issue_tracker;
@@ -282,7 +282,7 @@ class NDB_Form_Dashboard extends NDB_Form
                  JOIN feedback_bvl_type fbt USING (Feedback_type)
                  WHERE fbth.Status='opened' AND fbth.Active='Y'
                  ORDER BY Testdate DESC LIMIT 4",
-                array()
+                []
             );
             for ($i=0; $i < sizeof($bvl_feedback); $i++) {
                 if ($bvl_feedback[$i]['Testdate'] > $last_login) {
@@ -295,7 +295,7 @@ class NDB_Form_Dashboard extends NDB_Form
                 } else if ($bvl_feedback[$i]['Feedback_level'] == 'instrument') {
                     $instrument = $DB->pselectOne(
                         "SELECT Test_name from flag WHERE CommentID=:cid",
-                        array('cid' => $bvl_feedback[$i]['CommentID'])
+                        ['cid' => $bvl_feedback[$i]['CommentID']]
                     );
                     if ($instrument !== null) {
                         $bvl_feedback[$i]['URL'] = '/' . $instrument . '/?candID='
@@ -321,7 +321,7 @@ class NDB_Form_Dashboard extends NDB_Form
         $totalRecruitment = $DB->pselectOne(
             "SELECT COUNT(*) FROM candidate c
              WHERE c.Active='Y' AND c.Entity_type='Human' AND c.CenterID <> 1",
-            array()
+            []
         );
         return $totalRecruitment;
     }
@@ -341,7 +341,7 @@ class NDB_Form_Dashboard extends NDB_Form
              FROM candidate c
              WHERE c.Active='Y' AND c.ProjectID=:PID AND c.Entity_type='Human'
              AND c.CenterID <> 1",
-            array('PID' => $projectID)
+            ['PID' => $projectID]
         );
         return $totalRecruitment;
     }
@@ -361,7 +361,7 @@ class NDB_Form_Dashboard extends NDB_Form
              FROM candidate c
              WHERE c.Gender=:Gender AND c.Active='Y' AND c.Entity_type='Human'
              AND c.CenterID <> 1",
-            array('Gender' => $gender)
+            ['Gender' => $gender]
         );
         return $total;
     }
@@ -383,10 +383,10 @@ class NDB_Form_Dashboard extends NDB_Form
              FROM candidate c
              WHERE c.Gender=:Gender AND c.Active='Y' AND c.ProjectID=:PID
              AND c.Entity_type='Human' AND c.CenterID <> 1",
-            array(
+            [
              'Gender' => $gender,
              'PID'    => $projectID,
-            )
+            ]
         );
         return $total;
     }
@@ -478,11 +478,11 @@ class NDB_Form_Dashboard extends NDB_Form
 
         return array_merge(
             $baseDeps,
-            array(
+            [
              $baseurl . '/js/d3.min.js',
              $baseurl . '/js/c3.min.js',
              $baseurl . '/dashboard/js/dashboard-helper.js',
-            )
+            ]
         );
 
     }

@@ -33,8 +33,8 @@ class NDB_Factory
 
     private static $_couchdb    = null;
     private static $_user       = null;
-    private static $_candidates = array();
-    private static $_timepoints = array();
+    private static $_candidates = [];
+    private static $_timepoints = [];
 
     var $Testing; // Whether or not Mock objects should be returned instead of
                   // real ones
@@ -94,8 +94,8 @@ class NDB_Factory
 
         self::$_settings = null;
 
-        self::$_candidates = array();
-        self::$_timepoints = array();
+        self::$_candidates = [];
+        self::$_timepoints = [];
     }
 
     /**
@@ -237,12 +237,12 @@ class NDB_Factory
                 'CouchDB',
                 'MockCouchDBWrap',
                 /* mock out the functions that make HTTP requests */
-                array(
+                [
                  '_getRelativeURL',
                  '_postRelativeURL',
                  '_postURL',
                  '_getURL',
-                )
+                ]
             );
             self::$_couchdb = new MockCouchDBWrap();
         } else {

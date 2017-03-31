@@ -24,9 +24,9 @@
 */
 class GenomicFile
 {
-    var $fileData   = array();
-    var $parameters = array();
-    var $QCData     = array();
+    var $fileData   = [];
+    var $parameters = [];
+    var $QCData     = [];
 
     /**
     * Construct a GenomicFile
@@ -36,7 +36,7 @@ class GenomicFile
     function __construct($fileID)
     {
         $db     =& Database::singleton();
-        $params = array('FID' => $fileID);
+        $params = ['FID' => $fileID];
 
         $query    = "SELECT * FROM genomic_files WHERE GenomicFileID=:FID";
         $fileData = $db->pselectRow($query, $params);

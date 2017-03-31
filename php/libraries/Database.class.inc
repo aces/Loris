@@ -88,7 +88,7 @@ class Database
         $host=null,
         $trackChanges=true
     ) {
-        static $connections = array();
+        static $connections = [];
 
         // if no arguments, try to get the first connection or choke
         if (is_null($database)
@@ -269,7 +269,7 @@ class Database
      */
     private function _HTMLEscapeArray($set)
     {
-        $retVal = array();
+        $retVal = [];
         foreach ($set as $key => $val) {
             $retVal[$key] = is_null($val) ? null : htmlspecialchars($val);
         }
@@ -297,7 +297,7 @@ class Database
         $query .= $this->_implodeWithKeys(', ', $set);
 
         $prepQ       = "INSERT INTO $table SET ";
-        $exec_params = array();
+        $exec_params = [];
         $prepQ      .= $this->_implodeAsPrepared(",", $set, $exec_params);
 
         if (DEBUG) {
@@ -368,7 +368,7 @@ class Database
                 $query
             );
         } elseif ($result === 0) {
-            $this->insert('empty_queries', array('query' => $query));
+            $this->insert('empty_queries', ['query' => $query]);
         }
 
         $this->affected = $result;
@@ -437,7 +437,7 @@ class Database
 
         /* This generates the version of the update statement which is
          * executed. */
-        $exec_params = array();
+        $exec_params = [];
         $prepQ       = "UPDATE $table SET ";
         $prepQ      .= $this->_implodeAsPrepared(",", $set, $exec_params, 'set_');
         $prepQ      .= " WHERE ";
@@ -507,7 +507,7 @@ class Database
 
         // There is no set clause for a delete, so add a fake
         // one.
-        $err = $this->trackChanges($table, array(), $where, 'D');
+        $err = $this->trackChanges($table, [], $where, 'D');
 
         $this->_printQuery($query);
         $result = $this->_PDO->exec($query);
@@ -519,7 +519,7 @@ class Database
                 $where
             );
         } elseif ($result === 0) {
-            $this->insert('empty_queries', array('query' => $query));
+            $this->insert('empty_queries', ['query' => $query]);
         }
 
         $this->affected = $result;
@@ -548,7 +548,7 @@ class Database
             . "removed in a future version of LORIS. Please use prepared statements "
             . " in the Database::pselect() variety instead."
         );
-        $result = array();
+        $result = [];
 
         if (strpos(strtoupper($query), 'SELECT') !== 0
             && strpos(strtoupper($query), 'SHOW') !== 0
@@ -645,7 +645,7 @@ class Database
                 . print_r($this->_PDO->errorInfo(), true)
             );
         } elseif ($result === 0) {
-            $this->insert('empty_queries', array('query' => $query));
+            $this->insert('empty_queries', ['query' => $query]);
         }
 
         $this->affected = $result;
@@ -683,7 +683,7 @@ class Database
      * @return array An array of rows in the format ColName => Value after
      *               executing the statement.
      */
-    function execute($prepared, $params, $options = array())
+    function execute($prepared, $params, $options = [])
     {
         $execRun = $prepared->execute($params);
         if ($execRun === false) {
@@ -769,7 +769,7 @@ class Database
      */
     function _implodeWithKeys($glue, $dataArray)
     {
-        $output = array();
+        $output = [];
         if (!is_array($dataArray) || count($dataArray)==0) {
             return '';
         }
@@ -807,7 +807,7 @@ class Database
             return '';
         }
 
-        $output = array();
+        $output = [];
         foreach ($dataArray as $key => $item ) {
             $varname  = str_replace("%", "_percent_", $key);
             $output[] = "`$key`=:$prefix$varname";
@@ -854,7 +854,7 @@ class Database
         }
 
         // get the table description
-        $description = $this->pselect("SHOW INDEX FROM $table", array());
+        $description = $this->pselect("SHOW INDEX FROM $table", []);
 
         // find the primary key columns
         if (is_array($description)) {
@@ -889,7 +889,7 @@ class Database
             foreach (array_keys($set) AS $column) {
                 $this->_preparedStoreHistory->bindParam(":histcolumn", $column);
                 // find the primary key values
-                $primaryValues = array();
+                $primaryValues = [];
 
                 $usePDOID = false;
                 foreach ($primaryKeys AS $key) {
@@ -904,7 +904,7 @@ class Database
                     if (is_array($this->lastInsertID)) {
                         $primaryValues = $this->lastInsertID;
                     } else {
-                        $primaryValues = array($this->lastInsertID);
+                        $primaryValues = [$this->lastInsertID];
                     }
                 }
 
@@ -918,20 +918,20 @@ class Database
             $query = "SELECT * FROM $table WHERE $where";
 
             // select the database data
-            $oldRows = $this->pselect($query, array());
+            $oldRows = $this->pselect($query, []);
 
             // track history for all affected rows
             foreach ($oldRows AS $oldRow) {
                 // compute the difference between the two arrays
                 if ($type == 'D') {
                     $delta = $oldRow;
-                    $set   = array();
+                    $set   = [];
                 } else {
                     $delta = array_diff_assoc($set, $oldRow);
                 }
 
                 // find the primary key values
-                $primaryValues = array();
+                $primaryValues = [];
                 foreach ($primaryKeys AS $key) {
                     $primaryValues[] = $oldRow[$key];
                 }
@@ -1073,10 +1073,10 @@ class Database
 
         $result = $this->pselectOne(
             $query,
-            array(
+            [
              'tn' => $test_name,
              'db' => $database['database'],
-            )
+            ]
         );
 
         if (!empty($result)) {
@@ -1104,11 +1104,11 @@ class Database
             AND TABLE_SCHEMA = :db";
         $effected = $this->pselectOne(
             $query,
-            array(
+            [
              'tn' => $test_name,
              'cn' => $column,
              'db' => $database['database'],
-            )
+            ]
         );
         if ($effected) {
             return true;
@@ -1130,7 +1130,7 @@ class Database
         // http://php.net/manual/en/function.mysql-real-escape-string.php
         if (!empty($tableName) && is_string($tableName)) {
             $stringWithEscapedChars = str_replace(
-                array(
+                [
                  '\\',
                  "\0",
                  "\n",
@@ -1139,8 +1139,8 @@ class Database
                  '"',
                  "\x1a",
                  "`",
-                ),
-                array(
+                ],
+                [
                  '\\\\',
                  '\\0',
                  '\\n',
@@ -1149,7 +1149,7 @@ class Database
                  '\\"',
                  '\\Z',
                  "\\`",
-                ),
+                ],
                 $tableName
             );
             $fullyEscapedString     = "`".$stringWithEscapedChars."`";

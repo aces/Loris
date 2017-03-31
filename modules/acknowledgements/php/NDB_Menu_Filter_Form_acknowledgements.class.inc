@@ -60,7 +60,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
             return true;
         }
 
-        $results = array();
+        $results = [];
         foreach ($values as $key => $value) {
             $results[substr($key, 3)] = $value;
         }
@@ -106,7 +106,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
     {
         $config = NDB_Config::singleton();
 
-        $this->columns      = array(
+        $this->columns      = [
                                'ordering',
                                'full_name',
                                'citation_name',
@@ -116,18 +116,18 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                                'start_date',
                                'end_date',
                                'present',
-                              );
+                              ];
         $this->query        = " FROM acknowledgements WHERE 1=1";
         $this->group_by     = '';
         $this->order_by     = "ordering ASC";
-        $this->validFilters = array(
+        $this->validFilters = [
                                'full_name',
                                'citation_name',
                                'start_date',
                                'end_date',
                                'present',
-                              );
-        $this->headers      = array(
+                              ];
+        $this->headers      = [
                                'ordering',
                                'full_name',
                                'citation_name',
@@ -137,14 +137,14 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                                'start_date',
                                'end_date',
                                'present',
-                              );
-        $this->formToFilter = array(
+                              ];
+        $this->formToFilter = [
                                'full_name'     => 'full_name',
                                'citation_name' => 'citation_name',
                                'start_date'    => 'start_date',
                                'end_date'      => 'end_date',
                                'present'       => 'present',
-                              );
+                              ];
 
         $this->tpl_data['citation_policy'] = $config->getSetting('citation_policy');
 
@@ -159,11 +159,11 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
     function _setFilterForm()
     {
         // enums should match with acknowledgements table
-        $present = array(
+        $present = [
                     ''    => '',
                     'Yes' => 'Yes',
                     'No'  => 'No',
-                   );
+                   ];
 
         // add filter elements
         $this->addBasicText('ordering', 'Ordering:');
@@ -172,13 +172,13 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
         $config      =& NDB_Config::singleton();
         $startYear   = $config->getSetting('startYear');
         $endYear     = $config->getSetting('endYear');
-        $dateOptions = array(
+        $dateOptions = [
                         'language'       => 'en',
                         'format'         => 'YMd',
                         'addEmptyOption' => true,
                         'minYear'        => $startYear,
                         'maxYear'        => $endYear,
-                       );
+                       ];
         $this->addBasicDate('start_date', 'Start Date:', $dateOptions);
         $this->addBasicDate('end_date', 'End Date:', $dateOptions);
         $this->addSelect('present', 'Present?', $present);
@@ -190,13 +190,13 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
         $config      =& NDB_Config::singleton();
         $startYear   = $config->getSetting('startYear');
         $endYear     = $config->getSetting('endYear');
-        $dateOptions = array(
+        $dateOptions = [
                         'language'       => 'en',
                         'format'         => 'YMd',
                         'addEmptyOption' => true,
                         'minYear'        => $startYear,
                         'maxYear'        => $endYear,
-                       );
+                       ];
         $this->addBasicDate('addstart_date', 'Start Date:', $dateOptions);
         $this->addBasicDate('addend_date', 'End Date:', $dateOptions);
         $this->addSelect('addpresent', 'Present?', $present);
@@ -218,9 +218,9 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
 
         return array_merge(
             $baseDeps,
-            array(
+            [
              $baseurl . '/acknowledgements/js/acknowledgements_helper.js',
-            )
+            ]
         );
 
     }

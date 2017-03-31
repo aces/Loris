@@ -80,34 +80,34 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         }
 
         // set the class variables
-        $this->columns      = array(
+        $this->columns      = [
                                'e.full_name as Examiner',
                                'e.examinerID as ID',
                                'psc.Name as Site',
                                'e.radiologist as Radiologist',
                                'GROUP_CONCAT(tn.full_name) as Certification',
-                              );
+                              ];
         $this->group_by     = "e.full_name,psc.Name";
         $this->query        = $query;
         $this->order_by     = 'e.full_name';
-        $this->headers      = array(
+        $this->headers      = [
                                'Examiner',
                                'ID',
                                'Site',
                                'Radiologist',
                                'Certification',
-                              );
-        $this->validFilters = array(
+                              ];
+        $this->validFilters = [
                                'e.full_name',
                                'e.centerID',
                                'COALESCE(e.radiologist, 0)',
-                              );
+                              ];
 
-        $this->formToFilter = array(
+        $this->formToFilter = [
                                'examiner'    => 'e.full_name',
                                'site'        => 'e.centerID',
                                'radiologist' => 'COALESCE(e.radiologist, 0)',
-                              );
+                              ];
 
         // If certification is turned on, update the class variables to include
         // certification information
@@ -137,7 +137,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             // get the list of study sites - to be replaced by the Site object
             $sites = Utility::getSiteList();
             if (is_array($sites)) {
-                $sites = array('' => '') + $sites;
+                $sites = ['' => ''] + $sites;
             }
         } else {
             // allow only to view own site data
@@ -148,15 +148,15 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
                     $sites[$val] = $site[$key]->getCenterName();
                 }
             }
-            $sites = array('' => 'All User Sites') + $sites;
+            $sites = ['' => 'All User Sites'] + $sites;
         }
 
         // Radiologist options
-        $radiologist = array(
+        $radiologist = [
                         null => 'All',
                         '1'  => 'Yes',
                         '0'  => 'No',
-                       );
+                       ];
 
         // menu filter form elements
         $this->addBasicText('examiner', 'Examiner:');
@@ -165,10 +165,10 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 
         // add examiner form elements
         $this->addBasicText('addName', 'Name');
-        $this->addCheckbox('addRadiologist', 'Radiologist', array('value' => '1'));
+        $this->addCheckbox('addRadiologist', 'Radiologist', ['value' => '1']);
         $this->addSelect('addSite', 'Site', $sites);
 
-        $this->form->addFormRule(array(&$this, '_validateAddExaminer'));
+        $this->form->addFormRule([$this, '_validateAddExaminer']);
 
         // Add a useCertification template variable so that the template
         // rendering can depend on the EnableCertification setting
@@ -185,7 +185,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      */
     function _validateAddExaminer($values)
     {
-        $errors = array();
+        $errors = [];
 
         $name = $values['addName'];
         $site = $values['addSite'];
@@ -222,11 +222,11 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 
         $DB->insert(
             'examiners',
-            array(
+            [
              'full_name'   => $fullName,
              'centerID'    => $siteID,
              'radiologist' => $radiologist,
-            )
+            ]
         );
         header("Location: {$baseurl}/examiner/", true, 303);
     }
@@ -246,10 +246,10 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             "SELECT examinerID
              FROM examiners
              WHERE full_name=:fullName AND centerID=:siteID",
-            array(
+            [
              'fullName' => $fullName,
              'siteID'   => $siteID,
-            )
+            ]
         );
 
         if (empty($examinerID)) {
@@ -271,9 +271,9 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
              $baseURL . "/examiner/js/columnFormatter.js",
-            )
+            ]
         );
     }
 }

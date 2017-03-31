@@ -58,7 +58,7 @@ class NDB_Form_Examiner extends NDB_Form
                 "SELECT centerID 
                  FROM examiners
                  WHERE examinerID=:EID",
-                array('EID' => $this->identifier)
+                ['EID' => $this->identifier]
             );
 
             return $user->hasPermission('examiner_view')
@@ -83,7 +83,7 @@ class NDB_Form_Examiner extends NDB_Form
             "SELECT testID, pass, date_cert, comment 
              FROM certification
              WHERE examinerID=:EID",
-            array('EID' => $this->identifier)
+            ['EID' => $this->identifier]
         );
 
         // set the form defaults for the page
@@ -125,10 +125,10 @@ class NDB_Form_Examiner extends NDB_Form
                 "SELECT certID 
                  FROM certification
                  WHERE examinerID=:EID AND testID=:TID",
-                array(
+                [
                  'EID' => $examinerID,
                  'TID' => $testID,
-                )
+                ]
             );
 
              // if certification for new instrument for the examiner
@@ -136,27 +136,27 @@ class NDB_Form_Examiner extends NDB_Form
                 // insert a new certification entry
                 $DB->insert(
                     'certification',
-                    array(
+                    [
                      'examinerID' => $examinerID,
                      'date_cert'  => $date_cert,
                      'testID'     => $testID,
                      'pass'       => $certStatus,
                      'comment'    => $comment,
-                    )
+                    ]
                 );
                 $certID = $DB->pselectOne(
                     "SELECT certID 
                      FROM certification
                      WHERE examinerID =:EID and testID=:TID",
-                    array(
+                    [
                      'EID' => $examinerID,
                      'TID' => $testID,
-                    )
+                    ]
                 );
                 // Add a new entry to the certification history table
                 $DB->insert(
                     'certification_history',
-                    array(
+                    [
                      'col'         => 'pass',
                      'new'         => $certStatus,
                      'new_date'    => $date_cert,
@@ -166,7 +166,7 @@ class NDB_Form_Examiner extends NDB_Form
                      'changeDate'  => date("Y-m-d H:i:s"),
                      'userID'      => $_SESSION['State']->getUsername(),
                      'type'        => 'I',
-                    )
+                    ]
                 );
             } else { // update to a test certification for the examiner
 
@@ -177,10 +177,10 @@ class NDB_Form_Examiner extends NDB_Form
                      LEFT JOIN certification c ON (c.certID=ch.primaryVals)
                      WHERE c.examinerID=:EID AND ch.testID=:TID
                      ORDER BY changeDate DESC",
-                    array(
+                    [
                      'EID' => $examinerID,
                      'TID' => $testID,
-                    )
+                    ]
                 );
 
                 $oldVal  = $oldVals['new'];
@@ -190,10 +190,10 @@ class NDB_Form_Examiner extends NDB_Form
                     "SELECT pass, date_cert, comment
                      FROM certification
                      WHERE examinerID=:EID AND testID=:TID",
-                    array(
+                    [
                      'EID' => $examinerID,
                      'TID' => $testID,
-                    )
+                    ]
                 );
 
                 // If one of the values was changed
@@ -204,22 +204,22 @@ class NDB_Form_Examiner extends NDB_Form
                     // Update the certification entry
                     $DB->update(
                         'certification',
-                        array(
+                        [
                          'date_cert' => $date_cert,
                          'pass'      => $certStatus,
                          'comment'   => $comment,
-                        ),
-                        array(
+                        ],
+                        [
                          'examinerID' => $examinerID,
                          'testID'     => $testID,
-                        )
+                        ]
                     );
 
                     // Add a new entry to the certification history table
                     if ($oldDate != $date_cert || $oldVal != $certStatus) {
                         $DB->insert(
                             'certification_history',
-                            array(
+                            [
                              'col'         => 'pass',
                              'old'         => $oldVal,
                              'old_date'    => $oldDate,
@@ -231,7 +231,7 @@ class NDB_Form_Examiner extends NDB_Form
                              'changeDate'  => date("Y-m-d H:i:s"),
                              'userID'      => $_SESSION['State']->getUsername(),
                              'type'        => 'U',
-                            )
+                            ]
                         );
                     }
                 }
@@ -260,26 +260,26 @@ class NDB_Form_Examiner extends NDB_Form
              LEFT JOIN certification c ON (c.certID=ch.primaryVals)
              WHERE c.examinerID=:EID
              ORDER BY changeDate DESC",
-            array('EID' => $this->identifier)
+            ['EID' => $this->identifier]
         );
 
         $this->tpl_data['certification_history'] = $certification_history;
 
         $config = NDB_Config::singleton();
 
-        $dateOptions   = array(
+        $dateOptions   = [
                           'language'       => 'en',
                           'format'         => 'YMd',
                           'addEmptyOption' => true,
                           'minYear'        => $config->getSetting('startYear'),
                           'maxYear'        => $config->getSetting('endYear'),
-                         );
-        $statusOptions = array(
+                         ];
+        $statusOptions = [
                           null            => 'N/A',
                           'not_certified' => 'Not Certified',
                           'in_training'   => 'In Training',
                           'certified'     => 'Certified',
-                         );
+                         ];
 
         // Get the list of certification instruments
         $instruments = $this->getCertificationInstruments();
@@ -306,10 +306,10 @@ class NDB_Form_Examiner extends NDB_Form
                 $value,
                 $value,
                 '',
-                array(
+                [
                  'prefix_wrapper'  => '<div class="col-md-3">',
                  'postfix_wrapper' => '</div>',
-                )
+                ]
             );
             unset($group);
         }
@@ -323,7 +323,7 @@ class NDB_Form_Examiner extends NDB_Form
               FROM examiners
                JOIN psc ON psc.CenterID = examiners.centerID
               WHERE examinerID=:EID",
-            array('EID' => $this->identifier)
+            ['EID' => $this->identifier]
         );
         // Get identifier, to be added to the Reset button href
         $this->tpl_data['identifier'] = $this->identifier;
@@ -331,7 +331,7 @@ class NDB_Form_Examiner extends NDB_Form
         $this->tpl_data['examiner_name'] = $row['full_name'];
         $this->tpl_data['site_name']     = $row['site_name'];
 
-        $this->form->addFormRule(array(&$this, '_validateEditExaminer'));
+        $this->form->addFormRule([$this, '_validateEditExaminer']);
     }
 
 
@@ -344,7 +344,7 @@ class NDB_Form_Examiner extends NDB_Form
      */
     function _validateEditExaminer($values)
     {
-        $errors = array();
+        $errors = [];
 
         // check that there is both a status and a date (neither can be null)
         foreach ($values['certStatus'] as $instrumentID => $certificationStatus) {
@@ -380,7 +380,7 @@ class NDB_Form_Examiner extends NDB_Form
 
         $certificationInstruments['test']
             = Utility::toArray($certificationInstruments['test']);
-        $instruments = array();
+        $instruments = [];
 
         foreach ($certificationInstruments['test'] as $certificationInstrument) {
             $testName = $certificationInstrument['@']['value'];
@@ -389,7 +389,7 @@ class NDB_Form_Examiner extends NDB_Form
                  FROM test_names
                  WHERE Test_name
                  LIKE CONCAT('%', :testName, '%')",
-                array('testName' => $testName)
+                ['testName' => $testName]
             );
             $instruments[$testID] = $certificationInstrument['#'];
         }

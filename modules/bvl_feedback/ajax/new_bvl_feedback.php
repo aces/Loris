@@ -17,7 +17,7 @@ ini_set('default_charset', 'utf-8');
 require_once "bvl_panel_ajax.php";
 
 //Creating a new array to pass the set values into the DB.
-$newThreadValues = array();
+$newThreadValues = [];
 
 //For profile level feedback
 if (isset($_POST['comment']) && isset($_POST['candID'])

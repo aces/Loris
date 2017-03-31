@@ -61,7 +61,7 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
     function _setupVariables()
     {
         // set the class variables
-        $this->columns = array(
+        $this->columns = [
                           'GWAS.rsID AS SNP_ID',
                           'genome_loc.Chromosome AS Chromosome',
                           'genome_loc.StartLoc AS Position_BP',
@@ -71,7 +71,7 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
                           'GWAS.Estimate AS Estimate',
                           'GWAS.StdErr AS StdErr',
                           'GWAS.Pvalue AS Pvalue',
-                         );
+                         ];
 
         // This variable will be used by the columnFormatter javascript
         // to set the default hidden columns in the data table.
@@ -80,7 +80,7 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
                 function ($header) {
                         return ucwords(str_replace('_', ' ', $header));
                 },
-                array()
+                []
             )
         );
 
@@ -90,7 +90,7 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
             JOIN genome_loc ON (genome_loc.GenomeLocID = SNP.GenomeLocID)";
 
         $this->order_by     = 'genome_loc.Chromosome, GWAS.Pvalue DESC';
-        $this->validFilters = array(
+        $this->validFilters = [
                                'GWAS.rsID',
                                'genome_loc.Chromosome',
                                'genome_loc.StartLoc',
@@ -100,9 +100,9 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
                                'GWAS.Estimate',
                                'GWAS.StdErr',
                                'GWAS.Pvalue',
-                              );
+                              ];
 
-        $this->formToFilter = array(
+        $this->formToFilter = [
                                'SNP_ID'       => 'GWAS.rsID',
                                'Chromosome'   => 'genome_loc.Chromosome',
                                'BP_Position'  => 'genome_loc.StartLoc',
@@ -112,7 +112,7 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
                                'Estimate'     => 'GWAS.Estimate',
                                'StdErr'       => 'GWAS.StdErr',
                                'Pvalue'       => 'GWAS.Pvalue',
-                              );
+                              ];
 
         return true;
     }
@@ -129,10 +129,10 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
         $user = User::singleton();
 
         // add form elements
-        $show_results_options = array(
+        $show_results_options = [
                                  'brief' => 'Summary fields',
                                  'full'  => 'All fields',
-                                );
+                                ];
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
         $this->addBasicText('SNP_ID', 'SNP ID:');
@@ -140,13 +140,13 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
         $this->addBasicText('BP_Position', 'BP Position:');
         $this->addBasicText('MAF', 'MAF:');
 
-        $alleleArray = array(
+        $alleleArray = [
                         ''  => 'Any',
                         'A' => 'A',
                         'C' => 'C',
                         'T' => 'T',
                         'G' => 'G',
-                       );
+                       ];
         $this->addSelect('Minor_Allele', 'Minor Allele:', $alleleArray);
         $this->addSelect('Major_Allele', 'Major Allele:', $alleleArray);
 
@@ -211,10 +211,10 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
              $baseURL . "/genomic_browser/js/genomic_browser.js",
              $baseURL . "/genomic_browser/js/gwasColumnFormatter.js",
-            )
+            ]
         );
     }
 

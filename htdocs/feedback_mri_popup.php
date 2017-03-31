@@ -80,18 +80,18 @@ if ($comments->objectType == 'volume') {
                     AND f.AcquisitionProtocolID=st.ID
                     AND s.Active='Y'";
 
-    $qparams = array('FID' => $comments->fileID);
+    $qparams = ['FID' => $comments->fileID];
 } elseif ($comments->objectType == 'visit') {
     $query = "SELECT c.CandID, c.PSCID, s.Visit_label, s.SubprojectID
                 FROM session AS s, candidate AS c
               WHERE s.ID=:SID AND s.CandID=c.CandID AND s.Active='Y'";
 
-    $qparams = array('SID' => $comments->sessionID);
+    $qparams = ['SID' => $comments->sessionID];
 } else {
     $query = "SELECT c.CandID FROM session AS s, candidate AS c
                 WHERE s.ID=:SID AND s.CandID=c.CandID AND s.Active='Y'";
 
-    $qparams = array('SID' => $comments->sessionID);
+    $qparams = ['SID' => $comments->sessionID];
 }
 
 $result = $DB->pselect($query, $qparams);

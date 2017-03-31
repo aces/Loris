@@ -12,26 +12,32 @@ $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
 
 
-$cdb = CouchDB::singleton();
-$category = $_REQUEST['category'];
+$cdb       = CouchDB::singleton();
+$category  = $_REQUEST['category'];
 $fieldName = $_REQUEST['field'];
-$value = $_REQUEST['value'];
+$value     = $_REQUEST['value'];
 
 $results = $cdb->queryView(
     "DQG-2.0",
     "search",
-    array("reduce" => "false",
-          "startkey" => "[\"$category\", \"$fieldName\", \"$value\"]",
-          "endkey" => "[\"$category\", \"$fieldName\", \"$value"
+    [
+     "reduce"   => "false",
+     "startkey" => "[\"$category\", \"$fieldName\", \"$value\"]",
+     "endkey"   => "[\"$category\", \"$fieldName\", \"$value"
                           // PHP doesn't have any /u9999 unicode escaping, so
                           //  we use mb_convert_encoding to embed a high
                           //  unicode character
                           . mb_convert_encoding('&#x9999;', 'UTF-8', 'HTML-ENTITIES')
                           . "\"]",
-      )
+    ]
 );
 
-$sessionResults = array_map(function($element) { return $element['value']; }, $results);
+$sessionResults = array_map(
+    function ($element) {
+        return $element['value'];
+    },
+    $results
+);
 
 print json_encode($sessionResults);
 ?>

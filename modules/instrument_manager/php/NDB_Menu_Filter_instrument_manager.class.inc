@@ -42,23 +42,23 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
     {
         $config        = NDB_Config::singleton();
         $this->path    = $config->getSetting("base");
-        $this->headers = array(
+        $this->headers = [
                           'Instrument',
                           'Instrument_Type',
                           'Table_Installed',
                           'Table_Valid',
                           'Pages_Valid',
-                         );
+                         ];
         $this->query   = " FROM test_names t";
-        $this->columns = array(
+        $this->columns = [
                           't.Test_name as Instrument',
                           "'x' as Instrument_Type",
                           "'x' as Table_Installed",
                           "'x' as Table_Valid",
                           "'x' as Pages_Valid",
-                         );
-        $this->validFilters = array('');
-        $this->formToFilter = array();
+                         ];
+        $this->validFilters = [''];
+        $this->formToFilter = [];
 
         $writable = true;
         if (!is_writable($this->path . "project/instruments")
@@ -84,7 +84,7 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
                             " FROM test_names WHERE Test_name=:testname";
             $exists       = $db->pselectOne(
                 $sqlSelectOne,
-                array('testname' => $_FILES['install_file']['name'])
+                ['testname' => $_FILES['install_file']['name']]
             );
             if ($exists <= 0) {
                 $db_config = $config->getSetting('database');
@@ -165,10 +165,10 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
                     $tableName    = $this->tpl_data['items'][$x]['instrument_name'];
                     $exists       = $db->pselectOne(
                         $sqlSelectOne,
-                        array(
+                        [
                          'dbname'    => $factory->settings()->dbName(),
                          'tablename' => $tableName,
-                        )
+                        ]
                     );
                     if ($exists > 0) {
                         $this->tpl_data['items'][$x][$i]['value'] = 'Exists';
@@ -238,12 +238,12 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
                         " AND DATA_TYPE=:typename";
         $exists       = $db->pselectOne(
             $sqlSelectOne,
-            array(
+            [
              'dbname'     => $factory->settings()->dbName(),
              'columnname' => $columnname,
              'tablename'  => $tablename,
              'typename'   => $type,
-            )
+            ]
         );
         if (!$exists) {
             return "Column $columnname invalid";
@@ -309,13 +309,13 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
                                 " AND DATA_TYPE='enum'";
                 $db_enum      = $db->pselectOne(
                     $sqlSelectOne,
-                    array(
+                    [
                      'dbname'     => $factory->settings()->dbName(),
                      'columnname' => $name,
                      'tablename'  => $instname,
-                    )
+                    ]
                 );
-                $options      = array();
+                $options      = [];
                 foreach ($enums as $enum) {
                     $enum_split = explode("=>", $enum);
                     $key        = $enum_split[0];
@@ -361,10 +361,10 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
             case 'page':
                 $exists = $db->pselectOne(
                     $sqlSelectOne,
-                    array(
+                    [
                      'testname' => $instname,
                      'testdesc' => trim($pieces[2]),
-                    )
+                    ]
                 );
                 if ($exists <= 0) {
                     return "Missing page '" . trim($pieces[2]) . "'";

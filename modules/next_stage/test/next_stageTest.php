@@ -35,7 +35,7 @@ class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testNextStageDoesPageLoadWithPermission()
     {
-        $this->setupPermissions(array("data_entry"));
+        $this->setupPermissions(["data_entry"]);
         $this->webDriver->get($this->url . "/next_stage/?candID=900000&sessionID=999999&identifier=999999");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Next Stage", $bodyText);
@@ -49,7 +49,7 @@ class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testNextStageDoesNotPageLoadWithoutPermission()
     {
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->webDriver->get($this->url . "/next_stage/?candID=900000&sessionID=999999&identifier=999999");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("You do not have access to this page.", $bodyText);
@@ -70,14 +70,14 @@ class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->changeStudySite();
 
         // Check to make sure page doesn't load without permission
-        $this->setupPermissions(array());
+        $this->setupPermissions([]);
         $this->webDriver->get($this->url . "/next_stage/?candID=900000&sessionID=999999&identifier=999999");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
 
         // Check to make sure page doesn't load with permission
-        $this->setupPermissions(array("data_entry"));
+        $this->setupPermissions(["data_entry"]);
         $this->webDriver->get($this->url . "/next_stage/?candID=900000&sessionID=999999&identifier=999999");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("You do not have access to this page.", $bodyText);

@@ -34,7 +34,7 @@ header("content-type:application/json");
 require_once "Utility.class.inc";
 
 //Array containing the JSON information to return.
-$flattened_result = array();
+$flattened_result = [];
 //gets the given visit_label and returns the instrument
 
 //If all visits are selected return all visits

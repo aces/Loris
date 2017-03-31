@@ -39,7 +39,7 @@ $results = $DB->pselect(
          genomic_files 
      WHERE 
          GenomicFileID = :v_file_id',
-    array('v_file_id' => $_GET['GenomicFileID'])
+    ['v_file_id' => $_GET['GenomicFileID']]
 );
 
 if (count($results) < 1) {

@@ -31,7 +31,7 @@ class NDB_Breadcrumb
      * @var    array
      * @access private
      */
-    var $_breadcrumb = array();
+    var $_breadcrumb = [];
 
     /**
      * The index of the last crumb
@@ -55,14 +55,14 @@ class NDB_Breadcrumb
      * @var    array
      * @access private
      */
-    var $_userFriendlyNames = array(
+    var $_userFriendlyNames = [
                                'next_stage'       => 'Start Next Stage',
                                'create_timepoint' => 'Create Time Point',
                                'instrument_list'  => 'TimePoint Details',
                                'timepoint_list'   => 'Candidate Profile',
                                'candidate_list'   => 'Access Profile',
                                'datadict'         => 'Data Dictionary',
-                              );
+                              ];
 
     /**
      * Adds a crumb to the breadcrumb
@@ -165,14 +165,14 @@ class NDB_Breadcrumb
     function getBreadcrumb()
     {
         // set the parameters array
-        $this->_parameters = array(
+        $this->_parameters = [
                               'test_name'  => $this->_getRequest('test_name'),
                               'subtest'    => $this->_getRequest('subtest'),
                               'candID'     => $this->_getRequest('candID'),
                               'sessionID'  => $this->_getRequest('sessionID'),
                               'commentID'  => $this->_getRequest('commentID'),
                               'identifier' => $this->_getRequest('identifier'),
-                             );
+                             ];
 
         // check if test name is empty
         if (empty($this->_parameters['test_name'])) {
@@ -201,10 +201,10 @@ class NDB_Breadcrumb
 
         // add a crumb for subtests
         if (!empty($this->_parameters['subtest'])) {
-            $params = array(
+            $params = [
                        'PTestname' => $this->_parameters['test_name'],
                        'PSubtest'  => $this->_parameters['subtest'],
-                      );
+                      ];
             $result = $DB->pselectOne(
                 "SELECT Description FROM instrument_subtests
                 WHERE Test_name = :PTestname AND Subtest_name = :PSubtest",
@@ -220,9 +220,9 @@ class NDB_Breadcrumb
 
         // add a crumb for instruments
         if (!empty($this->_parameters['commentID'])) {
-            $params = array(
+            $params = [
                        'PTestname' => $this->_parameters['test_name'],
-                      );
+                      ];
             $result = $DB->pselectOne(
                 "SELECT Full_name FROM test_names WHERE Test_name = :PTestname",
                 $params
@@ -236,28 +236,28 @@ class NDB_Breadcrumb
         }
 
         // set the order of the crumbs
-        $crumbOrder = array(
-                       'next_stage'       => array(
+        $crumbOrder = [
+                       'next_stage'       => [
                                               'next'  => 'instrument_list',
                                               'unset' => 'identifier',
-                                             ),
-                       'create_timepoint' => array(
+                                             ],
+                       'create_timepoint' => [
                                               'next'  => 'timepoint_list',
                                               'unset' => 'identifier',
-                                             ),
-                       'instrument_list'  => array(
+                                             ],
+                       'instrument_list'  => [
                                               'next'  => 'timepoint_list',
                                               'unset' => 'sessionID',
-                                             ),
-                       'timepoint_list'   => array(
+                                             ],
+                       'timepoint_list'   => [
                                               'next'  => 'candidate_list',
                                               'unset' => 'candID',
-                                             ),
-                       'candidate_list'   => array(
+                                             ],
+                       'candidate_list'   => [
                                               'next'  => '',
                                               'unset' => '',
-                                             ),
-                      );
+                                             ],
+                      ];
 
         // loop through the crumbs according to the order above, or just
         // make one crumb
