@@ -7,7 +7,7 @@
 4. Test Selection Filter buttons: Show Data and Clear Forms
 5. Test column table is sortable by headers
 6. Test that Links work, to correct dataset (selected/native)
-7. Add more modalities (from the Scan_type column of the mri_scan_type table) to the Configuration/Imaging Browser/Tabulated Scan Types field, and ensure that for each added modality, a new corresponding column shows up in the Imaging Browser table    
+7. Add more modalities (from the Scan_type column of the mri_scan_type table) to the Configuration/Imaging Modules/Tabulated Scan Types field, and ensure that for each added modality, a new corresponding column shows up in the Imaging Browser table    
 
 #B. ViewSession / Volume List 
 8. Sidebar:  all links work 
