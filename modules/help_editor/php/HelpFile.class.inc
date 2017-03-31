@@ -163,12 +163,36 @@ class HelpFile
         // delete the links
         if (is_array($relatedIDs)) {
             foreach ($relatedIDs as $relatedID) {
-                $success = $DB->delete('help_related_links', array('helpID' => $this->helpID, 'relatedID' => $relatedID));// @codingStandardsIgnoreLine
-                $success = $DB->delete('help_related_links', array('helpID' => $relatedID, 'relatedID' => $this->helpID));// @codingStandardsIgnoreLine
+                $success = $DB->delete(
+                    'help_related_links',
+                    array(
+                     'helpID'    => $this->helpID,
+                     'relatedID' => $relatedID,
+                    )
+                );
+                $success = $DB->delete(
+                    'help_related_links',
+                    array(
+                     'helpID'    => $relatedID,
+                     'relatedID' => $this->helpID,
+                    )
+                );
             }
         } else {
-            $success = $DB->delete('help_related_links', array('helpID' => $this->helpID, 'relatedID' => $relatedIDs));// @codingStandardsIgnoreLine
-            $success = $DB->delete('help_related_links', array('helpID' => $relatedIDs, 'relatedID' => $this->helpID));// @codingStandardsIgnoreLine
+            $success = $DB->delete(
+                'help_related_links',
+                array(
+                 'helpID'    => $this->helpID,
+                 'relatedID' => $relatedIDs,
+                )
+            );
+            $success = $DB->delete(
+                'help_related_links',
+                array(
+                 'helpID'    => $relatedIDs,
+                 'relatedID' => $this->helpID,
+                )
+            );
         }
 
         return true;
@@ -188,8 +212,14 @@ class HelpFile
         $DB =& Database::singleton();
 
         // delete all related links
-        $success = $DB->delete('help_related_links', array('helpID' => $this->helpID));// @codingStandardsIgnoreLine
-        $success = $DB->delete('help_related_links', array('relatedID' => $this->helpID));// @codingStandardsIgnoreLine
+        $success = $DB->delete(
+            'help_related_links',
+            array('helpID' => $this->helpID)
+        );
+        $success = $DB->delete(
+            'help_related_links',
+            array('relatedID' => $this->helpID)
+        );
 
         // add all the new links
         $success = $this->addLinks($relatedIDs);
@@ -208,7 +238,10 @@ class HelpFile
         // create DB object
         $DB =& Database::singleton();
 
-        $result = $DB->pselectOne("SELECT COUNT(*) FROM help WHERE parentID = :HID", array('HID' => $this->helpID));// @codingStandardsIgnoreLine
+        $result = $DB->pselectOne(
+            "SELECT COUNT(*) FROM help WHERE parentID = :HID",
+            array('HID' => $this->helpID),
+        );
         return ($result > 0);
     }
 
@@ -233,7 +266,10 @@ class HelpFile
 
         // get its children
         if ($hasChild) {
-            $result = $DB->pselect("SELECT helpID FROM help WHERE parentID = :HID", array('HID' => $this->helpID));// @codingStandardsIgnoreLine
+            $result = $DB->pselect(
+                "SELECT helpID FROM help WHERE parentID = :HID",
+                array('HID' => $this->helpID)
+            );
             // add the children to the array
             $childIDs = Utility::reduce($result);
 
