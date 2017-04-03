@@ -220,7 +220,7 @@ class User extends UserPermissions
     /**
      * Get the user's site's ID number
      *
-     * @return integer
+     * @return array
      */
     function getCenterID()
     {
