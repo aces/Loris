@@ -16,12 +16,13 @@ $cdb = CouchDB::singleton();
 $category = $_REQUEST['category'];
 $fieldName = $_REQUEST['field'];
 $value = $_REQUEST['value'];
+$value = is_numeric($value) ? $value : "\"$value\"";
 
 $results = $cdb->queryView(
     "DQG-2.0",
     "search",
     array("reduce" => "false",
-          "startkey" => "[\"$category\", \"$fieldName\", \"$value\"]",
+          "startkey" => "[\"$category\", \"$fieldName\", $value]",
           "endkey" => "[\"$category\", \"$fieldName\", {}]",
       )
 );

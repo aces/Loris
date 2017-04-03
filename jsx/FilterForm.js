@@ -73,8 +73,8 @@ class FilterForm extends React.Component {
         let callbackName = callbackFunc.name;
         let elementName = child.type.displayName;
         let filterValue = this.queryString[child.props.name];
-        // If callback function was not set, set it to onElementUpdate() for form elements
-        // and to clearFilter() for <ButtonElement type='reset'/>.
+        // If callback function was not set, set it to onElementUpdate() for form
+        // elements and to clearFilter() for <ButtonElement type='reset'/>.
         if (callbackName === "onUserInput") {
           if (elementName === "ButtonElement" && child.props.type === "reset") {
             callbackFunc = this.clearFilter;
@@ -162,7 +162,11 @@ class FilterForm extends React.Component {
     }
 
     return (
-      <Panel id="selection-filter" title="Selection Filter">
+      <Panel
+        id={this.props.id}
+        height={this.props.height}
+        title={this.props.title}
+      >
         <FormElement {...this.props}>
           {formChildren}
         </FormElement>
@@ -173,14 +177,19 @@ class FilterForm extends React.Component {
 
 FilterForm.defaultProps = {
   id: 'selection-filter',
-  filterClass: "col-md-9",
+  height: '100%',
+  title: 'Selection Filter',
   onUpdate: function() {
     console.warn('onUpdate() callback is not set!');
   }
 };
 FilterForm.propTypes = {
   Module: React.PropTypes.string.isRequired,
-  filter: React.PropTypes.object.isRequired
+  filter: React.PropTypes.object.isRequired,
+  id: React.PropTypes.string,
+  height: React.PropTypes.string,
+  title: React.PropTypes.string,
+  onUpdate: React.PropTypes.func
 };
 
 window.FilterForm = FilterForm;

@@ -248,9 +248,6 @@ class Installer
         if ($this->_sourceSchemaFile($DB, "04-Help.sql") == false) {
             return false;
         };
-        if ($this->_sourceSchemaFile($DB, "99-indexes.sql") == false) {
-            return false;
-        };
         return true;
     }
 
