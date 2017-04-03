@@ -93,6 +93,12 @@ try {
     $tpl_data['user']['permissions']          = $user->getPermissions();
     $tpl_data['hasHelpEditPermission']        = $user->hasPermission('context_help');
     $tpl_data['user']['user_from_study_site'] = $oneIsStudySite;
+    $tpl_data['userNumSites']         = count($site_arr);
+    $tpl_data['user']['SitesTooltip'] = str_replace(
+        ";",
+        "\n",
+        $user->getData('Sites')
+    );
 } catch(Exception $e) {
     $tpl_data['error_message'][] = "Error: " . $e->getMessage();
 }
