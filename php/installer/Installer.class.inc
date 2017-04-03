@@ -187,7 +187,6 @@ class Installer
             return false;
         }
         $DB = Database::singleton();
-        error_log("createMySQLDB-A");
         if ($DB->connectAndCreate(
             $values['dbname'],
             $values['dbadminuser'],
@@ -195,20 +194,15 @@ class Installer
             $values['dbhost']
         ) == false
         ) {
-            error_log("createMySQLDB-B");
             if (!empty($DB->lastErr)) {
-                error_log("createMySQLDB-C");
                 $this->_lastErr = $DB->lastErr;
             } else {
-                error_log("createMySQLDB-D");
                 $this->_lastErr = "Could not connect to MySQL server "
                 . "and create database with credentials provided.";
             }
-            error_log("createMySQLDB-E");
             return false;
 
         }
-        error_log("createMySQLDB-F");
         return true;
     }
 
