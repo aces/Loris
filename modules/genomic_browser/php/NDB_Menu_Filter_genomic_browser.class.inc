@@ -245,8 +245,8 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
 
         $any_options = array(
                         ''  => null,
-                        'Y' => 'Any',
-                        'N' => 'None',
+                        'Y' => 'Yes',
+                        'N' => 'No',
                        );
         $this->addSelect('File', 'Files:', $any_options);
         $this->addSelect('SNP', 'SNPs found:', $any_options);
