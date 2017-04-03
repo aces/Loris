@@ -399,62 +399,6 @@ class User extends UserPermissions
         );
 
         $this->update($updateArray);
-
-        $config       =& NDB_Config::singleton();
-        $couch_config = $config->getSetting("CouchDB");
-        if ($couch_config['SyncAccounts'] === "true") {
-            $this->updateCouchUser($password);
-        }
-    }
-    /**
-     * Updates the CouchDB user for this user to synchronize
-     * the password with Loris.
-     *
-     * @param string $password Plaintext password to synchronize
-     *
-     * @return none
-     */
-    function updateCouchUser($password)
-    {
-        $factory = NDB_Factory::singleton();
-        $cdb     = $factory->CouchDB();
-        $config  = $factory->Config();
-
-        $c_config = $config->getSetting('CouchDB');
-        if ($c_config['SyncAccounts'] !== 'true') {
-            return false;
-        }
-        $username = $this->getUsername();
-        $authkey  = base64_encode(
-            $c_config['admin']
-            . ':'
-            . $c_config['adminpass']
-        );
-
-        $auth     = array('Authorization' => 'Basic ' . $authkey);
-        $userjson = $cdb->_getURL(
-            "/_users/org.couchdb.user:" . $username,
-            'GET',
-            $auth
-        );
-        $userobj  = json_decode($userjson, true);
-        if (isset($userobj['error']) && $userobj['error'] == 'not_found') {
-            $userobj = array(
-                        '_id'   => 'org.couchdb.user:' . $username,
-                        'type'  => 'user',
-                        'name'  => $username,
-                        'roles' => array(
-                                    'dqg',
-                                    $c_config['database'],
-                                   ),
-                       );
-        }
-        $userobj['password'] = $password;
-
-        $response = $cdb->_postURL(
-            "PUT /_users/org.couchdb.user:" . $username,
-            json_encode($userobj)
-        );
     }
 }
 ?>
