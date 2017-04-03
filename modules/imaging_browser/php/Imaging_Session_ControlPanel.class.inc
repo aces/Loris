@@ -228,7 +228,8 @@ class MRINavigation
     */
     function _otherLink($delta)
     {
-        if (isset($this->FilteredSessionList[$this->currentListIndex+$delta])) {// @codingStandardsIgnoreLine
+        if (isset($this->FilteredSessionList[$this->currentListIndex+$delta])
+        ) {
             $urlParams = $this->urlParams;
             $urlParams['sessionID'] = $this
                 ->FilteredSessionList[$this->currentListIndex+$delta];
