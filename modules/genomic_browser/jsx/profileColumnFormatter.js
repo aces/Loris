@@ -57,7 +57,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
             <span
               style={{cursor: 'pointer'}}
               onClick={loris.loadFilteredMenuClickHandler(
-                'genomic_browser&submenu=' + column.toLowerCase() + '_browser',{candID: rowData[1]}
+                'genomic_browser&submenu=' + column.toLowerCase() + '_browser',{DCCID: rowData[1]}
               )}
             >
               {cell}
