@@ -41,26 +41,36 @@
               ReactDOM.render(breadcrumbs, document.getElementById("breadcrumbs"));
             {/if}
 
-            // If <input type="date/> is not supported (i.e. Firefox), load
+            // If <input type="date" /> is not supported (i.e. Firefox), load
             // jquery date-picker
             if (!Modernizr.inputtypes.date) {
-              $('input[type=date]').datepicker({
+              var dateInputs = $('input[type=date]');
+              dateInputs.datepicker({
                 dateFormat: 'yy-mm-dd',
                 changeMonth: true,
-                changeYear: true
+                changeYear: true,
+                yearRange: "1900:" + new Date().getFullYear(),
+                constrainInput: true
               });
-              $('input[type=date]').attr('placeholder', 'yyyy-mm-dd');
+              dateInputs.attr('placeholder', 'yyyy-mm-dd');
+              dateInputs.on('keydown paste', function(e) { e.preventDefault(); });
             }
 
             if (!Modernizr.inputtypes.month) {
-              $('input[type=month]').datepicker({
-                dateFormat: 'MM yy',
+              var monthInputs = $('input[type=month]');
+              monthInputs.datepicker({
+                dateFormat: 'yy-mm',
                 changeMonth: true,
-                changeYear: true
+                changeYear: true,
+                yearRange: "1900:" + new Date().getFullYear(),
+                constrainInput: true,
+                onChangeMonthYear: function(y, m, d) {
+                  // Update date in the input field
+                  $(this).datepicker('setDate', new Date(y, m - 1, d.selectedDay));
+                }
               });
-
-              var placeholder = $.datepicker.formatDate('MM yy', new Date());
-              $('input[type=month]').attr('placeholder', placeholder);
+              monthInputs.attr('placeholder', 'yyyy-mm');
+              monthInputs.on('keydown paste', function(e) { e.preventDefault(); });
             }
 
           });
@@ -159,11 +169,12 @@
                                 <img width=17 src="{$baseurl}/images/help.gif">
                             </a>
                         </li>
-                        <li>
-                            <p class="navbar-text">
-                                &nbsp;&nbsp;  Sites: {$user.Sites} &nbsp;
-                            </p>
+                        <li class="nav">
+                            <a href="#" data-toggle="tooltip" title="{$user.SitesTooltip}">
+                                Site Affiliations: {$userNumSites} 
+                            </a>
                         </li>
+
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding-right:25px;">
                                 {$user.Real_name|escape} <b class="caret"></b>
@@ -508,5 +519,35 @@
         {if $FormAction}
         </form>
         {/if}
+
+        <a id="login-modal-button" href="#" data-toggle="modal" data-target="#login-modal" style="display: none;">Login</a>
+
+        <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        Login to Your Account
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <font color="red" align="middle" id="login-modal-error" style="display: none;">
+                                    Incorrect username or password
+                                </font>
+                            </div>
+                            <div class="form-group col-xs-12">
+                                <input id="modal-username" name="username" class="form-control" type="text" value="" placeholder="User">
+                            </div>
+                            <div class="form-group col-xs-12">
+                                <input id="modal-password" name="password" class="form-control" type="password" placeholder="Password">
+                            </div>
+                            <div class="form-group col-xs-12">
+                                <input class="btn btn-primary col-xs-12" id="modal-login" name="login" type="submit" value="Login">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

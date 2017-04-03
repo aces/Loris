@@ -16,6 +16,6 @@ INSERT IGNORE INTO `user_psc_rel` (UserID, CenterID) SELECT ID, CenterID FROM us
 -- Add admin to the user_psc_rel
 INSERT IGNORE INTO `user_psc_rel` (UserID, CenterID) SELECT 1, CenterID FROM psc;
 
--- DROP column CenterID from the users table
+-- ** WARNING: The next 2 lines will DROP column CenterID from the users table ** 
 -- ALTER TABLE users DROP foreign key FK_users_1;
 -- ALTER TABLE users DROP column `CenterID`;

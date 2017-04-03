@@ -85,12 +85,12 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
             array('category_name' => 'test')
         );
         $this->DB->delete(
-            "document_repository_categories",
-            array('id' => '9999999')
-        );
-        $this->DB->delete(
             "document_repository",
             array('record_id' => '9999999')
+        );
+        $this->DB->delete(
+            "document_repository_categories",
+            array('id' => '9999999')
         );
         parent::tearDown();
     }

@@ -56,7 +56,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
      *
      * @return void
      */
-    function candidate_parameters()
+    function candidate_parameters()//@codingStandardsIgnoreLine
     {
         $config    =& NDB_Config::singleton();
         $candidate =& Candidate::singleton($this->identifier);

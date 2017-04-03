@@ -26,9 +26,9 @@ try {
     $m = '';
 }
 if (!empty($m)) {
-    $page = !empty($_REQUEST['subtest']) ? $_REQUEST['subtest'] : $mname;
+    $page            = !empty($_REQUEST['subtest']) ? $_REQUEST['subtest'] : $mname;
     $help['content'] = $m->getHelp($page);
-    $help['format'] = 'markdown';
+    $help['format']  = 'markdown';
     print json_encode($help);
     ob_end_flush();
     exit(0);
@@ -45,8 +45,8 @@ if (!empty($_REQUEST['testName'])) {
     }
 }
 
-$help_file = HelpFile::factory($helpID);
-$data = $help_file->toArray();
+$help_file       = HelpFile::factory($helpID);
+$data            = $help_file->toArray();
 $data['content'] = trim($data['content']);
 
 if (empty($data['updated'])) {
