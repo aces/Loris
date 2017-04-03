@@ -1,5 +1,3 @@
-WARNINGS;
-
 --
 -- DROP tables
 --
