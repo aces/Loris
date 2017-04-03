@@ -148,7 +148,7 @@ class ConfigurationTest extends LorisIntegrationTest
         $this->_linkTest("GUI");
         $this->_linkTest("WWW");
         $this->_linkTest("Dashboard");
-        $this->_linkTest("DICOM Archive");
+        $this->_linkTest("Imaging Modules");
         $this->_linkTest("Statistics");
         $this->_linkTest("Email");
         $this->_linkTest("Uploads");

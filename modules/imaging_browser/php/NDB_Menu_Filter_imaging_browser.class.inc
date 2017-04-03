@@ -56,24 +56,37 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
+        $config = NDB_Config::singleton();
+        $DB = Database::singleton();
+        $scan_types = $config->getSetting('tblScanTypes');
+
+        foreach ($scan_types as $type) {
+            $id = $DB->pselectOne(
+                "SELECT ID FROM mri_scan_type mst
+                     WHERE mst.Scan_type=:ScanType",
+                array('ScanType' => $type)
+            );
+            $scan_id_types[$id]=$type;
+        }
+
         $NewDataSubquery = "CASE 
             COALESCE(nd.QCLastChangeTime, 'new')
             WHEN 'new' THEN 'new' 
             WHEN '' THEN 'new'
             ELSE ''
             END";
-        $T1PassSubquery = "CASE 
-            COALESCE(t1pass.T1QC, '') 
-            WHEN '' THEN ''
-            WHEN 1 THEN 'Passed'
-            WHEN 2 THEN 'Failed'
-            END";
-        $T2PassSubquery = "CASE 
-            COALESCE(t2pass.T2QC, '') 
-            WHEN '' THEN ''
-            WHEN 1 THEN 'Passed'
-            WHEN 2 THEN 'Failed'
-            END";
+
+        foreach ($scan_id_types as $id => $type) {
+            $pass[$id] = $type . 'pass';
+            $qc[$id] = $type . 'QC';
+            $coalesce_desc[$id] = $pass[$id] . '.' . $qc[$id];
+            $case_desc[$id] = "CASE
+                COALESCE($coalesce_desc[$id], '')
+                WHEN '' THEN ''
+                WHEN 1 THEN 'Passed'
+                WHEN 2 THEN 'Failed'
+                END";
+        }
 
         $PendingFailSubquery = "
             CASE s.MRIQCStatus
@@ -91,14 +104,24 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             JOIN files f ON (f.SessionID=s.ID) 
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
             JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
-            LEFT JOIN (SELECT files.SessionID, MIN(QCLastChangeTime) as QCLastChangeTime FROM files LEFT JOIN files_qcstatus USING (FileID) WHERE OutputType='native' AND AcquisitionProtocolID NOT IN (1, 2, 3, 52) GROUP BY files.SessionID) nd ON (nd.SessionID=f.SessionID)
-            LEFT JOIN (SELECT files.SessionID, MIN(files_qcstatus.QCStatus+0) as T1QC FROM files JOIN files_qcstatus USING (FileID) WHERE files.AcquisitionProtocolID=44 AND files_qcstatus.QCStatus IN (1, 2) GROUP BY files.SessionID) t1pass ON (t1pass.SessionID=f.SessionID)
-            LEFT JOIN (SELECT files.SessionID, MIN(files_qcstatus.QCStatus+0) as T2QC FROM files JOIN files_qcstatus USING (FileID) WHERE files.AcquisitionProtocolID=45 AND files_qcstatus.QCStatus IN (1, 2) GROUP BY files.SessionID) t2pass ON (t2pass.SessionID=f.SessionID)
+            LEFT JOIN (SELECT files.SessionID, MIN(QCLastChangeTime) as QCLastChangeTime FROM files LEFT JOIN files_qcstatus USING (FileID) WHERE OutputType='native' AND AcquisitionProtocolID NOT IN (1, 2, 3, 52) GROUP BY files.SessionID) nd ON (nd.SessionID=f.SessionID) ";
+
+        $left_join = "";
+        foreach ($case_desc as $key => $value) {
+            $left_join .= "
+            LEFT JOIN (SELECT files.SessionID, MIN(files_qcstatus.QCStatus+0) as " . $DB->quote($qc[$key]) . " FROM files JOIN files_qcstatus USING (FileID) WHERE files.AcquisitionProtocolID=" . $DB->quote($key) . " AND files_qcstatus.QCStatus IN (1, 2) GROUP BY files.SessionID) `" . $pass[$key] . "` ON (`" . $pass[$key] . "`.SessionID=f.SessionID) ";
+        }
+
+        $where = "
             WHERE 
             s.Active = 'Y' AND
             f.PendingStaging=0 AND 
             f.FileType='mnc' AND 
             f.AcquisitionProtocolID not in (1, 2, 3, 52)";
+
+        $this->query .= $left_join;
+        $this->query .= $where;
+
 
         $config =& NDB_Config::singleton();
         $user =& User::singleton();
@@ -108,39 +131,55 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
         }
 
+        // Initialize the arrays that go into this->columns and
+        // $this->headers so that array_merge works even if no
+        // $scan_types are set in the configuration module
+        $modalities_subquery_as = array();
+        $as = array();
+
+        foreach ($case_desc as $key => $value) {
+            $modalities_subquery[$key] = $value;
+            $as[$key] = $scan_id_types[$key] . '_QC_Status';
+            $modalities_subquery_as[$key] = $modalities_subquery[$key] . ' as ' . $as[$key];
+        }
+
         $this->columns = array(
             'p.MRI_alias as Site',
             'c.PSCID as PSCID',
             'c.CandID as DCCID',
             's.visit_label as Visit_Label',
-            "$PendingFailSubquery as QC_Status",
-            'MIN(md.AcquisitionDate) as First_Acq_Date',
-            'FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion_Date',
+            "$PendingFailSubquery as Visit_QC_Status",
+            'MIN(md.AcquisitionDate) as First_Acquisition',
+            'FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion',
             'FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC',
             "$NewDataSubquery as New_Data",
-            "$T1PassSubquery as T1_Passed",
-            "$T2PassSubquery as T2_Passed",
-            "GROUP_CONCAT(DISTINCT OutputType) as Links",
-            's.ID as sessionID'
+        );
+        $this->columns = array_merge(
+                            $this->columns,
+                            array("GROUP_CONCAT(DISTINCT OutputType) as Links", 
+                            's.ID as sessionID'),
+                            $modalities_subquery_as
         );
 
         $this->order_by = 'c.PSCID, s.Visit_label';
         $this->group_by = 's.ID';
+
         $this->headers = array(
             'Site',
             'PSCID',
             'DCCID',
             'Visit_Label',
-            'QC_Status',
-            'First_Acq_Date',
-            'First_Insertion_Date',
+            'Visit_QC_Status',
+            'First_Acquisition',
+            'First_Insertion',
             'Last_QC',
             'New_Data',
-            'T1_Passed',
-            'T2_Passed',
-            'Links',
-            'sessionID'
-        );
+            'Links');
+        $this->headers = array_merge(
+                $this->headers, 
+                $as, 
+                'sessionID'
+            );
 
         // Insert project column after DCCID, if useProject config is enabled
         if ($config->getSetting('useProjects') === "true") {
@@ -170,6 +209,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'Pending' => 'pending',
             'Scan_type'=>'f.AcquisitionProtocolID'
         );
+
         $this->EqualityFilters = array('f.AcquisitionProtocolID');
         $this->searchKeyword    = array();
 
@@ -216,7 +256,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         }
 
         $DB = Database::singleton();
-        $allAr = array('' => 'All');
+
         $this->addBasicText('pscid', 'PSCID', array("size"=>10,"maxlength"=>25));
         $this->addBasicText(
             'VL', 'Visit Label', array('size' => "10", "maxlength"=>"25")
@@ -224,6 +264,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $this->addBasicText(
             'DCCID', 'DCCID', array('size' => 10, "maxlength" => 25)
         );
+
 
         $config =& NDB_Config::singleton();
         if ($config->getSetting('useProjects') === "true") {
@@ -238,7 +279,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $this->addSelect('SiteID', 'Site', $list_of_sites);
         $this->addSelect(
             'VisitQCStatus',
-            'QC Status',
+            'Visit QC Status',
             array(''=>'All', 'Pass'=>'Pass', 'Fail'=>'Fail')
         );
 
@@ -248,6 +289,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             array(''=>'All', 'P'=>'Pending', 'N'=>'New', 'PN'=>'Pending or New')
         );
 
+        $allAr = array('' => All);
         //query to get scan types that exist for the project
         $types_q = $DB->pselect(
             "SELECT ID, Scan_type FROM mri_scan_type mri
@@ -259,6 +301,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             $type                   = $row['Scan_type'];
             $scan_types[$row['ID']] = $type;
         }
+
         $this->addSelect('Scan_type', 'Sequence Type', $scan_types);
 
         $outputTypes = $DB->pselect(
