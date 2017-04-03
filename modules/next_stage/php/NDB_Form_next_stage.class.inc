@@ -83,7 +83,7 @@ class NDB_Form_Next_Stage extends NDB_Form
 
         $firstVisit = false;
          //get first visit for candidate
-        $vLabel     = $candidate->getFirstVisit();
+        $vLabel = $candidate->getFirstVisit();
          //if current visit label is same as
          // visit label returned must be first visit
         if ($vLabel ==  $timePoint->getVisitLabel()) {
