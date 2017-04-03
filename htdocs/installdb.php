@@ -91,82 +91,87 @@ $tpl_data = array();
 // Page 4: 1. Check if user exists -- if so, error, if not create
 //	 2. Update config.xml if write access, otherwise download copy
 switch(isset($_POST["formname"]) ? $_POST["formname"] : "") {
-    case "validaterootaccount":
-        // This will connect to MySQL, check the permissions of the
-        // account provided, check that the database doesn't already
-        // exist, and create the database.
-        if (!isset($_POST["do_not_install"])) {
-            if (!isset($_POST["use_existing_database"])) {
-                if ($installer->CreateMySQLDB($_POST) === false) {
-                    $tpl_data["error"] = $installer->GetLastError();
-                    $tpl_data["Page"]  = "";
-                    break;
-                }
-            }
-            if ($installer->SourceSchema($_POST) === false) {
+case "validaterootaccount":
+    // This will connect to MySQL, check the permissions of the
+    // account provided, check that the database doesn't already
+    // exist, and create the database.
+    if (!isset($_POST["do_not_install"])) {
+        if (!isset($_POST["use_existing_database"])) {
+            if ($installer->CreateMySQLDB($_POST) === false) {
                 $tpl_data["error"] = $installer->GetLastError();
                 $tpl_data["Page"]  = "";
                 break;
             }
         }
-        if (!isset($_POST["do_not_update_config"])) {
-            if ($installer->UpdateBaseConfig($_POST) === false) {
-                $tpl_data["error"] = $installer->GetLastError();
-                $tpl_data["Page"]  = "";
-                break;
-            }
-        }
-        if (!Database::CanLogIn(
-            $_POST['dbhost'], $_POST['dbname'],
-            $_POST['dbadminuser'], $_POST['dbadminpassword']
-        )) {
-            $tpl_data["error"] = "The specified user does not exist or is using an incorrect password or the database does not exist";
+        if ($installer->SourceSchema($_POST) === false) {
+            $tpl_data["error"] = $installer->GetLastError();
             $tpl_data["Page"]  = "";
             break;
         }
-        $tpl_data["Page"] = "MySQLUserPrompt";
-        break;
-    case "createmysqlaccount":
-        if (isset($_POST["lorismysql_already_created"])) {
-            //Verify that it is, indeed, the case.
-            if (!Database::CanLogIn(
-                $_POST["dbhost"], $_POST["dbname"],
-                $_POST["lorismysqluser"], $_POST["lorismysqlpassword"]
-            )) {
-                
-                $tpl_data["error"] = "The specified user does not exist or is using an incorrect password or the database does not exist";
-                $tpl_data["Page"]  = "MySQLUserPrompt";
-                break;
-            }
-        } else {
-            if ($installer->CreateMySQLAccount($_POST) === false) {
-                $tpl_data["error"] = $installer->GetLastError();
-                $tpl_data["Page"]  = "MySQLUserPrompt";
-                break;
-            }
+    }
+    if (!isset($_POST["do_not_update_config"])) {
+        if ($installer->UpdateBaseConfig($_POST) === false) {
+            $tpl_data["error"] = $installer->GetLastError();
+            $tpl_data["Page"]  = "";
+            break;
         }
-        if ($installer->ResetFrontEndAdmin($_POST) === false) {
+    }
+    if (!Database::canLogIn(
+        $_POST['dbhost'],
+        $_POST['dbname'],
+        $_POST['dbadminuser'],
+        $_POST['dbadminpassword']
+    )) {
+        $tpl_data["error"] = "The specified user does not exist or ".
+            "is using an incorrect password or the database does not exist";
+        $tpl_data["Page"]  = "";
+        break;
+    }
+    $tpl_data["Page"] = "MySQLUserPrompt";
+    break;
+case "createmysqlaccount":
+    if (isset($_POST["lorismysql_already_created"])) {
+        //Verify that it is, indeed, the case.
+        if (!Database::canLogIn(
+            $_POST["dbhost"],
+            $_POST["dbname"],
+            $_POST["lorismysqluser"],
+            $_POST["lorismysqlpassword"]
+        )) {
+            $tpl_data["error"] = "The specified user does not exist or ".
+                "is using an incorrect password or the database does not exist";
+            $tpl_data["Page"]  = "MySQLUserPrompt";
+            break;
+        }
+    } else {
+        if ($installer->CreateMySQLAccount($_POST) === false) {
             $tpl_data["error"] = $installer->GetLastError();
             $tpl_data["Page"]  = "MySQLUserPrompt";
             break;
         }
-
-        if ($installer->ConfigWritable()) {
-            if ($installer->WriteConfig($_POST) === false) {
-                $tpl_data["error"] = $installer->GetLastError();
-                $tpl_data["Page"]  = "MySQLUserPrompt";
-                break;
-            }
-            $tpl_data["configfile"] = $installer->GetBaseDir() . "/project/config.xml";
-        } else {
-            $tpl_data["configlocation"] = $installer->GetBaseDir()
-                     . "/project/config.xml";
-            $tpl_data["configcontent"]  = htmlspecialchars(
-                $installer->GetConfigContent($_POST)
-            );
-        }
-        $tpl_data["Page"] = "Done";
+    }
+    if ($installer->ResetFrontEndAdmin($_POST) === false) {
+        $tpl_data["error"] = $installer->GetLastError();
+        $tpl_data["Page"]  = "MySQLUserPrompt";
         break;
+    }
+
+    if ($installer->ConfigWritable()) {
+        if ($installer->WriteConfig($_POST) === false) {
+            $tpl_data["error"] = $installer->GetLastError();
+            $tpl_data["Page"]  = "MySQLUserPrompt";
+            break;
+        }
+        $tpl_data["configfile"] = $installer->GetBaseDir() . "/project/config.xml";
+    } else {
+        $tpl_data["configlocation"] = $installer->GetBaseDir()
+                 . "/project/config.xml";
+        $tpl_data["configcontent"]  = htmlspecialchars(
+            $installer->GetConfigContent($_POST)
+        );
+    }
+    $tpl_data["Page"] = "Done";
+    break;
 }
 $tpl_data["console"] = htmlspecialchars(ob_get_contents());
 

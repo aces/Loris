@@ -387,13 +387,12 @@ class Installer
     function createMySQLAccount($values)
     {
         $DB = Database::singleton();
-        if (
-            $DB->connect(
-                $values['dbname'],
-                $values['dbadminuser'],
-                $values['dbadminpassword'],
-                $values['dbhost']
-            ) == false
+        if ($DB->connect(
+            $values['dbname'],
+            $values['dbadminuser'],
+            $values['dbadminpassword'],
+            $values['dbhost']
+        ) == false
         ) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
@@ -449,9 +448,11 @@ class Installer
             // (the MySQL Password() function has been deprecated,
             // so we can't rely on it to select a hash from the mysql.user
             // table and compare.)
-            if (Database::CanLogIn(
-                $values["dbhost"], $values["dbname"],
-                $values["lorismysqluser"], $values["lorismysqlpassword"]
+            if (Database::canLogIn(
+                $values["dbhost"],
+                $values["dbname"],
+                $values["lorismysqluser"],
+                $values["lorismysqlpassword"]
             )) {
                 // the user already exists and the password is valid.
                 // we don't need to go any further than this.
@@ -465,7 +466,7 @@ class Installer
                 return false;
             }
         }
-        
+
         if (!$DB->hasPrivilege("*", "*", "CREATE USER")) {
             $this->_lastErr = "User does not have privilege to create "
                 . "a mysql user.";

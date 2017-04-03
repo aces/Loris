@@ -43,79 +43,102 @@ class Database
         }
         return $DB;
     }
-    
-    /*
-     * @see https://dev.mysql.com/doc/refman/5.7/en/show-grants.html
+
+    /**
+     * On executing `SHOW GRANT;`, rows with a single column are returned.
+     * Each row's value is a string that lists the MySQL user's privileges for
+     * a given table.
+     *
      * @param string $raw The string of each row returned by `SHOW GRANT;`
-     * @return object The parsed privilege for a given string returned by `SHOW GRANT;`
+     *
+     * @see https://dev.mysql.com/doc/refman/5.7/en/show-grants.html
+     *
+     * @return object The parsed privilege for a string returned by `SHOW GRANT;`
      */
-    private function parsePrivilege ($raw) {
+    private function _parsePrivilege($raw)
+    {
         $token_arr = explode(" ON ", $raw);
         if (count($token_arr) != 2) {
             //Avoid letting the user see the "privileges", output to error_log()
-            error_log("Database::parsePrivilege(): Received {$raw}, could not split in half");
+            error_log(
+                "Database::_parsePrivilege():Received {$raw}, could not split in two"
+            );
             throw new Exception("Could not parse privilege");
         }
         $database_table_end = strpos($token_arr[1], " ");
-        $database_table = substr($token_arr[1], 0, $database_table_end);
-        
+        $database_table     = substr($token_arr[1], 0, $database_table_end);
+
         $privilege_arr_raw = substr($token_arr[0], strlen("GRANT "));
-        $privilege_arr = explode(", ", $privilege_arr_raw);
-        
+        $privilege_arr     = explode(", ", $privilege_arr_raw);
+
         return (object)array(
-            "database_table"=>$database_table,
-            "privilege_arr" =>$privilege_arr,
-        );
+                        "database_table" => $database_table,
+                        "privilege_arr"  => $privilege_arr,
+                       );
     }
-    private $privileges = null;
+    private $_privileges = null;
     /**
-     * @see https://dev.mysql.com/doc/refman/5.7/en/show-grants.html
-     * @return array An associative array mapping "`<database>`.`<table>`" strings to an array of privileges
+     * Fetches and caches all the current MySQL user's privileges.
+     * Subsequent calls return a cached copy.
+     *
+     * @see    https://dev.mysql.com/doc/refman/5.7/en/show-grants.html
+     * @return array An associative array mapping "`<database>`.`<table>`" strings
+     *               to an array of privileges
      */
-    public function getOrFetchAllPrivileges () {
-        if (is_null($this->privileges)) {
+    public function getOrFetchAllPrivileges()
+    {
+        if (is_null($this->_privileges)) {
             $stmt = $this->PDO->query("SHOW GRANTS");
             $arr  = $stmt->fetchAll(PDO::FETCH_COLUMN);
             $stmt->closeCursor();
-            
-            $this->privileges = array();
+
+            $this->_privileges = array();
             foreach ($arr as $raw) {
-                $obj = $this->parsePrivilege($raw);
-                $this->privileges[$obj->database_table] = $obj->privilege_arr;
+                $obj = $this->_parsePrivilege($raw);
+                $this->_privileges[$obj->database_table] = $obj->privilege_arr;
             }
         }
-        return $this->privileges;
+        return $this->_privileges;
     }
     /**
-     * @see https://dev.mysql.com/doc/refman/5.5/en/privileges-provided.html ; Table 6.2 Permissible Privileges for GRANT and REVOKE; "Privilege" column
-     * @param  string $database
-     * @param  string $table
-     * @param  string $privilege A string representing the privilege
-     * @return bool Returns true if the current MySQL user has the specified privilege
+     * Checks if the current MySQL user has the specified privilege.
+     *
+     * @param string $database  The database to check
+     * @param string $table     The table to check
+     * @param string $privilege A string representing the privilege
+     *
+     * @see https://dev.mysql.com/doc/refman/5.5/en/privileges-provided.html
+     *      Table 6.2 Permissible Privileges for GRANT and REVOKE; "Privilege" column
+     *
+     * @return bool Returns true if current MySQL user has the specified privilege
      */
-    public function hasPrivilege ($database, $table, $privilege) {
+    public function hasPrivilege($database, $table, $privilege)
+    {
         $arr = $this->getOrFetchAllPrivileges();
         if (!isset($arr[$database_table])) {
             return false;
         }
-        
+
         $database_escaped = ($database == "*") ?
             "*" : "`{$database}`";
-        $table_escaped = ($table == "*") ?
+        $table_escaped    = ($table == "*") ?
             "*" : "`{$table}`";
-        $database_table = "{$database_escaped}.{$table_escaped}";
+        $database_table   = "{$database_escaped}.{$table_escaped}";
         if (isset($arr[$database_table])) {
             $privilege_arr = $arr[$database_table];
-            //@see https://dev.mysql.com/doc/refman/5.5/en/privileges-provided.html#priv_all
-            if (
-                in_array("ALL", $privilege_arr) ||
-                in_array("ALL PRIVILEGES", $privilege_arr) ||
-                in_array($privilege, $privilege_arr)
+            /*
+            This passes phpcs. Putting the URL on a single-line comment
+            will make it fail. Thank you, phpcs.
+            https://dev.mysql.com/doc/refman/5.5/en/privileges-provided.html#priv_all
+            */
+            if (in_array("ALL", $privilege_arr)
+                || in_array("ALL PRIVILEGES", $privilege_arr)
+                || in_array($privilege, $privilege_arr)
             ) {
                 return true;
             }
         }
-        
+
         //Privilege was not found at this level, try to look higher
         //@see https://dev.mysql.com/doc/refman/5.7/en/grant.html
         if ($table == "*") {
@@ -135,8 +158,16 @@ class Database
             return $this->hasPrivilege($database, "*", $privilege);
         }
     }
-    
-    public function databaseExists ($database) {
+
+    /**
+     * Checks if the database exists
+     *
+     * @param bool $database The database name
+     *
+     * @return bool Returns true if the database exists
+     */
+    public function databaseExists($database)
+    {
         $exists = $this->PDO->query("SHOW DATABASES LIKE '$database'")
             ->fetch(PDO::FETCH_ASSOC);
         // this needs to be !empty, because otherwise if there's
@@ -147,7 +178,18 @@ class Database
         return !empty($exists);
     }
 
-    public static function CanLogIn ($host, $database, $username, $password) {
+    /**
+     * Checks if we can access the database with the given info
+     *
+     * @param string $host     The host
+     * @param string $database The database
+     * @param string $username The username
+     * @param string $password The password
+     *
+     * @return bool Returns true of the user can log in with the given info
+     */
+    public static function canLogIn($host, $database, $username, $password)
+    {
         try {
             $test = new PDO(
                 "mysql:host={$host};dbname={$database};charset=UTF8",
@@ -170,11 +212,11 @@ class Database
      * script are satisfied while we're connecting. This will only happen
      * once.
      *
-     * @param string $database     The database to be created
-     * @param string $username     The username to connect as
-     * @param string $password     The password to connect with
-     * @param string $host         The hostname that the SQL server is running
-     *                             on.
+     * @param string $database The database to be created
+     * @param string $username The username to connect as
+     * @param string $password The password to connect with
+     * @param string $host     The hostname that the SQL server is running
+     *                         on.
      *
      * @return bool true on success, false on failure.
      */
@@ -194,10 +236,9 @@ class Database
 
             if (!$this->hasPrivilege("*", "*", "CREATE")) {
                 if ($this->databaseExists($database)) {
-                     $this->lastErr ="
-                        User does not have create database privileges but the database `{$database}` already exists.
-                        Consider checking the 'use existing database checkbox'.
-                    ";
+                     $this->lastErr = "User does not have create database ".
+                        "privileges but the database `{$database}` already exists.".
+                        "Consider checking the 'use existing database checkbox'.";
                 } else {
                      $this->lastErr = "User does not have create database "
                     . "privileges; cannot create `{$database}`";
@@ -236,25 +277,27 @@ class Database
     ) {
         if ($this->isConnected() === true) {
             if (!$this->databaseExists($database)) {
-                $this->lastErr = "Database `{$database}` does not exist; consider creating it first";
+                $this->lastErr = "Database `{$database}` does not ".
+                    "exist; consider creating it first";
                 return false;
-             }
-             $this->PDO->exec("USE $database");
+            }
+            $this->PDO->exec("USE $database");
             return true;
         }
         try {
-             $this->PDO = new PDO(
-                 "mysql:host=$host;charset=UTF8",
-                 $username,
-                 $password
-             );
-             $this->PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
-             if (!$this->databaseExists($database)) {
-                $this->lastErr = "Database `{$database}` does not exist; consider creating it first";
+            $this->PDO = new PDO(
+                "mysql:host=$host;charset=UTF8",
+                $username,
+                $password
+            );
+            $this->PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+            if (!$this->databaseExists($database)) {
+                $this->lastErr = "Database `{$database}` does not exist; ".
+                    "consider creating it first";
                 return false;
-             }
-             $this->PDO->exec("USE $database");
-             return true;
+            }
+            $this->PDO->exec("USE $database");
+            return true;
         } catch(Exception $e) {
             $this->lastErr = "Exceptional error connecting to the database "
             . $database . ".";
