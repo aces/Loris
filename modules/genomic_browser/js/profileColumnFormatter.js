@@ -23,17 +23,19 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   var reactElement = null;
   switch (column) {
     case 'PSCID':
-      var url = loris.BaseURL + "/" + rowData[1] + "/";
-      reactElement = React.createElement(
-        "td",
-        null,
-        React.createElement(
-          "a",
-          { href: url },
-          cell
-        )
-      );
-      break;
+      {
+        var url = loris.BaseURL + "/" + rowData[1] + "/";
+        reactElement = React.createElement(
+          "td",
+          null,
+          React.createElement(
+            "a",
+            { href: url },
+            cell
+          )
+        );
+        break;
+      }
     case 'Subproject':
       reactElement = React.createElement(
         "td",
@@ -48,7 +50,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
           null,
           React.createElement(
             "a",
-            { href: "#", onClick: loris.loadFilteredMenuClickHandler('genomic_browser&submenu=viewGenomicFile', { 'candID': rowData[1] }) },
+            { href: "#", onClick: loris.loadFilteredMenuClickHandler('genomic_browser&submenu=viewGenomicFile', { candID: rowData[1] }) },
             cell
           )
         );
@@ -68,8 +70,11 @@ function formatColumn(column, cell, rowData, rowHeaders) {
           "td",
           null,
           React.createElement(
-            "a",
-            { href: "#", onClick: loris.loadFilteredMenuClickHandler('genomic_browser&submenu=' + column.toLowerCase() + '_browser', { 'candID': rowData[1] }) },
+            "span",
+            {
+              style: { cursor: 'pointer' },
+              onClick: loris.loadFilteredMenuClickHandler('genomic_browser&submenu=' + column.toLowerCase() + '_browser', { candID: rowData[1] })
+            },
             cell
           )
         );
