@@ -43,19 +43,30 @@
 			<fieldset>
 				<legend>LORIS MySQL User</legend>
 			<div>
-				<label for="lorisuser">Username: <input type="text" name="lorismysqluser" placeholder="ie. lorisuser" value="{$lorismysqluser}">
+				<label for="lorismysqluser">Username: <input type="text" name="lorismysqluser" placeholder="ie. lorisuser" value="{$lorismysqluser}">
 			</div>
 			<div>
-				<label for="lorispassword">Password: <input type="password" value="{$lorismysqlpassword}" name="lorismysqlpassword" placeholder="ie. LORISISTHEBEST!!!1">
+				<label for="lorismysqlpassword">Password: <input type="password" value="{$lorismysqlpassword}" name="lorismysqlpassword" placeholder="ie. LORISISTHEBEST!!!1">
+			</div>
+			<div>
+				<label for="lorismysql_already_created">Already Created:
+                <input type="checkbox" name="lorismysql_already_created" value="on" {($lorismysql_already_created == 'on') ? 'checked' : ''}/>
 			</div>
 			</fieldset>
+            <hr/>
+            <div>
+                Check "<strong>Already Created</strong>" only if the appropriate mysql user has already been created!<br/>
+                If you or the web admin wish to give the appropriate privileges to an existing MySQL user, <br/>
+                the privileges are <code>UPDATE, INSERT, SELECT, DELETE, CREATE TEMPORARY TABLES</code><br/>
+                for the following: <code>`{$dbname}`.*</code>
+            </div>
 			<fieldset>
 				<legend>LORIS Front End Admin</legend>
 			<div>
-				<label for="lorisuser">Username: <input type="text" name="frontenduser" placeholder="ie. myname" value="{$frontenduser}">
+				<label for="frontenduser">Username: <input type="text" name="frontenduser" placeholder="ie. myname" value="{$frontenduser}">
 			</div>
 			<div>
-				<label for="lorisuser">Password: <input type="password" name="frontendpassword" placeholder="ie. LORISISSTILLTHEBEST!!1" value="{$frontendpassword}">
+				<label for="frontendpassword">Password: <input type="password" name="frontendpassword" placeholder="ie. LORISISSTILLTHEBEST!!1" value="{$frontendpassword}">
 			</div>
 			</fieldset>
 			<input type="hidden" name="formname"        value="createmysqlaccount" />
@@ -149,6 +160,40 @@
 				</div>
 				<div class="col-md-10">
 					<input id="dbname" value="{if $dbname}{$dbname}{else}LORIS{/if}" type="text" name="dbname">
+				</div>
+			</div>
+			<div>
+				<div class="col-md-2">
+					<label for="use_existing_database">Use Existing Database:</label>
+				</div>
+				<div class="col-md-9">
+					<input type="checkbox" id="use_existing_database" name="use_existing_database" value="on" {($use_existing_database == 'on') ? 'checked' : ''}/>
+                    Check this if the database already exists but does not have Loris installed yet
+                    <!--The following is a hack to get the UI to align correctly *shrug*-->
+                    <div style="height:10px;">&nbsp;</div>
+				</div>
+			</div>
+			<div>
+				<div class="col-md-2">
+					<label for="do_not_install">Do Not Install:</label>
+				</div>
+				<div class="col-md-10">
+					<input type="checkbox" id="do_not_install" name="do_not_install" value="on" {($do_not_install == 'on') ? 'checked' : ''}/>
+                    Check this if you already installed Loris at the specified database
+                    <!--The following is a hack to get the UI to align correctly *shrug*-->
+                    <div style="height:10px;">&nbsp;</div>
+				</div>
+			</div>
+			<div>
+				<div class="col-md-2">
+					<label for="do_not_update_config">Do Not Update Configuration:</label>
+				</div>
+				<div class="col-md-10">
+					<input type="checkbox" id="do_not_update_config" name="do_not_update_config" value="on" {($do_not_update_config == 'on') ? 'checked' : ''}/>
+                    Check this if you don't want to update the configuration.
+                    <em>(You really should update the configuration if possible, though)</em>
+                    <!--The following is a hack to get the UI to align correctly *shrug*-->
+                    <div style="height:10px;">&nbsp;</div>
 				</div>
 			</div>
 			</fieldset>

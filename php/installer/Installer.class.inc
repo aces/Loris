@@ -187,6 +187,7 @@ class Installer
             return false;
         }
         $DB = Database::singleton();
+        error_log("createMySQLDB-A");
         if ($DB->connectAndCreate(
             $values['dbname'],
             $values['dbadminuser'],
@@ -194,15 +195,20 @@ class Installer
             $values['dbhost']
         ) == false
         ) {
+            error_log("createMySQLDB-B");
             if (!empty($DB->lastErr)) {
+                error_log("createMySQLDB-C");
                 $this->_lastErr = $DB->lastErr;
             } else {
+                error_log("createMySQLDB-D");
                 $this->_lastErr = "Could not connect to MySQL server "
                 . "and create database with credentials provided.";
             }
+            error_log("createMySQLDB-E");
             return false;
 
         }
+        error_log("createMySQLDB-F");
         return true;
     }
 
@@ -387,12 +393,13 @@ class Installer
     function createMySQLAccount($values)
     {
         $DB = Database::singleton();
-        if ($DB->connect(
-            $values['dbname'],
-            $values['dbadminuser'],
-            $values['dbadminpassword'],
-            $values['dbhost']
-        ) == false
+        if (
+            $DB->connect(
+                $values['dbname'],
+                $values['dbadminuser'],
+                $values['dbadminpassword'],
+                $values['dbhost']
+            ) == false
         ) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
@@ -403,6 +410,11 @@ class Installer
             return false;
         }
 
+        if (!$DB->hasPrivilege("mysql", "user", "SELECT")) {
+            $this->_lastErr = "User does not have privilege to check if "
+                . "a mysql user exists.";
+            return false;
+        }
         // This script is being run by the web server, so get the host
         // that the current user is connect from to be the host of the
         // new user, since the new user is also going to be used from
@@ -443,17 +455,14 @@ class Installer
             // (the MySQL Password() function has been deprecated,
             // so we can't rely on it to select a hash from the mysql.user
             // table and compare.)
-            try {
-                $test = new PDO(
-                    "mysql:host=$values[dbhost];dbname=$values[dbname];charset=UTF8",
-                    $values['lorismysqluser'],
-                    $values['lorismysqlpassword']
-                );
-
+            if (Database::CanLogIn(
+                $values["dbhost"], $values["dbname"],
+                $values["lorismysqluser"], $values["lorismysqlpassword"]
+            )) {
                 // the user already exists and the password is valid.
                 // we don't need to go any further than this.
                 return true;
-            } catch(Exception $e) {
+            } else {
                 // the user already exists but we couldn't connect as it.
                 $this->_lastErr = "MySQL user $quotedUser already exists and "
                 . " password does not match or it does not"
@@ -462,7 +471,12 @@ class Installer
                 return false;
             }
         }
-
+        
+        if (!$DB->hasPrivilege("*", "*", "CREATE USER")) {
+            $this->_lastErr = "User does not have privilege to create "
+                . "a mysql user.";
+            return false;
+        }
         // The user does not exist and needs to be created
         $DB->PDO->exec(
             "CREATE USER $quotedUser IDENTIFIED BY " .
