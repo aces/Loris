@@ -52,13 +52,15 @@ class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
                  " AND helpChild.topic IS NOT NULL";
 
         // set the class variables
+        $contentColumn  = "COALESCE(helpChild.projectContent,".
+                         " helpChild.content) as Content";
         $this->columns  = array(
                            'helpChild.helpID as helpID',
                            'helpChild.topic as Topic',
                            'helpChild.parentID as Parent_ID',
                            'helpParent.parentID as ParentTopic_ID',
                            'helpParent.topic as Parent_Topic',
-                           'COALESCE(helpChild.projectContent, helpChild.content) as Content',// @codingStandardsIgnoreLine
+                           $contentColumn,
                           );
         $this->query    = $query;
         $this->order_by = 'helpChild.helpID';
@@ -70,7 +72,8 @@ class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
                            'Parent_Topic',
                            'Content',
                           );
-        $this->tpl_data['hiddenHeaders'] = json_encode(['HelpID', 'ParentID', 'ParentTopicID']);// @codingStandardsIgnoreLine
+        $this->tpl_data['hiddenHeaders']
+            = json_encode(['HelpID', 'ParentID', 'ParentTopicID']);
         $this->validFilters = array('helpChild.topic');
 
         $this->formToFilter  = array('topic' => 'helpChild.topic');
