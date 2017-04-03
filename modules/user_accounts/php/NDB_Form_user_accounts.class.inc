@@ -58,9 +58,11 @@ class NDB_Form_User_Accounts extends NDB_Form
                 if ($this->isCreatingNewUser()) {
                     return true;
                 }
-                return in_array(
-                    $editor->getData('CenterIDs'),
-                    $user->getData('CenterIDs')
+                return array_intersect(
+                    $user->getData('CenterIDs'),
+                    $editor->getData('CenterIDs')
+                ) == $user->getData(
+                    'CenterIDs'
                 );
             }
 
@@ -221,24 +223,25 @@ class NDB_Form_User_Accounts extends NDB_Form
             unset($values['Password_hash']);
         }
 
-        // multi-site UPDATE
-        $uid           = $user->getData('ID');
-        $us_curr_sites = $values['CenterIDs'];
-        if (!$this->isCreatingNewUser()) {
-            $DB->delete('user_psc_rel', array("UserID" => $uid));
-            foreach ($us_curr_sites as $site) {
-                $DB->insert(
-                    'user_psc_rel',
-                    array(
-                     "UserID"   => $uid,
-                     "CenterID" => $site,
-                    )
-                );
+        if ($this->page === 'edit_user') {
+            // multi-site UPDATE
+            $uid           = $user->getData('ID');
+            $us_curr_sites = $values['CenterIDs'];
+            if (!$this->isCreatingNewUser()) {
+                $DB->delete('user_psc_rel', array("UserID" => $uid));
+                foreach ($us_curr_sites as $site) {
+                    $DB->insert(
+                        'user_psc_rel',
+                        array(
+                         "UserID"   => $uid,
+                         "CenterID" => $site,
+                        )
+                    );
+                }
             }
+            unset($values['CenterIDs']);
+            // END multi-site UPDATE
         }
-        unset($values['CenterIDs']);
-        // END multi-site UPDATE
-
         // EXAMINER UPDATE
         $ex_curr_sites =array();
         $ex_prev_sites =array();
@@ -574,10 +577,11 @@ class NDB_Form_User_Accounts extends NDB_Form
             $siteOptions = Utility::getSiteList(false);
         } else {
             // allow only to add to their own site
-            $siteOptions
-                = array(
-                   $editor->getData('CenterID') => $editor->getData('Site'),
-                  );
+            $site_arr = $editor->getData('CenterIDs');
+            foreach ($site_arr as $key => $val) {
+                $site[$key]        = &Site::singleton($val);
+                $siteOptions[$val] = $site[$key]->getCenterName();
+            }
         }
         $this->addSelect(
             'CenterIDs',
