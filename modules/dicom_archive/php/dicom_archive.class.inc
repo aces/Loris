@@ -82,7 +82,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
 
         $this->order_by = 't.DateAcquired';
 
-        $this->headers = [];
+        $this->headers = array();
 
         if ($this->dicomArchiveSettings['showTransferStatus'] == 'true') {
             array_push($this->headers, 'Transfer_Status');
@@ -90,7 +90,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
 
         $this->headers = array_merge(
             $this->headers,
-            [
+            array(
              'Patient_ID',
              'Patient_Name',
              'Gender',
@@ -103,17 +103,17 @@ class Dicom_Archive extends \NDB_Menu_Filter
              'Site',
              'TarchiveID',
              'SessionID',
-            ]
+            )
         );
 
         // Set header as hidden from the data table
         $this->tpl_data['hiddenHeaders'] = json_encode(
-            [
+            array(
              'Seriesuid',
              'Site',
              'TarchiveID',
              'SessionID',
-            ]
+            )
         );
 
         $this->validFilters = array(
@@ -184,12 +184,12 @@ class Dicom_Archive extends \NDB_Menu_Filter
     {
         $result          = $this->toArray();
         $result['Sites'] = \Utility::getSiteList();
-        $result['hiddenHeaders'] = [
+        $result['hiddenHeaders'] = array(
                                     'Seriesuid',
                                     'Site',
                                     'TarchiveID',
                                     'SessionID',
-                                   ];
+                                   );
 
         return json_encode($result);
     }

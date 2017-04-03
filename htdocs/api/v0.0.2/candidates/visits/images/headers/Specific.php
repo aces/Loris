@@ -41,7 +41,7 @@ class SpecificHeader extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         $this->AutoHandleRequestDelegation = false;
 
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = ['GET'];
+            $this->AllowedMethods = array('GET');
         }
 
         parent::__construct($method, $CandID, $VisitLabel, $Filename);
@@ -65,15 +65,15 @@ class SpecificHeader extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         foreach ($headersDB as $row) {
             $headers[$row['Header']] = $row['Value'];
         }
-        $this->JSON = [
-                       'Meta'  => [
+        $this->JSON = array(
+                       'Meta'  => array(
                                    'CandID'   => $this->CandID,
                                    'Visit'    => $this->VisitLabel,
                                    'Filename' => $this->Filename,
                                    "Header"   => $this->Header,
-                                  ],
+                                  ),
                        "Value" => $this->getHeader($this->Header),
-                      ];
+                      );
     }
 
     /**

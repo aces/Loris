@@ -195,12 +195,12 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
         }
 
         $this->tpl_data['hiddenHeaders'] = json_encode(
-            [
+            array(
              'SeriesUID',
              'Hash',
              'JoinID',
              'SiteID',
-            ]
+            )
         );
 
         $this->query    = " FROM (

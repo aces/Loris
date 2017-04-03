@@ -59,9 +59,9 @@ class NDB_Config
         // the base path is used by smarty, so calculate it relative
         // to the current directory. Nothing else needs to be supported.
         if ($setting == "paths") {
-            return [
+            return array(
                     "base" => __DIR__ . "/../../",
-                   ];
+                   );
         }
         return null;
     }

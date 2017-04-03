@@ -49,12 +49,12 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
         $bFlags
     ) {
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = [
+            $this->AllowedMethods = array(
                                      'GET',
                                      'PUT',
                                      'PATCH',
                                      'OPTIONS',
-                                    ];
+                                    );
         }
         $this->AutoHandleRequestDelegation = false;
         $this->bDDE   = $bDDE;
@@ -115,14 +115,14 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
      */
     function handleGET()
     {
-        $this->JSON = [
-                       "Meta" => [
+        $this->JSON = array(
+                       "Meta" => array(
                                   "Instrument" => $this->Instrument->testName,
                                   "Visit"      => $this->VisitLabel,
                                   "Candidate"  => $this->CandID,
                                   "DDE"        => $this->bDDE,
-                                 ],
-                      ];
+                                 ),
+                      );
 
         if (!$this->bFlags) {
             $Values = \NDB_BVL_Instrument::loadInstanceData($this->Instrument);
@@ -137,7 +137,7 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
             $flags = $this->DB->pselectRow(
                 "SELECT Data_entry, Administration, Validity
                  FROM flag WHERE CommentID=:CID",
-                ['CID' => $this->Instrument->getCommentID()]
+                array('CID' => $this->Instrument->getCommentID())
             );
 
             if (!$this->Instrument->ValidityEnabled) {

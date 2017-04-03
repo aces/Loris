@@ -76,7 +76,7 @@ class NDB_Menu_Filter_Mri_Protocol_Check_Violations extends NDB_Menu_Filter
                            'SeriesUID',
                            'TarchiveID',
                           );
-        $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
+        $this->tpl_data['hiddenHeaders'] = json_encode(array('TarchiveID'));
         $this->validFilters = array(
                                'l.TarchiveID',
                                'l.SeriesUID',
@@ -89,7 +89,7 @@ class NDB_Menu_Filter_Mri_Protocol_Check_Violations extends NDB_Menu_Filter
                                'PatientName' => 'l.PatientName',
                                'CandID'      => 'l.CandID',
                               );
-        $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
+        $this->tpl_data['hiddenHeaders'] = json_encode(array('TarchiveID'));
     }
 
     /**

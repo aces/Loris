@@ -71,7 +71,7 @@ class NDB_Form_Issue_Tracker extends NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/issue_tracker/css/issue_tracker.css"]
+            array($baseURL . "/issue_tracker/css/issue_tracker.css")
         );
     }
 
@@ -100,7 +100,7 @@ class NDB_Form_Issue_Tracker extends NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/issue_tracker/js/issueIndex.js"]
+            array($baseURL . "/issue_tracker/js/issueIndex.js")
         );
     }
 
@@ -123,7 +123,7 @@ class NDB_Form_Issue_Tracker extends NDB_Form
 
         $issueData = $db->pselectRow(
             "SELECT centerID FROM issues WHERE issueID=:issueID",
-            ['issueID' => $issueID]
+            array('issueID' => $issueID)
         );
 
         if (in_array($issueData['centerID'], $user->getData('CenterIDs'))

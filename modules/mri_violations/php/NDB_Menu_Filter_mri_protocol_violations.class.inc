@@ -104,7 +104,7 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
                                'SeriesUID',
                                'TarchiveID',
                               );
-        $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
+        $this->tpl_data['hiddenHeaders'] = json_encode(array('TarchiveID'));
         $this->query        = " FROM mri_protocol_violated_scans mpv
                  LEFT JOIN tarchive ON
                 (mpv.PatientName = tarchive.PatientName) WHERE 1=1";

@@ -297,7 +297,13 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
              'Hash',
             )
         );
-        $this->tpl_data['hiddenHeaders'] = json_encode(['Value1', 'Value2', 'Hash']);
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            array(
+             'Value1',
+             'Value2',
+             'Hash',
+            )
+        );
         $this->formToFilter = array(
                                'Instrument' => 'conflicts_unresolved.TableName',
                                'site'       => 'session.CenterID',

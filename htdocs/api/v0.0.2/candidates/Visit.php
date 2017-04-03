@@ -48,10 +48,10 @@ class Visit extends \Loris\API\Candidates\Candidate
         $this->AutoHandleRequestDelegation = false;
 
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = [
+            $this->AllowedMethods = array(
                                      'GET',
                                      'PUT',
-                                    ];
+                                    );
         }
         $this->CandID     = $CandID;
         $this->VisitLabel = $VisitLabel;
@@ -93,41 +93,41 @@ class Visit extends \Loris\API\Candidates\Candidate
     {
         $SubProjTitle = $this->Timepoint->getData("SubprojectTitle");
 
-        $this->JSON = [
-                       "Meta" => [
+        $this->JSON = array(
+                       "Meta" => array(
                                   "CandID"  => $this->CandID,
                                   'Visit'   => $this->VisitLabel,
                                   'Battery' => $SubProjTitle,
-                                 ],
-                      ];
+                                 ),
+                      );
         if ($this->Timepoint) {
-            $stages = [];
+            $stages = array();
             if ($this->Timepoint->getDateOfScreening() !== null) {
                 $Date   = $this->Timepoint->getDateOfScreening();
                 $Status = $this->Timepoint->getScreeningStatus();
 
-                $stages['Screening'] = [
+                $stages['Screening'] = array(
                                         'Date'   => $Date,
                                         'Status' => $Status,
-                                       ];
+                                       );
             }
             if ($this->Timepoint->getDateOfVisit() !== null) {
                 $Date   = $this->Timepoint->getDateOfVisit();
                 $Status = $this->Timepoint->getVisitStatus();
 
-                $stages['Visit'] = [
+                $stages['Visit'] = array(
                                     'Date'   => $Date,
                                     'Status' => $Status,
-                                   ];
+                                   );
             }
             if ($this->Timepoint->getDateOfApproval() !== null) {
                 $Date   = $this->Timepoint->getDateOfApproval();
                 $Status = $this->Timepoint->getApprovalStatus();
 
-                $stages['Approval'] = [
+                $stages['Approval'] = array(
                                        'Date'   => $Date,
                                        'Status' => $Status,
-                                      ];
+                                      );
             }
             $this->JSON['Stages'] = $stages;
         }

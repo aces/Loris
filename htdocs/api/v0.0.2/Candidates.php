@@ -35,10 +35,10 @@ class Candidates extends APIBase
      */
     public function __construct($method, $data=null)
     {
-        $this->AllowedMethods = [
+        $this->AllowedMethods = array(
                                  'GET',
                                  'POST',
-                                ];
+                                );
         $this->RequestData    = $data;
 
         parent::__construct($method);
@@ -77,7 +77,7 @@ class Candidates extends APIBase
                 FROM candidate c JOIN psc s on (s.CenterID=c.CenterID)
              WHERE Active='Y'
                 ",
-            []
+            array()
         );
 
         $projects   = \Utility::getProjectList();
@@ -92,7 +92,7 @@ class Candidates extends APIBase
             $candidates
         );
 
-        $this->JSON = ["Candidates" => $candValues];
+        $this->JSON = array("Candidates" => $candValues);
     }
 
     /**
@@ -110,7 +110,7 @@ class Candidates extends APIBase
                 $this->safeExit(0);
             }
 
-            $this->verifyField($data, 'Gender', ['Male', 'Female']);
+            $this->verifyField($data, 'Gender', array('Male', 'Female'));
             $this->verifyField($data, 'EDC', 'YYYY-MM-DD');
             $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
             //Candidate::createNew
@@ -122,9 +122,9 @@ class Candidates extends APIBase
                     $data['Candidate']['PSCID']
                 );
                 $this->header("HTTP/1.1 201 Created");
-                $this->JSON = [
-                               'Meta' => ["CandID" => $candid],
-                              ];
+                $this->JSON = array(
+                               'Meta' => array("CandID" => $candid),
+                              );
             } catch(\LorisException $e) {
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->safeExit(0);

@@ -44,7 +44,7 @@ function getCandInfoFields()
     $db =& Database::singleton();
 
     // get caveat options
-    $caveat_options = [];
+    $caveat_options = array();
     $options        = $db->pselect(
         "SELECT ID, Description FROM caveat_options",
         array()
@@ -89,12 +89,12 @@ function getCandInfoFields()
         array('cid' => $candID)
     );
 
-    $parameter_values = [];
+    $parameter_values = array();
     foreach ($fields as $row) {
         $parameter_values[$row['ParameterTypeID']] = $row['Value'];
     }
 
-    $result = [
+    $result = array(
                'pscid'                => $pscid,
                'candID'               => $candID,
                'caveatReasonOptions'  => $caveat_options,
@@ -103,7 +103,7 @@ function getCandInfoFields()
                'flagged_other'        => $other,
                'extra_parameters'     => $extra_parameters,
                'parameter_values'     => $parameter_values,
-              ];
+              );
 
     return $result;
 }
@@ -153,13 +153,13 @@ function getProbandInfoFields()
         }
     }
 
-    $result = [
+    $result = array(
                'pscid'         => $pscid,
                'candID'        => $candID,
                'ProbandGender' => $gender,
                'ProbandDoB'    => $dob,
                'ageDifference' => $ageDifference,
-              ];
+              );
 
     return $result;
 }
@@ -225,12 +225,12 @@ function getFamilyInfoFields()
         )
     );
 
-    $result = [
+    $result = array(
                'pscid'                 => $pscid,
                'candID'                => $candID,
                'candidates'            => $candidates,
                'existingFamilyMembers' => $familyMembers,
-              ];
+              );
 
     return $result;
 }
@@ -307,7 +307,7 @@ function getParticipantStatusFields()
 
     $history = getParticipantStatusHistory($candID);
 
-    $result = [
+    $result = array(
                'pscid'                 => $pscid,
                'candID'                => $candID,
                'statusOptions'         => $statusOptions,
@@ -318,7 +318,7 @@ function getParticipantStatusFields()
                'participantSuboptions' => $suboption,
                'reasonSpecify'         => $reason,
                'history'               => $history,
-              ];
+              );
 
     return $result;
 }
@@ -372,10 +372,10 @@ function getConsentStatusFields()
 
     $config        =& NDB_Config::singleton();
     $consent       = $config->getSetting('ConsentModule');
-    $consents      = [];
-    $consentStatus = [];
-    $date          = [];
-    $withdrawal    = [];
+    $consents      = array();
+    $consentStatus = array();
+    $date          = array();
+    $withdrawal    = array();
 
     $consent_details =Utility::asArray($consent['Consent']);
     if (!$consent_details[0]) {
@@ -407,7 +407,7 @@ function getConsentStatusFields()
 
     $history = getConsentStatusHistory($candID, $consents);
 
-    $result = [
+    $result = array(
                'pscid'           => $pscid,
                'candID'          => $candID,
                'consentStatuses' => $consentStatus,
@@ -415,7 +415,7 @@ function getConsentStatusFields()
                'withdrawals'     => $withdrawal,
                'consents'        => $consents,
                'history'         => $history,
-              ];
+              );
 
     return $result;
 }

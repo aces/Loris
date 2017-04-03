@@ -39,10 +39,10 @@ class Imaging extends \Loris\API\Candidates\Candidate\Visit
         $this->AutoHandleRequestDelegation = false;
 
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = [
+            $this->AllowedMethods = array(
                                      'GET',
                                      'PUT',
-                                    ];
+                                    );
         }
         $this->CandID     = $CandID;
         $this->VisitLabel = $VisitLabel;
@@ -77,12 +77,12 @@ class Imaging extends \Loris\API\Candidates\Candidate\Visit
              )
          );
 
-         $this->JSON = [
-                        'Meta' => [
+         $this->JSON = array(
+                        'Meta' => array(
                                    'CandID' => $this->CandID,
                                    'Visit'  => $this->VisitLabel,
-                                  ],
-                       ];
+                                  ),
+                       );
 
          $this->JSON['SessionQC'] = $qcstatus['MRIQCStatus'];
          $this->JSON['Pending']   = $qcstatus['MRIQCPending'] === 'N' ? false : true;
@@ -198,13 +198,13 @@ class Imaging extends \Loris\API\Candidates\Candidate\Visit
          );
          $qcstatus   = $DB->update(
              'session',
-             [
+             array(
               'MRIQCStatus'  => $data['SessionQC'],
               'MRIQCPending' => $savePending,
-             ],
-             ['ID' => $sessionID]
+             ),
+             array('ID' => $sessionID)
          );
-         $this->JSON = ["success" => "Updated QC"];
+         $this->JSON = array("success" => "Updated QC");
     }
 }
 

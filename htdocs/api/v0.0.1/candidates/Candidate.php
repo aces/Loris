@@ -77,8 +77,8 @@ class Candidate extends \Loris\API\APIBase
         $Site   = $this->Candidate->getCandidateSite();
         $Gender = $this->Candidate->getCandidateGender();
 
-        $this->JSON = [
-                       "Meta"   => [
+        $this->JSON = array(
+                       "Meta"   => array(
                                     "CandID"  => $this->CandID,
                                     'Project' => $this->Candidate->getProjectTitle(),
                                     'PSCID'   => $this->Candidate->getPSCID(),
@@ -86,11 +86,11 @@ class Candidate extends \Loris\API\APIBase
                                     'EDC'     => $this->Candidate->getCandidateEDC(),
                                     'DoB'     => $this->Candidate->getCandidateDoB(),
                                     'Gender'  => $Gender,
-                                   ],
+                                   ),
                        "Visits" => array_values(
                            $this->Candidate->getListOfVisitLabels()
                        ),
-                      ];
+                      );
     }
 
     /**

@@ -75,7 +75,7 @@ class Project extends \Loris\API\APIBase
         } catch (\LorisException $e) {
             // This projectName does not exists
             $this->header("HTTP/1.1 404 Not Found");
-            $this->error(['error' => 'Invalid project']);
+            $this->error(array('error' => 'Invalid project'));
             $this->safeExit(0);
         }
 
@@ -92,11 +92,11 @@ class Project extends \Loris\API\APIBase
         if (!empty($this->JSON)) {
             return $this->JSON;
         }
-        $JSONArray = [
-                      "Meta" => [
+        $JSONArray = array(
+                      "Meta" => array(
                                  "Project" => $this->project->getName(),
-                                ],
-                     ];
+                                ),
+                     );
 
         if ($this->bCandidates) {
             $JSONArray['Candidates'] = $this->project->getCandidateIds();
@@ -106,7 +106,7 @@ class Project extends \Loris\API\APIBase
             $Instruments = \Utility::getAllInstruments();
 
             if ($this->bInstrumentDetails) {
-                $dets   = [];
+                $dets   = array();
                 $config = $this->Factory->config();
                 $DB     = $this->Factory->database();
 
@@ -123,11 +123,11 @@ class Project extends \Loris\API\APIBase
 
                     $DDEEn = in_array($instrument, $DDE);
 
-                    $dets[$instrument] = [
+                    $dets[$instrument] = array(
                                           'FullName'               => $FullName,
                                           'Subgroup'               => $subgroup,
                                           'DoubleDataEntryEnabled' => $DDEEn,
-                                         ];
+                                         );
                 }
                 $JSONArray['Instruments'] = $dets;
             } else {

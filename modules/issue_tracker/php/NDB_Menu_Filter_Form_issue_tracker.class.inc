@@ -94,10 +94,10 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
                           'CandID',
                          );
         $this->tpl_data['hiddenHeaders'] = json_encode(
-            [
+            array(
              'SessionID',
              'CandID',
-            ]
+            )
         );
 
         $this->validFilters = array(
@@ -200,7 +200,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         $modules_expanded = $db->pselect(
             "SELECT DISTINCT Label, ID FROM LorisMenu 
 WHERE Parent IS NOT NULL ORDER BY Label",
-            []
+            array()
         );
         $modules          = $this->reorganizeQueryResults(
             $modules_expanded,
@@ -229,7 +229,7 @@ WHERE Parent IS NOT NULL ORDER BY Label",
         $unorgCategories = $db -> pselect(
             "SELECT categoryName
         FROM issues_categories",
-            []
+            array()
         );
         $categories      = array('' => "All");
         foreach ($unorgCategories as $r_row) {

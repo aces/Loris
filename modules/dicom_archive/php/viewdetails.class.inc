@@ -291,7 +291,7 @@ class ViewDetails extends \NDB_Form
         $baseURL = $factory->settings()->getBaseURL();
         return array_merge(
             $depends,
-            [$baseURL . "/dicom_archive/css/dicom_archive.css"]
+            array($baseURL . "/dicom_archive/css/dicom_archive.css")
         );
     }
 

@@ -139,11 +139,11 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             )
         );
         $this->tpl_data['hiddenHeaders'] = json_encode(
-            [
+            array(
              'New Value',
              'OldValue2',
              'CenterID',
-            ]
+            )
         );
         $con = "conflicts_resolved";
 

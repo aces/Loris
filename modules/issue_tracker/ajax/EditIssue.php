@@ -98,7 +98,7 @@ function editIssue()
     $historyValues = getChangedValues($issueValues, $issueID);
 
     if (!empty($issueID) || $issueID != 0) {
-        $db->update('issues', $issueValues, ['issueID' => $issueID]);
+        $db->update('issues', $issueValues, array('issueID' => $issueID));
     } else {
         $issueValues['reporter']    = $user->getData('UserID');
         $issueValues['dateCreated'] = date('Y-m-d H:i:s');
@@ -141,7 +141,7 @@ function editIssue()
         // Clear the list of current watchers
         $db->delete(
             'issues_watching',
-            ['issueID' => $issueID]
+            array('issueID' => $issueID)
         );
 
         // Add new watchers (if any)
@@ -150,10 +150,10 @@ function editIssue()
             if ($usersWatching) {
                 $db->insert(
                     'issues_watching',
-                    [
+                    array(
                      'userID'  => $usersWatching,
                      'issueID' => $issueID,
-                    ]
+                    )
                 );
             }
         }
@@ -162,7 +162,7 @@ function editIssue()
     //sending email
     emailUser($issueID, $issueValues['assignee']);
 
-    return ['issueID' => $issueID];
+    return array('issueID' => $issueID);
 }
 
 /**
@@ -179,12 +179,12 @@ function validateInput($values)
     $db         =& Database::singleton();
     $pscid      = (isset($values['PSCID']) ? $values['PSCID'] : null);
     $visitLabel = (isset($values['visitLabel']) ? $values['visitLabel'] : null);
-    $result     = [
+    $result     = array(
                    'PSCID'     => $pscid,
                    'visit'     => $visitLabel,
                    'candID'    => null,
                    'sessionID' => null,
-                  ];
+                  );
 
     // If both are set, return SessionID and CandID
     if (isset($result['PSCID']) && isset($result['visit'])) {
@@ -192,10 +192,10 @@ function validateInput($values)
             "SELECT s.ID as sessionID, c.candID as candID FROM candidate c 
             INNER JOIN session s on (c.CandID = s.CandID) 
             WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
-            [
+            array(
              'PSCID'      => $result['PSCID'],
              'visitLabel' => $result['visit'],
-            ]
+            )
         );
 
         if (isset($session[0]['sessionID'])) {
@@ -213,7 +213,7 @@ function validateInput($values)
     // If only PSCID is set, return CandID
     if (isset($result['PSCID'])) {
         $query  = "SELECT CandID FROM candidate WHERE PSCID=:PSCID";
-        $params = ['PSCID' => $result['PSCID']];
+        $params = array('PSCID' => $result['PSCID']);
 
         $user =& User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {
@@ -252,7 +252,7 @@ function validateInput($values)
 function getChangedValues($issueValues, $issueID)
 {
     $issueData     = getIssueData($issueID);
-    $changedValues = [];
+    $changedValues = array();
     foreach ($issueValues as $key => $value) {
         // Only include fields that have changed
         if ($issueValues[$key] != $issueData[$key] && !empty($value)) {
@@ -279,12 +279,12 @@ function updateHistory($values, $issueID)
 
     foreach ($values as $key => $value) {
         if (!empty($value)) {
-            $changedValues = [
+            $changedValues = array(
                               'newValue'     => $value,
                               'fieldChanged' => $key,
                               'issueID'      => $issueID,
                               'addedBy'      => $user->getData('UserID'),
-                             ];
+                             );
             $db->insert('issues_history', $changedValues);
         }
     }
@@ -591,9 +591,9 @@ WHERE FIND_IN_SET(u.CenterID,:CenterID) OR FIND_IN_SET(u.CenterID,:DCC)",
 
     $unorgCategories = $db->pselect(
         "SELECT categoryName FROM issues_categories",
-        []
+        array()
     );
-    $categories      = [];
+    $categories      = array();
     foreach ($unorgCategories as $r_row) {
         $categoryName = $r_row['categoryName'];
         if ($categoryName) {
@@ -605,7 +605,7 @@ WHERE FIND_IN_SET(u.CenterID,:CenterID) OR FIND_IN_SET(u.CenterID,:DCC)",
     $modules_expanded = $db->pselect(
         "SELECT DISTINCT Label, ID FROM LorisMenu 
 WHERE Parent IS NOT NULL ORDER BY Label ",
-        []
+        array()
     );
     foreach ($modules_expanded as $m_row) {
         $modules[$m_row['ID']] = $m_row['Label'];
@@ -642,7 +642,7 @@ ORDER BY dateAdded",
         $isOwnIssue = false;
     }
 
-    $result = [
+    $result = array(
                'assignees'         => $assignees,
                'sites'             => $sites,
                'statuses'          => $statuses,
@@ -655,7 +655,7 @@ ORDER BY dateAdded",
                    'issue_tracker_developer'
                ),
                'isOwnIssue'        => $isOwnIssue,
-              ];
+              );
 
     return $result;
 }
@@ -680,11 +680,11 @@ function getIssueData($issueID)
             "LEFT JOIN candidate c ON (i.candID=c.CandID)" .
             "LEFT JOIN session s ON (i.sessionID=s.ID) " .
             "WHERE issueID=:issueID",
-            ['issueID' => $issueID]
+            array('issueID' => $issueID)
         );
     }
 
-    return [
+    return array(
             'reporter'      => $user->getData('UserID'),
             'dateCreated'   => date('Y-m-d H:i:s'),
             'centerID'      => $user->getData('CenterID'),
@@ -700,7 +700,7 @@ function getIssueData($issueID)
             'visitLabel'    => null,
             'category'      => null,
             'lastUpdatedBy' => null,
-           ];
+           );
 }
 
 /**
@@ -717,5 +717,5 @@ function showError($message)
     }
     header('HTTP/1.1 400 Bad Request');
     header('Content-Type: application/json; charset=UTF-8');
-    die(json_encode(['message' => $message]));
+    die(json_encode(array('message' => $message)));
 }

@@ -40,11 +40,11 @@ class BrainBrowser extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         $this->AutoHandleRequestDelegation = false;
 
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = [
+            $this->AllowedMethods = array(
                                      'GET',
                                      'PUT',
                                      'PATCH',
-                                    ];
+                                    );
         }
 
         parent::__construct($method, $CandID, $VisitLabel, $Filename);
@@ -64,11 +64,11 @@ class BrainBrowser extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
      */
     private function _getDimension($dim)
     {
-        return [
+        return array(
                 'start'        => $this->getHeader("$dim:start"),
                 'space_length' => $this->getHeader("$dim:length"),
                 'step'         => $this->getHeader("$dim:step"),
-               ];
+               );
     }
 
     /**
@@ -80,11 +80,11 @@ class BrainBrowser extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
     {
         $order      = $this->getHeader("image:dimorder");
         $orderArray = explode(",", $order);
-        $this->JSON = [
+        $this->JSON = array(
                        'xspace' => $this->_getDimension("xspace"),
                        'yspace' => $this->_getDimension("yspace"),
                        "zspace" => $this->_getDimension("zspace"),
-                      ];
+                      );
         if (count($orderArray) === 4) {
             $this->JSON['time'] = $this->_getDimension("time")
         }

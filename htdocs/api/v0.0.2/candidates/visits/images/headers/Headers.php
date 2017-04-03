@@ -40,11 +40,11 @@ class Headers extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         $this->AutoHandleRequestDelegation = false;
 
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = [
+            $this->AllowedMethods = array(
                                      'GET',
                                      'PUT',
                                      'PATCH',
-                                    ];
+                                    );
         }
 
         parent::__construct($method, $CandID, $VisitLabel, $Filename);
@@ -70,46 +70,46 @@ class Headers extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         $SeriesName        =  $this->getHeader("acquisition:protocol");
         $SeriesDescription = $this->getHeader("acquisition:series_description");
 
-        $XSpace     = [
+        $XSpace     = array(
                        "Length"   => $this->getHeader("xspace:length"),
                        "StepSize" => $this->getHeader("xspace:step"),
-                      ];
-        $YSpace     = [
+                      );
+        $YSpace     = array(
                        "Length"   => $this->getHeader("yspace:length"),
                        "StepSize" => $this->getHeader("yspace:step"),
-                      ];
-        $ZSpace     = [
+                      );
+        $ZSpace     = array(
                        "Length"   => $this->getHeader("zspace:length"),
                        "StepSize" => $this->getHeader("zspace:step"),
-                      ];
-        $TimeD      = [
+                      );
+        $TimeD      = array(
                        "Length"   => $this->getHeader("time:length"),
                        "StepSize" => $this->getHeader("time:step"),
-                      ];
-        $this->JSON = [
-                       'Meta'        => [
+                      );
+        $this->JSON = array(
+                       'Meta'        => array(
                                          'CandID'   => $this->CandID,
                                          'Visit'    => $this->VisitLabel,
                                          'Filename' => $this->Filename,
-                                        ],
-                       'Physical'    => [
+                                        ),
+                       'Physical'    => array(
                                          "TE"             => $TE,
                                          "TR"             => $TR,
                                          "TI"             => $TI,
                                          "SliceThickness" => $ST,
-                                        ],
-                       'Description' => [
+                                        ),
+                       'Description' => array(
                                          "SeriesName"        => $SeriesName,
                                          "SeriesDescription" => $SeriesDescription,
-                                        ],
-                       'Dimensions'  => [
+                                        ),
+                       'Dimensions'  => array(
                                          "XSpace"        => $XSpace,
                                          "YSpace"        => $YSpace,
                                          "ZSpace"        => $ZSpace,
                                          "TimeDimension" => $TimeD,
-                                        ],
+                                        ),
 
-                      ];
+                      );
     }
 
     /**

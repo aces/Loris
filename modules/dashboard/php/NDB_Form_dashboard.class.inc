@@ -454,7 +454,7 @@ class NDB_Form_Dashboard extends NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/dashboard/css/dashboard.css"]
+            array($baseURL . "/dashboard/css/dashboard.css")
         );
     }
 

@@ -27,7 +27,7 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
     {
         parent::setUp();
         $window = new WebDriverWindow($this->webDriver);
-        $size   = new WebDriverDimension(1024,1768);
+        $size   = new WebDriverDimension(1024, 1768);
         $window->setSize($size);
         $this->DB->insert(
             "document_repository_categories",
@@ -125,7 +125,8 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/document_repository/");
         $this->safeFindElement(
             WebDriverBy::Name("addCategory"),
-            3000)->click();
+            3000
+        )->click();
         sleep(10);
         $this->safeFindElement(
             WebDriverBy::Name(
@@ -186,7 +187,8 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
      * @return void
      */
     function testDocumentRepositoryUploadFileEditDeleteComment()
-    {    $this->markTestSkipped("This method isn't working properly on travis.");
+    {
+        $this->markTestSkipped("This method isn't working properly on travis.");
          $this->safeGet($this->url . "/document_repository/");
          $this->safeFindElement(
              WebDriverBy::Xpath("//*[@id='TESTTESTTESTTESTa']/td/span")

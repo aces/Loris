@@ -131,7 +131,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/candidate_parameters/css/candidate_parameters.css"]
+            array($baseURL . "/candidate_parameters/css/candidate_parameters.css")
         );
     }
 

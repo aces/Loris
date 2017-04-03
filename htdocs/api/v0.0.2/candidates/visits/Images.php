@@ -39,7 +39,7 @@ class Images extends \Loris\API\Candidates\Candidate\Visit
         $this->AutoHandleRequestDelegation = false;
 
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = ['GET'];
+            $this->AllowedMethods = array('GET');
         }
         $this->CandID     = $CandID;
         $this->VisitLabel = $VisitLabel;
@@ -62,12 +62,12 @@ class Images extends \Loris\API\Candidates\Candidate\Visit
      */
     public function handleGET()
     {
-        $this->JSON          = [
-                                'Meta' => [
+        $this->JSON          = array(
+                                'Meta' => array(
                                            'CandID' => $this->CandID,
                                            'Visit'  => $this->VisitLabel,
-                                          ],
-                               ];
+                                          ),
+                               );
         $this->JSON['Files'] = $this->GetVisitImages();
 
     }
@@ -91,10 +91,10 @@ class Images extends \Loris\API\Candidates\Candidate\Visit
                     JOIN candidate c ON (s.CandID=c.CandID)
                 WHERE s.Visit_label=:VL AND c.CandID=:CID 
                     AND c.Active='Y' AND s.Active='Y'",
-            [
+            array(
              'VL'  => $this->VisitLabel,
              'CID' => $this->CandID,
-            ]
+            )
         );
         return $rows;
     }

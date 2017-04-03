@@ -84,11 +84,11 @@ class NDB_Form_Brainbrowser extends NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            [
+            array(
              $baseURL . "/css/loris-jquery/jquery-ui-1.10.4.custom.min.css",
              $baseURL . "/brainbrowser/css/volume-viewer-demo.css",
              $baseURL . "/brainbrowser/css/brainbrowser.css",
-            ]
+            )
         );
     }
 }

@@ -74,7 +74,7 @@ class NDB_Form_Instrument_Builder extends NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/instrument_builder/css/instrument_builder.css"]
+            array($baseURL . "/instrument_builder/css/instrument_builder.css")
         );
     }
 

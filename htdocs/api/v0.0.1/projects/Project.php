@@ -103,7 +103,7 @@ class Project extends \Loris\API\APIBase
 
         if (!is_numeric($this->ProjectID)) {
             $this->header("HTTP/1.1 404 Not Found");
-            $this->error(['error' => 'Invalid project']);
+            $this->error(array('error' => 'Invalid project'));
             $this->safeExit(0);
         }
 
@@ -122,11 +122,11 @@ class Project extends \Loris\API\APIBase
             return $this->JSON;
         }
 
-        $JSONArray = [
-                      "Meta" => [
+        $JSONArray = array(
+                      "Meta" => array(
                                  "Project" => $this->ProjectName,
-                                ],
-                     ];
+                                ),
+                     );
 
         if ($this->bCandidates) {
             if ($this->ProjectID === 0) {
@@ -140,7 +140,7 @@ class Project extends \Loris\API\APIBase
                     array("projID" => $this->ProjectID)
                 );
             }
-            $CandIDs = [];
+            $CandIDs = array();
 
             foreach ($rows as $row) {
                 $CandIDs[] = $row['CandID'];
@@ -153,7 +153,7 @@ class Project extends \Loris\API\APIBase
             $Instruments = \Utility::getAllInstruments();
 
             if ($this->bInstrumentDetails) {
-                $dets   = [];
+                $dets   = array();
                 $config = $this->Factory->config();
                 $DB     = $this->Factory->database();
 
@@ -170,11 +170,11 @@ class Project extends \Loris\API\APIBase
 
                     $DDEEn = in_array($instrument, $DDE);
 
-                    $dets[$instrument] = [
+                    $dets[$instrument] = array(
                                           'FullName'               => $FullName,
                                           'Subgroup'               => $subgroup,
                                           'DoubleDataEntryEnabled' => $DDEEn,
-                                         ];
+                                         );
                 }
                 $JSONArray['Instruments'] = $dets;
             } else {

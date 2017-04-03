@@ -41,10 +41,10 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
         $this->AutoHandleRequestDelegation = false;
 
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = [
+            $this->AllowedMethods = array(
                                      'GET',
                                      'PUT',
-                                    ];
+                                    );
         }
         $this->CandID     = $CandID;
         $this->VisitLabel = $VisitLabel;
