@@ -53,8 +53,8 @@ if ($user->hasPermission('document_repository_delete')) {
     $msg_data['deleteDocument'] = $baseURL. "/document_repository/";
     $msg_data['document']       = $fileName;
     $msg_data['study']          = $config->getSetting('title');
-    $query_Doc_Repo_Notification_Emails = "SELECT Email from users".
-                                          " where Active='Y' and ".
+    $query_Doc_Repo_Notification_Emails = "SELECT Email FROM users".
+                                          " WHERE Active='Y' and ".
                                           "Doc_Repo_Notifications='Y'".
                                           " and UserID<>:uid";
     $Doc_Repo_Notification_Emails       = $DB->pselect(
