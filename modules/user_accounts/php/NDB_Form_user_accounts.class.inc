@@ -223,24 +223,25 @@ class NDB_Form_User_Accounts extends NDB_Form
             unset($values['Password_hash']);
         }
 
-        // multi-site UPDATE
-        $uid           = $user->getData('ID');
-        $us_curr_sites = $values['CenterIDs'];
-        if (!$this->isCreatingNewUser()) {
-            $DB->delete('user_psc_rel', array("UserID" => $uid));
-            foreach ($us_curr_sites as $site) {
-                $DB->insert(
-                    'user_psc_rel',
-                    array(
-                     "UserID"   => $uid,
-                     "CenterID" => $site,
-                    )
-                );
+        if ($this->page === 'edit_user') {
+            // multi-site UPDATE
+            $uid           = $user->getData('ID');
+            $us_curr_sites = $values['CenterIDs'];
+            if (!$this->isCreatingNewUser()) {
+                $DB->delete('user_psc_rel', array("UserID" => $uid));
+                foreach ($us_curr_sites as $site) {
+                    $DB->insert(
+                        'user_psc_rel',
+                        array(
+                         "UserID"   => $uid,
+                         "CenterID" => $site,
+                        )
+                    );
+                }
             }
+            unset($values['CenterIDs']);
+            // END multi-site UPDATE
         }
-        unset($values['CenterIDs']);
-        // END multi-site UPDATE
-
         // EXAMINER UPDATE
         $ex_curr_sites =array();
         $ex_prev_sites =array();
