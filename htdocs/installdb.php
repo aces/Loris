@@ -4,7 +4,7 @@
  *
  * It should only be accessed the first time LORIS is installed.
  *
- * Since it"s written in PHP, obviously Apache and PHP are required to be
+ * Since it's written in PHP, obviously Apache and PHP are required to be
  * set up before accessing this page. Nonetheless, it will verify all
  * of the dependencies on the server being installed, create required
  * accounts, and source the schema. Users can either use the NeuroDebian,
@@ -14,19 +14,19 @@
  * this page, because the vendor/autoload.php file is required to load smarty.
  *
  * It does the following:
- *    1. Check if LORIS is already installed (there"s a config.xml
- *       setup), and if so bail to ensure it doesn"t affect an
+ *    1. Check if LORIS is already installed (there's a config.xml
+ *       setup), and if so bail to ensure it doesn't affect an
  *       existing system.
  *    2. Check that the external dependencies are installed (PHP version,
  *       MySQL, etc) and check their versions (if possible.)
  *    3. Prompt for the admin MySQL account to use for setup
- *    4. Check that the LORIS database doesn"t already exist
+ *    4. Check that the LORIS database doesn't already exist
  *    5. Prompt for (and create) the non-root MySQL user
  *    5a. Prompt for and update the LORIS frontend admin account username
  *       and password at the same time.
  *    6. Create the database, MySQL user, source the schema, and
  *       reset the admin username and password in the users table
- *    7. Write the config.xml if possible. If the directory isn"t
+ *    7. Write the config.xml if possible. If the directory isn't
  *       writable, print the content that should go there and ask
  *       the user to manually create the file.
  *
@@ -39,15 +39,15 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-// the installer directory doesn"t get autoloaded by composer, so we
+// the installer directory doesn't get autoloaded by composer, so we
 // need to manually require this.
 require_once __DIR__ . "/../php/installer/Installer.class.inc";
 
-// Since LORIS isn"t configured yet, these classes from the php/
-// directory won"t work. We need stubs for the installer to use, and
-// they need to have the same name so that composer doesn"t try and
-// autoload the ones that we can"t use which try to access config.xml.
-// We don"t need to implement all the functionality, just enough for
+// Since LORIS isn't configured yet, these classes from the php/
+// directory won't work. We need stubs for the installer to use, and
+// they need to have the same name so that composer doesn't try and
+// autoload the ones that we can't use which try to access config.xml.
+// We don't need to implement all the functionality, just enough for
 // smarty to use when it gets autoloaded.
 require_once __DIR__ . "/../php/installer/Database.class.inc";
 require_once __DIR__ . "/../php/installer/NDB_Config.class.inc";
@@ -93,7 +93,7 @@ $tpl_data = array();
 switch(isset($_POST["formname"]) ? $_POST["formname"] : "") {
     case "validaterootaccount":
         // This will connect to MySQL, check the permissions of the
-        // account provided, check that the database doesn"t already
+        // account provided, check that the database doesn't already
         // exist, and create the database.
         if (!isset($_POST["do_not_install"])) {
             if (!isset($_POST["use_existing_database"])) {
