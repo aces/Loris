@@ -45,7 +45,11 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         }
         $oneIsStudySite = in_array("1", $isStudySite);
 
-        return ($user->hasPermission('imaging_browser_view_allsites') || ($oneIsStudySite && $user->hasPermission('imaging_browser_view_site')));// @codingStandardsIgnoreLine
+        return ($user->hasPermission('imaging_browser_view_allsites')
+               || ($oneIsStudySite
+                   && $user->hasPermission('imaging_browser_view_site')
+                  )
+        );
     }
 
     /**
@@ -130,8 +134,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                           's.visit_label as Visit_Label',
                           "$PendingFailSubquery as QC_Status",
                           'MIN(md.AcquisitionDate) as First_Acq_Date',
-                          'FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion_Date',// @codingStandardsIgnoreLine
-                          'FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC',// @codingStandardsIgnoreLine
+                          'FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion_Date',
+                          'FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC',
                           "$NewDataSubquery as New_Data",
                           "$T1PassSubquery as T1_Passed",
                           "$T2PassSubquery as T2_Passed",
@@ -163,7 +167,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                 $this->columns,
                 3,
                 0,
-                '(SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project'// @codingStandardsIgnoreLine
+                '(SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project'
             );
             array_splice($this->headers, 3, 0, 'Project');
         }
@@ -220,7 +224,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         if ($user->hasPermission('imaging_browser_view_allsites')) {
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = Utility::getSiteList();
-            if (is_array($list_of_sites)) { $list_of_sites = array('' => 'All') + $list_of_sites;// @codingStandardsIgnoreLine
+            if (is_array($list_of_sites)) {
+                $list_of_sites = array('' => 'All') + $list_of_sites;
             }
         } else {
             // allow only to view own site data
@@ -230,13 +235,20 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                 if ($site[$key]->isStudySite()) {
                     $list_of_sites[$val] = $site[$key]->getCenterName();
                 }
-                $list_of_sites = array('' => 'All User Sites') + $list_of_sites;// @codingStandardsIgnoreLine
+                $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
             }
         }
 
         $DB    = Database::singleton();
         $allAr = array('' => 'All');
-        $this->addBasicText('pscid', 'PSCID', array("size" => 10, "maxlength" => 25));// @codingStandardsIgnoreLine
+        $this->addBasicText(
+            'pscid',
+            'PSCID',
+            array(
+             "size"      => 10,
+             "maxlength" => 25,
+            )
+        );
         $this->addBasicText(
             'VL',
             'Visit Label',
@@ -352,7 +364,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                     $query .= " AND $field = :v_$prepared_key";
                     // $qparams["v_$prepared_key"] = $val;
                 } else {
-                    $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";// @codingStandardsIgnoreLine
+                    $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
                 }
             } else if ($field == 'pending') {
                 switch ($val) {
