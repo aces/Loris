@@ -107,8 +107,11 @@ class Imaging_Session_ControlPanel
         $config =& NDB_Config::singleton();
 
         //if table is not in database return false to not display in the template
-        $this->tpl_data['mri_param_form_table_exists'] = $DB->tableExists('mri_parameter_form');// @codingStandardsIgnoreLine
-        $this->tpl_data['rad_review_table_exists']     = $DB->tableExists('radiology_review');// @codingStandardsIgnoreLine
+        $this->tpl_data['mri_param_form_table_exists']
+            = $DB->tableExists('mri_parameter_form');
+        $this->tpl_data['rad_review_table_exists']     = $DB->tableExists(
+            'radiology_review'
+        );
         $this->tpl_data['mantis']       = $config->getSetting('mantis_url');
         $subjectData['mantis']          = $config->getSetting('mantis_url');
         $subjectData['has_permission']  = $this->_hasAccess();
@@ -125,9 +128,10 @@ class Imaging_Session_ControlPanel
                                            'true'  => 'True',
                                            'false' => 'False',
                                           );
-
+        $query    = "SELECT MRIQCStatus, MRIQCPending,".
+                    " MRICaveat FROM session WHERE ID=:sid";
         $qcstatus = $DB->pselectRow(
-            "SELECT MRIQCStatus, MRIQCPending, MRICaveat FROM session WHERE ID=:sid",// @codingStandardsIgnoreLine
+            $query,
             array("sid" => $this->sessionID)
         );
 
