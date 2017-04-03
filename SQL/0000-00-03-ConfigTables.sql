@@ -1,19 +1,16 @@
-WARNINGS;
-SET SQL_NOTES=1;
-
 --
 -- DROP tables
 --
-SELECT 'Config' as 'DROP table';
+
 DROP TABLE IF EXISTS `Config`;
 
-SELECT 'ConfigSettings' as 'DROP table';
+
 DROP TABLE IF EXISTS `ConfigSettings`;
 
 --
 -- Table structure for table `ConfigSettings`
 --
-SELECT 'ConfigSettings' as 'CREATE table';
+
 CREATE TABLE `ConfigSettings` (
     `ID` int(11) NOT NULL AUTO_INCREMENT,
     `Name` varchar(255) NOT NULL,
@@ -28,7 +25,7 @@ CREATE TABLE `ConfigSettings` (
     UNIQUE KEY `Name` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SELECT 'Config' as 'CREATE table';
+
 CREATE TABLE `Config` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `ConfigID` int(11) NOT NULL,
@@ -45,7 +42,7 @@ CREATE TABLE `Config` (
 --
 -- Filling ConfigSettings table
 --
-SELECT 'study' as 'Inserting Config';
+
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('study', 'Settings related to details of the study', 1, 0, 'Study', 1);
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'additional_user_info', 'Display additional user profile fields on the User accounts page (e.g. Institution, Position, Country, Address)', 1, 0, 'boolean', ID, 'Additional user information', 14 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'title', 'Full descriptive title of the study', 1, 0, 'text', ID, 'Study title', 1 FROM ConfigSettings WHERE Name="study";
@@ -71,7 +68,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'citation_policy', 'Citation Policy for Acknowledgements module', 1, 0, 'textarea', ID, 'Citation Policy', 22 FROM ConfigSettings WHERE Name="study";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'CSPAdditionalHeaders', 'Extensions to the Content-security policy allow only for self-hosted content', 1, 0, 'text', ID, 'Content-Security Extensions', 23 FROM ConfigSettings WHERE Name="study";
 
-SELECT 'paths' as 'Inserting Config';
+
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('paths', 'Specify directories where LORIS-related files are stored or created. Take care when editing these fields as changing them incorrectly can cause certain modules to lose functionality.', 1, 0, 'Paths', 2);
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'imagePath', 'Path to images for display in Imaging Browser (e.g. /data/$project/data/) ', 1, 0, 'text', ID, 'Images', 9 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'base', 'The base filesystem path where LORIS is installed', 1, 0, 'text', ID, 'Base', 1 FROM ConfigSettings WHERE Name="paths";
@@ -86,24 +83,24 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'GenomicDataPath', 'Path to Genomic data files', 1, 0, 'text', ID, 'Genomic Data Path', 8 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'mediaPath', 'Path to uploaded media files', 1, 0, 'text', ID, 'Media', 9 FROM ConfigSettings WHERE Name="paths";
 
-SELECT 'gui' as 'Inserting Config';
+
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('gui', 'Settings related to the overall display of LORIS', 1, 0, 'GUI', 3);
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'css', 'CSS file used for rendering (default main.css)', 1, 0, 'text', ID, 'CSS file', 1 FROM ConfigSettings WHERE Name="gui";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'rowsPerPage', 'Number of table rows to display per page', 1, 0, 'text', ID, 'Table rows per page', 2 FROM ConfigSettings WHERE Name="gui";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'StudyDescription', 'Description of the Study', 1, 0, 'textarea', ID , 'Study Description', 2 FROM ConfigSettings WHERE Name="gui";
 
-SELECT 'www' as 'Inserting Config';
+
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('www', 'Web address settings', 1, 0, 'WWW', 4);
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'host', 'Host', 1, 0, 'text', ID, 'Host', 1 FROM ConfigSettings WHERE Name="www";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'url', 'Main URL where LORIS can be accessed', 1, 0, 'text', ID, 'Main LORIS URL', 2 FROM ConfigSettings WHERE Name="www";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'mantis_url', 'Bug tracker URL', 1, 0, 'text', ID, 'Bug tracker URL', 3 FROM ConfigSettings WHERE Name="www";
 
-SELECT 'dashboard' as 'Inserting Config';
+
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('dashboard', 'Settings that affect the appearance of the dashboard and its charts', 1, 0, 'Dashboard', 5);
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'projectDescription', 'Description of the study displayed in main dashboard panel', 1, 0, 'textarea', ID, 'Project Description', 1 FROM ConfigSettings WHERE Name="dashboard";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'recruitmentTarget', 'Target number of participants for the study', 1, 0, 'text', ID, 'Target number of participants', 2 FROM ConfigSettings WHERE Name="dashboard";
 
-SELECT 'dicom_archive' as 'Inserting Config';
+
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('dicom_archive', 'DICOM Archive settings', 1, 0, 'DICOM Archive', 6);
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'patientIDRegex', 'Regex for masking the Patient ID header field', 1, 0, 'text', ID, 'Patient ID regex', 1 FROM ConfigSettings WHERE Name="dicom_archive";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'patientNameRegex', 'Regex for masking the Patient Name header field', 1, 0, 'text', ID, 'Patient name regex', 2 FROM ConfigSettings WHERE Name="dicom_archive";
@@ -111,22 +108,22 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'LivingPhantomRegex', 'Regex to be used on Living Phantom scan header', 1, 0, 'text', ID, 'Living phantom regex', 4 FROM ConfigSettings WHERE Name="dicom_archive";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'showTransferStatus', 'Show transfer status in the DICOM Archive table', 1, 0, 'boolean', ID, 'Show transfer status', 5 FROM ConfigSettings WHERE Name="dicom_archive";
 
-SELECT 'statistics' as 'Inserting Config';
+
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('statistics', 'Statistics module settings', 1, 0, 'Statistics', 7);
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'excludedMeasures', 'Instruments to be excluded from Statistics calculations', 1, 1, 'instrument', ID, 'Excluded instruments', 1 FROM ConfigSettings WHERE Name="statistics";
 
-SELECT 'mail' as 'Inserting Config';
+
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('mail', 'LORIS email settings for notifications sent to users', 1, 0, 'Email', 8);
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'From', 'Sender email address header (e.g. admin@myproject.loris.ca)', 1, 0, 'email', ID, 'From', 1 FROM ConfigSettings WHERE Name="mail";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'Reply-to', 'Reply-to email address header (e.g. admin@myproject.loris.ca)', 1, 0, 'email', ID, 'Reply-to', 2 FROM ConfigSettings WHERE Name="mail";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'X-MimeOLE', 'X-MimeOLE', 1, 0, 'text', ID, 'X-MimeOLE', 3 FROM ConfigSettings WHERE Name="mail";
 
-SELECT 'upload' as 'Inserting Config';
+
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('uploads', 'Settings related to file uploading', 1, 0, 'Uploads', '9');
 
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'FileGroup', 'Determines the group permission for new subdirectories created for uploaded files', 1, 0, 'text', ID, 'File Group for Uploads', 1 FROM ConfigSettings WHERE Name="uploads";
 
-SELECT 'API keys' as 'Inserting Config';
+
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('APIKeys', 'Specify any API keys required for LORIS', 1, 0, 'API Keys', 10);
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'JWTKey', 'Secret key for signing JWT tokens on this server. This should be unique and never shared with anyone. ', 1, 0, 'text', ID, 'JWT Secret Key', 1 FROM ConfigSettings WHERE Name="APIKeys";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'reCAPTCHAPrivate', 'Private Key for Google reCAPTCHA', 1, 0, 'text', ID, 'reCAPTCHA Private Key', 2 FROM ConfigSettings WHERE Name="APIKeys";
@@ -135,7 +132,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 --
 -- Filling Config table with default values
 --
-SELECT 'Default study variables' as 'Filling Config table with default values';
+
 INSERT INTO Config (ConfigID, Value) SELECT ID, 1 FROM ConfigSettings WHERE Name="additional_user_info";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "Example Study" FROM ConfigSettings WHERE Name="title";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "<h3>Example Study Description</h3>\r\n <p>This is a sample description for this study, because it is a new LORIS install that has not yet customized this text.</p>\r\n <p>A LORIS administrator can customize this text in the configuration module, under the configuration option labeled \"Study Description\"</p>\r\n <h3>Useful Links</h3>\r\n <ul>\r\n <li><a href=\"https://github.com/aces/Loris\" >LORIS GitHub Repository</a></li>\r\n <li><a href=\"https://github.com/aces/Loris/wiki/Setup\" >LORIS Setup Guide</a></li>\r\n <li><a href=\"https://www.youtube.com/watch?v=2Syd_BUbl5A\" >A video of a loris on YouTube</a></li>\r\n </ul>" FROM ConfigSettings WHERE Name="StudyDescription";
@@ -158,7 +155,7 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, 0 FROM ConfigSettings WHERE Name
 INSERT INTO Config (ConfigID, Value) SELECT ID, "Modify this to your project's citation policy" FROM ConfigSettings WHERE Name="citation_policy";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "" FROM ConfigSettings WHERE Name="CSPAdditionalHeaders";
 
-SELECT 'Default path settings' as 'Filling Config table with default values';
+
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/%PROJECTNAME%/data/" FROM ConfigSettings WHERE Name="imagePath";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "%LORISROOT%" FROM ConfigSettings WHERE Name="base";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/%PROJECTNAME%/data/" FROM ConfigSettings WHERE Name="data";
@@ -172,34 +169,34 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/incoming/" FROM ConfigSet
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/PATH/TO/Genomic-Data/" FROM ConfigSettings WHERE Name="GenomicDataPath";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/data/uploads/" FROM ConfigSettings WHERE Name="mediaPath";
 
-SELECT 'Default gui settings' as 'Filling Config table with default values';
+
 INSERT INTO Config (ConfigID, Value) SELECT ID, "main.css" FROM ConfigSettings WHERE Name="css";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 25 FROM ConfigSettings WHERE Name="rowsPerPage";
 
-SELECT 'Default www settings' as 'Filling Config table with default values';
+
 INSERT INTO Config (ConfigID, Value) SELECT ID, "localhost" FROM ConfigSettings WHERE Name="host";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "http://localhost/" FROM ConfigSettings WHERE Name="url";
 
-SELECT 'Default dashboard settings' as 'Filling Config table with default values';
+
 INSERT INTO Config (ConfigID, Value) SELECT ID, "This database provides an on-line mechanism to store both imaging and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help icon at the top right. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun." FROM ConfigSettings WHERE Name="projectDescription";
 
-SELECT 'Default dicom_archive settings' as 'Filling Config table with default values';
+
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/./" FROM ConfigSettings WHERE Name="patientIDRegex";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/./i" FROM ConfigSettings WHERE Name="patientNameRegex";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/./i" FROM ConfigSettings WHERE Name="LegoPhantomRegex";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/./i" FROM ConfigSettings WHERE Name="LivingPhantomRegex";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="showTransferStatus";
 
-SELECT 'Default statistics settings' as 'Filling Config table with default values';
+
 INSERT INTO Config (ConfigID, Value) SELECT ID, "radiology_review" FROM ConfigSettings WHERE Name="excludedMeasures";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "mri_parameter_form" FROM ConfigSettings WHERE Name="excludedMeasures";
 
-SELECT 'Default mail settings' as 'Filling Config table with default values';
+
 INSERT INTO Config (ConfigID, Value) SELECT ID, "no-reply@example.com" FROM ConfigSettings WHERE Name="From";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "no-reply@example.com" FROM ConfigSettings WHERE Name="Reply-to";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "Produced by LorisDB" FROM ConfigSettings WHERE Name="X-MimeOLE";
 
-SELECT 'Default API keys settings' as 'Filling Config table with default values';
+
 INSERT INTO Config (ConfigID, Value) SELECT ID, "S3cret" FROM ConfigSettings WHERE Name="JWTKey";
 
-SELECT 'Config import completed' as 'Status';
+
