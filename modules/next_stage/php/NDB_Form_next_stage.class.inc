@@ -82,12 +82,12 @@ class NDB_Form_Next_Stage extends NDB_Form
         $candidate =& Candidate::singleton($timePoint->getCandID());
 
         $firstVisit = false;
-        $vLabel     = $candidate->getFirstVisit();
          //get first visit for candidate
+        $vLabel     = $candidate->getFirstVisit();
+         //if current visit label is same as
+         // visit label returned must be first visit
         if ($vLabel ==  $timePoint->getVisitLabel()) {
             $firstVisit = true;
-            //if current visit label is same as
-            // visit label returned must be first visit
         }
 
          // select a specific time point (sessionID) for the battery
@@ -108,8 +108,6 @@ class NDB_Form_Next_Stage extends NDB_Form
         $this->tpl_data['sessionID'] = $this->identifier;
         $this->tpl_data['candID']    = $timePoint->getCandID();
 
-        // freeze it, just in case
-        //$this->form->freeze();
     }
     /**
      * Next stage function
