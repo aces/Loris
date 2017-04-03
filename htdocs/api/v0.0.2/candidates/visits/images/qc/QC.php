@@ -40,10 +40,10 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         $this->AutoHandleRequestDelegation = false;
 
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = [
+            $this->AllowedMethods = array(
                                      'GET',
                                      'PUT',
-                                    ];
+                                    );
         }
 
         parent::__construct($method, $CandID, $VisitLabel, $Filename);
@@ -73,15 +73,15 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
                 WHERE f.File LIKE CONCAT('%', :FName)",
             array('FName' => $this->Filename)
         );
-        $this->JSON = [
-                       'Meta'     => [
+        $this->JSON = array(
+                       'Meta'     => array(
                                       'CandID' => $this->CandID,
                                       'Visit'  => $this->VisitLabel,
                                       'File'   => $this->Filename,
-                                     ],
+                                     ),
                        'QC'       => $QCStatus['QCStatus'],
                        'Selected' => $QCStatus['Selected'],
-                      ];
+                      );
     }
 
     /**
@@ -177,7 +177,7 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         }
         $this->_saveFileQC($data['QCStatus'], $selval);
 
-        $this->JSON = ['success' => 'Updated file QC information'];
+        $this->JSON = array('success' => 'Updated file QC information');
 
     }
 
@@ -206,20 +206,20 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         if ($AlreadySavedQC > 0) {
             $DB->update(
                 "files_qcstatus",
-                [
+                array(
                  'QCStatus' => $qcval,
                  'Selected' => $selval,
-                ],
-                ['FileID' => $FileID]
+                ),
+                array('FileID' => $FileID)
             );
         } else {
             $DB->insert(
                 "files_qcstatus",
-                [
+                array(
                  'QCStatus' => $qcval,
                  'Selected' => $selval,
                  'FileID'   => $FileID,
-                ]
+                )
             );
         }
     }

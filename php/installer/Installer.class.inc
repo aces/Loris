@@ -350,7 +350,7 @@ class Installer
 				ConfigID=(SELECT ID FROM ConfigSettings 
 					WHERE Name=:q_sett)"
         );
-        $prepared->execute(['q_val' => $value, 'q_sett' => $setting]);
+        $prepared->execute(array('q_val' => $value, 'q_sett' => $setting));
     }
 
     /**
@@ -426,10 +426,10 @@ class Installer
 			WHERE user=:q_user AND host=:q_host"
         );
         $userExistsQ->execute(
-            [
+            array(
              'q_user' => $values['lorismysqluser'],
              'q_host' => $connectHost,
-            ]
+            )
         );
         $results    = $userExistsQ->fetchAll(PDO::FETCH_ASSOC);
         $userExists = false;
@@ -521,13 +521,13 @@ class Installer
             . " WHERE ID=1"
         );
         return $stmt->execute(
-            [
+            array(
              'q_userID'   => $values['frontenduser'],
              'q_password' => password_hash(
                  $values['frontendpassword'],
                  PASSWORD_DEFAULT
              ),
-            ]
+            )
         );
     }
 
@@ -556,18 +556,18 @@ class Installer
     {
         $contents = file_get_contents(__DIR__ . "/../../docs/config/config.xml");
         return str_replace(
-            [
+            array(
              '%HOSTNAME%',
              '%USERNAME%',
              '%PASSWORD%',
              '%DATABASE%',
-            ],
-            [
+            ),
+            array(
              $values['dbhost'],
              $values['lorismysqluser'],
              $values['lorismysqlpassword'],
              $values['dbname'],
-            ],
+            ),
             $contents
         );
     }

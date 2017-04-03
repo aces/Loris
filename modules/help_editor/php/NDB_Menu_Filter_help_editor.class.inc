@@ -73,7 +73,7 @@ class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
                            'Content',
                           );
         $this->tpl_data['hiddenHeaders']
-            = json_encode(['HelpID', 'ParentID', 'ParentTopicID']);
+            = json_encode(array('HelpID', 'ParentID', 'ParentTopicID'));
         $this->validFilters = array('helpChild.topic');
 
         $this->formToFilter  = array('topic' => 'helpChild.topic');

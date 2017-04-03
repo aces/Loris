@@ -231,7 +231,7 @@ class NDB_Form_Configuration extends NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/configuration/css/configuration.css"]
+            array($baseURL . "/configuration/css/configuration.css")
         );
     }
 

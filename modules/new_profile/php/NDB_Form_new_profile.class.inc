@@ -126,7 +126,7 @@ class NDB_Form_New_Profile extends NDB_Form
                            'minYear'        => $startYear - $ageMax,
                            'maxYear'        => $endYear - $ageMin,
                           );
-        $dateAttributes = ['class' => 'form-control input-sm input-date'];
+        $dateAttributes = array('class' => 'form-control input-sm input-date');
 
         // add date of birth
         $this->addBasicDate(

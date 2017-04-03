@@ -108,7 +108,7 @@ class Imaging_Session_ControlPanel
 
         //if table is not in database return false to not display in the template
         $this->tpl_data['mri_param_form_table_exists'] = $DB->tableExists('mri_parameter_form');
-        $this->tpl_data['rad_review_table_exists'] = $DB->tableExists('radiology_review');
+        $this->tpl_data['rad_review_table_exists']     = $DB->tableExists('radiology_review');
         $this->tpl_data['mantis']       = $config->getSetting('mantis_url');
         $subjectData['mantis']          = $config->getSetting('mantis_url');
         $subjectData['has_permission']  = $this->_hasAccess();
@@ -121,8 +121,8 @@ class Imaging_Session_ControlPanel
                                            'Y' => 'Yes',
                                            'N' => 'No',
                                           );
-        $subjectData['caveat_options'] = array(
-                                           'true' => 'True',
+        $subjectData['caveat_options']  = array(
+                                           'true'  => 'True',
                                            'false' => 'False',
                                           );
 
@@ -133,8 +133,7 @@ class Imaging_Session_ControlPanel
 
         $subjectData['mriqcstatus']  = $qcstatus['MRIQCStatus'];
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
-        $subjectData['mricaveat'] = $qcstatus['MRICaveat'];
-
+        $subjectData['mricaveat']    = $qcstatus['MRICaveat'];
 
         $factory = NDB_Factory::singleton();
         $subjectData['backURL'] = $factory->settings()->getBaseURL()

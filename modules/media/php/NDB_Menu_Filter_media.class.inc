@@ -100,23 +100,23 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
             $siteList = array('' => 'All User Sites') + $siteList;
         }
 
-        $instrumentList   = [];
+        $instrumentList   = array();
         $instrumentsQuery = $db->pselect(
             "SELECT Test_name, Full_name FROM test_names ORDER BY Test_name",
-            []
+            array()
         );
         foreach ($instrumentsQuery as $instrument) {
             $instrumentList[$instrument['Full_name']] = $instrument['Full_name'];
         }
 
-        $fileTypeList  = [];
-        $fileTypeQuery = $db->pselect("SELECT file_type FROM media", []);
+        $fileTypeList  = array();
+        $fileTypeQuery = $db->pselect("SELECT file_type FROM media", array());
         foreach ($fileTypeQuery as $filetype) {
             $fileTypeList[$filetype['file_type']] = $filetype['file_type'];
         }
 
         // Form Elements
-        $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
+        $this->addBasicText('pSCID', 'PSCID', array("size" => 9, "maxlength" => 7));
         $this->addBasicText('fileName', 'File Name');
         $this->addSelect('fileType', 'File type', $fileTypeList);
         $this->addSelect('visitLabel', 'Visit Label', $visitList);
@@ -145,7 +145,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
 
         // set the class variables
         $this->columns
-            = [
+            = array(
                'm.file_name',
                '(SELECT PSCID from candidate WHERE CandID=s.CandID) as pscid',
                's.Visit_label as visit_label',
@@ -159,7 +159,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
                's.CandID as cand_id',
                's.ID as session_id',
                'm.id',
-              ];
+              );
 
         $this->query = $query;
 
@@ -170,7 +170,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
 
         $this->group_by = '';
         $this->order_by = 'm.instrument';
-        $this->headers  = [
+        $this->headers  = array(
                            'File Name',
                            'PSCID',
                            'Visit Label',
@@ -183,28 +183,33 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
                            'File Type',
                            'Cand ID',
                            'Session ID',
-                          ];
+                          );
 
         // Set header as hidden from the data table
-        $this->tpl_data['hiddenHeaders'] = json_encode(['Cand ID', 'Session ID']);
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            array(
+             'Cand ID',
+             'Session ID',
+            )
+        );
 
         // Add Edit field if user has permissions
         if ($this->hasWritePermission) {
             array_push($this->headers, 'Edit Metadata');
         }
 
-        $this->validFilters = [
+        $this->validFilters = array(
                                'c.PSCID',
                                'm.instrument',
                                's.Visit_label',
                                's.CenterID',
-                              ];
-        $this->formToFilter = [
+                              );
+        $this->formToFilter = array(
                                'pscid'       => 'c.PSCID',
                                'instrument'  => 'm.instrument',
                                'visit_label' => 's.Visit_label',
                                'for_site'    => 's.CenterID',
-                              ];
+                              );
 
         return true;
     }
@@ -236,7 +241,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/media/css/media.css"]
+            array($baseURL . "/media/css/media.css")
         );
     }
 
@@ -252,11 +257,11 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            [
+            array(
              $baseURL . "/js/components/Tabs.js",
              $baseURL . "/js/components/ProgressBar.js",
              $baseURL . "/media/js/mediaIndex.js",
-            ]
+            )
         );
     }
 }

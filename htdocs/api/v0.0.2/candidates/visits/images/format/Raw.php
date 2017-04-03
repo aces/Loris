@@ -40,7 +40,7 @@ class Raw extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         $this->AutoHandleRequestDelegation = false;
 
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = ['GET'];
+            $this->AllowedMethods = array('GET');
         }
 
         parent::__construct($method, $CandID, $VisitLabel, $Filename);

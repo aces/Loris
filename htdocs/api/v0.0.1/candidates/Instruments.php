@@ -40,7 +40,7 @@ class Instruments extends Visit
     public function __construct($method, $CandID, $Visit)
     {
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = ['GET'];
+            $this->AllowedMethods = array('GET');
         }
         $requestDelegationCascade = $this->AutoHandleRequestDelegation;
         // Parent will validate CandID and Visit Label and abort if necessary
@@ -79,13 +79,13 @@ class Instruments extends Visit
             $Insts
         );
 
-        $this->JSON = [
-                       "Meta"        => [
+        $this->JSON = array(
+                       "Meta"        => array(
                                          "CandID" => $this->CandID,
                                          'Visit'  => $this->VisitLabel,
-                                        ],
+                                        ),
                        'Instruments' => $Instruments,
-                      ];
+                      );
     }
 }
 

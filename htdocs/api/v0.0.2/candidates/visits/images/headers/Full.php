@@ -40,11 +40,11 @@ class Full extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         $this->AutoHandleRequestDelegation = false;
 
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = [
+            $this->AllowedMethods = array(
                                      'GET',
                                      'PUT',
                                      'PATCH',
-                                    ];
+                                    );
         }
 
         parent::__construct($method, $CandID, $VisitLabel, $Filename);
@@ -64,18 +64,18 @@ class Full extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
     {
         $headersDB = $this->getHeaders();
 
-        $headers = [];
+        $headers = array();
         foreach ($headersDB as $row) {
             $headers[$row['Header']] = $row['Value'];
         }
-        $this->JSON = [
-                       'Meta'    => [
+        $this->JSON = array(
+                       'Meta'    => array(
                                      'CandID'   => $this->CandID,
                                      'Visit'    => $this->VisitLabel,
                                      'Filename' => $this->Filename,
-                                    ],
+                                    ),
                        "Headers" => $headers,
-                      ];
+                      );
     }
 
     /**

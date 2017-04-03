@@ -49,14 +49,14 @@ function editFile()
         showError("Error! Invalid media file ID!");
     }
 
-    $updateValues = [
+    $updateValues = array(
                      'date_taken' => $req['dateTaken'],
                      'comments'   => $req['comments'],
                      'hide_file'  => $req['hideFile'] ? $req['hideFile'] : 0,
-                    ];
+                    );
 
     try {
-        $db->update('media', $updateValues, ['id' => $idMediaFile]);
+        $db->update('media', $updateValues, array('id' => $idMediaFile));
     } catch (DatabaseException $e) {
         showError("Could not update the file. Please try again!");
     }
@@ -122,11 +122,11 @@ function uploadFile()
         "SELECT s.ID as session_id FROM candidate c " .
         "LEFT JOIN session s USING(CandID) WHERE c.PSCID = :v_pscid AND " .
         "s.Visit_label = :v_visit_label AND s.CenterID = :v_center_id",
-        [
+        array(
          'v_pscid'       => $pscid,
          'v_visit_label' => $visit,
          'v_center_id'   => $site,
-        ]
+        )
     );
 
     if (!isset($sessionID) || count($sessionID) < 1) {
@@ -139,7 +139,7 @@ function uploadFile()
     }
 
     // Build insert query
-    $query = [
+    $query = array(
               'session_id'    => $sessionID,
               'instrument'    => $instrument,
               'date_taken'    => $dateTaken,
@@ -150,7 +150,7 @@ function uploadFile()
               'uploaded_by'   => $userID,
               'hide_file'     => 0,
               'date_uploaded' => date("Y-m-d H:i:s"),
-             ];
+             );
 
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
         $existingFiles = getFilesList();
@@ -158,7 +158,7 @@ function uploadFile()
         try {
             // Override db record if file_name already exists
             if ($idMediaFile) {
-                $db->update('media', $query, ['id' => $idMediaFile]);
+                $db->update('media', $query, array('id' => $idMediaFile));
             } else {
                 $db->insert('media', $query);
             }
@@ -183,11 +183,11 @@ function getUploadFields()
 
     $instruments = $db->pselect(
         "SELECT Test_name FROM test_names ORDER BY Test_name",
-        []
+        array()
     );
     $candidates  = $db->pselect(
         "SELECT CandID, PSCID FROM candidate ORDER BY PSCID",
-        []
+        array()
     );
 
     $instrumentsList = toSelect($instruments, "Test_name", null);
@@ -197,21 +197,21 @@ function getUploadFields()
     $siteList        = Utility::getSiteList(false);
 
     // Build array of session data to be used in upload media dropdowns
-    $sessionData    = [];
+    $sessionData    = array();
     $sessionRecords = $db->pselect(
         "SELECT c.PSCID, s.Visit_label, s.CenterID, f.Test_name " .
         "FROM candidate c ".
         "LEFT JOIN session s USING(CandID) ".
         "LEFT JOIN flag f ON (s.ID=f.SessionID) ".
         "ORDER BY c.PSCID ASC",
-        []
+        array()
     );
 
     foreach ($sessionRecords as $record) {
 
         // Populate sites
         if (!isset($sessionData[$record["PSCID"]]['sites'])) {
-            $sessionData[$record["PSCID"]]['sites'] = [];
+            $sessionData[$record["PSCID"]]['sites'] = array();
         }
         if ($record["CenterID"] !== null && !in_array(
             $record["CenterID"],
@@ -225,7 +225,7 @@ function getUploadFields()
 
         // Populate visits
         if (!isset($sessionData[$record["PSCID"]]['visits'])) {
-            $sessionData[$record["PSCID"]]['visits'] = [];
+            $sessionData[$record["PSCID"]]['visits'] = array();
         }
         if ($record["Visit_label"] !== null && !in_array(
             $record["Visit_label"],
@@ -242,10 +242,10 @@ function getUploadFields()
         $pscid =$record["PSCID"];
 
         if (!isset($sessionData[$pscid]['instruments'][$visit])) {
-            $sessionData[$pscid]['instruments'][$visit] = [];
+            $sessionData[$pscid]['instruments'][$visit] = array();
         }
         if (!isset($sessionData[$pscid]['instruments']['all'])) {
-            $sessionData[$pscid]['instruments']['all'] = [];
+            $sessionData[$pscid]['instruments']['all'] = array();
         }
 
         if ($record["Test_name"] !== null && !in_array(
@@ -287,11 +287,11 @@ function getUploadFields()
             "hide_file as hideFile, " .
             "m.id FROM media m LEFT JOIN session s ON m.session_id = s.ID " .
             "WHERE m.id = $idMediaFile",
-            []
+            array()
         );
     }
 
-    $result = [
+    $result = array(
                'candidates'  => $candidatesList,
                'candIDs'     => $candIdList,
                'visits'      => $visitList,
@@ -300,7 +300,7 @@ function getUploadFields()
                'mediaData'   => $mediaData,
                'mediaFiles'  => array_values(getFilesList()),
                'sessionData' => $sessionData,
-              ];
+              );
 
     return $result;
 }
@@ -319,7 +319,7 @@ function showError($message)
     }
     header('HTTP/1.1 500 Internal Server Error');
     header('Content-Type: application/json; charset=UTF-8');
-    die(json_encode(['message' => $message]));
+    die(json_encode(array('message' => $message)));
 }
 
 /**
@@ -334,7 +334,7 @@ function showError($message)
  */
 function toSelect($options, $item, $item2)
 {
-    $selectOptions = [];
+    $selectOptions = array();
 
     $optionsValue = $item;
     if (isset($item2)) {
@@ -357,9 +357,9 @@ function toSelect($options, $item, $item2)
 function getFilesList()
 {
     $db       =& Database::singleton();
-    $fileList = $db->pselect("SELECT id, file_name FROM media", []);
+    $fileList = $db->pselect("SELECT id, file_name FROM media", array());
 
-    $mediaFiles = [];
+    $mediaFiles = array();
     foreach ($fileList as $row) {
         $mediaFiles[$row['id']] = $row['file_name'];
     }

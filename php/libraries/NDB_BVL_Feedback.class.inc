@@ -39,10 +39,10 @@
 class NDB_BVL_Feedback
 {
     // contains info necessary to structure the object
-    var $_feedbackObjectInfo = [];
+    var $_feedbackObjectInfo = array();
 
     // contains full candidate profile/timepoint/instrument info
-    var $_feedbackCandidateProfileInfo = [];
+    var $_feedbackCandidateProfileInfo = array();
 
     // set of status options
     var $_feedbackStatusOptions = array(

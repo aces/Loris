@@ -694,7 +694,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/data_team_helper/css/data_team_helper.css"]
+            array($baseURL . "/data_team_helper/css/data_team_helper.css")
         );
     }
 }

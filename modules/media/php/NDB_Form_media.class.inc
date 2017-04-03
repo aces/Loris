@@ -53,7 +53,7 @@ class NDB_Form_Media extends NDB_Form
         if (isset($idMediaFile)) {
             $result = $db->pselectRow(
                 "SELECT id FROM media WHERE id = $idMediaFile",
-                []
+                array()
             );
             if (count($result) < 1) {
                 header('Location: ' . $baseURL . '/media/');
@@ -76,7 +76,7 @@ class NDB_Form_Media extends NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/media/css/media.css"]
+            array($baseURL . "/media/css/media.css")
         );
     }
 
@@ -93,7 +93,7 @@ class NDB_Form_Media extends NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/media/js/editFormIndex.js"]
+            array($baseURL . "/media/js/editFormIndex.js")
         );
     }
 

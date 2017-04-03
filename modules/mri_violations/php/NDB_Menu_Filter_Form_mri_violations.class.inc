@@ -204,11 +204,11 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
             array_splice($this->headers, 2, 0, 'Subproject');
         }
         $this->tpl_data['hiddenHeaders'] = json_encode(
-            [
+            array(
              'SeriesUID',
              'Hash',
              'JoinID',
-            ]
+            )
         );
         // Recreating the path (MincFileViolated field) to the minc file
         // for the table mri_violations_log is more complicated

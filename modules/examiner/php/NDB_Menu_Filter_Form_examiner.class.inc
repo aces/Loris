@@ -113,11 +113,16 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         // certification information
         if ($this->useCertification == '1') {
 
-            $this->tpl_data['hiddenHeaders'] = json_encode(['ID']);
+            $this->tpl_data['hiddenHeaders'] = json_encode(array('ID'));
 
         } else {
 
-            $this->tpl_data['hiddenHeaders'] = json_encode(['ID', 'Certification']);
+            $this->tpl_data['hiddenHeaders'] = json_encode(
+                array(
+                 'ID',
+                 'Certification',
+                )
+            );
 
         }
         return true;

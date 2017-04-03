@@ -30,7 +30,7 @@ abstract class APIBase
     var $DB;
     var $client;
     var $JSON;
-    var $AllowedMethods = [];
+    var $AllowedMethods = array();
     var $AutoHandleRequestDelegation = true;
     var $HTTPMethod;
 
@@ -45,7 +45,7 @@ abstract class APIBase
     function __construct($method)
     {
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = ['GET'];
+            $this->AllowedMethods = array('GET');
         }
         // Verify that method is allowed for this type of request.
         if (!in_array($method, $this->AllowedMethods)) {
@@ -223,7 +223,7 @@ abstract class APIBase
      */
     function error($msg)
     {
-        print json_encode(["error" => $msg]);
+        print json_encode(array("error" => $msg));
     }
 
     /**

@@ -60,25 +60,25 @@ class Projects extends APIBase
 
         $type = $PSCID['generation'] == 'sequential' ? 'auto' : 'prompt';
 
-        $settings = [
+        $settings = array(
                      "useEDC" => $useEDC,
-                     "PSCID"  => [
+                     "PSCID"  => array(
                                   "Type"  => $type,
                                   "Regex" => $PSCIDFormat,
-                                 ],
-                    ];
+                                 ),
+                    );
 
         if ($useProjects && $useProjects !== "false" && $useProjects !== "0") {
             $projects  = \Utility::getProjectList();
-            $projArray = [];
+            $projArray = array();
             foreach ($projects as $project) {
                 $projArray[$project] = $settings;
             }
-            $this->JSON = ["Projects" => $projArray];
+            $this->JSON = array("Projects" => $projArray);
         } else {
-            $this->JSON = [
+            $this->JSON = array(
                            "Projects" => array("loris" => $settings),
-                          ];
+                          );
         }
     }
 

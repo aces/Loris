@@ -24,7 +24,7 @@ require_once "Email.class.inc";
 
 $factory = NDB_Factory::singleton();
 $baseURL = $factory->settings()->getBaseURL();
-$client = new NDB_Client();
+$client  = new NDB_Client();
 $client->initialize("../../project/config.xml");
 
 $config = NDB_Config::singleton();
@@ -55,9 +55,11 @@ $user =& User::singleton();
 if ($user->hasPermission('document_repository_view') || $user->hasPermission('document_repository_delete')) {
     $DB->insert(
         "document_repository_categories",
-        array("category_name" => $category_name,
-              "parent_id"     => $parent_id,
-              "comments"      => $comments)
+        array(
+         "category_name" => $category_name,
+         "parent_id"     => $parent_id,
+         "comments"      => $comments,
+        )
     );
 
 
@@ -67,7 +69,7 @@ if ($user->hasPermission('document_repository_view') || $user->hasPermission('do
 
     $Doc_Repo_Notification_Emails = $DB->pselect(
         "SELECT Email from users where Active='Y' and Doc_Repo_Notifications='Y' and UserID<>:uid",
-        array("uid"=>$user->getUsername())
+        array("uid" => $user->getUsername())
     );
     foreach ($Doc_Repo_Notification_Emails as $email) {
         Email::send($email['Email'], 'document_repository.tpl', $msg_data);
