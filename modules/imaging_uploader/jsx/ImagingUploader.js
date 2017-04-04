@@ -80,6 +80,7 @@ class ImagingUploader extends React.Component {
                 <TextboxElement {... this.state.Data.form.candID} />
                 <TextboxElement {... this.state.Data.form.pSCID} />
                 <SelectElement {... this.state.Data.form.visitLabel} />
+                <ButtonElement type="reset" label="Clear Filters" />
               </FilterForm>
             </div>
             <div className="col-md-7">

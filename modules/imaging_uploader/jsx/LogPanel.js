@@ -172,7 +172,7 @@ class LogPanel extends React.Component {
             disabled={true}
             id="mri_upload_logs"
             value={this.state.logText}
-            rows={5}
+            rows={6}
           />
         </FormElement>
       </Panel>

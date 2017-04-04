@@ -63,13 +63,19 @@ class UploadForm extends React.Component {
    in order to get the percentage uploaded as value for the progress bar
    */
   uploadFile() {
-    const formData = new FormData(this.state.formData);
-    formData.append("fire_away", "Upload");
+    let formData = this.state.formData;
+    let formObj = new FormData();
+    for (let key in formData) {
+      if (formData[key] !== "") {
+        formObj.append(key, formData[key]);
+      }
+    }
+    formObj.append("fire_away", "Upload");
 
     $.ajax({
       type: 'POST',
       url: loris.BaseURL + "/imaging_uploader/",
-      data: formData,
+      data: formObj,
       cache: false,
       contentType: false,
       processData: false,
@@ -92,8 +98,16 @@ class UploadForm extends React.Component {
           document.open();
           document.write(data);
           document.close();
+        } else {
+          // If no error is shown, assume "success" and redirect to main page
+          swal({
+            title: "Upload Successful!",
+            type: "success"
+          }, function () {
+            window.location.assign(loris.BaseURL + "/imaging_uploader/");
+          });
         }
-      },
+      }.bind(this),
       error: function(err) {
         console.error(err);
         this.setState({
@@ -125,6 +139,7 @@ class UploadForm extends React.Component {
           <FormElement
             name="upload_form"
             formElements={form}
+            fileUpload={true}
             onUserInput={this.onFormChange}
           >
             <StaticElement
