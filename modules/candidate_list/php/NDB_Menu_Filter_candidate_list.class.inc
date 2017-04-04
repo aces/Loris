@@ -137,7 +137,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
 
         if (!$user->hasPermission('access_all_profiles')) {
 
-            $site_arr     = implode(",", $user->getCenterID());
+            $site_arr     = implode(",", $user->getCenterIDs());
             $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
         }
 

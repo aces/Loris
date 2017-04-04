@@ -222,7 +222,7 @@ class NDB_Config
             $this->_siteSettings =& $this->_settings;
         } else {
             $user     =& User::singleton($username);
-            $siteName = Utility::getCleanString($user->getSiteName());
+            $siteName = Utility::getCleanString($user->getSiteNames());
             if (isset($this->_settings['sites'][$siteName])
                 && is_array($this->_settings['sites'][$siteName])
             ) {

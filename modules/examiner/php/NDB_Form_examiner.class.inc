@@ -44,7 +44,7 @@ class NDB_Form_Examiner extends NDB_Form
 
         $user         = User::singleton();
         $userFullName = $user->getFullname();
-        $userCenter   = $user->getCenterID();
+        $userCenter   = $user->getCenterIDs();
 
         $certification = $config->getSetting('Certification');
         if (isset($certification['EnableCertification'])) {
