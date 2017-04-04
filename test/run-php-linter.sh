@@ -26,7 +26,7 @@ vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php module
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/conflict_resolver
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/create_timepoint
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/dashboard
-# vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/data_integrity_flag
+vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/data_integrity_flag
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/data_release
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/data_team_helper
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/datadict 
@@ -38,7 +38,7 @@ vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php module
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/genomic_browser
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/help_editor 
 # vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/imaging_browser
-# vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/imaging_uploader
+vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/imaging_uploader
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/instrument_builder
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/instrument_list 
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/instrument_manager
