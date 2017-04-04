@@ -420,7 +420,12 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         $visit_label=null,
         $candidate=null
     ) {
-
+        $config =& NDB_Config::singleton();
+        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+        for ($i=0; $i<count($ddeInstruments); ++$i) {
+            $ddeInstruments[$i] = Database::singleton()->quote($ddeInstruments[$i]);
+        }
+        
         global $DB;
         $query = "SELECT DISTINCT s.ID, s.visit_label, c.PSCID,s.candid,".
                  " f.SessionID, f.test_name,f.data_entry,f.commentid,".
@@ -432,7 +437,13 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
 
         $where   = " WHERE s.Active = 'Y' AND c.Active = 'Y'".
                    " AND coalesce(f.data_entry,'In Progress') = 'In Progress'".
-                   " AND psc.Centerid!= '1' AND c.Entity_type != 'Scanner'";
+                   " AND psc.Centerid!= '1' AND c.Entity_type != 'Scanner'";//.
+                   //" AND f.test_name NOT IN ('bmi', 'radiology_review') AND f.ID >= 4011 AND f.commentid NOT LIKE 'DDE_%'";//test
+
+       if (count($ddeInstruments) > 0) {
+           $ddeInstruments = implode(",", $ddeInstruments);
+           $where .= " AND (f.test_name IN ($ddeInstruments) OR f.commentid NOT LIKE 'DDE_%')";
+       }
         $qparams = array();
 
         //filter for testname
@@ -452,7 +463,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $qparams['CI'] = $candidate;
         }
 
-        $order_by = " ORDER BY f.commentid ";
+        $order_by = " ORDER BY f.ID";//"commentid ";
 
         $query   = $query . $where . $order_by;
         $results = $DB->pselect($query, $qparams);
