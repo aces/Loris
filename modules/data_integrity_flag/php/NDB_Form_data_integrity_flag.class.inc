@@ -1,10 +1,27 @@
 <?php
-
 /**
- * @package main
+ * This file contains the NDB_Form_Data_Integrity_Flag class
+ *
+ * PHP Version 5
+ *
+ * @category Loris
+ * @package  Main
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
-
-class NDB_Form_data_integrity_flag extends NDB_Form
+/**
+ * This file contains the NDB_Form_Data_Integrity_Flag class
+ *
+ * PHP Version 5
+ *
+ * @category Loris
+ * @package  Main
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+class NDB_Form_Data_Integrity_Flag extends NDB_Form
 {
 
     function _hasAccess()
@@ -47,8 +64,8 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         // get the userID
         $user      =& User::singleton();
         $user_name = $user->getUsername();
-
-        $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']); //get actual test_name
+        //get actual test_name
+        $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']);
 
         $visit_label = $_REQUEST['visit_label'];
         //save the date, flag status and comment in the data_integrity_flag table
@@ -60,8 +77,26 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         $flag = $values['flag_status'];
 
         //$instrument=
-        $sucess  =  $DB->update('data_integrity_flag', array('latest_entry' => 0), array('dataflag_instrument' => $instrument, 'dataflag_visitlabel' => $visit_label));
-        $success = $DB->insert("data_integrity_flag", array('dataflag_instrument' => $instrument, 'dataflag_visitlabel' => $visit_label, 'dataflag_comment' => $comment, 'dataflag_date' => $date, 'dataflag_status' => $flag, 'latest_entry' => 1, 'dataflag_userid' => $user_name));
+        $sucess  =  $DB->update(
+            'data_integrity_flag',
+            array('latest_entry' => 0),
+            array(
+             'dataflag_instrument' => $instrument,
+             'dataflag_visitlabel' => $visit_label,
+            )
+        );
+        $success = $DB->insert(
+            "data_integrity_flag",
+            array(
+             'dataflag_instrument' => $instrument,
+             'dataflag_visitlabel' => $visit_label,
+             'dataflag_comment'    => $comment,
+             'dataflag_date'       => $date,
+             'dataflag_status'     => $flag,
+             'latest_entry'        => 1,
+             'dataflag_userid'     => $user_name,
+            )
+        );
 
         $this->tpl_data['success'] = true;
     }
@@ -80,7 +115,8 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         $endYear     = $config->getSetting('endYear');
         $instrument  = '';
         if (!empty($_REQUEST['instrument'])) {
-            $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']); //converts the full_name into the test_name
+            //converts the full_name into the test_name
+            $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']);
         }
         $visit_array =Utility::getExistingVisitLabels();
         $visit_array = array_combine($visit_array, $visit_array);
@@ -93,7 +129,15 @@ class NDB_Form_data_integrity_flag extends NDB_Form
             $this->tpl_data['visit_label'] = $_REQUEST['visit_label'];
         }
         $this->tpl_data['test_name'] = $instrument;
-        $this->addSelect('users', 'Users', array_merge(array('' => 'All Users'), $this->getDIUsers()), array('id' => 'users'));
+        $this->addSelect(
+            'users',
+            'Users',
+            array_merge(
+                array('' => 'All Users'),
+                $this->getDIUsers()
+            ),
+            array('id' => 'users')
+        );
 
         $this->form->addFormRule(array(&$this, '_validate'));
 
