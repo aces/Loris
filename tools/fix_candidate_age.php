@@ -41,7 +41,12 @@ foreach ($instruments as $inst=>$fullName) {
 
     //Get instrument SQL table
     $DBInstTable = $DB->pselect(
-        "SELECT * FROM $inst",
+        "SELECT * 
+         FROM $inst i 
+            LEFT JOIN flag f ON (i.commentID=f.CommentID)
+            LEFT JOIN session s ON (f.SessionID=s.ID)
+            LEFT JOIN candidate c ON (s.CandID=c.CandID)
+         WHERE c.Active='Y' AND s.Active='Y'",
         array()
     );
 
@@ -99,6 +104,7 @@ foreach ($instruments as $inst=>$fullName) {
             if ($trouble && $confirm) {
                 //                $date = explode('-', $row['Date_taken']);
                 //                $dateArray = array ('Y' => $date[0], 'M' => $date[1], 'd' => $date[2]);
+                echo "Fixing age in instrument: ".$inst." for CommentID: ".$commentID."\n";
                 $instrument->_saveValues(array('Date_taken' => $dateTaken));
             }
         }
