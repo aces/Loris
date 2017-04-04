@@ -103,11 +103,11 @@ class UploadForm extends React.Component {
           swal({
             title: "Upload Successful!",
             type: "success"
-          }, function () {
+          }, function() {
             window.location.assign(loris.BaseURL + "/imaging_uploader/");
           });
         }
-      }.bind(this),
+      },
       error: function(err) {
         console.error(err);
         this.setState({

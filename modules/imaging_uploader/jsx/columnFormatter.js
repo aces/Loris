@@ -56,7 +56,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'Tarchive Info') {
-
     if (!cell || cell === "0") {
       return (<td></td>);
     }
