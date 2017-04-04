@@ -86,7 +86,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
    * @param {object} e - event info
    */
   function handleClick(dccid, e) {
-    loris.loadFilteredMenuClickHandler('imaging_browser', {
+    loris.loadFilteredMenuClickHandler('imaging_browser/', {
       DCCID: dccid
     })(e);
   }
