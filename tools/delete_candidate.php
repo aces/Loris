@@ -177,7 +177,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, $output)
 
     // IF CONFIRMED, DELETE CANDIDATE
     if ($confirm) {
-        echo "\nDropping all DB entries for candidate CandID: " . $CandID . "And PSCID: " .
+        echo "\nDropping all DB entries for candidate CandID: " . $CandID . " And PSCID: " .
             $PSCID . "\n";
 
         //delete from the participant_status table
@@ -192,7 +192,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, $output)
         //delete from candidate
         $DB->delete("candidate", array("CandID" => $CandID));
     } elseif ($printToSQL) {
-        echo "Generating all DELETE statements for CandID: " . $CandID . "And PSCID: " .
+        echo "Generating all DELETE statements for CandID: " . $CandID . " And PSCID: " .
             $PSCID . "\n";
 
         //delete from the participant_status table
