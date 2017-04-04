@@ -233,7 +233,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("Visit_label")
         );
 
-        $Visit_label        = new WebDriverSelect($Visit_labelElement);
+        $Visit_label = new WebDriverSelect($Visit_labelElement);
         $Visit_label->selectByVisibleText("TestVisitLabel");
 
         $this->webDriver->findElement(
