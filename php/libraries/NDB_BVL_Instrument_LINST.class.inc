@@ -108,7 +108,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      */
     function getFullName()
     {
-        $db =& Database::singleton();
+        $db =& \Database::singleton();
 
         $success = $db->pselectOne(
             "SELECT Full_name FROM test_names WHERE Test_name=:TN",
