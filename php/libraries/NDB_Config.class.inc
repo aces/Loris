@@ -89,7 +89,7 @@ class NDB_Config
 
             // Load the file
             $config = new NDB_Config();
-            $success = $config->load($configFile);
+           
             $fail    = $config->load("../test/config.xml");
             // Load all includes found in the config
             foreach (Utility::asArray($config->_settings['include']) as $k=>$path) {
