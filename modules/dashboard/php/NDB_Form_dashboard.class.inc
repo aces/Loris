@@ -142,13 +142,12 @@ class NDB_Form_Dashboard extends NDB_Form
                     "SELECT COUNT(*) FROM conflicts_unresolved cu 
                      LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) 
                      LEFT JOIN session s ON (flag.SessionID=s.ID)
-                     LEFT JOIN candidate c ON (s.CandID=c.CandID)
+		             LEFT JOIN candidate c ON (c.CandID=s.CandID)
                      LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
-                     WHERE FIND_IN_SET(psc.CenterID, :siteID)
+                     WHERE FIND_IN_SET(psc.CenterID, :siteID) 
 			            AND s.Active='Y' AND c.Active='Y'",
                     array('siteID' => implode(',', $siteID))
                 );
-
                 $this->tpl_data['conflicts_site'] = 'Sites: All User Sites';
             }
         }
