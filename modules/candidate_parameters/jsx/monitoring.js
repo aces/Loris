@@ -140,11 +140,11 @@ var MonitoringStatus = React.createClass(
         if (this.state.Data.visits.hasOwnProperty(visit)) {
           var label = this.state.Data.visits[visit];
           var monitored = visit + "_monitored";
-          var monitoredLabel = " Monitored: ";
+          var monitoredLabel = "Completed monitoring: ";
           var dateMonitored = visit + "_date";
-          var dateMonitoredLabel = "Date Monitored: ";
+          var dateMonitoredLabel = "Date of completion: ";
           var dateMonitored2 = visit + "_date2";
-          var dateMonitored2Label = "Confirm Date Monitored: ";
+          var dateMonitored2Label = "Confirm Date of completion: ";
           var monitorID = visit + "_monitor";
           var monitorIDLabel = "Monitored By (Examiner): ";
 
@@ -251,7 +251,7 @@ var MonitoringStatus = React.createClass(
           line.push(
             <td class="td-hist">
               <b>
-                Monitored ->
+                Completed monitoring ->
               </b>
               {monitoredH}
             </td>
@@ -260,7 +260,7 @@ var MonitoringStatus = React.createClass(
             line.push(
               <td class="td-hist">
                 <b>
-                  Date Monitored ->
+                  Date of completion ->
                 </b>
                 {monitoredDateH}
               </td>
@@ -304,9 +304,6 @@ var MonitoringStatus = React.createClass(
 
       return (
         <div class="row">
-          <div className ={alertClass} role="alert" ref="alert-message">
-            {alertMessage}
-          </div>
           <FormElement
             name ="monitoringStatus"
             onSubmit ={this.handleSubmit}
@@ -322,6 +319,9 @@ var MonitoringStatus = React.createClass(
               text ={this.state.Data.candID}
             />
             {visits}
+            <div className ={alertClass} role="alert" ref="alert-message">
+              {alertMessage}
+            </div>
             {updateButton}
             <table className="table-hist">
               {formattedHistory}

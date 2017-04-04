@@ -483,7 +483,6 @@ function editMonitoringStatusFields($db, $user)
              'vl'     => $vl,
             )
         );
-        //error_log(implode("  -  ",$flag));
 
         // MONITORING CHANGES
         $flagged   = $_POST[$vl];
@@ -503,8 +502,6 @@ function editMonitoringStatusFields($db, $user)
         foreach ($values as $k=>$val) {
             $values[$k] = ($val === 'null') ? null : $val;
             //get fields changed
-            error_log("DIFFFFFF: $values[$k]  -->   $k : " . $flag[$k]);
-
             if (!empty($flag)) {
                 if ($flagged === 'no' || $values[$k] !== $flag[$k]) {
                     $fieldDiff = true;
