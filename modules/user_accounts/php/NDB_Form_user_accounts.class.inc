@@ -441,11 +441,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         if ($this->isCreatingNewUser()) {
             $baseURL  = $config->getSetting('url');
             $redirect = $baseURL
-                . "/"
-                . $this->name
-                . "/"
-                . $this->page
-                . "/?identifier="
+                . "/user_accounts/edit_user/?identifier="
                 . $values['UserID'];
             header('Location: '. $redirect);
         }
