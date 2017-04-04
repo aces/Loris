@@ -29,7 +29,7 @@ class DataIntegrityFlag extends React.Component {
    * for easy access by columnFormatter.
    */
   fetchData() {
-    $.getJSON(this.props.DataURL, (data) => {
+    $.getJSON(this.props.DataURL, data => {
       loris.flagStatusList = data.flagStatusList;
       this.setState({
         Data: data,
