@@ -1,14 +1,35 @@
 <?php
-
 /**
- * HelpFile class
- * @package main
- * @subpackage unused
+ * Code for the form for the final radiological review module.
+ * See NDB_Menu_Filter_final_radiological_review for description
+ * of how module works.
+ *
+ * PHP Version 5
+ *
+ * @category Final_Radiological_Review
+ * @package  Main
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
+/**
+ * Code for the form for the final radiological review module.
+ * See NDB_Menu_Filter_final_radiological_review for description
+ * of how module works.
+ *
+ * PHP Version 5
+ *
+ * @category Final_Radiological_Review
+ * @package  Main
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class HelpFile
 {
     /**
      * Identifies the help file
+     *
      * @var    array
      * @access private
      */
@@ -16,6 +37,7 @@ class HelpFile
 
     /**
      * The help file's data
+     *
      * @var    array
      * @access private
      */
@@ -26,9 +48,9 @@ class HelpFile
      *
      * Selects and populates a help file
      *
-     * @param  int         Help file's ID
+     * @param int $helpID help file's ID
+     *
      * @return HelpFile
-     * @access public
      */
     static function &factory($helpID)
     {
@@ -40,9 +62,11 @@ class HelpFile
         // set the help ID
         $obj->helpID = $helpID;
         $result      = $DB->pselectRow(
-            "SELECT helpID, parentID, hash, topic, COALESCE(projectContent, content) AS content,
-                                   created, updated FROM help WHERE helpID = :HID", array('HID' => $helpID)
-                       );
+            "SELECT helpID, parentID, hash, topic,
+             COALESCE(projectContent, content) AS content,
+             created, updated FROM help WHERE helpID = :HID",
+            array('HID' => $helpID)
+        );
         // set the help file
         $obj->data = $result;
 
@@ -53,10 +77,9 @@ class HelpFile
     /**
      * Inserts a help file
      *
-     * @param  array       Associative array of values
-     * @return int         New help file's ID
-     * @access public
-     * @static
+     * @param array $set Associative array of values
+     *
+     * @return int  New help file's ID
      */
     function insert($set)
     {
@@ -73,9 +96,9 @@ class HelpFile
     /**
      * Updates a help file
      *
-     * @param  array       Associative array of values
+     * @param array $set Associative array of values
+     *
      * @return void
-     * @access public
      */
     function update($set)
     {
@@ -88,93 +111,20 @@ class HelpFile
         return true;
     }
 
-
-    /**
-     * Adds to a help file's related links
-     *
-     * @param  array       Array of related help file IDs
-     * @return void
-     * @access public
-     */
-    function addLinks($relatedIDs)
-    {
-        // create DB object
-        $DB =& Database::singleton();
-
-        // insert all related links
-        if (is_array($relatedIDs)) {
-            foreach ($relatedIDs as $relatedID) {
-                $success = $DB->insert('help_related_links', array('helpID' => $this->helpID, 'relatedID' => $relatedID));
-            }
-        } else {
-            $success = $DB->insert('help_related_links', array('helpID' => $this->helpID, 'relatedID' => $relatedIDs));
-        }
-
-        return true;
-    }
-
-    /**
-     * Removes links from a help file's related links
-     *
-     * @param  array       Array of related help file IDs
-     * @return void
-     * @access public
-     */
-    function removeLinks($relatedIDs)
-    {
-        // create DB object
-        $DB =& Database::singleton();
-
-        // delete the links
-        if (is_array($relatedIDs)) {
-            foreach($relatedIDs as $relatedID) {
-                $success = $DB->delete('help_related_links', array('helpID' => $this->helpID, 'relatedID' => $relatedID));
-                $success = $DB->delete('help_related_links', array('helpID' => $relatedID, 'relatedID' => $this->helpID));
-            }
-        } else {
-            $success = $DB->delete('help_related_links', array('helpID' => $this->helpID, 'relatedID' => $relatedIDs));
-            $success = $DB->delete('help_related_links', array('helpID' => $relatedIDs, 'relatedID' => $this->helpID));
-        }
-
-        return true;
-    }
-
-
-    /**
-     * Updates a help file's related links
-     *
-     * @param  array       Array of related help file IDs
-     * @return void
-     * @access public
-     */
-    function updateLinks($relatedIDs)
-    {
-        // create DB object
-        $DB =& Database::singleton();
-
-        // delete all related links
-        $success = $DB->delete('help_related_links', array('helpID' => $this->helpID));
-        $success = $DB->delete('help_related_links', array('relatedID' => $this->helpID));
-
-        // add all the new links
-        $success = $this->addLinks($relatedIDs);
-
-        return true;
-    }
-
-
     /**
      * Returns whether or not the topic has subtopics
      *
      * @return bool
-     * @access public
      */
     function hasChild()
     {
         // create DB object
         $DB =& Database::singleton();
 
-        $result = $DB->pselectOne("SELECT COUNT(*) FROM help WHERE parentID = :HID", array('HID' => $this->helpID));
+        $result = $DB->pselectOne(
+            "SELECT COUNT(*) FROM help WHERE parentID = :HID",
+            array('HID' => $this->helpID)
+        );
         return ($result > 0);
     }
 
@@ -182,10 +132,10 @@ class HelpFile
     /**
      * Returns an array of its subtopics' IDs
      *
-     * @param  int         Stop at this depth
-     * @param  int         Depth
+     * @param int $stopat Stop at this depth
+     * @param int $level  Depth
+     *
      * @return array
-     * @access public
      */
     function childIDs($stopat = 1, $level = 1)
     {
@@ -199,7 +149,10 @@ class HelpFile
 
         // get its children
         if ($hasChild) {
-            $result = $DB->pselect("SELECT helpID FROM help WHERE parentID = :HID", array('HID' => $this->helpID));
+            $result = $DB->pselect(
+                "SELECT helpID FROM help WHERE parentID = :HID",
+                array('HID' => $this->helpID)
+            );
             // add the children to the array
             $childIDs = Utility::reduce($result);
 
@@ -225,8 +178,8 @@ class HelpFile
     /**
      * Returns an array of its subtopics's IDs and topics
      *
-     * @param  int $stopat Stop at this depth
-     * @param  int $level  Depth
+     * @param int $stopat Stop at this depth
+     * @param int $level  Depth
      *
      * @return array
      */
@@ -343,160 +296,6 @@ class HelpFile
 
         return $parentData;
     }
-
-
-    /**
-     * Returns whether this topic is another's descendant
-     *
-     * Prevents children from having their descendants as parents
-     *
-     * @param int $ancestor Ancestor's help ID
-     *
-     * @return bool
-     */
-    function isDescendant($ancestor)
-    {
-        if ($this->data['parentID'] == -1) {
-            return false;
-        } elseif ($this->data['parentID'] == $ancestor) {
-            return true;
-        } else {
-            // make the parent
-            $parent =& HelpFile::factory($this->data['parentID']);
-
-            return $parent->isDescendant($ancestor);
-        }
-
-    }
-
-
-    /**
-     * Returns an array of its related link's IDs
-     *
-     * @return array
-     * @access public
-     */
-    function relationIDs()
-    {
-        // create DB object
-        $DB =& Database::singleton();
-
-        $result = $DB->pselect(
-            "SELECT helpID, relatedID
-            FROM help_related_links
-            WHERE helpID = :HID OR relatedID = :HID ",
-            array('HID' => $this->helpID)
-        );
-
-        // a multi-dimensional array is imploded, then exploded,
-        // and then this topic's ID is removed
-        return array_diff(Utility::reduce($result), array($this->helpID));
-    }
-
-
-    /**
-     * Returns an array of its related links' IDs and topics
-     *
-     * @return array
-     * @access public
-     */
-    function relationData()
-    {
-        // create DB object
-        $DB =& Database::singleton();
-
-        // get the relation IDs
-        $relationIDs = $this->relationIDs();
-
-        // build the query using the IDs provided by the previous function
-        $query = "SELECT helpID, topic FROM help WHERE 0";
-
-        // add them to the query
-        if (count($relationIDs) > 0) {
-            $query .= " OR helpID = ".implode(" OR helpID = ", $relationIDs);
-        }
-
-        $DB->select($query, $result);
-        return $result;
-    }
-
-
-    /**
-     * Returns an array of the IDs and topics of help files not in the "family"
-     *
-     * @param int $ancestor   Stop finding children at this depth
-     * @param int $descendant Stop finding parents at this depth
-     *
-     * @return array
-     */
-    function strangerData($ancestor = -1, $descendant = -1)
-    {
-        // create DB object
-        $DB =& Database::singleton();
-
-        // get the parent IDs
-        $parentIDs = $this->parentIDs($ancestor);
-
-        // get the child IDs
-        $childIDs = $this->childIDs($descendant);
-
-        // get all its descendants and ancestors, and I am not a stranger to myself!
-        $familyIDs = array_merge($parentIDs, $childIDs, $this->helpID);
-
-        // build the query blocking out family members
-        $query = "SELECT helpID, topic FROM help WHERE 1";
-
-        // add the family IDs to the query
-        if (count($familyIDs) > 0) {
-            $query .= " AND helpID != ".implode(" AND helpID != ", $familyIDs);
-        }
-
-        $DB->select($query, $result);
-        return $result;
-    }
-
-
-    /**
-     * Returns the tree starting with this help file
-     *
-     * @param integer $level The current depth of the tree
-     *
-     * @return array
-     */
-    function tree($level = 0)
-    {
-        $DB =& Database::singleton();
-
-        // see if it has a child
-        $hasChild = $this->hasChild();
-
-        $tree = array();
-
-        if ($hasChild) {
-            $result = $DB->pselect(
-                "SELECT helpID, topic, updated, $level as level
-                 FROM help
-                 WHERE parentID = :HID",
-                array('HID' => $this->helpID)
-            );
-
-            // go one-by-one
-            foreach ($result as $row) {
-                // add the row to the array...
-                $tree[] = $row;
-
-                // and go down another level!
-                $branch =& HelpFile::factory($row['helpID']);
-
-                $twig = $branch->tree($level + 1);
-
-                $tree = array_merge($tree, $twig);
-            }
-        }
-
-        return $tree;
-    }
-
 
     /**
      * Dumps the HelpFile as an array

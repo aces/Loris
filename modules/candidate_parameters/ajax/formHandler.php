@@ -307,12 +307,12 @@ function editParticipantStatusFields($db, $user)
     $candID = $_POST['candID'];
 
     // Process posted data
-    $status    = isset($_POST['participant_status']) ?
-        $_POST['participant_status'] : null;
-    $suboption = isset($_POST['participant_suboptions']) ?
-        $_POST['participant_suboptions'] : null;
-    $reason    = isset($_POST['reason_specify']) ?
-        $_POST['reason_specify'] : null;
+    $status    = isset($_POST['participantStatus']) ?
+        $_POST['participantStatus'] : null;
+    $suboption = isset($_POST['participantSuboptions']) ?
+        $_POST['participantSuboptions'] : null;
+    $reason    = isset($_POST['reasonSpecify']) ?
+        $_POST['reasonSpecify'] : null;
 
     $id = null;
     if (!(is_null($_SESSION['State']))) {
@@ -376,7 +376,15 @@ function editConsentStatusFields($db, $user)
     $config  =& NDB_Config::singleton();
     $consent = $config->getSetting('ConsentModule');
 
-    foreach (Utility::asArray($consent['Consent']) as $consentType) {
+    $consent_details =Utility::asArray($consent['Consent']);
+    if (!$consent_details[0]) {
+        // If only one consent, need to put in an array
+        $temp            = array();
+        $temp[]          = $consent_details;
+        $consent_details = $temp;
+    }
+
+    foreach ($consent_details as $consentType) {
 
         $consentName       = $_POST[$consentType['name']];
         $consentDate       = $_POST[$consentType['name'] . '_date'];

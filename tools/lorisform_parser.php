@@ -59,7 +59,7 @@ foreach ($files AS $file) {
 
     //Some instruments ought not be parsed with the quickform_parser
     if ((in_array($obj->testName, $instrumentsToSkip))) {
-        echo "quickform_parser will	skip file {$file}\n";
+        echo "quickform_parser will    skip file {$file}\n";
         continue;
     }
 
@@ -68,6 +68,11 @@ foreach ($files AS $file) {
         $obj->page =$subtest['Name'];
         echo "Building instrument page '$subtest[Name]'...\n";
         $obj->_setupForm();
+    }
+    
+    if (is_array($obj->getFullName())) {
+        echo "Could not find row for $matches[1] in table test_names, please populate test_names, instrument_subtests\n";
+        continue;
     }
 
     if (!empty($output)) {
@@ -86,9 +91,13 @@ foreach ($files AS $file) {
     $output      .=parseElements($formElements["elements"]);
     echo "Parsing complete\n---------------------------------------------------\n\n";
 }
-$fp =fopen("ip_output.txt", "w");
-fwrite($fp, $output);
-fclose($fp);
+if (empty($output)) {
+    echo "Nothing to output, 'ip_output.txt' not created\n";
+} else {
+    $fp =fopen("ip_output.txt", "w");
+    fwrite($fp, $output);
+    fclose($fp);
+}
 
 /**
  * Create a linst formated string for an LorisForm element.

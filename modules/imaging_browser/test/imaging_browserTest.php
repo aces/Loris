@@ -488,10 +488,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
-        $SiteTopMenuTextAll = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".navbar-text")
-        )->getText();
-        $SiteTopMenuText    = explode(":", $SiteTopMenuTextAll);
 
         $SiteFilterText = $this->webDriver->findElement(
             WebDriverBy::Name("SiteID")
@@ -505,9 +501,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             $this->url . "/imaging_browser/"
         );
 
-        $SiteTopMenuTextAll = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".navbar-text")
-        )->getText();
         $SiteFilterText     = $this->webDriver->findElement(
             WebDriverBy::Name("SiteID")
         )->getText();
