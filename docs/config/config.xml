@@ -26,7 +26,6 @@
     </database>
 
     <CouchDB>
-        <SyncAccounts>false</SyncAccounts>
     </CouchDB>
 
     <!-- study variables -->

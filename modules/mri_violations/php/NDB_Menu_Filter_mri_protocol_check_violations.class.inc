@@ -13,7 +13,7 @@
  * @category MRI
  * @package  Main
  * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- * @license  GPLv3
+ * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -23,10 +23,10 @@
  * @category MRI
  * @package  Main
  * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- * @license  GPLv3
+ * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
+class NDB_Menu_Filter_Mri_Protocol_Check_Violations extends NDB_Menu_Filter
 {
     /**
      * Determine who has access to this page. At the moment, tied to
@@ -47,47 +47,48 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $this->query = " FROM mri_violations_log l LEFT JOIN mri_scan_type m
+        $this->query    = " FROM mri_violations_log l LEFT JOIN mri_scan_type m
                          ON m.ID=l.Scan_type WHERE 1=1 ";
-        $this->columns = array(
-            'l.PatientName',
-            'l.CandID',
-            'l.Visit_label',
-            'm.Scan_type',
-            'l.Severity',
-            'l.Header',
-            'l.Value',
-            'l.ValidRange',
-            'l.ValidRegex',
-            'l.SeriesUID',
-            'l.TarchiveID as TarchiveID'
-        );
+        $this->columns  = array(
+                           'l.PatientName',
+                           'l.CandID',
+                           'l.Visit_label',
+                           'm.Scan_type',
+                           'l.Severity',
+                           'l.Header',
+                           'l.Value',
+                           'l.ValidRange',
+                           'l.ValidRegex',
+                           'l.SeriesUID',
+                           'l.TarchiveID as TarchiveID',
+                          );
         $this->order_by = 'PatientName';
-        $this->headers = array('PatientName',
-            'CandID',
-            'Visit_label',
-            'Scan_type',
-            'Severity',
-            'Header',
-            'Value',
-            'ValidRange',
-            'ValidRegex',
-            'SeriesUID',
-            'TarchiveID'
-        );
+        $this->headers  = array(
+                           'PatientName',
+                           'CandID',
+                           'Visit_label',
+                           'Scan_type',
+                           'Severity',
+                           'Header',
+                           'Value',
+                           'ValidRange',
+                           'ValidRegex',
+                           'SeriesUID',
+                           'TarchiveID',
+                          );
         $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
         $this->validFilters = array(
-            'l.TarchiveID',
-            'l.SeriesUID',
-            'l.PatientName',
-            'l.CandID'
-        );
-        $this->formToFilter = array (
-            'TarchiveID' => 'l.TarchiveID',
-            'SeriesUID' => 'l.SeriesUID',
-            'PatientName' => 'l.PatientName',
-            'CandID' => 'l.CandID'
-        );
+                               'l.TarchiveID',
+                               'l.SeriesUID',
+                               'l.PatientName',
+                               'l.CandID',
+                              );
+        $this->formToFilter = array(
+                               'TarchiveID'  => 'l.TarchiveID',
+                               'SeriesUID'   => 'l.SeriesUID',
+                               'PatientName' => 'l.PatientName',
+                               'CandID'      => 'l.CandID',
+                              );
         $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
     }
 
@@ -102,22 +103,34 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
         $this->addBasicText(
             'TarchiveID',
             'Tarchive ID:',
-            array("size"=>9, "maxlength"=>20)
+            array(
+             "size"      => 9,
+             "maxlength" => 20,
+            )
         );
         $this->addBasicText(
             'PatientName',
             'PatientName:',
-            array("size"=>20, "maxlength"=>64)
+            array(
+             "size"      => 20,
+             "maxlength" => 64,
+            )
         );
         $this->addBasicText(
             'CandID',
             'CandID:',
-            array("size"=>20, "maxlength"=>6)
+            array(
+             "size"      => 20,
+             "maxlength" => 6,
+            )
         );
         $this->addBasicText(
             'SeriesUID',
             'DICOM Series UID:',
-            array("size"=>20, "maxlength"=>64)
+            array(
+             "size"      => 20,
+             "maxlength" => 64,
+            )
         );
 
     }
@@ -149,10 +162,10 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
                 if ($key == 'Severity') {
                     $this->tpl_data['items'][$x]['severity'] = $val;
                 }
-                $row = array(
-                    'value' => $val,
-                    'name' => $key
-                );
+                $row           = array(
+                                  'value' => $val,
+                                  'name'  => $key,
+                                 );
                 $row['CandID'] = isset($item['CandID']) ? $item['CandID'] : '';
                 $row['CommentID'] = isset($item['CommentID'])
                     ? $item['CommentID']
@@ -167,15 +180,22 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
             $x++;
         }
     }
-
-    function getJSDependencies() {
-        $factory = NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
-        $depends = parent::getJSDependencies();
+    /**
+     * Gathers JS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory         = NDB_Factory::singleton();
+        $baseurl         = $factory->settings()->getBaseURL();
+        $depends         = parent::getJSDependencies();
+        $columnFormatter = "/mri_violations/js/".
+                           "mri_protocol_check_violations_columnFormatter.js";
         return array_merge(
             $depends,
             array(
-             $baseurl . "/mri_violations/js/mri_protocol_check_violations_columnFormatter.js",
+             $baseurl . $columnFormatter,
              $baseurl . "/mri_violations/js/mri_protocol_check_violations.js",
             )
         );

@@ -39,10 +39,10 @@
 class NDB_BVL_Feedback
 {
     // contains info necessary to structure the object
-    var $_feedbackObjectInfo ='';
+    var $_feedbackObjectInfo = [];
 
     // contains full candidate profile/timepoint/instrument info
-    var $_feedbackCandidateProfileInfo ='';
+    var $_feedbackCandidateProfileInfo = [];
 
     // set of status options
     var $_feedbackStatusOptions = array(
@@ -468,8 +468,8 @@ class NDB_BVL_Feedback
         }
         $query .= " WHERE ft.Active ='Y'";
         if (!$hasReadPermission===true) {
-            $query            .= " AND c.CenterID=:CentID";
-            $qparams['CentID'] = $user->getCenterID();
+            $query            .= " AND FIND_IN_SET (c.CenterID,:CentID)";
+            $qparams['CentID'] = implode(',', $user->getCenterID());
         }
 
         $query .= " AND Public = 'Y' AND Status <> 'closed'";
@@ -580,8 +580,9 @@ class NDB_BVL_Feedback
             )";
             $qparams['Username'] = $this->_username;
         } else {
-            $query            .= " AND ft.Active ='Y' AND c.CenterID=:CentID";
-            $qparams['CentID'] = $user->getCenterID();
+            $query            .= " AND ft.Active ='Y' 
+                                   AND FIND_IN_SET (c.CenterID,:CentID)";
+            $qparams['CentID'] = implode(',', $user->getCenterID());
         }
 
         $query .= " ORDER BY ft.CandID,

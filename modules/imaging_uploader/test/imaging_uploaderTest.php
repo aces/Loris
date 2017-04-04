@@ -199,7 +199,6 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
     function testImagingUploaderFilter()
     {
         $this->safeGet($this->url . '/imaging_uploader/');
-
         $this->webDriver->findElement(
             WebDriverBy::name("CandID")
         )->sendKeys("999999");
@@ -233,6 +232,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
         $Visit_labelElement =  $this->safeFindElement(
             WebDriverBy::Name("Visit_label")
         );
+
         $Visit_label        = new WebDriverSelect($Visit_labelElement);
         $Visit_label->selectByVisibleText("TestVisitLabel");
 
@@ -320,6 +320,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
                     WebDriverBy::cssSelector("body")
                 )->getText();
                 $this->assertContains("8889_999999_TestVisitLabel", $bodyText);
+
     }
 }
 ?>
