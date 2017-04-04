@@ -89,7 +89,7 @@ class NDB_Config
 
             // Load the file
             $config = new NDB_Config();
-            $config->load($configFile);
+            $success = $config->load($configFile);
 
             // Load all includes found in the config
             foreach (Utility::asArray($config->_settings['include']) as $k=>$path) {
@@ -122,7 +122,7 @@ class NDB_Config
             );
         }
 
-        $this->_settings += NDB_Config::convertToArray($newroot);
+        $this->_settings = NDB_Config::convertToArray($newroot);
     }
 
     /**
