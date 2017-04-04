@@ -388,6 +388,10 @@ function getComments($issueID)
 
     //looping by reference so can edit in place
     foreach ($unformattedComments as &$comment) {
+        $comment["dateAddedFormatted"] = date(
+            "d M'y h:iA",
+            strtotime($comment["dateAdded"])
+        );
         if ($comment['fieldChanged'] === 'module') {
             $module = $db->pselectOne(
                 "SELECT Label FROM LorisMenu WHERE ID=:module",
