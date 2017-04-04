@@ -1,16 +1,39 @@
 <?php
-require_once 'NDB_Menu_statistics_site.class.inc';
-
 /**
  * The welcome menu
  *
- * @package main
+ * PHP Version 5
+ *
+ * @category Loris
+ * @package  Main
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
  */
-class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
+require_once 'NDB_Menu_statistics_site.class.inc';
+/**
+ * The welcome menu
+ *
+ * PHP Version 5
+ *
+ * @category Loris
+ * @package  Main
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
+class NDB_Menu_Statistics_Mri_Site extends NDB_Menu_statistics_site
 {
     var $query_criteria = '';
     var $query_vars     = array();
-
+    /**
+     * CheckCriteria function
+     *
+     * @param string $centerID  the value of centerID
+     * @param string $projectID the value of projectID
+     *
+     * @return void
+     */
     function _checkCriteria($centerID, $projectID)
     {
         if (!empty($centerID)) {
@@ -22,7 +45,13 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
             $this->query_vars['pid'] = $projectID;
         }
     }
-
+    /**
+     * GetIssueName function
+     *
+     * @param string $issue the value of issue
+     *
+     * @return void
+     */
     function _getIssueName($issue)
     {
         switch($issue) {
@@ -35,13 +64,29 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
         }
         return parent::_getIssueName($issue);
     }
-
-    function _CompleteCount($centerID, $projectID, $issue)
+    /**
+     * CompleteCount function
+     *
+     * @param string $centerID  the value of centerID
+     * @param string $projectID the value of projectID
+     * @param string $issue     the value of issue
+     *
+     * @return void
+     */
+    function _completeCount($centerID, $projectID, $issue)
     {
         return null;
     }
-
-    function _GetResults($centerID, $projectID, $issue)
+    /**
+     * GetResults function
+     *
+     * @param string $centerID  the value of centerID
+     * @param string $projectID the value of projectID
+     * @param string $issue     the value of issue
+     *
+     * @return void
+     */
+    function _getResults($centerID, $projectID, $issue)
     {
         $this->_checkCriteria($centerID, $projectID);
         $DB =& Database::singleton();
@@ -53,21 +98,21 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
             foreach ($scan as $type=>$label) {
                 if ($counter < sizeof($scan_types)) {
                     $where .= "m.$label <> 'No' OR m.$label IS NULL OR ";
-                }
-                else {
+                } else {
                     $where .= "m.$label <> 'No' OR m.$label IS NULL )";
                 }
                 $counter++;
             }
         }
-        switch($issue) {
+        switch ($issue) {
         case 'Tarchive_Missing':
             $query = "SELECT DISTINCT f.CommentID as CommentID, 
                             c.PSCID, s.ID as SessionID, s.CandID as CandID,
                             s.Visit_label
                     FROM flag f JOIN session s ON (f.SessionID=s.ID)
                         LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
-                        LEFT JOIN tarchive t ON (s.CandID=MID(t.PatientName, 9, 6) AND MID(t.PatientName, 16, 7)=s.Visit_label)
+                        LEFT JOIN tarchive t ON (s.CandID=MID(t.PatientName, 9, 6)
+                        AND MID(t.PatientName, 16, 7)=s.Visit_label)
                         LEFT JOIN candidate c ON (s.CandID=c.CandID)
                         $where
                             AND f.CommentID NOT LIKE 'DDE%'
@@ -87,15 +132,15 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
                 foreach ($scan as $type=>$label) {
                     if ($counter < sizeof($scan_types)) {
                         $where .= "m.$label <> 'No' OR ";
-                    }
-                    else {
+                    } else {
                         $where .= "m.$label <> 'No')";
                     }
                     $counter++;
                 }
             }
 
-            $query = "SELECT DISTINCT f.CommentID as CommentID, s.ID as SessionID, c.PSCID, s.CandID, s.Visit_label
+            $query = "SELECT DISTINCT f.CommentID as CommentID,
+                      s.ID as SessionID, c.PSCID, s.CandID, s.Visit_label
                     FROM mri_parameter_form m LEFT JOIN flag f ON
                                         (f.CommentID=m.CommentID)
                     LEFT JOIN session s ON (s.ID=f.SessionID)
@@ -109,12 +154,14 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
                         $this->query_criteria
                     ORDER BY c.PSCID";
             break;
-        case 'PF_Missing': $query =
-            "SELECT DISTINCT c.PSCID, s.ID as SessionID,
+        case 'PF_Missing': $query = "SELECT DISTINCT c.PSCID, s.ID as SessionID,
                         s.Visit_label
                     FROM files LEFT JOIN session s ON (files.SessionID=s.ID)
-                        LEFT JOIN flag f on (f.SessionID=s.ID AND f.Test_name='mri_parameter_form' AND f.CommentID NOT LIKE 'DDE%')
-                        LEFT JOIN mri_parameter_form mpf ON (mpf.CommentID=f.CommentID)
+                        LEFT JOIN flag f on
+                       (f.SessionID=s.ID AND f.Test_name='mri_parameter_form'
+                         AND f.CommentID NOT LIKE 'DDE%')
+                        LEFT JOIN mri_parameter_form mpf
+                       ON (mpf.CommentID=f.CommentID)
                         LEFT JOIN candidate c ON (c.CandID=s.CandID)
                         WHERE s.Active='Y' 
                            AND c.Entity_type != 'Scanner'
@@ -127,11 +174,16 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
             break;
 
         }
-        if($query) { $result = $DB->pselect($query, $this->query_vars);
+        if ($query) {
+                      $result = $DB->pselect($query, $this->query_vars);
         }
         return $result;
     }
-
+    /**
+     * Setup function
+     *
+     * @return void
+     */
     function setup()
     {
         $this->issues = array(
@@ -139,11 +191,13 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
                          "Files_Missing",
                          "PF_Missing",
                         );
-        if(isset($_GET['subtest'])) {
+        if (isset($_GET['subtest'])) {
             header("Location: ?test_name=statistics#data_entry");
         }
         $DB     =& Database::singleton();
-        $center = $DB->pselectRow("SELECT CenterID as ID, PSCArea as Name FROM psc WHERE CenterID=:cid", array('cid' => $_REQUEST['CenterID']));
+        $sqlRow = "SELECT CenterID as ID,".
+                  " PSCArea as Name FROM psc WHERE CenterID=:cid";
+        $center = $DB->pselectRow($sqlRow, array('cid' => $_REQUEST['CenterID']));
         $id     = $center['ID'];
         $name   = $center['Name'];
         // List of all visits. Add to it any time a new one is seen, so
@@ -154,14 +208,14 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
 
         //$this->_setIssueName();
         $data = array();
-        foreach($this->issues as $issue){
-            $complete_count = $this->_CompleteCount($centerID, $projectID, $issue);
+        foreach ($this->issues as $issue) {
+            $complete_count = $this->_completeCount($centerID, $projectID, $issue);
 
-            $results = $this->_GetResults($centerID, $projectID, $issue);
+            $results = $this->_getResults($centerID, $projectID, $issue);
 
             $test_url = $issue;
-            foreach($results as $row) {
-                if(!in_array($row['Visit_label'], $visits)) {
+            foreach ($results as $row) {
+                if (!in_array($row['Visit_label'], $visits)) {
                     $visits[] = $row['Visit_label'];
                 }
                 $results[$row['Visit_label']][] = array(
@@ -201,9 +255,7 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array(
-                $baseURL . "/statistics/css/statistics.css"
-            )
+            array($baseURL . "/statistics/css/statistics.css")
         );
     }
 } // End class

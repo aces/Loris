@@ -10,9 +10,20 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
-require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
+require_once __DIR__ .
+      "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
+/**
+ * Imaging_uploader automated integration tests
+ *
+ * PHP Version 5
+ *
+ * @category Test
+ * @package  Loris
+ * @author   Wang Shen <wangshen.mcin@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
+class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
 {
     /**
      * Insert testing data
@@ -110,7 +121,9 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
     function testImagingUploaderDoespageLoad()
     {
         $this->safeGet($this->url . '/imaging_uploader/');
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->assertContains("Imaging Upload", $bodyText);
     }
     /**
@@ -123,7 +136,9 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
     {
         $this->setupPermissions(array(""));
         $this->safeGet($this->url . '/imaging_uploader/');
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->assertContains("You do not have access to this page.", $bodyText);
     }
     /**
@@ -136,7 +151,9 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
     {
         $this->setupPermissions(array("imaging_uploader"));
         $this->safeGet($this->url . '/imaging_uploader/');
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->assertNotContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
@@ -182,7 +199,6 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
     function testImagingUploaderFilter()
     {
         $this->safeGet($this->url . '/imaging_uploader/');
-
         $this->webDriver->findElement(
             WebDriverBy::name("candID")
         )->sendKeys("999999");

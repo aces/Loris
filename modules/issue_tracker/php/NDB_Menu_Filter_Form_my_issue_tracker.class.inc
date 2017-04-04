@@ -170,6 +170,7 @@ class NDB_Menu_Filter_Form_My_Issue_Tracker extends NDB_Menu_Filter_Form
                     $list_of_sites[$key] = $site[$key]->getCenterName();
                 }
             }
+            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
         }
 
         //reporters
