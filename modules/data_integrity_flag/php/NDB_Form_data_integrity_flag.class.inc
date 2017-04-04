@@ -225,10 +225,14 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
         // create Database object
         $DB = Database::singleton();
 
-        if(!empty($_REQUEST[$Filter]) && $_REQUEST[$Filter] !=='All Instruments' && $_REQUEST[$Filter] !=='No instruments for this visit' &&  $_REQUEST[$Filter] !=='All Visits') {
-
+        if(!empty($_REQUEST[$Filter])
+            && $_REQUEST[$Filter] !=='All Instruments'
+            && $_REQUEST[$Filter] !=='No instruments for this visit'
+            &&  $_REQUEST[$Filter] !=='All Visits'
+        ) {
             if ($Filter =='instrument') {
-                $test_name = $this->getTestNameusingMappedName($_REQUEST[$Filter]); //get actual test_name
+                //get actual test_name
+                $test_name = $this->getTestNameusingMappedName($_REQUEST[$Filter]);
                 return " AND $Column LIKE " . $DB->quote($test_name);
             }
             return " AND $Column LIKE " . $DB->quote($_REQUEST[$Filter]);
@@ -238,9 +242,9 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
     }
 
     /**
-     * _validate
+     * Validate
      *
-     * @param  unknown_type $fields
+     * @param  unknown_type $fields the value of fields
      * @return unknown
      */
     function _validate($fields)
@@ -250,7 +254,10 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
         $vl         = empty($_REQUEST['visit_label']) ? '' : $_REQUEST['visit_label'];
         $instFilter = $this->getTestNameusingMappedName($_REQUEST['instrument']);
 
-        if ((preg_match('/All/', $inst, $matches)) || (preg_match('/All/', $vl, $matches)) || ($instFilter == null)) {
+        if ((preg_match('/All/', $inst, $matches))
+            || (preg_match('/All/', $vl, $matches))
+            || ($instFilter == null)
+        ) {
             $errors['comment'] = 'An Instrument/Vist must be selected';
         }
 
@@ -292,8 +299,6 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
         return count($errors) > 0 ? $errors:true;
     }
 
-    // }}}
-    // {{{ _getQuickformDate()
     /**
  * Convert a database date or timestamp into a QuickForm acceptable date or time
  *
@@ -301,7 +306,6 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
  * @return array   $formDateValue       the quickform date/timestamp array
  * @access private
  */
-
     function _getQuickformDate($databaseValue/*,$date_reference*/)
     {
         if(!empty($databaseValue)) {
@@ -323,12 +327,16 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
         }
         return $formDateValue;
     }
-
     /**
- * getTestNameusingMappedName
- * returns the Test_name and its corresponding visit_label.. using the full_name  and/or subprojectID ..
+ * GetTestNameusingMappedName
+ * returns the Test_name and its corresponding visit_label..
+ * using the full_name  and/or subprojectID ..
+ *
+ * @param string                                        $full_name the value of full name
+ * @param string subprojectID the default value is null
+ *
+ * @return array;
  */
-
     function getTestNameusingMappedName($full_name, $subprojectID = null)
     {
         $DB     =& Database::singleton();
@@ -342,14 +350,18 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
 
     /**
  * Returns the list of users changed the Data-integrity flags
+ *
+ * @return array;
  */
-
     function getDIUsers()
     {
         $DB       =& Database::singleton();
-        $users    = $DB->pselect("SELECT DISTINCT dataflag_userid FROM data_integrity_flag", array());
+        $users    = $DB->pselect(
+            "SELECT DISTINCT dataflag_userid FROM data_integrity_flag",
+            array()
+        );
         $user_ids = array();
-        foreach ($users as $user){
+        foreach ($users as $user) {
             $user_ids[$user['dataflag_userid']] = $user['dataflag_userid'];
         }
         return $user_ids;
