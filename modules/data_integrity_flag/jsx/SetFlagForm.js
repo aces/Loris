@@ -21,7 +21,7 @@ class SetFlagForm extends React.Component {
    * @param {string} value - selected value for corresponding form element
    */
   setFormData(formElement, value) {
-    const formData = this.state.formData;
+    const formData = JSON.parse(JSON.stringify(this.state.formData));
     formData[formElement] = value;
     this.setState({formData});
   }
