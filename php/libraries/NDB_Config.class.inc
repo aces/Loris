@@ -96,7 +96,7 @@ class NDB_Config
            //     if (file_exists($path)) {
            //         $config->load($path);
            //     }
-            }
+           // }
         }
 
         return $config;
