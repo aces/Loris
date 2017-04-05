@@ -93,7 +93,15 @@ $(document).ready(function () {
             $("#emailContent").val(content);
         }
         );
-        
-
+        // check if instrument is normally apart of visit
+        $.get(loris.BaseURL + "/survey_accounts/ajax/TestInVLCheck.php", {
+            test_name: testname,
+            VL: $("select[name=VL]").val()
+        },
+        function(result) {
+            result = JSON.parse(result);
+            alert(result.warning_msg);
+        }
+        );
     });
 });

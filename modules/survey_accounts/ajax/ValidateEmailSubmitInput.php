@@ -41,7 +41,7 @@ $numCandidates = $db->pselectOne(
      'v_CandID' => $_REQUEST['dccid'],
     )
 );
-$error_msg     = "PSCID and DCC ID do not match or candidate does not exist.";
+$error_msg     = "PSCID and DCCID do not match or candidate does not exist.";
 if ($numCandidates != 1) {
     echo json_encode(
         array('error_msg' => $error_msg)
