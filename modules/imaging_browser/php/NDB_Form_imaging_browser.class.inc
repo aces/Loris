@@ -163,52 +163,137 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                     $this->scanner = $this->DB->pselectOne($query, array('ScanID' => $scannerID));// @codingStandardsIgnoreLine
                 }
             }
-            // @codingStandardsIgnoreStart
+
+            $FileID       = $fileRow['FileID'];
+            $Filename     = basename($FileObj->getParameter('File'));
+            $CheckPic     = "/mri/jiv/get_file.php?file=pic/".
+                                         $FileObj->getParameter(
+                                             'check_pic_filename'
+                                         );
+            $FullFilename = $FileObj->getParameter('File');
+            $JivFilename  = basename($FileObj->getParameter('File'));
+            $JivAddress   = str_replace(
+                '_check.jpg',
+                '',
+                $FileObj->getParameter('check_pic_filename')
+            );
+            $New          = ($FileObj->getParameter('QCFirstChangeTime') == '') ?
+                                         1 : 0;
+            $Pipeline     = $FileObj->getParameter('Pipeline');
+            $OutputType   = $FileObj->getParameter('OutputType');
+            $AcquisitionProtocol = $FileObj->getAcquisitionProtocol();
+            $CoordinateSpace     = $FileObj->getParameter('CoordinateSpace');
+            $Algorithm           = $FileObj->getParameter('Algorithm');
+            $AcquisitionDate     = $this->_getDate(
+                $FileObj,
+                'acquisition_date',
+                $acqDate
+            );
+            $ProcDate            = $this->_getDate(
+                $FileObj,
+                'processing:processing_date',
+                $procDate
+            );
+            $FileInsertDate      = $FileObj->getParameter('InsertTime');
+            $SeriesDescription   = $FileObj->getParameter('series_description');
+            $SeriesNumber        = $FileObj->getParameter('series_number');
+            $EchoTime            = number_format(
+                $FileObj->getParameter('echo_time')*1000,
+                2
+            );
+            $RepetitionTime      = number_format(
+                $FileObj->getParameter('repetition_time')*1000,
+                2
+            );
+            $SliceThickness      = number_format(
+                $FileObj->getParameter('slice_thickness'),
+                2
+            );
+            $Time    = number_format($FileObj->getParameter('time'), 2);
+            $Comment = $FileObj->getParameter('Comment');
+            $ProcessingPipeline = $FileObj->getParameter('processing:pipeline');
+            $TotalRejected      = $FileObj->getParameter(
+                'processing:total_rejected'
+            );
+            $SourceFile         = basename(
+                $FileObj->getParameter('processing:sourceFile')
+            );
+            $Tool = $FileObj->getParameter('Tool');
+            $SlicewiseRejected     = $this->_getRejected(
+                $FileObj,
+                'slicewise',
+                $sliceRej
+            );
+            $InterlaceRejected     = $this->_getRejected(
+                $FileObj,
+                'interlace',
+                $laceRej
+            );
+            $IntergradientRejected = $this->_getRejected(
+                $FileObj,
+                'intergradient',
+                $interRej
+            );
+            $Xstep       = number_format($FileObj->getParameter('xstep'), 2);
+            $Ystep       = number_format($FileObj->getParameter('ystep'), 2);
+            $Zstep       = number_format($FileObj->getParameter('zstep'), 2);
+            $Selected    = $this->_getSelected(
+                (int)$FileObj->getParameter('FileID')
+            );
+            $QCStatus    = $FileObj->getParameter('QCStatus');
+            $QCDate      = $FileObj->getParameter('QCLastChangeTime');
+            $Caveat      = $FileObj->getParameter('Caveat');
+            $SNR         = $FileObj->getParameter('SNR');
+            $SeriesUID   = $FileObj->getParameter('SeriesUID');
+            $XMLreport   = $FileObj->getParameter('processing:DTIPrepXmlReport');
+            $XMLprotocol = $FileObj->getParameter('ProtocolFile');
+            $NrrdFile    = $FileObj->getParameter('processing:nrrd_file');
+            $OtherTimepoints = $this->_getFilesAcrossTimepoints(
+                (int)$FileObj->getParameter('SessionID'),
+                (int)$FileObj->getParameter('AcquisitionProtocolID')
+            );
+
             $file = array(
-                     'FileID'                => $fileRow['FileID'],
-                     'Filename'              => basename($FileObj->getParameter('File')),
-                     'CheckPic'              => "/mri/jiv/get_file.php?file=pic/". $FileObj->getParameter('check_pic_filename'),
-                     'FullFilename'          => $FileObj->getParameter('File'),
-                     'JivFilename'           => basename($FileObj->getParameter('File')),
-                     'JivAddress'            => str_replace('_check.jpg', '', $FileObj->getParameter('check_pic_filename')),
-                     'New'                   => ($FileObj->getParameter('QCFirstChangeTime') == '') ? 1 : 0,
-                     'Pipeline'              => $FileObj->getParameter('Pipeline'),
-                     'OutputType'            => $FileObj->getParameter('OutputType'),
-                     'AcquisitionProtocol'   => $FileObj->getAcquisitionProtocol(),
-                     'CoordinateSpace'       => $FileObj->getParameter('CoordinateSpace'),
-                     'Algorithm'             => $FileObj->getParameter('Algorithm'),
-                     'AcquisitionDate'       => $this->_getDate($FileObj, 'acquisition_date', $acqDate),
-                     'ProcDate'              => $this->_getDate($FileObj, 'processing:processing_date', $procDate),
-                     'FileInsertDate'        => $FileObj->getParameter('InsertTime'),
-                     'SeriesDescription'     => $FileObj->getParameter('series_description'),
-                     'SeriesNumber'          => $FileObj->getParameter('series_number'),
-                     'EchoTime'              => number_format($FileObj->getParameter('echo_time')*1000, 2),
-                     'RepetitionTime'        => number_format($FileObj->getParameter('repetition_time')*1000, 2),
-                     'SliceThickness'        => number_format($FileObj->getParameter('slice_thickness'), 2),
-                     'Time'                  => number_format($FileObj->getParameter('time'), 2),
-                     'Comment'               => $FileObj->getParameter('Comment'),
-                     'ProcessingPipeline'    => $FileObj->getParameter('processing:pipeline'),
-                     'TotalRejected'         => $FileObj->getParameter('processing:total_rejected'),
-                     'SourceFile'            => basename($FileObj->getParameter('processing:sourceFile')),
-                     'Tool'                  => $FileObj->getParameter('Tool'),
-                     'SlicewiseRejected'     => $this->_getRejected($FileObj, 'slicewise', $sliceRej),
-                     'InterlaceRejected'     => $this->_getRejected($FileObj, 'interlace', $laceRej),
-                     'IntergradientRejected' => $this->_getRejected($FileObj, 'intergradient', $interRej),
-                     'Xstep'                 => number_format($FileObj->getParameter('xstep'), 2),
-                     'Ystep'                 => number_format($FileObj->getParameter('ystep'), 2),
-                     'Zstep'                 => number_format($FileObj->getParameter('zstep'), 2),
-		     'Selected'              => $this->_getSelected((int)$FileObj->getParameter('FileID')),
-                     'QCStatus'              => $FileObj->getParameter('QCStatus'),
-                     'QCDate'                => $FileObj->getParameter('QCLastChangeTime'),
-                     'Caveat'                => $FileObj->getParameter('Caveat'),
-                     'SNR'                   => $FileObj->getParameter('SNR'),
-                     'SeriesUID'             => $FileObj->getParameter('SeriesUID'),
-                     'XMLreport'             => $FileObj->getParameter('processing:DTIPrepXmlReport'),
-                     'XMLprotocol'           => $FileObj->getParameter('ProtocolFile'),
-                     'NrrdFile'              => $FileObj->getParameter('processing:nrrd_file'),
-                     'OtherTimepoints'       => $this->_getFilesAcrossTimepoints((int)$FileObj->getParameter('SessionID'), (int)$FileObj->getParameter('AcquisitionProtocolID')),
+                     'FileID'                => $FileID,
+                     'Filename'              => $Filename,
+                     'CheckPic'              => $CheckPic,
+                     'FullFilename'          => $FullFilename,
+                     'JivFilename'           => $JivFilename,
+                     'JivAddress'            => $JivAddress,
+                     'New'                   => $New,
+                     'Pipeline'              => $Pipeline,
+                     'OutputType'            => $OutputType,
+                     'AcquisitionProtocol'   => $AcquisitionProtocol,
+                     'CoordinateSpace'       => $CoordinateSpace,
+                     'Algorithm'             => $Algorithm,
+                     'AcquisitionDate'       => $AcquisitionDate,
+                     'ProcDate'              => $ProcDate,
+                     'FileInsertDate'        => $FileInsertDate,
+                     'SeriesDescription'     => $SeriesDescription,
+                     'SeriesNumber'          => $SeriesNumber,
+                     'EchoTime'              => $EchoTime,
+                     'Comment'               => $Comment,
+                     'ProcessingPipeline'    => $ProcessingPipeline,
+                     'TotalRejected'         => $TotalRejected,
+                     'SourceFile'            => $SourceFile,
+                     'Tool'                  => $Tool,
+                     'SlicewiseRejected'     => $SlicewiseRejected,
+                     'InterlaceRejected'     => $InterlaceRejected,
+                     'IntergradientRejected' => $IntergradientRejected,
+                     'Xstep'                 => $Xstep,
+                     'Ystep'                 => $Ystep,
+                     'Zstep'                 => $Zstep,
+                     'Selected'              => $Selected,
+                     'QCStatus'              => $QCStatus,
+                     'QCDate'                => $QCDate,
+                     'Caveat'                => $Caveat,
+                     'SNR'                   => $SNR,
+                     'SeriesUID'             => $SeriesUID,
+                     'XMLreport'             => $XMLreport,
+                     'XMLprotocol'           => $XMLprotocol,
+                     'NrrdFile'              => $NrrdFile,
+                     'OtherTimepoints'       => $OtherTimepoints,
                     );
-            // @codingStandardsIgnoreEnd
             $this->tpl_data['files'][] = $file;
         }
     }
