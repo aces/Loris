@@ -1,7 +1,8 @@
 import DataIntegrityFlag from './DataIntegrityFlag';
 
 /**
- * Render data_integrity_flag on page load
+ * Entry point of the module.
+ * Renders data_integrity_flag on page load
  */
 $(function() {
   const dataURL = loris.BaseURL + "/data_integrity_flag/?format=json";

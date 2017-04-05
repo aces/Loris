@@ -1,5 +1,12 @@
-/* exported SetFlagForm */
-
+/**
+ * Set Flag Form
+ *
+ * Allows users to update Instrument Status in Data Integrity Flag module
+ *
+ * @author Alex Ilea
+ * @version 1.0.0
+ *
+ * */
 class SetFlagForm extends React.Component {
 
   constructor(props) {
@@ -61,7 +68,7 @@ class SetFlagForm extends React.Component {
 
   render() {
     return (
-      <div className="col-md-8 col-lg-6 col-md-push-1 col-lg-push-2">
+      <div className="col-md-8 col-lg-6">
       <FormElement name="flag_form" onSubmit={this.handleSubmit}>
         <h3 className="text-center">Update Instrument Status</h3><br />
         <SelectElement

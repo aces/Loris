@@ -1,8 +1,15 @@
-/* global ReactDOM */
-
 import SetFlagForm from './SetFlagForm';
 import formatColumn from './columnFormatter';
 
+ /**
+  * Data Integrity Flag
+  *
+  * Main module component rendering the tab pane with Browse and Update tabs
+  *
+  * @author Alex Ilea
+  * @version 1.0.0
+  *
+  * */
 class DataIntegrityFlag extends React.Component {
 
   constructor(props) {
