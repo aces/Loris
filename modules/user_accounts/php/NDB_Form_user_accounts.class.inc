@@ -440,6 +440,14 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
 
         $this->tpl_data['success'] = true;
+
+        if ($this->isCreatingNewUser()) {
+            $baseURL  = $config->getSetting('url');
+            $redirect = $baseURL
+                . "/user_accounts/edit_user/?identifier="
+                . $values['UserID'];
+            header('Location: '. $redirect);
+        }
     }
 
     /**

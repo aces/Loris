@@ -407,7 +407,7 @@ class NDB_Reliability extends NDB_Form
                 FROM examiners
             WHERE centerID IN (:CentID, 6)
                 ORDER BY full_name",
-            array('CentID' => $centerID)
+            array('CentID' => implode(',', $centerID))
         );
 
         $examiners = array('' => '');
