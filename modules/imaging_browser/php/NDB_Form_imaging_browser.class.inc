@@ -52,7 +52,14 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         // allow only to view own site data
         $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
 
-        return ($user->hasPermission('imaging_browser_view_allsites') || ((in_array($timePoint->getData('CenterID'), $user->getData('CenterIDs'))) && $user->hasPermission('imaging_browser_view_site')));// @codingStandardsIgnoreLine
+        return ($user->hasPermission('imaging_browser_view_allsites')
+                || ((in_array(
+                    $timePoint->getData('CenterID'),
+                    $user->getData('CenterIDs')
+                ))
+                     && $user->hasPermission('imaging_browser_view_site')
+                   )
+        );
 
     }
 
@@ -102,12 +109,23 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 $this->tpl_data['show3DViewer'] = true;
             }
 
-            $this->tpl_data['status_options'] = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');// @codingStandardsIgnoreLine
-            $this->tpl_data['caveat_options'] = array ('' => '&nbsp;', true => 'True', false => 'False');// @codingStandardsIgnoreLine
-            $this->tpl_data['has_permission'] = ($this->_hasAccess()) ? true : false;// @codingStandardsIgnoreLine
-            $this->tpl_data['has_qc_permission'] = ($this->_hasQCPerm()) ? true : false;// @codingStandardsIgnoreLine
+            $this->tpl_data['status_options']    = array(
+                                                    ''     => '&nbsp;',
+                                                    'Pass' => 'Pass',
+                                                    'Fail' => 'Fail',
+                                                   );
+            $this->tpl_data['caveat_options']    = array(
+                                                    ''    => '&nbsp;',
+                                                    true  => 'True',
+                                                    false => 'False',
+                                                   );
+            $this->tpl_data['has_permission']    = ($this->_hasAccess()) ?
+                                                 true : false;
+            $this->tpl_data['has_qc_permission'] = ($this->_hasQCPerm()) ?
+                                                    true : false;
             if ($this->_hasQCPerm()) {
-                $this->FormAction = "/imaging_browser/viewSession/?sessionID=" . $this->sessionID;// @codingStandardsIgnoreLine
+                $this->FormAction = "/imaging_browser/viewSession/?sessionID=" .
+                         $this->sessionID;
             }
 
         }
@@ -133,7 +151,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 $extra_where_string .= " AND OutputType='$outputType'";
             } elseif ($outputType=="skull_mask") {
                 $extra_where_string .= " AND (OutputType='$outputType' 
-                    OR  (OutputType='native' AND AcquisitionProtocolID='44') )";// @codingStandardsIgnoreLine
+                    OR  (OutputType='native' AND AcquisitionProtocolID='44') )";
             } else {
                 $extra_where_string .= " AND (OutputType='$outputType' 
                     OR OutputType='linreg')";
@@ -159,8 +177,12 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             if (empty($scannerID)) {
                 $scannerID = $fileRow['ScannerID'];
                 if (!empty($scannerID)) {
-                    $query = "SELECT CONCAT_WS(' ', Manufacturer, Model, Serial_number) FROM mri_scanner WHERE ID=:ScanID";// @codingStandardsIgnoreLine
-                    $this->scanner = $this->DB->pselectOne($query, array('ScanID' => $scannerID));// @codingStandardsIgnoreLine
+                    $query         = "SELECT CONCAT_WS(' ', Manufacturer, Model,".
+                             " Serial_number) FROM mri_scanner WHERE ID=:ScanID";
+                    $this->scanner = $this->DB->pselectOne(
+                        $query,
+                        array('ScanID' => $scannerID)
+                    );
                 }
             }
 
@@ -420,10 +442,12 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                     $insertSet['SeriesUID']   = $file->getParameter(
                         'series_instance_uid'
                     );
-                    $insertSet['TarchiveID'] = $file->getParameter('TarchiveSource');// @codingStandardsIgnoreLine
-                    $insertSet['MincFile'] = $file->getParameter('File');
-                    $insertSet['PatientName'] = $file->getParameter('patient_name');// @codingStandardsIgnoreLine
-                    $insertSet['CandID'] = $candid;
+                    $insertSet['TarchiveID']  = $file->getParameter(
+                        'TarchiveSource'
+                    );
+                    $insertSet['MincFile']    = $file->getParameter('File');
+                    $insertSet['PatientName'] = $file->getParameter('patient_name');
+                    $insertSet['CandID']      = $candid;
                     $insertSet['Visit_label'] = $visit_label;
                     $insertSet['CheckID']     = null;
                     $insertSet['Severity']    = 'warning';
@@ -455,7 +479,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                         WHERE FileID=:FID ",
                         $params
                     ) > 0) {
-                        $success = $this->DB->delete('files_qcstatus', $updateWhere);// @codingStandardsIgnoreLine
+                        $success = $this->DB->delete('files_qcstatus', $updateWhere);
                     }
                 } else {
                     if ($this->DB->pselectOne(
@@ -465,8 +489,9 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                         $params
                     ) > 0) {
                         $updateSet = array(
-                            'Selected'=>$curSelected, 'QCLastChangeTime'=>time()// @codingStandardsIgnoreLine
-                        );
+                                      'Selected'         => $curSelected,
+                                      'QCLastChangeTime' => time(),
+                                     );
                         $success   = $this->DB->update(
                             'files_qcstatus',
                             $updateSet,
@@ -478,7 +503,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                                       'Selected'          => $curSelected,
                                       'QCFirstChangeTime' => time(),
                                      );
-                        $success = $this->DB->insert('files_qcstatus', $insertSet);// @codingStandardsIgnoreLine
+                        $success   = $this->DB->insert('files_qcstatus', $insertSet);
                     }
                 }
             }
@@ -493,8 +518,8 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     {
         if (!empty($_POST['visit_status'])) {
             $save_visit_status
-                = $_POST['visit_status'] == 'Unrated' ? '' : $_POST['visit_status'];// @codingStandardsIgnoreLine
-            $params = array('SID' => $this->sessionID);
+                = $_POST['visit_status'] == 'Unrated' ? '' : $_POST['visit_status'];
+            $params            = array('SID' => $this->sessionID);
             $old_visit_status  = $this->DB->pselectOne(
                 "SELECT MRIQCStatus 
                 FROM session 
@@ -577,12 +602,13 @@ class NDB_Form_Imaging_Browser extends NDB_Form
      *
      * @return string of FileIDs, comma separated
      */
-    function _getFilesAcrossTimepoints($initialFileID, $initialFileAcquisitionID){// @codingStandardsIgnoreLine
+    function _getFilesAcrossTimepoints($initialFileID, $initialFileAcquisitionID)
+    {
 
         $selectResults = $this->DB->pselect(
             "SELECT FileID FROM files ".
             "WHERE AcquisitionProtocolID =:initialFileAcquisitionID ".
-            "AND SessionID in (SELECT s2.ID FROM session s1 RIGHT JOIN session s2 ".// @codingStandardsIgnoreLine
+            "AND SessionID in (SELECT s2.ID FROM session s1 RIGHT JOIN session s2 ".
             "ON s1.CandID = s2.CandID WHERE s1.ID =:initialFileID)",
             array(
              'initialFileAcquisitionID' => $initialFileAcquisitionID,
@@ -608,7 +634,8 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     function _getSelected($FileID)
     {
 
-        $selected = $this->DB->pselectOne("SELECT Selected FROM files_qcstatus ".// @codingStandardsIgnoreLine
+        $selected = $this->DB->pselectOne(
+            "SELECT Selected FROM files_qcstatus ".
             "WHERE FileID =:FileID",
             array('FileID' => $FileID)
         );
@@ -650,8 +677,8 @@ class NDB_Form_Imaging_Browser extends NDB_Form
 
         $subjectData['sessionID']       = $_REQUEST['sessionID'];
         $subjectData['SubprojectID']    = $timePoint->getSubprojectID();
-        $subjectData['SubprojectTitle'] = $timePoint->getData('SubprojectTitle');// @codingStandardsIgnoreLine
-        $subjectData['visitLabel'] = $timePoint->getVisitLabel();
+        $subjectData['SubprojectTitle'] = $timePoint->getData('SubprojectTitle');
+        $subjectData['visitLabel']      = $timePoint->getVisitLabel();
         $subjectData['visitNo']         = $timePoint->getVisitNo();
         $subjectData['site']            = $timePoint->getPSC();
         $qcstatus = $this->DB->pselectRow(
@@ -702,7 +729,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
      */
     function getControlPanel()
     {
-        $controlPanel = new Imaging_Session_ControlPanel($_REQUEST['sessionID']);// @codingStandardsIgnoreLine
+        $controlPanel = new Imaging_Session_ControlPanel($_REQUEST['sessionID']);
         return $controlPanel->display();
     }
     /**
@@ -719,8 +746,8 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             $depends = array_merge(
                 $depends,
                 array(
-                    $baseurl . "/imaging_browser/js/jiv_and_imaging_browser.js",// @codingStandardsIgnoreLine
-                    $baseurl . "/imaging_browser/js/ImagePanel.js"
+                 $baseurl . "/imaging_browser/js/jiv_and_imaging_browser.js",
+                 $baseurl . "/imaging_browser/js/ImagePanel.js",
                 )
             );
 
