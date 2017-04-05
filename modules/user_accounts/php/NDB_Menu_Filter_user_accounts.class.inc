@@ -59,7 +59,9 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
 
         // set the class variables
         $this->columns      = array(
-                               "COALESCE(psc.Name,'Not Assigned') AS PSC",
+                               "COALESCE(GROUP_CONCAT(
+                                psc.Name SEPARATOR '; '),'Not Assigned'
+                                ) AS Sites",
                                'users.UserID AS Username',
                                'Real_name AS Full_name',
                                'Email',
@@ -68,6 +70,7 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
                               );
         $this->query        = $query;
         $this->order_by     = 'Username';
+        $this->group_by     = 'users.ID';
         $this->validFilters = array(
                                'user_psc_rel.CenterID',
                                'users.UserID',

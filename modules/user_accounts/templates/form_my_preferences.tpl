@@ -48,10 +48,10 @@
     </div>
     <div class="row form-group">
         <label class="col-sm-2">
-            {$form.Password_md5.label}
+            {$form.Password_hash.label}
         </label>
         <div class="col-sm-10">
-            {$form.Password_md5.html}
+            {$form.Password_hash.html}
         </div>
     </div>
     <div class="row form-group">
