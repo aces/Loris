@@ -986,11 +986,11 @@ class Database
         $dateTime = date("j-M-Y G:i:s", time());
         $output   = "[$dateTime] [$this->_databaseName]: $query\n";
 
-        if (isset($_SESSION['file_sql_queries'])) {
-            $tempFile = $_SESSION['file_sql_queries'];
+        if (isset($_GLOBALS['file_sql_queries'])) {
+            $tempFile = $_GLOBALS['file_sql_queries'];
         } else {
             $tempFile = tempnam("/tmp", "SQL");
-            $_SESSION['file_sql_queries'] = $tempFile;
+            $_GLOBALS['file_sql_queries'] = $tempFile;
         }
 
         $handle = fopen($tempFile, "a");
