@@ -122,7 +122,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                     )",
                     array('hash' => $key)
                 );
-                //echo "ID[2] = ".$ID_mri_violations_log."\n";
+
                 if (!empty($ID_mri_violations_log)) {
                     $newlyResolved['TypeTable'] = 'mri_violations_log';
                     $newlyResolved['ExtID']     = $ID_mri_violations_log;
@@ -138,7 +138,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                     )",
                     array('hash' => $key)
                 );
-                //echo "ID[3] = ".$ID_MRICandidateErrors."\n";
+
                 if (!empty($ID_MRICandidateErrors)) {
                     $newlyResolved['TypeTable'] = 'MRICandidateErrors';
                     $newlyResolved['ExtID']     = $ID_MRICandidateErrors;
@@ -368,30 +368,34 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
     function _setFilterForm()
     {
         // create user object
-        $user           =& User::singleton();
-        $config         =& NDB_Config::singleton();
-        $study          = $config->getSetting('study');
-        $minYear        = $study['startYear'] - $study['ageMax'];
-        $maxYear        = $study['endYear'] - $study['ageMin'];
-        $dateOptions    = array(
-                           'language'       => 'en',
-                           'format'         => 'YMd',
-                           'addEmptyOption' => true,
-                           'minYear'        => $minYear,
-                           'maxYear'        => $maxYear,
-                          );
-        $problemOption1 = '';
-        $problemOption2 = 'CandID and PSCID do not match database';
-        $problemOption3 = 'Could not identify scan type';
-        $problemOption4 = 'Protocol Violation';
-        $problemOption5 = 'Visit label does not exist';
-        $problemOptions = array(
-                           $problemOption1 => 'Any',
-                           $problemOption2 => 'Candidate Mismatch',
-                           $problemOption3 => 'Could not identify scan type',
-                           $problemOption4 => 'MRI Protocol Check violation',
-                           $problemOption5 => 'Visit label does not exist',
-                          );
+        $user        =& User::singleton();
+        $config      =& NDB_Config::singleton();
+        $db          =& Database::singleton();
+        $study       = $config->getSetting('study');
+        $minYear     = $study['startYear'] - $study['ageMax'];
+        $maxYear     = $study['endYear'] - $study['ageMin'];
+        $dateOptions = array(
+                        'language'       => 'en',
+                        'format'         => 'YMd',
+                        'addEmptyOption' => true,
+                        'minYear'        => $minYear,
+                        'maxYear'        => $maxYear,
+                       );
+
+        $problemOptions = ['' => 'Any'];
+
+        // Build a list of existing problem types based on data in db
+        $problemTypes = $db->pselect(
+            "SELECT DISTINCT MRICandidateErrors.Reason FROM MRICandidateErrors
+            UNION 
+            SELECT DISTINCT 'Could not identify scan type' 
+            FROM mri_protocol_violated_scans
+            UNION
+            SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log"
+        );
+        foreach ($problemTypes as $problem) {
+            $problemOptions[$problem['Reason']] = $problem['Reason'];
+        }
 
         $this->addBasicText('PatientName', 'Patient Name');
         $this->addBasicText('Description', 'Series Description or Scan Type');
@@ -410,7 +414,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
 
         // Subproject
         $list_of_subprojects = array('' => 'Any') +
-                                    Utility::getSubprojectList();
+            Utility::getSubprojectList();
         $this->addSelect(
             'Subproject',
             'Subproject',
