@@ -959,7 +959,7 @@ class Database
      * Writes all database queries for HTTP request to a single temporary file,
      * if showDatabaseQueries defined in config file.
      *
-     * Note: Saves reference to the file to SESSION. SESSION is used in
+     * Note: Saves reference to the file in $_GLOBALS. $_GLOBALS is used in
      * main.php which reads file contents and prints them to the Loris page.
      * Then closes and deletes the file.
      *
