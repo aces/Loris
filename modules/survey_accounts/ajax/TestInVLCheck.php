@@ -31,28 +31,26 @@ $client->initialize();
 $DB = Database::singleton();
 
 $test_name = $_REQUEST['test_name'];
-$vl = $_REQUEST['VL'];
+$vl        = $_REQUEST['VL'];
 
 $result = $DB->pselect(
     "SELECT * FROM test_battery ".
     "WHERE test_name=:TN AND Visit_label=:VL",
     array(
      "TN" => $test_name,
-     "VL" => $vl
+     "VL" => $vl,
     )
 );
 
 if (!$result) {
-    $full_name = $DB->pselectOne(
+    $full_name   = $DB->pselectOne(
         "SELECT Full_name FROM test_names ".
         "WHERE Test_name=:TN",
         array("TN" => $test_name)
     );
     $warning_msg = "WARNING: $full_name is not normally administered at visit $vl.";
     echo json_encode(
-        array(
-         "warning_msg" => $warning_msg
-        )
+        array("warning_msg" => $warning_msg)
     );
     exit;
 }
