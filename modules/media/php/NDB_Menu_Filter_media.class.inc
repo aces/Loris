@@ -72,13 +72,12 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $user =& User::singleton();
         $db   = Database::singleton();
 
-        $siteList = array();
+        $siteList  = array();
         $visitList = Utility::getVisitList();
-
 
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
-            $siteList  = Utility::getSiteList(false);
+            $siteList = Utility::getSiteList(false);
             // Index sites using their names (used to filter react tables)
             foreach ($siteList as $key => $site) {
                 unset($siteList[$key]);
