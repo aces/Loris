@@ -240,7 +240,6 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                                'Pending'       => 'pending',
                                'Scan_type'     => 'f.AcquisitionProtocolID',
                               );
-
         $this->EqualityFilters = array('f.AcquisitionProtocolID');
         $this->searchKeyword   = array();
 
@@ -288,6 +287,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         }
 
         $DB = Database::singleton();
+        $allAr = array('' => All);
 
         $this->addBasicText(
             'pscid',
@@ -346,7 +346,6 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             )
         );
 
-        $allAr = array('' => All);
         //query to get scan types that exist for the project
         $types_q    = $DB->pselect(
             "SELECT ID, Scan_type FROM mri_scan_type mri
@@ -358,7 +357,6 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             $type = $row['Scan_type'];
             $scan_types[$row['ID']] = $type;
         }
-
         $this->addSelect('Scan_type', 'Sequence Type', $scan_types);
 
         $outputTypes = $DB->pselect(
