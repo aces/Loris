@@ -230,16 +230,16 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                                'f.AcquisitionProtocolID',
                               );
 
-        $this->formToFilter = array(
-                               'pscid'         => 'c.PSCID',
-                               'VL'            => 's.Visit_label',
-                               'DCCID'         => 'c.CandID',
-                               'ProjectID'     => 'c.ProjectID',
-                               'SiteID'        => 's.CenterID',
-                               'VisitQCStatus' => 's.MRIQCStatus',
-                               'Pending'       => 'pending',
-                               'Scan_type'     => 'f.AcquisitionProtocolID',
-                              );
+        $this->formToFilter    = array(
+                                  'pscid'         => 'c.PSCID',
+                                  'VL'            => 's.Visit_label',
+                                  'DCCID'         => 'c.CandID',
+                                  'ProjectID'     => 'c.ProjectID',
+                                  'SiteID'        => 's.CenterID',
+                                  'VisitQCStatus' => 's.MRIQCStatus',
+                                  'Pending'       => 'pending',
+                                  'Scan_type'     => 'f.AcquisitionProtocolID',
+                                 );
         $this->EqualityFilters = array('f.AcquisitionProtocolID');
         $this->searchKeyword   = array();
 
@@ -286,7 +286,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             }
         }
 
-        $DB = Database::singleton();
+        $DB    = Database::singleton();
         $allAr = array('' => All);
 
         $this->addBasicText(
