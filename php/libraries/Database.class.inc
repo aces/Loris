@@ -959,7 +959,7 @@ class Database
      * Writes all database queries for HTTP request to a single temporary file,
      * if showDatabaseQueries defined in config file.
      *
-     * Note: Saves reference to the file in $_GLOBALS. $_GLOBALS is used in
+     * Note: Saves reference to the file in $_REQUEST. $_REQUEST is used in
      * main.php which reads file contents and prints them to the Loris page.
      * Then closes and deletes the file.
      *
@@ -979,18 +979,18 @@ class Database
             $query = str_replace(array_keys($params), array_values($params), $query);
         }
         // Remove multispaces, line breaks to show query inline
-        $query = str_replace(["\r", "\n", "\t"], " ", $query);
+        $query = str_replace(["\r", "\n", "\t"], " ", trim($query));
         while (strpos($query, "  ") !== false) {
             $query = str_replace("  ", " ", $query);
         }
         $dateTime = date("j-M-Y G:i:s", time());
         $output   = "[$dateTime] [$this->_databaseName]: $query\n";
 
-        if (isset($_GLOBALS['file_sql_queries'])) {
-            $tempFile = $_GLOBALS['file_sql_queries'];
+        if (isset($_REQUEST['file_sql_queries'])) {
+            $tempFile = $_REQUEST['file_sql_queries'];
         } else {
             $tempFile = tempnam("/tmp", "SQL");
-            $_GLOBALS['file_sql_queries'] = $tempFile;
+            $_REQUEST['file_sql_queries'] = $tempFile;
         }
 
         $handle = fopen($tempFile, "a");
