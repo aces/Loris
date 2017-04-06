@@ -13,7 +13,6 @@
 #       Some changes to verify in this test/config.xml file:
 #       *  Database connection credentials: specify credentials to the test DB which you create in step 1
 #       *  Set sandbox mode to 1: <sandbox>1</sandbox>
-#       *  Set SyncAccounts to false: <SyncAccounts>false</SyncAccounts>
 
 host="127.0.0.1"
 database="LorisTest"
