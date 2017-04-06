@@ -526,8 +526,8 @@ class NDB_Config
      *                        be passed. It's used to build the tree recursively
      *                        from the LorisMenu table.
      *
-     * @return An array of Label, Visible, Link, and ID to build the menu
-     *         for the currently logged in user
+     * @return array          Label, Visible, Link, and ID to build the menu
+     *                        for the currently logged in user
      */
     static function getMenuTabs($parent = null)
     {
@@ -570,8 +570,11 @@ class NDB_Config
             $nextLevel = NDB_Config::getMenuTabs($thisRow['ID']);
 
             if (!empty($nextLevel)) {
-                if (NDB_Config::checkMenuPermission($nextLevel[0]['ID'])) {
-                    $thisRow['subtabs'] = $nextLevel;
+                foreach ($nextLevel as $k=>$info) {
+                    if ($info['Visible']) {
+                        $thisRow['subtabs'] = $nextLevel;
+                        break;
+                    }
                 }
             }
         }
