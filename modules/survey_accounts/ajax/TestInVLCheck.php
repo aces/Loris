@@ -43,7 +43,12 @@ $result = $DB->pselect(
 );
 
 if (!$result) {
-    $warning_msg = "WARNING: $test_name is not normally administered at visit $vl.";
+    $full_name = $DB->pselectOne(
+        "SELECT Full_name FROM test_names ".
+        "WHERE Test_name=:TN",
+        array("TN" => $test_name)
+    );
+    $warning_msg = "WARNING: $full_name is not normally administered at visit $vl.";
     echo json_encode(
         array(
          "warning_msg" => $warning_msg
