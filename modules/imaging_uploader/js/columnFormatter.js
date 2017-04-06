@@ -63,6 +63,13 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'Tarchive Info') {
+    if (cell === null || cell === "0") {
+      return React.createElement(
+        'td',
+        { style: cellStyle },
+        'No Metadata'
+      );
+    }
     var url = loris.BaseURL + '/dicom_archive/viewDetails/?tarchiveID=' + cell;
     return React.createElement(
       'td',

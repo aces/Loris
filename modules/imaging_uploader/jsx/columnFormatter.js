@@ -56,6 +56,11 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'Tarchive Info') {
+    if (cell === null || cell === "0") {
+      return (
+        <td style={cellStyle}>No Metadata</td>
+      );
+    }
     let url = loris.BaseURL + '/dicom_archive/viewDetails/?tarchiveID=' + cell;
     return (
       <td style={cellStyle}>
