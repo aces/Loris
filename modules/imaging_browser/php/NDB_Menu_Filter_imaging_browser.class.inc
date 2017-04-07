@@ -123,7 +123,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $user   =& User::singleton();
         $DB     = Database::singleton();
         if (!$user->hasPermission('imaging_browser_view_allsites')) {
-            $site_arr     = implode(",", $user->getCenterID());
+            $site_arr     = implode(",", $user->getCenterIDs());
             $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
         }
 

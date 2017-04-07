@@ -208,21 +208,22 @@ class User extends UserPermissions
     }
 
     /**
-     * Get the user's site's name
+     * Get the user's sites' names, concatenated with
+     * a semi-colon if the User is at more than one site
      *
      * @return string
      */
-    function getSiteName()
+    function getSiteNames()
     {
         return $this->userInfo['Sites'];
     }
 
     /**
-     * Get the user's site's ID number
+     * Get the user's sites' ID numbers
      *
      * @return array
      */
-    function getCenterID()
+    function getCenterIDs()
     {
         return $this->userInfo['CenterIDs'];
     }

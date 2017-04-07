@@ -50,7 +50,7 @@ class NDB_Form_Training extends NDB_Form
 
         $user         = User::singleton();
         $userFullName = $user->getFullname();
-        $userSite     = $user->getCenterID();
+        $userSite     = $user->getCenterIDs();
 
         $isExaminer = $this->isExaminer($userFullName, $userSite);
 
@@ -148,7 +148,7 @@ class NDB_Form_Training extends NDB_Form
     {
         $user         = User::singleton();
         $userFullName = $user->getFullname();
-        $userCenter   = $user->getCenterID();
+        $userCenter   = $user->getCenterIDs();
 
         $DB = Database::singleton();
         $certificationStatus = $DB->pselectOne(
