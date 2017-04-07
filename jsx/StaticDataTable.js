@@ -264,21 +264,20 @@ var StaticDataTable = React.createClass({
     var index = [];
     var that = this;
 
-    for (var i = 0; i < this.props.Data.length; i += 1) {
-      var val = this.props.Data[i][this.state.SortColumn];
+    for (let i = 0; i < this.props.Data.length; i += 1) {
 
-      if (parseInt(val, 10) === val) {
-        val = parseInt(val, 10);
-      } else if (parseFloat(val) === val) {
-        val = parseFloat(val);
-      } else if (val === '.') {
-        val = null;
-      }
+      let val = this.props.Data[i][this.state.SortColumn] || undefined;
+      const isString = (typeof val === 'string' || val instanceof String);
 
-      // if string - convert to lowercase to make sort algorithm work
-      var isString = (typeof val === 'string' || val instanceof String);
-      if (val !== undefined && isString) {
-        val = val.toLowerCase();
+      if (isString) {
+        if (isNaN(val)) {
+          // if not a number convert to lowercase
+          val = val.toLowerCase();
+        } else {
+          val = Number(val);
+        }
+      } else {
+        val = undefined;
       }
 
       if (this.props.RowNameMap) {
