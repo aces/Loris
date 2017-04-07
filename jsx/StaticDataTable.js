@@ -265,7 +265,6 @@ var StaticDataTable = React.createClass({
     var that = this;
 
     for (let i = 0; i < this.props.Data.length; i += 1) {
-
       let val = this.props.Data[i][this.state.SortColumn] || undefined;
       const isString = (typeof val === 'string' || val instanceof String);
 
