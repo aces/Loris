@@ -53,7 +53,7 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
             LEFT JOIN psc ON (user_psc_rel.CenterID=psc.CenterID)
             WHERE 1=1";
         if (!$user->hasPermission('user_accounts_multisite')) {
-            $site_arr     = implode(",", $user->getCenterID());
+            $site_arr     = implode(",", $user->getCenterIDs());
             $this->query .= " AND user_psc_rel.CenterID IN (" . $site_arr . ")";
         }
 

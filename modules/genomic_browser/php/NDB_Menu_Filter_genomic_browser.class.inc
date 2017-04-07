@@ -125,7 +125,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
         $user = User::singleton();
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
             // allow only to view own site data
-            $site_arr     = implode(",", $user->getCenterID());
+            $site_arr     = implode(",", $user->getCenterIDs());
             $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
         }
 

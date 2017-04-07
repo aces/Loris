@@ -9,17 +9,17 @@
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>{$page_title}</title>
-  <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/css/public_layout.css">
-  <link type="image/x-icon" rel="icon" href="/images/favicon.ico">
+  <link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{$baseurl}/css/public_layout.css">
+  <link type="image/x-icon" rel="icon" href="{$baseurl}/images/favicon.ico">
 </head>
 <body>
   <header class="header">
     <div class="container">
       <div class="flex-wrapper">
         <div class="loris-logo">
-          <a href="/">
-            <img src="/images/LORIS_logo_white.svg" class="loris-logo" alt="Loris Logo"/>
+          <a href="{$baseurl}">
+            <img src="{$baseurl}/images/LORIS_logo_white.svg" class="loris-logo" alt="Loris Logo"/>
           </a>
         </div>
         <div class="study-title hidden-xs">
@@ -27,7 +27,7 @@
         </div>
         <div class="github-logo">
           <a href="https://github.com/aces/Loris" target="_blank">
-            <img src="/images/GitHub-Mark-Light-64px.png" alt="Github"/>
+            <img src="{$baseurl}/images/GitHub-Mark-Light-64px.png" alt="Github"/>
           </a>
         </div>
       </div>
@@ -56,7 +56,7 @@
     </a>
     by <a href="http://mcin-cnim.ca" target="_blank">MCIN</a>
   </footer>
-  <script src="/js/modernizr/modernizr.min.js"/>
+  <script src="{$baseurl}/js/modernizr/modernizr.min.js"/>
   <script>
     if (!Modernizr.webgl) {
       alert("Please download the latest version of Google Chrome of Mozilla Firefox in order to use Loris!");
