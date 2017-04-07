@@ -208,7 +208,8 @@ class User extends UserPermissions
     }
 
     /**
-     * Get the user's sites' names
+     * Get the user's sites' names, concatenated with
+     * a semi-colon if the User is at more than one site
      *
      * @return string
      */
