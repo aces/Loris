@@ -49,7 +49,8 @@ var config = {
     './modules/examiner/js/columnFormatter.js': './modules/examiner/jsx/columnFormatter.js',
     './modules/final_radiological_review/js/columnFormatter.js': './modules/final_radiological_review/jsx/columnFormatter.js',
     './modules/help_editor/js/columnFormatter.js': './modules/help_editor/jsx/columnFormatter.js',
-    './modules/brainbrowser/js/Brainbrowser.js': './modules/brainbrowser/jsx/Brainbrowser.js'
+    './modules/brainbrowser/js/Brainbrowser.js': './modules/brainbrowser/jsx/Brainbrowser.js',
+    './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js'
   },
   output: {
     path: './',
