@@ -1,0 +1,50 @@
+<?php
+    class AckAffiliation {
+        /*
+         * Fetches the id for the given title.
+         *
+         * @param string $title The title
+         *
+         * @return string|null The numeric `id` if exists
+         */
+        public static function FetchId ($title) {
+            //pselectOne() returns a string if it exists,
+            //Empty array, otherwise.
+            $result = Database::singleton()->pselectOne("
+                SELECT
+                    id
+                FROM
+                    ack_affiliation
+                WHERE
+                    title = :title
+            ", array(
+                "title"=>$title
+            ));
+            return is_string($result) ?
+                $result : null;
+        }
+        /*
+         * Inserts the title if it doesn't exist, fetches the id if it does
+         *
+         * @param string $title The title
+         *
+         * @return string|null The numeric `id` on success
+         */
+        public static function InsertIfNotExists ($title) {
+            $stmt = Database::singleton()->prepare("
+                INSERT IGNORE INTO
+                    ack_affiliation (title)
+                VALUES (
+                    :title
+                )
+            ");
+            if ($stmt->execute(array(
+                "title"=>$title
+            ))) {
+                return FetchId($title);
+            } else {
+                return null;
+            }
+        }
+    }
+?>
