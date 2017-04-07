@@ -73,6 +73,11 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             $all_scan_types[$row['ID']] = $type;
         }
 
+        // Get the intersection between all the scan types and those
+        // that are desired to go into imaging browser table, based on 
+        // array values rather than keys (hence the array_flip), then flip
+        // the resulting array back to revert it to a key/value (i.e.
+        // acquisition protocol ID/scan type combination.
         $scan_id_types =array_flip(
             array_intersect_key(
                 array_flip($all_scan_types),
@@ -115,16 +120,16 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             JOIN files f ON (f.SessionID=s.ID) 
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
             JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
-            LEFT JOIN (SELECT files.SessionID, MIN(QCLastChangeTime) 
-            as QCLastChangeTime FROM files 
-            LEFT JOIN files_qcstatus USING (FileID) 
+            LEFT JOIN (SELECT files.SessionID, MIN(QCLastChangeTime)
+            as QCLastChangeTime FROM files
+            LEFT JOIN files_qcstatus USING (FileID)
             WHERE OutputType='native' AND AcquisitionProtocolID 
             NOT IN (1, 2, 3, 52) GROUP BY files.SessionID) nd 
             ON (nd.SessionID=f.SessionID) ";
 
-        $left_join = "";
+        $left_joins = "";
         foreach ($case_desc as $key => $value) {
-            $left_join .= "
+            $left_joins .= "
             LEFT JOIN (SELECT files.SessionID, 
             MIN(files_qcstatus.QCStatus+0) as " . $DB->quote($qc[$key]) . " 
             FROM files 
@@ -142,7 +147,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             f.FileType='mnc' AND 
             f.AcquisitionProtocolID not in (1, 2, 3, 52)";
 
-        $this->query .= $left_join;
+        $this->query .= $left_joins;
         $this->query .= $where;
 
         $config =& NDB_Config::singleton();

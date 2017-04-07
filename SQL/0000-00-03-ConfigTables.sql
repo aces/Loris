@@ -17,7 +17,7 @@ CREATE TABLE `ConfigSettings` (
     `Description` varchar(255) DEFAULT NULL,
     `Visible` tinyint(1) DEFAULT '0',
     `AllowMultiple` tinyint(1) DEFAULT '0',
-    `DataType` ENUM('text', 'boolean', 'email', 'instrument', 'textarea') DEFAULT NULL,
+    `DataType` ENUM('text', 'boolean', 'email', 'instrument', 'textarea', 'scan_type') DEFAULT NULL,
     `Parent` int(11) DEFAULT NULL,
     `Label` varchar(255) DEFAULT NULL,
     `OrderNumber` int(11) DEFAULT NULL,
