@@ -574,7 +574,6 @@ class NDB_Config
             if (!empty($nextLevel)) {
                 $thisRow['subtabs'] = $nextLevel;
             }
-            print_r($thisRow);
         }
 
         return $thisLevel;
