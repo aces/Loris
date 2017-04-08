@@ -14,8 +14,6 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-require_once "NDB_Notifier.class.inc";
-
 $user =& User::singleton();
 if (!$user->hasPermission('media_write')) {
     header("HTTP/1.1 403 Forbidden");

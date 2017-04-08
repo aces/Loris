@@ -9,8 +9,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-require_once "Email.class.inc";
-
 /**
  * A class allowing to issue notifications using several services including sms,
  * phone, email and loris in-site notifications.
