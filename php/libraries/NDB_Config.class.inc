@@ -539,7 +539,8 @@ class NDB_Config
                        Link,
                        ID
                   FROM LorisMenu
-                  WHERE Parent IS NULL ORDER BY OrderNumber",
+                  WHERE Parent IS NULL AND (Visible = 'true' OR Visible IS NULL)
+                  ORDER BY OrderNumber",
                 array()
             );
         } else {
@@ -549,7 +550,8 @@ class NDB_Config
                         Link,
                         ID
                   FROM LorisMenu
-                  WHERE Parent=:ParentID ORDER BY OrderNumber",
+                  WHERE Parent=:ParentID AND (Visible = 'true' OR Visible IS NULL)
+                  ORDER BY OrderNumber",
                 array('ParentID' => $parent)
             );
 
@@ -570,13 +572,9 @@ class NDB_Config
             $nextLevel = NDB_Config::getMenuTabs($thisRow['ID']);
 
             if (!empty($nextLevel)) {
-                foreach ($nextLevel as $k=>$info) {
-                    if ($info['Visible']) {
-                        $thisRow['subtabs'] = $nextLevel;
-                        break;
-                    }
-                }
+                $thisRow['subtabs'] = $nextLevel;
             }
+            print_r($thisRow);
         }
 
         return $thisLevel;
