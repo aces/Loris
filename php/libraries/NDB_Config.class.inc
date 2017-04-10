@@ -36,7 +36,7 @@ class NDB_Config
      *
      * @access private
      */
-    static var $_settings = array();
+    var $_settings = array();
 
     /**
      * The merged array of study and site-specific settings
@@ -94,7 +94,7 @@ class NDB_Config
                   // Load all includes found in the config
             foreach (Utility::asArray($config->_settings['include']) as $k=>$path) {
                 if (file_exists($path)) {
-                    $config->load($path);
+                    print_r("dddddddddddddd");
                 }
             }
 
@@ -118,7 +118,7 @@ class NDB_Config
                 "Could not load Loris config file $configFile"
             );
         }
-
+        
         $this->_settings += NDB_Config::convertToArray($newroot);
     }
 
