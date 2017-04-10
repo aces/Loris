@@ -19,7 +19,30 @@ class Row extends React.Component {
         return result;
     }
     onEditClick () {
+        const data = this.state.data;
         
+        showAcknowledgementForm({
+            method:"PUT",
+            action:"/acknowledgements/ajax/update.php?id="+encodeURIComponent(data.id),
+            submit_text: "Edit",
+            title: "Edit Acknowledgement",
+            data: data,
+            callback: function () {
+                $.ajax({
+                    method:"GET",
+                    url:"/acknowledgements/ajax/fetch.php",
+                    data: {
+                        id:data.id
+                    },
+                    dataType: "json",
+                    success: function (new_data) {
+                        this.setState({
+                            data:new_data
+                        });
+                    }.bind(this)
+                });
+            }.bind(this)
+        });
     }
     onDeleteClick () {
         const data = this.state.data;
@@ -41,7 +64,7 @@ class Row extends React.Component {
         let   in_study_at_present = "Unknown";
                 
         if (data.in_study_at_present != null) {
-            in_study_at_present = data.in_study_at_present ?
+            in_study_at_present = (data.in_study_at_present === "1") ?
                 "Yes" : "No";
         }
         return (

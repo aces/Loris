@@ -272,8 +272,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
         $this->addBasicDate('end_date', 'End Date:', $dateOptions);
         $this->addSelect('present', 'Present?', $present);
 
-        $this->tpl_data["min_year"] = $startYear;
-        $this->tpl_data["max_year"] = $endYear;
+        $this->tpl_data["valid_date_range"] = Acknowledgement::FetchValidDateRange();
         
         return true;
     }

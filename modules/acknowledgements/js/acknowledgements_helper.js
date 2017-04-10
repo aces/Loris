@@ -187,6 +187,10 @@ function showAcknowledgementForm (args) {
     }
     $("#ack-in-study-at-present").val(in_study_at_present).prop("disabled", disabled);
     
+    
+    $(".acknowledgement-form-error")
+        .empty()
+    
     $("#acknowledgement-form-dialog").modal();
 }
 function loadOptions (select_id, url, center_id) {
@@ -266,13 +270,24 @@ function loadAcknowledgementForm (center_id) {
             data: form_data,
             dataType: "json",
             success: function (data) {
-                console.log("Success");
+                console.log(data);
                 if (args.callback) {
-                    args.callback();
+                    args.callback(data);
                 }
+                $("#acknowledgement-form-dialog").modal("hide");
             },
             error: function (error) {
                 console.log(error);
+                window.dispatchEvent(new CustomEvent("acknowledgement-error", {
+                    detail:{
+                        args:args,
+                        form_data:form_data,
+                        error:error
+                    }
+                }));
+                $(".acknowledgement-form-error")
+                    .empty()
+                    .append(document.createTextNode(error.responseJSON.error));
             }
         });
     });
@@ -281,111 +296,4 @@ function setRowValues (tr, data) {
     const arr = $(tr).find("td");
     $(arr[0]).empty().append(document.createTextNode(data.full_name));
     $(arr[1]).empty().append(document.createTextNode(data.citation_name));
-}/*
-$(document).ready(function () {
-    const qs = QueryString.get();
-    if (!qs.center_id) {
-        return;
-    }
-    $("#btn-add-acknowledgement").click(function () {
-        showAcknowledgementForm({
-            method:"POST",
-            action:"/acknowledgements/ajax/insert.php",
-            submit_text: "Add",
-            title: "Add Acknowledgement",
-            data: {
-                center_id: qs.center_id
-            }
-        });
-    }).css("display", "");
-    loadAcknowledgementForm(qs.center_id);
-    $.ajax({
-        type: "GET",
-        url : "/acknowledgements/ajax/fetch_all_of_center.php",
-        data: qs,
-        dataType: "json",
-        success: function (data) {
-            console.log(data);
-            for (i in data.arr) {
-                const cur = data.arr[i];
-                let   in_study_at_present = "Unknown";
-                
-                if (cur.in_study_at_present != null) {
-                    in_study_at_present = cur.in_study_at_present ?
-                        "Yes" : "No";
-                }
-                
-                const tr = $("<tr>");
-                tr
-                    .append($("<td>", {
-                        text:cur.full_name
-                    }))
-                    .append($("<td>", {
-                        text:cur.citation_name
-                    }))
-                    .append($("<td>", {
-                        text:joinOnKey(cur.affiliation_arr, "title", ", ")
-                    }))
-                    .append($("<td>", {
-                        text:joinOnKey(cur.degree_arr, "title", ", ")
-                    }))
-                    .append($("<td>", {
-                        text:joinOnKey(cur.role_arr, "title", ", ")
-                    }))
-                    .append($("<td>", {
-                        text:cur.start_date
-                    }))
-                    .append($("<td>", {
-                        text:cur.end_date
-                    }))
-                    .append($("<td>", {
-                        text:in_study_at_present
-                    }))
-                    .append($("<td>")
-                        .append(
-                            $("<a>", {
-                                text:"Edit"
-                            })
-                                .attr("href", "#/")
-                                .click(function () {
-                                    showAcknowledgementForm({
-                                        method:"PUT",
-                                        action:"/acknowledgements/ajax/update.php?id="+encodeURIComponent(this.id),
-                                        submit_text: "Edit",
-                                        title: "Edit Acknowledgement",
-                                        data: this,
-                                        callback: function (data) {
-                                            setRowValues(tr, data);
-                                        }
-                                    });
-                                }.bind(cur))
-                        )
-                    )
-                    .append($("<td>")
-                        .append(
-                            $("<a>", {
-                                text:"Delete"
-                            })
-                                .attr("href", "#/")
-                                .click(function () {
-                                    showAcknowledgementForm({
-                                        disabled: true,
-                                        method:"DELETE",
-                                        action:"/acknowledgements/ajax/delete.php?id="+encodeURIComponent(this.id),
-                                        submit_text: "Delete",
-                                        title: "Delete Acknowledgement",
-                                        data: this,
-                                        callback: function () {
-                                            tr.remove();
-                                        }
-                                    });
-                                }.bind(cur))
-                        )    
-                    );
-
-                $("#acknowledgement-tbody").append(tr);
-            }
-            $("#acknowledgement-table").css("display", "");
-        }
-    });
-});*/
+}

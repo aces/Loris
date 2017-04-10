@@ -23,6 +23,20 @@
                 return false;
             }
         }
+        public static function FetchValidDateRange () {
+            $config = NDB_Config::singleton();
+            return (object)array(
+                "start" => $config->getSetting("startYear") . "-01-01",
+                "end"   => $config->getSetting("endYear")   . "-12-31",
+            );
+        }
+        public static function IsValidStudyDate ($str) {
+            if (!self::IsValidMySQLDate($str)) {
+                return false;
+            }
+            $range = self::FetchValidDateRange();
+            return $str >= $range->start && $str <= $range->end;
+        }
         /*
          * Convenience method to check if start and end dates are valid.
          *
@@ -38,15 +52,15 @@
                     return true; //It is valid for both to be null
                 } else {
                     //Only need to check `$end_date`
-                    return self::IsValidMySQLDate($end_date);
+                    return self::IsValidStudyDate($end_date);
                 }
             } else if (is_null($end_date)) {
                 //Only need to check `$start_date`
-                return self::IsValidMySQLDate($start_date);
+                return self::IsValidStudyDate($start_date);
             } else {
                 return
-                    self::IsValidMySQLDate($start_date) &&
-                    self::IsValidMySQLDate($end_date) &&
+                    self::IsValidStudyDate($start_date) &&
+                    self::IsValidStudyDate($end_date) &&
                     $end_date >= $start_date;
             }
         }
@@ -185,7 +199,7 @@
          * @return array|null Each object-element has keys `id`, `title`;
          *                    `null` on failure
          */
-        public static function FetchAllOfCenter ($center_id, $start=null, $count=null) {
+        public static function FetchAllOfCenter ($center_id, $data=array()) {
             $query = "
                 SELECT
                     *
@@ -193,6 +207,7 @@
                     acknowledgement
                 WHERE
                     center_id = :center_id
+                    [[WHERE]]
                 ORDER BY
                     (start_date IS NULL) DESC,
                     start_date ASC,
@@ -207,8 +222,47 @@
             $args = array(
                 "center_id" =>$center_id
             );
+            
+            //[[WHERE]]
+            $where_arr = array();
+            if (isset($data["full_name"])) {
+                $where_arr[] = "full_name LIKE :full_name";
+                $args["full_name"] = "%".$data["full_name"]."%";
+            }
+            if (isset($data["citation_name"])) {
+                $where_arr[] = "citation_name LIKE :citation_name";
+                $args["citation_name"] = "%".$data["citation_name"]."%";
+            }
+            if (isset($data["start_date"])) {
+                $where_arr[] = "start_date >= :start_date";
+                $args["start_date"] = $data["start_date"];
+            }
+            if (isset($data["end_date"])) {
+                $where_arr[] = "end_date >= :end_date";
+                $args["end_date"] = $data["end_date"];
+            }
+            if (isset($data["filter_in_study_at_present"]) && $data["filter_in_study_at_present"]) {
+                if (is_null($data["in_study_at_present"])) {
+                    $where_arr[] = "in_study_at_present IS NULL";
+                } else {
+                    $where_arr[] = "in_study_at_present = :in_study_at_present";
+                    $args["in_study_at_present"] = $data["in_study_at_present"];
+                }
+            }
+            if (count($where_arr) == 0) {
+                $query = str_replace("[[WHERE]]", "", $query);
+            } else {
+                $where = "AND " . implode(" AND ", $where_arr);
+                $query = str_replace("[[WHERE]]", $where, $query);
+            }
+            //[[LIMIT]]
+            $start = isset($data["start"]) ? $data["start"] : null;
+            $count = isset($data["count"]) ? $data["count"] : null;
             if (is_null($start)) {
                 $query = str_replace("[[LIMIT]]", "", $query);
+            } else if (is_null($count)) {
+                $query = str_replace("[[LIMIT]]", "LIMIT :start", $query);
+                $args["start"] = $start;
             } else {
                 $query = str_replace("[[LIMIT]]", "LIMIT :start, :count", $query);
                 $args["start"] = $start;

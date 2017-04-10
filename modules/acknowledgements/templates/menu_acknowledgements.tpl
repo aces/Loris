@@ -1,4 +1,4 @@
-<div class="row">
+<div id="filter-container" class="row" style="display:none;">
     <div class="col-sm-9">
         <div class="panel panel-primary">
             <div class="panel-heading" onclick="hideFilter(this)">
@@ -6,73 +6,81 @@
                 <span class="glyphicon arrow glyphicon-chevron-up pull-right"></span>
             </div>
             <div class="panel-body">
-                <form method="post" action="/acknowledgements/">
-                    <div class="row">
-                        <div class="form-group col-sm-4">
-                            <label class="col-sm-12 col-md-4">
-                                {$form.full_name.label}
-                            </label>
-                            <div class="col-sm-12 col-md-8">
-                                {$form.full_name.html}
-                            </div>
-                        </div>
-                        <div class="form-group col-sm-4">
-                            <label class="col-sm-12 col-md-4">
-                                {$form.citation_name.label}
-                            </label>
-                            <div class="col-sm-12 col-md-8">
-                                {$form.citation_name.html}
-                            </div>
+                <div>
+                    <span class="filter-error label" style="background-color:#ff5f5f;"></span>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-4">
+                        <label class="col-sm-12 col-md-4">
+                            Full Name
+                        </label>
+                        <div class="col-sm-12 col-md-8">
+                            <input type="text" id="filter-full-name" name="full_name" placeholder="Full Name" class="form-fields form-control input-sm"/>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="form-group col-sm-4">
-                            <label class="col-sm-12 col-md-4">
-                                {$form.start_date.label}
-                            </label>
-                            <div class="col-sm-12 col-md-8">
-                                {$form.start_date.html}
-                            </div>
-                        </div>
-                        <div class="form-group col-sm-4">
-                            <label class="col-sm-12 col-md-4">
-                                {$form.end_date.label}
-                            </label>
-                            <div class="col-sm-12 col-md-8">
-                                {$form.end_date.html}
-                            </div>
-                        </div>
-                        <div class="form-group col-sm-4">
-                            <label class="col-sm-12 col-md-4">
-                                {$form.present.label}
-                            </label>
-                            <div class="col-sm-12 col-md-8">
-                                {$form.present.html}
-                            </div>
+                    <div class="form-group col-sm-4">
+                        <label class="col-sm-12 col-md-4">
+                            Citation Name
+                        </label>
+                        <div class="col-sm-12 col-md-8">
+                            <input type="text" id="filter-citation-name" name="citation_name" placeholder="Citation Name" class="form-fields form-control input-sm"/>
                         </div>
                     </div>
-                    <br class="visible-xs">
-                    <div id="advanced-buttons">
-                        <div class="col-sm-4 col-md-3 col-xs-12 col-md-offset-6">
-                            <input type="submit" name="filter" value="Show Data" id="showdata_advanced_options" class="btn btn-sm btn-primary col-xs-12" />
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-4">
+                        <label class="col-sm-12 col-md-4">
+                            Start Date
+                        </label>
+                        <div class="col-sm-12 col-md-8">
+                            <input type="date" id="filter-start-date" name="start_date" class="form-fields form-control input-sm" min="{$valid_date_range->start}" max="{$valid_date_range->end}"/>
                         </div>
+                    </div>
+                    <div class="form-group col-sm-4">
+                        <label class="col-sm-12 col-md-4">
+                            End Date
+                        </label>
+                        <div class="col-sm-12 col-md-8">
+                            <input type="date" id="filter-end-date" name="end_date" class="form-fields form-control input-sm" min="{$valid_date_range->start}" max="{$valid_date_range->end}"/>
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-4">
+                        <label class="col-sm-12 col-md-4">
+                            Present?
+                        </label>
+                        <div class="col-sm-12 col-md-8">
+                            <select id="filter-in-study-at-present" name="in_study_at_present" class="form-fields form-control input-sm">
+                                <option value="do-not-filter"></option>
+                                <option value="">Unknown</option>
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <br class="visible-xs">
+                <div id="advanced-buttons">
+                    <div class="col-sm-4 col-md-3 col-xs-12 col-md-offset-6">
+                        <input id="btn-filter" type="button" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
+                    </div>
 
-                        <div class="visible-xs col-xs-12"> </div>
-                        <div class="visible-xs col-xs-12"> </div>
-                        <div class="visible-xs col-xs-12"> </div>
-                        <div class="visible-xs col-xs-12"> </div>
-                        <div class="col-sm-4 col-md-3 col-xs-12">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/acknowledgements/?reset=true'" />
-                        </div>
-                        <div class="visible-xs col-xs-12"> </div>
-                        <div class="visible-xs col-xs-12"> </div>
-                        <div class="visible-xs col-xs-12"> </div>
-                        <div class="visible-xs col-xs-12"> </div>
+                    <div class="visible-xs col-xs-12"> </div>
+                    <div class="visible-xs col-xs-12"> </div>
+                    <div class="visible-xs col-xs-12"> </div>
+                    <div class="visible-xs col-xs-12"> </div>
+                    <div class="col-sm-4 col-md-3 col-xs-12">
+                        <input id="btn-filter-reset" type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="" />
                     </div>
-                </form>
+                    <div class="visible-xs col-xs-12"> </div>
+                    <div class="visible-xs col-xs-12"> </div>
+                    <div class="visible-xs col-xs-12"> </div>
+                    <div class="visible-xs col-xs-12"> </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
+<div class="row">
     <div class="col-sm-9">
         <div class="panel panel-primary">
             <div class="panel-body">
@@ -99,41 +107,28 @@
             </div>
         </div>
     </div>
-    <div id="tabs" style="background: white">
-        <div class="tab-content">
-            <div class="tab-pane active">
-                <table class="table table-hover table-primary table-bordered table-acknowledgements dynamictable" border="0">
-                    <thead>
-                        <tr class="info">
-                            <th>Citation Policy</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td nowrap="nowrap">
-                                <div class="col-sm-12 col-md-12">{$citation_policy}</div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <!--  title table with pagination -->
-                <table id="LogEntries" border="0" valign="bottom" width="100%">
-                    <tr>
-                        <!-- display pagination links -->
-                        <td align="right">{$page_links}</td>
+</div>
+<div id="tabs" style="background: white">
+    <div class="tab-content">
+        <div class="tab-pane active">
+            <table class="table table-hover table-primary table-bordered table-acknowledgements dynamictable" border="0">
+                <thead>
+                    <tr class="info">
+                        <th>Citation Policy</th>
                     </tr>
-                </table>
-                {foreach from=$form.errors item=error}
-                <ul>
-                    <li class="error">{$error}</li>
-                </ul>
-                {/foreach}
-                <div id="acknowledgement-table-container">
-                    
-                </div>
-            </div>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td nowrap="nowrap">
+                            <div class="col-sm-12 col-md-12">{$citation_policy}</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
+<div id="acknowledgement-table-container">
 </div>
 <div class="modal fade" id="acknowledgement-form-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -146,6 +141,11 @@
                 <input type="hidden" id="ack-id" name="id"/>
                 <input type="hidden" id="ack-center-id" name="center_id"/>
                 <div class="modal-body">
+                    <div>
+                        <span class="acknowledgement-form-error label" style="background-color:#ff5f5f;"></span>
+                        <br/>
+                        <br/>
+                    </div>
                     <div class="row">
                         <div class="col-xs-12 form-group">
                             <label class="col-xs-4" for="full_name">Full Name<font color="red"><sup> *</sup></font></label>
@@ -183,13 +183,13 @@
                         <div class="col-xs-12 form-group">
                             <label class="col-xs-4" for="start_date">Start Date<font color="red"><sup> *</sup></font></label>
                             <div class="col-xs-8">
-                                <input type="date" id="ack-start-date" name="start_date" class="form-fields form-control input-sm" min="{$min_year}-01-01" max="{$max_year}-12-31"/>
+                                <input type="date" id="ack-start-date" name="start_date" class="form-fields form-control input-sm" min="{$valid_date_range->start}" max="{$valid_date_range->end}"/>
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
                             <label class="col-xs-4" for="end_date">End Date<font color="red"><sup> *</sup></font></label>
                             <div class="col-xs-8">
-                                <input type="date" id="ack-end-date" name="end_date" class="form-fields form-control input-sm" min="{$min_year}-01-01" max="{$max_year}-12-31"/>
+                                <input type="date" id="ack-end-date" name="end_date" class="form-fields form-control input-sm" min="{$valid_date_range->start}" max="{$valid_date_range->end}"/>
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
@@ -203,6 +203,9 @@
                             </div>
                         </div>
                     </div>
+                    <div>
+                        <span class="acknowledgement-form-error label" style="background-color:#ff5f5f;"></span>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" id="acknowledgement-form-submit" role="button" aria-disabled="false"></button>
@@ -212,7 +215,9 @@
         </div>
     </div>
 </div>
-
+<script src="/acknowledgements/js/fetch-all.js"></script>
+<script src="/acknowledgements/js/filter.js"></script>
+<script src="/acknowledgements/js/btn-add-acknowledgements.js"></script>
 <script src="/acknowledgements/js/Row.js"></script>
 <script src="/acknowledgements/js/TBody.js"></script>
 <script src="/acknowledgements/js/Table.js"></script>
