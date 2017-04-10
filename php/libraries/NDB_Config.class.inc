@@ -92,7 +92,10 @@ class NDB_Config
             $success = $config->load($configFile);
         }
                   // Load all includes found in the config
-        var_dump(Utility::asArray($config->_settings['include']);
+        
+        print_r($config->_settings['include']);
+         print_r("-====--=-=-=-=-=-=-=-=-=-=-=-=-=");
+            
 
         return $config;
     }
