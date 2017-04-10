@@ -73,8 +73,6 @@ class NDB_Config
                 }
             }
 
-        }
-
         return $config;
     }
 
