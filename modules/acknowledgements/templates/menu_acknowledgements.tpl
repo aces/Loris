@@ -99,9 +99,13 @@
                             </div>
                         </form>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-3 col-sm-4">
                         <span class="visible-sm">&nbsp;<br/></span>
                         <input type="button" id="btn-add-acknowledgement" value="Add Acknowledgement" class="btn btn-sm btn-primary" style="display: none;"/>
+                    </div>
+                    <div class="col-lg-3 col-sm-4">
+                        <span class="visible-sm">&nbsp;<br/></span>
+                        <a id="btn-admin" class="btn btn-sm btn-primary" style="display: none;">Admin Panel</a>
                     </div>
                 </div>
             </div>
@@ -193,7 +197,7 @@
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
-                            <label class="col-xs-4" for="in_study_at_present">Present<font color="red"><sup> *</sup></font></label>
+                            <label class="col-xs-4" for="in_study_at_present">Present?<font color="red"><sup> *</sup></font></label>
                             <div class="col-xs-8">
                                 <select id="ack-in-study-at-present" name="in_study_at_present" class="form-fields form-control input-sm">
                                     <option value="">Unknown</option>

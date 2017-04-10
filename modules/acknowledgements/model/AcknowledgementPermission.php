@@ -102,7 +102,7 @@
                     psc
                 WHERE
                     CenterID IN ($in_str)
-            ");
+            ", array());
             
             //Objects are easier to work with, imo
             //Cleaner syntax
@@ -161,6 +161,78 @@
             //CanDelete() is a synonym for CanUpdate() for now
             //May have different permissions in the future?
             return self::CanUpdate($user_id, $acknowledgement_id);
+        }
+        /*
+         * Checks if the user can administer acknowledgements for a given center
+         *
+         * @param int $user_id   The user id
+         * @param int $center_id The center id
+         *
+         * @return bool `true` if the user has the permission
+         */
+        public static function CanAdministerForCenter ($user_id, $center_id) {
+            $username = self::UserId2Username($user_id);
+            if (is_null($username)) {
+                return false;
+            }
+            $user = User::factory($username);
+            //For now, acknowledgements_edit = admin rights
+            //May change in future
+            return
+                $user->hasPermission("acknowledgements_edit") &&
+                in_array($center_id, $user->getCenterID());
+        }
+        /*
+         * Fetches all centers the user can administer acknowledgements for
+         *
+         * @param int $user_id The user id
+         *
+         * @return array|null On success, each object-element has keys `id`, `name`
+         */
+        public static function FetchAllAdministrableCenter ($user_id) {
+            $username = self::UserId2Username($user_id);
+            if (is_null($username)) {
+                return null;
+            }
+            $user = User::factory($username);
+            $center_id_arr   = $user->getCenterID();
+            $administrable_id_arr = array();
+            foreach ($center_id_arr as $center_id) {
+                if (self::CanAdministerForCenter($user_id, $center_id)) {
+                    $administrable_id_arr[] = $center_id;
+                }
+            }
+            if (count($administrable_id_arr) == 0) {
+                return array();
+            }
+            $in_str = implode(", ", $administrable_id_arr);
+            $result = Database::singleton()->pselect("
+                SELECT
+                    CenterID AS id,
+                    Name AS name
+                FROM
+                    psc
+                WHERE
+                    CenterID IN ($in_str)
+            ", array());
+            
+            //Objects are easier to work with, imo
+            //Cleaner syntax
+            for ($i=0; $i<count($result); ++$i) {
+                $result[$i] = (object)$result[$i];
+            }
+            return $result;
+        }
+        /*
+         * Checks if the user can administer acknowledgements
+         * of at least one center
+         *
+         * @param int $user_id The user id
+         *
+         * @return bool `true` if the user has the permission
+         */
+        public static function CanAdministerForAtLeastOneCenter ($user_id) {
+            return count(self::FetchAllAdministrableCenter($user_id)) > 0;
         }
     }
 ?>

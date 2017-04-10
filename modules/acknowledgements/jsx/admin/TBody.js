@@ -11,7 +11,14 @@ class TBody extends React.Component {
         if (data && data.arr) {
             console.log(data);
             for (let i in data.arr) {
-                arr.push(<Row key={data.arr[i].id} data={data.arr[i]} deleteCallback={this.deleteCallback.bind(this)}/>);
+                arr.push(<Row
+                    key={this.props.id_prefix + data.arr[i].id}
+                    uniqueKey={this.props.id_prefix + data.arr[i].id}
+                    data={data.arr[i]}
+                    delete_url={this.props["delete_url"]}
+                    update_url={this.props["update_url"]}
+                    deleteCallback={this.deleteCallback.bind(this)}
+                    />);
             }
         }
         return (
@@ -44,23 +51,22 @@ class TBody extends React.Component {
             });
         }
     }
-    onFetchAllCallback (e) {
-        this.setState({
-            data:e.detail
-        });
-    }
     componentDidMount () {
-        fetch_all({
-            "center_id":this.props["center_id"],
-            "success": function (data) {
+        $.ajax({
+            type: "GET",
+            url : this.props.fetch_all_url,
+            data: {
+                "center_id":this.props.center_id
+            },
+            dataType: "json",
+            success: function (data) {
                 console.log(data);
                 this.setState({
                     data:data
                 });
             }.bind(this)
         });
-        window.addEventListener("acknowledgement-insert", this.onAddCallback.bind(this));
-        window.addEventListener("acknowledgement-fetch-all", this.onFetchAllCallback.bind(this));
+        window.addEventListener(this.props.id_prefix+"-insert", this.onAddCallback.bind(this));
     }
 }
 

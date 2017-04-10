@@ -15,7 +15,7 @@ class Table extends React.Component {
                         <th>Roles</th>
                         <th>Start Date</th>
                         <th>End Date</th>
-                        <th>In Study?</th>
+                        <th>Present?</th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>

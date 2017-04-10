@@ -36,7 +36,8 @@
                 FROM
                     ack_center_role
                 WHERE
-                    center_id = :center_id
+                    center_id = :center_id AND
+                    title = :title
             ", array(
                 "center_id" => $center_id,
                 "title"     => $title
@@ -54,6 +55,22 @@
          * @return string|null The numeric `id` on success
          */
         public static function Insert ($center_id, $title) {
+            //Does it exist?
+            $item = self::FetchByTitle($center_id, $title);
+            if (!is_null($item)) {
+                if ($item->hidden) {
+                    //Unhide it
+                    if (self::Update($item->id, $item->title, false)) {
+                        return $item->id;
+                    } else {
+                        return null;
+                    }
+                    
+                } else {
+                    return null;
+                }
+            }
+            
             $stmt = Database::singleton()->prepare("
                 INSERT INTO
                     ack_center_role (center_id, title)
@@ -85,7 +102,7 @@
                 UPDATE
                     ack_center_role
                 SET
-                    title  = :title AND
+                    title  = :title,
                     hidden = :hidden
                 WHERE
                     id = :id
