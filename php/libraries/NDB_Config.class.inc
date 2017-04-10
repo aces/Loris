@@ -63,33 +63,16 @@ class NDB_Config
     static function &singleton($configFile = null)
     {
         static $config = null;
-        if (is_null($config)) {
-            // If calling singleton without any parameter, first check
-            // for a project/config.xml, then check for the config
-            // file in a standard unix filesystem location.
-            // /etc/loris/config.xml
-            if ($configFile === null) {
-                // Can't directly check !empty because of a bug
-                // in PHP < 5.5, need to assign to a variable first
-                $env = getenv('LORIS_DB_CONFIG');
-                if (!empty($env)) {
-                    $configFile = $env;
-                } else if (file_exists(__DIR__ . "/../../project/config.xml")) {
-                    // "Classic" Loris location of project directory
-                    // parallel to php directory
-                    $configFile = __DIR__ . "/../../project/config.xml";
-                } else if (file_exists("/etc/loris/config.xml")) {
-                    // Standard Unix filesystem layout
-                    $configFile = "/etc/loris/config.xml";
-                } else if (file_exists("/usr/local/etc/loris/config.xml")) {
-                    // Standard Unix filesystem layout, option 2
-                    $configFile = "/usr/local/etc/loris/config.xml";
-                }
-            }
 
             // Load the file
             $config  = new NDB_Config();
-            $success = $config->load($configFile);
+
+            foreach (Utility::asArray($config->_settings['include']) as $k=>$path) {
+                if (file_exists($path)) {
+                    $config->load($path);
+                }
+            }
+
         }
 
         return $config;
