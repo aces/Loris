@@ -36,7 +36,7 @@ class NDB_Config
      *
      * @access private
      */
-    static $_settings = array();
+    static var $_settings = array();
 
     /**
      * The merged array of study and site-specific settings
