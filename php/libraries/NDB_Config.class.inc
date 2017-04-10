@@ -93,7 +93,7 @@ class NDB_Config
         }
                   // Load all includes found in the config
         
-        print_r($config->_settings['include']);
+     
          print_r("-====--=-=-=-=-=-=-=-=-=-=-=-=-=");
             
 
