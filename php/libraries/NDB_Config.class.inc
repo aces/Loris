@@ -93,9 +93,9 @@ class NDB_Config
         }
                   // Load all includes found in the config
             foreach (Utility::asArray($config->_settings['include']) as $k=>$path) {
-                if (file_exists($path)) {
+              
                     print_r("dddddddddddddd");
-                }
+             
             }
 
         return $config;
