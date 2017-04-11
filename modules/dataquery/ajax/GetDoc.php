@@ -14,12 +14,11 @@ header("Content-Type: application/json");
 
 
 $cdb = CouchDB::singleton();
-$docID = $_REQUEST['DocID'];
+$docID = urlencode($_REQUEST['DocID']);
 
 $results = $cdb->getDoc(
     $docID
 );
-
 
 print json_encode($results);
 ?>
