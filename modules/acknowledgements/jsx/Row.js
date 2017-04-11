@@ -5,18 +5,24 @@ class Row extends React.Component {
             data:props.data
         };
     }
-    joinOnKey (arr, key, separator) {
+    joinOnKey (arr, key) {
         if (arr == null) {
-            return "";
+            return null;
         }
         if (arr.length == 0) {
-            return "";
+            return null;
         }
-        let result = arr[0][key];
-        for (let i=1; i<arr.length; ++i) {
-            result += separator + arr[i][key];
+        let result = [];
+        for (let i=0; i<arr.length; ++i) {
+            let num = i+1;
+            let cur = arr[i][key];
+            
+            if (i > 0) {
+                result.push(<br/>);
+            }
+            result.push(<span>{num}. {cur}</span>);
         }
-        return result;
+        return (<div>{result}</div>);
     }
     onEditClick () {
         const data = this.state.data;
@@ -71,9 +77,9 @@ class Row extends React.Component {
             <tr>
                 <td>{data.full_name}</td>
                 <td>{data.citation_name}</td>
-                <td>{this.joinOnKey(data.affiliation_arr, "title", ", ")}</td>
-                <td>{this.joinOnKey(data.degree_arr, "title", ", ")}</td>
-                <td>{this.joinOnKey(data.role_arr, "title", ", ")}</td>
+                <td>{this.joinOnKey(data.affiliation_arr, "title")}</td>
+                <td>{this.joinOnKey(data.degree_arr, "title")}</td>
+                <td>{this.joinOnKey(data.role_arr, "title")}</td>
                 <td>{data.start_date}</td>
                 <td>{data.end_date}</td>
                 <td>{in_study_at_present}</td>

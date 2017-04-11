@@ -21,63 +21,50 @@ $client->initialize();
 $config = NDB_Config::singleton();
 $db     = Database::singleton();
 
-function array_to_str_on_key ($arr, $key) {
+function array_to_str_on_key ($arr, $key, $separator) {
     $result = array();
     foreach ($arr as $row) {
         $result[] = $row->$key;
     }
-    return implode(", ", $result);
+    for ($i=0; $i<count($result); ++$i) {
+        $num = $i+1;
+        $cur = $result[$i];
+        $result[$i] = "{$num}. {$cur}";
+    }
+    return implode($separator, $result);
 }
 function print_acknowledgements_html($arr) {
-    ?>
-        <style>
-            tr {
-                font-family:verdana;
-            }
-            tr:nth-child(even) {
-                background-color:#CCCCCC;
-            }
-            tr:nth-child(odd) {
-                background-color:#DDDDDD;
-            }
-            .date {
-                white-space:nowrap;
-            }
-        </style>
-        <a href="/acknowledgements/acknowledgements.php?<?php echo htmlspecialchars($_SERVER["QUERY_STRING"]); ?>&csv=true">
-            Download CSV
-        </a>
-        <table border="0" cellpadding="5">
-            <tr>
-                <th>Full Name</th>
-                <th>Citation Name</th>
-                <th>Affiliations</th>
-                <th>Degrees</th>
-                <th>Roles</th>
-                <th>Present?</th>
-            </tr>
-            <?php foreach ($arr as $row): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($row->full_name); ?></td>
-                    <td><?php echo htmlspecialchars($row->citation_name); ?></td>
-                    <td><?php echo htmlspecialchars(array_to_str_on_key($row->affiliation_arr, "title")); ?></td>
-                    <td><?php echo htmlspecialchars(array_to_str_on_key($row->degree_arr, "title")); ?></td>
-                    <td><?php echo htmlspecialchars(array_to_str_on_key($row->role_arr, "title")); ?></td>
-                    <td><?php
-                        if (is_null($row->in_study_at_present)) {
-                            echo "-";
-                        } else {
-                            echo $row->in_study_at_present ? "Yes" : "No";
-                        }
-                    ?></td>
-                </tr>
-            <?php endforeach; ?>
-        </table>
-    <?php
+    foreach ($arr as $row) {
+        $row->affiliation_str = array_to_str_on_key($row->affiliation_arr, "title", "<br/>");
+        $row->degree_str = array_to_str_on_key($row->degree_arr, "title", "<br/>");
+        $row->role_str = array_to_str_on_key($row->role_arr, "title", "<br/>");
+        $row->in_study_at_present_str = "-";
+        
+        if (!is_null($row->in_study_at_present)) {
+            $row->in_study_at_present_str = $row->in_study_at_present ?
+                "Yes" : "No";
+        }
+    }
+    
+    //Output template using Smarty
+    $factory = NDB_Factory::singleton();
+    $config  = $factory->config();
+    $paths   = $config->getSetting("paths");
+    
+    $smarty = new Smarty_neurodb;
+    $smarty->addTemplateDir($paths["base"] . "/modules/acknowledgements/templates");
+    $smarty->assign(array(
+        "arr"=>$arr,
+        "query_str"=>$_SERVER["QUERY_STRING"]
+    ));
+    $smarty->display("htdocs_acknowledgements.tpl");
 }
 function send_acknowledgements_csv ($arr) {
     ob_start();
     $f = fopen("php://output", "w");
+    //http://php.net/manual/en/function.fputcsv.php#118252
+    fputs($f, chr(0xEF) . chr(0xBB) . chr(0xBF));
+    
     fputcsv($f, array(
         "Full Name",
         "Citation Name",
@@ -90,9 +77,9 @@ function send_acknowledgements_csv ($arr) {
         fputcsv($f, array(
             $row->full_name,
             $row->citation_name,
-            array_to_str_on_key($row->affiliation_arr, "title"),
-            array_to_str_on_key($row->degree_arr, "title"),
-            array_to_str_on_key($row->role_arr, "title"),
+            array_to_str_on_key($row->affiliation_arr, "title", "\n"),
+            array_to_str_on_key($row->degree_arr, "title", "\n"),
+            array_to_str_on_key($row->role_arr, "title", "\n"),
             is_null($row->in_study_at_present) ?
                 "-" :
                 ($row->in_study_at_present ? "Yes" : "No")
