@@ -11,7 +11,6 @@
  *  @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  *  @license  Loris license
  *  @link     https://github.com/aces/Loris-Trunk
- *
  */
 
 $user =& User::singleton();
@@ -37,25 +36,30 @@ $config =& NDB_Config::singleton();
 
 $File = $_GET['File'];
 
-// Make sure that the user isn't trying to break out of the $path by
-// using a relative filename.
-// No need to check for '/' since all downloads are relative to $basePath
-if (strpos("..", $File) !== false) {
+// Ensure file exists in the document_repository table before serving
+$db     =& Database::singleton();
+$record = $db->pselectOne(
+    "SELECT record_id FROM document_repository WHERE "
+    . "Data_dir=:dd",
+    array('dd' => $File)
+);
+
+if (empty($record)) {
     error_log("ERROR: Invalid filename");
     header("HTTP/1.1 400 Bad Request");
     exit(4);
+} else {
+    $FullPath = __DIR__ . "/../user_uploads/$File";
+    echo "$FullPath";
+
+    if (!file_exists($FullPath)) {
+        error_log("ERROR: File $FullPath does not exist");
+        header("HTTP/1.1 404 Not Found");
+        exit(5);
+    }
+
+    $fp = fopen($FullPath, 'r');
+    fpassthru($fp);
+    fclose($fp);
 }
-
-
-$FullPath = __DIR__ . "/../user_uploads/$File";
-
-if (!file_exists($FullPath)) {
-    error_log("ERROR: File $FullPath does not exist");
-    header("HTTP/1.1 404 Not Found");
-    exit(5);
-}
-
-$fp = fopen($FullPath, 'r');
-fpassthru($fp);
-fclose($fp);
 ?>
