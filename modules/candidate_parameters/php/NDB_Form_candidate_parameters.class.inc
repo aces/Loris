@@ -41,6 +41,14 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
     {
         //create user object
         $user =& User::singleton();
+        $config =& NDB_Config::singleton();
+        $candidate =& Candidate::singleton($this->identifier);
+
+        if ($config->getSetting("useProjectPermissions")) {
+            if (!$user->hasAccessToProject($candidate->getData("ProjectID"))) {
+                return false;
+            }
+        }
 
         // Set global permission to control access
         // to different modules of candidate_parameters page

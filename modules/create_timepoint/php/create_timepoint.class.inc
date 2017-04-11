@@ -39,8 +39,14 @@ class Create_Timepoint extends \NDB_Form
     {
         // create user object
         $user =& \User::singleton();
-
+        $config =& \NDB_Config::singleton();
         $candidate =& \Candidate::singleton($this->identifier);
+
+        if ($config->getSetting("useProjectPermissions")) {
+            if (!$user->hasAccessToProject($candidate->getData("ProjectID"))) {
+                return false;
+            }
+        }
 
         // check user permissions
         return (

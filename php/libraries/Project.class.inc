@@ -136,6 +136,96 @@ class Project
     }
 
     /**
+     * Returns the current recruitment for a list or projects, or if no list is
+     * given, for all projects.
+     *
+     * @param array $projectIds Array of project ids
+     *
+     * @return Project the Project object
+     * @throws DatabaseException | LorisException
+     */
+    static public function getRecruitment($projectIds = null)
+    {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $query   = "SELECT COUNT(*)
+                  FROM candidate c
+                  WHERE c.Active='Y' AND c.Entity_type='Human'
+                  AND c.CenterID <> 1";
+
+        if (isset($projectIds)) {
+            $query .= " AND c.ProjectID=:PIDs";
+        }
+
+        $totalRecruitment = $DB->pselectOne(
+            $query,
+            isset($projectIds) ? array('PIDs' => implode(",", $projectIds)) : array()
+        );
+        return $totalRecruitment;
+    }
+
+    /**
+     * Returns the total number of male recruits for a list or projects,
+     * or if no list is given, for all projects.
+     *
+     * @param array $projectIds Array of project ids
+     *
+     * @return Project the Project object
+     * @throws DatabaseException | LorisException
+     */
+    static public function getTotalMales($projectIds = null)
+    {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $query   = "SELECT COUNT(*)
+                  FROM candidate c
+                  WHERE c.Active='Y' AND c.Entity_type='Human'
+                  AND c.Gender='Male'
+                  AND c.CenterID <> 1";
+
+        if (isset($projectIds)) {
+            $query .= " AND c.ProjectID=:PIDs";
+        }
+
+        $totalRecruitment = $DB->pselectOne(
+            $query,
+            isset($projectIds) ? array('PIDs' => implode(",", $projectIds)) : array()
+        );
+        return $totalRecruitment;
+    }
+
+    /**
+     * Returns the total number of female recruits for a list or projects,
+     * or if no list is given, for all projects.
+     *
+     * @param array $projectIds Array of project ids
+     *
+     * @return Project the Project object
+     * @throws DatabaseException | LorisException
+     */
+    static public function getTotalFemales($projectIds = null)
+    {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $query   = "SELECT COUNT(*)
+                  FROM candidate c
+                  WHERE c.Active='Y' AND c.Entity_type='Human'
+                  AND c.Gender='Female'
+                  AND c.CenterID <> 1";
+
+        if (isset($projectIds)) {
+            $query .= " AND c.ProjectID=:PIDs";
+        }
+
+        $totalRecruitment = $DB->pselectOne(
+            $query,
+            isset($projectIds) ? array('PIDs' => implode(",", $projectIds)) : array()
+        );
+        return $totalRecruitment;
+    }
+
+
+    /**
      * Get this project's id
      *
      * @return integer This project's id

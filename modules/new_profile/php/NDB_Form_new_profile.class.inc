@@ -115,6 +115,7 @@ class NDB_Form_New_Profile extends NDB_Form
     function new_profile()//@codingStandardsIgnoreLine
     {
         $config         =& NDB_Config::singleton();
+        $user           =& User::singleton();
         $startYear      = $config->getSetting('startYear');
         $endYear        = $config->getSetting('endYear');
         $ageMax         = $config->getSetting('ageMax');
@@ -185,7 +186,11 @@ class NDB_Form_New_Profile extends NDB_Form
         }
 
         if ($config->getSetting("useProjects") == "true") {
-            $projects = Utility::getProjectList();
+            if ($config->getSetting("useProjectPermissions")) {
+                $projects = $user->getProjects();
+            } else {
+                $projects = Utility::getProjectList();
+            }
             $projList = array('' => '');
             foreach ($projects as $projectID => $projectName) {
                 $projList[$projectID] = $projectName;
@@ -296,6 +301,15 @@ class NDB_Form_New_Profile extends NDB_Form
         $useProjects = $config->getSetting('useProjects');
         if ($useProjects === "true" && empty($values['ProjectID'])) {
             $errors['ProjectID'] = "Project is required";
+        }
+
+        $useProjectsPermissions = $config->getSetting('useProjectPermissions');
+        if ($useProjectsPermissions === "true" && !empty($values['ProjectID'])) {
+            $user =& User::singleton();
+
+            if (!$user->hasAccessToProject($values['ProjectID'])) {
+                $errors['ProjectID'] = "User does not belong to this project";
+            }
         }
 
         return $errors;

@@ -99,9 +99,25 @@ class User extends UserPermissions
                                                   );
             }
         }
+
+        // Get user projects
+        $project_rows = $DB->pselect(
+            "SELECT p.Name, p.ProjectID from user_project_rel upr
+             LEFT JOIN Project p on (p.ProjectID=upr.ProjectID)
+             WHERE (upr.UserID=:UserID)",
+            array(
+             "UserID" => $row['ID'],
+            )
+        );
+        $projects     = array();
+        foreach ($project_rows as $project_row) {
+            $projects[$project_row['ProjectID']] = $project_row['Name'];
+        }
+
         // store user data in object property
         $row['examiner']  =$examiner_info;
         $row['CenterIDs'] =$user_cid;
+        $row['Projects']  =$projects;
         $obj->userInfo    =$row;
         return $obj;
     }
@@ -239,6 +255,26 @@ class User extends UserPermissions
         $site_list = $this->userInfo['examiner'];
         unset($site_list['pending']);
         return $site_list;
+    }
+
+    /**
+     * Get the user's projects
+     *
+     * @return array
+     */
+    function getProjects()
+    {
+        return $this->userInfo['Projects'];
+    }
+
+    /**
+     * Get the user's project ids
+     *
+     * @return array
+     */
+    function getProjectIds()
+    {
+        return array_keys($this->userInfo['Projects']);
     }
 
     /**
@@ -400,6 +436,19 @@ class User extends UserPermissions
         );
 
         $this->update($updateArray);
+    }
+
+    /**
+     * Checks if a user has access to a project
+     *
+     * @param int $projectID The project's unique ID
+     *
+     * @return bool
+     */
+    function hasAccessToProject($projectID)
+    {
+        $userProjectIds = array_keys($this->getData("Projects"));
+        return (in_array($projectID, $userProjectIds));
     }
 }
 ?>

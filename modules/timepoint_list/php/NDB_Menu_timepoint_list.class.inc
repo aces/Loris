@@ -33,8 +33,14 @@ class NDB_Menu_Timepoint_List extends NDB_Menu
     {
         // create user object
         $user =& User::singleton();
-
+        $config =& NDB_Config::singleton();
         $candidate =& Candidate::singleton($_REQUEST['candID']);
+
+        if ($config->getSetting("useProjectPermissions")) {
+            if (!$user->hasAccessToProject($candidate->getData("ProjectID"))) {
+                return false;
+            }
+        }
 
         // check user permissions
         if ($user->hasPermission('access_all_profiles')

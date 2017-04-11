@@ -242,6 +242,24 @@ class NDB_Form_User_Accounts extends NDB_Form
             unset($values['CenterIDs']);
             // END multi-site UPDATE
         }
+
+        // multi-project UPDATE
+        $us_curr_projects = $values['ProjectIDs'];
+        if (!$this->isCreatingNewUser()) {
+            $DB->delete('user_project_rel', array("UserID" => $uid));
+            foreach ($us_curr_projects as $project) {
+                $DB->insert(
+                    'user_project_rel',
+                    array(
+                        "UserID"   => $uid,
+                        "ProjectID" => $project,
+                    )
+                );
+            }
+        }
+        unset($values['ProjectIDs']);
+        // END multi-project UPDATE
+
         // EXAMINER UPDATE
         $ex_curr_sites =array();
         $ex_prev_sites =array();
@@ -595,6 +613,14 @@ class NDB_Form_User_Accounts extends NDB_Form
             'CenterIDs',
             'Sites',
             $siteOptions,
+            array('multiple' => 'multiple')
+        );
+
+        $projectOptions = Utility::getProjectList();
+        $this->addSelect(
+            'ProjectIDs',
+            'Projects',
+            $projectOptions,
             array('multiple' => 'multiple')
         );
 

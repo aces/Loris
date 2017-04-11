@@ -169,6 +169,11 @@
                                 <img width=17 src="{$baseurl}/images/help.gif">
                             </a>
                         </li>
+                        <li>
+                            <p class="navbar-text">
+                                &nbsp;{if count($user.Projects) === 1}Project{else} Projects{/if}: {join(', ', array_values($user.Projects))}
+                            </p>
+                        </li>
                         <li class="nav">
                             <a href="#" data-toggle="tooltip" title="{$user.SitesTooltip}">
                                 Site Affiliations: {$userNumSites} 

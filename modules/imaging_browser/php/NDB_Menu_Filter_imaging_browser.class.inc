@@ -122,6 +122,11 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $config =& NDB_Config::singleton();
         $user   =& User::singleton();
         $DB     = Database::singleton();
+
+        if ($config->getSetting("useProjectPermissions")) {
+            $this->query .= " AND c.ProjectID IN (" . implode(",", $user->getProjectIds()) . ")";
+        }
+
         if (!$user->hasPermission('imaging_browser_view_allsites')) {
             $site_arr     = implode(",", $user->getCenterIDs());
             $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
@@ -269,7 +274,12 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $config =& NDB_Config::singleton();
         if ($config->getSetting('useProjects') === "true") {
             $list_of_projects = $allAr;
-            $projectList      = Utility::getProjectList();
+            if ($config->getSetting("useProjectPermissions")) {
+                $projectList = $user->getProjects();
+            } else {
+                $projectList = Utility::getProjectList();
+            }
+
             foreach ($projectList as $key => $value) {
                 $list_of_projects[$key] =$value;
             }
