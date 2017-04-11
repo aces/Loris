@@ -1,5 +1,3 @@
-/* exported RFamilyInfo */
-
 var FamilyInfo = React.createClass({
   getInitialState: function() {
     return {
@@ -67,14 +65,11 @@ var FamilyInfo = React.createClass({
       }
 
       return (
-          <button className="btn-info has-spinner">
-            Loading
-            <span
-              className="glyphicon glyphicon-refresh
-                        glyphicon-refresh-animate"
-            >
-                    </span>
-          </button>
+        <button className="btn-info has-spinner">
+          Loading
+          <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+          </span>
+        </button>
         );
     }
 
@@ -103,25 +98,23 @@ var FamilyInfo = React.createClass({
         var link = "?candID=" + candID + "&identifier=" + candID;
 
         familyMembersHTML.push(
-                  <div>
-                      <StaticElement
-                          label="Family Member DCCID"
-                          text={<a href={link}>{candID}</a>}
-                      />
-                      <StaticElement
-                          label="Relation Type"
-                          text={relationshipOptions[relationship]}
-                      />
-                      <ButtonElement
-                          label="Delete"
-                          type="button"
-                          onUserInput={
-                              this.deleteFamilyMember.bind(null, candID, key, candidateList)
-                          }
-                      />
-                      <hr />
-                  </div>
-              );
+          <div key={key}>
+              <StaticElement
+                  label="Family Member DCCID"
+                  text={<a href={link}>{candID}</a>}
+              />
+              <StaticElement
+                  label="Relation Type"
+                  text={relationshipOptions[relationship]}
+              />
+              <ButtonElement
+                  label="Delete"
+                  type="button"
+                  onUserInput={this.deleteFamilyMember.bind(null, candID, key, candidateList)}
+              />
+              <hr />
+          </div>
+        );
           // remove from list of candidates because it can only be added once
         delete candidateList[candID];
       }
@@ -150,7 +143,6 @@ var FamilyInfo = React.createClass({
           <div className={alertClass} role="alert" ref="alert-message">
             {alertMessage}
           </div>
-
           <FormElement
             name="familyInfo"
             onSubmit={this.handleSubmit}
@@ -339,9 +331,5 @@ var FamilyInfo = React.createClass({
 
 });
 
-var RFamilyInfo = React.createFactory(FamilyInfo);
-
-window.FamilyInfo = FamilyInfo;
-window.RFamilyInfo = RFamilyInfo;
 
 export default FamilyInfo;

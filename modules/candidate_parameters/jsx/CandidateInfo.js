@@ -1,5 +1,3 @@
-/* exported RCandidateInfo */
-
 var CandidateInfo = React.createClass(
   {
     getInitialState: function() {
@@ -184,7 +182,7 @@ var CandidateInfo = React.createClass(
               types = types.slice(0, -1);
               types = types.replace(/'/g, '');
               types = types.split(',');
-              var selectOptions = [];
+              var selectOptions = {};
               for (var key3 in types) {
                 if (types.hasOwnProperty(key3)) {
                   selectOptions[types[key3]] = types[key3];
@@ -200,6 +198,7 @@ var CandidateInfo = React.createClass(
                   onUserInput={this.setFormData}
                   ref={name}
                   disabled={disabled}
+                  key={key2}
                 />
               );
               break;
@@ -212,6 +211,7 @@ var CandidateInfo = React.createClass(
                   onUserInput={this.setFormData}
                   ref={name}
                   disabled={disabled}
+                  key={key2}
                 />
               );
               break;
@@ -224,6 +224,7 @@ var CandidateInfo = React.createClass(
                   onUserInput={this.setFormData}
                   ref={name}
                   disabled={disabled}
+                  key={key2}
                 />
               );
           }
@@ -244,7 +245,7 @@ var CandidateInfo = React.createClass(
       }
 
       return (
-        <div class="row">
+        <div className="row">
           <div className={alertClass} role="alert" ref="alert-message">
             {alertMessage}
           </div>
@@ -252,8 +253,7 @@ var CandidateInfo = React.createClass(
             name="candidateInfo"
             onSubmit={this.handleSubmit}
             ref="form"
-            class="col-md-6"
-          >
+            class="col-md-6">
             <StaticElement
               label="PSCID"
               text={this.state.Data.pscid}
@@ -366,10 +366,5 @@ var CandidateInfo = React.createClass(
 
   }
 );
-
-var RCandidateInfo = React.createFactory(CandidateInfo);
-
-window.CandidateInfo = CandidateInfo;
-window.RCandidateInfo = RCandidateInfo;
 
 export default CandidateInfo;

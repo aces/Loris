@@ -1,5 +1,3 @@
-/* exported RConsentStatus */
-
 var ConsentStatus = React.createClass(
   {
     getInitialState: function() {
@@ -88,24 +86,21 @@ var ConsentStatus = React.createClass(
       if (!this.state.isLoaded) {
         if (this.state.error !== undefined) {
           return (
-                    <div className ="alert alert-danger text-center">
-                        <strong>
-                            {this.state.error}
-                        </strong>
-                    </div>
-                    );
+            <div className ="alert alert-danger text-center">
+                <strong>
+                    {this.state.error}
+                </strong>
+            </div>
+          );
         }
 
         return (
-                <button className ="btn-info has-spinner">
-                    Loading
-                    <span
-                        className ="glyphicon glyphicon-refresh
-                        glyphicon-refresh-animate"
-                    >
-                    </span>
-                </button>
-                );
+          <button className ="btn-info has-spinner">
+              Loading
+              <span className ="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+              </span>
+          </button>
+        );
       }
 
       var disabled = true;
@@ -148,64 +143,58 @@ var ConsentStatus = React.createClass(
           var consentWithdrawalConfirmationLabel =
             "Confirmation Date of Withdrawal of " + label;
 
-          consents.push(
-                        <SelectElement
-                        label ={label}
-                        name ={consentStatus}
-                        options ={this.state.consentOptions}
-                        value ={this.state.Data.consentStatuses[consentStatus]}
-                        onUserInput ={this.setFormData}
-                        ref ={consentStatus}
-                        disabled ={disabled}
-                        required ={false}
-                        />
-                    );
-          consents.push(
-                        <DateElement
-                        label ={consentDateLabel}
-                        name ={consentDate}
-                        value ={this.state.Data.consentDates[consentStatus]}
-                        onUserInput ={this.setFormData}
-                        ref ={consentDate}
-                        disabled ={disabled}
-                        required ={dateRequired[i]}
-                        />
-                    );
-          consents.push(
-                        <DateElement
-                        label ={consentDateConfirmationLabel}
-                        name ={consentDate2}
-                        value ={this.state.Data.consentDates[consentStatus]}
-                        onUserInput ={this.setFormData}
-                        ref ={consentDate2}
-                        disabled ={disabled}
-                        required ={dateRequired[i]}
-                        />
-                    );
-          consents.push(
-                        <DateElement
-                        label ={consentWithdrawalLabel}
-                        name ={consentWithdrawal}
-                        value ={this.state.Data.withdrawals[consentStatus]}
-                        onUserInput ={this.setFormData}
-                        ref ={consentWithdrawal}
-                        disabled ={disabled}
-                        required ={false}
-                        />
-                    );
-          consents.push(
-                        <DateElement
-                        label ={consentWithdrawalConfirmationLabel}
-                        name ={consentWithdrawal2}
-                        value ={this.state.Data.withdrawals[consentStatus]}
-                        onUserInput ={this.setFormData}
-                        ref ={consentWithdrawal2}
-                        disabled ={disabled}
-                        required ={withdrawalRequired[i]}
-                        />
-                    );
-          consents.push(<hr />);
-
+          const consent = (
+            <div key={i}>
+              <SelectElement
+                label={label}
+                name={consentStatus}
+                options={this.state.consentOptions}
+                value={this.state.Data.consentStatuses[consentStatus]}
+                onUserInput={this.setFormData}
+                ref={consentStatus}
+                disabled={disabled}
+                required={false}
+              />
+              <DateElement
+                label={consentDateLabel}
+                name={consentDate}
+                value={this.state.Data.consentDates[consentStatus]}
+                onUserInput={this.setFormData}
+                ref={consentDate}
+                disabled={disabled}
+                required={dateRequired[i]}
+              />
+              <DateElement
+                label={consentDateConfirmationLabel}
+                name={consentDate2}
+                value={this.state.Data.consentDates[consentStatus]}
+                onUserInput={this.setFormData}
+                ref={consentDate2}
+                disabled={disabled}
+                required={dateRequired[i]}
+              />
+              <DateElement
+                label={consentWithdrawalLabel}
+                name={consentWithdrawal}
+                value={this.state.Data.withdrawals[consentStatus]}
+                onUserInput={this.setFormData}
+                ref={consentWithdrawal}
+                disabled={disabled}
+                required={false}
+              />
+              <DateElement
+                label={consentWithdrawalConfirmationLabel}
+                name={consentWithdrawal2}
+                value={this.state.Data.withdrawals[consentStatus]}
+                onUserInput={this.setFormData}
+                ref={consentWithdrawal2}
+                disabled={disabled}
+                required={withdrawalRequired[i]}
+              />
+              <hr/>
+            </div>
+          );
+          consents.push(consent);
           i++;
         }
       }
@@ -253,7 +242,7 @@ var ConsentStatus = React.createClass(
                   }
                 }
               }
-              formattedHistory.push(<p>{line}</p>);
+              formattedHistory.push(<p key={field}>{line}</p>);
             }
           }
         }
@@ -273,31 +262,24 @@ var ConsentStatus = React.createClass(
       }
 
       return (
-          <div class="row">
-                <div className ={alertClass} role="alert" ref="alert-message">
-                    {alertMessage}
-                </div>
-            <FormElement
-                name ="consentStatus"
-                onSubmit ={this.handleSubmit}
-                ref ="form"
-                class ="col-md-6"
-            >
-                <StaticElement
-                    label ="PSCID"
-                    text ={this.state.Data.pscid}
-                />
-                <StaticElement
-                    label ="DCCID"
-                    text ={this.state.Data.candID}
-                />
-                {consents}
-                {updateButton}
-                {formattedHistory}
-
-            </FormElement>
-                </div>
-            );
+        <div className="row">
+          <div className={alertClass} role="alert" ref="alert-message">
+            {alertMessage}
+          </div>
+          <FormElement
+            name="consentStatus"
+            onSubmit={this.handleSubmit}
+            ref="form"
+            class="col-md-6"
+          >
+            <StaticElement label="PSCID" text={this.state.Data.pscid} />
+            <StaticElement label="DCCID" text={this.state.Data.candID} />
+            {consents}
+            {updateButton}
+            {formattedHistory}
+          </FormElement>
+        </div>
+      );
     },
         /**
      * Handles form submission
@@ -425,10 +407,5 @@ var ConsentStatus = React.createClass(
 
   }
 );
-
-var RConsentStatus = React.createFactory(ConsentStatus);
-
-window.ConsentStatus = ConsentStatus;
-window.RConsentStatus = RConsentStatus;
 
 export default ConsentStatus;

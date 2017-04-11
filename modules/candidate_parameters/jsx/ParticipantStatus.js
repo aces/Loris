@@ -1,5 +1,3 @@
-/* exported RParticipantStatus */
-
 var ParticipantStatus = React.createClass(
   {
     getInitialState: function() {
@@ -77,24 +75,20 @@ var ParticipantStatus = React.createClass(
       if (!this.state.isLoaded) {
         if (this.state.error !== undefined) {
           return (
-                    <div className ="alert alert-danger text-center">
-                        <strong>
-                            {this.state.error}
-                        </strong>
-                    </div>
-                    );
+            <div className ="alert alert-danger text-center">
+                <strong>
+                    {this.state.error}
+                </strong>
+            </div>
+          );
         }
 
         return (
-                <button className ="btn-info has-spinner">
-                    Loading
-                    <span
-                        className ="glyphicon glyphicon-refresh
-                        glyphicon-refresh-animate"
-                    >
-                    </span>
-                </button>
-                );
+          <button className ="btn-info has-spinner">
+              Loading
+              <span className ="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+          </button>
+        );
       }
 
       var disabled = true;
@@ -105,7 +99,7 @@ var ParticipantStatus = React.createClass(
       }
 
       var required = this.state.Data.required;
-      var subOptions = [];
+      var subOptions = {};
       var suboptionsRequired = false;
       var participantStatus = (
         this.state.formData.participantStatus ?
@@ -114,7 +108,7 @@ var ParticipantStatus = React.createClass(
       );
 
       if (participantStatus && required.indexOf(participantStatus) > -1) {
-        subOptions = this.state.Data.parentIDs[participantStatus];
+        subOptions[participantStatus] = this.state.Data.parentIDs[participantStatus];
         suboptionsRequired = true;
       }
 
@@ -156,7 +150,7 @@ var ParticipantStatus = React.createClass(
               }
             }
           }
-          formattedHistory.push(<p>{line}</p>);
+          formattedHistory.push(<p key={statusKey}>{line}</p>);
         }
       }
 
@@ -174,58 +168,52 @@ var ParticipantStatus = React.createClass(
       }
 
       return (
-            <div class="row">
-                <div className ={alertClass} role="alert" ref="alert-message">
-                    {alertMessage}
-                </div>
-            <FormElement
-                name ="participantStatus"
-                onSubmit ={this.handleSubmit}
-                ref ="form"
-                class ="col-md-6"
-            >
-                <StaticElement
-                    label ="PSCID"
-                    text ={this.state.Data.pscid}
-                />
-                <StaticElement
-                    label ="DCCID"
-                    text ={this.state.Data.candID}
-                />
-                <SelectElement
-                    label ="Participant Status"
-                    name ="participantStatus"
-                    options ={this.state.Data.statusOptions}
-                    value ={this.state.formData.participantStatus}
-                    onUserInput ={this.setFormData}
-                    ref ="participantStatus"
-                    disabled ={disabled}
-                    required ={true}
-                />
-                <SelectElement
-                    label ="Specify Reason"
-                    name ="participantSuboptions"
-                    options ={subOptions}
-                    value ={this.state.formData.participantSuboptions}
-                    onUserInput ={this.setFormData}
-                    ref ="participantSuboptions"
-                    disabled ={!suboptionsRequired}
-                    required ={suboptionsRequired}
-                />
-                <TextareaElement
-                    label ="Comments"
-                    name ="reasonSpecify"
-                    value ={this.state.formData.reasonSpecify}
-                    onUserInput ={this.setFormData}
-                    ref ="reasonSpecify"
-                    disabled ={disabled}
-                    required ={false}
-                />
-                {updateButton}
-                {formattedHistory}
-            </FormElement>
-                </div>
-            );
+        <div className="row">
+          <div className={alertClass} role="alert" ref="alert-message">
+            {alertMessage}
+          </div>
+          <FormElement
+            name="participantStatus"
+            onSubmit={this.handleSubmit}
+            ref="form"
+            class="col-md-6"
+          >
+            <StaticElement label="PSCID" text={this.state.Data.pscid} />
+            <StaticElement label="DCCID" text={this.state.Data.candID} />
+            <SelectElement
+              label="Participant Status"
+              name="participantStatus"
+              options={this.state.Data.statusOptions}
+              value={this.state.formData.participantStatus}
+              onUserInput={this.setFormData}
+              ref="participantStatus"
+              disabled={disabled}
+              required={true}
+            />
+            <SelectElement
+              label="Specify Reason"
+              name="participantSuboptions"
+              options={subOptions}
+              value={this.state.formData.participantSuboptions}
+              onUserInput={this.setFormData}
+              ref="participantSuboptions"
+              disabled={!suboptionsRequired}
+              required={suboptionsRequired}
+            />
+            <TextareaElement
+              label="Comments"
+              name="reasonSpecify"
+              value={this.state.formData.reasonSpecify}
+              onUserInput={this.setFormData}
+              ref="reasonSpecify"
+              disabled={disabled}
+              required={false}
+            />
+            {updateButton}
+            {formattedHistory}
+          </FormElement>
+        </div>
+      );
     },
         /**
      * Handles form submission
@@ -300,10 +288,5 @@ var ParticipantStatus = React.createClass(
 
   }
 );
-
-var RParticipantStatus = React.createFactory(ParticipantStatus);
-
-window.ParticipantStatus = ParticipantStatus;
-window.RParticipantStatus = RParticipantStatus;
 
 export default ParticipantStatus;
