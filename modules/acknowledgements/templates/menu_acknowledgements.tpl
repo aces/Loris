@@ -90,11 +90,11 @@
                             <div class="row">
                                 <div class="col-lg-8 col-sm-8">
                                     <select id="select-center" name="center_id" class="form-control">
-                                        <option id="select-center-prompt" value="0">Select a Center</option>
+                                        <option id="select-center-prompt" value="0">Select a Site</option>
                                     </select>
                                 </div>
                                 <div class="col-lg-4 col-sm-4">
-                                    <input type="submit" value="Select Center" class="btn btn-sm btn-primary"/>
+                                    <input type="submit" value="Select Site" class="btn btn-sm btn-primary"/>
                                 </div>
                             </div>
                         </form>

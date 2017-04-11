@@ -14,6 +14,7 @@ var config = {
     './modules/acknowledgements/js/TBody.js': './modules/acknowledgements/jsx/TBody.js',
     './modules/acknowledgements/js/Table.js': './modules/acknowledgements/jsx/Table.js',
     './modules/acknowledgements/js/main.js': './modules/acknowledgements/jsx/main.js',
+    './modules/acknowledgements/js/admin_FormAdd.js': './modules/acknowledgements/jsx/admin/FormAdd.js',
     './modules/acknowledgements/js/admin_Row.js': './modules/acknowledgements/jsx/admin/Row.js',
     './modules/acknowledgements/js/admin_TBody.js': './modules/acknowledgements/jsx/admin/TBody.js',
     './modules/acknowledgements/js/admin_Table.js': './modules/acknowledgements/jsx/admin/Table.js',

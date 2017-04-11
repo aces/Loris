@@ -190,7 +190,7 @@
         /*
          * Fetches all acknowledgements of the center.
          *
-         * @param int         $center_id The center id
+         * @param int|null    $center_id The center id; null for all centers
          * @param string|null $start     Used in MySQL's `LIMIT`; numeric
          * @param string|null $count     Used in MySQL's `LIMIT`; numeric
          *                               If `$start` is non-null, `$count`
@@ -206,7 +206,10 @@
                 FROM
                     acknowledgement
                 WHERE
-                    center_id = :center_id
+                    (
+                        center_id = :center_id OR
+                        :center_id2 IS NULL
+                    )
                     [[WHERE]]
                 ORDER BY
                     (start_date IS NULL) DESC,
@@ -220,7 +223,8 @@
                 [[LIMIT]]
             ";
             $args = array(
-                "center_id" =>$center_id
+                "center_id"  =>$center_id,
+                "center_id2" =>$center_id
             );
             
             //[[WHERE]]
@@ -238,7 +242,7 @@
                 $args["start_date"] = $data["start_date"];
             }
             if (isset($data["end_date"])) {
-                $where_arr[] = "end_date >= :end_date";
+                $where_arr[] = "end_date <= :end_date";
                 $args["end_date"] = $data["end_date"];
             }
             if (isset($data["filter_in_study_at_present"]) && $data["filter_in_study_at_present"]) {
