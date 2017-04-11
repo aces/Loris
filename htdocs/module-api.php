@@ -26,21 +26,35 @@ if ($client->initialize() == false) {
     return false;
 }
 
-$app->add(function (Request $request, Response $response, $next) use ($app) {
-    $moduleName = getModuleName($request);
-    $module = Module::factory($moduleName);
+$app->add(
+    function (Request $request,
+        Response $response,
+        $next
+    ) use ($app) {
+        $moduleName = getModuleName($request);
+        $module     = Module::factory($moduleName);
+        $app->group(
+            "/{$moduleName}/api",
+            function () use ($app, $module) {
+                $module->injectAPIRoutes($app);
+            }
+        );
+        $response = $next($request, $response);
+        return $response;
+    }
+);
 
-    $app->group("/{$moduleName}/api", function () use ($app, $module) {
-        $module->injectAPIRoutes($app);
-    });
 
-    $response = $next($request, $response);
-
-    return $response;
-});
-
-function getModuleName(Request $request) {
-    $path = $request->getUri()->getPath();
+/**
+* Infers module name from request
+*
+* @param Request $request The HTTP request object
+*
+* @return string
+*/
+function getModuleName(Request $request)
+{
+    $path       = $request->getUri()->getPath();
     $moduleName = explode('/', $path)[1];
     return $moduleName;
 }
