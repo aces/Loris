@@ -273,6 +273,7 @@ var StaticDataTable = React.createClass({
           // if not a number convert to lowercase
           val = val.toLowerCase();
         } else {
+          // perform type conversion (from string to int/float)
           val = Number(val);
         }
       } else {
