@@ -31,6 +31,11 @@ class Database
     public $PDO;
 
     /**
+     * Not meant to be used outside of getOrFetchAllPrivileges()
+     */
+    private $_privileges = null;
+
+    /**
      * Returns one and only one Database object.
      *
      * @return Database
@@ -76,7 +81,7 @@ class Database
                         "privilege_arr"  => $privilege_arr,
                        );
     }
-    private $_privileges = null;
+
     /**
      * Fetches and caches all the current MySQL user's privileges.
      * Subsequent calls return a cached copy.
@@ -100,6 +105,7 @@ class Database
         }
         return $this->_privileges;
     }
+
     /**
      * Checks if the current MySQL user has the specified privilege.
      *
@@ -127,8 +133,6 @@ class Database
         if (isset($arr[$database_table])) {
             $privilege_arr = $arr[$database_table];
             /*
-            This passes phpcs. Putting the URL on a single-line comment
-            will make it fail. Thank you, phpcs.
             https://dev.mysql.com/doc/refman/5.5/en/privileges-provided.html#priv_all
             */
             if (in_array("ALL", $privilege_arr)
@@ -201,6 +205,7 @@ class Database
             return false;
         }
     }
+
     /**
      * This wrapper connects differently than the normal database wrapper.
      * Instead of connecting to a database, it will connect to the server,
