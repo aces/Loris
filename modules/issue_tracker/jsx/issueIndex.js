@@ -481,7 +481,7 @@ class CollapsibleComment extends React.Component {
     const colStyle = {
       paddingRight: "8px"
     };
-    const commentHistory = this.props.commentHistory;
+    const commentHistory = this.props.commentHistory.clone();
     let curDateAddedF = null;
     let curDateAdded = null;
     let curAddedBy = null;
@@ -489,8 +489,8 @@ class CollapsibleComment extends React.Component {
     let fieldUsed = null;
     let fieldChangeArr = null;
     commentHistory.push({
-      fieldChanged: "SENTINAL",
-      isSentinal: true
+      fieldChanged: "SENTINEL",
+      isSentinel: true
     });
 
     for (let commentID in commentHistory) {
@@ -500,7 +500,7 @@ class CollapsibleComment extends React.Component {
       let change = commentHistory[commentID];
       let nxtState = (change.fieldChanged === "comment") ?
         "commented" : "updated";
-      if (curDateAdded !== change.dateAdded || curAddedBy !== change.addedBy || change.isSentinal) {
+      if (curDateAdded !== change.dateAdded || curAddedBy !== change.addedBy || change.isSentinel) {
         if (fieldChangeArr !== null) {
           fieldChangeArr.reverse();
           historyText.push(
@@ -516,7 +516,7 @@ class CollapsibleComment extends React.Component {
             </div>
           );
         }
-        if (change.isSentinal) {
+        if (change.isSentinel) {
           break;
         }
         curDateAddedF = change.dateAddedFormatted;
