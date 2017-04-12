@@ -6,60 +6,37 @@ import ConsentStatus from './ConsentStatus';
 
 class CandidateParameters extends React.Component {
 
-  constructor(props) {
-    super(props);
+  getTabPanes(tabList) {
+    const actionURL = `${loris.BaseURL}/candidate_parameters/ajax/formHandler.php`;
+    const dataURL = `${loris.BaseURL}/candidate_parameters/ajax/getData.php?candID=${this.props.candID}`;
+    const tabPanes = Object.keys(tabList).map(function(key) {
+      const TabContent = tabList[key].component;
+      return (
+        <TabPane TabId={tabList[key].id} key={key}>
+          <TabContent
+            actionURL={actionURL}
+            dataURL={`${dataURL}&data=${tabList[key].id}`}
+            tabName={tabList[key].id}
+          />
+        </TabPane>
+      );
+    });
+    return tabPanes;
   }
 
   render() {
 
     let tabList = [
-      {id: "candidateInfo", label: "Candidate Information"},
-      {id: "probandInfo", label: "Proband Information"},
-      {id: "familyInfo", label: "Family Information"},
-      {id: "participantStatus", label: "Participant Status"},
-      {id: "consentStatus", label: "Consent Status"}
+      {id: "candidateInfo", label: "Candidate Information", component: CandidateInfo},
+      {id: "probandInfo", label: "Proband Information", component: ProbandInfo},
+      {id: "familyInfo", label: "Family Information", component: FamilyInfo},
+      {id: "participantStatus", label: "Participant Status", component: ParticipantStatus},
+      {id: "consentStatus", label: "Consent Status", component: ConsentStatus}
     ];
-
-    const actionURL = `${loris.BaseURL}/candidate_parameters/ajax/formHandler.php`;
-    let dataURL = `${loris.BaseURL}/candidate_parameters/ajax/getData.php?candID=${this.props.candID}`;
 
     return (
       <Tabs tabs={tabList} defaultTab="candidateInfo" updateURL={true}>
-        <TabPane TabId={tabList[0].id}>
-          <CandidateInfo
-            actionURL={actionURL}
-            dataURL={`${dataURL}&data=${tabList[0].id}`}
-            tabName={tabList[0].id}
-          />
-        </TabPane>
-        <TabPane TabId={tabList[1].id}>
-          <ProbandInfo
-            actionURL={actionURL}
-            dataURL={`${dataURL}&data=${tabList[1].id}`}
-            tabName={tabList[1].id}
-          />
-        </TabPane>
-        <TabPane TabId={tabList[2].id}>
-          <FamilyInfo
-            actionURL={actionURL}
-            dataURL={`${dataURL}&data=${tabList[2].id}`}
-            tabName={tabList[2].id}
-          />
-        </TabPane>
-        <TabPane TabId={tabList[3].id}>
-          <ParticipantStatus
-            actionURL={actionURL}
-            dataURL={`${dataURL}&data=${tabList[3].id}`}
-            tabName={tabList[3].id}
-          />
-        </TabPane>
-        <TabPane TabId={tabList[4].id}>
-          <ConsentStatus
-            actionURL={actionURL}
-            dataURL={`${dataURL}&data=${tabList[4].id}`}
-            tabName={tabList[4].id}
-          />
-        </TabPane>
+        {this.getTabPanes(tabList)}
       </Tabs>
     );
   }
