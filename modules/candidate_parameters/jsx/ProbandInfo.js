@@ -16,25 +16,25 @@ var ProbandInfo = React.createClass(
     },
     componentDidMount: function() {
       $.ajax(this.props.dataURL, {
-          dataType: 'json',
-          success: function(data) {
-            const formData = {
-              ProbandGender: data.ProbandGender,
-              ProbandDoB: data.ProbandDoB,
-              ProbandDoB2: data.ProbandDoB
-            };
-            this.setState({
-              formData,
-              Data: data,
-              isLoaded: true
-            });
-          }.bind(this),
-          error: function(data, errorCode, errorMsg) {
-            this.setState({
-              error: 'An error occurred when loading the form!'
-            });
-          }.bind(this)
-        }
+        dataType: 'json',
+        success: function(data) {
+          const formData = {
+            ProbandGender: data.ProbandGender,
+            ProbandDoB: data.ProbandDoB,
+            ProbandDoB2: data.ProbandDoB
+          };
+          this.setState({
+            formData,
+            Data: data,
+            isLoaded: true
+          });
+        }.bind(this),
+        error: function(data, errorCode, errorMsg) {
+          this.setState({
+            error: 'An error occurred when loading the form!'
+          });
+        }.bind(this)
+      }
             );
     },
     setFormData: function(formElement, value) {

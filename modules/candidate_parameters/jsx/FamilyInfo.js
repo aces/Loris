@@ -331,5 +331,4 @@ var FamilyInfo = React.createClass({
 
 });
 
-
 export default FamilyInfo;
