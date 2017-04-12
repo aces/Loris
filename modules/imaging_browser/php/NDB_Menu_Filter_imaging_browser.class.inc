@@ -74,10 +74,10 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         }
 
         // Get the intersection between all the scan types and those
-        // that are desired to go into imaging browser table, based on 
+        // that are desired to go into imaging browser table, based on
         // array values rather than keys (hence the array_flip), then flip
         // the resulting array back to revert it to a key/value (i.e.
-        // acquisition protocol ID/scan type combination.
+        // acquisition protocol ID/scan type) combination.
         $scan_id_types =array_flip(
             array_intersect_key(
                 array_flip($all_scan_types),
