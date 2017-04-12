@@ -28,11 +28,11 @@ class AcknowledgementPermission
      * Used internally so, when the great refactoring comes,
      * we may be spared from disaster.
      *
-     * @param int $user_id The user id
+     * @param int $userId The user id
      *
      * @return string|null The username on success
      */
-    private static function _userId2Username($user_id)
+    private static function _userId2Username($userId)
     {
         //The great prophets of ages past decided UserID meant Username
         //and ID meant User Id
@@ -43,9 +43,9 @@ class AcknowledgementPermission
                 FROM
                     users
                 WHERE
-                    ID = :user_id
+                    ID = :userId
             ",
-            array("user_id" => $user_id)
+            array("userId" => $userId)
         );
         return is_string($result) ?
             $result : null;
@@ -54,26 +54,26 @@ class AcknowledgementPermission
      * Checks if the user can view acknowledgements
      * of at least one center
      *
-     * @param int $user_id The user id
+     * @param int $userId The user id
      *
      * @return bool `true` if the user has the permission
      */
-    public static function canViewForAtLeastOneCenter($user_id)
+    public static function canViewForAtLeastOneCenter($userId)
     {
-        return count(self::fetchAllViewableCenter($user_id)) > 0;
+        return count(self::fetchAllViewableCenter($userId)) > 0;
     }
     /**
      * Checks if the user can view a specific acknowledgement
      *
-     * @param int $user_id            The user id
-     * @param int $acknowledgement_id The acknowledgement id
+     * @param int $userId            The user id
+     * @param int $acknowledgementId The acknowledgement id
      *                       //Unused at the moment, anticipating refactor
      *
      * @return bool `true` if the user has the permission
      */
-    public static function canView($user_id, $acknowledgement_id)
+    public static function canView($userId, $acknowledgementId)
     {
-        $username = self::_userId2Username($user_id);
+        $username = self::_userId2Username($userId);
         if (is_null($username)) {
             return false;
         }
@@ -83,41 +83,41 @@ class AcknowledgementPermission
     /**
      * Checks if the user can view acknowledgements for a given center
      *
-     * @param int $user_id   The user id
-     * @param int $center_id The center id
+     * @param int $userId   The user id
+     * @param int $centerId The center id
      *
      * @return bool `true` if the user has the permission
      */
-    public static function canViewForCenter($user_id, $center_id)
+    public static function canViewForCenter($userId, $centerId)
     {
-        $username = self::_userId2Username($user_id);
+        $username = self::_userId2Username($userId);
         if (is_null($username)) {
             return false;
         }
         $user = User::factory($username);
         return
             $user->hasPermission("acknowledgements_view") &&
-            in_array($center_id, $user->getCenterID());
+            in_array($centerId, $user->getCenterID());
     }
     /**
      * Fetches all centers the user can view acknowledgements for
      *
-     * @param int $user_id The user id
+     * @param int $userId The user id
      *
      * @return array|null On success, each object-element has keys `id`, `name`
      */
-    public static function fetchAllViewableCenter($user_id)
+    public static function fetchAllViewableCenter($userId)
     {
-        $username = self::_userId2Username($user_id);
+        $username = self::_userId2Username($userId);
         if (is_null($username)) {
             return null;
         }
         $user            = User::factory($username);
-        $center_id_arr   = $user->getCenterID();
+        $centerId_arr    = $user->getCenterID();
         $viewable_id_arr = array();
-        foreach ($center_id_arr as $center_id) {
-            if (self::canViewForCenter($user_id, $center_id)) {
-                $viewable_id_arr[] = $center_id;
+        foreach ($centerId_arr as $centerId) {
+            if (self::canViewForCenter($userId, $centerId)) {
+                $viewable_id_arr[] = $centerId;
             }
         }
         if (count($viewable_id_arr) == 0) {
@@ -147,35 +147,35 @@ class AcknowledgementPermission
     /**
      * Checks if the user can insert acknowledgements for a given center
      *
-     * @param int $user_id   The user id
-     * @param int $center_id The center id
+     * @param int $userId   The user id
+     * @param int $centerId The center id
      *
      * @return bool `true` if the user has the permission
      */
-    public static function caninsertForCenter($user_id, $center_id)
+    public static function caninsertForCenter($userId, $centerId)
     {
-        $username = self::_userId2Username($user_id);
+        $username = self::_userId2Username($userId);
         if (is_null($username)) {
             return false;
         }
         $user = User::factory($username);
         return
             $user->hasPermission("acknowledgements_edit") &&
-            in_array($center_id, $user->getCenterID());
+            in_array($centerId, $user->getCenterID());
     }
     /**
      * Checks if the user can update a specific acknowledgement
      *
-     * @param int $user_id            The user id
-     * @param int $acknowledgement_id The acknowledgement id
+     * @param int $userId            The user id
+     * @param int $acknowledgementId The acknowledgement id
      *                                //Unused at the moment,
      *                                //anticipating refactor
      *
      * @return bool `true` if the user has the permission
      */
-    public static function canupdate($user_id, $acknowledgement_id)
+    public static function canupdate($userId, $acknowledgementId)
     {
-        $username = self::_userId2Username($user_id);
+        $username = self::_userId2Username($userId);
         if (is_null($username)) {
             return false;
         }
@@ -185,30 +185,30 @@ class AcknowledgementPermission
     /**
      * Checks if the user can delete a specific acknowledgement
      *
-     * @param int $user_id            The user id
-     * @param int $acknowledgement_id The acknowledgement id
+     * @param int $userId            The user id
+     * @param int $acknowledgementId The acknowledgement id
      *                                //Unused at the moment,
      *                                //anticipating refactor
      *
      * @return bool `true` if the user has the permission
      */
-    public static function canDelete($user_id, $acknowledgement_id)
+    public static function canDelete($userId, $acknowledgementId)
     {
         //canDelete() is a synonym for canupdate() for now
         //May have different permissions in the future?
-        return self::canupdate($user_id, $acknowledgement_id);
+        return self::canupdate($userId, $acknowledgementId);
     }
     /**
      * Checks if the user can administer acknowledgements for a given center
      *
-     * @param int $user_id   The user id
-     * @param int $center_id The center id
+     * @param int $userId   The user id
+     * @param int $centerId The center id
      *
      * @return bool `true` if the user has the permission
      */
-    public static function canAdministerForCenter($user_id, $center_id)
+    public static function canAdministerForCenter($userId, $centerId)
     {
-        $username = self::_userId2Username($user_id);
+        $username = self::_userId2Username($userId);
         if (is_null($username)) {
             return false;
         }
@@ -217,27 +217,27 @@ class AcknowledgementPermission
         //May change in future
         return
             $user->hasPermission("acknowledgements_edit") &&
-            in_array($center_id, $user->getCenterID());
+            in_array($centerId, $user->getCenterID());
     }
     /**
      * Fetches all centers the user can administer acknowledgements for
      *
-     * @param int $user_id The user id
+     * @param int $userId The user id
      *
      * @return array|null On success, each object-element has keys `id`, `name`
      */
-    public static function fetchAllAdministrableCenter($user_id)
+    public static function fetchAllAdministrableCenter($userId)
     {
-        $username = self::_userId2Username($user_id);
+        $username = self::_userId2Username($userId);
         if (is_null($username)) {
             return null;
         }
-        $user          = User::factory($username);
-        $center_id_arr = $user->getCenterID();
+        $user         = User::factory($username);
+        $centerId_arr = $user->getCenterID();
         $administrable_id_arr = array();
-        foreach ($center_id_arr as $center_id) {
-            if (self::canAdministerForCenter($user_id, $center_id)) {
-                $administrable_id_arr[] = $center_id;
+        foreach ($centerId_arr as $centerId) {
+            if (self::canAdministerForCenter($userId, $centerId)) {
+                $administrable_id_arr[] = $centerId;
             }
         }
         if (count($administrable_id_arr) == 0) {
@@ -268,13 +268,13 @@ class AcknowledgementPermission
      * Checks if the user can administer acknowledgements
      * of at least one center
      *
-     * @param int $user_id The user id
+     * @param int $userId The user id
      *
      * @return bool `true` if the user has the permission
      */
-    public static function canAdministerForAtLeastOneCenter($user_id)
+    public static function canAdministerForAtLeastOneCenter($userId)
     {
-        return count(self::fetchAllAdministrableCenter($user_id)) > 0;
+        return count(self::fetchAllAdministrableCenter($userId)) > 0;
     }
 }
 ?>

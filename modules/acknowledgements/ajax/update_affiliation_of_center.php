@@ -41,7 +41,7 @@ if (is_null($item) || $item->hidden) {
     //Validate permission
 if (!AcknowledgementPermission::canAdministerForCenter(
     User::singleton()->userInfo["ID"],
-    $item->center_id
+    $item->centerId
 )) {
     http_response_code(401);
     die();

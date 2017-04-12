@@ -89,7 +89,7 @@
                         <form method="GET" action="/acknowledgements">
                             <div class="row">
                                 <div class="col-lg-8 col-sm-8">
-                                    <select id="select-center" name="center_id" class="form-control">
+                                    <select id="select-center" name="centerId" class="form-control">
                                         <option id="select-center-prompt" value="0">Select a Site</option>
                                     </select>
                                 </div>

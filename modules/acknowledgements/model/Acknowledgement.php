@@ -78,86 +78,86 @@ class Acknowledgement
     /**
      * Convenience method to check if start and end dates are valid.
      *
-     * @param string $start_date The start date
-     * @param string $end_date   The end date
+     * @param string $startDate The start date
+     * @param string $endDate   The end date
      *
      * @return bool `true` if dates are valid,
-     *              and `$end_date >= $start_date`, if applicable
+     *              and `$endDate >= $startDate`, if applicable
      */
-    public static function isValidStartToEndDate($start_date, $end_date)
+    public static function isValidStartToEndDate($startDate, $endDate)
     {
-        if (is_null($start_date)) {
-            if (is_null($end_date)) {
+        if (is_null($startDate)) {
+            if (is_null($endDate)) {
                 return true; //It is valid for both to be null
             } else {
-                //Only need to check `$end_date`
-                return self::isValidStudyDate($end_date);
+                //Only need to check `$endDate`
+                return self::isValidStudyDate($endDate);
             }
-        } else if (is_null($end_date)) {
-            //Only need to check `$start_date`
-            return self::isValidStudyDate($start_date);
+        } else if (is_null($endDate)) {
+            //Only need to check `$startDate`
+            return self::isValidStudyDate($startDate);
         } else {
             return
-                self::isValidStudyDate($start_date) &&
-                self::isValidStudyDate($end_date) &&
-                $end_date >= $start_date;
+                self::isValidStudyDate($startDate) &&
+                self::isValidStudyDate($endDate) &&
+                $endDate >= $startDate;
         }
     }
     /**
      * Inserts a new acknowledgement
      *
-     * @param int         $center_id           The center id
-     * @param string      $full_name           The full name
-     * @param string      $citation_name       The citation name
-     * @param string      $start_date          The start date in MySQL `DATE` format
-     * @param string|null $end_date            The end date in MySQL `DATE` format,
-     *                                         Must be >= $start_date
-     * @param bool        $in_study_at_present Is the user part of the study
+     * @param int         $centerId         The center id
+     * @param string      $fullName         The full name
+     * @param string      $citationName     The citation name
+     * @param string      $startDate        The start date in MySQL `DATE` format
+     * @param string|null $endDate          The end date in MySQL `DATE` format,
+     *                                         Must be >= $startDate
+     * @param bool        $inStudyAtPresent Is the user part of the study
      *                                         at the moment?
      *
      * @return string|null The numeric `id` on success
      */
     public static function insert(
-        $center_id,
-        $full_name,
-        $citation_name,
-        $start_date,
-        $end_date,
-        $in_study_at_present
+        $centerId,
+        $fullName,
+        $citationName,
+        $startDate,
+        $endDate,
+        $inStudyAtPresent
     ) {
 
-        if (!self::isValidStartToEndDate($start_date, $end_date)) {
+        if (!self::isValidStartToEndDate($startDate, $endDate)) {
             return null;
         }
         $stmt = Database::singleton()->prepare(
             "
                 INSERT INTO
                     acknowledgement (
-                        center_id,
-                        full_name,
-                        citation_name,
-                        start_date,
-                        end_date,
-                        in_study_at_present
+                        centerId,
+                        fullName,
+                        citationName,
+                        startDate,
+                        endDate,
+                        inStudyAtPresent
                     )
                 VALUES (
-                    :center_id,
-                    :full_name,
-                    :citation_name,
-                    :start_date,
-                    :end_date,
-                    :in_study_at_present
+                    :centerId,
+                    :fullName,
+                    :citationName,
+                    :startDate,
+                    :endDate,
+                    :inStudyAtPresent
                 )
             "
         );
         if ($stmt->execute(
             array(
-             "center_id"           => $center_id,
-             "full_name"           => $full_name,
-             "citation_name"       => $citation_name,
-             "start_date"          => $start_date,
-             "end_date"            => $end_date,
-             "in_study_at_present" => $in_study_at_present,
+             "centerId"         => $centerId,
+             "fullName"         => $fullName,
+             "citationName"     => $citationName,
+             "startDate"        => $startDate,
+             "endDate"          => $endDate,
+             "inStudyAtPresent" => $inStudyAtPresent,
             )
         )) {
             return Database::singleton()->_PDO->lastinsertId();
@@ -167,30 +167,30 @@ class Acknowledgement
     }
     /**
      * Updates the acknowledgement.
-     * Note that you cannot and should not update the `center_id`
+     * Note that you cannot and should not update the `centerId`
      * of an existing acknowledgement.
      *
-     * @param string      $id                  The numeric `id`
-     * @param string      $full_name           The full name
-     * @param string      $citation_name       The citation name
-     * @param string      $start_date          The start date in MySQL `DATE` format
-     * @param string|null $end_date            The end date in MySQL `DATE` format,
-     *                                         Must be >= $start_date
-     * @param bool        $in_study_at_present Is the user part of the study
+     * @param string      $id               The numeric `id`
+     * @param string      $fullName         The full name
+     * @param string      $citationName     The citation name
+     * @param string      $startDate        The start date in MySQL `DATE` format
+     * @param string|null $endDate          The end date in MySQL `DATE` format,
+     *                                         Must be >= $startDate
+     * @param bool        $inStudyAtPresent Is the user part of the study
      *                                         at the moment?
      *
      * @return bool `true` on success
      */
     public static function update(
         $id,
-        $full_name,
-        $citation_name,
-        $start_date,
-        $end_date,
-        $in_study_at_present
+        $fullName,
+        $citationName,
+        $startDate,
+        $endDate,
+        $inStudyAtPresent
     ) {
 
-        if (!self::isValidStartToEndDate($start_date, $end_date)) {
+        if (!self::isValidStartToEndDate($startDate, $endDate)) {
             return false;
         }
         $stmt = Database::singleton()->prepare(
@@ -198,23 +198,23 @@ class Acknowledgement
                 UPDATE
                     acknowledgement
                 SET
-                    full_name     = :full_name,
-                    citation_name = :citation_name,
-                    start_date    = :start_date,
-                    end_date      = :end_date,
-                    in_study_at_present = :in_study_at_present
+                    fullName     = :fullName,
+                    citationName = :citationName,
+                    startDate    = :startDate,
+                    endDate      = :endDate,
+                    inStudyAtPresent = :inStudyAtPresent
                 WHERE
                     id = :id
             "
         );
         return $stmt->execute(
             array(
-             "id"                  => $id,
-             "full_name"           => $full_name,
-             "citation_name"       => $citation_name,
-             "start_date"          => $start_date,
-             "end_date"            => $end_date,
-             "in_study_at_present" => $in_study_at_present,
+             "id"               => $id,
+             "fullName"         => $fullName,
+             "citationName"     => $citationName,
+             "startDate"        => $startDate,
+             "endDate"          => $endDate,
+             "inStudyAtPresent" => $inStudyAtPresent,
             )
         );
     }
@@ -265,13 +265,13 @@ class Acknowledgement
     /**
      * Fetches all acknowledgements of the center.
      *
-     * @param int|null $center_id The center id; null for all centers
-     * @param array    $data      The data to modify fetched output
+     * @param int|null $centerId The center id; null for all centers
+     * @param array    $data     The data to modify fetched output
      *
      * @return array|null Each object-element has keys `id`, `title`;
      *                    `null` on failure
      */
-    public static function fetchAllOfCenter($center_id, $data=array())
+    public static function fetchAllOfCenter($centerId, $data=array())
     {
         $query = "
                 SELECT
@@ -280,52 +280,52 @@ class Acknowledgement
                     acknowledgement
                 WHERE
                     (
-                        center_id = :center_id OR
-                        :center_id2 IS NULL
+                        centerId = :centerId OR
+                        :centerId2 IS NULL
                     )
                     [[WHERE]]
                 ORDER BY
-                    (start_date IS NULL) DESC,
-                    start_date ASC,
-                    (end_date IS NULL) DESC,
-                    end_date ASC,
-                    (in_study_at_present IS NULL) DESC,
-                    in_study_at_present DESC,
-                    citation_name ASC,
-                    full_name ASC
+                    (startDate IS NULL) DESC,
+                    startDate ASC,
+                    (endDate IS NULL) DESC,
+                    endDate ASC,
+                    (inStudyAtPresent IS NULL) DESC,
+                    inStudyAtPresent DESC,
+                    citationName ASC,
+                    fullName ASC
                 [[LIMIT]]
             ";
         $args  = array(
-                  "center_id"  => $center_id,
-                  "center_id2" => $center_id,
+                  "centerId"  => $centerId,
+                  "centerId2" => $centerId,
                  );
 
         //[[WHERE]]
         $where_arr = array();
-        if (isset($data["full_name"])) {
-            $where_arr[]       = "full_name LIKE :full_name";
-            $args["full_name"] = "%".$data["full_name"]."%";
+        if (isset($data["fullName"])) {
+            $where_arr[]      = "fullName LIKE :fullName";
+            $args["fullName"] = "%".$data["fullName"]."%";
         }
-        if (isset($data["citation_name"])) {
-            $where_arr[]           = "citation_name LIKE :citation_name";
-            $args["citation_name"] = "%".$data["citation_name"]."%";
+        if (isset($data["citationName"])) {
+            $where_arr[]          = "citationName LIKE :citationName";
+            $args["citationName"] = "%".$data["citationName"]."%";
         }
-        if (isset($data["start_date"])) {
-            $where_arr[]        = "start_date >= :start_date";
-            $args["start_date"] = $data["start_date"];
+        if (isset($data["startDate"])) {
+            $where_arr[]       = "startDate >= :startDate";
+            $args["startDate"] = $data["startDate"];
         }
-        if (isset($data["end_date"])) {
-            $where_arr[]      = "end_date <= :end_date";
-            $args["end_date"] = $data["end_date"];
+        if (isset($data["endDate"])) {
+            $where_arr[]     = "endDate <= :endDate";
+            $args["endDate"] = $data["endDate"];
         }
-        if (isset($data["filter_in_study_at_present"])
-            && $data["filter_in_study_at_present"]
+        if (isset($data["filter_inStudyAtPresent"])
+            && $data["filter_inStudyAtPresent"]
         ) {
-            if (is_null($data["in_study_at_present"])) {
-                $where_arr[] = "in_study_at_present IS NULL";
+            if (is_null($data["inStudyAtPresent"])) {
+                $where_arr[] = "inStudyAtPresent IS NULL";
             } else {
-                $where_arr[] = "in_study_at_present = :in_study_at_present";
-                $args["in_study_at_present"] = $data["in_study_at_present"];
+                $where_arr[] = "inStudyAtPresent = :inStudyAtPresent";
+                $args["inStudyAtPresent"] = $data["inStudyAtPresent"];
             }
         }
         if (count($where_arr) == 0) {
@@ -363,23 +363,23 @@ class Acknowledgement
      * @param object $obj The acknowledgement object, must have `id`
      *
      * @return bool `true` if `$obj` was populated with keys
-     *              `affiliation_arr`, `degree_arr`, `role_arr`
+     *              `affiliationArr`, `degreeArr`, `roleArr`
      */
     public static function fetchDetails($obj)
     {
         if (!is_object($obj) || !isset($obj->id)) {
             return false;
         }
-        $obj->affiliation_arr
+        $obj->affiliationArr
             = AcknowledgementAffiliation::fetchAllOfAcknowledgement(
                 $obj->id
             );
 
-        $obj->degree_arr = AcknowledgementDegree::fetchAllOfAcknowledgement(
+        $obj->degreeArr = AcknowledgementDegree::fetchAllOfAcknowledgement(
             $obj->id
         );
 
-        $obj->role_arr = AcknowledgementRole::fetchAllOfAcknowledgement($obj->id);
+        $obj->roleArr = AcknowledgementRole::fetchAllOfAcknowledgement($obj->id);
         return true;
     }
 }

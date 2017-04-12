@@ -41,11 +41,11 @@ if (!AcknowledgementPermission::canupdate(User::singleton()->userInfo["ID"], $id
     //update
 if (!Acknowledgement::update(
     $id,
-    $full_name,
-    $citation_name,
-    $start_date,
-    $end_date,
-    $in_study_at_present
+    $fullName,
+    $citationName,
+    $startDate,
+    $endDate,
+    $inStudyAtPresent
 )) {
     http_response_code(500);
     die(
@@ -56,7 +56,7 @@ if (!Acknowledgement::update(
 }
 if (!AcknowledgementAffiliation::repopulateAllOfAcknowledgement(
     $id,
-    $affiliation_arr
+    $affiliationArr
 )) {
     http_response_code(500);
     die(
@@ -65,7 +65,7 @@ if (!AcknowledgementAffiliation::repopulateAllOfAcknowledgement(
         )
     );
 }
-if (!AcknowledgementDegree::repopulateAllOfAcknowledgement($id, $degree_arr)) {
+if (!AcknowledgementDegree::repopulateAllOfAcknowledgement($id, $degreeArr)) {
     http_response_code(500);
     die(
         json_encode(
@@ -73,7 +73,7 @@ if (!AcknowledgementDegree::repopulateAllOfAcknowledgement($id, $degree_arr)) {
         )
     );
 }
-if (!AcknowledgementRole::repopulateAllOfAcknowledgement($id, $role_arr)) {
+if (!AcknowledgementRole::repopulateAllOfAcknowledgement($id, $roleArr)) {
     http_response_code(500);
     die(
         json_encode(

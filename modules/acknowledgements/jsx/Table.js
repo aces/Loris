@@ -1,13 +1,13 @@
 class Table extends React.Component {
-    constructor (props) {
-        super(props);
-        this.tbody = <TBody center_id={props["center_id"]}/>
-    }
-    render () {
-        return (
-            <table id="acknowledgement-table" className="table table-hover table-primary table-bordered table-unresolved-conflicts dynamictable" border="0">
+  constructor(props) {
+    super(props);
+    this.tbody = <TBody centerId ={props.centerId}/>;
+  }
+  render() {
+    return (
+            <table id ="acknowledgement-table" className="table table-hover table-primary table-bordered table-unresolved-conflicts dynamictable" border="0">
                 <thead>
-                    <tr className="info">
+                    <tr className ="info">
                         <th>Full Name</th>
                         <th>Citation Name</th>
                         <th>Affiliations</th>
@@ -23,7 +23,7 @@ class Table extends React.Component {
                 {this.tbody}
             </table>
         );
-    }
+  }
 }
 
 window.Table = Table;

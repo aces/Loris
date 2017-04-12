@@ -19,20 +19,20 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
     http_response_code(405);
     die();
 }
-if (!isset($_POST["center_id"])
-    || !is_string($_POST["center_id"])
-    || !preg_match("/^\d+$/", $_POST["center_id"])
+if (!isset($_POST["centerId"])
+    || !is_string($_POST["centerId"])
+    || !preg_match("/^\d+$/", $_POST["centerId"])
 ) {
     http_response_code(404);
     die();
 }
 
     //Get input
-    $center_id = $_POST["center_id"];
+    $centerId = $_POST["centerId"];
     //Validate permission
 if (!AcknowledgementPermission::canAdministerForCenter(
     User::singleton()->userInfo["ID"],
-    $center_id
+    $centerId
 )) {
     http_response_code(401);
     die();
@@ -43,7 +43,7 @@ if (!AcknowledgementPermission::canAdministerForCenter(
     Helper_validateString($title, "Title", 1, 255);
 
     //insert
-    $id = AckCenterAffiliation::insert($center_id, $title);
+    $id = AckCenterAffiliation::insert($centerId, $title);
 if (is_null($id)) {
     http_response_code(500);
     die(

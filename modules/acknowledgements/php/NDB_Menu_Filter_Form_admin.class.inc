@@ -34,23 +34,23 @@ class NDB_Menu_Filter_Form_Admin extends NDB_Menu_Filter_Form
          */
     function _hasAccess()
     {
-        $user    = User::singleton();
-        $user_id = $user->userInfo["ID"];
+        $user   = User::singleton();
+        $userId = $user->userInfo["ID"];
 
-        if (!isset($_GET["center_id"])) {
+        if (!isset($_GET["centerId"])) {
             return AcknowledgementPermission::canAdministerForAtLeastOneCenter(
-                $user_id
+                $userId
             );
         }
 
-        $center_id = $_GET["center_id"];
-        if (!is_string($center_id) || !preg_match("/^\d+$/", $center_id)) {
+        $centerId = $_GET["centerId"];
+        if (!is_string($centerId) || !preg_match("/^\d+$/", $centerId)) {
             return false;
         }
 
         return AcknowledgementPermission::canAdministerForCenter(
-            $user_id,
-            $center_id
+            $userId,
+            $centerId
         );
     }
 

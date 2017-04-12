@@ -37,7 +37,7 @@ if (is_null($item)) {
     //Validate permission
 if (!AcknowledgementPermission::canViewForCenter(
     User::singleton()->userInfo["ID"],
-    $item->center_id
+    $item->centerId
 )) {
     http_response_code(401);
     die();

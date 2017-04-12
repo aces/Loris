@@ -12,29 +12,29 @@
   */
     require_once __DIR__ . "/validation.php";
 
-    $full_name     = isset($_POST["full_name"])     ? $_POST["full_name"]     : "";
-    $citation_name = isset($_POST["citation_name"]) ? $_POST["citation_name"] : "";
-    $start_date    = isset($_POST["start_date"])    ? $_POST["start_date"]    : null;
-    $end_date      = isset($_POST["end_date"])      ? $_POST["end_date"]      : null;
+    $fullName     = isset($_POST["fullName"])     ? $_POST["fullName"]     : "";
+    $citationName = isset($_POST["citationName"]) ? $_POST["citationName"] : "";
+    $startDate    = isset($_POST["startDate"])    ? $_POST["startDate"]    : null;
+    $endDate      = isset($_POST["endDate"])      ? $_POST["endDate"]      : null;
 
-    $in_study_at_present = isset($_POST["in_study_at_present"]) ?
-        ($_POST["in_study_at_present"] === "1") :
+    $inStudyAtPresent = isset($_POST["inStudyAtPresent"]) ?
+        ($_POST["inStudyAtPresent"] === "1") :
         null;
 
-    $affiliation_arr = isset($_POST["affiliation_arr"]) ?
-        $_POST["affiliation_arr"] : array();
-    $degree_arr      = isset($_POST["degree_arr"])
-        ? $_POST["degree_arr"] : array();
-    $role_arr        = isset($_POST["role_arr"]) ?
-        $_POST["role_arr"] : array();
+    $affiliationArr = isset($_POST["affiliationArr"]) ?
+        $_POST["affiliationArr"] : array();
+    $degreeArr      = isset($_POST["degreeArr"])
+        ? $_POST["degreeArr"] : array();
+    $roleArr        = isset($_POST["roleArr"]) ?
+        $_POST["roleArr"] : array();
 
     //Validate input
-    Helper_validateString($full_name, "Full name", 0, 255);
-    Helper_validateString($citation_name, "Citation name", 0, 255);
+    Helper_validateString($fullName, "Full name", 0, 255);
+    Helper_validateString($citationName, "Citation name", 0, 255);
 
-    Helper_validateStartEndDate($start_date, $end_date);
+    Helper_validateStartEndDate($startDate, $endDate);
 
-    Helper_validateNumericArray($affiliation_arr, "Affiliations");
-    Helper_validateNumericArray($degree_arr, "Degrees");
-    Helper_validateNumericArray($role_arr, "Roles");
+    Helper_validateNumericArray($affiliationArr, "Affiliations");
+    Helper_validateNumericArray($degreeArr, "Degrees");
+    Helper_validateNumericArray($roleArr, "Roles");
 ?>

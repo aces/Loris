@@ -50,12 +50,12 @@ class AckCenterRole
     /**
      * Fetches the role.
      *
-     * @param int    $center_id The center id
-     * @param string $title     The title
+     * @param int    $centerId The center id
+     * @param string $title    The title
      *
      * @return object|null The row object if exists
      */
-    public static function fetchByTitle($center_id, $title)
+    public static function fetchByTitle($centerId, $title)
     {
         $result = Database::singleton()->pselectRow(
             "
@@ -64,12 +64,12 @@ class AckCenterRole
                 FROM
                     ack_center_role
                 WHERE
-                    center_id = :center_id AND
+                    centerId = :centerId AND
                     title = :title
             ",
             array(
-             "center_id" => $center_id,
-             "title"     => $title,
+             "centerId" => $centerId,
+             "title"    => $title,
             )
         );
         return empty($result) ?
@@ -79,15 +79,15 @@ class AckCenterRole
      * Inserts an role to the center.
      * Roles cannot share the same name within a center.
      *
-     * @param int    $center_id The center id
-     * @param string $title     The title
+     * @param int    $centerId The center id
+     * @param string $title    The title
      *
      * @return string|null The numeric `id` on success
      */
-    public static function insert($center_id, $title)
+    public static function insert($centerId, $title)
     {
         //Does it exist?
-        $item = self::fetchByTitle($center_id, $title);
+        $item = self::fetchByTitle($centerId, $title);
         if (!is_null($item)) {
             if ($item->hidden) {
                 //Unhide it
@@ -105,16 +105,16 @@ class AckCenterRole
         $stmt = Database::singleton()->prepare(
             "
                 INSERT INTO
-                    ack_center_role (center_id, title)
+                    ack_center_role (centerId, title)
                 VALUES (
-                    :center_id, :title
+                    :centerId, :title
                 )
             "
         );
         if ($stmt->execute(
             array(
-             "center_id" => $center_id,
-             "title"     => $title,
+             "centerId" => $centerId,
+             "title"    => $title,
             )
         )) {
             return Database::singleton()->_PDO->lastinsertId();
@@ -124,7 +124,7 @@ class AckCenterRole
     }
     /**
      * Updates an role of the center.
-     * Note that you cannot and should not update the `center_id`
+     * Note that you cannot and should not update the `centerId`
      * of an existing role.
      *
      * @param string|int $id     The numeric id
@@ -157,14 +157,14 @@ class AckCenterRole
     /**
      * Fetches all roles of the center.
      *
-     * @param int       $center_id The center id
-     * @param bool|null $hidden    If `null`, fetches all, regardless of
+     * @param int       $centerId The center id
+     * @param bool|null $hidden   If `null`, fetches all, regardless of
      *                             `hidden`. If `true`, fetches all hidden.
      *                             If `false`, fetches all not hidden.
      *
      * @return array Each object-element has keys `id`, `title`
      */
-    public static function fetchAllOfCenter($center_id, $hidden=false)
+    public static function fetchAllOfCenter($centerId, $hidden=false)
     {
         $result = Database::singleton()->pselect(
             "
@@ -173,7 +173,7 @@ class AckCenterRole
                 FROM
                     ack_center_role
                 WHERE
-                    center_id = :center_id AND
+                    centerId = :centerId AND
                     (
                         (:hidden IS NULL) OR
                         hidden = :hidden2
@@ -182,9 +182,9 @@ class AckCenterRole
                     title ASC
             ",
             array(
-             "center_id" => $center_id,
-             "hidden"    => $hidden,
-             "hidden2"   => $hidden,
+             "centerId" => $centerId,
+             "hidden"   => $hidden,
+             "hidden2"  => $hidden,
             )
         );
         //Objects are easier to work with, imo

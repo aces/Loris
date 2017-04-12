@@ -27,12 +27,12 @@ class AcknowledgementRole
     /**
      * Checks if it exists
      *
-     * @param string $acknowledgement_id The acknowledgement id
-     * @param string $role_id            The role id
+     * @param string $acknowledgementId The acknowledgement id
+     * @param string $roleId            The role id
      *
      * @return bool `true` if exists
      */
-    public static function exists($acknowledgement_id, $role_id)
+    public static function exists($acknowledgementId, $roleId)
     {
         $result = Database::singleton()->pselectOne(
             "
@@ -43,13 +43,13 @@ class AcknowledgementRole
                         FROM
                             acknowledgement_role
                         WHERE
-                            acknowledgement_id = :acknowledgement_id AND
-                            role_id     = :role_id
+                            acknowledgementId = :acknowledgementId AND
+                            roleId     = :roleId
                     )
             ",
             array(
-             "acknowledgement_id" => $acknowledgement_id,
-             "role_id"            => $role_id,
+             "acknowledgementId" => $acknowledgementId,
+             "roleId"            => $roleId,
             )
         );
         return ($result === "1");
@@ -57,35 +57,35 @@ class AcknowledgementRole
     /**
      * Checks the acknowledgement and role are from the same center
      *
-     * @param string $acknowledgement_id The acknowledgement id
-     * @param string $role_id            The role id
+     * @param string $acknowledgementId The acknowledgement id
+     * @param string $roleId            The role id
      *
      * @return bool `true` if they are from the same center
      */
-    public static function hasSameCenterId($acknowledgement_id, $role_id)
+    public static function hasSameCenterId($acknowledgementId, $roleId)
     {
         $result = Database::singleton()->pselectOne(
             "
                 SELECT
                     (
                         SELECT
-                            center_id
+                            centerId
                         FROM
                             acknowledgement
                         WHERE
-                            id = :acknowledgement_id
+                            id = :acknowledgementId
                     ) = (
                         SELECT
-                            center_id
+                            centerId
                         FROM
                             ack_center_role
                         WHERE
-                            id = :role_id
+                            id = :roleId
                     )
             ",
             array(
-             "acknowledgement_id" => $acknowledgement_id,
-             "role_id"            => $role_id,
+             "acknowledgementId" => $acknowledgementId,
+             "roleId"            => $roleId,
             )
         );
         return ($result === "1");
@@ -93,92 +93,92 @@ class AcknowledgementRole
     /**
      * Inserts a role to the acknowledgement
      *
-     * @param string $acknowledgement_id The acknowledgement id
-     * @param string $role_id            The role id
+     * @param string $acknowledgementId The acknowledgement id
+     * @param string $roleId            The role id
      *
      * @return bool `true` on success
      */
-    public static function insertIfNotExists($acknowledgement_id, $role_id)
+    public static function insertIfNotExists($acknowledgementId, $roleId)
     {
-        if (self::exists($acknowledgement_id, $role_id)) {
+        if (self::exists($acknowledgementId, $roleId)) {
             return true;
         }
-        if (!self::hasSameCenterId($acknowledgement_id, $role_id)) {
+        if (!self::hasSameCenterId($acknowledgementId, $roleId)) {
             return false;
         }
 
         $stmt = Database::singleton()->prepare(
             "
                 INSERT INTO
-                    acknowledgement_role (acknowledgement_id, role_id)
+                    acknowledgement_role (acknowledgementId, roleId)
                 VALUES (
-                    :acknowledgement_id,
-                    :role_id
+                    :acknowledgementId,
+                    :roleId
                 )
             "
         );
         return $stmt->execute(
             array(
-             "acknowledgement_id" => $acknowledgement_id,
-             "role_id"            => $role_id,
+             "acknowledgementId" => $acknowledgementId,
+             "roleId"            => $roleId,
             )
         );
     }
     /**
      * Deletes a role from the acknowledgement
      *
-     * @param string $acknowledgement_id The acknowledgement id
-     * @param string $role_id            The role id
+     * @param string $acknowledgementId The acknowledgement id
+     * @param string $roleId            The role id
      *
      * @return bool `true` on success
      */
-    public static function deleteIfexists($acknowledgement_id, $role_id)
+    public static function deleteIfexists($acknowledgementId, $roleId)
     {
         $stmt = Database::singleton()->prepare(
             "
                 DELETE FROM
                     acknowledgement_role
                 WHERE
-                    acknowledgement_id = :acknowledgement_id AND
-                    role_id     = :role_id
+                    acknowledgementId = :acknowledgementId AND
+                    roleId     = :roleId
             "
         );
         return $stmt->execute(
             array(
-             "acknowledgement_id" => $acknowledgement_id,
-             "role_id"            => $role_id,
+             "acknowledgementId" => $acknowledgementId,
+             "roleId"            => $roleId,
             )
         );
     }
     /**
      * Deletes all roles from the acknowledgement
      *
-     * @param string $acknowledgement_id The acknowledgement id
+     * @param string $acknowledgementId The acknowledgement id
      *
      * @return bool `true` on success
      */
-    public static function deleteAllOfAcknowledgement($acknowledgement_id)
+    public static function deleteAllOfAcknowledgement($acknowledgementId)
     {
         $stmt = Database::singleton()->prepare(
             "
                 DELETE FROM
                     acknowledgement_role
                 WHERE
-                    acknowledgement_id = :acknowledgement_id
+                    acknowledgementId = :acknowledgementId
             "
         );
         return $stmt->execute(
-            array("acknowledgement_id" => $acknowledgement_id)
+            array("acknowledgementId" => $acknowledgementId)
         );
     }
     /**
      * Fetches all roles of the acknowledgement
      *
-     * @param string $acknowledgement_id The acknowledgement id
+     * @param string $acknowledgementId The acknowledgement id
      *
      * @return array The array of objects
      */
-    public static function fetchAllOfAcknowledgement($acknowledgement_id)
+    public static function fetchAllOfAcknowledgement($acknowledgementId)
     {
         $result = Database::singleton()->pselect(
             "
@@ -189,13 +189,13 @@ class AcknowledgementRole
                 JOIN
                     ack_center_role item
                 ON
-                    item.id = ack.role_id
+                    item.id = ack.roleId
                 WHERE
-                    ack.acknowledgement_id = :acknowledgement_id
+                    ack.acknowledgementId = :acknowledgementId
                 ORDER BY
                     item.title ASC
             ",
-            array("acknowledgement_id" => $acknowledgement_id)
+            array("acknowledgementId" => $acknowledgementId)
         );
         //Objects are easier to work with, imo
         //Cleaner syntax
@@ -207,13 +207,13 @@ class AcknowledgementRole
     /**
      * Repopulates roles of the acknowledgement
      *
-     * @param string $acknowledgement_id The acknowledgement id
-     * @param array  $id_arr             The array of role ids
+     * @param string $acknowledgementId The acknowledgement id
+     * @param array  $id_arr            The array of role ids
      *
      * @return bool `true` on success
      */
     public static function repopulateAllOfAcknowledgement(
-        $acknowledgement_id,
+        $acknowledgementId,
         $id_arr
     ) {
 
@@ -224,15 +224,15 @@ class AcknowledgementRole
             if (!is_string($id) || !preg_match("/^\d+$/", $id)) {
                 return false;
             }
-            if (!self::hasSameCenterId($acknowledgement_id, $id)) {
+            if (!self::hasSameCenterId($acknowledgementId, $id)) {
                 return false;
             }
         }
-        if (!self::deleteAllOfAcknowledgement($acknowledgement_id)) {
+        if (!self::deleteAllOfAcknowledgement($acknowledgementId)) {
             return false;
         }
         foreach ($id_arr as $id) {
-            if (!self::insertIfNotExists($acknowledgement_id, $id)) {
+            if (!self::insertIfNotExists($acknowledgementId, $id)) {
                 return false;
             }
         }

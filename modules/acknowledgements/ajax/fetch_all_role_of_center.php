@@ -18,27 +18,27 @@ if ($_SERVER["REQUEST_METHOD"] != "GET") {
     http_response_code(405);
     die();
 }
-if (!isset($_GET["center_id"])
-    || !is_string($_GET["center_id"])
+if (!isset($_GET["centerId"])
+    || !is_string($_GET["centerId"])
     || !preg_match(
         "/^\d+$/",
-        $_GET["center_id"]
+        $_GET["centerId"]
     )) {
         http_response_code(404);
         die();
 }
     //Get input
-    $center_id = $_GET["center_id"];
+    $centerId = $_GET["centerId"];
     //Validate permission
 if (!AcknowledgementPermission::canViewForCenter(
     User::singleton()->userInfo["ID"],
-    $center_id
+    $centerId
 )) {
     http_response_code(401);
     die();
 }
     //fetch
-    $result = AckCenterRole::fetchAllOfCenter($center_id);
+    $result = AckCenterRole::fetchAllOfCenter($centerId);
     //Validate/Process fetched
 if (is_null($result)) {
     http_response_code(500);

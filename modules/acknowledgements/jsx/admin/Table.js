@@ -1,71 +1,83 @@
 class Table extends React.Component {
-    constructor (props) {
-        super(props);
-        this.state = {};
-        this.tbody = <TBody
-            id_prefix={props["id_prefix"]}
-            center_id={props["center_id"]}
-            fetch_all_url={props["fetch_all_url"]}
-            delete_url={props["delete_url"]}
-            update_url={props["update_url"]}
-            />
-    }
-    onAddSubmit (e) {
-        e.preventDefault();
-        
-        const val = $("#"+this.props.id_prefix+"-add-input").val();
-        console.log(val);
-        $.ajax({
-            type: "POST",
-            url : this.props["insert_url"],
-            dataType: "json",
-            data: {
-                "center_id":this.props["center_id"],
-                "title":val
-            },
-            success: function (data) {
-                console.log(data);
-                $.ajax({
-                    method: "GET",
-                    url : this.props["fetch_url"] + "?id=" + encodeURIComponent(data.id),
-                    dataType: "json",
-                    success: function (d) {
-                        window.dispatchEvent(new CustomEvent(this.props.id_prefix+"-insert", {
-                            detail:d
-                        }));
-                        this.setState({
-                            error:null
-                        });
-                    }.bind(this),
-                    error: function (error) {
-                        console.log(error);
-                        this.setState({
-                            error:error.responseJSON.error
-                        });
-                    }.bind(this)
-                });
-            }.bind(this),
-            error: function (error) {
-                console.log(error);
-                this.setState({
-                    error:error.responseJSON.error
-                });
-            }.bind(this)
-        });
-    }
-    render () {
-        return (
+  constructor(props) {
+    super(props);
+    this.state = {};
+    this.tbody = <TBody
+            idPrefix ={props.idPrefix}
+            centerId ={props.centerId}
+            fetchAllUrl ={props.fetchAllUrl}
+            deleteUrl ={props.deleteUrl}
+            updateUrl ={props.updateUrl}
+            />;
+  }
+  onAddSubmit(e) {
+    e.preventDefault();
+
+    const val = $("#" + this.props.idPrefix + "-add-input").val();
+
+    $.ajax(
+      {
+        type: "POST",
+        url: this.props.insertUrl,
+        dataType: "json",
+        data: {
+          centerId: this.props.centerId,
+          title: val
+        },
+        success: function(data) {
+          $.ajax(
+            {
+              method: "GET",
+              url: this.props.fetchUrl + "?id=" + encodeURIComponent(data.id),
+              dataType: "json",
+              success: function(d) {
+                window.dispatchEvent(
+                                    new CustomEvent(
+                                        this.props.idPrefix + "-insert",
+                                      {
+                                        detail: d
+                                      }
+                                    )
+                                );
+                this.setState(
+                  {
+                    error: null
+                  }
+                                );
+              }.bind(this),
+              error: function(error) {
+                this.setState(
+                  {
+                    error: error.responseJSON.error
+                  }
+                                );
+              }.bind(this)
+            }
+                    );
+        }.bind(this),
+        error: function(error) {
+          this.setState(
+            {
+              error: error.responseJSON.error
+            }
+                    );
+        }.bind(this)
+      }
+        );
+  }
+  render() {
+    return (
             <div>
                 <FormAdd
-                    id_prefix={this.props.id_prefix}
-                    center_id={this.props.center_id}
-                    insert_url={this.props.insert_url}
-                    fetch_url={this.props.fetch_url}
-                    placeholder={this.props.placeholder}
+                    idPrefix ={this.props.idPrefix}
+                    centerId ={this.props.centerId}
+                    insertUrl ={this.props.insertUrl}
+                    fetchUrl ={this.props.fetchUrl}
+                    placeholder ={this.props.placeholder}
                     />
-                <table className="table table-hover table-primary table-bordered table-unresolved-conflicts dynamictable">
+                <table className ="table table-hover table-primary table-bordered table-unresolved-conflicts dynamictable">
                     <thead>
-                        <tr className="info">
+                        <tr className ="info">
                             <th>{this.props.placeholder}</th>
                             <th>Edit</th>
                             <th>Delete</th>
@@ -75,7 +87,7 @@ class Table extends React.Component {
                 </table>
             </div>
         );
-    }
+  }
 }
 
 window.Table = Table;

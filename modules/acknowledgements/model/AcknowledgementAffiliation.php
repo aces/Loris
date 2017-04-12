@@ -27,12 +27,12 @@ class AcknowledgementAffiliation
     /**
      * Checks if it exists
      *
-     * @param string $acknowledgement_id The acknowledgement id
-     * @param string $affiliation_id     The affiliation id
+     * @param string $acknowledgementId The acknowledgement id
+     * @param string $affiliationId     The affiliation id
      *
      * @return bool `true` if exists
      */
-    public static function exists($acknowledgement_id, $affiliation_id)
+    public static function exists($acknowledgementId, $affiliationId)
     {
         $result = Database::singleton()->pselectOne(
             "
@@ -43,13 +43,13 @@ class AcknowledgementAffiliation
                         FROM
                             acknowledgement_affiliation
                         WHERE
-                            acknowledgement_id = :acknowledgement_id AND
-                            affiliation_id     = :affiliation_id
+                            acknowledgementId = :acknowledgementId AND
+                            affiliationId     = :affiliationId
                     )
             ",
             array(
-             "acknowledgement_id" => $acknowledgement_id,
-             "affiliation_id"     => $affiliation_id,
+             "acknowledgementId" => $acknowledgementId,
+             "affiliationId"     => $affiliationId,
             )
         );
         return ($result === "1");
@@ -57,35 +57,35 @@ class AcknowledgementAffiliation
     /**
      * Checks the acknowledgement and affiliation are from the same center
      *
-     * @param string $acknowledgement_id The acknowledgement id
-     * @param string $affiliation_id     The affiliation id
+     * @param string $acknowledgementId The acknowledgement id
+     * @param string $affiliationId     The affiliation id
      *
      * @return bool `true` if they are from the same center
      */
-    public static function hasSameCenterId($acknowledgement_id, $affiliation_id)
+    public static function hasSameCenterId($acknowledgementId, $affiliationId)
     {
         $result = Database::singleton()->pselectOne(
             "
                 SELECT
                     (
                         SELECT
-                            center_id
+                            centerId
                         FROM
                             acknowledgement
                         WHERE
-                            id = :acknowledgement_id
+                            id = :acknowledgementId
                     ) = (
                         SELECT
-                            center_id
+                            centerId
                         FROM
                             ack_center_affiliation
                         WHERE
-                            id = :affiliation_id
+                            id = :affiliationId
                     )
             ",
             array(
-             "acknowledgement_id" => $acknowledgement_id,
-             "affiliation_id"     => $affiliation_id,
+             "acknowledgementId" => $acknowledgementId,
+             "affiliationId"     => $affiliationId,
             )
         );
         return ($result === "1");
@@ -93,92 +93,92 @@ class AcknowledgementAffiliation
     /**
      * Inserts a affiliation to the acknowledgement
      *
-     * @param string $acknowledgement_id The acknowledgement id
-     * @param string $affiliation_id     The affiliation id
+     * @param string $acknowledgementId The acknowledgement id
+     * @param string $affiliationId     The affiliation id
      *
      * @return bool `true` on success
      */
-    public static function insertIfNotExists($acknowledgement_id, $affiliation_id)
+    public static function insertIfNotExists($acknowledgementId, $affiliationId)
     {
-        if (self::exists($acknowledgement_id, $affiliation_id)) {
+        if (self::exists($acknowledgementId, $affiliationId)) {
             return true;
         }
-        if (!self::hasSameCenterId($acknowledgement_id, $affiliation_id)) {
+        if (!self::hasSameCenterId($acknowledgementId, $affiliationId)) {
             return false;
         }
 
         $stmt = Database::singleton()->prepare(
             "
                 INSERT INTO
-                    acknowledgement_affiliation (acknowledgement_id, affiliation_id)
+                    acknowledgement_affiliation (acknowledgementId, affiliationId)
                 VALUES (
-                    :acknowledgement_id,
-                    :affiliation_id
+                    :acknowledgementId,
+                    :affiliationId
                 )
             "
         );
         return $stmt->execute(
             array(
-             "acknowledgement_id" => $acknowledgement_id,
-             "affiliation_id"     => $affiliation_id,
+             "acknowledgementId" => $acknowledgementId,
+             "affiliationId"     => $affiliationId,
             )
         );
     }
     /**
      * Deletes a affiliation from the acknowledgement
      *
-     * @param string $acknowledgement_id The acknowledgement id
-     * @param string $affiliation_id     The affiliation id
+     * @param string $acknowledgementId The acknowledgement id
+     * @param string $affiliationId     The affiliation id
      *
      * @return bool `true` on success
      */
-    public static function deleteIfExists($acknowledgement_id, $affiliation_id)
+    public static function deleteIfExists($acknowledgementId, $affiliationId)
     {
         $stmt = Database::singleton()->prepare(
             "
                 DELETE FROM
                     acknowledgement_affiliation
                 WHERE
-                    acknowledgement_id = :acknowledgement_id AND
-                    affiliation_id     = :affiliation_id
+                    acknowledgementId = :acknowledgementId AND
+                    affiliationId     = :affiliationId
             "
         );
         return $stmt->execute(
             array(
-             "acknowledgement_id" => $acknowledgement_id,
-             "affiliation_id"     => $affiliation_id,
+             "acknowledgementId" => $acknowledgementId,
+             "affiliationId"     => $affiliationId,
             )
         );
     }
     /**
      * Deletes all affiliations from the acknowledgement
      *
-     * @param string $acknowledgement_id The acknowledgement id
+     * @param string $acknowledgementId The acknowledgement id
      *
      * @return bool `true` on success
      */
-    public static function deleteAllOfAcknowledgement($acknowledgement_id)
+    public static function deleteAllOfAcknowledgement($acknowledgementId)
     {
         $stmt = Database::singleton()->prepare(
             "
                 DELETE FROM
                     acknowledgement_affiliation
                 WHERE
-                    acknowledgement_id = :acknowledgement_id
+                    acknowledgementId = :acknowledgementId
             "
         );
         return $stmt->execute(
-            array("acknowledgement_id" => $acknowledgement_id)
+            array("acknowledgementId" => $acknowledgementId)
         );
     }
     /**
      * Fetches all affiliations of the acknowledgement
      *
-     * @param string $acknowledgement_id The acknowledgement id
+     * @param string $acknowledgementId The acknowledgement id
      *
      * @return array The array of objects
      */
-    public static function fetchAllOfAcknowledgement($acknowledgement_id)
+    public static function fetchAllOfAcknowledgement($acknowledgementId)
     {
         $result = Database::singleton()->pselect(
             "
@@ -189,13 +189,13 @@ class AcknowledgementAffiliation
                 JOIN
                     ack_center_affiliation item
                 ON
-                    item.id = ack.affiliation_id
+                    item.id = ack.affiliationId
                 WHERE
-                    ack.acknowledgement_id = :acknowledgement_id
+                    ack.acknowledgementId = :acknowledgementId
                 ORDER BY
                     item.title ASC
             ",
-            array("acknowledgement_id" => $acknowledgement_id)
+            array("acknowledgementId" => $acknowledgementId)
         );
         //Objects are easier to work with, imo
         //Cleaner syntax
@@ -207,13 +207,13 @@ class AcknowledgementAffiliation
     /**
      * Repopulates affiliations of the acknowledgement
      *
-     * @param string $acknowledgement_id The acknowledgement id
-     * @param array  $id_arr             The array of affiliation ids
+     * @param string $acknowledgementId The acknowledgement id
+     * @param array  $id_arr            The array of affiliation ids
      *
      * @return bool `true` on success
      */
     public static function repopulateAllOfAcknowledgement(
-        $acknowledgement_id,
+        $acknowledgementId,
         $id_arr
     ) {
 
@@ -224,15 +224,15 @@ class AcknowledgementAffiliation
             if (!is_string($id) || !preg_match("/^\d+$/", $id)) {
                 return false;
             }
-            if (!self::hasSameCenterId($acknowledgement_id, $id)) {
+            if (!self::hasSameCenterId($acknowledgementId, $id)) {
                 return false;
             }
         }
-        if (!self::deleteAllOfAcknowledgement($acknowledgement_id)) {
+        if (!self::deleteAllOfAcknowledgement($acknowledgementId)) {
             return false;
         }
         foreach ($id_arr as $id) {
-            if (!self::insertIfNotExists($acknowledgement_id, $id)) {
+            if (!self::insertIfNotExists($acknowledgementId, $id)) {
                 return false;
             }
         }

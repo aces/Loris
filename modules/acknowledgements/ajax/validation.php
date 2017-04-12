@@ -56,28 +56,28 @@ function Helper_validateString($var, $name, $min_length, $max_length)
 /**
  * Validates a start and end date
  *
- * @param string $start_date The start date
- * @param string $end_date   The end date
+ * @param string $startDate The start date
+ * @param string $endDate   The end date
  *
  * @return void
  */
-function Helper_validateStartEndDate($start_date, $end_date)
+function Helper_validateStartEndDate($startDate, $endDate)
 {
-    if (!Acknowledgement::isValidStartToEndDate($start_date, $end_date)) {
-        if (!is_null($start_date)
-            && !is_null($end_date)
-            && $end_date < $start_date
+    if (!Acknowledgement::isValidStartToEndDate($startDate, $endDate)) {
+        if (!is_null($startDate)
+            && !is_null($endDate)
+            && $endDate < $startDate
         ) {
             Helper_error(400, "End date must be at or after start date");
         }
         $range = Acknowledgement::fetchValidDateRange();
-        if (!is_null($start_date)) {
+        if (!is_null($startDate)) {
             Helper_error(
                 400,
                 "Start date must be between {$range->start} and {$range->end}"
             );
         }
-        if (!is_null($end_date)) {
+        if (!is_null($endDate)) {
             Helper_error(
                 400,
                 "End date must be between {$range->start} and {$range->end}"
