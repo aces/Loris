@@ -3,7 +3,7 @@ set -e
 
 # Run PHP -l on everything to ensure there's no syntax
 # errors.
-for i in `ls php/libraries/*.class.inc modules/*/php/* modules/*/ajax/* htdocs/*.php htdocs/*/*.php`;
+for i in `ls php/libraries/*.class.inc modules/*/php/* modules/*/ajax/* modules/*/model/*.php htdocs/*.php htdocs/*/*.php`;
 do
   php -l $i || exit $?;
 done

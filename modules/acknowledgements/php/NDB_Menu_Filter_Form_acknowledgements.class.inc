@@ -12,8 +12,8 @@
  * @link     https://github.com/aces/Loris
  */
 
- require_once(__DIR__ . "/../model/require_once.php");
- 
+ require_once __DIR__ . "/../model/require_once.php";
+
 /**
  * This class provides the code to create the menu filter form that allows
  * for data entry of entities that should be acknowledged in publications
@@ -40,19 +40,19 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
     {
         $user    = User::singleton();
         $user_id = $user->userInfo["ID"];
-        
+
         if (!isset($_GET["center_id"])) {
-            return AcknowledgementPermission::CanViewForAtLeastOneCenter(
+            return AcknowledgementPermission::canViewForAtLeastOneCenter(
                 $user_id
             );
         }
-        
+
         $center_id = $_GET["center_id"];
         if (!is_string($center_id) || !preg_match("/^\d+$/", $center_id)) {
             return false;
         }
-        
-        return AcknowledgementPermission::CanViewForCenter($user_id, $center_id);
+
+        return AcknowledgementPermission::canViewForCenter($user_id, $center_id);
     }
 
     /**
@@ -75,13 +75,13 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        $this->query = " FROM acknowledgement WHERE FALSE";
+        $this->query   = " FROM acknowledgement WHERE FALSE";
         $this->columns = array();
 
         $config = NDB_Config::singleton();
-        
-        $this->tpl_data["valid_date_range"] = Acknowledgement::FetchValidDateRange();
-        $this->tpl_data['citation_policy'] = $config->getSetting('citation_policy');
+
+        $this->tpl_data["valid_date_range"] = Acknowledgement::fetchValidDateRange();
+        $this->tpl_data['citation_policy']  = $config->getSetting('citation_policy');
 
         return true;
     }
