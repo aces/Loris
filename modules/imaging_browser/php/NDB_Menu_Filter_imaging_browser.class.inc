@@ -127,7 +127,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             if (!$user->hasPermission('imaging_browser_view_site')) {
                     $this->query .= " AND c.Entity_type = 'Scanner' ";
             } else {
-                $site_arr     = implode(",", $user->getCenterID());
+                $site_arr     = implode(",", $user->getCenterIDs());
                 $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
                 if ($user->hasPermission('imaging_browser_phantom_data')) {
                     $this->query .= " OR c.Entity_type = 'Scanner' ";
