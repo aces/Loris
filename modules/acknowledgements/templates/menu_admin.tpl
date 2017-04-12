@@ -2,7 +2,12 @@
     <div class="col-lg-8">
         <div class="panel panel-primary">
             <div class="panel-body">
-                <a id="btn-back" class="btn btn-sm btn-primary" href="/acknowledgements/">Back to Acknowledgements</a>
+                <div>
+                    <a id="btn-back" class="btn btn-sm btn-primary" href="/acknowledgements/">Back to Acknowledgements</a>
+                    <span class="pull-right">
+                        <a id="btn-add-default-data" class="btn btn-sm btn-danger" href="#/" style="display:none;">Add Default Data</a>
+                    </span>
+                </div>
                 <br/>
                 <br/>
                 <br/>

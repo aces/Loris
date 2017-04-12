@@ -123,3 +123,35 @@ $(document).ready(
         );
     }
 );
+
+$(document).ready(
+    function() {
+      const qs = QueryString.get();
+      if (!qs.centerId) {
+        return;
+      }
+
+      $("#btn-add-default-data").click(function() {
+        if (confirm("Are you sure you want to add default data?") && confirm("Are you *really* sure?")) {
+          $.ajax({
+            method: "PUT",
+            url: "/acknowledgements/ajax/insert_default_center_data.php?centerId=" + encodeURIComponent(qs.centerId),
+            success: function() {
+              location.reload();
+            },
+            error: function(error) {
+              alert(error.responseJSON.error);
+            }
+          });
+        }
+      }).css("display", "");
+      loadCenter(
+            qs.centerId,
+            document.getElementById("container-affiliation"),
+            document.getElementById("container-degree"),
+            document.getElementById("container-role")
+        );
+      $("#btn-back")
+        .attr("href", "/acknowledgements/?centerId=" + encodeURIComponent(qs.centerId));
+    }
+);
