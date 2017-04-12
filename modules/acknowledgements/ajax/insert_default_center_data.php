@@ -39,31 +39,60 @@ if (!AcknowledgementPermission::canAdministerForCenter(
 }
 
     //Default data
-    $degreeArr = array(
-                  "Bachelor's",
-                  "Master's",
-                  "MD",
-                  "PhD",
-                  "Postdoctoral",
-                  "Registered Nurse",
-                 );
-    $roleArr   = array(
-                  "Clinical Evaluation",
-                  "Consultant",
-                  "Data Analysis",
-                  "Data Entry",
-                  "Database Management",
-                  "Database Programming",
-                  "Genetic Analysis and Biochemical Assays",
-                  "Imaging Processing and Evaluation",
-                  "Interview Data Collection",
-                  "Investigator",
-                  "LP/CSF Collection",
-                  "MRI Acquisition",
-                  "Project Administration",
-                  "Randomization and Pharmacy Allocation",
-                 );
+    $affiliationArr = array("McGill University");
+    $degreeArr      = array(
+                       "Bachelor's",
+                       "Master's",
+                       "MD",
+                       "PhD",
+                       "Postdoctoral",
+                       "Registered Nurse",
+                      );
+    $roleArr        = array(
+                       "Clinical Evaluation",
+                       "Consultant",
+                       "Data Analysis",
+                       "Data Entry",
+                       "Database Management",
+                       "Database Programming",
+                       "Genetic Analysis and Biochemical Assays",
+                       "Imaging Processing and Evaluation",
+                       "Interview Data Collection",
+                       "Investigator",
+                       "LP/CSF Collection",
+                       "MRI Acquisition",
+                       "Project Administration",
+                       "Randomization and Pharmacy Allocation",
+                      );
     //insert
+    foreach ($affiliationArr as $str) {
+        $item = AckCenterAffiliation::fetchByTitle($centerId, $str);
+        if (!is_null($item)) {
+            if ($item->hidden) {
+                //Unhide it
+                if (AckCenterAffiliation::update($item->id, $item->title, false)) {
+                    continue;
+                } else {
+                    http_response_code(500);
+                    die(
+                        json_encode(
+                            array("error" => "Could not insert affiliation '$str'")
+                        )
+                    );
+                }
+            } else {
+                continue;
+            }
+        }
+        if (is_null(AckCenterAffiliation::insert($centerId, $str))) {
+            http_response_code(500);
+            die(
+                json_encode(
+                    array("error" => "Could not insert affiliation '$str'")
+                )
+            );
+        }
+    }
     foreach ($degreeArr as $str) {
         $item = AckCenterDegree::fetchByTitle($centerId, $str);
         if (!is_null($item)) {
