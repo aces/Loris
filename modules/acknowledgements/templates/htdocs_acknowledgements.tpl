@@ -35,12 +35,12 @@
                 </thead>
                 {foreach from=$arr key=k item=v}
                     <tr> 
-                        <td>{$v->full_name}</td>
-                        <td>{$v->citation_name}</td>
-                        <td>{$v->affiliation_str}</td>
-                        <td>{$v->degree_str}</td>
-                        <td>{$v->role_str}</td>
-                        <td>{$v->in_study_at_present_str}</td>
+                        <td>{$v->fullName}</td>
+                        <td>{$v->citationName}</td>
+                        <td>{$v->affiliationStr}</td>
+                        <td>{$v->degreeStr}</td>
+                        <td>{$v->roleStr}</td>
+                        <td>{$v->inStudyAtPresentStr}</td>
                     </tr>
                 {/foreach}
             </table>

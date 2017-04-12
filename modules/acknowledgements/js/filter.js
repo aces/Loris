@@ -5,6 +5,8 @@ $(document).ready(
         if (!qs.centerId) {
             return;
         }
+        $("#txt-public-link")
+        .val(window.location.origin + "/acknowledgements/acknowledgements.php?centerId="+encodeURIComponent(qs.centerId));
         $("#filter-container").css("display", "");
         function buildFilter() {
             const filter = {
@@ -43,6 +45,8 @@ $(document).ready(
                 $("#filter-start-date").val("");
                 $("#filter-end-date").val("");
                 $("#filter-in-study-at-present").val("do-not-filter");
+                $("#txt-public-link")
+                .val(window.location.origin + "/acknowledgements/acknowledgements.php?centerId="+encodeURIComponent(qs.centerId));
                 fetchAll(
                     {
                         centerId: qs.centerId,
@@ -62,10 +66,11 @@ $(document).ready(
         );
         $("#btn-filter").click(
             function() {
+                const filter = buildFilter();
                 fetchAll(
                     {
                         centerId: qs.centerId,
-                        filter: buildFilter(),
+                        filter: filter,
                         success: function(data) {
                             $(".filter-error").empty();
                             window.dispatchEvent(
@@ -76,6 +81,9 @@ $(document).ready(
                                     }
                                 )
                             );
+                            filter.centerId = qs.centerId;
+                            $("#txt-public-link")
+                            .val(window.location.origin + "/acknowledgements/acknowledgements.php?" + jQuery.param(filter));
                         },
                         error: function(error) {
                             $(".filter-error")

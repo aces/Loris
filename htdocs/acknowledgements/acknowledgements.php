@@ -54,25 +54,25 @@ function Helper_arrayToStringOnKey($arr, $key, $separator)
 function Helper_printAcknowledgementsHTML($arr)
 {
     foreach ($arr as $row) {
-        $row->affiliation_str = Helper_arrayToStringOnKey(
-            $row->affiliation_arr,
+        $row->affiliationStr = Helper_arrayToStringOnKey(
+            $row->affiliationArr,
             "title",
             "<br/>"
         );
-        $row->degree_str      = Helper_arrayToStringOnKey(
-            $row->degree_arr,
+        $row->degreeStr      = Helper_arrayToStringOnKey(
+            $row->degreeArr,
             "title",
             "<br/>"
         );
-        $row->role_str        = Helper_arrayToStringOnKey(
-            $row->role_arr,
+        $row->roleStr        = Helper_arrayToStringOnKey(
+            $row->roleArr,
             "title",
             "<br/>"
         );
-        $row->in_study_at_present_str = "-";
+        $row->inStudyAtPresentStr = "-";
 
-        if (!is_null($row->in_study_at_present)) {
-            $row->in_study_at_present_str = $row->in_study_at_present ?
+        if (!is_null($row->inStudyAtPresent)) {
+            $row->inStudyAtPresentStr = $row->inStudyAtPresent ?
                 "Yes" : "No";
         }
     }
@@ -121,14 +121,14 @@ function Helper_sendAcknowledgementsCSV($arr)
         fputcsv(
             $f,
             array(
-             $row->full_name,
-             $row->citation_name,
-             Helper_arrayToStringOnKey($row->affiliation_arr, "title", "\n"),
-             Helper_arrayToStringOnKey($row->degree_arr, "title", "\n"),
-             Helper_arrayToStringOnKey($row->role_arr, "title", "\n"),
-             is_null($row->in_study_at_present) ?
+             $row->fullName,
+             $row->citationName,
+             Helper_arrayToStringOnKey($row->affiliationArr, "title", "\n"),
+             Helper_arrayToStringOnKey($row->degreeArr, "title", "\n"),
+             Helper_arrayToStringOnKey($row->roleArr, "title", "\n"),
+             is_null($row->inStudyAtPresent) ?
                 "-" :
-                ($row->in_study_at_present ? "Yes" : "No"),
+                ($row->inStudyAtPresent ? "Yes" : "No"),
             )
         );
     }

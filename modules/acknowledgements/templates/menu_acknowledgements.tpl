@@ -75,6 +75,11 @@
                     <div class="visible-xs col-xs-12"> </div>
                     <div class="visible-xs col-xs-12"> </div>
                     <div class="visible-xs col-xs-12"> </div>
+                    <div id="container-public-link" class="col-lg-12">
+                        <br/>
+                        Public Link
+                        <input id="txt-public-link" class="form-control" type="text" placeholder="Public Link"/>
+                    </div>
                 </div>
             </div>
         </div>
