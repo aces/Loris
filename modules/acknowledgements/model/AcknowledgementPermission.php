@@ -97,7 +97,7 @@ class AcknowledgementPermission
         $user = User::factory($username);
         return
             $user->hasPermission("acknowledgements_view") &&
-            in_array($centerId, $user->getCenterID());
+            in_array($centerId, $user->getCenterIDs());
     }
     /**
      * Fetches all centers the user can view acknowledgements for
@@ -113,7 +113,7 @@ class AcknowledgementPermission
             return null;
         }
         $user            = User::factory($username);
-        $centerId_arr    = $user->getCenterID();
+        $centerId_arr    = $user->getCenterIDs();
         $viewable_id_arr = array();
         foreach ($centerId_arr as $centerId) {
             if (self::canViewForCenter($userId, $centerId)) {
@@ -161,7 +161,7 @@ class AcknowledgementPermission
         $user = User::factory($username);
         return
             $user->hasPermission("acknowledgements_edit") &&
-            in_array($centerId, $user->getCenterID());
+            in_array($centerId, $user->getCenterIDs());
     }
     /**
      * Checks if the user can update a specific acknowledgement
@@ -217,7 +217,7 @@ class AcknowledgementPermission
         //May change in future
         return
             $user->hasPermission("acknowledgements_edit") &&
-            in_array($centerId, $user->getCenterID());
+            in_array($centerId, $user->getCenterIDs());
     }
     /**
      * Fetches all centers the user can administer acknowledgements for
@@ -233,7 +233,7 @@ class AcknowledgementPermission
             return null;
         }
         $user         = User::factory($username);
-        $centerId_arr = $user->getCenterID();
+        $centerId_arr = $user->getCenterIDs();
         $administrable_id_arr = array();
         foreach ($centerId_arr as $centerId) {
             if (self::canAdministerForCenter($userId, $centerId)) {
