@@ -25,18 +25,34 @@ class CandidateParameters extends React.Component {
   }
 
   render() {
+
     let tabList = [
       {id: "candidateInfo", label: "Candidate Information", component: CandidateInfo},
-      {id: "probandInfo", label: "Proband Information", component: ProbandInfo},
-      {id: "familyInfo", label: "Family Information", component: FamilyInfo},
       {id: "participantStatus", label: "Participant Status", component: ParticipantStatus},
       {id: "consentStatus", label: "Consent Status", component: ConsentStatus}
     ];
 
+    if (loris.config('useProband') === "true") {
+      tabList.splice(1, 0, {id: "probandInfo", label: "Proband Information", component: ProbandInfo});
+    }
+
+    if (loris.config('useFamilyID') === "true") {
+      tabList.splice(2, 0, {id: "familyInfo", label: "Family Information", component: FamilyInfo});
+    }
+
     return (
-      <Tabs tabs={tabList} defaultTab="candidateInfo" updateURL={true}>
-        {this.getTabPanes(tabList)}
-      </Tabs>
+      <div>
+        <a className="btn btn-sm btn-primary"
+           href={loris.BaseURL + '/timepoint_list/?candID=' + this.props.candID}
+           style={{marginBottom: '20px'}}
+        >
+          Return to timepoint list
+        </a>
+        <br />
+        <Tabs tabs={tabList} defaultTab="candidateInfo" updateURL={true}>
+          {this.getTabPanes(tabList)}
+        </Tabs>
+      </div>
     );
   }
 }
