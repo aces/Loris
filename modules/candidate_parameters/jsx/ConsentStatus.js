@@ -20,20 +20,6 @@ var ConsentStatus = React.createClass(
                 this.props.dataURL,
         {
           dataType: 'json',
-          xhr: function() {
-            var xhr = new window.XMLHttpRequest();
-            xhr.addEventListener(
-                            "progress",
-                            function(evt) {
-                              that.setState(
-                                {
-                                  loadedData: evt.loaded
-                                }
-                                );
-                            }
-                        );
-            return xhr;
-          },
           success: function(data) {
             var formData = {};
             var consents = data.consents;
@@ -149,7 +135,7 @@ var ConsentStatus = React.createClass(
                 label={label}
                 name={consentStatus}
                 options={this.state.consentOptions}
-                value={this.state.Data.consentStatuses[consentStatus]}
+                value={this.state.formData[consentStatus]}
                 onUserInput={this.setFormData}
                 ref={consentStatus}
                 disabled={disabled}
@@ -158,7 +144,7 @@ var ConsentStatus = React.createClass(
               <DateElement
                 label={consentDateLabel}
                 name={consentDate}
-                value={this.state.Data.consentDates[consentStatus]}
+                value={this.state.formData[consentDate]}
                 onUserInput={this.setFormData}
                 ref={consentDate}
                 disabled={disabled}
@@ -167,7 +153,7 @@ var ConsentStatus = React.createClass(
               <DateElement
                 label={consentDateConfirmationLabel}
                 name={consentDate2}
-                value={this.state.Data.consentDates[consentStatus]}
+                value={this.state.formData[consentDate2]}
                 onUserInput={this.setFormData}
                 ref={consentDate2}
                 disabled={disabled}
@@ -176,7 +162,7 @@ var ConsentStatus = React.createClass(
               <DateElement
                 label={consentWithdrawalLabel}
                 name={consentWithdrawal}
-                value={this.state.Data.withdrawals[consentStatus]}
+                value={this.state.formData[consentWithdrawal]}
                 onUserInput={this.setFormData}
                 ref={consentWithdrawal}
                 disabled={disabled}
@@ -185,7 +171,7 @@ var ConsentStatus = React.createClass(
               <DateElement
                 label={consentWithdrawalConfirmationLabel}
                 name={consentWithdrawal2}
-                value={this.state.Data.withdrawals[consentStatus]}
+                value={this.state.formData[consentWithdrawal2]}
                 onUserInput={this.setFormData}
                 ref={consentWithdrawal2}
                 disabled={disabled}

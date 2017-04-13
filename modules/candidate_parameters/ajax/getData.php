@@ -382,17 +382,24 @@ function getConsentStatusFields()
     }
 
     foreach ($consent_details as $consentType) {
-        $name   = $consentType['name'];
-        $dbName = $db->escape($name);
+        $name           = $consentType['name'];
+        $consentDate    = $name . '_date';
+        $withdrawalDate = $name . '_withdrawal';
 
-        $query = "SELECT {$dbName}, {$dbName}_date, {$dbName}_withdrawal 
-        FROM participant_status WHERE CandID=:candid";
-        $row   = $db->pselectRow($query, ['candid' => $candID]);
+        $query = "SELECT 
+                {$db->escape($name)}, 
+                {$db->escape($consentDate)},
+                {$db->escape($withdrawalDate )}         
+                FROM participant_status WHERE CandID=:candid";
+
+        $row = $db->pselectRow($query, ['candid' => $candID]);
 
         $consents[$name]      = $consentType['label'];
         $consentStatus[$name] = !empty($row[$name]) ? $row[$name] : null;
-        $date[$name]          = !empty($row[$name]) ? $row[$name] : null;
-        $withdrawal[$name]    = !empty($row[$name]) ? $row[$name] : null;
+        $date[$name]          = !empty($row[$consentDate]) ?
+            $row[$consentDate] : null;
+        $withdrawal[$name]    = !empty($row[$withdrawalDate]) ?
+            $row[$withdrawalDate] : null;
     }
 
     $history = getConsentStatusHistory($candID, $consents);
