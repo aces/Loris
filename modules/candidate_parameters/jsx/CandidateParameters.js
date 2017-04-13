@@ -25,7 +25,6 @@ class CandidateParameters extends React.Component {
   }
 
   render() {
-
     let tabList = [
       {id: "candidateInfo", label: "Candidate Information", component: CandidateInfo},
       {id: "participantStatus", label: "Participant Status", component: ParticipantStatus},
