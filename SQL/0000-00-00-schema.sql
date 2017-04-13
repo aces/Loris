@@ -1209,6 +1209,7 @@ CREATE TABLE `test_battery` (
   `AgeMaxDays` int(10) unsigned default NULL,
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Stage` varchar(255) default NULL,
+  `ProjectID` int(11) default NULL,
   `SubprojectID` int(11) default NULL,
   `Visit_label` varchar(255) default NULL,
   `CenterID` int(11) default NULL,
@@ -1217,7 +1218,8 @@ CREATE TABLE `test_battery` (
   PRIMARY KEY  (`ID`),
   KEY `age_test` (`AgeMinDays`,`AgeMaxDays`,`Test_name`),
   KEY `FK_test_battery_1` (`Test_name`),
-  CONSTRAINT `FK_test_battery_1` FOREIGN KEY (`Test_name`) REFERENCES `test_names` (`Test_name`)
+  CONSTRAINT `FK_test_battery_1` FOREIGN KEY (`Test_name`) REFERENCES `test_names` (`Test_name`),
+  FOREIGN KEY (`ProjectID`) REFERENCES Project(`ProjectID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
