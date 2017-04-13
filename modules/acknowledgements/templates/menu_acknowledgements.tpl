@@ -157,52 +157,52 @@
                     </div>
                     <div class="row">
                         <div class="col-xs-12 form-group">
-                            <label class="col-xs-4" for="full_name">Full Name<font color="red"><sup> *</sup></font></label>
+                            <label class="col-xs-4" for="full_name">Full Name</label>
                             <div class="col-xs-8">
                                 <input type="text" id="ack-full-name" name="full_name" placeholder="Full Name" class="form-fields form-control input-sm"/>
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
-                            <label class="col-xs-4" for="citation_name">Citation Name<font color="red"><sup> *</sup></font></label>
+                            <label class="col-xs-4" for="citation_name">Citation Name</label>
                             <div class="col-xs-8">
                                 <input type="text" id="ack-citation-name" name="citation_name" placeholder="Citation Name" class="form-fields form-control input-sm"/>
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
-                            <label class="col-xs-4" for="affiliation_arr[]">Affiliations<font color="red"><sup> *</sup></font></label>
+                            <label class="col-xs-4" for="affiliation_arr[]">Affiliations</label>
                             <div class="col-xs-8">
                                 <select id="ack-affiliation-arr" name="affiliation_arr[]" class="form-fields form-control input-sm" multiple>
                                 </select>
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
-                            <label class="col-xs-4" for="degree_arr[]">Degrees<font color="red"><sup> *</sup></font></label>
+                            <label class="col-xs-4" for="degree_arr[]">Degrees</label>
                             <div class="col-xs-8">
                                 <select id="ack-degree-arr" name="degree_arr[]" class="form-fields form-control input-sm" multiple>
                                 </select>
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
-                            <label class="col-xs-4" for="role_arr[]">Roles<font color="red"><sup> *</sup></font></label>
+                            <label class="col-xs-4" for="role_arr[]">Roles</label>
                             <div class="col-xs-8">
                                 <select id="ack-role-arr" name="role_arr[]" class="form-fields form-control input-sm" multiple>
                                 </select>
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
-                            <label class="col-xs-4" for="start_date">Start Date<font color="red"><sup> *</sup></font></label>
+                            <label class="col-xs-4" for="start_date">Start Date</label>
                             <div class="col-xs-8">
                                 <input type="date" id="ack-start-date" name="start_date" class="form-fields form-control input-sm" min="{$valid_date_range->start}" max="{$valid_date_range->end}"/>
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
-                            <label class="col-xs-4" for="end_date">End Date<font color="red"><sup> *</sup></font></label>
+                            <label class="col-xs-4" for="end_date">End Date</label>
                             <div class="col-xs-8">
                                 <input type="date" id="ack-end-date" name="end_date" class="form-fields form-control input-sm" min="{$valid_date_range->start}" max="{$valid_date_range->end}"/>
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
-                            <label class="col-xs-4" for="in_study_at_present">Present?<font color="red"><sup> *</sup></font></label>
+                            <label class="col-xs-4" for="in_study_at_present">Present?</label>
                             <div class="col-xs-8">
                                 <select id="ack-in-study-at-present" name="in_study_at_present" class="form-fields form-control input-sm">
                                     <option value="">Unknown</option>
