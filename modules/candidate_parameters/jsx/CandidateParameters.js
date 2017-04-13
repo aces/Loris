@@ -32,12 +32,12 @@ class CandidateParameters extends React.Component {
       {id: "consentStatus", label: "Consent Status", component: ConsentStatus}
     ];
 
-    if (loris.config('useProband') === "true") {
-      tabList.splice(1, 0, {id: "probandInfo", label: "Proband Information", component: ProbandInfo});
+    if (loris.config('useFamilyID') === "true") {
+      tabList.splice(1, 0, {id: "familyInfo", label: "Family Information", component: FamilyInfo});
     }
 
-    if (loris.config('useFamilyID') === "true") {
-      tabList.splice(2, 0, {id: "familyInfo", label: "Family Information", component: FamilyInfo});
+    if (loris.config('useProband') === "true") {
+      tabList.splice(1, 0, {id: "probandInfo", label: "Proband Information", component: ProbandInfo});
     }
 
     return (
