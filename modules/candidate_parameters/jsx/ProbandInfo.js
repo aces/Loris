@@ -20,20 +20,6 @@ var ProbandInfo = React.createClass(
         this.props.dataURL,
         {
           dataType: 'json',
-          xhr: function() {
-            var xhr = new window.XMLHttpRequest();
-            xhr.addEventListener(
-              "progress",
-              function(evt) {
-                that.setState(
-                  {
-                    loadedData: evt.loaded
-                  }
-                );
-              }
-            );
-            return xhr;
-          },
           success: function(data) {
             const formData = {
               ProbandGender: data.ProbandGender,
@@ -59,8 +45,7 @@ var ProbandInfo = React.createClass(
         }
       );
     },
-    setFormData: function(formElement,
-                          value) {
+    setFormData: function(formElement, value) {
       var formData = this.state.formData;
       formData[formElement] = value;
       this.setState(
@@ -145,19 +130,19 @@ var ProbandInfo = React.createClass(
               text={this.state.Data.candID}
             />
             <SelectElement
-              label ="Proband Gender"
-              name ="ProbandGender"
-              options ={this.state.genderOptions}
-              value ={this.state.Data.ProbandGender}
-              onUserInput ={this.setFormData}
-              ref ="ProbandGender"
-              disabled ={disabled}
-              required ={true}
+              label="Proband Gender"
+              name="ProbandGender"
+              options={this.state.genderOptions}
+              value={this.state.formData.ProbandGender}
+              onUserInput={this.setFormData}
+              ref="ProbandGender"
+              disabled={disabled}
+              required={true}
             />
             <DateElement
               label="DoB Proband"
               name="ProbandDoB"
-              value={this.state.Data.ProbandDoB}
+              value={this.state.formData.ProbandDoB}
               onUserInput={this.setFormData}
               ref="ProbandDoB"
               disabled={disabled}
@@ -166,7 +151,7 @@ var ProbandInfo = React.createClass(
             <DateElement
               label="Confirm DoB Proband"
               name="ProbandDoB2"
-              value={this.state.Data.ProbandDoB}
+              value={this.state.formData.ProbandDoB2}
               onUserInput={this.setFormData}
               ref="ProbandDoB2"
               disabled={disabled}
@@ -174,7 +159,7 @@ var ProbandInfo = React.createClass(
             />
             <StaticElement
               label="Age Difference (months)"
-              text={this.state.Data.ageDifference}
+              text={this.state.Data.ageDifference.toString()}
             />
             {updateButton}
           </FormElement>
