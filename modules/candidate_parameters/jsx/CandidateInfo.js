@@ -20,20 +20,6 @@ var CandidateInfo = React.createClass(
         this.props.dataURL,
         {
           dataType: 'json',
-          xhr: function() {
-            var xhr = new window.XMLHttpRequest();
-            xhr.addEventListener(
-              "progress",
-              function(evt) {
-                that.setState(
-                  {
-                    loadedData: evt.loaded
-                  }
-                );
-              }
-            );
-            return xhr;
-          },
           success: function(data) {
             var formData = {
               flaggedCaveatemptor: data.flagged_caveatemptor,
@@ -41,53 +27,37 @@ var CandidateInfo = React.createClass(
               flaggedReason: data.flagged_reason
             };
 
-            // Figure out what is the index of Other option
-            that.otherOption = null;
-            var caveatReasonOptions = data.caveatReasonOptions;
-            if (caveatReasonOptions) {
-              for (var reason in caveatReasonOptions) {
-                if (caveatReasonOptions[reason] === "Other") {
-                  that.otherOption = reason;
-                  break;
-                }
-              }
-            }
+            // Add parameter values to formData
+            Object.assign(formData, data.parameter_values);
 
-            that.setState(
-              {
-                Data: data,
-                isLoaded: true,
-                formData: formData
-              }
-            );
+            that.setState({
+              Data: data,
+              isLoaded: true,
+              formData: formData
+            });
           },
           error: function(data, errorCode, errorMsg) {
-            that.setState(
-              {
-                error: 'An error occurred when loading the form!'
-              }
-            );
+            that.setState({
+              error: 'An error occurred when loading the form!'
+            });
           }
         }
       );
     },
     setFormData: function(formElement, value) {
-      var formData = this.state.formData;
+      var formData = JSON.parse(JSON.stringify(this.state.formData));
       formData[formElement] = value;
 
-      // Reset 'reason' field
+      // Reset 'reason' and 'other' fields
       if (formElement === "flaggedCaveatemptor" && value === "false") {
         formData.flaggedReason = '';
         formData.flaggedOther = '';
-        this.refs.flaggedReason.state.value = "";
-        this.refs.flaggedReason.state.hasError = false;
-        this.refs.flaggedOther.state.value = "";
       }
 
       // Reset 'other' field
-      if (formElement === "flaggedReason" && value !== this.otherOption) {
+      if (formElement === "flaggedReason" &&
+        this.state.Data.caveatReasonOptions[value] !== "Other") {
         formData.flaggedOther = '';
-        this.refs.flaggedOther.state.value = "";
       }
 
       this.setState({
@@ -173,8 +143,8 @@ var CandidateInfo = React.createClass(
       for (var key2 in extraParameters) {
         if (extraParameters.hasOwnProperty(key2)) {
           var paramTypeID = extraParameters[key2].ParameterTypeID;
-          var name = 'PTID' + paramTypeID;
-          var value = this.state.Data.parameter_values[paramTypeID];
+          var name = paramTypeID;
+          var value = this.state.formData[paramTypeID];
 
           switch (extraParameters[key2].Type.substring(0, 3)) {
             case "enu":

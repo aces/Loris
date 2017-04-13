@@ -75,17 +75,19 @@ function getCandInfoFields()
     );
 
     $extra_parameters = $db->pselect(
-        "SELECT pt.ParameterTypeID, pt.Name, pt.Type, pt.Description 
-                     FROM parameter_type pt
-                     JOIN parameter_type_category_rel ptcr USING (ParameterTypeID) 
-                     JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
-                     WHERE ptc.Name='Candidate Parameters'
-                     ORDER BY pt.ParameterTypeID, pt.name ASC",
+        "SELECT CONCAT('PTID', pt.ParameterTypeID) AS ParameterTypeID, pt.Name, 
+        pt.Type, pt.Description 
+        FROM parameter_type pt
+        JOIN parameter_type_category_rel ptcr USING (ParameterTypeID) 
+        JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
+        WHERE ptc.Name='Candidate Parameters'
+        ORDER BY pt.ParameterTypeID, pt.name ASC",
         array()
     );
 
     $fields = $db->pselect(
-        "SELECT ParameterTypeID, Value FROM parameter_candidate WHERE CandID=:cid",
+        "SELECT CONCAT('PTID', ParameterTypeID) AS ParameterTypeID, Value 
+        FROM parameter_candidate WHERE CandID=:cid",
         array('cid' => $candID)
     );
 

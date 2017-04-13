@@ -14,7 +14,7 @@ class CandidateParameters extends React.Component {
       return (
         <TabPane TabId={tabList[key].id} key={key}>
           <TabContent
-            actionURL={actionURL}
+            action={actionURL}
             dataURL={`${dataURL}&data=${tabList[key].id}`}
             tabName={tabList[key].id}
           />
