@@ -108,7 +108,7 @@ var ParticipantStatus = React.createClass(
       );
 
       if (participantStatus && required.indexOf(participantStatus) > -1) {
-        subOptions[participantStatus] = this.state.Data.parentIDs[participantStatus];
+        subOptions = this.state.Data.parentIDs[participantStatus];
         suboptionsRequired = true;
       }
 
