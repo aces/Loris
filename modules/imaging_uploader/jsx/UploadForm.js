@@ -13,27 +13,35 @@ class UploadForm extends React.Component {
   constructor(props) {
     super(props);
 
+    const form = JSON.parse(JSON.stringify(this.props.form));
+    form.IsPhantom.required = true;
+    form.candID.required = true;
+    form.pSCID.required = true;
+    form.visitLabel.required = true;
+    form.mri_file.required = true;
+
     this.state = {
       formData: {},
-      form: JSON.parse(JSON.stringify(this.props.form)),
+      form: form,
       uploadProgress: -1
     };
 
     this.onFormChange = this.onFormChange.bind(this);
+    this.submitForm = this.submitForm.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
   }
 
   componentDidMount() {
-    const form = this.state.form;
-    form.IsPhantom.required = true;
-
     // Disable fields on initial load
-    this.onFormChange(form.IsPhantom.name, null);
+    this.onFormChange(this.state.form.IsPhantom.name, null);
   }
 
   onFormChange(field, value) {
+
+    if (!field) return;
+
     const form = JSON.parse(JSON.stringify(this.state.form));
-    const formData = JSON.parse(JSON.stringify(this.state.formData));
+    const formData = Object.assign({}, this.state.formData);
 
     if (field === 'IsPhantom') {
       if (value === 'N') {
@@ -58,12 +66,34 @@ class UploadForm extends React.Component {
     });
   }
 
+  submitForm() {
+    const fileName = this.state.formData.mri_file.name;
+    if (this.props.mriList.indexOf(fileName) > -1) {
+      swal({
+        title: "Are you sure?",
+        text: "A file with this name already exists!\n Would you like to override existing file?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: 'Yes, I am sure!',
+        cancelButtonText: "No, cancel it!"
+      }, function(isConfirm) {
+        if (isConfirm) {
+          this.uploadFile(true);
+        } else {
+          swal("Cancelled", "Your imaginary file is safe :)", "error");
+        }
+      }.bind(this));
+    } else {
+      this.uploadFile();
+    }
+  }
+
   /*
    Uploads file to the server, listening to the progress
    in order to get the percentage uploaded as value for the progress bar
    */
-  uploadFile() {
-    let formData = this.state.formData;
+  uploadFile(overwriteFile) {
+    const formData = this.state.formData;
     let formObj = new FormData();
     for (let key in formData) {
       if (formData[key] !== "") {
@@ -71,6 +101,9 @@ class UploadForm extends React.Component {
       }
     }
     formObj.append("fire_away", "Upload");
+    if (overwriteFile) {
+      formObj.append("overwrite", true);
+    }
 
     $.ajax({
       type: 'POST',
@@ -152,7 +185,7 @@ class UploadForm extends React.Component {
               </div>
             </div>
             <ButtonElement
-              onUserInput={this.uploadFile}
+              onUserInput={this.submitForm}
               buttonClass={btnClass}
             />
           </FormElement>

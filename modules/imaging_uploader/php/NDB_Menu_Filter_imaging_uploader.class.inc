@@ -382,8 +382,9 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $db        = Database::singleton();
         $file_name =  $file->fileInfo['name'];
 
-        $pname     = '';
-        $IsPhantom = $args['values']['IsPhantom'];
+        $pname      = '';
+        $IsPhantom  = $args['values']['IsPhantom'];
+        $updateFile = $args['values']['overwrite'] ? true : false;
         ///////////////////////////////////////////////////////////////////////
         ///////////////If empty get it using User class////////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -448,10 +449,19 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                    'PatientName'    => $pname,
                    'IsPhantom'      => $IsPhantom,
                   );
-        $db->Insert(
-            'mri_upload',
-            $values
-        );
+
+        if ($updateFile) {
+            $id = $db->pselectOne(
+                "SELECT UploadID FROM mri_upload WHERE UploadLocation = :ul",
+                array('ul' => $this->uploaded_file_path)
+            );
+            if (!empty($id)) {
+                $db->update('mri_upload', $values, array('UploadID' => $id));
+                return true;
+            }
+        }
+
+        $db->insert('mri_upload', $values);
         $this->mri_upload_id = $db->getLastInsertId();
 
         return true;
@@ -615,8 +625,14 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function toJSON()
     {
-        $result         = $this->toArray();
-        $result['form'] = $this->form->form;
+        $result            = $this->toArray();
+        $result['form']    = $this->form->form;
+        $result['mriList'] = array_map(
+            function ($fileName) {
+                return basename($fileName[5]);
+            },
+            $result['Data']
+        );
 
         return json_encode($result);
     }
