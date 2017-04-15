@@ -37,7 +37,6 @@ class UploadForm extends React.Component {
   }
 
   onFormChange(field, value) {
-
     if (!field) return;
 
     const form = JSON.parse(JSON.stringify(this.state.form));
