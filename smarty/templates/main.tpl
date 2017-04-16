@@ -252,11 +252,6 @@
                                         report a bug to your administrator
                                     </a>.
                                 </p>
-                                <p>
-                                    <a href="javascript:history.back(-1)">
-                                        Please click here to go back
-                                    </a>.
-                                </p>
                             {elseif $test_name == ""}
                                 <h1 style="align:center" class="text-primary">
                                     Welcome to the LORIS Database!
