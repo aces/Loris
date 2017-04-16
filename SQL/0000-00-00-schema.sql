@@ -352,7 +352,7 @@ INSERT INTO `feedback_mri_predefined_comments` VALUES
 	(4,2,'noisy scan'),
 	(5,2,'susceptibilty artifact above the ear canals.'),
 	(6,2,'susceptibilty artifact due to dental work'),
-	(7,2,'sagittal ghosts'),
+	(7,2,'ghosting in direction of phase encoding'),
 	(8,3,'slight ringing artefacts'),
 	(9,3,'severe ringing artefacts'),
 	(10,3,'movement artefact due to eyes'),
