@@ -400,12 +400,41 @@ class NDB_Config
             $XMLValue = $this->getSettingFromXML($name);
 
             if ($XMLValue !== null) {
+                switch($name) {
+                case 'database':
+                case 'sandbox':
+                case 'showDatabaseQueries':
+                    return $XMLValue;
+                }
+                $db = Database::singleton();
+                if ($db->isConnected() !== true) {
+                    // no database connection, fall back on config.xml
+                    throw new DatabaseException(
+                        "No connection to database while trying to get setting $name"
+                    );
+                }
+                $configSetting = $db->pselect(
+                    "SELECT child.ID,child.Name
+                    FROM ConfigSettings cs
+                        LEFT JOIN ConfigSettings child ON (child.Parent=cs.ID)
+                    WHERE cs.Name=:nm",
+                    array("nm" => $name)
+                );
+                foreach ($configSetting as $child) {
+                    if (!isset($XMLValue[$child['Name']])) {
+                        $XMLValue[$child['Name']]
+                            = $this->getSettingFromDB($child['Name'], $child['ID']);
+                    }
+                }
                 return $XMLValue;
             }
         } catch(ConfigurationException $e) {
             // There was no config in the database with this
             // name. It may exist in the XML, so we handle this
             // silently.
+        } catch(Exception $e) {
+            print_r($e);
+            throw $e;
         }
 
         // nothing in the config file, so get the value from the DB
