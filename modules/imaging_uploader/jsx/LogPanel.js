@@ -1,5 +1,7 @@
 /* global UploadProgress */
 
+import Panel from 'Panel';
+
 /**
  * Log Panel Component
  *

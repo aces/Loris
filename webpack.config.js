@@ -1,16 +1,14 @@
 var webpack = require('webpack');
+var path = require('path');
 
 var config = {
   entry: {
     './htdocs/js/components/DynamicDataTable.js': './jsx/DynamicDataTable.js',
-    './htdocs/js/components/FilterForm.js': './jsx/FilterForm.js',
     './htdocs/js/components/PaginationLinks.js': './jsx/PaginationLinks.js',
     './htdocs/js/components/StaticDataTable.js': './jsx/StaticDataTable.js',
     './htdocs/js/components/Breadcrumbs.js': './jsx/Breadcrumbs.js',
     './htdocs/js/components/Form.js': './jsx/Form.js',
-    './htdocs/js/components/Tabs.js': './jsx/Tabs.js',
     './htdocs/js/components/Markdown.js': './jsx/Markdown.js',
-    './htdocs/js/components/Panel.js': './jsx/Panel.js',
     './modules/media/js/mediaIndex.js': './modules/media/jsx/mediaIndex.js',
     './modules/media/js/editFormIndex.js': './modules/media/jsx/editFormIndex.js',
     './modules/issue_tracker/js/columnFormatter.js': './modules/issue_tracker/jsx/columnFormatter.js',
@@ -64,6 +62,24 @@ var config = {
         loader: 'babel-loader'
       }
     ]
+  },
+  resolve: {
+    root: path.resolve(__dirname),
+    alias: {
+      util: 'htdocs/js/util',
+      jsx: 'jsx',
+      Breadcrumbs: 'jsx/Breadcrumbs',
+      DynamicDataTable: 'jsx/DynamicDataTable',
+      FilterForm: 'jsx/FilterForm',
+      Form: 'jsx/Form',
+      Markdown: 'jsx/Markdown',
+      PaginationLinks: 'jsx/PaginationLinks',
+      Panel: 'jsx/Panel',
+      ProgressBar: 'jsx/ProgressBar',
+      StatidDataTable: 'jsx/StatidDataTable',
+      Tabs: 'jsx/Tabs'
+    },
+    extensions: ['', '.js', '.jsx']
   },
   externals: {
     react: 'React'

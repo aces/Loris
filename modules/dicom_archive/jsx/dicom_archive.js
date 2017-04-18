@@ -1,5 +1,7 @@
 /* exported DicomArchive */
-/* global formatColumn, ReactDOM */
+/* global formatColumn */
+
+import FilterForm from 'FilterForm';
 
 import formatColumn from './columnFormatter';
 
