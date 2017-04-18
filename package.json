@@ -22,7 +22,7 @@
   },
   "jest": {
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(js|jsx)$"
- }
+ },
   "scripts": {
     "lint:javascript": "./test/run-js-linter.sh",
     "lint:php": "./test/run-php-linter.sh",
