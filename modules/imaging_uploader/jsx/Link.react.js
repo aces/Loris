@@ -1,4 +1,5 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
+/*eslint comma-dangle: ["error", "never"]*/
 
 import React from 'react';
 
