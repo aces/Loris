@@ -120,11 +120,6 @@ var FamilyInfo = React.createClass({
       }
     }
 
-    var relationshipRequired = false;
-    if (this.state.formData.FamilyCandID) {
-      relationshipRequired = true;
-    }
-
     var alertMessage = "";
     var alertClass = "alert text-center hide";
     if (this.state.updateResult) {
@@ -166,7 +161,7 @@ var FamilyInfo = React.createClass({
               onUserInput={this.setFormData}
               ref="FamilyCandID"
               disabled={disabled}
-              required={false}
+              required={true}
               value={this.state.formData.FamilyCandID}
             />
             <SelectElement
@@ -176,7 +171,7 @@ var FamilyInfo = React.createClass({
               onUserInput={this.setFormData}
               ref="Relationship_type"
               disabled={disabled}
-              required={relationshipRequired}
+              required={true}
               value={this.state.formData.Relationship_type}
             />
             {addButton}
