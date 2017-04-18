@@ -69,7 +69,7 @@ var config = {
     react: 'React'
   },
   devtool: 'source-map',
-  plugins: [new webpack.optimize.UglifyJsPlugin()]
+  plugins: [new webpack.optimize.UglifyJsPlugin({mangle: false})]
 };
 
 module.exports = config;
