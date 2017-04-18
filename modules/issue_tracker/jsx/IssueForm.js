@@ -1,4 +1,4 @@
-/* global ReactDOM */
+import CommentList from './CommentList';
 
 /**
  * Issue add/edit form
@@ -91,7 +91,7 @@ class IssueForm extends React.Component {
     }
 
     const commentHistory = this.state.isNewIssue || (
-      <CollapsibleComment commentHistory={this.state.issueData.commentHistory} />
+      <CommentList commentHistory={this.state.issueData.commentHistory} />
     );
 
     let header;
@@ -152,10 +152,7 @@ class IssueForm extends React.Component {
           ref="form"
         >
           <h3>{headerText}</h3>
-          <br />
           {header}
-          <br></br>
-          <br></br>
           <TextboxElement
             name="title"
             label="Title"
@@ -449,82 +446,9 @@ IssueForm.propTypes = {
   action: React.PropTypes.string.isRequired
 };
 
-/**
- * React component used to display a button and a collapsible list
- * with comments.
- */
-class CollapsibleComment extends React.Component {
+export default IssueForm;
 
-  constructor(props) {
-    super(props);
 
-    this.state = {collapsed: true};
 
-    // Bind component instance to custom methods
-    this.toggleCollapsed = this.toggleCollapsed.bind(this);
-  }
 
-  toggleCollapsed() {
-    this.setState({collapsed: !this.state.collapsed});
-  }
-
-  render() {
-    const historyText = [];
-    const btnCommentsLabel = (this.state.collapsed ?
-      "Show Comment History" :
-      "Hide Comment History");
-
-    const commentHistory = this.props.commentHistory;
-    for (let commentID in commentHistory) {
-      if (commentHistory.hasOwnProperty(commentID)) {
-        let action = " updated the " + commentHistory[commentID].fieldChanged + " to ";
-        if (commentHistory[commentID].fieldChanged === 'comment') {
-          action = " commented ";
-        }
-        historyText.push(
-          <div key={"comment_" + commentID}>
-            [{commentHistory[commentID].dateAdded}]
-            <b> {commentHistory[commentID].addedBy}</b>
-            {action}
-            <i> {commentHistory[commentID].newValue}</i>
-          </div>
-        );
-      }
-    }
-
-    return (
-      <div>
-        <div className="btn btn-primary"
-             onClick={this.toggleCollapsed}
-             data-toggle="collapse"
-             data-target="#comment-history"
-             style={{margin: '10px 0'}}
-        >
-          {btnCommentsLabel}
-        </div>
-        <div id="comment-history" className="collapse">
-          {historyText}
-        </div>
-      </div>
-    );
-  }
-}
-
-/**
- * Render IsseForm on page load
- */
-$(function() {
-  const args = QueryString.get();
-  const issueTracker = (
-    <div className="page-issue-tracker">
-      <IssueForm
-        Module="issue_tracker"
-        DataURL={`${loris.BaseURL}/issue_tracker/ajax/EditIssue.php?action=getData&issueID=${args.issueID}`}
-        action={`${loris.BaseURL}/issue_tracker/ajax/EditIssue.php?action=edit`}
-      />
-    </div>
-  );
-
-  ReactDOM.render(issueTracker, document.getElementById("lorisworkspace"));
-});
 
