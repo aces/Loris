@@ -448,7 +448,3 @@ IssueForm.propTypes = {
 
 export default IssueForm;
 
-
-
-
-
