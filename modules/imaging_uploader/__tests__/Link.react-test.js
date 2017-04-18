@@ -4,7 +4,7 @@
 'use strict';
 
 import React from 'react';
-import Link from '../js/Link.react';
+import Link from '../jsx/Link.react';
 import renderer from 'react-test-renderer';
 
 it('renders correctly', () => {
