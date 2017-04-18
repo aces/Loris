@@ -15,7 +15,10 @@
     "eslint": "3.8.1",
     "eslint-config-google": "0.6.0",
     "eslint-plugin-react": "^5.2.2",
-    "webpack": "1.14.0"
+    "webpack": "1.14.0",
+    "react": "^15.4.1",
+    "react-test-renderer": "^15.4.1",
+    "jest": "^18.1.0"
   },
   "scripts": {
     "lint:javascript": "./test/run-js-linter.sh",
@@ -25,7 +28,8 @@
     "tests:integration": "./test/dockerized-integration-tests.sh",
     "tests:integration:debug": "DEBUG=true ./test/dockerized-integration-tests.sh",
     "compile": "webpack",
-    "watch": "webpack --watch"
+    "watch": "webpack --watch",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
