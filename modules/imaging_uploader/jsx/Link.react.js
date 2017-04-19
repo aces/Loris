@@ -1,5 +1,8 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
-/*eslint comma-dangle: ["error", "never"]*/
+/*global someFunction b:true*/
+/*eslint no-undef: "error"*/
+/*global a*/
+/*eslint no-undef: ["error", { "typeof": true }] */
 
 import React from 'react';
 
