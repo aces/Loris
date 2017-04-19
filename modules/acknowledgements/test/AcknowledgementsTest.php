@@ -35,17 +35,11 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      *
      * @return none
      */
-    function setUp()
-    {
-    }
     /**
      * Restore the values backed up in the setUp function
      *
      * @return none
      */
-    function tearDown()
-    {
-    }
 
     function testCandidateListPageLoads()
     {
