@@ -40,7 +40,43 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      *
      * @return none
      */
+    /**
+     * Insert testing data into the database
+     * author: Wang Shen
+     *
+     * @return none
+     */
+    function setUp()
+    {
+        parent::setUp();
+        $this->DB->insert(
+            "acknowledgements",
+            array(
+               'ID'       => '999',
+               'ordering' => '999',
+              'full_name' => 'Demo Test',
+          'citation_name' => 'Demo's Citation,
+           'affiliations' => 'mcgill',
+                'degrees' => 'bachelors',
+                  'roles' => 'investigators',
+             'start_date' => '2015-01-01',
+               'end_date' => '2016-01-01',
+                'present' => 'Yes',
+            )
+        );        
 
+    }
+     /**
+     * Delete testing data from database
+     * author: Wang Shen
+     *
+     * @return none
+     */
+    function tearDown()
+    {
+        $this->DB->delete("acknowledgements", array('ID' => '999'));
+        parent::tearDown();
+    }
     function testCandidateListPageLoads()
     {
         $this->safeGet($this->url . "/acknowledgements/");
