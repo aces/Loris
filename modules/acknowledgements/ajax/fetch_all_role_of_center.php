@@ -38,7 +38,7 @@ if (!AcknowledgementPermission::canViewForCenter(
     die();
 }
     //fetch
-    $result = AckCenterRole::fetchAllOfCenter($centerId);
+    $result = AckCenterRole::fetchAllOfCenter($centerId, null);
     //Validate/Process fetched
 if (is_null($result)) {
     http_response_code(500);

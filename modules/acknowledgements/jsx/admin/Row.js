@@ -6,6 +6,13 @@ class Row extends React.Component {
       data: props.data
     };
   }
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.data) {
+        this.setState({
+            data:nextProps.data
+        });
+    }
+  }
   onEditClick() {
     this.setState(
       {
@@ -81,13 +88,23 @@ class Row extends React.Component {
                 </tr>
             );
     }
-    return (
-              <tr>
-                  <td onDoubleClick ={this.onEditClick.bind(this)}>{data.title}</td>
-                  <td><a href ="#/" onClick={this.onEditClick.bind(this)}>Edit</a></td>
-                  <td><a href ="#/" onClick ={this.onDeleteClick.bind(this)}>Delete</a></td>
-              </tr>
-          );
+    if (data.hidden === "1") {
+        return (
+                  <tr style={{backgroundColor:"#EEEEEE"}}>
+                      <td>{data.title}</td>
+                      <td><small>Deleted</small></td>
+                      <td><small>Deleted</small></td>
+                  </tr>
+              );
+    } else {
+        return (
+                  <tr>
+                      <td onDoubleClick ={this.onEditClick.bind(this)}>{data.title}</td>
+                      <td><a href ="#/" onClick={this.onEditClick.bind(this)}>Edit</a></td>
+                      <td><a href ="#/" onClick ={this.onDeleteClick.bind(this)}>Delete</a></td>
+                  </tr>
+              );
+    }
   }
 }
 window.Row = Row;

@@ -179,6 +179,7 @@ class AckCenterDegree
                         hidden = :hidden2
                     )
                 ORDER BY
+                    hidden ASC,
                     title ASC
             ",
             array(

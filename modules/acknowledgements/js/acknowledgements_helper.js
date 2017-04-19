@@ -51,6 +51,51 @@ function joinOnKey(arr, key, separator) {
     }
     return result;
 }
+function repopulateOptions (selectId, val) {
+    const select = $("#"+selectId);
+    const dict = {};
+    if (val) {
+        for (let i=0; i < val.length; ++i) {
+            dict[val[i].id] = val[i];
+        }
+    }
+    const data = select.data("data");
+    
+    select.empty();
+    
+    for (let i = 0; i < data.arr.length; ++i) {
+        const cur = data.arr[i];
+        if (cur.hidden === "1") {
+            continue;
+        }
+        select.append(
+            $(
+                "<option>",
+                {
+                    text: cur.title
+                }
+            )
+            .val(cur.id)
+        );
+        delete dict[cur.id];
+    }
+    for (let id in dict) {
+        if (dict.hasOwnProperty(id)) {
+            const cur = dict[id];
+            select.prepend(
+                $(
+                    "<option>",
+                    {
+                        text: cur.title + " (Deleted)"
+                    }
+                )
+                .val(cur.id)
+            );
+        }
+    }
+    select.val(arrayOnKey(val, "id"));
+    return select;
+}
 function showAcknowledgementForm(args) {
     $("#acknowledgement-form-dialog-title").html(args.title);
     $("#acknowledgement-form-submit")
@@ -66,9 +111,9 @@ function showAcknowledgementForm(args) {
     $("#ack-center-id").val(data.centerId);
     $("#ack-full-name").val(data.fullName).prop("disabled", disabled);
     $("#ack-citation-name").val(data.citationName).prop("disabled", disabled);
-    $("#ack-affiliation-arr").val(arrayOnKey(data.affiliationArr, "id")).prop("disabled", disabled);
-    $("#ack-degree-arr").val(arrayOnKey(data.degreeArr, "id")).prop("disabled", disabled);
-    $("#ack-role-arr").val(arrayOnKey(data.roleArr, "id")).prop("disabled", disabled);
+    repopulateOptions("ack-affiliation-arr", data.affiliationArr).prop("disabled", disabled);
+    repopulateOptions("ack-degree-arr", data.degreeArr).prop("disabled", disabled);
+    repopulateOptions("ack-role-arr", data.roleArr).prop("disabled", disabled);
     $("#ack-start-date").val(data.startDate).prop("disabled", disabled);
     $("#ack-end-date").val(data.endDate).prop("disabled", disabled);
 
@@ -94,18 +139,7 @@ function loadOptions(selectId, url, centerId) {
             },
             dataType: "json",
             success: function(data) {
-                for (let i = 0; i < data.arr.length; ++i) {
-                    const cur = data.arr[i];
-                    $("#" + selectId).append(
-                        $(
-                            "<option>",
-                            {
-                                text: cur.title
-                            }
-                        )
-                        .val(cur.id)
-                    );
-                }
+                $("#" + selectId).data("data", data);
             }
         }
     );
