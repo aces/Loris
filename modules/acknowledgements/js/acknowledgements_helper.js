@@ -59,7 +59,7 @@ function showAcknowledgementForm(args) {
 
     var data = args.data;
 
-    var disabled = (args.disabled === null) ?
+    var disabled = (args.disabled === null || args.disabled === undefined) ?
         false : args.disabled;
 
     $("#ack-id").val(data.id);
