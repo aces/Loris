@@ -4,7 +4,7 @@ import React from 'react';
 
 const STATUS = {
   HOVERED: "hovered",
-  NORMAL: "normal",
+  NORMAL: "normal"
 };
 
 export default class Link extends React.Component {
@@ -16,7 +16,7 @@ export default class Link extends React.Component {
     this._onMouseLeave = this._onMouseLeave.bind(this);
 
     this.state = {
-      class: STATUS.NORMAL,
+      class: STATUS.NORMAL
     };
   }
 
