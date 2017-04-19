@@ -1,5 +1,5 @@
-/*global test */
-/*global expect */
+/* global test */
+/* global expect */
 /**
 * Test sum function
 */
