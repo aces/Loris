@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-require_once __DIR__
+ require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
  * AcknowledgementsIntegrationTest
@@ -46,6 +46,18 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      *
      * @return none
      */
+    static $testData = array(
+               'ID'       => '999',
+               'ordering' => '999',
+              'full_name' => 'Demo Test',
+          'citation_name' => "Demo's Citation",
+           'affiliations' => 'mcgill',
+                'degrees' => 'bachelors',
+                  'roles' => 'investigators',
+             'start_date' => '2015-01-01',
+               'end_date' => '2016-01-01',
+                'present' => 'Yes',
+            );
     function setUp()
     {
         parent::setUp();
@@ -101,6 +113,37 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         );
         $this->resetPermissions();
     }
+    /**
+     * Tests that, after clicking the "Advanced" button, all of the
+     * advanced filters appear on the page and are the correct element type.
+     *
+     * @return void
+     */
 
+    function testFilterWithData()
+    {
+       $this->_testFilter("full_name",self::$testData['full_name']);
+       $this->_testFilter("citation_name",self::$testData['citation_name']);
+       $this->_testFilter("start_date",self::$testData['start_date']);
+       $this->_testFilter("end_date",self::$testData['end_date']);
+       $this->_testFilter("present",self::$testData['present']);
+
+    }
+
+    private function _testFilter($element,$value)
+    {
+       $this->safeGet($this->url . "/acknowledgements/");
+       $this->webDriver->findElement(
+               WebDriverBy::Name($element)
+       )->sendKeys($value);
+       $this->webDriver->findElement(
+               WebDriverBy::ID("showdata_advanced_options")
+       )->click();
+       $this->safeGet($this->url . "/acknowledgements/?format=json");
+       $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+       $this->assertContains("[[\"999\",\"Demo Test",
+                              $bodyText); 
+    }
 }
 ?>
