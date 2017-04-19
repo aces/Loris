@@ -55,7 +55,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
                'ID'       => '999',
                'ordering' => '999',
               'full_name' => 'Demo Test',
-          'citation_name' => 'Demo's Citation,
+          'citation_name' => "Demo's Citation",
            'affiliations' => 'mcgill',
                 'degrees' => 'bachelors',
                   'roles' => 'investigators',
