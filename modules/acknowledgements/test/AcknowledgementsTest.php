@@ -139,6 +139,10 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
        $this->webDriver->findElement(
                WebDriverBy::ID("showdata_advanced_options")
        )->click();
+       //        $this->webDriver->executescript(
+       //     "document.getElementsByClassName('input-date')[0].value='2000-05-05'"
+       // );
+       //todo
        $this->safeGet($this->url . "/acknowledgements/?format=json");
        $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
