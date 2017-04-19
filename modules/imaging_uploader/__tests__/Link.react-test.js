@@ -1,4 +1,5 @@
-
+/*global it*/
+/*global expect*/
 'use strict';
 
 import React from 'react';
