@@ -23,62 +23,48 @@
  */
 class AcknowledgementsIntegrationTest extends LorisIntegrationTest
 {
-    /**
-     * The expected result when searches successfully retrieve candidate
-     *  TST0001.
-     *  All items represent the text of each column in the displayed HTML
-     *  candidate table.
-     */
-    /**
-     * Backs up the useEDC config value and sets the value to a known
-     * value (true) for testing.
-     *
-     * @return none
-     */
-    /**
-     * Restore the values backed up in the setUp function
-     *
-     * @return none
-     */
+
+    // Initial array data
+
+    static $testData = array(
+                        'ID'            => '999',
+                        'ordering'      => '999',
+                        'full_name'     => 'Demo Test',
+                        'citation_name' => "Demo's Citation",
+                        'affiliations'  => 'mcgill',
+                        'degrees'       => 'bachelors',
+                        'roles'         => 'investigators',
+                        'start_date'    => '2015-01-01',
+                        'end_date'      => '2016-01-01',
+                        'present'       => 'Yes',
+                       );
+    static $newData  = array(
+                        'ordering'      => '9999',
+                        'full_name'     => 'Test Test',
+                        'citation_name' => "Test's Citation",
+                        'affiliations'  => 'McGill',
+                        'degrees'       => 'Bachelors',
+                        'roles'         => 'Investigators',
+                        'start_date'    => '2015-11-11',
+                        'end_date'      => '2016-11-11',
+                        'present'       => 'Yes',
+                       );
     /**
      * Insert testing data into the database
      * author: Wang Shen
      *
      * @return none
      */
-    static $testData = array(
-               'ID'       => '999',
-               'ordering' => '999',
-              'full_name' => 'Demo Test',
-          'citation_name' => "Demo's Citation",
-           'affiliations' => 'mcgill',
-                'degrees' => 'bachelors',
-                  'roles' => 'investigators',
-             'start_date' => '2015-01-01',
-               'end_date' => '2016-01-01',
-                'present' => 'Yes',
-            );
-     static $newData = array(
-               'ordering' => '9999',
-              'full_name' => 'Test Test',
-          'citation_name' => "Test's Citation",
-           'affiliations' => 'McGill',
-                'degrees' => 'Bachelors',
-                  'roles' => 'Investigators',
-             'start_date' => '2015-11-11',
-               'end_date' => '2016-11-11',
-                'present' => 'Yes',
-            );
     function setUp()
     {
         parent::setUp();
         $this->DB->insert(
             "acknowledgements",
             self::$testData
-        );        
+        );
 
     }
-     /**
+    /**
      * Delete testing data from database
      * author: Wang Shen
      *
@@ -90,7 +76,12 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->DB->delete("acknowledgements", array('full_name' => 'Test Test'));
         parent::tearDown();
     }
-    function testCandidateListPageLoads()
+    /**
+     * Tests that, the homepage should have "Acknowledgements" on the page.
+     *
+     * @return void
+     */
+    function testPageLoads()
     {
         $this->safeGet($this->url . "/acknowledgements/");
         $bodyText = $this->webDriver
@@ -98,90 +89,96 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->assertContains("Acknowledgements", $bodyText);
     }
     /**
-     * Tests that, after clicking the "Advanced" button, all of the
-     * advanced filters appear on the page and are the correct element type.
+     * Tests that, the homepage should have "You do not have access to this page."
+     * on the page without permission.
      *
      * @return void
      */
-    function testCandidateListPageLoadsWithoutPermissions()
+    function testPageLoadsWithoutPermissions()
     {
         $this->setupPermissions(array("violated_scans_view_allsites"));
         $this->safeGet($this->url . "/acknowledgements/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("You do not have access to this page.",
-                              $bodyText
+        $this->assertContains(
+            "You do not have access to this page.",
+            $bodyText
         );
         $this->resetPermissions();
     }
     /**
-     * Tests that, after clicking the "Advanced" button, all of the
-     * advanced filters appear on the page and are the correct element type.
+     * Tests that, after clicking the "filter" button, all of the
+     * advanced filters appear on the page.
      *
      * @return void
      */
-
     function testFilterWithData()
     {
-       $this->_testFilter("full_name",self::$testData['full_name']);
-       $this->_testFilter("citation_name",self::$testData['citation_name']);
-       $this->_testFilter("start_date",self::$testData['start_date']);
-       $this->_testFilter("end_date",self::$testData['end_date']);
-       $this->_testFilter("present",self::$testData['present']);
+        $this->_testFilter("full_name", self::$testData['full_name']);
+        $this->_testFilter("citation_name", self::$testData['citation_name']);
+        $this->_testFilter("start_date", self::$testData['start_date']);
+        $this->_testFilter("end_date", self::$testData['end_date']);
+        $this->_testFilter("present", self::$testData['present']);
 
-    }
-
-    private function _testFilter($element,$value)
-    {
-       $this->safeGet($this->url . "/acknowledgements/");
-       if ($element == "start_date" || $element == "end_date") {
-           $this->webDriver->executescript(
-               "document.getElementsByName('$element')[0].value='$value'"
-           );
-       } elseif ($element == "present") {
-           $select  = $this->safeFindElement(WebDriverBy::Name($element));
-           $element = new WebDriverSelect($select);
-           $element->selectByVisibleText($value);
-       } else {
-             $this->webDriver->findElement(
-                   WebDriverBy::Name($element)
-             )->sendKeys($value);
-       }
-       $this->webDriver->findElement(
-               WebDriverBy::ID("showdata_advanced_options")
-       )->click();
-       $this->safeGet($this->url . "/acknowledgements/?format=json");
-       $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
-       $this->assertContains($value,$bodyText); 
     }
     /**
-     * Tests that, after clicking the "Advanced" button, all of the
-     * advanced filters appear on the page and are the correct element type.
+     * Test filter function
+     *
+     * @param string $element the test element
+     * @param string $value   the value
+     *
+     * @return void
+     */
+    private function _testFilter($element,$value)
+    {
+        $this->safeGet($this->url . "/acknowledgements/");
+        if ($element == "start_date" || $element == "end_date") {
+            $this->webDriver->executescript(
+                "document.getElementsByName('$element')[0].value='$value'"
+            );
+        } elseif ($element == "present") {
+            $select  = $this->safeFindElement(WebDriverBy::Name($element));
+            $element = new WebDriverSelect($select);
+            $element->selectByVisibleText($value);
+        } else {
+             $this->webDriver->findElement(
+                 WebDriverBy::Name($element)
+             )->sendKeys($value);
+        }
+        $this->webDriver->findElement(
+            WebDriverBy::ID("showdata_advanced_options")
+        )->click();
+        $this->safeGet($this->url . "/acknowledgements/?format=json");
+        $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains($value, $bodyText);
+    }
+    /**
+     * Tests that, adding a new record, then this record appears on the page.
      *
      * @return void
      */
     function testAddNewRecord()
     {
-       $this->safeGet($this->url . "/acknowledgements/");
-       //insert ordering 
-       $this->webDriver->findElement(
-                   WebDriverBy::Name("addordering")
-             )->sendKeys(self::$newData['ordering']);
-       //insert Full name
-       $this->webDriver->findElement(
-                   WebDriverBy::Name("addfull_name")
-             )->sendKeys(self::$newData['full_name']);
-       //insert Citation name
-       $this->webDriver->findElement(
-                   WebDriverBy::Name("addcitation_name")
-             )->sendKeys(self::$newData['citation_name']);
-       //expecting to find the value,after clicking save button
-       $this->webDriver->findElement(
-               WebDriverBy::Name("fire_away")
-       )->click();
-       //test filter
-       $this->_testFilter("full_name",self::$newData['full_name']);
+        $this->safeGet($this->url . "/acknowledgements/");
+        //insert ordering
+        $this->webDriver->findElement(
+            WebDriverBy::Name("addordering")
+        )->sendKeys(self::$newData['ordering']);
+        //insert Full name
+        $this->webDriver->findElement(
+            WebDriverBy::Name("addfull_name")
+        )->sendKeys(self::$newData['full_name']);
+        //insert Citation name
+        $this->webDriver->findElement(
+            WebDriverBy::Name("addcitation_name")
+        )->sendKeys(self::$newData['citation_name']);
+        //expecting to find the value,after clicking save button
+        $this->webDriver->findElement(
+            WebDriverBy::Name("fire_away")
+        )->click();
+        //test filter
+        $this->_testFilter("full_name", self::$newData['full_name']);
     }
 }
 ?>
