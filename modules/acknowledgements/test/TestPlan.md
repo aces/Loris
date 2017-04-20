@@ -7,5 +7,5 @@
 5. Check "Show Data" button works well after inputting special option.  
 6. Click "Clear Form" and ensure filters are reset to same state.
 7. Verify that "Save" button works well after inserting a new record.
-8. Verify that "Reset" button works.
+8. Verify that "Reset" button works and input text area ares reset to null state.
 
