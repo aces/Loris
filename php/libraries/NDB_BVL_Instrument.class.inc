@@ -497,10 +497,8 @@ class NDB_BVL_Instrument extends NDB_Page
                     $otherCommentID,
                     true
                 );
-                if (count($diff) > 0) {
-                    foreach ($diff as $d) {
-                        $this->form->warnings[$d["FieldName"]] = $d;
-                    }
+                foreach ($diff as $d) {
+                    $this->form->warnings[$d["FieldName"]] = $d;
                 }
             }
 
