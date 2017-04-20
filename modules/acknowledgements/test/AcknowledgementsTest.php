@@ -58,6 +58,17 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
                'end_date' => '2016-01-01',
                 'present' => 'Yes',
             );
+     static $newData = array(
+               'ordering' => '9999',
+              'full_name' => 'Test Test',
+          'citation_name' => "Test's Citation",
+           'affiliations' => 'McGill',
+                'degrees' => 'Bachelors',
+                  'roles' => 'Investigators',
+             'start_date' => '2015-11-11',
+               'end_date' => '2016-11-11',
+                'present' => 'Yes',
+            );
     function setUp()
     {
         parent::setUp();
@@ -87,6 +98,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     function tearDown()
     {
         $this->DB->delete("acknowledgements", array('ID' => '999'));
+        $this->DB->delete("acknowledgements", array('full_name' => 'Test Test'));
         parent::tearDown();
     }
     function testCandidateListPageLoads()
@@ -133,21 +145,54 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     private function _testFilter($element,$value)
     {
        $this->safeGet($this->url . "/acknowledgements/");
-       $this->webDriver->findElement(
-               WebDriverBy::Name($element)
-       )->sendKeys($value);
+       if ($element == "start_date" || $element == "end_date") {
+           $this->webDriver->executescript(
+               "document.getElementsByName('$element')[0].value='$value'"
+           );
+       } elseif ($element == "present") {
+           $select  = $this->safeFindElement(WebDriverBy::Name($element));
+           $element = new WebDriverSelect($select);
+           $element->selectByVisibleText($value);
+       } else {
+             $this->webDriver->findElement(
+                   WebDriverBy::Name($element)
+             )->sendKeys($value);
+       }
        $this->webDriver->findElement(
                WebDriverBy::ID("showdata_advanced_options")
        )->click();
-       //        $this->webDriver->executescript(
-       //     "document.getElementsByClassName('input-date')[0].value='2000-05-05'"
-       // );
-       //todo
        $this->safeGet($this->url . "/acknowledgements/?format=json");
        $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
-       $this->assertContains("[[\"999\",\"Demo Test",
-                              $bodyText); 
+       $this->assertContains($value,$bodyText); 
+    }
+    /**
+     * Tests that, after clicking the "Advanced" button, all of the
+     * advanced filters appear on the page and are the correct element type.
+     *
+     * @return void
+     */
+    function testAddNewRecord()
+    {
+       $this->safeGet($this->url . "/acknowledgements/");
+       //insert ordering 
+       $this->webDriver->findElement(
+                   WebDriverBy::Name("addordering")
+             )->sendKeys(self::$newData['ordering']);
+       //insert Full name
+       $this->webDriver->findElement(
+                   WebDriverBy::Name("addfull_name")
+             )->sendKeys(self::$newData['full_name']);
+       //insert Citation name
+       $this->webDriver->findElement(
+                   WebDriverBy::Name("addcitation_name")
+             )->sendKeys(self::$newData['citation_name']);
+       //expecting to find the value,after clicking save button
+       $this->webDriver->findElement(
+               WebDriverBy::Name("fire_away")
+       )->click();
+       //test filter
+       $this->_testFilter("full_name",self::$newData['full_name']);
     }
 }
 ?>
