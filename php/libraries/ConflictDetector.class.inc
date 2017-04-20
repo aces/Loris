@@ -30,25 +30,32 @@ class ConflictDetector
      * @param string $instrumentName The instrument being checked
      * @param string $commentId1     The first data entry CommentID
      * @param string $commentId2     The second data entry CommentID
+     * @param string $forceDiff      If `true`, incomplete instruments
+     *                               are still diff'd
      *
      * @return array An array of differences between the 2 data entry
      *               points.
      */
-    function detectConflictsForCommentIds($instrumentName, $commentId1, $commentId2)
-    {
+    function detectConflictsForCommentIds(
+        $instrumentName,
+        $commentId1,
+        $commentId2,
+        $forceDiff=false
+    ) {
+
         $diffResult = array();
 
         // Get data entry status for $commentId1
         $status = new NDB_BVL_InstrumentStatus();
         $status->select($commentId1);
-        if ($status->getDataEntryStatus() != 'Complete') {
+        if (!$forceDiff && $status->getDataEntryStatus() != 'Complete') {
             return $diffResult;
         }
 
         // Get data entry status for $commentId2
         $status = new NDB_BVL_InstrumentStatus();
         $status->select($commentId2);
-        if ($status->getDataEntryStatus() != 'Complete') {
+        if (!$forceDiff && $status->getDataEntryStatus() != 'Complete') {
             return $diffResult;
         }
 

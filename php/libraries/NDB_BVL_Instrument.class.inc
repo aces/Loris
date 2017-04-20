@@ -481,10 +481,28 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function save()
     {
-        $scoreResult = '';
+        //$scoreResult = '';
         if ($this->form->validate()) {
             $this->form->process(array(&$this, '_saveValues'), true);
-            $scoreResult = $this->score();
+            //$scoreResult = $this->score();
+
+            $input = $this->form->getSubmitValues();
+            if (preg_match("/^DDE_/", $input["commentID"])) {
+                //This is a double-data entry form
+                $otherCommentID = substr($input["commentID"], 4);
+
+                $diff = ConflictDetector::detectConflictsForCommentIds(
+                    $input["test_name"],
+                    $input["commentID"],
+                    $otherCommentID,
+                    true
+                );
+                if (count($diff) > 0) {
+                    foreach ($diff as $d) {
+                        $this->form->warnings[$d["FieldName"]] = $d;
+                    }
+                }
+            }
 
             // determine the data entry completion status, and store that in
             // the database

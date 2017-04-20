@@ -35,6 +35,7 @@ class LorisForm
     var $defaultValues = array();
     var $formRules     = array();
     var $errors        = array();
+    var $warnings      = array();
     var $filters       = array();
     var $frozen        = false;
     var $enctype       = '';
