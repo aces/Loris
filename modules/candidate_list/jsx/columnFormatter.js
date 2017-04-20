@@ -33,6 +33,15 @@ function formatColumn(column, cell, rowData) {
         </td>
       );
   }
+  if (column === "Study Consent") {
+    if (cell === null || cell === "not_answered") {
+      return <td>Not Answered</td>;
+    } else if (cell === "yes") {
+      return <td>Yes</td>;
+    } else {
+      return <td>No</td>;
+    }
+  }
   return <td>{cell}</td>;
 }
 

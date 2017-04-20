@@ -76,6 +76,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                           'c.Entity_type',
                           "COALESCE(pso.Description,'Active') "
                           . " AS Participant_Status",
+                          "ps.study_consent"
                          );
         if ($useProjects) {
             $this->columns[] = 'p.Name as Project';
