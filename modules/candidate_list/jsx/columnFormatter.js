@@ -38,9 +38,8 @@ function formatColumn(column, cell, rowData) {
       return <td>Not Answered</td>;
     } else if (cell === "yes") {
       return <td>Yes</td>;
-    } else {
-      return <td>No</td>;
     }
+    return <td>No</td>;
   }
   return <td>{cell}</td>;
 }

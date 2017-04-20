@@ -384,7 +384,6 @@ function getConsentStatusFields()
         $temp[]          = $consent_details;
         $consent_details = $temp;
     }
-
     foreach ($consent_details as $consentType) {
 
         $consents[$consentType['name']]      = $consentType['label'];
