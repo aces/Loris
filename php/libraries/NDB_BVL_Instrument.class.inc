@@ -499,8 +499,16 @@ class NDB_BVL_Instrument extends NDB_Page
                     $otherCommentID,
                     true
                 );
+                $diff_warnings = array();
                 foreach ($diff as $d) {
-                    $this->form->warnings[$d["FieldName"]] = $d;
+                    $diff_warnings[$d["FieldName"]] = $d;
+                }
+                $this->form->warnings["diff_warnings"] = $diff_warnings;
+                
+                $otherStatus = new NDB_BVL_InstrumentStatus();
+                $otherStatus->select($otherCommentID);
+                if ($otherStatus->getDataEntryStatus() != "Complete") {
+                    $this->form->warnings["other_incomplete"] = $otherCommentID;
                 }
             }
 

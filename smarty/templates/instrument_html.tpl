@@ -11,6 +11,11 @@
 <div class="row">
 	{$form.hidden}
 	{$form.errors.mainError}
+    {if $form.warnings.other_incomplete}
+        <div class="alert alert-warning" role="alert">
+            <em>Warning</em>: The original entries are incomplete <small>({$form.warnings.other_incomplete})</small>
+        </div>
+    {/if}
 	{assign var="inTable" value="FALSE"}
 	{foreach from=$form.elements item=element}
 		{if $element.name neq mainError}
@@ -41,7 +46,7 @@
 					{/if}
                     {assign var="has_warning" value=false}
                     {foreach key=gkey item=gitem from=$element.elements}
-                        {if array_key_exists($gitem.name, $form.warnings)}
+                        {if array_key_exists($gitem.name, $form.warnings.diff_warnings)}
                             {assign var="has_warning" value=true}
                         {/if}
                     {/foreach}
@@ -70,7 +75,7 @@
 				                </div>
 							{/if}
                             {foreach key=gkey item=gitem from=$element.elements}
-                                {if array_key_exists($gitem.name, $form.warnings)}
+                                {if array_key_exists($gitem.name, $form.warnings.diff_warnings)}
                                     <div class="col-xs-12">
                                         <font class="warning">{$gitem.name} does not match the original input</font>
                                     </div>
@@ -120,7 +125,7 @@
 					{assign var="inTable" value="FALSE"}
 					</table>
 				{/if}
-                {assign var="has_warning" value=array_key_exists($element.name, $form.warnings)}
+                {assign var="has_warning" value=array_key_exists($element.name, $form.warnings.diff_warnings)}
 				{if $element.error}
 		    	<div class="row form-group form-inline form-inline has-error">
                 {elseif $has_warning}
@@ -143,7 +148,7 @@
 			                    <font class="form-error">{$element.error}</font>
 			                </div>
 						{/if}
-                        {if array_key_exists($element.name, $form.warnings)}
+                        {if array_key_exists($element.name, $form.warnings.diff_warnings)}
                             <div class="col-xs-12">
                                 <font class="warning">{$element.name} does not match the original input</font>
                             </div>
@@ -240,7 +245,7 @@
 						{assign var="inTable" value="FALSE"}
 						</table>
 					{/if}
-                    {assign var="has_warning" value=array_key_exists($element.name, $form.warnings)}
+                    {assign var="has_warning" value=array_key_exists($element.name, $form.warnings.diff_warnings)}
 					{if $element.error}
 			    	<div class="row form-group form-inline has-error">
                     {elseif $has_warning}
@@ -263,7 +268,7 @@
 				                    <font class="form-error">{$element.error}</font>
 				                </div>
 							{/if}
-                            {if array_key_exists($element.name, $form.warnings)}
+                            {if array_key_exists($element.name, $form.warnings.diff_warnings)}
                                 <div class="col-xs-12">
                                     <font class="warning">{$element.name} does not match the original input</font>
                                 </div>
