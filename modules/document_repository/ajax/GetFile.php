@@ -34,32 +34,33 @@ $client->initialize("../project/config.xml");
 // Checks that config settings are set
 $config =& NDB_Config::singleton();
 
-$File = $_GET['File'];
+$file = $_GET['File'];
 
 // Ensure file exists in the document_repository table before serving
 $db     =& Database::singleton();
 $record = $db->pselectOne(
     "SELECT record_id FROM document_repository WHERE "
     . "Data_dir=:dd",
-    array('dd' => $File)
+    array('dd' => $file)
 );
 
 if (empty($record)) {
     error_log("ERROR: Invalid filename");
     header("HTTP/1.1 400 Bad Request");
     exit(4);
-} else {
-    $FullPath = __DIR__ . "/../user_uploads/$File";
-    echo "$FullPath";
+} 
 
-    if (!file_exists($FullPath)) {
-        error_log("ERROR: File $FullPath does not exist");
-        header("HTTP/1.1 404 Not Found");
-        exit(5);
-    }
+$path = __DIR__ . "/../user_uploads/$file";
 
-    $fp = fopen($FullPath, 'r');
-    fpassthru($fp);
-    fclose($fp);
+if (!file_exists($path)) {
+    error_log("ERROR: File $path does not exist");
+    header("HTTP/1.1 404 Not Found");
+    exit(5);
 }
-?>
+
+// Output file in downloadable format
+header('Content-Description: File Transfer');
+header('Content-Type: application/force-download');
+header("Content-Transfer-Encoding: Binary");
+header("Content-disposition: attachment; filename=\"" . basename($path) . "\"");
+readfile($path);
