@@ -462,7 +462,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $qparams['CI'] = $candidate;
         }
 
-        $order_by = " ORDER BY f.commentid";
+        $order_by = " ORDER BY f.commentid ";
 
         $query   = $query . $where . $order_by;
         $results = $DB->pselect($query, $qparams);
