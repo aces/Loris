@@ -74,18 +74,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         parent::setUp();
         $this->DB->insert(
             "acknowledgements",
-            array(
-               'ID'       => '999',
-               'ordering' => '999',
-              'full_name' => 'Demo Test',
-          'citation_name' => "Demo's Citation",
-           'affiliations' => 'mcgill',
-                'degrees' => 'bachelors',
-                  'roles' => 'investigators',
-             'start_date' => '2015-01-01',
-               'end_date' => '2016-01-01',
-                'present' => 'Yes',
-            )
+            self::$testData
         );        
 
     }
