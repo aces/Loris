@@ -445,6 +445,10 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
                 AND (f.test_name IN ($ddeInstruments) OR
                 f.commentid NOT LIKE 'DDE_%')
             ";
+        } else {
+            $where .= "
+                AND (f.commentid NOT LIKE 'DDE_%')
+            ";
         }
         $qparams = array();
 
