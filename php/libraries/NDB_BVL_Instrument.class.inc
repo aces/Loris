@@ -481,10 +481,12 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function save()
     {
-        //$scoreResult = '';
+        //Do not comment this out; used for score calculation
+        $scoreResult = '';
         if ($this->form->validate()) {
             $this->form->process(array(&$this, '_saveValues'), true);
-            //$scoreResult = $this->score();
+            //Do not comment this out; used for score calculation
+            $scoreResult = $this->score();
 
             $input = $this->form->getSubmitValues();
             if (preg_match("/^DDE_/", $input["commentID"])) {

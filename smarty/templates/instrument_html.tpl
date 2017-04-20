@@ -9,6 +9,7 @@
 </style>
 <form method="post" name="test_form" id="test_form" {$form.enctype} {$form.action}>
 <div class="row">
+    <pre>{var_dump($form.warnings)}</pre>
 	{$form.hidden}
 	{$form.errors.mainError}
 	{assign var="inTable" value="FALSE"}
@@ -61,6 +62,13 @@
 				                    <font class="form-error">{$element.error}</font>
 				                </div>
 							{/if}
+                            {foreach key=gkey item=gitem from=$element.elements}
+                                {if array_key_exists($gitem.name, $form.warnings)}
+                                    <div class="col-xs-12">
+                                        <font class="form-warning">{$gitem.name} does not match the original input</font>
+                                    </div>
+                                {/if}
+                            {/foreach}
 						</div>
 					</div>
 				{else}
@@ -125,6 +133,11 @@
 			                    <font class="form-error">{$element.error}</font>
 			                </div>
 						{/if}
+                        {if array_key_exists($element.name, $form.warnings)}
+                            <div class="col-xs-12">
+                                <font class="form-warning">{$element.name} does not match the original input</font>
+                            </div>
+                        {/if}
 					</div>
 				</div>
 			{/if}
@@ -236,6 +249,11 @@
 				                    <font class="form-error">{$element.error}</font>
 				                </div>
 							{/if}
+                            {if array_key_exists($element.name, $form.warnings)}
+                                <div class="col-xs-12">
+                                    <font class="form-warning">{$element.name} does not match the original input</font>
+                                </div>
+                            {/if}
 						</div>
 					</div>
 				{/if}

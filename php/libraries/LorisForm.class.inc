@@ -1578,6 +1578,7 @@ class LorisForm
                     'elements' => array(),
                     'type'     => 'page',
                     'errors'   => $this->errors,
+                    'warnings' => $this->warnings,
                    );
         $retVal  = $curPage;
 
