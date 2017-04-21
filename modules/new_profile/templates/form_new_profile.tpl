@@ -8,6 +8,11 @@
 
 <br />
 <form method="post" name="new_profile" id="new_profile" class="form-inline">
+	<div class="form-group col-sm-12">
+		<label >
+			<i>**{$disclaimer}</i>
+		</label>
+	</div>
 
     {foreach from=$form.errors item=error}
     <div class="col-sm-12">

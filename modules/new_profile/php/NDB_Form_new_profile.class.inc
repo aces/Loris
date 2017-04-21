@@ -114,6 +114,9 @@ class NDB_Form_New_Profile extends NDB_Form
      */
     function new_profile()//@codingStandardsIgnoreLine
     {
+        $this->tpl_data['disclaimer']=$this->getDisclaimer('new_profile');
+
+
         $config         =& NDB_Config::singleton();
         $startYear      = $config->getSetting('startYear');
         $endYear        = $config->getSetting('endYear');
@@ -302,6 +305,13 @@ class NDB_Form_New_Profile extends NDB_Form
         }
 
         return $errors;
+    }
+
+    function getDisclaimer($module) {
+
+        $db =& Database::singleton();
+
+        return $db->pselectOne("SELECT Value FROM disclaimer WHERE module=:mod", array("mod"=>$module));
     }
 
 }
