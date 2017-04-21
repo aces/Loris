@@ -1,10 +1,10 @@
 --
 -- Table structure for table `help`
 --
-SELECT 'help' as 'DROP TABLE';
+
 DROP TABLE IF EXISTS `help`;
 
-SELECT 'help' as 'CREATE TABLE';
+
 CREATE TABLE `help` (
     `helpID` int(10) unsigned NOT NULL AUTO_INCREMENT, 
     `parentID` int(11) NOT NULL DEFAULT '-1',
@@ -21,7 +21,7 @@ CREATE TABLE `help` (
 --
 -- Dumping data for table `help`
 --
-SELECT 'help' as 'Inserting data';
+
 INSERT INTO `help` (helpID, parentID, hash, topic, content, created, updated) VALUES  (1,-1,md5('dashboard'),'LORIS HELP: Using the Database','Welcome to the LORIS database. \r\nThis Help section provides you with guidelines for adding and updating information in the database. On each page, click on the question mark icon in the Menu Bar across the top of the screen to access detailed information specific to the current page.\r\n\r\nUpon logging into the LORIS database, the user will come to the home page. Here, key user information can automatically be seen at the right-hand side of the Menu Bar at the top of the screen indicating the user’s name and the site to which the user belongs. To return to the home page at any time, the user can click on the \"LORIS\" button at the far left corner of the Menu Bar.\r\nThe menus spanning horizontally across the Menu Bar represent different categories of features within the database that allow data acquisition, storage, processing and dissemination using the web based interface. Please note that when accessing LORIS via tablet, mobile device, or in a narrow-width desktop browser window, these main menus will be hidden under the downward-pointing arrow icon in the Menu Bar. Clicking on this button will show or hide all main menus in a vertical list.\r\nThere are five main drop-down menus: Candidate, Clinical, Imaging, Reports and Admin. Hover over on each menu to display a list of features or modules, organized by category:\r\n- Candidate: New Profile, Access Profile\r\n- Clinical: Reliability Coding, Conflict Resolver, Certification, Document Repository\r\n- Imaging: Radiological Review, DICOM Archive, Imaging Browser, Imaging Uploader\r\n- Reports: Database Statistics, Data Dictionary, Data Querying Tool, Data Team Helper, Data Integrity Tool\r\n- Admin: User Accounts, Instrument Builder\r\n\r\nOn the right side of the Menu Bar there are two icons linking to the Feedback Module, a pencil on paper icon , and Help, a question mark icon. Each of these modules will open in a new pop-up window, or new tab on a mobile browser.\r\n\r\nAll five main menus, the two icons listed above, the user’s site and the user’s name are accessible from any page in LORIS, via the Menu Bar at the top of the screen. \r\n\r\nTo log out of the database, click on the username displayed at the right edge of the Menu Bar, and select the \"Log Out\" option from the drop-down menu. \r\n\r\nThe \"My Preferences\" feature, also listed in this menu, can be used to update certain user profile settings and change the user’s password. \r\n','2014-09-01 00:00:00',NULL),
 (2,-1,NULL,'HOW TO - Guide','Under Construction. Please visit us later',NULL,NULL),
 (3,-1,NULL,'Guidelines','Under Construction. Please visit us later',NULL,NULL),
@@ -73,4 +73,4 @@ INSERT INTO `help` (helpID, parentID, hash, topic, content, created, updated) VA
 (51,-1,md5('issue_tracker'), 'Issue Tracker', 'The Issue Tracker module allows users to report bugs and flag data concerns within a given LORIS. <br>Click the "Add Issue" button to register a new issue. Use the All Issues, Closed Issues, and My Issues tabs, in combination with the Selection filters, to build a custom view of issues of interest. Optionally, a PSCID can be associated to an issue, to link it to a specific subject record.  If PSCID is provided, a Visit label can also be specified for cases where an issue relates to a subject-timepoint.<br>Clicking on any issue will load a page displaying the Issue Details, enabling the user to edit or update the issue given appropriate user permissions.  This form can be used to re-assign an issue, change its status, and add further comments.  Email notifications are sent when a given issue is updated, to any user who is added to the list of those "watching" the issue. The history of all comments and updates to the issue is also visible at the end of the Issue page.', '2016-10-25 00:00:00', NULL),
 (52,-1,md5('data_release'), 'Data Release', 'The Data Release Module can be used to easily distribute packaged data releases of your study. Use the "Upload File" button to upload your file and tag it with a version based on your own version convention. Grant access to any of your users using the "Add Permission" button. These buttons will be visible only if you have the "superuser" permission.', '2016-11-04 00:00:00', NULL);
 
-SELECT 'Help import completed' as 'Status';
+
