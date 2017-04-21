@@ -67,6 +67,9 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             $useProjects = false;
         }
 
+        $useMonitoring = $config->getSetting('useMonitoring');
+        $useMonitoring = ($useMonitoring === "false") ? false : true;
+
         // set the class variables
         $this->columns = array(
                           'psc.Name AS Site',
@@ -123,6 +126,21 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             )
         );
 
+        if ($useMonitoring) {
+            $monitoringField = "CONCAT('[',".
+                "GROUP_CONCAT(".
+                    "DISTINCT CONCAT('{".
+                        "\"visit\":\"',m.visit_label,'\", ".
+                        "\"monitored\":\"',m.monitored,'\"".
+                    "}')".
+                "),']') as Monitoring";
+
+            $this->columns = array_merge(
+                $this->columns,
+                array($monitoringField)
+            );
+        }
+
         $this->query = " FROM candidate c
             LEFT JOIN psc ON (c.CenterID=psc.CenterID)
             LEFT JOIN session s ON (c.CandID = s.CandID AND s.Active = 'Y')
@@ -133,6 +151,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                 ON (ps.participant_status=pso.ID)
             LEFT JOIN Project p ON (c.ProjectID=p.ProjectID)
             LEFT JOIN subproject sp ON (s.SubprojectID=sp.SubprojectID)
+            LEFT JOIN monitoring m ON (m.CandID = c.CandID)
             WHERE c.Active = 'Y'";
 
         if (!$user->hasPermission('access_all_profiles')) {
@@ -415,6 +434,23 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         }
         $this->tpl_data['numCandidates'] = $this->TotalItems;
         return true;
+    }
+
+    /**
+     * Include additional CSS files:
+     *  1. candidate_list.css
+     *
+     * @return array of css to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . "/candidate_list/css/candidate_list.css"]
+        );
     }
 
     /**

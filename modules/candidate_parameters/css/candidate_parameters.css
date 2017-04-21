@@ -5,3 +5,8 @@
 .nav-tabs {
     margin-left: 0px;
 }
+
+.table-hist {
+    border-spacing: 12px;
+    border-collapse:separate;
+}

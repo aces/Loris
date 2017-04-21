@@ -23,16 +23,46 @@ function formatColumn(column, cell, rowData) {
   }
   if (column === 'Scan Done' && cell === 'Y') {
     return (
-        <td className="scanDoneLink">
-            <a href="#"
-               onClick={loris.loadFilteredMenuClickHandler('imaging_browser',
-                 {pscid: rowData[2]})}
-            >
-                {cell}
-            </a>
+      <td className="scanDoneLink">
+        <a href="#"
+           onClick={loris.loadFilteredMenuClickHandler('imaging_browser',
+             {pscid: rowData[2]})}
+        >
+          {cell}
+        </a>
+      </td>
+    );
+  }
+  if (column === 'Monitoring') {
+    if (cell) {
+      var visits = JSON.parse(cell);
+
+      // var visits = cell.split(",");
+      var vlRow = function(visitRow) {
+        if (visitRow.monitored === 'Y') {
+          return (
+            <div className="bg-success">
+              {visitRow.visit}
+            </div>
+          );
+        }
+        if (visitRow.monitored === 'N') {
+          return (
+            <div className="bg-danger">
+              {visitRow.visit}
+            </div>
+          );
+        }
+      };
+
+      return (
+        <td className="monitoring">
+          {visits.map(vlRow)}
         </td>
       );
+    }
   }
+
   return <td>{cell}</td>;
 }
 

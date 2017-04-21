@@ -1,0 +1,11 @@
+.bg-success {
+    padding: 0 10px;
+}
+
+.bg-danger {
+    padding: 0 10px;
+}
+
+table tbody tr td.monitoring {
+    padding: 0;
+}

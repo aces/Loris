@@ -63,6 +63,9 @@ DROP TABLE IF EXISTS `user_account_history`;
 DROP TABLE IF EXISTS `final_radiological_review_history`;
 DROP TABLE IF EXISTS `final_radiological_review`;
 
+DROP TABLE IF EXISTS `monitoring`;
+DROP TABLE IF EXISTS `monitoring_history`;
+
 DROP TABLE IF EXISTS `data_integrity_flag`;
 
 DROP TABLE IF EXISTS `certification_training_quiz_answers`;
@@ -78,7 +81,7 @@ DROP TABLE IF EXISTS `family`;
 DROP TABLE IF EXISTS `participant_emails`;
 DROP TABLE IF EXISTS `participant_accounts`;
 DROP TABLE IF EXISTS `participant_status`;
-DROP TABLE IF EXISTS `participant_status_options`; 
+DROP TABLE IF EXISTS `participant_status_options`;
 
 DROP TABLE IF EXISTS `conflicts_resolved`;
 DROP TABLE IF EXISTS `conflicts_unresolved`;
@@ -1100,6 +1103,34 @@ CREATE TABLE `certification_training_quiz_answers` (
     `OrderNumber` INTEGER UNSIGNED NOT NULL,
     PRIMARY KEY (`ID`),
     CONSTRAINT `FK_certification_training_quiz_answers` FOREIGN KEY (`QuestionID`) REFERENCES `certification_training_quiz_questions` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ********************************
+-- monitoring tables
+-- ********************************
+
+CREATE TABLE `monitoring` (
+  `CandID` int(6) NOT NULL,
+  `visit_label` varchar(255) DEFAULT NULL,
+  `monitored` enum('Y','N') NOT NULL DEFAULT 'N',
+  `date_monitored` date DEFAULT NULL,
+  `monitor_id` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`CandID`,`Visit_label`),
+  CONSTRAINT `FK_monitoring_1` FOREIGN KEY (`monitor_id`) REFERENCES `examiners` (`examinerID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `monitoring_history` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `CandID` int(6) NOT NULL,
+  `visit_label` varchar(255) DEFAULT NULL,
+  `flag` enum('Y','N') NOT NULL DEFAULT 'N',
+  `monitored` enum('Y','N') NOT NULL DEFAULT 'N',
+  `date_monitored` date DEFAULT NULL,
+  `monitor_id` int(10) unsigned DEFAULT NULL,
+  `data_entry_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `entry_staff` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  CONSTRAINT `FK_monitoring_history_1` FOREIGN KEY (`entry_staff`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************

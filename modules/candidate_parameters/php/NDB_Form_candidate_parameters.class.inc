@@ -66,8 +66,10 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
 
         // consent
         $consent = $config->getSetting('ConsentModule');
+        $monitor = $config->getSetting('useMonitoring');
 
-        $this->tpl_data['useConsent'] = $consent['useConsent'];
+        $this->tpl_data['useConsent']    = $consent['useConsent'];
+        $this->tpl_data['useMonitoring'] = $monitor;
     }
 
     /**
@@ -159,6 +161,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
              $baseURL . "/candidate_parameters/js/familyInfo.js",
              $baseURL . "/candidate_parameters/js/participantStatus.js",
              $baseURL . "/candidate_parameters/js/consentStatus.js",
+             $baseURL . "/candidate_parameters/js/monitoring.js",
             )
         );
     }
