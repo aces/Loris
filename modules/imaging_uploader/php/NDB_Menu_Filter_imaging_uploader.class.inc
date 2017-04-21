@@ -441,6 +441,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         } else {
                 $this->uploaded_file_path = $this->getTempPath();
         }
+
         $values = array(
                    'UploadedBy'     => $user_name,
                    'UploadDate'     => $date,
@@ -579,6 +580,29 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
     }
 
     /**
+     * The function returns an array of filenames that exist in the mri
+     * upload directory.
+     *
+     * @param array $data data retrieved from mri_upload table
+     *
+     * @return array list of filenames
+     */
+    function _getFileList($data)
+    {
+
+        $files = array();
+
+        foreach ($data as $row) {
+            $fileName = $row[5];
+            if (file_exists($fileName)) {
+                array_push($files, basename($fileName));
+            }
+        }
+
+        return $files;
+    }
+
+    /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu
      *
@@ -627,12 +651,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
     {
         $result            = $this->toArray();
         $result['form']    = $this->form->form;
-        $result['mriList'] = array_map(
-            function ($fileName) {
-                return basename($fileName[5]);
-            },
-            $result['Data']
-        );
+        $result['mriList'] = $this->_getFileList($result['Data']);
 
         return json_encode($result);
     }
