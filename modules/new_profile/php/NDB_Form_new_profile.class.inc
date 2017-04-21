@@ -119,13 +119,16 @@ class NDB_Form_New_Profile extends NDB_Form
         $endYear        = $config->getSetting('endYear');
         $ageMax         = $config->getSetting('ageMax');
         $ageMin         = $config->getSetting('ageMin');
+        $dobFormat      = $config->getSetting('dobFormat');
+
         $dateOptions    = array(
                            'language'       => 'en',
-                           'format'         => 'YMd',
+                           'format'         => $dobFormat,
                            'addEmptyOption' => true,
                            'minYear'        => $startYear - $ageMax,
                            'maxYear'        => $endYear - $ageMin,
                           );
+
         $dateAttributes = ['class' => 'form-control input-sm input-date'];
 
         // add date of birth
