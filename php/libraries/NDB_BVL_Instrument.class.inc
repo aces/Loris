@@ -493,7 +493,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 //This is a double-data entry form
                 $otherCommentID = substr($input["commentID"], 4);
 
-                $diff = ConflictDetector::detectConflictsForCommentIds(
+                $diff          = ConflictDetector::detectConflictsForCommentIds(
                     $input["test_name"],
                     $input["commentID"],
                     $otherCommentID,
@@ -504,7 +504,7 @@ class NDB_BVL_Instrument extends NDB_Page
                     $diff_warnings[$d["FieldName"]] = $d;
                 }
                 $this->form->warnings["diff_warnings"] = $diff_warnings;
-                
+
                 $otherStatus = new NDB_BVL_InstrumentStatus();
                 $otherStatus->select($otherCommentID);
                 if ($otherStatus->getDataEntryStatus() != "Complete") {
