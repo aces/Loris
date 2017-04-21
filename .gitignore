@@ -25,5 +25,4 @@ htdocs/js/components/.module-cache/
 node_modules/
 modules/*/js/*.map
 htdocs/js/components/*.map
-npm-debug.log
-npm-debug.log.*
+npm-debug.log*
