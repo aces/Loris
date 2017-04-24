@@ -57,7 +57,7 @@
             <div>
                 Check "<strong>Already Created</strong>" only if the appropriate mysql user has already been created!<br/>
                 If you or the web admin wish to give the appropriate privileges to an existing MySQL user, <br/>
-                the privileges are <code>UPDATE, INSERT, SELECT, DELETE, CREATE TEMPORARY TABLES</code><br/>
+                the privileges are <code>SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, CREATE TEMPORARY TABLES, LOCK TABLES</code><br/>
                 for the following: <code>`{$dbname}`.*</code>
             </div>
 			<fieldset>
@@ -145,6 +145,9 @@
 				<div class="col-md-10">
 					<input id="serveruser" value="{$dbadminuser}" name="dbadminuser" type="text" placeholder="ie. root">
 				</div>
+                <div>
+                    The admin should have <strong>ALL</strong> privileges granted for the database specified.
+                </div>
 			</div>
 			<div>
 				<div class="col-md-2">
@@ -162,6 +165,7 @@
 					<input id="dbname" value="{if $dbname}{$dbname}{else}LORIS{/if}" type="text" name="dbname">
 				</div>
 			</div>
+            <hr/>
 			<div>
 				<div class="col-md-2">
 					<label for="use_existing_database">Use Existing Database:</label>
