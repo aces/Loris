@@ -41,7 +41,7 @@
         {foreach from=$subject.tarchiveids item=tarchive}
         <li><a href="{$baseurl}/dicom_archive/viewDetails/?tarchiveID={$tarchive.TarchiveID}&backURL={$backURL|escape:"url"}">DICOM Archive {$tarchive.TarchiveID}</a></li>{/foreach}
         {if $mantis}
-            <li><a target="mantis" href="{$mantis}">Report a Bug (Mantis)</a></li>
+            <li><a target="mantis" href="{$mantis}">Report a Bug</a></li>
         {/if}
     </ul>
 
