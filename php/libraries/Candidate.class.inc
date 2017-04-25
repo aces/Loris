@@ -22,8 +22,6 @@ define('PSCID_INVALID_STRUCTURE', 4);
 // id ranges...
 define('CANDIDATE_MIN_CANDID', 100000);
 define('CANDIDATE_MAX_CANDID', 999999);
-define('CANDIDATE_MIN_PSCID', 1000);
-define('CANDIDATE_MAX_PSCID', 9999);
 
 /**
  * Wrapper around a candidate in Loris. Mostly, it gets information
@@ -714,7 +712,10 @@ class Candidate
         $config = $factory->config();
 
         $PSCIDSettings = $config->getSetting('PSCID');
-        $generator     = Candidate::idGeneratorFromXMLConfig($PSCIDSettings, $prefix);
+        $generator     = Candidate::idGeneratorFromXMLConfig(
+            $PSCIDSettings,
+            $prefix
+        );
         // run one first time, then loop until the pscid is not used
         do {
             // pick a new pscid
@@ -758,7 +759,9 @@ class Candidate
         $config  = $factory->config();
 
         $ExternalIDSettings = $config->getSetting('ExternalID');
-        $generator          = Candidate::idGeneratorFromXMLConfig($ExternalIDSettings);
+        $generator          = Candidate::idGeneratorFromXMLConfig(
+            $ExternalIDSettings
+        );
 
         $db = $factory->database();
 
@@ -845,6 +848,5 @@ class Candidate
 
         return IdGenerator::fromXMLConfig($idStructure, $siteAbbrev);
     }
-
 }
 ?>
