@@ -128,6 +128,13 @@
          * @return bool `true` on success
          */
         public function nextRand ();
+        /**
+         * Returns the max number of times nextRand() can be
+         * reasonably called without a reset.
+         *
+         * @return int -1 if nextRand() always returns the same result
+         */
+        public function randAttemptsMax ();
     }
     class StaticGenerator implements IdGeneratorInterface {
         private $value;
@@ -147,6 +154,15 @@
          */
         public function reset () {}
         /**
+         * Expected to return `null` if unable to get the
+         * current string, this returns the current string in sequence
+         *
+         * @return string|null The current string in the id
+         */
+        public function cur () {
+            return $this->value;
+        }
+        /**
          * Tries to generate the next string in the sequence
          *
          * @return bool `true` on success
@@ -163,13 +179,13 @@
             return true;
         }
         /**
-         * Expected to return `null` if unable to get the
-         * current string, this returns the current string in sequence
+         * Returns the max number of times nextRand() can be
+         * reasonably called without a reset.
          *
-         * @return string|null The current string in the id
+         * @return int -1 if nextRand() always returns the same result
          */
-        public function cur () {
-            return $this->value;
+        public function randAttemptsMax () {
+            return -1;
         }
         
         public function __construct ($value) {
@@ -277,13 +293,22 @@
                 return true;
             }
         }
+        /**
+         * Returns the max number of times nextRand() can be
+         * reasonably called without a reset.
+         *
+         * @return int -1 if nextRand() always returns the same result
+         */
+        public function randAttemptsMax () {
+            return $this->rand_attempts_max;
+        }
         
         public function __construct ($min, $max, $length) {
             $this->min    = $min;
             $this->max    = $max;
             $this->length = $length;
             
-            $delta = $max-$min;
+            $delta = $max-$min + 1;
             $this->rand_attempts_max = IdGeneratorUtil::approximateRandAttemptsMax($delta);
             
             $this->reset();
@@ -449,27 +474,28 @@
         }
     }
     class IdGenerator implements IdGeneratorInterface {
-        private static function _nextImpl ($generator_arr, $index, $next_callback, &$attempts) {
+        private static function _nextImpl ($generator_arr, $index, &$attempts) {
             if ($index < 0) {
                 return false;
             }
             $generator = $generator_arr[$index];
             if ($generator->canReset()) {
                 ++$attempts;
-                if ($next_callback($generator)) {
+                if ($generator->next()) {
                     return true;
                 } else {
                     $generator->reset();
-                    return self::_nextImpl($generator_arr, $index-1, $next_callback, $attempts);
+                    return self::_nextImpl($generator_arr, $index-1, $attempts);
                 }
             } else {
-                return self::_nextImpl($generator_arr, $index-1, $next_callback, $attempts);
+                return self::_nextImpl($generator_arr, $index-1, $attempts);
             }
         }
         
         private $generator_arr;
         private $needs_reset;
         private $attempts;
+        private $rand_attempts_max;
         
         public function getAttempts () {
             return $this->attempts;
@@ -534,9 +560,6 @@
             $success = self::_nextImpl(
                 $this->generator_arr,
                 count($this->generator_arr)-1,
-                function ($generator) {
-                    return $generator->next();
-                },
                 $this->attempts
             );
             $this->needs_reset = !$success;
@@ -553,23 +576,43 @@
                 return false;
             }
             
-            $this->attempts = 0;
+            ++$this->attempts;
+            if ($this->attempts >= $this->rand_attempts_max) {
+                $this->needs_reset = true;
+                return false;
+            }
             
-            $success = self::_nextImpl(
-                $this->generator_arr,
-                count($this->generator_arr)-1,
-                function ($generator) {
-                    return $generator->nextRand();
-                },
-                $this->attempts
-            );
-            $this->needs_reset = !$success;
-            return $success;
+            foreach ($this->generator_arr as $generator) {
+                if (!$generator->nextRand()) {
+                    $generator->reset();
+                    if (!$generator->nextRand()) {
+                        //Can't even generate the first random result...
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        /**
+         * Returns the max number of times nextRand() can be
+         * reasonably called without a reset.
+         *
+         * @return int -1 if nextRand() always returns the same result
+         */
+        public function randAttemptsMax () {
+            return $this->rand_attempts_max;
         }
         
         public function __construct ($generator_arr) {
             $this->generator_arr = $generator_arr;
+            $this->rand_attempts_max = 1;
             
+            foreach ($generator_arr as $generator) {
+                $r = $generator->randAttemptsMax();
+                if ($r > 0) {
+                    $this->rand_attempts_max *= $r;
+                }
+            }
             $this->reset();
         }
         public static function fromXMLConfig ($xml, $site_name=null) {
@@ -606,8 +649,7 @@
                         $generator = AlphanumericGenerator::fromXMLConfig($x);
                         break;
                     }
-                    case "set":
-                    case "enum": {
+                    case "set": {
                         $generator = EnumerationGenerator::fromXMLConfig($x);
                         break;
                     }

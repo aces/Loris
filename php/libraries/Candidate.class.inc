@@ -727,9 +727,10 @@ class Candidate
             }
 
             if (is_null($pscid)) {
+                $attempts = $generator->getAttempts();
                 throw new Exception(
-                    "Could not generate psc id, "
-                    . "please set psc id generator definition "
+                    "Could not generate psc id after {$attempts} attempts. "
+                    . "Please set psc id generator definition "
                     . "to allow more ids to be generated."
                 );
             }
@@ -771,9 +772,10 @@ class Candidate
             }
 
             if (is_null($externalID)) {
+                $attempts = $generator->getAttempts();
                 throw new Exception(
-                    "Could not generate external id, "
-                    . "please set external id generator definition "
+                    "Could not generate external id, after {$attempts} attempts. "
+                    . "Please set external id generator definition "
                     . "to allow more ids to be generated."
                 );
             }
