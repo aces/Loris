@@ -714,25 +714,23 @@ class Candidate
         $config = $factory->config();
 
         $PSCIDSettings = $config->getSetting('PSCID');
-        $pscidArrays   = Candidate::generateArrays($PSCIDSettings, $prefix);
-
+        $generator     = Candidate::idGeneratorFromXMLConfig($PSCIDSettings, $prefix);
         // run one first time, then loop until the pscid is not used
         do {
             // pick a new pscid
             if ($PSCIDSettings['generation'] == 'sequential') {
-                if (!empty($pscid)) {
-                    $pscid++;
-                } else {
-                    $pscid = Candidate::generateFirstStringFromArrays($pscidArrays);
-                }
+                $pscid = $generator->cur();
+                $generator->next();
             } else {
-                $pscid = Candidate::generateRandomStringFromArrays($pscidArrays);
+                $generator->nextRand();
+                $pscid = $generator->cur();
             }
 
-            if ($pscid == '') {
-                throw new LorisException(
-                    "Well this is embarrassing, our automated PSCID generator "
-                    . "is about to enter an infinite loop."
+            if (is_null($pscid)) {
+                throw new Exception(
+                    "Could not generate psc id, "
+                    . "please set psc id generator definition "
+                    . "to allow more ids to be generated."
                 );
             }
 
@@ -743,7 +741,6 @@ class Candidate
                 array('PID' => $pscid)
             ) > 0
         );
-
         return $pscid;
     }
 
@@ -759,26 +756,27 @@ class Candidate
         $config  = $factory->config();
 
         $ExternalIDSettings = $config->getSetting('ExternalID');
-        $ExternalIDArrays   = Candidate::generateArrays($ExternalIDSettings);
+        $generator          = Candidate::idGeneratorFromXMLConfig($ExternalIDSettings);
 
         $db = $factory->database();
 
         do {
             // generate a new external ID
             if ($ExternalIDSettings['generation'] == 'sequential') {
-                if (!empty($externalID)) {
-                    $externalID++;
-                } else {
-                    $externalID = Candidate::generateFirstStringFromArrays(
-                        $ExternalIDArrays
-                    );
-                }
+                $externalID = $generator->cur();
+                $generator->next();
             } else {
-                $externalID = Candidate::generateRandomStringFromArrays(
-                    $ExternalIDArrays
-                );
+                $generator->nextRand();
+                $externalID = $generator->cur();
             }
 
+            if (is_null($externalID)) {
+                throw new Exception(
+                    "Could not generate external id, "
+                    . "please set external id generator definition "
+                    . "to allow more ids to be generated."
+                );
+            }
             // check if the external ID is used
         } while (
             $db->pselectOne(
@@ -816,46 +814,6 @@ class Candidate
 
 
     /**
-     * Helper function used to generate PSCID. This generates a random
-     * number if generation is not "sequential"
-     *
-     * @param array $arrays Array specifying format of random
-     *                      string to be generated
-     *
-     * @return string A random string matching format from arrays
-     */
-    static function generateRandomStringFromArrays($arrays)
-    {
-        $string = "";
-        foreach ($arrays AS $array) {
-            if (is_array($array)) {
-                $string .= $array[array_rand($array)];
-            } else {
-                $string .= $array;
-            }
-        }
-        return $string;
-    }
-
-    /**
-     * Helper function used to generate PSCID. Generate the string for the first
-     * numeric part of the PSCID if generation type is "sequential" and pads with
-     * an appropriate numbers.
-     *
-     * @param array $arrays An array config file specifying format of number
-     *
-     * @return string The first string to be used for the PSCID
-     */
-    static function generateFirstStringFromArrays($arrays)
-    {
-        $string = "";
-        foreach ($arrays AS $array) {
-            $string .= array_shift($array);
-        }
-        return $string;
-    }
-
-    /**
      * Helper function used for generating PSCID.
      * This parses the PSCID format in the config file into a format that
      * can be converted into a regex for validation.
@@ -869,7 +827,7 @@ class Candidate
      * @return array An array of regular expressions defining each section of
      *               the PSCID as defined in config.xml
      */
-    static function generateArrays($idStructure, $siteAbbrev=null)
+    static function idGeneratorFromXMLConfig($idStructure, $siteAbbrev=null)
     {
         $idStructure = $idStructure['structure']['seq'];
 
@@ -881,50 +839,7 @@ class Candidate
             $idStructure = $temp;
         }
 
-        $arrays = array();
-        foreach ($idStructure AS $seq) {
-            if (isset($seq['@']['length'])) {
-                $length = $seq['@']['length'];
-            } elseif (isset($seq['@']['minLength'])) {
-                $length = $seq['@']['minLength'];
-            } else {
-                $length = 1;
-            }
-
-            for ($i=0; $i<$length; $i++) {
-                switch($seq['@']['type']) {
-                case 'alpha':
-                    $arrays[] = range('a', 'z');
-                    break;
-
-                case 'alphanumeric':
-                    $arrays[] = array_merge(range(0, 9), range('a', 'z'));
-                    break;
-
-                case 'numeric':
-                    $arrays[] = range(0, 9);
-                    break;
-
-                case 'static':
-                    $arrays[] = array($seq['#']);
-                    break;
-
-                case 'set':
-                    if (strpos($seq['#'], '|') !== false) {
-                        $arrays[] = explode('|', $seq['#']);
-                    } else {
-                        $arrays[] = str_split($seq['#']);
-                    }
-                    break;
-
-                case 'siteAbbrev':
-                    $arrays[] = array($siteAbbrev);
-                    break;
-                }
-            }
-        }
-
-        return $arrays;
+        return IdGenerator::fromXMLConfig($idStructure, $siteAbbrev);
     }
 
 }
