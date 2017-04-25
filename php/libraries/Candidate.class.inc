@@ -731,7 +731,8 @@ class Candidate
                 throw new Exception(
                     "Could not generate psc id after {$attempts} attempts. "
                     . "Please set psc id generator definition "
-                    . "to allow more ids to be generated."
+                    . "to allow more ids to be generated. "
+                    . "(expected number of candidates)^3 is recommended"
                 );
             }
 
@@ -776,7 +777,8 @@ class Candidate
                 throw new Exception(
                     "Could not generate external id, after {$attempts} attempts. "
                     . "Please set external id generator definition "
-                    . "to allow more ids to be generated."
+                    . "to allow more ids to be generated. "
+                    . "(expected number of candidates)^3 is recommended"
                 );
             }
             // check if the external ID is used
