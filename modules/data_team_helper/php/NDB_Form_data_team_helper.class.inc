@@ -89,6 +89,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         $config =& NDB_Config::singleton();
         if (isset($_REQUEST['instrument'])) {
             $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']);
+            $this->tpl_data['test_name'] = $instrument;
         }
         //construct the instrument drop down..
         if (isset($_REQUEST['visit_label'])) {
@@ -107,7 +108,6 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
                  $this->tpl_data['candidate'] = null;
                }
         }
-        $this->tpl_data['test_name'] = $instrument;
 
         if (isset($_REQUEST['PSCID']) && !empty($_REQUEST['PSCID'])
             && (isset($_REQUEST['candidate'])) && !empty($_REQUEST['candidate'])
@@ -122,19 +122,22 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         }
 
         //Percentage completed for the given instrument
+        if (!empty($instrument) && isset($_REQUEST['visit_label']) && !empty($candID)) {
             $percent_completed = $this->_getPercentCompleted(
                 $instrument,
                 $_REQUEST['visit_label'],
                 $candID
             );
+        }
             $this->tpl_data['percent_completed'] = $percent_completed;
 
             /* Visit_labels
              */
             $visit_array =Utility::getExistingVisitLabels();
             $visit_array = array_combine($visit_array, $visit_array);
+         if (!empty($visit_array)) { 
             $this->tpl_data['visitLabels'] = $visit_array;
-
+         } 
             $incompleteCandidates = $this->
                  getIncompleteCandidates(
                      $instrument,
