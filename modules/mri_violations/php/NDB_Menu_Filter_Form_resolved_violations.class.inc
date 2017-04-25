@@ -431,6 +431,5 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
         }
         return true;
     }
-
 }
 ?>
