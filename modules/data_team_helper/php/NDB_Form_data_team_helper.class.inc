@@ -88,11 +88,15 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
 
         $config =& NDB_Config::singleton();
         if (isset($_REQUEST['instrument'])) {
-        $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']);
+            $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']);
         }
         //construct the instrument drop down..
-        $this->tpl_data['visit_label'] = $_REQUEST['visit_label'];
-        $this->tpl_data['FieldName']   = $_REQUEST['FieldName'];
+        if (isset($_REQUEST['visit_label'])) {
+            $this->tpl_data['visit_label'] = $_REQUEST['visit_label'];
+        }
+        if (isset($_REQUEST['FieldName'])) {
+            $this->tpl_data['FieldName']   = $_REQUEST['FieldName'];
+        }
         if ($_REQUEST['PSCID'] && !empty($_REQUEST['PSCID'])) {
             $this->tpl_data['candidate'] = $_REQUEST['PSCID'];
         } elseif ($_REQUEST['candidate'] && !empty($_REQUEST['candidate'])) {
