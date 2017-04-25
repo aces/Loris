@@ -356,7 +356,7 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
             'pscid',
             'PSCID:',
             array(
-             "size" => 9,
+             "size"      => 9,
              "maxlength" => 11,
             )
         );
@@ -364,7 +364,7 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
             'dccid',
             'DCCID:',
             array(
-             "size" => 9,
+             "size"      => 9,
              "maxlength" => 6,
             )
         );
@@ -389,15 +389,15 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
         $this->addSelect('Exclusionary_Status', 'Exclusionary Status', $exclude);
 
         $this->addSelect('Finalized', 'Finalized', $options_boolean_finalized);
-        if($useProjects) {
+        if ($useProjects) {
             $this->addSelect('Project', 'Project', $list_of_projects);
         }
         $this->addBasicText(
             'keyword',
             'Search keyword in Comments',
             array(
-             "size" => 10,
-             "maxlength" => 25
+             "size"      => 10,
+             "maxlength" => 25,
             )
         );
     }
