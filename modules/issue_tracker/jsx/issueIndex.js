@@ -474,24 +474,82 @@ class CollapsibleComment extends React.Component {
       "Show Comment History" :
       "Hide Comment History");
 
-    const commentHistory = this.props.commentHistory;
+    const hrStyle = {
+      marginTop: "8px",
+      marginBottom: "8px"
+    };
+    const colStyle = {
+      paddingRight: "8px"
+    };
+    const commentHistory = this.props.commentHistory.clone();
+    let curDateAddedF = null;
+    let curDateAdded = null;
+    let curAddedBy = null;
+    let curState = null;
+    let fieldUsed = null;
+    let fieldChangeArr = null;
+    commentHistory.push({
+      fieldChanged: "SENTINEL",
+      isSentinel: true
+    });
+
     for (let commentID in commentHistory) {
-      if (commentHistory.hasOwnProperty(commentID)) {
-        let action = " updated the " + commentHistory[commentID].fieldChanged + " to ";
-        if (commentHistory[commentID].fieldChanged === 'comment') {
-          action = " commented ";
+      if (!commentHistory.hasOwnProperty(commentID)) {
+        continue;
+      }
+      let change = commentHistory[commentID];
+      let nxtState = (change.fieldChanged === "comment") ?
+        "commented" : "updated";
+      if (curDateAdded !== change.dateAdded || curAddedBy !== change.addedBy || change.isSentinel) {
+        if (fieldChangeArr !== null) {
+          fieldChangeArr.reverse();
+          historyText.push(
+            <div key={"comment_" + commentID}>
+              <hr style={hrStyle}/>
+              <b> {curAddedBy}</b>
+              {curState} <small>@ {curDateAddedF}</small>
+              <table>
+                <tbody>
+                  {fieldChangeArr}
+                </tbody>
+              </table>
+            </div>
+          );
         }
-        historyText.push(
-          <div key={"comment_" + commentID}>
-            [{commentHistory[commentID].dateAdded}]
-            <b> {commentHistory[commentID].addedBy}</b>
-            {action}
-            <i> {commentHistory[commentID].newValue}</i>
-          </div>
+        if (change.isSentinel) {
+          break;
+        }
+        curDateAddedF = change.dateAddedFormatted;
+        curDateAdded = change.dateAdded;
+        curAddedBy = change.addedBy;
+        curState = nxtState;
+        fieldUsed = {};
+        fieldChangeArr = [];
+      }
+      if (nxtState === "commented") {
+        fieldUsed = {};
+        fieldChangeArr.push(
+          <tr>
+            <td>Comment:&nbsp;</td>
+            <td colSpan={3}>{change.newValue}</td>
+          </tr>
+        );
+      } else if (!fieldUsed[change.fieldChanged]) {
+        fieldUsed[change.fieldChanged] = true;
+        fieldChangeArr.push(
+          <tr>
+            <td>Set&nbsp;</td>
+            <td style={colStyle}>
+              <em>{change.fieldChanged}</em>
+            </td>
+            <td>&nbsp;to&nbsp;</td>
+            <td>
+              <em>{change.newValue}</em>
+            </td>
+          </tr>
         );
       }
     }
-
     return (
       <div>
         <div className="btn btn-primary"
