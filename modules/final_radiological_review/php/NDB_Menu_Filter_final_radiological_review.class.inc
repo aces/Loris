@@ -38,11 +38,10 @@ function _makePretty($key, $val)
         // Print 'Yes' or 'No' instead of 1 or 0.
         if ($val == 1 || $val === '1' || $val === 'true') {
             return 'Yes';
-            // PHP turns the tinyint back into a string ....
-        } elseif ($val === "0" || $val === "false") {
+        } elseif ($val === "0" || $val === "false") {/* PHP turns the tinyint back
+                                                      into a string ....*/
             return 'No';
-            // Leave nulls empty so that we can distinguish
-        } else {
+        } else { // Leave nulls empty so that we can distinguish
             return '';
         }
     }
@@ -175,7 +174,7 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
             $this->columns[] = 'pjct.Name as Project';
         }
 
-        $this->columns  = array_merge(
+        $this->columns = array_merge(
             $this->columns,
             array(
              'psc.Name as Site',
@@ -195,6 +194,7 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
              's.CandID as CandID',
             )
         );
+
         $this->order_by = 'PSCID';
         $this->headers  = array(
                            'PSCID',
