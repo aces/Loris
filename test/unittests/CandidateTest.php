@@ -667,7 +667,7 @@ class CandidateTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals('AB0002', Candidate::_generatePSCID(array(
             "siteAbbrev"=>'AB'
-        ))));
+        )));
     }
 
     /**
