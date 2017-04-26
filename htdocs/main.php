@@ -96,7 +96,7 @@ try {
     $tpl_data['userNumSites']         = count($site_arr);
     $tpl_data['user']['SitesTooltip'] = str_replace(
         ";",
-        "\n",
+        "<br/>",
         $user->getData('Sites')
     );
 } catch(Exception $e) {
