@@ -66,7 +66,14 @@ class UploadForm extends React.Component {
   }
 
   submitForm() {
-    const fileName = this.state.formData.mri_file.name;
+    // Validate required fields
+    const data = this.state.formData;
+    if (data.IsPhantom === 'N' && (!data.candID || !data.pSCID || !data.visitLabel)) {
+      return;
+    }
+
+    // Validate filename
+    const fileName = data.mri_file.name;
     if (this.props.mriList.indexOf(fileName) > -1) {
       swal({
         title: "Are you sure?",
