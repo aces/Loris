@@ -219,6 +219,21 @@ interface IdGeneratorInterface
      * @return int -1 if nextRand() always returns the same result
      */
     public function randAttemptsMax();
+    /**
+     * Returns the number of sequences this generator can create.
+     *
+     * @return int `1` if there's only one sequence.
+     */
+    public function sequenceCount();
+    /**
+     * After calling setSequence($n), cur() will return the
+     * $n-th sequence
+     *
+     * @param int $n Range: [0, sequenceCount())
+     *
+     * @return void
+     */
+    public function setSequence($n);
 }
 
 /**
@@ -290,6 +305,29 @@ class StaticGenerator implements IdGeneratorInterface
     public function randAttemptsMax()
     {
         return -1;
+    }
+    /**
+     * Returns the number of sequences this generator can create.
+     *
+     * @return int `1` if there's only one sequence.
+     */
+    public function sequenceCount()
+    {
+        return 1;
+    }
+    /**
+     * After calling setSequence($n), cur() will return the
+     * $n-th sequence
+     *
+     * @param int $n Range: [0, sequenceCount())
+     *
+     * @return void
+     */
+    public function setSequence($n)
+    {
+        if ($n != 0) {
+            throw new Exception("Invalid sequence number {$n}");
+        }
     }
 
     /**
@@ -456,6 +494,30 @@ class NumericGenerator implements IdGeneratorInterface
     public function randAttemptsMax()
     {
         return $this->_rand_attempts_max;
+    }
+    /**
+     * Returns the number of sequences this generator can create.
+     *
+     * @return int `1` if there's only one sequence.
+     */
+    public function sequenceCount()
+    {
+        return $this->_max - $this->_min + 1;
+    }
+    /**
+     * After calling setSequence($n), cur() will return the
+     * $n-th sequence
+     *
+     * @param int $n Range: [0, sequenceCount())
+     *
+     * @return void
+     */
+    public function setSequence($n)
+    {
+        if ($n < 0 || $n >= $this->sequenceCount()) {
+            throw new Exception("Invalid sequence number {$n}");
+        }
+        $this->_cur = $this->_min + $n;
     }
 
     /**
@@ -937,6 +999,126 @@ class IdGenerator implements IdGeneratorInterface
     public function randAttemptsMax()
     {
         return $this->_rand_attempts_max;
+    }
+    /**
+     * Returns the number of sequences this generator can create.
+     *
+     * @return int `1` if there's only one sequence.
+     */
+    public function sequenceCount()
+    {
+        $result = 1;
+        foreach ($this->_generator_arr as $generator) {
+            $result *= $generator->sequenceCount();
+        }
+        return $result;
+    }
+    /**
+     * After calling setSequence($n), cur() will return the
+     * $n-th sequence
+     *
+     * @param int $n Range: [0, sequenceCount())
+     *
+     * @return void
+     */
+    public function setSequence($n)
+    {
+        if ($n < 0 || $n >= $this->sequenceCount()) {
+            throw new Exception("Invalid sequence number {$n}");
+        }
+        for ($i=count($this->_generator_arr)-1; $i>=0; --$i) {
+            $generator = $this->_generator_arr[$i];
+            $count     = $generator->sequenceCount();
+            $digit     = $n % $count;
+
+            $n /= $count;
+
+            $generator->setSequence($digit);
+        }
+    }
+
+    /**
+     * Does a linear search to find an unallocated id
+     *
+     * @param function $is_colliding_callback `bool ($needle)`
+     *
+     * @return bool `true` on success
+     */
+    private function _linearNextNonColliding($is_colliding_callback)
+    {
+        //Reset while preserving the number of attempts
+        $tmp = $this->_attempts;
+        $this->reset();
+        $this->_attempts = $tmp;
+
+        while ($is_colliding_callback($this->cur())) {
+            if (!$this->next()) {
+                //We collided and could not generate the next sequence.
+                //We've allocated everything
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Does a binary search to find an unallocated id.
+     * If it fails, it will fall back to linear search.
+     * The reason behind this is that the user may have
+     * mixed `sequential` and `random` generation in the past,
+     * causing gaps in the allocated id sequence.
+     * So, the fall back is a last-ditch attempt to find
+     * an unallocated id.
+     * Users should really have a setting that never causes
+     * them to run out of allocatable ids, though...
+     * Still, failing after running in O(n) is preferable to
+     * failing in O(log n) when there's the possibility of
+     * an unallocated id!
+     *
+     * @param function $is_colliding_callback `bool ($needle)`
+     *
+     * @return bool `true` on success
+     */
+    public function nextNonColliding($is_colliding_callback)
+    {
+        $this->_attempts = 0;
+        //Modified binary search
+        $start = 0;
+        $end   = $this->sequenceCount();
+        while ($start < $end) {
+            ++$this->_attempts;
+            $mid = floor(($start+$end)/2);
+
+            $this->setSequence($mid);
+            $needle = $this->cur();
+
+            if ($is_colliding_callback($needle)) {
+                $start = $mid+1;
+            } else {
+                $end = $mid;
+            }
+        }
+        if ($end == $this->sequenceCount()) {
+            //We're still colliding, fall back to linear search
+            //and hope for a gap.
+            return $this->_linearNextNonColliding($is_colliding_callback);
+        }
+        $this->setSequence($end);
+        if ($is_colliding_callback($this->cur())) {
+            //We're not doing a "true" binary search
+            //Therefore, there is the possibility of being off-by-1
+            //This attempts to rectify it
+            $this->setSequence($end+1);
+            if ($is_colliding_callback($this->cur())) {
+                //We're still colliding, fall back to linear search
+                //and hope for a gap.
+                return $this->_linearNextNonColliding($is_colliding_callback);
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
     }
 
     /**

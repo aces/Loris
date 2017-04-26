@@ -705,46 +705,56 @@ class Candidate
     */
     static function _generatePSCID($prefix)
     {
-        // get a database connection
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
-
-        $config = $factory->config();
-
-        $PSCIDSettings = $config->getSetting('PSCID');
-        $generator     = Candidate::idGeneratorFromXMLConfig(
-            $PSCIDSettings,
+        $factory   = NDB_Factory::singleton();
+        $db        = $factory->database();
+        $config    = $factory->config();
+        $settings  = $config->getSetting("PSCID");
+        $generator = Candidate::idGeneratorFromXMLConfig(
+            $settings,
             $prefix
         );
-        // run one first time, then loop until the pscid is not used
-        do {
-            // pick a new pscid
-            if ($PSCIDSettings['generation'] == 'sequential') {
-                $pscid = $generator->cur();
-                $generator->next();
-            } else {
+
+        $is_colliding_callback = function ($needle) use ($db) {
+            $colliding = $db->pselectOne(
+                "
+                SELECT EXISTS (
+                    SELECT
+                        *
+                    FROM
+                        candidate
+                    WHERE
+                        PSCID = :needle
+                )
+            ",
+                array("needle" => $needle)
+            );
+            return $colliding;
+        };
+
+        $result = null;
+        if ($settings["generation"] == "sequential") {
+            if ($generator->nextNonColliding($is_colliding_callback)) {
+                $result = $generator->cur();
+            }
+        } else {
+            do {
                 $generator->nextRand();
-                $pscid = $generator->cur();
-            }
+                $result = $generator->cur();
+            } while (!is_null($result) && $is_colliding_callback($result));
+        }
 
-            if (is_null($pscid)) {
-                $attempts = $generator->getAttempts();
-                throw new Exception(
-                    "Could not generate psc id after {$attempts} attempts. "
-                    . "Please set psc id generator definition "
-                    . "to allow more ids to be generated. "
-                    . "(expected number of candidates)^3 is recommended"
-                );
-            }
-
-            // check if the pscid is used
-        } while (
-            $db->pselectOne(
-                "SELECT count(PSCID) FROM candidate WHERE PSCID=:PID",
-                array('PID' => $pscid)
-            ) > 0
-        );
-        return $pscid;
+        if (is_null($result)) {
+            $attempts = $generator->getAttempts();
+            $seqCount = $generator->sequenceCount();
+            throw new Exception(
+                "Could not generate psc id after {$attempts} attempts. "
+                . "All {$seqCount} possible ids have been generated. "
+                . "Please set psc id generator definition "
+                . "to allow more ids to be generated. "
+                . "(expected number of candidates)^3 is recommended."
+            );
+        }
+        return $result;
     }
 
     /**
@@ -755,44 +765,54 @@ class Candidate
      */
     static function _generateExternalID()
     {
-        $factory = NDB_Factory::singleton();
-        $config  = $factory->config();
-
-        $ExternalIDSettings = $config->getSetting('ExternalID');
-        $generator          = Candidate::idGeneratorFromXMLConfig(
-            $ExternalIDSettings
+        $factory   = NDB_Factory::singleton();
+        $db        = $factory->database();
+        $config    = $factory->config();
+        $settings  = $config->getSetting("ExternalID");
+        $generator = Candidate::idGeneratorFromXMLConfig(
+            $settings
         );
 
-        $db = $factory->database();
+        $is_colliding_callback = function ($needle) use ($db) {
+            return $db->pselectOne(
+                "
+                SELECT EXISTS (
+                    SELECT
+                        *
+                    FROM
+                        candidate
+                    WHERE
+                        ExternalID = :needle
+                )
+            ",
+                array("needle" => $needle)
+            );
+        };
 
-        do {
-            // generate a new external ID
-            if ($ExternalIDSettings['generation'] == 'sequential') {
-                $externalID = $generator->cur();
-                $generator->next();
-            } else {
+        $result = null;
+        if ($settings["generation"] == "sequential") {
+            if ($generator->nextNonColliding($is_colliding_callback)) {
+                $result = $generator->cur();
+            }
+        } else {
+            do {
                 $generator->nextRand();
-                $externalID = $generator->cur();
-            }
+                $result = $generator->cur();
+            } while (!is_null($result) && $is_colliding_callback($result));
+        }
 
-            if (is_null($externalID)) {
-                $attempts = $generator->getAttempts();
-                throw new Exception(
-                    "Could not generate external id, after {$attempts} attempts. "
-                    . "Please set external id generator definition "
-                    . "to allow more ids to be generated. "
-                    . "(expected number of candidates)^3 is recommended"
-                );
-            }
-            // check if the external ID is used
-        } while (
-            $db->pselectOne(
-                "SELECT count(ExternalID) FROM candidate WHERE ExternalID=:EID",
-                array('EID' => $externalID)
-            )  > 0
-        );
-
-        return $externalID;
+        if (is_null($result)) {
+            $attempts = $generator->getAttempts();
+            $seqCount = $generator->sequenceCount();
+            throw new Exception(
+                "Could not generate psc id after {$attempts} attempts. "
+                . "All {$seqCount} possible ids have been generated. "
+                . "Please set psc id generator definition "
+                . "to allow more ids to be generated. "
+                . "(expected number of candidates)^3 is recommended."
+            );
+        }
+        return $result;
     }
 
     /**
