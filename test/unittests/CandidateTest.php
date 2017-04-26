@@ -663,8 +663,12 @@ class CandidateTest extends PHPUnit_Framework_TestCase
         //case when first 2 generated PSCIDs already exist in DB
         $this->_dbMock->expects($this->any())
             ->method('pselectOne')
-            ->will($this->onConsecutiveCalls(1, 1, 0));
-
+            ->will(function ($query, $args) {
+                $needle = $args["needle"];
+                $needle = substr($needle, 2);
+                $needle = intval($needle);
+                return ($needle < 2);
+            });
         $this->assertEquals('AB0002', Candidate::_generatePSCID(array(
             "siteAbbrev"=>'AB'
         )));
