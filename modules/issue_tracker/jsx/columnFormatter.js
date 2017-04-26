@@ -1,5 +1,7 @@
 /* exported formatColumn */
 
+import WatchingCheckbox from "./WatchingCheckbox";
+
 /**
  * Modify behaviour of specified column cells in the Data Table component
  * @param {string} column - column name
@@ -24,29 +26,23 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   );
 
   if (column === 'Title') {
-    let cellLinks = [];
-    cellLinks.push(
-      <a href={loris.BaseURL + "/issue_tracker/issue/?issueID=" +
-      row['Issue ID'] + "&backURL=/issue_tracker/"}>
-        {row.Title}
-      </a>
-    );
     return (
-      <td>
-        {cellLinks}
-      </td>
+        <td>
+            <a href={loris.BaseURL + "/issue_tracker/issue/?issueID=" + row['Issue ID'] + "&backURL=/issue_tracker/"}>
+                {row.Title}
+            </a>
+        </td>
     );
   }
 
   if (column === 'Issue ID') {
-    let cellLinks = [];
-    cellLinks.push(
-      <a href={loris.BaseURL + "/issue_tracker/issue/?issueID=" +
-      row['Issue ID'] + "&backURL=/issue_tracker/"}>
-        {cell}
-      </a>
+    return (
+        <td>
+            <a href={loris.BaseURL + "/issue_tracker/issue/?issueID=" + row['Issue ID'] + "&backURL=/issue_tracker/"}>
+                {cell}
+            </a>
+        </td>
     );
-    return (<td>{cellLinks}</td>);
   }
 
   if (column === 'Priority') {
@@ -67,33 +63,26 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'PSCID' && row.PSCID !== null) {
-    let cellLinks = [];
-    cellLinks.push(
-      <a href={loris.BaseURL + "/" +
-      row.CandID + "/"}>
-        {cell}
-      </a>
-    );
     return (
-      <td>
-        {cellLinks}
-      </td>
+        <td>
+            <a href={loris.BaseURL + "/" + row.CandID + "/"}>
+                {cell}
+            </a>
+        </td>
     );
   }
 
   if (column === 'Visit Label' && row['Visit Label'] !== null) {
-    let cellLinks = [];
-    cellLinks.push(
-      <a href={loris.BaseURL + "/instrument_list/?candID=" +
-              row.CandID + "&sessionID=" + row.SessionID }>
-        {cell}
-      </a>
-    );
     return (
-      <td>
-        {cellLinks}
-      </td>
+        <td>
+            <a href={loris.BaseURL + "/instrument_list/?candID=" + row.CandID + "&sessionID=" + row.SessionID }>
+                {cell}
+            </a>
+        </td>
     );
+  }
+  if (column === 'Watching') {
+    return (<td><WatchingCheckbox checked={cell === "1"} issue_id={row['Issue ID']}/></td>);
   }
 
   return <td>{cell}</td>;
