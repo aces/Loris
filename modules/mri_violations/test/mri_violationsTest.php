@@ -489,6 +489,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/mri_violations/");
         sleep(1);
+        printf($this->webDriver->getPageSource());
         $this->webDriver->findElement(
             WebDriverBy::Name($searchBy)
         )->sendKeys($testValue);
