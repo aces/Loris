@@ -12,8 +12,8 @@ INSERT INTO `ConfigSettings`
 SELECT
     'issue_tracker_url',
     'The *new* bug/issue tracker url',
-    '1',
-    '0',
+    1,
+    0,
     'text',
     (
         SELECT
@@ -24,7 +24,7 @@ SELECT
             `Name` = 'www'
     ),
     'Issue Tracker URL',
-    '4'
+    3
 ;
 INSERT INTO
     `Config` (`ConfigID`, `Value`)
