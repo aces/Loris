@@ -1142,22 +1142,13 @@ class IdGenerator implements IdGeneratorInterface
     /**
      * Parses the xml to produce the generator
      *
-     * @param array       $xml       The xml
-     * @param string|null $site_name The site name
+     * @param array $xml         The xml
+     * @param array $static_dict Example: array("siteAbbrev"=>"DCC")
      *
      * @return object The generator
      */
-    public static function fromXMLConfig($xml, $site_name=null)
+    public static function fromXMLConfig($xml, $static_dict)
     {
-        if (!is_null($site_name)) {
-            if (!is_string($site_name)) {
-                throw new Exception("site_name must be a string");
-            }
-            if (strlen($site_name) == 0) {
-                throw new Exception("site_name cannot be an empty string");
-            }
-        }
-
         $generator_arr = array();
         foreach ($xml as $x) {
             if (!isset($x["@"]["type"])) {
@@ -1181,16 +1172,18 @@ class IdGenerator implements IdGeneratorInterface
             case "set":
                 $generator = EnumerationGenerator::fromXMLConfig($x);
                 break;
-            case "siteAbbrev":
-                if (is_null($site_name)) {
-                    throw new Exception(
-                        "Not allowed to use siteAbbrev generator "
-                        . "when site_name is null"
-                    );
-                }
-                $generator = new StaticGenerator($site_name);
-                break;
             default:
+                if (!is_null($static_dict)
+                    && is_array($static_dict)
+                    && isset($static_dict[$type])
+                ) {
+                    $str = $static_dict[$type];
+                    if (!is_string($str) || strlen($str) == 0) {
+                        throw new Exception("{$type}'s value is invalid");
+                    }
+                    $generator = new StaticGenerator($str);
+                    break;
+                }
                 throw new Exception("Unknown generator type '{$type}'");
             }
 

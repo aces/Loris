@@ -613,7 +613,9 @@ class CandidateTest extends PHPUnit_Framework_TestCase
             ->method('pselectOne')
             ->willReturn(0);
 
-        $this->assertRegExp('/AAA[0-9]{4}$/', Candidate::_generatePSCID('AAA'));
+        $this->assertRegExp('/AAA[0-9]{4}$/', Candidate::_generatePSCID(array(
+            "siteAbbrev"=>'AAA'
+        )));
     }
 
     /**
@@ -663,7 +665,9 @@ class CandidateTest extends PHPUnit_Framework_TestCase
             ->method('pselectOne')
             ->will($this->onConsecutiveCalls(1, 1, 0));
 
-        $this->assertEquals('AB0002', Candidate::_generatePSCID('AB'));
+        $this->assertEquals('AB0002', Candidate::_generatePSCID(array(
+            "siteAbbrev"=>'AB'
+        ))));
     }
 
     /**
