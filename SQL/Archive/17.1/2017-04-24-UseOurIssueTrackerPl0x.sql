@@ -1,22 +1,64 @@
-INSERT IGNORE INTO
-    Config (`ID`, `ConfigID`, `Value`)
+INSERT INTO `ConfigSettings`
+    (
+        `Name`,
+        `Description`,
+        `Visible`,
+        `AllowMultiple`,
+        `DataType`,
+        `Parent`,
+        `Label`,
+        `OrderNumber`
+    )
+SELECT
+    'issue_tracker_url',
+    'The *new* bug/issue tracker url',
+    '1',
+    '0',
+    'text',
+    (
+        SELECT
+            `ID`
+        FROM
+            `ConfigSettings`
+        WHERE
+            `Name` = 'www'
+    ),
+    'Issue Tracker URL',
+    '4'
+;
+INSERT INTO
+    `Config` (`ConfigID`, `Value`)
 SELECT
     (
         SELECT
-            ID
+            `ID`
         FROM
-            Config
+            `ConfigSettings`
         WHERE
-            ConfigID = tracker.ID
+            `Name` = 'issue_tracker_url'
     ),
-    tracker.ID,
-    '/issue_tracker'
-FROM
-    (
-        SELECT
-            ID
-        FROM
-            ConfigSettings
-        WHERE
-            `Name` = 'mantis_url'
-    ) AS tracker;
+    COALESCE(
+        (
+            SELECT
+                `Value`
+            FROM
+                `Config`
+            WHERE
+                `ConfigID` = (
+                    SELECT
+                        `ID`
+                    FROM
+                        `ConfigSettings`
+                    WHERE
+                        `Name` = 'mantis_url'
+                )
+        ),
+        '/issue_tracker'
+    );
+
+UPDATE
+    `ConfigSettings`
+SET
+    `Visible` = FALSE
+WHERE
+    `Name` = 'mantis_url';

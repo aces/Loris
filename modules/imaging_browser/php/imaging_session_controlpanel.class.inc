@@ -112,8 +112,9 @@ class Imaging_Session_ControlPanel
         $this->tpl_data['rad_review_table_exists']     = $DB->tableExists(
             'radiology_review'
         );
-        $this->tpl_data['mantis']       = $config->getSetting('mantis_url');
-        $subjectData['mantis']          = $config->getSetting('mantis_url');
+        $issue_tracker_url = $config->getSetting("issue_tracker_url");
+        $this->tpl_data['mantis']       = $issue_tracker_url;
+        $subjectData['mantis']          = $issue_tracker_url;
         $subjectData['has_permission']  = $this->_hasAccess();
         $subjectData['status_options']  = array(
                                            'Unrated' => '',
