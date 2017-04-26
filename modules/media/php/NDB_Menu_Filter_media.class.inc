@@ -72,32 +72,26 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $user =& User::singleton();
         $db   = Database::singleton();
 
-        $siteList  = Utility::getSiteList(false);
+        $siteList  = array();
         $visitList = Utility::getVisitList();
-
-        // Index sites using their names (used to filter react tables)
-        foreach ($siteList as $key => $site) {
-            unset($siteList[$key]);
-            $siteList[$site] = $site;
-        }
 
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
-            // get the list of study sites - to be replaced by the Site object
-            if (is_array($siteList)) {
-                $siteList = $siteList;
+            $siteList = Utility::getSiteList(false);
+            // Index sites using their names (used to filter react tables)
+            foreach ($siteList as $key => $site) {
+                unset($siteList[$key]);
+                $siteList[$site] = $site;
             }
         } else {
             // allow only to view own site data
-            $siteList =array();
-            $site_arr = $user->getData('CenterIDs');
-            foreach ($site_arr as $key => $val) {
-                $site[$key] = &Site::singleton($val);
-                if ($site[$key]->isStudySite()) {
-                    $siteList[$val] = $site[$key]->getCenterName();
+            $siteIDs = $user->getData('CenterIDs');
+            foreach ($siteIDs as $val) {
+                $site = &Site::singleton($val);
+                if ($site->isStudySite()) {
+                    $siteList[$site->getCenterName()] = $site->getCenterName();
                 }
             }
-            $siteList = array('' => 'All User Sites') + $siteList;
         }
 
         $instrumentList   = [];
@@ -164,7 +158,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $this->query = $query;
 
         if (!$user->hasPermission('access_all_profiles')) {
-            $site_arr     = implode(",", $user->getCenterID());
+            $site_arr     = implode(",", $user->getCenterIDs());
             $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
         }
 

@@ -469,7 +469,7 @@ class NDB_BVL_Feedback
         $query .= " WHERE ft.Active ='Y'";
         if (!$hasReadPermission===true) {
             $query            .= " AND FIND_IN_SET (c.CenterID,:CentID)";
-            $qparams['CentID'] = implode(',', $user->getCenterID());
+            $qparams['CentID'] = implode(',', $user->getCenterIDs());
         }
 
         $query .= " AND Public = 'Y' AND Status <> 'closed'";
@@ -582,7 +582,7 @@ class NDB_BVL_Feedback
         } else {
             $query            .= " AND ft.Active ='Y' 
                                    AND FIND_IN_SET (c.CenterID,:CentID)";
-            $qparams['CentID'] = implode(',', $user->getCenterID());
+            $qparams['CentID'] = implode(',', $user->getCenterIDs());
         }
 
         $query .= " ORDER BY ft.CandID,
