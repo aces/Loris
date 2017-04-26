@@ -98,20 +98,25 @@ class NDB_Form_User_Accounts extends NDB_Form
             }
 
             // Prevent Javascript injection on all fields
-            $defaults['UserID']      = htmlspecialchars($defaults['UserID']);
-            $defaults['First_name']  = htmlspecialchars($defaults['First_name']);
-            $defaults['Last_name']   = htmlspecialchars($defaults['Last_name']);
-            $defaults['Real_name']   = htmlspecialchars($defaults['Real_name']);
-            $defaults['Email']       = htmlspecialchars($defaults['Email']);
-            $defaults['Degree']      = htmlspecialchars($defaults['Degree']);
-            $defaults['Institution'] = htmlspecialchars($defaults['Institution']);
-            $defaults['Address']     = htmlspecialchars($defaults['Address']);
-            $defaults['City']        = htmlspecialchars($defaults['City']);
-            $defaults['State']       = htmlspecialchars($defaults['State']);
-            $defaults['Zip_code']    = htmlspecialchars($defaults['Zip_code']);
-            $defaults['Country']     = htmlspecialchars($defaults['Country']);
-            $defaults['Fax']         = htmlspecialchars($defaults['Fax']);
-            $defaults['examiner']    = $defaults['examiner'];
+            $defaults['UserID']         = htmlspecialchars($defaults['UserID']);
+            $defaults['First_name']     = htmlspecialchars($defaults['First_name']);
+            $defaults['Last_name']      = htmlspecialchars($defaults['Last_name']);
+            $defaults['Real_name']      = htmlspecialchars($defaults['Real_name']);
+            $defaults['Email']          = htmlspecialchars($defaults['Email']);
+            $defaults['Degree']         = htmlspecialchars($defaults['Degree']);
+            $defaults['Institution']    = htmlspecialchars($defaults['Institution']);
+            $defaults['Address']        = htmlspecialchars($defaults['Address']);
+            $defaults['City']           = htmlspecialchars($defaults['City']);
+            $defaults['State']          = htmlspecialchars($defaults['State']);
+            $defaults['Zip_code']       = htmlspecialchars($defaults['Zip_code']);
+            $defaults['Country']        = htmlspecialchars($defaults['Country']);
+            $defaults['Fax']            = htmlspecialchars($defaults['Fax']);
+            $defaults['phone_landline'] = htmlspecialchars(
+                $defaults['phone_landline']
+            );
+            $defaults['phone_mobile']   = htmlspecialchars(
+                $defaults['phone_mobile']
+            );
 
             foreach ($defaults['examiner'] as $cid=>$vals) {
                 //sets pending approval info
@@ -221,6 +226,19 @@ class NDB_Form_User_Accounts extends NDB_Form
         // will be set to '' by the system
         if ($values['Password_hash'] == '' && !$this->isCreatingNewUser()) {
             unset($values['Password_hash']);
+        }
+
+        //Phone number processing
+        $phones = array(
+                   'phone_landline',
+                   'phone_mobile',
+                  );
+        foreach ($phones as $line) {
+            $values[$line] = preg_replace(
+                '~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~',
+                '($1) $2-$3',
+                $values[$line]
+            );
         }
 
         if ($this->page === 'edit_user') {
@@ -554,6 +572,17 @@ class NDB_Form_User_Accounts extends NDB_Form
             $this->addBasicText('Zip_code', 'Zip/Postal Code');
             $this->addBasicText('Country', 'Country');
             $this->addBasicText('Fax', 'FAX');
+            $this->addBasicText(
+                'phone_landline',
+                'Phone Number (Landline)',
+                array('placeholder'=>'(xxx) xxx-xxxx')
+            );
+            $this->addBasicText(
+                'phone_mobile',
+                'Phone Number (Mobile)',
+                array('placeholder'=>'(xxx) xxx-xxxx')
+            );
+
         }
 
         // email address
@@ -824,6 +853,16 @@ class NDB_Form_User_Accounts extends NDB_Form
             $this->addBasicText('Zip_code', 'Zip/Postal Code');
             $this->addBasicText('Country', 'Country');
             $this->addBasicText('Fax', 'FAX');
+            $this->addBasicText(
+                'phone_landline',
+                'Phone Number (Landline)',
+                array('placeholder'=>'(xxx) xxx-xxxx')
+            );
+            $this->addBasicText(
+                'phone_mobile',
+                'Phone Number (Mobile)',
+                array('placeholder'=>'(xxx) xxx-xxxx')
+            );
         }
 
         // email address

@@ -253,7 +253,27 @@ $(document).ready(function() {
     	</div>
     </div>
     {/if}
-    {if $form.errors.Email_Group}
+      {if $form.phone_landline}
+        <div class="row form-group form-inline">
+          <label class="col-sm-2">
+            {$form.phone_landline.label}
+          </label>
+          <div class="col-sm-10">
+            {$form.phone_landline.html}
+          </div>
+        </div>
+      {/if}
+      {if $form.phone_mobile}
+        <div class="row form-group form-inline">
+          <label class="col-sm-2">
+            {$form.phone_mobile.label}
+          </label>
+          <div class="col-sm-10">
+            {$form.phone_mobile.html}
+          </div>
+        </div>
+      {/if}
+      {if $form.errors.Email_Group}
     <div class="row form-group form-inline form-inline has-error">
     {else}
     <div class="row form-group form-inline form-inline">

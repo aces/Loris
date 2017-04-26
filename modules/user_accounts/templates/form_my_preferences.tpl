@@ -38,7 +38,24 @@
         <div class="col-sm-10">
             {$form.Last_name.html}
         </div>
-    </div><div class="row form-group">
+    </div>
+    <div class="row form-group">
+        <label class="col-sm-2">
+          {$form.phone_landline.label}
+        </label>
+        <div class="col-sm-10">
+          {$form.phone_landline.html}
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-sm-2">
+          {$form.phone_mobile.label}
+        </label>
+        <div class="col-sm-10">
+          {$form.phone_mobile.html}
+        </div>
+    </div>
+    <div class="row form-group">
         <label class="col-sm-2">
             {$form.Email.label}
         </label>
@@ -46,6 +63,7 @@
             {$form.Email.html}
         </div>
     </div>
+
     <div class="row form-group">
         <label class="col-sm-2">
             {$form.Password_hash.label}
