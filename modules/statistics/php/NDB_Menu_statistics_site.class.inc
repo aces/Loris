@@ -23,7 +23,28 @@
  */
 class NDB_Menu_Statistics_Site extends NDB_Menu
 {
+    /**
+     * Checking user's permission
+     *
+     * @return bool
+     */
+    function _hasAccess()
+    {
+        $user =& User::singleton();
+        if (!$user->hasPermission("data_entry")) {
+            return false;
+        }
+        if ($user->hasPermission("access_all_profiles")) {
+            return true;
+        }
 
+        if (isset($_GET["CenterID"])) {
+            $center_id = $_GET["CenterID"];
+            return in_array($center_id, $user->getCenterIDs());
+        } else {
+            return false;
+        }
+    }
     var $instruments    = array();
     var $issues         = array();
     var $query_criteria = '';
