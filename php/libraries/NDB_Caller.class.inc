@@ -443,25 +443,6 @@ class NDB_Caller
         $commentID,
         $redirectToOnSuccess=null
     ) {
-        if ($page === 'finalpage') {
-            $instrument =& NDB_BVL_Instrument::factory(
-                $instrumentName,
-                $commentID,
-                $page
-            );
-
-            $this->instrument = $instrument;
-            return "<script language='javascript'>"
-                . "window.location='$redirectToOnSuccess'"
-                . "</script>";
-        }
-        $user =& User::singleton();
-
-        if ($_REQUEST['sessionID']) {
-            $timepoint =& TimePoint::singleton($_REQUEST['sessionID']);
-        }
-
-        // make an instance of the instrument's object
         $instrument =& NDB_BVL_Instrument::factory(
             $instrumentName,
             $commentID,
@@ -469,6 +450,24 @@ class NDB_Caller
         );
 
         $this->instrument = $instrument;
+        if (is_null($instrument)) {
+            throw new Exception("Instrument does not exist");
+        }
+        if ($page === 'finalpage') {
+            return "<script language='javascript'>"
+                . "window.location='$redirectToOnSuccess'"
+                . "</script>";
+        }
+        $user =& User::singleton();
+
+        $session_id = $instrument->getSessionID();
+        $timepoint  =& TimePoint::singleton($session_id);
+        //This preserves backwards compatability for any
+        //code that will be called that assumes
+        //$_REQUEST["sessionID"] will be populated
+        $_REQUEST["sessionID"] = $session_id;
+        $_GET["sessionID"]     = $session_id;
+        $_POST["sessionID"]    = $session_id;
 
         if (method_exists($instrument, 'getControlPanel')) {
             $this->controlPanel = $instrument->getControlPanel();
@@ -495,6 +494,7 @@ class NDB_Caller
         // freeze the form to prevent data entry
         if ($status->getDataEntryStatus() != 'In Progress'
             || !$user->hasPermission('data_entry')
+            || is_null($timepoint)
             || !in_array(
                 $timepoint->getData("CenterID"),
                 $user->getData("CenterIDs")
