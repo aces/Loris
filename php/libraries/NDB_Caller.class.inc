@@ -474,6 +474,7 @@ class NDB_Caller
         } else {
             $_POST["sessionID"] = $session_id;
         }
+
         if (method_exists($instrument, 'getControlPanel')) {
             $this->controlPanel = $instrument->getControlPanel();
         }
@@ -484,17 +485,8 @@ class NDB_Caller
             );
         }
 
-        // save instrument form data
-        $success = $instrument->save();
-
-        if ($redirectToOnSuccess !== null && $success !== false) {
-            return "<script language='javascript'>"
-                .   "window.location='$redirectToOnSuccess'"
-                . "</script>";
-        }
-        // create an instrument status object
         $status  = new NDB_BVL_InstrumentStatus;
-        $success = $status->select($commentID);
+        $status->select($commentID);
 
         $has_read_permission = $user->hasPermission("access_all_profiles")
             || $user->hasCenter($timepoint->getCenterID());
@@ -504,9 +496,16 @@ class NDB_Caller
         $has_write_permission = $has_read_permission
             && $user->hasCenterPermission("data_entry", $timepoint->getCenterID());
         // freeze the form to prevent data entry
-        if ($status->getDataEntryStatus() != 'In Progress'
-            || !$has_write_permission
-        ) {
+        if ($status->getDataEntryStatus() == "In Progress" && $has_write_permission) {
+            if (strtoupper($_SERVER["REQUEST_METHOD"]) === "POST") {
+                $success = $instrument->save();
+                if ($redirectToOnSuccess !== null && $success !== false) {
+                    return "<script language='javascript'>"
+                        .   "window.location='$redirectToOnSuccess'"
+                        . "</script>";
+                }
+            }
+        } else {
             if ($instrument->preview !== true && $this->DataEntry !== 'Direct') {
                 $instrument->freeze();
             }
