@@ -354,6 +354,7 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         // ALWAYS INCLUDE THESE!
 
+        var_dump($_REQUEST);
         if (isset($_REQUEST['key'])) {
             $this->DataEntryType = 'DirectEntry';
         } else {

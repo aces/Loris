@@ -468,6 +468,7 @@ class NDB_Caller
         $_REQUEST["sessionID"] = $session_id;
         $_GET["sessionID"]     = $session_id;
         $_POST["sessionID"]    = $session_id;
+        var_dump($session_id);
 
         if (method_exists($instrument, 'getControlPanel')) {
             $this->controlPanel = $instrument->getControlPanel();
@@ -491,20 +492,26 @@ class NDB_Caller
         $status  = new NDB_BVL_InstrumentStatus;
         $success = $status->select($commentID);
 
-        $has_permission = $user->hasPermission('data_entry')
+        $has_read_permission = $user->hasPermission("superuser") ||
+            $user->hasPermission("access_all_profiles")
+            || (
+                !is_null($timepoint)
+                && in_array(
+                    $timepoint->getData("CenterID"),
+                    $user->getData("CenterIDs")
+                )
+            );
+        if (!$has_read_permission) {
+            throw new Exception("You cannot read this instrument");
+        }
+        $has_write_permission = $has_read_permission
             && (
                 $user->hasPermission("superuser")
-                || (
-                    !is_null($timepoint)
-                    && in_array(
-                        $timepoint->getData("CenterID"),
-                        $user->getData("CenterIDs")
-                    )
-                )
+                || $user->hasPermission("data_entry")
             );
         // freeze the form to prevent data entry
         if ($status->getDataEntryStatus() != 'In Progress'
-            || !$has_permission
+            || !$has_write_permission
         ) {
             if ($instrument->preview !== true && $this->DataEntry !== 'Direct') {
                 $instrument->freeze();
