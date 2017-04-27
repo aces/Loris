@@ -493,7 +493,7 @@ class NDB_Caller
 
         $has_permission = $user->hasPermission('data_entry')
             && (
-                $user->hasPermission("access_all_profiles")
+                $user->hasPermission("superuser")
                 || (
                     !is_null($timepoint)
                     && in_array(
