@@ -491,14 +491,20 @@ class NDB_Caller
         $status  = new NDB_BVL_InstrumentStatus;
         $success = $status->select($commentID);
 
+        $has_permission = $user->hasPermission('data_entry')
+            && (
+                $user->hasPermission("access_all_profiles")
+                || (
+                    !is_null($timepoint)
+                    && in_array(
+                        $timepoint->getData("CenterID"),
+                        $user->getData("CenterIDs")
+                    )
+                )
+            );
         // freeze the form to prevent data entry
         if ($status->getDataEntryStatus() != 'In Progress'
-            || !$user->hasPermission('data_entry')
-            || is_null($timepoint)
-            || !in_array(
-                $timepoint->getData("CenterID"),
-                $user->getData("CenterIDs")
-            )
+            || !$has_permission
         ) {
             if ($instrument->preview !== true && $this->DataEntry !== 'Direct') {
                 $instrument->freeze();
