@@ -443,7 +443,7 @@ class NDB_Caller
         $commentID,
         $redirectToOnSuccess=null
     ) {
-        $instrument =& NDB_BVL_Instrument::factory(
+        $instrument = NDB_BVL_Instrument::factory(
             $instrumentName,
             $commentID,
             $page
