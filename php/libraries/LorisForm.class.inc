@@ -1938,10 +1938,6 @@ class LorisForm
      */
     function getGroupValues($submitKeys, &$arr)
     {
-        var_dump("getGroupValues");
-        var_dump($this->groupMapping);
-        var_dump($this->form);
-        throw new Exception("Blah");
         foreach ($submitKeys as $key) {
             if (!isset($this->form[$key])) {
                 $tp = $this->groupMapping[$key];

@@ -468,10 +468,13 @@ class NDB_Caller
         //This preserves backwards compatability for any
         //code that will be called that assumes
         //$_REQUEST["sessionID"] will be populated
+        var_dump($_REQUEST);
         $_REQUEST["sessionID"] = $session_id;
-        $_GET["sessionID"]     = $session_id;
-        $_POST["sessionID"]    = $session_id;
-
+        if (strtoupper($_SERVER["REQUEST_METHOD"]) === "GET") {
+            $_GET["sessionID"] = $session_id;
+        } else {
+            $_POST["sessionID"] = $session_id;
+        }
         if (method_exists($instrument, 'getControlPanel')) {
             $this->controlPanel = $instrument->getControlPanel();
         }
