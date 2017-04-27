@@ -461,14 +461,16 @@ class NDB_Caller
         $user =& User::singleton();
 
         $session_id = $instrument->getSessionID();
-        $timepoint  =& TimePoint::singleton($session_id);
+        $timepoint  = TimePoint::singleton($session_id);
+        if (is_null($timepoint)) {
+            throw new Exception("Time point is null for {$session_id}");
+        }
         //This preserves backwards compatability for any
         //code that will be called that assumes
         //$_REQUEST["sessionID"] will be populated
         $_REQUEST["sessionID"] = $session_id;
         $_GET["sessionID"]     = $session_id;
         $_POST["sessionID"]    = $session_id;
-        var_dump($session_id);
 
         if (method_exists($instrument, 'getControlPanel')) {
             $this->controlPanel = $instrument->getControlPanel();
@@ -492,23 +494,13 @@ class NDB_Caller
         $status  = new NDB_BVL_InstrumentStatus;
         $success = $status->select($commentID);
 
-        $has_read_permission = $user->hasPermission("superuser") ||
-            $user->hasPermission("access_all_profiles")
-            || (
-                !is_null($timepoint)
-                && in_array(
-                    $timepoint->getData("CenterID"),
-                    $user->getData("CenterIDs")
-                )
-            );
+        $has_read_permission = $user->hasPermission("access_all_profiles")
+            || $user->hasCenter($timepoint->getCenterID());
         if (!$has_read_permission) {
             throw new Exception("You cannot read this instrument");
         }
         $has_write_permission = $has_read_permission
-            && (
-                $user->hasPermission("superuser")
-                || $user->hasPermission("data_entry")
-            );
+            && $user->hasCenterPermission("data_entry", $timepoint->getCenterID());
         // freeze the form to prevent data entry
         if ($status->getDataEntryStatus() != 'In Progress'
             || !$has_write_permission
