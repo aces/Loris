@@ -13,6 +13,33 @@
 /**
  * Abstract class serving as base for project notification system implementation.
  *
+ * This class implements a module-specific operation-specific user-specific
+ * permission-checking site-checking system allowing to trigger automatic
+ * notifications to users from anywhere in the code. This code is meant to be
+ * extended by projects to accommodate different types of notifications with
+ * different formats depending on project preferences
+ *
+ * A basic implementation of this abstract class is found on loris, it uses basic
+ * emails to issue notifications. Projects are responsible of overriding the
+ * mentioned example to send different formats such as SMS, phone or HTML/email
+ * notifications.
+ *
+ * The ***NDB_Notifier_Abstract.class.inc*** implements the entire notification
+ * logic with the exception of the `notify()` function. In order to use the
+ * Notifier system, the project must choose to implement its own extension of
+ * the notifier class or use the basic model provided by loris. The abstract
+ * parent provides, upon instantiation of the child object, a list of users
+ * which will be notified by this specific event. A set of Static helper functions
+ * allows programmers to query different characteristics of the current state of
+ * the system (modules enabled, services, services per module, ...)
+ *
+ * The ***NDB_Notifier.class.inc*** implements the `abstract notify()` function to
+ * manage the behaviour of the notifications being issued. If project uses
+ * different services then the basic text emails, it is within there capacity to
+ * modify and implement the procedure for each service independently. An example
+ * implementation is available on loris and used in the media and
+ * document-repository modules.
+ *
  * @category Notification
  * @package  Notification
  * @author   Rida Abou-Haidar <rida.loris@gmail.com>
