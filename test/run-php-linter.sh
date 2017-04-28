@@ -16,4 +16,6 @@ vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php htdocs
 # vendor/bin/phpcs --standard=docs/LorisCS.xml tools/CouchDB_Confirm_Integrity.php
 
 # Run PHPCS on specific modules
+
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/
+
