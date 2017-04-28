@@ -296,6 +296,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
         //de-activate examiner if sites where no longer checked
         $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
+
         foreach ($ex_inactive as $cid) {
             $DB->update(
                 'examiners',
@@ -309,12 +310,14 @@ class NDB_Form_User_Accounts extends NDB_Form
         unset($values['examiner_pending']);
         unset($values['examiner_radiologist']);
         //END EXAMINER UPDATE
+
         // START NOTIFICATIONS UPDATE
         if ($this->page==='my_preferences') {
             // get current notifications for user
             $curr_sub = NDB_Notifier::getUserNotificationModuleServices(
                 $user->getData("ID")
             );
+
             if (!$this->isCreatingNewUser()) {
                 // get notification details
                 foreach ($curr_sub as $module => $operations) {
@@ -330,6 +333,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                             );
                             $var_name   = "notif_" . $module . "_"
                                 . $operation . "_" . $service;
+
                             if ($values[$var_name] === 'on') {
                                 if ($subscribed === 'N') {
                                     $DB->insert(
@@ -360,6 +364,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             }
             // END NOTIFICATIONS UPDATE
         }
+
         // make the set
         foreach ($values as $key => $value) {
             $set[$key] = $value;
@@ -757,10 +762,13 @@ class NDB_Form_User_Accounts extends NDB_Form
     {
     // @codingStandardsIgnoreEnd
         $this->identifier = $_SESSION['State']->getUsername();
+
         $user =& User::singleton($this->identifier);
+
         ///get the value for additional_user_info flag
         $config = NDB_Config::singleton();
         $additional_user_info = $config->getSetting('additional_user_info');
+
         //get notification details
         $notifier_list     = NDB_Notifier::getNotificationModuleServices();
         $notifier_services = NDB_Notifier::getNotificationServices();
@@ -841,9 +849,11 @@ class NDB_Form_User_Accounts extends NDB_Form
         $nGroup[] = &$this->createLabel("Module");
         $nGroup[] = &$this->createLabel("Operation");
         $nGroup[] = &$this->createLabel("Description");
+
         foreach ($notifier_services as $id=>$serv) {
             $nGroup[] = &$this->createLabel($serv);
         }
+
         $this->addGroup(
             $nGroup,
             "notification_headers",
@@ -852,6 +862,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             false
         );
         unset($nGroup);
+
         // Notification rows
         $notification_rows =array();
         foreach ($notifier_list as $module=>$operation_services) {
@@ -860,6 +871,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                 $nGroup[] = &$this->createLabel($operation);
                 $nGroup[] = &$this->createLabel($services['desc']);
                 unset($services['desc']);
+
                 // Check for permissions
                 $display =true;
                 foreach ($services['perm'] as $k=>$permission) {
@@ -869,6 +881,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                     }
                 }
                 unset($services['perm']);
+
                 foreach ($services as $service=>$avail) {
                     if ($avail==='Y' && $display) {
                         $nGroup[] = &$this->createCheckbox(
@@ -880,7 +893,9 @@ class NDB_Form_User_Accounts extends NDB_Form
                             "N/A"
                         );
                     }
+
                 }
+
                 $this->addGroup(
                     $nGroup,
                     "row_".$module."_".$operation,
