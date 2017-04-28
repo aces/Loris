@@ -29,6 +29,12 @@ if (strpos("..", $file) !== false) {
     exit(4);
 }
 
+$downloadNotifier = new NDB_Notifier(
+    "media",
+    "download",
+    array("file" => $file)
+);
+
 $config   =& NDB_Config::singleton();
 $path     = $config->getSetting('mediaPath');
 $filePath = $path . $file;
@@ -45,3 +51,4 @@ header('Content-Type: application/force-download');
 header("Content-Transfer-Encoding: Binary");
 header("Content-disposition: attachment; filename=\"" . basename($filePath) . "\"");
 readfile($filePath);
+$downloadNotifier->notify();
