@@ -485,7 +485,7 @@ class NDB_Caller
             );
         }
 
-        $status  = new NDB_BVL_InstrumentStatus;
+        $status = new NDB_BVL_InstrumentStatus;
         $status->select($commentID);
 
         $has_read_permission = $user->hasPermission("access_all_profiles")
@@ -496,7 +496,9 @@ class NDB_Caller
         $has_write_permission = $has_read_permission
             && $user->hasCenterPermission("data_entry", $timepoint->getCenterID());
         // freeze the form to prevent data entry
-        if ($status->getDataEntryStatus() == "In Progress" && $has_write_permission) {
+        if ($status->getDataEntryStatus() == "In Progress"
+            && $has_write_permission
+        ) {
             if (strtoupper($_SERVER["REQUEST_METHOD"]) === "POST") {
                 $success = $instrument->save();
                 if ($redirectToOnSuccess !== null && $success !== false) {
