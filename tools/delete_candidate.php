@@ -1,7 +1,12 @@
 <?php
 
 /**
- * This script Deletes all DB table entries for one candidate, given their DCCID.
+ * This script deletes the specified candidate information.
+ *
+ * Delete all table rows for a given candidate
+ * "Usage: php delete_candidate.php delete_candidate DCCID PSCID [confirm]";
+ * echo "Example: php delete_candidate.php delete_candidate 965327 dcc0007";
+ * echo "Example: php delete_candidate.php delete_candidate 965327 dcc0007 confirm";
  *
  * PHP Version 5
  *
@@ -13,11 +18,14 @@
  */
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
-require_once "Candidate.class.inc";
-require_once "Utility.class.inc";
 
 /**
- * Deletes all DB table entries for one candidate, given their DCCID.
+ * This script deletes the specified candidate information.
+ *
+ * Delete all table rows for a given candidate
+ * "Usage: php delete_candidate.php delete_candidate DCCID PSCID [confirm]";
+ * echo "Example: php delete_candidate.php delete_candidate 965327 dcc0007";
+ * echo "Example: php delete_candidate.php delete_candidate 965327 dcc0007 confirm";
  *
  * @category Main
  * @package  Loris
@@ -26,19 +34,35 @@ require_once "Utility.class.inc";
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
+// Possible script actions
+$actions = array('delete_candidate');
+
 //define the command line parameters
-if (count($argv)!=3) {
-    echo "Usage: php delete_candidate DCCID PSCID\n";
-    echo "Example: php delete_candidate 608858 SEA0252\n";
-    die();
-} else {
-    $DCCID = $argv[1];
-    $PSCID = $argv[2];
+if (count($argv) < 4 || $argv[1] == 'help' || !in_array($argv[1], $actions)) {
+    showHelp();
 }
 
-echo "Dropping all DB entries for candidate DCCID: " . $DCCID . "And PSCID:" .
-$PSCID. "\n";
+// set default arguments
+$action = $argv[1];
+$DCCID = $argv[2];
+$PSCID = $argv[3];
+$confirm = false;
 
+// get the rest of the arguments
+switch ($action) {
+    case 'delete_candidate':
+        if (!empty($argv[4]) && $argv[4] == 'confirm') $confirm = true;
+        break;
+    default:
+        showHelp();
+        break;
+}
+
+$DB =& Database::singleton();
+
+/*
+ * Perform validations on arguments
+ */
 if ($DB->pselectOne(
     "SELECT COUNT(*) FROM candidate WHERE CandID = :cid AND PSCID = :pid ",
     array('cid'=>$DCCID, 'pid'=>$PSCID)
@@ -49,241 +73,176 @@ if ($DB->pselectOne(
     die();
 }
 
-//Find candidate...
-$candidate = new Candidate();
-$candidate->select($DCCID); //find the candidate with the given DCCID
+/*
+ * The switch to execute actions
+ */
+switch ($action) {
+    case 'delete_candidate':
+        deleteCandidate($DCCID, $PSCID, $confirm, $DB);
+        break;
+}
 
-//Find Issues id with candidate foreign key
-$issueIDs = $DB->pselect("SELECT issueID 
-                FROM issues 
-                WHERE candID=:candID",
-                array('candID' => $DCCID)
-		);
+/*
+ * Prints the usage and example help text and stop program
+ */
+function showHelp() {
+    echo "*** Delete Candidate Info ***\n\n";
 
-//delete issues_comments
-//delete issues_history
-foreach ($issueIDs as $issueID) {
-$DB->delete("issues_comments", array("issueID" => $issueID['issueID']));  
-$DB->delete("issues_history", array("issueID" => $issueID['issueID'])); 
-};
-echo "----------------------delete issues_comments-------------------\n";  
-echo "----------------------delete issues_history--------------------\n";
-//find sessions
-$sessions = $candidate->getListOfTimePoints();
-if (is_null($sessions) || empty($sessions)) {
-    echo "There are no coressponding session for Candid : $DCCID \n";
+    echo "Usage: php delete_candidate.php delete_candidate DCCID PSCID [confirm]\n";
+    echo "Example: php delete_candidate.php delete_candidate 965327 dcc0007\n";
+    echo "Example: php delete_candidate.php delete_candidate 965327 dcc0007 confirm\n\n";
+
     die();
 }
-//delete from issues
-$DB->delete("issues", array("CandID" => $DCCID));
-echo "----------------------delete issues----------------------------\n";
 
-//find the test_names and commentIDs
-$query = "SELECT ID, Test_name, CommentID FROM flag WHERE SessionID in (" . 
-         implode(" , ", $sessions) . ")";
-$instruments = $DB->pselect($query, array()); 
-//delete from genomic_candidate_files_rel
-$DB->delete("genomic_candidate_files_rel", array("CandID" => $DCCID));
-echo "----------------------delete genomic_candidate_files_rel-------\n";
+function deleteCandidate($DCCID, $PSCID, $confirm, $DB) {
 
-//delete from genomic_cpg
-$sample_labels = $DB->pselect("SELECT sample_label 
-                FROM genomic_sample_candidate_rel 
-                WHERE candID=:candID",
-                array('candID' => $DCCID)
+    //Find candidate...
+    $candidate = new Candidate();
+    $candidate->select($DCCID); //find the candidate with the given DCCID
+    $sessionExists = true;
+
+    //find sessions
+    $sessions = $candidate->getListOfTimePoints();
+    if (is_null($sessions) || empty($sessions)) {
+        echo "There are no corresponding session for Candid : $DCCID \n";
+        $sessionExists = false;
+    }
+    // if no sessions, don't delete from instrument tables, etc...
+    else {
+        //find the test_names and commentIDs
+        $query = "SELECT ID, Test_name, CommentID FROM flag WHERE SessionID in (" .
+            implode(" , ", $sessions) . ")";
+        $instruments = $DB->pselect($query, array());
+
+        // Print sessions to delete
+        $result = $DB->pselect('SELECT * FROM session WHERE CandID=:cid', array('cid' => $DCCID));
+        print_r($result);
+        echo "\n";
+
+        // Print instruments to delete
+        foreach ($instruments as $instrument) {
+            echo "{$instrument['Test_name']}\n";
+            $result = $DB->pselect('SELECT * FROM ' . $DB->escape($instrument['Test_name']) . ' WHERE CommentID=:cid', array('cid' => $instrument['CommentID']));
+            print_r($result);
+            echo "\n";
+            $result = $DB->pselect('SELECT * FROM flag WHERE ID=:id', array('id' => $instrument['ID']));
+            print_r($result);
+            echo "\n";
+            $result = $DB->pselect('SELECT * FROM conflicts_resolved WHERE CommentId1=:cid OR CommentID2=:cid', array('cid' => $instrument['CommentID']));
+            print_r($result);
+            echo "\n";
+            $result = $DB->pselect('SELECT * FROM conflicts_unresolved WHERE CommentId1=:cid OR CommentID2=:cid', array('cid' => $instrument['CommentID']));
+            print_r($result);
+            echo "\n";
+            $result = $DB->pselect('SELECT * FROM final_radiological_review WHERE CommentID=:cid', array('cid' => $instrument['CommentID']));
+            print_r($result);
+            echo "\n";
+        }
+
+        // Print feedback related tables
+        $Feedbackids = $DB->pselect(
+            "SELECT fbt.FeedbackID from feedback_bvl_thread fbt WHERE CandID=:cid",
+            array('cid' => $DCCID)
+        );
+
+        echo "Behavioural Feedback\n";
+        foreach ($Feedbackids as $Feedbackid) {
+            $result = $DB->pselect(
+                'SELECT * FROM feedback_bvl_entry WHERE FeedbackID=:fid',
+                array('fid' => $Feedbackid['FeedbackID'])
+            );
+            print_r($result);
+        }
+        $result = $DB->pselect('SELECT * FROM feedback_bvl_thread WHERE CandID=:cid', array('cid' => $DCCID));
+        print_r($result);
+    }
+
+    // Print participant_status
+    echo "Participant Status\n";
+    $result = $DB->pselect('SELECT * FROM participant_status WHERE CandID=:cid', array('cid' => $DCCID));
+    print_r($result);
+
+    // Print participant_status_history
+    echo "Participant Status History\n";
+    $result = $DB->pselect('SELECT * FROM participant_status_history WHERE CandID=:cid', array('cid' => $DCCID));
+    print_r($result);
+
+    // Print parameter_candidate
+    echo "Parameter Candidate\n";
+    $result = $DB->pselect('SELECT * FROM parameter_candidate WHERE CandID=:cid', array('cid' => $DCCID));
+    print_r($result);
+
+    // Print candidate
+    echo "Candidate\n";
+    $result = $DB->pselect('SELECT * FROM candidate WHERE CandID=:cid', array('cid' => $DCCID));
+    print_r($result);
+
+    // IF CONFIRMED, DELETE CANDIDATE
+    if ($confirm) {
+        echo "Dropping all DB entries for candidate DCCID: " . $DCCID . "And PSCID: " .
+            $PSCID . "\n";
+
+        if ($sessionExists) {
+            //delete the sessions
+            $DB->delete("session", array("CandID" => $DCCID));
+
+            //delete each instrument table entry
+            foreach ($instruments as $instrument) {
+
+                //delete the entry from the instrument table
+                $DB->delete(
+                    $instrument['Test_name'], array("CommentID" => $instrument['CommentID'])
                 );
 
-foreach ($sample_labels as $sample_label) {
-         $DB->delete("genomic_cpg", 
-                 array("sample_label" => $sample_label['sample_label']));      
-};
-echo "----------------------delete genomic_cpg----------------------\n";
+                //delete from flag
+                $DB->delete("flag", array("ID" => $instrument['ID']));
 
-
-//delete from genomic_sample_candidate_rel
-$DB->delete("genomic_sample_candidate_rel", array("CandID" => $DCCID));
-echo "----------------------delete genomic_sample_candidate_rel------\n";
-
-//to do: for deleting  mri_scanner
-$mri_scannerIDs = $DB->pselect("SELECT ID 
-                FROM mri_scanner 
-                WHERE candID=:candID",
-                array('candID' => $DCCID)
+                //delete from conflicts_resolved
+                $DB->delete(
+                    "conflicts_resolved", array("CommentId1" => $instrument['CommentID'])
+                );
+                $DB->delete(
+                    "conflicts_resolved", array("CommentId2" => $instrument['CommentID'])
+                );
+                //delete from conflicts_unresolved
+                $DB->delete(
+                    "conflicts_unresolved", array("CommentId1" => $instrument['CommentID'])
+                );
+                $DB->delete(
+                    "conflicts_unresolved", array("CommentId2" => $instrument['CommentID'])
                 );
 
-foreach ($mri_scannerIDs as $mri_scannerID) {
-      $DB->delete("mri_protocol",
-                           array("ScannerID" => $mri_scannerID['ID']));
-
-      $fileIDs = $DB->pselect("SELECT FileID 
-                FROM files 
-                WHERE ScannerID=:ScannerID",
-                array('ScannerID' => $mri_scannerID['ID'])
-                );      
-      
-      foreach ($fileIDs as $fileID) {
-      
-      $DB->delete("feedback_mri_comments",
-                           array("FileID" => $fileID['FileID']));
-      $DB->delete("files_intermediary",
-                           array("Input_FileID" => $fileID['FileID']));
-      $DB->delete("files_intermediary",
-                           array("Output_FileID" => $fileID['FileID']));     
-      $DB->delete("parameter_file", 
-                           array("FileID" => $fileID['FileID']));
-      
-      };       
-
-      $DB->delete("files", 
-                           array("ScannerID" => $mri_scannerID['ID']));       
-};
-echo "----------------------delete feedback_mri_comments-------------\n";
-echo "----------------------delete files_intermediary----------------\n";
-echo "----------------------delete parameter_file--------------------\n";
-echo "----------------------delete mri_protocol----------------------\n";
-echo "----------------------delete files-----------------------------\n";
-
-//delete from mri_scanner
-$DB->delete("mri_scanner", array("CandID" => $DCCID));
-echo "----------------------delete mri_scanner-----------------------\n";
-//delete from parameter_candidate
-$DB->delete("parameter_candidate", array("CandID" => $DCCID));
-echo "----------------------delete parameter candidate---------------\n";
-//find session id
-$sessionIDs = $DB->pselect("SELECT ID 
-                FROM session 
-                WHERE candID=:candID",
-                array('candID' => $DCCID)
+                //delete from final_radiological_review
+                $DB->delete(
+                    "final_radiological_review", array("CommentID" => $instrument['CommentID'])
                 );
+            }
 
-foreach ($sessionIDs as $sessionID) {
-$DB->delete("media", array("session_id" => $sessionID['ID']));
-
-$fileIDs = $DB->pselect("SELECT FileID 
-                FROM files 
-                WHERE SessionID=:SessionID",
-                array('SessionID' => $sessionID['ID'])
+            //Delete from the feedback related tables
+            foreach ($Feedbackids as $Feedbackid) {
+                $DB->delete(
+                    "feedback_bvl_entry", array('FeedbackID' => $Feedbackid['FeedbackID'])
                 );
-         foreach ($fileIDs as $fileID) {
-//delete from parameter_file
-         $DB->delete("parameter_file",
-                      array("FileID" => $fileID['FileID']));
-         
-//delete from feedback_mri_comments
-         $DB->delete("feedback_mri_comments", 
-                      array("FileID" => $fileID['FileID']));
-          };
-//delete from feedback_mri_comments
-$DB->delete("feedback_mri_comments",
-                    array("SessionID" => $sessionID['ID']));
+            }
+            $DB->delete("feedback_bvl_thread", array('CandID' => $DCCID));
+        }
 
-//delete from flag
-$DB->delete("flag", 
-                    array("SessionID" => $sessionID['ID']));
+        //delete from the participant_status table
+        $DB->delete("participant_status", array("CandID" => $DCCID));
 
-//delete from mri_acquisition_dates
-$DB->delete("mri_acquisition_dates",                 
-                    array("SessionID" => $sessionID['ID']));
+        //delete from the participant_status_history table
+        $DB->delete("participant_status_history", array("CandID" => $DCCID));
 
-//delete from parameter_session
-$DB->delete("parameter_session",
-                    array("SessionID" => $sessionID['ID']));
+        //delete from parameter_candidate
+        $DB->delete("parameter_candidate", array("CandID" => $DCCID));
 
-//delete from issues
-$DB->delete("issues",
-                    array("SessionID" => $sessionID['ID']));
-
-//delete all foreign constraint of files
-
-$fileIDs = $DB->pselect("SELECT FileID 
-                FROM files 
-                WHERE SessionID=:SessionID",
-                array('SessionID' => $sessionID['ID'])
-                );
-
-
-      foreach ($fileIDs as $fileID) {
-
-      $DB->delete("feedback_mri_comments",
-                           array("FileID" => $fileID['FileID']));
-      $DB->delete("files_intermediary",
-                           array("Input_FileID" => $fileID['FileID']));
-      $DB->delete("files_intermediary",
-                           array("Output_FileID" => $fileID['FileID']));
-      $DB->delete("parameter_file",
-                           array("FileID" => $fileID['FileID']));
-
-      };
-
-//delete from files
-$DB->delete("files", array("SessionID" => $sessionID['ID']));
-};
-echo "----------------------delete parameter_file--------------------\n";
-echo "----------------------delete feedback_mri_comments-------------\n";
-echo "----------------------delete files (session)-------------------\n";
-echo "----------------------delete media-----------------------------\n";
-//delete the sessions
-$DB->delete("session", array("CandID" => $DCCID));
-echo "----------------------delete session---------------------------\n";
-//delete each instrument table entry
-foreach ($instruments as $instrument) {
-
-    //delete the entry from the instrument table
-    $DB->delete(
-        $instrument['Test_name'], array("CommentID" => $instrument['CommentID'])
-    );
-
-    //delete from flag
-    $DB->delete("flag", array("ID" => $instrument['ID']));
-    
-     //delete from conflicts_resolved
-    $DB->delete(
-        "conflicts_resolved", array("CommentId1" => $instrument['CommentID'])
-    );
-    $DB->delete(
-        "conflicts_resolved", array("CommentId2" => $instrument['CommentID'])
-    );
-    //delete from conflicts_unresolved
-    $DB->delete(
-        "conflicts_unresolved", array("CommentId1" => $instrument['CommentID'])
-    );
-    $DB->delete(
-        "conflicts_unresolved", array("CommentId2" => $instrument['CommentID'])
-    );
-    
-    //delete from final_radiological_review
-    $DB->delete(
-        "final_radiological_review", 
-               array("CommentID" => $instrument['CommentID'])
-    );
-    
-}
-echo "----------------------delete each instrument table entry-------\n";
-
-//Delete from the feedback related tables
-$Feedbackids = $DB->pselect(
-    "SELECT fbt.FeedbackID from feedback_bvl_thread fbt WHERE CandID =:cid",
-    array('cid'=>$DCCID)
-);
-foreach ($Feedbackids as $Feedbackid) {
-    $DB->delete(
-        "feedback_bvl_entry", array('FeedbackID'=>$Feedbackid['FeedbackID'])
-    );
+        //delete from candidate
+        $DB->delete("candidate", array("CandID" => $DCCID));
+    }
 }
 
-$DB->delete("feedback_bvl_thread", array('CandID'=>$DCCID));
-echo "----------------------delete feedback_bvl_thread---------------\n";
-
-//delete from the participant_status table
-$DB->delete("participant_status", array("CandID" => $DCCID));
-echo "----------------------delete participant_status----------------\n";
-//delete from the SNP_candidate_rel table
-$DB->delete("SNP_candidate_rel", array("CandID" => $DCCID));
-echo "----------------------delete SNP_candidate_rel-----------------\n";
-//delete from the participant_status_history table
-$DB->delete("participant_status_history", array("CandID" => $DCCID));
-echo "----------------------delete participant_status_history--------\n";
-//delete from candidate
-$DB->delete("candidate", array("CandID" => $DCCID));
-echo "----------------------delete candidate-------------------------\n";
-?>
+if ($confirm === false) {
+    echo "\n\nRun this tool again with the argument 'confirm' to ".
+        "perform the changes\n\n";
+}
