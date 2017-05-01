@@ -391,7 +391,8 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
             SELECT DISTINCT 'Could not identify scan type' 
             FROM mri_protocol_violated_scans
             UNION
-            SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log"
+            SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log",
+            array()
         );
         foreach ($problemTypes as $problem) {
             $problemOptions[$problem['Reason']] = $problem['Reason'];
