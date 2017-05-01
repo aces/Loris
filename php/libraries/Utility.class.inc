@@ -1265,5 +1265,31 @@ class Utility
         }
         return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
     }
+
+    static function validParam($param, $value) {
+        switch ($param) {
+        case 'candID':
+            $pattern = '/^[0-9]{6}$/';
+            break;
+        case 'sessonID':
+            $pattern = '/^[a-zA-Z0-9_]+$/';
+            break;
+        default:
+            return false;
+        }
+        return preg_match($pattern, $value);
+    }
+
+    static function validParams(array $param_names = array()) {
+        // Iterate over parameters and validate that they are well-formed
+        foreach ($params_names as $param_name) {
+            $param_value = isset($_REQUEST[$param_name]) ? $_REQUEST[$param_name] : '';
+            if ($param_value) {
+                if (!self::_validParam($param_name, $param_value)) { 
+                    return false;
+                }
+            }
+        }
+    }
 }
 ?>
