@@ -1266,6 +1266,17 @@ class Utility
         return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
     }
 
+    /**
+     * Given a parameter, check that it is well-formed. Used
+     * to validate user input across trust boundaries to ensure
+     * there is no malicious input being reflected to the user.
+     *
+     * @param String $param, the name of a parameter
+     * @param String $value, the value of a parameter
+     *
+     * @return true if pattern matches, false otherwise. false if $param
+     * falls through the switch-case statement.
+     */
     static function validParam($param, $value) {
         switch ($param) {
         case 'candID':
@@ -1280,9 +1291,18 @@ class Utility
         return preg_match($pattern, $value);
     }
 
+    /**
+     * Wrapper for validParam which allows for testing of multiple
+     * parameter values.
+     *
+     * @param Array $param_names of parameter names, e.g. ('candID', 'sessionID')
+     *
+     * @return True if all parameters well-formed, false otherwise.
+     */
+        
     static function validParams(array $param_names = array()) {
         // Iterate over parameters and validate that they are well-formed
-        foreach ($params_names as $param_name) {
+        foreach ($param_names as $param_name) {
             $param_value = isset($_REQUEST[$param_name]) ? $_REQUEST[$param_name] : '';
             if ($param_value) {
                 if (!self::_validParam($param_name, $param_value)) { 
