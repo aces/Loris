@@ -444,6 +444,12 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     function testNotResolvedSearchButton()
     {
+        //testing search by PatientName
+        $this->_searchTest(
+            "PatientName",
+            "[Test]PatientName",
+            "[Test]PatientName"
+        );
         //testing search by Filename
         $this->_searchTest(
             "Filename",
@@ -466,12 +472,6 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->_searchTest(
             "SeriesUID",
             "5556",
-            "[Test]PatientName"
-        );
-        //testing search by PatientName
-        $this->_searchTest(
-            "PatientName",
-            "[Test]PatientName",
             "[Test]PatientName"
         );
 
