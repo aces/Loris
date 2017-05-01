@@ -453,7 +453,9 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
 
         if ($updateFile) {
             $id = $db->pselectOne(
-                "SELECT UploadID FROM mri_upload WHERE UploadLocation = :ul",
+                "SELECT 
+                IF(InsertionComplete=0 AND Inserting=0, UploadID, NULL) as UploadID 
+                FROM mri_upload WHERE UploadLocation = :ul",
                 array('ul' => $this->uploaded_file_path)
             );
             if (!empty($id)) {
@@ -593,9 +595,17 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $files = array();
 
         foreach ($data as $row) {
-            $fileName = $row[5];
+            $fileName     = $row[5];
+            $uploadStatus = $row[1];
+
             if (file_exists($fileName)) {
-                array_push($files, basename($fileName));
+                array_push(
+                    $files,
+                    [
+                     "fileName" => basename($fileName),
+                     "status"   => $uploadStatus,
+                    ]
+                );
             }
         }
 

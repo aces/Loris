@@ -68,13 +68,39 @@ class UploadForm extends React.Component {
   submitForm() {
     // Validate required fields
     const data = this.state.formData;
+    if (!data.mri_file || !data.IsPhantom) {
+      return;
+    }
+
     if (data.IsPhantom === 'N' && (!data.candID || !data.pSCID || !data.visitLabel)) {
       return;
     }
 
-    // Validate filename
+    // Checks if a file with a given fileName has already been uploaded
     const fileName = data.mri_file.name;
-    if (this.props.mriList.indexOf(fileName) > -1) {
+    const mriFile = this.props.mriList.find(
+      mriFile => mriFile.fileName.indexOf(fileName) > -1
+    );
+
+    // New File
+    if (!mriFile) {
+      this.uploadFile();
+      return;
+    }
+
+    // File uploaded and completed mri pipeline
+    if (mriFile.status === "Success") {
+      swal({
+        title: "File already exists!",
+        text: "A file with this name has already succesfully passed the MRI pipeline!\n",
+        type: "error",
+        confirmButtonText: 'OK',
+      });
+      return;
+    }
+
+    // File uploaded but failed during mri pipeline
+    if (mriFile.status === "Failure") {
       swal({
         title: "Are you sure?",
         text: "A file with this name already exists!\n Would you like to override existing file?",
@@ -89,8 +115,7 @@ class UploadForm extends React.Component {
           swal("Cancelled", "Your imaginary file is safe :)", "error");
         }
       }.bind(this));
-    } else {
-      this.uploadFile();
+      return;
     }
   }
 
