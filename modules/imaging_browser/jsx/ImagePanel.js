@@ -48,11 +48,11 @@ var ImagePanelHeader = React.createClass({
             <input type="checkbox" data-file-id={this.props.FileID}
                      className="mripanel user-success" />
                 <h3 className="panel-title" style={{
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    display:"inline-block",
-                    maxWidth:"100%"
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  display: "inline-block",
+                  maxWidth: "100%"
                 }}>{this.props.Filename} </h3>
                 {QCStatusLabel}
                 {arrow}
