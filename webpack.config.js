@@ -14,7 +14,7 @@ var config = {
     './modules/media/js/mediaIndex.js': './modules/media/jsx/mediaIndex.js',
     './modules/media/js/editFormIndex.js': './modules/media/jsx/editFormIndex.js',
     './modules/issue_tracker/js/columnFormatter.js': './modules/issue_tracker/jsx/columnFormatter.js',
-    './modules/issue_tracker/js/issueIndex.js': './modules/issue_tracker/jsx/issueIndex.js',
+    './modules/issue_tracker/js/index.js': './modules/issue_tracker/jsx/index.js',
     './modules/candidate_parameters/js/candidateInfo.js': './modules/candidate_parameters/jsx/candidateInfo.js',
     './modules/candidate_parameters/js/consentStatus.js': './modules/candidate_parameters/jsx/consentStatus.js',
     './modules/candidate_parameters/js/familyInfo.js': './modules/candidate_parameters/jsx/familyInfo.js',
@@ -50,6 +50,7 @@ var config = {
     './modules/final_radiological_review/js/columnFormatter.js': './modules/final_radiological_review/jsx/columnFormatter.js',
     './modules/help_editor/js/columnFormatter.js': './modules/help_editor/jsx/columnFormatter.js',
     './modules/brainbrowser/js/Brainbrowser.js': './modules/brainbrowser/jsx/Brainbrowser.js',
+    './modules/data_integrity_flag/js/index.js': './modules/data_integrity_flag/jsx/index.js',
     './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js'
   },
   output: {
@@ -69,7 +70,7 @@ var config = {
     react: 'React'
   },
   devtool: 'source-map',
-  plugins: [new webpack.optimize.UglifyJsPlugin()]
+  plugins: [new webpack.optimize.UglifyJsPlugin({mangle: false})]
 };
 
 module.exports = config;
