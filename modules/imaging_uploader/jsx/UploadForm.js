@@ -92,7 +92,7 @@ class UploadForm extends React.Component {
     if (mriFile.status === "Success") {
       swal({
         title: "File already exists!",
-        text: "A file with this name has already succesfully passed the MRI pipeline!\n",
+        text: "A file with this name has already successfully passed the MRI pipeline!\n",
         type: "error",
         confirmButtonText: 'OK',
       });

@@ -452,6 +452,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                   );
 
         if ($updateFile) {
+            // Only overwrite file if it failed MRI pipeline
             $id = $db->pselectOne(
                 "SELECT 
                 IF(InsertionComplete=0 AND Inserting=0, UploadID, NULL) as UploadID 
