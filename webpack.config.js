@@ -14,7 +14,7 @@ var config = {
     './modules/media/js/mediaIndex.js': './modules/media/jsx/mediaIndex.js',
     './modules/media/js/editFormIndex.js': './modules/media/jsx/editFormIndex.js',
     './modules/issue_tracker/js/columnFormatter.js': './modules/issue_tracker/jsx/columnFormatter.js',
-    './modules/issue_tracker/js/issueIndex.js': './modules/issue_tracker/jsx/issueIndex.js',
+    './modules/issue_tracker/js/index.js': './modules/issue_tracker/jsx/index.js',
     './modules/candidate_parameters/js/index.js': './modules/candidate_parameters/jsx/index.js',
     './modules/configuration/js/SubprojectRelations.js': './modules/configuration/jsx/SubprojectRelations.js',
     './modules/bvl_feedback/js/react.behavioural_feedback_panel.js': './modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',

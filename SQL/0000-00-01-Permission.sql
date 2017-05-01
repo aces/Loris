@@ -119,4 +119,16 @@ INSERT INTO `user_perm_rel` (userID, permID)
   WHERE u.userid = 'admin' 
   ORDER BY p.permID;
 
+-- permissions for each notification module
+DROP TABLE IF EXISTS `notification_modules_perm_rel`;
+CREATE TABLE `notification_modules_perm_rel` (
+      `notification_module_id` int(10) unsigned NOT NULL,
+      `perm_id` int(10) unsigned NOT NULL default '0',
+      CONSTRAINT `FK_notification_modules_perm_rel_1` FOREIGN KEY (`notification_module_id`) REFERENCES `notification_modules` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+      CONSTRAINT `FK_notification_modules_perm_rel_2` FOREIGN KEY (`perm_id`) REFERENCES `permissions` (`permID`) ON DELETE CASCADE ON UPDATE CASCADE,
+      PRIMARY KEY (`notification_module_id`,`perm_id`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
+-- populate notification perm table
+INSERT INTO notification_modules_perm_rel SELECT nm.id, p.permID FROM notification_modules nm JOIN permissions p WHERE nm.module_name='media' AND (p.code='media_write' OR p.code='media_read');
+INSERT INTO notification_modules_perm_rel SELECT nm.id, p.permID FROM notification_modules nm JOIN permissions p WHERE nm.module_name='document_repository' AND (p.code='document_repository_view' OR p.code='document_repository_delete');
