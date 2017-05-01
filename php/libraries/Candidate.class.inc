@@ -56,9 +56,9 @@ class Candidate
      */
     static function &singleton($candID)
     {
-        $param_name = 'candID';
+        $param_name  = 'candID';
         $param_value = $candID;
-        $valid = Utility::validParam($param_name, $param_value);
+        $valid       = Utility::validParam($param_name, $param_value);
         if (!$valid) {
             throw new LorisException(
                 "CandID parameter is invalid. Request refused."

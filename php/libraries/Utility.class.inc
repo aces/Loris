@@ -1271,13 +1271,14 @@ class Utility
      * to validate user input across trust boundaries to ensure
      * there is no malicious input being reflected to the user.
      *
-     * @param String $param, the name of a parameter
-     * @param String $value, the value of a parameter
+     * @param string $param The name of a parameter
+     * @param string $value The value of a parameter
      *
-     * @return true if pattern matches, false otherwise. false if $param
+     * @return True if pattern matches, false otherwise. false if $param
      * falls through the switch-case statement.
      */
-    static function validParam($param, $value) {
+    static function validParam($param, $value)
+    {
         switch ($param) {
         case 'candID':
             $pattern = '/^[0-9]{6}$/';
@@ -1299,13 +1300,14 @@ class Utility
      *
      * @return True if all parameters well-formed, false otherwise.
      */
-        
-    static function validParams(array $param_names = array()) {
+    static function validParams(array $param_names = array())
+    {
         // Iterate over parameters and validate that they are well-formed
         foreach ($param_names as $param_name) {
-            $param_value = isset($_REQUEST[$param_name]) ? $_REQUEST[$param_name] : '';
+            $param_value = isset($_REQUEST[$param_name]) ?
+                                 $_REQUEST[$param_name] : '';
             if ($param_value) {
-                if (!self::_validParam($param_name, $param_value)) { 
+                if (!self::_validParam($param_name, $param_value)) {
                     return false;
                 }
             }
