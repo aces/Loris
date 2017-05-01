@@ -94,7 +94,7 @@ class UploadForm extends React.Component {
         title: "File already exists!",
         text: "A file with this name has already successfully passed the MRI pipeline!\n",
         type: "error",
-        confirmButtonText: 'OK',
+        confirmButtonText: 'OK'
       });
       return;
     }
