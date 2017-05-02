@@ -378,10 +378,8 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function importFile($file, $args)
     {
-        $feedbacks = array();
-        $db        = Database::singleton();
-        $file_name =  $file->fileInfo['name'];
-
+        $feedbacks  = array();
+        $db         = Database::singleton();
         $pname      = '';
         $IsPhantom  = $args['values']['IsPhantom'];
         $updateFile = $args['values']['overwrite'] ? true : false;
@@ -452,12 +450,15 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                   );
 
         if ($updateFile) {
-            // Only overwrite file if it failed MRI pipeline
-            $id = $db->pselectOne(
+            // Only overwrite file if it failed MRI pipeline. Need to use
+            // wildcard for files that were uploaded to a random temp path.
+            $fileName = $file->fileInfo['name'];
+            $id       = $db->pselectOne(
                 "SELECT 
-                IF(InsertionComplete=0 AND Inserting=0, UploadID, NULL) as UploadID 
-                FROM mri_upload WHERE UploadLocation = :ul",
-                array('ul' => $this->uploaded_file_path)
+                IF (InsertionComplete=0 AND 
+                (ISNULL(Inserting) OR Inserting=0), UploadID, NULL) as UploadID 
+                FROM mri_upload WHERE UploadLocation LIKE :ul",
+                array('ul' => "%$fileName")
             );
             if (!empty($id)) {
                 $db->update('mri_upload', $values, array('UploadID' => $id));
@@ -596,14 +597,23 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $files = array();
 
         foreach ($data as $row) {
-            $fileName     = $row[5];
+            $filePath     = $row[5];
+            $fileName     = basename($filePath);
             $uploadStatus = $row[1];
 
-            if (file_exists($fileName)) {
+            // Checks if a file is already in files array
+            $isDuplicate = (
+                array_search(
+                    $fileName,
+                    array_column($files, 'fileName')
+                ) > -1
+            );
+
+            if (file_exists($filePath) && !$isDuplicate) {
                 array_push(
                     $files,
                     [
-                     "fileName" => basename($fileName),
+                     "fileName" => $fileName,
                      "status"   => $uploadStatus,
                     ]
                 );
