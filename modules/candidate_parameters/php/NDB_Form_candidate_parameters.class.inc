@@ -69,7 +69,6 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
 
         $this->tpl_data['useConsent'] = $consent['useConsent'];
     }
-
     /**
      * Gets the participant_status options from participant_status_options
      * getParticipantStatusOptions()
