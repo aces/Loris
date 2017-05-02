@@ -70,6 +70,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         $defaults["FieldName"]          = $_REQUEST['FieldName'];
         $defaults["candidate"]          = $_REQUEST['candidate'];
         $defaults["visit_label"]        = $_REQUEST['visit_label'];
+        $defaults["site"]               = $_REQUEST['site'];
+        $defaults["project"]            = $_REQUEST['project'];
         $this->tpl_data['instrumentvalue'] = $_REQUEST['instrument'];
         return $defaults;
     }
@@ -83,6 +85,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
     {
         //initializations
         $DB        =& Database::singleton();
+        $user      =& User::singleton();
         $conflicts = array();
         $smarty    = new Smarty_neurodb();
 
@@ -92,6 +95,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         //construct the instrument drop down..
         $this->tpl_data['visit_label'] = $_REQUEST['visit_label'];
         $this->tpl_data['FieldName']   = $_REQUEST['FieldName'];
+        $this->tpl_data['site']        = $_REQUEST['site'];
+        $this->tpl_data['project']     = $_REQUEST['project'];
         if ($_REQUEST['PSCID'] && !empty($_REQUEST['PSCID'])) {
             $this->tpl_data['candidate'] = $_REQUEST['PSCID'];
         } elseif ($_REQUEST['candidate'] && !empty($_REQUEST['candidate'])) {
@@ -127,12 +132,34 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $visit_array =Utility::getExistingVisitLabels();
             $visit_array = array_combine($visit_array, $visit_array);
             $this->tpl_data['visitLabels'] = $visit_array;
+        if ($user->hasPermission('access_all_profiles')) {
+            // get the list of study sites - to be replaced by the Site object
+            $list_of_sites = Utility::getSiteList();
+            if (is_array($list_of_sites)) {
+                $list_of_sites = array('' => 'All Sites') + $list_of_sites;
+            }
+        } else {
+            // allow only to view own site data
+            $site =& Site::singleton($user->getData('CenterID'));
+            if ($site->isStudySite()) {
+                $list_of_sites = array();
+                $list_of_sites[$user->getData('CenterID')] = $user->getData('Site');
+            }
+        }
+        $this->tpl_data['siteList'] = $list_of_sites;
+        // Project list, if applicable
+        if ($config->getSetting("useProjects")==="true") {
+            $projectList      = Utility::getProjectList();
+            $this->tpl_data['projectList'] = $projectList;
+        }
 
             $incompleteCandidates = $this->
                  getIncompleteCandidates(
                      $instrument,
                      $_REQUEST['visit_label'],
-                     $candID
+                     $candID,
+                     $_REQUEST['site'],
+                     $_REQUEST['project']
                  );
 
             $this->tpl_data['Incomplete_candidates']
@@ -145,7 +172,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             instrumentInConflict(
                 $instrument,
                 $_REQUEST['visit_label'],
-                $candID
+                $candID,
+                $_REQUEST['site'],
+                $_REQUEST['project']
             );
 
             $this->tpl_data['Conflicts'] =  json_encode($conflicts);
@@ -153,7 +182,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $this->tpl_data['Conflicts_length'] = count($conflicts);
 
             $bvlFeedback = $this
-            ->getFeedbacks($instrument, $candID, $_REQUEST['visit_label']);
+            ->getFeedbacks($instrument, $candID, $_REQUEST['visit_label'],$_REQUEST['site'] ,$_REQUEST['project']);
 
             $this->tpl_data['Bvl_Feedback'] = json_encode($bvlFeedback);
 
@@ -163,7 +192,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
                 ->_getPercentCompleted(
                     $instrument,
                     $_REQUEST['visit_label'],
-                    $candID
+                    $candID,
+                    $_REQUEST['site'],
+                    $_REQUEST['project']
                 );
 
     }
@@ -186,7 +217,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @throws   DatabaseException
      * @internal param unknown_type $field_name
      */
-    function getFeedbacks($test_name = null, $candID=null, $visit_label=null)
+    function getFeedbacks($test_name = null, $candID=null, $visit_label=null, $site=null,$project=null)
     {
 
         $DB      =& Database::singleton();
@@ -194,8 +225,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
 
         $select = "SELECT fb.FeedbackID, fb.CandID, fb.SessionID,
                       fb.CommentID, fb.Feedback_level, f.Test_name, fb.FieldName,
-                      tn.Full_name, s.Visit_label FROM feedback_bvl_thread AS fb
+                      tn.Full_name, s.Visit_label, s.PSCID FROM feedback_bvl_thread AS fb
                       JOIN session s ON (s.ID = fb.SessionID)
+                      JOIN project_rel pr ON (s.SubprojectID = pr.SubprojectID)
                       LEFT JOIN flag f ON (fb.CommentID = f.CommentID)
                       LEFT JOIN test_names tn ON (tn.Test_name = f.Test_name)";
 
@@ -212,8 +244,17 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $where        .= " AND s.Visit_label = :VL";
             $qparams['VL'] = $visit_label;
         }
+        if (($site !=null)&&($site!='All Sites')) {
+            $where        .= " AND s.CenterId = :CID";
+            $qparams['CID'] = $site;
+        }
 
-        if (isset($test_name) && $test_name !='All Instruments' ) {
+        if (($project !=null)&&($project!='All Projects')) {
+            $where        .= " AND pr.ProjectID = :PID";
+            $qparams['PID'] = $project;
+        }
+
+        if (isset($test_name) && $test_name !='All Instruments' && $test_name!=null) {
 
             $where      .= " AND FieldName = :FN";
             $field_names = Utility::getSourcefields($test_name);
@@ -291,7 +332,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      */
     function instrumentInConflict($test_name,
         $visit_label=null,
-        $candidate=null
+        $candidate=null,
+        $site=null,
+        $project=null
     ) {
 
         global $DB;
@@ -344,6 +387,16 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         if ($candidate !=null) {
             $where        .= " AND s.candID = :CI";
             $qparams['CI'] = $candidate;
+        }
+        //filter for sites
+        if (($site !=null)&&($site!='All Sites')) {
+            $where        .= " AND ca.CenterId = :CID";
+            $qparams['CID'] = $site;
+        }
+        //filter for candidate
+        if (($project !=null)&&($project!='All Projects')) {
+            $where        .= " AND ca.ProjectID = :PID";
+            $qparams['PID'] = $project;
         }
 
         $query     = $query . $where;
@@ -418,7 +471,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      */
     function getIncompleteCandidates($test_name,
         $visit_label=null,
-        $candidate=null
+        $candidate=null,
+        $site=null,
+        $project=null
     ) {
 
         global $DB;
@@ -451,6 +506,14 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $where        .= " AND s.candID = :CI";
             $qparams['CI'] = $candidate;
         }
+        if (($site !=null)&&($site!='All Sites')) {
+            $where        .= " AND c.CenterID = :CID";
+            $qparams['CID'] = $site;
+        }
+        if (($project !=null)&&($project!='All Projects')) {
+            $where        .= " AND c.ProjectID = :PID";
+            $qparams['PID'] = $project;
+        }
 
         $order_by = " ORDER BY f.commentid ";
 
@@ -469,7 +532,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      *
      * @return unknown
      */
-    function getInstrumentCount($test_name, $visit_label=null, $candidate=null)
+    function getInstrumentCount($test_name, $visit_label=null, $candidate=null, $site=null, $project=null)
     {
         global $DB;
 
@@ -491,7 +554,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
 
         $where =" WHERE s.Active='Y'
             AND s.Current_stage <> 'Recycling Bin'
-            AND f.CommentID NOT LIKE '%DDE%'
+            AND f.CommentID NOT LIKE '%DDE%'  
             AND psc.Centerid!= '1'";
 
         //filter for visit
@@ -503,6 +566,14 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         if ($candidate !=null) {
             $where        .= " AND s.candID = :CI";
             $qparams['CI'] = $candidate;
+        }
+        if (($site !=null)&&($site!='All Sites')) {
+            $where        .= " AND c.CenterID = :CID";
+            $qparams['CID'] = $site;
+        }
+        if (($project !=null)&&($project!='All Projects')) {
+            $where        .= " AND c.ProjectID = :PID";
+            $qparams['PID'] = $project;
         }
 
         $query .= $where;
@@ -519,7 +590,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      *
      * @return unknown
      */
-    function getCompleteInstrumentCount($test_name,$visit_label=null,$candidate=null)
+    function getCompleteInstrumentCount($test_name,$visit_label=null,$candidate=null,$site=null, $project=null)
     {
         global $DB;
         if ($test_name != null) {
@@ -553,6 +624,14 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         if ($candidate !=null) {
             $where        .= " AND s.candID = :CI";
             $qparams['CI'] = $candidate;
+        }
+        if (($site !=null)&&($site!='All Sites')) {
+            $where        .= " AND c.CenterID = :CID";
+            $qparams['CID'] = $site;
+        }
+        if (($project !=null)&&($project!='All Projects')) {
+            $where        .= " AND c.ProjectID = :PID";
+            $qparams['PID'] = $project;
         }
 
         $query .= $where;
