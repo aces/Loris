@@ -992,11 +992,11 @@ class Database
 
         // Print queries to screen
         if ($this->_showQueries === "1" || $this->_showQueries === "3") {
-            if (isset($_REQUEST['file_sql_queries'])) {
-                $tempFile = $_REQUEST['file_sql_queries'];
+            if (isset($GLOBALS['file_sql_queries'])) {
+                $tempFile = $GLOBALS['file_sql_queries'];
             } else {
                 $tempFile = tempnam("/tmp", "SQL");
-                $_REQUEST['file_sql_queries'] = $tempFile;
+                $GLOBALS['file_sql_queries'] = $tempFile;
             }
 
             $handle = fopen($tempFile, "a");

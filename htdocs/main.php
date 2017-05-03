@@ -289,13 +289,13 @@ $tpl_data['jsonParams']  = json_encode(
 $tpl_data['css'] = $config->getSetting('css');
 
 // Prints SQL Queries if a file with output exists
-if (isset($_REQUEST['file_sql_queries'])) {
-    $tempFile = $_REQUEST['file_sql_queries'];
+if (isset($GLOBALS['file_sql_queries'])) {
+    $tempFile = "/tmp/" . basename($GLOBALS['file_sql_queries']);
     $handle   = fopen($tempFile, "r");
     echo fread($handle, filesize($tempFile));
     fclose($handle);
     unlink($tempFile);
-    unset($_REQUEST['file_sql_queries']);
+    unset($GLOBALS['file_sql_queries']);
 }
 //--------------------------------------------------
 
