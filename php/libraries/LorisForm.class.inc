@@ -1180,7 +1180,7 @@ class LorisForm
 
                 if (isset($el['required'])
                     && $el['required'] === true
-                    && empty($value)
+                    && (is_null($value) || (empty($value) && $value !=0))
                 ) {
                     $errors[$el['name']] = "required fail";
                 }
