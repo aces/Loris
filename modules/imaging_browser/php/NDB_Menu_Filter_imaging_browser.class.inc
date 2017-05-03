@@ -125,12 +125,15 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $DB     = Database::singleton();
         if (!$user->hasPermission('imaging_browser_view_allsites')) {
             if (!$user->hasPermission('imaging_browser_view_site')) {
+                    // User must have phantom permission to get here
                     $this->query .= " AND c.Entity_type = 'Scanner' ";
             } else {
-                $site_arr     = implode(",", $user->getCenterIDs());
-                $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
+                $site_arr = implode(",", $user->getCenterIDs());
                 if ($user->hasPermission('imaging_browser_phantom_data')) {
-                    $this->query .= " OR c.Entity_type = 'Scanner' ";
+                    $this->query .= " AND (c.CenterID IN (" . $site_arr . ") 
+                                      OR c.Entity_type = 'Scanner')";
+                } else {
+                    $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
                 }
             }
         }
