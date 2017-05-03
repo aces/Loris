@@ -956,12 +956,14 @@ class Database
     }
 
     /**
-     * Writes all database queries for HTTP request to a single temporary file,
-     * if showDatabaseQueries defined in config file.
+     * Print database queries to screen (1), error log (2) or both (3).
      *
-     * Note: Saves reference to the file in $_REQUEST. $_REQUEST is used in
-     * main.php which reads file contents and prints them to the Loris page.
-     * Then closes and deletes the file.
+     * Note: In order to print to screen the function writes all database queries
+     * for HTTP request to a single temporary file and saves a reference to it
+     * in $_REQUEST. $_REQUEST is used in main.php which reads file contents and
+     * prints them to the Loris page. Then closes and deletes the file.
+     * This is done to prevent sending response headers before the page is
+     * actually rendered.
      *
      * @param string $query  The query to replace
      * @param array  $params The prepared statement parameters used for this query
@@ -972,13 +974,15 @@ class Database
      */
     function _printQuery($query, $params = null)
     {
+        // Don't print queries
         if (!$this->_showQueries) {
             return;
         }
+
+        // Remove multispaces, line breaks to show query inline
         if ($params) {
             $query = str_replace(array_keys($params), array_values($params), $query);
         }
-        // Remove multispaces, line breaks to show query inline
         $query = str_replace(["\r", "\n", "\t"], " ", trim($query));
         while (strpos($query, "  ") !== false) {
             $query = str_replace("  ", " ", $query);
@@ -986,16 +990,24 @@ class Database
         $dateTime = date("j-M-Y G:i:s", time());
         $output   = "[$dateTime] [$this->_databaseName]: $query\n";
 
-        if (isset($_REQUEST['file_sql_queries'])) {
-            $tempFile = $_REQUEST['file_sql_queries'];
-        } else {
-            $tempFile = tempnam("/tmp", "SQL");
-            $_REQUEST['file_sql_queries'] = $tempFile;
+        // Print queries to screen
+        if ($this->_showQueries === "1" || $this->_showQueries === "3") {
+            if (isset($_REQUEST['file_sql_queries'])) {
+                $tempFile = $_REQUEST['file_sql_queries'];
+            } else {
+                $tempFile = tempnam("/tmp", "SQL");
+                $_REQUEST['file_sql_queries'] = $tempFile;
+            }
+
+            $handle = fopen($tempFile, "a");
+            fwrite($handle, $output);
+            fclose($handle);
         }
 
-        $handle = fopen($tempFile, "a");
-        fwrite($handle, $output);
-        fclose($handle);
+        // Print queries to error log
+        if ($this->_showQueries === "2" || $this->_showQueries === "3") {
+            error_log($output);
+        }
     }
 
     /**
