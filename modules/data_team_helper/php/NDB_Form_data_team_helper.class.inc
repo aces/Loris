@@ -70,8 +70,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         $defaults["FieldName"]          = $_REQUEST['FieldName'];
         $defaults["candidate"]          = $_REQUEST['candidate'];
         $defaults["visit_label"]        = $_REQUEST['visit_label'];
-        $defaults["site"]               = $_REQUEST['site'];
-        $defaults["project"]            = $_REQUEST['project'];
+        $defaults["site"]    = $_REQUEST['site'];
+        $defaults["project"] = $_REQUEST['project'];
         $this->tpl_data['instrumentvalue'] = $_REQUEST['instrument'];
         return $defaults;
     }
@@ -132,26 +132,27 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $visit_array =Utility::getExistingVisitLabels();
             $visit_array = array_combine($visit_array, $visit_array);
             $this->tpl_data['visitLabels'] = $visit_array;
-        if ($user->hasPermission('access_all_profiles')) {
-            // get the list of study sites - to be replaced by the Site object
-            $list_of_sites = Utility::getSiteList();
-            if (is_array($list_of_sites)) {
-                $list_of_sites = array('' => 'All Sites') + $list_of_sites;
+            if ($user->hasPermission('access_all_profiles')) {
+                // get the list of study sites - to be replaced by the Site object
+                $list_of_sites = Utility::getSiteList();
+                if (is_array($list_of_sites)) {
+                    $list_of_sites = array('' => 'All Sites') + $list_of_sites;
+                }
+            } else {
+                // allow only to view own site data
+                $site =& Site::singleton($user->getData('CenterID'));
+                if ($site->isStudySite()) {
+                    $list_of_sites = array();
+                    $user_site     =$user->getData('Site');
+                    $list_of_sites[$user->getData('CenterID')] = $user_site;
+                }
             }
-        } else {
-            // allow only to view own site data
-            $site =& Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $list_of_sites = array();
-                $list_of_sites[$user->getData('CenterID')] = $user->getData('Site');
+            $this->tpl_data['siteList'] = $list_of_sites;
+            // Project list, if applicable
+            if ($config->getSetting("useProjects")==="true") {
+                $projectList = Utility::getProjectList();
+                $this->tpl_data['projectList'] = $projectList;
             }
-        }
-        $this->tpl_data['siteList'] = $list_of_sites;
-        // Project list, if applicable
-        if ($config->getSetting("useProjects")==="true") {
-            $projectList      = Utility::getProjectList();
-            $this->tpl_data['projectList'] = $projectList;
-        }
 
             $incompleteCandidates = $this->
                  getIncompleteCandidates(
@@ -181,8 +182,13 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
 
             $this->tpl_data['Conflicts_length'] = count($conflicts);
 
-            $bvlFeedback = $this
-            ->getFeedbacks($instrument, $candID, $_REQUEST['visit_label'],$_REQUEST['site'] ,$_REQUEST['project']);
+            $bvlFeedback = $this->getFeedbacks(
+                $instrument,
+                $candID,
+                $_REQUEST['visit_label'],
+                $_REQUEST['site'],
+                $_REQUEST['project']
+            );
 
             $this->tpl_data['Bvl_Feedback'] = json_encode($bvlFeedback);
 
@@ -211,21 +217,28 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param null $test_name   the value of test name
      * @param null $candID      the value of candidate ID
      * @param null $visit_label the value of visit label
+     * @param null $site        the value of site
+     * @param null $project     the value of project
      *
      * @return   Array containing a list of feedbacks for
      * the appropriate feedback level.
      * @throws   DatabaseException
      * @internal param unknown_type $field_name
      */
-    function getFeedbacks($test_name = null, $candID=null, $visit_label=null, $site=null,$project=null)
-    {
+    function getFeedbacks($test_name = null,
+        $candID=null,
+        $visit_label=null,
+        $site=null,
+        $project=null
+    ) {
 
         $DB      =& Database::singleton();
         $qparams = array();
 
         $select = "SELECT fb.FeedbackID, fb.CandID, fb.SessionID,
                       fb.CommentID, fb.Feedback_level, f.Test_name, fb.FieldName,
-                      tn.Full_name, s.Visit_label, s.PSCID FROM feedback_bvl_thread AS fb
+                      tn.Full_name, s.Visit_label, s.PSCID 
+                       FROM feedback_bvl_thread AS fb
                       JOIN session s ON (s.ID = fb.SessionID)
                       JOIN project_rel pr ON (s.SubprojectID = pr.SubprojectID)
                       LEFT JOIN flag f ON (fb.CommentID = f.CommentID)
@@ -245,16 +258,18 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $qparams['VL'] = $visit_label;
         }
         if (($site !=null)&&($site!='All Sites')) {
-            $where        .= " AND s.CenterId = :CID";
+            $where         .= " AND s.CenterId = :CID";
             $qparams['CID'] = $site;
         }
 
         if (($project !=null)&&($project!='All Projects')) {
-            $where        .= " AND pr.ProjectID = :PID";
+            $where         .= " AND pr.ProjectID = :PID";
             $qparams['PID'] = $project;
         }
 
-        if (isset($test_name) && $test_name !='All Instruments' && $test_name!=null) {
+        if (isset($test_name) && $test_name !='All Instruments'
+            && $test_name!=null
+        ) {
 
             $where      .= " AND FieldName = :FN";
             $field_names = Utility::getSourcefields($test_name);
@@ -327,6 +342,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
+     * @param null         $site        the value of site
+     * @param null         $project     the value of project
      *
      * @return unknown
      */
@@ -390,12 +407,12 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         }
         //filter for sites
         if (($site !=null)&&($site!='All Sites')) {
-            $where        .= " AND ca.CenterId = :CID";
+            $where         .= " AND ca.CenterId = :CID";
             $qparams['CID'] = $site;
         }
         //filter for candidate
         if (($project !=null)&&($project!='All Projects')) {
-            $where        .= " AND ca.ProjectID = :PID";
+            $where         .= " AND ca.ProjectID = :PID";
             $qparams['PID'] = $project;
         }
 
@@ -466,6 +483,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
+     * @param null         $site        the value of site
+     * @param null         $project     the value of project
      *
      * @return unknown
      */
@@ -507,11 +526,11 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $qparams['CI'] = $candidate;
         }
         if (($site !=null)&&($site!='All Sites')) {
-            $where        .= " AND c.CenterID = :CID";
+            $where         .= " AND c.CenterID = :CID";
             $qparams['CID'] = $site;
         }
         if (($project !=null)&&($project!='All Projects')) {
-            $where        .= " AND c.ProjectID = :PID";
+            $where         .= " AND c.ProjectID = :PID";
             $qparams['PID'] = $project;
         }
 
@@ -529,11 +548,17 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
+     * @param null         $site        the value of site
+     * @param null         $project     the value of project
      *
      * @return unknown
      */
-    function getInstrumentCount($test_name, $visit_label=null, $candidate=null, $site=null, $project=null)
-    {
+    function getInstrumentCount($test_name,
+        $visit_label=null,
+        $candidate=null,
+        $site=null,
+        $project=null
+    ) {
         global $DB;
 
         if ($test_name != null) {
@@ -568,11 +593,11 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $qparams['CI'] = $candidate;
         }
         if (($site !=null)&&($site!='All Sites')) {
-            $where        .= " AND c.CenterID = :CID";
+            $where         .= " AND c.CenterID = :CID";
             $qparams['CID'] = $site;
         }
         if (($project !=null)&&($project!='All Projects')) {
-            $where        .= " AND c.ProjectID = :PID";
+            $where         .= " AND c.ProjectID = :PID";
             $qparams['PID'] = $project;
         }
 
@@ -587,11 +612,17 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
+     * @param null         $site        the value of site
+     * @param null         $project     the value of project
      *
      * @return unknown
      */
-    function getCompleteInstrumentCount($test_name,$visit_label=null,$candidate=null,$site=null, $project=null)
-    {
+    function getCompleteInstrumentCount($test_name,
+        $visit_label=null,
+        $candidate=null,
+        $site=null,
+        $project=null
+    ) {
         global $DB;
         if ($test_name != null) {
             $query = "SELECT COUNT(*) FROM $test_name AS i
@@ -626,11 +657,11 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $qparams['CI'] = $candidate;
         }
         if (($site !=null)&&($site!='All Sites')) {
-            $where        .= " AND c.CenterID = :CID";
+            $where         .= " AND c.CenterID = :CID";
             $qparams['CID'] = $site;
         }
         if (($project !=null)&&($project!='All Projects')) {
-            $where        .= " AND c.ProjectID = :PID";
+            $where         .= " AND c.ProjectID = :PID";
             $qparams['PID'] = $project;
         }
 
