@@ -75,17 +75,19 @@ function getCandInfoFields()
     );
 
     $extra_parameters = $db->pselect(
-        "SELECT pt.ParameterTypeID, pt.Name, pt.Type, pt.Description 
-                     FROM parameter_type pt
-                     JOIN parameter_type_category_rel ptcr USING (ParameterTypeID) 
-                     JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
-                     WHERE ptc.Name='Candidate Parameters'
-                     ORDER BY pt.ParameterTypeID, pt.name ASC",
+        "SELECT CONCAT('PTID', pt.ParameterTypeID) AS ParameterTypeID, pt.Name, 
+        pt.Type, pt.Description 
+        FROM parameter_type pt
+        JOIN parameter_type_category_rel ptcr USING (ParameterTypeID) 
+        JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
+        WHERE ptc.Name='Candidate Parameters'
+        ORDER BY pt.ParameterTypeID, pt.name ASC",
         array()
     );
 
     $fields = $db->pselect(
-        "SELECT ParameterTypeID, Value FROM parameter_candidate WHERE CandID=:cid",
+        "SELECT CONCAT('PTID', ParameterTypeID) AS ParameterTypeID, Value 
+        FROM parameter_candidate WHERE CandID=:cid",
         array('cid' => $candID)
     );
 
@@ -289,21 +291,15 @@ function getParticipantStatusFields()
         }
     }
 
-    $status    = $db->pselectOne(
-        "SELECT participant_status 
-        FROM participant_status WHERE CandID=:candid",
-        array('candid' => $candID)
-    );
-    $suboption = $db->pselectOne(
-        "SELECT participant_suboptions 
-        FROM participant_status WHERE CandID=:candid",
-        array('candid' => $candID)
-    );
-    $reason    = $db->pselectOne(
-        "SELECT reason_specify 
-        FROM participant_status WHERE CandID=:candid",
-        array('candid' => $candID)
-    );
+    $query = "SELECT participant_status, participant_suboptions, 
+    reason_specify FROM participant_status WHERE CandID=:candid";
+    $row   = $db->pselectRow($query, ['candid' => $candID]);
+
+    $status    = !empty($row['participant_status']) ? $row['participant_status']
+        : null;
+    $suboption = !empty($row['participant_suboptions'])
+        ? $row['participant_suboptions'] : null;
+    $reason    = !empty($row['reason_specify']) ? $row['reason_specify'] : null;
 
     $history = getParticipantStatusHistory($candID);
 
@@ -386,23 +382,24 @@ function getConsentStatusFields()
     }
 
     foreach ($consent_details as $consentType) {
+        $name           = $consentType['name'];
+        $consentDate    = $name . '_date';
+        $withdrawalDate = $name . '_withdrawal';
 
-        $consents[$consentType['name']]      = $consentType['label'];
-        $consentStatus[$consentType['name']] = $db->pselectOne(
-            'SELECT ' . $db->escape($consentType['name'])
-            . ' FROM participant_status WHERE CandID=:candid',
-            array('candid' => $candID)
-        );
-        $date[$consentType['name']]          = $db->pselectOne(
-            'SELECT ' . $db->escape($consentType['name'] . '_date')
-            . ' FROM participant_status WHERE CandID=:candid',
-            array('candid' => $candID)
-        );
-        $withdrawal[$consentType['name']]    = $db->pselectOne(
-            'SELECT ' . $db->escape($consentType['name'] . '_withdrawal')
-            . ' FROM participant_status WHERE CandID=:candid',
-            array('candid' => $candID)
-        );
+        $query = "SELECT 
+                {$db->escape($name)}, 
+                {$db->escape($consentDate)},
+                {$db->escape($withdrawalDate )}         
+                FROM participant_status WHERE CandID=:candid";
+
+        $row = $db->pselectRow($query, ['candid' => $candID]);
+
+        $consents[$name]      = $consentType['label'];
+        $consentStatus[$name] = !empty($row[$name]) ? $row[$name] : null;
+        $date[$name]          = !empty($row[$consentDate]) ?
+            $row[$consentDate] : null;
+        $withdrawal[$name]    = !empty($row[$withdrawalDate]) ?
+            $row[$withdrawalDate] : null;
     }
 
     $history = getConsentStatusHistory($candID, $consents);
