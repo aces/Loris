@@ -237,8 +237,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
 
         $select = "SELECT fb.FeedbackID, fb.CandID, fb.SessionID,
                       fb.CommentID, fb.Feedback_level, f.Test_name, fb.FieldName,
-                      tn.Full_name, s.Visit_label, s.PSCID 
+                      tn.Full_name, s.Visit_label, ca.PSCID 
                        FROM feedback_bvl_thread AS fb
+                      JOIN candidate ca ON (ca.CandID = fb.CandID)
                       JOIN session s ON (s.ID = fb.SessionID)
                       JOIN project_rel pr ON (s.SubprojectID = pr.SubprojectID)
                       LEFT JOIN flag f ON (fb.CommentID = f.CommentID)
