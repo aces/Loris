@@ -83,7 +83,7 @@ before_script:
     - mysql LorisTest -e "INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('testtest', '1', '99999', 'Y', 'V1', '1', '2', NULL)"
     - cd tools
     - find ../project/instruments/NDB_BVL_Instrument_testtest.class.inc | php lorisform_parser.php
-    - find ../project/instruments/NDB_BVL_Instrument_testtest.class.inc | php generate_tables_sql.php
+    - php generate_tables_sql.php
     - cd ..
     - mysql LorisTest < project/tables_sql/testtest.sql
 #env:
