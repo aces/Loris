@@ -315,6 +315,10 @@ vertical-align:top;
 border-bottom: 1px solid #CCCCCC;
 }
 
+td.lab {
+width: 50%;
+}
+
 tr.directentry {
     background: #BDDDBD;
 }

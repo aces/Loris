@@ -29,7 +29,9 @@
 							<span style="color: #ff0000">{$element.error}</span>
 							<br />
 						{/if}
-						{$element.html}
+                        {if $element.type neq static}
+                            {$element.html}
+						{/if}
 					</td>
 				</tr>
 			{/if}
