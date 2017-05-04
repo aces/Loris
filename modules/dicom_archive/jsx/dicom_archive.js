@@ -1,8 +1,4 @@
-/* exported DicomArchive */
-/* global formatColumn */
-
 import FilterForm from 'FilterForm';
-
 import formatColumn from './columnFormatter';
 
 /**

@@ -77,7 +77,7 @@ var config = {
       PaginationLinks: 'jsx/PaginationLinks',
       Panel: 'jsx/Panel',
       ProgressBar: 'jsx/ProgressBar',
-      StatidDataTable: 'jsx/StatidDataTable',
+      StaticDataTable: 'jsx/StaticDataTable',
       Tabs: 'jsx/Tabs'
     },
     extensions: ['', '.js', '.jsx']

@@ -1,5 +1,3 @@
-/* global formatColumn */
-
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 
