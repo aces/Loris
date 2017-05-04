@@ -117,7 +117,7 @@ class JSONInstrumentToLINSTConverter_Test extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals(
-            "select{@}s1{@}Label français{@}NULL=>''{-}'1'=>'Option 1'{-}'2'=>'Option 2'{-}'not_answered'=>'Not Answered'",
+            "select{@}s1{@}Label français{@}NULL=>''{-}'1'=>'Option 1'{-}'2'=>'Option 2'",
             JSONInstrumentToLINSTConverter::convertSelectElement($selectElement, 'fr-ca')
         );
     }
@@ -151,7 +151,7 @@ class JSONInstrumentToLINSTConverter_Test extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals(
-            "multiselect{@}s1{@}Label français{@}NULL=>''{-}'1'=>'Option 1'{-}'2'=>'Option 2'{-}'not_answered'=>'Not Answered'",
+            "multiselect{@}s1{@}Label français{@}NULL=>''{-}'1'=>'Option 1'{-}'2'=>'Option 2'",
             JSONInstrumentToLINSTConverter::convertSelectElement($selectElement, 'fr-ca')
         );
     }
@@ -167,7 +167,7 @@ class JSONInstrumentToLINSTConverter_Test extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals(
-            "NULL=>''{-}'1'=>'Option 1'{-}'2'=>'Option 2'{-}'not_answered'=>'Not Answered'",
+            "NULL=>''{-}'1'=>'Option 1'{-}'2'=>'Option 2'",
             JSONInstrumentToLINSTConverter::convertSelectElementOptions($options)
         );
     }
