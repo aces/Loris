@@ -1,5 +1,6 @@
 language: php
-
+jdk:
+  - oraclejdk8
 cache:
     directories:
         - vendor
@@ -39,7 +40,7 @@ install:
     - npm -g install eslint-plugin-react
 
     # Download a Selenium Web Driver release
-    - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
+    - wget "http://selenium-release.storage.googleapis.com/3.0-beta2/selenium-server-standalone-3.0.0-beta2.jar"
 
     - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
 
@@ -51,7 +52,7 @@ install:
     # Start Selenium and redirect Selenium WebDriver
     # output to /dev/null so that it doesn't flood the
     # screen in the middle of our other tests
-    - DISPLAY=:99.0 java -jar selenium-server-standalone-2.52.0.jar  2>1 > /dev/null &
+    - DISPLAY=:99.0 java -jar selenium-server-standalone-3.0.0-beta2.jar  2>1 > /dev/null &
 
 before_script:
     # Set up the Loris environment
