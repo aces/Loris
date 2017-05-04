@@ -582,8 +582,6 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/js/components/Tabs.js",
-             $baseURL . "/js/components/ProgressBar.js",
              $baseURL . "/imaging_uploader/js/index.js",
              $baseURL . "/imaging_uploader/js/imaging_uploader_helper.js",
             )

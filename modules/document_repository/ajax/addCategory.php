@@ -34,6 +34,11 @@ $config = NDB_Config::singleton();
 // create Database object
 $DB =& Database::singleton();
 
+$Notifier = new NDB_Notifier(
+    "document_repository",
+    "new_category"
+);
+
 if (empty($_POST['category_name']) && $_POST['category_name'] !== '0') {
     header("HTTP/1.1 400 Bad Request");
     exit;
@@ -66,21 +71,10 @@ if ($user->hasPermission('document_repository_view')
         )
     );
 
-
     $msg_data['newCategory'] = $baseURL . "/document_repository/";
     $msg_data['category']    = $category_name;
-    $msg_data['study']       = $config->getSetting('title');
-    $sqlSelect = "SELECT Email".
-                 " from users".
-                 " where Active='Y' and".
-                 " Doc_Repo_Notifications='Y' and UserID<>:uid";
-    $Doc_Repo_Notification_Emails = $DB->pselect(
-        $sqlSelect,
-        array("uid" => $user->getUsername())
-    );
-    foreach ($Doc_Repo_Notification_Emails as $email) {
-        Email::send($email['Email'], 'document_repository.tpl', $msg_data);
-    }
+
+    $Notifier->notify($msg_data);
 }
 
 ?>

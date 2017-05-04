@@ -73,6 +73,11 @@
               monthInputs.on('keydown paste', function(e) { e.preventDefault(); });
             }
 
+            // Initialize bootstrap tooltip for site affiliations
+            $('#site-affiliations').tooltip({
+              html: true,
+              container: 'body'
+            });
           });
         </script>
         <link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="Stylesheet" />
@@ -175,8 +180,12 @@
                             </p>
                         </li>
                         <li class="nav">
-                            <a href="#" data-toggle="tooltip" title="{$user.SitesTooltip}">
-                                Site Affiliations: {$userNumSites} 
+                            <a href="#"
+                               id="site-affiliations"
+                               data-toggle="tooltip"
+                               data-placement="bottom"
+                               title="{$user.SitesTooltip}">
+                                Site Affiliations: {$userNumSites}
                             </a>
                         </li>
 

@@ -1,4 +1,5 @@
-/* global formatColumn */
+import FilterForm from 'FilterForm';
+import {Tabs, TabPane} from 'Tabs';
 
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';

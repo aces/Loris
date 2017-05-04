@@ -198,23 +198,22 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         if ($result == 0) {
             // insert into DB only if email address doesn't exist
             $success = $DB->insert('users', $vals);
+            // Get the ID of the new user and insert into user_psc_rel
+            $user_id = $DB->pselectOne(
+                "SELECT ID FROM users WHERE Email = :VEmail",
+                array('VEmail' => $from)
+            );
+
+            $DB->insert(
+                'user_psc_rel',
+                array(
+                 'UserID'   => $user_id,
+                 'CenterID' => $site,
+                )
+            );
         }
         // Show success message even if email already exists for security reasons
         $tpl_data['success'] = true;
-
-        // Get the ID of the new user and insert into user_psc_rel
-        $user_id = $DB->pselectOne(
-            "SELECT ID FROM users WHERE Email = :VEmail",
-            array('VEmail' => $from)
-        );
-
-        $DB->insert(
-            'user_psc_rel',
-            array(
-             'UserID'   => $user_id,
-             'CenterID' => $site,
-            )
-        );
 
         unset($_SESSION['tntcon']);
     }

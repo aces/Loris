@@ -214,6 +214,16 @@ class User extends UserPermissions
     }
 
     /**
+     * Get the user's id
+     *
+     * @return int
+     */
+    function getId()
+    {
+        return $this->userInfo['ID'];
+    }
+
+    /**
      * Get the user's username
      *
      * @return string
