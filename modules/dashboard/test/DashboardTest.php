@@ -57,7 +57,7 @@ class DashboardTest extends LorisIntegrationTest
             array(
              'CenterID'  => '55',
              'Name'      => 'TESTinPSC',
-             'Alias'     => 'tst',
+             'Alias'     => 'test',
              'MRI_alias' => 'test',
             )
         );
@@ -111,7 +111,6 @@ class DashboardTest extends LorisIntegrationTest
             "violations_resolved",
             array(
              'ExtID'     => '1001',
-             'hash'      => 'this is not a null value',
              'TypeTable' => 'mri_protocol_violated_scans',
              'Resolved'  => 'other',
             )
@@ -120,7 +119,6 @@ class DashboardTest extends LorisIntegrationTest
             "violations_resolved",
             array(
              'ExtID'     => '1002',
-             'hash'      => 'this is not a null value',
              'TypeTable' => 'MRICandidateErrors',
              'Resolved'  => 'unresolved',
             )
@@ -315,7 +313,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->setupPermissions(
             array("violated_scans_view_allsites")
         );
-        $this->_testMytaskPanelAndLink(".mri_violations", "2", "[Test]PatientName");
+        $this->_testMytaskPanelAndLink(".mri_violations", "2", "Not Resolved");
         $this->resetPermissions();
     }
     /**
