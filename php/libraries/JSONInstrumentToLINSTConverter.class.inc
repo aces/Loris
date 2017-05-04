@@ -23,9 +23,13 @@
 class JSONInstrumentToLINSTConverter
 {
     /**
-     * blah blah blah
+     * Converts JSON instrument to LINST instrument
      *
-     * @return object blah blah blah
+     * @param string $json instrument in JSON format
+     * @param string $lang language code
+     * @param string $year year
+     *
+     * @return string LINST String
      */
     static function convert($json, $lang, $year = null)
     {
@@ -42,8 +46,18 @@ class JSONInstrumentToLINSTConverter
         return implode("\n", $linstLines);
     }
 
-    static function generateStandardLines($table, $title, $year) {
-        $lines = array();
+    /**
+     * Generates standard LINST lines
+     *
+     * @param string $table table name
+     * @param string $title title
+     * @param string $year  year
+     *
+     * @return array Array of standard LINST lines
+     */
+    static function generateStandardLines($table, $title, $year)
+    {
+        $lines   = array();
         $lines[] = "table{@}{$table}";
         $lines[] = "title{@}{$title}";
         $lines[] = "date{@}Date_taken{@}Date of Administration{@}2006{@}{$year}";
@@ -53,33 +67,71 @@ class JSONInstrumentToLINSTConverter
         return $lines;
     }
 
-    static function convertElements($elements, $lang) {
-        return array_map(function($element) use ($lang) {
-            switch ($element["Type"]) {
+    /**
+     * Convert JSON instrument elements into LINST lines
+     *
+     * @param array  $elements JSON elements
+     * @param string $lang     language key
+     *
+     * @return array Array of LINST lines
+     */
+    static function convertElements($elements, $lang)
+    {
+        return array_map(
+            function ($element) use ($lang) {
+                switch ($element["Type"]) {
                 case "label":
                     return self::convertLabelElement($element, $lang);
                     break;
                 case "select":
                     return self::convertSelectElement($element, $lang);
                     break;
-            }
-        }, $elements);
+                }
+            },
+            $elements
+        );
     }
 
-    static function convertLabelElement($element, $lang) {
+    /**
+     * Convert JSON label element to LINST line
+     *
+     * @param array  $element Label element
+     * @param string $lang    language key
+     *
+     * @return string LINST line
+     */
+    static function convertLabelElement($element, $lang)
+    {
         if (!array_key_exists($lang, $element['Description'])) return "";
         return "static{@}{@}{$element['Description'][$lang]}";
     }
 
-    static function convertSelectElement($element, $lang) {
-        $options = self::convertSelectElementOptions($element['Options']['Values'][$lang]);
+    /**
+     * Convert JSON select element to LINST line
+     *
+     * @param array  $element Select element
+     * @param string $lang    language key
+     *
+     * @return string LINST line
+     */
+    static function convertSelectElement($element, $lang)
+    {
+        $options    = self::convertSelectElementOptions($element['Options']['Values'][$lang]);
         $selectType = $element['Options']['AllowMultiple'] === true ? 'multiselect' : 'select';
         return "{$selectType}{@}{$element['Name']}{@}{$element['Description'][$lang]}{@}{$options}";
     }
 
-    static function convertSelectElementOptions($options) {
+    /**
+     * Convert JSON select options to LINST option format
+     *
+     * @param array $options JSON Select element options
+     *
+     * @return string LINST format options
+     */
+    static function convertSelectElementOptions($options)
+    {
         $result = array("NULL=>''");
-        foreach($options as $index => $value) {
+        foreach ($options as $index => $value) {
             $result[] = "'{$index}'=>'$value'";
         }
 

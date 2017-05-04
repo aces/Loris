@@ -185,7 +185,6 @@ class NDB_BVL_Instrument extends NDB_Page
             include_once 'NDB_BVL_Instrument_LINST.class.inc';
             $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST();
 
-
             // if a script is loading this form without a commentID, display all fields
             if (!isset($commentID)) {
                 $obj->displayAllFields = true;
@@ -194,10 +193,10 @@ class NDB_BVL_Instrument extends NDB_Page
             // Sets up page variables such as $this->commentID and $this->form
             $success = $obj->setup($commentID, $page);
 
-            $json = file_get_contents($base."project/instruments/$instrument.json");
-            $lang = $_REQUEST["lang"] ? $_REQUEST["lang"] : "en-ca";
+            $json        = file_get_contents($base."project/instruments/$instrument.json");
+            $lang        = $_REQUEST["lang"] ? $_REQUEST["lang"] : "en-ca";
             $linstString = \JSONInstrumentToLINSTConverter::convert($json, $lang);
-            $base64 = "data://text/plain;base64," . base64_encode($linstString);
+            $base64      = "data://text/plain;base64," . base64_encode($linstString);
 
             $obj->loadInstrumentFile($base64, true);
         } else if (file_exists($base."project/instruments/$instrument.linst")) {
