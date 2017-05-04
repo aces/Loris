@@ -6,6 +6,8 @@
  *
  */
 
+import Panel from 'Panel';
+
 /**
  * FilterForm component.
  * A wrapper for form elements inside a selection filter.
@@ -200,7 +202,5 @@ FilterForm.propTypes = {
   title: React.PropTypes.string,
   onUpdate: React.PropTypes.func
 };
-
-window.FilterForm = FilterForm;
 
 export default FilterForm;

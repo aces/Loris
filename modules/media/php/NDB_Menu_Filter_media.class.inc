@@ -246,9 +246,9 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            [
+            array(
              $baseURL . "/media/js/mediaIndex.js",
-            ]
+            )
         );
     }
 }
