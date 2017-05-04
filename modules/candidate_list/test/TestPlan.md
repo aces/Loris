@@ -1,12 +1,17 @@
-# Access Profile Test Plan
-
 1. Access access profile page, ensure that it renders.
+[Automation Test On Travis CI]
 2. Verify that either the permission access_all_profiles or data_entry is required for access the page.
+[Automation Test On Travis CI]
 3. Verify that if data_entry and not access_all_profiles permissions, can only see subjects from own site.
+[Automation Test On Travis CI]
 4. Verify that if data_entry and not access_all_profiles permissions, check that initial filter state is Subproject = All.
+[Automation Test On Travis CI]
 5. Verify advanced/basic filter toggle works.
+[Automation Test On Travis CI]
 6. Verify advanced filters are expanded on page load when an advanced filter is set, and collapsed otherwise.
+[Automation Test On Travis CI]
 7. Check that each dropdown has the correct options.
+[Automation Test On Travis CI]
 8. Test each filter individually
    [ ] Site
    [ ] DCCID
@@ -32,3 +37,4 @@ It should return that no results were found.
 16. Enter correct PSCID/DCCID combination and ensure that it loads correct timepoint_list page
 17. Remove access_all_profiles permission and ensure that PSCID links are still clickable.
 18. Change useEDC and useProjects config variables to false and ensure filters are removed from menu.
+                                                                                             
