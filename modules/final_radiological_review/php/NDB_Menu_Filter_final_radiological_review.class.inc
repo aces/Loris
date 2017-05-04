@@ -416,6 +416,7 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
+             $baseURL . "/final_radiological_review/js/columnFormatter_HistoryLog.js",
              $baseURL . "/final_radiological_review/js/columnFormatter.js",
             )
         );
