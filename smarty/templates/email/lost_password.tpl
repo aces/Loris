@@ -1,9 +1,9 @@
-Subject: Lost Password - {$study}
+Subject: [LORIS Notification] Password Recovery
 
 {$realname},
 
 
-Your password has been reset to:
+Your password for the {$study} Loris account has been reset to:
 {$password}
 
 Please try to login again. You will be prompted to change your password after logging in.
