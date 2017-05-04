@@ -1277,7 +1277,7 @@ class Utility
      * @return True if pattern matches, false otherwise. false if $param
      * falls through the switch-case statement.
      */
-    static function validParam($param, $value)
+    static function _validParam($param, $value)
     {
         switch ($param) {
         case 'candID':
