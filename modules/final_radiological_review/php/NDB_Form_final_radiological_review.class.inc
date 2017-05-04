@@ -269,24 +269,6 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
                                    );
             }
 
-            $history = $DB->pselect(
-                'SELECT userID, changeDate, col, old, new 
-                 FROM final_radiological_review_history
-                WHERE CommentID= :primKey ORDER BY changeDate DESC',
-                array('primKey' => $this->identifier)
-            );
-
-            $history_display = '';
-            foreach ($history as &$history_item) {
-                $history_display .= '<tr><td>' .
-                    $history_item['changeDate'] . '</td><td>' .
-                    $history_item['userID'] . '</td><td>' .
-                    $history_item['col'] . '</td><td>' .
-                    _makePretty($history_item['col'], $history_item['old']) .
-                    '</td><td>' .
-                    _makePretty($history_item['col'], $history_item['new']) .
-                    '</td></tr>';
-            }
             $defaults   = array_merge(
                 $final_review,
                 $original_review,
