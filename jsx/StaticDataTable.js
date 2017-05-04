@@ -189,7 +189,7 @@ var StaticDataTable = React.createClass({
       const isNumber = !isNaN(val) && typeof val !== 'object';
 
       if (val === ".") {
-        // hack to handle non-existend items in DQT
+        // hack to handle non-existent items in DQT
         val = null;
       } else if (isNumber) {
         // perform type conversion (from string to int/float)
