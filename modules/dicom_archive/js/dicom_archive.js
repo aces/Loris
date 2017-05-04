@@ -208,17 +208,6 @@ var DicomArchive = React.createClass({
               value: this.state.Filter.archiveLocation,
               ref: archiveLocation
             })
-          ),
-          React.createElement(
-            'div',
-            { className: 'col-md-6' },
-            React.createElement(TextboxElement, {
-              name: seriesUID,
-              label: 'Series UID',
-              onUserInput: this.setFilter,
-              value: this.state.Filter.seriesUID,
-              ref: seriesUID
-            })
           )
         ),
         React.createElement(
