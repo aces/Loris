@@ -1,5 +1,3 @@
-/* exported Panel */
-
 /**
  * This file contains React component for Panel
  *
@@ -80,7 +78,5 @@ Panel.defaultProps = {
   id: 'default-panel',
   height: '100%'
 };
-
-window.Panel = Panel;
 
 export default Panel;

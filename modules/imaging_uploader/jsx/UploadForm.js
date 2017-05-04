@@ -1,3 +1,5 @@
+import ProgressBar from 'ProgressBar';
+
 /**
  * Imaging Upload Form
  *

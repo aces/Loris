@@ -1,25 +1,19 @@
 var webpack = require('webpack');
+var path = require('path');
 
 var config = {
   entry: {
     './htdocs/js/components/DynamicDataTable.js': './jsx/DynamicDataTable.js',
-    './htdocs/js/components/FilterForm.js': './jsx/FilterForm.js',
     './htdocs/js/components/PaginationLinks.js': './jsx/PaginationLinks.js',
     './htdocs/js/components/StaticDataTable.js': './jsx/StaticDataTable.js',
     './htdocs/js/components/Breadcrumbs.js': './jsx/Breadcrumbs.js',
     './htdocs/js/components/Form.js': './jsx/Form.js',
-    './htdocs/js/components/Tabs.js': './jsx/Tabs.js',
     './htdocs/js/components/Markdown.js': './jsx/Markdown.js',
-    './htdocs/js/components/Panel.js': './jsx/Panel.js',
     './modules/media/js/mediaIndex.js': './modules/media/jsx/mediaIndex.js',
     './modules/media/js/editFormIndex.js': './modules/media/jsx/editFormIndex.js',
     './modules/issue_tracker/js/columnFormatter.js': './modules/issue_tracker/jsx/columnFormatter.js',
-    './modules/issue_tracker/js/issueIndex.js': './modules/issue_tracker/jsx/issueIndex.js',
-    './modules/candidate_parameters/js/candidateInfo.js': './modules/candidate_parameters/jsx/candidateInfo.js',
-    './modules/candidate_parameters/js/consentStatus.js': './modules/candidate_parameters/jsx/consentStatus.js',
-    './modules/candidate_parameters/js/familyInfo.js': './modules/candidate_parameters/jsx/familyInfo.js',
-    './modules/candidate_parameters/js/participantStatus.js': './modules/candidate_parameters/jsx/participantStatus.js',
-    './modules/candidate_parameters/js/probandInfo.js': './modules/candidate_parameters/jsx/probandInfo.js',
+    './modules/issue_tracker/js/index.js': './modules/issue_tracker/jsx/index.js',
+    './modules/candidate_parameters/js/index.js': './modules/candidate_parameters/jsx/index.js',
     './modules/configuration/js/SubprojectRelations.js': './modules/configuration/jsx/SubprojectRelations.js',
     './modules/bvl_feedback/js/react.behavioural_feedback_panel.js': './modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
     './modules/data_team_helper/js/behavioural_qc_module.js': './modules/data_team_helper/jsx/behavioural_qc_module.js',
@@ -65,6 +59,24 @@ var config = {
         loader: 'babel-loader'
       }
     ]
+  },
+  resolve: {
+    root: path.resolve(__dirname),
+    alias: {
+      util: 'htdocs/js/util',
+      jsx: 'jsx',
+      Breadcrumbs: 'jsx/Breadcrumbs',
+      DynamicDataTable: 'jsx/DynamicDataTable',
+      FilterForm: 'jsx/FilterForm',
+      Form: 'jsx/Form',
+      Markdown: 'jsx/Markdown',
+      PaginationLinks: 'jsx/PaginationLinks',
+      Panel: 'jsx/Panel',
+      ProgressBar: 'jsx/ProgressBar',
+      StaticDataTable: 'jsx/StaticDataTable',
+      Tabs: 'jsx/Tabs'
+    },
+    extensions: ['', '.js', '.jsx']
   },
   externals: {
     react: 'React'
