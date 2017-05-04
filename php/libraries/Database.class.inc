@@ -960,8 +960,8 @@ class Database
      *
      * Note: In order to print to screen the function writes all database queries
      * for HTTP request to a single temporary file and saves a reference to it
-     * in $_REQUEST. $_REQUEST is used in main.php which reads file contents and
-     * prints them to the Loris page. Then closes and deletes the file.
+     * in $GLOBALS. $GLOBALS is used in main.php which reads file contents and
+     * prints them to the Loris page, then closes and deletes the file.
      * This is done to prevent sending response headers before the page is
      * actually rendered.
      *
