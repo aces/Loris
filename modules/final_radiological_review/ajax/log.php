@@ -1,13 +1,12 @@
 <?php
 /**
- * Used to create a new entry on a specific thread via the bvl feedback
- * panel.
+ * Return History Log Json data
  *
- * PHP version 5
+ * PHP version 5.6
  *
- * @category Behavioural
+ * @category Final_Ridiological_Review
  * @package  Main
- * @author   Evan McIlroy <evanmcilroy@gmail.com>
+ * @author   Wangshen <wangshen.mcin@gmail.com>
  * @license  GPLv3 <http://www.gnu.org/licenses/gpl-3.0.en.html>
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
