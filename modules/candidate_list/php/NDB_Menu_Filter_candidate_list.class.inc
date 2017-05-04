@@ -158,6 +158,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
              $FeedbackSQL,
              's.Scan_done',
              's.Visit_label',
+             'COALESCE(pso.ID, 1)',
              'c.Entity_type',
              'COALESCE(pso.ID, 1)',
             )
