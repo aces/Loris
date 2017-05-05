@@ -26,7 +26,7 @@ $cdb  = CouchDB::singleton();
 $qid  = $user->getUserName() . "_" . $_REQUEST['QueryName'];
 
 if ($_REQUEST['SharedQuery'] === "true") {
-    $qid = "global_" . $qid;
+    $qid = "global:" . $qid;
 }
 
 if ($_REQUEST['Override'] === "false") {
