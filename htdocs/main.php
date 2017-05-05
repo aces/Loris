@@ -93,6 +93,12 @@ try {
     $tpl_data['user']['permissions']          = $user->getPermissions();
     $tpl_data['hasHelpEditPermission']        = $user->hasPermission('context_help');
     $tpl_data['user']['user_from_study_site'] = $oneIsStudySite;
+    $tpl_data['userNumSites']         = count($site_arr);
+    $tpl_data['user']['SitesTooltip'] = str_replace(
+        ";",
+        "<br/>",
+        $user->getData('Sites')
+    );
 } catch(Exception $e) {
     $tpl_data['error_message'][] = "Error: " . $e->getMessage();
 }
@@ -270,12 +276,12 @@ foreach ($user->getPermissions() as $permName => $hasPerm) {
 }
 $tpl_data['userPerms']   = $realPerms;
 $tpl_data['studyParams'] = array(
-                            'useEDC'      => $config->getSetting('useEDC') ?
-        $config->getSetting('useEDC') : false,
-                            'useProband'  => $config->getSetting('useProband') ?
-        $config->getSetting('useProband') : false,
-                            'useFamilyID' => $config->getSetting('useFamilyID') ?
-        $config->getSetting('useFamilyID') : false,
+                            'useEDC'      => $config->getSetting('useEDC'),
+                            'useProband'  => $config->getSetting('useProband'),
+                            'useFamilyID' => $config->getSetting('useFamilyID'),
+                            'useConsent'  => $config->getSetting(
+                                'ConsentModule'
+                            )['useConsent'],
                            );
 $tpl_data['jsonParams']  = json_encode(
     array(

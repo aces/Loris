@@ -36,7 +36,7 @@ class NDB_Form_Dashboard extends NDB_Form
         $DB     = Database::singleton();
         $user   = User::singleton();
         $config = NDB_Config::singleton();
-        $site   = $user->getSiteName();
+        $site   = explode(';', $user->getSiteNames());
 
         $userID     = $user->getUsername();
         $last_login = $DB->pselectOne(
@@ -49,7 +49,7 @@ class NDB_Form_Dashboard extends NDB_Form
             array('UserID' => $userID)
         );
 
-        $siteID = implode(',', $user->getCenterID());
+        $siteID = $user->getCenterIDs();
         $this->tpl_data['user_site'] = $siteID;
 
         // Welcome panel
@@ -146,12 +146,11 @@ class NDB_Form_Dashboard extends NDB_Form
                      LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
                      WHERE FIND_IN_SET(psc.CenterID, :siteID) 
 			            AND s.Active='Y' AND c.Active='Y'",
-                    array('siteID' => $siteID)
+                    array('siteID' => implode(',', $siteID))
                 );
-                $this->tpl_data['conflicts_site'] = 'Sites: ' . $site;
+                $this->tpl_data['conflicts_site'] = 'Sites: All User Sites';
             }
         }
-
         // Incomplete forms
         if ($user->hasPermission('data_entry')) {
             if ($user->hasPermission('access_all_profiles')) {
@@ -173,12 +172,11 @@ class NDB_Form_Dashboard extends NDB_Form
                     WHERE Data_entry='In Progress' 
                     AND FIND_IN_SET(psc.CenterID, :siteID)
 			          AND s.Active='Y' AND c.Active='Y'",
-                    array('siteID' => $siteID)
+                    array('siteID' => implode(',', $siteID))
                 );
-                $this->tpl_data['incomplete_forms_site'] = 'Sites: ' . $site;
+                $this->tpl_data['incomplete_forms_site'] = $site;
             }
         }
-
         // Final radiological review
         if ($user->hasPermission('edit_final_radiological_review')
             && $user->hasPermission('view_final_radiological_review')
@@ -208,7 +206,7 @@ class NDB_Form_Dashboard extends NDB_Form
             );
             $this->tpl_data['pending_users_site'] = 'Sites: all';
         } elseif ($user->hasPermission('user_accounts')) {
-            $site_arr = $user->getCenterID();
+            $site_arr = $user->getCenterIDs();
             $this->tpl_data['pending_users'] = $DB->pselectOne(
                 "SELECT COUNT(*) FROM users 
                 LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)
@@ -268,7 +266,7 @@ class NDB_Form_Dashboard extends NDB_Form
                 $this->tpl_data['issues_assigned_site'] = 'Sites: all';
             } else {
                 $this->tpl_data['issues_assigned_site'] = 'Sites: '.
-                    $user->getSiteName();
+                    $user->getSiteNames();
             }
         }
 

@@ -249,7 +249,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
         $user = User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {
             // restrict data to own site
-            $site_arr     = implode(",", $user->getCenterID());
+            $site_arr     = implode(",", $user->getCenterIDs());
             $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
         }
 

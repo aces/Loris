@@ -6,6 +6,8 @@
  *
  */
 
+import Panel from 'Panel';
+
 /**
  * FilterForm component.
  * A wrapper for form elements inside a selection filter.
@@ -14,6 +16,11 @@
  * for proper rendering.
  *
  * Keeps track of filter object and sends it to parent on every update.
+ *
+ * //HACK/NOTE: Loris has special behaviour for `candID` attribute in the query string,
+ * making it impossible to use it for selection filters. This components renames
+ * all `candID` fields to `candidateID` automatically before appending them to URL.
+ *
  */
 class FilterForm extends React.Component {
 
@@ -37,7 +44,8 @@ class FilterForm extends React.Component {
 
     // Initiaze filter using querystring value
     Object.keys(queryString).forEach(function(key) {
-      filter[key] = {
+      let filterKey = (key === 'candidateID') ? 'candID' : key;
+      filter[filterKey] = {
         value: queryString[key],
         exactMatch: false
       };
@@ -72,7 +80,8 @@ class FilterForm extends React.Component {
         let callbackFunc = child.props.onUserInput;
         let callbackName = callbackFunc.name;
         let elementName = child.type.displayName;
-        let filterValue = this.queryString[child.props.name];
+        let queryFieldName = (child.props.name === 'candID') ? 'candidateID' : child.props.name;
+        let filterValue = this.queryString[queryFieldName];
         // If callback function was not set, set it to onElementUpdate() for form
         // elements and to clearFilter() for <ButtonElement type='reset'/>.
         if (callbackName === "onUserInput") {
@@ -142,7 +151,8 @@ class FilterForm extends React.Component {
     }
 
     // Update query string
-    this.queryString = QueryString.set(this.queryString, fieldName, fieldValue);
+    let queryFieldName = (fieldName === 'candID') ? 'candidateID' : fieldName;
+    this.queryString = QueryString.set(this.queryString, queryFieldName, fieldValue);
 
     // Update filter and get new filter object
     let filter = this.setFilter(type, fieldName, fieldValue);
@@ -156,8 +166,9 @@ class FilterForm extends React.Component {
 
     if (formElements) {
       Object.keys(formElements).forEach(function(fieldName) {
+        let queryFieldName = (fieldName === 'candID') ? 'candidateID' : fieldName;
         formElements[fieldName].onUserInput = this.onElementUpdate.bind(null, fieldName);
-        formElements[fieldName].value = this.queryString[fieldName];
+        formElements[fieldName].value = this.queryString[queryFieldName];
       }.bind(this));
     }
 
@@ -191,7 +202,5 @@ FilterForm.propTypes = {
   title: React.PropTypes.string,
   onUpdate: React.PropTypes.func
 };
-
-window.FilterForm = FilterForm;
 
 export default FilterForm;

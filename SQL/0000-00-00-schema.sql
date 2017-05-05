@@ -1,6 +1,3 @@
-WARNINGS;
-SET SQL_NOTES=1;
-
 -- ********************************
 -- DROP TABLE (ORDER MATTERS)
 -- ********************************
@@ -81,7 +78,7 @@ DROP TABLE IF EXISTS `family`;
 DROP TABLE IF EXISTS `participant_emails`;
 DROP TABLE IF EXISTS `participant_accounts`;
 DROP TABLE IF EXISTS `participant_status`;
-DROP TABLE IF EXISTS `participant_status_options`; 
+DROP TABLE IF EXISTS `participant_status_options`;
 
 DROP TABLE IF EXISTS `conflicts_resolved`;
 DROP TABLE IF EXISTS `conflicts_unresolved`;
@@ -89,6 +86,11 @@ DROP TABLE IF EXISTS `conflicts_unresolved`;
 
 DROP TABLE IF EXISTS `notification_spool`;
 DROP TABLE IF EXISTS `notification_types`;
+DROP TABLE IF EXISTS `notification_history`;
+DROP TABLE IF EXISTS `users_notifications_rel`;
+DROP TABLE IF EXISTS `notification_modules_services_rel`;
+DROP TABLE IF EXISTS `notification_services`;
+DROP TABLE IF EXISTS `notification_modules`;
 
 DROP TABLE IF EXISTS `document_repository`;
 DROP TABLE IF EXISTS `document_repository_categories`;
@@ -137,7 +139,7 @@ DROP TABLE IF EXISTS `Project`;
 -- ********************************
 -- Core tables
 -- ********************************
-SELECT 'Core tables' AS 'CREATE TABLES';
+
 
 CREATE TABLE `Project` (
     `ProjectID` INT(2) NOT NULL AUTO_INCREMENT,
@@ -155,7 +157,7 @@ CREATE TABLE `subproject` (
     PRIMARY KEY (SubprojectID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores Subprojects used in Loris';
 
-SELECT 'Default value for subproject' as 'Important INSERT statement';
+
 INSERT INTO subproject (title, useEDC, WindowDifference) VALUES
   ('Control', false, 'optimal'),
   ('Experimental', false, 'optimal');
@@ -185,7 +187,7 @@ CREATE TABLE `psc` (
   UNIQUE KEY `Name` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SELECT 'Data Coordinating Center' as 'Important INSERT statement';
+
 INSERT INTO `psc` (Name, Alias, Study_site) VALUES ('Data Coordinating Center','DCC', 'Y');
 
 CREATE TABLE `users` (
@@ -219,9 +221,9 @@ CREATE TABLE `users` (
   UNIQUE KEY `UserID` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SELECT 'Admin user' as 'Important INSERT statement';
 
-INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval,Password_expiry) 
+
+INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval,Password_expiry)
 VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N','2016-03-30');
 
 CREATE TABLE `user_psc_rel` (
@@ -233,7 +235,7 @@ CREATE TABLE `user_psc_rel` (
   CONSTRAINT `FK_user_psc_rel_1` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SELECT 'Admin affiliation to all sites (psc)' as 'Important INSERT statement';
+
 INSERT INTO user_psc_rel (UserID, CenterID) SELECT 1, CenterID FROM psc;
 
 CREATE TABLE `caveat_options` (
@@ -336,7 +338,7 @@ CREATE TABLE `test_subgroups` (
   PRIMARY KEY  (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SELECT 'Default value for instruments subgroups' as 'Important INSERT statement';
+
 INSERT INTO test_subgroups (Subgroup_name) VALUES ('Instruments');
 
 CREATE TABLE `test_names` (
@@ -436,13 +438,13 @@ CREATE TABLE `Visit_Windows` (
 -- ********************************
 -- Imaging tables
 -- ********************************
-SELECT 'Imaging tables' AS 'CREATE TABLES';
+
 
 CREATE TABLE `ImagingFileTypes` (
  `type` varchar(255) NOT NULL PRIMARY KEY
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SELECT 'Default value for ImagingFileTypes' as 'Important INSERT statement';
+
 INSERT INTO `ImagingFileTypes` VALUES
       ('mnc'),
       ('obj'),
@@ -482,7 +484,7 @@ CREATE TABLE `mri_scanner` (
 SET @OLD_SQL_MODE=@@SQL_MODE;
 SET SQL_MODE='NO_AUTO_VALUE_ON_ZERO';
 
-SELECT 'Default value for mri_scanner' as 'Important INSERT statement';
+
 INSERT INTO `mri_scanner` (ID) VALUES (0);
 
 SET SQL_MODE=@OLD_SQL_MODE;
@@ -610,7 +612,7 @@ CREATE TABLE `mri_protocol` (
   CONSTRAINT `FK_mri_protocol_1` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8;
 
-SELECT 'Default value for mri_protocol' as 'Important INSERT statement';
+
 INSERT INTO mri_protocol (Center_name,Scan_type,TR_range,TE_range,time_range) VALUES
   ('ZZZZ',48,'8000-14000','80-130','0-200'),
   ('ZZZZ',40,'1900-2700','10-30','0-500'),
@@ -713,7 +715,7 @@ CREATE TABLE `mri_protocol_violated_scans` (
 -- ********************************
 -- tarchive tables
 -- ********************************
-SELECT 'tarchive tables' AS 'CREATE TABLES';
+
 
 CREATE TABLE `tarchive` (
   `DicomArchiveID` varchar(255) NOT NULL default '',
@@ -796,7 +798,7 @@ CREATE TABLE `tarchive_find_new_uploads` (
 -- ********************************
 -- document_repository tables
 -- ********************************
-SELECT 'document_repository tables' AS 'CREATE TABLES';
+
 
 CREATE TABLE `document_repository_categories` (
   `id` int(3) unsigned NOT NULL AUTO_INCREMENT,
@@ -833,7 +835,7 @@ CREATE TABLE `document_repository` (
 -- ********************************
 -- Notification tables
 -- ********************************
-SELECT 'Notification tables' AS 'CREATE TABLES';
+
 
 CREATE TABLE `notification_types` (
   `NotificationTypeID` int(11) NOT NULL auto_increment,
@@ -843,7 +845,7 @@ CREATE TABLE `notification_types` (
   PRIMARY KEY  (`NotificationTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SELECT 'Default value for notification_types' as 'Important INSERT statement';
+
 INSERT INTO `notification_types` (Type,private,Description) VALUES
     ('mri new study',0,'New studies processed by the MRI upload handler'),
     ('mri new series',0,'New series processed by the MRI upload handler'),
@@ -877,10 +879,89 @@ CREATE TABLE `notification_spool` (
   CONSTRAINT `FK_notification_spool_1` FOREIGN KEY (`NotificationTypeID`) REFERENCES `notification_types` (`NotificationTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `notification_modules` (
+  `id` int(10) unsigned auto_increment NOT NULL,
+  `module_name` varchar(100) NOT NULL,
+  `operation_type` varchar(100) NOT NULL,
+  `as_admin` enum('Y','N') NOT NULL DEFAULT 'N',
+  `template_file` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY (`module_name`),
+  UNIQUE(module_name,operation_type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `notification_services` (
+  `id` int(10) unsigned auto_increment NOT NULL,
+  `service` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE(service)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Associates modules with the service available for each
+CREATE TABLE `notification_modules_services_rel` (
+  `module_id` int(10) unsigned NOT NULL,
+  `service_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`module_id`,`service_id`),
+  KEY `FK_notification_modules_services_rel_1` (`module_id`),
+  KEY `FK_notification_modules_services_rel_2` (`service_id`),
+  CONSTRAINT `FK_notification_modules_services_rel_1` FOREIGN KEY (`module_id`) REFERENCES `notification_modules` (`id`),
+  CONSTRAINT `FK_notification_modules_services_rel_2` FOREIGN KEY (`service_id`) REFERENCES `notification_services` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- saves users preferences for notification type
+CREATE TABLE `users_notifications_rel` (
+  `user_id` int(10) unsigned NOT NULL,
+  `module_id` int(10) unsigned NOT NULL,
+  `service_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`user_id`,`module_id`,`service_id`),
+  KEY `FK_notifications_users_rel_1` (`user_id`),
+  KEY `FK_notifications_users_rel_2` (`module_id`),
+  KEY `FK_notifications_users_rel_3` (`service_id`),
+  CONSTRAINT `FK_notifications_users_rel_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`ID`),
+  CONSTRAINT `FK_notifications_users_rel_2` FOREIGN KEY (`module_id`) REFERENCES `notification_modules` (`id`),
+  CONSTRAINT `FK_notifications_users_rel_3` FOREIGN KEY (`service_id`) REFERENCES `notification_services` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- history log
+CREATE TABLE `notification_history` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `module_id` int(10) unsigned NOT NULL,
+  `service_id` int(10) unsigned NOT NULL,
+  `date_sent` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `trigger_user` int(10) unsigned NOT NULL,
+  `target_user` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_notification_history_1` (`trigger_user`),
+  KEY `FK_notification_history_2` (`target_user`),
+  CONSTRAINT `FK_notification_history_1` FOREIGN KEY (`trigger_user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_notification_history_2` FOREIGN KEY (`target_user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- basic notification service
+INSERT INTO notification_services (service) VALUES
+('email_text');
+
+-- Pre-implemented notifications
+INSERT INTO notification_modules (module_name, operation_type, as_admin, template_file, description) VALUES
+  ('media', 'upload', 'N', 'notifier_media_upload.tpl', 'Media: New File Uploaded'),
+  ('media', 'download', 'N', 'notifier_media_download.tpl', 'Media: File Downloaded'),
+  ('document_repository', 'new_category', 'N', 'notifier_document_repository_new_category.tpl', 'Document Repository: New Category'),
+  ('document_repository', 'upload', 'N', 'notifier_document_repository_upload.tpl', 'Document Repository: New Document Uploaded'),
+  ('document_repository', 'delete', 'N', 'notifier_document_repository_delete.tpl', 'Document Repository: Document Deleted'),
+  ('document_repository', 'edit', 'N', 'notifier_document_repository_edit.tpl', 'Document Repository: Document Edited');
+
+-- enable doc repo basic text emails
+INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='document_repository' AND ns.service='email_text';
+
+-- Transfer Document repository notifications to new system
+INSERT INTO users_notifications_rel SELECT u.ID, nm.id, ns.id FROM users u JOIN notification_modules nm JOIN notification_services ns WHERE nm.module_name='document_repository' AND ns.service='email_text' AND u.Doc_Repo_Notifications='Y';
+
+
 -- ********************************
 -- conflict_resolver tables
 -- ********************************
-SELECT 'conflict_resolver tables' AS 'CREATE TABLES';
+
 
 CREATE TABLE `conflicts_unresolved` (
   `ConflictID` int(10) NOT NULL AUTO_INCREMENT,
@@ -919,7 +1000,7 @@ CREATE TABLE `conflicts_resolved` (
 -- ********************************
 -- candidate_parameter tables
 -- ********************************
-SELECT 'candidate_parameter tables' AS 'CREATE TABLES';
+
 
 CREATE TABLE `participant_status_options` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -930,7 +1011,7 @@ CREATE TABLE `participant_status_options` (
   UNIQUE KEY `ID` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SELECT 'Default value for participant_status_options' as 'Important INSERT statement';
+
 INSERT INTO `participant_status_options` (Description, Required) VALUES
   ('Active',0),
   ('Refused/Not Enrolled',0),
@@ -939,13 +1020,13 @@ INSERT INTO `participant_status_options` (Description, Required) VALUES
   ('Inactive',1),
   ('Incomplete',1),
   ('Complete',0);
-SELECT ID INTO @tmp_val FROM participant_status_options WHERE Description = 'Inactive' AND parentID IS NULL;
+
 INSERT INTO `participant_status_options` (Description, Required, parentID) VALUES
   ('Unsure',NULL,@tmp_val),
   ('Requiring Further Investigation',NULL,@tmp_val),
   ('Not Responding',NULL,@tmp_val);
 SET @tmp_val = NULL;
-SELECT ID INTO @tmp_val FROM participant_status_options WHERE Description = 'Incomplete' AND parentID IS NULL;
+
 INSERT INTO `participant_status_options` (Description, Required, parentID) VALUES
   ('Death',NULL,@tmp_val),
   ('Lost to Followup',NULL,@tmp_val);
@@ -1031,7 +1112,7 @@ CREATE TABLE `family` (
 -- ********************************
 -- Training tables
 -- ********************************
-SELECT 'Training tables' AS 'CREATE TABLES';
+
 
 CREATE TABLE `examiners` (
   `examinerID` int(10) unsigned NOT NULL auto_increment,
@@ -1108,7 +1189,7 @@ CREATE TABLE `certification_training_quiz_answers` (
 -- ********************************
 -- data_intergrity_flag tables
 -- ********************************
-SELECT 'data_intergrity_flag tables' AS 'CREATE TABLES';
+
 
 CREATE TABLE `data_integrity_flag` (
   `dataflag_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1129,7 +1210,7 @@ CREATE TABLE `data_integrity_flag` (
 -- ********************************
 -- final_radiological_review tables
 -- ********************************
-SELECT 'final_radiological_review tables' AS 'CREATE TABLES';
+
 
 CREATE TABLE `final_radiological_review` (
   `CommentID` varchar(255) NOT NULL,
@@ -1165,7 +1246,7 @@ CREATE TABLE `final_radiological_review_history` (
 -- ********************************
 -- user_account_history tables
 -- ********************************
-SELECT 'user_account_history tables' AS 'CREATE TABLES';
+
 
 CREATE TABLE `user_account_history` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -1179,7 +1260,7 @@ CREATE TABLE `user_account_history` (
 -- ********************************
 -- user_login_history tables
 -- ********************************
-SELECT 'user_login_history tables' AS 'CREATE TABLES';
+
 
 CREATE TABLE `user_login_history` (
   `loginhistoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -1196,7 +1277,7 @@ CREATE TABLE `user_login_history` (
 -- ********************************
 -- StatisticsTabs tables
 -- ********************************
-SELECT 'StatisticsTabs tables' AS 'CREATE TABLES';
+
 
 CREATE TABLE `StatisticsTabs` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -1207,7 +1288,7 @@ CREATE TABLE `StatisticsTabs` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores list of tabs for the statistics module';
 
-SELECT 'Default value for StatisticsTabs' as 'Important INSERT statement';
+
 INSERT INTO StatisticsTabs (ModuleName, SubModuleName, Description, OrderNo) VALUES
   ('statistics', 'stats_general', 'General Description', 1),
   ('statistics', 'stats_demographic', 'Demographic Statistics', 2),
@@ -1218,7 +1299,7 @@ INSERT INTO StatisticsTabs (ModuleName, SubModuleName, Description, OrderNo) VAL
 -- ********************************
 -- server_processes tables
 -- ********************************
-SELECT 'server_processes tables' AS 'CREATE TABLES';
+
 
 CREATE TABLE `server_processes` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -1258,7 +1339,7 @@ CREATE TABLE `media` (
 -- ********************************
 -- issues tables
 -- ********************************
-SELECT 'issues tables' AS 'CREATE TABLES';
+
 
 CREATE TABLE `issues_categories` (
   `categoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -1267,7 +1348,7 @@ CREATE TABLE `issues_categories` (
   UNIQUE KEY `categoryName` (`categoryName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SELECT 'Default value for issues_categories' as 'Important INSERT statement';
+
 INSERT INTO issues_categories (categoryName) VALUES
   ('Behavioural Battery'),
   ('Behavioural Instruments'),
@@ -1355,7 +1436,7 @@ CREATE TABLE `issues_watching` (
 -- ********************************
 -- parameter tables
 -- ********************************
-SELECT 'parameter tables' AS 'CREATE TABLES';
+
 
 CREATE TABLE `parameter_type` (
   `ParameterTypeID` int(10) unsigned NOT NULL auto_increment,
@@ -1374,7 +1455,7 @@ CREATE TABLE `parameter_type` (
   KEY `name` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='dictionary of all the variables in the project';
 
-SELECT 'Default value for parameter_type 1/2' as 'Important INSERT statement';
+
 INSERT INTO `parameter_type` VALUES
   (2,'Geometric_distortion','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
   (3,'Intensity_artifact','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
@@ -1385,7 +1466,7 @@ INSERT INTO `parameter_type` VALUES
   (8,'Color_Artifact','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
   (9,'Entropy','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0);
 
-SELECT 'Default value for parameter_type 2/2' as 'Important INSERT statement';
+
 INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) VALUES
   ('candidate_label','text','Identifier_of_candidate',null,null,'PSCID','candidate',null,1,null),
   ('Visit_label','varchar(255)','Visit_label',null,null,'visit_label','session',null,1,null),
@@ -1398,8 +1479,8 @@ CREATE TABLE `parameter_type_category` (
   PRIMARY KEY  (`ParameterTypeCategoryID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SELECT 'Default value for parameter_type_category' as 'Important INSERT statement';
-INSERT INTO `parameter_type_category` (Name, Type) VALUES 
+
+INSERT INTO `parameter_type_category` (Name, Type) VALUES
   ('MRI Variables','Metavars'),
   ('Identifiers', 'Metavars');
 
@@ -1412,7 +1493,7 @@ CREATE TABLE `parameter_type_category_rel` (
   CONSTRAINT `FK_parameter_type_category_rel_1` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SELECT 'Default value for parameter_type_category_rel' as 'Important INSERT statement';
+
 INSERT INTO parameter_type_category_rel (ParameterTypeID,ParameterTypeCategoryID)
   SELECT pt.ParameterTypeID,ptc.ParameterTypeCategoryID
   FROM parameter_type pt,parameter_type_category ptc
@@ -1466,7 +1547,7 @@ CREATE TABLE `parameter_type_override` (
 -- ********************************
 -- genomic_browser tables
 -- ********************************
-SELECT 'genomic_browser tables' AS 'CREATE TABLES';
+
 
 CREATE TABLE `genome_loc` (
   `GenomeLocID` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1583,7 +1664,7 @@ CREATE TABLE `genomic_analysis_modality_enum` (
   PRIMARY KEY (`analysis_modality`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SELECT 'Default value for genomic_analysis_modality_enum' as 'Important INSERT statement';
+
 INSERT IGNORE INTO `genomic_analysis_modality_enum` (analysis_modality) VALUES
 ('Methylation beta-values'),
 ('Other');
@@ -1677,7 +1758,7 @@ CREATE TABLE `genomic_cpg` (
 -- ********************************
 -- reliability
 -- ********************************
-SELECT 'reliability' as 'Tables for';
+
 
 CREATE TABLE `reliability` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -1694,7 +1775,7 @@ CREATE TABLE `reliability` (
 -- ********************************
 -- External links
 -- ********************************
-SELECT 'External links' as 'Tables for';
+
 
 CREATE TABLE `ExternalLinkTypes` (
   `LinkTypeID` int(11) NOT NULL AUTO_INCREMENT,
@@ -1702,7 +1783,7 @@ CREATE TABLE `ExternalLinkTypes` (
   PRIMARY KEY (`LinkTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SELECT 'ExternalLinkTypes' as 'Important INSERT statement';
+
 INSERT INTO `ExternalLinkTypes` (LinkType) VALUES
   ('FooterLink'),
   ('StudyLinks'),
@@ -1718,7 +1799,7 @@ CREATE TABLE `ExternalLinks` (
   CONSTRAINT `ExternalLinks_ibfk_1` FOREIGN KEY (`LinkTypeID`) REFERENCES `ExternalLinkTypes` (`LinkTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SELECT 'ExternalLinks' as 'Important INSERT statement';
+
 INSERT INTO `ExternalLinks` (LinkTypeID, LinkText, LinkURL) VALUES
   ((SELECT LinkTypeID from ExternalLinkTypes WHERE LinkType='FooterLink'), 'Loris Website', 'http://www.loris.ca'),
   ((SELECT LinkTypeID from ExternalLinkTypes WHERE LinkType='FooterLink'), 'GitHub', 'https://github.com/aces/Loris'),
@@ -1729,7 +1810,7 @@ INSERT INTO `ExternalLinks` (LinkTypeID, LinkText, LinkURL) VALUES
 -- ********************************
 -- empty_queries
 -- ********************************
-SELECT 'empty_queries' as 'Tables for';
+
 
 CREATE TABLE `empty_queries` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -1741,7 +1822,7 @@ CREATE TABLE `empty_queries` (
 -- ********************************
 -- data_release
 -- ********************************
-SELECT 'data_release' as 'Tables for';
+
 
 CREATE TABLE `data_release` (
  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -1764,7 +1845,7 @@ CREATE TABLE `data_release_permissions` (
 -- ********************************
 -- Acknowledgements
 -- ********************************
-SELECT 'acknowledgements' as 'Tables for';
+
 
 CREATE TABLE `acknowledgements` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -1784,7 +1865,7 @@ CREATE TABLE `acknowledgements` (
 -- ********************************
 -- Feedback
 -- ********************************
-SELECT 'Feedback' as 'Tables for';
+
 
 CREATE TABLE `feedback_bvl_type` (
   `Feedback_type` int(11) unsigned NOT NULL auto_increment,
@@ -1794,7 +1875,7 @@ CREATE TABLE `feedback_bvl_type` (
   UNIQUE KEY `Name` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SELECT 'feedback_bvl_type' as 'Important INSERT statement';
+
 INSERT INTO `feedback_bvl_type` (Name, Description) VALUES
   ('Input','Input Errors'),
   ('Scoring','Scoring Errors');
@@ -1838,7 +1919,6 @@ CREATE TABLE `feedback_mri_comment_types` (
   PRIMARY KEY  (`CommentTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SELECT 'feedback_mri_comment_types' as 'Important INSERT statement';
 INSERT INTO `feedback_mri_comment_types` (CommentName,CommentType,CommentStatusField) VALUES
   ('Geometric distortion','volume','a:2:{s:5:\"field\";s:20:\"Geometric_distortion\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
   ('Intensity artifact','volume','a:2:{s:5:\"field\";s:18:\"Intensity_artifact\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
@@ -1859,7 +1939,6 @@ CREATE TABLE `feedback_mri_predefined_comments` (
   CONSTRAINT `FK_feedback_mri_predefined_comments_1` FOREIGN KEY (`CommentTypeID`) REFERENCES `feedback_mri_comment_types` (`CommentTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SELECT 'feedback_mri_predefined_comments' as 'Important INSERT statement';
 INSERT INTO `feedback_mri_predefined_comments` (CommentTypeID, Comment) VALUES
   (2,'missing slices'),
   (2,'reduced dynamic range due to bright artifact/pixel'),
@@ -1921,5 +2000,3 @@ CREATE TABLE `feedback_mri_comments` (
   CONSTRAINT `FK_feedback_mri_comments_2` FOREIGN KEY (`PredefinedCommentID`) REFERENCES `feedback_mri_predefined_comments` (`PredefinedCommentID`),
   CONSTRAINT `FK_feedback_mri_comments_3` FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-SELECT 'Schema import completed' as 'Status';

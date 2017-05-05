@@ -73,6 +73,11 @@ function editFile()
  */
 function uploadFile()
 {
+    $uploadNotifier = new NDB_Notifier(
+        "media",
+        "upload"
+    );
+
     $db     =& Database::singleton();
     $config = NDB_Config::singleton();
     $user   =& User::singleton();
@@ -107,9 +112,14 @@ function uploadFile()
         showError("Please fill in all required fields!");
         return;
     }
+    $fileName  = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
+    $fileType  = $_FILES["file"]["type"];
+    $extension = pathinfo($fileName)['extension'];
 
-    $fileName = $_FILES["file"]["name"];
-    $fileType = $_FILES["file"]["type"];
+    if (!isset($extension)) {
+        showError("Please make sure your file has a valid extension!");
+        return;
+    }
 
     $userID = $user->getData('UserID');
 
@@ -157,6 +167,7 @@ function uploadFile()
             } else {
                 $db->insert('media', $query);
             }
+            $uploadNotifier->notify(array("file" => $fileName));
         } catch (DatabaseException $e) {
             showError("Could not upload the file. Please try again!");
         }

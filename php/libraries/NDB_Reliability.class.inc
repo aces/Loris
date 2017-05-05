@@ -397,7 +397,7 @@ class NDB_Reliability extends NDB_Form
     {
         $db       =& Database::singleton();
         $user     =& User::singleton();
-        $centerID = $user->getCenterID();
+        $centerID = $user->getCenterIDs();
 
         // UofA is a special case--they never enter their own data.
         // So the available examiners are either the ones at the logged
