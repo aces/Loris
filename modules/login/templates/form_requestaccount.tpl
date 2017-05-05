@@ -23,19 +23,38 @@
       Please fill in the form below to request a LORIS account.<br/>
       We will contact you once your account has been approved.
     </p>
-    <form method="POST"
-          name="form1" id="form1">
+    <form method="POST" name="form1" id="form1">
       <div class="form-group">
-        {$form.firstname.html} {$form.firstname.error}
+        {$form.firstname.html}
+          {if $form.firstname.error}
+            <span id="helpBlock" class="help-block">
+              <b class="text-danger">{$form.firstname.error}</b>
+            </span>
+          {/if}
       </div>
       <div class="form-group">
-        {$form.lastname.html} {$form.lastname.error}
+        {$form.lastname.html}
+          {if $form.lastname.error}
+            <span id="helpBlock" class="help-block">
+              <b class="text-danger">{$form.lastname.error}</b>
+            </span>
+          {/if}
       </div>
       <div class="form-group">
-        {$form.from.html} {$form.from.error}
+        {$form.from.html}
+          {if $form.from.error}
+            <span id="helpBlock" class="help-block">
+              <b class="text-danger">{$form.from.error}</b>
+            </span>
+          {/if}
       </div>
       <div class="form-group">
-        {$form.site.html} {$form.site.error}
+        {$form.site.html}
+          {if $form.site.error}
+            <span id="helpBlock" class="help-block">
+              <b class="text-danger">{$form.site.error}</b>
+            </span>
+          {/if}
       </div>
       <div class="form-group">
         {$form.examiner.html}

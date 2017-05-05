@@ -57,6 +57,8 @@ DROP TABLE IF EXISTS `StatisticsTabs`;
 
 DROP TABLE IF EXISTS `user_login_history`;
 
+DROP TABLE IF EXISTS `password_recovery`;
+
 DROP TABLE IF EXISTS `user_account_history`;
 -- TODO :: Add permissions here... because useR_perm_rel needs to be DROPed before users
 
@@ -1285,6 +1287,21 @@ CREATE TABLE `user_login_history` (
   `IP_address` varchar(255) DEFAULT NULL,
   `Page_requested` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`loginhistoryID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ********************************
+-- user password_recovery tables
+-- ********************************
+
+CREATE TABLE `password_recovery` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ip` int(10) NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `token` varchar(65) NOT NULL,
+  `time` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ID`),
+  CONSTRAINT `fk_password_recovery_users_1` FOREIGN KEY (`email`) REFERENCES `users` (`Email`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
