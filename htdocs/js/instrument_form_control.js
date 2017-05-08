@@ -62,7 +62,6 @@ $(document).ready(function() {
     }
     naList[i].onchange = notAnswered;
   }
-
   var msg = '';
   var isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
   if (isMac) {
