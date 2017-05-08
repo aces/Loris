@@ -554,7 +554,7 @@ class NDB_Form_Statistics extends NDB_Form
             );
         } else {
             $Param_Project = '';
-            $subprojects = Utility::getSubprojectList($currentProject);
+            $subprojects   = Utility::getSubprojectList($currentProject);
         }
 
         $this->tpl_data['Subprojects'] = $subprojects;
