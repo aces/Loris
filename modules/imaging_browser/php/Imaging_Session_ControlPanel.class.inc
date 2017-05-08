@@ -104,6 +104,15 @@ class Imaging_Session_ControlPanel
         );
         $subjectData['tarchiveids'] = $tarchiveIDs;
 
+        // To enable DICOM download: Add pair: tarchiveID, ArchiveLocation
+        $tarchiveIDLoc = $DB->pselect(
+            "SELECT TarchiveID, ArchiveLocation
+            FROM tarchive
+            WHERE PatientName LIKE $ID",
+            $params
+        );
+        $subjectData['tarchiveidLoc'] = $tarchiveIDLoc;
+
         $config =& NDB_Config::singleton();
 
         //if table is not in database return false to not display in the template

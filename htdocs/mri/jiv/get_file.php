@@ -90,6 +90,11 @@ if (strpos("..", $File) !== false) {
     exit(4);
 }
 
+// If $File contains "tarchive", identify it as $FileExt: "DICOMTAR"
+if (strpos($File, "tarchive") ) { 
+    $FileExt = "DICOMTAR";
+}
+
 switch($FileExt) {
 case 'mnc':
     $FullPath         = $mincPath . '/' . $File;
@@ -129,6 +134,12 @@ case 'xml':
 case 'nrrd':
     $FullPath         = $imagePath . '/' . $File;
     $MimeType         = 'image/vnd.nrrd';
+    $DownloadFilename = basename($File);
+    break;
+case 'DICOMTAR':   
+    // ADD case for DICOMTAR
+    $FullPath         = $File;
+    $MimeType         = "application/x-nifti-gz";
     $DownloadFilename = basename($File);
     break;
 default:
