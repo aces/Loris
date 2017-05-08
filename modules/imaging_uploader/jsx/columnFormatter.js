@@ -99,6 +99,12 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     })(e);
   }
 
+    /**
+     * Opens MRI Violations for when there are violated scans
+     *
+     * @param {string} patientName - Patient name of the form PSCID_DCCID_VisitLabel
+     * @param {object} e - event info
+     */
   function openViolatedScans(patientName, e) {
     loris.loadFilteredMenuClickHandler('mri_violations/', {
       PatientName: patientName
