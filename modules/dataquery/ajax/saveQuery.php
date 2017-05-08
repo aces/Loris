@@ -42,17 +42,18 @@ if ($_REQUEST['Override'] === "false") {
 }
 
 $baseDocument = array(
-    '_id' => $qid,
-    'Meta' => array('DocType' => 'SavedQuery',
-        'user' => $user->getUserName()),
-
-    'Fields' => array(),
-    'Conditions' => array(),
-);
-if(isset($_REQUEST['QueryName'])) {
+                 '_id'        => $qid,
+                 'Meta'       => array(
+                                  'DocType' => 'SavedQuery',
+                                  'user'    => $user->getUserName(),
+                                 ),
+                 'Fields'     => array(),
+                 'Conditions' => array(),
+                );
+if (isset($_REQUEST['QueryName'])) {
     $baseDocument['Meta']['name'] = $_REQUEST['QueryName'];
 }
-if($_REQUEST['SharedQuery'] === "true") {
+if ($_REQUEST['SharedQuery'] === "true") {
     $baseDocument['Meta']['user'] = 'global';
     $baseDocument['Meta']['name'] = $user->getUserName() .
                                     ': ' .
@@ -61,7 +62,7 @@ if($_REQUEST['SharedQuery'] === "true") {
 $fields = $_REQUEST['Fields'];
 $cond   = $_REQUEST['Filters'];
 $baseDocument['Conditions'] = $cond;
-$baseDocument['Fields'] = $fields;
+$baseDocument['Fields']     = $fields;
 
 if ($_REQUEST['Override'] === "true") {
     unset($baseDocument['_id']);
