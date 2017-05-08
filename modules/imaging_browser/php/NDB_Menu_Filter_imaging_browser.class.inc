@@ -232,7 +232,9 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $user =& User::singleton();
 
         // PSC
-        if ($user->hasPermission('imaging_browser_view_allsites')) {
+        if ($user->hasPermission('imaging_browser_view_allsites')
+            || $user->hasPermission('imaging_browser_phantom_data')
+        ) {
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = Utility::getSiteList();
             if (is_array($list_of_sites)) {
