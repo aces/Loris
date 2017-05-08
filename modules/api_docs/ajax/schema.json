@@ -269,6 +269,84 @@
                     }
                 }
             }
+        },
+        "/candidates/{candid}": {
+            "get": {
+                "description": "Get a specific candidate object along with a list of its visit labels",
+                "tags": [
+                    "Candidate"
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "candid",
+                        "in": "path",
+                        "description": "The id of the candidate",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An object representation of that candidate and an array of visit labels",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "Meta": {
+                                    "$ref": "#/definitions/Candidate"
+                                },
+                                "Visits": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/candidates/{candid}/{visit}": {
+            "get": {
+                "description": "Get a specific candidate object along with a list of its visit labels",
+                "tags": [
+                    "Candidate"
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "candid",
+                        "in": "path",
+                        "description": "The id of the candidate",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "visit",
+                        "in": "path",
+                        "description": "The visit_label of that candidate's visit",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An object representation of that candidate and an array of visit labels",
+                        "schema": {
+                            "$ref": "#/definitions/VisitsData"
+                        }
+                    }
+                }
+            }
         }
     },
     "securityDefinitions": {
@@ -406,6 +484,55 @@
                     "enum": [
                         "Male",
                         "Female"
+                    ]
+                }
+            }
+        },
+        "VisitsData": {
+            "type": "object",
+            "properties": {
+                "Meta": {
+                    "properties": {
+                        "CandID": {
+                            "type": "string"
+                        },
+                        "Visits": {
+                            "type": "string"
+                        },
+                        "Battery": {
+                            "type": "string",
+                            "description": "Name of the cohort"
+                        }
+                    }
+                },
+                "Stages": {
+                    "properties": {
+                        "Screening": {
+                            "$ref": "#/definitions/VisitSummary"
+                        },
+                        "Visit": {
+                            "$ref": "#/definitions/VisitSummary"
+                        },
+                        "Approval": {
+                            "$ref": "#/definitions/VisitSummary"
+                        }
+                    }
+                }
+            }
+        },
+        "VisitSummary": {
+            "type": "object",
+            "properties": {
+                "Date": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "Status": {
+                    "enum": [
+                        "Pass",
+                        "Failure",
+                        "Withdrawal",
+                        "In Progress"
                     ]
                 }
             }

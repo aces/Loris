@@ -531,7 +531,8 @@ class NDB_Form_Statistics extends NDB_Form
 
         }
 
-        if (isset($_REQUEST['BehaviouralProject'])
+        $subprojects = array();
+        if(isset($_REQUEST['BehaviouralProject'])
             && $_REQUEST['BehaviouralProject'] != ''
         ) {
             $currentProject = $_REQUEST['BehaviouralProject'];
@@ -542,10 +543,19 @@ class NDB_Form_Statistics extends NDB_Form
                   );
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
             $this->params['pid'] =$_REQUEST['BehaviouralProject'];
+            $project     = \NDB_Factory::singleton()->project($currentProject);
+            $subprojects = array_reduce(
+                $project->getSubprojects(),
+                function ($carry, $subproject) {
+                    $carry[$subproject->subprojectId] = $subproject->title;
+                    return $carry;
+                },
+                array()
+            );
         } else {
             $Param_Project = '';
+            $subprojects = Utility::getSubprojectList($currentProject);
         }
-        $subprojects = Utility::getSubprojectsForProject($currentProject);
 
         $this->tpl_data['Subprojects'] = $subprojects;
         foreach ($subprojects as $key=>$val) {
