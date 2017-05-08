@@ -70,9 +70,18 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   if (column === 'Number Of MincInserted') {
     if (cell > 0) {
+      let violatedScans;
+      if (row['Number Of MincCreated'] - row['Number Of MincInserted'] > 0) {
+        let numViolatedScans = row['Number Of MincCreated'] - row['Number Of MincInserted'];
+        let patientName = row.PSCID + '_' + row.CandID + '_'  + row['Visit Label'];
+        violatedScans = <a onClick={openViolatedScans.bind(null, patientName)}>
+            &nbsp; ({numViolatedScans} violated scans)
+        </a>;
+      }
       return (
         <td style={cellStyle}>
           <a onClick={handleClick.bind(null, row.CandID)}>{cell}</a>
+            {violatedScans}
         </td>
       );
     }
@@ -87,6 +96,12 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   function handleClick(dccid, e) {
     loris.loadFilteredMenuClickHandler('imaging_browser/', {
       DCCID: dccid
+    })(e);
+  }
+
+  function openViolatedScans(patientName, e) {
+    loris.loadFilteredMenuClickHandler('mri_violations/', {
+      PatientName: patientName
     })(e);
   }
 
