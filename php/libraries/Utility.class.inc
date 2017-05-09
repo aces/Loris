@@ -327,6 +327,8 @@ class Utility
                 },
                 array()
             );
+        } else {
+            $subprojects = self::getSubprojectList();
         }
         return $subprojects;
     }
