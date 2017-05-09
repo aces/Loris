@@ -532,7 +532,7 @@ class NDB_Form_Statistics extends NDB_Form
         }
 
         $subprojects = array();
-        if(isset($_REQUEST['BehaviouralProject'])
+        if (isset($_REQUEST['BehaviouralProject'])
             && $_REQUEST['BehaviouralProject'] != ''
         ) {
             $currentProject = $_REQUEST['BehaviouralProject'];

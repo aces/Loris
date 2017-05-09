@@ -317,15 +317,18 @@ class Utility
     static function getSubprojectsForProject($projectID)
     {
         error_log('DEPRECATED: Utility::getSubprojectsForProject');
-        return array_reduce(
-            \Project::getInstanceById($projectID)->getSubprojects(),
-            function ($carry, $item) {
-                $carry[$item->subprojectId] = $item->title;
-                return $carry;
-            },
-            array()
-        );
-        //return self::getSubprojectList($projectID);
+        $subprojects = array();
+        if (!empty($subprojects)) {
+            $subprojects = array_reduce(
+                \Project::getInstanceById($projectID)->getSubprojects(),
+                function ($carry, $item) {
+                    $carry[$item->subprojectId] = $item->title;
+                    return $carry;
+                },
+                array()
+            );
+        }
+        return $subprojects;
     }
 
     /**
