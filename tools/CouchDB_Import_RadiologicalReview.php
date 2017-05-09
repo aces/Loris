@@ -143,6 +143,8 @@ class CouchDBRadiologicalReviewImporter {
             ELSE 'false' END as Conflict_Any
             FROM final_radiological_review frr
             LEFT JOIN flag f ON (f.CommentID=frr.CommentID) 
+            LEFT JOIN radiology_review AS orig ON (orig.CommentID=f.CommentID)
+            LEFT JOIN final_radiological_review AS r ON (r.CommentID=f.CommentID)
             LEFT JOIN session s ON (s.ID=f.SessionID) 
             LEFT JOIN candidate c ON (c.CandID=s.CandID)
             LEFT JOIN examiners eFinal ON (eFinal.ExaminerID=frr.Final_Examiner)
