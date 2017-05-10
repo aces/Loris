@@ -13,7 +13,7 @@ class CouchDBInstrumentImporter
     function __construct()
     {
         $this->SQLDB   = Database::singleton();
-        $this->CouchDB = CouchDB::singleton();
+        $this->CouchDB = \NDB_Factory::singleton()->couchDB();
     }
 
     function UpdateDataDicts($Instruments)

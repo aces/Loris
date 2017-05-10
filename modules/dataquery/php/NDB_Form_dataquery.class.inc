@@ -47,7 +47,7 @@ class NDB_Form_Dataquery extends NDB_Form
     {
         $user     = User::singleton();
         $username = $user->getUsername();
-        $couch    = CouchDB::singleton();
+        $couch    = \NDB_Factory::couchdb();
 
         $update = $couch->queryView(
             "DQG-2.0",

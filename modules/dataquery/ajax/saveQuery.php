@@ -43,6 +43,7 @@ $fields = $_REQUEST['Fields'];
 $cond   = $_REQUEST['Filters'];
 $baseDocument['Conditions'] = $cond;
 $baseDocument['Fields']     = $fields;
-$cdb = CouchDB::singleton();
+
+$cdb = \NDB_Factory::singleton()->couchDB();
 print $cdb->postDoc($baseDocument);
 ?>

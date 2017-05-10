@@ -154,6 +154,11 @@ class CouchDB
 {
 
     /**
+     * This array keep a reference for each instance of this class.
+     */
+    private static $instances = array();
+
+    /**
      * Boolean true if we are currently doing a bulk transaction.
      */
     var $bulk = false;
@@ -164,23 +169,43 @@ class CouchDB
      */
     var $bulkDocuments = array();
 
+    /** 
+     * Keep the database name
+     */
+    private $database = '';
+
     /**
-     * Returns one and only one CouchDB database wrapper object.
+     * Private Constructor for CouchDB
+     */
+    private function __construct()
+    {
+    }
+
+    /**
+     * Returns one and only one CouchDB database wrapper object for a given
+     * database name.
+     *
      * NOTE: You shouldn't call this directly, instead you should
      *       probably use the NDB_Factory->couchDB() factory method
      *       which calls this.
      *
      * @return CouchDB A Loris CouchDB wrapper object
      */
-    static function singleton()
+    static function &getInstance($database = null)
     {
-        static $db = null;
-        if ($db === null) {
+        if (empty(self::$instances[$database])) {
             $db = new CouchDB();
             $db->SocketHandler = new SocketWrapper();
-            return $db;
+
+            if (empty($database)) {
+                $config = NDB_Config::singleton();
+                $database = $config->getSetting("CouchDB")['database'];
+            }
+            $db->database = $database;            
+
+            self::$instances[$database] = $db;
         }
-        return $db;
+        return self::$instances[$database];
     }
 
     /**
@@ -193,10 +218,7 @@ class CouchDB
      */
     function _constructURL($op, $doc)
     {
-        $config = NDB_Config::singleton();
-        $db     = $config->getSetting("CouchDB");
-
-        return "$op /$db[database]/$doc";
+        return "$op /$this->database/$doc";
     }
 
     /**
