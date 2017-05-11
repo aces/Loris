@@ -21,9 +21,7 @@ $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
 header("Content-Type: application/json");
 
-$factory = NDB_Factory::singleton();
-
-$cdb   = $factory->couchDB();
+$cdb   = \NDB_Factory::singleton()->couchDB();
 $docID = urlencode($_REQUEST['DocID']);
 
 $results = $cdb->getDoc(
