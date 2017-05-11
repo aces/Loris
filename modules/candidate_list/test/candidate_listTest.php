@@ -102,6 +102,24 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->resetPermissions();
     }
     /**
+     * Tests that, Verify that if data_entry and not access_all_profiles
+     * permissions, can only see subjects from own site.
+     *
+     * @return void
+     */
+    function testPageLoadsWithDataEntry()
+    {
+        $this->setupPermissions(array("data_entry"));
+        $this->safeGet($this->url . "/candidate_list/?format=json");
+        $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains(
+            "Subproject",
+            $bodyText
+        );
+        $this->resetPermissions();
+    }
+    /**
      * Tests that, when loading the candidate_list module, the breadcrumb
      * appears and the default filters are set to "Basic" mode.
      *
