@@ -120,6 +120,24 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->resetPermissions();
     }
     /**
+     * Verify that if data_entry and not access_all_profiles permissions,
+     * check that initial filter state is Subproject = All.
+     *
+     *
+     * @return void
+     */
+    function testPageLoadsWithDataEntrySubprojectAll()
+    {
+        $this->setupPermissions(array("data_entry"));
+        $this->safeGet($this->url . "/candidate_list/");
+        $siteElement =  $this->safeFindElement(WebDriverBy::Name("SubprojectID"));
+        $Subproject  = new WebDriverSelect($siteElement);
+        $value       = $site->getFirstSelectedOption()->getAttribute('value');
+        $this->assertEquals("All", $value);
+        
+        $this->resetPermissions();
+    }
+    /**
      * Tests that, when loading the candidate_list module, the breadcrumb
      * appears and the default filters are set to "Basic" mode.
      *
