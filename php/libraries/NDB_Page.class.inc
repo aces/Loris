@@ -399,8 +399,9 @@ class NDB_Page
     function createText(
         $field,
         $label=null,
-        $attr=array('class' => 'form-control input-sm')
+        $attribs=array()
     ) {
+        $attr=array_merge($attribs,array('class' => 'form-control input-sm'));
         return $this->form->createElement("text", $field, $label, $attr);
     }
 
