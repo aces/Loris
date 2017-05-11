@@ -66,6 +66,42 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->restoreConfigSetting("useEDC");
     }
     /**
+     * Tests that, the homepage should not have "You do not have access to this page."
+     * on the page with permission.
+     *
+     * @return void
+     */
+    function testPageLoadsWithoutPermissionsAccessAllProfiles()
+    {
+        $this->setupPermissions(array("access_all_profiles"));
+        $this->safeGet($this->url . "/candidate_list/");
+        $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->resetPermissions();
+    }
+    /**
+     * Tests that, the homepage should not have "You do not have access to this page."
+     * on the page with permission.
+     *
+     * @return void
+     */
+    function testPageLoadsWithoutPermissionsDataEntry()
+    {
+        $this->setupPermissions(array("data_entry"));
+        $this->safeGet($this->url . "/candidate_list/");
+        $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->resetPermissions();
+    }
+    /**
      * Tests that, when loading the candidate_list module, the breadcrumb
      * appears and the default filters are set to "Basic" mode.
      *
