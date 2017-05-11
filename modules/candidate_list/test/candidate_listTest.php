@@ -131,8 +131,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->setupPermissions(array("data_entry"));
         $this->safeGet($this->url . "/candidate_list/");
         $siteElement =  $this->safeFindElement(WebDriverBy::Name("SubprojectID"));
-        $Subproject  = new WebDriverSelect($siteElement);
-        $value       = $site->getFirstSelectedOption()->getAttribute('value');
+        $subproject  = new WebDriverSelect($siteElement);
+        $value       = $subproject->getFirstSelectedOption()->getText('value');
         $this->assertEquals("All", $value);
         
         $this->resetPermissions();
