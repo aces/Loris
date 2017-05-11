@@ -19,6 +19,6 @@
       "pre-install-cmd": "mkdir -p project/libraries"
     },
     "autoload" : {
-        "classmap": ["project/libraries", "php/libraries", "php/exceptions"]
+        "classmap": ["project/modules", "project/libraries", "php/libraries", "php/exceptions"]
     }
 }
