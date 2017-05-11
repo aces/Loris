@@ -1,7 +1,7 @@
 var webpack = require('webpack');
 var path = require('path');
 
-var config = {
+var config = [{
   entry: {
     './htdocs/js/components/DynamicDataTable.js': './jsx/DynamicDataTable.js',
     './htdocs/js/components/PaginationLinks.js': './jsx/PaginationLinks.js',
@@ -83,6 +83,11 @@ var config = {
   },
   devtool: 'source-map',
   plugins: [new webpack.optimize.UglifyJsPlugin({mangle: false})]
-};
+}];
+
+var fs = require('fs');
+if (fs.existsSync('./project/webpack.config.js')) {
+  config.push(require('./project/webpack.config'));
+}
 
 module.exports = config;
