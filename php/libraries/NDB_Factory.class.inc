@@ -225,6 +225,8 @@ class NDB_Factory
     /**
      * Returns a reference to a Loris CouchDB database wrapper.
      *
+     * @param string $database The couchDB database name
+     *
      * @return CouchDB CouchDB singleton
      */
     function couchDB($database = null)
@@ -232,7 +234,7 @@ class NDB_Factory
         if (empty($database)) {
             $database = self::config()->getSetting("CouchDB")['database'];
         }
-        
+
         if (!empty(self::$_couchdb[$database])) {
             return self::$_couchdb[$database];
         }

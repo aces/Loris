@@ -156,7 +156,12 @@ class CouchDB
     /**
      * This array keep a reference for each instance of this class.
      */
-    private static $instances = array();
+    private static $_instances = array();
+
+    /**
+     * Keep the database name
+     */
+    private $_database = '';
 
     /**
      * Boolean true if we are currently doing a bulk transaction.
@@ -169,16 +174,14 @@ class CouchDB
      */
     var $bulkDocuments = array();
 
-    /** 
-     * Keep the database name
-     */
-    private $database = '';
-
     /**
      * Private Constructor for CouchDB
+     *
+     * @param string $database The couchDB database name
      */
-    private function __construct()
+    private function __construct($database = '')
     {
+        $this->_database = $database;
     }
 
     /**
@@ -189,23 +192,25 @@ class CouchDB
      *       probably use the NDB_Factory->couchDB() factory method
      *       which calls this.
      *
+     * @param string $database The couchDB database name
+     *
      * @return CouchDB A Loris CouchDB wrapper object
      */
     static function &getInstance($database = null)
     {
-        if (empty(self::$instances[$database])) {
-            $db = new CouchDB();
-            $db->SocketHandler = new SocketWrapper();
+        if (empty(self::$_instances[$database])) {
 
+            // Default to DQT
             if (empty($database)) {
-                $config = NDB_Config::singleton();
+                $config   = NDB_Config::singleton();
                 $database = $config->getSetting("CouchDB")['database'];
             }
-            $db->database = $database;            
+            $db = new CouchDB($database);
+            $db->SocketHandler = new SocketWrapper();
 
-            self::$instances[$database] = $db;
+            self::$_instances[$database] = $db;
         }
-        return self::$instances[$database];
+        return self::$_instances[$database];
     }
 
     /**
@@ -218,7 +223,7 @@ class CouchDB
      */
     function _constructURL($op, $doc)
     {
-        return "$op /$this->database/$doc";
+        return "$op /$this->_database/$doc";
     }
 
     /**
