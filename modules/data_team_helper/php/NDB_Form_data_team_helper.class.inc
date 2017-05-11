@@ -98,10 +98,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         $this->tpl_data['site']        = $_REQUEST['site'];
         $this->tpl_data['project']     = $_REQUEST['project'];
         if ($_REQUEST['PSCID'] && !empty($_REQUEST['PSCID'])) {
-            $this->tpl_data['candidate'] = $_REQUEST['PSCID'];
+            $this->tpl_data['PSCID'] = $_REQUEST['PSCID'];
         } elseif ($_REQUEST['candidate'] && !empty($_REQUEST['candidate'])) {
-            $this->tpl_data['candidate']
-                = Candidate::singleton($_REQUEST['candidate'])->getPSCID();
+            $this->tpl_data['candID'] =$_REQUEST['candidate'] ;
         } else {
             $this->tpl_data['candidate'] = null;
         }
