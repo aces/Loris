@@ -200,11 +200,12 @@ class CouchDB
     {
         if (empty(self::$_instances[$database])) {
 
-            // Default to DQT
             if (empty($database)) {
+                // Default to DQT
                 $config   = NDB_Config::singleton();
                 $database = $config->getSetting("CouchDB")['database'];
             }
+
             $db = new CouchDB($database);
             $db->SocketHandler = new SocketWrapper();
 

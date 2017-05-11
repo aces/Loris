@@ -19,7 +19,6 @@ require_once __DIR__ . '/../../../vendor/autoload.php';
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
-
 $cdb      = \NDB_Factory::singleton()->couchDB();
 $category = $_REQUEST['category'];
 $results  = $cdb->queryView(
