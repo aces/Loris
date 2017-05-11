@@ -1,12 +1,12 @@
 # Access Profile Test Plan
 
-1. Access access profile page, ensure that it renders.
+1. Access access profile page, ensure that it renders.[Automation Testing]
 2. Verify that either the permission access_all_profiles or data_entry is required for access the page.
 3. Verify that if data_entry and not access_all_profiles permissions, can only see subjects from own site.
 4. Verify that if data_entry and not access_all_profiles permissions, check that initial filter state is Subproject = All.
-5. Verify advanced/basic filter toggle works.
-6. Verify advanced filters are expanded on page load when an advanced filter is set, and collapsed otherwise.
-7. Check that each dropdown has the correct options.
+5. Verify advanced/basic filter toggle works.[Automation Testing]
+6. Verify advanced filters are expanded on page load when an advanced filter is set, and collapsed otherwise.[Automation Testing]
+7. Check that each dropdown has the correct options.[Automation Testing]
 8. Test each filter individually
    [ ] Site
    [ ] DCCID
