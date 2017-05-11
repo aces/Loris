@@ -66,8 +66,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->restoreConfigSetting("useEDC");
     }
     /**
-     * Tests that, the homepage should not have "You do not have access to this page."
-     * on the page with permission.
+     * Tests that, the homepage should not have "You do not have access
+     * to this page." on the page with permission.
      *
      * @return void
      */
@@ -84,8 +84,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->resetPermissions();
     }
     /**
-     * Tests that, the homepage should not have "You do not have access to this page."
-     * on the page with permission.
+     * Tests that, the homepage should not have "You do not
+     * have access to this page." on the page with permission.
      *
      * @return void
      */
@@ -123,7 +123,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      * Verify that if data_entry and not access_all_profiles permissions,
      * check that initial filter state is Subproject = All.
      *
-     *
      * @return void
      */
     function testPageLoadsWithDataEntrySubprojectAll()
@@ -134,7 +133,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $subproject  = new WebDriverSelect($siteElement);
         $value       = $subproject->getFirstSelectedOption()->getText('value');
         $this->assertEquals("All", $value);
-        
+
         $this->resetPermissions();
     }
     /**
