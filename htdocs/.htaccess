@@ -18,6 +18,7 @@
  RewriteRule ^([0-9]{6,6})/([0-9]+)/([a-zA-Z0-9_]+)/$ main.php?test_name=$3&candID=$1&sessionID=$2 [QSA]
  RewriteRule ^([0-9]{6,6})/([0-9]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/$ main.php?test_name=$3&candID=$1&sessionID=$2&subtest=$4 [QSA]
 
+ RewriteRule ^testotheque/([a-zA-Z0-9_.-]+)/([a-zA-Z0-9_.-]+)/$ testotheque/
  # Preferences is a special case for url rewriting
  RewriteRule ^preferences/$ main.php?test_name=user_accounts&subtest=my_preferences
  # Rewrite /foo/ to appropriate module
