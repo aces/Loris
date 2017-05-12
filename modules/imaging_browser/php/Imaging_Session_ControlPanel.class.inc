@@ -96,7 +96,8 @@ class Imaging_Session_ControlPanel
             $params['PCandID'] = $timePoint->getCandID();
             $params['PVL']     = $timePoint->getVisitLabel();
         }
-        $tarchiveIDs = $DB->pselect(
+
+        $tarchiveIDs = $DB->pselectRow(
             "SELECT TarchiveID 
             FROM tarchive 
             WHERE PatientName LIKE $ID",
@@ -105,13 +106,13 @@ class Imaging_Session_ControlPanel
         $subjectData['tarchiveids'] = $tarchiveIDs;
 
         // To enable DICOM download: Add pair: tarchiveID, ArchiveLocation
-        $qresult = $DB->pselectRow(
+        $qresult = $DB->pselect(
             "SELECT TarchiveID, ArchiveLocation
             FROM tarchive
-            WHERE PatientName LIKE :patient_name",
-            array('patient_name' => $params)
+            WHERE PatientName LIKE $ID",
+            $params
         );
-        $subjectData['tarchiveidLoc'] =  (empty($qresult)) ? "" : $qresult;
+        $subjectData['tarchiveidLoc'] =  (empty($qresult['ArchiveLocation'])) ? "" : $qresult['ArchiveLocation'];
 
         $config =& NDB_Config::singleton();
 

@@ -136,10 +136,10 @@ case 'nrrd':
     $MimeType         = 'image/vnd.nrrd';
     $DownloadFilename = basename($File);
     break;
-case 'DICOMTAR':   
+case 'tar':   
     // ADD case for DICOMTAR
-    $FullPath         = $File;
-    $MimeType         = "application/x-nifti-gz";
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'application/x-tar';
     $DownloadFilename = basename($File);
     break;
 default:
