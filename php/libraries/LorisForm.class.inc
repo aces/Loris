@@ -880,6 +880,7 @@ class LorisForm
     {
         $cls      = '';
         $disabled = '';
+        $readonly = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
@@ -913,6 +914,7 @@ class LorisForm
                 : ''
               )
             . $disabled
+            . ' '
             . $readonly
             .">";
     }
