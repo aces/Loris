@@ -73,7 +73,7 @@ class Settings
      */
     public function toAbsoluteUrl($relative)
     {
-        $url  = $getBaseURL();
+        $url  = $this->getBaseURL();
         $url .= Utility::removeCommonAffix($url, $relative);
         return $url;
     }
