@@ -50,7 +50,7 @@ if (empty($record)) {
     error_log("ERROR: Invalid filename");
     header("HTTP/1.1 400 Bad Request");
     exit(4);
-} 
+}
 
 $path = __DIR__ . "/../user_uploads/$file";
 

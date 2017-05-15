@@ -270,7 +270,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                         FROM examiners
                         WHERE full_name=:fn",
                 array(
-                    "fn" => $values['Real_name'],
+                 "fn" => $values['Real_name'],
                 )
             );
             foreach ($prev_sites as $row => $center) {
@@ -281,7 +281,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                 if (preg_match("/^ex_[0-9]+$/", $k)) {
                     //get centerID
                     $parse_key = explode('_', $k);
-                    $cid = $parse_key[1];
+                    $cid       = $parse_key[1];
                     array_push($ex_curr_sites, $cid);
 
                     //Check if examiner already in db for site
@@ -291,8 +291,8 @@ class NDB_Form_User_Accounts extends NDB_Form
                           FROM examiners 
                           WHERE full_name=:fn AND centerID=:cid",
                         array(
-                            "fn"  => $values['Real_name'],
-                            "cid" => $cid,
+                         "fn"  => $values['Real_name'],
+                         "cid" => $cid,
                         )
                     );
 
@@ -301,24 +301,24 @@ class NDB_Form_User_Accounts extends NDB_Form
                         $DB->insert(
                             'examiners',
                             array(
-                                'full_name'        => $values['Real_name'],
-                                'centerID'         => $cid,
-                                'radiologist'      => $values['examiner_radiologist'],
-                                'active'           => 'Y',
-                                'pending_approval' => $values['examiner_pending'],
+                             'full_name'        => $values['Real_name'],
+                             'centerID'         => $cid,
+                             'radiologist'      => $values['examiner_radiologist'],
+                             'active'           => 'Y',
+                             'pending_approval' => $values['examiner_pending'],
                             )
                         );
                     } else {
                         $DB->update(
                             'examiners',
                             array(
-                                'radiologist'      => $values['examiner_radiologist'],
-                                'Active'           => 'Y',
-                                'pending_approval' => $values['examiner_pending'],
+                             'radiologist'      => $values['examiner_radiologist'],
+                             'Active'           => 'Y',
+                             'pending_approval' => $values['examiner_pending'],
                             ),
                             array(
-                                "full_name" => $values['Real_name'],
-                                "centerID"  => $cid,
+                             "full_name" => $values['Real_name'],
+                             "centerID"  => $cid,
                             )
                         );
                     }
@@ -334,8 +334,8 @@ class NDB_Form_User_Accounts extends NDB_Form
                     'examiners',
                     array("Active" => 'N'),
                     array(
-                        "full_name" => $values['Real_name'],
-                        "centerID"  => $cid,
+                     "full_name" => $values['Real_name'],
+                     "centerID"  => $cid,
                     )
                 );
             }

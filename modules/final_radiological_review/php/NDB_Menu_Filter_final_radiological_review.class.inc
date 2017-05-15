@@ -146,7 +146,8 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
         if ($DB->tableExists('radiology_review') === false) {
             throw new LorisException(
                 "Table 'radiology_review' does not exist."
-                . " Please have this instrument set up in order to use this module properly."
+                . " Please have this instrument set up in"
+                . " order to use this module properly."
             );
         }
 
