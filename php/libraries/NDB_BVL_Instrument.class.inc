@@ -485,7 +485,10 @@ class NDB_BVL_Instrument extends NDB_Page
         if ($this->form->validate()) {
             $success = $this->form->process(array(&$this, '_saveValues'), true);
             if (!is_bool($success)) {
-                throw new Exception("_saveValues()/_save() must return a boolean indicating success or failure");
+                throw new Exception(
+                    "_saveValues()/_save() must return a boolean indicating "
+                    . "success or failure"
+                );
             }
             if (!$success) {
                 return false;

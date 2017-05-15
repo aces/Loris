@@ -36,7 +36,15 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
      */
     public $redirect_url_on_save = null;
 
-    public function setRelativeRedirectUrlOnSave ($relative) {
+    /**
+     * Sets the redirect url to a relative url
+     *
+     * @param string $relative The relative url
+     *
+     * @return void
+     */
+    public function setRelativeRedirectUrlOnSave($relative)
+    {
         $absolute = NDB_Factory::singleton()->settings()->toAbsoluteUrl($relative);
         $this->redirect_url_on_save = $absolute;
     }
@@ -61,7 +69,10 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
                 if (is_bool($success)) {
                     return $success;
                 } else {
-                    throw new Exception("_save()/_process() must return a boolean indicating success or failure");
+                    throw new Exception(
+                        "_save()/_process() must return a boolean indicating "
+                        . "success or failure"
+                    );
                 }
             }
         }

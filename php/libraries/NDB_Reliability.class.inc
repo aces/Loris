@@ -163,7 +163,10 @@ class NDB_Reliability extends NDB_Form
         if (is_bool($success)) {
             return $success;
         } else {
-            throw new Exception("_save()/_process() must return a boolean indicating success or failure");
+            throw new Exception(
+                "_save()/_process() must return a boolean indicating "
+                . "success or failure"
+            );
         }
     }
 

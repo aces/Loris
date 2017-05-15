@@ -64,8 +64,16 @@ class Settings
         return $www['url'];
     }
 
-    public function toAbsoluteUrl ($relative) {
-        $url = $getBaseURL();
+    /**
+     * Converts a relative url to an absolute url
+     *
+     * @param string $relative The relative url
+     *
+     * @return string
+     */
+    public function toAbsoluteUrl($relative)
+    {
+        $url  = $getBaseURL();
         $url .= Utility::removeCommonAffix($url, $relative);
         return $url;
     }

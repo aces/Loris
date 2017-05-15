@@ -520,7 +520,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                 . $values['UserID'];
             header('Location: '. $redirect);
         }
-        
+
         return true;
     }
 

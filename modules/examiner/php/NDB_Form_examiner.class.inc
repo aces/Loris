@@ -237,7 +237,9 @@ class NDB_Form_Examiner extends NDB_Form
                 }
             }
         }
-        $this->setRelativeRedirectUrlOnSave("/examiner/editExaminer/?identifier={$examinerID}");
+        $this->setRelativeRedirectUrlOnSave(
+            "/examiner/editExaminer/?identifier={$examinerID}"
+        );
         return true;
     }
 

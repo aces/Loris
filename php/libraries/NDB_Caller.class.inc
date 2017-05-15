@@ -67,21 +67,29 @@ class NDB_Caller
      *
      * @return bool
      */
-    static function shouldCallSave () {
-        switch (strtoupper($_SERVER["REQUEST_METHOD"])) {
-            case "POST":
-            case "PUT":
-            case "DELETE":
-            case "PATCH": {
-                return true;
-            }
-            default: {
-                return false;
-            }
+    static function shouldCallSave()
+    {
+        switch (strtoupper($_SERVER["REQUEST_METHOD"]))
+        {
+        case "POST":
+        case "PUT":
+        case "DELETE":
+        case "PATCH":
+            return true;
+        default:
+            return false;
         }
     }
 
-    private static function _setHeaderRedirectUrlOnSave ($redirect_url_on_save) {
+    /**
+     * Sets the redirect header, must be called only after a save()
+     *
+     * @param string $redirect_url_on_save The redirect url
+     *
+     * @return void
+     */
+    private static function _setHeaderRedirectUrlOnSave($redirect_url_on_save)
+    {
         if (is_null($redirect_url_on_save) || !is_string($redirect_url_on_save)) {
             http_response_code(303);
             header("Location: " . $_SERVER["REQUEST_URI"]);
