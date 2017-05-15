@@ -291,7 +291,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                           FROM examiners 
                           WHERE full_name=:fn AND centerID=:cid",
                         array(
-                            "fn" => $values['Real_name'],
+                            "fn"  => $values['Real_name'],
                             "cid" => $cid,
                         )
                     );
@@ -301,10 +301,10 @@ class NDB_Form_User_Accounts extends NDB_Form
                         $DB->insert(
                             'examiners',
                             array(
-                                'full_name' => $values['Real_name'],
-                                'centerID' => $cid,
-                                'radiologist' => $values['examiner_radiologist'],
-                                'active' => 'Y',
+                                'full_name'        => $values['Real_name'],
+                                'centerID'         => $cid,
+                                'radiologist'      => $values['examiner_radiologist'],
+                                'active'           => 'Y',
                                 'pending_approval' => $values['examiner_pending'],
                             )
                         );
@@ -312,13 +312,13 @@ class NDB_Form_User_Accounts extends NDB_Form
                         $DB->update(
                             'examiners',
                             array(
-                                'radiologist' => $values['examiner_radiologist'],
-                                'Active' => 'Y',
+                                'radiologist'      => $values['examiner_radiologist'],
+                                'Active'           => 'Y',
                                 'pending_approval' => $values['examiner_pending'],
                             ),
                             array(
                                 "full_name" => $values['Real_name'],
-                                "centerID" => $cid,
+                                "centerID"  => $cid,
                             )
                         );
                     }
@@ -335,7 +335,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                     array("Active" => 'N'),
                     array(
                         "full_name" => $values['Real_name'],
-                        "centerID" => $cid,
+                        "centerID"  => $cid,
                     )
                 );
             }
