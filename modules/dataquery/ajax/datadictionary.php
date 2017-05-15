@@ -21,28 +21,30 @@ $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
 
 $cdb = CouchDB::singleton();
-if($_REQUEST['category']) {
-	$category = $_REQUEST['category'];
+if ($_REQUEST['category']) {
+    $category = $_REQUEST['category'];
 
-	$results = $cdb->queryView(
-	    "DQG-2.0",
-	    "datadictionary",
-	    array("reduce" => "false",
-	          "startkey" => "[\"$category\"]",
-	          "endkey" =>  "[\"$category\", \"ZZZZZZZZ\"]"
-	      )
-	);
+    $results = $cdb->queryView(
+        "DQG-2.0",
+        "datadictionary",
+        array(
+         "reduce"   => "false",
+         "startkey" => "[\"$category\"]",
+         "endkey"   => "[\"$category\", \"ZZZZZZZZ\"]",
+        )
+    );
 } else if ($_REQUEST['key']) {
-	$key = split(',', $_REQUEST['key']);
-	// error_log($key);
+    $key = explode(',', $_REQUEST['key']);
+    // error_log($key);
 
-	$results = $cdb->queryView(
-	    "DQG-2.0",
-	    "datadictionary",
-	    array("reduce" => "false",
-	          "key" => "[\"$key[0]\",\"$key[1]\"]"
-	      )
-	);
+    $results = $cdb->queryView(
+        "DQG-2.0",
+        "datadictionary",
+        array(
+         "reduce" => "false",
+         "key"    => "[\"$key[0]\",\"$key[1]\"]",
+        )
+    );
 }
 
 
