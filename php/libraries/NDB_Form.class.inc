@@ -50,6 +50,18 @@ class NDB_Form extends NDB_Page
     */
     var $tpl_data = array();
 
+    /**
+     * The redirect url after save() succeeds.
+     * If `null`, redirects back to the REQUEST_URI
+     *
+     * @var null|string
+     */
+    public $redirect_url_on_save = null;
+    
+    public function setRelativeRedirectUrlOnSave ($relative) {
+        $absolute = NDB_Factory::singleton()->settings()->toAbsoluteUrl($relative);
+        $this->redirect_url_on_save = $absolute;
+    }
 
     /**
      * Generates a new form instance and runs the appropriate method
@@ -121,13 +133,19 @@ class NDB_Form extends NDB_Page
      * Attempts to validate the form (using the defined rules) and
      * saves the validated data into the database
      *
-     * @return void
+     * @return bool
      * @access public
      */
     function save()
     {
-        if ($this->form->validate()) {
-            $success = $this->form->process(array(&$this, "_save"), false);
+        if (!$this->form->validate()) {
+            return false;
+        }
+        $success = $this->form->process(array(&$this, "_save"), false);
+        if (is_bool($success)) {
+            return $success;
+        } else {
+            throw new Exception("_save()/_process() must return a boolean indicating success or failure");
         }
     }
 
@@ -138,7 +156,7 @@ class NDB_Form extends NDB_Page
      * @param array $values the array of values ready to be passed to
      *                      a Database::replace call as the set array
      *
-     * @return void
+     * @return bool
      */
     function _save($values)
     {
@@ -157,6 +175,7 @@ class NDB_Form extends NDB_Page
         }
 
         $success = $this->_process($values);
+        return $success;
     }
 
 
@@ -166,11 +185,11 @@ class NDB_Form extends NDB_Page
      *
      * @param array $values form values
      *
-     * @return void
+     * @return bool
      */
     function _process($values)
     {
-        return true;
+        return false;
     }
 
     /**

@@ -96,9 +96,9 @@ class NDB_Form_Help_Editor extends NDB_Form
      /**
       * Process function
       *
-      * @param string $values the value
+      * @param array $values the value
       *
-      * @return void
+      * @return bool
       */
     function _process($values)
     {
@@ -193,7 +193,7 @@ class NDB_Form_Help_Editor extends NDB_Form
 
         }
         $this->tpl_data['success'] =  true;
-
+        return true;
     }
      /**
       * Edit help content function

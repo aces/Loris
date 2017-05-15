@@ -64,6 +64,12 @@ class Settings
         return $www['url'];
     }
 
+    public function toAbsoluteUrl ($relative) {
+        $url = $getBaseURL();
+        $url .= Utility::removeCommonAffix($url, $relative);
+        return $url;
+    }
+
     /**
      * Check if sandbox setting is true
      *

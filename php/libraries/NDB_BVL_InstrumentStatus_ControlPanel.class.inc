@@ -125,7 +125,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     /**
      * Saves changes to the flags based on interaction with the control panel
      *
-     * @return void
+     * @return bool
      */
     function save()
     {

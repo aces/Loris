@@ -156,7 +156,7 @@ class NDB_Form_Survey_Accounts extends NDB_Form
      *
      * @param array $values The values submitted on the page
      *
-     * @return none, but as a side-effect inserts into database
+     * @return bool
      */
     function _process($values)
     {
@@ -213,6 +213,10 @@ class NDB_Form_Survey_Accounts extends NDB_Form
         );
         $this->tpl_data['success'] = $success;
 
+        if (!$success) {
+            return false;
+        }
+
         if ($email) {
             $config = NDB_Config::singleton();
             $www    = $config->getSetting("www");
@@ -225,6 +229,8 @@ class NDB_Form_Survey_Accounts extends NDB_Form
                         );
             Email::send($values['Email'], 'new_survey.tpl', $msg_data);
         }
+
+        return true;
     }
 
     /**

@@ -28,6 +28,18 @@
 class NDB_Menu_Filter_Form extends NDB_Menu_Filter
 {
 
+    /**
+     * The redirect url after save() succeeds.
+     * If `null`, redirects back to the REQUEST_URI
+     *
+     * @var null|string
+     */
+    public $redirect_url_on_save = null;
+
+    public function setRelativeRedirectUrlOnSave ($relative) {
+        $absolute = NDB_Factory::singleton()->settings()->toAbsoluteUrl($relative);
+        $this->redirect_url_on_save = $absolute;
+    }
 
     /**
      * Saves the form
@@ -35,7 +47,7 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
      * Attempts to validate the form (using the defined rules) and
      * saves the validated data into the database
      *
-     * @return void
+     * @return bool
      * @access public
      */
     function save()
@@ -46,8 +58,14 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
         ) {
             if ($this->form->validate()) {
                 $success = $this->form->process(array(&$this, "_save"), false);
+                if (is_bool($success)) {
+                    return $success;
+                } else {
+                    throw new Exception("_save()/_process() must return a boolean indicating success or failure");
+                }
             }
         }
+        return false;
     }
 
 
@@ -58,7 +76,7 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
      * @param array $values the array of values ready to be passed to
                              a Database::replace call as the set array
      *
-     * @return void
+     * @return bool
      * @access private
      */
     function _save($values)
@@ -78,6 +96,7 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
         }
 
         $success = $this->_process($values);
+        return $success;
     }
 
 
@@ -86,12 +105,12 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
      *
      * @param array $values form values
      *
-     * @return void
+     * @return bool
      * @access private
      */
     function _process($values)
     {
-        return true;
+        return false;
     }
 
     /**

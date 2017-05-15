@@ -52,7 +52,7 @@ class NDB_Form_New_Profile extends NDB_Form
      *
      * @param array $values form values
      *
-     * @return void
+     * @return bool
      */
     function _process($values)
     {
@@ -106,6 +106,7 @@ class NDB_Form_New_Profile extends NDB_Form
 
         // freeze it, just in case
         $this->form->freeze();
+        return true;
     }
     /**
      * New profile function

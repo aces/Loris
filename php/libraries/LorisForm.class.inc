@@ -1352,11 +1352,11 @@ class LorisForm
      *
      * @param callable $func The callback to use to process this form.
      *
-     * @return none
+     * @return mixed Preferably `bool`...
      */
     function process($func)
     {
-        call_user_func($func, $this->getSubmitValues());
+        return call_user_func($func, $this->getSubmitValues());
     }
 
     /**

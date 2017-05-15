@@ -151,13 +151,19 @@ class NDB_Reliability extends NDB_Form
      * Attempts to validate the form (using the defined rules) and
      * saves the validated data into the database
      *
-     * @return void
+     * @return bool
      * @access public
      */
     function save()
     {
-        if ($this->form->validate()) {
-            $success = $this->form->process(array(&$this, "_save"), false);
+        if (!$this->form->validate()) {
+            return false;
+        }
+        $success = $this->form->process(array(&$this, "_save"), false);
+        if (is_bool($success)) {
+            return $success;
+        } else {
+            throw new Exception("_save()/_process() must return a boolean indicating success or failure");
         }
     }
 
@@ -168,7 +174,7 @@ class NDB_Reliability extends NDB_Form
      * @param array $values The array of values ready to be passed to
      *                      a Database::replace call as the set array
      *
-     * @return void
+     * @return bool
      */
     function _save($values)
     {
@@ -188,6 +194,7 @@ class NDB_Reliability extends NDB_Form
         }
 
         $success = $this->_process($values);
+        return $success;
     }
 
     /**
