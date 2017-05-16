@@ -20,21 +20,9 @@ if (!$user->hasPermission('media_write')) {
     exit;
 }
 
-// Make sure that the user isn't trying to break out of the $path by using a relative
-// filename. No need to check for '/' since all downloads are relative to $basePath.
-$file = $_GET['File'];
-if (strpos("..", $file) !== false) {
-    error_log("ERROR: Invalid filename");
-    header("HTTP/1.1 400 Bad Request");
-    exit(4);
-}
-
-$downloadNotifier = new NDB_Notifier(
-    "media",
-    "download",
-    array("file" => $file)
-);
-
+// Make sure that the user isn't trying to break out of the $path
+// by using a relative filename.
+$file     = basename($_GET['File']);
 $config   =& NDB_Config::singleton();
 $path     = $config->getSetting('mediaPath');
 $filePath = $path . $file;
