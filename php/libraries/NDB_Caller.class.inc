@@ -463,7 +463,9 @@ class NDB_Caller
         $session_id = $instrument->getSessionID();
         $timepoint  = TimePoint::singleton($session_id);
         if (is_null($timepoint)) {
-            throw new LorisException("Time point does not exist for session {$session_id}");
+            throw new LorisException(
+                "Time point does not exist for session {$session_id}"
+            );
         }
         //This preserves backwards compatability for any
         //code that will be called that assumes
