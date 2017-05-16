@@ -85,10 +85,10 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                         }
                     }
                 }
-            }
-            //if row is not found no resolve status was assigned,
-            // if selection<>0, then insert new row.
-            else{
+            } else {
+                //if row is not found no resolve status was assigned,
+                // if selection<>0, then insert new row.
+
                 // no need to insert to DB for Unresolved value.
                 if ($val=='unresolved') {
                     continue;
@@ -162,12 +162,11 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
         // create user object
         $user =& User::singleton();
 
-        $config =& NDB_Config::singleton();
+        $config      =& NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         if ($useProjects === "false") {
             $useProjects = false;
-        }
-        else{
+        } else {
             $useProjects = true;
         }
         $dir_path      = $config->getSetting("imagePath");
@@ -192,7 +191,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
             array_splice($this->headers, 2, 0, 'Subproject');
         }
 
-        $this->query = " FROM (
+        $this->query    = " FROM (
             SELECT PatientName as PatientName,
                 time_run as TimeRun,
                 c.ProjectID as Project,
@@ -380,8 +379,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
             if (is_array($sites)) {
                 $sites = array('' => 'All') + $sites;
             }
-        }
-        else {
+        } else {
             // allow only to view own site data
             $site_arr = $user->getData('CenterIDs');
             foreach ($site_arr as $key => $val) {
@@ -391,31 +389,29 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                 }
                 if ($key === 'Resolved') {
                     $resolved_index = $val;
-                    $optional = array("selected" => (string)$resolved_index);
+                    $optional       = array("selected" => (string)$resolved_index);
                     $this->addSelect("$hash", "", $resolve_options, $optional);
-                    //setting the 'selected' attribute so the form will show current value.
+                    // setting the 'selected' attribute so the form will show
+                    // current value.
                     $this->form->form[$hash]['selected'] = $resolved_index;
                     //modifying the SELECT name attr so it'll be treated as an array.
                     $this->form->form[$hash]['name'] = "resolvable[$hash]";
                 }
                 if ($key === 'Problem') {
-                    if($val === "Could not identify scan type"){
+                    if ($val === "Could not identify scan type") {
                         $this->tpl_data['join_tbl'] = "mri_protocol_violated_scans";
-                    }
-                    elseif($val === "Protocol Violation"){
+                    } elseif ($val === "Protocol Violation") {
                         $this->tpl_data['join_tbl'] = "mri_violations_log";
-                    }
-                    else{
+                    } else {
                         $this->tpl_data['join_tbl'] = "MRICandidateErrors";
                     }
                 }
                 if ($key === 'SeriesUID') {
                     $this->tpl_data['items'][$x]['series'] = $val;
-                }
-                else {
-                    $this->tpl_data['items'][$x][$i]['name'] = $key;
+                } else {
+                    $this->tpl_data['items'][$x][$i]['name']  = $key;
                     $this->tpl_data['items'][$x][$i]['value'] = $val;
-                }            
+                }
                 $i++;
             }
             $sites = array('' => 'All User Sites') + $sites;
