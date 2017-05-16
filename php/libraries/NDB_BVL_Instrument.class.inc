@@ -434,6 +434,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 $formArray['tableID'] = "instrument";
             }
 
+            $formArray['lang'] = $_REQUEST["lang"] ? $_REQUEST["lang"] : "en-ca";
             $smarty->assign('form', $formArray);
             $html = $smarty->fetch("directentry_form.tpl");
         } elseif (isset($_REQUEST['json']) == 'true') {

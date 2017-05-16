@@ -39,7 +39,7 @@ class JSONInstrumentToLINSTConverter
         }
 
         $linstLines = array_merge(
-            self::generateStandardLines($obj["Meta"]["ShortName"], $obj["Meta"]["LongName"], $year),
+            self::generateStandardLines($obj["Meta"]["ShortName"], $obj["Meta"]["LongName"][$lang], $year, $lang),
             self::convertElements($obj["Elements"], $lang)
         );
 
@@ -55,12 +55,14 @@ class JSONInstrumentToLINSTConverter
      *
      * @return array Array of standard LINST lines
      */
-    static function generateStandardLines($table, $title, $year)
+    static function generateStandardLines($table, $title, $year, $lang = 'en-ca')
     {
+        $dateLabel = $lang === 'fr-ca' ? "Date d'administration" : "Date of Administration";
+
         $lines   = array();
         $lines[] = "table{@}{$table}";
         $lines[] = "title{@}{$title}";
-        $lines[] = "date{@}Date_taken{@}Date of Administration{@}2006{@}{$year}";
+        $lines[] = "date{@}Date_taken{@}{$dateLabel}{@}2006{@}{$year}";
         $lines[] = "static{@}Candidate_Age{@}Candidate Age (Months)";
         $lines[] = "static{@}Window_Difference{@}Window Difference (+/- Days)";
         $lines[] = "select{@}Examiner{@}Examiner{@}NULL=>''";

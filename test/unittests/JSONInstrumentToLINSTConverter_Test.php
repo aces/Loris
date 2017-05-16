@@ -25,7 +25,9 @@ class JSONInstrumentToLINSTConverter_Test extends \PHPUnit_Framework_TestCase
             "InstrumentVersion": "v0.0.1",
             "InstrumentFormatVersion": "v0.0.3-dev",
             "ShortName": "wasi",
-            "LongName": "WASIIII",
+            "LongName": {
+              "en-ca": "WASIIII"
+            },
             "IncludeMetaDataFields": true
           },
           "Elements": [

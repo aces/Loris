@@ -36,7 +36,7 @@
             {if $finalpage || $complete}
             {elseif $pageNum && $totalPages}
             <small>
-                Page {$pageNum} of {$totalPages}
+                Page {$pageNum} / {$totalPages}
             </small>
             {/if}
         </td>
@@ -133,12 +133,20 @@ Submit data
     <button class="btn btn-default" id="savecontinue">
         <span style="display: none" id="nextpage">{$nextpage}</span>
         <span style="display: none" id="key">{$key}</span>
-        Save and Continue
+        {if $lang eq "fr-ca"}
+            Enregistrer et Continuer
+        {else}
+            Save and Continue
+        {/if}
     </button>
     {else}
     <button id="finalize">
         <span style="display: none" id="key">{$key}</span>
-        Save and Finalize
+        {if $lang eq "fr-ca"}
+            Enregistrer et Confirmer
+        {else}
+            Save and Finalize
+        {/if}
     </button>
     {/if}
     </td>

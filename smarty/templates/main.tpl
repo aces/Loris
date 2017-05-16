@@ -179,15 +179,6 @@
                                 &nbsp;{if count($user.Projects) === 1}Project{else} Projects{/if}: {join(', ', array_values($user.Projects))}
                             </p>
                         </li>
-                        <li class="nav">
-                            <a href="#"
-                               id="site-affiliations"
-                               data-toggle="tooltip"
-                               data-placement="bottom"
-                               title="{$user.SitesTooltip}">
-                                Site Affiliations: {$userNumSites}
-                            </a>
-                        </li>
 
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding-right:25px;">

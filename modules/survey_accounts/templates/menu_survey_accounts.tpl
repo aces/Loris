@@ -21,8 +21,6 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-12">
-                            <label class="col-sm-12 col-md-2">{$form.Email.label}</label>
-                            <div class="col-sm-12 col-md-4">{$form.Email.html}</div>
                             <label class="col-sm-12 col-md-2">{$form.Instrument.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.Instrument.html}</div>
                         </div>
