@@ -452,7 +452,7 @@ class NDB_Caller
 
             $this->instrument = $instrument;
             header("Location: $redirectToOnSuccess");
-            die();
+            return "";
         }
         $user =& User::singleton();
 
@@ -484,7 +484,7 @@ class NDB_Caller
 
         if ($redirectToOnSuccess !== null && $success !== false) {
             header("Location: $redirectToOnSuccess");
-            die();
+            return "";
         }
         // create an instrument status object
         $status  = new NDB_BVL_InstrumentStatus;
