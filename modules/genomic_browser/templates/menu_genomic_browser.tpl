@@ -91,28 +91,28 @@
                     <div class="row">
                       <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-3 col-lg-3">
-                          {$form.Files.label}
+                          {$form.File.label}
                         </label>
                         <div class="col-sm-12 col-md-3 col-lg-2">
-                          {$form.Files.html}
+                          {$form.File.html}
                         </div>
                         <label class="col-sm-12 col-md-3">
-                          {$form.CPGs.label}
+                          {$form.CPG.label}
                         </label>
                         <div class="col-sm-12 col-md-3">
-                          {$form.CPGs.html}
+                          {$form.CPG.html}
                         </div>
                         <label class="col-sm-12 col-md-3 col-lg-3">
-                          {$form.SNPs.label}
+                          {$form.SNP.label}
                         </label>
                         <div class="col-sm-12 col-md-3 col-lg-2">
-                          {$form.SNPs.html}
+                          {$form.SNP.html}
                         </div>
                         <label class="col-sm-12 col-md-3">
-                          {$form.CNVs.label}
+                          {$form.CNV.label}
                         </label>
                         <div class="col-sm-12 col-md-3 pull-left">
-                          {$form.CNVs.html}
+                          {$form.CNV.html}
                         </div>
                       </div>
                     </div>
