@@ -7,7 +7,8 @@
 <link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
 <title>{$study_title}</title>
 
-<link type="text/css" href="{$baseurl}/css/jquery-ui-1.10.4.custom.css" rel="Stylesheet" />
+<link type="text/css" href="{$baseurl}/css/overcast/jquery-ui-1.10.4.custom.css" rel="Stylesheet" />
+<link type="text/css" href="{$baseurl}/js/jquery/datepicker/datepicker.css" rel="Stylesheet" />
 <script src="{$baseurl}/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="{$baseurl}/js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
 <script type="text/javascript" src="{$baseurl}/js/modules/direct_entry.js"></script>
@@ -25,7 +26,51 @@
             {$study_title}
         </th>
     </tr>
-
+        <!-- script src="{$baseurl}/js/loris.js" type="text/javascript"></script -->
+        <script src="{$baseurl}/js/modernizr/modernizr.js" type="text/javascript"></script>
+        <script type="text/javascript">
+          $(document).ready(function() {
+            {if $crumbs != "" && empty($error_message)}
+              var crumbs = {$crumbs|@json_encode},
+                      baseurl = "{$baseurl}",
+                      breadcrumbs = RBreadcrumbs({
+                        breadcrumbs: crumbs,
+                        baseURL: baseurl
+                      });
+              React.render(breadcrumbs, document.getElementById("breadcrumbs"));
+            {/if}
+            // If <input type="date" /> is not supported (i.e. Firefox), load
+            // jquery date-picker
+            if (!Modernizr.inputtypes.date) {
+              var dateInputs = $('input[type=date]');
+              dateInputs.datepicker({
+                dateFormat: 'yy-mm-dd',
+                changeMonth: true,
+                changeYear: true,
+                yearRange: "1900:" + new Date().getFullYear(),
+                constrainInput: true
+              });
+              dateInputs.attr('placeholder', 'yyyy-mm-dd');
+              dateInputs.on('keydown paste', function(e) { e.preventDefault(); });
+            }
+            if (!Modernizr.inputtypes.month) {
+              var monthInputs = $('input[type=month]');
+              monthInputs.datepicker({
+                dateFormat: 'yy-mm',
+                changeMonth: true,
+                changeYear: true,
+                yearRange: "1900:" + new Date().getFullYear(),
+                constrainInput: true,
+                onChangeMonthYear: function(y, m, d) {
+                  // Update date in the input field
+                  $(this).datepicker('setDate', new Date(y, m - 1, d.selectedDay));
+                }
+              });
+              monthInputs.attr('placeholder', 'yyyy-mm');
+              monthInputs.on('keydown paste', function(e) { e.preventDefault(); });
+            }
+          });
+        </script>
     <tr>
     <!-- user info table -->
          <td width="50%" colspan="2" valign="bottom" align="left" nowrap="nowrap" class="controlPanelSection">
