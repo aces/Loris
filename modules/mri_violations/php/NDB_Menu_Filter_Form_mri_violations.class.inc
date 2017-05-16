@@ -85,9 +85,10 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                         }
                     }
                 }
-            } else {
-                //if row is not found no resolve status was assigned,
-                // if selection<>0, then insert new row.
+            }
+            //if row is not found no resolve status was assigned,
+            // if selection<>0, then insert new row.
+            else{
                 // no need to insert to DB for Unresolved value.
                 if ($val=='unresolved') {
                     continue;
@@ -159,13 +160,14 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
     {
         // set the class variables
         // create user object
-        $user        =& User::singleton();
-        $DB          =& Database::singleton();
-        $config      =& NDB_Config::singleton();
+        $user =& User::singleton();
+
+        $config =& NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         if ($useProjects === "false") {
             $useProjects = false;
-        } else {
+        }
+        else{
             $useProjects = true;
         }
         $dir_path      = $config->getSetting("imagePath");
@@ -183,52 +185,19 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                           'v.Resolved',
                          );
 
-        $this->headers = array(
-                          'PatientName',
-                          'Site',
-                          'TimeRun',
-                          'MincFile',
-                          'MincFileViolated',
-                          'Series_Description_Or_Scan_Type',
-                          'Problem',
-                          'SeriesUID',
-                          'Hash',
-                          'JoinID',
-                          'Resolution_status',
-                         );
-
         if ($useProjects) {
             array_splice($this->columns, 1, 0, 'pjct.Name as Project');
             array_splice($this->columns, 2, 0, 'subpjct.title as Subproject');
             array_splice($this->headers, 1, 0, 'Project');
             array_splice($this->headers, 2, 0, 'Subproject');
         }
-        $this->tpl_data['hiddenHeaders'] = json_encode(
-            [
-             'SeriesUID',
-             'Hash',
-             'JoinID',
-            ]
-        );
-        // Recreating the path (MincFileViolated field) to the minc file
-        // for the table mri_violations_log is more complicated
-        // because of the 3 cases that can occur as we pull the data
-        // from the db.
-        //   1. if the Mincfile starts with "assembly" then we need to
-        //      add the directory path in front of it.
-        //   2. if the word "assembly" is there but not at the beginning,
-        //      then uses it as is, the path is correct.
-        //   3. if it is not in the assembly dir, then it is in the trashbin,
-        //      so we fix the path with that in mind.
-        $this->query    = " FROM (
+
+        $this->query = " FROM (
             SELECT PatientName as PatientName,
                 time_run as TimeRun,
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 minc_location as MincFile,
-                CONCAT_WS(''," . $DB->quote($dir_path) . ",
-                'trashbin/',SUBSTRING_INDEX(minc_location, '/', -2))
-                  as MincFileViolated,
                 series_description as Series_Description,
                 'Could not identify scan type' as Problem,
                 SeriesUID,
@@ -254,19 +223,6 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 MincFile,
-                IF(INSTR('MincFile', 'assembly'),
-                IF(LEFT('MincFile', 8) = 'assembly',
-                 CONCAT_WS('',
-                          " . $DB->quote($dir_path) . ",
-                         'MincFile'
-                 ),'MincFile'),
-                 CONCAT_WS('',
-                            " . $DB->quote($dir_path) . ",
-                           'trashbin/',
-                           SUBSTRING_INDEX(MincFile, '/', -2)
-                 )
-                )
-                 as MincFileViolated,
                 mri_scan_type.Scan_type,
                 'Protocol Violation',
                 SeriesUID,
@@ -299,11 +255,6 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 MincFile,
-                CONCAT_WS('',
-                          " . $DB->quote($dir_path) . ",
-                          'trashbin/',
-                          SUBSTRING_INDEX(MincFile, '/', -2)
-                ) as MincFileViolated,
                 null,
                 Reason,
                 SeriesUID,
@@ -429,7 +380,8 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
             if (is_array($sites)) {
                 $sites = array('' => 'All') + $sites;
             }
-        } else {
+        }
+        else {
             // allow only to view own site data
             $site_arr = $user->getData('CenterIDs');
             foreach ($site_arr as $key => $val) {
@@ -437,6 +389,34 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                 if ($site[$key]->isStudySite()) {
                     $sites[$val] = $site[$key]->getCenterName();
                 }
+                if ($key === 'Resolved') {
+                    $resolved_index = $val;
+                    $optional = array("selected" => (string)$resolved_index);
+                    $this->addSelect("$hash", "", $resolve_options, $optional);
+                    //setting the 'selected' attribute so the form will show current value.
+                    $this->form->form[$hash]['selected'] = $resolved_index;
+                    //modifying the SELECT name attr so it'll be treated as an array.
+                    $this->form->form[$hash]['name'] = "resolvable[$hash]";
+                }
+                if ($key === 'Problem') {
+                    if($val === "Could not identify scan type"){
+                        $this->tpl_data['join_tbl'] = "mri_protocol_violated_scans";
+                    }
+                    elseif($val === "Protocol Violation"){
+                        $this->tpl_data['join_tbl'] = "mri_violations_log";
+                    }
+                    else{
+                        $this->tpl_data['join_tbl'] = "MRICandidateErrors";
+                    }
+                }
+                if ($key === 'SeriesUID') {
+                    $this->tpl_data['items'][$x]['series'] = $val;
+                }
+                else {
+                    $this->tpl_data['items'][$x][$i]['name'] = $key;
+                    $this->tpl_data['items'][$x][$i]['value'] = $val;
+                }            
+                $i++;
             }
             $sites = array('' => 'All User Sites') + $sites;
         }
