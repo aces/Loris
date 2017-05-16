@@ -67,7 +67,11 @@ class CouchDBIntegrityChecker
         );
         print "Sessions:\n";
 
-        $activeExists = $this->SQLDB->prepare("SELECT count(*) AS count FROM candidate c LEFT JOIN session s USING (CandID) WHERE s.Active='Y' AND c.Active='Y' AND c.PSCID=:PID and s.Visit_label=:VL");
+        $activeExists = $this->SQLDB->prepare(
+            "SELECT count(*) AS count FROM 
+        candidate c LEFT JOIN session s USING (CandID) WHERE s.Active='Y' 
+        AND c.Active='Y' AND c.PSCID=:PID and s.Visit_label=:VL"
+        );
         foreach ($sessions as $row) {
             $pscid = $row['key'][0];
             $vl    = $row['key'][1];
@@ -83,21 +87,29 @@ class CouchDBIntegrityChecker
             );
 
             if (!empty($sqlDB) && $sqlDB['cActive'] == 'N') {
-              print "PSCID $pscid is inactive but $row[id] still exists. Deleting Doc.\n";
+                print "PSCID $pscid is inactive but $row[id] still exists. 
+                Deleting Doc.\n";
 
-              $this->CouchDB->deleteDoc($row['id']);
+                $this->CouchDB->deleteDoc($row['id']);
             }
 
             if (!empty($sqlDB) && $sqlDB['Active'] != 'Y') {
-                $numActive = $this->SQLDB->execute($activeExists, array('PID' => $pscid, 'VL' => $vl));
+                $numActive = $this->SQLDB->execute(
+                    $activeExists, array(
+                    'PID' => $pscid, 
+                    'VL' => $vl)
+                );
 
-                if(!array_key_exists('count', $numActive[0]) || $numActive[0]['count'] == '0') {
+                if (!array_key_exists('count', $numActive[0]) 
+                    || $numActive[0]['count'] == '0'
+                ) {
                     print "PSCID $pscid VL $vl is cancelled and has no active "
                            . "equivalent session but $row[id] still exists.\n";
 
                     $this->CouchDB->deleteDoc($row['id']);
                 } else {
-                    print "There is an active session for $pscid $vl overriding the cancelled one. Keeping $row[id]\n";
+                    print "There is an active session for $pscid $vl overriding 
+                    the cancelled one. Keeping $row[id]\n";
                 }
             } else if (!empty($sqlDB) && $sqlDB['PSCID'] !== $pscid) {
                 print "PSCID $pscid case sensitivity mismatch for $row[id].\n";
