@@ -358,7 +358,9 @@ class NDB_Caller
         if (method_exists($menu, 'getFeedbackPanel')) {
             $this->feedbackPanel = $menu->getFeedbackPanel(
                 $_REQUEST['candID'],
-                $_REQUEST['sessionID']
+                isset($_REQUEST['sessionID']) ?
+                    $_REQUEST['sessionID'] :
+                    null
             );
         }
         if (method_exists($menu, 'save')) {
