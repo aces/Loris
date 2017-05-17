@@ -95,4 +95,4 @@ script:
 
     # Run unit tests to make sure functions still do what they should.
     - vendor/bin/phpunit --configuration test/phpunit.xml
-    - vendor/bin/phpunit --coverage-clover=coverage.xml
+    - vendor/bin/phpunit --bootstrap src/autoload.php --debug --coverage-text test
