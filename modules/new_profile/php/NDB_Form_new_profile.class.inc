@@ -102,7 +102,7 @@ class NDB_Form_New_Profile extends NDB_Form
         // freeze it, just in case
         $this->form->freeze();
         $this->setRelativeRedirectUrlOnSave(
-            "/new_profile/?candId=".urlencode($candID)
+            "/new_profile?candId=".urlencode($candID)
         );
         return true;
     }

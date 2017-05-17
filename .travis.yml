@@ -12,7 +12,7 @@ php:
 sudo: false
 
 addons:
-    firefox: "44.0"
+    firefox: "53.0"
 
 before_install:
     # Start Xvfb in a desktop screen size,

@@ -108,6 +108,10 @@ class NDB_Form_Next_Stage extends NDB_Form
         $this->tpl_data['sessionID'] = $this->identifier;
         $this->tpl_data['candID']    = $timePoint->getCandID();
 
+        $candidateId = $timePoint->getCandID();
+        $this->setRelativeRedirectUrlOnSave(
+            "/instrument_list/?candID={$candidateId}&sessionID={$this->identifier}"
+        );
         return true;
     }
     /**
