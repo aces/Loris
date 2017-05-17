@@ -14,7 +14,7 @@
         </testsuite>
 
         <testsuite name='LorisModuleIntegrationTests'>
-            <!--<directory>../modules/acknowledgements/test/</directory>
+            <directory>../modules/acknowledgements/test/</directory>
             <directory>../modules/brainbrowser/test/</directory>
             <directory>../modules/candidate_list/test/</directory>
             <directory>../modules/candidate_parameters/test/</directory>
@@ -37,10 +37,10 @@
             <directory>../modules/instrument_list/test/</directory>
             <directory>../modules/instrument_manager/test/</directory>
             <directory>../modules/mri_upload/test/</directory>
-            <directory>../modules/mri_violations/test/</directory>-->
+            <directory>../modules/mri_violations/test/</directory>
             <directory>../modules/new_profile/test/</directory>
             <directory>../modules/next_stage/test/</directory>
-            <!--<directory>../modules/reliability/test/</directory>
+            <directory>../modules/reliability/test/</directory>
             <directory>../modules/statistics/test/</directory>
             <directory>../modules/survey_accounts/test/</directory>
             <directory>../modules/timepoint_flag/test/</directory>
@@ -49,7 +49,7 @@
             <directory>../modules/user_accounts/test/</directory>
             <directory>../modules/media/test/</directory>
             <directory>../modules/issue_tracker/test/</directory>
-            <directory>../test/test_instrument/</directory>-->
+            <directory>../test/test_instrument/</directory>
         </testsuite>
 
     </testsuites>
