@@ -95,7 +95,6 @@ class NDB_Form_New_Profile extends NDB_Form
 
         if ($config->getSetting('useProjects') == "true") {
             $candidate->setData('ProjectID', $values['ProjectID']);
-
         }
 
         //------------------------------------------------------------
@@ -122,7 +121,7 @@ class NDB_Form_New_Profile extends NDB_Form
             $this->tpl_data['PSCID']   = $candidate->getPSCID();
             $this->form->freeze();
         }
-        
+
         $config    =& NDB_Config::singleton();
         $startYear = $config->getSetting('startYear');
         $endYear   = $config->getSetting('endYear');
