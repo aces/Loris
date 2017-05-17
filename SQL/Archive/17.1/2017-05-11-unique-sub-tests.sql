@@ -21,6 +21,6 @@ WHERE KeepRows.ID IS NULL;
 
 SELECT 'Alter instrument_subtests to force unique Subtest_name' as 'Step #2';
 ALTER TABLE `instrument_subtests`
-ADD UNIQUE KEY `Subtest_name` (`Subtest_name`);
+ADD UNIQUE KEY `unique_index` (`Test_name`, `Subtest_name`);
 
 SELECT 'Patch complete' as 'Status';
