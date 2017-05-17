@@ -116,7 +116,7 @@ class Edit_User extends \NDB_Form
                     $defaults[$fieldName] = htmlspecialchars($defaults[$fieldName]);
                 }
             }
-
+            
             foreach ($defaults['examiner'] as $cid=>$vals) {
                 //sets pending approval info
                 if ($cid=='pending') {
@@ -715,6 +715,10 @@ class Edit_User extends \NDB_Form
 
         // checking if the account can be rejected (no password hash
         // pending approval)
+        $this->tpl_data['can_reject'] =$this->canRejectAccount($this->identifier);
+
+        // checking if the account can be rejected (no password hash
+        // pending approval)
         $this->tpl_data['can_reject'] =$this->_canRejectAccount($this->identifier);
 
         // get the editor's permissions
@@ -810,10 +814,77 @@ class Edit_User extends \NDB_Form
     }
 
     /**
+    * Query database on UserID to check that password has doesn't
+    * exist and account is still pending approval, to ensure the
+    * users with account activity can't be rejected by setting
+    * their status to pending.
+    *
+    * @param string $id identifier of account to verify
+    *
+    * @return boolean true is Password_hash is null and
+    * Pending_approval is Yes, false otherwsie
+    */
+    static function canRejectAccount($id)
+    {
+        $DB     = Database::singleton();
+        $fields =  $DB->pselect(
+            "SELECT Password_hash, Pending_approval
+                   FROM users
+                   WHERE UserID=:id",
+            array("id" => $id)
+        );
+        if (is_null($fields[0]['Password_hash'])
+            && $fields[0]['Pending_approval']=="Y"
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+    * Send DB query to remove user based on userID through a GET
+    * request.
+    * The reject user button populates on edit_users page, therefore
+    * any user that has access to the button has user_accounts
+    * privileges.
+    * The URL is redirected to user_account after the operation
+    *
+    * @return void
+    */
+    // @codingStandardsIgnoreStart
+    function reject_user()
+    {
+    // @codingStandardsIgnoreEnd
+        $DB     = Database::singleton();
+        $editor = User::singleton();
+
+        $redirect = $baseURL . "/user_accounts/";
+
+        // The $editor variable is set by the edit_user script.
+        // Checking that this is set ensures that the user is
+        // accessing this function through the authorized button
+        // and not by pointing their URL directly to this script.
+        if (isset($editor)) {
+            if ($this->identifier!='') {
+                $DB->delete('users', array("UserID" => $this->identifier));
+            }
+        }
+        // If the user tried to access this function through the URL
+        // nothing will execute and they will be brought back to
+        // the to the user_accounts menu where an error message will
+        // be displayed if the user doesn't have the correct
+        // permissions
+        header('Location: '.$redirect);
+
+    }
+
+    /**
      * Query database on UserID to check that password has doesn't
      * exist and account is still pending approval, to ensure the
      * users with account activity can't be rejected by setting
      * their status to pending.
+     * Controls the output/behaviour of the form is used to edit
+     * the user's preferences.
      *
      * @param string $id identifier of account to verify
      *
@@ -1104,6 +1175,24 @@ class Edit_User extends \NDB_Form
             list(,$description) = each($permission[0]);
         }
         return $permission;
+    }
+    /**
+     * Gathers JS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/user_accounts/js/columnFormatter.js",
+             $baseURL . "/user_accounts/js/reject_users.js",
+            )
+        );
     }
 }
 ?>
