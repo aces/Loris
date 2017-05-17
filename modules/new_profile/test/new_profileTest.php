@@ -242,9 +242,15 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
         $gender->sendKeys("Male");
 
+        var_dump($this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText());
         $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
         sleep(3);
+        var_dump($this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText());
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
