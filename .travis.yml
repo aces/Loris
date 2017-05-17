@@ -51,8 +51,8 @@ install:
 
 before_script:
     # Set up the Loris environment
-    - mkdir -p project smarty/templates_c project/instruments project/tables_sql
-    - chmod 777 smarty/templates_c project/instruments project/tables_sql test/
+    - mkdir -p project smarty/templates_c project/instruments project/tables_sql logs/
+    - chmod 777 smarty/templates_c project/instruments project/tables_sql logs/
 
     # Set up the MySQL database, install the Schema, create a MySQL user
     # for the config file, and reset the Loris user's password for testing
@@ -95,4 +95,4 @@ script:
 
     # Run unit tests to make sure functions still do what they should.
     - vendor/bin/phpunit --configuration test/phpunit.xml
-    - php coverage-checker.php test/clover.xml 75
+    - php coverage-checker.php logs/clover.xml 75
