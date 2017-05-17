@@ -243,7 +243,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $gender->sendKeys("Male");
 
         $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
-        var_dump($startVisit->getText());
+        var_dump($startVisit->getAttribute("value"));
         $startVisit->click();
         sleep(3);
         $bodyText = $this->safeFindElement(
