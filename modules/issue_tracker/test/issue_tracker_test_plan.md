@@ -1,4 +1,4 @@
-Issue Tracker Filter Form
+Issue Tracker Filter Form [Automation Testing]
 1. User can access the page iff they have issue tracker reporter or developer permission
 2. User can see data from other sites iff they have access_all_profiles permission
 3. Test that all filters work. Nothing should be filtered at first loading.
@@ -7,7 +7,7 @@ Issue Tracker Filter Form
 6. Check that links to issues in table are correct.
 7. Check that table sorts and displays additional pages correctly 
 
-Issue Tracker Create New Issue
+Issue Tracker Create New Issue [Manual Testing]
 1. User can access the page if they have reporter permission
 2. Check that title and assignee are required. 
 3. Should display message, and redirect after success. 
@@ -17,7 +17,7 @@ Issue Tracker Create New Issue
 7. Navigation bar should lead you back to list
 8. Check that watching logging is working - turn it off and on for your current user, and for other watchers on the issue
 
-Issue Tracker Edit Existing Issue
+Issue Tracker Edit Existing Issue [Manual Testing]
 1. User can access the page if they have (developer or reporter permission) and (they have either access_all_profiles or are a member of the site of the issue or the site has no issue).
 2. Users who have reporter permission can edit all fields if it is their issue, but are blocked except for commenting for all other issues. Developers can make all changes on all issues that they can view. 
 3. Users can only enter a PSCID for those candidate that are in their site.
@@ -28,7 +28,7 @@ Issue Tracker Edit Existing Issue
 8. Check that watching logging is working - turn it off and on for your current user, and for other watchers on the issue
 
 
-Permissions
+Permissions [Automation Testing]
 1. Remove access all profile permission.
 2. Remove reporter permission
 3. Remove developer permission
