@@ -309,7 +309,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @access   public
      * @abstract
      */
-    function setup($commentID, $page)
+    function setup($commentID = NULL, $page = NULL)
     {
         $this->_setupPage(null, $page, null, $commentID, 'test_form');
     }
