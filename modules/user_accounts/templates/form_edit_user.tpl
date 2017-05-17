@@ -369,17 +369,20 @@ $(document).ready(function() {
           </div>
         </div>
      </div>
-
     <div class="row form-group form-inline">
     	<div class="col-sm-2">
     		<input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="Save" type="submit" />
     	</div>
-    	<div class="col-sm-2">
-    		<input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset" />
-    	</div>
+        <div class="col-sm-2">
+            <input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset"/>
+        </div>
     	<div class="col-sm-2">
     		<input class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/user_accounts/'" value="Back" type="button" />
     	</div>
+        {if $can_reject}
+        <div class="col-sm-2">
+            <input class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/user_accounts/reject_user/?identifier={$form.UserID.html}/" value="Reject User" type="button"/>
+        </div>
+        {/if}
     </div>
-<!-- </form> -->
 </form>

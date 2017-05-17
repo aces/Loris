@@ -25,7 +25,7 @@ class NDB_Form_User_Accounts extends NDB_Form
     /**
      * Determines whether this form is in edit or create mode.
      *
-     * @return boolean true if in crete mode, false otherwise.
+     * @return boolean true if in create mode, false otherwise.
      */
     function isCreatingNewUser()
     {
@@ -111,7 +111,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             $defaults['Zip_code']    = htmlspecialchars($defaults['Zip_code']);
             $defaults['Country']     = htmlspecialchars($defaults['Country']);
             $defaults['Fax']         = htmlspecialchars($defaults['Fax']);
-
+            
             foreach ($defaults['examiner'] as $cid=>$vals) {
                 //sets pending approval info
                 if ($cid=='pending') {
@@ -171,6 +171,7 @@ class NDB_Form_User_Accounts extends NDB_Form
      */
     function _process($values)
     {
+
         $config = NDB_Config::singleton();
         $DB     = Database::singleton();
 
@@ -736,15 +737,20 @@ class NDB_Form_User_Accounts extends NDB_Form
         );
 
         //------------------------------------------------------------
+        
+        // checking if the account can be rejected (no password hash
+        // pending approval)
+        $this->tpl_data['can_reject']=$this->_canRejectAccount($this->identifier);
 
         // get the editor's permissions
+
         $perms    = $editor->getPermissionsVerbose();
         $lastRole = '';
         foreach ($perms as $row) {
             if ($row['type'] != $lastRole) {
                 $lastRole = $row['type'];
                 $group[]  = $this->form->createElement(
-                    'static',
+                  'static',
                     null,
                     null,
                     '</div>'
@@ -826,6 +832,72 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         // unique key and password rules
         $this->form->addFormRule(array(&$this, '_validateEditUser'));
+    }
+        
+    /**
+    * Query database on UserID to check that password has doesn't
+    * exist and account is still pending approval, to ensure the 
+    * users with account activity can't be rejected by setting 
+    * their status to pending. 
+    * 
+    * return @boolean true is Password_hash is null and 
+    * Pending_approval is Yes, false otherwsie
+    */
+
+    function _canRejectAccount($id)
+    {
+        $DB = Database::singleton();
+        $fields =  $DB->pselect(
+                  "SELECT Password_hash, Pending_approval
+                   FROM users
+                   WHERE UserID=:id",
+                   array("id" => $id,)
+        );
+        var_dump($id);
+        var_dump($fields);
+        if((is_null($fields[0]['Password_hash'])) && 
+            $fields[0]['Pending_approval']=="Y"){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+    * 
+    * Send DB query to remove user based on userID through a GET 
+    * request.
+    * The reject user button populates on edit_users page, therefore
+    * any user that has access to the button has user_accounts 
+    * privileges.
+    * The URL is redirected to user_account after the operation
+    *
+    * @return void
+    */
+    // @codingStandardsIgnoreStart
+    function reject_user()
+    {
+    // @codingStandardsIgnoreEnd
+        $DB = Database::singleton();
+        $editor = User::singleton();
+
+        $redirect = $baseURL . "/user_accounts";
+        
+        // The $editor variable is set by the edit_user script. 
+        // Checking that this is set ensures that the user is 
+        // accessing this function through the authorized button 
+        // and not by pointing their URL directly to this script.
+        if(isset($editor)){
+            if($this->identifier!=''){
+                $DB->delete('users',array("UserID"=> $this->identifier));
+                }
+        }
+        // if the user tried to access this function through the URL
+        // nothing will execute and they will be brought back to
+        // the to the user_accounts menu where an error message will
+        // be displayed if the user doesn't have the correct 
+        // permissions
+        header('Location: '.$redirect);
+       
     }
 
     /**
@@ -1248,6 +1320,7 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         return $errors;
     }
+    
 
     /**
      * Validates that en email address entered for a given user
