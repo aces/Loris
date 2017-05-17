@@ -229,13 +229,6 @@ class DashboardTest extends LorisIntegrationTest
              )
          );
           $this->DB->insert(
-              "final_radiological_review",
-              array(
-               'CommentID'            => 'CommentID111',
-               'Final_Review_Results' => 'not_answered',
-              )
-          );
-          $this->DB->insert(
               "issues",
               array(
                'issueID'  => '999999',
@@ -280,10 +273,6 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->delete(
             "issues",
             array('issueID' => '999999')
-        );
-        $this->DB->delete(
-            "final_radiological_review",
-            array('CommentID' => 'CommentID111')
         );
         $this->DB->delete(
             "conflicts_resolved",
@@ -483,35 +472,6 @@ class DashboardTest extends LorisIntegrationTest
             ".conflict_resolver",
             "1",
             "-  Conflict  Resolver"
-        );
-        $this->resetPermissions();
-    }
-    /**
-     *  Verify that for a user with 'Can edit final radiological reviews' and
-     * 'Can view final radiological reviews' permission, the number of
-     * radiological reviews to do is displayed in the My Task panel.
-     * Site displayed is always 'All'. The number of radiological reviews is
-     * the number of entries on the Radiological Review page for which Review
-     * Done is not set (i.e. 'No' is chosen in the Selection Filter for the
-     * Review Done entry). Clicking on the task should take you to that page,
-     * with the Selection Filter set correctly.
-     *
-     * @return void
-     */
-    public function testFinalRadioReview()
-    {
-
-        $this->setupPermissions(
-            array(
-             "edit_final_radiological_review",
-             "view_final_radiological_review",
-            )
-        );
-        $this->safeGet($this->url . '/dashboard/');
-        $this->_testMytaskPanelAndLink(
-            ".radiological-review",
-            "1",
-            "-  Final  Radiological  Review"
         );
         $this->resetPermissions();
     }
