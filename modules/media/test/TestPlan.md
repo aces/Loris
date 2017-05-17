@@ -4,7 +4,7 @@
 
 Media module allows users to upload, browse and edit media files associated with a specific timepoint in Loris.
 
-### 🔒 Permissions
+### 🔒 Permissions 
 
 In order to use the media module the user might need one or both of the following permissions:
 
@@ -26,20 +26,20 @@ In order to use the media module the user might need one or both of the followin
 
 ### 💻 Testing Procedure
 
-**Install Module**
+**Install Module** 
   1. Run associated SQL patch to create a "media" table and add "Media" module under _Clinical_ section in Loris.
 
 
-**Testing with no permissions**
+**Testing with no permissions** [Automation Testing]
   1. Access the module with a regular user (without superuser permissions)
   2. By default, the access to module should be denied
 
 
-**Testing with read-only permission**
+**Testing with read-only permission** [Automation Testing]
   1. Add read permission to the aforementioned user
   2. Media module should be accessible and only present with **one** tab (Browse) with an empty datatable
 
-**Testing with write-permission**
+**Testing with write-permission** [Automation Testing]
   1. Add write permission
   2. Media module should now have **two** tabs (Browse) and (Upload)
   3. Clicking on Upload tab should hide the data table and display a form with the following fields: PSCID, Visit Label, Instrument, For Site, Data of Administration, Comments, File to Upload
