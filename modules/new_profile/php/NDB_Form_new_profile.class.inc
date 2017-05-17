@@ -41,6 +41,10 @@ class NDB_Form_New_Profile extends NDB_Form
         }
         $oneIsStudySite = in_array("1", $isStudySite);
         $oneIsDCCSite   = in_array("DCC", $isDCCSite);
+        var_dump($site_arr);
+        var_dump($site);
+        var_dump($isStudySite);
+        var_dump($isDCCSite);
         if ($oneIsStudySite or $oneIsDCCSite) {
             return $user->hasPermission('data_entry');
         }
