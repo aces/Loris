@@ -95,4 +95,4 @@ script:
 
     # Run unit tests to make sure functions still do what they should.
     - vendor/bin/phpunit --configuration test/phpunit.xml
-    - php vendor/bin/codacycoverage clover path/to/clover.xml
+    - php vendor/bin/codacycoverage clover logs/clover.xml
