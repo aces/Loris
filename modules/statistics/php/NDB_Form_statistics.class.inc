@@ -499,9 +499,8 @@ class NDB_Form_Statistics extends NDB_Form
         $DB          =& Database::singleton();
         $config      = NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
-        //$useSubprojects = $config->getSetting("useSubprojects");
         $this->tpl_data['useProjects'] = $useProjects;
-        //$this->tpl_data['useSubprojects'] = $useSubprojects;
+        
         $subprojList ="";
 
         $centers = $DB->pselect(
@@ -562,21 +561,26 @@ class NDB_Form_Statistics extends NDB_Form
         $this->tpl_data['Subprojects'] = $subprojects;
         $currentSubProject = null;
         $subprojList = substr($subprojList, 1, -1);
-            if (isset($_REQUEST['BehaviouralSubproject'])
-                && $_REQUEST['BehaviouralSubproject'] != ''
-                && in_array($_REQUEST['BehaviouralSubproject'], array_keys($subprojects)))
-            {
-                $currentSubProject = $_REQUEST['BehaviouralSubproject'];
-                $this->tpl_data['CurrentSubproject']
-                    = array(
-                        'ID'    => $currentSubProject,
-                        'Name'  => $subprojects[$currentSubProject],
-                      );
-                $suproject_query ="AND (s.SubprojectID IS NULL OR s.SubprojectID = ($currentSubProject))";
-            } else {
-                $suproject_query ="";
-            }
-
+        if (isset($_REQUEST['BehaviouralSubproject'])
+            && $_REQUEST['BehaviouralSubproject'] != ''
+            && in_array($_REQUEST['BehaviouralSubproject'], array_keys($subprojects)))
+        {
+            $currentSubProject = $_REQUEST['BehaviouralSubproject'];
+            $this->tpl_data['CurrentSubproject']
+                 = array(
+                    'ID'    => $currentSubProject,
+                    'Name'  => $subprojects[$currentSubProject]
+                    );
+            $suproject_query ="AND (s.SubprojectID IS NULL OR s.SubprojectID = ($currentSubProject))";
+        } else {
+            $suproject_query ="";
+        }
+        if (!in_array($_REQUEST['BehaviouralSubproject'], array_keys($subprojects))){
+            $this->tpl_data['PreviousSubproject'] = Utility::getSubprojectsForProject()[$_REQUEST['BehaviouralSubproject']];
+            $this->tpl_data['Warning'] = 1;
+        } else {
+            $this->tpl_data['Warning'] = null;
+        }
         $Visits = Utility::getExistingVisitLabels($currentProject);
         $this->tpl_data['Visits'] = $Visits;
 
@@ -1062,20 +1066,26 @@ class NDB_Form_Statistics extends NDB_Form
         $this->tpl_data['Subprojects'] = $subprojects;
         $currentSubProject = null;
         $subprojList = substr($subprojList, 1, -1);
-            if (isset($_REQUEST['ReliabilitySubproject'])
-                && $_REQUEST['ReliabilitySubproject'] != ''
-                && in_array($_REQUEST['ReliabilitySubproject'], array_keys($subprojects)))
-            {   
-                $currentSubProject = $_REQUEST['ReliabilitySubproject'];
-                $this->tpl_data['CurrentSubproject']
-                    = array(    
-                        'ID'    => $currentSubProject,
-                        'Name'  => $subprojects[$currentSubProject],
-                      );
-                $suproject_query ="AND (s.SubprojectID IS NULL OR s.SubprojectID = ($currentSubProject))";
-            } else {
-                $suproject_query ="";
-            }
+        if (isset($_REQUEST['ReliabilitySubproject'])
+            && $_REQUEST['ReliabilitySubproject'] != ''
+            && in_array($_REQUEST['ReliabilitySubproject'], array_keys($subprojects)))
+        {   
+            $currentSubProject = $_REQUEST['ReliabilitySubproject'];
+            $this->tpl_data['CurrentSubproject']
+                = array(    
+                    'ID'    => $currentSubProject,
+                    'Name'  => $subprojects[$currentSubProject],
+                  );
+            $suproject_query ="AND (s.SubprojectID IS NULL OR s.SubprojectID = ($currentSubProject))";
+        } else {
+            $suproject_query ="";
+        }
+        if (!in_array($_REQUEST['BehaviouralSubproject'], array_keys($subprojects))){
+            $this->tpl_data['PreviousSubproject'] = Utility::getSubprojectsForProject()[$_REQUEST['BehaviouralSubproject']];
+            $this->tpl_data['Warning'] = 1;
+        } else {
+            $this->tpl_data['Warning'] = null;
+        }
 
 
         //SITES
