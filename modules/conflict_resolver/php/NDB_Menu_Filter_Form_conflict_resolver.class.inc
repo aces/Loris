@@ -130,11 +130,16 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                     );
 
                     $TableName = $row['TableName'];
-                    $date      = explode('-', $setArray['Date_taken']);
+                    $date      = explode(
+                        '-',
+                        isset($setArray['Date_taken']) ?
+                            $setArray['Date_taken'] :
+                            null
+                    );
                     $dateArray = array(
                                   'Y' => $date[0],
-                                  'M' => $date[1],
-                                  'd' => $date[2],
+                                  'M' => isset($date[1]) ? $date[1] : null,
+                                  'd' => isset($date[2]) ? $date[2] : null,
                                  );
 
                     $Instrument = NDB_BVL_Instrument::factory(
