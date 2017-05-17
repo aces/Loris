@@ -91,6 +91,8 @@ class NDB_Caller
     private static function _setHeaderRedirectUrlOnSave($redirect_url_on_save)
     {
         if (is_null($redirect_url_on_save) || !is_string($redirect_url_on_save)) {
+            error_log("Redirecting to " . $_SERVER["REQUEST_URI"]);
+            var_dump("Redirecting to " . $_SERVER["REQUEST_URI"]);
             http_response_code(303);
             header("Location: " . $_SERVER["REQUEST_URI"]);
         } else {
