@@ -36,7 +36,7 @@
     </filter>
     <logging>
         <!-- and this is where your report will be written -->
-        <log type="coverage-clover" target="logs/clover.xml"/>
+        <log type="coverage-clover" target="/logs/coverage.xml"/>
     </logging>
 
 </phpunit>
