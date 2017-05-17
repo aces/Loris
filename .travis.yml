@@ -1,4 +1,4 @@
-language: php
+lnguage: php
 
 cache:
     directories:
@@ -95,4 +95,4 @@ script:
 
     # Run unit tests to make sure functions still do what they should.
     - vendor/bin/phpunit --configuration test/phpunit.xml
-    - php coverage-checker.php clover.xml 
+    - php coverage-checker.php ./clover.xml 
