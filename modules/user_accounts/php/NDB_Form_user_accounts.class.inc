@@ -853,8 +853,6 @@ class NDB_Form_User_Accounts extends NDB_Form
                    WHERE UserID=:id",
                    array("id" => $id,)
         );
-        var_dump($id);
-        var_dump($fields);
         if((is_null($fields[0]['Password_hash'])) && 
             $fields[0]['Pending_approval']=="Y"){
             return true;
