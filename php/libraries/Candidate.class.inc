@@ -205,7 +205,7 @@ class Candidate
         if ($PSCIDSettings['generation'] == 'user') {
             // check pscid is specified
             if (empty($PSCID)) {
-                throw new Exception(
+                throw new LorisException(
                     "PSCID must be specified",
                     PSCID_NOT_SPECIFIED
                 );
@@ -225,7 +225,7 @@ class Candidate
                 array('PID' => $PSCID)
             ) > 0
             ) {
-                throw new Exception("PSCID not unique", PSCID_NOT_UNIQUE);
+                throw new LorisException("PSCID not unique", PSCID_NOT_UNIQUE);
             }
         } else {
             $PSCID = Candidate::_generatePSCID(
@@ -703,7 +703,9 @@ class Candidate
     *
     * @param string   $name                  The name to display on exception
     * @param array    $settings              The xml settings
-    * @param array    $static_dict           Example: array("siteAbbrev"=>"DCC")
+    * @param array    $static_dict           Maps element names to static,
+    *                                        unchanging values
+    *                                        Example: array("siteAbbrev"=>"DCC")
     * @param function $is_colliding_callback `bool ($needle)`
     *
     * @return string The id
@@ -725,7 +727,7 @@ class Candidate
         );
 
         $result = null;
-        if ($is_sequential) {
+        if ($is_sequential === true) {
             if ($generator->nextNonColliding($is_colliding_callback)) {
                 $result = $generator->cur();
             }
@@ -747,14 +749,15 @@ class Candidate
                 $error .= "(expected number of candidates)^3 is recommended "
                     . "for random generation.";
             }
-            throw new Exception($error);
+            throw new LorisException($error);
         }
         return $result;
     }
     /**
     * Generates a new PSCID in the format defined by the config file
     *
-    * @param array $static_dict Example: array("siteAbbrev"=>"DCC")
+    * @param array $static_dict Maps element names to static, unchanging values
+    *                           Example: array("siteAbbrev"=>"DCC")
     *
     * @return string id in format defined by config.xml
     */
@@ -765,7 +768,7 @@ class Candidate
         $config  = $factory->config();
 
         return self::_generateId(
-            "PSC Id",
+            "PSCID",
             $config->getSetting("PSCID"),
             $static_dict,
             function ($needle) use ($db) {
@@ -800,7 +803,7 @@ class Candidate
         $config  = $factory->config();
 
         return self::_generateId(
-            "External Id",
+            "ExternalID",
             $config->getSetting("ExternalID"),
             null,
             function ($needle) use ($db) {
@@ -854,10 +857,10 @@ class Candidate
      *
      * @param array $idStructure The structure defined in the config file in the
      *                            array format returned by NDB_Config.
-     * @param array $static_dict Example: array("siteAbbrev"=>"DCC")
+     * @param array $static_dict Maps element names to static, unchanging values
+     *                           Example: array("siteAbbrev"=>"DCC")
      *
-     * @return array An array of regular expressions defining each section of
-     *               the PSCID as defined in config.xml
+     * @return IdGenerator
      */
     static function idGeneratorFromXMLConfig($idStructure, $static_dict)
     {

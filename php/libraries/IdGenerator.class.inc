@@ -1143,7 +1143,8 @@ class IdGenerator implements IdGeneratorInterface
      * Parses the xml to produce the generator
      *
      * @param array $xml         The xml
-     * @param array $static_dict Example: array("siteAbbrev"=>"DCC")
+     * @param array $static_dict Maps element names to static, unchanging values
+     *                           Example: array("siteAbbrev"=>"DCC")
      *
      * @return object The generator
      */
