@@ -11,8 +11,8 @@
     },
     "require-dev" : {
         "squizlabs/php_codesniffer" : "2.5.*",
-        "phpunit/phpunit" : "4.3.*",
-        "phpunit/dbunit": ">=1.2",
+        "phpunit/phpunit" : "6.0.*",
+        "phpunit/dbunit": "<3",
         "facebook/webdriver" : "dev-master",
         "codacy/coverage": "dev-master"
     },
