@@ -99,6 +99,5 @@ script:
     # Run unit tests to make sure functions still do what they should.
     #- vendor/bin/phpunit --configuration test/phpunit.xml
     - vendor/bin/phpunit configuration test/unit.xml --testsuit 'LorisUnitTests' --coverage-text=coverage.text
-r/bin/phpunit
     - cat coverage.text
 after_success:
