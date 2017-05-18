@@ -34,8 +34,8 @@ install:
     # Install node modules specified in package.json
     - npm install
 
-    # Download a Selenium Web Driver release
-    - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
+    - npm install selenium-server-standalone-jar@3.0.1
+    # Download a Selenium Web Driver release.
 
     - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
 
@@ -47,7 +47,7 @@ install:
     # Start Selenium and redirect Selenium WebDriver
     # output to /dev/null so that it doesn't flood the
     # screen in the middle of our other tests
-    - DISPLAY=:99.0 java -jar selenium-server-standalone-2.52.0.jar  2>1 > /dev/null &
+    - DISPLAY=:99.0 java -jar selenium-server-standalone-3.0.1.jar  2>1 > /dev/null &
 
 before_script:
     # Set up the Loris environment
