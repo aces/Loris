@@ -550,7 +550,8 @@ class NDB_Form_Statistics extends NDB_Form
         }
         $subprojects[null] = 'All Valid Sub-Projects';
 
-        foreach (Utility::getSubprojectsForProject($currentProject) as $key=>$value) {
+        foreach (Utility::getSubprojectsForProject($currentProject)
+            as $key=>$value) {
             $subprojects[$key] = $value;
         }
 
@@ -572,13 +573,18 @@ class NDB_Form_Statistics extends NDB_Form
                    'Name' => $subprojects[$currentSubProject],
                   );
             $suproject_query
-                = "AND (s.SubprojectID IS NULL OR s.SubprojectID = ($currentSubProject))";
+                = "AND (s.SubprojectID IS NULL".
+                " OR s.SubprojectID = ($currentSubProject))";
         } else {
             $suproject_query ="";
         }
-        if (!in_array($_REQUEST['BehaviouralSubproject'], array_keys($subprojects))) {
+        if (!in_array(
+            $_REQUEST['BehaviouralSubproject'],
+            array_keys($subprojects)
+        )) {
+            $BS = 'BehaviouralSubproject';
             $this->tpl_data['PreviousSubproject']
-                = Utility::getSubprojectsForProject()[$_REQUEST['BehaviouralSubproject']];
+                = Utility::getSubprojectsForProject()[$_REQUEST[$BS]];
             $this->tpl_data['Warning']            = 1;
         } else {
             $this->tpl_data['Warning'] = null;
@@ -1057,7 +1063,8 @@ class NDB_Form_Statistics extends NDB_Form
         //SUBPROJECTS
         $subprojects[null] = 'All Valid Sub-Projects';
 
-        foreach (Utility::getSubprojectsForProject($currentProject) as $key=>$value) {
+        foreach (Utility::getSubprojectsForProject($currentProject)
+            as $key=>$value) {
             $subprojects[$key] = $value;
         }
 
@@ -1079,13 +1086,18 @@ class NDB_Form_Statistics extends NDB_Form
                    'Name' => $subprojects[$currentSubProject],
                   );
             $suproject_query
-                = "AND (s.SubprojectID IS NULL OR s.SubprojectID = ($currentSubProject))";
+                = "AND (s.SubprojectID IS NULL ".
+                "OR s.SubprojectID = ($currentSubProject))";
         } else {
             $suproject_query ="";
         }
-        if (!in_array($_REQUEST['BehaviouralSubproject'], array_keys($subprojects))) {
+        if (!in_array(
+            $_REQUEST['BehaviouralSubproject'],
+            array_keys($subprojects)
+        )) {
+            $BS = 'BehaviouralSubproject';
             $this->tpl_data['PreviousSubproject']
-                = Utility::getSubprojectsForProject()[$_REQUEST['BehaviouralSubproject']];
+                = Utility::getSubprojectsForProject()[$_REQUEST[$BS]];
             $this->tpl_data['Warning']            = 1;
         } else {
             $this->tpl_data['Warning'] = null;
