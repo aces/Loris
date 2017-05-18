@@ -15,7 +15,6 @@
         "phpunit/dbunit": "<3",
         "ext-xdebug": "^2.5",
         "facebook/webdriver" : "dev-master",
-        "codacy/coverage": "dev-master"
     },
     "scripts": {
       "pre-install-cmd": "mkdir -p project/libraries"
