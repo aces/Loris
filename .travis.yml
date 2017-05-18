@@ -25,6 +25,8 @@ before_install:
     - nvm install node
     - mkdir -p project project/libraries
     - phpenv config-rm xdebug.ini
+    - travis_retry composer self-update
+    - travis_retry composer install --no-interaction --prefer-source --dev
 
 install:
     # Install composer modules
@@ -95,4 +97,6 @@ script:
 
     # Run unit tests to make sure functions still do what they should.
     - vendor/bin/phpunit --configuration test/phpunit.xml
-    - vendor/bin/phpunit test/ --coverage-clover /logs/coverage.xml
+    - vendor/bin/phpunit --coverage-clover=coverage.xml
+after_success:
+    - bash <(curl -s https://codecov.io/bash)
