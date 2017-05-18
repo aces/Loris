@@ -47,7 +47,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
     {
         $defaults     = array();
         $DB           =& Database::singleton();
-        $extra_where .= $this->addWhere("p.sourceFrom", 'instrument');
+        $extra_where  = $this->addWhere("p.sourceFrom", 'instrument');
         $extra_where .= $this->addWhere("p.Name", 'FieldName');
         $orderby      = " ORDER BY p.sourceFrom,p.sourceField";
 
@@ -55,22 +55,36 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         if (($extra_where) !=null) {
             $query = "SELECT DISTINCT p.sourceFrom,p.sourceField FROM
                 parameter_type p WHERE 1=1 $extra_where";
-            $DB->select($query,  $info);
+            $info  = $DB->pselect($query, array());
             foreach ($info as $data) {
-                $percent_completed            = $data['Name']
-                    . ":" . $data['Visit_label']
+                $percent_completed            = (isset($data['Name']) ?
+                    $data['Name'] : null
+                    )
+                    . ":"
+                    . (isset($data['Visit_label']) ?
+                        $data['Visit_label'] : null
+                    )
                     .":" . 'percent_completed';
-                $defaults[$percent_completed] = $data['percent_completed'];
+                $defaults[$percent_completed] = isset($data['percent_completed']) ?
+                    $data['percent_completed'] : null;
             }
         }
-        $defaults["feedback_status"]    = $_REQUEST['feedback_status'];
-        $defaults["completion_status"]  = $_REQUEST['completion_status'];
-        $defaults["sent_to_dcc_status"] = $_REQUEST['sent_to_dcc_status'];
-        $defaults["instrument"]         = $_REQUEST['instrument'];
-        $defaults["FieldName"]          = $_REQUEST['FieldName'];
-        $defaults["candidate"]          = $_REQUEST['candidate'];
-        $defaults["visit_label"]        = $_REQUEST['visit_label'];
-        $this->tpl_data['instrumentvalue'] = $_REQUEST['instrument'];
+        $defaults["feedback_status"]    = isset($_REQUEST['feedback_status']) ?
+            $_REQUEST['feedback_status'] : null;
+        $defaults["completion_status"]  = isset($_REQUEST['completion_status']) ?
+            $_REQUEST['completion_status'] : null;
+        $defaults["sent_to_dcc_status"] = isset($_REQUEST['sent_to_dcc_status']) ?
+            $_REQUEST['sent_to_dcc_status'] : null;
+        $defaults["instrument"]         = isset($_REQUEST['instrument']) ?
+            $_REQUEST['instrument'] : null;
+        $defaults["FieldName"]          = isset($_REQUEST['FieldName']) ?
+            $_REQUEST['FieldName'] : null;
+        $defaults["candidate"]          = isset($_REQUEST['candidate']) ?
+            $_REQUEST['candidate'] : null;
+        $defaults["visit_label"]        = isset($_REQUEST['visit_label']) ?
+            $_REQUEST['visit_label'] : null;
+        $this->tpl_data['instrumentvalue'] = isset($_REQUEST['instrument']) ?
+            $_REQUEST['instrument'] : null;
         return $defaults;
     }
     /**
@@ -88,13 +102,27 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
 
         $config =& NDB_Config::singleton();
 
-        $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']);
+        $instrument = $this->getTestNameusingMappedName(
+            isset($_REQUEST['instrument']) ?
+                $_REQUEST['instrument'] :
+                null
+        );
         //construct the instrument drop down..
-        $this->tpl_data['visit_label'] = $_REQUEST['visit_label'];
-        $this->tpl_data['FieldName']   = $_REQUEST['FieldName'];
-        if ($_REQUEST['PSCID'] && !empty($_REQUEST['PSCID'])) {
+        $this->tpl_data['visit_label'] = isset($_REQUEST['visit_label']) ?
+            $_REQUEST['visit_label'] :
+            null;
+        $this->tpl_data['FieldName']   = isset($_REQUEST['FieldName']) ?
+            $_REQUEST['FieldName'] :
+            null;
+        if (isset($_REQUEST['PSCID'])
+            && $_REQUEST['PSCID']
+            && !empty($_REQUEST['PSCID'])
+        ) {
             $this->tpl_data['candidate'] = $_REQUEST['PSCID'];
-        } elseif ($_REQUEST['candidate'] && !empty($_REQUEST['candidate'])) {
+        } elseif (isset($_REQUEST['candidate'])
+            && $_REQUEST['candidate']
+            && !empty($_REQUEST['candidate'])
+        ) {
             $this->tpl_data['candidate']
                 = Candidate::singleton($_REQUEST['candidate'])->getPSCID();
         } else {
@@ -102,6 +130,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         }
         $this->tpl_data['test_name'] = $instrument;
 
+        $candID = null;
         if (isset($_REQUEST['PSCID']) && !empty($_REQUEST['PSCID'])
             && (isset($_REQUEST['candidate'])) && !empty($_REQUEST['candidate'])
         ) {
@@ -117,7 +146,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         //Percentage completed for the given instrument
             $percent_completed = $this->_getPercentCompleted(
                 $instrument,
-                $_REQUEST['visit_label'],
+                isset($_REQUEST['visit_label']) ?
+                    $_REQUEST['visit_label'] :
+                    null,
                 $candID
             );
             $this->tpl_data['percent_completed'] = $percent_completed;
@@ -131,7 +162,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $incompleteCandidates = $this->
                  getIncompleteCandidates(
                      $instrument,
-                     $_REQUEST['visit_label'],
+                     isset($_REQUEST['visit_label']) ?
+                        $_REQUEST['visit_label'] :
+                        null,
                      $candID
                  );
 
@@ -144,7 +177,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $conflicts = $this->
             instrumentInConflict(
                 $instrument,
-                $_REQUEST['visit_label'],
+                isset($_REQUEST['visit_label']) ?
+                    $_REQUEST['visit_label'] :
+                    null,
                 $candID
             );
 
@@ -153,7 +188,13 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $this->tpl_data['Conflicts_length'] = count($conflicts);
 
             $bvlFeedback = $this
-            ->getFeedbacks($instrument, $candID, $_REQUEST['visit_label']);
+            ->getFeedbacks(
+                $instrument,
+                $candID,
+                isset($_REQUEST['visit_label']) ?
+                    $_REQUEST['visit_label'] :
+                    null
+            );
 
             $this->tpl_data['Bvl_Feedback'] = json_encode($bvlFeedback);
 
@@ -162,7 +203,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $this->tpl_data['percent_complete'] = $this
                 ->_getPercentCompleted(
                     $instrument,
-                    $_REQUEST['visit_label'],
+                    isset($_REQUEST['visit_label']) ?
+                        $_REQUEST['visit_label'] :
+                        null,
                     $candID
                 );
 
@@ -599,8 +642,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * returns the Test_name and its corresponding visit_label..
      * using the full_name  and/or subprojectID ..
      *
-     * @param string $full_name    the value of full name
-     * @param string $subprojectID the value of subproject ID
+     * @param string|null $full_name    the value of full name
+     * @param string|null $subprojectID the value of subproject ID
      *
      * @return mixed|Non
      * @throws DatabaseException
@@ -609,6 +652,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
     {
         $DB     =& Database::singleton();
         $values = array();
+
+        $test_name = null;
         if ((!(is_null($full_name)))) {
             if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
                 $sqlSelectOne = "SELECT Test_name".
@@ -622,7 +667,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
                 $test_name = Utility::getTestNameUsingFullName($full_name);
             }
         }
-        return     $test_name;
+        return $test_name;
     }
 
     /**
