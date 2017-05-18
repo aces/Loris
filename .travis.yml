@@ -53,8 +53,8 @@ install:
 
 before_script:
     # Set up the Loris environment
-    - mkdir -p project smarty/templates_c project/instruments project/tables_sql logs/
-    - chmod 777 smarty/templates_c project/instruments project/tables_sql logs/
+    - mkdir -p project smarty/templates_c project/instruments project/tables_sql 
+    - chmod 777 smarty/templates_c project/instruments project/tables_sql coverage.text
 
     # Set up the MySQL database, install the Schema, create a MySQL user
     # for the config file, and reset the Loris user's password for testing
