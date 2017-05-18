@@ -119,7 +119,9 @@ class NDB_Client
             . $config_additions
         );
         // start php session
-        session_start();
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
 
         // if exiting, destroy the php session
         if (isset($_REQUEST['logout']) && $_REQUEST['logout']) {

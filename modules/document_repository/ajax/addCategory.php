@@ -39,12 +39,14 @@ $Notifier = new NDB_Notifier(
     "new_category"
 );
 
-if (empty($_POST['category_name']) && $_POST['category_name'] !== '0') {
+if (!isset($_POST['category_name'])
+    || (empty($_POST['category_name']) && $_POST['category_name'] !== '0')
+) {
     header("HTTP/1.1 400 Bad Request");
     exit;
-} else {
-    $category_name = $_POST['category_name'];
 }
+
+$category_name = $_POST['category_name'];
 if ($_POST['parent_id'] !== '') {
     if (isset($_POST['parent_id']) || is_numeric($_POST['parent_id'])) {
         $parent_id = $_POST['parent_id'];
@@ -53,6 +55,7 @@ if ($_POST['parent_id'] !== '') {
         die();
     }
 }
+$comments = null;
 if ($_POST['comments'] !== '') {
     $comments = $_POST['comments'];
 }

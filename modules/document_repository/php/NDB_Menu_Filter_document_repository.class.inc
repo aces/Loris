@@ -77,9 +77,11 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
                           'v.Date_uploaded',
                          );
 
-        $openAccordion = $_GET['openAccordion'];
+        $openAccordion = isset($_GET['openAccordion']) ?
+            $_GET['openAccordion'] : null;
         $this->tpl_data['openAccordion'] = $openAccordion;
-        $filtered = $_GET['filtered'];
+        $filtered = isset($_GET['filtered']) ?
+            $_GET['filtered'] : null;
         $this->tpl_data['filtered'] = $filtered;
         $this->query        = $query;
         $this->group_by     = '';
@@ -118,6 +120,61 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         return true;
     }
 
+    private static function _fetchAllFileCategoriesImpl ($prefix, $parent_id, &$results) {
+        $child_arr = Database::singleton()->pselect("
+            SELECT
+                id,
+                category_name
+            FROM
+                document_repository_categories
+            WHERE
+                parent_id = :parent_id
+        ", array(
+            "parent_id" => $parent_id
+        ));
+        foreach ($child_arr as $row) {
+            $name = $prefix . ">" . $row["category_name"];
+            $results[$row["id"]] = $name;
+            self::_fetchAllFileCategoriesImpl(
+                $name,
+                $row["id"],
+                $results
+            );
+        }
+    }
+    private static function _fetchAllFileCategories () {
+        $results = array();
+        
+        //Subquery necessary because `parent_id` IS NOT
+        //a foreign key. It could possibly be referring to
+        //a row that does not exist...
+        $root_arr = Database::singleton()->pselect("
+            SELECT
+                r.id,
+                r.category_name
+            FROM
+                document_repository_categories r
+            WHERE
+                NOT EXISTS (
+                    SELECT
+                        *
+                    FROM
+                        document_repository_categories p
+                    WHERE
+                        p.id = r.parent_id
+                )
+        ", array());
+        
+        foreach ($root_arr as $row) {
+            $results[$row["id"]] = $row["category_name"];
+            self::_fetchAllFileCategoriesImpl(
+                $row["category_name"],
+                $row["id"],
+                $results
+            );
+        }
+        return $results;
+    }
     /**
      * Set filter form function
      *
@@ -170,6 +227,7 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         }
         $fileTypes = array_merge(array(null => 'Any') + $fileTypes);
 
+        $fileCategories = array(null => "Any") + self::_fetchAllFileCategories();
         // Form Elements
         $this->addBasicText('File_name', 'File name:');
         $this->addBasicText('version', 'Version:');
