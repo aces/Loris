@@ -98,5 +98,5 @@ script:
     # Run unit tests to make sure functions still do what they should.
     #- vendor/bin/phpunit --configuration test/phpunit.xml
     - vendor/bin/phpunit --configuration test/unit.xml --testsuit 'LorisUnitTests'
-    - php coverage-checker.php /home/travis/build/aces/Loris/logs/clover.xml 75 
+    - cat /home/travis/build/aces/Loris/logs/clover.xml 75 
 after_success:
