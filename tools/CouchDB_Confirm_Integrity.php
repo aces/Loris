@@ -1,11 +1,11 @@
 <?php
 /**
- * This script deletes cancelled or incorrect data from the DQT by comparing 
+ * This script deletes cancelled or incorrect data from the DQT by comparing
  * everything in CouchDB against what's currently valid in MySQL.
  *
- * Note that if there is a duplicate Visit_label for a PSCID the script can 
+ * Note that if there is a duplicate Visit_label for a PSCID the script can
  * not determine which is Active on the CouchDB end and assumes that the identifier
- * is invalid, so this should be run *before* the import scripts because it will 
+ * is invalid, so this should be run *before* the import scripts because it will
  * delete both (and then the import script will reimport the correct one if run
  * in that order.)
  *
@@ -24,7 +24,7 @@ require_once 'CouchDB.class.inc';
 require_once 'Database.class.inc';
 
 /**
- * This class compares what's in a CouchDB Loris DQT instance against the 
+ * This class compares what's in a CouchDB Loris DQT instance against the
  * MySQL database of that Loris instance and deletes anything from CouchDB
  * that is not in MySQL.
  *
@@ -42,7 +42,7 @@ class CouchDBIntegrityChecker
 
 
     /**
-     * Initialize references to SQL database and CouchDB wrapper 
+     * Initialize references to SQL database and CouchDB wrapper
      *
      * @return None
      */
@@ -66,7 +66,6 @@ class CouchDBIntegrityChecker
             array("reduce" => "false")
         );
         print "Sessions:\n";
-
         $activeExists = $this->SQLDB->prepare(
             "SELECT count(*) AS count FROM 
         candidate c LEFT JOIN session s USING (CandID) WHERE s.Active='Y' 
@@ -125,7 +124,6 @@ class CouchDBIntegrityChecker
 
         }
     }
-
 }
 
 // Don't run if we're doing the unit tests, the unit test will call run..
