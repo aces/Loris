@@ -96,7 +96,7 @@ script:
     - npm run lint:javascript
 
     # Run unit tests to make sure functions still do what they should.
-    - vendor/bin/phpunit --configuration test/phpunit.xml
-    - vendor/bin/phpunit --coverage-clover=coverage.xml
+    #- vendor/bin/phpunit --configuration test/phpunit.xml
+    - vendor/bin/phpunit --configurantion test/unit.xml --testsuit 'LorisUnitTests'
+    - php coverage-checker.php /logs/clover.xml 10 
 after_success:
-    - bash <(curl -s https://codecov.io/bash)
