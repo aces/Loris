@@ -27,8 +27,5 @@
             <!--directory>../modules/dashboard/ajax/</directory-->
         </whitelist>
     </filter>
-    <logging>
-             <log type="coverage-clover" target="../../logs/coverage.xml"/>
-    </logging>
 
 </phpunit>
