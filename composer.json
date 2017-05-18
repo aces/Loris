@@ -14,7 +14,7 @@
         "phpunit/phpunit" : "6.0.*",
         "phpunit/dbunit": "<3",
         "ext-xdebug": "^2.5",
-        "facebook/webdriver" : "dev-master",
+        "facebook/webdriver" : "dev-master"
     },
     "scripts": {
       "pre-install-cmd": "mkdir -p project/libraries"
