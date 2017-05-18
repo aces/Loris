@@ -31,7 +31,6 @@ before_install:
 install:
     # Install composer modules
     - composer install
-    - composer require phpunit/php-code-coverage
     - phpenv rehash
 
     # Install node modules specified in package.json
