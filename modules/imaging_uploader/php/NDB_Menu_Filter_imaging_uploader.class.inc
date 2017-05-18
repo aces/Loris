@@ -268,7 +268,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $errors    = array();
         $config    = NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
-            'dicom_archive'
+            'imaging_modules'
         );
         $corect_name            = $dicom_archive_settings['patientNameRegex'];
         $header_patient_name    = array();
