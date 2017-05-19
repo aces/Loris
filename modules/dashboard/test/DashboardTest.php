@@ -513,7 +513,6 @@ class DashboardTest extends LorisIntegrationTest
             "1",
             "-  Final  Radiological  Review"
         );
-        $this->_testMytaskPanelAndLink(".mri_violations", "2", "Not Resolved");
         $this->resetPermissions();
     }
     /**

@@ -97,6 +97,10 @@
                     <form method="post" action="{$baseurl}/mri_violations/"  name="mri_violations" id="mri_violations">
                         <!--  title table with pagination -->
                         <div class="dynamictable" id="datatable"></div>                        
+                        <div class="pull-right">
+                            <input class="btn btn-sm btn-primary" name="fire_away" value="Save" type="submit" />
+                            <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
+                        </div>
 
                     </form>
                 </div>

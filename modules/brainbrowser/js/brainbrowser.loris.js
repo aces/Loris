@@ -259,8 +259,7 @@ $(function() {
           viewer.volumes.forEach(function(volume) {
             volume.setWorldCoords(x, y, z);
           });
-        }
-        else {
+        } else {
           viewer.volumes[vol_id].setWorldCoords(x, y, z);
         }
 
