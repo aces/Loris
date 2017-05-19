@@ -149,11 +149,11 @@ CREATE TABLE `Project` (
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `subproject` (
-    SubprojectID int(10) unsigned NOT NULL auto_increment,
-    title varchar(255) NOT NULL,
-    useEDC boolean,
-    WindowDifference enum('optimal', 'battery'),
-    RecruitmentTarget int(10) unsigned,
+    `SubprojectID` int(10) unsigned NOT NULL auto_increment,
+    `title` varchar(255) NOT NULL,
+    `useEDC` boolean,
+    `WindowDifference` enum('optimal', 'battery'),
+    `RecruitmentTarget` int(10) unsigned,
     PRIMARY KEY (SubprojectID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores Subprojects used in Loris';
 
