@@ -186,18 +186,32 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 }
             }
 
+            // Provide a default pic for DTI with time dimention / volumes
+            // processed before 2012-07, after this date, they are fixed.
+            $config = NDB_Config::singleton();
+            $check_pic_filename = $FileObj->getParameter('check_pic_filename');
+            $Time = number_format($FileObj->getParameter('time'), 2);
+            if (!file_exists(
+                $config->getSetting('imagePath') . "pic/" .
+                $check_pic_filename
+            ) && $Time > 0) {
+                $check_pic_filename = str_replace(
+                    '_check.jpg',
+                    '_check-0.jpg',
+                    $check_pic_filename
+                );
+            }
+
             $FileID       = $fileRow['FileID'];
             $Filename     = basename($FileObj->getParameter('File'));
             $CheckPic     = "/mri/jiv/get_file.php?file=pic/".
-                                         $FileObj->getParameter(
-                                             'check_pic_filename'
-                                         );
+                                         $check_pic_filename;
             $FullFilename = $FileObj->getParameter('File');
             $JivFilename  = basename($FileObj->getParameter('File'));
             $JivAddress   = str_replace(
                 '_check.jpg',
                 '',
-                $FileObj->getParameter('check_pic_filename')
+                $check_pic_filename
             );
             $New          = ($FileObj->getParameter('QCFirstChangeTime') == '') ?
                                          1 : 0;
@@ -231,8 +245,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 $FileObj->getParameter('slice_thickness'),
                 2
             );
-            $Time    = number_format($FileObj->getParameter('time'), 2);
-            $Comment = $FileObj->getParameter('Comment');
+            $Comment            = $FileObj->getParameter('Comment');
             $ProcessingPipeline = $FileObj->getParameter('processing:pipeline');
             $TotalRejected      = $FileObj->getParameter(
                 'processing:total_rejected'
