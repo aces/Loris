@@ -23,8 +23,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     classes.push("bg-danger");
   }
 
-  classes.push("text-primary");
-
   classes = classes.join(" ");
   
   const hasWritePermission = loris.userHasPermission('media_write');
