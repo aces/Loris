@@ -117,7 +117,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $this->addSelect('site', 'For Site', $siteList);
         $this->addBasicText('uploadedBy', 'Uploaded By');
         $this->addSelect('instrument', 'Instrument', $instrumentList);
-        $this->addCheckbox('show_hidden', 'Show hidden files', array('value'=>'1'));
+        //$this->addCheckbox('show_hidden', 'Show hidden files', array('value'=>'1'));
 
         $this->tpl_data["hasWritePermission"] = $this->hasWritePermission;
 
