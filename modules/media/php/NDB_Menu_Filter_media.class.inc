@@ -136,7 +136,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         // the base query
         $query  = " FROM media m LEFT JOIN session s ON m.session_id = s.ID".
         " LEFT JOIN candidate c ON c.CandID=s.CandID";
-        //$query .= " WHERE m.hide_file = FALSE";
+        $query .= " WHERE m.hide_file = FALSE";
 
         // set the class variables
         $this->columns
