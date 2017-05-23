@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile.test.db
       args:
         BASE_DIR: /app/
+    volumes:
+      - ./test/mysql-config:/etc/mysql/conf.d
     environment:
       - MYSQL_DATABASE=LorisTest
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
