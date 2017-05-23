@@ -117,6 +117,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $this->addSelect('site', 'For Site', $siteList);
         $this->addBasicText('uploadedBy', 'Uploaded By');
         $this->addSelect('instrument', 'Instrument', $instrumentList);
+        $this->addCheckbox('show_hidden', 'Show hidden files', array('value'=>'1'));
 
         $this->tpl_data["hasWritePermission"] = $this->hasWritePermission;
 
@@ -135,7 +136,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         // the base query
         $query  = " FROM media m LEFT JOIN session s ON m.session_id = s.ID".
         " LEFT JOIN candidate c ON c.CandID=s.CandID";
-        $query .= " WHERE m.hide_file = FALSE";
+        //$query .= " WHERE m.hide_file = FALSE";
 
         // set the class variables
         $this->columns
@@ -152,6 +153,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
                'm.file_type',
                's.CandID as cand_id',
                's.ID as session_id',
+               'm.hide_file',
                'm.id',
               ];
 
@@ -177,10 +179,8 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
                            'File Type',
                            'Cand ID',
                            'Session ID',
+                           'Hide File',
                           ];
-
-        // Set header as hidden from the data table
-        $this->tpl_data['hiddenHeaders'] = json_encode(['Cand ID', 'Session ID']);
 
         // Add Edit field if user has permissions
         if ($this->hasWritePermission) {
