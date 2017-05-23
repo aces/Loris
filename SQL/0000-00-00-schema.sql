@@ -570,14 +570,14 @@ CREATE TABLE `files_intermediary` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `files_qcstatus` (
-    'FileQCID' int(11) PRIMARY KEY auto_increment,
-    'FileID' int(11) UNIQUE NULL,
-    'SeriesUID' varchar(64) DEFAULT NULL,
-    'EchoTime' double DEFAULT NULL,
-    'QCStatus' enum('Pass', 'Fail'),
-    'QCFirstChangeTime' int(10) unsigned,
-    'QCLastChangeTime' int(10) unsigned,
-    'Selected' enum('true', 'false') DEFAULT NULL
+    `FileQCID` int(11) PRIMARY KEY auto_increment,
+    `FileID` int(11) UNIQUE NULL,
+    `SeriesUID` varchar(64) DEFAULT NULL,
+    `EchoTime` double DEFAULT NULL,
+    `QCStatus` enum('Pass', 'Fail'),
+    `QCFirstChangeTime` int(10) unsigned,
+    `QCLastChangeTime` int(10) unsigned,
+    `Selected` enum('true', 'false') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `mri_acquisition_dates` (
