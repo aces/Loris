@@ -140,8 +140,10 @@ class Imaging_Session_ControlPanel
         $subjectData['mricaveat']    = $qcstatus['MRICaveat'];
 
         $factory = NDB_Factory::singleton();
-        $subjectData['backURL'] = $factory->settings()->getBaseURL()
-            . urldecode($_REQUEST['backURL']);
+        $subjectData['backURL'] = isset($_REQUEST['backURL']) ?
+            $factory->settings()->getBaseURL()
+                . "/imaging_browser/" :
+            null;
 
         $NavBar = new MRINavigation($this->sessionID);
         $subjectData['nextTimepoint']['URL'] = $NavBar->nextLink();
