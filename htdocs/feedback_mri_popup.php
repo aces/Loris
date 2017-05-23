@@ -15,8 +15,12 @@ require_once __DIR__ . "/../vendor/autoload.php";
 ini_set('default_charset', 'utf-8');
 ob_start('ob_gzhandler');
 require_once "NDB_Client.class.inc";
-$client = new NDB_Client();
-$client->initialize();
+$client = new NDB_Client;
+if ($client->initialize() == false) {
+    $login = $_SESSION['State']->getProperty('login');
+    $login->showLoginScreen();
+    return false;
+}
 
 require_once "FeedbackMRI.class.inc";
 

@@ -268,7 +268,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $errors    = array();
         $config    = NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
-            'dicom_archive'
+            'imaging_modules'
         );
         $corect_name            = $dicom_archive_settings['patientNameRegex'];
         $header_patient_name    = array();
@@ -582,8 +582,6 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/js/components/Tabs.js",
-             $baseURL . "/js/components/ProgressBar.js",
              $baseURL . "/imaging_uploader/js/index.js",
              $baseURL . "/imaging_uploader/js/imaging_uploader_helper.js",
             )

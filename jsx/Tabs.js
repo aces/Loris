@@ -1,5 +1,3 @@
-/* exported Tabs, TabPane */
-
 /**
  * This file contains React components for Tabs component.
  *
@@ -173,10 +171,7 @@ TabPane.propTypes = {
   activeTab: React.PropTypes.string
 };
 
-window.Tabs = Tabs;
-window.TabPane = TabPane;
-
-export default {
+export {
   Tabs,
   TabPane
 };

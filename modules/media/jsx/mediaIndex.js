@@ -1,4 +1,5 @@
-/* global ReactDOM */
+import FilterForm from 'FilterForm';
+import {Tabs, TabPane} from 'Tabs';
 
 import MediaUploadForm from './uploadForm';
 import formatColumn from './columnFormatter';
