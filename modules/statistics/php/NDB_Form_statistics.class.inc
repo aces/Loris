@@ -98,12 +98,13 @@ class NDB_Form_Statistics extends NDB_Form
         $tpl_data['DropdownOptions']  = $dropdown_opt;
         $tpl_data['DropdownSelected'] = $dropdown_selected;
         $tpl_data['Centers']          = $centres;
+
         foreach ($data as $row) {
             $subproj = $row['SubprojectID'];
             $vl      = $row['VLabel'];
             $subcat  = $row['Subcat'];
             $center  = $row['CenterID'];
-
+            
             if (in_array($vl, $visits)
                 && in_array($subcat, $subcats)
                 && $this->_inCenter($center, $centres)
@@ -126,7 +127,6 @@ class NDB_Form_Statistics extends NDB_Form
                 $tpl_data['data'][$subcat]     += $row['val'];
                 $tpl_data['data']['total']     += $row['val'];
             }
-
         }
         $smarty->assign($tpl_data);
         $html = $smarty->fetch("table_statistics.tpl");
@@ -720,13 +720,14 @@ class NDB_Form_Statistics extends NDB_Form
         }
 
         //GET SCAN TYPES
+        $scan_types[null] = 'All Scan Types';
         $Scan_type_results = $DB->pselect(
             "SELECT mst.ID, mst.Scan_type
               FROM mri_scan_type mst
                 JOIN mri_protocol mp ON (mst.ID=mp.Scan_type)",
             array()
         );
-
+        
         foreach ($Scan_type_results as $row) {
             $scan_types[$row['ID']] = $row['Scan_type'];
         }
@@ -742,7 +743,7 @@ class NDB_Form_Statistics extends NDB_Form
                 $scans_selected[$scid] =$scan_types[$scid];
             }
         }
-
+        
         $Visits = Utility::getExistingVisitLabels($currentProject);
         $this->tpl_data['scan_types']     = $scan_types;
         $this->tpl_data['Scans_sel_box']  = array_keys($scans_selected);
@@ -773,7 +774,10 @@ class NDB_Form_Statistics extends NDB_Form
             $MRI_Type = $scan_types[$_REQUEST['mri_type']];
         }
         //TODO IBIS
-        if ($MRI_Type==='t1w') {
+        $CompileAllFlag = 0;
+        if ($MRI_Type==='All Scan Types') {
+            $CompileAllFlag = 1;
+        } elseif ($MRI_Type==='t1w') {
             $MRI_Type ='T1';
         } elseif ($MRI_Type=='t2w') {
             $MRI_Type ='T2';
@@ -785,55 +789,161 @@ class NDB_Form_Statistics extends NDB_Form
             $MRI_Type ='Spectroscopy';
         }
 
-        $MRI_Type_Field = $MRI_Type . "_Scan_Done";
-        $MRIHeader      = "$MRI_Type Breakdown";
-        $CaseStatement  = "
-                          CASE($MRI_Type_Field)
-                          WHEN 'Partial' THEN 'Partial Run'
-                          WHEN 'No' THEN 'No Scan'
-                          ELSE 'Complete'
-                          END";
+        if ($CompileAllFlag) {
+			$MRIHeader		= "Breakdown of All Scans";
+			$no_scans = '';
+			$partial_scans = '';
+			$complete_scans = '';
+            foreach ($Scan_type_results as $row) {
+        	    $temp = $row['Scan_type'];
+                if ($temp === '') {
+                    continue;
+                }
+				if($no_scans === '' && $partial_scans === '' && $complete_scans === '') {
+                    $no_scans .= "(".$temp."_Scan_Done = 'No')";
+                    $partial_scans .= "(".$temp."_Scan_Done = 'Partial')";
+                    $complete_scans .= "(".$temp."_Scan_Done = 'Complete')";
+                    $complete_scans .= " + (".$temp."_Scan_Done = '')";
+                } else {
+                    $no_scans .= " + (".$temp."_Scan_Done = 'No')";
+                    $partial_scans .= " + (".$temp."_Scan_Done = 'Partial')";
+                    $complete_scans .= " + (".$temp."_Scan_Done = 'Complete')";
+                    $complete_scans .= " + (".$temp."_Scan_Done = '')";
+                }
+            }
+            $Pre_Result_One =
+                "CREATE TEMPORARY TABLE IF NOT EXISTS temp_totals AS (
+                    SELECT 
+                        s.SubprojectID,
+                        c.CenterID,
+                        s.Visit_label AS VLabel,
+                        SUM($no_scans) AS total_no,
+                        SUM($partial_scans) AS total_part,
+                        SUM($complete_scans) AS total_comp
+                    FROM
+                        mri_parameter_form m
+                        JOIN flag f USING (CommentID)
+                        JOIN session s ON (f.SessionID=s.ID)
+                        JOIN candidate c ON (c.CandID=s.CandID)
+                    WHERE 
+                        s.Current_stage <> 'Recycling Bin'
+                        AND f.Administration<>'NONE'
+                        AND s.Active='Y'
+                        AND c.Active='Y'
+                        AND f.CommentID NOT LIKE 'DDE&'
+                        AND s.CenterID <> '1'
+                        $suproject_query
+                        $Param_Project
+                    GROUP BY
+                        s.SubprojectID,
+                        c.CenterID,
+                        s.Visit_label)";
+            $PRO_params = array($no_scans,
+                                $partial_scans,
+                                $complete_scans,
+                                $suproject_query,
+                                $Param_Project);
+        	$Pre_Result_Two =
+				"CREATE TEMPORARY TABLE IF NOT EXISTS temp_comp AS (
+                    SELECT
+                        t.SubprojectID,
+                        t.CenterID,
+                        t.VLabel,
+                        \"Complete\" AS Subcat,
+                        t.total_comp AS val
+                    FROM temp_totals t)";
+            $Pre_Result_Three =
+				"CREATE TEMPORARY TABLE IF NOT EXISTS temp_part AS (
+                    SELECT
+                        t.SubprojectID,
+                        t.CenterID,
+                        t.VLabel,
+                        \"Partial Run\" AS Subcat,
+                        t.total_part AS val
+                    FROM temp_totals t)";
+			$Pre_Result_Four =
+                "CREATE TEMPORARY TABLE IF NOT EXISTS temp_no AS (
+                    SELECT
+                        t.SubprojectID,
+                        t.CenterID,
+                        t.VLabel,
+                        \"No Scan\" AS Subcat,
+                        t.total_no AS val
+                    FROM temp_totals t)";
+			$Result_query =	
+				"SELECT * FROM temp_comp UNION SELECT * FROM temp_part UNION SELECT * FROM temp_no";
+            $DB->execute($DB->prepare($Pre_Result_One), $PRO_params, array('nofetch' => true));
+            $DB->execute($DB->prepare($Pre_Result_Two), array(), array('nofetch' => true));
+            $DB->execute($DB->prepare($Pre_Result_Three), array(), array('nofetch' => true));
+            $DB->execute($DB->prepare($Pre_Result_Four), array(), array('nofetch' => true));
+			$result = $DB->pselect($Result_query,
+                                   array()
+            );
+            $M_Visits = Utility::getExistingVisitLabels($currentProject);
+            $this->tpl_data['MRI_Done_Table'] = $this->renderStatsTable(
+                "Breakdown By Scan Type",
+                $MRIHeader,
+                $MRISubcategories,
+                $M_Visits,
+                "mri_type",
+                $scan_types,
+                $_REQUEST['mri_type'],
+                $centers,
+                $result,
+                "mri",
+                "",
+                $currentProject
+            );
+        } else {
+        	$MRI_Type_Field = $MRI_Type . "_Scan_Done";
+        	$MRIHeader      = "$MRI_Type Breakdown";
+        	$CaseStatement  = "
+        	                  CASE($MRI_Type_Field)
+        	                  WHEN 'Partial' THEN 'Partial Run'
+        	                  WHEN 'No' THEN 'No Scan'
+        	                  ELSE 'Complete'
+        	                  END";
 
-        $result = $DB->pselect(
-            "SELECT s.SubprojectID,
-                    c.CenterID,
-                    s.Visit_label as VLabel,
-                    $CaseStatement as Subcat,
-                    COUNT(*) as val
-              FROM mri_parameter_form m
-                    JOIN flag f USING (CommentID)
-                    JOIN session s ON (f.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
-              WHERE s.Current_stage <> 'Recycling Bin'
-                    AND f.Administration <> 'None'
-                    AND s.Active='Y'
-                    AND c.Active='Y'
-                    AND f.CommentID NOT LIKE 'DDE%'
-                    AND s.CenterID <> '1'
-                    $suproject_query
-                    $Param_Project
-              GROUP BY Subcat,
-                    s.SubprojectID,
-                    c.CenterID,
-                    s.Visit_label",
-            $bigTable_params
-        );
-
-        $M_Visits = Utility::getExistingVisitLabels($currentProject);
-        $this->tpl_data['MRI_Done_Table'] = $this->renderStatsTable(
-            "Breakdown By Scan Type",
-            $MRIHeader,
-            $MRISubcategories,
-            $M_Visits,
-            "mri_type",
-            $scan_types,
-            $_REQUEST['mri_type'],
-            $centers,
-            $result,
-            "mri",
-            "",
-            $currentProject
-        );
+	        $result = $DB->pselect(
+	            "SELECT s.SubprojectID,
+    	                c.CenterID,
+    	                s.Visit_label as VLabel,
+    	                $CaseStatement as Subcat,
+    	                COUNT(*) as val
+    	          FROM mri_parameter_form m
+    	                JOIN flag f USING (CommentID)
+    	                JOIN session s ON (f.SessionID=s.ID)
+    	                JOIN candidate c ON (c.CandID=s.CandID)
+    	          WHERE s.Current_stage <> 'Recycling Bin'
+    	                AND f.Administration <> 'None'
+    	                AND s.Active='Y'
+    	                AND c.Active='Y'
+    	                AND f.CommentID NOT LIKE 'DDE%'
+    	                AND s.CenterID <> '1'
+    	                $suproject_query
+    	                $Param_Project
+    	          GROUP BY Subcat,
+    	                s.SubprojectID,
+    	                c.CenterID,
+    	                s.Visit_label",
+    	        $bigTable_params
+    	    );
+    	    $M_Visits = Utility::getExistingVisitLabels($currentProject);
+			$this->tpl_data['MRI_Done_Table'] = $this->renderStatsTable(
+    	        "Breakdown By Scan Type",
+    	        $MRIHeader,
+    	        $MRISubcategories,
+    	        $M_Visits,
+    	        "mri_type",
+    	        $scan_types,
+    	        $_REQUEST['mri_type'],
+    	        $centers,
+    	        $result,
+    	        "mri",
+    	        "",
+    	        $currentProject
+    	    );
+        }
         //END BIGTABLE
 
         //considers the naming convention of
