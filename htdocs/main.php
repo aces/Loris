@@ -113,16 +113,20 @@ $tpl_data['tabs'] = NDB_Config::GetMenuTabs();
 // accept candidate data
 $argstring = '';
 if (!empty($_REQUEST['candID'])) {
-    $argstring .= "filter%5BcandID%5D=".$_REQUEST['candID']."&";
+    $argstring .= "filter%5BcandID%5D=".htmlspecialchars($_REQUEST['candID'])."&";
 }
 
 if (!empty($_REQUEST['sessionID'])) {
     try {
         $timePoint  =& TimePoint::singleton($_REQUEST['sessionID']);
         $argstring .= "filter%5Bm.VisitNo%5D=".$timePoint->getVisitNo()."&";
+        if ($config->getSetting("SupplementalSessionStatus")) {
+            $tpl_data['SupplementalSessionStatuses'] = true;
+        }
+        $tpl_data['timePoint'] = $timePoint->getData();
     } catch (Exception $e) {
         $tpl_data['error_message'][]
-            = "TimePoint Error (".$_REQUEST['sessionID']."): ".$e->getMessage();
+            = "TimePoint Error (".htmlspecialchars($_REQUEST['sessionID'])."): ".$e->getMessage();
     }
 }
 
@@ -156,21 +160,6 @@ if (!empty($_REQUEST['candID'])) {
     } catch(Exception $e) {
         $tpl_data['error_message'][] = $e->getMessage();
     }
-}
-
-// get time point data
-if (!empty($_REQUEST['sessionID'])) {
-    try {
-        $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-        if ($config->getSetting("SupplementalSessionStatus")) {
-            $tpl_data['SupplementalSessionStatuses'] = true;
-        }
-        $tpl_data['timePoint'] = $timePoint->getData();
-    } catch(Exception $e) {
-        $tpl_data['error_message'][]
-            = "TimePoint Error (".$_REQUEST['sessionID']."): ".$e->getMessage();
-    }
-
 }
 
 //--------------------------------------------------
