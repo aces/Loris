@@ -55,12 +55,11 @@ class NDB_Page
     var $defaults = array();
 
     /**
-
      * Additional template parameters to send to smarty.
      */
     var $tpl_data = array();
 
-     * If true, the default display function will not try to load any template.
+    /* If true, the default display function will not try to load any template.
      * This is intended to be used with, for instance, pages that completely
      * construct the DOM from javascript.
      */
