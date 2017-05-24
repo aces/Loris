@@ -110,29 +110,46 @@ class Candidates extends APIBase
                 $this->safeExit(0);
             }
 
-            $this->verifyField($data, 'Gender', ['Male', 'Female']);
-            $this->verifyField($data, 'EDC', 'YYYY-MM-DD');
-            $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
-            //Candidate::createNew
-            try {
-                $this->createNew(
-                    $data['Candidate']['DoB'],
-                    $data['Candidate']['EDC'],
-                    $data['Candidate']['Gender'],
-                    $data['Candidate']['PSCID']
-                );
-                $this->header("HTTP/1.1 201 Created");
-                $this->JSON = [
-                               'Meta' => ["CandID" => "123456"],
-                              ];
-            } catch(\LorisException $e) {
+            // This version od the API does not handle candidate creation 
+            // when users are at multiple sites
+            $user = \User::singleton();
+            $centerIDs = $user->getData('CenterIDs');
+            $num_sites = count($centerIDs);
+
+            if ($num_sites >1) {
+                $this->header("HTTP/1.1 501 Not Implemented");
+                $this->error("This API version does not support timepoint creation " .
+                              "by uers with multiple site affilifations. This will be ".
+                              "implemented in a future API version");
+                $this->safeExit(0);
+            } else {
+                $centerIDs = $user->getData('CenterIDs');
+                $centerID  = $centerIDs[0];
+
+                $this->verifyField($data, 'Gender', ['Male', 'Female']);
+                $this->verifyField($data, 'EDC', 'YYYY-MM-DD');
+                $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
+                //Candidate::createNew
+                try {
+                    $candid = $this->createNew(
+                        $centerID,
+                        $data['Candidate']['DoB'],
+                        $data['Candidate']['EDC'],
+                        $data['Candidate']['Gender'],
+                        $data['Candidate']['PSCID']
+                    );
+                    $this->header("HTTP/1.1 201 Created");
+                    $this->JSON = [
+                                   'Meta' => ["CandID" => $candid],
+                                  ];
+                } catch(\LorisException $e) {
+                    $this->header("HTTP/1.1 400 Bad Request");
+                    $this->safeExit(0);
+                }
+            } else {
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->safeExit(0);
             }
-        } else {
-            $this->header("HTTP/1.1 400 Bad Request");
-            $this->safeExit(0);
-        }
     }
 
     /**

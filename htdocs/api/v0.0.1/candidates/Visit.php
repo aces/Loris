@@ -169,9 +169,23 @@ class Visit extends \Loris\API\Candidates\Candidate
             $this->safeExit(0);
 
         }
-        // need to extract subprojectID
-        $this->createNew($this->CandID, $subprojectID, $this->VisitLabel);
-        $this->header("HTTP/1.1 201 Created");
+        // This version od the API does not handle timepoint creation 
+        // when users are at multiple sites
+        $user = \User::singleton();
+        $centerIDs = $user->getData('CenterIDs');
+        $num_sites = count($centerIDs);
+
+        if ($num_sites >1) {
+            $this->header("HTTP/1.1 501 Not Implemented");
+            $this->error("This API version does not support timepoint creation " .
+                          "by uers with multiple site affilifations. This will be ".
+                          "implemented in a future API version");
+            $this->safeExit(0);
+        } else {
+            // need to extract subprojectID
+            $this->createNew($this->CandID, $subprojectID, $this->VisitLabel);
+            $this->header("HTTP/1.1 201 Created");
+        }
     }
 
     /**
