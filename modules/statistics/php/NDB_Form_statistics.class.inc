@@ -880,8 +880,8 @@ class NDB_Form_Statistics extends NDB_Form
             $PRO_params['complete_Scans']  = $complete_scans;
             $PRO_params['suproject_query'] = $suproject_query;
             $PRO_params['Param_Project']   = $Param_Project;
-            $Pre_Result_Two
-                = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_comp AS (
+
+            $Pre_Result_Two   = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_comp AS (
                     SELECT
                         t.SubprojectID,
                         t.CenterID,
@@ -889,8 +889,7 @@ class NDB_Form_Statistics extends NDB_Form
                         \"Complete\" AS Subcat,
                         t.total_comp AS val
                     FROM temp_totals t)";
-            $Pre_Result_Three
-                = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_part AS (
+            $Pre_Result_Three = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_part AS (
                     SELECT
                         t.SubprojectID,
                         t.CenterID,
@@ -898,8 +897,7 @@ class NDB_Form_Statistics extends NDB_Form
                         \"Partial Run\" AS Subcat,
                         t.total_part AS val
                     FROM temp_totals t)";
-            $Pre_Result_Four
-                = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_no AS (
+            $Pre_Result_Four  = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_no AS (
                     SELECT
                         t.SubprojectID,
                         t.CenterID,
@@ -907,9 +905,9 @@ class NDB_Form_Statistics extends NDB_Form
                         \"No Scan\" AS Subcat,
                         t.total_no AS val
                     FROM temp_totals t)";
-            $Result_query
-                = "SELECT * FROM temp_comp UNION SELECT * FROM temp_part UNION "
-                    ."SELECT * FROM temp_no";
+            $Result_query     = "SELECT * FROM temp_comp UNION SELECT * FROM";
+            $Result_query    .= " temp_part UNION SELECT * FROM temp_no";
+
             $DB->execute(
                 $DB->prepare($Pre_Result_One),
                 $PRO_params,
