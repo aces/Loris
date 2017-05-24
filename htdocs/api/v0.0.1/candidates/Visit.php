@@ -186,7 +186,7 @@ class Visit extends \Loris\API\Candidates\Candidate
                           "implemented in a future API version");
             $this->safeExit(0);
         } else {
-            $centerID  = $centerIDs[0];
+            $centerID = $centerIDs[0];
             $candidateCenterID = \Candidate::singleton($this->CandID)
                 ->getCenterID();
             if ($centerID != $candidateCenterID) {

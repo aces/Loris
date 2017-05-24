@@ -127,7 +127,7 @@ class Candidates extends APIBase
                               "implemented in a future API version");
                 $this->safeExit(0);
             } else {
-                $centerID  = $centerIDs[0];
+                $centerID = $centerIDs[0];
 
                 $this->verifyField($data, 'Gender', ['Male', 'Female']);
                 $this->verifyField($data, 'EDC', 'YYYY-MM-DD');
@@ -194,11 +194,11 @@ class Candidates extends APIBase
      * @param string $gender   Gender of the candidate to be created
      * @param string $PSCID    PSCID of the candidate to be created
      *
-     * @return none
+     * @return int The id
      */
     public function createNew($centerID, $DoB, $edc, $gender, $PSCID)
     {
-        \Candidate::createNew(
+        return \Candidate::createNew(
             $centerID,
             $DoB,
             $edc,
