@@ -149,11 +149,11 @@ CREATE TABLE `Project` (
 ) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE `subproject` (
-    SubprojectID int(10) unsigned NOT NULL auto_increment,
-    title varchar(255) NOT NULL,
-    useEDC boolean,
-    WindowDifference enum('optimal', 'battery'),
-    RecruitmentTarget int(10) unsigned,
+    `SubprojectID` int(10) unsigned NOT NULL auto_increment,
+    `title` varchar(255) NOT NULL,
+    `useEDC` boolean,
+    `WindowDifference` enum('optimal', 'battery'),
+    `RecruitmentTarget` int(10) unsigned,
     PRIMARY KEY (SubprojectID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores Subprojects used in Loris';
 
@@ -570,14 +570,14 @@ CREATE TABLE `files_intermediary` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `files_qcstatus` (
-    FileQCID int(11) PRIMARY KEY auto_increment,
-    FileID int(11) UNIQUE NULL,
-    SeriesUID varchar(64) DEFAULT NULL,
-    EchoTime double DEFAULT NULL,
-    QCStatus enum('Pass', 'Fail'),
-    QCFirstChangeTime int(10) unsigned,
-    QCLastChangeTime int(10) unsigned,
-    Selected enum('true', 'false') DEFAULT NULL
+    `FileQCID` int(11) PRIMARY KEY auto_increment,
+    `FileID` int(11) UNIQUE NULL,
+    `SeriesUID` varchar(64) DEFAULT NULL,
+    `EchoTime` double DEFAULT NULL,
+    `QCStatus` enum('Pass', 'Fail'),
+    `QCFirstChangeTime` int(10) unsigned,
+    `QCLastChangeTime` int(10) unsigned,
+    `Selected` enum('true', 'false') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `mri_acquisition_dates` (
@@ -1640,8 +1640,10 @@ CREATE TABLE `CNV` (
   PRIMARY KEY (`CNVID`),
   KEY `PlatformID` (`PlatformID`),
   KEY `GenomeLocID` (`GenomeLocID`),
+  KEY `CandID` (`CandID`),
   CONSTRAINT `CNV_ibfk_1` FOREIGN KEY (`PlatformID`) REFERENCES `genotyping_platform` (`PlatformID`),
-  CONSTRAINT `CNV_ibfk_2` FOREIGN KEY (`GenomeLocID`) REFERENCES `genome_loc` (`GenomeLocID`)
+  CONSTRAINT `CNV_ibfk_2` FOREIGN KEY (`GenomeLocID`) REFERENCES `genome_loc` (`GenomeLocID`),
+  CONSTRAINT `CNV_ibfk_3` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `GWAS` (

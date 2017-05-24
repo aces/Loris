@@ -178,8 +178,6 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             [
-             $baseURL . "/js/components/Panel.js",
-             $baseURL . "/js/components/Tabs.js",
              $baseURL . "/data_integrity_flag/js/index.js",
             ]
         );
