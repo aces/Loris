@@ -655,6 +655,7 @@ class NDB_Form_Statistics extends NDB_Form
         $useProjects = $config->getSetting("useProjects");
         $this->tpl_data['useProjects'] = $useProjects;
         $bigTable_params =array();
+        $PRO_params = array();
 
         $this->tpl_data['showTable'] = true;
 
@@ -671,10 +672,12 @@ class NDB_Form_Statistics extends NDB_Form
                    'ID'   => $currentProject,
                    'Name' => $projects[$currentProject],
                   );
-            $sqlVar        = 'AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+            $sqlVar        = 'AND (c.ProjectID IS NULL OR c.ProjectID=:pid)';
             $Param_Project =$sqlVar;
-            $this->params['pid']    =$_REQUEST['MRIProject'];
-            $bigTable_params['pid'] =$_REQUEST['MRIProject'];
+            $pid = $_REQUEST['MRIProject'];
+            $this->params['pid']    =$pid;
+            $bigTable_params['pid'] =$pid;
+            $PRO_params['pid']      =$pid;
         } else {
             $Param_Project = '';
         }
@@ -720,16 +723,17 @@ class NDB_Form_Statistics extends NDB_Form
         }
 
         //GET SCAN TYPES
-        $scan_types[null] = 'All Scan Types';
+        $scan_types_ind[null] = 'All Scan Types';
         $Scan_type_results = $DB->pselect(
             "SELECT mst.ID, mst.Scan_type
               FROM mri_scan_type mst
                 JOIN mri_protocol mp ON (mst.ID=mp.Scan_type)",
             array()
         );
-        
+
         foreach ($Scan_type_results as $row) {
             $scan_types[$row['ID']] = $row['Scan_type'];
+            $scan_types_ind[$row['ID']] = $row['Scan_type'];
         }
 
         $scans_selected =array();
@@ -746,6 +750,7 @@ class NDB_Form_Statistics extends NDB_Form
         
         $Visits = Utility::getExistingVisitLabels($currentProject);
         $this->tpl_data['scan_types']     = $scan_types;
+        $this->tpl_data['scan_types_ind'] = $scan_types_ind;
         $this->tpl_data['Scans_sel_box']  = array_keys($scans_selected);
         $this->tpl_data['Scans_selected'] = $scans_selected;
         $this->tpl_data['Sites']          = $sites;
@@ -769,9 +774,9 @@ class NDB_Form_Statistics extends NDB_Form
         //Check if a specific scan is requested otherwise display first
         //available scan
         if (!$_REQUEST['mri_type']) {
-            $MRI_Type = current($scan_types);
+            $MRI_Type = current($scan_types_ind);
         } else {
-            $MRI_Type = $scan_types[$_REQUEST['mri_type']];
+            $MRI_Type = $scan_types_ind[$_REQUEST['mri_type']];
         }
         //TODO IBIS
         $CompileAllFlag = 0;
@@ -811,38 +816,67 @@ class NDB_Form_Statistics extends NDB_Form
                     $complete_scans .= " + (".$temp."_Scan_Done = '')";
                 }
             }
-            $Pre_Result_One =
-                "CREATE TEMPORARY TABLE IF NOT EXISTS temp_totals AS (
-                    SELECT 
-                        s.SubprojectID,
-                        c.CenterID,
-                        s.Visit_label AS VLabel,
-                        SUM($no_scans) AS total_no,
-                        SUM($partial_scans) AS total_part,
-                        SUM($complete_scans) AS total_comp
-                    FROM
-                        mri_parameter_form m
-                        JOIN flag f USING (CommentID)
-                        JOIN session s ON (f.SessionID=s.ID)
-                        JOIN candidate c ON (c.CandID=s.CandID)
-                    WHERE 
-                        s.Current_stage <> 'Recycling Bin'
-                        AND f.Administration<>'NONE'
-                        AND s.Active='Y'
-                        AND c.Active='Y'
-                        AND f.CommentID NOT LIKE 'DDE&'
-                        AND s.CenterID <> '1'
-                        $suproject_query
-                        $Param_Project
-                    GROUP BY
-                        s.SubprojectID,
-                        c.CenterID,
-                        s.Visit_label)";
-            $PRO_params = array($no_scans,
-                                $partial_scans,
-                                $complete_scans,
-                                $suproject_query,
-                                $Param_Project);
+            if($Param_Project != '') {
+                $Pre_Result_One =
+                	"CREATE TEMPORARY TABLE IF NOT EXISTS temp_totals AS (
+                	    SELECT 
+                	        s.SubprojectID,
+                	        c.CenterID,
+                	        s.Visit_label AS VLabel,
+                	        SUM($no_scans) AS total_no,
+                	        SUM($partial_scans) AS total_part,
+                	        SUM($complete_scans) AS total_comp
+                	    FROM
+                	        mri_parameter_form m
+                	        JOIN flag f USING (CommentID)
+                	        JOIN session s ON (f.SessionID=s.ID)
+                	        JOIN candidate c ON (c.CandID=s.CandID)
+                	    WHERE 
+                	        s.Current_stage <> 'Recycling Bin'
+                	        AND f.Administration<>'NONE'
+                	        AND s.Active='Y'
+                	        AND c.Active='Y'
+                	        AND f.CommentID NOT LIKE 'DDE&'
+                	        AND s.CenterID <> '1'
+							AND (c.ProjectID IS NULL OR c.ProjectID=$pid)
+                	        $suproject_query
+                	    GROUP BY
+                	        s.SubprojectID,
+                	        c.CenterID,
+                	        s.Visit_label)";
+            } else {
+            	$Pre_Result_One =
+            	    "CREATE TEMPORARY TABLE IF NOT EXISTS temp_totals AS (
+            	        SELECT 
+            	            s.SubprojectID,
+            	            c.CenterID,
+            	            s.Visit_label AS VLabel,
+            	            SUM($no_scans) AS total_no,
+            	            SUM($partial_scans) AS total_part,
+            	            SUM($complete_scans) AS total_comp
+            	        FROM
+            	            mri_parameter_form m
+            	            JOIN flag f USING (CommentID)
+            	            JOIN session s ON (f.SessionID=s.ID)
+            	            JOIN candidate c ON (c.CandID=s.CandID)
+            	        WHERE 
+            	            s.Current_stage <> 'Recycling Bin'
+            	            AND f.Administration<>'NONE'
+            	            AND s.Active='Y'
+            	            AND c.Active='Y'
+            	            AND f.CommentID NOT LIKE 'DDE&'
+            	            AND s.CenterID <> '1'
+            	            $suproject_query
+            	        GROUP BY
+            	            s.SubprojectID,
+            	            c.CenterID,
+            	            s.Visit_label)";
+			}
+            $PRO_params['no_scans'] = $no_scans;
+            $PRO_params['partial_scans'] = $partial_scans;
+            $PRO_params['complete_Scans'] = $complete_scans;
+            $PRO_params['suproject_query'] = $suproject_query;
+            $PRO_params['Param_Project'] = $Param_Project;
         	$Pre_Result_Two =
 				"CREATE TEMPORARY TABLE IF NOT EXISTS temp_comp AS (
                     SELECT
@@ -886,7 +920,7 @@ class NDB_Form_Statistics extends NDB_Form
                 $MRISubcategories,
                 $M_Visits,
                 "mri_type",
-                $scan_types,
+                $scan_types_ind,
                 $_REQUEST['mri_type'],
                 $centers,
                 $result,
@@ -935,7 +969,7 @@ class NDB_Form_Statistics extends NDB_Form
     	        $MRISubcategories,
     	        $M_Visits,
     	        "mri_type",
-    	        $scan_types,
+    	        $scan_types_ind,
     	        $_REQUEST['mri_type'],
     	        $centers,
     	        $result,
