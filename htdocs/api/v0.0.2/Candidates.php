@@ -113,20 +113,17 @@ class Candidates extends APIBase
             // This version od the API does not handle candidate creation 
             // when users are at multiple sites
             $user = \User::singleton();
-            $centerIDs = $user->getCenterIDs();
+            $centerIDs = $user->getData('CenterIDs');
             $num_sites = count($centerIDs);
 
-            if ($num_sites == 0) {
-                $this->header("HTTP/1.1 401 Unauthorized");
-                $this->error("You are not affiliated with any site");
-                $this->safeExit(0);
-            } else if ($num_sites > 1) {
+            if ($num_sites >1) {
                 $this->header("HTTP/1.1 501 Not Implemented");
                 $this->error("This API version does not support timepoint creation " .
                               "by uers with multiple site affilifations. This will be ".
                               "implemented in a future API version");
                 $this->safeExit(0);
             } else {
+                $centerIDs = $user->getData('CenterIDs');
                 $centerID  = $centerIDs[0];
 
                 $this->verifyField($data, 'Gender', ['Male', 'Female']);
@@ -170,7 +167,6 @@ class Candidates extends APIBase
     {
         if (!isset($data['Candidate'][$field])) {
             $this->header("HTTP/1.1 400 Bad Request");
-            throw new \Exception("AAAAH $field");
             $this->safeExit(0);
         }
         if (is_array($values) && !in_array($data['Candidate'][$field], $values)) {
@@ -188,17 +184,18 @@ class Candidates extends APIBase
     /**
      * Testable wrapper for Candidate::createNew
      *
-     * @param string $centerID The center id of the candidate
-     * @param string $DoB      Date of birth of the candidate
-     * @param string $edc      EDC of the candidate
-     * @param string $gender   Gender of the candidate to be created
-     * @param string $PSCID    PSCID of the candidate to be created
+     * @param int    $centerID  centerID of the site to which the candidate will
+     *                          belong
+     * @param string $DoB       Date of birth of the candidate
+     * @param string $edc       EDC of the candidate
+     * @param string $gender    Gender of the candidate to be created
+     * @param string $PSCID     PSCID of the candidate to be created
      *
      * @return none
      */
     public function createNew($centerID, $DoB, $edc, $gender, $PSCID)
     {
-        \Candidate::createNew(
+        return \Candidate::createNew(
             $centerID,
             $DoB,
             $edc,
@@ -210,7 +207,14 @@ class Candidates extends APIBase
 
 if (isset($_REQUEST['PrintCandidates'])) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $obj = new Candidates($_SERVER['REQUEST_METHOD'], $_POST);
+        $fp   = fopen("php://input", "r");
+        $data = '';
+        while (!feof($fp)) {
+            $data .= fread($fp, 1024);
+        }
+        fclose($fp);
+
+        $obj = new Candidates($_SERVER['REQUEST_METHOD'], json_decode($data, true));
     } else {
         $obj = new Candidates($_SERVER['REQUEST_METHOD']);
     }
