@@ -149,10 +149,11 @@ class Candidates extends APIBase
                     $this->header("HTTP/1.1 400 Bad Request");
                     $this->safeExit(0);
                 }
-            } else {
-                $this->header("HTTP/1.1 400 Bad Request");
-                $this->safeExit(0);
             }
+        } else {
+            $this->header("HTTP/1.1 400 Bad Request");
+            $this->safeExit(0);
+        }
     }
 
     /**

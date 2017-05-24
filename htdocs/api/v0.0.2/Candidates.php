@@ -116,7 +116,11 @@ class Candidates extends APIBase
             $centerIDs = $user->getCenterIDs();
             $num_sites = count($centerIDs);
 
-            if ($num_sites >1) {
+            if ($num_sites == 0) {
+                $this->header("HTTP/1.1 401 Unauthorized");
+                $this->error("You are not affiliated with any site");
+                $this->safeExit(0);
+            } else if ($num_sites > 1) {
                 $this->header("HTTP/1.1 501 Not Implemented");
                 $this->error("This API version does not support timepoint creation " .
                               "by uers with multiple site affilifations. This will be ".
@@ -145,10 +149,11 @@ class Candidates extends APIBase
                     $this->header("HTTP/1.1 400 Bad Request");
                     $this->safeExit(0);
                 }
-            } else {
-                $this->header("HTTP/1.1 400 Bad Request");
-                $this->safeExit(0);
             }
+        } else {
+            $this->header("HTTP/1.1 400 Bad Request");
+            $this->safeExit(0);
+        }
     }
 
     /**
