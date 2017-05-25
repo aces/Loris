@@ -84,7 +84,7 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
 
     function testPostCandidateValid() {
         try {
-            User::singleton("UnitTester");
+            \User::singleton("UnitTester");
             $API = $this->getMockBuilder(
                 '\Loris\API\Candidates')->disableOriginalConstructor()->setMethods(['createNew'])->getMock();
             $API->expects($this->once())->method('createNew');
