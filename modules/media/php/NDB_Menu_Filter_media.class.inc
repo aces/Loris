@@ -222,7 +222,6 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
                                'for_site'    => 's.CenterID',
                                'hide_file'   => 'm.hide_file',
                               ];
-        //print_r($this->query);
         return true;
     }
 
@@ -236,7 +235,6 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
     {
         $result         = $this->toArray();
         $result['form'] = $this->form->form;
-        //var_dump($this->form->form);
         return json_encode($result);
     }
 
