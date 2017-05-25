@@ -8,7 +8,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
 class Module extends \Module implements \ModuleAPI
 {
-    function injectAPIRoutes(\Slim\App $app) {
+    function addRoutes(\LorisApp $app) {
         $app->get('/items', function (Request $request, Response $response) {
             $response->getBody()->write("GET an item");
             return $response;

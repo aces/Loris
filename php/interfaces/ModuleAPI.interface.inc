@@ -8,5 +8,5 @@ interface ModuleAPI
      * @param  \Slim\App $app
      * @return void
      */
-    public function injectAPIRoutes(\Slim\App $app);
+    public function addRoutes(\LorisApp $app);
 }

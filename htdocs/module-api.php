@@ -17,7 +17,7 @@ use \Psr\Http\Message\ResponseInterface as Response;
 
 require '../vendor/autoload.php';
 
-$app    = new \Slim\App;
+$app    = new LorisApp();
 $client = new NDB_Client;
 
 if ($client->initialize() == false) {
@@ -36,7 +36,7 @@ $app->add(
         $app->group(
             "/{$moduleName}/api",
             function () use ($app, $module) {
-                $module->injectAPIRoutes($app);
+                $module->addRoutes($app);
             }
         );
         $response = $next($request, $response);
