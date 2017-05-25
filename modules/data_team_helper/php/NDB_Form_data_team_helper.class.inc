@@ -62,17 +62,18 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
                     .":" . 'percent_completed';
                 $defaults[$percent_completed] = $data['percent_completed'];
             }
-        }
-        $defaults["feedback_status"]    = $_REQUEST['feedback_status'];
-        $defaults["completion_status"]  = $_REQUEST['completion_status'];
-        $defaults["sent_to_dcc_status"] = $_REQUEST['sent_to_dcc_status'];
-        $defaults["instrument"]         = $_REQUEST['instrument'];
-        $defaults["FieldName"]          = $_REQUEST['FieldName'];
-        $defaults["candidate"]          = $_REQUEST['candidate'];
-        $defaults["visit_label"]        = $_REQUEST['visit_label'];
-        $defaults["site"]    = $_REQUEST['site'];
-        $defaults["project"] = $_REQUEST['project'];
-        $this->tpl_data['instrumentvalue'] = $_REQUEST['instrument'];
+        }//sanitizing the input coming from the request
+        $sanitize = array_map('htmlspecialchars' , $_REQUEST);
+        $defaults["feedback_status"]    = $sanitize['feedback_status'];
+        $defaults["completion_status"]  = $sanitize['completion_status'];
+        $defaults["sent_to_dcc_status"] = $sanitize['sent_to_dcc_status'];
+        $defaults["instrument"]         = $sanitize['instrument'];
+        $defaults["FieldName"]          = $sanitize['FieldName'];
+        $defaults["candidate"]          = $sanitize['candidate'];
+        $defaults["visit_label"]        = $sanitize['visit_label'];
+        $defaults["site"]    = $sanitize['site'];
+        $defaults["project"] = $sanitize['project'];
+        $this->tpl_data['instrumentvalue'] = $sanitize['instrument'];
         return $defaults;
     }
     /**
@@ -90,38 +91,39 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         $smarty    = new Smarty_neurodb();
 
         $config =& NDB_Config::singleton();
+        $sanitize = array_map('htmlspecialchars' , $_REQUEST);
 
-        $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']);
+        $instrument = $this->getTestNameusingMappedName($sanitize['instrument']);
         //construct the instrument drop down..
-        $this->tpl_data['visit_label'] = $_REQUEST['visit_label'];
-        $this->tpl_data['FieldName']   = $_REQUEST['FieldName'];
-        $this->tpl_data['site']        = $_REQUEST['site'];
-        $this->tpl_data['project']     = $_REQUEST['project'];
-        if ($_REQUEST['PSCID'] && !empty($_REQUEST['PSCID'])) {
-            $this->tpl_data['PSCID'] = $_REQUEST['PSCID'];
-        } elseif ($_REQUEST['candidate'] && !empty($_REQUEST['candidate'])) {
-            $this->tpl_data['candID'] =$_REQUEST['candidate'] ;
+        $this->tpl_data['visit_label'] = $sanitize['visit_label'];
+        $this->tpl_data['FieldName']   = $sanitize['FieldName'];
+        $this->tpl_data['site']        = $sanitize['site'];
+        $this->tpl_data['project']     = $sanitize['project'];
+        if ($sanitize['PSCID'] && !empty($sanitize['PSCID'])) {
+            $this->tpl_data['PSCID'] = $sanitize['PSCID'];
+        } elseif ($sanitize['candidate'] && !empty($sanitize['candidate'])) {
+            $this->tpl_data['candID'] =$sanitize['candidate'] ;
         } else {
             $this->tpl_data['candidate'] = null;
         }
         $this->tpl_data['test_name'] = $instrument;
 
-        if (isset($_REQUEST['PSCID']) && !empty($_REQUEST['PSCID'])
-            && (isset($_REQUEST['candidate'])) && !empty($_REQUEST['candidate'])
+        if (isset($sanitize['PSCID']) && !empty($sanitize['PSCID'])
+            && (isset($sanitize['candidate'])) && !empty($sanitize['candidate'])
         ) {
-            $candID = ($_REQUEST['candidate']);
-        } elseif (isset($_REQUEST['candidate']) && !empty($_REQUEST['candidate'])) {
-                $candID = $_REQUEST['candidate'];
-        } elseif (isset($_REQUEST['PSCID']) && !empty($_REQUEST['PSCID'])) {
+            $candID = ($sanitize['candidate']);
+        } elseif (isset($sanitize['candidate']) && !empty($sanitize['candidate'])) {
+                $candID = $sanitize['candidate'];
+        } elseif (isset($sanitize['PSCID']) && !empty($sanitize['PSCID'])) {
             $query   = "SELECT CandID FROM candidate WHERE PSCID = :PID";
-            $qparams = (array('PID' => $_REQUEST['PSCID']));
+            $qparams = (array('PID' => $sanitize['PSCID']));
             $candID  = $DB->pselectOne($query, $qparams);
         }
 
         //Percentage completed for the given instrument
             $percent_completed = $this->_getPercentCompleted(
                 $instrument,
-                $_REQUEST['visit_label'],
+                $sanitize['visit_label'],
                 $candID
             );
             $this->tpl_data['percent_completed'] = $percent_completed;
@@ -156,10 +158,10 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $incompleteCandidates = $this->
                  getIncompleteCandidates(
                      $instrument,
-                     $_REQUEST['visit_label'],
+                     $sanitize['visit_label'],
                      $candID,
-                     $_REQUEST['site'],
-                     $_REQUEST['project']
+                     $sanitize['site'],
+                     $sanitize['project']
                  );
 
             $this->tpl_data['Incomplete_candidates']
@@ -171,10 +173,10 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $conflicts = $this->
             instrumentInConflict(
                 $instrument,
-                $_REQUEST['visit_label'],
+                $sanitize['visit_label'],
                 $candID,
-                $_REQUEST['site'],
-                $_REQUEST['project']
+                $sanitize['site'],
+                $sanitize['project']
             );
 
             $this->tpl_data['Conflicts'] =  json_encode($conflicts);
@@ -184,9 +186,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $bvlFeedback = $this->getFeedbacks(
                 $instrument,
                 $candID,
-                $_REQUEST['visit_label'],
-                $_REQUEST['site'],
-                $_REQUEST['project']
+                $sanitize['visit_label'],
+                $sanitize['site'],
+                $sanitize['project']
             );
 
             $this->tpl_data['Bvl_Feedback'] = json_encode($bvlFeedback);
@@ -196,10 +198,10 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $this->tpl_data['percent_complete'] = $this
                 ->_getPercentCompleted(
                     $instrument,
-                    $_REQUEST['visit_label'],
+                    $sanitize['visit_label'],
                     $candID,
-                    $_REQUEST['site'],
-                    $_REQUEST['project']
+                    $sanitize['site'],
+                    $sanitize['project']
                 );
 
     }
@@ -313,24 +315,25 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      */
     function addWhere($Column, $Filter)
     {
-        if (!empty($_REQUEST[$Filter])
-            && $_REQUEST[$Filter] !=='All Fields'
-            && (strtolower($_REQUEST[$Filter]) !=='any')
-            && ($_REQUEST[$Filter] !=='All Visits')
-            && $_REQUEST[$Filter] !=='all_flags'
-            && ($_REQUEST[$Filter] !=='All Instruments')
+        $sanitize = array_map('htmlspecialchars' , $_REQUEST);
+        if (!empty($sanitize[$Filter])
+            && $sanitize[$Filter] !=='All Fields'
+            && (strtolower($sanitize[$Filter]) !=='any')
+            && ($sanitize[$Filter] !=='All Visits')
+            && $sanitize[$Filter] !=='all_flags'
+            && ($sanitize[$Filter] !=='All Instruments')
         ) {
             global $DB;
             if ($Filter == 'instrument') {
                 $test_name = $this->getTestNameusingMappedName(
-                    $_REQUEST[$Filter]
+                    $sanitize[$Filter]
                 );
                 return " AND $Column LIKE " . $DB->quote($test_name);
             }
-            if ($_REQUEST[$Filter] == 'not_sent_to_dcc') {
+            if ($sanitize[$Filter] == 'not_sent_to_dcc') {
                 return " AND $Column NOT LIKE '%Approval%'";
             }
-            return " AND $Column LIKE " . $DB->quote($_REQUEST[$Filter]);
+            return " AND $Column LIKE " . $DB->quote($sanitize[$Filter]);
         }
         return '';
     }
