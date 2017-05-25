@@ -25,7 +25,7 @@ before_install:
     - nvm install node
     - mkdir -p project project/libraries
     - phpenv config-rm xdebug.ini
-    - chmod +x ./scripts/*
+    - chmod +x ./script/*
     - ./script/travis_mysql_5.7.sh
     - ./script/mysql-reset-root-password.sh
 install:
