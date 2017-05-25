@@ -29,7 +29,7 @@
 class NDB_Menu_Filter_Media extends NDB_Menu_Filter
 {
     public $hasWritePermission = false;
-    public $hasHidePermission = false;
+    public $hasHidePermission  = false;
     public $AjaxModule         = true;
 
     /**
@@ -46,8 +46,8 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         // Set global permission to control access to different modules of media page
         $this->hasWritePermission = $user->hasPermission('media_write');
 
-        // Set permission to access user-hidden files, current based on superuser (admin)
-        $this->hasHidePermission= $user->hasPermission("superuser");
+        // Set permission to access user-hidden files, currently based on superuser
+        $this->hasHidePermission = $user->hasPermission("superuser");
 
         return $user->hasPermission('media_read');
     }
@@ -123,21 +123,20 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $this->addSelect('instrument', 'Instrument', $instrumentList);
 
         // Add hidden files filter is user is admin
-        if ($this->hasHidePermission){
-            // Unable to create checkbox using addCheckbox(), using addSelect for the time being
-            // $this->addCheckbox('show_hidden', "Show hidden files", array('value'=>'1'));
-
+        if ($this->hasHidePermission) {
+            // Unable to create checkbox using addCheckbox(), using addSelect for
+            // the time being
             // select options
             $hiddenOptions = array(
-                "" =>'Both',
-                "0" =>'Visible only',
-                "1" =>'Hidden only',
-            );
+                              ""  => 'Both',
+                              "0" => 'Visible only',
+                              "1" => 'Hidden only',
+                             );
             $this->addSelect('hideFile', 'File Visibility', $hiddenOptions);
         }
 
         $this->tpl_data["hasWritePermission"] = $this->hasWritePermission;
-        $this->tpl_data["hasHidePermission"] = $this->hasHidePermission;
+        $this->tpl_data["hasHidePermission"]  = $this->hasHidePermission;
 
         return true;
     }
@@ -156,7 +155,6 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         " LEFT JOIN candidate c ON c.CandID=s.CandID";
         $query .= " WHERE 1=1 ";
         //"m.hide_file = FALSE";
-
 
         // set the class variables
         $this->columns
@@ -184,7 +182,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
             $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
         }
 
-        if (!$user->hasPermission("superuser")){
+        if (!$user->hasPermission("superuser")) {
             $this->query .= " AND m.hide_file = FALSE";
         }
 
@@ -216,7 +214,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
                                'm.instrument',
                                's.Visit_label',
                                's.CenterID',
-                                'm.hide_file',
+                               'm.hide_file',
                               ];
         $this->formToFilter = [
                                'pscid'       => 'c.PSCID',
@@ -224,7 +222,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
                                'visit_label' => 's.Visit_label',
                                'for_site'    => 's.CenterID',
                                'hide_file'   => 'm.hide_file',
-                               ];
+                              ];
         //print_r($this->query);
         return true;
     }
