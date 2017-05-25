@@ -75,13 +75,13 @@ function formatColumn(column, cell, rowData, rowHeaders) {
         let numViolatedScans = row['Number Of MincCreated'] - row['Number Of MincInserted'];
         let patientName = row.PSCID + '_' + row.CandID + '_' + row['Visit Label'];
         violatedScans = <a onClick={openViolatedScans.bind(null, patientName)}>
-            &nbsp; ({numViolatedScans} violated scans)
+            ({numViolatedScans} violated scans)
         </a>;
       }
       return (
         <td style={cellStyle}>
           <a onClick={handleClick.bind(null, row.CandID)}>{cell}</a>
-            {violatedScans}
+          &nbsp; {violatedScans}
         </td>
       );
     }
