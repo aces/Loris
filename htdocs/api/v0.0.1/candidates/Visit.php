@@ -172,16 +172,29 @@ class Visit extends \Loris\API\Candidates\Candidate
         // This version od the API does not handle timepoint creation 
         // when users are at multiple sites
         $user = \User::singleton();
-        $centerIDs = $user->getData('CenterIDs');
+        $centerIDs = $user->getCenterIDs();
         $num_sites = count($centerIDs);
 
-        if ($num_sites >1) {
+        if ($num_sites == 0) {
+            $this->header("HTTP/1.1 401 Unauthorized");
+            $this->error("You are not affiliated with any site");
+            $this->safeExit(0);
+        } else if ($num_sites > 1) {
             $this->header("HTTP/1.1 501 Not Implemented");
             $this->error("This API version does not support timepoint creation " .
                           "by uers with multiple site affilifations. This will be ".
                           "implemented in a future API version");
             $this->safeExit(0);
         } else {
+            $centerID = $centerIDs[0];
+            $candidateCenterID = \Candidate::singleton($this->CandID)
+                ->getCenterID();
+            if ($centerID != $candidateCenterID) {
+                $this->header("HTTP/1.1 401 Unauthorized");
+                $this->error("You are not affiliated with the candidate's site");
+                $this->safeExit(0);
+            }
+
             // need to extract subprojectID
             $this->createNew($this->CandID, $subprojectID, $this->VisitLabel);
             $this->header("HTTP/1.1 201 Created");

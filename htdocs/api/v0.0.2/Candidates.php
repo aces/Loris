@@ -113,18 +113,21 @@ class Candidates extends APIBase
             // This version od the API does not handle candidate creation 
             // when users are at multiple sites
             $user = \User::singleton();
-            $centerIDs = $user->getData('CenterIDs');
+            $centerIDs = $user->getCenterIDs();
             $num_sites = count($centerIDs);
 
-            if ($num_sites >1) {
+            if ($num_sites == 0) {
+                $this->header("HTTP/1.1 401 Unauthorized");
+                $this->error("You are not affiliated with any site");
+                $this->safeExit(0);
+            } else if ($num_sites > 1) {
                 $this->header("HTTP/1.1 501 Not Implemented");
                 $this->error("This API version does not support timepoint creation " .
                               "by uers with multiple site affilifations. This will be ".
                               "implemented in a future API version");
                 $this->safeExit(0);
             } else {
-                $centerIDs = $user->getData('CenterIDs');
-                $centerID  = $centerIDs[0];
+                $centerID = $centerIDs[0];
 
                 $this->verifyField($data, 'Gender', ['Male', 'Female']);
                 $this->verifyField($data, 'EDC', 'YYYY-MM-DD');
@@ -146,10 +149,11 @@ class Candidates extends APIBase
                     $this->header("HTTP/1.1 400 Bad Request");
                     $this->safeExit(0);
                 }
-            } else {
-                $this->header("HTTP/1.1 400 Bad Request");
-                $this->safeExit(0);
             }
+        } else {
+            $this->header("HTTP/1.1 400 Bad Request");
+            $this->safeExit(0);
+        }
     }
 
     /**
@@ -191,7 +195,7 @@ class Candidates extends APIBase
      * @param string $gender    Gender of the candidate to be created
      * @param string $PSCID     PSCID of the candidate to be created
      *
-     * @return none
+     * @return int The id
      */
     public function createNew($centerID, $DoB, $edc, $gender, $PSCID)
     {
