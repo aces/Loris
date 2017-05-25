@@ -122,16 +122,17 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $this->addBasicText('uploadedBy', 'Uploaded By');
         $this->addSelect('instrument', 'Instrument', $instrumentList);
 
-        $yesNoOptions = array(
-            "0" =>'No',
-            "1" =>'Yes',
+        $hiddenOptions = array(
+            "" =>'Both',
+            "0" =>'Visible only',
+            "1" =>'Hidden only',
         );
 
         if ($this->hasHidePermission){
             // Unable to add checkbox using the function below, adding select for the time being
             //$this->addCheckbox('show_hidden', "Show hidden files", array('value'=>'1'));
 
-            $this->addSelect('hide_file', 'Show Hidden', $yesNoOptions);
+            $this->addSelect('hideFile', 'File Visibility', $hiddenOptions);
         }
 
         $this->tpl_data["hasWritePermission"] = $this->hasWritePermission;
