@@ -70,21 +70,33 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   if (column === 'Number Of MincInserted') {
     if (cell > 0) {
-      let violatedScans;
-      if (row['Number Of MincCreated'] - row['Number Of MincInserted'] > 0) {
-        let numViolatedScans = row['Number Of MincCreated'] - row['Number Of MincInserted'];
-        let patientName = row.PSCID + '_' + row.CandID + '_' + row['Visit Label'];
-        violatedScans = <a onClick={openViolatedScans.bind(null, patientName)}>
-            ({numViolatedScans} violated scans)
-        </a>;
-      }
       return (
         <td style={cellStyle}>
           <a onClick={handleClick.bind(null, row.CandID)}>{cell}</a>
-          &nbsp; {violatedScans}
         </td>
       );
     }
+  }
+
+  if (column === 'Number Of MincCreated') {
+     let violatedScans;
+     if (row['Number Of MincCreated'] - row['Number Of MincInserted'] > 0) {
+      let numViolatedScans = row['Number Of MincCreated'] - row['Number Of MincInserted'];
+      let uploadLoc = row['UploadLocation'];
+      let fileName = uploadLoc.split("/").splice(-1)[0];
+      let patientName = fileName.split(".")[0];
+      violatedScans = <a onClick={openViolatedScans.bind(null, patientName)}>
+      ({numViolatedScans} violated scans)
+      </a>;
+     }
+
+     return (
+         <td style={cellStyle}>
+             {cell}
+             &nbsp;
+             {violatedScans}
+         </td>
+     );
   }
 
   /**
