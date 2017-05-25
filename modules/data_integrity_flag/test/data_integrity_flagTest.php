@@ -94,8 +94,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
     function testDataIntegrityFlagFilterInstrument()
     {
         $this->safeGet(
-            $this->url . "/data_integrity_flag/".
-            "?instrument=test_instrument"
+            $this->url . "/data_integrity_flag/?format=json"
         );
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -131,8 +130,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
     function testDataIntegrityFlagFilterUser()
     {
         $this->safeGet(
-            $this->url . "/data_integrity_flag/".
-            "?users=test_user"
+            $this->url . "/data_integrity_flag/?format=json"
         );
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -167,8 +165,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
     function testDataIntegrityFlagFilterVisitlabel()
     {
         $this->safeGet(
-            $this->url . "/data_integrity_flag/"
-            ."?visit_label=V_test"
+            $this->url . "/data_integrity_flag/?format=json"
         );
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")

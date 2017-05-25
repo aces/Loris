@@ -86,7 +86,7 @@ class BrainBrowser extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
                        "zspace" => $this->_getDimension("zspace"),
                       ];
         if (count($orderArray) === 4) {
-            $this->JSON['time'] = $this->_getDimension("time")
+            $this->JSON['time'] = $this->_getDimension("time");
         }
         $this->JSON['order'] = $orderArray;
     }

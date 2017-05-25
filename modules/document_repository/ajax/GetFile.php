@@ -36,27 +36,33 @@ $client->initialize("../project/config.xml");
 // Checks that config settings are set
 $config =& NDB_Config::singleton();
 
-$File = $_GET['File'];
+$file = $_GET['File'];
 
-// Make sure that the user isn't trying to break out of the $path by
-// using a relative filename.
-// No need to check for '/' since all downloads are relative to $basePath
-if (strpos("..", $File) !== false) {
+// Ensure file exists in the document_repository table before serving
+$db     =& Database::singleton();
+$record = $db->pselectOne(
+    "SELECT record_id FROM document_repository WHERE "
+    . "Data_dir=:dd",
+    array('dd' => $file)
+);
+
+if (empty($record)) {
     error_log("ERROR: Invalid filename");
     header("HTTP/1.1 400 Bad Request");
     exit(4);
 }
 
+$path = __DIR__ . "/../user_uploads/$file";
 
-$FullPath = __DIR__ . "/../user_uploads/$File";
-
-if (!file_exists($FullPath)) {
-    error_log("ERROR: File $FullPath does not exist");
+if (!file_exists($path)) {
+    error_log("ERROR: File $path does not exist");
     header("HTTP/1.1 404 Not Found");
     exit(5);
 }
 
-$fp = fopen($FullPath, 'r');
-fpassthru($fp);
-fclose($fp);
-?>
+// Output file in downloadable format
+header('Content-Description: File Transfer');
+header('Content-Type: application/force-download');
+header("Content-Transfer-Encoding: Binary");
+header("Content-disposition: attachment; filename=\"" . basename($path) . "\"");
+readfile($path);

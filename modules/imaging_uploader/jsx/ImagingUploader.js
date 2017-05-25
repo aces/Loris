@@ -1,4 +1,5 @@
-/* global formatColumn */
+import FilterForm from 'FilterForm';
+import {Tabs, TabPane} from 'Tabs';
 
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
@@ -97,7 +98,10 @@ class ImagingUploader extends React.Component {
           </div>
         </TabPane>
         <TabPane TabId={tabList[1].id}>
-          <UploadForm form={this.state.Data.form} />
+          <UploadForm
+            form={this.state.Data.form}
+            mriList={this.state.Data.mriList}
+          />
         </TabPane>
       </Tabs>
     );
