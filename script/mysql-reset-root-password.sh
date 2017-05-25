@@ -6,8 +6,7 @@ sudo service mysql stop || echo "mysql not stopped"
 sudo stop mysql-5.6 || echo "mysql-5.6 not stopped"
 sudo  mysqld_safe --skip-grant-tables &
 sleep 4
-sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('') where User='root';FLUSH PRIVILEGES;quit;"
-sudo kill -9 `sudo cat /var/lib/mysql/mysqld_safe.pid`
-sudo kill -9 `sudo cat /var/run/mysqld/mysqld.pid`
+mysql -u root -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('')"
+
 sudo service mysql restart
 sleep 4
