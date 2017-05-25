@@ -47,7 +47,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $this->hasWritePermission = $user->hasPermission('media_write');
 
         // Set permission to access user-hidden files, currently based on superuser
-        $this->hasHidePermission = $user->hasPermission("superuser"); 
+        $this->hasHidePermission = $user->hasPermission("superuser");
 
         return $user->hasPermission('media_read');
     }
@@ -154,7 +154,6 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $query  = " FROM media m LEFT JOIN session s ON m.session_id = s.ID".
         " LEFT JOIN candidate c ON c.CandID=s.CandID";
         $query .= " WHERE 1=1 ";
-        //"m.hide_file = FALSE";
 
         // set the class variables
         $this->columns

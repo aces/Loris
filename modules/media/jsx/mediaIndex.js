@@ -47,7 +47,6 @@ class MediaIndex extends React.Component {
   }
 
   updateFilter(filter) {
-    //console.log(filter);
     this.setState({filter});
   }
 
@@ -80,7 +79,6 @@ class MediaIndex extends React.Component {
         </TabPane>
       );
     }
-    //console.log(this.state.filter)
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
