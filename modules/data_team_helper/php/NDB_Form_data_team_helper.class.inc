@@ -63,7 +63,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
                 $defaults[$percent_completed] = $data['percent_completed'];
             }
         }//sanitizing the input coming from the request
-        $sanitize = array_map('htmlspecialchars' , $_REQUEST);
+        $sanitize = array_map('htmlspecialchars', $_REQUEST);
         $defaults["feedback_status"]    = $sanitize['feedback_status'];
         $defaults["completion_status"]  = $sanitize['completion_status'];
         $defaults["sent_to_dcc_status"] = $sanitize['sent_to_dcc_status'];
@@ -90,8 +90,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         $conflicts = array();
         $smarty    = new Smarty_neurodb();
 
-        $config =& NDB_Config::singleton();
-        $sanitize = array_map('htmlspecialchars' , $_REQUEST);
+        $config   =& NDB_Config::singleton();
+        $sanitize = array_map('htmlspecialchars', $_REQUEST);
 
         $instrument = $this->getTestNameusingMappedName($sanitize['instrument']);
         //construct the instrument drop down..
@@ -315,7 +315,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      */
     function addWhere($Column, $Filter)
     {
-        $sanitize = array_map('htmlspecialchars' , $_REQUEST);
+        $sanitize = array_map('htmlspecialchars', $_REQUEST);
         if (!empty($sanitize[$Filter])
             && $sanitize[$Filter] !=='All Fields'
             && (strtolower($sanitize[$Filter]) !=='any')
