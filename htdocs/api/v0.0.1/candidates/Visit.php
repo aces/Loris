@@ -182,8 +182,8 @@ class Visit extends \Loris\API\Candidates\Candidate
         } else if ($num_sites > 1) {
             $this->header("HTTP/1.1 501 Not Implemented");
             $this->error("This API version does not support timepoint creation " .
-                          "by uers with multiple site affilifations. This will be ".
-                          "implemented in a future API version");
+                          "by uers with multiple site affiliations. This will be ".
+                          "implemented in a future release");
             $this->safeExit(0);
         } else {
             $centerID = $centerIDs[0];
