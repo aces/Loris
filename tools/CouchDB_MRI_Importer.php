@@ -102,7 +102,7 @@ class CouchDBMRIImporter
             LEFT JOIN feedback_mri_comments fmric
             ON (fmric.CommentTypeID=7 AND fmric.SessionID=s.ID)
             WHERE c.Entity_type != 'Scanner' AND c.PSCID NOT LIKE '%9999'
-                  AND c.Active='Y' AND s.Active='Y' AND c.CenterID <> 1 ORDER BY s.ID";
+                  AND c.Active='Y' AND s.Active='Y' AND c.CenterID <> 1";
         return $Query;
     }
 
@@ -392,11 +392,11 @@ class CouchDBMRIImporter
 
         $ScanTypes = $this->SQLDB->pselect(
             "SELECT DISTINCT msc.Scan_type as ScanType from mri_scan_type msc
-JOIN files f ON msc.ID= f.AcquisitionProtocolID 
-JOIN files_qcstatus fqc ON f.FileID=fqc.FileID",
+JOIN files f ON msc.ID= f.AcquisitionProtocolID
+JOIN files_qcstatus fqc ON f.FileID=fqc.FileID ORDER BY f.AcquisitionProtocolID",
             array()
         );
-        
+
         return $ScanTypes;
     }
 
