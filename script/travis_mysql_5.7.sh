@@ -8,4 +8,6 @@ echo "--------"
 sudo apt-get update -q
 echo "apt-get update -q"
 sudo apt-get install -q -y -o Dpkg::Options::=--force-confnew mysql-server
+echo "apt-get install -q -y -o Dpkg::Options::=--force-confnew mysql-server"
 sudo mysql_upgrade
+echo "mysql_upgrade"
