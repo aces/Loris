@@ -126,7 +126,8 @@ if (!empty($_REQUEST['sessionID'])) {
         $tpl_data['timePoint'] = $timePoint->getData();
     } catch (Exception $e) {
         $tpl_data['error_message'][]
-            = "TimePoint Error (".htmlspecialchars($_REQUEST['sessionID'])."): ".$e->getMessage();
+            = "TimePoint Error (".htmlspecialchars($_REQUEST['sessionID'])."): "
+                                                             . $e->getMessage();
     }
 }
 

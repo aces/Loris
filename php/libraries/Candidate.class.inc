@@ -98,7 +98,8 @@ class Candidate
 
         if (!is_array($row) || sizeof($row) == 0) {
             throw new LorisException(
-                'Could not select Candidate data from the database (DCCID: ' . htmlspecialchars($candID),
+                'Could not select Candidate data from the database (DCCID: '
+                                                . htmlspecialchars($candID),
                 CANDIDATE_INVALID
             );
         }
