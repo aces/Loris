@@ -25,16 +25,9 @@ before_install:
     - nvm install node
     - mkdir -p project project/libraries
     - phpenv config-rm xdebug.ini
-    - apt-get remove --purge "^mysql.*"
-    - apt-get autoremove
-    - apt-get autoclean
-    - rm -rf /var/lib/mysql
-    - rm -rf /var/log/mysql
-    - echo mysql-apt-config mysql-apt-config/enable-repo select mysql-5.7-dmr | sudo debconf-set-selections
-    - wget http://dev.mysql.com/get/mysql-apt-config_0.2.1-1ubuntu12.04_all.deb
-    - dpkg --install mysql-apt-config_0.2.1-1ubuntu12.04_all.deb
-    - apt-get update -q
-    - apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" mysql-server
+    - chmod +x ./scripts/*
+    - ./script/travis_mysql_5.7.sh
+    - ./script/mysql-reset-root-password.sh
 install:
     # Install composer modules
     - composer install
