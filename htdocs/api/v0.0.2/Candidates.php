@@ -110,9 +110,9 @@ class Candidates extends APIBase
                 $this->safeExit(0);
             }
 
-            // This version od the API does not handle candidate creation 
+            // This version od the API does not handle candidate creation
             // when users are at multiple sites
-            $user = \User::singleton();
+            $user      = \User::singleton();
             $centerIDs = $user->getCenterIDs();
             $num_sites = count($centerIDs);
 
@@ -122,9 +122,11 @@ class Candidates extends APIBase
                 $this->safeExit(0);
             } else if ($num_sites > 1) {
                 $this->header("HTTP/1.1 501 Not Implemented");
-                $this->error("This API version does not support candidate creation " .
-                              "by uers with multiple site affiliations. This will be ".
-                              "implemented in a future release");
+                $this->error(
+                    "This API version does not support candidate creation " .
+                    "by uers with multiple site affiliations. This will be ".
+                    "implemented in a future release"
+                );
                 $this->safeExit(0);
             } else {
                 $centerID = $centerIDs[0];
@@ -188,12 +190,12 @@ class Candidates extends APIBase
     /**
      * Testable wrapper for Candidate::createNew
      *
-     * @param int    $centerID  centerID of the site to which the candidate will
+     * @param int    $centerID centerID of the site to which the candidate will belong
      *                          belong
-     * @param string $DoB       Date of birth of the candidate
-     * @param string $edc       EDC of the candidate
-     * @param string $gender    Gender of the candidate to be created
-     * @param string $PSCID     PSCID of the candidate to be created
+     * @param string $DoB      Date of birth of the candidate
+     * @param string $edc      EDC of the candidate
+     * @param string $gender   Gender of the candidate to be created
+     * @param string $PSCID    PSCID of the candidate to be created
      *
      * @return int The id
      */

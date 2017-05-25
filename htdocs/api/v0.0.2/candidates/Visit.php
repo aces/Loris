@@ -169,9 +169,9 @@ class Visit extends \Loris\API\Candidates\Candidate
             $this->safeExit(0);
 
         }
-        // This version od the API does not handle timepoint creation 
+        // This version od the API does not handle timepoint creation
         // when users are at multiple sites
-        $user = \User::singleton();
+        $user      = \User::singleton();
         $centerIDs = $user->getCenterIDs();
         $num_sites = count($centerIDs);
 
@@ -181,12 +181,14 @@ class Visit extends \Loris\API\Candidates\Candidate
             $this->safeExit(0);
         } else if ($num_sites > 1) {
             $this->header("HTTP/1.1 501 Not Implemented");
-            $this->error("This API version does not support timepoint creation " .
-                          "by uers with multiple site affiliations. This will be ".
-                          "implemented in a future release");
+            $this->error(
+                "This API version does not support timepoint creation " .
+                "by uers with multiple site affiliations. This will be ".
+                "implemented in a future release"
+            );
             $this->safeExit(0);
         } else {
-            $centerID  = $centerIDs[0];
+            $centerID          = $centerIDs[0];
             $candidateCenterID = \Candidate::singleton($this->CandID)
                 ->getCenterID();
             if ($centerID != $candidateCenterID) {
