@@ -81,13 +81,14 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   if (column === 'Number Of MincCreated') {
      let violatedScans;
      if (row['Number Of MincCreated'] - row['Number Of MincInserted'] > 0) {
-      let numViolatedScans = row['Number Of MincCreated'] - row['Number Of MincInserted'];
-      let uploadLoc = row['UploadLocation'];
-      let fileName = uploadLoc.split("/").splice(-1)[0];
-      let patientName = fileName.split(".")[0];
-      violatedScans = <a onClick={openViolatedScans.bind(null, patientName)}>
-      ({numViolatedScans} violated scans)
-      </a>;
+       let numViolatedScans
+           = row['Number Of MincCreated'] - row['Number Of MincInserted'];
+       let uploadLoc = row['UploadLocation'];
+       let fileName = uploadLoc.split('/').splice(-1)[0];
+       let patientName = fileName.split('.')[0];
+       violatedScans = <a onClick={openViolatedScans.bind(null, patientName)}>
+         ({numViolatedScans} violated scans)
+       </a>;
      }
 
      return (
