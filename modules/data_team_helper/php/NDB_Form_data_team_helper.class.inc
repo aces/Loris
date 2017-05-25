@@ -47,15 +47,16 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
     {
         $defaults     = array();
         $DB           =& Database::singleton();
-        $extra_where .= $this->addWhere("p.sourceFrom", 'instrument');
+        $extra_where  = $this->addWhere("p.sourceFrom", 'instrument');
         $extra_where .= $this->addWhere("p.Name", 'FieldName');
         $orderby      = " ORDER BY p.sourceFrom,p.sourceField";
 
         //construct the query
         if (($extra_where) !=null) {
-            $query = "SELECT DISTINCT p.sourceFrom,p.sourceField FROM
+            $query   = "SELECT DISTINCT p.sourceFrom,p.sourceField FROM
                 parameter_type p WHERE 1=1 $extra_where";
-            $DB->select($query,  $info);
+            $qparams =array();
+            $info    =$DB->pselect($query,  $qparams);
             foreach ($info as $data) {
                 $percent_completed            = $data['Name']
                     . ":" . $data['Visit_label']
