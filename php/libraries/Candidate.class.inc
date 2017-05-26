@@ -724,7 +724,7 @@ var_dump("INSERTED");
         // run one first time, then loop until the pscid is not used
         do {
             // pick a new pscid
-            if ($PSCIDSettings['generation'] == 'sequential') 
+            if ($PSCIDSettings['generation'] == 'sequential') {
                 var_dump("SEQUENTIAL");
                 if (!empty($pscid)) {
                     $pscid++;
