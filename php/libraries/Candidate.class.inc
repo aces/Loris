@@ -835,14 +835,18 @@ var_dump($pscid);
      */
     static function generateRandomStringFromArrays($arrays)
     {
+        var_dump("generateRandomStringFromArrays");
+        var_dump($arrays);
         $string = "";
         foreach ($arrays AS $array) {
+            var_dump($string);
             if (is_array($array)) {
                 $string .= $array[array_rand($array)];
             } else {
                 $string .= $array;
             }
         }
+        var_dump($string);
         return $string;
     }
 
