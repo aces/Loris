@@ -90,8 +90,9 @@ if (strpos("..", $File) !== false) {
     exit(4);
 }
 
-// If $File contains "tarchive", identify it as $FileExt: "DICOMTAR"
-if (strpos($File, "tarchive") ) { 
+// If $File contains "DCM_", prefix automatically inserted by the
+// LORIS-MRI pipeline, identify it as $FileExt: "DICOMTAR"
+if (strpos($File, "DCM_") ) {
     $FileExt = "DICOMTAR";
 }
 
@@ -136,7 +137,7 @@ case 'nrrd':
     $MimeType         = 'image/vnd.nrrd';
     $DownloadFilename = basename($File);
     break;
-case 'tar':   
+case 'DICOMTAR':
     // ADD case for DICOMTAR
     $FullPath         = $imagePath . '/' . $File;
     $MimeType         = 'application/x-tar';
