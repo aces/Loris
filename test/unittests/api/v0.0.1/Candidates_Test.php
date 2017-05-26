@@ -81,14 +81,8 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
             ]
         ]);
     }
-
-    function testPostCandidateValid() {
+    function doPostCandidate () {
         try {
-            $user = \User::singleton("admin");
-            $tmp  = $user->userInfo["CenterIDs"];
-
-            $user->userInfo["CenterIDs"] = array(1);
-
             $API = $this->getMockBuilder(
                 '\Loris\API\Candidates')->disableOriginalConstructor()->setMethods(['createNew'])->getMock();
             $API->expects($this->once())->method('createNew');
@@ -102,9 +96,32 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
                     ]
                 ]
                 );
+            return $API;
         } catch(\Loris\API\SafeExitException $e) {
             $API = $e->Object;
+            return $API;
         }
+    }
+    function testPostCandidateValid() {
+        $user = \User::singleton("admin");
+        $tmp  = $user->userInfo["CenterIDs"];
+
+        //Test with no centers
+        $user->userInfo["CenterIDs"] = array();
+
+        $API = $this->doPostCandidate();
+        $this->assertEquals($API->Headers, ['HTTP/1.1 401 Unauthorized']);
+        $this->assertEquals(isset($API->JSON['Meta']['CandID']), false);
+
+        //Test with multiple centers
+        $user->userInfo["CenterIDs"] = array(1, 2);
+
+        $API = $this->doPostCandidate();
+        $this->assertEquals($API->Headers, ['HTTP/1.1 501 Not Implemented']);
+        $this->assertEquals(isset($API->JSON['Meta']['CandID']), false);
+
+        //Test with one center
+        $user->userInfo["CenterIDs"] = array(1);
 
         $this->assertEquals($API->Headers, ['HTTP/1.1 201 Created']);
         $this->assertEquals(isset($API->JSON['Meta']['CandID']), true);
