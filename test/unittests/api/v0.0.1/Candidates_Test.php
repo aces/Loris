@@ -131,7 +131,7 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
 
         $API = $this->doPostCandidate();
         var_dump($API->JSON);
-        //\Candidate::createNew(1, '2015-05-26', '2015-05-26', 'Male', 'HelloPSC');
+        \Candidate::createNew(1, '2015-05-26', '2015-05-26', 'Male', 'HelloPSC');
         $this->assertEquals($API->Headers, ['HTTP/1.1 201 Created']);
         $this->assertEquals(isset($API->JSON['Meta']['CandID']), true);
         $CandID = $API->JSON['Meta']['CandID'];
