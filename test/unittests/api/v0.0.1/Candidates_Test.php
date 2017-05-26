@@ -11,7 +11,17 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
             define("UNIT_TESTING", true);
         }
 
-        //$this->getMockBuilder('NDB_Config')->setMockClassName("MockNDB_Config")->getMock();
+        $this->getMockBuilder('NDB_Config')->setMockClassName("MockNDB_Config")
+            ->getMock()
+                ->method("getSetting")
+                    ->will($this->returnCallback(function ($key) {
+                        switch ($key) {
+                            case "PSCID":
+                                return array();
+                            default:
+                                throw new Exception("no key $key");
+                        }
+                    }));
         $this->getMockBuilder('Database')->setMockClassName("MockDatabase")->getMock();
         $this->getMockBuilder('Candidate')->setMockClassName("MockCandidate")->getMock();
 

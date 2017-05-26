@@ -719,6 +719,8 @@ var_dump("INSERTED");
         $config = $factory->config();
 
         $PSCIDSettings = $config->getSetting('PSCID');
+        var_dump("PSCID SETTINGS");
+        var_dump($PSCIDSettings);
         $pscidArrays   = Candidate::generateArrays($PSCIDSettings, $prefix);
 
         // run one first time, then loop until the pscid is not used
