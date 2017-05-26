@@ -391,7 +391,7 @@ class User extends UserPermissions
      * @param string $expiry   The password expiry date. If not supplied, the
      *                         password expiry date will be set to now+6months.
      *
-     * @return none
+     * @return void
      */
     function updatePassword($password, $expiry = null)
     {
