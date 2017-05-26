@@ -107,6 +107,7 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
         $_SESSION = array(
             'State' => State::singleton()->setUsername("admin")
         );
+        var_dump($_SESSION);
         $tmp  = $user->userInfo["CenterIDs"];
 
         //Test with no centers

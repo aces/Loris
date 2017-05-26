@@ -197,6 +197,7 @@ var_dump("DATABASE VAR DEFINED");
         $site =& Site::singleton($centerID);
 var_dump("SITE VAR DEFINED");
 var_dump($site);
+        var_dump($_SESSION);
         $user =& User::singleton($_SESSION['State']->getUsername());
 var_dump("USER VAR DEFINED!");
 var_dump($user);
