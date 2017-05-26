@@ -20,7 +20,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   // create array of classes to be added to td tag
   var classes = [];
-  if (row['Hide File'] === 1) {
+  if (row['Hide File'] === '1') {
     classes.push("bg-danger");
   }
   // convert array to string, with blank space separator
@@ -51,7 +51,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     return <td className={classes}><a href={editURL}>Edit</a></td>;
   }
 
-  return <td className= {classes}>{cell}</td>;
+  return <td className={classes}>{cell}</td>;
 }
 
 export default formatColumn;
