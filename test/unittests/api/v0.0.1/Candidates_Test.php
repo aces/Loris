@@ -84,7 +84,11 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
 
     function testPostCandidateValid() {
         try {
-            \User::singleton("admin");
+            $user = \User::singleton("admin");
+            $tmp  = $user->userInfo["CenterIDs"];
+
+            $user->userInfo["CenterIDs"] = array(1);
+
             $API = $this->getMockBuilder(
                 '\Loris\API\Candidates')->disableOriginalConstructor()->setMethods(['createNew'])->getMock();
             $API->expects($this->once())->method('createNew');
@@ -109,6 +113,7 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
         $this->assertTrue($CandID >= 100000);
         $this->assertTrue($CandID <= 999999);
 
+        $user->userInfo["CenterIDs"] = $tmp;
     }
 
     function testPostCandidateInvalidGender() {
