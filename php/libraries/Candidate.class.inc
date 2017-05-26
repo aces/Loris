@@ -735,8 +735,8 @@ var_dump("INSERTED");
             } else {
                 var_dump("RANDOM");
                 $pscid = Candidate::generateRandomStringFromArrays($pscidArrays);
+                var_dump($pscid);
             }
-
             if ($pscid == '') {
                 throw new LorisException(
                     "Well this is embarrassing, our automated PSCID generator "
@@ -751,7 +751,8 @@ var_dump("INSERTED");
                 array('PID' => $pscid)
             ) > 0
         );
-
+var_dump("RETURNING THE PSCID");
+var_dump($pscid);
         return $pscid;
     }
 
