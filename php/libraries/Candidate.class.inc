@@ -724,13 +724,16 @@ var_dump("INSERTED");
         // run one first time, then loop until the pscid is not used
         do {
             // pick a new pscid
-            if ($PSCIDSettings['generation'] == 'sequential') {
+            if ($PSCIDSettings['generation'] == 'sequential') 
+                var_dump("SEQUENTIAL");
                 if (!empty($pscid)) {
                     $pscid++;
                 } else {
                     $pscid = Candidate::generateFirstStringFromArrays($pscidArrays);
                 }
+                var_dump($pscid);
             } else {
+                var_dump("RANDOM");
                 $pscid = Candidate::generateRandomStringFromArrays($pscidArrays);
             }
 
