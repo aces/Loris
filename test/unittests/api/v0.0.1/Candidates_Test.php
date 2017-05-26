@@ -11,7 +11,7 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
             define("UNIT_TESTING", true);
         }
 
-        $this->getMockBuilder('NDB_Config')->setMockClassName("MockNDB_Config")->getMock();
+        //$this->getMockBuilder('NDB_Config')->setMockClassName("MockNDB_Config")->getMock();
         $this->getMockBuilder('Database')->setMockClassName("MockDatabase")->getMock();
         $this->getMockBuilder('Candidate')->setMockClassName("MockCandidate")->getMock();
 
