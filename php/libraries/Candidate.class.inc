@@ -199,7 +199,8 @@ class Candidate
 
         // generate candid
         $candID = Candidate::_generateCandID();
-
+var_dump("FUCK THIS");
+var_dump($candID);
         // figure out how to generate PSCID
         $config        = $factory->config();
         $PSCIDSettings = $config->getSetting('PSCID');
@@ -254,7 +255,7 @@ class Candidate
         }
 
         $db->insert('candidate', $setArray);
-
+var_dump("INSERTED");
         // return the new candid
         return $candID;
     }
