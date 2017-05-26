@@ -190,13 +190,16 @@ class Candidate
     static public function createNew(
         $centerID, $dateOfBirth, $edc, $gender, $PSCID = null
     ) {
+        var_dump("CALLED!");
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
-
+var_dump("DATABASE VAR DEFINED");
         $site =& Site::singleton($centerID);
-
+var_dump("SITE VAR DEFINED");
+var_dump($site);
         $user =& User::singleton($_SESSION['State']->getUsername());
-
+var_dump("USER VAR DEFINED!");
+var_dump($user);
         // generate candid
         $candID = Candidate::_generateCandID();
 var_dump("FUCK THIS");
