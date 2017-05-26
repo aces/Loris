@@ -104,7 +104,9 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
     }
     function testPostCandidateValid() {
         $user = \User::singleton("admin");
-        $_SESSION['State'] = State::singleton()->setUsername("admin");
+        $_SESSION = array(
+            'State' => State::singleton()->setUsername("admin")
+        );
         $tmp  = $user->userInfo["CenterIDs"];
 
         //Test with no centers
