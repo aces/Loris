@@ -105,8 +105,9 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
     function testPostCandidateValid() {
         $user = \User::singleton("admin");
         $_SESSION = array(
-            'State' => State::singleton()->setUsername("admin")
+            'State' => State::singleton()
         );
+        State::singleton()->setUsername("admin");
         var_dump($_SESSION);
         var_dump(State::singleton());
         $tmp  = $user->userInfo["CenterIDs"];
