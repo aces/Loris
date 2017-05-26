@@ -147,6 +147,7 @@ class Candidates extends APIBase
                     $this->JSON = [
                                    'Meta' => ["CandID" => $candid],
                                   ];
+                    var_dump($this->JSON);
                 } catch(\LorisException $e) {
                     $this->header("HTTP/1.1 400 Bad Request");
                     $this->safeExit(0);

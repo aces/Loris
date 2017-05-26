@@ -124,6 +124,7 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
         $user->userInfo["CenterIDs"] = array(1);
 
         $API = $this->doPostCandidate();
+        var_dump($API->JSON);
         $this->assertEquals($API->Headers, ['HTTP/1.1 201 Created']);
         $this->assertEquals(isset($API->JSON['Meta']['CandID']), true);
         $CandID = $API->JSON['Meta']['CandID'];
