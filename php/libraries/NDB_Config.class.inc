@@ -543,6 +543,16 @@ class NDB_Config
                   ORDER BY OrderNumber",
                 array()
             );
+
+            foreach ($thisLevel as &$thisRow) {
+                $nextLevel = NDB_Config::getMenuTabs($thisRow['ID']);
+
+                if (!empty($nextLevel)) {
+                    $thisRow['subtabs'] = $nextLevel;
+                }
+            }
+
+            return $thisLevel;
         } else {
             $thisLevel = $DB->pselect(
                 "SELECT Label,
@@ -567,16 +577,6 @@ class NDB_Config
             }
             return;
         }
-
-        foreach ($thisLevel as &$thisRow) {
-            $nextLevel = NDB_Config::getMenuTabs($thisRow['ID']);
-
-            if (!empty($nextLevel)) {
-                $thisRow['subtabs'] = $nextLevel;
-            }
-        }
-
-        return $thisLevel;
     }
 
     /**
