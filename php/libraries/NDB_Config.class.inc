@@ -78,9 +78,7 @@ class NDB_Config
 
             // Load all includes found in the config
             foreach (Utility::asArray($config->_settings['include']) as $k=>$path) {
-                if (file_exists($path)) {
-                    $config->load($path);
-                }
+                $config->load($config->configFilePath($path));
             }
         }
 
@@ -117,6 +115,8 @@ class NDB_Config
      * @param string $pathToFile relative file path or file name
      *
      * @return string  absolute path of config file
+     *
+     * @throws LorisException when any config file is missing
      */
     function configFilePath($pathToFile = "config.xml")
     {
@@ -136,6 +136,13 @@ class NDB_Config
         } else if (file_exists("/usr/local/etc/loris/$pathToFile")) {
             // Standard Unix filesystem layout, option 2
             $file = "/usr/local/etc/loris/$pathToFile";
+        } else if (file_exists($pathToFile)) {
+            // Absolute path given
+            $file = $pathToFile;
+        } else {
+            throw new LorisException(
+                "Config file $pathToFile does not exist in the defined locations."
+            );
         }
 
         return $file;
