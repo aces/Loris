@@ -390,9 +390,9 @@ class NDB_Page
     /**
      * Creates a QuickForm text element but does not add it to the form
      *
-     * @param string $field The field name for this text element
-     * @param string $label The label to attach to the element
-     * @param array  $attr  Extra HTML attributes to add to the element
+     * @param string $field   The field name for this text element
+     * @param string $label   The label to attach to the element
+     * @param array  $attribs Extra HTML attributes to add to the element
      *
      * @return HTML_QuickForm Text element
      */
@@ -401,7 +401,7 @@ class NDB_Page
         $label=null,
         $attribs=array()
     ) {
-        $attr=array_merge($attribs,array('class' => 'form-control input-sm'));
+        $attr =array_merge($attribs, array('class' => 'form-control input-sm'));
         return $this->form->createElement("text", $field, $label, $attr);
     }
 
