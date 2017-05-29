@@ -769,6 +769,7 @@ class NDB_Form_Statistics extends NDB_Form
                              'Complete',
                              'Partial Run',
                              'No Scan',
+                             'Unspecified',
                             );
 
         //Check if a specific scan is requested otherwise display first
@@ -799,6 +800,7 @@ class NDB_Form_Statistics extends NDB_Form
             $no_scans       = '';
             $partial_scans  = '';
             $complete_scans = '';
+            $unspec_scans = '';
             foreach ($Scan_type_results as $row) {
                 $temp = $row['Scan_type'];
                 if ($temp === '') {
@@ -811,12 +813,12 @@ class NDB_Form_Statistics extends NDB_Form
                     $no_scans       .= "(".$temp."_Scan_Done = 'No')";
                     $partial_scans  .= "(".$temp."_Scan_Done = 'Partial')";
                     $complete_scans .= "(".$temp."_Scan_Done = 'Complete')";
-                    $complete_scans .= " + (".$temp."_Scan_Done = '')";
+                    $unspec_scans   .= "(".$temp."_Scan_Done = '')";
                 } else {
                     $no_scans       .= " + (".$temp."_Scan_Done = 'No')";
                     $partial_scans  .= " + (".$temp."_Scan_Done = 'Partial')";
                     $complete_scans .= " + (".$temp."_Scan_Done = 'Complete')";
-                    $complete_scans .= " + (".$temp."_Scan_Done = '')";
+                    $unspec_scans   .= " + (".$temp."_Scan_Done = '')";
                 }
             }
             if ($Param_Project != '') {
@@ -828,7 +830,8 @@ class NDB_Form_Statistics extends NDB_Form
                 	        s.Visit_label AS VLabel,
                 	        SUM($no_scans) AS total_no,
                 	        SUM($partial_scans) AS total_part,
-                	        SUM($complete_scans) AS total_comp
+                	        SUM($complete_scans) AS total_comp,
+                            SUM($unspec_scans) AS total_unsp
                 	    FROM
                 	        mri_parameter_form m
                 	        JOIN flag f USING (CommentID)
@@ -856,7 +859,8 @@ class NDB_Form_Statistics extends NDB_Form
             	            s.Visit_label AS VLabel,
             	            SUM($no_scans) AS total_no,
             	            SUM($partial_scans) AS total_part,
-            	            SUM($complete_scans) AS total_comp
+            	            SUM($complete_scans) AS total_comp,
+                            SUM($unspec_scans) AS total_unsp
             	        FROM
             	            mri_parameter_form m
             	            JOIN flag f USING (CommentID)
@@ -877,9 +881,10 @@ class NDB_Form_Statistics extends NDB_Form
             }
             $PRO_params['no_scans']        = $no_scans;
             $PRO_params['partial_scans']   = $partial_scans;
-            $PRO_params['complete_Scans']  = $complete_scans;
+            $PRO_params['complete_scans']  = $complete_scans;
             $PRO_params['suproject_query'] = $suproject_query;
             $PRO_params['Param_Project']   = $Param_Project;
+            $PRO_params['unspec_scans']    = $unspec_scans;
 
             $Pre_Result_Two   = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_comp AS (
                     SELECT
@@ -905,9 +910,17 @@ class NDB_Form_Statistics extends NDB_Form
                         \"No Scan\" AS Subcat,
                         t.total_no AS val
                     FROM temp_totals t)";
+            $Pre_Result_Five = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_unsp AS (
+                    SELECT
+                        t.SubprojectID,
+                        t.CenterID,
+                        t.VLabel,
+                        \"Unspecified\" AS Subcat,
+                        t.total_unsp AS val
+                    FROM temp_totals t)";
             $Result_query     = "SELECT * FROM temp_comp UNION SELECT * FROM";
             $Result_query    .= " temp_part UNION SELECT * FROM temp_no";
-
+            $Result_query    .= " UNION SELECT * FROM temp_unsp";
             $DB->execute(
                 $DB->prepare($Pre_Result_One),
                 $PRO_params,
@@ -928,10 +941,16 @@ class NDB_Form_Statistics extends NDB_Form
                 array(),
                 array('nofetch' => true)
             );
+            $DB->execute(
+                $DB->prepare($Pre_Result_Five),
+                array(),
+                array('nofetch; => true')
+            );
             $result   = $DB->pselect(
                 $Result_query,
                 array()
             );
+
             $M_Visits = Utility::getExistingVisitLabels($currentProject);
             $this->tpl_data['MRI_Done_Table'] = $this->renderStatsTable(
                 "Breakdown By Scan Type",
@@ -954,7 +973,8 @@ class NDB_Form_Statistics extends NDB_Form
         	                  CASE($MRI_Type_Field)
         	                  WHEN 'Partial' THEN 'Partial Run'
         	                  WHEN 'No' THEN 'No Scan'
-        	                  ELSE 'Complete'
+        	                  WHEN 'Complete' THEN 'Complete'
+                              WHEN '' THEN 'Unspecified'
         	                  END";
 
             $result   = $DB->pselect(
