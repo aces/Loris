@@ -14,7 +14,7 @@
         </testsuite>
 
         <testsuite name='LorisModuleIntegrationTests'>
-            <!--<directory>../modules/acknowledgements/test/</directory>
+            <directory>../modules/acknowledgements/test/</directory>
             <directory>../modules/brainbrowser/test/</directory>
             <directory>../modules/candidate_list/test/</directory>
             <directory>../modules/candidate_parameters/test/</directory>
@@ -49,7 +49,7 @@
             <directory>../modules/user_accounts/test/</directory>
             <directory>../modules/media/test/</directory>
             <directory>../modules/issue_tracker/test/</directory>
-            <directory>../test/test_instrument/</directory>-->
+            <directory>../test/test_instrument/</directory>
         </testsuite>
 
     </testsuites>
