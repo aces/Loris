@@ -190,21 +190,15 @@ class Candidate
     static public function createNew(
         $centerID, $dateOfBirth, $edc, $gender, $PSCID = null
     ) {
-        var_dump("CALLED!");
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
-var_dump("DATABASE VAR DEFINED");
+
         $site =& Site::singleton($centerID);
-var_dump("SITE VAR DEFINED");
-var_dump($site);
-        var_dump($_SESSION);
         $user =& User::singleton($_SESSION['State']->getUsername());
-var_dump("USER VAR DEFINED!");
-var_dump($user);
+
         // generate candid
         $candID = Candidate::_generateCandID();
-var_dump("FUCK THIS");
-var_dump($candID);
+
         // figure out how to generate PSCID
         $config        = $factory->config();
         $PSCIDSettings = $config->getSetting('PSCID');
@@ -259,7 +253,7 @@ var_dump($candID);
         }
 
         $db->insert('candidate', $setArray);
-var_dump("INSERTED");
+
         // return the new candid
         return $candID;
     }
@@ -719,25 +713,19 @@ var_dump("INSERTED");
         $config = $factory->config();
 
         $PSCIDSettings = $config->getSetting('PSCID');
-        var_dump("PSCID SETTINGS");
-        var_dump($PSCIDSettings);
         $pscidArrays   = Candidate::generateArrays($PSCIDSettings, $prefix);
 
         // run one first time, then loop until the pscid is not used
         do {
             // pick a new pscid
             if ($PSCIDSettings['generation'] == 'sequential') {
-                var_dump("SEQUENTIAL");
                 if (!empty($pscid)) {
                     $pscid++;
                 } else {
                     $pscid = Candidate::generateFirstStringFromArrays($pscidArrays);
                 }
-                var_dump($pscid);
             } else {
-                var_dump("RANDOM");
                 $pscid = Candidate::generateRandomStringFromArrays($pscidArrays);
-                var_dump($pscid);
             }
             if ($pscid == '') {
                 throw new LorisException(
@@ -753,8 +741,6 @@ var_dump("INSERTED");
                 array('PID' => $pscid)
             ) > 0
         );
-var_dump("RETURNING THE PSCID");
-var_dump($pscid);
         return $pscid;
     }
 
@@ -837,18 +823,14 @@ var_dump($pscid);
      */
     static function generateRandomStringFromArrays($arrays)
     {
-        var_dump("generateRandomStringFromArrays");
-        var_dump($arrays);
         $string = "";
         foreach ($arrays AS $array) {
-            var_dump($string);
             if (is_array($array)) {
                 $string .= $array[array_rand($array)];
             } else {
                 $string .= $array;
             }
         }
-        var_dump($string);
         return $string;
     }
 
