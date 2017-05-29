@@ -800,7 +800,7 @@ class NDB_Form_Statistics extends NDB_Form
             $no_scans       = '';
             $partial_scans  = '';
             $complete_scans = '';
-            $unspec_scans = '';
+            $unspec_scans   = '';
             foreach ($Scan_type_results as $row) {
                 $temp = $row['Scan_type'];
                 if ($temp === '') {
@@ -910,7 +910,7 @@ class NDB_Form_Statistics extends NDB_Form
                         \"No Scan\" AS Subcat,
                         t.total_no AS val
                     FROM temp_totals t)";
-            $Pre_Result_Five = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_unsp AS (
+            $Pre_Result_Five  = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_unsp AS (
                     SELECT
                         t.SubprojectID,
                         t.CenterID,
@@ -946,7 +946,7 @@ class NDB_Form_Statistics extends NDB_Form
                 array(),
                 array('nofetch; => true')
             );
-            $result   = $DB->pselect(
+            $result = $DB->pselect(
                 $Result_query,
                 array()
             );
