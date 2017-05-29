@@ -199,7 +199,7 @@ class ExaminerTest extends LorisIntegrationTest
     function testExaminerLoadsCertificationElements()
     {
 //        $this->markTestIncomplete("Test not implemented!");
-       *$this->setupConfigSetting('EnableCertification', '1');
+       $this->setupConfigSetting('EnableCertification', '1');
         $this->safeGet($this->url . "/examiner/");
 
         // Check that the certification column appears
