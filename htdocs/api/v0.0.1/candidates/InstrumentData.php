@@ -98,7 +98,7 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
                 null,
                 true
             );
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             $this->header("HTTP/1.1 404 Not Found");
             $this->error("Invalid instrument");
             $this->safeExit(0);

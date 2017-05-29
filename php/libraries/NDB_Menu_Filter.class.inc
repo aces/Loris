@@ -591,11 +591,10 @@ class NDB_Menu_Filter extends NDB_Menu
     {
         $wheredetails = $this->_getBaseFilter();
         $db           = Database::singleton();
-        if (empty($this->group_by)) {
+        if (empty($this->group_by) && empty($this->having)) {
             $query = "SELECT COUNT(*)" . $this->query . $wheredetails['clause'];
-        } else if (!empty($this->group_by)) {
+        } else {
             $query = "SELECT COUNT(*) FROM ($query) as tmptable";
-
         }
         $this->TotalItems = $db->pselectOne($query, $wheredetails['params']);
 
@@ -698,6 +697,9 @@ class NDB_Menu_Filter extends NDB_Menu
                        header('Content-Type: application/json');
                 return $this->toJSON();
             }
+        }
+        if ($this->skipTemplate) {
+            return "";
         }
         // Set the csvFile links
         $uri    = ltrim($_SERVER['REQUEST_URI'], "/");
@@ -804,8 +806,12 @@ class NDB_Menu_Filter extends NDB_Menu
                 ." ".$this->filter['order']['fieldOrder'].", ";
         }
         $query .= $this->order_by;
-        // get the list
 
+        if (!empty($this->limit)) {
+            $query .= " LIMIT $this->limit";
+        }
+
+        // get the list
         $this->_getNumberPages($query);
 
         $config         =& NDB_Config::singleton();

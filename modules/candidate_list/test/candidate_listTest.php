@@ -66,6 +66,77 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->restoreConfigSetting("useEDC");
     }
     /**
+     * Tests that, the homepage should not have "You do not have access
+     * to this page." on the page with permission.
+     *
+     * @return void
+     */
+    function testPageLoadsWithoutPermissionsAccessAllProfiles()
+    {
+        $this->setupPermissions(array("access_all_profiles"));
+        $this->safeGet($this->url . "/candidate_list/");
+        $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertNotContains(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->resetPermissions();
+    }
+    /**
+     * Tests that, the homepage should not have "You do not
+     * have access to this page." on the page with permission.
+     *
+     * @return void
+     */
+    function testPageLoadsWithoutPermissionsDataEntry()
+    {
+        $this->setupPermissions(array("data_entry"));
+        $this->safeGet($this->url . "/candidate_list/");
+        $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertNotContains(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->resetPermissions();
+    }
+    /**
+     * Tests that, Verify that if data_entry and not access_all_profiles
+     * permissions, can only see subjects from own site.
+     *
+     * @return void
+     */
+    function testPageLoadsWithDataEntry()
+    {
+        $this->setupPermissions(array("data_entry"));
+        $this->safeGet($this->url . "/candidate_list/?format=json");
+        $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains(
+            "Subproject",
+            $bodyText
+        );
+        $this->resetPermissions();
+    }
+    /**
+     * Verify that if data_entry and not access_all_profiles permissions,
+     * check that initial filter state is Subproject = All.
+     *
+     * @return void
+     */
+    function testPageLoadsWithDataEntrySubprojectAll()
+    {
+        $this->setupPermissions(array("data_entry"));
+        $this->safeGet($this->url . "/candidate_list/");
+        $siteElement =  $this->safeFindElement(WebDriverBy::Name("SubprojectID"));
+        $subproject  = new WebDriverSelect($siteElement);
+        $value       = $subproject->getFirstSelectedOption()->getText('value');
+        $this->assertEquals("All", $value);
+
+        $this->resetPermissions();
+    }
+    /**
      * Tests that, when loading the candidate_list module, the breadcrumb
      * appears and the default filters are set to "Basic" mode.
      *

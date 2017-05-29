@@ -199,6 +199,7 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
      * information from the final_radiological_review table for
      * smarty
      *
+     * @throws LorisException
      * @return array defaults for smarty to use
      */
     function _getDefaults()
@@ -229,6 +230,14 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
                                  'Final_Incidental_Findings2' => '',
                                  'Finalized'                  => '',
                                 );
+            }
+
+            if ($DB->tableExists('radiology_review') === false) {
+                throw new LorisException(
+                    "Table 'radiology_review' does not exist."
+                    . " Please have this instrument set up in order"
+                    . " to use this module properly."
+                );
             }
 
             $original_review = $DB->pselectRow(

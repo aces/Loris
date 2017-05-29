@@ -149,7 +149,10 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
             $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
         }
 
-        $this->order_by     = 'psc.Name, candidate.CandID DESC';
+        $this->order_by = 'psc.Name, candidate.CandID DESC';
+
+        $this->limit = 10000;
+
         $this->validFilters = array(
                                'candidate.CenterID',
                                'candidate.CandID',
