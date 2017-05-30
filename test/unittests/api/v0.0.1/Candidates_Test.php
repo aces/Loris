@@ -27,7 +27,7 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
                     return [
                         [
                             "CandID" => "123456",
-                            "ProjectID" => null,
+                            "ProjectID" => '1',
                             "PSCID" => "TestCandidate2",
                             "Site" => "DCC",
                             "EDC" => null,
@@ -36,7 +36,7 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
                         ],
                         [
                             "CandID" => "222222",
-                            "ProjectID" => null,
+                            "ProjectID" => '1',
                             "PSCID" => "TestCandidate",
                             "Site" => "DCC",
                             "EDC" => null,
