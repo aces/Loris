@@ -726,8 +726,6 @@ class CandidateTest extends PHPUnit_Framework_TestCase
         $site = $this->getMockBuilder('Site')->getMock();  
         $site->method('singleton')
              ->will($this->returnValue('1'));
-        $site->method('singleton')
-             ->will($this->returnValue('1'));
          $this->assertEquals(
             1,
             Candidate::createNew('1', NULL,NULL,NULL,NULL)
