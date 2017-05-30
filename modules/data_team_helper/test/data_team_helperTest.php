@@ -75,6 +75,18 @@ class DataTeamHelperTestIntegrationTest extends LorisIntegrationTest
           );
           $this->resetPermissions();
     }
-
+    /**
+     * Tests that help editor loads with the permission
+     *
+     * @return void
+     */
+    function testDataTeamHelperJsonList()
+    {
+         $this->safeGet($this->url . "/data_team_helper/");
+         $bodyText = $this->safeFindElement(
+             WebDriverBy::cssSelector("body")
+         )->getText();
+         printf($bodyText);
+    }
 }
 ?>

@@ -87,20 +87,27 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         $smarty    = new Smarty_neurodb();
 
         $config =& NDB_Config::singleton();
-
-        $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']);
-        //construct the instrument drop down..
-        $this->tpl_data['visit_label'] = $_REQUEST['visit_label'];
-        $this->tpl_data['FieldName']   = $_REQUEST['FieldName'];
-        if ($_REQUEST['PSCID'] && !empty($_REQUEST['PSCID'])) {
-            $this->tpl_data['candidate'] = $_REQUEST['PSCID'];
-        } elseif ($_REQUEST['candidate'] && !empty($_REQUEST['candidate'])) {
-            $this->tpl_data['candidate']
-                = Candidate::singleton($_REQUEST['candidate'])->getPSCID();
-        } else {
-            $this->tpl_data['candidate'] = null;
+        if (isset($_REQUEST['instrument'])) {
+            $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']);
+            $this->tpl_data['test_name'] = $instrument;
         }
-        $this->tpl_data['test_name'] = $instrument;
+        //construct the instrument drop down..
+        if (isset($_REQUEST['visit_label'])) {
+            $this->tpl_data['visit_label'] = $_REQUEST['visit_label'];
+        }
+        if (isset($_REQUEST['FieldName'])) {
+            $this->tpl_data['FieldName']   = $_REQUEST['FieldName'];
+        }
+        if (isset($_REQUEST['PSCID'])) {
+             if ($_REQUEST['PSCID'] && !empty($_REQUEST['PSCID'])) {
+                 $this->tpl_data['candidate'] = $_REQUEST['PSCID'];
+             } elseif ($_REQUEST['candidate'] && !empty($_REQUEST['candidate'])) {
+               $this->tpl_data['candidate']
+                = Candidate::singleton($_REQUEST['candidate'])->getPSCID();
+               } else {
+                 $this->tpl_data['candidate'] = null;
+               }
+        }
 
         if (isset($_REQUEST['PSCID']) && !empty($_REQUEST['PSCID'])
             && (isset($_REQUEST['candidate'])) && !empty($_REQUEST['candidate'])
@@ -115,19 +122,22 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         }
 
         //Percentage completed for the given instrument
+        if (!empty($instrument) && isset($_REQUEST['visit_label']) && !empty($candID)) {
             $percent_completed = $this->_getPercentCompleted(
                 $instrument,
                 $_REQUEST['visit_label'],
                 $candID
             );
+        }
             $this->tpl_data['percent_completed'] = $percent_completed;
 
             /* Visit_labels
              */
             $visit_array =Utility::getExistingVisitLabels();
             $visit_array = array_combine($visit_array, $visit_array);
+         if (!empty($visit_array)) { 
             $this->tpl_data['visitLabels'] = $visit_array;
-
+         } 
             $incompleteCandidates = $this->
                  getIncompleteCandidates(
                      $instrument,
