@@ -125,9 +125,27 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals($API->Headers, ['HTTP/1.1 501 Not Implemented']);
         $this->assertEquals(isset($API->JSON['Meta']['CandID']), false);
 
-        /*
+
         //Test with one center, Skip for now because The following test fails.
         //Random Generation is failing, so it isn't really this pull request's fault
+
+                try {
+            $API = new \Loris\API\Candidates("POST",
+                ['candidate' => json_encode([
+                'Candidate' => [
+                    'Project' => "loris",
+                    'PSCID'   => 'HelloPSC',
+                    'EDC'     => '2015-05-19',
+                    'Gender'  => 'None'
+                ]])
+            ]
+        );
+        } catch(\Loris\API\SafeExitException $e) {
+            $API = $e->Object;
+        }
+
+
+
         $user->userInfo["CenterIDs"] = array(1);
 
         $API = $this->doPostCandidate();
@@ -140,7 +158,7 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
         $this->assertEquals(is_numeric($CandID), true);
         $this->assertTrue($CandID >= 100000);
         $this->assertTrue($CandID <= 999999);
-        */
+        
         $user->userInfo["CenterIDs"] = $tmp;
     }
 
