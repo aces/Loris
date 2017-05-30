@@ -509,15 +509,35 @@ function candidateExists($pscid)
     return !empty($CandID);
 }
 
-function begin () {
+/**
+ * Begins the transaction for the file upload
+ *
+ * @return void
+ */
+function begin()
+{
     $DB = Database::singleton();
     $DB->beginTransaction();
 }
-function endWithFailure () {
+
+/**
+ * Ends the transaction for the file upload with failure
+ *
+ * @return void
+ */
+function endWithFailure()
+{
     $DB = Database::singleton();
     $DB->rollBack();
 }
-function endWithSuccess () {
+
+/**
+ * Ends the transaction for the file upload with success
+ *
+ * @return void
+ */
+function endWithSuccess()
+{
     $DB = Database::singleton();
     $DB->commit();
 }
