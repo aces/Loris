@@ -125,7 +125,7 @@ function moveFileToFS(&$fileToUpload)
     $config           = NDB_Config::singleton();
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
 
-    reportProgress(95, "Copying file to $genomic_data_dir ");
+    reportProgress(98, "Copying file to $genomic_data_dir ");
     if (move_uploaded_file(
         $fileToUpload->tmp_name,
         $genomic_data_dir . 'genomic_uploader/'
@@ -214,13 +214,7 @@ function createSampleCandidateRelations(&$fileToUpload)
 
     reportProgress(85, "Creating sample-candidate relations");
 
-    $config           = NDB_Config::singleton();
-    $genomic_data_dir = $config->getSetting('GenomicDataPath');
     $DB =& Database::singleton();
-
-    $stmt = 'INSERT IGNORE INTO genomic_sample_candidate_rel (sample_label, CandID)
-             VALUES ';
-    $rows = array();
 
     $f = fopen(
         $fileToUpload->tmp_name,
@@ -247,23 +241,24 @@ function createSampleCandidateRelations(&$fileToUpload)
         $sample_label_prefix
     );
 
-    $rows = array_map(
-        function ($pscid) {
-            return "( '$pscid', 
-           (SELECT CandID FROM candidate WHERE PSCID = '"
-            . explode('_', $pscid)[1]
-            . "'))";
-        },
-        $headers
-    );
+    $stmt = $DB->prepare("
+        INSERT IGNORE INTO
+            genomic_sample_candidate_rel (sample_label, CandID)
+        VALUES (
+            :sample_label,
+            (SELECT CandID FROM candidate WHERE PSCID = :pscid)
+        )
+    ");
 
-    $stmt .= join(',', $rows);
     try {
-        $prep   = $DB->prepare($stmt);
-        $result = $DB->execute($prep, array(), array('nofetch' => true));
+        foreach ($headers as $pscid) {
+            $success = $stmt->execute(array(
+                "sample_label" => $pscid,
+                "pscid" => explode('_', $pscid)[1]
+            ));
+        }
         // Report number on relation created (candidate founded)
         reportProgress(90, "Relation created");
-
     } catch (Exception $e) {
         endWithFailure();
         die(
@@ -296,8 +291,6 @@ function insertBetaValues(&$fileToUpload)
     // Assuming genomic_cpg_annotation have ialready been created.
     // see: /module/genomic_browser/tool/human...
 
-    $config           = NDB_Config::singleton();
-    $genomic_data_dir = $config->getSetting('GenomicDataPath');
     $DB =& Database::singleton();
 
     $f = fopen(
@@ -306,10 +299,6 @@ function insertBetaValues(&$fileToUpload)
     );
 
     if ($f) {
-
-        $stmt_prefix = 'INSERT IGNORE INTO genomic_cpg 
-           (sample_label, cpg_name, beta_value) VALUES ';
-
         $line    = fgets($f);
         $headers = explode(',', $line);
         array_shift($headers);
@@ -330,26 +319,35 @@ function insertBetaValues(&$fileToUpload)
 
         $sample_count = count($headers);
 
+        
+        $stmt = $DB->prepare("
+            INSERT IGNORE INTO
+                genomic_cpg (sample_label, cpg_name, beta_value)
+            VALUES (
+                :sample_label,
+                :cpg_name,
+                :beta_value
+            )
+        ");
+
         while (($line = fgets($f)) !== false) {
-            $stmt = '';
-
-            $values   = explode(',', $line);
-            $values   = array_map('trim', $values);
-            $probe_id = $values[0];
-            // TODO validate probe value
-
-            array_shift($values);
-            $rows = array();
-            foreach ($values as $key => $value) {
-                $row = "('$headers[$key]', '$probe_id', $value)";
-                array_push($rows, $row);
-            }
-
-            $stmt .= join(',', $rows);
-
             try {
-                $prep   = $DB->prepare($stmt_prefix . $stmt);
-                $result = $DB->execute($prep, array(), array('nofetch' => true));
+                $values   = explode(',', $line);
+                $values   = array_map('trim', $values);
+                $probe_id = $values[0];
+                // TODO validate probe value
+
+                array_shift($values);
+                foreach ($values as $key => $value) {
+                    $success = $stmt->execute(array(
+                        "sample_label" => $headers[$key],
+                        "cpg_name"     => $probe_id,
+                        "beta_value"   => $value
+                    ));
+                    if (!$success) {
+                        throw new DatabaseException("Failed to insert row");
+                    }
+                }
             } catch (Exception $e) {
                 endWithFailure();
                 die(
@@ -389,8 +387,6 @@ function insertBetaValues(&$fileToUpload)
  */
 function createCandidateFileRelations(&$fileToUpload)
 {
-    $config           = NDB_Config::singleton();
-    $genomic_data_dir = $config->getSetting('GenomicDataPath');
     $DB =& Database::singleton();
 
     $f = fopen(
@@ -399,33 +395,32 @@ function createCandidateFileRelations(&$fileToUpload)
     );
 
     if ($f) {
-
-        $stmt_prefix = 'INSERT IGNORE INTO genomic_candidate_files_rel
-            (CandID, GenomicFileID) VALUES ';
-        $stmt        = '';
-
-        $line = fgets($f);
-        fclose($f);
-
-        $headers = explode(',', $line);
-        array_shift($headers);
-
-        $rows = array();
-        foreach ($headers as $pscid) {
-            $pscid = trim($pscid);
-            $row   = "(
-               (select CandID from candidate where PSCID = '$pscid'),
-               $fileToUpload->GenomicFileID
-            )";
-            array_push($rows, $row);
-        }
-        $stmt .= join(',', $rows);
-
         try {
+            $line = fgets($f);
+            fclose($f);
 
-            $prep   = $DB->prepare($stmt_prefix . $stmt);
-            $result = $DB->execute($prep, array(), array('nofetch' => true));
+            $headers = explode(',', $line);
+            array_shift($headers);
 
+            $stmt = $DB->prepare("
+                INSERT IGNORE INTO
+                    genomic_candidate_files_rel (CandID, GenomicFileID)
+                VALUES (
+                    (select CandID from candidate where PSCID = :pscid),
+                    :genomic_file_id
+                )
+            ");
+
+            foreach ($headers as $pscid) {
+                $pscid   = trim($pscid);
+                $success = $stmt->execute(array(
+                    "pscid" => $pscid,
+                    "genomic_file_id" => $fileToUpload->GenomicFileID
+                ));
+                if (!$success) {
+                    throw new DatabaseException("Failed to insert row");
+                }
+            }
         } catch (DatabaseException $e) {
             endWithFailure();
             die(
@@ -450,7 +445,7 @@ function createCandidateFileRelations(&$fileToUpload)
             )
         );
     }
-    reportProgress(98, "Creating file-candidate relations");
+    reportProgress(95, "Creating file-candidate relations");
 
 }
 
