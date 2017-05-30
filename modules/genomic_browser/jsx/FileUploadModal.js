@@ -312,7 +312,7 @@ var CheckboxInput = React.createClass({
             <div className="form-group col-sm-12">
                 <label className="col-xs-3"></label>
                 <div className="col-xs-9">
-                    <input className="user-success" name={this.props.name} id={this.props.name} type="checkbox" defaultChecked="true" style={{'marginRight': '1em'}} />
+                    <input className="user-success" name={this.props.name} id={this.props.name} type="checkbox" defaultChecked="true" style={{marginRight: '1em'}} />
                     Use PSCID in column headers
                     {this.props.label}
                 </div>
