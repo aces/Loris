@@ -51,6 +51,8 @@ $fileToUpload
                 'description'       => $_POST['description'],
                );
 
+setFullPath($fileToUpload);
+
 switch ($fileToUpload->genomic_file_type) {
 case 'Methylation beta-values':
     validateRequest();
@@ -111,6 +113,42 @@ function validateRequest()
 }
 
 /**
+ * Sets $fileToUpload->full_path
+ *
+ * @return void
+ */
+function setFullPath (&$fileToUpload) {
+    $config           = NDB_Config::singleton();
+    $genomic_data_dir = $config->getSetting('GenomicDataPath')
+        . "/genomic_uploader/";
+    
+    $fileToUpload->full_path = $genomic_data_dir
+            . $fileToUpload->file_name;
+
+    $collision_count = 0;
+    $collision_max   = 100;
+    
+    while (file_exists($fileToUpload->full_path)) {
+        ++$collision_count;
+        if ($collision_count > $collision_max) {
+            die(
+                json_encode(
+                    array(
+                     'message'  => 'That file already exists, '
+                        . 'could not generate a non-colliding name',
+                     'progress' => 100,
+                     'error'    => true,
+                    )
+                )
+            );
+        }
+        $fileToUpload->full_path = $genomic_data_dir
+            . uniqid() . "-"
+            . $fileToUpload->file_name;
+    }
+}
+
+/**
  * This moves the file from php tmp dir to the genomic data
  * directory specified in the configSettings.
  *
@@ -128,8 +166,7 @@ function moveFileToFS(&$fileToUpload)
     reportProgress(98, "Copying file to $genomic_data_dir ");
     if (move_uploaded_file(
         $fileToUpload->tmp_name,
-        $genomic_data_dir . 'genomic_uploader/'
-        . $fileToUpload->file_name
+        $fileToUpload->full_path
     )) {
         reportProgress(99, "File copied to $genomic_data_dir ");
     } else {
@@ -161,8 +198,7 @@ function registerFile(&$fileToUpload)
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
 
     $values = array(
-               'FileName'         => $genomic_data_dir
-                   . 'genomic_uploader/' . $fileToUpload->file_name,
+               'FileName'         => $fileToUpload->full_path,
                'Description'      => $fileToUpload->description,
                'FileType'         => $fileToUpload->file_type,
                'AnalysisModality' => $fileToUpload->genomic_file_type,
