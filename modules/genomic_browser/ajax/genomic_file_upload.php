@@ -54,13 +54,17 @@ $fileToUpload
 switch ($fileToUpload->genomic_file_type) {
 case 'Methylation beta-values':
     validateRequest();
-    moveFileToFS($fileToUpload);
+    begin();
     registerFile($fileToUpload);
     insertMethylationData($fileToUpload);
+    moveFileToFS($fileToUpload);
+    endWithSuccess();
     break;
 case 'Other':
-    moveFileToFS($fileToUpload);
+    begin();
     registerFile($fileToUpload);
+    moveFileToFS($fileToUpload);
+    endWithSuccess();
     break;
 default:
     die(
@@ -120,15 +124,16 @@ function moveFileToFS(&$fileToUpload)
 
     $config           = NDB_Config::singleton();
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
-    $DB =& Database::singleton();
-    reportProgress(40, "Copying file to $genomic_data_dir ");
+
+    reportProgress(95, "Copying file to $genomic_data_dir ");
     if (move_uploaded_file(
         $fileToUpload->tmp_name,
         $genomic_data_dir . 'genomic_uploader/'
         . $fileToUpload->file_name
     )) {
-        reportProgress(60, "File copied to $genomic_data_dir ");
+        reportProgress(99, "File copied to $genomic_data_dir ");
     } else {
+        endWithFailure();
         die(
             json_encode(
                 array(
@@ -179,10 +184,11 @@ function registerFile(&$fileToUpload)
         $fileToUpload->date_inserted = $values['Date_inserted'];
 
     } catch (DatabaseException $e) {
+        endWithFailure();
         die(
             json_encode(
                 array(
-                 'message'  => 'File registration failed',
+                 'message'  => 'File registration failed, is the description empty?',
                  'progress' => 100,
                  'error'    => true,
                 )
@@ -217,8 +223,7 @@ function createSampleCandidateRelations(&$fileToUpload)
     $rows = array();
 
     $f = fopen(
-        $genomic_data_dir . 'genomic_uploader/'
-            . $fileToUpload->file_name,
+        $fileToUpload->tmp_name,
         'r'
     );
 
@@ -260,6 +265,7 @@ function createSampleCandidateRelations(&$fileToUpload)
         reportProgress(90, "Relation created");
 
     } catch (Exception $e) {
+        endWithFailure();
         die(
             json_encode(
                 array(
@@ -295,8 +301,7 @@ function insertBetaValues(&$fileToUpload)
     $DB =& Database::singleton();
 
     $f = fopen(
-        $genomic_data_dir . 'genomic_uploader/'
-            . $fileToUpload->file_name,
+        $fileToUpload->tmp_name,
         "r"
     );
 
@@ -346,6 +351,7 @@ function insertBetaValues(&$fileToUpload)
                 $prep   = $DB->prepare($stmt_prefix . $stmt);
                 $result = $DB->execute($prep, array(), array('nofetch' => true));
             } catch (Exception $e) {
+                endWithFailure();
                 die(
                     json_encode(
                         array(
@@ -359,6 +365,7 @@ function insertBetaValues(&$fileToUpload)
         }
         fclose($f);
     } else {
+        endWithFailure();
         die(
             json_encode(
                 array(
@@ -387,8 +394,7 @@ function createCandidateFileRelations(&$fileToUpload)
     $DB =& Database::singleton();
 
     $f = fopen(
-        $genomic_data_dir . 'genomic_uploader/'
-            . $fileToUpload->file_name,
+        $fileToUpload->tmp_name,
         "r"
     );
 
@@ -421,6 +427,7 @@ function createCandidateFileRelations(&$fileToUpload)
             $result = $DB->execute($prep, array(), array('nofetch' => true));
 
         } catch (DatabaseException $e) {
+            endWithFailure();
             die(
                 json_encode(
                     array(
@@ -432,6 +439,7 @@ function createCandidateFileRelations(&$fileToUpload)
             );
         }
     } else {
+        endWithFailure();
         die(
             json_encode(
                 array(
@@ -491,14 +499,26 @@ function reportProgress($progress, $message)
 function candidateExists($pscid)
 {
 
-    $DB    =& Database::singleton();
-    $pscid = $DB->quote(trim($pscid));
+    $DB =& Database::singleton();
 
     $CandID = $DB->pselectOne(
-        "SELECT CandID from candidate WHERE PSCID = $pscid",
-        array()
+        "SELECT CandID from candidate WHERE PSCID = :pscid",
+        array("pscid" => $pscid)
     );
 
     return !empty($CandID);
+}
+
+function begin () {
+    $DB = Database::singleton();
+    $DB->beginTransaction();
+}
+function endWithFailure () {
+    $DB = Database::singleton();
+    $DB->rollBack();
+}
+function endWithSuccess () {
+    $DB = Database::singleton();
+    $DB->commit();
 }
 ?>
