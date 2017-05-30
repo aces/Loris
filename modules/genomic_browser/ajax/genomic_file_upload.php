@@ -115,19 +115,22 @@ function validateRequest()
 /**
  * Sets $fileToUpload->full_path
  *
+ * @param stdClass $fileToUpload The file to upload
+ *
  * @return void
  */
-function setFullPath (&$fileToUpload) {
+function setFullPath(&$fileToUpload)
+{
     $config           = NDB_Config::singleton();
     $genomic_data_dir = $config->getSetting('GenomicDataPath')
         . "/genomic_uploader/";
-    
+
     $fileToUpload->full_path = $genomic_data_dir
             . $fileToUpload->file_name;
 
     $collision_count = 0;
     $collision_max   = 100;
-    
+
     while (file_exists($fileToUpload->full_path)) {
         ++$collision_count;
         if ($collision_count > $collision_max) {
@@ -277,21 +280,28 @@ function createSampleCandidateRelations(&$fileToUpload)
         $sample_label_prefix
     );
 
-    $stmt = $DB->prepare("
+    $stmt = $DB->prepare(
+        "
         INSERT IGNORE INTO
             genomic_sample_candidate_rel (sample_label, CandID)
         VALUES (
             :sample_label,
             (SELECT CandID FROM candidate WHERE PSCID = :pscid)
         )
-    ");
+    "
+    );
 
     try {
         foreach ($headers as $pscid) {
-            $success = $stmt->execute(array(
-                "sample_label" => $pscid,
-                "pscid" => explode('_', $pscid)[1]
-            ));
+            $success = $stmt->execute(
+                array(
+                 "sample_label" => $pscid,
+                 "pscid"        => explode(
+                     '_',
+                     $pscid
+                 )[1],
+                )
+            );
         }
         // Report number on relation created (candidate founded)
         reportProgress(90, "Relation created");
@@ -355,8 +365,8 @@ function insertBetaValues(&$fileToUpload)
 
         $sample_count = count($headers);
 
-        
-        $stmt = $DB->prepare("
+        $stmt = $DB->prepare(
+            "
             INSERT IGNORE INTO
                 genomic_cpg (sample_label, cpg_name, beta_value)
             VALUES (
@@ -364,7 +374,8 @@ function insertBetaValues(&$fileToUpload)
                 :cpg_name,
                 :beta_value
             )
-        ");
+        "
+        );
 
         while (($line = fgets($f)) !== false) {
             try {
@@ -375,11 +386,13 @@ function insertBetaValues(&$fileToUpload)
 
                 array_shift($values);
                 foreach ($values as $key => $value) {
-                    $success = $stmt->execute(array(
-                        "sample_label" => $headers[$key],
-                        "cpg_name"     => $probe_id,
-                        "beta_value"   => $value
-                    ));
+                    $success = $stmt->execute(
+                        array(
+                         "sample_label" => $headers[$key],
+                         "cpg_name"     => $probe_id,
+                         "beta_value"   => $value,
+                        )
+                    );
                     if (!$success) {
                         throw new DatabaseException("Failed to insert row");
                     }
@@ -438,21 +451,25 @@ function createCandidateFileRelations(&$fileToUpload)
             $headers = explode(',', $line);
             array_shift($headers);
 
-            $stmt = $DB->prepare("
+            $stmt = $DB->prepare(
+                "
                 INSERT IGNORE INTO
                     genomic_candidate_files_rel (CandID, GenomicFileID)
                 VALUES (
                     (select CandID from candidate where PSCID = :pscid),
                     :genomic_file_id
                 )
-            ");
+            "
+            );
 
             foreach ($headers as $pscid) {
                 $pscid   = trim($pscid);
-                $success = $stmt->execute(array(
-                    "pscid" => $pscid,
-                    "genomic_file_id" => $fileToUpload->GenomicFileID
-                ));
+                $success = $stmt->execute(
+                    array(
+                     "pscid"           => $pscid,
+                     "genomic_file_id" => $fileToUpload->GenomicFileID,
+                    )
+                );
                 if (!$success) {
                     throw new DatabaseException("Failed to insert row");
                 }
