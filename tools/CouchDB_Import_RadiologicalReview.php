@@ -129,20 +129,21 @@ class CouchDBRadiologicalReviewImporter {
             WHEN frr.PVS2=4 THEN 'Marker' END as ExtraReview_PVS, 
             frr.Final_Exclusionary2 AS ExtraReview_ExclusionaryStatus,
             frr.Final_Incidental_Findings2 AS ExtraReview_Comment,
-            CASE WHEN orig.review_results <> r.final_review_results THEN 'true'
-            WHEN orig.abnormal_atypical_exclusionary <> r.final_exclusionary  THEN 'true'
-            WHEN r.Final_Review_Results <> r.Final_Review_Results2 THEN 'true'
-            WHEN r.Final_Exclusionary <> r.Final_Exclusionary2 THEN 'true'
-            WHEN r.SAS <> r.SAS2 THEN 'true'
-            WHEN r.PVS <> r.PVS2 THEN 'true'
+            CASE WHEN orig.review_results <> frr.final_review_results THEN 'true'
+            WHEN orig.abnormal_atypical_exclusionary <> frr.final_exclusionary  THEN 'true'
+            WHEN frr.Final_Review_Results <> frr.Final_Review_Results2 THEN 'true'
+            WHEN frr.Final_Exclusionary <> frr.Final_Exclusionary2 THEN 'true'
+            WHEN frr.SAS <> frr.SAS2 THEN 'true'
+            WHEN frr.PVS <> frr.PVS2 THEN 'true'
             ELSE 'false' END as Conflict_Final_Extra,
-            CASE WHEN r.Final_Review_Results <> r.Final_Review_Results2 THEN 'prim_second'
-            WHEN r.Final_Exclusionary <> r.Final_Exclusionary2 THEN 'prim_second'
-            WHEN r.SAS <> r.SAS2 THEN 'prim_second'
-            WHEN r.PVS <> r.PVS2 THEN 'prim_second'
+            CASE WHEN frr.Final_Review_Results <> frr.Final_Review_Results2 THEN 'prim_second'
+            WHEN frr.Final_Exclusionary <> frr.Final_Exclusionary2 THEN 'prim_second'
+            WHEN frr.SAS <> frr.SAS2 THEN 'prim_second'
+            WHEN frr.PVS <> frr.PVS2 THEN 'prim_second'
             ELSE 'false' END as Conflict_Any
             FROM final_radiological_review frr
             LEFT JOIN flag f ON (f.CommentID=frr.CommentID) 
+            LEFT JOIN radiology_review AS orig ON (orig.CommentID=f.CommentID)
             LEFT JOIN session s ON (s.ID=f.SessionID) 
             LEFT JOIN candidate c ON (c.CandID=s.CandID)
             LEFT JOIN examiners eFinal ON (eFinal.ExaminerID=frr.Final_Examiner)
