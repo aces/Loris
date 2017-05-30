@@ -30,7 +30,10 @@ $minc_file = getMincLocation() . $minc_file;
 $header      = $_REQUEST['minc_headers'];
 $header_data = $_REQUEST['raw_data'];
 if ($header_data) {
-    passthru("minctoraw -double -normalize $minc_file");
+    //passthru("minctoraw -double -normalize $minc_file");
+    $fp = fopen($minc_file, 'r');
+    fpassthru($fp);
+    fclose($fp);
 }
 if ($header=='true' && $minc_file !=null) {
     print initialize($minc_file);

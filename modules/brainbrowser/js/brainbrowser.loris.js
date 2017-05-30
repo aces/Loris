@@ -172,6 +172,14 @@ $(function() {
       });
     });
 
+    $(document).keypress(function(e) {
+      if (e.keyCode === 114) {
+        // Reset displays if user presses 'r' key.
+        viewer.resetDisplays();
+        viewer.redrawVolumes();
+      }
+    });
+
     /**
      * @doc function
      * @name viewer.setAutoResize
