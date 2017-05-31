@@ -87,7 +87,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
                                'e.radiologist as Radiologist',
                                'GROUP_CONCAT(tn.full_name) as Certification',
                               );
-        $this->group_by     = "e.full_name,psc.Name";
+        $this->group_by     = "e.full_name,psc.Name,e.examinerID";
         $this->query        = $query;
         $this->order_by     = 'e.full_name';
         $this->headers      = array(
