@@ -79,8 +79,8 @@ class MediaTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $text = $this->webDriver->executescript(
-            "document.querySelector('#browse > div.panel.panel-primary > div.panel-heading').textContent"
-        );
+            "return window.document.querySelector('#browse > div.panel.panel-primary > div.panel-heading').textContent",
+        array());
         $this->assertContains("Selection Filter", $text);
     }
     
@@ -98,7 +98,7 @@ class MediaTest extends LorisIntegrationTest
         )->getText();
         foreach ($this->loadingUI as $key => $value) {
             $text = $this->webDriver->executescript(
-            "document.querySelector($value).textContent"
+            "document.querySelector('$value').textContent"
         );
         $this->assertContains($key, $text);
         }
