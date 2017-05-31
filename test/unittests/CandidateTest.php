@@ -723,7 +723,7 @@ class CandidateTest extends PHPUnit_Framework_TestCase
     public function testCreateNew()
     {
         //$this->markTestIncomplete("Test not implemented!");
-        $mock = $this->getMockBuilder('Candidate')->setMethod(['createNew'])->getMock();
+        $mock = $this->getMockBuilder('Candidate')->setMethods(['createNew'])->getMock();
         $site = $this->getMockBuilder('Site')->getMock();  
         $site->method('singleton')
              ->will($this->returnValue('1'));
