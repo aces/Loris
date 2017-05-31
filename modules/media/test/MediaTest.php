@@ -74,6 +74,7 @@ class MediaTest extends LorisIntegrationTest
     function testPageUI()
     {
         $this->safeGet($this->url . "/media/");
+        sleep(2);
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -95,7 +96,7 @@ class MediaTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        foreach ($loadingUI as $key => $value) {
+        foreach ($this->loadingUI as $key => $value) {
             $text = $this->webDriver->executescript(
             "document.querySelector($value).textContent"
         );
