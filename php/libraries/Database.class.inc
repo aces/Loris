@@ -305,7 +305,7 @@ class Database
 
         if (DEBUG) {
             fwrite(STDERR, $query."\n");
-            throw new DatabaseException("Exception due to debug mode");
+            return false;
         }
 
         // There is no where clause for an insert, so add a fake
