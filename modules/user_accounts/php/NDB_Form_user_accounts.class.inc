@@ -268,8 +268,8 @@ class NDB_Form_User_Accounts extends NDB_Form
                 $DB->insert(
                     'user_project_rel',
                     array(
-                        "UserID"   => $uid,
-                        "ProjectID" => $project,
+                     "UserID"    => $uid,
+                     "ProjectID" => $project,
                     )
                 );
             }
@@ -687,7 +687,6 @@ class NDB_Form_User_Accounts extends NDB_Form
             $siteOptions,
             array('multiple' => 'multiple')
         );
-
         $projectOptions = Utility::getProjectList();
         $this->addSelect(
             'ProjectIDs',
@@ -695,7 +694,6 @@ class NDB_Form_User_Accounts extends NDB_Form
             $projectOptions,
             array('multiple' => 'multiple')
         );
-
         if ($editor->hasPermission('examiner_multisite')) {
             //get site aliases
             $DB      =& Database::singleton();
