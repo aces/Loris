@@ -150,14 +150,7 @@ class NDB_Form extends NDB_Page
             return false;
         }
         $success = $this->form->process(array(&$this, "_save"), false);
-        if (is_bool($success)) {
-            return $success;
-        } else {
-            throw new Exception(
-                "_save()/_process() must return a boolean indicating "
-                . "success or failure"
-            );
-        }
+        return $success;
     }
 
 
