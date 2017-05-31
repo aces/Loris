@@ -28,7 +28,9 @@ class Utility
     /**
      * Stops anyone from instantiating an instance of Utility
      */
-    private function __construct () {}
+    private function __construct()
+    {
+    }
 
     /**
      * This is identical to PEAR::isError from PEAR only the function
