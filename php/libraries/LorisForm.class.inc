@@ -1358,7 +1358,7 @@ class LorisForm
     {
         $result = call_user_func($func, $this->getSubmitValues());
         if (!is_bool($result)) {
-            throw new LorisException('$func passed to process() must return bool');
+            throw new LorisException("\$func passed to process() must return bool");
         } else {
             return $result;
         }
