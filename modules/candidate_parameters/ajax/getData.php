@@ -307,7 +307,7 @@ function getParticipantStatusFields()
                'pscid'                 => $pscid,
                'candID'                => $candID,
                'statusOptions'         => $statusOptions,
-               'required'              => \Utility::reduce($required),
+               'required'              => $required,
                'reasonOptions'         => $reasonOptions,
                'parentIDs'             => $parentIDMap,
                'participantStatus'     => $status,
