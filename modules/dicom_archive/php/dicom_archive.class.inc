@@ -48,6 +48,8 @@ class Dicom_Archive extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
+        $this->skipTemplate = true;
+
         $this->_setDicomArchiveSettings();
 
         $this->query = " FROM tarchive t
