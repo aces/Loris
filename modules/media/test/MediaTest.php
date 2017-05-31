@@ -60,6 +60,22 @@ class MediaTest extends LorisIntegrationTest
         $this->assertContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
-
+    /**
+     * Tests that the page does not load if the user does not have correct
+     * permissions
+     *
+     * @return void
+     */
+    function testPageUI()
+    {
+        $this->safeGet($this->url . "/media/");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $text = $this->webDriver->executescript(
+            "document.querySelector('browse > div.panel.panel-primary > div.panel-heading').textContent"
+        );
+        $this->assertContains("Selection Filter", $text);
+    }
 }
 ?>
