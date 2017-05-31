@@ -27,7 +27,13 @@ require_once __DIR__ .
  */
 class MediaTest extends LorisIntegrationTest
 {
-
+   /**
+     * UI elements and locations
+     */
+   private $loadingUI
+        = array(
+           'Selection Filter' => '#browse > div.panel.panel-primary > div.panel-heading'
+          );
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -61,9 +67,8 @@ class MediaTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
     /**
-     * Tests that the page does not load if the user does not have correct
-     * permissions
-     *
+     * Testing UI when page loads
+     * 
      * @return void
      */
     function testPageUI()
@@ -73,9 +78,29 @@ class MediaTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $text = $this->webDriver->executescript(
-            "document.querySelector('browse > div.panel.panel-primary > div.panel-heading').textContent"
+            "document.querySelector('#browse > div.panel.panel-primary > div.panel-heading').textContent"
         );
         $this->assertContains("Selection Filter", $text);
+    }
+    
+    /**
+     * 
+     * 
+     *
+     * @return void
+     */
+    function testPageUIs()
+    {
+        $this->safeGet($this->url . "/media/");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        foreach ($loadingUI as $key => $value) {
+            $text = $this->webDriver->executescript(
+            "document.querySelector($value).textContent"
+        );
+        $this->assertContains($key, $text);
+        }
     }
 }
 ?>
