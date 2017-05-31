@@ -380,7 +380,7 @@ class LorisForm
     public function addElement(
         $type,
         $name,
-        $label,
+        $label=null,
         $options=array(),
         $attribs=array()
     ) {
@@ -1793,10 +1793,14 @@ class LorisForm
     {
         $name = $this->_generateName($name);
         foreach ($array as $key => $value) {
-            $this->groupMapping[$value['name']] = array(
-                                                   'groupName' => $name,
-                                                   'index'     => $key,
-                                                  );
+            if (is_array($value)) {
+                if (array_key_exists('name', $value)) {
+                    $this->groupMapping[$value['name']] = array(
+                                                           'groupName' => $name,
+                                                           'index'     => $key,
+                                                          );
+                }
+            }
         }
         $this->form[$name] = array(
                               'type'      => 'group',
@@ -1839,8 +1843,14 @@ class LorisForm
      *
      * @return array of the form supported by $this->form
      */
-    function createElement($type, $elname, $label, $options, $attribs=array())
-    {
+    function createElement(
+        $type,
+        $elname,
+        $label=null,
+        $options=null,
+        $attribs=array()
+    ) {
+
         switch($type) {
         case 'text':
             return $this->createText($elname, $label, $options, $attribs);
