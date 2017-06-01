@@ -110,15 +110,18 @@ class User extends UserPermissions
             )
         );
         $projects     = array();
+        $project_IDs  = array();
         foreach ($project_rows as $project_row) {
             $projects[$project_row['ProjectID']] = $project_row['Name'];
+            array_push($project_IDs, $project_row['ProjectID']);
         }
 
         // store user data in object property
-        $row['examiner']  =$examiner_info;
-        $row['CenterIDs'] =$user_cid;
-        $row['Projects']  =$projects;
-        $obj->userInfo    =$row;
+        $row['examiner']   =$examiner_info;
+        $row['CenterIDs']  =$user_cid;
+        $row['Projects']   =$projects;
+        $row['ProjectIDs'] =$project_IDs;
+        $obj->userInfo     =$row;
         return $obj;
     }
 
