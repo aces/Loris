@@ -26,7 +26,7 @@ The upload path is configurable in `Paths` section of `Configuration` module.
 
 >**Important** 
  >
->The destination directory must have `755` permissions and `$GROUP$` group in order for upload to work. Note: group name is OS dependent. 
+>The destination directory must have `775` permissions and `$GROUP$` group in order for upload to work. Note: group name is OS dependent. 
 >```
 >Ubuntu: $GROUP$ = www-data
 >CentOS: $GROUP$ = apache
@@ -35,7 +35,7 @@ The upload path is configurable in `Paths` section of `Configuration` module.
 
 >Make sure to to run these commands where `/data/uploads/` is your upload directory:
 >```
->chmod 755 /data/uploads/
+>chmod 775 /data/uploads/
 >sudo chown lorisadmin:$GROUP$ /data/uploads/
 >```
 
