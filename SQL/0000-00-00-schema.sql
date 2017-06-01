@@ -135,6 +135,7 @@ DROP TABLE IF EXISTS `psc`;
 DROP TABLE IF EXISTS `project_rel`;
 DROP TABLE IF EXISTS `subproject`;
 DROP TABLE IF EXISTS `Project`;
+DROP TABLE IF EXISTS `user_project_rel`;
 
 -- ********************************
 -- Core tables
@@ -166,6 +167,17 @@ CREATE TABLE `project_rel` (
   `ProjectID` int(2) DEFAULT NULL,
   `SubprojectID` int(2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `user_project_rel` (
+  `UserID` int(10) unsigned NOT NULL,
+  `ProjectID` int(2) NOT NULL,
+  PRIMARY KEY  (`UserID`,`ProjectID`),
+  KEY `FK_user_project_rel_2` (`ProjectID`),
+  CONSTRAINT `FK_user_project_rel_2` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_user_project_rel_1` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO user_project_rel (UserID, ProjectID) SELECT 1, ProjectID FROM Project;
 
 CREATE TABLE `psc` (
   `CenterID` tinyint(2) unsigned NOT NULL AUTO_INCREMENT,
