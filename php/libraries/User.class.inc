@@ -111,11 +111,9 @@ class User extends UserPermissions
         );
         $projects     = array();
         $project_IDs  = array();
-        $i            = 0;
         foreach ($project_rows as $project_row) {
             $projects[$project_row['ProjectID']] = $project_row['Name'];
-            $project_IDs[$i] = $project_row['ProjectID'];
-            $i += 1;
+            array_push($project_IDs, $project_row['ProjectID']);
         }
 
         // store user data in object property
