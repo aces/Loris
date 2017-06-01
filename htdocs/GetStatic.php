@@ -39,7 +39,7 @@ if (empty($configFile)) {
     $configFile = "../project/config.xml";
 }
 
-if ($client->initialize("../project/config.xml") == false) {
+if ($client->initialize($configFile) == false) {
     return false;
 }
 
