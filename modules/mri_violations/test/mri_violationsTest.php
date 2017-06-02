@@ -548,7 +548,6 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     function testPageUIs()
     {
         $this->safeGet($this->url . "/mri_violations/");
-        sleep(100);
         foreach ($this->loadingUI as $key => $value) {
             $text = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
