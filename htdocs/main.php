@@ -100,7 +100,7 @@ try {
         $user->getData('Sites')
     );
 } catch(Exception $e) {
-    $tpl_data['error_message'][] = "Error: " . $e->getMessage();
+    $tpl_data['error_message'][] = "Error: " . htmlspecialchars($e->getMessage());
 }
 
 // the the list of tabs, their links and perms
@@ -159,7 +159,7 @@ if (!empty($_REQUEST['candID'])) {
         $candidate =& Candidate::singleton($_REQUEST['candID']);
         $tpl_data['candidate'] = $candidate->getData();
     } catch(Exception $e) {
-        $tpl_data['error_message'][] = $e->getMessage();
+        $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
     }
 }
 
@@ -191,14 +191,14 @@ try {
     $tpl_data['workspace'] = $workspace;
 } catch(ConfigurationException $e) {
     header("HTTP/1.1 500 Internal Server Error");
-    $tpl_data['error_message'][] = $e->getMessage();
+    $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
 } catch(DatabaseException $e) {
     header("HTTP/1.1 500 Internal Server Error");
-    $tpl_data['error_message'][] = $e->getMessage();
-    $tpl_data['error_message'][] = "Query: <pre>" . $e->query . "</pre>";
+    $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
+    $tpl_data['error_message'][] = "Query: <pre>" . htmlspecialchars($e->query) . "</pre>";
     $tpl_data['error_message'][] = "Bind parameters: " . print_r($e->params, true);
     $tpl_data['error_message'][] = "Stack Trace: <pre>"
-        . $e->getTraceAsString()
+        . htmlspecialchars($e->getTraceAsString())
         . "</pre>";
 } catch(Exception $e) {
     switch($e->getCode()) {
@@ -207,7 +207,7 @@ try {
     case 403: header("HTTP/1.1 403 Forbidden");
         break;
     }
-    $tpl_data['error_message'][] = $e->getMessage();
+    $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
 } finally {
     // Set dependencies if they are not set
     if (!isset($tpl_data['jsfiles']) || !isset($tpl_data['cssfiles'])) {
@@ -225,7 +225,7 @@ try {
 
     $tpl_data['crumbs'] = $crumbs;
 } catch(Exception $e) {
-    $tpl_data['error_message'][] = $e->getMessage();
+    $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
 }
 
 //--------------------------------------------------
