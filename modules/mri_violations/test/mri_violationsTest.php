@@ -6,7 +6,6 @@
  *
  * @category Test
  * @package  Loris
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
  * @author   Wang Shen <wangshen.mcin@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
@@ -20,13 +19,29 @@ require_once __DIR__ .
  *
  * @category Test
  * @package  Loris
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
  * @author   Wang Shen <wangshen.mcin@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
 class MriViolationsTestIntegrationTest extends LorisIntegrationTest
 {
+   /**
+     * UI elements and locations
+     */
+   private $loadingUI
+        = array(
+           //breadcrumb
+           'Mri  Violations' => '#bc2 > a:nth-child(2) > div',
+           //react table titles
+           'PatientName'         => '#PatientName',
+           'Site'              
+                 => '#dynamictable > thead > tr > th.dynamictableNext',
+           'TimeRun'             => '#dynamictable > thead > tr > th:nth-child(4)',
+           'MincFile'            => '#dynamictable > thead > tr > th:nth-child(5)',
+           'Series Description'  => '#dynamictable > thead > tr > th:nth-child(6)',
+           'Problem'             => '#dynamictable > thead > tr > th:nth-child(7)',
+           'Resolution Status'   => '#dynamictable > thead > tr > th:nth-child(8)' 
+          );
     /**
      * Insert testing data
      *
@@ -35,15 +50,12 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     public function setUp()
     {
         parent::setUp();
-         $window = new WebDriverWindow($this->webDriver);
-         $size   = new WebDriverDimension(1024, 768);
-         $window->setSize($size);
         $this->DB->insert(
             "psc",
             array(
              'CenterID'  => '55',
              'Name'      => 'TESTinPSC',
-             'Alias'     => 'test',
+             'Alias'     => 'ttt',
              'MRI_alias' => 'test',
             )
         );
@@ -95,6 +107,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "violations_resolved",
             array(
              'ExtID'     => '1001',
+             'hash'      => '123456',
              'TypeTable' => 'mri_protocol_violated_scans',
              'Resolved'  => 'other',
             )
@@ -103,6 +116,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "violations_resolved",
             array(
              'ExtID'     => '1002',
+             'hash'      => '123457',
              'TypeTable' => 'MRICandidateErrors',
              'Resolved'  => 'unresolved',
             )
@@ -525,6 +539,23 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
 
         $value = $resolution->getFirstSelectedOption()->getAttribute('value');
         $this->assertEquals("inserted", $value);
+    }
+    /**
+     * Testing UI when page loads
+     * 
+     * @return void
+     */
+    function testPageUIs()
+    {
+        $this->safeGet($this->url . "/mri_violations/");
+        sleep(100);
+        foreach ($this->loadingUI as $key => $value) {
+            $text = $this->webDriver->executescript(
+            "return document.querySelector('$value').textContent"
+        );
+         
+        $this->assertContains($key, $text);
+        }
     }
 }
 ?>
