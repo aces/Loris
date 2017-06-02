@@ -37,6 +37,9 @@ foreach ($instruments as $inst=>$fullName) {
     if (!$DB->tableExists($inst)) {
         echo $inst." does not have a table in the Database\n";
         continue;
+    } else if (strpos('_proband',$inst) !== false) {
+        echo $inst." is a Proband instrument and should be handled seperately.\n";
+        continue;
     }
 
     //Get instrument SQL table
