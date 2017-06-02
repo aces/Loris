@@ -543,7 +543,6 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             $text = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
         );
-        var_dump($text);
         $this->assertContains($key, $text);
         }
     }
