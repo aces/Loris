@@ -27,6 +27,7 @@
     "lint:php": "./test/run-php-linter.sh",
     "tests:unit": "./test/dockerized-unit-tests.sh",
     "tests:unit:js": "mocha-webpack --webpack-config webpack.config.test.js --glob '*.test.js' test/js-tests",
+    "tests:unit:js:watch": "mocha-webpack --webpack-config webpack.config.test.js --glob '*.test.js' test/js-tests --watch",
     "tests:unit:debug": "DEBUG=true ./test/dockerized-unit-tests.sh",
     "tests:integration": "./test/dockerized-integration-tests.sh",
     "tests:integration:debug": "DEBUG=true ./test/dockerized-integration-tests.sh",
