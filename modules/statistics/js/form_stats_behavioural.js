@@ -5,7 +5,7 @@ function updateBehaviouralTab() {
     var request            = $.ajax(
         {
             url: loris.BaseURL + '/statistics/stats_behavioural/?dynamictabs=dynamictabs&BehaviouralProject=' + (BehaviouralProject==null ? "" : BehaviouralProject.value) + '&BehaviouralSubproject=' + (BehaviouralSubproject==null ? "" : BehaviouralSubproject.value),
-            type: 'POST',
+            type: 'GET',
             data: 'html',
             success: function (response) {
                 $('#data_entry').html(response);
