@@ -25,6 +25,8 @@ before_install:
     - nvm install node
     - mkdir -p project project/libraries
     - phpenv config-rm xdebug.ini
+    - travis_retry composer self-update
+    - travis_retry composer install --no-interaction --prefer-source --dev
 
 install:
     # Install composer modules
@@ -51,8 +53,8 @@ install:
 
 before_script:
     # Set up the Loris environment
-    - mkdir -p project smarty/templates_c project/instruments project/tables_sql
-    - chmod 777 smarty/templates_c project/instruments project/tables_sql
+    - mkdir -p project smarty/templates_c project/instruments project/tables_sql 
+    - chmod 777 smarty/templates_c project/instruments project/tables_sql coverage.text
 
     # Set up the MySQL database, install the Schema, create a MySQL user
     # for the config file, and reset the Loris user's password for testing
@@ -94,4 +96,7 @@ script:
     - npm run lint:javascript
 
     # Run unit tests to make sure functions still do what they should.
-    - vendor/bin/phpunit --configuration test/phpunit.xml
+    #- vendor/bin/phpunit --configuration test/phpunit.xml
+    - vendor/bin/phpunit configuration test/unit.xml --testsuit 'LorisUnitTests' --coverage-text=coverage.text
+    - cat coverage.text
+after_success:
