@@ -216,11 +216,11 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * all the feedback at all levels. In the case of just a candidate
      * set we return all feedbacks at every level for that candidate.
      *
-     * @param null    $test_name   the value of test name
-     * @param null    $candID      the value of candidate ID
-     * @param null    $visit_label the value of visit label
-     * @param integer $site        the id of the site
-     * @param integer $project     the id of the project
+     * @param null     $test_name   the value of test name
+     * @param null     $candID      the value of candidate ID
+     * @param null     $visit_label the value of visit label
+     * @param int|null $site        the id of the site or can be null
+     * @param int|null $project     the id of the project or can be null
      *
      * @return   Array containing a list of feedbacks for
      * the appropriate feedback level.
@@ -346,8 +346,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
-     * @param integer      $site        the id of the site
-     * @param integer      $project     the id of the project
+     * @param int|null     $site        the id of the site or can be null
+     * @param int|null     $project     the id of the project or can be null
      *
      * @return unknown
      */
@@ -487,8 +487,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
-     * @param integer      $site        the id of of the site
-     * @param integer      $project     the id of the project
+     * @param int|null     $site        the id of of the site or can be null
+     * @param int|null     $project     the id of the project or can be null
      *
      * @return unknown
      */
@@ -552,8 +552,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
-     * @param integer      $site        the id of the site
-     * @param integer      $project     the id of the project
+     * @param int|null     $site        the id of the site or can be null
+     * @param int|null     $project     the id of the project or can be null
      *
      * @return unknown
      */
@@ -616,8 +616,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
-     * @param integer      $site        the id of the site
-     * @param integer      $project     the id of the project
+     * @param int|null     $site        the id of the site or can be null
+     * @param int|null     $project     the id of the project or can be null
      *
      * @return unknown
      */
