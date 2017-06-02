@@ -55,6 +55,13 @@ class NDB_Page
     var $defaults = array();
 
     /**
+     * If true, the default display function will not try to load any template.
+     * This is intended to be used with, for instance, pages that completely
+     * construct the DOM from javascript.
+     */
+    var $skipTemplate = false;
+
+    /**
      * Does the setup required for this page. By default, sets up elements
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
@@ -492,11 +499,13 @@ class NDB_Page
     /**
      * Displays the form
      *
-     * @return void
-     * @access public
+     * @return a string of the content to be inserted into the template
      */
     function display()
     {
+        if ($this->skipTemplate) {
+            return "";
+        }
         if (!$this->form->isFrozen()) {
             // hidden values
               $this->addHidden('test_name', $this->name);
