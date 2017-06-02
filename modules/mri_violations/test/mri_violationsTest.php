@@ -31,16 +31,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
    private $loadingUI
         = array(
            //breadcrumb
-           'Mri  Violations' => '#bc2 > a:nth-child(2) > div',
-           //react table titles
-           'PatientName'         => '#PatientName',
-           'Site'              
-                 => '#dynamictable > thead > tr > th.dynamictableNext',
-           'TimeRun'             => '#dynamictable > thead > tr > th:nth-child(4)',
-           'MincFile'            => '#dynamictable > thead > tr > th:nth-child(5)',
-           'Series Description'  => '#dynamictable > thead > tr > th:nth-child(6)',
-           'Problem'             => '#dynamictable > thead > tr > th:nth-child(7)',
-           'Resolution Status'   => '#dynamictable > thead > tr > th:nth-child(8)' 
+           'Mri  Violations' => '#bc2 > a:nth-child(2) > div'
           );
     /**
      * Insert testing data
