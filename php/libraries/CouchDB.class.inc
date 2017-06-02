@@ -194,9 +194,9 @@ class CouchDB
     function _constructURL($op, $doc)
     {
         $config = NDB_Config::singleton();
-        $db     = $config->getSetting("CouchDB");
+        $db     = $config->getSetting('CouchDB');
 
-        return "$op /$db[database]/$doc";
+        return "$op /$db[dbName]/$doc";
     }
 
     /**

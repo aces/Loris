@@ -142,6 +142,9 @@ class NDB_Menu extends NDB_Page
      */
     function display()
     {
+        if ($this->skipTemplate) {
+            return "";
+        }
         // dump the html for the menu
         $smarty = new Smarty_neurodb($this->Module);
         $smarty->assign('mode', $this->mode);

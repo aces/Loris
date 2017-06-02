@@ -258,91 +258,91 @@ class NDB_Form_User_Accounts extends NDB_Form
             }
             unset($values['CenterIDs']);
             // END multi-site UPDATE
-        }
-        // EXAMINER UPDATE
-        $ex_curr_sites = array();
-        $ex_prev_sites = array();
 
-        //get sites where user is already an examiner at for compare
-        $prev_sites = $DB->pselect(
-            "
+            // EXAMINER UPDATE
+            $ex_curr_sites = array();
+            $ex_prev_sites = array();
+
+            //get sites where user is already an examiner at for compare
+            $prev_sites = $DB->pselect(
+                "
                         SELECT centerID
                         FROM examiners
                         WHERE full_name=:fn",
-            array(
-             "fn" => $values['Real_name'],
-            )
-        );
+                array(
+                 "fn" => $values['Real_name'],
+                )
+            );
+            foreach ($prev_sites as $row => $center) {
+                array_push($ex_prev_sites, $center['centerID']);
+            }
+            foreach ($values as $k => $v) {
+                //examiner fields
+                if (preg_match("/^ex_[0-9]+$/", $k)) {
+                    //get centerID
+                    $parse_key = explode('_', $k);
+                    $cid       = $parse_key[1];
+                    array_push($ex_curr_sites, $cid);
 
-        foreach ($prev_sites as $row => $center) {
-            array_push($ex_prev_sites, $center['centerID']);
-        }
-        foreach ($values as $k => $v) {
-            //examiner fields
-            if (preg_match("/^ex_[0-9]+$/", $k)) {
-                //get centerID
-                $parse_key = explode('_', $k);
-                $cid       = $parse_key[1];
-                array_push($ex_curr_sites, $cid);
-
-                //Check if examiner already in db for site
-                $result = $DB->pselectRow(
-                    "
+                    //Check if examiner already in db for site
+                    $result = $DB->pselectRow(
+                        "
                           SELECT full_name, centerID
                           FROM examiners 
                           WHERE full_name=:fn AND centerID=:cid",
+                        array(
+                         "fn"  => $values['Real_name'],
+                         "cid" => $cid,
+                        )
+                    );
+
+                    // examiner was not previously added, add and set to active
+                    if (empty($result) || is_null($result)) {
+                        $DB->insert(
+                            'examiners',
+                            array(
+                             'full_name'        => $values['Real_name'],
+                             'centerID'         => $cid,
+                             'radiologist'      => $values['examiner_radiologist'],
+                             'active'           => 'Y',
+                             'pending_approval' => $values['examiner_pending'],
+                            )
+                        );
+                    } else {
+                        $DB->update(
+                            'examiners',
+                            array(
+                             'radiologist'      => $values['examiner_radiologist'],
+                             'Active'           => 'Y',
+                             'pending_approval' => $values['examiner_pending'],
+                            ),
+                            array(
+                             "full_name" => $values['Real_name'],
+                             "centerID"  => $cid,
+                            )
+                        );
+                    }
+                    unset($values[$k]);
+                }
+            }
+
+            //de-activate examiner if sites where no longer checked
+            $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
+
+            foreach ($ex_inactive as $cid) {
+                $DB->update(
+                    'examiners',
+                    array("Active" => 'N'),
                     array(
-                     "fn"  => $values['Real_name'],
-                     "cid" => $cid,
+                     "full_name" => $values['Real_name'],
+                     "centerID"  => $cid,
                     )
                 );
-
-                // examiner was not previously added, add and set to active
-                if (empty($result) || is_null($result)) {
-                    $DB->insert(
-                        'examiners',
-                        array(
-                         'full_name'        => $values['Real_name'],
-                         'centerID'         => $cid,
-                         'radiologist'      => $values['examiner_radiologist'],
-                         'active'           => 'Y',
-                         'pending_approval' => $values['examiner_pending'],
-                        )
-                    );
-                } else {
-                    $DB->update(
-                        'examiners',
-                        array(
-                         'radiologist'      => $values['examiner_radiologist'],
-                         'Active'           => 'Y',
-                         'pending_approval' => $values['examiner_pending'],
-                        ),
-                        array(
-                         "full_name" => $values['Real_name'],
-                         "centerID"  => $cid,
-                        )
-                    );
-                }
-                unset($values[$k]);
             }
+            unset($values['examiner_pending']);
+            unset($values['examiner_radiologist']);
+            //END EXAMINER UPDATE
         }
-
-        //de-activate examiner if sites where no longer checked
-        $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
-
-        foreach ($ex_inactive as $cid) {
-            $DB->update(
-                'examiners',
-                array("Active" => 'N'),
-                array(
-                 "full_name" => $values['Real_name'],
-                 "centerID"  => $cid,
-                )
-            );
-        }
-        unset($values['examiner_pending']);
-        unset($values['examiner_radiologist']);
-        //END EXAMINER UPDATE
 
         // START NOTIFICATIONS UPDATE
         if ($this->page==='my_preferences') {
