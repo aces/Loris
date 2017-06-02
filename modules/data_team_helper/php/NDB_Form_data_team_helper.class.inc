@@ -346,8 +346,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
-     * @param null         $site        the value of site
-     * @param null         $project     the value of project
+     * @param string       $site        the value of site
+     * @param string       $project     the value of project
      *
      * @return unknown
      */
@@ -487,8 +487,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
-     * @param null         $site        the value of site
-     * @param null         $project     the value of project
+     * @param string       $site        the value of site
+     * @param string       $project     the value of project
      *
      * @return unknown
      */
@@ -552,8 +552,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
-     * @param null         $site        the value of site
-     * @param null         $project     the value of project
+     * @param string       $site        the value of site
+     * @param string       $project     the value of project
      *
      * @return unknown
      */
@@ -583,7 +583,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
 
         $where =" WHERE s.Active='Y'
             AND s.Current_stage <> 'Recycling Bin'
-            AND f.CommentID NOT LIKE '%DDE%'  
+            AND f.CommentID NOT LIKE '%DDE%'
             AND psc.Centerid!= '1'";
 
         //filter for visit
@@ -616,8 +616,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
-     * @param null         $site        the value of site
-     * @param null         $project     the value of project
+     * @param string       $site        the value of site
+     * @param string       $project     the value of project
      *
      * @return unknown
      */
@@ -681,8 +681,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * Returns the percent completed for the given instrument
      *
      * @param unknown_type $instrument  the value of instrument
-     * @param null         $visit_label the value of visit lable
-     * @param null         $candidate   the value of candidate
+     * @param string       $visit_label the value of visit lable
+     * @param string       $candidate   the value of candidate
      *
      * @return unknown
      */
