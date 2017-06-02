@@ -195,7 +195,8 @@ try {
 } catch(DatabaseException $e) {
     header("HTTP/1.1 500 Internal Server Error");
     $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
-    $tpl_data['error_message'][] = "Query: <pre>" . htmlspecialchars($e->query) . "</pre>";
+    $tpl_data['error_message'][] = "Query: <pre>" .
+                               htmlspecialchars($e->query) . "</pre>";
     $tpl_data['error_message'][] = "Bind parameters: " . print_r($e->params, true);
     $tpl_data['error_message'][] = "Stack Trace: <pre>"
         . htmlspecialchars($e->getTraceAsString())
