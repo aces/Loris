@@ -59,7 +59,8 @@ class Utility
      *
      * @param array $array The multi-dimensional array
      *
-     * @return  string
+     * @return string
+     *
      * @deprecated
      */
     static function reduce($array)
@@ -78,7 +79,8 @@ class Utility
      *
      * @note If any element of the array contains a backtick, you'll run into trouble
      *
-     * @return  string
+     * @return string
+     *
      * @deprecated
      */
     static function crunch($x, $y)
