@@ -145,24 +145,39 @@
                                 </a>
                             {/if}
                             {if $incomplete_forms neq "" and $incomplete_forms neq 0}
-                            {if $incomplete_forms_site eq "Site: all"}
-                            <a href="{$baseURL}/statistics/?submenu=statistics_site" class="list-group-item statistics">
-                                {else}
-                                <a href="{$baseURL}/statistics/?submenu=statistics_site&CenterID={$user_site}"
-                                   class="list-group-item">
-                                    {/if}
-                                    <div class="row">
-                                        <div class="col-xs-8 text-left">
-                                            <div class="huge">{$incomplete_forms}</div>
-                                            Incomplete form{if $incomplete_forms neq 1}s{/if}
+                                {if $incomplete_forms_site eq "Sites: all"}
+                                     <a href="{$baseURL}/statistics/?submenu=statistics_site" class="list-group-item statistics">
+                                        <div class="row">
+                                            <div class="col-xs-8 text-left">
+                                                <div class="huge">{$incomplete_forms}</div>
+                                                Incomplete form{if $incomplete_forms neq 1}s{/if}
+                                            </div>
+                                            <div class="col-xs-4 text-right alert-chevron">
+                                                <span class="glyphicon glyphicon-chevron-right medium"></span>
+                                                <p class="small task-site">{$incomplete_forms_site}</p>
+                                            </div>
                                         </div>
-                                        <div class="col-xs-4 text-right alert-chevron">
-                                            <span class="glyphicon glyphicon-chevron-right medium"></span>
-                                            <p class="small task-site">{$incomplete_forms_site}</p>
+                                     </a>
+                                {else}
+                                    <div class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-xs-8 text-left">
+                                                <div class="huge">{$incomplete_forms}</div>
+                                                Incomplete form{if $incomplete_forms neq 1}s{/if}
+                                            </div>
+                                            <div class="col-xs-4 text-right alert-chevron">
+                                                {foreach from=$user_site key=ind item=centerID}
+                                                    <a href="{$baseURL}/statistics/?submenu=statistics_site&CenterID={$centerID}">
+                                                        <p style="color:#555" class="small task-site">{$incomplete_forms_site.$ind}
+                                                            <span class="glyphicon glyphicon-chevron-right small"></span>
+                                                        </p>
+                                                    </a>
+                                                {/foreach}
+                                            </div>
                                         </div>
                                     </div>
-                                </a>
                                 {/if}
+                            {/if}
                                 {if $new_scans neq "" and $new_scans neq 0}
                                     <a href="{$baseURL}/imaging_browser/" class="list-group-item new-scans">
                                         <div class="row">
@@ -222,7 +237,7 @@
                                 {/if}
                                 {if $issues_assigned neq "" and $issues_assigned neq 0}
                                     {*submit a post request here so its already filtered?*}
-                                    <a href="{$baseURL}/issue_tracker/?submenu=my_issue_tracker" class="list-group-item mri_violations">
+                                    <a href="{$baseURL}/issue_tracker/?submenu=my_issue_tracker" class="list-group-item issue_tracker">
                                         <div class="row">
                                             <div class="col-xs-8 text-left">
                                                 <div class="huge">{$issues_assigned}</div>
@@ -274,7 +289,7 @@
             </div>
         {/if}
 
-        <!-- Behavioural Feedback -->
+       <!-- Behavioural Feedback -->
         {if $bvl_feedback_notifications neq ""}
             <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
                 <div class="panel panel-default">
@@ -301,6 +316,6 @@
                 </div>
             </div>
         {/if}
-
+ 
     </div>
 </div>

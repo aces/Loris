@@ -1,5 +1,6 @@
 <?php
-/** Help editor automated integration tests
+/**
+ * Help editor automated integration tests
  *
  * PHP Version 5
  *
@@ -34,7 +35,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     {
         parent::setUp();
         $md5String = md5("TestTestTest");
-        $window = new WebDriverWindow($this->webDriver);
+        $window    = new WebDriverWindow($this->webDriver);
         $window->maximize();
         $this->DB->insert(
             "help",

@@ -48,6 +48,15 @@ foreach ($res as $elt) {
     $site_list[$elt["CenterID"]] = $elt["Name"];
 }
 
+// Get reCATPCHA keys
+$reCAPTCHAPrivate = $config->getSetting('reCAPTCHAPrivate');
+$reCAPTCHAPublic  = $config->getSetting('reCAPTCHAPublic');
+
+// Display reCAPTCHA if both private and public keys are set
+if ($reCAPTCHAPrivate && $reCAPTCHAPublic) {
+    $tpl_data['captcha_key'] = $reCAPTCHAPublic;
+}
+
 $tpl_data['baseurl']     = $config->getSetting('url');
 $tpl_data['css']         = $config->getSetting('css');
 $tpl_data['rand']        = rand(0, 9999);
@@ -55,6 +64,11 @@ $tpl_data['success']     = false;
 $tpl_data['study_title'] = $config->getSetting('title');
 $tpl_data['currentyear'] = date('Y');
 $tpl_data['site_list']   = $site_list;
+$tpl_data['page']        = 'request_account';
+$tpl_data['currentyear'] = date('Y');
+$tpl_data['version']     = file_get_contents(__DIR__ . "/../../VERSION");
+$tpl_data['form']        = $_REQUEST;
+$tpl_data['page_title']  = 'Request LORIS Account';
 
 try {
     $tpl_data['study_logo'] = "../".$config->getSetting('studylogo');
@@ -83,19 +97,32 @@ try {
 $err = array();
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
+    // Verify reCAPTCHA
+    if (isset($_POST['g-recaptcha-response']) && isset($reCAPTCHAPrivate)) {
+        $recaptcha = new \ReCaptcha\ReCaptcha($reCAPTCHAPrivate);
+        $resp      = $recaptcha->verify(
+            $_POST['g-recaptcha-response'],
+            $_SERVER['REMOTE_ADDR']
+        );
+        if (!$resp->isSuccess()) {
+            $errors         = $resp->getErrorCodes();
+            $err['captcha'] = 'Please complete the reCaptcha!';
+        }
+    }
+
     if (!checkLen('name')) {
-        $err[] = 'The minimum length for First Name field is 3 characters';
+        $err['name'] = 'The minimum length for First Name field is 3 characters!';
     }
     if (!checkLen('lastname')) {
-        $err[] = 'The minimum length for Last Name field is 3 characters';
+        $err['lastname'] = 'The minimum length for Last Name field is 3 characters!';
     }
     if (!checkLen('from')) {
-        $err[] = 'Your email is not valid!';
+        $err['from'] = 'Please provide a valid email!';
     } else if (!filter_var($_REQUEST['from'], FILTER_VALIDATE_EMAIL) ) {
-        $err[] = 'Your email is not valid!';
+        $err['from'] = 'Please provide a valid email!';
     }
     if (!checkLen('site', 0)) {
-        $err[] = 'The Site field is empty!';
+        $err['site'] = 'Please choose a site!';
     }
     if (isset($_SESSION['tntcon'])
         && md5($_REQUEST['verif_box']).'a4xn' != $_SESSION['tntcon']
@@ -114,10 +141,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     foreach ($fields as $key => $field) {
         $value = $_REQUEST[$key];
         if (preg_match('/["]/', html_entity_decode($value))) {
-            $err[] = "You can't use quotes in $field";
+            $err[$field] = "You can't use quotes in $field";
         }
         if (strlen($value) > strlen(strip_tags($value))) {
-            $err[] = "You can't use tags in $field";
+            $err[$field] = "You can't use tags in $field";
         }
     }
 
@@ -132,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $verif_box = htmlspecialchars($_REQUEST["verif_box"], ENT_QUOTES);
         $site      = htmlspecialchars($_REQUEST["site"], ENT_QUOTES);
 
-        // check to see if verificaton code was correct
+        // check to see if verification code was correct
         // if verification code was correct send the message and show this page
         $fullname = $name." ".$lastname;
         $vals     = array(
@@ -142,7 +169,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                      'Last_name'        => $lastname,
                      'Pending_approval' => 'Y',
                      'Email'            => $from,
-                     'CenterID'         => $site,
                     );
 
         if ($_REQUEST['examiner']=='on') {
@@ -150,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if ($_REQUEST['radiologist']=='on') {
                 $rad =1;
             }
-            //insert in DB as inactive untill account approved
+            //insert in DB as inactive until account approved
             $DB->insert(
                 'examiners',
                 array(
@@ -170,14 +196,26 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         );
 
         if ($result == 0) {
-            // insert into db only if email address if it doesnt exist
+            // insert into DB only if email address doesn't exist
             $success = $DB->insert('users', $vals);
-        }
-        unset($_SESSION['tntcon']);
-        //redirect to a new page
-        header("Location: thank-you.html", true, 301);
-        exit();
+            // Get the ID of the new user and insert into user_psc_rel
+            $user_id = $DB->pselectOne(
+                "SELECT ID FROM users WHERE Email = :VEmail",
+                array('VEmail' => $from)
+            );
 
+            $DB->insert(
+                'user_psc_rel',
+                array(
+                 'UserID'   => $user_id,
+                 'CenterID' => $site,
+                )
+            );
+        }
+        // Show success message even if email already exists for security reasons
+        $tpl_data['success'] = true;
+
+        unset($_SESSION['tntcon']);
     }
 }
 
@@ -200,7 +238,7 @@ function checkLen($str, $len=2)
 //Output template using Smarty
 $smarty = new Smarty_neurodb;
 $smarty->assign($tpl_data);
-$smarty->display('process_new_account.tpl');
+$smarty->display('public_layout.tpl');
 
 ob_end_flush();
 

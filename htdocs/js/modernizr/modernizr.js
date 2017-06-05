@@ -1,13 +1,6 @@
 /*!
  * modernizr v3.3.1
- * Build https://modernizr.com/download?-inputtypes-dontmin
- *
- * ~~~~~~~~~~~[Note for LORIS Developers]~~~~~~~~~~~
- * This build of modernizr only checks for inputtypes,
- * for more functionality you will need to update this build for both dev and minified
- * version.
- *
- *
+ * Build https://modernizr.com/download?-inputtypes-webgl-setclasses-dontmin
  *
  * Copyright (c)
  *  Faruk Ates
@@ -30,6 +23,9 @@
  */
 
 ;(function(window, document, undefined){
+  var classes = [];
+
+
   var tests = [];
 
 
@@ -90,9 +86,6 @@
   // Overwrite name so constructor name is nicer :D
   Modernizr = new Modernizr();
 
-
-
-  var classes = [];
 
 
   /**
@@ -202,6 +195,41 @@
 
 
   /**
+   * setClasses takes an array of class names and adds them to the root element
+   *
+   * @access private
+   * @function setClasses
+   * @param {string[]} classes - Array of class names
+   */
+
+  // Pass in an and array of class names, e.g.:
+  //  ['no-webp', 'borderradius', ...]
+  function setClasses(classes) {
+    var className = docElement.className;
+    var classPrefix = Modernizr._config.classPrefix || '';
+
+    if (isSVG) {
+      className = className.baseVal;
+    }
+
+    // Change `no-js` to `js` (independently of the `enableClasses` option)
+    // Handle classPrefix on this too
+    if (Modernizr._config.enableJSClass) {
+      var reJS = new RegExp('(^|\\s)' + classPrefix + 'no-js(\\s|$)');
+      className = className.replace(reJS, '$1' + classPrefix + 'js$2');
+    }
+
+    if (Modernizr._config.enableClasses) {
+      // Add the new classes
+      className += ' ' + classPrefix + classes.join(' ' + classPrefix);
+      isSVG ? docElement.className.baseVal = className : docElement.className = className;
+    }
+
+  }
+
+  ;
+
+  /**
    * createElement is a convenience wrapper around document.createElement. Since we
    * use createElement all over the place, this allows for (slightly) smaller code
    * as well as abstracting away issues with creating elements in contexts other than
@@ -225,6 +253,25 @@
   }
 
   ;
+  /*!
+   {
+   "name": "WebGL",
+   "property": "webgl",
+   "caniuse": "webgl",
+   "tags": ["webgl", "graphics"],
+   "polyfills": ["jebgl", "cwebgl", "iewebgl"]
+   }
+   !*/
+
+  Modernizr.addTest('webgl', function() {
+    var canvas = createElement('canvas');
+    var supports = 'probablySupportsContext' in canvas ? 'probablySupportsContext' :  'supportsContext';
+    if (supports in canvas) {
+      return canvas[supports]('webgl') || canvas[supports]('experimental-webgl');
+    }
+    return 'WebGLRenderingContext' in window;
+  });
+
 
   /**
    * since we have a fairly large number of input tests that don't mutate the input
@@ -347,6 +394,9 @@
 
   // Run each test
   testRunner();
+
+  // Remove the "no-js" class if it exists
+  setClasses(classes);
 
   delete ModernizrProto.addTest;
   delete ModernizrProto.addAsyncTest;

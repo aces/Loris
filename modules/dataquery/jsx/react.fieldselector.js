@@ -11,7 +11,7 @@
  *  The following component is used for displaying individual categories in the
  *  categories list
  */
-CategoryItem = React.createClass({
+var CategoryItem = React.createClass({
     render: function() {
         var classList = "list-group-item",
             badge = '';
@@ -33,7 +33,7 @@ CategoryItem = React.createClass({
 /*
  *  The following component is used for displaying the list of availible categories
  */
-CategoryList = React.createClass({
+var CategoryList = React.createClass({
     getInitialState: function () {
         return {
             selectedCategory: ""
@@ -76,7 +76,7 @@ CategoryList = React.createClass({
 /*
  *  The following component is used for displaying individual fields
  */
-FieldItem = React.createClass({
+var FieldItem = React.createClass({
     visitSelect: function(evt){
         // Selects and deselects visits
 
@@ -140,30 +140,20 @@ FieldItem = React.createClass({
  *  The following component is used for displaying the list of availible fields for
  *  the selected category
  */
-FieldList = React.createClass({
-    getInitialState: function() {
-        return {
-            PageNumber: 1
-        };
-    },
+var FieldList = React.createClass({
     onFieldClick: function(fieldName, downloadable) {
         // Wrapper function used to update field
         this.props.onFieldSelect(fieldName, this.props.category, downloadable);
-    },
-    changePage: function(i) {
-        this.setState({
-            PageNumber: i
-        });
     },
     render: function() {
         // Renders the html for the component
 
         var fields = [];
         var items = this.props.items || [];
-        var fieldName, desc, isFile;
+        var fieldName, desc, isFile, type, selected;
         var rowsPerPage = this.props.FieldsPerPage || 20;
 
-        var start = (this.state.PageNumber - 1) * rowsPerPage;
+        var start = (this.props.PageNumber - 1) * rowsPerPage;
         var filter = this.props.Filter.toLowerCase();
         var selectedFields;
         if(filter > 0) {
@@ -218,7 +208,7 @@ FieldList = React.createClass({
         return (
             <div className="list-group col-md-9 col-sm-12">
                 {fields}
-                <PaginationLinks Total={items.length} Active={this.state.PageNumber} onChangePage={this.changePage} RowsPerPage={rowsPerPage}/>
+                <PaginationLinks Total={items.length} Active={this.props.PageNumber} onChangePage={this.props.changePage} RowsPerPage={rowsPerPage}/>
             </div>
         );
     }
@@ -227,7 +217,7 @@ FieldList = React.createClass({
 /*
  *  The following component is the base component for the field select tan
  */
-FieldSelector = React.createClass({
+var FieldSelector = React.createClass({
     propTypes: {
         selectedFields: React.PropTypes.array
     },
@@ -241,6 +231,7 @@ FieldSelector = React.createClass({
             selectedCategory: "",
             categoryFields: {},
             instruments: instruments,
+            PageNumber: 1
         };
     },
     onFieldSelect: function(fieldName, category, downloadable) {
@@ -265,7 +256,8 @@ FieldSelector = React.createClass({
             }, 'json');
         }
         this.setState({
-            selectedCategory: category
+            selectedCategory: category,
+            PageNumber: 1
         });
     },
     filterChange: function(evt) {
@@ -320,6 +312,11 @@ FieldSelector = React.createClass({
                 }
             }
         }
+    },
+    changePage: function(i) {
+        this.setState({
+            PageNumber: i
+        });
     },
     render: function() {
         // Renders the html for the component
@@ -391,9 +388,25 @@ FieldSelector = React.createClass({
                         Filter={this.state.filter}
                         Visits={this.props.Visits}
                         fieldVisitSelect = {this.props.fieldVisitSelect}
+                        changePage={this.changePage}
+                        PageNumber={this.state.PageNumber}
                     />
                 </div>
             </div>
         );
     }
 });
+
+window.CategoryItem = CategoryItem;
+window.CategoryList = CategoryList;
+window.FieldItem = FieldItem;
+window.FieldList = FieldList;
+window.FieldSelector = FieldSelector;
+
+export default {
+  CategoryItem,
+  CategoryList,
+  FieldItem,
+  FieldList,
+  FieldSelector
+};

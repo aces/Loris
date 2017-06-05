@@ -48,6 +48,8 @@ class Dicom_Archive extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
+        $this->skipTemplate = true;
+
         $this->_setDicomArchiveSettings();
 
         $this->query = " FROM tarchive t
@@ -146,7 +148,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
     function _setDicomArchiveSettings()
     {
         $config =& \NDB_Config::singleton();
-        $this->dicomArchiveSettings = $config->getSetting('dicom_archive');
+        $this->dicomArchiveSettings = $config->getSetting('imaging_modules');
     }
 
     /**
@@ -254,7 +256,6 @@ class Dicom_Archive extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/dicom_archive/js/columnFormatter.js",
              $baseURL . "/dicom_archive/js/dicom_archive.js",
             )
         );

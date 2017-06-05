@@ -180,6 +180,68 @@ var StaticDataTable = React.createClass({
       return index === 0 ? match.toLowerCase() : match.toUpperCase();
     });
   },
+  getSortedRows() {
+    const index = [];
+
+    for (let i = 0; i < this.props.Data.length; i += 1) {
+      let val = this.props.Data[i][this.state.SortColumn] || undefined;
+      const isString = (typeof val === 'string' || val instanceof String);
+      const isNumber = !isNaN(val) && typeof val !== 'object';
+
+      if (val === ".") {
+        // hack to handle non-existent items in DQT
+        val = null;
+      } else if (isNumber) {
+        // perform type conversion (from string to int/float)
+        val = Number(val);
+      } else if (isString) {
+        // if string with text convert to lowercase
+        val = val.toLowerCase();
+      } else {
+        val = undefined;
+      }
+
+      if (this.props.RowNameMap) {
+        index.push({RowIdx: i, Value: val, Content: this.props.RowNameMap[i]});
+      } else {
+        index.push({RowIdx: i, Value: val, Content: i + 1});
+      }
+    }
+
+    index.sort(function(a, b) {
+      if (this.state.SortOrder === 'ASC') {
+        // Check if null values
+        if (a.Value === null) return -1;
+        if (b.Value === null) return 1;
+
+        // Sort by value
+        if (a.Value < b.Value) return -1;
+        if (a.Value > b.Value) return 1;
+
+        // If all values are equal, sort by rownum
+        if (a.RowIdx < b.RowIdx) {
+          return -1;
+        }
+        if (a.RowIdx > b.RowIdx) return 1;
+      } else {
+        // Check if null values
+        if (a.Value === null) return 1;
+        if (b.Value === null) return -1;
+
+        // Sort by value
+        if (a.Value < b.Value) return 1;
+        if (a.Value > b.Value) return -1;
+
+        // If all values are equal, sort by rownum
+        if (a.RowIdx < b.RowIdx) return 1;
+        if (a.RowIdx > b.RowIdx) return -1;
+      }
+      // They're equal..
+      return 0;
+    }.bind(this));
+
+    return index;
+  },
   /**
    * Searches for the filter keyword in the column cell
    *
@@ -191,27 +253,35 @@ var StaticDataTable = React.createClass({
    * of one of the column values, false otherwise.
    */
   hasFilterKeyword: function(headerData, data) {
-    var header = this.toCamelCase(headerData);
-    var filterData = (this.props.Filter[header] ?
-      this.props.Filter[header] :
-      null
-    );
+    let header = this.toCamelCase(headerData);
+    let filterData = null;
+    let exactMatch = false;
 
-      // Handle nullinputs
+    if (this.props.Filter[header]) {
+      filterData = this.props.Filter[header].value;
+      exactMatch = this.props.Filter[header].exactMatch;
+    }
+
+    // Handle null inputs
     if (filterData === null || data === null) {
       return false;
     }
 
-      // Handle numeric inputs
+    // Handle numeric inputs
     if (typeof filterData === 'number') {
       var intData = Number.parseInt(data, 10);
       return filterData === intData;
     }
 
-      // Handle string inputs
+    // Handle string inputs
     if (typeof filterData === 'string') {
       var searchKey = filterData.toLowerCase();
       var searchString = data.toLowerCase();
+
+      if (exactMatch) {
+        return searchString === searchKey;
+      }
+
       return (searchString.indexOf(searchKey) > -1);
     }
 
@@ -253,65 +323,7 @@ var StaticDataTable = React.createClass({
     }
     var rows = [];
     var curRow = [];
-    var index = [];
-    var that = this;
-
-    for (var i = 0; i < this.props.Data.length; i += 1) {
-      var val = this.props.Data[i][this.state.SortColumn];
-
-      if (parseInt(val, 10) === val) {
-        val = parseInt(val, 10);
-      } else if (parseFloat(val) === val) {
-        val = parseFloat(val);
-      } else if (val === '.') {
-        val = null;
-      }
-
-      // if string - convert to lowercase to make sort algorithm work
-      var isString = (typeof val === 'string' || val instanceof String);
-      if (val !== undefined && isString) {
-        val = val.toLowerCase();
-      }
-
-      if (this.props.RowNameMap) {
-        index.push({RowIdx: i, Value: val, Content: this.props.RowNameMap[i]});
-      } else {
-        index.push({RowIdx: i, Value: val, Content: i + 1});
-      }
-    }
-
-    index.sort(function(a, b) {
-      if (that.state.SortOrder === 'ASC') {
-        // Check if null values
-        if (a.Value === null) return -1;
-        if (b.Value === null) return 1;
-
-        // Sort by value
-        if (a.Value < b.Value) return -1;
-        if (a.Value > b.Value) return 1;
-
-        // If all values are equal, sort by rownum
-        if (a.RowIdx < b.RowIdx) {
-          return -1;
-        }
-        if (a.RowIdx > b.RowIdx) return 1;
-      } else {
-        // Check if null values
-        if (a.Value === null) return 1;
-        if (b.Value === null) return -1;
-
-        // Sort by value
-        if (a.Value < b.Value) return 1;
-        if (a.Value > b.Value) return -1;
-
-        // If all values are equal, sort by rownum
-        if (a.RowIdx < b.RowIdx) return 1;
-        if (a.RowIdx > b.RowIdx) return -1;
-      }
-      // They're equal..
-      return 0;
-    });
-
+    var index = this.getSortedRows();
     var matchesFound = 0; // Keeps track of how many rows where displayed so far across all pages
     var filteredRows = this.countFilteredRows();
     var currentPageRow = (rowsPerPage * (this.state.PageNumber - 1));
@@ -354,8 +366,8 @@ var StaticDataTable = React.createClass({
           );
           if (data !== null) {
             // Note: Can't currently pass a key, need to update columnFormatter
-            // to not return a <td> node
-            curRow.push(data);
+            // to not return a <td> node. Using createFragment instead.
+            curRow.push(React.addons.createFragment({data}));
           }
         } else {
           curRow.push(<td key={key}>{data}</td>);
@@ -460,3 +472,8 @@ var StaticDataTable = React.createClass({
 });
 
 var RStaticDataTable = React.createFactory(StaticDataTable);
+
+window.StaticDataTable = StaticDataTable;
+window.RStaticDataTable = RStaticDataTable;
+
+export default StaticDataTable;

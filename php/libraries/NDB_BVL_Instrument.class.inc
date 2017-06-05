@@ -705,6 +705,32 @@ class NDB_BVL_Instrument extends NDB_Page
             $values,
             array('CommentID' => $this->getCommentID())
         );
+
+        // Extract the old data and merge it with what was submitted so that we
+        // don't overwrite data from other pages.
+        $oldData = $db->pselectOne(
+            "SELECT Data FROM flag WHERE CommentID=:cid",
+            array('cid' => $this->getCommentID())
+        );
+
+        // (The PDO driver seems to return null as "null" for JSON column types)
+        if (!empty($oldData) && $oldData !== "null") {
+            $oldData = json_decode($oldData, true);
+        } else {
+            $oldData = array();
+        }
+        $newData = array_merge($oldData, $values);
+
+        // Save the JSON to the flag.Data column.
+        //
+        // json_encode ensures that this is safe. If we use the safe wrapper,
+        // HTML encoding the quotation marks will make it invalid JSON.
+        $result = $db->unsafeUpdate(
+            "flag",
+            array("Data" => json_encode($newData)),
+            array('CommentID' => $this->getCommentID())
+        );
+
     }
 
 
@@ -1080,7 +1106,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $flag = true;
             if (is_array($elvalue)) {
                 foreach ($elvalue AS $val) {
-                    if ($val == "") {
+                    if ($val === "") {
                         $flag = false;
                     }
                 }
@@ -1088,7 +1114,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
             //If the answer is empty (or its a group and one of answers in the
             //group is empty) then run the rules
-            if ($elvalue=="" || $flag==false) {
+            if ($elvalue==="" || $flag==false) {
                 if ($this->XINDebug) {
                     //debugging code
                     echo "<p><b>$elname</b><br> ";

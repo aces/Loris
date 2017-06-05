@@ -488,15 +488,11 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
-        $SiteTopMenuTextAll = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".navbar-text")
-        )->getText();
-        $SiteTopMenuText    = explode(":", $SiteTopMenuTextAll);
 
         $SiteFilterText = $this->webDriver->findElement(
             WebDriverBy::Name("SiteID")
         )->getText();
-        $this->assertEquals(trim($SiteTopMenuText[1]), $SiteFilterText);
+        $this->assertContains("All User Sites", $SiteFilterText);
 
         // With permission imaging_browser_view_allsites
         $this->setupPermissions(array('imaging_browser_view_allsites'));
@@ -505,9 +501,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             $this->url . "/imaging_browser/"
         );
 
-        $SiteTopMenuTextAll = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".navbar-text")
-        )->getText();
         $SiteFilterText     = $this->webDriver->findElement(
             WebDriverBy::Name("SiteID")
         )->getText();

@@ -1,22 +1,66 @@
---
--- Table structure for table `permissions`
---
+SET FOREIGN_KEY_CHECKS=0;
+
 
 DROP TABLE IF EXISTS `permissions`;
+
+
+DROP TABLE IF EXISTS `permissions_category`;
+
+
+DROP TABLE IF EXISTS `user_perm_rel`;
+
+SET FOREIGN_KEY_CHECKS=1;
+--
+-- Table structure for table `permissions_category`
+--
+
+
+CREATE TABLE `permissions_category` (
+  `ID` int(10) NOT NULL AUTO_INCREMENT,
+  `Description` varchar(255) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `permissions_category` VALUES 
+  (1,'Roles'),
+  (2,'Permission');
+
+
 CREATE TABLE `permissions` (
-  `permID` int(10) unsigned NOT NULL auto_increment,
-  `code` varchar(255) NOT NULL default '' UNIQUE,
-  `description` varchar(255) NOT NULL default '',
-  `categoryID` int(10) DEFAULT NULL,
-  PRIMARY KEY  (`permID`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+  `permID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `code` varchar(255) NOT NULL DEFAULT '',
+  `description` varchar(255) NOT NULL DEFAULT '',
+  `categoryID` int(10) NOT NULL DEFAULT '2',
+  PRIMARY KEY (`permID`),
+  UNIQUE KEY `code` (`code`),
+  KEY `fk_permissions_1_idx` (`categoryID`),
+  CONSTRAINT `fk_permissions_1`
+  FOREIGN KEY (`categoryID`)
+    REFERENCES `permissions_category` (`ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `permissions`
---
 
-LOCK TABLES `permissions` WRITE;
-/*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
+CREATE TABLE `user_perm_rel` (
+  `userID` int(10) unsigned NOT NULL default '0',
+  `permID` int(10) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`userID`,`permID`),
+  KEY `FK_user_perm_rel_2` (`permID`),
+  CONSTRAINT `FK_user_perm_rel_2`
+  FOREIGN KEY (`permID`)
+    REFERENCES `permissions` (`permID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `FK_user_perm_rel_1`
+  FOREIGN KEY (`userID`)
+    REFERENCES `users` (`ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 INSERT INTO `permissions` VALUES
     (1,'superuser','There can be only one Highlander','1'),
     (2,'user_accounts','User management','2'),
@@ -67,49 +111,24 @@ INSERT INTO `permissions` VALUES
     (47,'issue_tracker_reporter', 'Can add a new issue, edit own issue, comment on all', 2),
     (48,'issue_tracker_developer', 'Can re-assign issues, mark issues as closed, comment on all, edit issues.', 2);
 
-/*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
-UNLOCK TABLES;
 
---
--- Table structure for table `permissions_category`
---
 
-DROP TABLE IF EXISTS `permissions_category`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `permissions_category` (
-  `ID` int(10) NOT NULL AUTO_INCREMENT,
-  `Description` varchar(255) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+INSERT INTO `user_perm_rel` (userID, permID)
+  SELECT u.ID, p.permID 
+  FROM users u JOIN permissions p 
+  WHERE u.userid = 'admin' 
+  ORDER BY p.permID;
 
---
--- Dumping data for table `permissions_category`
---
+-- permissions for each notification module
+DROP TABLE IF EXISTS `notification_modules_perm_rel`;
+CREATE TABLE `notification_modules_perm_rel` (
+      `notification_module_id` int(10) unsigned NOT NULL,
+      `perm_id` int(10) unsigned NOT NULL default '0',
+      CONSTRAINT `FK_notification_modules_perm_rel_1` FOREIGN KEY (`notification_module_id`) REFERENCES `notification_modules` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+      CONSTRAINT `FK_notification_modules_perm_rel_2` FOREIGN KEY (`perm_id`) REFERENCES `permissions` (`permID`) ON DELETE CASCADE ON UPDATE CASCADE,
+      PRIMARY KEY (`notification_module_id`,`perm_id`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
-LOCK TABLES `permissions_category` WRITE;
-/*!40000 ALTER TABLE `permissions_category` DISABLE KEYS */;
-INSERT INTO `permissions_category` VALUES (1,'Roles'),(2,'Permission');
-/*!40000 ALTER TABLE `permissions_category` ENABLE KEYS */;
-UNLOCK TABLES;
-
-DROP TABLE IF EXISTS `user_perm_rel`;
-CREATE TABLE `user_perm_rel` (
-  `userID` int(10) unsigned NOT NULL default '0',
-  `permID` int(10) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`userID`,`permID`),
-  KEY `FK_user_perm_rel_2` (`permID`),
-  CONSTRAINT `FK_user_perm_rel_2` FOREIGN KEY (`permID`) REFERENCES `permissions` (`permID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_user_perm_rel_1` FOREIGN KEY (`userID`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `user_perm_rel`
---
-
-LOCK TABLES `user_perm_rel` WRITE, `permissions` READ;
-/*!40000 ALTER TABLE `user_perm_rel` DISABLE KEYS */;
-INSERT INTO `user_perm_rel` (userID, permID) SELECT DISTINCT 1, permID FROM permissions;
-/*!40000 ALTER TABLE `user_perm_rel` ENABLE KEYS */;
-UNLOCK TABLES;
+-- populate notification perm table
+INSERT INTO notification_modules_perm_rel SELECT nm.id, p.permID FROM notification_modules nm JOIN permissions p WHERE nm.module_name='media' AND (p.code='media_write' OR p.code='media_read');
+INSERT INTO notification_modules_perm_rel SELECT nm.id, p.permID FROM notification_modules nm JOIN permissions p WHERE nm.module_name='document_repository' AND (p.code='document_repository_view' OR p.code='document_repository_delete');

@@ -26,21 +26,19 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     url = loris.BaseURL +
       "/final_radiological_review/final_radiological_review/?identifier=" +
       row.CommentID;
-    return <td>
+    return (
+             <td>
                 <a href ={url}>{cell}</a>
-             </td>;
+             </td>
+           );
   }
   if (column === 'Review Done') {
-    reviewDone = " ";
+    reviewDone = "No";
 
-    if (row.ReviewDone === '1') {
+    if (row['Review Done'] === 'yes' || row['Review Done'] === 'Yes') {
       reviewDone = 'Yes';
     }
-
-    if (row.ReviewDone === '0') {
-      reviewDone = 'No';
-    }
-    return <td>{reviewDone}</td>;
+    return (<td>{reviewDone}</td>);
   }
 
   if (column === 'SAS') {
@@ -65,7 +63,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
     }
 
-    return <td>{sas}</td>;
+    return (<td>{sas}</td>);
   }
 
   if (column === 'PVS') {
@@ -89,19 +87,30 @@ function formatColumn(column, cell, rowData, rowHeaders) {
         pvs = "Not Answered";
 
     }
-    return <td>{pvs}</td>;
+    return (<td>{pvs}</td>);
   }
   if (column === 'Finalized') {
-    if (row.Finalized === '1') {
-      finalizedvar = "Yes";
-    }
+    finalizedvar = "No";
 
-    if (row.Finalized === '0') {
-      finalizedvar = "No";
+    if (row.Finalized === 'yes' || row.Finalized === 'Yes') {
+      finalizedvar = 'Yes';
     }
-    return <td>{finalizedvar}</td>;
+    return (<td>{finalizedvar}</td>);
   }
 
-  return <td>{cell}</td>;
+  if (column === 'T1 Inserted' && row['T1 Inserted'] === "Yes") {
+    url = loris.BaseURL +
+      "/imaging_browser/viewSession/?sessionID=" +
+      row.SessionID;
+    return (
+             <td>
+                <a href ={url}>{cell}</a>
+             </td>
+           );
+  }
+  return (<td>{cell}</td>);
 }
 
+window.formatColumn = formatColumn;
+
+export default formatColumn;

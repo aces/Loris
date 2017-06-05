@@ -1,25 +1,53 @@
-#LORIS meets ReactJS
+# Front-end Developer Guide to LORIS
 
-##1. Setting up Grunt
+>**Note**: This guide assumes basic knowledge of **Javascript** and **React JS**
 
-In order to run the grunt build step, you will have to install the following dependencies:
+## Overview
 
-* NodeJS
-* NPM
+Currently Loris is in the process of "reactification" of its existing modules. This implies that:
+- Major module updates should rely on React for all the frontend needs `(#GetRidOfSmarty)`
+- New modules should be built using Loris React components (both existing and new)
 
-###1.1 Installing dependencies 
+---
 
-####1.1.1 NodeJS
+## Coding Guidelines
+- All new React components and major updates to existing React components should follow `ES6 standard`
+- All new and existing Javascript code should pass `ESLint` validation
+- All new components should be compiled using `webpack`
+- All new modules and major module updates should use a single javascript entry-point `index.js` and rely on ES6 modules to include additional components
 
-To check whether or not NodeJS is installed on your machine, run the following:
+---
 
+## File Structure
+
+**1. Generic `JSX` files (Loris Core)**
+
+Within LORIS we have many React components that can be used throughout the different modules. When adding a new generic file, the `JSX` file should be placed in the `jsx/` directory and its compiled file in the `htdocs/js/components` directory.
+
+**2. Module specific JSX files**
+
+In many cases, React components are designed for a specific LORIS module. In such cases the `JSX` file should be placed in the
+`module/$DESIRED_MODULE/jsx/` and its compiled file in the `module/$DESIRED_MODULE/js/` directory.
+
+
+>**Note**: When creating a new JSX file **always** use the `.js` extension or the continuous compilation will not work as expected. The file name of the `JSX` and its compiled file should have the same name.
+
+---
+
+## Set up
+
+In order to use `webpack`, we need to install `Node.js`, `NPM` and additional dependencies.
+
+### 1. Get Node.js
+
+To check whether or not `Node.js` is installed on your machine, run the following:
 ```
 node -v
 ```
 
 If not installed, use one of the following steps to install for your OS:
 
-#####Ubuntu
+**Ubuntu**
 
 For this install you will need sudo rights
 
@@ -29,7 +57,7 @@ sudo apt-get install -y nodejs
 sudo apt-get install -y build-essential
 ```
 
-#####CentOS
+**CentOS**
 
 ```
 curl --silent --location https://rpm.nodesource.com/setup_6.x | bash -
@@ -37,95 +65,70 @@ yum -y install nodejs
 yum install gcc-c++ make
 ```
 
-#####MacOS
+**MacOS**
 
-Download the NodeJS package from [here](https://nodejs.org/en/)
+Download the `Node.js` package from [here](https://nodejs.org/en/)
 
-####1.1.2 NPM
+### 2. Get NPM
 
-Once NodeJS is installed, use the following to install NPM
+Once `Node.js` is installed, use the following to install `npm`
 
 ```
 curl -L https://www.npmjs.com/install.sh | sudo sh
 ```
 
-###1.2 Installing Grunt
+### 3. Get LORIS dependencies
 
-Once NodeJS and NPM are installed, you are ready to install Grunt. First, ```cd``` into the LORIS home directory in your terminal. 
-Then run the following command:
+Once `Node.js` and `npm` are installed, you are ready to install all necessary `Node.js` dependencies. (i.e `webpack`)
 
-```
-npm install --only=dev
-```
+Follow these steps in your terminal:
 
-Grunt should now be installed.
-
-##2. Compiling JSX
-
-###2.1 Using Grunt to compile all JSX
-
-To compile all JSX files in LORIS, use the following command:
-
-```
-node_modules/.bin/grunt jsx
+```bash
+  cd $loris$ # your LORIS home directory
+  npm install --only=dev
 ```
 
-**NOTE:** If you create a new React file, ensure you add it to the ```Grunt.js``` file under the ```babel.compile.files``` object
-with the following format:
+>**Note**: to see a list of all dependencies refer to `package.json` under LORIS home directory
 
+---
+
+## Transpiling React code
+
+We need to use `webpack` in order to transpile `JSX` and `ES6` syntax used in our React code into `ES5` syntax understood by all browsers.
+
+**Step 1: Update `webpack.config.js`**
+
+When you create a new `ES6/JSX file`, ensure you add it to the ```webpack.config.js``` file under the ```config.entry``` object with the following format:
 ```
-'desc/file.js' : 'src/file.js'
-```
-
-###2.2 Using Babel to compile JSX
-
-There are four major ways you can compile JSX with Babel. You can compile once or continuously a single or a directory. Using 
-continuous compilation becomes useful when you are constantly making changes to the JSX file.
-
-####2.2.1 Compile single file
-
-To compile a single file use the following command:
-
-```
-./node_modules/.bin/babel src/file.js --out-file desc/file.js
+'./desc/file.js' : './src/file.js'
 ```
 
-####2.2.2 Compile a directory
+**Step 2: Transpiling all files**
 
-To compile a directory use the following command:
-
-```
-./node_modules/.bin/babel src/ --out-dir desc/
-```
-
-####2.2.3 Continuously compile single file
-
-To compile a single file continuously use the following command:
+To compile all `ES6/JSX` files in LORIS, use the following command:
 
 ```
-./node_modules/.bin/babel --watch src/file.js --out-file desc/file.js
+npm run compile
 ```
 
-####2.2.4 Continuously compile a directory
-
-To compile a directory continuously use the following command:
+which is a short-cut for:
 
 ```
-./node_modules/.bin/babel --watch src/ --out-dir desc/
+./node_modules/.bin/webpack
 ```
 
-##3. LORIS JSX file structure
+**Step 3: Watch all files (optional)**
 
-Within LORIS, we have two main ways of adding JSX and their compiled files. When creating a new JSX file **always** use the ```.js```
-extension or the continuous compilation will not work as expected. The file name of the JSX and its compiled file should have the
-same name. 
+You can have webpack watch for changes to all revelant files and compile them on the fly:
 
-###3.1 Adding generic JSX files
+```
+npm run watch
+```
 
-Within LORIS we have many React components that can be used throughout the different modules. When adding a new generic file, the
-JSX file should be placed in the ```jsx/``` directory and its compiled file in the ```htdocs/js/components``` directory.
+which is a short-cut for:
 
-###3.2 Adding module specific JSX files
+```
+./node_modules/.bin/webpack --watch
+```
 
-In many cases, React components are designed for a specific LORIS module. In such cases the JSX file should be placed in the 
-```module/$DESIRED_MODULE/jsx/``` and its compiled file in the ```module/$DESIRED_MODULE/js/``` directory.
+---

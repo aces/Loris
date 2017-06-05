@@ -5,7 +5,7 @@ project-*
 *.un~
 *.linst~
 *.php~
-vendor
+/vendor
 .idea
 tools/*.txt
 htdocs/phpunit_codecoverage/
@@ -25,3 +25,4 @@ htdocs/js/components/.module-cache/
 node_modules/
 modules/*/js/*.map
 htdocs/js/components/*.map
+npm-debug.log*

@@ -92,7 +92,7 @@ if($test_name== 'all') {
 } else {
     $query = "SELECT DISTINCT test_name FROM test_battery WHERE Active='Y' AND Test_name ='$test_name'";
 }
-$db->select($query, $result);
+$result = $db->pselect($query, array());
 // if nothing is returned than the instrument DNE
 if (!is_array($result) || count($result)==0) {
     fwrite(STDERR, "Invalid Instrument ($test_name)!\n");
@@ -112,11 +112,11 @@ foreach($result as $test) {
         FROM candidate as c, session as s, flag as f, $test_name as t
         WHERE c.CandID=s.CandID AND s.ID=f.SessionID AND f.CommentID=t.CommentID
         AND s.Active = 'Y' AND c.Active='Y' 
-        AND f.Test_name = '$test_name' AND f.Administration <> 'None' AND f.Administration IS NOT NULL";
+        AND f.Test_name = :tnm AND f.Administration <> 'None' AND f.Administration IS NOT NULL";
     if ($action=='one') {
         $query .= " AND s.ID = '$sessionID' AND s.CandID='$candID'";
     }
-    $db->select($query, $result);
+    $result = $db->pselect($query, array('tnm' => $test_name));
     // return error if no candidates/timepoint matched the args
     if (!is_array($result) || count($result)==0) {
         fwrite(STDERR, "No records match the criteria returned for candidate ($candID), timepoint ($sessionID)!\n");
@@ -137,13 +137,13 @@ foreach($result as $test) {
         }
 
         // print out candidate/session info
-        fwrite(STDERR, "Candidate: ".$record['CandID']."/".$record['Visit_label']."/".$record['SessionID'].":: ($record[PSCID])\n");
+        fwrite(STDERR, "Candidate: ".$record['CandID']."/".$record['Visit_label']."/".$record['SessionID'].":: (".$record['PSCID'].")\n");
         //fwrite(STDERR, "Candidate: ".$instrument->_dob."/"."Test_name:".$test_name."/". $instrument->_pls3Age."/".$instrument->getDateOfAdministration().":: \n");
 
         // call the score function
-        $db->selectRow("SELECT * FROM $test_name WHERE CommentID='$record[CommentID]'", $oldRecord);
+        $oldRecord = $db->pselectRow("SELECT * FROM $test_name WHERE CommentID=:cid", array('cid' => $record['CommentID']));
         $success = $instrument->score();
-        $db->selectRow("SELECT * FROM $test_name WHERE CommentID='$record[CommentID]'", $newRecord);
+        $newRecord = $db->pselectRow("SELECT * FROM $test_name WHERE CommentID=:cid", array('cid' => $record['CommentID']));
         unset($oldRecord['Testdate']);
         unset($newRecord['Testdate']);
         $diff = array_diff_assoc($oldRecord, $newRecord);
@@ -158,7 +158,7 @@ foreach($result as $test) {
             }
         }
         else {
-            log_msg("No changes made to $record[CommentID]");
+            log_msg("No changes made to " . $record['CommentID']);
         }
 
         fwrite(STDERR, "-- OK! \n");

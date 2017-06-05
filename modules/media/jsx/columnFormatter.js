@@ -1,6 +1,3 @@
-/* global hasWritePermission */
-/* exported formatColumn */
-
 /**
  * Modify behaviour of specified column cells in the Data Table component
  * @param {string} column - column name
@@ -21,7 +18,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     row[header] = rowData[index];
   }, this);
 
-  // hasWritePermission is defined in menu_media.tpl
+  const hasWritePermission = loris.userHasPermission('media_write');
   if (column === 'File Name' && hasWritePermission === true) {
     var downloadURL = loris.BaseURL + "/media/ajax/FileDownload.php?File=" +
       row['File Name'];
@@ -49,3 +46,5 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   return <td>{cell}</td>;
 }
+
+export default formatColumn;

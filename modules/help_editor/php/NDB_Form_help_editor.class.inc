@@ -1,29 +1,29 @@
 <?php
 /**
- * This file contains code for editing context help section 
+ * This file contains code for editing context help section
  *
  * PHP Version 5
  *
  * @category Main
  * @package  Loris
  * @author   Rathi Sekaran <sekaranrathi@gmail.com>
- * @license  GPLv3
+ * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
 require_once __DIR__ . "/HelpFile.class.inc";
 /**
- * A class for holding a set of functions to add/update content 
+ * A class for holding a set of functions to add/update content
  * for all modules
  *
  * @category Main
  * @package  Loris
  * @author   Rathi Sekaran <sekaranrathi@gmail.com>
- * @license  GPLv3
+ * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-class NDB_Form_help_editor extends NDB_Form
+class NDB_Form_Help_Editor extends NDB_Form
 {
     var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
      /**
@@ -31,7 +31,6 @@ class NDB_Form_help_editor extends NDB_Form
      *
      * @return boolean true if access is permitted
      */
-
     function _hasAccess()
     {
         // create user object
@@ -54,16 +53,17 @@ class NDB_Form_help_editor extends NDB_Form
         }
         if (!empty($_REQUEST['section'])) {
             $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
-        } 
-        if (!empty($_REQUEST['section']) 
-            && $_REQUEST['subsection'] != 'undefined' ) {
+        }
+        if (!empty($_REQUEST['section'])
+            && $_REQUEST['subsection'] != 'undefined'
+        ) {
             $helpID = HelpFile::hashToID(md5($_REQUEST['subsection']));
         }
         $this->tpl_data['section']    = $_REQUEST['section'] ;
         $this->tpl_data['subsection'] = $_REQUEST['subsection'] ;
         if (!empty($helpID)) {
-            $help_file           = HelpFile::factory($helpID);
-            $data                = $help_file->toArray(); 
+            $help_file = HelpFile::factory($helpID);
+            $data      = $help_file->toArray();
             $defaults['title']   = $data['topic'];
             $defaults['content'] = utf8_encode(trim($data['content']));
             if (isset($_REQUEST['helpID'])) {
@@ -72,15 +72,15 @@ class NDB_Form_help_editor extends NDB_Form
                 $this->tpl_data['module_name'] = $defaults['title'];
             }
 
-        } 
+        }
         // case where no help content exists
-        if (empty($defaults['title'])) { 
+        if (empty($defaults['title'])) {
             if (!empty($_REQUEST['section'])) {
                 $defaults['title'] = str_replace("_", " ", $_REQUEST['section']);
             }
             // if not module and not instrument, should be a subtest
-            if ( $_REQUEST['subsection'] != 'undefined') { 
-                $defaults['title'] = str_replace("_", " ", $_REQUEST['subsection']); 
+            if ($_REQUEST['subsection'] != 'undefined') {
+                $defaults['title'] = str_replace("_", " ", $_REQUEST['subsection']);
             }
             $this->tpl_data['module_name'] = $defaults['title'];
         }
@@ -88,14 +88,20 @@ class NDB_Form_help_editor extends NDB_Form
             $defaults['content'] = 'Under Construction';
         }
 
-        if (isset($_COOKIE["LastUrl"]) ) { 
+        if (isset($_COOKIE["LastUrl"]) ) {
             $this->tpl_data['url'] = $_COOKIE["LastUrl"];
         }
         return $defaults;
     }
-
+     /**
+      * Process function
+      *
+      * @param string $values the value
+      *
+      * @return void
+      */
     function _process($values)
-    { 
+    {
         $DB = Database::singleton();
         //Get the default values
         if (isset($_REQUEST['helpID'])) {
@@ -108,69 +114,104 @@ class NDB_Form_help_editor extends NDB_Form
         if (!empty($_REQUEST['section'])) {
             $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
         }
-        if (!empty($_REQUEST['section']) 
-            && $_REQUEST['subsection'] != 'undefined' ) {
+        if (!empty($_REQUEST['section'])
+            && $_REQUEST['subsection'] != 'undefined'
+        ) {
             $helpID   = HelpFile::hashToID(md5($_REQUEST['subsection']));
             $parentID = HelpFile::hashToID(md5($_REQUEST['section']));
-        } 
+        }
         if (!empty($helpID)) {
             $help_file = HelpFile::factory($helpID);
             // update the help file
-            $success = $help_file->update(array(
-                        'topic' => $values['title'],
-                        'projectContent' => $values['content'],
-                        'updated' => date('Y-m-d h:i:s', time())
-                        ));
+            $success = $help_file->update(
+                array(
+                 'topic'          => $values['title'],
+                 'projectContent' => $values['content'],
+                 'updated'        => date(
+                     'Y-m-d h:i:s',
+                     time()
+                 ),
+                )
+            );
         } else {
             //content does not exist insert the help file
-            if (!empty($_REQUEST['section']) 
+            if (!empty($_REQUEST['section'])
                 && $_REQUEST['subsection'] != 'undefined'
-                && empty($parentID)) { 
+                && empty($parentID)
+            ) {
                 //create parent help section first
-                $parentID = HelpFile::insert(array(
-                            'hash' => md5($_REQUEST['section']),
-                            'topic' => "",
-                            'projectContent' => "Under construction",
-                            'created' => date('Y-m-d h:i:s', time())
-                            ));
+                $parentID = HelpFile::insert(
+                    array(
+                     'hash'           => md5($_REQUEST['section']),
+                     'topic'          => "",
+                     'projectContent' => "Under construction",
+                     'created'        => date(
+                         'Y-m-d h:i:s',
+                         time()
+                     ),
+                    )
+                );
                  // check errors
 
             }
-            if (!empty($_REQUEST['section']) 
+            if (!empty($_REQUEST['section'])
                 && $_REQUEST['subsection'] != 'undefined'
-                && !empty($parentID)) { 
- 
-                // insert the help file
-                $helpID = HelpFile::insert(array(
-                            'parentID' => $parentID,
-                            'hash' => md5($_REQUEST['subsection']),
-                            'topic' => $values['title'],
-                            'projectContent' => $values['content'],
-                            'created' => date('Y-m-d h:i:s', time())
-                            ));
+                && !empty($parentID)
+            ) {
 
-            } else if ( !empty($_REQUEST['section']) 
-                        && $_REQUEST['subsection'] == 'undefined') { 
+                // insert the help file
+                $helpID = HelpFile::insert(
+                    array(
+                     'parentID'       => $parentID,
+                     'hash'           => md5($_REQUEST['subsection']),
+                     'topic'          => $values['title'],
+                     'projectContent' => $values['content'],
+                     'created'        => date(
+                         'Y-m-d h:i:s',
+                         time()
+                     ),
+                    )
+                );
+
+            } else if (!empty($_REQUEST['section'])
+                && $_REQUEST['subsection'] == 'undefined'
+            ) {
                 //default case
-                $helpID = HelpFile::insert(array(
-                            'hash' => md5($_REQUEST['section']),
-                            'topic' => $values['title'],
-                            'projectContent' => $values['content'],
-                            'created' => date('Y-m-d h:i:s', time())
-                            ));
+                $helpID = HelpFile::insert(
+                    array(
+                     'hash'           => md5($_REQUEST['section']),
+                     'topic'          => $values['title'],
+                     'projectContent' => $values['content'],
+                     'created'        => date(
+                         'Y-m-d h:i:s',
+                         time()
+                     ),
+                    )
+                );
 
             }
 
         }
         $this->tpl_data['success'] =  true;
 
-    } 
-
-    function edit_help_content()
-    {  
+    }
+     /**
+      * Edit help content function
+      *
+      * @return void
+      */
+    function edit_help_content()// @codingStandardsIgnoreLine
+    {
         $this->addBasicText('title', 'Title');
-        $this->addBasicTextArea('content', 'Content', array('cols'=>140, 'rows'=>30));
-        
+        $this->addBasicTextArea(
+            'content',
+            'Content',
+            array(
+             'cols' => 140,
+             'rows' => 30,
+            )
+        );
+
     }
 
     /**
@@ -191,6 +232,6 @@ class NDB_Form_help_editor extends NDB_Form
             )
         );
     }
-}    
+}
 
 ?>

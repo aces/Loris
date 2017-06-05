@@ -140,7 +140,7 @@ class ViewDetails extends \NDB_Form
     function _validateNamesIds()
     {
         $config =& \NDB_Config::singleton();
-        $dicomArchiveSettings = $config->getSetting('dicom_archive');
+        $dicomArchiveSettings = $config->getSetting('imaging_modules');
 
         if ((preg_match(
             $dicomArchiveSettings['patientNameRegex'],
@@ -292,6 +292,24 @@ class ViewDetails extends \NDB_Form
         return array_merge(
             $depends,
             [$baseURL . "/dicom_archive/css/dicom_archive.css"]
+        );
+    }
+
+    /**
+     * Overrides base getJSDependencies() to add additional JS files
+     *
+     * @return an array of extra JS files that this page depends on
+     */
+    function getJSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/dicom_archive/js/view_details_link.js",
+            )
         );
     }
 }

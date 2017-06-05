@@ -63,6 +63,13 @@ class NDB_Page
     var $defaults = array();
 
     /**
+     * If true, the default display function will not try to load any template.
+     * This is intended to be used with, for instance, pages that completely
+     * construct the DOM from javascript.
+     */
+    var $skipTemplate = false;
+
+    /**
      * Does the setup required for this page. By default, sets up elements
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
@@ -500,11 +507,13 @@ class NDB_Page
     /**
      * Displays the form
      *
-     * @return void
-     * @access public
+     * @return a string of the content to be inserted into the template
      */
     function display()
     {
+        if ($this->skipTemplate) {
+            return "";
+        }
         if (!$this->form->isFrozen()) {
             // hidden values
               $this->addHidden('test_name', $this->name);
@@ -595,7 +604,8 @@ class NDB_Page
                   $baseurl . '/js/jquery.dynamictable.js',
                   $baseurl . '/js/jquery.fileupload.js',
                   $baseurl . '/bootstrap/js/bootstrap.min.js',
-                  $baseurl . '/js/components/react.breadcrumb.js',
+                  $baseurl . '/js/components/Breadcrumbs.js',
+                  $baseurl . '/vendor/sweetalert/sweetalert' . $min . '.js',
                   $baseurl . "/js/util/queryString.js",
                   $baseurl . '/js/components/Form.js',
                   $baseurl . '/js/components/Markdown.js',
@@ -623,6 +633,7 @@ class NDB_Page
                   $baseurl . "/bootstrap/css/bootstrap.min.css",
                   $baseurl . "/bootstrap/css/custom-css.css",
                   $baseurl . "/js/jquery/datepicker/datepicker.css",
+                  $baseurl . '/vendor/sweetalert/sweetalert.css',
                  );
         return $files;
     }
@@ -635,6 +646,28 @@ class NDB_Page
      */
     function setup()
     {
+    }
+
+    /**
+     * Returns false if user does not have access to page.
+     *
+     * Usage: the hasAccess() function in a child class should contain
+     * something like:
+     *
+     *     // create user object
+     *     $user =& User::singleton();
+     *
+     *     return $user->hasPermission('superuser');
+     *
+     * You do not need to overload hasAccess() if there are no access restrictions
+     *
+     * @note   overloaded function
+     * @return bool
+     * @access private
+     */
+    function _hasAccess()
+    {
+        return true;
     }
 }
 ?>

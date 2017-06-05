@@ -68,6 +68,35 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
     function _setupVariables()
     {
         // set the class variables
+        $file_subquery = "
+          CASE WHEN EXISTS (
+            select genomicfileid
+            from genomic_candidate_files_rel
+            where candid = candidate.candid
+          ) THEN 'Y' ELSE 'N' END
+        ";
+        $snp_subquery  = "
+          CASE WHEN EXISTS (
+            select snpid
+            from SNP_candidate_rel
+            where candid = candidate.candid
+          ) THEN 'Y' ELSE 'N' END
+        ";
+        $cnv_subquery  = "
+          CASE WHEN EXISTS (
+            select cnvid
+            from CNV
+            where candid = candidate.candid
+          ) THEN 'Y' ELSE 'N' END
+        ";
+        $cpg_subquery  = "
+          CASE WHEN EXISTS (
+            select cpg_name
+            from genomic_sample_candidate_rel
+            left join genomic_cpg using (sample_label)
+            where candid = candidate.candid
+          ) THEN 'Y' ELSE 'N' END
+        ";
         $this->columns = array(
                           'psc.Name AS PSC',
                           'LPAD(candidate.CandID, 6, "0") AS DCCID',
@@ -76,10 +105,10 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                           'cohort.SubprojectID as Subproject',
                           'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
                           'candidate.ExternalID as externalID',
-                          'F.FileCount as Files',
-                          'S.SNPCount as SNPs',
-                          'C.CNVCount as CNVs',
-                          'M.CPGCount as CPGs',
+                          "$file_subquery as File",
+                          "$snp_subquery as SNP",
+                          "$cnv_subquery as CNV",
+                          "$cpg_subquery as CPG",
                          );
 
         // This variable will be used by the columnFormatter javascript
@@ -103,33 +132,21 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                 from session s GROUP BY s.CandID) AS cohort
                 ON (cohort.CandID=candidate.CandID)
             LEFT JOIN psc ON (psc.CenterID= candidate.CenterID)
-            LEFT JOIN (SELECT gcfr.CandID, count(gcfr.GenomicFileID) as FileCount 
-                from genomic_candidate_files_rel gcfr group by gcfr.CandID) F 
-                ON candidate.CandID = F.CandID
-            LEFT JOIN (select scr.CandID, count(scr.CandID) as SNPCount
-                from SNP_candidate_rel as scr GROUP BY scr.CandID) as S
-                 ON (candidate.CandID = S.CandID)
-            LEFT JOIN (select CNV.CandID, count(CNV.CandID) as CNVCount
-                from CNV GROUP BY CNV.CandID) AS C
-                ON (C.CandID=candidate.CandID)
-            LEFT JOIN  (select gscr.CandID, COUNT(cpg_name) as CPGCount 
-                from genomic_cpg gc 
-                JOIN genomic_sample_candidate_rel gscr 
-                    USING (sample_label) 
-                group by gscr.CandID) as M
-                ON (M.CandID = candidate.CandID)
             WHERE
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
         $DB   = Database::singleton();
         $user = User::singleton();
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
-            $this->query .= " AND candidate.CenterID=";
-            $this->query .= $DB->quote($user->getCenterID());
+            // allow only to view own site data
+            $site_arr     = implode(",", $user->getCenterIDs());
+            $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
         }
 
-        $this->group_by     = '';
-        $this->order_by     = 'psc.Name, candidate.CandID DESC';
+        $this->group_by = '';
+
+        $this->order_by = 'psc.Name, candidate.CandID DESC';
+
         $this->validFilters = array(
                                'candidate.CenterID',
                                'candidate.CandID',
@@ -139,11 +156,18 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                                'candidate.DoB',
                                'candidate.ExternalID',
                                'show_brief_results',
-                               'F.FileCount',
-                               'C.CNVCount',
-                               'S.SNPCount',
-                               'M.CPGCount',
+                               'File',
+                               'CNV',
+                               'SNP',
+                               'CPG',
                               );
+
+        $this->validHavingFilters = array(
+                                     'File',
+                                     'CNV',
+                                     'SNP',
+                                     'CPG',
+                                    );
 
         $ftf = array(
                 'centerID'           => 'candidate.CenterID',
@@ -153,10 +177,10 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                 'SubprojectID'       => 'cohort.SubprojectID',
                 'External_ID'        => 'candidate.ExternalID',
                 'Show_Brief_Results' => 'show_brief_results',
-                'Files'              => 'F.FileCount',
-                'SNPs'               => 'S.SNPCount',
-                'CNVs'               => 'C.CNVCount',
-                'CPGs'               => 'M.CPGCount',
+                'File'               => 'File',
+                'SNP'                => 'SNP',
+                'CNV'                => 'CNV',
+                'CPG'                => 'CPG',
                );
 
         $this->formToFilter = $ftf;
@@ -185,11 +209,13 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $site = Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $centerIDdata  = $user->getData('CenterID');
-                $siteData      = $user->getData('Site');
-                $list_of_sites = array($centerIDdata => $siteData);
+            $site_arr = $user->getData('CenterIDs');
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $list_of_sites[$val] = $site[$key]->getCenterName();
+                }
+                $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
             }
         }
 
@@ -219,13 +245,13 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
 
         $any_options = array(
                         ''  => null,
-                        '1' => 'Any',
-                        '0' => 'None',
+                        'Y' => 'Yes',
+                        'N' => 'No',
                        );
-        $this->addSelect('Files', 'Files:', $any_options);
-        $this->addSelect('SNPs', 'SNPs found:', $any_options);
-        $this->addSelect('CNVs', 'CNVs found:', $any_options);
-        $this->addSelect('CPGs', 'CPGs found:', $any_options);
+        $this->addSelect('File', 'Files:', $any_options);
+        $this->addSelect('SNP', 'SNPs found:', $any_options);
+        $this->addSelect('CNV', 'CNVs found:', $any_options);
+        $this->addSelect('CPG', 'CPGs found:', $any_options);
 
         $show_results_options = array(
                                  'brief' => 'Summary fields',
@@ -267,16 +293,6 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                 && in_array($field, $this->EqualityFilters))
             ) {
                  $query .= " AND $field = :v_$prepared_key";
-            } elseif ($field == "F.FileCount"
-                || $field == "S.SNPCount"
-                || $field == "C.CNVCount"
-                || $field == "M.CPGCount"
-            ) {
-                if ($val == "1") {  // if ANY found i.e. >= 1
-                    $query .= " AND $field >= :v_$prepared_key";
-                } elseif ($val == "0") { // if NONE found i.e. = 0
-                    $query .= " AND ($field = :v_$prepared_key || $field IS NULL)";
-                }
             } elseif ($field == "candidate.CandID") {
                 $query .= " AND $field = CONVERT( :v_$prepared_key, DECIMAL) ";
             } else {

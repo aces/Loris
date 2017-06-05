@@ -281,6 +281,25 @@ class NDB_Factory
         return self::$_settings;
     }
 
+    /**
+     * Retrieve a Project object representing this project
+     *
+     * @param string $projectName The name of the project
+     *
+     * @return Project object
+     */
+    public function project($projectName)
+    {
+        $project = null;
+
+        if ($this->Testing) {
+            $project = new MockProject($projectName);
+        } else {
+            $project = \Project::singleton($projectName);
+        }
+
+        return $project;
+    }
 
     /**
      * Retrieve a candidate object representing this candidate

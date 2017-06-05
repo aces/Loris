@@ -82,6 +82,10 @@ class CouchDBDemographicsImporter {
         'Study_consent_withdrawal' => array(
             'Description' => 'Study Consent Withdrawal Date',
             'Type' => "varchar(255)",
+        ),
+        'session_feedback' => array(
+            'Description' => 'Behavioural feedback at the session level',
+            'Type' => "varchar(255)",
         )
     );
 
@@ -119,19 +123,74 @@ class CouchDBDemographicsImporter {
 
     function _generateQuery() {
         $config = NDB_Config::singleton();
-        $fieldsInQuery = "SELECT c.DoB, c.CandID, c.PSCID, s.Visit_label, s.SubprojectID, p.Alias as Site, c.Gender, s.Current_stage, CASE WHEN s.Visit='Failure' THEN 'Failure' WHEN s.Screening='Failure' THEN 'Failure' WHEN s.Visit='Withdrawal' THEN 'Withdrawal' WHEN s.Screening='Withdrawal' THEN 'Withdrawal' ELSE 'Neither' END as Failure, c.ProjectID, c.flagged_caveatemptor as CEF, c.flagged_caveatemptor as CEF, c_o.Description as CEF_reason, c.flagged_other as CEF_comment, pc_comment.Value as Comment, COALESCE(pso.Description,'Active') as Status, ps.participant_suboptions as Status_reason, ps.reason_specify as Status_comments, ps.study_consent as Study_consent, COALESCE(ps.study_consent_withdrawal,'0000-00-00') AS Study_consent_withdrawal";
-        $tablesToJoin = " FROM session s JOIN candidate c USING (CandID) LEFT JOIN psc p ON (p.CenterID=s.CenterID) LEFT JOIN caveat_options c_o ON (c_o.ID=c.flagged_reason) LEFT JOIN parameter_candidate AS pc_comment ON (pc_comment.CandID=c.CandID) AND pc_comment.ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE Name='candidate_comment') LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)";
+
+        $fieldsInQuery = "SELECT c.DoB,
+                                c.CandID, 
+                                c.PSCID, 
+                                s.Visit_label, 
+                                s.SubprojectID, 
+                                p.Alias as Site, 
+                                c.Gender, 
+                                s.Current_stage, 
+                                CASE WHEN s.Visit='Failure' THEN 'Failure' WHEN s.Screening='Failure' THEN 'Failure' WHEN s.Visit='Withdrawal' THEN 'Withdrawal' WHEN s.Screening='Withdrawal' THEN 'Withdrawal' ELSE 'Neither' END as Failure, 
+                                c.ProjectID, 
+                                c.flagged_caveatemptor as CEF, 
+                                c_o.Description as CEF_reason, 
+                                c.flagged_other as CEF_comment, 
+                                pc_comment.Value as Comment, 
+                                COALESCE(pso.Description,'Active') as Status, 
+                                ps.participant_suboptions as Status_reason, 
+                                ps.reason_specify as Status_comments, 
+                                ps.study_consent as Study_consent, 
+                                COALESCE(ps.study_consent_withdrawal,'0000-00-00') AS Study_consent_withdrawal,
+                                GROUP_CONCAT(fbe.Comment) as session_feedback";
+        $tablesToJoin = " FROM session s 
+                                JOIN candidate c USING (CandID) 
+                                LEFT JOIN psc p ON (p.CenterID=s.CenterID) 
+                                LEFT JOIN caveat_options c_o ON (c_o.ID=c.flagged_reason) 
+                                LEFT JOIN parameter_candidate AS pc_comment ON (pc_comment.CandID=c.CandID) AND pc_comment.ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE Name='candidate_comment') 
+                                LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) 
+                                LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)
+                                LEFT JOIN feedback_bvl_thread fbt ON (fbt.CandID=c.CandID) 
+                                LEFT JOIN feedback_bvl_entry fbe ON (fbe.FeedbackID=fbt.FeedbackID)";
+
+        $groupBy=" GROUP BY s.ID, 
+                            c.DoB,
+							c.CandID, 
+                            c.PSCID, 
+                            s.Visit_label, 
+                            s.SubprojectID, 
+                            Site, 
+                            c.Gender, 
+                            s.Current_stage,
+                            Failure,
+                            c.ProjectID, 
+                            CEF, 
+                            CEF_reason, 
+                            CEF_comment, 
+                            pc_comment.Value, 
+                            pso.Description, 
+                            ps.participant_suboptions, 
+                            ps.reason_specify, 
+                            ps.study_consent, 
+                            Study_consent_withdrawal
+                            ";
+
         // If proband fields are being used, add proband information into the query
         if ($config->getSetting("useProband") === "true") {
             $probandFields = ", c.ProbandGender as Gender_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference";
             $fieldsInQuery .= $probandFields;
+            $groupBy .= ", c.ProbandGender, Age_difference";
         }
         // If expected date of confinement is being used, add EDC information into the query
         if ($config->getSetting("useEDC") === "true") {
             $EDCFields = ", c.EDC as EDC";
             $fieldsInQuery .= $EDCFields;
+            $groupBy .= ", c.EDC";
         }
-        $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y' AND c.Entity_type != 'Scanner'";
+        $whereClause=" WHERE s.Active='Y' AND c.Active='Y' AND c.Entity_type != 'Scanner'";
+
+        $concatQuery = $fieldsInQuery . $tablesToJoin . $whereClause . $groupBy;
         return $concatQuery;
     }
 
@@ -161,8 +220,8 @@ class CouchDBDemographicsImporter {
             $projectsEnum .= implode("', '", $projects);
             $projectsEnum .= "')";
             $this->Dictionary["Project"] = array(
-                'Description' => 'Expected Date of Confinement (Due Date)',
-                'Type' => $projects
+                'Description' => 'Project for which the candidate belongs',
+                'Type' => $projectsEnum
             );
         }
         /*
@@ -185,6 +244,7 @@ class CouchDBDemographicsImporter {
         print "Updating Config:BaseConfig: $config";
 
         // Run query
+        $max_len = $this->SQLDB->run("SET SESSION group_concat_max_len = 100000;", array());
         $demographics = $this->SQLDB->pselect($this->_generateQuery(), array());
 
         $this->CouchDB->beginBulkTransaction();
