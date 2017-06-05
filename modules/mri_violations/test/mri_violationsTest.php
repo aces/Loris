@@ -25,14 +25,11 @@ require_once __DIR__ .
  */
 class MriViolationsTestIntegrationTest extends LorisIntegrationTest
 {
-   /**
+    /**
      * UI elements and locations
+     * breadcrumb - 'Mri  Violations'
      */
-   private $loadingUI
-        = array(
-           //breadcrumb
-           'Mri  Violations' => '#bc2 > a:nth-child(2) > div'
-          );
+    private $_loadingUI = array('Mri  Violations' => '#bc2 > a:nth-child(2) > div');
     /**
      * Insert testing data
      *
@@ -124,7 +121,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
 
     }
     /**
- * Delete the test data
+     * Delete the test data
      *
      * @return void
      */
@@ -533,17 +530,17 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     }
     /**
      * Testing UI when page loads
-     * 
+     *
      * @return void
      */
     function testPageUIs()
     {
         $this->safeGet($this->url . "/mri_violations/");
-        foreach ($this->loadingUI as $key => $value) {
+        foreach ($this->_loadingUI as $key => $value) {
             $text = $this->webDriver->executescript(
-            "return document.querySelector('$value').textContent"
-        );
-        $this->assertContains($key, $text);
+                "return document.querySelector('$value').textContent"
+            );
+            $this->assertContains($key, $text);
         }
     }
 }
