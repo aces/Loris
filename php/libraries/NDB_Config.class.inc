@@ -92,7 +92,7 @@ class NDB_Config
             printf("22222222222222222222");
             var_dump($configFile);
             printf("22222222222222222222");
-            if(!empty(Utility::asArray($config->_settings['include']))){
+            if(!empty($config->_settings['include'])){
             // Load all includes found in the config
                foreach (Utility::asArray($config->_settings['include']) as $k=>$path) {
                    $config->load($config->configFilePath($path));
