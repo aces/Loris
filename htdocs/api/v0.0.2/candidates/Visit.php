@@ -195,7 +195,7 @@ class Visit extends \Loris\API\Candidates\Candidate
 
 if (isset($_REQUEST['PrintVisit'])) {
     $InputDataArray = file_get_contents("php://input");
-    $InputData = json_decode($InputDataArray, true);
+    $InputData      = json_decode($InputDataArray, true);
     if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $obj = new Visit(
             $_SERVER['REQUEST_METHOD'],
