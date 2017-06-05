@@ -64,8 +64,12 @@ FilterRule = React.createClass({
 				"startsWith": "startsWith",
 				"contains": "contains"
 				// }
-			}
+			},
+			value: ""
 		};
+	},
+	componentWillMount: function () {
+		this.valueSet = loris.debounce(this.valueSet, 1000);
 	},
 	selectInstrument: function (event) {
 		// Update the rules instrument, getting the instruments avalible fields
@@ -81,7 +85,7 @@ FilterRule = React.createClass({
 	},
 	fieldSelect: function (event) {
 		// Update the rules desired field, setting the rules field and field type
-		var rule = this.props.rule;
+		var rule = JSON.parse(JSON.stringify(this.props.rule));
 		delete rule.field;
 		delete rule.fieldType;
 		delete rule.operator;
@@ -96,7 +100,7 @@ FilterRule = React.createClass({
 	},
 	operatorSelect: function (event) {
 		// Update the desired rule operation for the selected field
-		var rule = this.props.rule;
+		var rule = JSON.parse(JSON.stringify(this.props.rule));
 		delete rule.operator;
 		delete rule.value;
 		delete rule.visit;
@@ -106,14 +110,24 @@ FilterRule = React.createClass({
 		}
 		this.props.updateRule(this.props.index, rule);
 	},
-	valueSet: function (event) {
-		// Update the value to filter for, and runs the query for the rules parameters
-		var rule = this.props.rule,
-		    that = this;
-		delete rule.value;
+	valueChange: function (event) {
+		var rule = JSON.parse(JSON.stringify(this.props.rule));
 		delete rule.visit;
 		delete rule.candidates;
-		if (event.target.value) {
+
+		rule.value = event.target.value;
+
+		this.setState({
+			value: event.target.value
+		});
+		this.valueSet();
+		this.props.updateRule(this.props.index, rule);
+	},
+	valueSet: function () {
+		// Update the value to filter for, and runs the query for the rules parameters
+		var rule = JSON.parse(JSON.stringify(this.props.rule)),
+		    that = this;
+		if (this.state.value) {
 			var responseHandler = function (data) {
 				var i,
 				    allSessions = {},
@@ -142,7 +156,7 @@ FilterRule = React.createClass({
 				$.get(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=" + script, {
 					category: rule.instrument,
 					field: rule.field,
-					value: event.target.value
+					value: that.state.value
 				}, responseHandler, 'json');
 			};
 			switch (rule.operator) {
@@ -167,14 +181,11 @@ FilterRule = React.createClass({
 				default:
 					break;
 			}
-
-			rule.value = event.target.value;
 		}
-		this.props.updateRule(this.props.index, rule);
 	},
 	updateVisit: function (event) {
 		// Update rule to filter for specified visit
-		var rule = this.props.rule;
+		var rule = JSON.parse(JSON.stringify(this.props.rule));
 		rule.visit = event.target.value;
 
 		if (event.target.value === "all") {
@@ -248,7 +259,7 @@ FilterRule = React.createClass({
 							value = this.props.rule.value ? this.props.rule.value : "";
 							input = React.createElement(
 								"select",
-								{ className: "input-sm col-xs-3", onChange: this.valueSet, value: value },
+								{ className: "input-sm col-xs-3", onChange: this.valueChange, value: value },
 								React.createElement("option", { value: "" }),
 								options
 							);
@@ -256,7 +267,7 @@ FilterRule = React.createClass({
 						default:
 							input = React.createElement("input", { type: "text",
 								className: "input-sm col-xs-3",
-								onChange: this.valueSet,
+								onChange: this.valueChange,
 								value: this.props.rule.value
 							});
 							break;

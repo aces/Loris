@@ -115,7 +115,7 @@ class Candidates extends APIBase
             $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
             //Candidate::createNew
             try {
-                $this->createNew(
+                $candid = $this->createNew(
                     $data['Candidate']['DoB'],
                     $data['Candidate']['EDC'],
                     $data['Candidate']['Gender'],
@@ -123,7 +123,7 @@ class Candidates extends APIBase
                 );
                 $this->header("HTTP/1.1 201 Created");
                 $this->JSON = [
-                               'Meta' => ["CandID" => "123456"],
+                               'Meta' => ["CandID" => $candid],
                               ];
             } catch(\LorisException $e) {
                 $this->header("HTTP/1.1 400 Bad Request");
@@ -150,7 +150,6 @@ class Candidates extends APIBase
     {
         if (!isset($data['Candidate'][$field])) {
             $this->header("HTTP/1.1 400 Bad Request");
-            throw new \Exception("AAAAH $field");
             $this->safeExit(0);
         }
         if (is_array($values) && !in_array($data['Candidate'][$field], $values)) {
@@ -178,7 +177,7 @@ class Candidates extends APIBase
     public function createNew($DoB, $edc, $gender, $PSCID)
     {
         $user = \User::singleton();
-        \Candidate::createNew(
+        return \Candidate::createNew(
             $user->getCenterID(),
             $DoB,
             $edc,
@@ -190,7 +189,14 @@ class Candidates extends APIBase
 
 if (isset($_REQUEST['PrintCandidates'])) {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $obj = new Candidates($_SERVER['REQUEST_METHOD'], $_POST);
+        $fp   = fopen("php://input", "r");
+        $data = '';
+        while (!feof($fp)) {
+            $data .= fread($fp, 1024);
+        }
+        fclose($fp);
+
+        $obj = new Candidates($_SERVER['REQUEST_METHOD'], json_decode($data, true));
     } else {
         $obj = new Candidates($_SERVER['REQUEST_METHOD']);
     }

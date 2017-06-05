@@ -321,6 +321,26 @@ class LorisForm
         $el['type'] = 'header';
         return $el;
     }
+
+    /**
+     * Reimplementation of HTML_QuickForm's "addLink" API
+     *
+     * @param string $name  The element name.
+     * @param string $label The label to attach to this element.
+     * @param array  $url   The url label to set as href attrib
+     * @param array  $link  The value to display as the link
+     *
+     * @return &array
+     */
+    public function addLink($name, $label, $url, $link)
+    {
+        $el         =& $this->addBase($name, $label);
+        $el['type'] = 'link';
+        $el['url']  = $url;
+        $el['link'] = $link;
+        return $el;
+    }
+
     /**
      * Generates a unique element name for anonymous elements to use
      * to differentiate things in the internal elements array.
@@ -415,6 +435,9 @@ class LorisForm
             break;
         case 'hidden':
             $el = $this->addHidden($name, $label, $options);
+            break;
+        case 'link':
+            $el = $this->addLink($name, $label, $options, $attribs);
             break;
         case 'text':
         default:
@@ -666,18 +689,22 @@ class LorisForm
                 $optionKey = (string) $optionKey;
             }
 
+            $defaultValue = $this->getValue($el['name']);
+
             if (isset($el['multiple'])) {
-                if (!empty($this->getValue($el['name']))
-                    && in_array($optionKey, $this->getValue($el['name']))
-                ) {
-                    $selected = 'selected="selected"';
+                if (!empty($defaultValue)) {
+                    if (in_array($optionKey, $defaultValue)
+                        || $optionKey === $defaultValue
+                    ) {
+                        $selected = 'selected="selected"';
+                    }
                 }
             } else {
-                if ($optionKey === $this->getValue($el['name'])) {
+                if ($optionKey === $defaultValue) {
                     $selected = 'selected="selected"';
                 } elseif (isset($el['selected'])
                     && $optionKey === $el['selected']
-                    && $this->getValue($el['name']) === null
+                    && $defaultValue === null
                 ) {
                     $selected = 'selected="selected"';
                 }
@@ -772,23 +799,32 @@ class LorisForm
         $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
         $required = isset($el['required']) ? "this.value === '' ? '$msg':''" : "''";
         $value    = $this->getValue($el['name']);
-        if (array_key_exists('options', $el)
-            && ((strtolower($el['options']['format']) == 'my')
-            || (strtolower($el['options']['format']) == 'ym'))
-        ) {
-            $format = 'month';
-            if ($value) {
-                $value = explode("-", $value);
-                $value = sprintf("%s-%s", $value[0], $value[1]);
+        $format   = 'date';
+
+        if (array_key_exists('options', $el)) {
+            $elOptions = $el['options'];
+            $elFormat  = strtolower($elOptions['format']);
+
+            if ($elFormat == 'my' || $elFormat == 'ym') {
+                $format = 'month';
+                if ($value) {
+                    $value = explode("-", $value);
+                    $value = sprintf("%s-%s", $value[0], $value[1]);
+                }
+                if ($elOptions['maxYear']) {
+                    $minYear = "min=\"" . $elOptions['minYear'] . "-01\"";
+                }
+                if ($elOptions['maxYear']) {
+                    $maxYear = "max=\"" . $elOptions['maxYear'] . "-12\"";
+                }
             }
-        } else {
-            $format = 'date';
         }
+
         $elmnt = "<input name=\"$el[name]\" type=\"$format\" $cls "
             . "$minYear $maxYear "
-            . "onChange=\"this.setCustomValidity($required)\""
-            . (isset($el['required']) ? "required" : '')
-            . (!empty($disabled) ? "disabled" : '')
+            . "onChange=\"this.setCustomValidity($required)\" "
+            . (isset($el['required']) ? "required " : '')
+            . (!empty($disabled) ? "disabled " : '')
             . (
             !empty($value)
                 ? ' value="' . $value . '" '
@@ -992,6 +1028,25 @@ class LorisForm
     }
 
     /**
+     * Generates the HTML to add to the page when rendered for a
+     * link element
+     *
+     * @param array $el The element to render from $this->form
+     *
+     * @return string A string of the HTML markup to render
+     */
+    function linkHTML($el)
+    {
+        $html = "<a href=\""
+            . $el['url']
+            . "\">"
+            . $el['link']
+            . "</a>";
+
+        return $html;
+    }
+
+    /**
      * Generates the HTML to add to the page when a file is
      * added to the form.
      *
@@ -1117,12 +1172,16 @@ class LorisForm
                     }
                 }
             } else {
-                $value = $this->getValue($el['name']);
+                if ($el['type'] === 'file') {
+                    $value = $_FILES[$el['name']]['name'];
+                } else {
+                    $value = $this->getValue($el['name']);
+                }
+
                 if (isset($el['required'])
                     && $el['required'] === true
-                    && empty($value)
+                    && $value === ""
                 ) {
-                    //$this->setElementError($el['name'], "$el[name] required.");
                     $errors[$el['name']] = "required fail";
                 }
 
@@ -1177,6 +1236,27 @@ class LorisForm
 
                     $errors[$el['name']] = "maxlength fail";
                 }
+
+                // Check if date fields have errors and add them to error list
+                if ($el['type'] === 'date') {
+                    $date = (
+                        $values[$elName] ?
+                            $values[$elName] :
+                        $this->getValue($el['name'])
+                    );
+                    if (empty($date)) {
+                        continue;
+                    }
+                    $dt          = DateTime::createFromFormat('Y-m-d', $date);
+                    $isValidDate = $dt && $dt->format('Y-m-d') == $date;
+                    if (!$isValidDate) {
+                        $this->setElementError(
+                            $el['name'],
+                            "Please input a valid date in '" . $el['label'] . "'!"
+                        );
+                        $errors[$el['name']] = "date fail";
+                    }
+                }
             }
         }
         foreach ($this->formRules as $rule) {
@@ -1201,7 +1281,6 @@ class LorisForm
                 }
             }
         }
-
         return empty($errors);
     }
 
@@ -1368,6 +1447,8 @@ class LorisForm
             return $this->hiddenHTML($el);
         case 'time':
             return $this->timeHTML($el);
+        case 'link':
+            return $this->linkHTML($el);
         }
         throw new LorisException(
             "Unsupported element type $el[type] in renderElement"
@@ -1527,6 +1608,25 @@ class LorisForm
 
         return $retVal;
     }
+
+    /**
+     * Renders the current form to a complete HTML
+     * based string.
+     *
+     * @return String the HTML string of the form
+     */
+    function toHTML()
+    {
+
+        $smarty    = new Smarty_neurodb;
+        $formArray = $this->toElementArray();
+
+        $smarty->assign('form', $formArray);
+        $html = $smarty->fetch("toHTML_form.tpl");
+
+        return $html;
+    }
+
     /**
      * Reimplement Smarty's addRule API.
      *
@@ -1889,31 +1989,29 @@ class LorisForm
                 continue;
             }
 
-            if ($el['type'] === 'date'
-                && array_key_exists('options', $el)
-                && ((strtolower($el['options']['format']) == 'y'))
-            ) {
-                    $value = $this->getValue($name);
-                if ($value) {
-                    $arr[$name] = sprintf("%s-00-00", $value);
-                } else {
-                    $arr[$name] = '';
-                }
-                    continue;
-            }
+            if ($el['type'] === 'date' && array_key_exists('options', $el)) {
+                $value = $this->getValue($name);
+                $date  = $value;
 
-            if ($el['type'] === 'date'
-                && array_key_exists('options', $el)
-                && ((strtolower($el['options']['format']) == 'my')
-                || (strtolower($el['options']['format']) == 'ym'))
-            ) {
-                    $value = $this->getValue($name);
-                if ($value) {
-                    $arr[$name] = sprintf("%s-00", $value);
-                } else {
+                if (!$value) {
                     $arr[$name] = '';
-                }
                     continue;
+                }
+
+                // Convert year to a valid SQL format (i.e yyyy-mm-dd)
+                if (strtolower($el['options']['format']) === 'y') {
+                    $date = sprintf("%s-01-01", $value);
+                }
+                // Convert month-year to a valid SQL format (i.e yyyy-mm-dd)
+                if ((strtolower($el['options']['format']) === 'my')
+                    || (strtolower($el['options']['format']) === 'ym')
+                ) {
+                    $date = sprintf("%s-01", $value);
+                }
+
+                $arr[$name] = $date;
+
+                continue;
             }
 
             // Check to see it the element type is a header or is a static

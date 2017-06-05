@@ -139,6 +139,7 @@ class NDB_Form_final_radiological_review extends NDB_Form
      * information from the final_radiological_review table for
      * smarty
      *
+     * @throws LorisException
      * @return array defaults for smarty to use
      */
     function _getDefaults()
@@ -171,6 +172,13 @@ class NDB_Form_final_radiological_review extends NDB_Form
                 );
             }
 
+            if ($DB->tableExists('radiology_review') === false) {
+                throw new LorisException(
+                    "Table 'radiology_review' does not exist."
+                    . " Please have this instrument set up in order to use this module properly."
+                );
+            }
+
             $original_review = $DB->pselectRow(
                 "SELECT r.Scan_done as Original_Scan_Done, 
                 r.review_results as Original_Review_Results, 
@@ -190,7 +198,8 @@ class NDB_Form_final_radiological_review extends NDB_Form
                 LEFT JOIN tarchive t ON (upper(t.PatientName) 
                 LIKE CONCAT(upper(c.PSCID), '_', upper(s.CandID), '_', upper(s.visit_label), '%')) 
                 WHERE r.CommentID=:CID 
-                GROUP by CandID, PSCID, Visit_label, SessionID, CommentID", 
+                GROUP by CandID, PSCID, Visit_label, SessionID, CommentID,
+                r.Scan_done, r.review_results, r.abnormal_atypical_exclusionary, r.Incidental_findings, e.full_name", 
                 array('CID' => $this->identifier)
             );
             if(empty($original_review)) {
@@ -205,7 +214,7 @@ class NDB_Form_final_radiological_review extends NDB_Form
 
 
             $history = $DB->pselect(
-                'SELECT userID, changeDate, col, old, new FROM final_radiological_review_history
+                'SELECT userID, changeDate, col, old, new FROM final_radiological_review_history 
                 WHERE CommentID= :primKey ORDER BY changeDate DESC',
                 array('primKey' => $this->identifier)
             );
@@ -216,8 +225,8 @@ class NDB_Form_final_radiological_review extends NDB_Form
                     $history_item['changeDate'] . '</td><td>' . 
                     $history_item['userID'] . '</td><td>' . 
                     $history_item['col'] . '</td><td>' . 
-                    _makePretty($history_item['col'], $history_item['old']) . '</td><td>' 
-                    . _makePretty($history_item['col'], $history_item['new']) 
+                    _makePretty($history_item['col'], $history_item['old']) . '</td><td>'
+                    . _makePretty($history_item['col'], $history_item['new'])
                     . '</td></tr>';
             }
             $defaults = array_merge(
@@ -234,7 +243,7 @@ class NDB_Form_final_radiological_review extends NDB_Form
                 $this->tpl_data['conflicts'][] = "Conflict between final and extra review";
             }
             if ($defaults['Final_Review_Results'] != $defaults['Original_Review_Results']
-                || $defaults['Original_Exclusionary'] != $defaults['Final_Exclusionary']
+         
             ) {
                 $this->tpl_data['conflicts'][] = "Conflict between original and final review";
             }

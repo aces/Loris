@@ -564,7 +564,7 @@ class SinglePointLogin
     function disabledDueToInactivity($username, $maximumDaysInactive)
     {
         $DB    =& Database::singleton();
-        $query = "SELECT MAX(Login_timestamp) 
+        $query = "SELECT MAX(Login_timestamp) as Login_timestamp
                   FROM user_login_history 
                   WHERE UserID = :username";
 

@@ -29,8 +29,14 @@ var ParticipantStatus = React.createClass({
         return xhr;
       },
       success: function success(data) {
+        var formData = {};
+        formData.participantStatus = data.participantStatus;
+        formData.participantSuboptions = data.participantSuboptions;
+        formData.reasonSpecify = data.reasonSpecify;
+
         that.setState({
           Data: data,
+          formData: formData,
           isLoaded: true
         });
       },
@@ -43,6 +49,10 @@ var ParticipantStatus = React.createClass({
   },
   setFormData: function setFormData(formElement, value) {
     var formData = this.state.formData;
+    var required = this.state.Data.required;
+    if (formElement === "participantStatus" && required.indexOf(value) < 0) {
+      formData.participantSuboptions = "";
+    }
     formData[formElement] = value;
     this.setState({
       formData: formData
@@ -85,18 +95,11 @@ var ParticipantStatus = React.createClass({
     var required = this.state.Data.required;
     var subOptions = [];
     var suboptionsRequired = false;
-    for (var key in required) {
-      if (required.hasOwnProperty(key)) {
-        var participantStatus = this.state.formData.participant_status;
-        if (participantStatus === null || participantStatus === undefined) {
-          participantStatus = this.state.Data.participant_status;
-        }
-        if (required[key].ID === participantStatus) {
-          subOptions = this.state.Data.parentIDs[participantStatus];
-          suboptionsRequired = true;
-          break;
-        }
-      }
+    var participantStatus = this.state.formData.participantStatus ? this.state.formData.participantStatus : this.state.Data.participantStatus;
+
+    if (participantStatus && required.indexOf(participantStatus) > -1) {
+      subOptions = this.state.Data.parentIDs[participantStatus];
+      suboptionsRequired = true;
     }
 
     var formattedHistory = [];
@@ -184,30 +187,30 @@ var ParticipantStatus = React.createClass({
         }),
         React.createElement(SelectElement, {
           label: 'Participant Status',
-          name: 'participant_status',
+          name: 'participantStatus',
           options: this.state.Data.statusOptions,
-          value: this.state.Data.participant_status,
+          value: this.state.formData.participantStatus,
           onUserInput: this.setFormData,
-          ref: 'participant_status',
+          ref: 'participantStatus',
           disabled: disabled,
           required: true
         }),
         React.createElement(SelectElement, {
           label: 'Specify Reason',
-          name: 'participant_suboptions',
+          name: 'participantSuboptions',
           options: subOptions,
-          value: this.state.Data.participant_suboptions,
+          value: this.state.formData.participantSuboptions,
           onUserInput: this.setFormData,
-          ref: 'participant_suboptions',
+          ref: 'participantSuboptions',
           disabled: !suboptionsRequired,
           required: suboptionsRequired
         }),
         React.createElement(TextareaElement, {
           label: 'Comments',
-          name: 'reason_specify',
-          value: this.state.Data.reason_specify,
+          name: 'reasonSpecify',
+          value: this.state.formData.reasonSpecify,
           onUserInput: this.setFormData,
-          ref: 'reason_specify',
+          ref: 'reasonSpecify',
           disabled: disabled,
           required: false
         }),
