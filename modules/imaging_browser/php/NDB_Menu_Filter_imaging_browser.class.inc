@@ -131,7 +131,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         foreach ($case_desc as $key => $value) {
             $left_joins .= "
             LEFT JOIN (SELECT files.SessionID, 
-            MIN(files_qcstatus.QCStatus+0) as " . $DB->quote($qc[$key]) . " 
+            MIN(files_qcstatus.QCStatus+0) as " . $DB->escape($qc[$key]) . " 
             FROM files 
             JOIN files_qcstatus USING (FileID) 
             WHERE files.AcquisitionProtocolID=" . $DB->quote($key) . " 
