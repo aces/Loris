@@ -28,6 +28,7 @@ with open(annotation_file, 'r') as f:
     reader = csv.DictReader(f, delimiter=',')
     for line in reader:
         
+
         if line["Name"] == '':
             sys.stdout.write('-- Parser encoutered a line with an unexpected format.\n')
             sys.stdout.write('-- Closing file.\n')
