@@ -61,7 +61,7 @@ class Visit extends \Loris\API\Candidates\Candidate
         // CandID
         parent::__construct($method, $CandID);
         if ($method === 'PUT') {
-            $this->ReceivedJSON = json_decode($InputData, true);
+            $this->ReceivedJSON = $InputData;
         } else {
             $timepoints = $this->Candidate->getListOfVisitLabels();
             $Visits     = array_values($timepoints);
@@ -194,8 +194,8 @@ class Visit extends \Loris\API\Candidates\Candidate
 }
 
 if (isset($_REQUEST['PrintVisit'])) {
-    parse_str(urldecode(file_get_contents("php://input")), $InputDataArray);
-    $InputData = json_encode($InputDataArray);
+    $InputDataArray = file_get_contents("php://input");
+    $InputData      = json_decode($InputDataArray, true);
     if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $obj = new Visit(
             $_SERVER['REQUEST_METHOD'],

@@ -97,7 +97,7 @@ class CouchDBInstrumentImporter
                 unset($docdata['CommentID']);
                 unset($docdata['PSCID']);
                 unset($docdata['Visit_label']);
-
+                unset($docdata['Testdate']);
                 unset($docdata['city_of_birth']);
                 unset($docdata['city_of_birth_status']);
 

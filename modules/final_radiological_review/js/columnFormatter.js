@@ -1,3 +1,5 @@
+'use strict';
+
 /* exported formatColumn */
 
 /**
@@ -35,14 +37,10 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     );
   }
   if (column === 'Review Done') {
-    reviewDone = " ";
+    reviewDone = "No";
 
-    if (row.ReviewDone === '1') {
+    if (row['Review Done'] === 'yes' || row['Review Done'] === 'Yes') {
       reviewDone = 'Yes';
-    }
-
-    if (row.ReviewDone === '0') {
-      reviewDone = 'No';
     }
     return React.createElement(
       'td',
@@ -108,12 +106,10 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     );
   }
   if (column === 'Finalized') {
-    if (row.Finalized === '1') {
-      finalizedvar = "Yes";
-    }
+    finalizedvar = "No";
 
-    if (row.Finalized === '0') {
-      finalizedvar = "No";
+    if (row.Finalized === 'yes' || row.Finalized === 'Yes') {
+      finalizedvar = 'Yes';
     }
     return React.createElement(
       'td',
@@ -122,6 +118,18 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     );
   }
 
+  if (column === 'T1 Inserted' && row['T1 Inserted'] === "Yes") {
+    url = loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + row.SessionID;
+    return React.createElement(
+      'td',
+      null,
+      React.createElement(
+        'a',
+        { href: url },
+        cell
+      )
+    );
+  }
   return React.createElement(
     'td',
     null,

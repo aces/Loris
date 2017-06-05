@@ -309,7 +309,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @access   public
      * @abstract
      */
-    function setup($commentID, $page)
+    function setup($commentID = null, $page = null)
     {
         $this->_setupPage(null, $page, null, $commentID, 'test_form');
     }
@@ -1080,7 +1080,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $flag = true;
             if (is_array($elvalue)) {
                 foreach ($elvalue AS $val) {
-                    if ($val == "") {
+                    if ($val === "") {
                         $flag = false;
                     }
                 }
@@ -1088,7 +1088,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
             //If the answer is empty (or its a group and one of answers in the
             //group is empty) then run the rules
-            if ($elvalue=="" || $flag==false) {
+            if ($elvalue==="" || $flag==false) {
                 if ($this->XINDebug) {
                     //debugging code
                     echo "<p><b>$elname</b><br> ";

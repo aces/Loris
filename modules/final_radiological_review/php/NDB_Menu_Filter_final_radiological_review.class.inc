@@ -139,6 +139,14 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             WHEN r.PVS <> r.PVS2 THEN 'prim_second'
             ELSE 'false' END)";
 
+        $DB = Database::singleton();
+        if ($DB->tableExists('radiology_review') === false) {
+            throw new LorisException(
+                "Table 'radiology_review' does not exist."
+                . " Please have this instrument set up in order to use this module properly."
+            );
+        }
+
         $this->query = " FROM radiology_review orig
             LEFT JOIN final_radiological_review r ON (r.CommentID=orig.CommentID)
             JOIN flag f ON (f.CommentID=orig.CommentID)
@@ -156,7 +164,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                 SELECT fi.FileID
                 FROM files fi
                 WHERE fi.SessionID=s.ID AND fi.AcquisitionProtocolID=44
-                GROUP BY fi.SessionID),'')
+                GROUP BY fi.SessionID, fi.FileID LIMIT 1),'')
             WHEN '' THEN 'No'
             ELSE 'Yes'
             END
@@ -219,7 +227,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                 'CandID'
             )
         );  
-        $this->tpl_data['hiddenHeaders'] = json_encode(['T1_Inserted','CommentID','Conflict2','SessionID','CandID']);
+        $this->tpl_data['hiddenHeaders'] = json_encode(['CommentID','Conflict2','SessionID','CandID']);
         $this->validFilters = array('c.CandID',
             'r.DICOM_ID',
             's.visit_label',
@@ -231,7 +239,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             'r.Final_Exclusionary',
             $conflict_condition1,
             $conflict_condition2,
-            'r.Finalized',
+            "COALESCE(r.Finalized, 'no')",
             'c.CenterID',
             'c.ProjectID',
             'keyword'
@@ -247,7 +255,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                                     'Visit_label' => 's.visit_label',
                                     'Project'   => 'c.ProjectID',
                                     'pscid'       => 'c.PSCID',
-                                    'Review_Done' => "COALESCE(r.Review_Done, 0)",
+                                    'Review_Done' => "COALESCE(r.Review_Done, 'no')",
                                     'Results'     => 'r.Final_Review_Results',
                                     'Final_Review_Results' 
                                                   => 'r.Final_Review_Results',
@@ -257,7 +265,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                                     'SAS'         => 'r.sas',
                                     'Conflict'    => $conflict_condition1,
                                     'Conflict2'   => $conflict_condition2,
-                                    'Finalized'   => 'r.Finalized',
+                                    'Finalized'   => "COALESCE(r.Finalized, 'no')",
                                     'keyword'     => 'r.Final_Incidental_Findings'
         );
         $this->searchKeyword    = array('r.Final_Incidental_Findings');
@@ -295,7 +303,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             }
         }
         $options_boolean= array(null => 'All', 'yes' => 'Yes', 'no' => 'No');
-        $options_boolean_finalized = array(null => 'All', '1' => 'Yes', '0' => 'No');
+        $options_boolean_finalized = array(null => 'All', 'yes' => 'Yes', 'no' => 'No');
         $conflict_options1 = array(null => 'All', 'true' => 'Yes', 'false' => 'No' );
         $conflict_options2 = array(null => 'All', 
             'prim_second' => 'Yes', 
