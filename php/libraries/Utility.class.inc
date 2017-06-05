@@ -60,13 +60,12 @@ class Utility
      * @param array $array The multi-dimensional array
      *
      * @return  string
-     * @cleanup Determine if this is still used.
+     * @deprecated
      */
     static function reduce($array)
     {
-        throw new LorisException(
-            "Utility::reduce has been deprecated. "
-            . "If really needed, consider implementing your own."
+        throw new DeprecatedException(
+            "Utility::reduce has been deprecated."
         );
     }
 
@@ -80,13 +79,12 @@ class Utility
      * @note If any element of the array contains a backtick, you'll run into trouble
      *
      * @return  string
-     * @cleanup Determine if this is still used.
+     * @deprecated
      */
     static function crunch($x, $y)
     {
-        throw new LorisException(
-            "Utility::crunch has been deprecated. "
-            . "If really needed, consider implementing your own."
+        throw new DeprecatedException(
+            "Utility::crunch has been deprecated."
         );
     }
 
