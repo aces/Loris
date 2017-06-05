@@ -29,7 +29,7 @@ if ($_REQUEST['SharedQuery'] === "true") {
     $qid = "global:" . $qid;
 }
 
-if ($_REQUEST['Override'] === "false") {
+if ($_REQUEST['OverwriteQuery'] === "false") {
     $results = $cdb->getDoc(
         $qid
     );
@@ -64,7 +64,7 @@ $cond   = $_REQUEST['Filters'];
 $baseDocument['Conditions'] = $cond;
 $baseDocument['Fields']     = $fields;
 
-if ($_REQUEST['Override'] === "true") {
+if ($_REQUEST['OverwriteQuery'] === "true") {
     unset($baseDocument['_id']);
     $cdb->replaceDoc($qid, $baseDocument);
     $query['id'] = $qid;

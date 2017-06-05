@@ -174,7 +174,7 @@ var DataQueryApp = React.createClass({
                 Filters: filter,
                 QueryName: name,
                 SharedQuery: shared,
-                Override: override
+                OverwriteQuery: override
             }, function(data) {
                 // Once saved, add the query to the list of saved queries
                 var id = JSON.parse(data).id,
