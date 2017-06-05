@@ -582,7 +582,7 @@ class NDB_Form_Statistics extends NDB_Form
             $_REQUEST['BehaviouralSubproject'],
             array_keys($subprojects)
         )) {
-            $BS = 'BehaviouralSubproject';
+            $BS          = 'BehaviouralSubproject';
             $cleanString = htmlspecialchars($_REQUEST[$BS]);
             $this->tpl_data['PreviousSubproject']
                 = Utility::getSubprojectsForProject()[$cleanString];
@@ -1096,7 +1096,7 @@ class NDB_Form_Statistics extends NDB_Form
             $_REQUEST['ReliabilitySubproject'],
             array_keys($subprojects)
         )) {
-            $BS = 'ReliabilitySubproject';
+            $BS          = 'ReliabilitySubproject';
             $cleanString = htmlspecialchars($_REQUEST[$BS]);
             $this->tpl_data['PreviousSubproject']
                 = Utility::getSubprojectsForProject()[$cleanString];
