@@ -70,12 +70,28 @@ class NDB_Config
             if ($configFile === null) {
                 // Can't directly check !empty because of a bug
                 // in PHP < 5.5, need to assign to a variable first
-                $configFile = $config->configFilePath();
+
+                if (!empty($env)) {
+                    $configFile = $env;
+                } else if (file_exists(__DIR__ . "/../../project/config.xml")) {
+                    // "Classic" Loris location of project directory
+                    // parallel to php directory
+                    $configFile = __DIR__ . "/../../project/config.xml";
+                } else if (file_exists("/etc/loris/config.xml")) {
+                    // Standard Unix filesystem layout
+                    $configFile = "/etc/loris/config.xml";
+                } else if (file_exists("/usr/local/etc/loris/config.xml")) {
+                    // Standard Unix filesystem layout, option 2
+                    $configFile = "/usr/local/etc/loris/config.xml";
+                }
             }
 
             // Load the file
             $config->load($configFile);
-
+            var_dump($config);
+            printf("22222222222222222222");
+            var_dump($configFile);
+            printf("22222222222222222222");
             // Load all includes found in the config
             foreach (Utility::asArray($config->_settings['include']) as $k=>$path) {
                 $config->load($config->configFilePath($path));
