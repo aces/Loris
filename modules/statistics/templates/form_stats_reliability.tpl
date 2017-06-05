@@ -15,6 +15,7 @@
     <div class="col-sm-3 col-xs-12 form-group">
         <button onClick="updateReliabilityTab()" class="btn btn-primary btn-small col-xs-12">Submit Query</button>
     </div>
+    <label>{if $Warning}The sub-project {$PreviousSubproject} is not valid for project {$CurrentProject.Name}. Showing data for all valid sub-projects.{/if}</label>
     <br><br>
     <div class="row">
         <div class="table-reponsive">

@@ -573,7 +573,7 @@ class NDB_Form_Statistics extends NDB_Form
                    'Name' => $subprojects[$currentSubProject],
                   );
             $subproject_query     = "AND (s.SubprojectID IS NULL";
-            $subprojcet_query    .= " OR s.SubprojectID=:spid)";
+            $subproject_query    .= " OR s.SubprojectID=:spid)";
             $this->params['spid'] =$currentSubProject;
         } else {
             $subproject_query ="";
@@ -583,8 +583,9 @@ class NDB_Form_Statistics extends NDB_Form
             array_keys($subprojects)
         )) {
             $BS = 'BehaviouralSubproject';
+            $cleanString = htmlspecialchars($_REQUEST[$BS]);
             $this->tpl_data['PreviousSubproject']
-                = Utility::getSubprojectsForProject()[$_REQUEST[$BS]];
+                = Utility::getSubprojectsForProject()[$cleanString];
             $this->tpl_data['Warning']            = 1;
         } else {
             $this->tpl_data['Warning'] = null;
@@ -1092,12 +1093,13 @@ class NDB_Form_Statistics extends NDB_Form
             $subproject_query ="";
         }
         if (!in_array(
-            $_REQUEST['BehaviouralSubproject'],
+            $_REQUEST['ReliabilitySubproject'],
             array_keys($subprojects)
         )) {
-            $BS = 'BehaviouralSubproject';
+            $BS = 'ReliabilitySubproject';
+            $cleanString = htmlspecialchars($_REQUEST[$BS]);
             $this->tpl_data['PreviousSubproject']
-                = Utility::getSubprojectsForProject()[$_REQUEST[$BS]];
+                = Utility::getSubprojectsForProject()[$cleanString];
             $this->tpl_data['Warning']            = 1;
         } else {
             $this->tpl_data['Warning'] = null;
