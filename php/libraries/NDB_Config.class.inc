@@ -91,6 +91,17 @@ class NDB_Config
             $config  = new NDB_Config();
             $success = $config->load($configFile);
         }
+                  // Load all includes found in the config
+         print_r("{{========}}");
+
+        if (!empty($config->_settings['include'])) {
+            foreach (Utility::toArray($config->_settings['include']) as $k=>$path) {
+                if (file_exists($path)) {
+                    $success = $config->load($path);
+                }
+            } 
+        }   
+         
 
         return $config;
     }
@@ -112,8 +123,8 @@ class NDB_Config
                 "Could not load Loris config file $configFile"
             );
         }
-
-        $this->_settings = NDB_Config::convertToArray($newroot);
+        
+        $this->_settings += NDB_Config::convertToArray($newroot);
     }
 
     /**
