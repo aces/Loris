@@ -1,3 +1,11 @@
+---
+layout: default
+title: Loris API
+description:
+group: dev
+permalink: /api/
+---
+
 # Loris API - v0.0.2
 
 ## 1.0 Overview
@@ -513,7 +521,7 @@ of the form
 }
 ```
 
-A PUT to the same location will update the QC information. 
+A PUT to the same location will update the QC information.
 
 ## 4.3 Image Level Data
 ```
@@ -659,7 +667,7 @@ file (for instance, a 3D image will not have a time dimension.)
 GET /candidates/$CandID/$VisitLabel/images/$Filename/headers/full
 ```
 
-This will return a JSON object with ALL headers for this acquisition. 
+This will return a JSON object with ALL headers for this acquisition.
 
 The JSON will be of the form:
 

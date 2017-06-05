@@ -1,0 +1,23 @@
+ {% assign page_slug = page.url | split: '/' | last %}
+
+
+
+<div id="search-container">
+  <input class="form-control" type="text" id="search-input" placeholder="search...">
+  <ul class="nav navbar-nav">
+    <li class="dropdown">
+      <ul class="dropdown-menu" id="search-results"></ul>
+    </li>
+  </ul>
+</div>
+
+<div class="nav-docs">
+  <ul>
+    {% for my_page in site.pages %} {% if my_page.title %}
+    <li class="list-inline">
+      <a class="page-link" href="{{ my_page.url | relative_url }}">{{ my_page.title | escape }}</a>
+    </li>
+    {% endif %} {% endfor %}
+  </ul>
+</div>
+

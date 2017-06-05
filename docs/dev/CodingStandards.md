@@ -1,3 +1,12 @@
+---
+layout: default
+title: Coding Standards
+description:
+group: dev
+permalink: /code-style/
+---
+
+
 General Formatting:
 - Indentation should be 4 spaces instead of tabs
 - Each embedded block should be indented 1 more indentation level
@@ -9,7 +18,7 @@ set expandtab
 set autoindent
 set smartindent
 
-while working in vi, this command will automatically indent: 
+while working in vi, this command will automatically indent:
 gg=G
 
 In emacs:
@@ -31,7 +40,7 @@ HTML:
     <span>foo</span>
 </div>
 
-Javascript: 
+Javascript:
 - Javascript should never be mixed with HTML or PHP code. Javascript should go into
   `modules/js`
 - Any newly written Javascript should pass ESLint with default options.
