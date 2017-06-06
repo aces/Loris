@@ -77,8 +77,8 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
                           'v.Date_uploaded',
                          );
 
-        $openAccordion = isset($_GET['openAccordion']) ?
-            $_GET['openAccordion'] : null;
+        $openAccordion = $_GET['openAccordion'] ?? null;
+
         $this->tpl_data['openAccordion'] = $openAccordion;
         $filtered = isset($_GET['filtered']) ?
             $_GET['filtered'] : null;
