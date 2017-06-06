@@ -81,7 +81,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         //Boilerplate taken from modules/candidate_parameters/ajax/getData.php's
         //getConsentStatusFields()
         $consent = $config->getSetting('ConsentModule');
-        if ($consent['useConsent']) {
+        //String comparison is required, if ("false") { echo "is true"; }
+        if ($consent['useConsent'] == "true") {
             $consent_details = $consent['Consent'];
             //This check is necessary because of the following,
             //1. Only one consent is configured, an assoc array is returned
