@@ -753,7 +753,7 @@ $(function() {
         minc_volumes.push({
             type: 'minc',
 	    header_url: "",
-	    raw_data_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + minc_ids_arr[i] + "&raw_data=true",
+	    raw_data_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + minc_ids_arr[i],
             template: {
                 element_id: "volume-ui-template4d",
                 viewer_insert_class: "volume-viewer-display"
