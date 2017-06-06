@@ -27,6 +27,12 @@
 "INTEGER("                          return 'INTEGER('
 "SQRT("                             return 'SQRT('
 "ABS("                              return 'ABS('
+"EQ("                               return 'EQ('
+"NEQ("                              return 'NEQ('
+"GT("                               return 'GT('
+"LT("                               return 'LT('
+"GEQ("                              return 'GEQ('
+"LEQ("                              return 'LEQ('
 [a-zA-Z0-9_]+("_"[a-zA-Z0-9_]+)?\b  return 'LETTER'
 "["                                 return '['
 "]"                                 return ']'
@@ -70,28 +76,30 @@ e
     | '-' e %prec UMINUS
         {$$ = '(0-' + $2 + ')';}
     | '(' e ')'
-        {$$ = '' + $2;}
+        {$$ = '(' + $2 + ')';}
     | NUMBER
-        {$$ = '' + Number(yytext);}
+        {$$ = yytext;}
     | '[' LETTER ']'
-        {$$ = '$' + $2;}
+        {$$ = 'this.' + $2;}
     | E
         {$$ = 'Math.E';}
     | PI
         {$$ = 'Math.PI';}
     | 'ROUND(' e ',' e ')'
-        {$$ = $2 + '.toFixed(' + $4 + ')';}
+        {$$ = 'Number((' + $2 + ').toFixed(' + $4 + '))';}
     | 'ROUNDUP(' e ')'
         {$$ = 'Math.ceil(' + $2 + ')';}
     | 'ROUNDDOWN(' e ')'
         {$$ = 'Math.floor(' + $2 + ')';}
     | 'INTEGER(' e ')'
-        {$$ = $2 + '.toFixed(0)';}
+        {$$ = 'Math.round(' + $2 + ')';}
     | 'MOD(' e ',' e ')'
-        {$$ = $2 + '%' + $4;}
+        {$$ = '(' + $2 + ')' + '%' + $4;}
     | 'SQRT(' e ')'
         {$$ = 'Math.sqrt(' + $2 + ')';}
     | 'ABS(' e ')'
         {$$ = 'Math.abs(' + $2 + ')';}
+    | 'EQ(' e ',' e ')'
+        {$$ = (function eq (x, y) {return x==y} ) ($2, $4);}
     ;
 

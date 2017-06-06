@@ -1,1 +1,1 @@
-(-[b123_ANDCc]+SQRT(-4*[a]*[c]))/(2*[a]) 
+MOD((INTEGER(SQRT(ABS((5+[c]-7)/[b])))*[b]+[c]),7)
