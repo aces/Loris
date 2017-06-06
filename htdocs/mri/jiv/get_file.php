@@ -78,16 +78,16 @@ $baseFile = basename(realpath($File));
 
 switch($FileExt) {
 case 'mnc':
-    $FullPath         = $mincPath . '/' . $baseFile;
-    $MimeType         = "application/x-minc";
+    $FullPath = $mincPath . '/' . $baseFile;
+    $MimeType = "application/x-minc";
     break;
 case 'nii':
-    $FullPath         = $mincPath . '/' . $baseFile;
-    $MimeType         = "application/x-nifti";
+    $FullPath = $mincPath . '/' . $baseFile;
+    $MimeType = "application/x-nifti";
     break;
 case 'nii.gz':
-    $FullPath         = $mincPath . '/' . $baseFile;
-    $MimeType         = "application/x-nifti-gz";
+    $FullPath = $mincPath . '/' . $baseFile;
+    $MimeType = "application/x-nifti-gz";
     break;
 case 'png':
     $FullPath = $imagePath . '/' . $baseFile;
@@ -104,16 +104,16 @@ case 'raw_byte.gz':
     $MimeType = 'application/octet-stream';
     break;
 case 'xml':
-    $FullPath         = $imagePath . '/' . $baseFile;
-    $MimeType         = 'application/xml';
+    $FullPath = $imagePath . '/' . $baseFile;
+    $MimeType = 'application/xml';
     break;
 case 'nrrd':
-    $FullPath         = $imagePath . '/' . $baseFile;
-    $MimeType         = 'image/vnd.nrrd';
+    $FullPath = $imagePath . '/' . $baseFile;
+    $MimeType = 'image/vnd.nrrd';
     break;
 default:
-    $FullPath         = $DownloadPath . '/' . $baseFile;
-    $MimeType         = 'application/octet-stream';
+    $FullPath = $DownloadPath . '/' . $baseFile;
+    $MimeType = 'application/octet-stream';
     break;
 }
 
@@ -127,7 +127,10 @@ if (!file_exists($FullPath) || !is_file($FullPath)) {
     header("Content-type: $MimeType");
     header('Content-Transfer-Encoding: Binary');
     if (!empty($baseFile)) {
-        header('Content-Disposition: attachment; filename="' . basename($File) . '"');
+        header(
+            'Content-Disposition: attachment; filename="'
+            . basename($File) . '"'
+        );
     }
     readfile($FullPath);
 }
