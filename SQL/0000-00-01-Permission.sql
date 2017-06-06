@@ -110,8 +110,8 @@ INSERT INTO `permissions` VALUES
     (46,'media_read','Media files: Browsing','2'),
     (47,'issue_tracker_reporter', 'Can add a new issue, edit own issue, comment on all', 2),
     (48,'issue_tracker_developer', 'Can re-assign issues, mark issues as closed, comment on all, edit issues.', 2),
-    (49,'imaging_browser_phantom_data', 'Can access only phantom data in Imaging Browser', 2);
-
+    (49,'imaging_browser_phantom_allsites', 'Can access only phantom data from all sites in Imaging Browser', 2);
+    (50,'imaging_browser_phantom_ownsite', 'Can access only phantom data from own site in Imaging Browser', 2);
 
 
 INSERT INTO `user_perm_rel` (userID, permID)

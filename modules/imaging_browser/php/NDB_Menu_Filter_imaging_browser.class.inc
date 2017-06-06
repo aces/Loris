@@ -49,7 +49,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                || ($oneIsStudySite
                    && $user->hasPermission('imaging_browser_view_site')
                   )
-               || $user->hasPermission('imaging_browser_phantom_data')
+               || $user->hasPermission('imaging_browser_phantom_allsites')
+               || $user->hasPermission('imaging_browser_phantom_ownsite')
         );
     }
 
@@ -124,16 +125,25 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $user   =& User::singleton();
         $DB     = Database::singleton();
         if (!$user->hasPermission('imaging_browser_view_allsites')) {
+            $site_arr = implode(",", $user->getCenterIDs());
             if (!$user->hasPermission('imaging_browser_view_site')) {
-                    // User must have phantom permission to get here
-                    $this->query .= " AND c.Entity_type = 'Scanner' ";
+                // User must havve one of the two phantom permissions to get here
+                $this->query .= " AND c.Entity_type = 'Scanner' ";
+                if (!$user->hasPermission('imaging_browser_phantom_allsites')) {
+                    // Display only the phantom scans at the user's centers
+                    // For phantoms, use session centerID
+                    $this->query .= " AND s.CenterID IN (" . $site_arr . ") ";
+                }
             } else {
-                $site_arr = implode(",", $user->getCenterIDs());
-                if ($user->hasPermission('imaging_browser_phantom_data')) {
+                if ($user->hasPermission('imaging_browser_phantom_allsites')) {
                     $this->query .= " AND (c.CenterID IN (" . $site_arr . ") 
-                                      OR c.Entity_type = 'Scanner')";
+                                      OR c.Entity_type = 'Scanner') ";
+                } else if ($user->hasPermission('imaging_browser_phantom_ownsite')) {
+                    $this->query .= " AND (c.CenterID IN (" . $site_arr . ")
+                                      OR (c.Entity_type = 'Scanner'
+                                      AND s.CenterID IN (" . $site_arr . "))) ";
                 } else {
-                    $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
+                    $this->query .= " AND c.CenterID IN (" . $site_arr . ") ";
                 }
             }
         }
@@ -233,7 +243,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
 
         // PSC
         if ($user->hasPermission('imaging_browser_view_allsites')
-            || $user->hasPermission('imaging_browser_phantom_data')
+            || $user->hasPermission('imaging_browser_phantom_allsites')
         ) {
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = Utility::getSiteList();
