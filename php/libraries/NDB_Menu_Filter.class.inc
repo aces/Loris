@@ -591,11 +591,10 @@ class NDB_Menu_Filter extends NDB_Menu
     {
         $wheredetails = $this->_getBaseFilter();
         $db           = Database::singleton();
-        if (empty($this->group_by)) {
+        if (empty($this->group_by) && empty($this->having)) {
             $query = "SELECT COUNT(*)" . $this->query . $wheredetails['clause'];
-        } else if (!empty($this->group_by)) {
+        } else {
             $query = "SELECT COUNT(*) FROM ($query) as tmptable";
-
         }
         $this->TotalItems = $db->pselectOne($query, $wheredetails['params']);
 
@@ -804,8 +803,12 @@ class NDB_Menu_Filter extends NDB_Menu
                 ." ".$this->filter['order']['fieldOrder'].", ";
         }
         $query .= $this->order_by;
-        // get the list
 
+        if (!empty($this->limit)) {
+            $query .= " LIMIT $this->limit";
+        }
+
+        // get the list
         $this->_getNumberPages($query);
 
         $config         =& NDB_Config::singleton();
@@ -849,8 +852,6 @@ class NDB_Menu_Filter extends NDB_Menu
             $depends,
             array(
              $baseURL . '/js/components/PaginationLinks.js',
-             $baseURL . '/js/components/Panel.js',
-             $baseURL . '/js/components/FilterForm.js',
              $baseURL . '/js/components/StaticDataTable.js',
              $baseURL . '/js/components/DynamicDataTable.js',
             )

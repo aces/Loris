@@ -4,7 +4,7 @@
  * This script deletes the specified candidate timepoint.
  *
  * Delete all timepoint rows for a given candidate
- * echo "Usage: php delete_timepoint.php delete_timepoint DCCID PSCID SessionID [confirm] [tosql]";
+ * echo "Usage: php delete_timepoint.php delete_timepoint CandID PSCID SessionID [confirm] [tosql]";
  * echo "Example: php delete_timepoint.php delete_timepoint 965327 dcc0007 482";
  * echo "Example: php delete_timepoint.php delete_timepoint 965327 dcc0007 482 confirm";
  * echo "Example: php delete_timepoint.php delete_timepoint 965327 dcc0007 482 tosql";
@@ -25,7 +25,7 @@ require_once __DIR__ . "/generic_includes.php";
  * This script deletes the specified candidate timepoint.
  *
  * Delete all timepoint rows for a given candidate
- * echo "Usage: php delete_timepoint.php delete_timepoint DCCID PSCID SessionID [confirm] [tosql]";
+ * echo "Usage: php delete_timepoint.php delete_timepoint CandID PSCID SessionID [confirm] [tosql]";
  * echo "Example: php delete_timepoint.php delete_timepoint 965327 dcc0007 482";
  * echo "Example: php delete_timepoint.php delete_timepoint 965327 dcc0007 482 confirm";
  * echo "Example: php delete_timepoint.php delete_timepoint 965327 dcc0007 482 tosql";
@@ -47,7 +47,7 @@ if (count($argv) < 4 || $argv[1] == 'help' || !in_array($argv[1], $actions)) {
 
 // set default arguments
 $action    = $argv[1];
-$DCCID     = $argv[2];
+$CandID     = $argv[2];
 $PSCID     = $argv[3];
 $sessionID = $argv[4];
 $confirm   = false;
@@ -80,28 +80,31 @@ $DB =& Database::singleton();
  */
 
 $candExists = $DB->pselectOne(
-    "SELECT COUNT(*) FROM candidate WHERE CandID = :cid AND PSCID = :pid ",
+    "SELECT COUNT(*) 
+      FROM candidate 
+      WHERE CandID = :cid AND PSCID = :pid AND Active ='Y'",
     array(
-     'cid' => $DCCID,
-     'pid' => $PSCID,
+        'cid' => $CandID,
+        'pid' => $PSCID,
     )
 );
-
 if ($candExists == 0) {
-    echo "The Candid : $DCCID  AND PSCID : $PSCID Doesn't Exist in " .
-        "the database\n";
+    echo "\nThe candidate with CandID : $CandID  and PSCID : $PSCID either does ".
+        "not exist in the database or is set to Active='N' state.\n\n";
     die();
 }
 
 if ($sessionID != null) {
-    if ($DB->pselectOne(
-        'SELECT COUNT(*) FROM session WHERE ID=:sid and CandID=:cid',
+    $sessionExists = $DB->pselectOne(
+        "SELECT COUNT(*) FROM session WHERE ID=:sid AND CandID=:cid AND Active ='Y'",
         array(
-         'sid' => $sessionID,
-         'cid' => $DCCID,
+            'sid' => $sessionID,
+            'cid' => $CandID,
         )
-    ) == 0) {
-        echo "Session ID $sessionID for candidate $DCCID does not exist in the database\n";
+    );
+    if ($sessionExists == 0) {
+        echo "Session ID $sessionID for candidate $CandID either does not exist ".
+            "in the database or is set to Active='N' state.\n\n";
         die();
     }
 }
@@ -111,7 +114,7 @@ if ($sessionID != null) {
  */
 switch ($action) {
 case 'delete_timepoint':
-    deleteTimepoint($sessionID, $confirm, $printToSQL, $DB, $output);
+    deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $output);
     break;
 }
 
@@ -122,39 +125,45 @@ function showHelp()
 {
     echo "*** Delete Timepoint ***\n\n";
 
-    echo "Usage: php delete_timepoint.php delete_timepoint DCCID PSCID SessionID [confirm] [tosql]\n";
+    echo "Usage: php delete_timepoint.php delete_timepoint CandID PSCID SessionID [confirm] [tosql]\n";
     echo "Example: php delete_timepoint.php delete_timepoint 965327 dcc0007 482\n";
     echo "Example: php delete_timepoint.php delete_timepoint 965327 dcc0007 482 confirm\n";
     echo "Example: php delete_timepoint.php delete_timepoint 965327 dcc0007 482 tosql\n\n";
 
     echo "When the 'tosql' function is used, the SQL file exported will be located \n".
-        "under the following path: loris_root/project/tables_sql/DELETE_session_session_id.sql";
+        "under the following path: loris_root/project/tables_sql/DELETE_session_CandID_session_id.sql\n\n";
 
     die();
 }
 
-function deleteTimepoint($sessionID, $confirm, $printToSQL, $DB, $output)
+function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $output)
 {
+    echo "\n#########################################################################\n";
+    echo "Deleting timepoint data for candidate $CandID and session $sessionID.";
+    echo "\n#########################################################################\n";
 
     $instruments = $DB->pselect('SELECT Test_name, CommentID FROM flag WHERE SessionID=:sid', array('sid' => $sessionID));
 
     // Print each instrument instance
     foreach ($instruments as $instrument) {
         $result = $DB->pselect(
-            'SELECT * FROM ' . $DB->escape($instrument['Test_name']) . ' WHERE CommentID=:cid',
+            'SELECT CommentID FROM ' . $DB->escape($instrument['Test_name']) . ' WHERE CommentID=:cid',
             array('cid' => $instrument['CommentID'])
         );
-        echo "{$instrument['Test_name']}\n";
+        echo "\n{$instrument['Test_name']}\n";
+        echo "-----------------------------------------\n";
         print_r($result);
 
         // Print from conflicts
-        echo "Conflicts Unresolved\n";
+        echo "\nConflicts Unresolved\n";
+        echo "----------------------\n";
         $result = $DB->pselect(
             'SELECT * FROM conflicts_unresolved WHERE CommentId1=:cid OR CommentId2=:cid',
             array('cid' => $instrument['CommentID'])
         );
         print_r($result);
-        echo "Conflicts Resolved\n";
+        echo "\nConflicts Resolved\n";
+        echo "--------------------\n";
         $result = $DB->pselect(
             'SELECT * FROM conflicts_resolved WHERE CommentId1=:cid OR CommentId2=:cid',
             array('cid' => $instrument['CommentID'])
@@ -162,22 +171,26 @@ function deleteTimepoint($sessionID, $confirm, $printToSQL, $DB, $output)
         print_r($result);
     }
     // Print from flag
-    echo "Flag\n";
+    echo "\nFlag\n";
+    echo "------\n";
     $result = $DB->pselect('SELECT * FROM flag WHERE SessionID=:sid', array('sid' => $sessionID));
     print_r($result);
 
     // Print from media
-    echo "Media\n";
+    echo "\nMedia\n";
+    echo "-------\n";
     $result = $DB->pselect('SELECT * FROM media WHERE session_id=:sid', array('sid' => $sessionID));
     print_r($result);
 
     // Print from session
-    echo "Session\n";
+    echo "\nSession\n";
+    echo "---------\n";
     $result = $DB->pselect('SELECT * FROM session WHERE ID=:id', array('id' => $sessionID));
     print_r($result);
 
     // Print from feedback
-    echo "Behavioural Feedback\n";
+    echo "\nBehavioural Feedback\n";
+    echo "----------------------\n";
     $result = $DB->pselect(
         'SELECT * from feedback_bvl_thread WHERE SessionID =:sid',
         array('sid' => $sessionID)
@@ -213,18 +226,20 @@ function deleteTimepoint($sessionID, $confirm, $printToSQL, $DB, $output)
         echo "\n-- Deleting from flag.\n";
         $DB->delete('flag', array('SessionID' => $sessionID));
 
+        //Delete from media
         echo "\n-- Deleting from media.\n";
         $DB->delete('media', array('session_id' => $sessionID));
+
+        // Delete from feedback
+        echo "\n-- Deleting from feedback.\n";
+        foreach ($feedbackIDs as $id) {
+            $DB->delete('feedback_bvl_entry', array('FeedbackID' => $id['FeedbackID']));
+        }
+        $DB->delete('feedback_bvl_thread', array('SessionID' => $sessionID));
 
         // Delete from session
         echo "\n-- Deleting from session.\n";
         $DB->delete('session', array('ID' => $sessionID));
-        // Delete from feedback
-        echo "\n-- Deleting from feedback.\n";
-        $DB->delete('feedback_bvl_thread', array('SessionID' => $sessionID));
-        foreach ($feedbackIDs as $id) {
-            $DB->delete('feedback_bvl_entry', array('FeedbackID' => $id));
-        }
     } elseif ($printToSQL) {
         // Delete each instrument instance
         foreach ($instruments as $instrument) {
@@ -242,24 +257,22 @@ function deleteTimepoint($sessionID, $confirm, $printToSQL, $DB, $output)
         $output .= "\n-- Deleting from flag.\n";
         _printResultsSQL('flag', array('SessionID' => $sessionID), $output, $DB);
 
+        // Delete from media
         $output .= "\n-- Deleting from media.\n";
         _printResultsSQL('media', array('session_id' => $sessionID), $output, $DB);
+
+        // Delete from feedback
+        $output .= "\n-- Deleting from feedback.\n";
+        foreach ($feedbackIDs as $id) {
+            _printResultsSQL('feedback_bvl_entry', array('FeedbackID' => $id['FeedbackID']), $output, $DB);
+        }
+        _printResultsSQL('feedback_bvl_thread', array('SessionID' => $sessionID), $output, $DB);
 
         // Delete from session
         $output .= "\n-- Deleting from session.\n";
         _printResultsSQL('session', array('ID' => $sessionID), $output, $DB);
-        // Delete from feedback
-        $output .= "\n-- Deleting from feedback.\n";
-        _printResultsSQL('feedback_bvl_thread', array('SessionID' => $sessionID), $output, $DB);
-        foreach ($feedbackIDs as $id) {
-            _printResultsSQL('feedback_bvl_entry', array('FeedbackID' => $id), $output, $DB);
-        }
-
-        //export file
-        $filename = __DIR__ . "/../project/tables_sql/DELETE_session_$sessionID.sql";
-        $fp       =fopen($filename, "w");
-        fwrite($fp, $output);
-        fclose($fp);
+        
+        _exportSQL($output, $CandID, $sessionID);
     }
 }
 
@@ -271,6 +284,14 @@ function _printResultsSQL($table, $where, &$output, $DB)
     $query .= ";\n";
 
     $output .=$query;
+}
+
+function _exportSQL ($output, $CandID, $sessionID) {
+    //export file
+    $filename = __DIR__ . "/../project/tables_sql/DELETE_session_".$CandID."_".$sessionID.".sql";
+    $fp       = fopen($filename, "w");
+    fwrite($fp, $output);
+    fclose($fp);
 }
 
 if ($confirm === false && $printToSQL === false) {

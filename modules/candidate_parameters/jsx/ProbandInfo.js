@@ -1,5 +1,3 @@
-/* exported RProbandInfo */
-
 var ProbandInfo = React.createClass(
   {
     getInitialState: function() {
@@ -19,23 +17,9 @@ var ProbandInfo = React.createClass(
     componentDidMount: function() {
       var that = this;
       $.ajax(
-                this.props.dataURL,
+        this.props.dataURL,
         {
           dataType: 'json',
-          xhr: function() {
-            var xhr = new window.XMLHttpRequest();
-            xhr.addEventListener(
-                            "progress",
-                            function(evt) {
-                              that.setState(
-                                {
-                                  loadedData: evt.loaded
-                                }
-                                );
-                            }
-                        );
-            return xhr;
-          },
           success: function(data) {
             const formData = {
               ProbandGender: data.ProbandGender,
@@ -49,27 +33,26 @@ var ProbandInfo = React.createClass(
                 Data: data,
                 isLoaded: true
               }
-                        );
+            );
           },
           error: function(data, errorCode, errorMsg) {
             that.setState(
               {
                 error: 'An error occurred when loading the form!'
               }
-                        );
+            );
           }
         }
-            );
+      );
     },
-    setFormData: function(formElement,
-    value) {
+    setFormData: function(formElement, value) {
       var formData = this.state.formData;
       formData[formElement] = value;
       this.setState(
         {
           formData: formData
         }
-            );
+      );
     },
     onSubmit: function(e) {
       e.preventDefault();
@@ -78,24 +61,24 @@ var ProbandInfo = React.createClass(
       if (!this.state.isLoaded) {
         if (this.state.error !== undefined) {
           return (
-                    <div className ="alert alert-danger text-center">
-                        <strong>
-                            {this.state.error}
-                        </strong>
-                    </div>
-                    );
+            <div className ="alert alert-danger text-center">
+              <strong>
+                {this.state.error}
+              </strong>
+            </div>
+          );
         }
 
         return (
-                <button className ="btn-info has-spinner">
-                    Loading
-                    <span
-                        className ="glyphicon glyphicon-refresh
+          <button className ="btn-info has-spinner">
+            Loading
+            <span
+              className ="glyphicon glyphicon-refresh
                         glyphicon-refresh-animate"
-                    >
+            >
                     </span>
-                </button>
-                );
+          </button>
+        );
       }
 
       var disabled = true;
@@ -128,62 +111,62 @@ var ProbandInfo = React.createClass(
       }
 
       return (
-          <div class="row">
-                <div className ={alertClass} role="alert" ref="alert-message">
-                    {alertMessage}
-                </div>
-                <FormElement
-                    name ="probandInfo"
-                    onSubmit ={this.handleSubmit}
-                    ref ="form"
-                    class ="col-md-6"
-                >
-                <StaticElement
-                    label ="PSCID"
-                    text ={this.state.Data.pscid}
-                />
-                <StaticElement
-                    label ="DCCID"
-                    text ={this.state.Data.candID}
-                />
-                <SelectElement
-                    label ="Proband Gender"
-                    name ="ProbandGender"
-                    options ={this.state.genderOptions}
-                    value ={this.state.Data.ProbandGender}
-                    onUserInput ={this.setFormData}
-                    ref ="ProbandGender"
-                    disabled ={disabled}
-                    required ={true}
-                />
-                <DateElement
-                    label ="DoB Proband"
-                    name ="ProbandDoB"
-                    value ={this.state.Data.ProbandDoB}
-                    onUserInput ={this.setFormData}
-                    ref ="ProbandDoB"
-                    disabled ={disabled}
-                    required ={dobRequired}
-                />
-                <DateElement
-                    label ="Confirm DoB Proband"
-                    name ="ProbandDoB2"
-                    value ={this.state.Data.ProbandDoB}
-                    onUserInput ={this.setFormData}
-                    ref ="ProbandDoB2"
-                    disabled ={disabled}
-                    required ={dob2Required}
-                />
-                <StaticElement
-                    label ="Age Difference (months)"
-                    text ={this.state.Data.ageDifference}
-                />
-                {updateButton}
-            </FormElement>
-                </div>
-            );
+        <div className="row">
+          <div className={alertClass} role="alert" ref="alert-message">
+            {alertMessage}
+          </div>
+          <FormElement
+            name="probandInfo"
+            onSubmit={this.handleSubmit}
+            ref="form"
+            class="col-md-6"
+          >
+            <StaticElement
+              label="PSCID"
+              text={this.state.Data.pscid}
+            />
+            <StaticElement
+              label="DCCID"
+              text={this.state.Data.candID}
+            />
+            <SelectElement
+              label="Proband Gender"
+              name="ProbandGender"
+              options={this.state.genderOptions}
+              value={this.state.formData.ProbandGender}
+              onUserInput={this.setFormData}
+              ref="ProbandGender"
+              disabled={disabled}
+              required={true}
+            />
+            <DateElement
+              label="DoB Proband"
+              name="ProbandDoB"
+              value={this.state.formData.ProbandDoB}
+              onUserInput={this.setFormData}
+              ref="ProbandDoB"
+              disabled={disabled}
+              required={dobRequired}
+            />
+            <DateElement
+              label="Confirm DoB Proband"
+              name="ProbandDoB2"
+              value={this.state.formData.ProbandDoB2}
+              onUserInput={this.setFormData}
+              ref="ProbandDoB2"
+              disabled={disabled}
+              required={dob2Required}
+            />
+            <StaticElement
+              label="Age Difference (months)"
+              text={this.state.Data.ageDifference.toString()}
+            />
+            {updateButton}
+          </FormElement>
+        </div>
+      );
     },
-        /**
+    /**
      * Handles form submission
      *
      * @param {event} e - Form submission event
@@ -203,9 +186,9 @@ var ProbandInfo = React.createClass(
       }
       today = yyyy + '-' + mm + '-' + dd;
       var dob1 = myFormData.ProbandDoB ?
-            myFormData.ProbandDoB : null;
+        myFormData.ProbandDoB : null;
       var dob2 = myFormData.ProbandDoB2 ?
-            myFormData.ProbandDoB2 : null;
+        myFormData.ProbandDoB2 : null;
       if (dob1 !== dob2) {
         alert("DOB do not match!");
         return;
@@ -216,7 +199,7 @@ var ProbandInfo = React.createClass(
         return;
       }
 
-            // Set form data
+      // Set form data
       var self = this;
       var formData = new FormData();
       for (var key in myFormData) {
@@ -240,7 +223,7 @@ var ProbandInfo = React.createClass(
               {
                 updateResult: "success"
               }
-                  );
+            );
             self.showAlertMessage();
           },
           error: function(err) {
@@ -251,14 +234,14 @@ var ProbandInfo = React.createClass(
                   updateResult: "error",
                   errorMessage: errorMessage
                 }
-                      );
+              );
               self.showAlertMessage();
             }
           }
         }
-            );
+      );
     },
-        /**
+    /**
      * Display a success/error alert message after form submission
      */
     showAlertMessage: function() {
@@ -269,23 +252,18 @@ var ProbandInfo = React.createClass(
 
       var alertMsg = this.refs["alert-message"];
       $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
-                500,
-                function() {
-                  self.setState(
-                    {
-                      updateResult: null
-                    }
-                    );
-                }
-            );
+        500,
+        function() {
+          self.setState(
+            {
+              updateResult: null
+            }
+          );
+        }
+      );
     }
 
   }
 );
-
-var RProbandInfo = React.createFactory(ProbandInfo);
-
-window.ProbandInfo = ProbandInfo;
-window.RProbandInfo = RProbandInfo;
 
 export default ProbandInfo;

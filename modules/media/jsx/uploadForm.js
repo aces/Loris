@@ -1,4 +1,4 @@
-/* exported RMediaUploadForm */
+import ProgressBar from 'ProgressBar';
 
 /**
  * Media Upload Form
