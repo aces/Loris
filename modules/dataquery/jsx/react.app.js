@@ -260,9 +260,11 @@ var DataQueryApp = React.createClass({
 // TODO:    Build the sessions in the new format
         switch(rule.operator) {
             case "equal":
+            case "isNull":
                 script = "queryEqual.php";
                 break;
             case "notEqual":
+            case "isNotNull":
                 script = "queryNotEqual.php";
                 break;
             case "lessThanEqual":
