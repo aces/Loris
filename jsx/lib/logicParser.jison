@@ -26,6 +26,7 @@
 "MOD("                              return 'MOD('
 "INTEGER("                          return 'INTEGER('
 "SQRT("                             return 'SQRT('
+"ABS("                              return 'ABS('
 [a-zA-Z0-9_]+("_"[a-zA-Z0-9_]+)?\b  return 'LETTER'
 "["                                 return '['
 "]"                                 return ']'
@@ -63,17 +64,7 @@ e
     | e '/' e
         {$$ = $1 + '/' + $3;}
     | e '^' e
-        {$$ = 'Math.pow(' + $1 + ',' + $3 + ')';}
-    | e '!'
-        {
-          if ($1 >= 0 && $1%1 == 0) {
-              $$ = '(function fact (n) { return n==0 ? 1 : fact(n-1) * n })(' + $1 + ')';
-          } else if ($1 >= 0 && $1%1 == 0.5) {
-              $$ = '(function fact (n) { return n==0.5 ? Math.sqrt(Math.PI)/2 : fact(n-1) * n })(' + $1 + ')';
-          } else {
-              $$ = '0'; //NEED TO REPLACE THIS WITH ERROR
-          }
-        }
+        {$$ = 'Math.pow(' + $1 + ',' + $3 + ')';} 
     | e '%'
         {$$ = $1 + '/100';}
     | '-' e %prec UMINUS
@@ -100,5 +91,7 @@ e
         {$$ = $2 + '%' + $4;}
     | 'SQRT(' e ')'
         {$$ = 'Math.sqrt(' + $2 + ')';}
+    | 'ABS(' e ')'
+        {$$ = 'Math.abs(' + $2 + ')';}
     ;
 

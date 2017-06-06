@@ -1,10 +1,16 @@
+const parse = require("./logicParser.js").parse;
+
+
 class InstrumentLogicParser {
-    var parser = require("./logicParser.js").parser;
-    static parse(logicString) {
+    static evaluate(logicString, context) {
+        
         if (!logicString) {
             throw new Error('You must pass a non-empty string');
         }
-        return 'return ' + parser.parse(logicString);
+        const expression = parse(logicString);
+        const expressionFn =  new Function('return ' + expression)();
+
+        return result;
     }
 }
 

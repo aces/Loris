@@ -8,5 +8,22 @@ describe('InstrumentLogicParser#parse', () => {
       expect(() => InstrumentLogicParser.parse('')).to.throw();
     })
   })
+
+  describe('when passed something', () => {
+    it('evals', () => {
+      const LOGIC_STR = '5*SQRT(36)'; 
+      const res = InstrumentLogicParser.evaluate(LOGIC_STR);
+      expect(res).to.equal(30);
+    })
+  })
+
+  describe('when given context', () => {
+    it('uses it', () => {
+      const LOGIC_STR = '5*[a]'; 
+      const CONTEXT = {a: 2}; 
+      const res = InstrumentLogicParser.evaluate(LOGIC_STR, CONTEXT);
+      expect(res).to.equal(10);
+    })
+  });
 })
 

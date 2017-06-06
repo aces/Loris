@@ -17,6 +17,7 @@
     "eslint": "3.8.1",
     "eslint-config-google": "0.6.0",
     "eslint-plugin-react": "^5.2.2",
+    "jison": "^0.4.17",
     "mocha": "3.4.2",
     "mocha-webpack": "0.7.0",
     "webpack": "1.14.0",
