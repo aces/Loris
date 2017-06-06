@@ -71,7 +71,7 @@ class Issue_Tracker_ControlPanel
         $issueData['backURL'] = isset($_REQUEST['backURL']) ?
             $factory->settings()->getBaseURL()
                 . "/issue_tracker/" :
-            null;;
+            null;
 
         $NavBar = new IssueNavigation($this->issueID);
         if ($this->issueID != 0) {
