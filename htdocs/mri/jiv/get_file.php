@@ -60,13 +60,6 @@ if ($imagePath === '/' || $DownloadPath === '/' || $mincPath === '/') {
 // Now get the file and do file validation
 $File = $_GET['file'];
 
-// File validation
-if (strpos($File, ".") === false) {
-    error_log("ERROR: Could not determine file type.");
-    header("HTTP/1.1 400 Bad Request");
-    exit(3);
-}
-
 // Find the extension
 $path_parts = pathinfo($File);
 $FileExt    = $path_parts['extension'];
@@ -80,76 +73,65 @@ if (strcmp($FileExt, "gz") == 0) {
 }
 unset($path_parts);
 
-// Make sure that the user isn't trying to break out of the $path by
-// using a relative filename.
-// No need to check for '/' since all downloads are relative to $imagePath,
-// $DownloadPath or $mincPath
-if (strpos("..", $File) !== false) {
-    error_log("ERROR: Invalid filename");
-    header("HTTP/1.1 400 Bad Request");
-    exit(4);
-}
+/* Prevent directory traversal by resolving the path first */
+$baseFile = basename(realpath($File));
 
 switch($FileExt) {
 case 'mnc':
-    $FullPath         = $mincPath . '/' . $File;
-    $MimeType         = "application/x-minc";
-    $DownloadFilename = basename($File);
+    $FullPath = $mincPath . '/' . $baseFile;
+    $MimeType = "application/x-minc";
     break;
 case 'nii':
-    $FullPath         = $mincPath . '/' . $File;
-    $MimeType         = "application/x-nifti";
-    $DownloadFilename = basename($File);
+    $FullPath = $mincPath . '/' . $baseFile;
+    $MimeType = "application/x-nifti";
     break;
 case 'nii.gz':
-    $FullPath         = $mincPath . '/' . $File;
-    $MimeType         = "application/x-nifti-gz";
-    $DownloadFilename = basename($File);
+    $FullPath = $mincPath . '/' . $baseFile;
+    $MimeType = "application/x-nifti-gz";
     break;
 case 'png':
-    $FullPath = $imagePath . '/' . $File;
+    $FullPath = $imagePath . '/' . $baseFile;
     $MimeType = "image/png";
     break;
 case 'jpg':
-    $FullPath = $imagePath . '/' . $File;
+    $FullPath = $imagePath . '/' . $baseFile;
     $MimeType = "image/jpeg";
     break;
-case 'header':
 case 'raw_byte.gz':
     // JIVs are relative to imagePath for historical reasons
     // And they don't have a real mime type.
-    $FullPath = $imagePath . '/' . $File;
+    $FullPath = $imagePath . '/' . $baseFile;
     $MimeType = 'application/octet-stream';
     break;
 case 'xml':
-    $FullPath         = $imagePath . '/' . $File;
-    $MimeType         = 'application/xml';
-    $DownloadFilename = basename($File);
+    $FullPath = $imagePath . '/' . $baseFile;
+    $MimeType = 'application/xml';
     break;
 case 'nrrd':
-    $FullPath         = $imagePath . '/' . $File;
-    $MimeType         = 'image/vnd.nrrd';
-    $DownloadFilename = basename($File);
+    $FullPath = $imagePath . '/' . $baseFile;
+    $MimeType = 'image/vnd.nrrd';
     break;
 default:
-    $FullPath         = $DownloadPath . '/' . $File;
-    $MimeType         = 'application/octet-stream';
-    $DownloadFilename = basename($File);
+    $FullPath = $DownloadPath . '/' . $baseFile;
+    $MimeType = 'application/octet-stream';
     break;
 }
 
-if (!file_exists($FullPath)) {
-    error_log("ERROR: File $File does not exist");
+if (!file_exists($FullPath) || !is_file($FullPath)) {
+    error_log("ERROR: File $FullPath does not exist");
     header("HTTP/1.1 404 Not Found");
     exit(5);
+} else {
+    // Output file in downloadable format
+    header('Content-Description: File Transfer');
+    header("Content-type: $MimeType");
+    header('Content-Transfer-Encoding: Binary');
+    if (!empty($baseFile)) {
+        header(
+            'Content-Disposition: attachment; filename="'
+            . basename($File) . '"'
+        );
+    }
+    readfile($FullPath);
 }
-
-header("Content-type: $MimeType");
-if (!empty($DownloadFilename)) {
-
-    header("Content-Disposition: attachment; filename=$DownloadFilename");
-}
-$fp = fopen($FullPath, 'r');
-fpassthru($fp);
-fclose($fp);
 ?>
