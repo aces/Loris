@@ -19,7 +19,7 @@ export default class Row extends React.Component {
       let cur = arr[i][key];
 
       if (i > 0) {
-        result.push(<br key={"br"+i}/>);
+        result.push(<br key={"br" + i}/>);
       }
       result.push(<span key={num}>{num}. {cur}</span>);
     }

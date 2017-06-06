@@ -111,11 +111,11 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
         return array_merge(
             $baseDeps,
             array(
-                $baseUrl . "/acknowledgements/js/fetch-all.js",
-                $baseUrl . "/acknowledgements/js/filter.js",
-                $baseUrl . "/acknowledgements/js/btn-add-acknowledgements.js",
-                $baseUrl . "/acknowledgements/js/acknowledgements_helper.js",
-                $baseUrl . "/acknowledgements/js/main.js",
+             $baseUrl . "/acknowledgements/js/fetch-all.js",
+             $baseUrl . "/acknowledgements/js/filter.js",
+             $baseUrl . "/acknowledgements/js/btn-add-acknowledgements.js",
+             $baseUrl . "/acknowledgements/js/acknowledgements_helper.js",
+             $baseUrl . "/acknowledgements/js/main.js",
             )
         );
     }
