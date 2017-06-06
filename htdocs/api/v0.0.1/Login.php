@@ -75,9 +75,13 @@ class Login extends APIBase
         $login = $this->getLoginAuthenticator();
 
         if ($login->passwordAuthenticate($user, $password, false)) {
-            $this->JSON = array(
-                           "token" => $this->getEncodedToken($user),
-                          );
+            $token = $this->getEncodedToken($user);
+            if ($token) {
+                $this->JSON = array("token" => $token);
+            } else {
+                $this->header("HTTP/1.1 403 Forbidden");
+                $this->JSON = array("error" => "Unacceptable JWT key.");
+            }
         } else {
             $this->header("HTTP/1.1 401 Unauthorized");
             if (!empty($login->_lastError)) {
@@ -129,6 +133,10 @@ class Login extends APIBase
                  );
 
         $key = $config->getSetting("JWTKey");
+        if ($key === "S3cret") {
+            error_log("ERROR: Default JWT key detected. This should be changed immediately.");
+            return "";
+        }
         return \Firebase\JWT\JWT::encode($token, $key, "HS256");
     }
 
