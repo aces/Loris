@@ -112,8 +112,8 @@ class Candidates extends APIBase
             }
 
             $this->verifyField($data, 'Gender', ['Male', 'Female']);
-            $this->verifyField($data, 'EDC', 'YYYY-MM-DD');
             $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
+
             //Candidate::createNew
             try {
                 $candid = $this->createNew(
@@ -122,6 +122,17 @@ class Candidates extends APIBase
                     $data['Candidate']['Gender'],
                     $data['Candidate']['PSCID']
                 );
+
+                if (isset($data['Candidate']['Project'])) {
+                    $projectName = htmlspecialchars($data['Candidate']['Project']);
+                    $project     = \Project::singleton($projectName);
+                    if (!empty($project)) {
+                        \Candidate::singleton($candid)->setData(
+                            array('ProjectID' => $project->getId())
+                        );
+                    }
+                }
+
                 $this->header("HTTP/1.1 201 Created");
                 $this->JSON = [
                                'Meta' => ["CandID" => $candid],
