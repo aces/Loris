@@ -1,4 +1,4 @@
-class FormAdd extends React.Component {
+export default class FormAdd extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -80,5 +80,3 @@ class FormAdd extends React.Component {
         );
   }
 }
-
-window.FormAdd = FormAdd;

@@ -104,11 +104,20 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
     function getJSDependencies()
     {
         $factory = NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
+        $baseUrl = $factory->settings()->getBaseURL();
 
         $baseDeps = parent::getJSDependencies();
 
-        return $baseDeps;
+        return array_merge(
+            $baseDeps,
+            array(
+                $baseUrl . "/acknowledgements/js/fetch-all.js",
+                $baseUrl . "/acknowledgements/js/filter.js",
+                $baseUrl . "/acknowledgements/js/btn-add-acknowledgements.js",
+                $baseUrl . "/acknowledgements/js/acknowledgements_helper.js",
+                $baseUrl . "/acknowledgements/js/main.js",
+            )
+        );
     }
 }
 ?>

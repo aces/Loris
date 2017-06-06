@@ -224,11 +224,3 @@
         </div>
     </div>
 </div>
-<script src="/acknowledgements/js/fetch-all.js"></script>
-<script src="/acknowledgements/js/filter.js"></script>
-<script src="/acknowledgements/js/btn-add-acknowledgements.js"></script>
-<script src="/acknowledgements/js/Row.js"></script>
-<script src="/acknowledgements/js/TBody.js"></script>
-<script src="/acknowledgements/js/Table.js"></script>
-<script src="/acknowledgements/js/acknowledgements_helper.js"></script>
-<script src="/acknowledgements/js/main.js"></script>

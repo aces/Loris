@@ -1,4 +1,6 @@
-class TBody extends React.Component {
+import Row from "./Row";
+
+export default class TBody extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -76,5 +78,3 @@ class TBody extends React.Component {
     window.addEventListener(this.props.idPrefix + "-insert", this.onAddCallback.bind(this));
   }
 }
-
-window.TBody = TBody;

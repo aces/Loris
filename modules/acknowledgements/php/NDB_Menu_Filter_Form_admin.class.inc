@@ -102,11 +102,16 @@ class NDB_Menu_Filter_Form_Admin extends NDB_Menu_Filter_Form
     function getJSDependencies()
     {
         $factory = NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
+        $baseUrl = $factory->settings()->getBaseURL();
 
         $baseDeps = parent::getJSDependencies();
 
-        return $baseDeps;
+        return array_merge(
+            $baseDeps,
+            array(
+                $baseUrl . "/acknowledgements/js/admin_main.js",
+            )
+        );
     }
 }
 ?>

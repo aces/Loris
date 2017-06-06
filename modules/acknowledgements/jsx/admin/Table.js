@@ -1,4 +1,7 @@
-class Table extends React.Component {
+import FormAdd from "./FormAdd";
+import TBody from "./TBody";
+
+export default class Table extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -89,5 +92,3 @@ class Table extends React.Component {
         );
   }
 }
-
-window.Table = Table;

@@ -46,8 +46,3 @@
     <div class="col-lg-4" id="container-role">
     </div>
 </div>
-<script src="/acknowledgements/js/admin_FormAdd.js"></script>
-<script src="/acknowledgements/js/admin_Row.js"></script>
-<script src="/acknowledgements/js/admin_TBody.js"></script>
-<script src="/acknowledgements/js/admin_Table.js"></script>
-<script src="/acknowledgements/js/admin_main.js"></script>

@@ -1,3 +1,5 @@
+import Table from "./Table";
+
 function loadCenter(centerId, containerAffiliation, containerDegree, containerRole) {
   ReactDOM.render(
         (<Table

@@ -1,4 +1,4 @@
-class Row extends React.Component {
+export default class Row extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -106,4 +106,3 @@ class Row extends React.Component {
               );
   }
 }
-window.Row = Row;
