@@ -77,27 +77,24 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                           "COALESCE(pso.Description,'Active') "
                           . " AS Participant_Status",
                          );
+
         //Boilerplate taken from modules/candidate_parameters/ajax/getData.php's
         //getConsentStatusFields()
-        $consent         = $config->getSetting('ConsentModule');
-        $consent_details = Utility::asArray($consent['Consent']);
-        if (!$consent_details[0]) {
-            // If only one consent, need to put in an array
-            $temp            = array();
-            $temp[]          = $consent_details;
-            $consent_details = $temp;
-        }
-        foreach ($consent_details as $consentType) {
-            $name = $consentType["name"];
-            //From http://stackoverflow.com/questions/1542627
-            //     /escaping-column-names-in-pdo-statements
-            $label = str_replace("`", "``", $consentType["label"]);
-            //This is not foolproof.
-            //This is only done because the following does not work,
-            //"ps.{$name} AS `{$label}`" (notice the backticks `)
-            $label = preg_replace("/\s/", "_", $label);
+        $consent = $config->getSetting('ConsentModule');
+        if ($consent['useConsent']) {
+            $consent_details = Utility::asArray($consent['Consent']);
+            foreach ($consent_details as $consentType) {
+                $name  = Database::singleton()->escape($consentType["name"]);
+                $label = Database::singleton()->escape($consentType["label"]);
+                //This is not foolproof.
+                //This is only done because the following does not work,
+                //"ps.{$name} AS `{$label}`" (notice the backticks `)
+                //The code that creates the tables on the front end will freak out
+                //if it sees a space in the label name
+                $label = preg_replace("/\s/", "_", $label);
 
-            $this->columns[] = "ps.{$name} AS {$label}";
+                $this->columns[] = "ps.{$name} AS {$label}";
+            }
         }
         if ($useProjects) {
             $this->columns[] = 'p.Name as Project';
