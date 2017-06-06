@@ -31,6 +31,7 @@ $header      = $_REQUEST['minc_headers'];
 $header_data = $_REQUEST['raw_data'];
 if ($header_data) {
     //passthru("minctoraw -double -normalize $minc_file");
+// https://greg-dev.loris.ca/main.php?test_name=brainbrowser&minc_id=[56780] ace-db-2    
     $fp = fopen($minc_file, 'r');
     fpassthru($fp);
     fclose($fp);
