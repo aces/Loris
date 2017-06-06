@@ -134,7 +134,10 @@ class Login extends APIBase
 
         $key = $config->getSetting("JWTKey");
         if ($key === "S3cret") {
-            error_log("ERROR: Default JWT key detected. This should be changed immediately.");
+            error_log(
+                '"ERROR: Default JWT key detected. '
+                .'This should be changed immediately.'
+            );
             return "";
         }
         return \Firebase\JWT\JWT::encode($token, $key, "HS256");
