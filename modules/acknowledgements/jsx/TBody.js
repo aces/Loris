@@ -1,5 +1,7 @@
+import Row from "./Row";
+
 /* global fetchAll */
-class TBody extends React.Component {
+export default class TBody extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -15,10 +17,10 @@ class TBody extends React.Component {
       }
     }
     return (
-            <tbody>
-                {arr}
-            </tbody>
-        );
+      <tbody>
+        {arr}
+      </tbody>
+    );
   }
   deleteCallback(id) {
     let data = this.state.data;
@@ -30,7 +32,7 @@ class TBody extends React.Component {
             {
               data: data
             }
-                    );
+          );
           break;
         }
       }
@@ -44,7 +46,7 @@ class TBody extends React.Component {
         {
           data: data
         }
-            );
+      );
     }
   }
   onFetchAllCallback(e) {
@@ -52,7 +54,7 @@ class TBody extends React.Component {
       {
         data: e.detail
       }
-        );
+    );
   }
   componentDidMount() {
     fetchAll(
@@ -63,13 +65,11 @@ class TBody extends React.Component {
             {
               data: data
             }
-                    );
+          );
         }.bind(this)
       }
-        );
+    );
     window.addEventListener("acknowledgement-insert", this.onAddCallback.bind(this));
     window.addEventListener("acknowledgement-fetch-all", this.onFetchAllCallback.bind(this));
   }
 }
-
-window.TBody = TBody;

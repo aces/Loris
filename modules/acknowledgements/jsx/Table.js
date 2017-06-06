@@ -1,4 +1,6 @@
-class Table extends React.Component {
+import TBody from "./TBody";
+
+export default class Table extends React.Component {
   constructor(props) {
     super(props);
     this.tbody = <TBody centerId ={props.centerId}/>;
@@ -25,5 +27,3 @@ class Table extends React.Component {
         );
   }
 }
-
-window.Table = Table;

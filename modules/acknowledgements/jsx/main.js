@@ -1,3 +1,5 @@
+import Table from "./Table";
+
 /* global loadAcknowledgementForm */
 $(document).ready(
     function() {
