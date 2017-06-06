@@ -4,7 +4,7 @@ class InstrumentLogicParser {
         if (!logicString) {
             throw new Error('You must pass a non-empty string');
         }
-        return parser.parse(logicString);
+        return 'return ' + parser.parse(logicString);
     }
 }
 
