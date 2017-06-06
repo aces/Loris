@@ -33,7 +33,13 @@ $DB = Database::singleton();
 $test_name = $_REQUEST['test_name'];
 $vl        = $_REQUEST['VL'];
 
-$result = $DB->pselect(
+$test_has_VL = $DB->pselect(
+    "SELECT * FROM test_battery ".
+    "WHERE test_name=:TN AND Visit_label IS NOT NULL",
+    array("TN" => $test_name)
+);
+
+$test_in_VL = $DB->pselect(
     "SELECT * FROM test_battery ".
     "WHERE test_name=:TN AND Visit_label=:VL",
     array(
@@ -42,7 +48,7 @@ $result = $DB->pselect(
     )
 );
 
-if (!$result) {
+if (!$test_in_VL && $test_has_VL) {
     $full_name   = $DB->pselectOne(
         "SELECT Full_name FROM test_names ".
         "WHERE Test_name=:TN",
