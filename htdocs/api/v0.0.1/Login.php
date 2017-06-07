@@ -76,7 +76,7 @@ class Login extends APIBase
 
         if ($login->passwordAuthenticate($user, $password, false)) {
             $token = $this->getEncodedToken($user);
-            if ($token) {
+            if (!empty($token)) {
                 $this->JSON = array("token" => $token);
             } else {
                 $this->header("HTTP/1.1 500 Internal Server Error");
@@ -133,10 +133,10 @@ class Login extends APIBase
                  );
 
         $key = $config->getSetting("JWTKey");
-        if ($key === "S3cret") {
+        if (!$isKeyStrong) {
             error_log(
-                '"ERROR: Default JWT key detected. '
-                .'This should be changed immediately.'
+                'ERROR: JWTKey config variable is weak. '
+                .'Please change the key to a more cryptographically-secure value.'
             );
             return "";
         }
@@ -154,6 +154,40 @@ class Login extends APIBase
     function calculateETag()
     {
         return;
+    }
+
+    /**
+    * Verify key meets cryptographic strength requirements
+    *
+    * @param string $key The JWT key to verify
+    *
+    * @return boolean Key passes strength test
+    */
+    function isKeyStrong($key)
+    {
+        // Note: this code adapted from User::isPasswordString
+        $CharTypes = 0;
+        // less than 20 characters
+        if (strlen($key) < 20) {
+            return false;
+        }
+        // nothing but letters
+        if (!preg_match('/[^A-Za-z]/', $key)) {
+            return false;
+        }
+        // nothing but numbers
+        if (!preg_match('/[^0-9]/', $key)) {
+            return false;
+        }
+        // preg_match returns 1 on match, 0 on non-match
+        $CharTypes += preg_match('/[0-9]+/', $key);
+        $CharTypes += preg_match('/[A-Za-z]+/', $key);
+        $CharTypes += preg_match('/[!\\\$\^@#%&\*\(\)]+/', $key);
+        if ($CharTypes < 3) {
+            return false;
+        }
+
+        return true;
     }
 }
 
