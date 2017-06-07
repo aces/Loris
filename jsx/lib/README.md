@@ -51,3 +51,7 @@ GREATER THAN OR EQUAL TO:                                           GEQ( e1 , e2
                                                                     returns true if e1 >= e2, false if not
 LESS THAN OR EQUAL TO:                                              LEQ( e1, e2 )
                                                                     returns true if e1 <= e2, false if not
+
+SYNTAX RULES:
+do not use boolean operators as a part of a larger expression; you cannot compute 5+true!!!
+all whitespace is ignored

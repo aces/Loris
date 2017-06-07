@@ -6,7 +6,7 @@
 %lex
 %%
 
-\s+                   /* skip whitespace */
+\s+                                 /* skip whitespace */
 [0-9]+("."[0-9]+)?\b                return 'NUMBER'
 "*"                                 return '*'
 "/"                                 return '/'
@@ -33,9 +33,11 @@
 "LT("                               return 'LT('
 "GEQ("                              return 'GEQ('
 "LEQ("                              return 'LEQ('
-[a-zA-Z0-9_]+("_"[a-zA-Z0-9_]+)?\b  return 'LETTER'
+"IF("                               return 'IF('
+[a-zA-Z0-9_]+("_"[a-zA-Z0-9_]+)?\b  return 'LETTER' /* all functions using letters must be defined BEFORE this to avoid errors  */
 "["                                 return '['
 "]"                                 return ']'
+"\""                                return '"'
 <<EOF>>                             return 'EOF'
 .                                   return 'INVALID'
 
@@ -66,21 +68,23 @@ e
     | e '-' e
         {$$ = $1 + '-' + $3;}
     | e '*' e
-        {$$ = $1 + '*' + $3;}
+        {$$ = '(' + $1 + ')' + '*' + '(' + $3 + ')';}
     | e '/' e
-        {$$ = $1 + '/' + $3;}
+        {$$ = '(' + $1 + ')' + '/' + '(' + $3 + ')';}
     | e '^' e
         {$$ = 'Math.pow(' + $1 + ',' + $3 + ')';} 
     | e '%'
-        {$$ = $1 + '/100';}
+        {$$ = '(' + $1 + ')' + '/100';}
     | '-' e %prec UMINUS
-        {$$ = '(0-' + $2 + ')';}
+        {$$ = '(0-(' + $2 + '))';}
     | '(' e ')'
         {$$ = '(' + $2 + ')';}
     | NUMBER
         {$$ = yytext;}
     | '[' LETTER ']'
         {$$ = 'this.' + $2;}
+    | '"' LETTER '"'
+        {$$ = '' + $2;}
     | E
         {$$ = 'Math.E';}
     | PI
@@ -94,13 +98,13 @@ e
     | 'INTEGER(' e ')'
         {$$ = 'Math.round(' + $2 + ')';}
     | 'MOD(' e ',' e ')'
-        {$$ = '(' + $2 + ')' + '%' + $4;}
+        {$$ = '(' + $2 + ')' + '%' + '(' + $4 + ')';}
     | 'SQRT(' e ')'
         {$$ = 'Math.sqrt(' + $2 + ')';}
     | 'ABS(' e ')'
         {$$ = 'Math.abs(' + $2 + ')';}
     | 'EQ(' e ',' e ')'
-        {$$ = (function eq (x, y) {return x===y} ) (
+        {$$ = (function eq (x, y) {return x===y} ) ( /* inputs are processed on the fly here to avoid accidental inequality  */
             new Function('return ' + $2).call(),
             new Function('return ' + $4).call());}
     | 'NEQ(' e ',' e ')'
@@ -123,4 +127,6 @@ e
         {$$ = (function eq (x, y) {return x<=y} ) (
             new Function('return ' + $2).call(),
             new Function('return ' + $4).call());}
+    | 'IF(' e ',' e ',' e ')'
+        {if ($2) {$$ = $4} else {$$ = $6};}    
     ;

@@ -28,10 +28,10 @@ describe('InstrumentLogicParser#parse', () => {
   
   describe('bool ops', () => {
     it('evals', () => {
-      const LOGIC_STR = 'LEQ(SQRT(49),ROUND(4+1.384729392834, 5))';
+      const LOGIC_STR = 'IF(GT(0,1),10+10,4+1)';
       const CONTEXT = {};
       const res = InstrumentLogicParser.evaluate(LOGIC_STR, CONTEXT);
-      expect(res).to.equal(false);
+      expect(res).to.equal(5);
     })
   });
 })
