@@ -14,6 +14,7 @@ addons:
     firefox: "44.0"
 
 before_install:
+    - phpenv config-rm xdebug.ini
     # Start Xvfb in a desktop screen size,
     # otherwise some tests will fail because the links
     # are hidden when Selenium tries to find them.
