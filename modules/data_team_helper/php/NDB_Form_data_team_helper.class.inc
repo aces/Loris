@@ -100,7 +100,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         $config   =& NDB_Config::singleton();
         $sanitize = array_map('htmlspecialchars', $_REQUEST);
 
-        $instrument = $this->getTestNameusingMappedName($sanitize['instrument'] ?? null);
+        $instrument = $this->getTestNameusingMappedName(
+            $sanitize['instrument'] ?? null
+        );
         //construct the instrument drop down..
         $this->tpl_data['visit_label'] = $sanitize['visit_label'] ?? null;
         $this->tpl_data['FieldName']   = $sanitize['FieldName'] ?? null;
