@@ -171,7 +171,6 @@ class NDB_Form_User_Accounts extends NDB_Form
      */
     function _process($values)
     {
-
         $config = NDB_Config::singleton();
         $DB     = Database::singleton();
 
@@ -879,7 +878,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         $DB     = Database::singleton();
         $editor = User::singleton();
 
-        $redirect = $baseURL . "/user_accounts";
+        $redirect = $baseURL . "/user_accounts/";
 
         // The $editor variable is set by the edit_user script.
         // Checking that this is set ensures that the user is
