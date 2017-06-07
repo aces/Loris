@@ -100,6 +100,27 @@ e
     | 'ABS(' e ')'
         {$$ = 'Math.abs(' + $2 + ')';}
     | 'EQ(' e ',' e ')'
-        {$$ = (function eq (x, y) {return x==y} ) ($2, $4);}
+        {$$ = (function eq (x, y) {return x===y} ) (
+            new Function('return ' + $2).call(),
+            new Function('return ' + $4).call());}
+    | 'NEQ(' e ',' e ')'
+        {$$ = (function eq (x, y) {return x!==y} ) (
+            new Function('return ' + $2).call(),
+            new Function('return ' + $4).call());}
+    | 'GT(' e ',' e ')'
+        {$$ = (function eq (x, y) {return x>y} ) (
+            new Function('return ' + $2).call(),
+            new Function('return ' + $4).call());}
+    | 'LT(' e ',' e ')'
+        {$$ = (function eq (x, y) {return x<y} ) (
+            new Function('return ' + $2).call(),
+            new Function('return ' + $4).call());}
+    | 'GEQ(' e ',' e ')'
+        {$$ = (function eq (x, y) {return x>=y} ) (
+            new Function('return ' + $2).call(),
+            new Function('return ' + $4).call());}
+    | 'LEQ(' e ',' e ')'
+        {$$ = (function eq (x, y) {return x<=y} ) (
+            new Function('return ' + $2).call(),
+            new Function('return ' + $4).call());}
     ;
-

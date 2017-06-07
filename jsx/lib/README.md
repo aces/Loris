@@ -40,14 +40,14 @@ BOOLEAN OPERATIONS:
 e = expression
 
 EQUALITY:                                                           EQ( e , e )
-                                                                    returns 1 if both sides are equal, 0 if not
+                                                                    returns true if both sides are equal, false if not
 INEQUALITY:                                                         NEQ( e , e )
-                                                                    returns 1 if both sides are inequal, 0 if not
+                                                                    returns true if both sides are inequal, false if not
 GREATER THAN:                                                       GT( e1 , e2 )
-                                                                    returns 1 if e1 > e2, 0 if not
+                                                                    returns true if e1 > e2, false if not
 LESS THAN:                                                          LT( e1 , e2 )
-                                                                    returns 1 if e1 < e2. 0 it not
+                                                                    returns true if e1 < e2. false it not
 GREATER THAN OR EQUAL TO:                                           GEQ( e1 , e2 )
-                                                                    returns 1 if e1 >= e2, 0 if not
+                                                                    returns true if e1 >= e2, false if not
 LESS THAN OR EQUAL TO:                                              LEQ( e1, e2 )
-                                                                    returns 1 if e1 <= e2, 0 if not
+                                                                    returns true if e1 <= e2, false if not
