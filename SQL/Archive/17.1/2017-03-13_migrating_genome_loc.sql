@@ -21,7 +21,7 @@ UPDATE CNV t JOIN gene g USING (GenomeLocID) set t.Symbol = g.Symbol, t.Name = g
 
 -- Remove the FOREIGN KEY using constraint name from infomration_schema.
 SET @constraint_name = (SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS WHERE table_name = 'CNV' AND CONSTRAINT_SCHEMA = DATABASE() AND REFERENCED_TABLE_NAME = 'genome_loc');
-SET @s = (SELECT IF(@constraint_name IS NULL,"SELECT 'There is not foreign key between CNV and genome_loc table' as Message",CONCAT("ALTER TABLE CNV DROP FOREIGN KEY ", @constraint_name)));
+SET @s = (SELECT IF(@constraint_name IS NULL,"SELECT 'There is no foreign key between CNV and genome_loc table' as Message",CONCAT("ALTER TABLE CNV DROP FOREIGN KEY ", @constraint_name)));
 PREPARE stmt FROM @s;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
@@ -53,7 +53,7 @@ UPDATE SNP t JOIN gene g USING (GenomeLocID) set t.Symbol = g.Symbol, t.Name = g
 
 -- Remove the FOREIGN KEY using constraint name from infomration_schema.
 SET @constraint_name = (SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS WHERE table_name = 'SNP' AND CONSTRAINT_SCHEMA = DATABASE() AND REFERENCED_TABLE_NAME = 'genome_loc');
-SET @s = (SELECT IF(@constraint_name IS NULL,"SELECT 'There is not foreign key between SNP and genome_loc table' as Message",CONCAT("ALTER TABLE SNP DROP FOREIGN KEY ", @constraint_name)));
+SET @s = (SELECT IF(@constraint_name IS NULL,"SELECT 'There is no foreign key between SNP and genome_loc table' as Message",CONCAT("ALTER TABLE SNP DROP FOREIGN KEY ", @constraint_name)));
 PREPARE stmt FROM @s;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
@@ -76,7 +76,7 @@ UPDATE genomic_cpg_annotation t JOIN genome_loc gl ON (location_id = GenomeLocID
 
 -- Remove the FOREIGN KEY using constraint name from infomration_schema.
 SET @constraint_name = (SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS WHERE table_name = 'genomic_cpg_annotation' AND CONSTRAINT_SCHEMA = DATABASE() AND REFERENCED_TABLE_NAME = 'genome_loc');
-SET @s = (SELECT IF(@constraint_name IS NULL,"SELECT 'There is not foreign key between genomic_cpg_annotation and genome_loc table' as Message",CONCAT("ALTER TABLE genomic_cpg_annotation DROP FOREIGN KEY ", @constraint_name)));
+SET @s = (SELECT IF(@constraint_name IS NULL,"SELECT 'There is no foreign key between genomic_cpg_annotation and genome_loc table' as Message",CONCAT("ALTER TABLE genomic_cpg_annotation DROP FOREIGN KEY ", @constraint_name)));
 PREPARE stmt FROM @s;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
