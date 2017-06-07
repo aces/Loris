@@ -133,7 +133,7 @@ class Login extends APIBase
                  );
 
         $key = $config->getSetting("JWTKey");
-        if (!$isKeyStrong) {
+        if (!isKeyStrong($key)) {
             error_log(
                 'ERROR: JWTKey config variable is weak. '
                 .'Please change the key to a more cryptographically-secure value.'
