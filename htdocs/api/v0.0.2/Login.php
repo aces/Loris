@@ -165,7 +165,7 @@ class Login extends APIBase
     */
     function isKeyStrong($key)
     {
-        // Note: this code adapted from User::isPasswordString
+        // Note: this code adapted from User::isPasswordStrong
         $CharTypes = 0;
         // less than 20 characters
         if (strlen($key) < 20) {
