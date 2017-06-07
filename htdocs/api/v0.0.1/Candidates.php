@@ -30,7 +30,7 @@ class Candidates extends APIBase
     /**
      * Create a Candidates request handler
      *
-     * @param string $method The HTTP request method of the request
+     * @param string $methof the HTTP request method of the request
      * @param array  $data   The data that was POSTed to the request
      */
     public function __construct($method, $data=null)
@@ -110,7 +110,7 @@ class Candidates extends APIBase
                 $this->safeExit(0);
             }
 
-            // This version od the API does not handle candidate creation
+            // This version of the API does not handle candidate creation
             // when users are at multiple sites
             $user      = \User::singleton();
             $centerIDs = $user->getCenterIDs();
@@ -124,7 +124,7 @@ class Candidates extends APIBase
                 $this->header("HTTP/1.1 501 Not Implemented");
                 $this->error(
                     "This API version does not support candidate creation " .
-                    "by uers with multiple site affiliations. This will be ".
+                    "by users with multiple site affiliations. This will be ".
                     "implemented in a future release"
                 );
                 $this->safeExit(0);
