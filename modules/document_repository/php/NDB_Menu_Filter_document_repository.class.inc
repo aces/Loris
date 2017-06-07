@@ -80,8 +80,9 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         $openAccordion = $_GET['openAccordion'] ?? null;
 
         $this->tpl_data['openAccordion'] = $openAccordion;
-        $filtered = isset($_GET['filtered']) ?
-            $_GET['filtered'] : null;
+
+        $filtered = $_GET['filtered'] ?? null;
+
         $this->tpl_data['filtered'] = $filtered;
         $this->query        = $query;
         $this->group_by     = '';
