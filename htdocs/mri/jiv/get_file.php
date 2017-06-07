@@ -57,9 +57,11 @@ if ($imagePath === '/' || $DownloadPath === '/' || $mincPath === '/') {
     exit(2);
 }
 
-// Now get the file and do file validation
-$File = $_GET['file'];
+// Now get the file and do file validation.
+// Resolve the filename before doing anything.
+$File = realpath($_GET['file']);
 
+// Extra sanity checks, just in case something went wrong with realpath.
 // File validation
 if (strpos($File, ".") === false) {
     error_log("ERROR: Could not determine file type.");
