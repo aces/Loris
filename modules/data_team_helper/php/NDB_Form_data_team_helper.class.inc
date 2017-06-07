@@ -53,9 +53,10 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
 
         //construct the query
         if (($extra_where) !=null) {
-            $query = "SELECT DISTINCT p.sourceFrom,p.sourceField FROM
+            $query   = "SELECT DISTINCT p.sourceFrom,p.sourceField FROM
                 parameter_type p WHERE 1=1 $extra_where";
-            $info  = $DB->pselect($query, array());
+            $qparams =array();
+            $info    =$DB->pselect($query,  $qparams);
             foreach ($info as $data) {
                 $percent_completed            = (isset($data['Name']) ?
                     $data['Name'] : null
@@ -68,23 +69,18 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
                 $defaults[$percent_completed] = isset($data['percent_completed']) ?
                     $data['percent_completed'] : null;
             }
-        }
-        $defaults["feedback_status"]    = isset($_REQUEST['feedback_status']) ?
-            $_REQUEST['feedback_status'] : null;
-        $defaults["completion_status"]  = isset($_REQUEST['completion_status']) ?
-            $_REQUEST['completion_status'] : null;
-        $defaults["sent_to_dcc_status"] = isset($_REQUEST['sent_to_dcc_status']) ?
-            $_REQUEST['sent_to_dcc_status'] : null;
-        $defaults["instrument"]         = isset($_REQUEST['instrument']) ?
-            $_REQUEST['instrument'] : null;
-        $defaults["FieldName"]          = isset($_REQUEST['FieldName']) ?
-            $_REQUEST['FieldName'] : null;
-        $defaults["candidate"]          = isset($_REQUEST['candidate']) ?
-            $_REQUEST['candidate'] : null;
-        $defaults["visit_label"]        = isset($_REQUEST['visit_label']) ?
-            $_REQUEST['visit_label'] : null;
-        $this->tpl_data['instrumentvalue'] = isset($_REQUEST['instrument']) ?
-            $_REQUEST['instrument'] : null;
+        }//sanitizing the input coming from the request
+        $sanitize = array_map('htmlspecialchars', $_REQUEST);
+        $defaults["feedback_status"]    = $sanitize['feedback_status'] ?? null;
+        $defaults["completion_status"]  = $sanitize['completion_status'] ?? null;
+        $defaults["sent_to_dcc_status"] = $sanitize['sent_to_dcc_status'] ?? null;
+        $defaults["instrument"]         = $sanitize['instrument'] ?? null;
+        $defaults["FieldName"]          = $sanitize['FieldName'] ?? null;
+        $defaults["candidate"]          = $sanitize['candidate'] ?? null;
+        $defaults["visit_label"]        = $sanitize['visit_label'] ?? null;
+        $defaults["site"]    = $sanitize['site'] ?? null;
+        $defaults["project"] = $sanitize['project'] ?? null;
+        $this->tpl_data['instrumentvalue'] = $sanitize['instrument'] ?? null;
         return $defaults;
     }
     /**
@@ -97,58 +93,45 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
     {
         //initializations
         $DB        =& Database::singleton();
+        $user      =& User::singleton();
         $conflicts = array();
         $smarty    = new Smarty_neurodb();
 
-        $config =& NDB_Config::singleton();
+        $config   =& NDB_Config::singleton();
+        $sanitize = array_map('htmlspecialchars', $_REQUEST);
 
-        $instrument = $this->getTestNameusingMappedName(
-            isset($_REQUEST['instrument']) ?
-                $_REQUEST['instrument'] :
-                null
-        );
+        $instrument = $this->getTestNameusingMappedName($sanitize['instrument'] ?? null);
         //construct the instrument drop down..
-        $this->tpl_data['visit_label'] = isset($_REQUEST['visit_label']) ?
-            $_REQUEST['visit_label'] :
-            null;
-        $this->tpl_data['FieldName']   = isset($_REQUEST['FieldName']) ?
-            $_REQUEST['FieldName'] :
-            null;
-        if (isset($_REQUEST['PSCID'])
-            && $_REQUEST['PSCID']
-            && !empty($_REQUEST['PSCID'])
-        ) {
-            $this->tpl_data['candidate'] = $_REQUEST['PSCID'];
-        } elseif (isset($_REQUEST['candidate'])
-            && $_REQUEST['candidate']
-            && !empty($_REQUEST['candidate'])
-        ) {
-            $this->tpl_data['candidate']
-                = Candidate::singleton($_REQUEST['candidate'])->getPSCID();
+        $this->tpl_data['visit_label'] = $sanitize['visit_label'] ?? null;
+        $this->tpl_data['FieldName']   = $sanitize['FieldName'] ?? null;
+        $this->tpl_data['site']        = $sanitize['site'] ?? null;
+        $this->tpl_data['project']     = $sanitize['project'] ?? null;
+        if (isset($sanitize['PSCID']) && !empty($sanitize['PSCID'])) {
+            $this->tpl_data['PSCID'] = $sanitize['PSCID'];
+        } elseif (isset($sanitize['candidate']) && !empty($sanitize['candidate'])) {
+            $this->tpl_data['candID'] = $sanitize['candidate'];
         } else {
             $this->tpl_data['candidate'] = null;
         }
         $this->tpl_data['test_name'] = $instrument;
 
         $candID = null;
-        if (isset($_REQUEST['PSCID']) && !empty($_REQUEST['PSCID'])
-            && (isset($_REQUEST['candidate'])) && !empty($_REQUEST['candidate'])
+        if (isset($sanitize['PSCID']) && !empty($sanitize['PSCID'])
+            && (isset($sanitize['candidate'])) && !empty($sanitize['candidate'])
         ) {
-            $candID = ($_REQUEST['candidate']);
-        } elseif (isset($_REQUEST['candidate']) && !empty($_REQUEST['candidate'])) {
-                $candID = $_REQUEST['candidate'];
-        } elseif (isset($_REQUEST['PSCID']) && !empty($_REQUEST['PSCID'])) {
+            $candID = ($sanitize['candidate']);
+        } elseif (isset($sanitize['candidate']) && !empty($sanitize['candidate'])) {
+                $candID = $sanitize['candidate'];
+        } elseif (isset($sanitize['PSCID']) && !empty($sanitize['PSCID'])) {
             $query   = "SELECT CandID FROM candidate WHERE PSCID = :PID";
-            $qparams = (array('PID' => $_REQUEST['PSCID']));
+            $qparams = (array('PID' => $sanitize['PSCID']));
             $candID  = $DB->pselectOne($query, $qparams);
         }
 
         //Percentage completed for the given instrument
             $percent_completed = $this->_getPercentCompleted(
                 $instrument,
-                isset($_REQUEST['visit_label']) ?
-                    $_REQUEST['visit_label'] :
-                    null,
+                $sanitize['visit_label'] ?? null,
                 $candID
             );
             $this->tpl_data['percent_completed'] = $percent_completed;
@@ -158,14 +141,35 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $visit_array =Utility::getExistingVisitLabels();
             $visit_array = array_combine($visit_array, $visit_array);
             $this->tpl_data['visitLabels'] = $visit_array;
+            if ($user->hasPermission('access_all_profiles')) {
+                // get the list of study sites - to be replaced by the Site object
+                $list_of_sites = Utility::getSiteList();
+                if (is_array($list_of_sites)) {
+                    $list_of_sites = array('' => 'All Sites') + $list_of_sites;
+                }
+            } else {
+                // allow only to view own site data
+                $site =& Site::singleton($user->getData('CenterID'));
+                if ($site->isStudySite()) {
+                    $list_of_sites = array();
+                    $user_site     =$user->getData('Site');
+                    $list_of_sites[$user->getData('CenterID')] = $user_site;
+                }
+            }
+            $this->tpl_data['siteList'] = $list_of_sites;
+            // Project list, if applicable
+            if ($config->getSetting("useProjects")==="true") {
+                $projectList = Utility::getProjectList();
+                $this->tpl_data['projectList'] = $projectList;
+            }
 
             $incompleteCandidates = $this->
                  getIncompleteCandidates(
                      $instrument,
-                     isset($_REQUEST['visit_label']) ?
-                        $_REQUEST['visit_label'] :
-                        null,
-                     $candID
+                     $sanitize['visit_label'] ?? null,
+                     $candID,
+                     $sanitize['site'] ?? null,
+                     $sanitize['project'] ?? null
                  );
 
             $this->tpl_data['Incomplete_candidates']
@@ -177,23 +181,22 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $conflicts = $this->
             instrumentInConflict(
                 $instrument,
-                isset($_REQUEST['visit_label']) ?
-                    $_REQUEST['visit_label'] :
-                    null,
-                $candID
+                $sanitize['visit_label'] ?? null,
+                $candID,
+                $sanitize['site'] ?? null,
+                $sanitize['project'] ?? null
             );
 
             $this->tpl_data['Conflicts'] =  json_encode($conflicts);
 
             $this->tpl_data['Conflicts_length'] = count($conflicts);
 
-            $bvlFeedback = $this
-            ->getFeedbacks(
+            $bvlFeedback = $this->getFeedbacks(
                 $instrument,
                 $candID,
-                isset($_REQUEST['visit_label']) ?
-                    $_REQUEST['visit_label'] :
-                    null
+                $sanitize['visit_label'] ?? null,
+                $sanitize['site'] ?? null,
+                $sanitize['project'] ?? null
             );
 
             $this->tpl_data['Bvl_Feedback'] = json_encode($bvlFeedback);
@@ -203,10 +206,10 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $this->tpl_data['percent_complete'] = $this
                 ->_getPercentCompleted(
                     $instrument,
-                    isset($_REQUEST['visit_label']) ?
-                        $_REQUEST['visit_label'] :
-                        null,
-                    $candID
+                    $sanitize['visit_label'] ?? null,
+                    $candID,
+                    $sanitize['site'] ?? null,
+                    $sanitize['project'] ?? null
                 );
 
     }
@@ -220,25 +223,34 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * all the feedback at all levels. In the case of just a candidate
      * set we return all feedbacks at every level for that candidate.
      *
-     * @param null $test_name   the value of test name
-     * @param null $candID      the value of candidate ID
-     * @param null $visit_label the value of visit label
+     * @param null     $test_name   the value of test name
+     * @param null     $candID      the value of candidate ID
+     * @param null     $visit_label the value of visit label
+     * @param int|null $site        the id of the site or can be null
+     * @param int|null $project     the id of the project or can be null
      *
      * @return   Array containing a list of feedbacks for
      * the appropriate feedback level.
      * @throws   DatabaseException
      * @internal param unknown_type $field_name
      */
-    function getFeedbacks($test_name = null, $candID=null, $visit_label=null)
-    {
+    function getFeedbacks($test_name = null,
+        $candID=null,
+        $visit_label=null,
+        $site=null,
+        $project=null
+    ) {
 
         $DB      =& Database::singleton();
         $qparams = array();
 
         $select = "SELECT fb.FeedbackID, fb.CandID, fb.SessionID,
                       fb.CommentID, fb.Feedback_level, f.Test_name, fb.FieldName,
-                      tn.Full_name, s.Visit_label FROM feedback_bvl_thread AS fb
+                      tn.Full_name, s.Visit_label, ca.PSCID 
+                       FROM feedback_bvl_thread AS fb
+                      JOIN candidate ca ON (ca.CandID = fb.CandID)
                       JOIN session s ON (s.ID = fb.SessionID)
+                      JOIN project_rel pr ON (s.SubprojectID = pr.SubprojectID)
                       LEFT JOIN flag f ON (fb.CommentID = f.CommentID)
                       LEFT JOIN test_names tn ON (tn.Test_name = f.Test_name)";
 
@@ -255,8 +267,19 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $where        .= " AND s.Visit_label = :VL";
             $qparams['VL'] = $visit_label;
         }
+        if (($site !=null)&&($site!='All Sites')) {
+            $where         .= " AND s.CenterId = :CID";
+            $qparams['CID'] = $site;
+        }
 
-        if (isset($test_name) && $test_name !='All Instruments' ) {
+        if (($project !=null)&&($project!='All Projects')) {
+            $where         .= " AND pr.ProjectID = :PID";
+            $qparams['PID'] = $project;
+        }
+
+        if (isset($test_name) && $test_name !='All Instruments'
+            && $test_name!=null
+        ) {
 
             $where      .= " AND FieldName = :FN";
             $field_names = Utility::getSourcefields($test_name);
@@ -300,24 +323,25 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      */
     function addWhere($Column, $Filter)
     {
-        if (!empty($_REQUEST[$Filter])
-            && $_REQUEST[$Filter] !=='All Fields'
-            && (strtolower($_REQUEST[$Filter]) !=='any')
-            && ($_REQUEST[$Filter] !=='All Visits')
-            && $_REQUEST[$Filter] !=='all_flags'
-            && ($_REQUEST[$Filter] !=='All Instruments')
+        $sanitize = array_map('htmlspecialchars', $_REQUEST);
+        if (!empty($sanitize[$Filter])
+            && $sanitize[$Filter] !=='All Fields'
+            && (strtolower($sanitize[$Filter]) !=='any')
+            && ($sanitize[$Filter] !=='All Visits')
+            && $sanitize[$Filter] !=='all_flags'
+            && ($sanitize[$Filter] !=='All Instruments')
         ) {
             global $DB;
             if ($Filter == 'instrument') {
                 $test_name = $this->getTestNameusingMappedName(
-                    $_REQUEST[$Filter]
+                    $sanitize[$Filter]
                 );
                 return " AND $Column LIKE " . $DB->quote($test_name);
             }
-            if ($_REQUEST[$Filter] == 'not_sent_to_dcc') {
+            if ($sanitize[$Filter] == 'not_sent_to_dcc') {
                 return " AND $Column NOT LIKE '%Approval%'";
             }
-            return " AND $Column LIKE " . $DB->quote($_REQUEST[$Filter]);
+            return " AND $Column LIKE " . $DB->quote($sanitize[$Filter]);
         }
         return '';
     }
@@ -329,12 +353,16 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
+     * @param int|null     $site        the id of the site or can be null
+     * @param int|null     $project     the id of the project or can be null
      *
      * @return unknown
      */
     function instrumentInConflict($test_name,
         $visit_label=null,
-        $candidate=null
+        $candidate=null,
+        $site=null,
+        $project=null
     ) {
 
         global $DB;
@@ -387,6 +415,16 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         if ($candidate !=null) {
             $where        .= " AND s.candID = :CI";
             $qparams['CI'] = $candidate;
+        }
+        //filter for sites
+        if (($site !=null)&&($site!='All Sites')) {
+            $where         .= " AND ca.CenterId = :CID";
+            $qparams['CID'] = $site;
+        }
+        //filter for candidate
+        if (($project !=null)&&($project!='All Projects')) {
+            $where         .= " AND ca.ProjectID = :PID";
+            $qparams['PID'] = $project;
         }
 
         $query     = $query . $where;
@@ -456,12 +494,16 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
+     * @param int|null     $site        the id of of the site or can be null
+     * @param int|null     $project     the id of the project or can be null
      *
      * @return unknown
      */
     function getIncompleteCandidates($test_name,
         $visit_label=null,
-        $candidate=null
+        $candidate=null,
+        $site=null,
+        $project=null
     ) {
 
         global $DB;
@@ -494,6 +536,14 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $where        .= " AND s.candID = :CI";
             $qparams['CI'] = $candidate;
         }
+        if (($site !=null)&&($site!='All Sites')) {
+            $where         .= " AND c.CenterID = :CID";
+            $qparams['CID'] = $site;
+        }
+        if (($project !=null)&&($project!='All Projects')) {
+            $where         .= " AND c.ProjectID = :PID";
+            $qparams['PID'] = $project;
+        }
 
         $order_by = " ORDER BY f.commentid ";
 
@@ -509,11 +559,17 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
+     * @param int|null     $site        the id of the site or can be null
+     * @param int|null     $project     the id of the project or can be null
      *
      * @return unknown
      */
-    function getInstrumentCount($test_name, $visit_label=null, $candidate=null)
-    {
+    function getInstrumentCount($test_name,
+        $visit_label=null,
+        $candidate=null,
+        $site=null,
+        $project=null
+    ) {
         global $DB;
 
         if ($test_name != null) {
@@ -547,6 +603,14 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $where        .= " AND s.candID = :CI";
             $qparams['CI'] = $candidate;
         }
+        if (($site !=null)&&($site!='All Sites')) {
+            $where         .= " AND c.CenterID = :CID";
+            $qparams['CID'] = $site;
+        }
+        if (($project !=null)&&($project!='All Projects')) {
+            $where         .= " AND c.ProjectID = :PID";
+            $qparams['PID'] = $project;
+        }
 
         $query .= $where;
         $count  =$DB->pselectOne($query, $qparams);
@@ -559,11 +623,17 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
+     * @param int|null     $site        the id of the site or can be null
+     * @param int|null     $project     the id of the project or can be null
      *
      * @return unknown
      */
-    function getCompleteInstrumentCount($test_name,$visit_label=null,$candidate=null)
-    {
+    function getCompleteInstrumentCount($test_name,
+        $visit_label=null,
+        $candidate=null,
+        $site=null,
+        $project=null
+    ) {
         global $DB;
         if ($test_name != null) {
             $query = "SELECT COUNT(*) FROM $test_name AS i
@@ -596,6 +666,14 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         if ($candidate !=null) {
             $where        .= " AND s.candID = :CI";
             $qparams['CI'] = $candidate;
+        }
+        if (($site !=null)&&($site!='All Sites')) {
+            $where         .= " AND c.CenterID = :CID";
+            $qparams['CID'] = $site;
+        }
+        if (($project !=null)&&($project!='All Projects')) {
+            $where         .= " AND c.ProjectID = :PID";
+            $qparams['PID'] = $project;
         }
 
         $query .= $where;

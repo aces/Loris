@@ -1,6 +1,8 @@
 <IfModule mod_rewrite.c>
  RewriteEngine on
 
+ RewriteRule ^([a-zA-Z_-]+)/api/([a-zA-Z0-9_.-/]+)$ module-api.php
+
  # Bootstrap is not a Loris module, don't rewrite it.
  RewriteRule ^bootstrap/(.*) bootstrap/$1 [L]
 

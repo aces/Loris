@@ -55,7 +55,7 @@ class Utility
      * @return  string
      * @cleanup Determine if this is still used.
      */
-    function reduce($array)
+    static function reduce($array)
     {
         $string = array_reduce($array, array('Utility', 'crunch'));
         return (!empty($string)) ? explode('`', $string) : array();
@@ -73,7 +73,7 @@ class Utility
      * @return  string
      * @cleanup Determine if this is still used.
      */
-    function crunch($x, $y)
+    static function crunch($x, $y)
     {
         $a = (is_array($x)) ? array_reduce($x, array('Utility', 'crunch')) : $x;
         $b = (is_array($y)) ? array_reduce($y, array('Utility', 'crunch')) : $y;
