@@ -158,8 +158,8 @@ case 'createmysqlaccount':
 
     if ($installer->ConfigWritable()) {
         if ($installer->WriteConfig($_POST) === false) {
-            $tpl_data["error"] = $installer->GetLastError();
-            $tpl_data["Page"]  = "MySQLUserPrompt";
+            $tpl_data['error'] = $installer->GetLastError();
+            $tpl_data['Page']  = "MySQLUserPrompt";
             break;
         }
         $tpl_data['configfile'] = $installer->GetBaseDir() . "/project/config.xml";
