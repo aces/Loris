@@ -83,7 +83,7 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
 
         $filtered = $_GET['filtered'] ?? null;
 
-        $this->tpl_data['filtered'] = $filtered;
+        $this->tpl_data['filtered'] = htmlspecialchars($filtered);
         $this->query        = $query;
         $this->group_by     = '';
         $this->order_by     = 'v.File_name';
