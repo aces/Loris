@@ -9,11 +9,7 @@
         }
     }
     
-    require_once __DIR__ . "/../vendor/autoload.php";
-    $client = new NDB_Client();
-    $client->makeCommandLine();
-    $client->initialize(__DIR__ . "/../project/config.xml");
-    $DB = Database::singleton();
+    require_once __DIR__ . "/generic_includes.php";
     
     $instrument_arr = $DB->pselect("
         SELECT
