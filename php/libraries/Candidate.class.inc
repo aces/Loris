@@ -194,7 +194,6 @@ class Candidate
         $db      = $factory->database();
 
         $site =& Site::singleton($centerID);
-
         $user =& User::singleton($_SESSION['State']->getUsername());
 
         // generate candid
@@ -728,7 +727,6 @@ class Candidate
             } else {
                 $pscid = Candidate::generateRandomStringFromArrays($pscidArrays);
             }
-
             if ($pscid == '') {
                 throw new LorisException(
                     "Well this is embarrassing, our automated PSCID generator "
@@ -743,7 +741,6 @@ class Candidate
                 array('PID' => $pscid)
             ) > 0
         );
-
         return $pscid;
     }
 
