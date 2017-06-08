@@ -138,14 +138,12 @@ class Candidates extends APIBase
                                'Meta' => ["CandID" => $candid],
                               ];
             } catch(\LorisException $e) {
-                error_log(print_r($e, true));
-                $this->header("HTTP/1.1 400 Bad Request");
-                $this->safeExit(0);
+                $this->header("HTTP/1.1 500 Internal Server Error");
+                $this->JSON = array("error" => "Candidate can't be created");
             }
         } else {
-            error_log('There is no Candidate object in the POST data');
             $this->header("HTTP/1.1 400 Bad Request");
-            $this->safeExit(0);
+            $this->JSON = array("error" => "There is no Candidate object in the POST data");
         }
     }
 
