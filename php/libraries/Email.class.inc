@@ -41,6 +41,7 @@ class Email
      * @param string $from     optional email header
      * @param string $cc       optional email header
      * @param string $bcc      optional email header
+     * @param string $type     optional defaults to plain text
      *
      * @return void
      * @access public
@@ -52,7 +53,8 @@ class Email
         $reply_to = '',
         $from = '',
         $cc = '',
-        $bcc = ''
+        $bcc = '',
+        $type="text/plain"
     ) {
         $config   =& NDB_Config::singleton();
         $defaults = $config->getSetting('mail');
@@ -64,10 +66,9 @@ class Email
         if (empty($reply_to)) {
             $reply_to = $defaults['Reply-to'];
         }
-
         // build header
         $headers  = "MIME-Version: 1.0\n";
-        $headers .= "Content-type: text/plain; charset = iso-8859-1\n";
+        $headers .= "Content-type: $type; charset = UTF-8\n";
         $headers .= "Reply-to: $reply_to\n";
         $headers .= "From: $from\n";
         $headers .= "Return-Path: $from\n";

@@ -27,6 +27,7 @@ var FormElement = React.createClass({
     name: React.PropTypes.string.isRequired,
     id: React.PropTypes.string,
     method: React.PropTypes.oneOf(['POST', 'GET']),
+    action: React.PropTypes.string,
     class: React.PropTypes.string,
     columns: React.PropTypes.number,
     formElements: React.PropTypes.shape({
@@ -44,6 +45,7 @@ var FormElement = React.createClass({
       name: null,
       id: null,
       method: 'POST',
+      action: undefined,
       class: 'form-horizontal',
       columns: 1,
       fileUpload: false,
@@ -120,6 +122,7 @@ var FormElement = React.createClass({
         id={this.props.id}
         className={this.props.class}
         method={this.props.method}
+        action={this.props.action}
         encType={encType}
         onSubmit={this.handleSubmit}
       >
@@ -218,8 +221,8 @@ var SelectElement = React.createClass({
       elementClass = 'row form-group has-error';
     }
 
-    // After checking for errors, set value to empty string to reset dropdown
-    const value = (this.props.value === undefined) ? "" : this.props.value;
+    // Default to empty string for regular select and to empty array for 'multiple' select
+    const value = this.props.value || (multiple ? [] : "");
 
     return (
       <div className={elementClass}>
@@ -265,6 +268,8 @@ var TextareaElement = React.createClass({
     id: React.PropTypes.string,
     disabled: React.PropTypes.bool,
     required: React.PropTypes.bool,
+    rows: React.PropTypes.number,
+    cols: React.PropTypes.number,
     onUserInput: React.PropTypes.func
   },
 
@@ -276,6 +281,8 @@ var TextareaElement = React.createClass({
       id: null,
       disabled: false,
       required: false,
+      rows: 4,
+      cols: 25,
       onUserInput: function() {
         console.warn('onUserInput() callback is not set');
       }
@@ -302,12 +309,12 @@ var TextareaElement = React.createClass({
         </label>
         <div className="col-sm-9">
           <textarea
-            cols="25"
-            rows="4"
+            cols={this.props.cols}
+            rows={this.props.rows}
             className="form-control"
             name={this.props.name}
             id={this.props.id}
-            value={this.props.value}
+            value={this.props.value || ""}
             required={required}
             disabled={disabled}
             onChange={this.handleChange}
@@ -371,7 +378,7 @@ var TextboxElement = React.createClass({
             className="form-control"
             name={this.props.name}
             id={this.props.id}
-            value={this.props.value}
+            value={this.props.value || ""}
             required={required}
             disabled={disabled}
             onChange={this.handleChange}
@@ -439,7 +446,7 @@ var DateElement = React.createClass({
             min={this.props.minYear}
             max={this.props.maxYear}
             onChange={this.handleChange}
-            value={this.props.value}
+            value={this.props.value || ""}
             required={required}
             disabled={disabled}
           />
@@ -762,6 +769,9 @@ var LorisElement = React.createClass({
         break;
       case 'file':
         elementHtml = (<FileElement {...elementProps} />);
+        break;
+      case 'static':
+        elementHtml = (<StaticElement {...elementProps} />);
         break;
       default:
         console.warn(

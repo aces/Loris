@@ -1,6 +1,8 @@
 <IfModule mod_rewrite.c>
  RewriteEngine on
 
+ RewriteRule ^([a-zA-Z_-]+)/api/([a-zA-Z0-9_.-/]+)$ module-api.php
+
  # Bootstrap is not a Loris module, don't rewrite it.
  RewriteRule ^bootstrap/(.*) bootstrap/$1 [L]
 
@@ -19,7 +21,7 @@
  RewriteRule ^([0-9]{6,6})/([0-9]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/$ main.php?test_name=$3&candID=$1&sessionID=$2&subtest=$4 [QSA]
 
  # Preferences is a special case for url rewriting
- RewriteRule ^preferences/$ /main.php?test_name=user_accounts&subtest=my_preferences
+ RewriteRule ^preferences/$ main.php?test_name=user_accounts&subtest=my_preferences
  # Rewrite /foo/ to appropriate module
  # Includes /foo/css/cssfile.css
  #          /foo/js/javascriptfile.js

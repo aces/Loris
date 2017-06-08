@@ -50,13 +50,24 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
     }
 
     /**
+     * Override default behaviour, since the page is loaded from index.js
+     *
+     * @return void
+     * @access public
+     */
+    function display()
+    {
+        return null;
+    }
+
+    /**
      * Gets CandID and whether the consent tab should be displayed
      *
      * @throws DatabaseException
      *
      * @return void
      */
-    function candidate_parameters()
+    function candidate_parameters()//@codingStandardsIgnoreLine
     {
         $config    =& NDB_Config::singleton();
         $candidate =& Candidate::singleton($this->identifier);
@@ -119,30 +130,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
     }
 
     /**
-     * Include additional CSS files:
-     *  1. candidate_parameters.css
-     *
-     * @return array of css to be inserted
-     */
-    function getCSSDependencies()
-    {
-        $factory = NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . "/candidate_parameters/css/candidate_parameters.css"]
-        );
-    }
-
-    /**
-     * Include the column formatter required to display the feedback link colours
-     * in the candidate_list menu
-     *  1. candidateInfo.js
-     *  2. probandInfo.js
-     *  3. familyInfo.js
-     *  4. participantStatus.js
-     *  5. consentStatus.js
+     * Include the Tabs.js and index.js (entry point of the module)
      *
      * @return array of javascript to be inserted
      */
@@ -154,11 +142,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/candidate_parameters/js/candidateInfo.js",
-             $baseURL . "/candidate_parameters/js/probandInfo.js",
-             $baseURL . "/candidate_parameters/js/familyInfo.js",
-             $baseURL . "/candidate_parameters/js/participantStatus.js",
-             $baseURL . "/candidate_parameters/js/consentStatus.js",
+             $baseURL . "/candidate_parameters/js/index.js",
             )
         );
     }

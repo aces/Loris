@@ -145,11 +145,14 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
         $DB   = Database::singleton();
         $user = User::singleton();
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
-            $site_arr     = implode(",", $user->getCenterID());
+            $site_arr     = implode(",", $user->getCenterIDs());
             $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
         }
 
-        $this->order_by     = 'psc.Name, candidate.CandID DESC';
+        $this->order_by = 'psc.Name, candidate.CandID DESC';
+
+        $this->limit = 10000;
+
         $this->validFilters = array(
                                'candidate.CenterID',
                                'candidate.CandID',

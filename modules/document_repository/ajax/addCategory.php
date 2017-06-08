@@ -12,7 +12,9 @@
  */
 
 $user =& User::singleton();
-if (!$user->hasPermission('document_repository_view') && !$user->hasPermission('document_repository_delete')) {
+if (!$user->hasPermission('document_repository_view')
+    && !$user->hasPermission('document_repository_delete')
+) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
@@ -24,13 +26,18 @@ require_once "Email.class.inc";
 
 $factory = NDB_Factory::singleton();
 $baseURL = $factory->settings()->getBaseURL();
-$client = new NDB_Client();
+$client  = new NDB_Client();
 $client->initialize("../../project/config.xml");
 
 $config = NDB_Config::singleton();
 
 // create Database object
 $DB =& Database::singleton();
+
+$Notifier = new NDB_Notifier(
+    "document_repository",
+    "new_category"
+);
 
 if (empty($_POST['category_name']) && $_POST['category_name'] !== '0') {
     header("HTTP/1.1 400 Bad Request");
@@ -52,26 +59,22 @@ if ($_POST['comments'] !== '') {
 
 $user =& User::singleton();
 //if user has document repository permission
-if ($user->hasPermission('document_repository_view') || $user->hasPermission('document_repository_delete')) {
+if ($user->hasPermission('document_repository_view')
+    || $user->hasPermission('document_repository_delete')
+) {
     $DB->insert(
         "document_repository_categories",
-        array("category_name" => $category_name,
-              "parent_id"     => $parent_id,
-              "comments"      => $comments)
+        array(
+         "category_name" => $category_name,
+         "parent_id"     => $parent_id,
+         "comments"      => $comments,
+        )
     );
-
 
     $msg_data['newCategory'] = $baseURL . "/document_repository/";
     $msg_data['category']    = $category_name;
-    $msg_data['study']       = $config->getSetting('title');
 
-    $Doc_Repo_Notification_Emails = $DB->pselect(
-        "SELECT Email from users where Active='Y' and Doc_Repo_Notifications='Y' and UserID<>:uid",
-        array("uid"=>$user->getUsername())
-    );
-    foreach ($Doc_Repo_Notification_Emails as $email) {
-        Email::send($email['Email'], 'document_repository.tpl', $msg_data);
-    }
+    $Notifier->notify($msg_data);
 }
 
 ?>

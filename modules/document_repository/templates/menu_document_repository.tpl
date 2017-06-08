@@ -18,16 +18,8 @@
 <script id="dir" type="x-tmpl-mustache">
     <tr id="{{ id }}a" {{ #parentID }}class="{{ parentID }}a directoryRow" style="display:none"{{ /parentID }}>
         <td class="fileColumn" colspan="10">
-            {{ #depth }}
-                {{ #first }}
-                    <div class="spacer" style="border-left: none;"> </div>
-                {{ /first }}
-                {{ ^first }}
-                    <div class="spacer"> </div>
-                {{ /first }}
-            {{ /depth }}
             {{ #indent }}
-                <div class="fileDDD">
+                <div class="fileDDD" style="{{ margin }}">
                     <span style="padding: 8px" class='directory glyphicon glyphicon-chevron-right' data-container="body" data-toggle="popover" data-placement="right" data-content="{{ Comment }}">
                         {{ name }}
                     </span>
@@ -44,15 +36,7 @@
 <script id="file" type="x-tmpl-mustache">
     <tr class="{{ parentID }}a fileRow" {{ ^filtered }}style="display:none" {{ /filtered }}>
         <td class="blah fileColumn">
-            {{ #depth }}
-                {{ #first }}
-                    <div class="spacer" style="border-left: none;"> </div>
-                {{ /first }}
-                {{ ^first }}
-                    <div class="spacer"> </div>
-                {{ /first }}
-            {{ /depth }}
-            <div {{ ^filtered }}class="fileDDD"{{ /filtered }}><div style="padding-top: 8px">
+            <div {{ ^filtered }}class="fileDDD" style="{{ margin }}"{{ /filtered }}><div style="padding-top: 8px">
                 <a href="{/literal}{$baseurl}{literal}/document_repository/ajax/GetFile.php?File={{ Data_dir }}" target="_blank" download="{{ File_name }}">
                         {{ File_name }}
                 </a>({{ File_size }})

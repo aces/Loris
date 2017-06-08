@@ -27,6 +27,8 @@ ob_start();
 // load the client
 $client = new NDB_Client;
 if ($client->initialize() == false) {
+    $login = $_SESSION['State']->getProperty('login');
+    $login->showLoginScreen();
     return false;
 }
 
@@ -91,8 +93,14 @@ try {
     $tpl_data['user']['permissions']          = $user->getPermissions();
     $tpl_data['hasHelpEditPermission']        = $user->hasPermission('context_help');
     $tpl_data['user']['user_from_study_site'] = $oneIsStudySite;
+    $tpl_data['userNumSites']         = count($site_arr);
+    $tpl_data['user']['SitesTooltip'] = str_replace(
+        ";",
+        "<br/>",
+        $user->getData('Sites')
+    );
 } catch(Exception $e) {
-    $tpl_data['error_message'][] = "Error: " . $e->getMessage();
+    $tpl_data['error_message'][] = "Error: " . htmlspecialchars($e->getMessage());
 }
 
 // the the list of tabs, their links and perms
@@ -105,16 +113,21 @@ $tpl_data['tabs'] = NDB_Config::GetMenuTabs();
 // accept candidate data
 $argstring = '';
 if (!empty($_REQUEST['candID'])) {
-    $argstring .= "filter%5BcandID%5D=".$_REQUEST['candID']."&";
+    $argstring .= "filter%5BcandID%5D=".htmlspecialchars($_REQUEST['candID'])."&";
 }
 
 if (!empty($_REQUEST['sessionID'])) {
     try {
         $timePoint  =& TimePoint::singleton($_REQUEST['sessionID']);
         $argstring .= "filter%5Bm.VisitNo%5D=".$timePoint->getVisitNo()."&";
+        if ($config->getSetting("SupplementalSessionStatus")) {
+            $tpl_data['SupplementalSessionStatuses'] = true;
+        }
+        $tpl_data['timePoint'] = $timePoint->getData();
     } catch (Exception $e) {
         $tpl_data['error_message'][]
-            = "TimePoint Error (".$_REQUEST['sessionID']."): ".$e->getMessage();
+            = "TimePoint Error (".htmlspecialchars($_REQUEST['sessionID'])."): "
+                                                             . $e->getMessage();
     }
 }
 
@@ -146,23 +159,8 @@ if (!empty($_REQUEST['candID'])) {
         $candidate =& Candidate::singleton($_REQUEST['candID']);
         $tpl_data['candidate'] = $candidate->getData();
     } catch(Exception $e) {
-        $tpl_data['error_message'][] = $e->getMessage();
+        $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
     }
-}
-
-// get time point data
-if (!empty($_REQUEST['sessionID'])) {
-    try {
-        $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-        if ($config->getSetting("SupplementalSessionStatus")) {
-            $tpl_data['SupplementalSessionStatuses'] = true;
-        }
-        $tpl_data['timePoint'] = $timePoint->getData();
-    } catch(Exception $e) {
-        $tpl_data['error_message'][]
-            = "TimePoint Error (".$_REQUEST['sessionID']."): ".$e->getMessage();
-    }
-
 }
 
 //--------------------------------------------------
@@ -193,14 +191,15 @@ try {
     $tpl_data['workspace'] = $workspace;
 } catch(ConfigurationException $e) {
     header("HTTP/1.1 500 Internal Server Error");
-    $tpl_data['error_message'][] = $e->getMessage();
+    $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
 } catch(DatabaseException $e) {
     header("HTTP/1.1 500 Internal Server Error");
-    $tpl_data['error_message'][] = $e->getMessage();
-    $tpl_data['error_message'][] = "Query: <pre>" . $e->query . "</pre>";
+    $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
+    $tpl_data['error_message'][] = "Query: <pre>" .
+                               htmlspecialchars($e->query) . "</pre>";
     $tpl_data['error_message'][] = "Bind parameters: " . print_r($e->params, true);
     $tpl_data['error_message'][] = "Stack Trace: <pre>"
-        . $e->getTraceAsString()
+        . htmlspecialchars($e->getTraceAsString())
         . "</pre>";
 } catch(Exception $e) {
     switch($e->getCode()) {
@@ -209,7 +208,7 @@ try {
     case 403: header("HTTP/1.1 403 Forbidden");
         break;
     }
-    $tpl_data['error_message'][] = $e->getMessage();
+    $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
 } finally {
     // Set dependencies if they are not set
     if (!isset($tpl_data['jsfiles']) || !isset($tpl_data['cssfiles'])) {
@@ -227,7 +226,7 @@ try {
 
     $tpl_data['crumbs'] = $crumbs;
 } catch(Exception $e) {
-    $tpl_data['error_message'][] = $e->getMessage();
+    $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
 }
 
 //--------------------------------------------------
@@ -268,12 +267,12 @@ foreach ($user->getPermissions() as $permName => $hasPerm) {
 }
 $tpl_data['userPerms']   = $realPerms;
 $tpl_data['studyParams'] = array(
-                            'useEDC'      => $config->getSetting('useEDC') ?
-        $config->getSetting('useEDC') : false,
-                            'useProband'  => $config->getSetting('useProband') ?
-        $config->getSetting('useProband') : false,
-                            'useFamilyID' => $config->getSetting('useFamilyID') ?
-        $config->getSetting('useFamilyID') : false,
+                            'useEDC'      => $config->getSetting('useEDC'),
+                            'useProband'  => $config->getSetting('useProband'),
+                            'useFamilyID' => $config->getSetting('useFamilyID'),
+                            'useConsent'  => $config->getSetting(
+                                'ConsentModule'
+                            )['useConsent'],
                            );
 $tpl_data['jsonParams']  = json_encode(
     array(

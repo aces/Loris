@@ -68,3 +68,7 @@ h3 {
   color: #064785;
   text-decoration: none;
 }
+
+.page-issue-tracker h3 {
+  margin: 25px 0;
+}
