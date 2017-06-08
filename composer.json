@@ -7,12 +7,11 @@
         "PHPOffice/PHPExcel": "1.8.*",
         "firebase/php-jwt" : "~3.0",
         "pear-pear.php.net/HTML_QuickForm" : "~3.2",
-        "google/recaptcha": "~1.1",
-        "slim/slim": "^3.0"
+        "google/recaptcha": "~1.1"
     },
     "require-dev" : {
         "squizlabs/php_codesniffer" : "2.5.*",
-        "phpunit/phpunit" : "4.3.*",
+        "phpunit/phpunit" : "5.7.*",
         "phpunit/dbunit": ">=1.2",
         "facebook/webdriver" : "dev-master"
     },
@@ -20,6 +19,6 @@
       "pre-install-cmd": "mkdir -p project/libraries"
     },
     "autoload" : {
-        "classmap": ["project/libraries", "php/libraries", "php/exceptions", "php/interfaces"]
+        "classmap": ["project/libraries", "php/libraries", "php/exceptions"]
     }
 }

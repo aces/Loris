@@ -93,4 +93,5 @@ script:
     - npm run lint:javascript
 
     # Run unit tests to make sure functions still do what they should.
+    - vendor/bin/phpunit --version
     - vendor/bin/phpunit --configuration test/phpunit.xml
