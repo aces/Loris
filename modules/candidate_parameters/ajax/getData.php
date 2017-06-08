@@ -439,7 +439,7 @@ function getConsentStatusHistory($candID, $consents)
             . $db->escape($consent) . ", "
             . $db->escape($consent . '_date') . ", "
             . $db->escape($consent . '_withdrawal')
-            ." FROM consent_info_history WHERE CandID=:cid",
+            ." FROM consent_info_history WHERE $consent IS NOT NULL and CandID=:cid",
             array('cid' => $candID)
         );
 
