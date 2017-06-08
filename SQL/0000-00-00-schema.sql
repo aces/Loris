@@ -206,6 +206,7 @@ CREATE TABLE `users` (
   `State` varchar(255) default NULL,
   `Zip_code` varchar(255) default NULL,
   `Country` varchar(255) default NULL,
+  `Phone` varchar(15) default NULL,
   `Fax` varchar(255) default NULL,
   `Email` varchar(255) NOT NULL default '',
   `Privilege` tinyint(1) NOT NULL default '0',
