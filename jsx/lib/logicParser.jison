@@ -17,23 +17,25 @@
 "%"                                 return '%'
 "("                                 return '('
 ")"                                 return ')'
-"PI"                                return 'PI'
-"E"                                 return 'E'
+"constPi"                           return 'constPi'
+"constE"                            return 'constE'
 ","                                 return ','
-"ROUND("                            return 'ROUND('
-"ROUNDUP("                          return 'ROUNDUP('
-"ROUNDDOWN("                        return 'ROUNDDOWN('
-"MOD("                              return 'MOD('
-"INTEGER("                          return 'INTEGER('
-"SQRT("                             return 'SQRT('
-"ABS("                              return 'ABS('
-"EQ("                               return 'EQ('
-"NEQ("                              return 'NEQ('
-"GT("                               return 'GT('
-"LT("                               return 'LT('
-"GEQ("                              return 'GEQ('
-"LEQ("                              return 'LEQ('
-"IF("                               return 'IF('
+"round("                            return 'round('
+"roundup("                          return 'roundup('
+"rounddown("                        return 'rounddown('
+"mod("                              return 'mod('
+"integer("                          return 'integer('
+"sqrt("                             return 'sqrt('
+"abs("                              return 'abs('
+"eq("                               return 'eq('
+"neq("                              return 'neq('
+"gt("                               return 'gt('
+"lt("                               return 'lt('
+"geq("                              return 'geq('
+"leq("                              return 'leq('
+"if("                               return 'if('
+"null"                              return 'null'
+"isNaN("                            return 'isNaN('
 [a-zA-Z0-9_]+("_"[a-zA-Z0-9_]+)?\b  return 'LETTER' /* all functions using letters must be defined BEFORE this to avoid errors  */
 "["                                 return '['
 "]"                                 return ']'
@@ -85,48 +87,54 @@ e
         {$$ = 'this.' + $2;}
     | '"' LETTER '"'
         {$$ = '' + $2;}
-    | E
+    | '""'
+        {$$ = '';}
+    | null
+        {$$ = null;}
+    | constE
         {$$ = 'Math.E';}
-    | PI
+    | constPi
         {$$ = 'Math.PI';}
-    | 'ROUND(' e ',' e ')'
+    | 'round(' e ',' e ')'
         {$$ = 'Number((' + $2 + ').toFixed(' + $4 + '))';}
-    | 'ROUNDUP(' e ')'
+    | 'roundup(' e ')'
         {$$ = 'Math.ceil(' + $2 + ')';}
-    | 'ROUNDDOWN(' e ')'
+    | 'rounddown(' e ')'
         {$$ = 'Math.floor(' + $2 + ')';}
-    | 'INTEGER(' e ')'
+    | 'integer(' e ')'
         {$$ = 'Math.round(' + $2 + ')';}
-    | 'MOD(' e ',' e ')'
+    | 'mod(' e ',' e ')'
         {$$ = '(' + $2 + ')' + '%' + '(' + $4 + ')';}
-    | 'SQRT(' e ')'
+    | 'sqrt(' e ')'
         {$$ = 'Math.sqrt(' + $2 + ')';}
-    | 'ABS(' e ')'
+    | 'abs(' e ')'
         {$$ = 'Math.abs(' + $2 + ')';}
-    | 'EQ(' e ',' e ')'
+    | 'eq(' e ',' e ')'
         {$$ = (function eq (x, y) {return x===y} ) ( /* inputs are processed on the fly here to avoid accidental inequality  */
             new Function('return ' + $2).call(),
             new Function('return ' + $4).call());}
-    | 'NEQ(' e ',' e ')'
+    | 'neq(' e ',' e ')'
         {$$ = (function eq (x, y) {return x!==y} ) (
             new Function('return ' + $2).call(),
             new Function('return ' + $4).call());}
-    | 'GT(' e ',' e ')'
+    | 'gt(' e ',' e ')'
         {$$ = (function eq (x, y) {return x>y} ) (
             new Function('return ' + $2).call(),
             new Function('return ' + $4).call());}
-    | 'LT(' e ',' e ')'
+    | 'lt(' e ',' e ')'
         {$$ = (function eq (x, y) {return x<y} ) (
             new Function('return ' + $2).call(),
             new Function('return ' + $4).call());}
-    | 'GEQ(' e ',' e ')'
+    | 'geq(' e ',' e ')'
         {$$ = (function eq (x, y) {return x>=y} ) (
             new Function('return ' + $2).call(),
             new Function('return ' + $4).call());}
-    | 'LEQ(' e ',' e ')'
+    | 'leq(' e ',' e ')'
         {$$ = (function eq (x, y) {return x<=y} ) (
             new Function('return ' + $2).call(),
             new Function('return ' + $4).call());}
-    | 'IF(' e ',' e ',' e ')'
+    | 'isNaN(' e ')'
+        {$$ = isNaN($2);}
+    | 'if(' e ',' e ',' e ')'
         {if ($2) {$$ = $4} else {$$ = $6};}    
     ;
