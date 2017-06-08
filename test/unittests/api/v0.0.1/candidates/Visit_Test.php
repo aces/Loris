@@ -89,6 +89,7 @@ class Visit_Test extends BaseTestCase
         $this->assertEquals($API->Headers, ["HTTP/1.1 400 Bad Request"]);
     }
     function testPostValidVisit() {
+        \User::singleton("admin");
         $JSON = json_encode([
             "Meta" => [
                 "CandID" => 123456,
