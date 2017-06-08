@@ -12,6 +12,8 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
+require_once 'Utility.class.inc';
+
 /* Define constants used by the file */
 // error codes
 define('CANDIDATE_INVALID', 1);
@@ -54,6 +56,15 @@ class Candidate
      */
     static function &singleton($candID)
     {
+        $param_name  = 'candID';
+        $param_value = $candID;
+        $valid       = Utility::validParam($param_name, $param_value);
+        if (!$valid) {
+            throw new LorisException(
+                "CandID parameter is invalid. Request refused."
+            );
+            return;
+        }
         $candidateList =& $GLOBALS['__candidateObjects'];
         if (!isset($candidateList[$candID])) {
             $candidateList[$candID] = new Candidate();
