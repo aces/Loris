@@ -138,7 +138,6 @@ class Login extends APIBase
                 'ERROR: JWTKey config variable is weak. '
                 .'Please change the key to a more cryptographically-secure value.'
             );
-            $this->header("HTTP/1.1 500 Internal Server Error");
             return "";
         }
         return \Firebase\JWT\JWT::encode($token, $key, "HS256");
