@@ -106,9 +106,8 @@ class Candidates extends APIBase
         if (isset($this->RequestData['Candidate'])) {
             $data = $this->RequestData;
             if ($data === null) {
-                error_log("Can't parse data");
                 $this->header("HTTP/1.1 400 Bad Request");
-                $this->safeExit(0);
+                $this->JSON = array("error" => "Can't parse data");
             }
 
             $this->verifyField($data, 'Gender', ['Male', 'Female']);
@@ -161,21 +160,18 @@ class Candidates extends APIBase
     protected function verifyField($data, $field, $values)
     {
         if (!isset($data['Candidate'][$field])) {
-            error_log("Candidate's field missing");
             $this->header("HTTP/1.1 400 Bad Request");
-            $this->safeExit(0);
+            $this->JSON = array("error" => "Candidate's field missing");
         }
         if (is_array($values) && !in_array($data['Candidate'][$field], $values)) {
-            error_log("Value not permitted");
             $this->header("HTTP/1.1 400 Bad Request");
-            $this->safeExit(0);
+            $this->JSON = array("error" => "Value not permitted");
         }
         if ($values === 'YYYY-MM-DD'
             && !preg_match("/\d\d\d\d\-\d\d\-\d\d/", $data['Candidate'][$field])
         ) {
-            error_log("Invalid date format");
             $this->header("HTTP/1.1 400 Bad Request");
-            $this->safeExit(0);
+            $this->JSON = array("error" => "Invalid date format");
         }
     }
 
