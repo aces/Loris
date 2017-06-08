@@ -142,9 +142,8 @@ class Candidates extends APIBase
             }
         } else {
             $this->header("HTTP/1.1 400 Bad Request");
-            $this->JSON = array(
-                "error" => "There is no Candidate object in the POST data"
-            );
+
+            $this->JSON = array("error" => "Missing candidate object in POST data");
         }
     }
 
