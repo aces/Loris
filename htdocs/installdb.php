@@ -127,7 +127,7 @@ case 'validaterootaccount':
         $tpl_data["Page"]  = "";
         break;
     }
-    $tpl_data['Page'] = 'MySQLUserPrompt';
+    $tpl_data['Page'] = "MySQLUserPrompt";
     break;
 case 'createmysqlaccount':
     if (isset($_POST["lorismysql_already_created"])) {
@@ -151,8 +151,8 @@ case 'createmysqlaccount':
         }
     }
     if ($installer->ResetFrontEndAdmin($_POST) === false) {
-        $tpl_data["error"] = $installer->GetLastError();
-        $tpl_data["Page"]  = "MySQLUserPrompt";
+        $tpl_data['error"' = $installer->GetLastError();
+        $tpl_data['Page']  = "MySQLUserPrompt";
         break;
     }
 
@@ -162,18 +162,18 @@ case 'createmysqlaccount':
             $tpl_data["Page"]  = "MySQLUserPrompt";
             break;
         }
-        $tpl_data["configfile"] = $installer->GetBaseDir() . "/project/config.xml";
+        $tpl_data['configfile'] = $installer->GetBaseDir() . "/project/config.xml";
     } else {
-        $tpl_data["configlocation"] = $installer->GetBaseDir()
+        $tpl_data['configlocation'] = $installer->GetBaseDir()
                  . "/project/config.xml";
-        $tpl_data["configcontent"]  = htmlspecialchars(
+        $tpl_data['configcontent']  = htmlspecialchars(
             $installer->GetConfigContent($_POST)
         );
     }
-    $tpl_data["Page"] = "Done";
+    $tpl_data['Page'] = "Done";
     break;
 }
-$tpl_data["console"] = htmlspecialchars(ob_get_contents());
+$tpl_data['console'] = htmlspecialchars(ob_get_contents());
 
 // Set up some special smarty variables that are required on different
 // pages
@@ -203,7 +203,7 @@ function tplvar($name)
     if (isset($_REQUEST[$name])) {
         $tpl_data[$name] = $_REQUEST[$name];
     } else {
-        $tpl_data[$name] = "";
+        $tpl_data[$name] = '';
     }
 }
 tplvar("dbhost");
@@ -220,7 +220,7 @@ tplvar("do_not_update_config");
 tplvar("lorismysql_already_created");
 $smarty = new Smarty_NeuroDB;
 $smarty->assign($tpl_data);
-$smarty->display("install.tpl");
+$smarty->display('install.tpl');
 
 //ob_end_flush();
 ?>
