@@ -32,7 +32,6 @@ install:
 
     # Install node modules specified in package.json
     - npm install
-
     # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
 
@@ -91,6 +90,6 @@ before_script:
 script:
     - npm run lint:php
     - npm run lint:javascript
-
     # Run unit tests to make sure functions still do what they should.
     - vendor/bin/phpunit --configuration test/phpunit.xml
+    - npm test -- -u
