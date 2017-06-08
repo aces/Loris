@@ -58,16 +58,11 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $qparams =array();
             $info    =$DB->pselect($query,  $qparams);
             foreach ($info as $data) {
-                $percent_completed            = (isset($data['Name']) ?
-                    $data['Name'] : null
-                    )
-                    . ":"
-                    . (isset($data['Visit_label']) ?
-                        $data['Visit_label'] : null
-                    )
-                    .":" . 'percent_completed';
-                $defaults[$percent_completed] = isset($data['percent_completed']) ?
-                    $data['percent_completed'] : null;
+                $percent_completed = ($data['Name'] ?? null)
+                    . ":" . ($data['Visit_label'] ?? null)
+                    . ":" . 'percent_completed';
+
+                $defaults[$percent_completed] = $data['percent_completed'] ?? null;
             }
         }//sanitizing the input coming from the request
         $sanitize = array_map('htmlspecialchars', $_REQUEST);
