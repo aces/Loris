@@ -133,11 +133,12 @@ class Login extends APIBase
                  );
 
         $key = $config->getSetting("JWTKey");
-        if (!isKeyStrong($key)) {
+        if (!self::isKeyStrong($key)) {
             error_log(
                 'ERROR: JWTKey config variable is weak. '
                 .'Please change the key to a more cryptographically-secure value.'
             );
+            $this->header("HTTP/1.1 500 Internal Server Error");
             return "";
         }
         return \Firebase\JWT\JWT::encode($token, $key, "HS256");
@@ -163,7 +164,7 @@ class Login extends APIBase
     *
     * @return boolean Key passes strength test
     */
-    function isKeyStrong($key)
+    static function isKeyStrong($key)
     {
         // Note: this code adapted from User::isPasswordStrong
         $CharTypes = 0;
