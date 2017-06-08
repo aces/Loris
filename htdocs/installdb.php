@@ -151,7 +151,7 @@ case 'createmysqlaccount':
         }
     }
     if ($installer->ResetFrontEndAdmin($_POST) === false) {
-        $tpl_data['error"' = $installer->GetLastError();
+        $tpl_data['error'] = $installer->GetLastError();
         $tpl_data['Page']  = "MySQLUserPrompt";
         break;
     }
