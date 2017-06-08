@@ -76,10 +76,10 @@ if ($installer->CheckSystemDependenciesValid() == false) {
 
 require_once __DIR__ . "/../vendor/autoload.php";
 
-ini_set("default_charset", "utf-8");
+ini_set('default_charset', 'utf-8');
 // Create an output buffer to capture console output, separately from the
 // gzip handler.
-//ob_start("ob_gzhandler");
+//ob_start('ob_gzhandler');
 ob_start();
 $tpl_data = array();
 
@@ -91,7 +91,7 @@ $tpl_data = array();
 // Page 4: 1. Check if user exists -- if so, error, if not create
 //	 2. Update config.xml if write access, otherwise download copy
 switch(isset($_POST["formname"]) ? $_POST["formname"] : "") {
-case "validaterootaccount":
+case 'validaterootaccount':
     // This will connect to MySQL, check the permissions of the
     // account provided, check that the database doesn't already
     // exist, and create the database.
@@ -129,7 +129,7 @@ case "validaterootaccount":
     }
     $tpl_data["Page"] = "MySQLUserPrompt";
     break;
-case "createmysqlaccount":
+case 'createmysqlaccount':
     if (isset($_POST["lorismysql_already_created"])) {
         //Verify that it is, indeed, the case.
         if (!Database::canLogIn(
