@@ -60,6 +60,7 @@ class Database
     var $lastInsertID;
 
     var $_showQueries = false;
+    var $_usePHPELog  = false;
 
     var $_trackChanges = true;
 
@@ -147,11 +148,19 @@ class Database
         $this->_trackChanges = $trackChanges;
         $this->_databaseName = $database;
 
+        $this->_PDO = new PDO(
+            "mysql:host=$host;dbname=$database;charset=UTF8",
+            $username,
+            $password
+        );
+        $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+
         $historydb    = null;
         $historytable = "history";
 
         if (class_exists('NDB_Config')) {
-            $config =& NDB_Config::singleton();
+            $config            =& NDB_Config::singleton();
+            $this->_usePHPELog = $config->getSetting('usePHPErrorLogForSQLQueries');
             $this->_showQueries = $config->getSetting('showDatabaseQueries');
 
             // get history database from config
@@ -164,13 +173,6 @@ class Database
             }
 
         }
-
-        $this->_PDO = new PDO(
-            "mysql:host=$host;dbname=$database;charset=UTF8",
-            $username,
-            $password
-        );
-        $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 
         $this->_preparedStoreHistory = $this->_PDO->prepare(
             "INSERT INTO history (tbl, col, new, old,"
@@ -974,9 +976,13 @@ class Database
         if ($params) {
             $query = str_replace(array_keys($params), array_values($params), $query);
         }
-        print "$this->_databaseName:"
+        if ($this->_usePHPELog) {
+            error_log("$this->_databaseName:" . $query);
+        } else {
+            print "$this->_databaseName:"
             . date("j-M-Y G:i:s", time())
             .": $query<br>\n";
+        }
     }
 
     /**
