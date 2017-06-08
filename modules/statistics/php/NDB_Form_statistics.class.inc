@@ -92,7 +92,11 @@ class NDB_Form_Statistics extends NDB_Form
         $tpl_data['TableHeader']   = $tableHeader;
         $tpl_data['Disclamer']     = $disclamer;
         $tpl_data['Subcategories'] = $subcats;
-        $tpl_var = Utility::getSubprojectsForProject($projectID);
+        if (empty($projectID)) {
+            $tpl_var = Utility::getSubprojectList();
+        } else {
+            $tpl_var = \Project::getInstanceById($projectID)->getSubprojects();
+        }
         $tpl_data['Subprojects']      = $tpl_var;
         $tpl_data['DropdownName']     = $dropdown_name;
         $tpl_data['DropdownOptions']  = $dropdown_opt;
@@ -103,7 +107,6 @@ class NDB_Form_Statistics extends NDB_Form
             $vl      = $row['VLabel'];
             $subcat  = $row['Subcat'];
             $center  = $row['CenterID'];
-
             if (in_array($vl, $visits)
                 && in_array($subcat, $subcats)
                 && $this->_inCenter($center, $centres)
@@ -201,8 +204,14 @@ class NDB_Form_Statistics extends NDB_Form
         }
 
         //SUBPROJECTS
+        if (empty($currentProject)) {
+            $subprojects = Utility::getSubprojectList();
+        } else {
+            $subprojects = \Project::getInstanceById(
+                $currentProject
+            )->getSubprojects();
+        }
         $subprojList ="";
-        $subprojects = Utility::getSubprojectsForProject($currentProject);
         foreach ($subprojects as $key=>$val) {
             $subprojList .= $key.",";
         }

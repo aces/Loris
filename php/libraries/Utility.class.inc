@@ -324,9 +324,23 @@ class Utility
      *
      * @return array an associative array("SubprojectID" => "Subproject title")
      */
-    static function getSubprojectsForProject($projectID = null)
+    static function getSubprojectsForProject($projectID)
     {
-        return self::getSubprojectList($projectID);
+        error_log('DEPRECATED: Utility::getSubprojectsForProject');
+        $subprojects = array();
+        if (!empty($subprojects)) {
+            $subprojects = array_reduce(
+                \Project::getInstanceById($projectID)->getSubprojects(),
+                function ($carry, $item) {
+                    $carry[$item->subprojectId] = $item->title;
+                    return $carry;
+                },
+                array()
+            );
+        } else {
+            $subprojects = self::getSubprojectList();
+        }
+        return $subprojects;
     }
 
     /**
@@ -750,6 +764,21 @@ class Utility
     }
 
     /**
+     * Get a list of instruments installed in Loris for a specific project.
+     *
+     * @param string $projectName The project name
+     *
+     * @return Associative array of the form Test_name => Full Description
+     * @note   Arguably, this should be a static function in NDB_BVL_Instrument
+     */
+    static function getAllProjectInstruments($projectName)
+    {
+        error_log('DEPRECATED : Utility::getAllProjectInstruments');
+        error_log('Please use getInstrumentList from the Project class instead');
+        return \Project::singleton($projectName)->getInstrumentList();
+    }
+
+    /**
      * Get a list of DDE instruments installed in Loris.
      *
      * @return Associative array of the form Test_name => Full Description
@@ -777,6 +806,31 @@ class Utility
             }
         }
         return $instruments;
+    }
+
+    /**
+     * Get the subgroup name of an instrument
+     *
+     * @param string $test_name The instrument short name
+     *
+     * @return string The subgroup name;
+     */
+    static function getInstrumentSubgroupName($test_name=null)
+    {
+        $DB    = Database::singleton();
+        $value = $DB->pselectOne(
+            "
+            SELECT
+              Subgroup_name
+            FROM
+              test_subgroups s
+            JOIN test_names t
+              ON (s.ID = t.Sub_group)
+            WHERE t.test_name = :v_test_name
+            ",
+            array('v_test_name' => $test_name)
+        );
+        return $value;
     }
 
     /**
