@@ -75,10 +75,12 @@ class NDB_Config
 
             // Load the file
             $config->load($configFile);
-
-            // Load all includes found in the config
-            foreach (Utility::asArray($config->_settings['include']) as $k=>$path) {
-                $config->load($config->configFilePath($path));
+            
+            if (!empty($config->_settings['include'])) {
+                // Load all includes found in the config
+                foreach (Utility::asArray($config->_settings['include']) as $k=>$path) {
+                    $config->load($config->configFilePath($path));
+                }
             }
         }
 
