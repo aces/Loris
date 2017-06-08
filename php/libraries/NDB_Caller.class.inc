@@ -443,32 +443,39 @@ class NDB_Caller
         $commentID,
         $redirectToOnSuccess=null
     ) {
-        if ($page === 'finalpage') {
-            $instrument =& NDB_BVL_Instrument::factory(
-                $instrumentName,
-                $commentID,
-                $page
-            );
-
-            $this->instrument = $instrument;
-            return "<script language='javascript'>"
-                . "window.location='$redirectToOnSuccess'"
-                . "</script>";
-        }
-        $user =& User::singleton();
-
-        if ($_REQUEST['sessionID']) {
-            $timepoint =& TimePoint::singleton($_REQUEST['sessionID']);
-        }
-
-        // make an instance of the instrument's object
-        $instrument =& NDB_BVL_Instrument::factory(
+        $instrument = NDB_BVL_Instrument::factory(
             $instrumentName,
             $commentID,
             $page
         );
 
         $this->instrument = $instrument;
+        if (is_null($instrument)) {
+            throw new Exception("Instrument does not exist");
+        }
+        if ($page === 'finalpage') {
+            return "<script language='javascript'>"
+                . "window.location='$redirectToOnSuccess'"
+                . "</script>";
+        }
+        $user =& User::singleton();
+
+        $session_id = $instrument->getSessionID();
+        $timepoint  = TimePoint::singleton($session_id);
+        if (is_null($timepoint)) {
+            throw new LorisException(
+                "Time point does not exist for session {$session_id}"
+            );
+        }
+        //This preserves backwards compatability for any
+        //code that will be called that assumes
+        //$_REQUEST["sessionID"] will be populated
+        $_REQUEST["sessionID"] = $session_id;
+        if (strtoupper($_SERVER["REQUEST_METHOD"]) === "GET") {
+            $_GET["sessionID"] = $session_id;
+        } else {
+            $_POST["sessionID"] = $session_id;
+        }
 
         if (method_exists($instrument, 'getControlPanel')) {
             $this->controlPanel = $instrument->getControlPanel();
@@ -480,26 +487,29 @@ class NDB_Caller
             );
         }
 
-        // save instrument form data
-        $success = $instrument->save();
+        $status = new NDB_BVL_InstrumentStatus;
+        $status->select($commentID);
 
-        if ($redirectToOnSuccess !== null && $success !== false) {
-            return "<script language='javascript'>"
-                .   "window.location='$redirectToOnSuccess'"
-                . "</script>";
+        $has_read_permission = $user->hasPermission("access_all_profiles")
+            || $user->hasCenter($timepoint->getCenterID());
+        if (!$has_read_permission) {
+            throw new Exception("You cannot read this instrument");
         }
-        // create an instrument status object
-        $status  = new NDB_BVL_InstrumentStatus;
-        $success = $status->select($commentID);
-
+        $has_write_permission = $has_read_permission
+            && $user->hasCenterPermission("data_entry", $timepoint->getCenterID());
         // freeze the form to prevent data entry
-        if ($status->getDataEntryStatus() != 'In Progress'
-            || !$user->hasPermission('data_entry')
-            || !in_array(
-                $timepoint->getData("CenterID"),
-                $user->getData("CenterIDs")
-            )
+        if ($status->getDataEntryStatus() == "In Progress"
+            && $has_write_permission
         ) {
+            if (strtoupper($_SERVER["REQUEST_METHOD"]) === "POST") {
+                $success = $instrument->save();
+                if ($redirectToOnSuccess !== null && $success !== false) {
+                    return "<script language='javascript'>"
+                        .   "window.location='$redirectToOnSuccess'"
+                        . "</script>";
+                }
+            }
+        } else {
             if ($instrument->preview !== true && $this->DataEntry !== 'Direct') {
                 $instrument->freeze();
             }
