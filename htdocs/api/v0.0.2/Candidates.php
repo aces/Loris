@@ -106,13 +106,14 @@ class Candidates extends APIBase
         if (isset($this->RequestData['Candidate'])) {
             $data = $this->RequestData;
             if ($data === null) {
+                error_log("Can't parse data");
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->safeExit(0);
             }
 
             $this->verifyField($data, 'Gender', ['Male', 'Female']);
-            $this->verifyField($data, 'EDC', 'YYYY-MM-DD');
             $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
+
             //Candidate::createNew
             try {
                 $candid = $this->createNew(
@@ -121,15 +122,28 @@ class Candidates extends APIBase
                     $data['Candidate']['Gender'],
                     $data['Candidate']['PSCID']
                 );
+
+                if (isset($data['Candidate']['Project'])) {
+                    $projectName = htmlspecialchars($data['Candidate']['Project']);
+                    $project     = \Project::singleton($projectName);
+                    if (!empty($project)) {
+                        \Candidate::singleton($candid)->setData(
+                            array('ProjectID' => $project->getId())
+                        );
+                    }
+                }
+
                 $this->header("HTTP/1.1 201 Created");
                 $this->JSON = [
                                'Meta' => ["CandID" => $candid],
                               ];
             } catch(\LorisException $e) {
+                error_log(print_r($e, true));
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->safeExit(0);
             }
         } else {
+            error_log('There is no Candidate object in the POST data');
             $this->header("HTTP/1.1 400 Bad Request");
             $this->safeExit(0);
         }
@@ -149,16 +163,19 @@ class Candidates extends APIBase
     protected function verifyField($data, $field, $values)
     {
         if (!isset($data['Candidate'][$field])) {
+            error_log("Candidate's field missing");
             $this->header("HTTP/1.1 400 Bad Request");
             $this->safeExit(0);
         }
         if (is_array($values) && !in_array($data['Candidate'][$field], $values)) {
+            error_log("Value not permitted");
             $this->header("HTTP/1.1 400 Bad Request");
             $this->safeExit(0);
         }
         if ($values === 'YYYY-MM-DD'
             && !preg_match("/\d\d\d\d\-\d\d\-\d\d/", $data['Candidate'][$field])
         ) {
+            error_log("Invalid date format");
             $this->header("HTTP/1.1 400 Bad Request");
             $this->safeExit(0);
         }
@@ -178,7 +195,7 @@ class Candidates extends APIBase
     {
         $user = \User::singleton();
         return \Candidate::createNew(
-            $user->getCenterID(),
+            $user->getCenterIDs()[0],
             $DoB,
             $edc,
             $gender,
