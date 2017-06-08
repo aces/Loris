@@ -145,9 +145,10 @@ function setFullPath(&$fileToUpload)
                 )
             );
         }
+        $ext = pathinfo($fileToUpload->file_name, PATHINFO_EXTENSION);
+        $nme = pathinfo($fileToUpload->file_name, PATHINFO_FILENAME);
         $fileToUpload->full_path = $genomic_data_dir
-            . uniqid() . "-"
-            . $fileToUpload->file_name;
+            . $nme . "-" . $collision_count . $ext;
     }
 }
 
