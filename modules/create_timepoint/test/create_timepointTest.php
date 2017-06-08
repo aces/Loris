@@ -60,6 +60,9 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepointDoespageLoad()
     {
+        $this->markTestSkipped(
+            'Skipping tests for php 7.1'
+        );
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=900000&identifier=900000"
         );
