@@ -106,6 +106,7 @@ class Candidates extends APIBase
         if (isset($this->RequestData['Candidate'])) {
             $data = $this->RequestData;
             if ($data === null) {
+                error_log("Can't parse data");
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->safeExit(0);
             }
@@ -126,10 +127,12 @@ class Candidates extends APIBase
                                'Meta' => ["CandID" => $candid],
                               ];
             } catch(\LorisException $e) {
+                error_log(print_r($e, true));
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->safeExit(0);
             }
         } else {
+            error_log('There is no Candidate object in the POST data');
             $this->header("HTTP/1.1 400 Bad Request");
             $this->safeExit(0);
         }
@@ -149,16 +152,19 @@ class Candidates extends APIBase
     protected function verifyField($data, $field, $values)
     {
         if (!isset($data['Candidate'][$field])) {
+            error_log("Candidate's field missing");
             $this->header("HTTP/1.1 400 Bad Request");
             $this->safeExit(0);
         }
         if (is_array($values) && !in_array($data['Candidate'][$field], $values)) {
+            error_log("Value not permitted");
             $this->header("HTTP/1.1 400 Bad Request");
             $this->safeExit(0);
         }
         if ($values === 'YYYY-MM-DD'
             && !preg_match("/\d\d\d\d\-\d\d\-\d\d/", $data['Candidate'][$field])
         ) {
+            error_log("Invalid date format");
             $this->header("HTTP/1.1 400 Bad Request");
             $this->safeExit(0);
         }
@@ -178,7 +184,7 @@ class Candidates extends APIBase
     {
         $user = \User::singleton();
         return \Candidate::createNew(
-            $user->getCenterID(),
+            $user->getCenterIDs()[0],
             $DoB,
             $edc,
             $gender,
