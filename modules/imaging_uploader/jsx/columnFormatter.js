@@ -1,6 +1,6 @@
 /* exported formatColumn */
 
-loris.hiddenHeaders = [];
+loris.hiddenHeaders = ['PatientName'];
 
 /**
  * Modify behaviour of specified column cells in the Data Table component
@@ -83,9 +83,8 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     if (row['Number Of MincCreated'] - row['Number Of MincInserted'] > 0) {
       let numViolatedScans =
            row['Number Of MincCreated'] - row['Number Of MincInserted'];
-      let uploadLoc = row.UploadLocation;
-      let fileName = uploadLoc.split('/').splice(-1)[0];
-      let patientName = fileName.split('.')[0];
+
+      let patientName = row.PatientName;
       violatedScans = <a onClick={openViolatedScans.bind(null, patientName)}>
          ({numViolatedScans} violated scans)
        </a>;
