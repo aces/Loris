@@ -307,7 +307,7 @@ function getParticipantStatusFields()
                'pscid'                 => $pscid,
                'candID'                => $candID,
                'statusOptions'         => $statusOptions,
-               'required'              => \Utility::reduce($required),
+               'required'              => $required,
                'reasonOptions'         => $reasonOptions,
                'parentIDs'             => $parentIDMap,
                'participantStatus'     => $status,
@@ -439,7 +439,7 @@ function getConsentStatusHistory($candID, $consents)
             . $db->escape($consent) . ", "
             . $db->escape($consent . '_date') . ", "
             . $db->escape($consent . '_withdrawal')
-            ." FROM consent_info_history WHERE CandID=:cid",
+            ." FROM consent_info_history WHERE $consent IS NOT NULL and CandID=:cid",
             array('cid' => $candID)
         );
 
