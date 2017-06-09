@@ -66,14 +66,16 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $DB     = Database::singleton();
         $toTable_scan_types = $config->getSetting('tblScanTypes');
 
-        $all_scan_types = $DB->pselect(
+        $all_scan_types_2d = $DB->pselect(
             "SELECT ID, Scan_type FROM mri_scan_type mri",
             array()
         );
-        foreach ($all_scan_types as $row) {
+
+        foreach ($all_scan_types_2d as $row) {
             $type = $row['Scan_type'];
             $all_scan_types[$row['ID']] = $type;
         }
+
 
         // Get the intersection between all the scan types and those
         // that are desired to go into imaging browser table, based on
@@ -292,6 +294,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
+        $list_of_sites = array();
 
         // PSC
         if ($user->hasPermission('imaging_browser_view_allsites')
