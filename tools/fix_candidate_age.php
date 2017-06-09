@@ -37,7 +37,7 @@ foreach ($instruments as $inst=>$fullName) {
     if (!$DB->tableExists($inst)) {
         echo $inst." does not have a table in the Database\n";
         continue;
-    } else if (strpos('_proband',$inst) !== false) {
+    } else if (strpos('_proband', $inst) !== false) {
         echo $inst." is a Proband instrument and should be handled seperately.\n";
         continue;
     }
@@ -72,6 +72,7 @@ foreach ($instruments as $inst=>$fullName) {
         }
         if (!$instrument) {
             // instrument does not exist
+            echo $inst." for CommentID:$row[CommentID] could not be instantiated.\n";
             continue;
         }
 
@@ -89,8 +90,7 @@ foreach ($instruments as $inst=>$fullName) {
             } else {
                 // get Age from instrument class
                 $calculatedAge       = $instrument->getCandidateAge();
-                $agemonths           = $calculatedAge['year'] * 12 + $calculatedAge['mon'] + ($calculatedAge['day'] / 30);
-                $calculatedAgeMonths = (round($agemonths*10) / 10.0);
+                $calculatedAgeMonths = $instrument->calculateAgeMonths($calculatedAge);
                 //Compare age to value saved in the instrument table
                 $DBAge = $instrument->getFieldValue('Candidate_Age');
 

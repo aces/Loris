@@ -550,10 +550,10 @@ class NDB_BVL_Instrument extends NDB_Page
             if (empty($age)) {
                 throw new LorisException("Candidate age could not be found.");
             }
-            $agedays   = $age['year']*365 + $age['mon']*30 + $age['day'];
-            $agemonths = $age['year']*12 + $age['mon'] + ($age['day']/30);
-            // 1 Decimal.
-            $agemonths = (round($agemonths*10) / 10.0);
+
+            $agedays   = $this->calculateAgeDays($age);
+            $agemonths = $this->calculateAgeMonths($age);
+
             if (!empty($age)) {
                 $query_params = array(
                                  'TN'  => $this->testName,
@@ -608,6 +608,34 @@ class NDB_BVL_Instrument extends NDB_Page
                 }
             }
         }
+    }
+
+    /**
+     * Calculate age in months given and array with years months and days
+     *
+     * @param array $age containing the years, months and days of the age
+     *
+     * @return float
+     */
+    function calculateAgeMonths($age)
+    {
+        $months = $age['year']*12 + $age['mon'] + ($age['day']/30);
+        // 1 Decimal.
+        $months = (round($months*10) / 10.0);
+        return $months;
+    }
+
+    /**
+     * Calculate age in days given and array with years months and days
+     *
+     * @param array $age containing the years, months and days of the age
+     *
+     * @return int
+     */
+    function calculateAgeDays($age)
+    {
+        $days = $age['year']*365 + $age['mon']*30 + $age['day'];
+        return $days;
     }
 
     /**
