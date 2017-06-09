@@ -498,6 +498,11 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         $site=null,
         $project=null
     ) {
+        $config         =& NDB_Config::singleton();
+        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+        for ($i=0; $i<count($ddeInstruments); ++$i) {
+            $ddeInstruments[$i] = Database::singleton()->quote($ddeInstruments[$i]);
+        }
 
         global $DB;
         $query = "SELECT DISTINCT s.ID, s.visit_label, c.PSCID,s.candid,".
@@ -508,9 +513,21 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
                  " JOIN test_names t ON (t.Test_name = f.Test_name)".
                  " JOIN psc ON (s.CenterID = psc.CenterID)";
 
-        $where   = " WHERE s.Active = 'Y' AND c.Active = 'Y'".
+        $where = " WHERE s.Active = 'Y' AND c.Active = 'Y'".
                    " AND coalesce(f.data_entry,'In Progress') = 'In Progress'".
                    " AND psc.Centerid!= '1' AND c.Entity_type != 'Scanner'";
+
+        if (count($ddeInstruments) > 0) {
+            $ddeInstruments = implode(",", $ddeInstruments);
+            $where         .= "
+                AND (f.test_name IN ($ddeInstruments) OR
+                f.commentid NOT LIKE 'DDE_%')
+            ";
+        } else {
+            $where .= "
+                AND (f.commentid NOT LIKE 'DDE_%')
+            ";
+        }
         $qparams = array();
 
         //filter for testname
