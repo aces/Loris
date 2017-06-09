@@ -55,6 +55,7 @@ foreach ($instruments as $inst=>$fullName) {
 
     // Break if Date taken does not exist
     if (!$DB->columnExists($inst, 'Date_taken')) {
+        echo $inst." does not use a `Date_taken` field and should be handled seperately.\n";
         continue;
     }
 
