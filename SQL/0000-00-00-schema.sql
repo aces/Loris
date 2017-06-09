@@ -1344,7 +1344,7 @@ CREATE TABLE `media` (
 
 CREATE TABLE `issues_categories` (
   `categoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `categoryName` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `categoryName` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`categoryID`),
   UNIQUE KEY `categoryName` (`categoryName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1864,11 +1864,9 @@ CREATE TABLE `acknowledgements` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 -- ********************************
 -- Feedback
 -- ********************************
-
 
 CREATE TABLE `feedback_bvl_type` (
   `Feedback_type` int(11) unsigned NOT NULL auto_increment,
