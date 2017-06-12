@@ -58,6 +58,11 @@ class UserPermissions
         $params = array('UName' => $username);
 
         $this->userID = $DB->pselectOne($query, $params);
+        if (empty($this->userID)) {
+            throw new LorisException(
+                "The user with name $username does not exist in the database."
+            );
+        }
 
         // load the user's permissions
         $success = $this->setPermissions();
