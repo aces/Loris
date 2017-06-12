@@ -218,11 +218,12 @@
     $(frozenCell).addClass("static-col colm-static headerColm");
     $(frozenCell).html($(headerCell).html());
     // add 18px since height is beting set with padding included
-    $(frozenCell).height($(headerCell).next().height() + 18);
+    $(frozenCell).height($($(frozenHeader).find("th")[0]).height() + 18);
     var temp = $(frozenCell).css("height");
     $(headerCell).css({ 'padding' : '0px' });
     var top = $(frozenHeader).css("top");
     $(frozenCell).css({ 'min-height' : temp, "top" : top });
+    $(frozenCell).html($($(".dynamictableFrozenColumn")[0]).html());
     $(frozenHeader).after(frozenCell);
   }
 
