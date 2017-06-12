@@ -88,8 +88,8 @@ class Imaging_Session_ControlPanel
         $params     = array();
         $EntityType = $candidate->getData('Entity_type');
         if ($EntityType == 'Scanner') {
-            $ID = ":PPSCID";
-            $params['PPSCID'] = $timePoint->getData('PSCID');
+            $ID = ":PVL";
+            $params['PVL'] = $timePoint->getVisitLabel();
         } else {
             $ID = "LOWER(CONCAT(:PPSCID, '_', :PCandID, '_', :PVL, '%'))";
             $params['PPSCID']  = $candidate->getPSCID();
