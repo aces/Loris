@@ -67,12 +67,12 @@ before_script:
     - cp docs/config/config.xml test/config.xml
     - sed -i -e "s/%HOSTNAME%/127.0.0.1/g" -e "s/%USERNAME%/SQLTestUser/g" -e "s/%PASSWORD%/TestPassword/g" -e "s/%DATABASE%/LorisTest/g" project/config.xml
     - sed -i -e "s/%HOSTNAME%/127.0.0.1/g" -e "s/%USERNAME%/SQLTestUser/g" -e "s/%PASSWORD%/TestPassword/g" -e "s/%DATABASE%/LorisTest/g" test/config.xml
+    - mysql LorisTest -e "INSERT INTO ccna_laptop.users (UserID, Password, Real_name, First_name, Last_name, `Degree`, Position_title, Institution, Department, Address, City, State, Zip_code, Country, Fax, Email, CenterID, Privilege, PSCPI, DBAccess, Active, Password_hash, Password_expiry, Pending_approval, Doc_Repo_Notifications, Phone) VALUES('travis', NULL, 'unix account', 'unix', 'account', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'unixtest@mail.com', 1, 0, 'N', '', 'Y', '$2y$10$6JvNxHFCugACdUPvCpm3zeSLCEwSKsUyBbfv0/tWKAa8Ga8MmeZIG', '2019-12-06', 'N', 'N', NULL)"
     # Set the admin account password to a known value for testing. This needs to be done
     # after the config.xml is setup.
     - cd tools
     - echo "testpass" | php ./resetpassword.php admin
     - mysql LorisTest -e "UPDATE users SET Pending_approval='N', Password_expiry='2100-01-01' WHERE ID=1"
-    - mysql LorisTest -e "INSERT INTO ccna_laptop.users (UserID, Password, Real_name, First_name, Last_name, `Degree`, Position_title, Institution, Department, Address, City, State, Zip_code, Country, Fax, Email, CenterID, Privilege, PSCPI, DBAccess, Active, Password_hash, Password_expiry, Pending_approval, Doc_Repo_Notifications, Phone) VALUES('travis', NULL, 'unix account', 'unix', 'account', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'unixtest@mail.com', 1, 0, 'N', '', 'Y', '$2y$10$6JvNxHFCugACdUPvCpm3zeSLCEwSKsUyBbfv0/tWKAa8Ga8MmeZIG', '2019-12-06', 'N', 'N', NULL)"
     - cd ..
     - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
     - mysql LorisTest -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
