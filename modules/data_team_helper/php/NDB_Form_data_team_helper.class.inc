@@ -58,23 +58,24 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $qparams =array();
             $info    =$DB->pselect($query,  $qparams);
             foreach ($info as $data) {
-                $percent_completed            = $data['Name']
-                    . ":" . $data['Visit_label']
-                    .":" . 'percent_completed';
-                $defaults[$percent_completed] = $data['percent_completed'];
+                $percent_completed = ($data['Name'] ?? null)
+                    . ":" . ($data['Visit_label'] ?? null)
+                    . ":" . 'percent_completed';
+
+                $defaults[$percent_completed] = $data['percent_completed'] ?? null;
             }
         }//sanitizing the input coming from the request
         $sanitize = array_map('htmlspecialchars', $_REQUEST);
-        $defaults["feedback_status"]    = $sanitize['feedback_status'];
-        $defaults["completion_status"]  = $sanitize['completion_status'];
-        $defaults["sent_to_dcc_status"] = $sanitize['sent_to_dcc_status'];
-        $defaults["instrument"]         = $sanitize['instrument'];
-        $defaults["FieldName"]          = $sanitize['FieldName'];
-        $defaults["candidate"]          = $sanitize['candidate'];
-        $defaults["visit_label"]        = $sanitize['visit_label'];
-        $defaults["site"]    = $sanitize['site'];
-        $defaults["project"] = $sanitize['project'];
-        $this->tpl_data['instrumentvalue'] = $sanitize['instrument'];
+        $defaults["feedback_status"]    = $sanitize['feedback_status'] ?? null;
+        $defaults["completion_status"]  = $sanitize['completion_status'] ?? null;
+        $defaults["sent_to_dcc_status"] = $sanitize['sent_to_dcc_status'] ?? null;
+        $defaults["instrument"]         = $sanitize['instrument'] ?? null;
+        $defaults["FieldName"]          = $sanitize['FieldName'] ?? null;
+        $defaults["candidate"]          = $sanitize['candidate'] ?? null;
+        $defaults["visit_label"]        = $sanitize['visit_label'] ?? null;
+        $defaults["site"]    = $sanitize['site'] ?? null;
+        $defaults["project"] = $sanitize['project'] ?? null;
+        $this->tpl_data['instrumentvalue'] = $sanitize['instrument'] ?? null;
         return $defaults;
     }
     /**
@@ -94,21 +95,24 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         $config   =& NDB_Config::singleton();
         $sanitize = array_map('htmlspecialchars', $_REQUEST);
 
-        $instrument = $this->getTestNameusingMappedName($sanitize['instrument']);
+        $instrument = $this->getTestNameusingMappedName(
+            $sanitize['instrument'] ?? null
+        );
         //construct the instrument drop down..
-        $this->tpl_data['visit_label'] = $sanitize['visit_label'];
-        $this->tpl_data['FieldName']   = $sanitize['FieldName'];
-        $this->tpl_data['site']        = $sanitize['site'];
-        $this->tpl_data['project']     = $sanitize['project'];
-        if ($sanitize['PSCID'] && !empty($sanitize['PSCID'])) {
+        $this->tpl_data['visit_label'] = $sanitize['visit_label'] ?? null;
+        $this->tpl_data['FieldName']   = $sanitize['FieldName'] ?? null;
+        $this->tpl_data['site']        = $sanitize['site'] ?? null;
+        $this->tpl_data['project']     = $sanitize['project'] ?? null;
+        if (isset($sanitize['PSCID']) && !empty($sanitize['PSCID'])) {
             $this->tpl_data['PSCID'] = $sanitize['PSCID'];
-        } elseif ($sanitize['candidate'] && !empty($sanitize['candidate'])) {
-            $this->tpl_data['candID'] =$sanitize['candidate'] ;
+        } elseif (isset($sanitize['candidate']) && !empty($sanitize['candidate'])) {
+            $this->tpl_data['candID'] = $sanitize['candidate'];
         } else {
             $this->tpl_data['candidate'] = null;
         }
         $this->tpl_data['test_name'] = $instrument;
 
+        $candID = null;
         if (isset($sanitize['PSCID']) && !empty($sanitize['PSCID'])
             && (isset($sanitize['candidate'])) && !empty($sanitize['candidate'])
         ) {
@@ -124,7 +128,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         //Percentage completed for the given instrument
             $percent_completed = $this->_getPercentCompleted(
                 $instrument,
-                $sanitize['visit_label'],
+                $sanitize['visit_label'] ?? null,
                 $candID
             );
             $this->tpl_data['percent_completed'] = $percent_completed;
@@ -159,10 +163,10 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $incompleteCandidates = $this->
                  getIncompleteCandidates(
                      $instrument,
-                     $sanitize['visit_label'],
+                     $sanitize['visit_label'] ?? null,
                      $candID,
-                     $sanitize['site'],
-                     $sanitize['project']
+                     $sanitize['site'] ?? null,
+                     $sanitize['project'] ?? null
                  );
 
             $this->tpl_data['Incomplete_candidates']
@@ -174,10 +178,10 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $conflicts = $this->
             instrumentInConflict(
                 $instrument,
-                $sanitize['visit_label'],
+                $sanitize['visit_label'] ?? null,
                 $candID,
-                $sanitize['site'],
-                $sanitize['project']
+                $sanitize['site'] ?? null,
+                $sanitize['project'] ?? null
             );
 
             $this->tpl_data['Conflicts'] =  json_encode($conflicts);
@@ -187,9 +191,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $bvlFeedback = $this->getFeedbacks(
                 $instrument,
                 $candID,
-                $sanitize['visit_label'],
-                $sanitize['site'],
-                $sanitize['project']
+                $sanitize['visit_label'] ?? null,
+                $sanitize['site'] ?? null,
+                $sanitize['project'] ?? null
             );
 
             $this->tpl_data['Bvl_Feedback'] = json_encode($bvlFeedback);
@@ -199,10 +203,10 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $this->tpl_data['percent_complete'] = $this
                 ->_getPercentCompleted(
                     $instrument,
-                    $sanitize['visit_label'],
+                    $sanitize['visit_label'] ?? null,
                     $candID,
-                    $sanitize['site'],
-                    $sanitize['project']
+                    $sanitize['site'] ?? null,
+                    $sanitize['project'] ?? null
                 );
 
     }
@@ -730,8 +734,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * returns the Test_name and its corresponding visit_label..
      * using the full_name  and/or subprojectID ..
      *
-     * @param string $full_name    the value of full name
-     * @param string $subprojectID the value of subproject ID
+     * @param string|null $full_name    the value of full name
+     * @param string|null $subprojectID the value of subproject ID
      *
      * @return mixed|Non
      * @throws DatabaseException
@@ -740,6 +744,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
     {
         $DB     =& Database::singleton();
         $values = array();
+
+        $test_name = null;
         if ((!(is_null($full_name)))) {
             if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
                 $sqlSelectOne = "SELECT Test_name".
@@ -753,7 +759,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
                 $test_name = Utility::getTestNameUsingFullName($full_name);
             }
         }
-        return     $test_name;
+        return $test_name;
     }
 
     /**
