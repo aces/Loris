@@ -34,12 +34,7 @@ require_once __DIR__ . "/../vendor/autoload.php";
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
 
-$configFile = getenv('LORIS_DB_CONFIG');
-if (empty($configFile)) {
-    $configFile = "../project/config.xml";
-}
-
-if ($client->initialize($configFile) == false) {
+if ($client->initialize(null) == false) {
     return false;
 }
 
