@@ -26,6 +26,13 @@
 class Utility
 {
     /**
+     * Stops anyone from instantiating an instance of Utility
+     */
+    private function __construct()
+    {
+    }
+
+    /**
      * This is identical to PEAR::isError from PEAR only the function
      * has the static keyword. This is required because PEAR::isError
      * being called staticly throws a warning in newer versions of PHP
@@ -52,13 +59,15 @@ class Utility
      *
      * @param array $array The multi-dimensional array
      *
-     * @return  string
-     * @cleanup Determine if this is still used.
+     * @return string
+     *
+     * @deprecated
      */
     static function reduce($array)
     {
-        $string = array_reduce($array, array('Utility', 'crunch'));
-        return (!empty($string)) ? explode('`', $string) : array();
+        throw new DeprecatedException(
+            "Utility::reduce has been deprecated."
+        );
     }
 
 
@@ -70,14 +79,15 @@ class Utility
      *
      * @note If any element of the array contains a backtick, you'll run into trouble
      *
-     * @return  string
-     * @cleanup Determine if this is still used.
+     * @return string
+     *
+     * @deprecated
      */
     static function crunch($x, $y)
     {
-        $a = (is_array($x)) ? array_reduce($x, array('Utility', 'crunch')) : $x;
-        $b = (is_array($y)) ? array_reduce($y, array('Utility', 'crunch')) : $y;
-        return (!empty($a)) ? "$a`$b" : $b;
+        throw new DeprecatedException(
+            "Utility::crunch has been deprecated."
+        );
     }
 
 
@@ -149,7 +159,7 @@ class Utility
      * @note    This is no longer used and should be removed
      * @cleanup
      */
-    function getListOfSubjectEthnicities()
+    static function getListOfSubjectEthnicities()
     {
         $DB =& Database::singleton();
 
@@ -579,7 +589,7 @@ class Utility
      *       by NDB_Form_candidate_parameters and if so, should be moved there.
      * @cleanup
      */
-    function explodeEncapsulated($seperator, $delimiter, $string)
+    static function explodeEncapsulated($seperator, $delimiter, $string)
     {
         $state        =0;
         $output       =$string;
@@ -620,7 +630,7 @@ class Utility
      * @note    This function does not appear to be used anymore.
      * @cleanup
      */
-    function arrayMergeKeepKeys()
+    static function arrayMergeKeepKeys()
     {
         $arg_list = func_get_args();
         foreach ((array)$arg_list as $arg) {
@@ -682,7 +692,7 @@ class Utility
      * @note    Function should be removed and code using it cleaned up.
      * @cleanup
      */
-    function flatten($Arr)
+    static function flatten($Arr)
     {
         return $Arr['Test_name'];
     }
@@ -710,7 +720,7 @@ class Utility
      * @note    Function should be removed and code using it cleaned up.
      * @cleanup
      */
-    function flattenFull($Arr)
+    static function flattenFull($Arr)
     {
         return $Arr['Full_name'];
     }
@@ -1246,7 +1256,7 @@ class Utility
      *
      * @return True if the date is invalid, false if it's valid.
      */
-    function _checkDate($dateElement)
+    static function _checkDate($dateElement)
     {
         if (empty($dateElement['M'])
             && empty($dateElement['d'])
