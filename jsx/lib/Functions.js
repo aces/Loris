@@ -42,16 +42,16 @@ module.exports = {
   },
   per(a) {
     return a / 100;
-  }
+  },
   fact(a) {
-    if ($1 >= 0 && $1%1 == 0) {
+    if (a >= 0 && a%1 == 0) {
       return (function fact (n) { return n==0 ? 1 : fact(n-1) * n })(a);
-    } else if ($1 >= 0 && $1%1 == 0.5) {
+    } else if (a >= 0 && a%1 == 0.5) {
       return (function fact (n) { return n==0.5 ? Math.sqrt(Math.PI)/2 : fact(n-1) * n })(a);
     } else {
-      throw 'Factorial for a number not divisible by 0.5 and greater than 0 is not supported.';
+      throw 'Factorial for a number not divisible by 0.5 or greater than 0 is not supported.'
     }
-  }
+  },
   isNaN(a) {
     return isNaN(a);
   },
@@ -81,13 +81,13 @@ module.exports = {
   },
   mean(...ns) {
     if (ns.length === 0) {
-      throw 'Cannot find median of 0 arguments';
+      throw 'Cannot find median of 0 arguments'
     }
     return ns.reduce((a,b) => a+b, 0) / ns.length;
   },
   median(...ns) {
     if (ns.length === 0) {
-      throw 'Cannot find median of 0 arguments';
+      throw 'Cannot find median of 0 arguments'
     }
     const cpy = ns.map(x => x)
     const mid = cpy.length / 2
@@ -110,7 +110,7 @@ module.exports = {
       return ((x - mean) * (x - mean)) + a
     }, 0) / (ns.length - 1);
     return variance;
-  }
+  },
   stdev(...ns) {
     const mean = ns.reduce((a,x) => a + x, 0) / ns.length;
     const variance = ns.reduce((a,x) => {
@@ -131,6 +131,7 @@ module.exports = {
         mdate1 = moment(date1, ['MM-DD-YYYY', 'MM-DD-YYYY HH:mm:ss']);
         mdate2 = moment(date2, ['MM-DD-YYYY', 'MM-DD-YYYY HH:mm:ss']);
         break;
+      }
       case 'dmy': {
         mdate1 = moment(date1, ['DD-MM-YYYY', 'DD-MM-YYYY HH:mm:ss']);
         mdate2 = moment(date2, ['DD-MM-YYYY', 'DD-MM-YYYY HH:mm:ss']);

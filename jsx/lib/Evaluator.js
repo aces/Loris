@@ -14,7 +14,7 @@ function evalAST(tree, scope) {
       return scope[tree.args[0]];
     }
     case 'FuncApplication': {
-      if (tree.args[0] === 'ifel') {
+      if (tree.args[0] === 'if') {
         if (evalAST(tree.args[1][0], scope)) {
           return evalAST(tree.args[1][1],scope);
         }
