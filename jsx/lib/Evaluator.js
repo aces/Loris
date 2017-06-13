@@ -4,9 +4,6 @@ const parser = require('./logicParser');
 
 function evalAST(tree, scope) {
   switch(tree.tag) {
-    case 'EscapedString': {
-      return String(tree.args[0].slice(1, -1));
-    }
     case 'Literal': {
       return tree.args[0];
     }

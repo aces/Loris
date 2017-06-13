@@ -7,53 +7,29 @@
 %%
 
 \s+                                 /* skip whitespace */
-[0-9]+("."[0-9]+)?\b                return 'NUMBER'
+"null"                              return 'null'
+"true"                              return 'true'
+"false"                             return 'false'
+"E"                                 return 'E'
+"PI"                                return 'PI'
+\d+("."\d+)?\b                      return 'NUMBER'
 "*"                                 return '*'
 "/"                                 return '/'
 "-"                                 return '-'
 "+"                                 return '+'
 "^"                                 return '^'
+"="                                 return '='
 "!"                                 return '!'
 "%"                                 return '%'
 "("                                 return '('
 ")"                                 return ')'
-"constPi"                           return 'constPi'
-"constE"                            return 'constE'
 ","                                 return ','
-"round("                            return 'round('
-"roundup("                          return 'roundup('
-"rounddown("                        return 'rounddown('
-"mod("                              return 'mod('
-"integer("                          return 'integer('
-"sqrt("                             return 'sqrt('
-"abs("                              return 'abs('
-"="                                 return '='
-"<>"                                return '<>'
-">="                                return '>='
-"<="                                return '<='
-">"                                 return '>'
-"<"                                 return '<'
-"if("                               return 'if('
-"null"                              return 'null'
-"isNaN("                            return 'isNaN('
-"min("                              return 'min('
-"max("                              return 'max('
-"mean("                             return 'mean('
-"median("                           return 'median('
-"mode("                             return 'mode('
-"sum("                              return 'sum('
-"stdev("                            return 'stdev('
-"var("								return 'var('
-"product("                          return 'product('
-"curdate()"                         return 'curdate()'
-"curtime()"                         return 'curtime()'
-"curdatetime()"                     return 'curdatetime()'
-"datediff("                         return 'datediff('
-[a-zA-Z0-9_]+("_"[a-zA-Z0-9_]+)?\b  return 'LETTER' /* all functions using letters must be defined BEFORE this to avoid errors  */
+'<'                                 return '<'
+'>'                                 return '>'
+[_a-zA-Z]\w*                        return 'VARIABLE'
+"'"[^']*"'"                         return 'STRING'
 "["                                 return '['
 "]"                                 return ']'
-"\""                                return '"'
-":"                                 return ':'
 <<EOF>>                             return 'EOF'
 .                                   return 'INVALID'
 
@@ -61,8 +37,7 @@
 
 /* operator associations and precedence */
 
-%left ','
-%left '=' '<=' '<' '>' '>=' '<>'
+%left '=' '<' '>'
 %left '+' '-'
 %left '*' '/'
 %left '^'
@@ -76,133 +51,69 @@
 
 expressions
     : e EOF
-        { typeof console !== 'undefined' ? console.log($1) : print($1);
-          return $1; }
+        { return $1; }
     ;
 
+arguments
+    : e ',' arguments
+        { $$ = [$1].concat($3); }
+    | e
+        { $$ = [$1]; }
+    ;
+
+variable
+    : VARIABLE
+        { $$ = yytext; }
+    ;
 e
-    : e '+' e
-        {$$ = $1 + '+' + $3;}
-    | e '-' e
-        {$$ = $1 + '-' + $3;}
-    | e '*' e
-        {$$ = '(' + $1 + ')' + '*' + '(' + $3 + ')';}
-    | e '/' e
-        {$$ = '(' + $1 + ')' + '/' + '(' + $3 + ')';}
-    | e '^' e
-        {$$ = 'Math.pow(' + $1 + ',' + $3 + ')';} 
-    | e '%'
-        {$$ = '(' + $1 + ')' + '/100';}
-    | '-' e %prec UMINUS
-        {$$ = '(0-(' + $2 + '))';}
-    | '(' e ')'
-        {$$ = '(' + $2 + ')';}
-    | NUMBER
-        {$$ = yytext;}
-    | '[' LETTER ']'
-        {$$ = 'this.' + $2;}
-    | '"' LETTER '"'
-        {$$ = '"' + $2 + '"';}
-    | '"' NUMBER '"'
-        {$$ = '"' + $2 + '"';}
-    | '"' NUMBER '-' NUMBER '-' NUMBER '"'
-        {$$ = '"' + $2 + '-' + $4 + '-' + $6 + '"';}
-    | '"' NUMBER '-' NUMBER '"'
-        {$$ = '"' + $2 + '-' + $4 + '"';}
-    | '"' NUMBER '-' NUMBER '-' NUMBER ',' NUMBER ':' NUMBER ':' NUMBER '"'
-        {$$ = '"' + $2 + '-' + $4 + '-' + $6 + 'T' + $8 + ':' + $10 + ':' + $12 + 'Z"';}
-    | '"' NUMBER ':' NUMBER ':' NUMBER '"'
-        {$$ = '"1970-01-01T' + $2 + ':' + $4 + ':' + $6 + 'Z"';}
-    | '""'
-        {$$ = '""';}
-    | null
-        {$$ = null;}
-    | constE
-        {$$ = 'Math.E';}
-    | constPi
-        {$$ = 'Math.PI';}
-    | 'round(' e ',' e ')'
-        {$$ = 'Number((' + $2 + ').toFixed(' + $4 + '))';}
-    | 'roundup(' e ')'
-        {$$ = 'Math.ceil(' + $2 + ')';}
-    | 'rounddown(' e ')'
-        {$$ = 'Math.floor(' + $2 + ')';}
-    | 'integer(' e ')'
-        {$$ = 'Math.round(' + $2 + ')';}
-    | 'mod(' e ',' e ')'
-        {$$ = '(' + $2 + ')' + '%' + '(' + $4 + ')';}
-    | 'sqrt(' e ')'
-        {$$ = 'Math.sqrt(' + $2 + ')';}
-    | 'abs(' e ')'
-        {$$ = 'Math.abs(' + $2 + ')';}
-    | e '=' e
-        {$$ = "(function eq (x, y) {return x===y} ) (new Function('return ' + " + $1 + ").call(), new Function('return ' + " + $3 + ").call())";}
+    : e '=' e
+        { $$ = {tag: 'BinaryOp', op: 'eq', args: [$1, $3]}; }
     | e '<>' e
-        {$$ = "(function neq (x, y) {return x!==y} ) (new Function('return ' + " + $1 + ").call(), new Function('return ' + " + $3 + ").call())";}
-    | e '>' e
-        {$$ = "(function gt (x, y) {return x>y} ) (new Function('return ' + " + $1 + ").call(), new Function('return ' + " + $3 + ").call())";}
+        { $$ = {tag: 'BinaryOp', op: 'neq', args: [$1, $3]}; }
     | e '<' e
-        {$$ = "(function lt (x, y) {return x<y} ) (new Function('return ' + " + $1 + ").call(), new Function('return ' + " + $3 + ").call())";}
-    | e '>=' e
-        {$$ = "(function geq (x, y) {return x>=y} ) (new Function('return ' + " + $1 + ").call(), new Function('return ' + " + $3 + ").call())";}
+        { $$ = {tag: 'BinaryOp', op: 'lt', args: [$1, $3]}; }
+    | e '>' e
+        { $$ = {tag: 'BinaryOp', op: 'gt', args: [$1, $3]}; }
     | e '<=' e
-        {$$ = "(function leq (x, y) {return x<=y} ) (new Function('return ' + " + $1 + ").call(), new Function('return ' + " + $3 + ").call())";}
-    | 'isNaN(' e ')'
-        {$$ = 'isNaN(' + $2 + ')';}
-    | 'if(' e ')'
-        {$$ = '(function ifel (x, y, z) {if (x) {return y} else {return z}} ) (' + $2[0] + ',' + $2[1] + ',' +  $2[2] + ')';}
-    | e ',' e
-        {if (Array.isArray($1)) {
-            $1.push($3);
-            $$ = $1;
-        } else {
-            $$ = [$1, $3];
-        };}
-    | 'min(' e ')'
-        {$$ = '(function min (x) {if (Array.isArray(x)) {return Math.min.apply(null, x)} else {return x}}) ([' + $2 + '])';}
-    | 'max(' e ')'
-        {$$ = '(function max (x) {if (Array.isArray(x)) {return Math.max.apply(null, x)} else {return x}}) ([' + $2 + '])';}
-    | 'sum(' e ')'
-        {$$ = '(function sum (x) {if (Array.isArray(x)) {return x.reduce((a,b) => Number(a) + Number(b), 0)} else {return x}}) ([' + $2 + '])';}
-    | 'mean(' e ')'
-        {$$ = '(function mean (x) {if (Array.isArray(x)) {return x.reduce((a,b) => Number(a) + Number(b), 0)/(x.length)} else {return x}}) ([' + $2 + '])';}
-    | 'product(' e ')'
-        {$$ = '(function prod (x) {if (Array.isArray(x)) {return x.reduce((a,b) => Number(a) * Number(b), 1)} else {return x}})([' + $2 + '])';}
-    | 'median(' e ')'
-        {$$ = '(function med (x) {if (Array.isArray(x)) {x.sort((a,b) => Number(a) - Number(b)); return (Number(x[Math.floor((x.length-1)/2)]) + Number(x[Math.ceil((x.length-1)/2)]))/2} else {return x}}) ([' + $2 + '])';}
-    | 'var(' e ')'
-        {$$ = '(function vrn (x) {if (Array.isArray(x)) {var mean = (x.reduce((a,b)=>Number(a)+Number(b),0))/(x.length); var sqDevs=[]; for(i = 0; i<x.length; i++){sqDevs[i] = Math.pow((Number(x[i])-mean),2);}; return sqDevs.reduce((a,b) => Number(a) + Number(b), 0)/(sqDevs.length)} else {return 0}}) ([' + $2 + '])';}
-    | 'stdev(' e ')'
-        {$$ = '(function std (x) {if (Array.isArray(x)) {var mean = (x.reduce((a,b)=>Number(a)+Number(b),0))/(x.length); var sqDevs=[]; for(i = 0; i<x.length; i++){sqDevs[i] = Math.pow((Number(x[i])-mean),2);}; return Math.sqrt(sqDevs.reduce((a,b) => Number(a) + Number(b), 0)/(sqDevs.length))} else {return 0}}) ([' + $2 + '])';}
-    | 'curdate()'
-        {var today = new Date(); $$ = '"' + today.toISOString().slice(0,10) + '"';} 
-    | 'curtime()'
-        {var today = new Date(); $$ = '"' + today.toISOString().slice(11,-5) + '"';}
-    | 'curdatetime()'
-        {var today = new Date(); $$ = '"' + today.toISOString() + '"';}
-    | 'datediff(' e ')'
-        {var signedDiff;
-        if ($2[3]==='0') {
-            signedDiff = 'Math.abs(' + '(new Date(' + $2[0] + ') - new Date(' +$2[1] + ')' + '))';
-        } else {
-            signedDiff = '( + new Date(' + $2[0] + ') - new Date(' + $2[1] + '))'
-        }
-        var conv = 1;
-        if ($2[2] === "\"y\"") {
-            conv = 31556952000;
-        } else if($2[2] === "\"mo\"") {
-            conv = 2630016000;
-        } else if($2[2] === "\"d\"") {
-            conv = 86400000;
-        } else if($2[2] === "\"h\"") {
-            conv = 3600000;
-        } else if($2[2] === "\"m\"") {
-            conv = 60000;
-        } else if($2[2] === "\"s\"") {
-            conv = 1000;
-        } else {
-            conv = 1;
-        }
-        $$ = signedDiff + '/' + conv;
-        }
+        { $$ = {tag: 'BinaryOp', op: 'leq', args: [$1, $3]}; }
+    | e '>=' e
+        { $$ = {tag: 'BinaryOp', op: 'geq', args: [$1, $3]}; }
+    | e '+' e
+        { $$ = {tag: 'BinaryOp', op: 'add', args: [$1, $3]}; }
+    | e '-' e
+        { $$ = {tag: 'BinaryOp', op: 'sub', args: [$1, $3]}; }
+    | e '*' e
+        { $$ = {tag: 'BinaryOp', op: 'mul', args: [$1, $3]}; }
+    | e '/' e
+        { $$ = {tag: 'BinaryOp', op: 'div', args: [$1, $3]}; }
+    | e '^' e
+        { $$ = {tag: 'BinaryOp', op: 'pow', args: [$1, $3]}; }
+    | e '%' e
+        { $$ = {tag: 'BinaryOp', op: 'mod', args: [$1, $3]}; }
+    | e '%'
+        { $$ = {tag: 'BinaryOp', op: 'per', args: [$1]}; }
+    | e '!'
+        { $$ = {tag: 'BinaryOp', op: 'fact', args: [$1]}; }
+    | '-' e %prec UMINUS
+        { $$ = {tag: 'UnaryOp', op: 'negate', args: [$2]}; }
+    | '(' e ')'
+        { $$ = {tag: 'NestedExpression', args: [$2]}; }
+    | variable '(' arguments ')'
+        { $$ = {tag: 'FuncApplication', args:[$1, $3]}; }
+    | "[" variable "]"
+        { $$ = {tag: 'Variable', args: [$2]}; }
+    | NUMBER
+        { $$ = {tag: 'Literal', args: [Number(yytext)]}; }
+    | STRING
+        { $$ = {tag: 'Literal', args: [String(yytext)]}; }
+    | 'false'
+        { $$ = {tag: 'Literal', args: [false]}; }
+    | 'true'
+        { $$ = {tag: 'Literal', args: [true]}; }
+    | 'null'
+        { $$ = {tag: 'Literal', args: [null]}; }
+    | 'E'
+        { $$ = {tag: 'Literal', args: [Math.E]}; }
+    | 'PI'
+        { $$ = {tag: 'Literal', args: [Math.PI]}; }
     ;

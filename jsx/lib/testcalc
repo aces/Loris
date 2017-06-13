@@ -1,1 +1,0 @@
-MOD((INTEGER(SQRT(ABS((5+[c]-7)/[b])))*[b]+[c]),7)
