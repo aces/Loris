@@ -36,7 +36,7 @@ describe('InstrumentLogicParser#parse', () => {
   
   describe('bool ops', () => {
     it('evals', () => {
-      const LOGIC_STR = 'if((5+4)=[a],5,4)';
+      const LOGIC_STR = 'if((5+4)>=[a],5,4)';
       const CONTEXT = {a: 9};
       const res = InstrumentLogicParser.evaluate(LOGIC_STR, CONTEXT);
       expect(res).to.equal(5);
@@ -54,7 +54,7 @@ describe('InstrumentLogicParser#parse', () => {
   
  describe('date ops', () => {
     it('evals', () => {
-      const LOGIC_STR = 'datediff("2017-01-02","2017","d",0)';
+      const LOGIC_STR = 'curtime()';
       const CONTEXT = {a: 2, b: 4};
       const res = InstrumentLogicParser.evaluate(LOGIC_STR, CONTEXT);
       expect(res).to.equal(1);
@@ -62,7 +62,7 @@ describe('InstrumentLogicParser#parse', () => {
   })
  describe('more date ops', () => {
     it('evals', () => {
-      const LOGIC_STR = 'datediff(curdatetime(),curdate(),"h",0)';
+      const LOGIC_STR = 'datediff(curdatetime(),"00:00:00","h",0)';
       const CONTEXT = {a: 2, b: 4};
       const res = InstrumentLogicParser.evaluate(LOGIC_STR, CONTEXT);
       expect(res).to.equal(1);

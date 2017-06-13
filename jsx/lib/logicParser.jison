@@ -46,6 +46,7 @@
 "var("								return 'var('
 "product("                          return 'product('
 "curdate()"                         return 'curdate()'
+"curtime()"                         return 'curtime()'
 "curdatetime()"                     return 'curdatetime()'
 "datediff("                         return 'datediff('
 [a-zA-Z0-9_]+("_"[a-zA-Z0-9_]+)?\b  return 'LETTER' /* all functions using letters must be defined BEFORE this to avoid errors  */
@@ -101,17 +102,19 @@ e
     | '[' LETTER ']'
         {$$ = 'this.' + $2;}
     | '"' LETTER '"'
-        {$$ = '' + $2;}
+        {$$ = '"' + $2 + '"';}
     | '"' NUMBER '"'
-        {$$ = '' + $2;}
+        {$$ = '"' + $2 + '"';}
     | '"' NUMBER '-' NUMBER '-' NUMBER '"'
-        {$$ = $2 + '-' + $4 + '-' + $6;}
+        {$$ = '"' + $2 + '-' + $4 + '-' + $6 + '"';}
     | '"' NUMBER '-' NUMBER '"'
-        {$$ = $2 + '-' + $4;}
-    | '"' NUMBER '-' NUMBER '-' LETTER ':' NUMBER ':' LETTER '"'
-        {$$ = $2 + '-' + $4 + '-' + $6 + ':' + $8 + ':' + $10;}
+        {$$ = '"' + $2 + '-' + $4 + '"';}
+    | '"' NUMBER '-' NUMBER '-' NUMBER ',' NUMBER ':' NUMBER ':' NUMBER '"'
+        {$$ = '"' + $2 + '-' + $4 + '-' + $6 + 'T' + $8 + ':' + $10 + ':' + $12 + 'Z"';}
+    | '"' NUMBER ':' NUMBER ':' NUMBER '"'
+        {$$ = '"1970-01-01T' + $2 + ':' + $4 + ':' + $6 + 'Z"';}
     | '""'
-        {$$ = '';}
+        {$$ = '""';}
     | null
         {$$ = null;}
     | constE
@@ -172,28 +175,30 @@ e
     | 'stdev(' e ')'
         {$$ = '(function std (x) {if (Array.isArray(x)) {var mean = (x.reduce((a,b)=>Number(a)+Number(b),0))/(x.length); var sqDevs=[]; for(i = 0; i<x.length; i++){sqDevs[i] = Math.pow((Number(x[i])-mean),2);}; return Math.sqrt(sqDevs.reduce((a,b) => Number(a) + Number(b), 0)/(sqDevs.length))} else {return 0}}) ([' + $2 + '])';}
     | 'curdate()'
-        {var today = new Date(); $$ = today.toISOString().slice(0,10);} 
+        {var today = new Date(); $$ = '"' + today.toISOString().slice(0,10) + '"';} 
+    | 'curtime()'
+        {var today = new Date(); $$ = '"' + today.toISOString().slice(11,-5) + '"';}
     | 'curdatetime()'
-        {var today = new Date(); $$ = today.toISOString();}
+        {var today = new Date(); $$ = '"' + today.toISOString() + '"';}
     | 'datediff(' e ')'
         {var signedDiff;
         if ($2[3]==='0') {
-            signedDiff = 'Math.abs(' + '(new Date("' + $2[0] + '") - new Date("' +$2[1] + '")' + '))';
+            signedDiff = 'Math.abs(' + '(new Date(' + $2[0] + ') - new Date(' +$2[1] + ')' + '))';
         } else {
-            signedDiff = '( + new Date("' + $2[0] + '") - new Date("' + $2[1] + '"))'
+            signedDiff = '( + new Date(' + $2[0] + ') - new Date(' + $2[1] + '))'
         }
         var conv = 1;
-        if ($2[2] === 'y') {
+        if ($2[2] === "\"y\"") {
             conv = 31556952000;
-        } else if($2[2] === 'mo') {
+        } else if($2[2] === "\"mo\"") {
             conv = 2630016000;
-        } else if($2[2] === 'd') {
+        } else if($2[2] === "\"d\"") {
             conv = 86400000;
-        } else if($2[2] === 'h') {
+        } else if($2[2] === "\"h\"") {
             conv = 3600000;
-        } else if($2[2] === 'm') {
+        } else if($2[2] === "\"m\"") {
             conv = 60000;
-        } else if($2[2] === 's') {
+        } else if($2[2] === "\"s\"") {
             conv = 1000;
         } else {
             conv = 1;
