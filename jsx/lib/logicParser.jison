@@ -24,6 +24,9 @@
 "("                                 return '('
 ")"                                 return ')'
 ","                                 return ','
+"<>"								return '<>'
+"<="								return '<='
+">="								return '>='
 "<"                                 return '<'
 ">"                                 return '>'
 [_a-zA-Z]\w*                        return 'VARIABLE'
@@ -37,7 +40,7 @@
 
 /* operator associations and precedence */
 
-%left '=' '<' '>'
+%left '=' '<' '>' '<>' '<=' '>='
 %left '+' '-'
 %left '*' '/'
 %left '^'
@@ -68,17 +71,17 @@ variable
 e
     : e '=' e
         { $$ = {tag: 'BinaryOp', op: 'eq', args: [$1, $3]}; }
-    | e '<>' e
-        { $$ = {tag: 'BinaryOp', op: 'neq', args: [$1, $3]}; }
     | e '<' e
         { $$ = {tag: 'BinaryOp', op: 'lt', args: [$1, $3]}; }
     | e '>' e
         { $$ = {tag: 'BinaryOp', op: 'gt', args: [$1, $3]}; }
+    | e '<>' e
+        { $$ = {tag: 'BinaryOp', op: 'neq', args: [$1, $3]}; }
     | e '<=' e
         { $$ = {tag: 'BinaryOp', op: 'leq', args: [$1, $3]}; }
     | e '>=' e
         { $$ = {tag: 'BinaryOp', op: 'geq', args: [$1, $3]}; }
-    | e '+' e
+	| e '+' e
         { $$ = {tag: 'BinaryOp', op: 'add', args: [$1, $3]}; }
     | e '-' e
         { $$ = {tag: 'BinaryOp', op: 'sub', args: [$1, $3]}; }
@@ -91,9 +94,9 @@ e
     | e '%' e
         { $$ = {tag: 'BinaryOp', op: 'mod', args: [$1, $3]}; }
     | e '%'
-        { $$ = {tag: 'BinaryOp', op: 'per', args: [$1]}; }
+        { $$ = {tag: 'UnaryOp', op: 'per', args: [$1]}; }
     | e '!'
-        { $$ = {tag: 'BinaryOp', op: 'fact', args: [$1]}; }
+        { $$ = {tag: 'UnaryOp', op: 'fact', args: [$1]}; }
     | '-' e %prec UMINUS
         { $$ = {tag: 'UnaryOp', op: 'negate', args: [$2]}; }
     | '(' e ')'
