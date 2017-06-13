@@ -1361,11 +1361,16 @@ class LorisForm
      *
      * @param callable $func The callback to use to process this form.
      *
-     * @return none
+     * @return bool `true` on success, `false`, otherwise
      */
     function process($func)
     {
-        call_user_func($func, $this->getSubmitValues());
+        $result = call_user_func($func, $this->getSubmitValues());
+        if (!is_bool($result)) {
+            throw new LorisException("\$func passed to process() must return bool");
+        } else {
+            return $result;
+        }
     }
 
     /**

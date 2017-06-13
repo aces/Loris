@@ -46,12 +46,12 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
      *
      * @param array $values The values submitted from the form
      *
-     * @return none
+     * @return bool
      */
     function _process($values)
     {
         if (!is_array($values) || count($values) == 0) {
-            return true;
+            return false;
         }
 
         $DB =& Database::singleton();
@@ -185,6 +185,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
         }
 
         $this->tpl_data['success'] = true;
+        return true;
     }
 
     /**

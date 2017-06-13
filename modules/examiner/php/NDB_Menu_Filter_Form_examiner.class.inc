@@ -204,7 +204,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      *
      * @param array $values add examiner form values
      *
-     * @return void
+     * @return bool
      */
     function _process($values)
     {
@@ -220,7 +220,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         // to the form using the addCheckbox method
         //$radiologist = $values['addRadiologist'];
 
-        $DB->insert(
+        $success = $DB->insert(
             'examiners',
             array(
              'full_name'   => $fullName,
@@ -228,7 +228,8 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
              'radiologist' => $radiologist,
             )
         );
-        header("Location: {$baseurl}/examiner/", true, 303);
+        $this->setRelativeRedirectUrlOnSave("/examiner/");
+        return $success;
     }
 
     /**

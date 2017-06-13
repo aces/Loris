@@ -52,7 +52,7 @@ class NDB_Form_New_Profile extends NDB_Form
      *
      * @param array $values form values
      *
-     * @return void
+     * @return bool
      */
     function _process($values)
     {
@@ -95,17 +95,16 @@ class NDB_Form_New_Profile extends NDB_Form
 
         if ($config->getSetting('useProjects') == "true") {
             $candidate->setData('ProjectID', $values['ProjectID']);
-
         }
 
         //------------------------------------------------------------
 
-        $this->tpl_data['success'] = true;
-        $this->tpl_data['candID']  = $candID;
-        $this->tpl_data['PSCID']   = $candidate->getPSCID();
-
         // freeze it, just in case
         $this->form->freeze();
+        $this->setRelativeRedirectUrlOnSave(
+            "/new_profile/?candId=".urlencode($candID)
+        );
+        return true;
     }
     /**
      * New profile function
@@ -114,6 +113,15 @@ class NDB_Form_New_Profile extends NDB_Form
      */
     function new_profile()//@codingStandardsIgnoreLine
     {
+        if (isset($_GET["candId"])) {
+            //Throws an Exception on failure, somewhere
+            $candidate = Candidate::singleton($_GET["candId"]);
+            $this->tpl_data['success'] = true;
+            $this->tpl_data['candID']  = $_GET["candId"];
+            $this->tpl_data['PSCID']   = $candidate->getPSCID();
+            $this->form->freeze();
+        }
+
         $config    =& NDB_Config::singleton();
         $startYear = $config->getSetting('startYear');
         $endYear   = $config->getSetting('endYear');

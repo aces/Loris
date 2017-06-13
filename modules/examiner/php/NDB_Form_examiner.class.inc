@@ -101,7 +101,7 @@ class NDB_Form_Examiner extends NDB_Form
      *
      * @param array $values Certification form values
      *
-     * @return nothing
+     * @return bool
      */
     function _process($values)
     {
@@ -237,9 +237,10 @@ class NDB_Form_Examiner extends NDB_Form
                 }
             }
         }
-        $url = "{$baseurl}/examiner/editExaminer/?identifier="
-               . $examinerID;
-        header("Location: " . $url, true, 303);
+        $this->setRelativeRedirectUrlOnSave(
+            "/examiner/editExaminer/?identifier={$examinerID}"
+        );
+        return true;
     }
 
     /**

@@ -65,6 +65,20 @@ class Settings
     }
 
     /**
+     * Converts a relative url to an absolute url
+     *
+     * @param string $relative The relative url
+     *
+     * @return string
+     */
+    public function toAbsoluteUrl($relative)
+    {
+        $url  = $this->getBaseURL();
+        $url .= Utility::removeCommonAffix($url, $relative);
+        return $url;
+    }
+
+    /**
      * Check if sandbox setting is true
      *
      * @return bool true if 'sandbox' config value is equivalent to true

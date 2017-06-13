@@ -167,7 +167,7 @@ class NDB_Form_User_Accounts extends NDB_Form
      *
      * @param array $values values entered in the form.
      *
-     * @return void
+     * @return bool
      */
     function _process($values)
     {
@@ -520,6 +520,8 @@ class NDB_Form_User_Accounts extends NDB_Form
                 . $values['UserID'];
             header('Location: '. $redirect);
         }
+
+        return true;
     }
 
     /**

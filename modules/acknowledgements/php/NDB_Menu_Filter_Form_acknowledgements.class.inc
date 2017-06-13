@@ -46,14 +46,14 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
      *
      * @param array $values Array of submitted values
      *
-     * @return boolean
+     * @return bool
      */
     function _process($values)
     {
         // create user object and check appropriate permission
         $user =& User::singleton();
         if (!$user->hasPermission('acknowledgements_edit')) {
-            return;
+            return false;
         }
 
         if (!is_array($values) || count($values) == 0) {
@@ -94,6 +94,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
         }
 
         $this->tpl_data['success'] = true;
+        return true;
     }
 
     /**

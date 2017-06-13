@@ -42,14 +42,14 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
     /**
      * Process function
      *
-     * @param string $values the value of values
+     * @param array $values the value of values
      *
-     * @return boolean true if the user is permitted to see violated scans
+     * @return bool true if the user is permitted to see violated scans
      */
     function _process($values)
     {
         if (!is_array($values) || count($values) ==0) {
-            return true;
+            return false;
         }
         $DB   =& Database::singleton();
         $user =& User::singleton();
@@ -148,6 +148,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
         }
 
         $this->tpl_data['success'] = true;
+        return true;
     }
     /**
      * Set up the class and smarty variables to use for the menu filter to

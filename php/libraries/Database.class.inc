@@ -232,11 +232,12 @@ class Database
      *
      * This will insert a row. HTML from any field in the row will be automatically
      * escaped to avoid injection.
+     * Throws an Exception on failure. Otherwise, always returns true.
      *
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
      *
-     * @return none
+     * @return bool
      */
     public function insert($table, $set)
     {
@@ -280,13 +281,15 @@ class Database
      * Inserts a row
      *
      * Inserts a single row into the specified table, containing the values specified
+     * Throws an Exception on failure. Otherwise, always returns true,
+     * because it's legacy code and this is the behaviour given to it.
      *
      * @param string $table      the table into which to insert the row
      * @param array  $set        the values with which to fill the new row
      * @param bool   $autoescape determines whether the values to be set should
      *                           automatically have the html escaped
      *
-     * @return none
+     * @return bool
      */
     private function _realinsert($table, $set, $autoescape = true)
     {
@@ -302,7 +305,7 @@ class Database
 
         if (DEBUG) {
             fwrite(STDERR, $query."\n");
-            return;
+            return false;
         }
 
         // There is no where clause for an insert, so add a fake

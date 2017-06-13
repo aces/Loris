@@ -63,6 +63,43 @@ class NDB_Caller
     }
 
     /**
+     * Returns true if a save() method should be called
+     *
+     * @return bool
+     */
+    static function shouldCallSave()
+    {
+        switch (strtoupper($_SERVER["REQUEST_METHOD"]))
+        {
+        case "POST":
+        case "PUT":
+        case "DELETE":
+        case "PATCH":
+            return true;
+        default:
+            return false;
+        }
+    }
+
+    /**
+     * Sets the redirect header, must be called only after a save()
+     *
+     * @param string $redirect_url_on_save The redirect url
+     *
+     * @return void
+     */
+    private static function _setHeaderRedirectUrlOnSave($redirect_url_on_save)
+    {
+        if (is_null($redirect_url_on_save) || !is_string($redirect_url_on_save)) {
+            http_response_code(303);
+            header("Location: " . $_SERVER["REQUEST_URI"]);
+        } else {
+            http_response_code(303);
+            header("Location: " . $redirect_url_on_save);
+        }
+    }
+
+    /**
     * Renders the called menu, form or the instrument into html
     *
     * @param string $test_name The object type to load.  The test_name of the
@@ -361,8 +398,12 @@ class NDB_Caller
                 $_REQUEST['sessionID']
             );
         }
-        if (method_exists($menu, 'save')) {
+        if (method_exists($menu, 'save') && self::shouldCallSave()) {
             $success = $menu->save();
+            if ($success) {
+                $this->_setHeaderRedirectUrlOnSave($menu->redirect_url_on_save);
+                return "";
+            }
         }
         $this->page = $menu;
         $html       = $menu->display();
@@ -387,7 +428,13 @@ class NDB_Caller
         if (method_exists($form, 'getControlPanel')) {
             $this->controlPanel = $form->getControlPanel();
         }
-        $success = $form->save();
+        if (self::shouldCallSave()) {
+            $success = $form->save();
+            if ($success) {
+                $this->_setHeaderRedirectUrlOnSave($form->redirect_url_on_save);
+                return "";
+            }
+        }
 
         if (method_exists($form, 'getControlPanel')) {
             $this->controlPanel = $form->getControlPanel();
@@ -418,7 +465,13 @@ class NDB_Caller
             $reliability_center_id
         );
 
-        $success = $form->save();
+        if (self::shouldCallSave()) {
+            $success = $form->save();
+            if ($success) {
+                $this->_setHeaderRedirectUrlOnSave($form->redirect_url_on_save);
+                return "";
+            }
+        }
 
         $this->page = $form;
         $html       = $form->display();
@@ -481,8 +534,13 @@ class NDB_Caller
         }
 
         // save instrument form data
-        $success = $instrument->save();
-
+        if (self::shouldCallSave()) {
+            $success = $instrument->save();
+            if ($success) {
+                $this->_setHeaderRedirectUrlOnSave(null);
+                return "";
+            }
+        }
         if ($redirectToOnSuccess !== null && $success !== false) {
             return "<script language='javascript'>"
                 .   "window.location='$redirectToOnSuccess'"

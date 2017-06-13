@@ -52,7 +52,7 @@ class NDB_Form_Next_Stage extends NDB_Form
      *
      * @param array $values form values
      *
-     * @return void
+     * @return bool
      */
     function _process($values)
     {
@@ -108,6 +108,11 @@ class NDB_Form_Next_Stage extends NDB_Form
         $this->tpl_data['sessionID'] = $this->identifier;
         $this->tpl_data['candID']    = $timePoint->getCandID();
 
+        $candidateId = $timePoint->getCandID();
+        $this->setRelativeRedirectUrlOnSave(
+            "/instrument_list/?candID={$candidateId}&sessionID={$this->identifier}"
+        );
+        return true;
     }
     /**
      * Next stage function
