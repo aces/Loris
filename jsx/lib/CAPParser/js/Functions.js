@@ -138,7 +138,7 @@ module.exports = {
         break;
       }
     }
-    const diff = mdate2.diff(mdate1, units);
+    const diff = mdate1.diff(mdate2, units, true);
     if (returnSigned) {
       return diff;
     } else {

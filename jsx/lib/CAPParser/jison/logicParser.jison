@@ -30,6 +30,7 @@
 "<"                                 return '<'
 ">"                                 return '>'
 [_a-zA-Z]\w*                        return 'VARIABLE'
+"\""[^"]*"\""                       return 'ESTRING'
 "'"[^']*"'"                         return 'STRING'
 "["                                 return '['
 "]"                                 return ']'
@@ -68,6 +69,14 @@ variable
     : VARIABLE
         { $$ = yytext; }
     ;
+
+constant
+    : 'E'
+        { $$ = Math.E }
+    | 'PI'
+        { $$ = Math.PI }
+    ;
+
 e
     : e '=' e
         { $$ = {tag: 'BinaryOp', op: 'eq', args: [$1, $3]}; }
@@ -105,18 +114,18 @@ e
         { $$ = {tag: 'FuncApplication', args:[$1, $3]}; }
     | "[" variable "]"
         { $$ = {tag: 'Variable', args: [$2]}; }
+    | constant
+        { $$ = {tag: 'Literal', args: [$1]}; }
     | NUMBER
         { $$ = {tag: 'Literal', args: [Number(yytext)]}; }
     | STRING
-        { $$ = {tag: 'Literal', args: [String(yytext)]}; }
+        { $$ = {tag: 'String', args: [yytext]}; }
+    | ESTRING
+        { $$ = {tag: 'String', args: [yytext]}; }
     | 'false'
         { $$ = {tag: 'Literal', args: [false]}; }
     | 'true'
         { $$ = {tag: 'Literal', args: [true]}; }
     | 'null'
         { $$ = {tag: 'Literal', args: [null]}; }
-    | 'E'
-        { $$ = {tag: 'Literal', args: [Math.E]}; }
-    | 'PI'
-        { $$ = {tag: 'Literal', args: [Math.PI]}; }
     ;
