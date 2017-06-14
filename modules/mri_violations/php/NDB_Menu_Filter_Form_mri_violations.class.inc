@@ -349,9 +349,10 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
         $user        =& User::singleton();
         $config      =& NDB_Config::singleton();
         $db          =& Database::singleton();
-        $study       = $config->getSetting('study');
-        $minYear     = $study['startYear'] - $study['ageMax'];
-        $maxYear     = $study['endYear'] - $study['ageMin'];
+        $minYear     = $config->getSetting('startYear')
+            - $config->getSetting('ageMax');
+        $maxYear     = $config->getSetting('endYear')
+            - $config->getSetting('ageMin');
         $dateOptions = array(
                         'language'       => 'en',
                         'format'         => 'YMd',

@@ -43,13 +43,44 @@
 						<div class ="form-group col-sm-6">
 							<label class ="col-sm-12 col-md-4">DCCID:</label>
 							<div class="col-sm-12 col-md-8">
-								<input name = "candidate" type="text" id="autocomplete-ajax" class="form-control"/>
+								<input name = "candidate" value="{$candID}" type="text" id="autocomplete-ajax" class="form-control"/>
 							</div>
 						</div>
 						<div class ="form-group col-sm-6">
 							<label class ="col-sm-12 col-md-4">PSCID:</label>
 							<div class="col-sm-12 col-md-8">
-								<input name = "PSCID" type="text" class="form-control"/>
+								<input name = "PSCID" value="{$PSCID}" type="text" class="form-control"/>
+							</div>
+						</div>
+					</div>
+					<div class ="row">
+						<div class ="form-group col-sm-6">
+							<label class ="col-sm-12 col-md-4">Site:</label>
+							<div class="col-sm-12 col-md-8">
+								<select name="site" id="site" class="form-control input-sm">
+                                    {foreach from=$siteList item=val key=name}
+                                        {if $name eq $site}
+											<option value="{$name}" selected="selected"> {$val}</option>
+                                        {else}
+											<option value="{$name}"> {$val}</option>
+                                        {/if}
+                                    {/foreach}
+								</select>
+							</div>
+						</div>
+						<div class ="form-group col-sm-6">
+							<label class ="col-sm-12 col-md-4">Project:</label>
+							<div class="col-sm-12 col-md-8">
+								<select name="project" id="project" class="form-control input-sm">
+									<option value="All Projects" selected="selected">All Projects</option>
+                                    {foreach from=$projectList item=val key=name}
+                                        {if $name eq $project}
+											<option value="{$name}" selected="selected"> {$val}</option>
+                                        {else}
+											<option value="{$name}"> {$val}</option>
+                                        {/if}
+                                    {/foreach}
+								</select>
 							</div>
 						</div>
 					</div>
@@ -105,7 +136,7 @@ incomplete = JSON.parse(incomplete);
 
 var CandiPanel = IncompleteCandidatesPanel({
 	title: "Incomplete Forms",
-	header: ["Visit", "DCCID", "Instrument"],
+	header: ["Visit", "DCCID", "PSCID", "Instrument"],
 	incomplete_candidates: incomplete,
     BaseURL : loris.BaseURL
 });
@@ -115,7 +146,7 @@ conflicts = JSON.parse(conflicts);
 
 var ConflictsPanel = InstrumentConflictsPanel({
 	title: "Data Entry Conflicts",
-	header: ["Visit", "DCCID", "Instrument", "Field Name"],
+	header: ["Visit", "DCCID", "PSCID", "Instrument", "Field Name"],
 	conflicts: conflicts,
     BaseURL : loris.BaseURL
 });
@@ -125,7 +156,7 @@ feedback = JSON.parse(feedback);
 
 var FeedbackTab = BehaviouralFeedbackTab({
 	title: "Behvarioural Feedback",
-	header:["DCCID", "Feedback Level", "Field Name"],
+	header:["DCCID", "PSCID", "Feedback Level", "Field Name"],
 	feedback: feedback,
     BaseURL : loris.BaseURL
 });

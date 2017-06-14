@@ -12,7 +12,7 @@
  */
 
 if (file_exists('../project/config.xml')) {
-    die("Project config.xml. Aborting deploy.");
+    die("Project config.xml already exists. Aborting deploy.");
 }
 
 $url      = parse_url(getenv("CLEARDB_DATABASE_URL"));

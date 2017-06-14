@@ -344,7 +344,9 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
         // things stand you either need to work with the $_POST
         // array/DB directly in a Menu_Filter,
         // or rewrite/imitate the Menu_Filter in an NDB_Form. -- Dave
-        if ($_POST['swap'] == 'Swap Candidates' || $_POST['swap'] == 'swap') {
+        if (isset($_POST['swap'])
+            && ($_POST['swap'] == 'Swap Candidates' || $_POST['swap'] == 'swap')
+        ) {
             $message = $this->_swap_candidates();
             if (isset($message['error'])) {
                 $this->form->addElement('static', 'error', $message['error']);
@@ -352,7 +354,9 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
             if (isset($message['message'])) {
                 $this->form->addElement('static', 'message', $message['message']);
             }
-        } else if ($_POST['swap'] == "Add Candidate" || $_POST['swap'] == 'addnew') {
+        } else if (isset($_POST['swap'])
+            && ($_POST['swap'] == "Add Candidate" || $_POST['swap'] == 'addnew')
+        ) {
             $message = $this->_addCandidate();
             if (isset($message['error'])) {
                 $this->form->addElement('static', 'error', $message['error']);
@@ -730,7 +734,9 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
         foreach ($tableData['Data'] as $key => $record) {
 
             // Calculate and set `Reliable` column
-            $instrumentThreshold = $threshold[$record[9]];
+            $instrumentThreshold = isset($record[9], $threshold[$record[9]]) ?
+                $threshold[$record[9]] :
+                null;
             $instrumentScore     = $record[10];
 
             // Map cohort id to a string value

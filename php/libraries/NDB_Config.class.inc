@@ -526,8 +526,8 @@ class NDB_Config
      *                        be passed. It's used to build the tree recursively
      *                        from the LorisMenu table.
      *
-     * @return An array of Label, Visible, Link, and ID to build the menu
-     *         for the currently logged in user
+     * @return array          Label, Visible, Link, and ID to build the menu
+     *                        for the currently logged in user
      */
     static function getMenuTabs($parent = null)
     {
@@ -539,9 +539,20 @@ class NDB_Config
                        Link,
                        ID
                   FROM LorisMenu
-                  WHERE Parent IS NULL ORDER BY OrderNumber",
+                  WHERE Parent IS NULL AND (Visible = 'true' OR Visible IS NULL)
+                  ORDER BY OrderNumber",
                 array()
             );
+
+            foreach ($thisLevel as &$thisRow) {
+                $nextLevel = NDB_Config::getMenuTabs($thisRow['ID']);
+
+                if (!empty($nextLevel)) {
+                    $thisRow['subtabs'] = $nextLevel;
+                }
+            }
+
+            return $thisLevel;
         } else {
             $thisLevel = $DB->pselect(
                 "SELECT Label,
@@ -549,7 +560,8 @@ class NDB_Config
                         Link,
                         ID
                   FROM LorisMenu
-                  WHERE Parent=:ParentID ORDER BY OrderNumber",
+                  WHERE Parent=:ParentID AND (Visible = 'true' OR Visible IS NULL)
+                  ORDER BY OrderNumber",
                 array('ParentID' => $parent)
             );
 
@@ -565,18 +577,6 @@ class NDB_Config
             }
             return;
         }
-
-        foreach ($thisLevel as &$thisRow) {
-            $nextLevel = NDB_Config::getMenuTabs($thisRow['ID']);
-
-            if (!empty($nextLevel)) {
-                if (NDB_Config::checkMenuPermission($nextLevel[0]['ID'])) {
-                    $thisRow['subtabs'] = $nextLevel;
-                }
-            }
-        }
-
-        return $thisLevel;
     }
 
     /**
