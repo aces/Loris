@@ -34,6 +34,7 @@ dl {
     margin-bottom: 8px;
     padding-top: 5px;
 }
+
 .img-navigation-array {
     border: 0;
     width: 12px;
@@ -74,11 +75,19 @@ h3 {
     font-size: 16px;
     color: inherit;
 
+<<<<<<< HEAD
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     display: inline-block;
     max-width: 100%;
+=======
+    white-space: "nowrap";
+    overflow: "hidden";
+    text-overflow: "ellipsis";
+    display: "inline-block";
+    max-width: "100%";
+>>>>>>> styles moved to css
 }
 .views {
     margin-right: 10px;
