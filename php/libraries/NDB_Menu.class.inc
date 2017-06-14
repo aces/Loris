@@ -40,15 +40,6 @@ class NDB_Menu extends NDB_Page
     var $mode;
 
     /**
-     * The template data for Smarty
-     *
-     * @var    array
-     * @access private
-     */
-    var $tpl_data;
-
-
-    /**
      * Generates a new menu instance
      *
      * @param string $menu The name of the menu to use
@@ -87,11 +78,9 @@ class NDB_Menu extends NDB_Page
             throw new Exception("You do not have access to this page.", 403);
         }
 
-        //set the baseurl of the tpl_data
         $factory  = NDB_Factory::singleton();
         $settings = $factory->settings();
-
-        $obj->tpl_data['baseurl'] = $settings->getBaseURL();
+        $obj->setTemplateVar('baseurl', $settings->getBaseURL());
 
         return $obj;
     }
@@ -148,7 +137,7 @@ class NDB_Menu extends NDB_Page
         // dump the html for the menu
         $smarty = new Smarty_neurodb($this->Module);
         $smarty->assign('mode', $this->mode);
-        $smarty->assign($this->tpl_data);
+        $smarty->assign($this->getTemplateData());
         $html = $smarty->fetch("menu_$this->menu.tpl");
         return $html;
     }
