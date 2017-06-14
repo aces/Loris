@@ -44,7 +44,9 @@
 
 /* operator associations and precedence */
 
-%left '=' '<' '>' '<>' '<=' '>=' 'and' 'or' 'not'
+%left 'and' 'or'
+%right 'not'
+%left '=' '<' '>' '<>' '<=' '>='
 %left '+' '-'
 %left '*' '/'
 %left '^'

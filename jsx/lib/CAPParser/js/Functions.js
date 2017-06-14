@@ -58,6 +58,8 @@ module.exports = {
     }
   },
   not(a) {
+    console.log(a);
+    console.log(!a);
     return !a;
   },
   fact(a) {
