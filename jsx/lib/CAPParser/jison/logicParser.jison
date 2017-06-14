@@ -29,6 +29,9 @@
 ">="								return '>='
 "<"                                 return '<'
 ">"                                 return '>'
+"and"                               return 'and'
+"or"                                return 'or'
+"not"                               return 'not'
 [_a-zA-Z]\w*                        return 'VARIABLE'
 "\""[^"]*"\""                       return 'ESTRING'
 "'"[^']*"'"                         return 'STRING'
@@ -41,7 +44,7 @@
 
 /* operator associations and precedence */
 
-%left '=' '<' '>' '<>' '<=' '>='
+%left '=' '<' '>' '<>' '<=' '>=' 'and' 'or' 'not'
 %left '+' '-'
 %left '*' '/'
 %left '^'
@@ -102,7 +105,13 @@ e
         { $$ = {tag: 'BinaryOp', op: 'pow', args: [$1, $3]}; }
     | e '%' e
         { $$ = {tag: 'BinaryOp', op: 'mod', args: [$1, $3]}; }
-    | e '%'
+    | e 'and' e
+        { $$ = {tag: 'BinaryOp', op: 'and', args: [$1, $3]}; }
+    | e 'or' e
+        { $$ = {tag: 'BinaryOp', op: 'or', args: [$1, $3]}; }
+    | 'not' e
+        { $$ = {tag: 'UnaryOp', op: 'not', args: [$2]}; }
+	| e '%'
         { $$ = {tag: 'UnaryOp', op: 'per', args: [$1]}; }
     | e '!'
         { $$ = {tag: 'UnaryOp', op: 'fact', args: [$1]}; }

@@ -1,7 +1,13 @@
-const Evaluator = require('./Evaluator');
+const Evaluator = require('../js/Evaluator');
 
 const asserts = [
-  ['3.0 = 3', true],
+  ['(5*(4+1))=(30-10/2)', true],
+  ['not true', false],
+  ['not false', true],
+  ['(4 > 10)', false],
+  ['(4 < 10)', true],
+  ['not (4 < 10)', false],
+  ['not (4 > 10)', true],
   ['5 + 1', 6],
   ['3.0 - 2', 1],
   ['7 * 12', 84],
@@ -28,6 +34,9 @@ asserts.forEach((test) => {
   const o = Evaluator(test[0], {x: 98, dob: "1993-01-01"});
   if (!(o === test[1])) {
     throw `${test[0]} evaluates to ${o} not ${test[1]}.`
+  }
+  else {
+    console.log(`${test[0]} evaluates to ${o}`);
   }
 })
 

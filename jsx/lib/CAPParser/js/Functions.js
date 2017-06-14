@@ -43,6 +43,23 @@ module.exports = {
   per(a) {
     return a / 100;
   },
+  and(a, b) {
+    if (a && b) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+  or(a, b) {
+    if (a || b) {
+      return true;
+    } else {
+      return false;
+    }
+  },
+  not(a) {
+    return !a;
+  },
   fact(a) {
     if (a >= 0 && a%1 == 0) {
       return (function fact (n) { return n==0 ? 1 : fact(n-1) * n })(a);
