@@ -11,7 +11,7 @@ function evalAST(tree, scope) {
       return tree.args[0];
     }
     case 'Variable': {
-      if (!scope[tree.args[0]]) {
+      if (typeof scope[tree.args[0]] === 'undefined') {
         throw `Unbound variable: ${tree.args[0]}`;
       }
       return scope[tree.args[0]];
