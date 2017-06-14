@@ -112,18 +112,14 @@
     <h3>Change Log</h3>
 </div>
 </div>
-    <table class="table table-hover table-primary table-bordered dynamictable">
-        <thead>
-            <tr class="info">
-                <th>Time</th>
-                <th>User</th>
-                <th>Field</th>
-                <th>Old Value</th>
-                <th>New Value</th>
-            </tr>
-        </thead>
-        <tbody>
-            {$form.history.html}
-        </tbody>
-    </table>
+<div class="dynamictable" id="datatable"></div>
+<script>
+loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+var table = RDynamicDataTable({
+     "DataURL" : "{$baseurl}/final_radiological_review/ajax/log.php?identifier=" + $identifier,
+     "getFormattedCell" : formatColumn,
+     "freezeColumn" : "PSCID"
+  });
+ReactDOM.render(table, document.getElementById("datatable"));
+</script>
 </form>
