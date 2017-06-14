@@ -360,6 +360,7 @@ CREATE TABLE `instrument_subtests` (
   `Subtest_name` varchar(255) NOT NULL default '',
   `Description` varchar(255) NOT NULL default '',
   `Order_number` int(11) NOT NULL default '0',
+  UNIQUE KEY `unique_index` (`Test_name`, `Subtest_name`),
   PRIMARY KEY  (`ID`),
   KEY `FK_instrument_subtests_1` (`Test_name`),
   CONSTRAINT `FK_instrument_subtests_1` FOREIGN KEY (`Test_name`) REFERENCES `test_names` (`Test_name`)
