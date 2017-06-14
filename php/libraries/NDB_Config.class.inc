@@ -143,7 +143,7 @@ class NDB_Config
             // Absolute path given
             $file = $pathToFile;
         } else {
-            throw new LorisException(
+            throw new ConfigurationException(
                 "Config file $pathToFile does not exist in the defined locations."
             );
         }
