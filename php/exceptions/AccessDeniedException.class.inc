@@ -1,9 +1,10 @@
 <?php
 /**
  * This class is an Exception extention created to distinguish any
- * Exception from the case when a module can't be load via the Module class
+ * Exception from the case when a user tries to access something without
+ * the sufficient permissions.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Errors
  * @package  Loris
@@ -12,10 +13,8 @@
  * @link     https://github.com/aces/Loris
  */
 
-namespace LORIS\Exceptions;
-
 /**
- * The LorisModuleMissingException class.
+ * The AccessDeniedException class.
  *
  * @category Errors
  * @package  Loris
