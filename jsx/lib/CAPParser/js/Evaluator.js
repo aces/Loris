@@ -33,7 +33,7 @@ function evalAST(tree, scope) {
       return evalAST(tree.args[0], scope);
     }
     case 'UnaryOp': {
-      return Functions[tree.op](tree.args[0].args[0]);
+      return Functions[tree.op](evalAST(tree.args[0],scope));
     }
     case 'BinaryOp': {
       const funcArgs = tree.args.map(ast => evalAST(ast, scope));

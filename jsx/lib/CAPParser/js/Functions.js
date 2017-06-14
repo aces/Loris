@@ -58,8 +58,6 @@ module.exports = {
     }
   },
   not(a) {
-    console.log(a);
-    console.log(!a);
     return !a;
   },
   fact(a) {
@@ -90,13 +88,13 @@ module.exports = {
     return Math.sqrt(a);
   },
   abs(a) {
-    Math.abs(a);
+    return Math.abs(a);
   },
   min(...ns) {
-    Math.min(...ns);
+    return Math.min.apply(null, ns);
   },
   max(...ns) {
-    Math.max(...ns);
+    return Math.max.apply(null, ns);
   },
   mean(...ns) {
     if (ns.length === 0) {
@@ -125,16 +123,18 @@ module.exports = {
   },
   variance(...ns) {
     const mean = ns.reduce((a,x) => a + x, 0) / ns.length;
-    const variance = ns.reduce((a,x) => {
-      return ((x - mean) * (x - mean)) + a
-    }, 0) / (ns.length - 1);
+    const sqDiffs = ns.map(function(value) {
+      return Math.pow(value-mean, 2);
+    });
+    const variance = sqDiffs.reduce((a,x) => a + x, 0) / sqDiffs.length;
     return variance;
   },
   stdev(...ns) {
     const mean = ns.reduce((a,x) => a + x, 0) / ns.length;
-    const variance = ns.reduce((a,x) => {
-      return ((x - mean) * (x - mean)) + a
-    }, 0) / (ns.length - 1);
+    const sqDiffs = ns.map(function(value) {
+      return Math.pow(value-mean, 2);
+    });
+    const variance = sqDiffs.reduce((a,x) => a + x, 0) / sqDiffs.length;
     return Math.sqrt(variance);
   },
   // Assuming 24-hour clock

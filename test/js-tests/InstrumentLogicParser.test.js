@@ -1,27 +1,26 @@
 import 'mocha';
 import { expect } from 'chai';
-import InstrumentLogicParser from '../../jsx/lib/InstrumentLogicParser';
-
-describe('InstrumentLogicParser#parse', () => {
-  describe('when passed an empty string', () => {
-    it('throws an error', () => {
-      expect(() => InstrumentLogicParser.parse('')).to.throw();
+const Evaluator = require('/var/www/LORIS/Loris/jsx/lib/CAPParser/js/Evaluator');
+describe('CAPParser Unit Tests', () => {
+  describe('When passed an empty string', () => {
+    it('Throws an error', () => {
+      expect(() => Evaluator('')).to.throw();
     })
   })
 
-  describe('when passed a null', () => {
-    it('returns null', () => {
+  describe('When passed null', () => {
+    it('Returns null', () => {
       const LOGIC_STR = 'null';
-      const res = InstrumentLogicParser.evaluate(LOGIC_STR);
+      const res = Evaluator(LOGIC_STR);
       expect(res).to.equal(null);
     })
   })
 
-  describe('when passed something', () => {
-    it('evals', () => {
-      const LOGIC_STR = 'constPi+2'; 
-      const res = InstrumentLogicParser.evaluate(LOGIC_STR);
-      expect(res).to.equal(Math.PI+2);
+  describe('When passed a simple equation', () => {
+    it('Evaluates the equation, maintaining order of ops', () => {
+      const LOGIC_STR = 'abs((sqrt(64)-12^2)/(min(5,99,104.1232234,3.0001,3))+1/3)'; 
+      const res = Evaluator(LOGIC_STR);
+      expect(res).to.equal(45);
     })
   })
 
@@ -29,7 +28,7 @@ describe('InstrumentLogicParser#parse', () => {
     it('uses it', () => {
       const LOGIC_STR = '[a]'; 
       const CONTEXT = {a: 100, b: 50, c: 1}; 
-      const res = InstrumentLogicParser.evaluate(LOGIC_STR, CONTEXT);
+      const res = Evaluator(LOGIC_STR, CONTEXT);
       expect(res).to.equal(100);
     })
   })
@@ -38,7 +37,7 @@ describe('InstrumentLogicParser#parse', () => {
     it('evals', () => {
       const LOGIC_STR = 'if((5+4)>=[a],5,4)';
       const CONTEXT = {a: 9};
-      const res = InstrumentLogicParser.evaluate(LOGIC_STR, CONTEXT);
+      const res = Evaluator(LOGIC_STR, CONTEXT);
       expect(res).to.equal(5);
     })
   })
@@ -47,24 +46,16 @@ describe('InstrumentLogicParser#parse', () => {
     it('evals', () => {
       const LOGIC_STR = 'stdev(5,[a],1,[b],3)';
       const CONTEXT = {a: 2, b: 4};
-      const res = InstrumentLogicParser.evaluate(LOGIC_STR, CONTEXT);
+      const res = Evaluator(LOGIC_STR, CONTEXT);
       expect(res).to.equal(Math.sqrt(2));
     })
   })
   
- describe('date ops', () => {
-    it('evals', () => {
-      const LOGIC_STR = 'curtime()';
-      const CONTEXT = {a: 2, b: 4};
-      const res = InstrumentLogicParser.evaluate(LOGIC_STR, CONTEXT);
-      expect(res).to.equal(1);
-    })
-  })
- describe('more date ops', () => {
+  describe('more date ops', () => {
     it('evals', () => {
       const LOGIC_STR = 'datediff(curdatetime(),"00:00:00","h",0)';
       const CONTEXT = {a: 2, b: 4};
-      const res = InstrumentLogicParser.evaluate(LOGIC_STR, CONTEXT);
+      const res = Evaluator(LOGIC_STR, CONTEXT);
       expect(res).to.equal(1);
     })
   });
