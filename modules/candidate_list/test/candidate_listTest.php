@@ -214,7 +214,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         // Verify that only one candidate is returned: TST0001
         $this->_assertSearchBy(
             array('PSCID' => 'TST0001'),
-           'TST0001'
+            'TST0001'
         );
         // Enter something that does not even make sense in the PSCID field
         // Verify that no candidates are returned
@@ -234,7 +234,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->_assertSearchBy(
             array('PSCID' => 'tst0001'),
             'TST0001'
-            );
+        );
         // Search for PSCID that contains string t0
         // Verify that candidate TST0001 is returned
         $this->_assertSearchBy(
@@ -314,25 +314,25 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     /**
      * Compares the content of the candidate table with an expected content.
      *
-     * @param string $tableName    name of the HTML table.
      * @param string $expectedRows array of candidates that the table should contain.
      *
      * @return void
      */
     private function _assertCandidateTableContents($expectedRows)
-    { 
+    {
         if (!is_null($expectedRows)) {
-	    $text = $this->webDriver->executescript(
-                 "return document.querySelector('#dynamictable > tbody').textContent"
-             );
-             $this->assertContains($expectedRows, $text);  	
-            
-        } else { 
+            $text = $this->webDriver->executescript(
+                "return document.querySelector('#dynamictable > tbody').textContent"
+            );
+             $this->assertContains($expectedRows, $text);
+
+        } else {
              $text = $this->webDriver->executescript(
-                 "return document.querySelector('#datatable > div > strong').textContent"
+                 "return document.querySelector".
+                 "('#datatable > div > strong').textContent"
              );
              $this->assertContains("No result found.", $text);
- 
+
         }
 
     }
