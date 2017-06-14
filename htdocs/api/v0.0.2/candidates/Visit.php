@@ -61,7 +61,7 @@ class Visit extends \Loris\API\Candidates\Candidate
         // CandID
         parent::__construct($method, $CandID);
         if ($method === 'PUT') {
-var_dump($InputData);
+            var_dump($InputData);
             $this->ReceivedJSON = json_decode($InputData, true);
         } else {
             $timepoints = $this->Candidate->getListOfVisitLabels();
