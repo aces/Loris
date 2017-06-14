@@ -188,10 +188,11 @@ class Candidates extends APIBase
     /**
      * Testable wrapper for Candidate::createNew
      *
-     * @param string $DoB    Date of birth of the candidate
-     * @param string $edc    EDC of the candidate
-     * @param string $gender Gender of the candidate to be created
-     * @param string $PSCID  PSCID of the candidate to be created
+     * @param string $centerID The center id of the candidate
+     * @param string $DoB      Date of birth of the candidate
+     * @param string $edc      EDC of the candidate
+     * @param string $gender   Gender of the candidate to be created
+     * @param string $PSCID    PSCID of the candidate to be created
      *
      * @return none
      */
