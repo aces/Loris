@@ -70,12 +70,10 @@ class BVL_Feedback_Panel
         $candidateObject         = Candidate::singleton($candidateID);
         $this->tpl_data['pscid'] = $candidateObject->getPSCID();
 
-        $this->tpl_data['sessionID'] = isset($feedbackProfile["SessionID"]) ?
-            $feedbackProfile["SessionID"] : null;
+        $this->tpl_data['sessionID'] = $feedbackProfile["SessionID"] ?? null;
 
         $feedbackObject = $this->_feedbackThread->_feedbackObjectInfo;
-        $this->tpl_data['commentID'] = isset($feedbackObject["CommentID"]) ?
-            $feedbackObject["CommentID"] : null;
+        $this->tpl_data['commentID'] = $feedbackObject["CommentID"] ?? null;
 
         $this->tpl_data['thread_list']    = $this->_feedbackThread->getThreadList();
         $this->tpl_data['feedback_level'] = $this->_feedbackThread->_feedbackLevel;
