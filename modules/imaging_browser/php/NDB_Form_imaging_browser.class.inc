@@ -208,13 +208,11 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             $Algorithm           = $FileObj->getParameter('Algorithm');
             $AcquisitionDate     = $this->_getDate(
                 $FileObj,
-                'acquisition_date',
-                $acqDate
+                'acquisition_date'
             );
             $ProcDate            = $this->_getDate(
                 $FileObj,
-                'processing:processing_date',
-                $procDate
+                'processing:processing_date'
             );
             $FileInsertDate      = $FileObj->getParameter('InsertTime');
             $SeriesDescription   = $FileObj->getParameter('series_description');
@@ -243,18 +241,15 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             $Tool = $FileObj->getParameter('Tool');
             $SlicewiseRejected     = $this->_getRejected(
                 $FileObj,
-                'slicewise',
-                $sliceRej
+                'slicewise'
             );
             $InterlaceRejected     = $this->_getRejected(
                 $FileObj,
-                'interlace',
-                $laceRej
+                'interlace'
             );
             $IntergradientRejected = $this->_getRejected(
                 $FileObj,
-                'intergradient',
-                $interRej
+                'intergradient'
             );
             $Xstep       = number_format($FileObj->getParameter('xstep'), 2);
             $Ystep       = number_format($FileObj->getParameter('ystep'), 2);
@@ -325,14 +320,14 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     /**
      * Gets a rejected parameter according to its type
      *
-     * @param MRIFile $file  file object
-     * @param string  $type  type of the rejected
-     * @param array   $array array containing rejected
+     * @param MRIFile $file file object
+     * @param string  $type type of the rejected
      *
-     * @return parameter of the rejected
+     * @return string The parameter of the rejected
      */
-    function _getRejected($file, $type, $array)
+    function _getRejected($file, $type)
     {
+        $array     = array();
         $parameter = 'processing:' . $type . '_rejected';
         if (preg_match(
             "/(Directions)([^\(]+)(\(\d+\))/",
@@ -351,14 +346,14 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     /**
      * Gets the date according to the type
      *
-     * @param MRIFile $file  file object
-     * @param string  $type  type of the date
-     * @param array   $array array containing the date
+     * @param MRIFile $file file object
+     * @param string  $type type of the date
      *
-     * @return date if exists, if not an empty string
+     * @return string The date if exists, if not an empty string
      */
-    function _getDate($file, $type, $array)
+    function _getDate($file, $type)
     {
+        $array = array();
         if (preg_match(
             "/(\d{4})-?(\d{2})-?(\d{2})/",
             $file->getParameter($type),

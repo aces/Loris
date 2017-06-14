@@ -206,6 +206,7 @@ CREATE TABLE `users` (
   `State` varchar(255) default NULL,
   `Zip_code` varchar(255) default NULL,
   `Country` varchar(255) default NULL,
+  `Phone` varchar(15) default NULL,
   `Fax` varchar(255) default NULL,
   `Email` varchar(255) NOT NULL default '',
   `Privilege` tinyint(1) NOT NULL default '0',
@@ -1343,7 +1344,7 @@ CREATE TABLE `media` (
 
 CREATE TABLE `issues_categories` (
   `categoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `categoryName` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `categoryName` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`categoryID`),
   UNIQUE KEY `categoryName` (`categoryName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1387,7 +1388,7 @@ CREATE TABLE `issues` (
   CONSTRAINT `fk_issues_2` FOREIGN KEY (`assignee`) REFERENCES `users` (`UserID`),
   CONSTRAINT `fk_issues_3` FOREIGN KEY (`candID`) REFERENCES `candidate` (`CandID`),
   CONSTRAINT `fk_issues_4` FOREIGN KEY (`sessionID`) REFERENCES `session` (`ID`),
-  CONSTRAINT `fk_issues_5` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
+  CONSTRAINT `fk_issues_5` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `fk_issues_6` FOREIGN KEY (`lastUpdatedBy`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
@@ -1863,11 +1864,9 @@ CREATE TABLE `acknowledgements` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 -- ********************************
 -- Feedback
 -- ********************************
-
 
 CREATE TABLE `feedback_bvl_type` (
   `Feedback_type` int(11) unsigned NOT NULL auto_increment,
