@@ -77,7 +77,7 @@ class NDB_Form_New_Profile extends NDB_Form
                 $dob,
                 $edc,
                 $values['gender'],
-                isset($values['PSCID']) ? $values['PSCID'] : null
+                $values['PSCID'] ?? null
             );
         } else {
             $centerIDs = $user->getData('CenterIDs');
@@ -87,7 +87,7 @@ class NDB_Form_New_Profile extends NDB_Form
                 $dob,
                 $edc,
                 $values['gender'],
-                isset($values['PSCID']) ? $values['PSCID'] : null
+                $values['PSCID'] ?? null
             );
         }
 
