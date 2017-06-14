@@ -25,19 +25,21 @@ By default, all files are uploaded under `/data/uploads/`.
 The upload path is configurable in `Paths` section of `Configuration` module.
 
 >**Important** 
- >
->The destination directory must have `755` permissions and `$GROUP$` group in order for upload to work. Note: group name is OS dependent. 
+>
+>The upload path must be readable and writable by your web server; either the web server `user` or `group` must have read and write permissions.
+>The default group for your web server process is listed below
 >```
 >Ubuntu: $GROUP$ = www-data
 >CentOS: $GROUP$ = apache
 >```
+>
+>To find the `user` of your web server, run `ps aux | grep 'apache' | egrep -v 'grep|Ss' | awk '{ print $1 }' | sort | uniq`
+>To find the `group` of your web server, run `ps aux | grep 'apache' | egrep -v 'grep|Ss' | awk '{ print $1 }' | sort | uniq | groups`
 
+>To see if your web server's user or group owns the upload path, run `ls -ld /data/uploads | awk '{ print "user:" $3 ", group:" $4 }'`
 
->Make sure to to run these commands where `/data/uploads/` is your upload directory:
->```
->chmod 755 /data/uploads/
->sudo chown lorisadmin:$GROUP$ /data/uploads/
->```
+>If neither owns the folder, you should run `sudo chown <unix-user>:<web-server-group> /data/uploads`
+>Then, run `chmod 775 /data/uploads`
 
 ### 💯 Features
 
