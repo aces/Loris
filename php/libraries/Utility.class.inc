@@ -558,7 +558,7 @@ class Utility
      */
     static function asArray($var)
     {
-        if (!is_array($var) && !empty($var)) {
+        if (!is_array($var)) {
             return array($var);
         }
         return $var;
