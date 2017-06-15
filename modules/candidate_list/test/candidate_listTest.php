@@ -53,7 +53,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         =  array(
             'Access Profile'      => '#bc2 > a:nth-child(2) > div',
             'Site'                => '#dynamictable > thead > tr > th:nth-child(2)',
-            'DCCID'               => '#PSCID',
+            'PSCID'               => '#PSCID',
             'Gender'              => '#dynamictable > thead>tr>th.dynamictableNext',
             'Entity Type'         => '#dynamictable > thead > tr > th:nth-child(6)',
             'Participant Status'  => '#dynamictable > thead > tr > th:nth-child(7)',
@@ -358,8 +358,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
 
     }
     /**
-      * Testing UI when page loads
-      *
+      * Testing UI elements when page loads
+      * 
       * @return void
       */
     function testPageUIs()
@@ -371,6 +371,25 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             );
             $this->assertContains($key, $text);
         }
+    }
+    /**
+      * Testing link of PSCID 
+      *
+      * @return void
+      */
+    function testPSCIDLink()
+    {
+        $this->safeGet($this->url . "/candidate_list/");
+        //find PSCID link and click
+        $this->webDriver->executescript(
+           "document.querySelectorAll('#dynamictable > tbody > tr >".
+           " td.dynamictableFrozenColumn > a')[0].click()"
+        );
+        //make sure that breadcrumb contains DCCID
+        $text = $this->webDriver->executescript(
+           "return document.querySelector('#bc2 > a:nth-child(3) > div').textContent"
+        );
+        $this->assertContains('900000', $text);
     }
 }
 ?>
