@@ -19,13 +19,18 @@
  *  @link     https://github.com/aces/Loris-Trunk
  */
 
-/* Effectively resolve '..' characters in a file path
+/**
+ * Effectively resolve '..' characters in a file path
  *
+ * @param string $path A potentially-relative filepath to be resolved
+ *
+ * @return string $resolvedPath a path containing no .. sequences
  */
-function resolvePath ($path) {
+function resolvePath($path)
+{
     $resolvedPath = array();
     // do some normalization
-    $path = str_replace('//', '/', $path);
+    $path        = str_replace('//', '/', $path);
     $path_pieces = explode('/', $path);
     foreach ($path_pieces as $piece) {
         if ($piece == '.') {
