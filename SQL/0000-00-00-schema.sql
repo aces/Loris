@@ -164,7 +164,8 @@ INSERT INTO subproject (title, useEDC, WindowDifference) VALUES
 
 CREATE TABLE `project_rel` (
   `ProjectID` int(2) DEFAULT NULL,
-  `SubprojectID` int(2) DEFAULT NULL
+  `SubprojectID` int(2) DEFAULT NULL,
+  PRIMARY KEY (ProjectID, SubprojectID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `psc` (
