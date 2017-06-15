@@ -323,9 +323,6 @@ class CouchDBMRIImporter
             );
             print $docid . ": " . $success . "\n";
 
-            $config = NDB_Config::singleton();
-            $paths  = $config->getSetting('paths');
-
         }
         return;
     }
