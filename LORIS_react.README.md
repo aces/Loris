@@ -56,7 +56,7 @@ curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 sudo apt-get install -y nodejs
 sudo apt-get install -y build-essential
 ```
-(optional) For Ubuntu 14.04:
+>**Note**: Older LTS version (14.04<=)
 ```
 curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
 sudo apt-get install -y nodejs
@@ -95,7 +95,7 @@ Follow these steps in your terminal:
   npm install --only=dev
 ```
 
-(Optional)
+>**Note**: Permissions might be adjusted using
 ```bash
 sudo chown -R $USER:$(id -gn $USER) ./node_modules
 ```
