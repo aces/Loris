@@ -19,6 +19,28 @@
  *  @link     https://github.com/aces/Loris-Trunk
  */
 
+/* Effectively resolve '..' characters in a file path
+ *
+ */
+function resolvePath ($path) {
+    $resolvedPath = array();
+    // do some normalization
+    $path = str_replace('//', '/', $path);
+    $path_pieces = explode('/', $path);
+    foreach ($path_pieces as $piece) {
+        if ($piece == '.') {
+            continue;
+        } elseif ($piece == '..') {
+            array_shift($resolvedPath);
+            continue;
+        } else {
+            array_push($resolvedPath, $piece);
+        }
+    }
+    $resolvedPath = implode('/', $resolvedPath);
+    return $resolvedPath;
+}
+
 
 // Load config file and ensure paths are correct
 set_include_path(
@@ -59,7 +81,8 @@ if ($imagePath === '/' || $DownloadPath === '/' || $mincPath === '/') {
 
 // Now get the file and do file validation.
 // Resolve the filename before doing anything.
-$File = realpath($_GET['file']);
+$File = resolvePath($_GET['file']);
+error_log("Resolved path: $File");
 
 // Extra sanity checks, just in case something went wrong with realpath.
 // File validation
