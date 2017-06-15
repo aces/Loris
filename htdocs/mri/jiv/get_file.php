@@ -36,7 +36,7 @@ function resolvePath($path)
         if ($piece == '.') {
             continue;
         } elseif ($piece == '..') {
-            array_shift($resolvedPath);
+            array_pop($resolvedPath);
             continue;
         } else {
             array_push($resolvedPath, $piece);
