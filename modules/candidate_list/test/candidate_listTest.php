@@ -45,6 +45,15 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
                                 'None',
                                );
     /**
+     * UI elements and locations
+     * breadcrumb - 'Access Profile'
+     * Table headers
+     */
+    private $_loadingUI =
+             array('Access Profile' => '#bc2 > a:nth-child(2) > div',
+                   'Site' =>  '#dynamictable > thead > tr > th:nth-child(2)',
+             );
+    /**
      * Backs up the useEDC config value and sets the value to a known
      * value (true) for testing.
      *
@@ -336,5 +345,20 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         }
 
     }
+    /**
+      * Testing UI when page loads
+      *
+      * @return void
+      */
+     function testPageUIs()
+     {
+         $this->safeGet($this->url . "/candidate_list/");
+         foreach ($this->_loadingUI as $key => $value) {
+             $text = $this->webDriver->executescript(
+                 "return document.querySelector('$value').textContent"
+             );
+             $this->assertContains($key, $text);
+         }
+     }
 }
 ?>
