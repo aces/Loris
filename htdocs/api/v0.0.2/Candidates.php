@@ -124,7 +124,7 @@ class Candidates extends APIBase
                 );
 
                 if (isset($data['Candidate']['Project'])) {
-                    $projectName = htmlspecialchars($data['Candidate']['Project']);
+                    $projectName = $data['Candidate']['Project'];
                     $project     = \Project::singleton($projectName);
                     if (!empty($project)) {
                         \Candidate::singleton($candid)->setData(
