@@ -112,7 +112,7 @@ Note that all whitespace (spaces or tabs) is ignored in the parser.
 | Argument     	| Syntax                                	| Notes                                                                                                                                     	|
 |--------------	|---------------------------------------	|-------------------------------------------------------------------------------------------------------------------------------------------	|
 | date         	| "YYYY-MM-DD HH:MM:SS" or "YYYY-MM-DD" 	| valid formats for date include YMD (default/ISO standard), MDY, DMY; note that time is optional                                           	|
-|              	| "YYYY-MM"                             	| note that day and time together is optional for all formats                                                                               	|
+|              	| "YYYY-MM" or "MM-YYYY"                   	| note that day and time together is optional for all formats                                                                               	|
 |              	| "YYYY"                                	| note that month, day, and time together are optional for all formats                                                                      	|
 | units        	| "y","M","d","h","m","s"               	| specifies the return value unit: years, months, days, hours, minutes, and seconds respectively. Any other input will return milliseconds. 	|
 | format       	| "ymd", "mdy". "dmy"                   	| YMD is default                                                                                                                            	|
