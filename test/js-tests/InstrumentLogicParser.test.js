@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-const Evaluator = require('/var/www/LORIS/Loris/jsx/lib/CAPParser/js/Evaluator');
+import Evaluator from '../../jsx/lib/CAPParser/js/Evaluator';
 describe('CAPParser Unit Tests', () => {
   describe('When passed an empty string', () => {
     it('Throws an error', () => {
@@ -17,7 +17,7 @@ describe('CAPParser Unit Tests', () => {
   })
 
   describe('Simple equation', () => {
-    it('Evaluates the equation, maintaining order of ops', () => {
+    it('Maintains order of operations', () => {
       const LOGIC_STR = 'abs((sqrt(64)-12^(4^(1/2)))/(min(5,99,104.1232234,3.0001,3))+1/3)'; 
       const res = Evaluator(LOGIC_STR);
       expect(res).to.equal(45);
@@ -25,7 +25,7 @@ describe('CAPParser Unit Tests', () => {
   })
 
   describe('Simple if statement', () => {
-    it('Evaluates the equation, maintaining order of ops', () => {
+    it('Returns true string', () => {
       const LOGIC_STR = 'if(true, 2 + " string test", 0)';
       const res = Evaluator(LOGIC_STR);
       expect(res).to.equal("2 string test");
@@ -33,7 +33,7 @@ describe('CAPParser Unit Tests', () => {
   })
 
   describe('Complex equation containing nested ifs, boolean operations, counting operations, and string concatenation', () => {
-    it('Evaluates the equation, maintaining order of ops and context', () => {
+    it('Maintains order of operatopms and context', () => {
       const LOGIC_STR = 'max(if([d]="North America",if([e]<>"Montreal",1,0.5),0),if(([a]+1)/[c]>(product(100,1/2,1/2,1/2,1/2,1/(12.5))),2,0)) + ", " + [e] + ", " + [d]'; 
       const CONTEXT = {a: 100, b: 50, c: 1, d: "North America", e: "Montreal"}; 
       const res = Evaluator(LOGIC_STR, CONTEXT);
@@ -42,7 +42,7 @@ describe('CAPParser Unit Tests', () => {
   })
   
   describe('Complex boolean operation', () => {
-    it('evals', () => {
+    it('Maintains boolean logic', () => {
       const LOGIC_STR = 'if((5+4)>=[a] and not ((4>10) or [d]),5,4)';
       const CONTEXT = {a: 9, d: false};
       const res = Evaluator(LOGIC_STR, CONTEXT);
@@ -51,25 +51,23 @@ describe('CAPParser Unit Tests', () => {
   })
 
   describe('Rounding operations', () => {
-    it('evals', () => {
+    it('Correctly rounds up or down', () => {
       const LOGIC_STR = 'if(rounddown([a],[b])<>roundup([a],[b]) and (round([a],[b])<>roundup([a],[b]) or round([a],[b])<>rounddown([a],[b])),round([a],[b]),"Rounding failure")';
       const CONTEXT = {a: 2.43298570129128437893429384, b: 4};
       const res = Evaluator(LOGIC_STR, CONTEXT);
       expect(res).to.equal(2.4330);
     })
-  })
-  
-  describe('Trailing zeroes', () => {
-    it('evals', () => {
+
+    it('Handles trailing zeros correctly', () => {
       const LOGIC_STR = 'round([a],[b])';
       const CONTEXT = {a: 2, b: 4};
       const res = Evaluator(LOGIC_STR, CONTEXT);
       expect(res).to.equal(2.0000);
     })
   })
-
+  
   describe('Date difference operations', () => {
-    it('evals', () => {
+    it('Returns "yes" if age >= 6', () => {
       const LOGIC_STR = 'if(datediff("2017-01-01","2000-01-01 00:00:00","y","ymd", 0)>=6,"yes","no")';
       const CONTEXT = {a: 2, b: 4};
       const res = Evaluator(LOGIC_STR, CONTEXT);

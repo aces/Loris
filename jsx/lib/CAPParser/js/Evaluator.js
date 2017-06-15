@@ -1,5 +1,5 @@
-const Functions = require('./Functions');
-const parser = require('./logicParser');
+import Functions from './Functions';
+import { parser } from './logicParser';
 
 
 function evalAST(tree, scope) {
