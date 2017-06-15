@@ -1,8 +1,8 @@
-# CAP Parser (CAPP)
+# Parser
 
-The CAPP provides a human readable syntax for front end equation building.
+The Parser provides a human readable syntax for front end equation building.
 
-This Readme breaks down the different parts of CAPP and lists syntax rules.
+This Readme breaks down the different parts of the Parser and lists syntax rules.
 
 # Prerequisites for Development
 
@@ -28,10 +28,10 @@ To add or edit functions, simply edit `js/Functions.js`.
 To add new types of operations, add a case to the switch statement in `js/Evaluator.js`.
 
 ### Unit Testing
-Tests can be added to `Loris/test/js-tests/InstrumentLogicParser.test.js`. Run tests with `npm run tests:unit:js:watch`.
+Tests can be added to `Loris/test/js-tests/Parser.test.js`. Run tests with `npm run tests:unit:js:watch`.
 
 ### Use
-At the top of your JS file add `const Evaluator = require('/var/www/Loris/jsx/lib/CAPParser/js/Evaluator');`
+At the top of your JS file add `import { Evaluator } from './jsx/lib/Parser';` (change the path based on your directory location).
 
 Call `Evaluator(LOGIC_STRING)` to evaluate an equation.
 
