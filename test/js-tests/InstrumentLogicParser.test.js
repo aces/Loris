@@ -59,21 +59,21 @@ describe('CAPParser Unit Tests', () => {
     })
   })
   
-  describe('Rounding operations', () => {
+  describe('Trailing zeroes', () => {
     it('evals', () => {
       const LOGIC_STR = 'round([a],[b])';
-      const CONTEXT = {a: 2.4, b: 4};
+      const CONTEXT = {a: 2, b: 4};
       const res = Evaluator(LOGIC_STR, CONTEXT);
-      expect(res).to.equal(2.4000);
+      expect(res).to.equal(2.0000);
     })
   })
 
   describe('Date difference operations', () => {
     it('evals', () => {
-      const LOGIC_STR = 'datediff("2017-01-01","2017-01-01T17:30:00Z","h","ymd", 0)';
+      const LOGIC_STR = 'if(datediff("2017-01-01","2000-01-01 00:00:00","y","ymd", 0)>=6,"yes","no")';
       const CONTEXT = {a: 2, b: 4};
       const res = Evaluator(LOGIC_STR, CONTEXT);
-      expect(res).to.equal(17.5);
+      expect(res).to.equal('yes');
     })
   });
 })
