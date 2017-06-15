@@ -107,7 +107,8 @@ class Candidates extends APIBase
             $data = $this->RequestData;
             if ($data === null) {
                 $this->header("HTTP/1.1 400 Bad Request");
-                $this->JSON = array("error" => "Can't parse data");
+                $this->error("Can't parse data");
+                $this->safeExit(0);
             }
 
             $this->verifyField($data, 'Gender', ['Male', 'Female']);
@@ -138,13 +139,13 @@ class Candidates extends APIBase
                               ];
             } catch(\LorisException $e) {
                 $this->header("HTTP/1.1 500 Internal Server Error");
-                $this->JSON = array("error" => "Candidate can't be created");
+                $this->error("Candidate can't be created");
+                $this->safeExit(0);
             }
         } else {
             $this->header("HTTP/1.1 400 Bad Request");
-            $this->JSON = array(
-                "error" => "There is no Candidate object in the POST data"
-            );
+            $this->error("There is no Candidate object in the POST data");
+            $this->safeExit(0);
         }
     }
 
@@ -163,17 +164,20 @@ class Candidates extends APIBase
     {
         if (!isset($data['Candidate'][$field])) {
             $this->header("HTTP/1.1 400 Bad Request");
-            $this->JSON = array("error" => "Candidate's field missing");
+            $this->error("Candidate's field missing");
+            $this->safeExit(0);
         }
         if (is_array($values) && !in_array($data['Candidate'][$field], $values)) {
             $this->header("HTTP/1.1 400 Bad Request");
-            $this->JSON = array("error" => "Value not permitted");
+            $this->error("Value not permitted");
+            $this->safeExit(0);
         }
         if ($values === 'YYYY-MM-DD'
             && !preg_match("/\d\d\d\d\-\d\d\-\d\d/", $data['Candidate'][$field])
         ) {
             $this->header("HTTP/1.1 400 Bad Request");
-            $this->JSON = array("error" => "Invalid date format");
+            $this->error("Invalid date format");
+            $this->safeExit(0);
         }
     }
 
