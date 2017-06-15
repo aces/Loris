@@ -280,6 +280,27 @@ class NDB_Page
     }
 
     /**
+     * Wrapper to create a radio button
+     *
+     * @param string $name     The field name of this radio button
+     * @param string $label    The label to attach to this radio button
+     * @param array  $options  Options to pass to QuickForm for this
+     *                         radio button
+     * @param array  $optional Optional extra HTML attributes to add
+     *                         to the radio button
+     *
+     * @return none
+     */
+    function addRadio($name, $label, $options, $optional=array())
+    {
+        $optional = array_merge(
+            array('class' => 'form-control input-sm'),
+            $optional
+        );
+        $this->form->addElement('radio', $name, $label, $options, $optional);
+    }
+
+    /**
      * Adds a hidden element to the current page. Note if the hidden element
      * needs a value it should be added to the defaults.
      *
@@ -506,6 +527,27 @@ class NDB_Page
     {
         return $this->form->createElement(
             "advcheckbox",
+            $field,
+            $label,
+            $options,
+            array()
+        );
+    }
+
+    /**
+     * Creates an HTML radio button but does not add it to the form.
+     *
+     * @param string $field   The fieldname for this radio button
+     * @param string $label   The label to attach to this radio button
+     * @param string $options Options to pass to HTML_QuickForm
+     * @param string $closer  ?????
+     *
+     * @return QuickForm_Element representing radio button
+     */
+    function createRadio($field, $label, $options=null, $closer='</label>')
+    {
+        return $this->form->createElement(
+            "radio",
             $field,
             $label,
             $options,
