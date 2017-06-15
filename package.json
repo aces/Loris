@@ -6,7 +6,8 @@
     "doc": "docs",
     "test": "test"
   },
-  "dependencies": {},
+  "dependencies": {
+  },
   "devDependencies": {
     "babel-cli": "^6.8.0",
     "babel-loader": "6.2.10",
@@ -17,7 +18,9 @@
     "eslint": "3.8.1",
     "eslint-config-google": "0.6.0",
     "eslint-plugin-react": "^5.2.2",
+    "jison": "^0.4.17",
     "mocha": "3.4.2",
+    "moment": "^2.18.1",
     "mocha-webpack": "0.7.0",
     "webpack": "1.14.0",
     "webpack-node-externals": "1.6.0"
