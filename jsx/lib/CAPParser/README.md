@@ -65,7 +65,7 @@ Note that all whitespace (spaces or tabs) is ignored in the parser.
 | divide    	| a / b  	| cannot divide by 0                                                	|
 | exponent  	| a ^ b  	|                                                                     	|
 | percentage  	| a %   	| divides the value of a by 100                                         |
-| factorial  	| a !   	| returns a factorial; supports any number divisible by 0.5 and above 0 |
+| factorial  	| a !   	| returns a factorial; supports 0 or positive numbers divisible by 0.5  |
 
 ### Boolean/Comparison Operations (returns true or false)
 | Operation        	| Syntax  	| Notes                            	|
