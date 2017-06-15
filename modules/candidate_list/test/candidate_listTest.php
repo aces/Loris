@@ -359,7 +359,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     }
     /**
       * Testing UI elements when page loads
-      * 
+      *
       * @return void
       */
     function testPageUIs()
@@ -373,7 +373,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         }
     }
     /**
-      * Testing link of PSCID 
+      * Testing link of PSCID
       *
       * @return void
       */
@@ -382,12 +382,12 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->safeGet($this->url . "/candidate_list/");
         //find PSCID link and click
         $this->webDriver->executescript(
-           "document.querySelectorAll('#dynamictable > tbody > tr >".
-           " td.dynamictableFrozenColumn > a')[0].click()"
+            "document.querySelectorAll('#dynamictable > tbody > tr >".
+            " td.dynamictableFrozenColumn > a')[0].click()"
         );
         //make sure that breadcrumb contains DCCID
         $text = $this->webDriver->executescript(
-           "return document.querySelector('#bc2 > a:nth-child(3) > div').textContent"
+            "return document.querySelector('#bc2 > a:nth-child(3)>div').textContent"
         );
         $this->assertContains('900000', $text);
     }
