@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-module.exports = {
+export default {
   eq(a, b) {
     return a === b;
   },

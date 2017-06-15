@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
-import Evaluator from '../../jsx/lib/CAPParser/js/Evaluator';
-describe('CAPParser Unit Tests', () => {
+import { Evaluator } from '../../jsx/lib/Parser';
+describe('Parser Unit Tests', () => {
   describe('When passed an empty string', () => {
     it('Throws an error', () => {
       expect(() => Evaluator('')).to.throw();

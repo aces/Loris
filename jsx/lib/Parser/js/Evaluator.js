@@ -42,7 +42,7 @@ function evalAST(tree, scope) {
   }
 }
 
-module.exports = function Evaluator(stringExpression, scope = {}) {
+export default function Evaluator(stringExpression, scope = {}) {
   const tree = parser.parse(stringExpression);
   return evalAST(tree, scope);
 }
