@@ -35,12 +35,16 @@ function resolvePath($path)
     foreach ($path_pieces as $piece) {
         if ($piece == '.') {
             continue;
-        } elseif ($piece == '..') {
+        }
+        if ($piece == '..') {
+            if (!is_array($resolvedPath)) {
+                error_log("ERROR: Resolved path not an array");
+                return "";
+            }
             array_pop($resolvedPath);
             continue;
-        } else {
-            array_push($resolvedPath, $piece);
         }
+        array_push($resolvedPath, $piece);
     }
     $resolvedPath = implode('/', $resolvedPath);
     return $resolvedPath;
@@ -87,9 +91,8 @@ if ($imagePath === '/' || $DownloadPath === '/' || $mincPath === '/') {
 // Now get the file and do file validation.
 // Resolve the filename before doing anything.
 $File = resolvePath($_GET['file']);
-error_log("Resolved path: $File");
 
-// Extra sanity checks, just in case something went wrong with realpath.
+// Extra sanity checks, just in case something went wrong with path resolution.
 // File validation
 if (strpos($File, ".") === false) {
     error_log("ERROR: Could not determine file type.");
