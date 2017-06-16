@@ -60,7 +60,7 @@ class Entrypoint
 
 
         if (!array_key_exists(0, $this->_args)) {
-            $this->_error("No Endpoint: $this->_endpoint", 404);
+            $this->error("No Endpoint: $this->_endpoint", 404);
         }
 
         $this->_endpoint = array_shift($this->_args);
@@ -74,7 +74,7 @@ class Entrypoint
             } else if ($_SERVER['HTTP_X_HTTP_METHOD'] == 'PUT') {
                 $this->_method = 'PUT';
             } else {
-                $this->_error("Method not recognized", 501);
+                $this->error("Method not recognized", 501);
             }
         }
 
@@ -88,7 +88,7 @@ class Entrypoint
                 $this->_request = $this->_cleanInputs($this->_args);
                 break;
             default:
-                $this->_error("Invalid Method $this->_method", 405);
+                $this->error("Invalid Method $this->_method", 405);
                 break;
         }
 
@@ -114,32 +114,16 @@ class Entrypoint
         return $clean_input;
     }
 
-    /**
-     * @Deprecated
-     */
-    private function _prepareData()
-    {
-          $input = "";
-
-          $fp   = fopen("php://input", "r");
-          while (!feof($fp)) {
-              $input .= fread($fp, 1024);
-          }
-          fclose($fp);
-
-          $this->_data = json_decode($input);
-    }
-
     public function run()
     {
         $endpoint_name = "LORIS\RestAPI\\" . $this->_endpoint;
         if (!class_exists($endpoint_name)) {
-            $this->_error("No Endpoint: $this->_endpoint", 404);
+            $this->error("No Endpoint: $this->_endpoint", 404);
         }
 
         $function_name = 'handle' . $this->_method;
         if (!is_callable(array($endpoint_name, $function_name))) {
-            $this->_error('Endpoint interface not implemented', 50);
+            $this->error('Endpoint interface not implemented', 50);
         }
 
         try {
@@ -158,13 +142,13 @@ class Entrypoint
             }
 
         } catch (\AccessDeniedException $e) {
-            $this->_error($e->getMessage(), 401);
+            $this->error($e->getMessage(), 401);
         } catch (\Exception $e) {
-            $this->_error("Unknown Error", 520);
+            $this->error("Unknown Error", 520);
         } catch (\Error $e) {
             // TODO :: Security check : Is is safe to display any Fatal error in
             // The repsonse body?
-            $this->_error($e->getMessage());
+            $this->error($e->getMessage());
         }
     }
 
@@ -185,7 +169,7 @@ class Entrypoint
         }
     }
 
-    private function _response($data, $status = 200) {
+    public static function response($data, $status = 200) {
         switch ($status) {
             case 100: $text = 'Continue'; break;
             case 101: $text = 'Switching Protocols'; break;
@@ -229,7 +213,7 @@ class Entrypoint
             break;
         }
         
-        $this->_header("HTTP/1.1 " . $status . " " . $text);
+        self::_header("HTTP/1.1 " . $status . " " . $text);
         print json_encode($data);
     }
 
@@ -240,11 +224,11 @@ class Entrypoint
      *
      * @return none
      */
-    private function _error($msg, $status = 500)
+    public static function error($msg, $status = 500)
     {
-        $this->_response(['error' => $msg], $status);
+        self::response(['error' => $msg], $status);
         error_log("API call existed with 1: " . $msg);
-        $this->_safeExit(1);
+        self::_safeExit(1);
     }
 
     /**
@@ -254,7 +238,7 @@ class Entrypoint
      *
      * @return none, but exits the running program
      */
-    private function _safeExit($code)
+    private static function _safeExit($code)
     {
         if (defined("UNIT_TESTING")) {
             throw new SafeExitException(

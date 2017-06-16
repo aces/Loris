@@ -42,6 +42,7 @@ var_dump(func_get_args());
     {
 var_dump(__FUNCTION__);
 var_dump(func_get_args());
+Entrypoint::error('YO', 402);
     }
 
     /**
