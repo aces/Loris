@@ -112,14 +112,30 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         $searchButton = $this->webDriver->findElement(
             WebDriverBy::Name("filter")
         );
-
+        //search exist data
         $searchButton->click();
         
         $name = $this->webDriver->executescript(
                   "return document.querySelector".
                   "('#dynamictable > tbody > tr > td:nth-child(3)').textContent"
                 );
-            $this->assertContains("TestParameterNotRealMAGICNUMBER335", $name);     
+            $this->assertContains("TestParameterNotRealMAGICNUMBER335", $name);    
+
+        //search no exist data
+        $searchKey[0]->sendKeys("noExist");
+        $searchButton = $this->webDriver->findElement(
+            WebDriverBy::Name("filter")
+        );
+
+        $searchButton->click();
+
+        $name = $this->webDriver->executescript(
+                  "return document.querySelector".
+                  "('#dynamictable > tbody').textContent"
+                );
+            $this->assertContains("noExist", $name);
+
+ 
      }        
     /**
       * Testing UI elements when page loads
