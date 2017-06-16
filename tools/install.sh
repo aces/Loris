@@ -83,6 +83,7 @@ elif [[ -x ../composer ]]; then
 else
     echo ""
     echo "PHP Composer does not appear to be installed. Please install it before running this script."
+    echo ""
     echo "(e.g. curl -sS https://getcomposer.org/installer | php)"
     exit 2;
 fi
