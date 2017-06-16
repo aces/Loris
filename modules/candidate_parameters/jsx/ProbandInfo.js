@@ -98,7 +98,7 @@ var ProbandInfo = React.createClass(
       }
 
       var extraParameters = this.state.Data.extra_parameters;
-      var extraParameterFields = extraParameters.map((extraParam) => {
+      var extraParameterFields = extraParameters.map(extraParam => {
         var paramTypeID = extraParam.ParameterTypeID;
         var name = 'PTID' + paramTypeID;
         var value = this.state.Data.parameter_values[paramTypeID];
@@ -114,8 +114,7 @@ var ProbandInfo = React.createClass(
               selectOptions[type] = type;
             });
 
-            return(
-                  <SelectElement
+            return (<SelectElement
                   label={extraParam.Description}
                   name={name}
                   options={selectOptions}
@@ -124,11 +123,9 @@ var ProbandInfo = React.createClass(
                   ref={name}
                   disabled={disabled}
                   />
-          );
-            break;
+            );
           case "dat":
-            return(
-              <DateElement
+            return (<DateElement
               label={extraParam.Description}
               name={name}
               value={value}
@@ -136,11 +133,9 @@ var ProbandInfo = React.createClass(
               ref={name}
               disabled={disabled}
                   />
-          );
-            break;
+            );
           default:
-            return(
-              <TextareaElement
+            return (<TextareaElement
               label={extraParam.Description}
               name={name}
               value={value}
@@ -148,7 +143,7 @@ var ProbandInfo = React.createClass(
               ref={name}
               disabled={disabled}
               />
-          );
+            );
         }
       });
 
@@ -216,6 +211,7 @@ var ProbandInfo = React.createClass(
               label="Age Difference (months)"
               text={this.state.Data.ageDifference.toString()}
             />
+            {extraParameterFields}
             {updateButton}
           </FormElement>
         </div>
