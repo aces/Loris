@@ -35,6 +35,9 @@ function changeVisitLabels()
 	    var $instrument_dropdown = $('#instrument');
 	    for (var i = 0; i < data.length; i++){
 		$instrument_dropdown.append(new Option(data[i], data[i]));
+            if(data[i]== instrument_dropdown_value) {
+                $('#instrument').val(data[i]);
+            }
 	    }
 	},
         error: function (xhr, desc, err){

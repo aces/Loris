@@ -1,3 +1,4 @@
+import {Tabs, TabPane} from 'Tabs';
 /* global Instrument */
 /* exported RInstrumentBuilderApp */
 

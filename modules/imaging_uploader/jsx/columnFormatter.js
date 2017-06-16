@@ -1,6 +1,6 @@
 /* exported formatColumn */
 
-loris.hiddenHeaders = [];
+loris.hiddenHeaders = ['PatientName'];
 
 /**
  * Modify behaviour of specified column cells in the Data Table component
@@ -78,6 +78,27 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     }
   }
 
+  if (column === 'Number Of MincCreated') {
+    let violatedScans;
+    if (row['Number Of MincCreated'] - row['Number Of MincInserted'] > 0) {
+      let numViolatedScans =
+           row['Number Of MincCreated'] - row['Number Of MincInserted'];
+
+      let patientName = row.PatientName;
+      violatedScans = <a onClick={openViolatedScans.bind(null, patientName)}>
+         ({numViolatedScans} violated scans)
+       </a>;
+    }
+
+    return (
+         <td style={cellStyle}>
+             {cell}
+             &nbsp;
+             {violatedScans}
+         </td>
+    );
+  }
+
   /**
    * Handles clicks on 'Number Of MincInserted' cells
    *
@@ -87,6 +108,18 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   function handleClick(dccid, e) {
     loris.loadFilteredMenuClickHandler('imaging_browser/', {
       DCCID: dccid
+    })(e);
+  }
+
+    /**
+     * Opens MRI Violations for when there are violated scans
+     *
+     * @param {string} patientName - Patient name of the form PSCID_DCCID_VisitLabel
+     * @param {object} e - event info
+     */
+  function openViolatedScans(patientName, e) {
+    loris.loadFilteredMenuClickHandler('mri_violations/', {
+      PatientName: patientName
     })(e);
   }
 

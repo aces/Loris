@@ -236,7 +236,7 @@ abstract class NDB_Notifier_Abstract
         $user =& User::singleton();
 
         //array of sites concerned
-        $sites_concerned =  $user->getCenterID();
+        $sites_concerned =  $user->getCenterIDs();
         $sql_sites       =implode(",", $sites_concerned);
 
         // query needs to take into account the notified user permissions.

@@ -194,7 +194,6 @@ class NDB_BVL_Feedback
         $query .= " LIMIT 1";
 
         $result = $db->pselect($query, $qparams);
-
         if (!is_array($result) || count($result) == 0) {
             throw new Exception(
                 "Error, unable to select data for the feedback object"
@@ -202,9 +201,11 @@ class NDB_BVL_Feedback
         }
 
         $this->_feedbackCandidateProfileInfo['CandID'] = $result[0]['CandID'];
-        if (isset($result[0]['SessionID'])) {
+        if (isset($result[0]['SessionID'])
+            || isset($this->_feedbackObjectInfo['SessionID'])
+        ) {
             $this->_feedbackCandidateProfileInfo['SessionID']
-                = $result[0]['SessionID'];
+                = $result[0]['SessionID'] ?? $this->_feedbackObjectInfo['SessionID'];
         }
     }
 

@@ -93,6 +93,9 @@ class LorisForm
         if (isset($attribs['disabled'])) {
             $el['disabled'] = true;
         }
+        if (isset($attribs['readonly'])) {
+            $el['readonly'] = true;
+        }
         if (isset($attribs['required']) && $attribs['required'] === true) {
             $el['required'] = true;
         }
@@ -877,11 +880,15 @@ class LorisForm
     {
         $cls      = '';
         $disabled = '';
+        $readonly = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
         if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
+        }
+        if (isset($el['readonly'])) {
+            $readonly = 'readonly';
         }
         $value = $this->getValue($el['name']);
         return "<input name=\"$el[name]\" type=\"$type\" $cls"
@@ -907,6 +914,8 @@ class LorisForm
                 : ''
               )
             . $disabled
+            . ' '
+            . $readonly
             .">";
     }
 
