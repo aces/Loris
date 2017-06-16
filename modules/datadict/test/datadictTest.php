@@ -84,6 +84,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     function testDatadictDoespageLoad()
     {
         $this->webDriver->get($this->url . "/datadict/");
+        sleep(160);
                 $this->webDriver->wait(120, 1000)->until(
                     WebDriverExpectedCondition::presenceOfElementLocated(
                         WebDriverBy::Name("keyword")
@@ -121,6 +122,32 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
                 );
             $this->assertContains("TestParameterNotRealMAGICNUMBER335", $name);    
      }        
+    /**
+     * Testing keyword filter with testing data not case-sensitive
+     *
+     * @return void
+     */
+    function testDataDictSearchKeywordFiltersnotCaseSensitvie()
+    {
+        $this->webDriver->get($this->url . "/datadict/");
+
+        $searchKey = $this->webDriver->findElements(
+            WebDriverBy::Name("keyword")
+        );
+
+        $searchKey[0]->sendKeys("notrealMAGICNUMBER335");
+        $searchButton = $this->webDriver->findElement(
+            WebDriverBy::Name("filter")
+        );
+        //search exist data
+        $searchButton->click();
+
+        $name = $this->webDriver->executescript(
+                  "return document.querySelector".
+                  "('#dynamictable > tbody > tr > td:nth-child(3)').textContent"
+                );
+            $this->assertContains("TestParameterNotRealMAGICNUMBER335", $name);
+     }
     /**
      * Testing keyword filter without testing data
      *
