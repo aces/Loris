@@ -98,7 +98,7 @@ var ProbandInfo = React.createClass(
       }
 
       var extraParameters = this.state.Data.extra_parameters;
-      var extraParameterFields = extraParameters.map(function(extraParam) {
+      var extraParameterFields = extraParameters.map((extraParam) => {
         var paramTypeID = extraParam.ParameterTypeID;
         var name = 'PTID' + paramTypeID;
         var value = this.state.Data.parameter_values[paramTypeID];
@@ -114,7 +114,7 @@ var ProbandInfo = React.createClass(
               selectOptions[type] = type;
             });
 
-            extraParameterFields.push(
+            return(
                   <SelectElement
                   label={extraParam.Description}
                   name={name}
@@ -127,7 +127,7 @@ var ProbandInfo = React.createClass(
           );
             break;
           case "dat":
-            extraParameterFields.push(
+            return(
               <DateElement
               label={extraParam.Description}
               name={name}
@@ -139,7 +139,7 @@ var ProbandInfo = React.createClass(
           );
             break;
           default:
-            extraParameterFields.push(
+            return(
               <TextareaElement
               label={extraParam.Description}
               name={name}
