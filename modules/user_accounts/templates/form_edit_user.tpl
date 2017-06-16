@@ -296,6 +296,11 @@ $(document).ready(function() {
     	<div class="col-sm-10">
     		{$form.CenterIDs.html}
     	</div>
+        {if $form.errors.sites_group}
+            <div class="col-sm-offset-2 col-xs-12">
+                <font class="form-error">{$form.errors.sites_group}</font>
+            </div>
+        {/if}
     </div>
         {if $form.errors.examiner_sites}
         <div class="row form-group form-inline form-inline has-error">
