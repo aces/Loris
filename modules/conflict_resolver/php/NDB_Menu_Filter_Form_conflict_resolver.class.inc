@@ -76,7 +76,6 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                     array('hash' => $hash)
                 );
                 if (!empty($row)) {
-
                     // insert into conflicts_resolved
                     $user1         = $DB->pselectOne(
                         "SELECT UserID FROM flag WHERE CommentID=:CID",
@@ -130,17 +129,6 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                     );
 
                     $TableName = $row['TableName'];
-                    $date      = explode(
-                        '-',
-                        isset($setArray['Date_taken']) ?
-                            $setArray['Date_taken'] :
-                            null
-                    );
-                    $dateArray = array(
-                                  'Y' => $date[0],
-                                  'M' => isset($date[1]) ? $date[1] : null,
-                                  'd' => isset($date[2]) ? $date[2] : null,
-                                 );
 
                     $Instrument = NDB_BVL_Instrument::factory(
                         $TableName,
@@ -152,7 +140,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                         //calculate candidate age if Date_taken was changed
                         if ($row['FieldName'] == 'Date_taken') {
                             $Instrument->_saveValues(
-                                array('Date_taken' => $dateArray)
+                                array('Date_taken' => $setArray['Date_taken'])
                             );
                         }
 
@@ -174,7 +162,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                         //calculate candidate age if Date_taken was changed
                         if ($row['FieldName'] == 'Date_taken') {
                             $Instrument->_saveValues(
-                                array('Date_taken' => $dateArray)
+                                array('Date_taken' => $setArray['Date_taken'])
                             );
                         }
 
