@@ -120,23 +120,35 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
                   "('#dynamictable > tbody > tr > td:nth-child(3)').textContent"
                 );
             $this->assertContains("TestParameterNotRealMAGICNUMBER335", $name);    
+     }        
+    /**
+     * Testing keyword filter without testing data
+     *
+     * @return void
+     */
+    function testDataDictSearchKeywordFiltersWithoutData()
+    {
+        $this->webDriver->get($this->url . "/datadict/");
 
-        //search no exist data
+        $searchKey = $this->webDriver->findElements(
+            WebDriverBy::Name("keyword")
+        );
+
         $searchKey[0]->sendKeys("noExist");
         $searchButton = $this->webDriver->findElement(
             WebDriverBy::Name("filter")
         );
-
+        //search exist data
         $searchButton->click();
 
-        $name = $this->webDriver->executescript(
+        $res = $this->webDriver->executescript(
                   "return document.querySelector".
-                  "('#dynamictable > tbody').textContent"
+                  "('#datatable > div > strong').textContent"
                 );
-            $this->assertContains("noExist", $name);
+        $this->assertContains("No result found.", $res);
 
- 
-     }        
+     }
+
     /**
       * Testing UI elements when page loads
       *
