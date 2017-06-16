@@ -86,7 +86,6 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                         "SELECT UserID FROM flag WHERE CommentID=:CID",
                         array('CID' => $row['CommentId2'])
                     );
-
                     $resolutionLog = array(
                                       'UserID'         => $user->getUsername(),
                                       'User1'          => $user1,

@@ -284,7 +284,6 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         $limit          = " LIMIT $resultsPerPage"
             ." OFFSET " . (($pageNum-1)*$resultsPerPage);
         $result         = $DB->pselect($query . $limit, $qparams);
-        
         // OVERRIDE START
         foreach ($result as $k => $r) {
             if ($r['Question'] === 'Examiner') {
