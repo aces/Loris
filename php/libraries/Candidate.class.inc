@@ -86,7 +86,8 @@ class Candidate
         $db = $factory->database();
 
         // get candidate data from database
-        $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, c.EDC, c.Gender,
+        $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, 
+            c.EDC, c.Gender, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
             c.Active, u1.Real_name as RegisteredBy, c.UserID, c.ProjectID
             FROM candidate as c

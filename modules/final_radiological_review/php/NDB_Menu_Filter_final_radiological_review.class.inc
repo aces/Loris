@@ -142,6 +142,15 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
             WHEN r.PVS <> r.PVS2 THEN 'prim_second'
             ELSE 'false' END)";
 
+        $DB = Database::singleton();
+        if ($DB->tableExists('radiology_review') === false) {
+            throw new LorisException(
+                "Table 'radiology_review' does not exist."
+                . " Please have this instrument set up in"
+                . " order to use this module properly."
+            );
+        }
+
         $this->query = " FROM radiology_review orig
             LEFT JOIN final_radiological_review r ON (r.CommentID=orig.CommentID)
             JOIN flag f ON (f.CommentID=orig.CommentID)

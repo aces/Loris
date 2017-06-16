@@ -55,6 +55,46 @@ class NDB_Page
     var $defaults = array();
 
     /**
+     * If true, the default display function will not try to load any template.
+     * This is intended to be used with, for instance, pages that completely
+     * construct the DOM from javascript.
+     */
+    var $skipTemplate = false;
+
+    /**
+     * Template data to be passed to Smarty.
+     *
+     * FIXME: This should be private to ensure users go through the getter and setter
+     * methods to safely update the template data, but all references that directly
+     * use tpl_data must be updated first.
+     */
+    protected $tpl_data = array();
+
+    /**
+     * Safely sets a smarty template variable.
+     *
+     * @param string $name  The name of the template variable to set
+     * @param string $value The (unescaped, unsafe) value to set the template
+     *                      variable to
+     *
+     * @return void
+     */
+    function setTemplateVar($name, $value)
+    {
+        $this->tpl_data[$name] = htmlspecialchars($value);
+    }
+
+    /**
+     * Return the template data for this page.
+     *
+     * @return array Mapping of variable names to template value.
+     */
+    function getTemplateData()
+    {
+        return $this->tpl_data;
+    }
+
+    /**
      * Does the setup required for this page. By default, sets up elements
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
@@ -390,17 +430,18 @@ class NDB_Page
     /**
      * Creates a QuickForm text element but does not add it to the form
      *
-     * @param string $field The field name for this text element
-     * @param string $label The label to attach to the element
-     * @param array  $attr  Extra HTML attributes to add to the element
+     * @param string $field   The field name for this text element
+     * @param string $label   The label to attach to the element
+     * @param array  $attribs Extra HTML attributes to add to the element
      *
      * @return HTML_QuickForm Text element
      */
     function createText(
         $field,
         $label=null,
-        $attr=array('class' => 'form-control input-sm')
+        $attribs=array()
     ) {
+        $attr =array_merge($attribs, array('class' => 'form-control input-sm'));
         return $this->form->createElement("text", $field, $label, $attr);
     }
 
@@ -492,11 +533,13 @@ class NDB_Page
     /**
      * Displays the form
      *
-     * @return void
-     * @access public
+     * @return a string of the content to be inserted into the template
      */
     function display()
     {
+        if ($this->skipTemplate) {
+            return "";
+        }
         if (!$this->form->isFrozen()) {
             // hidden values
               $this->addHidden('test_name', $this->name);
