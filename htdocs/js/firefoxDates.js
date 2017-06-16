@@ -1,3 +1,5 @@
+var Modernizr = require('modernizr/modernizr.js');
+
 $(document).ready(function() {
   // If <input type="date" /> is not supported (i.e. Firefox), load
   // jquery date-picker
@@ -11,7 +13,9 @@ $(document).ready(function() {
       constrainInput: true
     });
     dateInputs.attr('placeholder', 'yyyy-mm-dd');
-    dateInputs.on('keydown paste', function(e) { e.preventDefault(); });
+    dateInputs.on('keydown paste', function(e) {
+      e.preventDefault();
+    });
   }
   if (!Modernizr.inputtypes.month) {
     var monthInputs = $('input[type=month]');
@@ -27,7 +31,9 @@ $(document).ready(function() {
       }
     });
     monthInputs.attr('placeholder', 'yyyy-mm');
-    monthInputs.on('keydown paste', function(e) { e.preventDefault(); });
+    monthInputs.on('keydown paste', function(e) {
+      e.preventDefault();
+    });
   }
 });
 
