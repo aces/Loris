@@ -16,7 +16,7 @@
 namespace LORIS\RestAPI;
 
 /**
- * The EntryPoint is the controler of the flow of operations.
+ * The Entrypoint is the controler of the flow of operations.
  *
  * PHP Version 7
  *
@@ -26,7 +26,7 @@ namespace LORIS\RestAPI;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class EntryPoint
+class Entrypoint
 {
     /**
      * The HTTP method this request was made in, either GET, POST, PUT or DELETE
@@ -79,21 +79,22 @@ class EntryPoint
         }
 
         switch($this->_method) {
-            case 'DELETE':
             case 'POST':
-                $this->_request = $this->_cleanInputs($_POST);
-                break;
-            case 'GET':
-                $this->_request = $this->_cleanInputs($_GET);
-                break;
             case 'PUT':
-                $this->_request = $this->_cleanInputs($_GET);
-                $this->_file = file_get_contents("php://input");
+            case 'DELETE':
+                $input = json_decode(file_get_contents("php://input"),true);
+                $this->_file = $this->_cleanInputs($input);
+            case 'GET':
+                $this->_request = $this->_cleanInputs($this->_args);
                 break;
             default:
                 $this->_error("Invalid Method $this->_method", 405);
                 break;
         }
+
+        unset($_GET);
+        unset($_POST);
+        unset($_REQUEST);
 
         $client = new \NDB_Client();
 
@@ -108,30 +109,9 @@ class EntryPoint
                 $clean_input[$k] = $this->_cleanInputs($v);
             }
         } else {
-            $clean_input = trim(strip_tags($data));
+            $clean_input = trim($data);
         }
         return $clean_input;
-    }
-
-    /**
-     * @Deprecated
-     */
-    private function _prepareParams()
-    {
-        // extract params from $_REQUEST
-        $raw = explode('/',$_REQUEST['req']);
-
-        // Trim them
-        $trimed = array_map('trim', $raw);
-
-        // Remove empty strings
-        $filtered = array_filter($trimed, 'strlen');
-
-        unset($_GET);
-        unset($_POST);
-        unset($_REQUEST);
-
-        $this->_params = $filtered;
     }
 
     /**
@@ -152,22 +132,39 @@ class EntryPoint
 
     public function run()
     {
-        $handler_name = "LORIS\RestAPI\\" . $this->_endpoint;
-
-        if (!class_exists($handler_name)) {
+        $endpoint_name = "LORIS\RestAPI\\" . $this->_endpoint;
+        if (!class_exists($endpoint_name)) {
             $this->_error("No Endpoint: $this->_endpoint", 404);
+        }
+
+        $function_name = 'handle' . $this->_method;
+        if (!is_callable(array($endpoint_name, $function_name))) {
+            $this->_error('Endpoint interface not implemented', 50);
         }
 
         try {
 
-            $handler = new $handler_name();
-            $handler->{$this->_method}($this->_request, $this->_file);
+            $endpoint = new $endpoint_name();
+
+            switch ($this->_method) {
+                case 'GET':
+                    $endpoint->{$function_name}($this->_request);
+                    break;
+                case 'POST':
+                case 'PUT':
+                case 'DELETE':
+                    $endpoint->{$function_name}($this->_request, $this->_file);
+                    break;
+            }
 
         } catch (\AccessDeniedException $e) {
             $this->_error($e->getMessage(), 401);
-
         } catch (\Exception $e) {
             $this->_error("Unknown Error", 520);
+        } catch (\Error $e) {
+            // TODO :: Security check : Is is safe to display any Fatal error in
+            // The repsonse body?
+            $this->_error($e->getMessage());
         }
     }
 
@@ -246,6 +243,7 @@ class EntryPoint
     private function _error($msg, $status = 500)
     {
         $this->_response(['error' => $msg], $status);
+        error_log("API call existed with 1: " . $msg);
         $this->_safeExit(1);
     }
 
