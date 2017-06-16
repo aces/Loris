@@ -111,12 +111,10 @@ var ProbandInfo = React.createClass(
               types = types.slice(0, -1);
               types = types.replace(/'/g, '');
               types = types.split(',');
-              var selectOptions = [];
-              for (var key3 in types) {
-                if (types.hasOwnProperty(key3)) {
-                  selectOptions[types[key3]] = types[key3];
-                }
-              }
+              var selectOptions = {};
+              types.forEach(function(type) {
+                selectOptions[type] = type;
+              });
 
               extraParameterFields.push(
                     <SelectElement
@@ -125,8 +123,8 @@ var ProbandInfo = React.createClass(
                     options={selectOptions}
                     value={value}
                     onUserInput={this.setFormData}
-                ref={name}
-                disabled={disabled}
+                    ref={name}
+                    disabled={disabled}
                     />
             );
               break;
