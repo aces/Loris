@@ -22,7 +22,7 @@ $client->initialize(__DIR__ . "/../../../project/config.xml");
 
 $cdb = CouchDB::singleton();
 if ($_REQUEST['category']) {
-    $category = $_REQUEST['category'];
+    $category = urlencode($_REQUEST['category']);
 
     $results = $cdb->queryView(
         "DQG-2.0",
@@ -34,7 +34,7 @@ if ($_REQUEST['category']) {
         )
     );
 } else if ($_REQUEST['key']) {
-    $key = explode(',', $_REQUEST['key']);
+    $key = explode(',', urlencode($_REQUEST['key']));
     // error_log($key);
 
     $results = $cdb->queryView(
