@@ -85,7 +85,6 @@
   var checkOverflow = function(wrapper, rightLink, leftLink, headCol) {
     var staticCol = (headCol !== undefined);
     var element = wrapper;
-    var table = wrapper.children[0];
     var headers = wrapper.children[3];
 
     if ((element.offsetHeight < element.scrollHeight) ||
@@ -121,6 +120,21 @@
       $(rightLink).hide();
     }
   };
+  var headerAlign = function(table, headers) {
+    var tableHeaders = $(table).find("thead").children().children();
+    var fixedHeaders = $(headers).find("thead").children().children();
+
+    for (var i = 0; i < tableHeaders.length; i++) {
+      if (!$(fixedHeaders[i]).hasClass("static-col")) {
+        var temp = $(tableHeaders[i]).width();
+        $(fixedHeaders[i]).width(temp);
+        temp = $(tableHeaders[i]).css("width");
+        $(fixedHeaders[i]).css({'min-width': temp});
+      }
+    }
+
+    $(headers).width($(table).parent().width());
+  };
   var wrapTable = function(table) {
     $(table).wrap("<div class=\"row\"></div>");
     // Add wrapper code necessary for bootstrap carousel
@@ -132,9 +146,9 @@
 
     var headers = document.createElement("div");
     $(headers).addClass("frozenHeader");
-    $(headers).html("<table><thead>"
-        + $(table).find("thead").html()
-        + "</thead><table>"
+    $(headers).html("<table><thead>" +
+        $(table).find("thead").html() +
+        "</thead><table>"
     );
     $($(headers).children()[0]).addClass($(table).attr("class"));
     $($(headers).children()[0]).removeClass("dynamictable");
@@ -149,23 +163,6 @@
       '</a><a class="right carousel-control" href="#" data-slide="next">' +
       '<span class="glyphicon glyphicon-chevron-right"></span></a>'
     );
-
-    
-  };
-  var headerAlign = function(table, headers) {
-    var tableHeaders = $(table).find("thead").children().children();
-    var fixedHeaders = $(headers).find("thead").children().children();
-
-    for (var i = 0; i < tableHeaders.length; i++) {
-      if(!$(fixedHeaders[i]).hasClass("static-col")) {
-        var temp = $(tableHeaders[i]).width();
-        $(fixedHeaders[i]).width(temp);
-        temp = $(tableHeaders[i]).css("width");
-        $(fixedHeaders[i]).css({ 'min-width' : temp });
-      }
-    }
-
-    $(headers).width($(table).parent().width());
   };
   var unwrapTable = function(table) {
     // Delete links for carousel
@@ -176,6 +173,20 @@
     $(table).unwrap();
     // Remove row wrapper
     $(table).unwrap();
+  };
+  var addFrozenHeaderColm = function(frozenHeader) {
+    var frozenCell = document.createElement("div");
+    var headerCell = $(frozenHeader).find(".static-col");
+    $(frozenCell).addClass("static-col colm-static headerColm");
+    $(frozenCell).html($(headerCell).html());
+    // add 18px since height is beting set with padding included
+    $(frozenCell).height($($(frozenHeader).find("th")[0]).height() + 18);
+    var temp = $(frozenCell).css("height");
+    $(headerCell).css({padding: '0px'});
+    var top = $(frozenHeader).css("top");
+    $(frozenCell).css({'min-height': temp, "top": top});
+    $(frozenCell).html($($(".dynamictableFrozenColumn")[0]).html());
+    $(frozenHeader).after(frozenCell);
   };
   var freezeColm = function(tableID, colmStatic) {
     var statColPos = $("." + tableID + "FrozenColumn").offset().left;
@@ -194,7 +205,7 @@
           }
         });
         $("." + tableID + "FrozenColumn").removeClass("static-col colm-static");
-        $(header).find(".dynamictableFrozenColumn").css({ 'padding' : '8px' });
+        $(header).find(".dynamictableFrozenColumn").css({padding: "8px"});
         $(".headerColm").remove();
         return false;
       }
@@ -206,8 +217,8 @@
         }
       });
       $("." + tableID + "FrozenColumn").addClass("static-col colm-static");
-      if($(header).parent().find(".headerColm").length == 0
-        && $(header).parent().find(".frozenHeader").is(":visible")
+      if ($(header).parent().find(".headerColm").length === 0 &&
+        $(header).parent().find(".frozenHeader").is(":visible")
       ) {
         addFrozenHeaderColm(header);
       }
@@ -215,20 +226,6 @@
     }
     return colmStatic;
   };
-  var addFrozenHeaderColm = function(frozenHeader) {
-    var frozenCell = document.createElement("div");
-    var headerCell = $(frozenHeader).find(".static-col");
-    $(frozenCell).addClass("static-col colm-static headerColm");
-    $(frozenCell).html($(headerCell).html());
-    // add 18px since height is beting set with padding included
-    $(frozenCell).height($($(frozenHeader).find("th")[0]).height() + 18);
-    var temp = $(frozenCell).css("height");
-    $(headerCell).css({ 'padding' : '0px' });
-    var top = $(frozenHeader).css("top");
-    $(frozenCell).css({ 'min-height' : temp, "top" : top });
-    $(frozenCell).html($($(".dynamictableFrozenColumn")[0]).html());
-    $(frozenHeader).after(frozenCell);
-  }
 
   $.fn.DynamicTable = function(options) {
     this.filter("table").each(function() {
@@ -261,11 +258,11 @@
       });
 
       window.addEventListener("scroll", function() {
-        var thead   = $(table).find("thead");
-        var eTop    = $(thead).offset().top - $(window).scrollTop();  // gets the position from the top
+        var thead = $(table).find("thead");
+        var eTop = $(thead).offset().top - $(window).scrollTop();  // gets the position from the top
         var headers = $($(table).parent().find("table")[1]).parent();
-        var height  = $(table).height() - $(headers).height();
-        if(eTop <= 50 && height + eTop >= 50) {
+        var height = $(table).height() - $(headers).height();
+        if (eTop <= 50 && height + eTop >= 50) {
           // near LORIS header
           var top = 0;
           if (eTop < 0) {
@@ -273,18 +270,18 @@
           } else {
             top = 50 - eTop;
           }
-          $(headers).css({'top' : top});
-          $(".headerColm").css({'top' : top});
+          $(headers).css({top: top});
+          $(".headerColm").css({top: top});
           $(headers).show();
           headerAlign(table, headers);
-          if($(table).find(".static-col").length != 0
-            && $(table).parent().find(".headerColm").length == 0
+          if ($(table).find(".static-col").length !== 0 &&
+            $(table).parent().find(".headerColm").length === 0
           ) {
             addFrozenHeaderColm(headers);
           }
         } else {
           $(headers).hide();
-          $(headers).find(".dynamictableFrozenColumn").css({ 'padding' : '8px' });
+          $(headers).find(".dynamictableFrozenColumn").css({padding: '8px'});
           $(".headerColm").remove();
         }
       });
