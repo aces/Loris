@@ -34,8 +34,7 @@ if ($_REQUEST['category']) {
         )
     );
 } else if ($_REQUEST['key']) {
-    $key = explode(',', urlencode($_REQUEST['key']));
-    // error_log($key);
+    $key = explode('%2C', urlencode($_REQUEST['key']));
 
     $results = $cdb->queryView(
         "DQG-2.0",
