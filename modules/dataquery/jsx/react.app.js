@@ -471,7 +471,7 @@ var DataQueryApp = React.createClass({
         for (var i = 0; i < fieldsList.length; i++) {
             var that = this;
             $.ajax({
-                url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=datadictionary.php",
+                url: loris.BaseURL + "/dataquery/ajax/datadictionary.php",
                 success: function(data) {
                     if(data[0].value.IsFile) {
                         that.setState(function(state){
