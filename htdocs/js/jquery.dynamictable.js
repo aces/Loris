@@ -137,6 +137,7 @@
         + "</thead><table>"
     );
     $($(headers).children()[0]).addClass($(table).attr("class"));
+    $($(headers).children()[0]).removeClass("dynamictable");
     $(table).after($(headers));
     $(headers).hide();
     headerAlign(table, headers);
@@ -148,6 +149,8 @@
       '</a><a class="right carousel-control" href="#" data-slide="next">' +
       '<span class="glyphicon glyphicon-chevron-right"></span></a>'
     );
+
+    
   };
   var headerAlign = function(table, headers) {
     var tableHeaders = $(table).find("thead").children().children();
