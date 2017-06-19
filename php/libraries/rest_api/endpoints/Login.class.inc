@@ -31,22 +31,22 @@ class Login implements Endpoint
      * Handle a POST request
      *
      * @param $request array Pass by reference array of the request params
-     * @param $file array The content of php://input
+     * @param $input array The content of php://input
      * @param $context a Object Value to use as context
      *
      * @return none
      */
-    public function handlePOST(array &$req, array &$file, \stdClass &$ctx = NULL)
+    public function handlePOST(array &$req, array &$input, \stdClass &$ctx = NULL)
     {
         $required_fields = array(
             'username',
             'password'
         );
-        if (!$this->_isValidPostData($file))  {
+        if (!$this->_isValidPostData($input))  {
             Entrypoint::error('Invalid input', 400);
         } 
-        $username = $file['username'];
-        $password = $file['password'];
+        $username = $input['username'];
+        $password = $input['password'];
 
         $login = new \SinglePointLogin();
         if ($login->passwordAuthenticate($username, $password ,false)) {
@@ -63,12 +63,12 @@ class Login implements Endpoint
      * Handle a PUT request
      *
      * @param $request array Pass by reference array of the request params
-     * @param $file array The content of php://input
+     * @param $input array The content of php://input
      * @param $context a Object Value to use as context
      *
      * @return none
      */
-    public function handlePUT(array &$req, array &$file, \stdClass &$ctx = NULL)
+    public function handlePUT(array &$req, array &$input, \stdClass &$ctx = NULL)
     {
         Entrypoint::header('Allow: POST');
         Entrypoint::error('Method Not Allowed', 405);
@@ -78,12 +78,12 @@ class Login implements Endpoint
      * Handle a DELETE request
      *
      * @param $request array Pass by reference array of the request params
-     * @param $file array The content of php://input
+     * @param $input array The content of php://input
      * @param $context a Object Value to use as context
      *
      * @return none
      */
-    public function handleDELETE(array &$req, array &$file, \stdClass &$ctx = NULL)
+    public function handleDELETE(array &$req, array &$input, \stdClass &$ctx = NULL)
     {
         Entrypoint::header('Allow: POST');
         Entrypoint::error('Method Not Allowed', 405);

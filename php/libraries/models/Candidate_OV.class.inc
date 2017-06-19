@@ -1,5 +1,5 @@
 <?php
-
+namespace LORIS\Models;
 
  /**
   * Candidate Value Object.

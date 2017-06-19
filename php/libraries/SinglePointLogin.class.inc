@@ -287,7 +287,6 @@ class SinglePointLogin
             }
 
         }
-
         // Now try password validation
 
         // This wasn't a login form, so don't waste any time
@@ -311,7 +310,6 @@ class SinglePointLogin
         $config  = $factory->config();
 
         $sharedKey = $config->getSetting("JWTKey");
-
         //$jwt = \Firebase\JWT\JWT::encode($token, $sharedKey);
         try {
             $decoded = \Firebase\JWT\JWT::decode($token, $sharedKey, array("HS256"));
