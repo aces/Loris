@@ -165,7 +165,7 @@ class FeedbackMRI
                       FROM feedback_mri_comments
                   WHERE ".$this->_buildWhere();
 
-        $result = $DB->pselect($query, array());
+        $result   = $DB->pselect($query, array());
         $comments = array();
 
         // build the output array

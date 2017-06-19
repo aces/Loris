@@ -88,17 +88,19 @@ class CouchDBMRIImporter
 
         foreach($s as $scan){
             $scantype=$scan['ScanType'];
-            $Query .= ", (SELECT f.File FROM files f
+            $Query  .= ", (SELECT f.File FROM files f
                     LEFT JOIN files_qcstatus fqc USING(FileID)
                     LEFT JOIN mri_scan_type msc ON (msc.ID= f.AcquisitionProtocolID)
               WHERE f.SessionID=s.ID AND msc.Scan_type='$scantype'
-              AND fqc.Selected='true' LIMIT 1)
+              AND fqc.Selected='true' ORDER BY
+              FIND_IN_SET(fqc.QCStatus, 'Fail,Pass') DESC LIMIT 1)
                     as Selected_$scantype,
               (SELECT fqc.QCStatus FROM files f
                     LEFT JOIN files_qcstatus fqc USING(FileID)
                     LEFT JOIN mri_scan_type msc ON(msc.ID= f.AcquisitionProtocolID)
               WHERE f.SessionID=s.ID AND msc.Scan_type='$scantype'
-              AND fqc.Selected='true' LIMIT 1)
+              AND fqc.Selected='true' ORDER BY
+              FIND_IN_SET(fqc.QCStatus, 'Fail,Pass') DESC LIMIT 1)
                      as $scantype"."_QCStatus";
         }
         $Query .= " FROM session s JOIN candidate c USING (CandID)
