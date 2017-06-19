@@ -48,13 +48,12 @@ class Entrypoint
     /**
      * Stores the input of the PUT request
      */
-    private $_file = Null;
+    private $_file = array();
 
     public function __construct()
     {
-        $this->_header("Access-Control-Allow-Origin: *");
-        $this->_header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE");
-        $this->_header("Content-Type: application/json");
+        $this->header("Access-Control-Allow-Origin: *");
+        $this->header("Content-Type: application/json");
 
         $this->_args = explode('/', rtrim($_REQUEST['req'], '/'));
 
@@ -83,6 +82,9 @@ class Entrypoint
             case 'PUT':
             case 'DELETE':
                 $input = json_decode(file_get_contents("php://input"),true);
+                if (!is_array($input)) {
+                    $this->error("Invalid input", 400);
+                }
                 $this->_file = $this->_cleanInputs($input);
             case 'GET':
                 $this->_request = $this->_cleanInputs($this->_args);
@@ -123,7 +125,7 @@ class Entrypoint
 
         $function_name = 'handle' . $this->_method;
         if (!is_callable(array($endpoint_name, $function_name))) {
-            $this->error('Endpoint interface not implemented', 50);
+            $this->error('Endpoint interface not implemented', 501);
         }
 
         try {
@@ -160,10 +162,10 @@ class Entrypoint
      *
      * @return none
      */
-    private function _header($header)
+    public static function header($header)
     {
         if (defined("UNIT_TESTING")) {
-            $this->Headers[] = $header;
+            self::$Headers[] = $header;
         } else {
             header($header);
         }
@@ -213,7 +215,7 @@ class Entrypoint
             break;
         }
         
-        self::_header("HTTP/1.1 " . $status . " " . $text);
+        self::header("HTTP/1.1 " . $status . " " . $text);
         print json_encode($data);
     }
 

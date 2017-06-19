@@ -327,6 +327,38 @@ class SinglePointLogin
     }
 
     /**
+     * Return a valid JWT encoded identification token for the user
+     *
+     * @param string $user The user to return an identification token for
+     *
+     * @return string JWT encoded token
+     */
+    function getEncodedToken($user)
+    {
+        $factory = \NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $www     = $config->getSetting("www");
+        $baseURL = $www['url'];
+
+        $token = array(
+            // JWT related tokens to for the JWT library to validate
+                  "iss"  => $baseURL,
+                  "aud"  => $baseURL,
+            // Issued at
+                  "iat"  => time(),
+                  "nbf"  => time(),
+            // Expire in 1 day
+                  "exp"  => time() + 86400,
+            // Additional payload data
+                  "user" => $user,
+                 );
+
+        $key = $config->getSetting("JWTKey");
+        return \Firebase\JWT\JWT::encode($token, $key, "HS256");
+    }
+
+    /**
      * Checks whether a given username and password are valid
      *
      * @param string $username The username to validate

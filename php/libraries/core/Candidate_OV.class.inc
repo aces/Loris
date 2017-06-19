@@ -28,7 +28,7 @@
 
 
 
-class Candidate {
+class Candidate_VO {
 
     /** 
      * Persistent Instance variables. This data is directly 
@@ -61,22 +61,12 @@ class Candidate {
 
 
     /** 
-     * Constructors. DaoGen generates two constructors by default.
-     * The first one takes no arguments and provides the most simple
-     * way to create object instance. The another one takes one
-     * argument, which is the primary key of the corresponding table.
+     * Constructors. DaoGen generated constructors takes no arguments
+     * and provides the most simple way to create object instance. 
      */
-
-    function Candidate () {
+    function Candidate_VO () {
 
     }
-
-    /* function Candidate ($IDIn) {
-
-          $this->ID = $IDIn;
-
-    } */
-
 
     /** 
      * Get- and Set-methods for persistent variables. The default
@@ -431,7 +421,7 @@ class Candidate {
      * will also have all its attributes cloned.
      */
     function clone() {
-        $cloned = new Candidate();
+        $cloned = new Candidate_VO();
 
         $cloned->setID($this->ID); 
         $cloned->setCandID($this->CandID); 

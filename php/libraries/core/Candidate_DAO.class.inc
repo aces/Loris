@@ -1,5 +1,5 @@
 <?php
-
+namespace LORIS\Models
 
  /**
   * Candidate Data Access Object (DAO).
@@ -27,7 +27,7 @@
 
 
 
-class CandidateDao {
+class Candidate_DAO {
 
 
     /**
@@ -39,7 +39,7 @@ class CandidateDao {
      * clone() method in it!
      */
     function createValueObject() {
-          return new Candidate();
+          return new Candidate_VO();
     }
 
 
@@ -77,7 +77,7 @@ class CandidateDao {
                return false;
           }
 
-          $sql = "SELECT * FROM Candidate WHERE (ID = ".$valueObject->getID().") "; 
+          $sql = "SELECT * FROM candidate WHERE (ID = ".$valueObject->getID().") "; 
 
           if ($this->singleQuery(&$conn, $sql, &$valueObject))
                return true;
@@ -98,7 +98,7 @@ class CandidateDao {
     function loadAll(&$conn) {
 
 
-          $sql = "SELECT * FROM Candidate ORDER BY ID ASC ";
+          $sql = "SELECT * FROM candidate ORDER BY ID ASC ";
 
           $searchResults = $this->listQuery(&$conn, $sql);
 
@@ -122,7 +122,7 @@ class CandidateDao {
      */
     function create(&$conn, &$valueObject) {
 
-          $sql = "INSERT INTO Candidate ( ID, CandID, PSCID, ";
+          $sql = "INSERT INTO candidate ( ID, CandID, PSCID, ";
           $sql = $sql."ExternalID, DoB, EDC, ";
           $sql = $sql."Gender, CenterID, ProjectID, ";
           $sql = $sql."Ethnicity, Active, Date_active, ";
@@ -172,7 +172,7 @@ class CandidateDao {
      */
     function save(&$conn, &$valueObject) {
 
-          $sql = "UPDATE Candidate SET CandID = ".$valueObject->getCandID().", ";
+          $sql = "UPDATE candidate SET CandID = ".$valueObject->getCandID().", ";
           $sql = $sql."PSCID = '".$valueObject->getPSCID()."', ";
           $sql = $sql."ExternalID = '".$valueObject->getExternalID()."', ";
           $sql = $sql."DoB = '".$valueObject->getDoB()."', ";
@@ -226,7 +226,7 @@ class CandidateDao {
                return false;
           }
 
-          $sql = "DELETE FROM Candidate WHERE (ID = ".$valueObject->getID().") ";
+          $sql = "DELETE FROM candidate WHERE (ID = ".$valueObject->getID().") ";
           $result = $this->databaseUpdate(&$conn, $sql);
 
           if ($result != 1) {
@@ -250,7 +250,7 @@ class CandidateDao {
      */
     function deleteAll(&$conn) {
 
-          $sql = "DELETE FROM Candidate";
+          $sql = "DELETE FROM candidate";
           $result = $this->databaseUpdate(&$conn, $sql);
 
           return true;
@@ -267,7 +267,7 @@ class CandidateDao {
      */
     function countAll(&$conn) {
 
-          $sql = "SELECT count(*) FROM Candidate";
+          $sql = "SELECT count(*) FROM candidate";
           $allRows = 0;
 
           $result = $conn->execute($sql);
@@ -295,7 +295,7 @@ class CandidateDao {
     function searchMatching(&$conn, &$valueObject) {
 
           $first = true;
-          $sql = "SELECT * FROM Candidate WHERE 1=1 ";
+          $sql = "SELECT * FROM candidate WHERE 1=1 ";
 
           if ($valueObject->getID() != 0) {
               if ($first) { $first = false; }

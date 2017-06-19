@@ -11,7 +11,7 @@ interface Endpoint
      *
      * @return none, but print result as side-effect
      */
-    public function handleGET(array &$req, \stdClass &$ctx = null);
+    public function handleGET(array &$req, \stdClass &$ctx = NULL);
 
     /**
      * Handle a POST request
@@ -22,7 +22,7 @@ interface Endpoint
      *
      * @return none, but print result and process as side-effect
      */
-    public function handlePOST(array &$req, array &$file, \stdClass &$ctx = null);
+    public function handlePOST(array &$req, array &$file, \stdClass &$ctx = NULL);
 
     /**
      * Handle a PUT request
@@ -33,7 +33,7 @@ interface Endpoint
      *
      * @return none, but print result and update as side-effect
      */
-    public function handlePUT(array &$req, array &$file, \stdClass &$ctx = null);
+    public function handlePUT(array &$req, array &$file, \stdClass &$ctx = NULL);
 
     /**
      * Handle a DELETE request
@@ -44,6 +44,6 @@ interface Endpoint
      *
      * @return none, but print result and delete  as side-effect 
      */
-    public function handleDELETE(array &$req, array &$file, \stdClass &$ctx = null);
+    public function handleDELETE(array &$req, array &$file, \stdClass &$ctx = NULL);
 
 }
