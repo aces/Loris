@@ -1,6 +1,6 @@
 <?php
 /**
- * Implements the ViewDetails subpage of the dicom_archive module.
+ * Implements the user password reset page for LORIS.
  *
  * PHP version 5
  *
@@ -14,7 +14,7 @@
 namespace LORIS\login;
 
 /**
- * Implements the ViewDetails subpage of the dicom_archive module.
+ * Implements the user password reset page for LORIS.
  *
  * @category   Behavioural
  * @package    Main

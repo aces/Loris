@@ -1,6 +1,7 @@
 <?php
 /**
- * Implements the ViewDetails subpage of the dicom_archive module.
+ * Implements the main LORIS user login page to handle authentication
+ * of users.
  *
  * PHP version 5
  *
@@ -14,7 +15,8 @@
 namespace LORIS\login;
 
 /**
- * Implements the ViewDetails subpage of the dicom_archive module.
+ * Implements the main LORIS user login page to handle authentication
+ * of users.
  *
  * @category   Behavioural
  * @package    Main
