@@ -61,11 +61,6 @@ class NDB_Page
      */
     var $skipTemplate = false;
 
-    /*
-     * Additional template parameters to send to smarty.
-     */
-    var $tpl_data = array();
-
     /**
      * Template data to be passed to Smarty.
      *
