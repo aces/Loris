@@ -124,7 +124,7 @@ class ConflictDetector
      *
      * @return null As a side-effect deletes from database
      */
-    function clearConflictsForInstance($commentId)
+    static function clearConflictsForInstance($commentId)
     {
         $deleteWhere = array('CommentId1' => $commentId);
 
