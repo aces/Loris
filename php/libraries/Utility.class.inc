@@ -164,7 +164,7 @@ class Utility
         $DB =& Database::singleton();
 
         // get the list of ethnicities
-        $query = "SELECT DISTINCT Ethnicity 
+        $query = "SELECT DISTINCT Ethnicity
             FROM candidate
             WHERE Ethnicity NOT IN (NULL, '')
             ORDER BY Ethnicity";
@@ -382,6 +382,7 @@ class Utility
      *
      * @note    This should probably be moved to the Candidate class, since it's
      *       only used there to validate the PSCID
+     * @note    This should be removed when user-generated PSCID support is removed
      * @cleanup
      */
     static function structureToPCRE($structure, $siteAbbrev=null)
@@ -500,16 +501,22 @@ class Utility
      * @param integer $age   age in days
      * @param string  $stage study stage (screening or visit)
      *
-     * @return array list of instruments
+     * @return  array list of instruments
+     * @note    Only tools/fix_timepoint_date_problems uses this,
+     *          Is there a way to make it use NDB_BVL_Battery::lookupBattery()?
+     *          I don't know enough about what it is doing at the moment and
+     *          I don't want to devote too much time on this. It would be great
+     *          if we can get rid of this method here.
+     * @cleanup
      */
     static function lookupBattery($age, $stage=null)
     {
         $DB =& Database::singleton();
 
         // craft the select query
-        $query  = "SELECT t.Test_name FROM test_battery AS b, test_names AS t 
-            WHERE t.Test_name=b.Test_name 
-            AND b.AgeMinDays<=:CandAge AND b.AgeMaxDays>=:CandAge 
+        $query  = "SELECT t.Test_name FROM test_battery AS b, test_names AS t
+            WHERE t.Test_name=b.Test_name
+            AND b.AgeMinDays<=:CandAge AND b.AgeMaxDays>=:CandAge
             AND b.Active='Y'";
         $params = array('CandAge' => $age);
 
@@ -546,6 +553,8 @@ class Utility
      * @param mixed $var The variable to be converted to an array.
      *
      * @return array If $var is an array, var, otherwise an array containing $var
+     * @note   Should refactor Settings.class.inc into the appropriate DAO classes
+     *         to eliminate the need for this method - anyhowstep
      */
     static function toArray($var)
     {
@@ -565,6 +574,8 @@ class Utility
      * @return  array If $var is an array, var, otherwise an array containing $var
      * @cleanup This should be removed and all uses converted to toArray
      *          (or vice versa, but toArray seems to be more common in the code)
+     * @note    Should refactor Settings.class.inc into the appropriate DAO classes
+     *          to eliminate the need for this method - anyhowstep
      */
     static function asArray($var)
     {
@@ -572,73 +583,6 @@ class Utility
             return array($var);
         }
         return $var;
-    }
-
-    /**
-     * Explodes an encapsulted, delimited string like
-     * 'hello','my name is \'bob\'', 'etc'
-     *
-     * @param string $seperator unknown
-     * @param string $delimiter unknown
-     * @param string $string    unknown
-     *
-     * @return unknown
-     *
-     * @note    Don't know what the above function comment is supposed to mean,
-     *       so just preserving it for now. Appears to only be used
-     *       by NDB_Form_candidate_parameters and if so, should be moved there.
-     * @cleanup
-     */
-    static function explodeEncapsulated($seperator, $delimiter, $string)
-    {
-        $state        =0;
-        $output       =$string;
-        $output_index =0;
-
-        for ($i=0;$i<strlen($string);$i++) {
-            switch ($string[$i]) {
-            case $delimiter:
-                if ($string[$i-1]!="\\") {
-                    $output =substr_replace($output, "", $output_index, 1);
-                    $output_index--;
-                }
-                break;
-
-            case $seperator:
-                if ($state%2==0) {
-                    $output        =substr_replace($output, "{@}", $output_index, 1);
-                    $output_index +=2;
-                }
-                break;
-            }
-            $output_index++;
-        }
-        $output =str_replace("\\".$delimiter, $delimiter, $output);
-        return explode("{@}", $output);
-    }
-
-
-    /**
-     * Presumably, this does an array_merge and preserves the keys. Unsure
-     * why this exists instead of using built-in PHP functions.
-     * to be used.
-     *
-     * From php.net
-     *
-     * @return  The parameters passed all merged together, with keys preserved?
-     * @note    Function comment written by Dave, not the author of this function.
-     * @note    This function does not appear to be used anymore.
-     * @cleanup
-     */
-    static function arrayMergeKeepKeys()
-    {
-        $arg_list = func_get_args();
-        foreach ((array)$arg_list as $arg) {
-            foreach ((array)$arg as $K => $V) {
-                $Zoo[$K] =$V;
-            }
-        }
-        return $Zoo;
     }
 
     /**
@@ -660,6 +604,10 @@ class Utility
      *                      to null.
      *
      * @return array The same array passed in, after modifications.
+     * @note   This is less a problem with smarty than a problem with the
+     *         front end passing empty strings instead of not passing
+     *         the fields at all; we should find the time to eliminate the need
+     *         for this method in future - anyhowstep
      */
     public static function nullifyEmpty(&$arr, $field)
     {
@@ -667,62 +615,6 @@ class Utility
             $arr[$field] = null;
         }
         return $arr;
-    }
-
-    /**
-     * Now that Loris requires PHP >5.3 places that use this code should be
-     * updated to use a closure.
-     *
-     * Function (previously?) used by stats page(?) for map/reduce to extract
-     * the Test_name from all the rows returned from a database call and
-     * thereby convert from an array of the form
-     *
-     * array(0 => array('Test_name' => value))
-     *
-     * to
-     *
-     * array(0 => value)
-     *
-     *
-     * If this doesn't make sense, see note.
-     *
-     * @param array $Arr A row from an associative array based by array_map
-     *
-     * @return  The name from the given array row.
-     * @note    Function should be removed and code using it cleaned up.
-     * @cleanup
-     */
-    static function flatten($Arr)
-    {
-        return $Arr['Test_name'];
-    }
-
-    /**
-     * Now that Loris requires PHP >5.3 places that use this code should be
-     * updated to use a closure.
-     *
-     * Function (previously?) used by stats page(?) for map/reduce to extract
-     * the Full_name from all the rows returned from a database call and
-     * thereby convert from an array of the form:
-     *
-     * array(0 => array('Full_name' => value))
-     *
-     * to
-     *
-     * array(0 => value)
-     *
-     *
-     * If this doesn't make sense, see note.
-     *
-     * @param array $Arr A row from an associative array based by array_map
-     *
-     * @return  The name from the given array row.
-     * @note    Function should be removed and code using it cleaned up.
-     * @cleanup
-     */
-    static function flattenFull($Arr)
-    {
-        return $Arr['Full_name'];
     }
 
     /**
@@ -849,26 +741,6 @@ class Utility
         return array();
     }
 
-
-    /**
-     * Return the number of columns to use before the quat table scripts
-     * overflow into a new table. This information comes from the config.xml.
-     *
-     * @return integer Column threshold from config file
-     * @note   Function should be either removed or moved to NDB_Config
-     * @note   Function comment written by Dave, who can't remember if he's
-     *       the author of this function.
-     *
-     * @cleanup
-     */
-    static function getColumnThresholdCount()
-    {
-        $config =& NDB_Config::singleton();
-        // get the list of Subprojects
-        $column_threshold = $config->getSetting('columnThreshold');
-        return $column_threshold;
-    }
-
     /**
      * Checks to see if a table contains a specified column
      *
@@ -876,6 +748,7 @@ class Utility
      * @param string $column     The column name to check the table for.
      *
      * @return boolean true if the table has at least one NULL in the column
+     * @note   This should really be in the Database.class.inc file... -anyhowstep
      */
     static function columnsHasNull($table_name,$column)
     {
@@ -893,34 +766,6 @@ class Utility
             return true;
         }
         return false;
-    }
-
-    /**
-     * Returns the visit labels that a given test_name exists in
-     *
-     * @param string $test_name The instrument that we want to know
-     *                          which visit labels exist in.
-     *
-     * @return Array of the form array(0 => array('Visit_label' => VL))
-     *         where VL is the value returned from the database.
-     *
-     * @note    This should be moved out of the Utility class into whatever
-     *       module uses it. (Data team helper?)
-     * @note    Function comment written by Dave, not the author of this function.
-     * @cleanup
-     */
-    static function getVisitLabelUsingTestName($test_name)
-    {
-        $db    =& Database::singleton();
-        $query = "SELECT DISTINCT s.visit_label FROM session s
-            JOIN flag f ON (s.ID = f.SessionID)
-            JOIN candidate c ON (c.Candid = s.Candid)
-            JOIN psc ON (s.CenterID = psc.CenterID)
-            WHERE s.Active = 'Y' AND c.Active= 'Y' 
-            AND f.Test_name = :tn AND psc.Centerid!= '1'";
-
-        $visitlabels = $db->pselect($query, array('tn' => $test_name));
-        return $visitlabels;
     }
 
     /**
@@ -984,37 +829,6 @@ class Utility
     }
 
     /**
-     * Get all the sourcefrom instruments from parameter_type (which
-     * exist in the data_integrity flag table)
-     *
-     * @return  Associative array of the form array('Full Name' => 'Full Name')
-     * @note    This should be moved out of the Utility class into whatever
-     *       module uses it. (Data team helper?)
-     * @note    Function comment written by Dave, not the author of this function.
-     * @cleanup
-     */
-    static function getSourcefrom()
-    {
-        $DB =& Database::singleton();
-
-        $sourcefrom = $DB->pselect(
-            "SELECT DISTINCT t.Full_name FROM parameter_type pt
-            JOIN data_integrity_flag di ON (pt.Name = di.Name)
-            JOIN test_names t ON (t.test_name = pt.sourcefrom)
-            WHERE pt.sourcefrom IS NOT NULL
-            ORDER BY t.Full_name",
-            array()
-        );
-
-        foreach ($sourcefrom as $table) {
-            if (!is_null($table)) {
-                $result[$table['Full_name']] = $table['Full_name'];
-            }
-        }
-        return $result;
-    }
-
-    /**
      * Returns all the sourcefrom instruments from parameter_type
      *
      * @param string $instrument If specified, return fields from this
@@ -1053,7 +867,7 @@ class Utility
                 array('cid' => $commentID)
             );
             $sourcefields = $DB->pselect(
-                "SELECT SourceField, Name FROM parameter_type 
+                "SELECT SourceField, Name FROM parameter_type
                 WHERE queryable = '1' AND sourcefrom = :instrument
                 ORDER BY Name",
                 array('instrument' => $instrument)
@@ -1132,7 +946,7 @@ class Utility
 
         if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
             $test_names = $DB->pselect(
-                "SELECT DISTINCT Test_name_display FROM test_battery 
+                "SELECT DISTINCT Test_name_display FROM test_battery
                 WHERE Visit_label=:vl",
                 array('vl' => $visit_label)
             );
@@ -1143,7 +957,7 @@ class Utility
                 JOIN psc ON (s.CenterID = psc.CenterID)
                 JOIN flag f ON (f.sessionid=s.id)
                 JOIN test_names t ON (f.test_name=t.Test_name)
-                WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl 
+                WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl
                 AND psc.CenterID != '1' AND c.Entity_type != 'Scanner'
                 ORDER BY t.Full_name",
                 array('vl' => $visit_label)
@@ -1161,6 +975,8 @@ class Utility
      *
      * @return boolean True if the given parameter is an array with
      *                 numeric keys, false otherwise.
+     * @note   Note to self, fix this in future, checking $arr[0] is naive
+     *       - anyhowstep
      */
     static function numericArray($arr)
     {
