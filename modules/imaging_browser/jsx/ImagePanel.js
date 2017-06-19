@@ -159,13 +159,13 @@ var ImagePanelHeadersTable = React.createClass({
                         <td className="col-xs-2">
                              {this.props.HeaderInfo.InterlaceRejected}
                         </td>
+
                         <th className="col-xs-2 info">
                               Number of Gradient-wise correlations
                         </th>
                         <td className="col-xs-2">
                               {this.props.HeaderInfo.IntergradientRejected}
                         </td>
-
                     </tr>
                     <tr>
                         <th className="col-xs-2 info">
@@ -180,7 +180,6 @@ var ImagePanelHeadersTable = React.createClass({
                              {this.props.HeaderInfo.SeriesUID}
                         </td>
                         <td className="col-xs-4" colSpan="4">&nbsp;</td>
-
                     </tr>
                 </tbody>
             </table>
