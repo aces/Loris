@@ -16,6 +16,19 @@ function evalAST(tree, scope) {
       }
       return scope[tree.args[0]];
     }
+    case 'NestedVariables': {
+      if (typeof scope[tree.args[0]] === 'undefined') {
+        throw `Unbound variable: ${tree.args[0]}`;
+      }
+      var res = scope[tree.args[0]];
+      for (var i = 0; i < tree.args[1].length; i++) {
+        if (typeof res[tree.args[1][i]] === 'undefined') {
+          throw `Unbound sub-variable: ${tree.args[1][i]}`;
+        }
+        res = res[tree.args[1][i]];
+      }
+      return res;
+    }
     case 'FuncApplication': {
       if (tree.args[0] === 'if') {
         if (evalAST(tree.args[1][0], scope)) {
@@ -44,5 +57,6 @@ function evalAST(tree, scope) {
 
 export default function Evaluator(stringExpression, scope = {}) {
   const tree = parser.parse(stringExpression);
+  console.log(evalAST(tree,scope));
   return evalAST(tree, scope);
 }
