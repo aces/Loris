@@ -166,6 +166,7 @@ class FeedbackMRI
                   WHERE ".$this->_buildWhere();
 
         $result = $DB->pselect($query, array());
+        $comments = array();
 
         // build the output array
         if (is_array($result)) {
@@ -473,10 +474,10 @@ class FeedbackMRI
         // build the where depending on object and subject type
         if ($this->objectType == 'volume') {
             // per-volume
-            $where .= "FileID='$this->fileID'";
+            $where = "FileID='$this->fileID'";
         } else {
             // per-visit
-            $where .= "SessionID='$this->sessionID'";
+            $where = "SessionID='$this->sessionID'";
         }
         return $where;
     }
