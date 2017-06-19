@@ -33,11 +33,11 @@ $anonymous = $client->initialize() === false;
 ob_flush();
 
 if ($anonymous === false) {
-    $TestName = isset($_REQUEST['test_name']) ? $_REQUEST['test_name'] : 'dashboard';
-    $subtest  = isset($_REQUEST['subtest']) ? $_REQUEST['subtest'] : '';
+    $TestName = $_REQUEST['test_name'] ?? 'dashboard';
+    $subtest  = $_REQUEST['subtest'] ?? '';
 } else {
-    $TestName = isset($_REQUEST['test_name']) ? $_REQUEST['test_name'] : 'login';
-    $subtest  = isset($_REQUEST['subtest']) ? $_REQUEST['subtest'] : '';
+    $TestName = $_REQUEST['test_name'] ?? 'login';
+    $subtest  = $_REQUEST['subtest'] ?? '';
 }
 // make local instances of objects
 $config =& NDB_Config::singleton();
