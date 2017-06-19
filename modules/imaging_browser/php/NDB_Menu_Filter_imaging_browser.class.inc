@@ -76,7 +76,6 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             $all_scan_types[$row['ID']] = $type;
         }
 
-
         // Get the intersection between all the scan types and those
         // that are desired to go into imaging browser table, based on
         // array values rather than keys (hence the array_flip), then flip
@@ -293,7 +292,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
     function _setFilterForm()
     {
         // create user object
-        $user =& User::singleton();
+        $user          =& User::singleton();
         $list_of_sites = array();
 
         // PSC
