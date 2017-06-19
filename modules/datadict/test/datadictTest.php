@@ -33,11 +33,11 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      */
     private $_loadingUI
         =  array(
-            'Data Dictionary'     => '#bc2 > a:nth-child(2) > div',
-            'SourceFrom'          => '#dynamictable > thead > tr > th:nth-child(2)',
-            'Name'                => '#dynamictable > thead > tr > th:nth-child(3)',
-            'SourceField'         => '#dynamictable > thead > tr > th:nth-child(4)',
-            'Description'         => '#dynamictable > thead > tr > th:nth-child(5)',
+            'Data Dictionary' => '#bc2 > a:nth-child(2) > div',
+            'SourceFrom'      => '#dynamictable > thead > tr > th:nth-child(2)',
+            'Name'            => '#dynamictable > thead > tr > th:nth-child(3)',
+            'SourceField'     => '#dynamictable > thead > tr > th:nth-child(4)',
+            'Description'     => '#dynamictable > thead > tr > th:nth-child(5)',
            );
 
     /**
@@ -114,13 +114,13 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         );
         //search exist data
         $searchButton->click();
-        
+
         $name = $this->webDriver->executescript(
-                  "return document.querySelector".
+            "return document.querySelector".
                   "('#dynamictable > tbody > tr > td:nth-child(3)').textContent"
-                );
-            $this->assertContains("TestParameterNotRealMAGICNUMBER335", $name);    
-     }        
+        );
+            $this->assertContains("TestParameterNotRealMAGICNUMBER335", $name);
+    }
     /**
      * Testing keyword filter with testing data not case-sensitive
      *
@@ -142,11 +142,11 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         $searchButton->click();
 
         $name = $this->webDriver->executescript(
-                  "return document.querySelector".
+            "return document.querySelector".
                   "('#dynamictable > tbody > tr > td:nth-child(3)').textContent"
-                );
+        );
             $this->assertContains("TestParameterNotRealMAGICNUMBER335", $name);
-     }
+    }
     /**
      * Testing keyword filter without testing data
      *
@@ -168,12 +168,12 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         $searchButton->click();
 
         $res = $this->webDriver->executescript(
-                  "return document.querySelector".
+            "return document.querySelector".
                   "('#datatable > div > strong').textContent"
-                );
+        );
         $this->assertContains("No result found.", $res);
 
-     }
+    }
 
     /**
       * Testing UI elements when page loads
