@@ -230,7 +230,7 @@ class Entrypoint
     {
         self::response(['error' => $msg], $status);
         error_log("API call existed with 1: " . $msg);
-        self::_safeExit(1);
+        self::safeExit(1);
     }
 
     /**
@@ -240,7 +240,7 @@ class Entrypoint
      *
      * @return none, but exits the running program
      */
-    private static function _safeExit($code)
+    public static function safeExit($code)
     {
         if (defined("UNIT_TESTING")) {
             throw new SafeExitException(

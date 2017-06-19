@@ -3,12 +3,13 @@ namespace LORIS\RestAPI;
 
 class Login implements Endpoint
 {
-    public function __construct()
+    public function __construct() 
     {
         $login = new \SinglePointLogin();
         if ($login->authenticate()) {
             // TODO :: To be documented
-            Entrypoint::response("You are already logged in", 202);
+            Entrypoint::response(["message" =>"You are already logged in"], 202);
+            Entrypoint::safeExit(0);
         }
     }
 
@@ -53,8 +54,9 @@ class Login implements Endpoint
                 'token' => $login->getEncodedToken($username)
             );
             Entrypoint::response($response,200);
+        } else {
+            Entrypoint::error($login->_lastError, 401);
         }
-        
     }
 
     /**
