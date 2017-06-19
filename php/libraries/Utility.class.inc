@@ -1087,10 +1087,12 @@ class Utility
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
+        $qparams = array();
 
         if ($projectID != null) {
             $ExtraProject_Criteria
-                = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $projectID . ')';
+                = ' AND (c.ProjectID IS NULL OR c.ProjectID=:ProjectID)';
+            $qparams["ProjectID"] = $projectID;
         } else {
             $ExtraProject_Criteria ='';
         }
