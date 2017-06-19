@@ -343,10 +343,10 @@ $(document).ready(function() {
     </div>
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
-    		{$form.Pending_approval.label}
+    		{$form.Pending_approval_Group.label}
     	</label>
     	<div class="col-sm-10">
-    		{$form.Pending_approval.html}
+    		{$form.Pending_approval_Group.html}
     	</div>
     </div>
     <div class="row form-group form-inline">
