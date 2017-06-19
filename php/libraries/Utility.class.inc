@@ -493,6 +493,55 @@ class Utility
     }
 
     /**
+     * Returns a list of bvl instruments
+     *
+     * Returns a list of instruments for a timepoint's stage ($stage).
+     * If no stage arg is passed, return the full list for all stages
+     *
+     * @param integer $age   age in days
+     * @param string  $stage study stage (screening or visit)
+     *
+     * @return  array list of instruments
+     * @note    Only tools/fix_timepoint_date_problems uses this,
+     *          Is there a way to make it use NDB_BVL_Battery::lookupBattery()?
+     *          I don't know enough about what it is doing at the moment and
+     *          I don't want to devote too much time on this. It would be great
+     *          if we can get rid of this method here.
+     * @cleanup
+     */
+    static function lookupBattery($age, $stage=null)
+    {
+        $DB =& Database::singleton();
+
+        // craft the select query
+        $query  = "SELECT t.Test_name FROM test_battery AS b, test_names AS t
+            WHERE t.Test_name=b.Test_name
+            AND b.AgeMinDays<=:CandAge AND b.AgeMaxDays>=:CandAge
+            AND b.Active='Y'";
+        $params = array('CandAge' => $age);
+
+        if (!is_null($stage)) {
+            $query .= " AND b.Stage=:BatStage";
+            $params['BatStage'] = $stage;
+        }
+
+        $query .= " GROUP BY Test_name ORDER BY Test_name";
+
+        // get the list of instruments
+        $rows  = array();
+        $tests = array();
+        $rows  = $DB->pselect($query, $params);
+
+        // repackage the array
+        foreach ($rows AS $row) {
+            $tests[] = $row['Test_name'];
+        }
+
+        // return an array of test names
+        return $tests;
+    }
+
+    /**
      * Ensures that $var is a collection of $var elements, not just a
      * single element. This is useful for using config->getSetting for an element
      * that may be in the config multiple times or may be in the config file a
