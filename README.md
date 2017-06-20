@@ -10,77 +10,29 @@ Deploy and log in with username <i>admin</i> and the password that's set up duri
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/17.1-dev)
 <hr>
 
-This Readme covers installation of the <b>17.1</b> LORIS release on <b>Ubuntu</b>.
-([CentOS Readme also available](https://github.com/aces/Loris/blob/master/README.CentOS6.md)).
+The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki.
 
-Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information not included in this Readme. The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki. 
+# Latest Release
 
-# Prerequisites for Installation
+The latest release may be found [here](https://github.com/aces/Loris/releases/latest)
 
- * LINUX (supported on Ubuntu 14+ and [CentOS 6.5](https://github.com/aces/Loris/blob/master/README.CentOS6.md))
- * Apache2
- * MySQL 5.7 
- * PHP <b>7</b>  
- * Package manager (for LINUX distributions)
- * Composer : should be run with --no-dev option
+# Installation Instructions
+
+Installation instructions may be found [here](https://github.com/aces/Loris/wiki/Installing-Loris)
+
+LORIS uses a LAMP stack. Additional dependencies (and how to get them) may be found on the installation instructions.
+
+[This](https://github.com/aces/Loris/wiki/Setup) link may be useful after your installation.
+
+# Upgrade Instructions
 
 <b>Important:</b>
- * If you are upgrading your LORIS, you'll also want to upgrade to both PHP 7 and MySQL 5.7, since these dependency versions were not supported in the last release. 
- * Composer should be run with --no-dev option unless you are an active LORIS developer. 
+ * If you are upgrading your LORIS, you'll also want to upgrade to both PHP 7 and MySQL 5.7, since these dependency versions were not supported in the last release.
+ * Composer should be run with --no-dev option unless you are an active LORIS developer.
 
-Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information.
+Upgrade instructions may be found [here](https://github.com/aces/Loris/wiki/Upgrading-Loris)
 
-# Installation
-
-1. Set up LINUX user lorisadmin and create LORIS base directory:
-
-    ```
-    sudo useradd -U -m -G sudo -s /bin/bash lorisadmin
-    sudo passwd lorisadmin
-    su - lorisadmin
-    ```
-
-    <b>Important ⇾ All steps from this point forward must be executed by lorisadmin user</b>
-
-    ```
-    sudo mkdir -m 775 -p /var/www/$projectname
-    sudo chown lorisadmin.lorisadmin /var/www/$projectname
-    ```
-
-    <i>$projectname ⇾ "loris" or one-word project name</i>
-
-2. Get code:
-    Download the latest release from the [releases page](https://github.com/aces/Loris/releases) and
-    extract it to `/var/www/$projectname`
-
-3. Run installer script to install core code, and libraries. The script will prompt for information and so that it can create directories automatically.
-
-    For more information, please read the [Install Script wiki page](https://github.com/aces/Loris/wiki/Install-Script).
-
-    ```
-    cd /var/www/$projectname/tools
-    ./install.sh
-    ```
-
-4. Apache configuration and restart 
-LORIS requires Apache's mod_rewrite module to rewrite its URLs. Enable this module, then restart Apache: 
-
-    ```
-    sudo a2enmod rewrite
-    sudo service apache2 reload
-    ```
-
-5. Go to http://localhost/installdb.php and follow the instructions to finalize LORIS installation.
-
-    _Note_: Apache config files will be installed as *.conf, per Ubuntu 14.04. If running an earlier version of Ubuntu, rename these files, then run the following commands. After, restart Apache.
-
-
-    ```
-    sudo a2dissite default
-    sudo a2ensite $projectname
-    ```
-
-6. Follow the [Setup Guide in the LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) to complete your post-installation setup and configuration, and for more documentation.
+[This](https://github.com/aces/Loris/wiki/Setup) link may be useful after your upgrade.
 
 # Community
 Please feel free to subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) to ask any LORIS-related questions.
