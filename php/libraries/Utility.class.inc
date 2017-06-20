@@ -164,7 +164,7 @@ class Utility
         $DB =& Database::singleton();
 
         // get the list of ethnicities
-        $query = "SELECT DISTINCT Ethnicity 
+        $query = "SELECT DISTINCT Ethnicity
             FROM candidate
             WHERE Ethnicity NOT IN (NULL, '')
             ORDER BY Ethnicity";
@@ -507,9 +507,9 @@ class Utility
         $DB =& Database::singleton();
 
         // craft the select query
-        $query  = "SELECT t.Test_name FROM test_battery AS b, test_names AS t 
-            WHERE t.Test_name=b.Test_name 
-            AND b.AgeMinDays<=:CandAge AND b.AgeMaxDays>=:CandAge 
+        $query  = "SELECT t.Test_name FROM test_battery AS b, test_names AS t
+            WHERE t.Test_name=b.Test_name
+            AND b.AgeMinDays<=:CandAge AND b.AgeMaxDays>=:CandAge
             AND b.Active='Y'";
         $params = array('CandAge' => $age);
 
@@ -916,7 +916,7 @@ class Utility
             JOIN flag f ON (s.ID = f.SessionID)
             JOIN candidate c ON (c.Candid = s.Candid)
             JOIN psc ON (s.CenterID = psc.CenterID)
-            WHERE s.Active = 'Y' AND c.Active= 'Y' 
+            WHERE s.Active = 'Y' AND c.Active= 'Y'
             AND f.Test_name = :tn AND psc.Centerid!= '1'";
 
         $visitlabels = $db->pselect($query, array('tn' => $test_name));
@@ -1053,7 +1053,7 @@ class Utility
                 array('cid' => $commentID)
             );
             $sourcefields = $DB->pselect(
-                "SELECT SourceField, Name FROM parameter_type 
+                "SELECT SourceField, Name FROM parameter_type
                 WHERE queryable = '1' AND sourcefrom = :instrument
                 ORDER BY Name",
                 array('instrument' => $instrument)
@@ -1132,7 +1132,7 @@ class Utility
 
         if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
             $test_names = $DB->pselect(
-                "SELECT DISTINCT Test_name_display FROM test_battery 
+                "SELECT DISTINCT Test_name_display FROM test_battery
                 WHERE Visit_label=:vl",
                 array('vl' => $visit_label)
             );
@@ -1143,7 +1143,7 @@ class Utility
                 JOIN psc ON (s.CenterID = psc.CenterID)
                 JOIN flag f ON (f.sessionid=s.id)
                 JOIN test_names t ON (f.test_name=t.Test_name)
-                WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl 
+                WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl
                 AND psc.CenterID != '1' AND c.Entity_type != 'Scanner'
                 ORDER BY t.Full_name",
                 array('vl' => $visit_label)
