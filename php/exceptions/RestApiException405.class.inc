@@ -15,6 +15,7 @@
  * @link     https://github.com/aces/Loris
  */
 
+namespace LORIS\RestAPI;
 /**
  * The RestApiException405 class.
  *

@@ -7,7 +7,7 @@ class Login implements Endpoint
     {
         $login = new \SinglePointLogin();
         if ($login->authenticate()) {
-            throw new \RestApiException("You are already logged in", 202);
+            throw new RestApiException("You are already logged in", 202);
         }
     }
 
@@ -19,10 +19,9 @@ class Login implements Endpoint
      *
      * @return none
      */
-    public function handleGET(array &$request, \stdClass &$ctx = NULL)
+    public function handleGET(array &$req, array &$input, \stdClass &$ctx = NULL)
     {
-        $previous = new \RestApiExceptionAllow("POST");
-        throw new \RestApiException405('Method disabled', 405, $previous);
+        $this->_methodNotAllowed();
     }
 
     /**
@@ -39,7 +38,7 @@ class Login implements Endpoint
         $response = array('token' => null);
 
         if (!$this->_isValidPostData($input))  {
-            throw new \RestApiException('Missing username or password', 400);
+            throw new RestApiException('Missing username or password', 400);
         } 
         $username = $input['username'];
         $password = $input['password'];
@@ -47,7 +46,7 @@ class Login implements Endpoint
         $login = new \SinglePointLogin();
 
         if (!$login->passwordAuthenticate($username, $password ,false)) {
-            throw new \RestApiException($login->_lastError, 401);
+            throw new RestApiException($login->_lastError, 401);
         }
         $body = array('token' => $login->getEncodedToken($username));
         $status = 200;
@@ -65,8 +64,7 @@ class Login implements Endpoint
      */
     public function handlePUT(array &$req, array &$input, \stdClass &$ctx = NULL)
     {
-        $previous = new \RestApiExceptionAllow("POST");
-        throw new \RestApiException405('Method disabled', 405, $previous);
+        $this->_methodNotAllowed();
     }
 
     /**
@@ -80,8 +78,7 @@ class Login implements Endpoint
      */
     public function handleDELETE(array &$req, array &$input, \stdClass &$ctx = NULL)
     {
-        $previous = new \RestApiExceptionAllow("POST");
-        throw new \RestApiException405('Method disabled', 405, $previous);
+        $this->_methodNotAllowed();
     }
 
     /**
@@ -100,4 +97,17 @@ class Login implements Endpoint
             return $carry && array_key_exists($item, $input);
         },true);
     }
+
+    /**
+     * Handle the case when a method is disabled from this endpoint
+     *
+     * @throws RestApiException405
+     * @return node
+     */
+    private _methodNotAllowed()
+    {
+        $previous = new RestApiExceptionAllow("POST");
+        throw new RestApiException405('Method disabled', 405, $previous);
+    }
+
 }

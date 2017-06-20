@@ -11,7 +11,7 @@ interface Endpoint
      *
      * @return none, but print result as side-effect
      */
-    public function handleGET(array &$req, \stdClass &$ctx = NULL);
+    public function handleGET(array &$req, array &$input, \stdClass &$ctx = NULL);
 
     /**
      * Handle a POST request
