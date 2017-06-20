@@ -204,9 +204,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $field->clear();
         $field->sendKeys('email@example.com');
         $this->safeClick(WebDriverBy::Name('SendEmail'));
-        $field = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
-        $field->clear();
-        $field->sendKeys('1');
+        $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
+        $sitesOption = new WebDriverSelect($sitesElement);
+        $sitesOption->selectByValue("1");
         $this->safeClick(WebDriverBy::Name('fire_away'));
         $this->_accessUser('user_accounts', 'userid');
         $field = $this->safeFindElement(WebDriverBy::Name('First_name'));
@@ -215,8 +215,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $this->assertEquals($field->getAttribute('value'), 'last');
         $field = $this->safeFindElement(WebDriverBy::Name('Email'));
         $this->assertEquals($field->getAttribute('value'), 'email@example.com');
-        $field = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
-        $this->assertEquals($field->getAttribute('value'), '1');
     }
 
     /**
