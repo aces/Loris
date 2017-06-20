@@ -192,7 +192,7 @@ function validateInput($values)
                   ];
 
     if (isset($result['PSCID'], $result['centerID'])) {
-        $valid_center = $db->pselectOne(
+        $validCenter = $db->pselectOne(
             "
             SELECT
                 CenterID = :center_id
@@ -206,8 +206,8 @@ function validateInput($values)
              "psc_id"    => $result['PSCID'],
             )
         );
-        if (!$valid_center) {
-            $valid_center = $db->pselectOne(
+        if (!$validCenter) {
+            $validCenter = $db->pselectOne(
                 "
                 SELECT
                     EXISTS (
@@ -230,15 +230,15 @@ function validateInput($values)
                 )
             );
         }
-        if (!$valid_center) {
+        if (!$validCenter) {
             showError("PSCID and Center ID do not match a valid session!");
         }
     }
     // If both are set, return SessionID and CandID
     if (isset($result['PSCID']) && isset($result['visit'])) {
         $session = $db->pSelect(
-            "SELECT s.ID as sessionID, c.candID as candID FROM candidate c 
-            INNER JOIN session s on (c.CandID = s.CandID) 
+            "SELECT s.ID as sessionID, c.candID as candID FROM candidate c
+            INNER JOIN session s on (c.CandID = s.CandID)
             WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
             [
              'PSCID'      => $result['PSCID'],
@@ -490,7 +490,7 @@ function emailUser($issueID, $changed_assignee)
     $baseurl = $factory->settings()->getBaseURL();
 
     $title = $db->pSelectOne(
-        "SELECT title FROM issues 
+        "SELECT title FROM issues
         WHERE issueID=:issueID",
         array('issueID' => $issueID)
     );
@@ -585,8 +585,8 @@ function getIssueFields()
             array()
         );
         $assignee_expanded = $db->pselect(
-            "SELECT u.Real_name, u.UserID FROM users u 
-WHERE FIND_IN_SET(u.CenterID,:CenterID) OR FIND_IN_SET(u.CenterID,:DCC)",
+            "SELECT u.Real_name, u.UserID FROM users u
+WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
             array(
              'CenterID' => $CenterID,
              'DCC'      => $DCCID,
@@ -651,7 +651,7 @@ WHERE FIND_IN_SET(u.CenterID,:CenterID) OR FIND_IN_SET(u.CenterID,:DCC)",
 
     $modules          = array();
     $modules_expanded = $db->pselect(
-        "SELECT DISTINCT Label, ID FROM LorisMenu 
+        "SELECT DISTINCT Label, ID FROM LorisMenu
 WHERE Parent IS NOT NULL ORDER BY Label ",
         []
     );
@@ -665,7 +665,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
         $issueID    = $_GET['issueID'];
         $issueData  = getIssueData($issueID);
         $isWatching = $db->pselectOne(
-            "SELECT userID, issueID FROM issues_watching 
+            "SELECT userID, issueID FROM issues_watching
             WHERE issueID=:issueID AND userID=:userID",
             array(
              'issueID' => $issueID,
@@ -676,8 +676,8 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
         $issueData['commentHistory'] = getComments($issueID);
         $issueData['othersWatching'] = getWatching($issueID);
         $issueData['desc']           = $db->pSelectOne(
-            "SELECT issueComment 
-FROM issues_comments WHERE issueID=:issueID 
+            "SELECT issueComment
+FROM issues_comments WHERE issueID=:issueID
 ORDER BY dateAdded",
             array('issueID' => $issueID)
         );
