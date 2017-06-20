@@ -314,15 +314,20 @@ class LorisForm
      *
      * @param string $name    The element name.
      * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other attributes that should
+     * @param array  $options An array of options that should
      *                        get added.
+     * @param array  $attribs An array of attributes that should
+     *                        get added. "value" should be set to compare
+     *                        the value stored in the database to
+     *                        the individual radio button representing
+     *                        that value.
      *
      * @return &array
      */
     function &addRadio($name, $label, $options, $attribs)
-    {   
-        $el         =& $this->addBase($name, $label, $attribs);
-        $el['type'] = 'radio';
+    {
+        $el            =& $this->addBase($name, $label, $attribs);
+        $el['type']    = 'radio';
         $el['options'] = $options;
         return $el;
     }
@@ -1590,12 +1595,12 @@ class LorisForm
             $checked = 'checked="checked"';
         }
 
-		if (isset($el['disabled']) || $this->frozen) {
+        if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
-		return "<input name=\"$el[name]\" type=\"radio\" $checked $value "
-			. "$disabled/>"
-			. " $el[label]";
+        return "<input name=\"$el[name]\" type=\"radio\" $checked $value "
+        . "$disabled/>"
+        . " $el[label]";
     }
 
     /**
@@ -1945,7 +1950,7 @@ class LorisForm
             }
             break;
         case 'radio':
-            $el = $this->createBase($elname, $label, $options, $attribs);
+            $el         = $this->createBase($elname, $label, $options, $attribs);
             $el['type'] = 'radio';
             break;
         case 'time':
