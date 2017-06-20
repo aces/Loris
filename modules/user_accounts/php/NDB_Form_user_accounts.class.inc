@@ -171,7 +171,6 @@ class NDB_Form_User_Accounts extends NDB_Form
      */
     function _process($values)
     {
-        print_r($values);
         $config = NDB_Config::singleton();
         $DB     = Database::singleton();
 
