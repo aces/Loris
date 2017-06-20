@@ -1092,7 +1092,7 @@ class Utility
         if ($projectID != null) {
             $ExtraProject_Criteria
                 = ' AND (c.ProjectID IS NULL OR c.ProjectID=:ProjectID)';
-            $qparams["ProjectID"] = $projectID;
+            $qparams["ProjectID"]  = $projectID;
         } else {
             $ExtraProject_Criteria ='';
         }
