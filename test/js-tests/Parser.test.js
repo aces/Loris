@@ -73,5 +73,28 @@ describe('Parser Unit Tests', () => {
       const res = Evaluator(LOGIC_STR, CONTEXT);
       expect(res).to.equal('yes');
     })
+  })
+
+  describe('Nested Variables', () => {
+    it('Accesses correct context (2 levels)', () => {
+      const LOGIC_STR = '[t1_arm_1][age_mnths]';
+      const CONTEXT = {t1_arm_1: {age_mnths: 45, visits: {v1: 'v1',v2: 'v2',v3: {site: 'Montreal', active: 'Y'}}}};
+      const res = Evaluator(LOGIC_STR, CONTEXT);
+      expect(res).to.equal(45);
+    })
+
+    it('Accesses correct context (3 levels)', () => {
+      const LOGIC_STR = '[t1_arm_1][visits][v2]';
+      const CONTEXT = {t1_arm_1: {age_mnths: 45, visits: {v1: 'v1',v2: 'v2',v3: {site: 'Montreal', active: 'Y'}}}};
+      const res = Evaluator(LOGIC_STR, CONTEXT);
+      expect(res).to.equal('v2');
+    })
+
+    it('Accesses correct context (4 levels)', () => {
+      const LOGIC_STR = '[t1_arm_1][visits][v3][site]';
+      const CONTEXT = {t1_arm_1: {age_mnths: 45, visits: {v1: 'v1',v2: 'v2',v3: {site: 'Montreal', active: 'Y'}}}};
+      const res = Evaluator(LOGIC_STR, CONTEXT);
+      expect(res).to.equal('Montreal');
+    })
   });
 })

@@ -32,7 +32,7 @@
 "and"                               return 'and'
 "or"                                return 'or'
 "not"                               return 'not'
-[_a-zA-Z]\w*                        return 'VARIABLE'
+[_a-zA-Z0-9]\w*                     return 'VARIABLE'
 "\""[^"]*"\""                       return 'ESTRING'
 "'"[^']*"'"                         return 'STRING'
 "["                                 return '['
@@ -77,11 +77,17 @@ variable
 
 constant
     : 'E'
-        { $$ = Math.E }
+        { $$ = Math.E; }
     | 'PI'
-        { $$ = Math.PI }
+        { $$ = Math.PI; }
     ;
 
+accessors
+    : '[' variable ']' accessors
+        { $$ = [$2].concat($4); }
+    | '[' variable ']'
+        { $$ = [$2]; }
+    ;
 e
     : e '=' e
         { $$ = {tag: 'BinaryOp', op: 'eq', args: [$1, $3]}; }
@@ -123,6 +129,8 @@ e
         { $$ = {tag: 'NestedExpression', args: [$2]}; }
     | variable '(' arguments ')'
         { $$ = {tag: 'FuncApplication', args:[$1, $3]}; }
+    | "[" variable "]" accessors
+        { $$ = {tag: 'NestedVariables', args: [$2, $4]}; }
     | "[" variable "]"
         { $$ = {tag: 'Variable', args: [$2]}; }
     | constant
