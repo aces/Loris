@@ -12,8 +12,15 @@ use \LORIS\Models\VO;
   *       DaoGen generator version 2.4.1.
   */
 
-class Candidate_DAO {
+class Candidate_DAO
+{
 
+    private $_database;
+
+    public function __construct(&$conn)
+    {
+        $this->_database = $conn;
+    }
 
     /**
      * createValueObject-method. This method is used when the Dao class needs
@@ -24,7 +31,7 @@ class Candidate_DAO {
      * clone() method in it!
      */
     function createValueObject() {
-          return new Candidate_VO();
+          return new Candidate_OV();
     }
 
 
@@ -34,11 +41,11 @@ class Candidate_DAO {
      * for the real load-method which accepts the valueObject as a parameter. Returned
      * valueObject will be created using the createValueObject() method.
      */
-    function getObject(&$conn, $ID) {
+    function getObject($ID) {
 
           $valueObject = $this->createValueObject();
           $valueObject->setID($ID);
-          $this->load(&$conn, &$valueObject);
+          $this->load($valueObject);
           return $valueObject;
     }
 
@@ -55,7 +62,7 @@ class Candidate_DAO {
      * @param valueObject  This parameter contains the class instance to be loaded.
      *                     Primary-key field must be set for this to work properly.
      */
-    function load(&$conn, &$valueObject) {
+    function load(&$valueObject) {
 
           if (!$valueObject->getID()) {
                //print "Can not select without Primary-Key!";
@@ -64,7 +71,7 @@ class Candidate_DAO {
 
           $sql = "SELECT * FROM candidate WHERE (ID = ".$valueObject->getID().") "; 
 
-          if ($this->singleQuery(&$conn, $sql, &$valueObject))
+          if ($this->singleQuery($this->_database, $sql, $valueObject))
                return true;
           else
                return false;
@@ -85,7 +92,7 @@ class Candidate_DAO {
 
           $sql = "SELECT * FROM candidate ORDER BY ID ASC ";
 
-          $searchResults = $this->listQuery(&$conn, $sql);
+          $searchResults = $this->listQuery($conn, $sql);
 
           return $searchResults;
     }
@@ -137,7 +144,7 @@ class Candidate_DAO {
           $sql = $sql."'".$valueObject->getEntity_type()."', ";
           $sql = $sql."'".$valueObject->getProbandGender()."', ";
           $sql = $sql."'".$valueObject->getProbandDoB()."') ";
-          $result = $this->databaseUpdate(&$conn, $sql);
+          $result = $this->databaseUpdate($conn, $sql);
 
 
           return true;
@@ -180,7 +187,7 @@ class Candidate_DAO {
           $sql = $sql."ProbandGender = '".$valueObject->getProbandGender()."', ";
           $sql = $sql."ProbandDoB = '".$valueObject->getProbandDoB()."'";
           $sql = $sql." WHERE (ID = ".$valueObject->getID().") ";
-          $result = $this->databaseUpdate(&$conn, $sql);
+          $result = $this->databaseUpdate($conn, $sql);
 
           if ($result != 1) {
                //print "PrimaryKey Error when updating DB!";
@@ -212,7 +219,7 @@ class Candidate_DAO {
           }
 
           $sql = "DELETE FROM candidate WHERE (ID = ".$valueObject->getID().") ";
-          $result = $this->databaseUpdate(&$conn, $sql);
+          $result = $this->databaseUpdate($conn, $sql);
 
           if ($result != 1) {
                //print "PrimaryKey Error when updating DB!";
@@ -236,7 +243,7 @@ class Candidate_DAO {
     function deleteAll(&$conn) {
 
           $sql = "DELETE FROM candidate";
-          $result = $this->databaseUpdate(&$conn, $sql);
+          $result = $this->databaseUpdate($conn, $sql);
 
           return true;
     }
@@ -405,7 +412,7 @@ class Candidate_DAO {
           if ($first)
                return array();
 
-          $searchResults = $this->listQuery(&$conn, $sql);
+          $searchResults = $this->listQuery($conn, $sql);
 
           return $searchResults;
     }

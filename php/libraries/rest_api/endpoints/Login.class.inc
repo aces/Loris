@@ -7,9 +7,7 @@ class Login implements Endpoint
     {
         $login = new \SinglePointLogin();
         if ($login->authenticate()) {
-            // TODO :: To be documented
-            Entrypoint::response(["message" =>"You are already logged in"], 202);
-            Entrypoint::safeExit(0);
+            throw new \RestApiException("You are already logged in", 202);
         }
     }
 
@@ -23,8 +21,8 @@ class Login implements Endpoint
      */
     public function handleGET(array &$request, \stdClass &$ctx = NULL)
     {
-        Entrypoint::header('Allow: POST');
-        Entrypoint::error('Method Not Allowed', 405);
+        $previous = new \RestApiExceptionAllow("POST");
+        throw new \RestApiException405('Method disabled', 405, $previous);
     }
 
     /**
@@ -34,29 +32,26 @@ class Login implements Endpoint
      * @param $input array The content of php://input
      * @param $context a Object Value to use as context
      *
-     * @return none
+     * @return 
      */
     public function handlePOST(array &$req, array &$input, \stdClass &$ctx = NULL)
     {
-        $required_fields = array(
-            'username',
-            'password'
-        );
+        $response = array('token' => null);
+
         if (!$this->_isValidPostData($input))  {
-            Entrypoint::error('Invalid input', 400);
+            throw new \RestApiException('Missing username or password', 400);
         } 
         $username = $input['username'];
         $password = $input['password'];
 
         $login = new \SinglePointLogin();
-        if ($login->passwordAuthenticate($username, $password ,false)) {
-            $response = array(
-                'token' => $login->getEncodedToken($username)
-            );
-            Entrypoint::response($response,200);
-        } else {
-            Entrypoint::error($login->_lastError, 401);
+
+        if (!$login->passwordAuthenticate($username, $password ,false)) {
+            throw new \RestApiException($login->_lastError, 401);
         }
+        $body = array('token' => $login->getEncodedToken($username));
+        $status = 200;
+        return array($body ,$status);
     }
 
     /**
@@ -70,8 +65,8 @@ class Login implements Endpoint
      */
     public function handlePUT(array &$req, array &$input, \stdClass &$ctx = NULL)
     {
-        Entrypoint::header('Allow: POST');
-        Entrypoint::error('Method Not Allowed', 405);
+        $previous = new \RestApiExceptionAllow("POST");
+        throw new \RestApiException405('Method disabled', 405, $previous);
     }
 
     /**
@@ -85,8 +80,8 @@ class Login implements Endpoint
      */
     public function handleDELETE(array &$req, array &$input, \stdClass &$ctx = NULL)
     {
-        Entrypoint::header('Allow: POST');
-        Entrypoint::error('Method Not Allowed', 405);
+        $previous = new \RestApiExceptionAllow("POST");
+        throw new \RestApiException405('Method disabled', 405, $previous);
     }
 
     /**

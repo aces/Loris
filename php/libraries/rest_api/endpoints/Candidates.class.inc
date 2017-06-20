@@ -1,6 +1,8 @@
 <?php
 namespace LORIS\RestAPI;
 
+use \LORIS\Core\LORIS_DAO_Factory;
+
 class Candidates implements Endpoint
 {
     private $_user;
@@ -9,13 +11,8 @@ class Candidates implements Endpoint
     {
         $login = new \SinglePointLogin();
         if (!$login->authenticate()) {
-            throw new \AccessDeniedException('Not logged in');
-
-            header("HTTP/1.1 401 Unauthorized");
-            print json_encode(["error" => "You are not logged in"]);
-            exit;
+            throw new \AccessDeniedException('Not logged in',401);
         }
-        $this->_user = \User_DAO::fetch($login->_username);
     }
 
     /**
@@ -30,6 +27,9 @@ class Candidates implements Endpoint
     {
 var_dump(__FUNCTION__);
 var_dump(func_get_args());
+        if (empty($request)) {
+           
+        }
     }
 
     /**
@@ -45,7 +45,7 @@ var_dump(func_get_args());
     {
 var_dump(__FUNCTION__);
 var_dump(func_get_args());
-Entrypoint::error('YO', 402);
+throw new \RestApiException('YO', 402);
     }
 
     /**

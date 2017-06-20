@@ -1,8 +1,10 @@
 <?php
 /**
- * This class is an Exception extention created to distinguish any
- * Exception from the case when a user tries to access something without
- * the sufficient permissions.
+ * This class is an Exception extention created to distinguish any Exception
+ * from the case when the API need to send HTTP status code 405. This is a 
+ * special case because the server need to send a Allow header also.
+ * the allowed method list should be contained in the message of the nested
+ * previous excpetion as a comma separated list.
  *
  * PHP Version 7
  *
@@ -14,7 +16,7 @@
  */
 
 /**
- * The AccessDeniedException class.
+ * The RestApiException405 class.
  *
  * @category Errors
  * @package  Loris
@@ -23,7 +25,7 @@
  * @link     https://github.com/aces/Loris
  */
 
-class AccessDeniedException extends \LorisException
+class RestApiException405 extends \LorisException
 {
 }
 ?>

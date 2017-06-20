@@ -28,7 +28,7 @@ namespace LORIS\Models;
 
 
 
-class Candidate_VO {
+class Candidate_OV {
 
     /** 
      * Persistent Instance variables. This data is directly 
