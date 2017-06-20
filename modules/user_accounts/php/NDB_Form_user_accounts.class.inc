@@ -171,6 +171,7 @@ class NDB_Form_User_Accounts extends NDB_Form
      */
     function _process($values)
     {
+        print_r($values);
         $config = NDB_Config::singleton();
         $DB     = Database::singleton();
 
@@ -726,17 +727,14 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         // active
         $this->addSelect('Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
-        /*$this->addSelect(
+        $this->addSelect(
             'Pending_approval',
             'Pending approval',
             array(
              'Y' => 'Yes',
              'N' => 'No',
             )
-        );*/
-        $pendGroup[] = $this->createRadio("Pending_approval","Yes","Yes",array('Y'=>'Yes'));
-        $pendGroup[] = $this->createRadio("Pending_approval","No","No",array('N'=>'No'));
-        $this->addGroup($pendGroup, "Pending_approval_Group", "Pending Approval", $this->_GUIDelimiter, false);
+        );
 
         //------------------------------------------------------------
 
