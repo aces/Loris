@@ -23,7 +23,16 @@
  */
 class NDB_Menu_Statistics_Site extends NDB_Menu
 {
-
+    /**
+     * Checking user's permission
+     *
+     * @return bool
+     */
+    function _hasAccess()
+    {
+        $user =& User::singleton();
+        return $user->hasPermission('data_entry');
+    }
     var $instruments    = array();
     var $issues         = array();
     var $query_criteria = '';
