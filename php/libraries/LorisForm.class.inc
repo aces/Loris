@@ -1583,13 +1583,14 @@ class LorisForm
         $checked  = '';
         $value    = '';
         $disabled = '';
-        if (!empty($val)) {
-            $checked = 'checked="checked"';
-        }
         if (isset($el['value'])) {
             $value = "value=\"$el[value]\"";
         }
-        if (isset($el['disabled']) || $this->frozen) {
+        if ($val===$el['value']) {
+            $checked = 'checked="checked"';
+        }
+
+		if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
 		return "<input name=\"$el[name]\" type=\"radio\" $checked $value "

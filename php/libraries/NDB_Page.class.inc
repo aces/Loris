@@ -540,11 +540,10 @@ class NDB_Page
      * @param string $field   The fieldname for this radio button
      * @param string $label   The label to attach to this radio button
      * @param string $options Options to pass to HTML_QuickForm
-     * @param string $closer  ?????
      *
      * @return QuickForm_Element representing radio button
      */
-    function createRadio($field, $label, $options=null, $closer='</label>')
+    function createRadio($field, $label, $options=null)
     {
         return $this->form->createElement(
             "radio",
