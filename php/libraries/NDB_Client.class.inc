@@ -126,6 +126,7 @@ class NDB_Client
             session_destroy();
             setcookie("FeedbackButtonBoolean", "");
             session_start();
+            \SinglePointLogin::reset();
         }
 
         /**
@@ -185,7 +186,7 @@ class NDB_Client
     {
         if (!isset($_SESSION['State'])) {
             $_SESSION['State'] =& State::singleton();
-            $login = \SinglePointLogin::getinstance();
+            $login = \SinglePointLogin::getInstance();
             $_SESSION['State']->setProperty('login', $login);
         } else {
             $login = $_SESSION['State']->getProperty('login');

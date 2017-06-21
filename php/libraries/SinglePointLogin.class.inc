@@ -30,6 +30,11 @@ class SinglePointLogin
     private static $_instance;
 
     /**
+     * The class instance
+     */
+    private static $_instance = null;
+
+    /**
      * Defines whether a user is currently logged in
      */
     var $_isLoggedIn = false;
@@ -57,6 +62,55 @@ class SinglePointLogin
             self::$_instance = new SinglePointLogin();
         }
         return self::$_instance;
+    }
+
+    /**
+     * The constructor is private so getInstance must be used
+     */
+    private function __construct()
+    {
+    }
+
+    /**
+     * The clone function is private so getInstance must be used
+     *
+     * @return none
+     */
+    private function __clone()
+    {
+    }
+
+    /**
+     * The wakeup function is used when the instance is stored in the $_SESSION
+     *
+     * @return none, but set the instance variable
+     */
+    public function __wakeup()
+    {
+        self::$_instance = $this;
+    }
+
+    /**
+     * The object is created from within the class itself
+     *
+     * @return SinglePointLogin The unique instance of that class
+     */
+    public static function getInstance()
+    {
+        if (empty(self::$_instance)) {
+            self::$_instance = new SinglePointLogin();
+        }
+        return self::$_instance;
+    }
+
+    /**
+     * This allow to start fresh. It is required for logout.
+     *
+     * @return none, but set the instance variable
+     */
+    public static function reset()
+    {
+        self::$_instance = null;
     }
 
     /**
