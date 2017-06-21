@@ -92,6 +92,16 @@ class SinglePointLogin
     }
 
     /**
+     * This allow to start fresh. It is required for logout.
+     *
+     * @return none, but set the instance variable
+     */
+    public static function reset()
+    {
+        self::$_instance = null;
+    }
+
+    /**
      * Dumps the login form
      *
      * @return void

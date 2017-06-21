@@ -126,6 +126,7 @@ class NDB_Client
             session_destroy();
             setcookie("FeedbackButtonBoolean", "");
             session_start();
+            \SinglePointLogin::reset();
         }
 
         /**
