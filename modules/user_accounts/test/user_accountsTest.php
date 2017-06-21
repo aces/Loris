@@ -205,7 +205,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $field->sendKeys('email@example.com');
         $this->safeClick(WebDriverBy::Name('SendEmail'));
         $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
-        $sitesOption = new WebDriverSelect($sitesElement);
+        $sitesOption  = new WebDriverSelect($sitesElement);
         $sitesOption->selectByValue("1");
         $this->safeClick(WebDriverBy::Name('fire_away'));
         $this->_accessUser('user_accounts', 'userid');
