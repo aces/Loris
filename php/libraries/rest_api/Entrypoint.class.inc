@@ -36,11 +36,6 @@ class Entrypoint
     private $_method = '';
 
     /**
-     * The Model requested in the URI. eg: /Candidate
-     */
-    private $_endpoint = '';
-
-    /**
      * Any additional URI components after the endpoint and verb have been removed, in our
      * case, an integer ID for the resource. eg: /<endpoint>/<verb>/<arg0>/<arg1>
      * or /<endpoint>/<arg0>
@@ -61,10 +56,10 @@ class Entrypoint
 
 
         if (!array_key_exists(0, $this->_args)) {
-            $this->_error("No Endpoint: $this->_endpoint", 404);
+            $this->_error("Endpoint not specified", 404);
         }
 
-        $this->_endpoint = array_shift($this->_args);
+        $this->_request  = $this->_cleanInputs($this->_args);
 
         $this->_method = $_SERVER['REQUEST_METHOD'];
         // X-HTTP-Method header can be added to a POST request that signals that the
@@ -89,7 +84,7 @@ class Entrypoint
                 }
                 $this->_file = $this->_cleanInputs($input);
             case 'GET':
-                $this->_request = $this->_cleanInputs($this->_args);
+            case 'OPTIONS':
                 break;
             default:
                 $this->_error("Invalid Method $this->_method", 405);
@@ -120,21 +115,20 @@ class Entrypoint
 
     public function run()
     {
-        $endpoint_name = "LORIS\RestAPI\\" . $this->_endpoint;
-        if (!class_exists($endpoint_name)) {
-            $this->_error("No Endpoint: $this->_endpoint", 404);
-        }
-
         $function_name = 'handle' . $this->_method;
         if (!is_callable(array($endpoint_name, $function_name))) {
             $this->_error('Endpoint interface not implemented', 501);
         }
 
         try {
-            $endpoint = new $endpoint_name();
+            $endpoint = $this->_getEndpoint($this->_request);
+
+            if ($this->_method == 'OPTIONS') {
+                $allowedMethods = $endpoint->getAllowedMethods()
+                $this->_header("Allow: $allowedMethods");
+            }
 
             list($data, $status) = $endpoint->{$function_name}(
-                $this->_request,
                 $this->_file
             );
 
@@ -169,7 +163,7 @@ class Entrypoint
      *
      * @return none
      */
-    private static function _header($header)
+    private static function _header(string $header)
     {
         if (defined("UNIT_TESTING")) {
             self::$Headers[] = $header;
@@ -178,7 +172,7 @@ class Entrypoint
         }
     }
 
-    public static function _response($data, $status = 200) {
+    public static function _response(array $data, int $status = 200) {
         switch ($status) {
             case 100: $text = 'Continue'; break;
             case 101: $text = 'Switching Protocols'; break;
@@ -233,10 +227,10 @@ class Entrypoint
      *
      * @return none
      */
-    private static function _error($msg, $status = 500)
+    private static function _error(string $msg, int $status = 500)
     {
         self::_response(['error' => $msg], $status);
-        error_log("API call existed with 1: " . $msg);
+        error_log("API call exited with 1: " . $msg);
         self::_safeExit(1);
     }
 
@@ -247,7 +241,7 @@ class Entrypoint
      *
      * @return none, but exits the running program
      */
-    private static function _safeExit($code)
+    private static function _safeExit(int $code)
     {
         if (defined("UNIT_TESTING")) {
             throw new SafeExitException(
@@ -258,5 +252,18 @@ class Entrypoint
         } else {
             exit($code);
         }
+    }
+
+    private function _getEndpointInstance(array $request)
+    {
+        $endpoint_name = array_shift($request);
+        $endpoint_id   = array_shift($request);
+
+        if (!class_exists($endpoint_name)) {
+            $this->_error("No Endpoint: $class_name", 404);
+        }
+
+        $endpoint = new $endpoint_name($endpoint_id);
+        return $endpoint->getEndpointInstance($request);
     }
 }

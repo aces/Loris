@@ -106,7 +106,7 @@ class Login implements Endpoint
      */
     private _methodNotAllowed()
     {
-        $previous = new RestApiExceptionAllow("POST");
+        $previous = new \Exception("POST");
         throw new RestApiException405('Method disabled', 405, $previous);
     }
 

@@ -14,7 +14,8 @@
 namespace LORIS\Core;
 
 use \LORIS\Models\Candidate_DAO;
-use \LORIS\Models\User_DAO;
+use \LORIS\Models\Visit_DAO;
+
 /**
  * A class for accessing DAOs
  *
@@ -38,4 +39,14 @@ class LORIS_DAO_Factory
     {
         return new Candidate_DAO();
     }
+
+    /**
+     * Get a Visit DAO
+     * @return Visit_DAO
+     */
+    public static function getVisitDAO()
+    {
+        return new Visit_DAO();
+    }
+  
 }

@@ -28,6 +28,10 @@ class Candidate_DAO
         $sql_query = 'select * from candidate where CandID = :v_candid';
         $values = $this->_database->pselectRow($sql_query, array('v_candid' => $candid));
 
+        if (empty($values)) {
+            throw new \LorisException("This candidate does not exists.");
+        }
+
         $candidate = new Candidate_VO(); 
         $candidate->setAll($values);
         return $candidate;

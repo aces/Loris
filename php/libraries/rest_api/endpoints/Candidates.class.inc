@@ -5,13 +5,18 @@ use \LORIS\Core\LORIS_DAO_Factory;
 
 class Candidates implements Endpoint
 {
-    private $_user;
+    private $_candidate;
 
-    public function __construct()
+    public function __construct(string $candid = null)
     {
         $login = new \SinglePointLogin();
         if (!$login->authenticate()) {
             throw new RestApiException('Not logged in', 401);
+        }
+
+        if (!empty($candid)) {
+            $candidate_dao    = LORIS_DAO_Factory::getCandidateDAO();
+            $this->_candidate = $candidate_dao->getObject($candid);
         }
     }
 
@@ -115,7 +120,30 @@ var_dump(func_get_args());
      */
     private function _methodNotAllowed()
     {
-        $previous = new RestApiExceptionAllow("GET,POST,PUT");
+        $previous = new \Exception("GET,POST,PUT");
         throw new RestApiException405('Method disabled', 405, $previous);
+    }
+
+    public function getEndpointInstance(array $request)
+    {
+        $final_endpoint = null;
+
+        if (empty($request)) {
+            $final_endpoint = $this;
+
+        } else {
+            $endpoint_name = array_shift($request);
+            $endpoint_id   = array_shift($request);
+
+            $class_name = '\LORIS\RestAPI\Candidates\\' . $endpoint_name;
+            if (!class_exists($class_name)) {
+                throw new RestApiException("No Endpoint: $endpoint_name", 404);
+            }
+
+            $endpoint = new $class_name($endpoint_id);
+            $final_enpoint = $endpoint->getEndpointInstance($request);
+        }
+ 
+        return $final_endpoint;
     }
 }
