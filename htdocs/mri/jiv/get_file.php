@@ -19,6 +19,37 @@
  *  @link     https://github.com/aces/Loris-Trunk
  */
 
+/**
+ * Effectively resolve '..' characters in a file path
+ *
+ * @param string $path A potentially-relative filepath to be resolved
+ *
+ * @return string $resolvedPath a path containing no .. sequences
+ */
+function resolvePath($path)
+{
+    $resolvedPath = array();
+    // do some normalization
+    $path        = str_replace('//', '/', $path);
+    $path_pieces = explode('/', $path);
+    foreach ($path_pieces as $piece) {
+        if ($piece == '.') {
+            continue;
+        }
+        if ($piece == '..') {
+            if (!is_array($resolvedPath)) {
+                error_log("ERROR: Resolved path not an array");
+                return "";
+            }
+            array_pop($resolvedPath);
+            continue;
+        }
+        array_push($resolvedPath, $piece);
+    }
+    $resolvedPath = implode('/', $resolvedPath);
+    return $resolvedPath;
+}
+
 
 // Load config file and ensure paths are correct
 set_include_path(
@@ -59,9 +90,9 @@ if ($imagePath === '/' || $DownloadPath === '/' || $mincPath === '/') {
 
 // Now get the file and do file validation.
 // Resolve the filename before doing anything.
-$File = realpath($_GET['file']);
+$File = resolvePath($_GET['file']);
 
-// Extra sanity checks, just in case something went wrong with realpath.
+// Extra sanity checks, just in case something went wrong with path resolution.
 // File validation
 if (strpos($File, ".") === false) {
     error_log("ERROR: Could not determine file type.");
