@@ -44,7 +44,6 @@ class User extends UserPermissions
     static function &factory($username)
     {
         $obj = new User;
-
         // right off, set the username
         $obj->userInfo['UserID'] = $username;
 

@@ -3,128 +3,65 @@ namespace LORIS\RestAPI;
 
 use \LORIS\Core\LORIS_DAO_Factory;
 
-class Candidates implements Endpoint
+class Candidates extends Endpoint
 {
     private $_candidate;
+    private $_allowedMethods = array('GET','POST', 'PUT', 'DELETE');
 
     public function __construct(string $candid = null)
     {
-        $login = new \SinglePointLogin();
+        $login = \SinglePointLogin::getInstance();
         if (!$login->authenticate()) {
             throw new RestApiException('Not logged in', 401);
         }
 
         if (!empty($candid)) {
             $candidate_dao    = LORIS_DAO_Factory::getCandidateDAO();
-            $this->_candidate = $candidate_dao->getObject($candid);
+            try {
+                $this->_candidate = $candidate_dao->getObject($candid);
+            } catch (\LorisException $e) {
+                throw new RestApiException($e->getMessage(), 404);
+            }
         }
+    }
+
+    /**
+     * Accessor for this endpoint's allowed HTTP methods
+     * 
+     * @return string A comma separated list of allowed methods
+     */
+    public function getAllowedMethods()
+    {
+        return join(',',$this->_allowedMethods);
     }
 
     /**
      * Handle a GET request
      *
-     * @param $request array Pass by reference array of the request params
      * @param $context a Object Value to use as context
      *
      * @return none
      */
-    public function handleGET(array &$req, array &$input, \stdClass &$ctx = null)
+    public function handleGET(&$ctx = null)
     {
-        $candid = array_shift($req);
-
-        if (!$this->_isValidCandid($candid)) {
-            throw new RestApiException('Missing or invalid candid', 400);
-        }
-
-        $candidate_dao = LORIS_DAO_Factory::getCandidateDAO();
-        $candidate = $candidate_dao->getObject($candid);
-
-        if (empty($req)) {
-            $data = array(
+        $format_candidate = function ($candidate) {
+            return array(
                 'candidate_id' => $candidate->getCandID(), 
                 'DoB'          => $candidate->getDoB()
             );
-            $response = array($data, 200);
+        };
+        $data = null;
 
+        if (!empty($this->_candidate)) {
+            $data = $format_candidate($this->_candidate);
         } else {
-            $next_endpoint = array_shift($req);
-            $endpoint_name = "LORIS\RestAPI\Candidates\\" . $next_endpoint;
-            $endpoint = new $endpoint_name();
-            $response = $endpoint->handleGET($req,$input,$candidate);
+            $candidate_dao    = LORIS_DAO_Factory::getCandidateDAO();
+            $data = array_map($format_candidate, $candidate_dao->getAll());
         }
-
-        return $response;
+        return array($data, 200);
     }
 
-    /**
-     * Handle a POST request
-     *
-     * @param $request array Pass by reference array of the request params
-     * @param $input array json_decode of the content of php://input
-     * @param $context a Object Value to use as context
-     *
-     * @return none
-     */
-    public function handlePOST(array &$req, array &$input, \stdClass &$ctx = null)
-    {
-var_dump(__FUNCTION__);
-var_dump(func_get_args());
-throw new RestApiException('YO', 402);
-    }
-
-    /**
-     * Handle a PUT request
-     *
-     * @param $request array Pass by reference array of the request params
-     * @param $input array json_decode of the content of php://input
-     * @param $context a Object Value to use as context
-     *
-     * @return none
-     */
-    public function handlePUT(array &$req, array &$input, \stdClass &$ctx = null)
-    {
-var_dump(__FUNCTION__);
-var_dump(func_get_args());
-    }
-
-    /**
-     * Handle a DELETE request
-     *
-     * @param $request array Pass by reference array of the request params
-     * @param $input array json_decode of the content of php://input
-     * @param $context a Object Value to use as context
-     *
-     * @return none
-     */
-    public function handleDELETE(array &$req, array &$input, \stdClass &$ctx = null)
-    {
-       $this->_methodNotAllowed(); 
-    }
-
-    /**
-     * Validate that the received input contains the required fields
-     *
-     * @param $input array The key-value inputs
-     *
-     * @return bool If all the fields are keys of the input
-     */
-    private function _isValidCandid($candid): bool {
-        return is_numeric($candid);
-    }
-
-    /**
-     * Handle the case when a method is disabled from this endpoint
-     *
-     * @throws RestApiException405
-     * @return node
-     */
-    private function _methodNotAllowed()
-    {
-        $previous = new \Exception("GET,POST,PUT");
-        throw new RestApiException405('Method disabled', 405, $previous);
-    }
-
-    public function getEndpointInstance(array $request)
+    public function getEndpointInstance(array $request = null)
     {
         $final_endpoint = null;
 

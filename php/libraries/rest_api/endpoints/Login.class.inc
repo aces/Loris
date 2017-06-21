@@ -1,7 +1,7 @@
 <?php
 namespace LORIS\RestAPI;
 
-class Login implements Endpoint
+class Login extends Endpoint
 {
     public function __construct() 
     {
@@ -12,28 +12,24 @@ class Login implements Endpoint
     }
 
     /**
-     * Handle a GET request
-     *
-     * @param $request array Pass by reference array of the request params
-     * @param $context a Object Value to use as context
-     *
-     * @return none
+     * Accessor for this endpoint's allowed HTTP methods
+     * 
+     * @return string A comma separated list of allowed methods
      */
-    public function handleGET(array &$req, array &$input, \stdClass &$ctx = NULL)
+    public function getAllowedMethods()
     {
-        $this->_methodNotAllowed();
+        return 'POST';
     }
 
     /**
      * Handle a POST request
      *
-     * @param $request array Pass by reference array of the request params
      * @param $input array The content of php://input
      * @param $context a Object Value to use as context
      *
      * @return 
      */
-    public function handlePOST(array &$req, array &$input, \stdClass &$ctx = NULL)
+    public function handlePOST(array &$input, &$ctx = NULL)
     {
         $response = array('token' => null);
 
@@ -54,41 +50,14 @@ class Login implements Endpoint
     }
 
     /**
-     * Handle a PUT request
-     *
-     * @param $request array Pass by reference array of the request params
-     * @param $input array The content of php://input
-     * @param $context a Object Value to use as context
-     *
-     * @return none
-     */
-    public function handlePUT(array &$req, array &$input, \stdClass &$ctx = NULL)
-    {
-        $this->_methodNotAllowed();
-    }
-
-    /**
-     * Handle a DELETE request
-     *
-     * @param $request array Pass by reference array of the request params
-     * @param $input array The content of php://input
-     * @param $context a Object Value to use as context
-     *
-     * @return none
-     */
-    public function handleDELETE(array &$req, array &$input, \stdClass &$ctx = NULL)
-    {
-        $this->_methodNotAllowed();
-    }
-
-    /**
      * Validate that the received input contains the required fields
      *
      * @param $input array The key-value inputs
      *
      * @return bool If all the fields are keys of the input
      */
-    private function _isValidPostData($input): bool {
+    private function _isValidPostData($input): bool
+    {
         $required_fields = array(
             'username',
             'password'
@@ -97,17 +66,4 @@ class Login implements Endpoint
             return $carry && array_key_exists($item, $input);
         },true);
     }
-
-    /**
-     * Handle the case when a method is disabled from this endpoint
-     *
-     * @throws RestApiException405
-     * @return node
-     */
-    private _methodNotAllowed()
-    {
-        $previous = new \Exception("POST");
-        throw new RestApiException405('Method disabled', 405, $previous);
-    }
-
 }

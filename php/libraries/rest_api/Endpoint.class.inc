@@ -3,11 +3,14 @@ namespace LORIS\RestAPI;
 
 abstract class Endpoint
 {
-    protected $allowedMethods = array();
-
+    /**
+     * Accessor for this endpoint's allowed HTTP methods
+     * 
+     * @return string A comma separated list of allowed methods
+     */
     public function getAllowedMethods()
     {
-        return $this->allowedMethods;
+        return '';
     }
 
     /**
@@ -33,7 +36,7 @@ abstract class Endpoint
      */
     public function handleGET(&$ctx = NULL)
     {
-        $this->methodNotImplemented();
+        $this->_methodNotAllowed();
     }
 
     /**
@@ -47,7 +50,7 @@ abstract class Endpoint
      */
     public function handlePOST(array &$input, &$ctx = NULL)
     {
-        $this->methodNotImplemented();
+        $this->_methodNotAllowed();
     }
 
     /**
@@ -59,9 +62,9 @@ abstract class Endpoint
      * @throws RestApiException
      * @return array The response body and a status code.
      */
-    public function handlePUT(array &$input, &$ctx = NULL);
+    public function handlePUT(array &$input, &$ctx = NULL)
     {
-        $this->methodNotImplemented();
+        $this->_methodNotAllowed();
     }
 
     /**
@@ -73,9 +76,9 @@ abstract class Endpoint
      * @throws RestApiException
      * @return array The response body and a status code.
      */
-    public function handleDELETE(array &$input, &$ctx = NULL);
+    public function handleDELETE(array &$input, &$ctx = NULL)
     {
-        $this->methodNotImplemented();
+        $this->_methodNotAllowed();
     }
 
     /**
@@ -86,7 +89,7 @@ abstract class Endpoint
      */
     private function _methodNotAllowed()
     {
-        $previous = new \Exception(join(',', $this->allowedMethod));
+        $previous = new \Exception($this->getAllowedMethods());
         throw new RestApiException405('Method disabled', 405, $previous);
     }
 
@@ -96,7 +99,7 @@ abstract class Endpoint
      * @throws RestApiException
      * @return Endpoint
      */
-    public function getEndpointInstance()
+    public function getEndpointInstance(array $request = null)
     {
         return $this;
     } 

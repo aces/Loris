@@ -27,6 +27,8 @@
  */
 class SinglePointLogin
 {
+    private static $_instance;
+
     /**
      * Defines whether a user is currently logged in
      */
@@ -46,6 +48,16 @@ class SinglePointLogin
      * Defines whether a user's password has expired
      */
     var $_passwordExpired = false;
+
+    private function __construct() {}
+
+    public static function getInstance()
+    {
+        if (empty(self::$_instance)) {
+            self::$_instance = new SinglePointLogin();
+        }
+        return self::$_instance;
+    }
 
     /**
      * Dumps the login form
@@ -316,6 +328,7 @@ class SinglePointLogin
         } catch(Exception $e) {
             return false;
         }
+        $this->isLoggedIn = true;
 
         $decodedArray    = (array) $decoded;
         $this->_username
@@ -581,6 +594,15 @@ class SinglePointLogin
             return true;
         }
         return false;
+    }
+
+    public function getLoggedInUser()
+    {
+        $user = null;
+        if (!$this->_isLoggedIn) {
+            $user =& \User::factory($this->_username);
+        }
+        return $user;
     }
 }
 ?>

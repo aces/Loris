@@ -133,7 +133,7 @@ class NDB_Client
         */
         if (!isset($_SESSION['State'])) {
             $_SESSION['State'] =& State::singleton();
-            $login = new SinglePointLogin();
+            $login = \SinglePointLogin::getInstance();
             $_SESSION['State']->setProperty('login', $login);
         } else {
             $login = $_SESSION['State']->getProperty('login');
@@ -185,7 +185,7 @@ class NDB_Client
     {
         if (!isset($_SESSION['State'])) {
             $_SESSION['State'] =& State::singleton();
-            $login = new SinglePointLogin();
+            $login = \SinglePointLogin::getinstance();
             $_SESSION['State']->setProperty('login', $login);
         } else {
             $login = $_SESSION['State']->getProperty('login');

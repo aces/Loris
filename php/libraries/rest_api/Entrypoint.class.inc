@@ -45,7 +45,7 @@ class Entrypoint
     /**
      * Stores the input of the PUT request
      */
-    private $_file = array();
+    private $_inputs = array();
 
     public function __construct()
     {
@@ -82,7 +82,7 @@ class Entrypoint
                 if (!is_array($input)) {
                     $this->_error("Invalid input", 400);
                 }
-                $this->_file = $this->_cleanInputs($input);
+                $this->_inputs = $this->_cleanInputs($input);
             case 'GET':
             case 'OPTIONS':
                 break;
@@ -115,21 +115,18 @@ class Entrypoint
 
     public function run()
     {
-        $function_name = 'handle' . $this->_method;
-        if (!is_callable(array($endpoint_name, $function_name))) {
-            $this->_error('Endpoint interface not implemented', 501);
-        }
-
         try {
-            $endpoint = $this->_getEndpoint($this->_request);
+            $endpoint = $this->_getEndpointInstance($this->_request);
+
+            $function_name = 'handle' . $this->_method;
 
             if ($this->_method == 'OPTIONS') {
-                $allowedMethods = $endpoint->getAllowedMethods()
+                $allowedMethods = $endpoint->getAllowedMethods();
                 $this->_header("Allow: $allowedMethods");
             }
 
             list($data, $status) = $endpoint->{$function_name}(
-                $this->_file
+                $this->_inputs
             );
 
             $this->_response($data, $status);
@@ -173,6 +170,8 @@ class Entrypoint
     }
 
     public static function _response(array $data, int $status = 200) {
+        $response_body = array('d' => $data);
+
         switch ($status) {
             case 100: $text = 'Continue'; break;
             case 101: $text = 'Switching Protocols'; break;
@@ -217,7 +216,7 @@ class Entrypoint
         }
         
         self::_header("HTTP/1.1 " . $status . " " . $text);
-        print json_encode($data);
+        print json_encode($response_body);
     }
 
     /**
@@ -254,16 +253,17 @@ class Entrypoint
         }
     }
 
-    private function _getEndpointInstance(array $request)
+    private function _getEndpointInstance(array &$request)
     {
         $endpoint_name = array_shift($request);
         $endpoint_id   = array_shift($request);
 
-        if (!class_exists($endpoint_name)) {
-            $this->_error("No Endpoint: $class_name", 404);
+        $class_name = '\LORIS\RestAPI\\' . $endpoint_name;
+        if (!class_exists($class_name)) {
+            $this->_error("No Endpoint: $endpoint_name", 404);
         }
 
-        $endpoint = new $endpoint_name($endpoint_id);
+        $endpoint = new $class_name($endpoint_id);
         return $endpoint->getEndpointInstance($request);
     }
 }
