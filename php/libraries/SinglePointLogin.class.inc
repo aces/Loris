@@ -53,10 +53,29 @@ class SinglePointLogin
     var $_passwordExpired = false;
 
     /**
-     * The constructor is private so getinstance must be used
+     * The constructor is private so getInstance must be used
      */
     private function __construct()
     {
+    }
+
+    /**
+     * The clone function is private so getInstance must be used
+     *
+     * @return none
+     */
+    private function __clone()
+    {
+    }
+
+    /**
+     * The wakeup function is used when the instance is stored in the $_SESSION
+     *
+     * @return none, but set the instance variable
+     */
+    public function __wakeup()
+    {
+        self::$_instance = $this;
     }
 
     /**
