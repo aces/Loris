@@ -6,8 +6,6 @@
  */
 namespace LORIS\Models;
 
-use \LORIS\Models\Candidate_VO;
-
 class Candidate_VO
 {
     /**

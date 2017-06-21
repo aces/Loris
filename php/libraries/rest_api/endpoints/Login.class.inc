@@ -5,7 +5,7 @@ class Login extends Endpoint
 {
     public function __construct() 
     {
-        $login = new \SinglePointLogin();
+        $login = \SinglePointLogin::getInstance();
         if ($login->authenticate()) {
             throw new RestApiException("You are already logged in", 202);
         }
@@ -39,7 +39,7 @@ class Login extends Endpoint
         $username = $input['username'];
         $password = $input['password'];
 
-        $login = new \SinglePointLogin();
+        $login = \SinglePointLogin::getInstance();
 
         if (!$login->passwordAuthenticate($username, $password ,false)) {
             throw new RestApiException($login->_lastError, 401);

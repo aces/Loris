@@ -119,7 +119,6 @@ class Entrypoint
             $endpoint = $this->_getEndpointInstance($this->_request);
 
             $function_name = 'handle' . $this->_method;
-
             if ($this->_method == 'OPTIONS') {
                 $allowedMethods = $endpoint->getAllowedMethods();
                 $this->_header("Allow: $allowedMethods");
@@ -141,7 +140,6 @@ class Entrypoint
 
         } catch (\Exception $e) {
             $this->_error("Unknown Error", 520);
-
         } catch (\Error $e) {
             // TODO :: Security check : Is is safe to display any Fatal error in
             // The repsonse body?

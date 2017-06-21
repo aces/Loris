@@ -38,11 +38,9 @@ class Candidates extends Endpoint
     /**
      * Handle a GET request
      *
-     * @param $context a Object Value to use as context
-     *
      * @return none
      */
-    public function handleGET(&$ctx = null)
+    public function handleGET()
     {
         $format_candidate = function ($candidate) {
             return array(
@@ -77,8 +75,8 @@ class Candidates extends Endpoint
                 throw new RestApiException("No Endpoint: $endpoint_name", 404);
             }
 
-            $endpoint = new $class_name($endpoint_id);
-            $final_enpoint = $endpoint->getEndpointInstance($request);
+            $endpoint = new $class_name($endpoint_id, $this->_candidate->getCandID());
+            $final_endpoint = $endpoint->getEndpointInstance($request);
         }
  
         return $final_endpoint;
