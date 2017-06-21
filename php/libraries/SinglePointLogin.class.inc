@@ -27,8 +27,6 @@
  */
 class SinglePointLogin
 {
-    private static $_instance;
-
     /**
      * The class instance
      */
@@ -53,16 +51,6 @@ class SinglePointLogin
      * Defines whether a user's password has expired
      */
     var $_passwordExpired = false;
-
-    private function __construct() {}
-
-    public static function getInstance()
-    {
-        if (empty(self::$_instance)) {
-            self::$_instance = new SinglePointLogin();
-        }
-        return self::$_instance;
-    }
 
     /**
      * The constructor is private so getInstance must be used
