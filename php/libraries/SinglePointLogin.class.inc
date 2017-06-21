@@ -28,6 +28,11 @@
 class SinglePointLogin
 {
     /**
+     * The class instance
+     */
+    private static $_instance = null;
+
+    /**
      * Defines whether a user is currently logged in
      */
     var $_isLoggedIn = false;
@@ -46,6 +51,26 @@ class SinglePointLogin
      * Defines whether a user's password has expired
      */
     var $_passwordExpired = false;
+
+    /**
+     * The constructor is private so getinstance must be used
+     */
+    private function __construct()
+    {
+    }
+
+    /**
+     * The object is created from within the class itself
+     *
+     * @return SinglePointLogin The unique instance of that class
+     */
+    public static function getInstance()
+    {
+        if (empty(self::$_instance)) {
+            self::$_instance = new SinglePointLogin();
+        }
+        return self::$_instance;
+    }
 
     /**
      * Dumps the login form
