@@ -20,6 +20,7 @@
   "scripts": {
     "lint:javascript": "./test/run-js-linter.sh",
     "lint:php": "./test/run-php-linter.sh",
+    "fix:php": "phpcbf --standard=./docs/LorisCS.xml",
     "tests:unit": "./test/dockerized-unit-tests.sh",
     "tests:unit:debug": "DEBUG=true ./test/dockerized-unit-tests.sh",
     "tests:integration": "./test/dockerized-integration-tests.sh",
