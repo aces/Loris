@@ -1518,7 +1518,7 @@ CREATE TABLE `parameter_file` (
   `ParameterFileID` int(10) unsigned NOT NULL auto_increment,
   `FileID` int(10) unsigned NOT NULL default '0',
   `ParameterTypeID` int(10) unsigned NOT NULL default '0',
-  `Value` text,
+  `Value` longtext,
   `InsertTime` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`ParameterFileID`),
   UNIQUE KEY `file_type_uniq` (`FileID`,`ParameterTypeID`),
