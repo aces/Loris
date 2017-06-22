@@ -293,24 +293,17 @@ class NDB_Page
      *
      * @return none
      */
-    function addRadio($name, $groupLabel, $radios, $options)
+    function addRadio($name, $groupLabel, $radios, $options=array())
     {
         foreach ($radios as $radElement) {
-            if ($options === null) {
-                $tempOptions = array(
-                                'class' => 'form-control input-sm',
-                                'value' => $radElement['value'],
-                               );
-            } else {
-                $tempOptions = array_merge(
-                    array(
-                     'class' => 'form-control input-sm',
-                     'value' => $radElement['value'],
-                    ),
-                    $options
-                );
-            }
-            $radGroup[] = $this->createRadio(
+            $tempOptions = array_merge(
+                array(
+                 'class' => 'form-control input-sm',
+                 'value' => $radElement['value'],
+                ),
+                $options
+            );
+            $radGroup[]  = $this->createRadio(
                 $name,
                 $radElement['label'],
                 $tempOptions
