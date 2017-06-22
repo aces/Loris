@@ -284,7 +284,7 @@ class NDB_Page
      *
      * @param string $name     The field name of this radio button
      * @param string $label    The label to attach to this radio button
-     * @param array  $options  Options to pass to QuickForm for this
+     * @param array  $options  Options to pass to LorisForm for this
      *                         radio button
      * @param array  $optional Optional extra HTML attributes to add
      *                         to the radio button
@@ -556,7 +556,7 @@ class NDB_Page
      *
      * @param string $field   The fieldname for this radio button
      * @param string $label   The label to attach to this radio button
-     * @param string $options Options to pass to HTML_QuickForm
+     * @param string $options Options to pass to LorisForm
      *
      * @return QuickForm_Element representing radio button
      */
