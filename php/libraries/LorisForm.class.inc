@@ -1892,9 +1892,13 @@ class LorisForm
                 $el['type'] = $type;
             }
             break;
+        case 'date':
+            $el = $this->createBase($elname, $label, $attribs);
+            $el['type'] = $type;
+            $el['options'] = $options;
+            break;
         case 'time':
         case 'textarea':
-        case 'date':
         case 'password':
             $el         = $this->createBase($elname, $label, $options);
             $el['type'] = $type;
