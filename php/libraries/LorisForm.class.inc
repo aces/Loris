@@ -1893,8 +1893,8 @@ class LorisForm
             }
             break;
         case 'date':
-            $el = $this->createBase($elname, $label, $attribs);
-            $el['type'] = $type;
+            $el            = $this->createBase($elname, $label, $attribs);
+            $el['type']    = $type;
             $el['options'] = $options;
             break;
         case 'time':
