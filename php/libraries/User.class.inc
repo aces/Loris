@@ -430,9 +430,8 @@ class User extends UserPermissions
      * Determines if the user has a permission
      * for a center
      *
-     * @param string $code   The permission code
+     * @param string $code      The permission code
      * @param int    $center_id The center id
-     *
      *
      * @return bool
      */
