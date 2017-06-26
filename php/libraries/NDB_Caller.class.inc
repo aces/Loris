@@ -501,7 +501,7 @@ class NDB_Caller
         $has_write_permission = $has_read_permission
             && $user->hasCenterPermission("data_entry", $timepoint->getCenterID());
         // freeze the form to prevent data entry
-        if ($status->getDataEntryStatus() != 'In Progress'
+        if ($status->getDataEntryStatus() == 'In Progress'
             && $has_write_permission
         ) {
             if (strtoupper($_SERVER["REQUEST_METHOD"]) === "POST") {
