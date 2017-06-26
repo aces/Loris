@@ -96,14 +96,8 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
         $battery = new NDB_BVL_Battery;
         $success = $battery->selectBattery($_REQUEST['sessionID']);
 
-        $this->tpl_data['subprojectID'] = Utility::getSubprojectIDUsingCandID(
-            $this->tpl_data['candID']
-        );
-
         // get the list of instruments
-        $listOfInstruments = $this->getBatteryInstrumentList(
-            $this->tpl_data['subprojectID']
-        );
+        $listOfInstruments = $this->getBatteryInstrumentList();
 
         // display list of instruments
         if (!empty($listOfInstruments)) {
@@ -229,12 +223,10 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
      * Gets an associative array of instruments which are members of the current
      * battery for instrument list module
      *
-     * @param integer $SubprojectID The SubprojectID of that we want the battery for.
-     *
      * @return array an associative array containing Test_name,
      *         Full_name, Sub_group, CommentID
      */
-    function getBatteryInstrumentList($SubprojectID=null)
+    function getBatteryInstrumentList()
     {
         $DB = Database::singleton();
 

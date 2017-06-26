@@ -950,10 +950,10 @@ class Utility
      */
     static function getSubprojectIDUsingCandID($Cand_id)
     {
-        $db    =& Database::singleton();
-        $query = "select DISTINCT SubprojectID from session where CandID = :CandID";
-        $stage = $db->pselect($query, array('CandID' => $Cand_id));
-        return $stage[0]['SubprojectID'];
+        throw new LorisException(
+            "Utility::getSubprojectIDUsingCandID() is deprecated. "
+            . "Use TimePoint::getSubprojectID() instead."
+        );
     }
 
     /**
