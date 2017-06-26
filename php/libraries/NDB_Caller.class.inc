@@ -461,7 +461,7 @@ class NDB_Caller
         $user =& User::singleton();
 
         $session_id = $instrument->getSessionID();
-        $timepoint = TimePoint::singleton($session_id);
+        $timepoint  = TimePoint::singleton($session_id);
 
         // This prevents users from requesting an unassigned sessionID for
         // a candidate and consequently writing to it.
