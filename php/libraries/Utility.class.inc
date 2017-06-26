@@ -945,8 +945,9 @@ class Utility
      *
      * @param string $Cand_id candidate ID
      *
-     * @return array
-     * @throws DatabaseException
+     * @return     array
+     * @throws     DatabaseException
+     * @deprecated
      */
     static function getSubprojectIDUsingCandID($Cand_id)
     {
