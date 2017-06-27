@@ -85,7 +85,7 @@ foreach ($instruments as $inst=>$fullName) {
             // Check if age is null OR if wrong age
             if (empty($row['Candidate_Age'])) {
                 // Null age
-                $nullAges[$inst][$commentID] = $row;
+                $nullAges[$inst][$commentID] = $row['CommentID'];
                 $trouble =true;
             } else {
                 // get Age from instrument class
