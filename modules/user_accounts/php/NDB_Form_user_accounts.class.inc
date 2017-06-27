@@ -862,43 +862,6 @@ class NDB_Form_User_Accounts extends NDB_Form
     }
 
     /**
-    * Send DB query to remove user based on userID through a GET
-    * request.
-    * The reject user button populates on edit_users page, therefore
-    * any user that has access to the button has user_accounts
-    * privileges.
-    * The URL is redirected to user_account after the operation
-    *
-    * @return void
-    */
-    // @codingStandardsIgnoreStart
-    function reject_user()
-    {
-    // @codingStandardsIgnoreEnd
-        $DB     = Database::singleton();
-        $editor = User::singleton();
-
-        $redirect = $baseURL . "/user_accounts/";
-
-        // The $editor variable is set by the edit_user script.
-        // Checking that this is set ensures that the user is
-        // accessing this function through the authorized button
-        // and not by pointing their URL directly to this script.
-        if (isset($editor)) {
-            if ($this->identifier!='') {
-                $DB->delete('users', array("UserID" => $this->identifier));
-            }
-        }
-        // If the user tried to access this function through the URL
-        // nothing will execute and they will be brought back to
-        // the to the user_accounts menu where an error message will
-        // be displayed if the user doesn't have the correct
-        // permissions
-        header('Location: '.$redirect);
-
-    }
-
-    /**
      * Controls the output/behaviour of the form is used to edit
      * the user's preferences.
      *

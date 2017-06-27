@@ -381,7 +381,7 @@ $(document).ready(function() {
     	</div>
         {if $can_reject}
         <div class="col-sm-2">
-            <input class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/user_accounts/reject_user/?identifier={$form.UserID.html}'" value="Reject User" type="button"/>
+            <input class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/user_accounts/ajax/rejectUser.php?identifier={$form.UserID.html}'" value="Reject User" type="button"/>
         </div>
         {/if}
     </div>
