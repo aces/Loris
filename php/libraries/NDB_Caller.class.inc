@@ -447,9 +447,8 @@ class NDB_Caller
             );
 
             $this->instrument = $instrument;
-            return "<script language='javascript'>"
-                . "window.location='$redirectToOnSuccess'"
-                . "</script>";
+            header("Location: $redirectToOnSuccess");
+            return "";
         }
         $user =& User::singleton();
 
@@ -480,9 +479,8 @@ class NDB_Caller
         $success = $instrument->save();
 
         if ($redirectToOnSuccess !== null && $success !== false) {
-            return "<script language='javascript'>"
-                .   "window.location='$redirectToOnSuccess'"
-                . "</script>";
+            header("Location: $redirectToOnSuccess");
+            return "";
         }
         // create an instrument status object
         $status  = new NDB_BVL_InstrumentStatus;
