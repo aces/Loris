@@ -451,7 +451,8 @@ class NDB_Caller
 
         $this->instrument = $instrument;
         if (is_null($instrument)) {
-            throw new Exception("Instrument does not exist");
+            throw new Exception('Instrument '
+                . htmlspecialchars($instrumentName) . ' does not exist.');
         }
         if ($page === 'finalpage') {
             return "<script language='javascript'>"
@@ -476,7 +477,7 @@ class NDB_Caller
         $_REQUEST["sessionID"] = $session_id;
         if (strtoupper($_SERVER["REQUEST_METHOD"]) === "GET") {
             $_GET["sessionID"] = $session_id;
-        } else {
+        } else if (strtoupper($_SERVER["REQUEST_METHOD"]) === "POST") {
             $_POST["sessionID"] = $session_id;
         }
 
