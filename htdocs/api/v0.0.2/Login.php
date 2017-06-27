@@ -76,7 +76,7 @@ class Login extends APIBase
 
         if ($login->passwordAuthenticate($user, $password, false)) {
             $this->JSON = array(
-                           "token" => $this->getEncodedToken($user),
+                           "token" => $login->getEncodedToken($user),
                           );
         } else {
             $this->header("HTTP/1.1 401 Unauthorized");
@@ -97,39 +97,7 @@ class Login extends APIBase
      */
     function getLoginAuthenticator()
     {
-        return new \SinglePointLogin();
-    }
-
-    /**
-     * Return a valid JWT encoded identification token for the user
-     *
-     * @param string $user The user to return an identification token for
-     *
-     * @return string JWT encoded token
-     */
-    function getEncodedToken($user)
-    {
-        $factory = \NDB_Factory::singleton();
-        $config  = $factory->config();
-
-        $www     = $config->getSetting("www");
-        $baseURL = $www['url'];
-
-        $token = array(
-            // JWT related tokens to for the JWT library to validate
-                  "iss"  => $baseURL,
-                  "aud"  => $baseURL,
-            // Issued at
-                  "iat"  => time(),
-                  "nbf"  => time(),
-            // Expire in 1 day
-                  "exp"  => time() + 86400,
-            // Additional payload data
-                  "user" => $user,
-                 );
-
-        $key = $config->getSetting("JWTKey");
-        return \Firebase\JWT\JWT::encode($token, $key, "HS256");
+        return new \SinglePointLogin::getInstance();
     }
 
     /**

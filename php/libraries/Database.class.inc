@@ -867,13 +867,16 @@ class Database
 
         // get the user id
         if (isset($_SESSION['State'])) {
+// TODO :: Store the username in the NDB_Client when he logs in or get it from $_SESSION['State']->getUsername() otherwise.
             $userID = $_SESSION['State']->getUsername();
         }
 
         if (empty($userID)) {
             $userID = getenv('USER');
+// TODO :: Store the username in the NDB_Client when he logs in or get it from $_SESSION['State']->getUsername() otherwise.
         }
         if (empty($userID)) {
+// TODO :: Throw exception Can't track changes instead of the Databse foreign key exception 
             $userID = 'unknown';
         }
 

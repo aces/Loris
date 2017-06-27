@@ -1,0 +1,15 @@
+Options -Indexes
+<IfModule mod_rewrite.c>
+  RewriteEngine on
+
+  # pass-through if another rewrite rule has been applied already
+  RewriteCond %{ENV:REDIRECT_STATUS} 200
+  RewriteRule ^ - [L]
+
+  # Prevent from accessing index.php directly
+  RewriteCond %{REQUEST_FILENAME} -f 
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule . index.php [L]
+
+  RewriteRule ^([a-zA-Z0-9_\w\s./]+) index.php?req=$1 [L]
+</IfModule>
