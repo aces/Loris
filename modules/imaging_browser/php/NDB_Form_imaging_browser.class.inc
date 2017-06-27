@@ -141,6 +141,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         if (!empty($_REQUEST['selectedOnly'])) {
             $extra_where_string .= " AND COALESCE(sel.Selected,'') <> ''";
         }
+        $args = array('SID' => $this->sessionID);
         // To better support QC for CIVET output a couple of
         // additional conditions have been put in...
         if (!empty($_REQUEST['outputType'])) {
@@ -148,13 +149,15 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             if ($outputType=="processed") {
                 $extra_where_string .= " AND OutputType != 'native' ";
             } elseif ($outputType=="native") {
-                $extra_where_string .= " AND OutputType='$outputType'";
+                $extra_where_string .= " AND OutputType='native'";
             } elseif ($outputType=="skull_mask") {
-                $extra_where_string .= " AND (OutputType='$outputType' 
+                $extra_where_string .= " AND (OutputType='skull_mask' 
                     OR  (OutputType='native' AND AcquisitionProtocolID='44') )";
             } else {
-                $extra_where_string .= " AND (OutputType='$outputType' 
+                $extra_where_string .= " AND (OutputType=:outputType 
                     OR OutputType='linreg')";
+
+                $args["outputType"] = $outputType;
             }
         }
         $files = $this->DB->pselect(
@@ -167,9 +170,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             ORDER BY files.OutputType, 
                      files.AcquisitionProtocolID, 
                      files.File",
-            array(
-             'SID' => $this->sessionID,
-            )
+            $args
         );
         $this->tpl_data['files'] = array();
         foreach ($files as $fileRow) {
