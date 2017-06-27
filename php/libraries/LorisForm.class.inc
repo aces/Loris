@@ -1949,8 +1949,10 @@ class LorisForm
     {
         foreach ($submitKeys as $key) {
             if (!isset($this->form[$key])) {
-                $tp = $this->groupMapping[$key];
-                $el = $this->form[$tp['groupName']]['elements'][$tp['index']];
+                $tp = $this->groupMapping[$key] ?? null;
+                $el = is_null($tp) ?
+                    null :
+                    $this->form[$tp['groupName']]['elements'][$tp['index']];
                 if (!$el) {
                     $arr[$key] = $_REQUEST[$key];
                     continue;
