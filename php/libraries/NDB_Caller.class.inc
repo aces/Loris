@@ -439,6 +439,7 @@ class NDB_Caller
         $commentID,
         $redirectToOnSuccess=null
     ) {
+
         $instrument = NDB_BVL_Instrument::factory(
             $instrumentName,
             $commentID,
@@ -447,10 +448,11 @@ class NDB_Caller
 
         $this->instrument = $instrument;
         if (is_null($instrument)) {
-            throw new Exception('Instrument '.
-                       htmlspecialchars($instrumentName).
-                         ' does not exist.'
-                      );
+            throw new Exception(
+                'Instrument ' .
+                htmlspecialchars($instrumentName) .
+                ' does not exist.'
+            );
         }
         if ($page === 'finalpage') {
             return "<script language='javascript'>"
@@ -496,60 +498,62 @@ class NDB_Caller
             || $user->hasCenter($timepoint->getCenterID());
         if (!$has_read_permission) {
             throw new Exception("You cannot read this instrument");
-        $has_write_permission = $has_read_permission
-            && $user->hasCenterPermission("data_entry", $timepoint->getCenterID());
-        // freeze the form to prevent data entry
-        if ($status->getDataEntryStatus() == 'In Progress'
-            && $has_write_permission
-        ) {
-            if (strtoupper($_SERVER["REQUEST_METHOD"]) === "POST") {
-                $success = $instrument->save();
-                if ($redirectToOnSuccess != null && $success !== false) {
-                    return "script language='javascript'>"
-                        .  "window.location='$redirectToOnSuccess'"
-                        . "</script>";
+            $has_write_permission = $has_read_permission
+                &&
+                $user->hasCenterPermission("data_entry", $timepoint->getCenterID());
+            // freeze the form to prevent data entry
+            if ($status->getDataEntryStatus() == 'In Progress'
+                && $has_write_permission
+            ) {
+                if (strtoupper($_SERVER["REQUEST_METHOD"]) === "POST") {
+                    $success = $instrument->save();
+                    if ($redirectToOnSuccess != null && $success !== false) {
+                        return "script language='javascript'>"
+                            . "window.location='$redirectToOnSuccess'"
+                            . "</script>";
+                    }
+                }
+            } else {
+                if ($instrument->preview !== true && $this->DataEntry !== 'Direct') {
+                    $instrument->freeze();
                 }
             }
-        } else {
-            if ($instrument->preview !== true && $this->DataEntry !== 'Direct') {
-                $instrument->freeze();
+
+            $this->page = $instrument;
+            $html       = $instrument->display();
+
+            return $html;
+        }
+
+        /**
+         * Checks if a library exists, and requires it if it does.
+         *
+         * @param string $library name of class to be included.
+         *
+         * @return bool true if file exists, otherwise false
+         */
+        function existsAndRequire($library)
+        {
+            if (stream_resolve_include_path($library) !== false) {
+                include_once $library;
+                return true;
             }
+
+            return false;
         }
 
-        $this->page = $instrument;
-        $html       = $instrument->display();
-
-        return $html;
-    }
-
-    /**
-     * Checks if a library exists, and requires it if it does.
-     *
-     * @param string $library name of class to be included.
-     *
-     * @return bool true if file exists, otherwise false
-     */
-    function existsAndRequire($library)
-    {
-        if (stream_resolve_include_path($library) !== false) {
-            include_once $library;
-            return true;
+        /**
+         * Sets the data entry type being performed.
+         *
+         * @param string $type "normal" or "direct", the type of data entry
+         *                     being performed.
+         *
+         * @return none
+         */
+        function setDataEntryType($type)
+        {
+            $this->DataEntry = $type;
         }
-
-        return false;
-    }
-
-    /**
-     * Sets the data entry type being performed.
-     *
-     * @param string $type "normal" or "direct", the type of data entry
-     *                     being performed.
-     *
-     * @return none
-     */
-    function setDataEntryType($type)
-    {
-        $this->DataEntry = $type;
     }
 }
 ?>
