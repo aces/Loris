@@ -439,7 +439,6 @@ class NDB_Caller
         $commentID,
         $redirectToOnSuccess=null
     ) {
-
         $instrument = NDB_BVL_Instrument::factory(
             $instrumentName,
             $commentID,
@@ -462,7 +461,7 @@ class NDB_Caller
         $user =& User::singleton();
 
         $session_id = $instrument->getSessionID();
-        $timepoint  = TimePoint::singleton($session_id);
+        $timepoint = TimePoint::singleton($session_id);
 
         // This prevents users from requesting an unassigned sessionID for
         // a candidate and consequently writing to it.
@@ -520,10 +519,11 @@ class NDB_Caller
             }
 
             $this->page = $instrument;
-            $html       = $instrument->display();
+            $html = $instrument->display();
 
             return $html;
         }
+    }
 
         /**
          * Checks if a library exists, and requires it if it does.
@@ -532,15 +532,15 @@ class NDB_Caller
          *
          * @return bool true if file exists, otherwise false
          */
-        function existsAndRequire($library)
-        {
-            if (stream_resolve_include_path($library) !== false) {
-                include_once $library;
-                return true;
-            }
-
-            return false;
+    function existsAndRequire($library)
+    {
+        if (stream_resolve_include_path($library) !== false) {
+            include_once $library;
+            return true;
         }
+
+        return false;
+    }
 
         /**
          * Sets the data entry type being performed.
@@ -550,10 +550,9 @@ class NDB_Caller
          *
          * @return none
          */
-        function setDataEntryType($type)
-        {
-            $this->DataEntry = $type;
-        }
+    function setDataEntryType($type)
+    {
+        $this->DataEntry = $type;
     }
 }
 ?>
