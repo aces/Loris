@@ -53,14 +53,14 @@ class ConflictDetector
         }
 
         // Create the instrument instance for $commentId1
-        $instance1 =& NDB_BVL_Instrument::factory(
+        $instance1 = NDB_BVL_Instrument::factory(
             $instrumentName,
             $commentId1,
             null
         );
 
         // Create the instrument instance for $commentId2
-        $instance2 =& NDB_BVL_Instrument::factory(
+        $instance2 = NDB_BVL_Instrument::factory(
             $instrumentName,
             $commentId2,
             null
