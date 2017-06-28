@@ -28,10 +28,10 @@
 
 class File_Upload
 {
-    private $_errorLog;
-    private $_destinationFilename;
-    private $_destinationDirectory;
     private $_baseUploadDirectory;
+    private $_destinationDirectory;
+    private $_destinationFilename;
+    private $_errorLog;
 
     /**
      * Construct the File_Upload class. This sets the default parameters
@@ -39,17 +39,17 @@ class File_Upload
      */
     public function __construct()
     {
-        // TODO: fileMove should be removed after imaging uploader is refactored
+        // TODO: _fileMove should be removed after imaging uploader is refactored
         // It is not a private variable because imaging_uploader currently
         // changes its value manually.
         // @see imaging_uploader/php/NDB_Menu_Filter_imaging_uploader.class.inc#L212
-        $this->fileMove            = true;
-        $this->errorLog            = array();
-        $this->fieldName           = '';
-        $this->fieldNames          = '';
-        $this->destinationFilename = '';
-        $this->destinationDirectory = '';
-        $this->baseUploadDirectory  = '';
+        $this->_baseUploadDirectory  = '';
+        $this->_destinationDirectory = '';
+        $this->_destinationFilename  = '';
+        $this->_errorLog  = array();
+        $this->fileMove   = true;
+        $this->fieldName  = '';
+        $this->fieldNames = '';
     }
 
 
@@ -63,7 +63,7 @@ class File_Upload
     {
         //Loop through fields.
         if (empty($this->fieldNames) || !is_array($this->fieldNames)) {
-            $this->setError(
+            $this->_setError(
                 "",
                 "No files to process! Register handlers first."
             );
@@ -72,8 +72,8 @@ class File_Upload
 
         foreach ($this->fieldNames as $field) {
             $this->fieldName =$field;
-            if (!$this->preprocessFile()) {
-                $this->setError(
+            if (!$this->_preprocessFile()) {
+                $this->_setError(
                     $field,
                     "Could not upload file. Max file size is "
                     . ini_get("upload_max_filesize") . "."
@@ -84,7 +84,7 @@ class File_Upload
             //Determine appropriate file handler class
             if (empty($this->fileHandlers[$field])) {
                 //If a field type is set use that.
-                $this->setError(
+                $this->_setError(
                     $field,
                     "No file handler registered for field '$field'"
                 );
@@ -92,7 +92,7 @@ class File_Upload
             }
 
             //Test the handler to ensure it exists and all methods are intact
-            if ($this->isValidFileHandler($field)) {
+            if ($this->_isValidFileHandler($field)) {
                 //Validate using the isValid method of the handler class
                 $errors = $this->callFileHandler($field, 'verify');
                 // The above function call returns an array if something goes wrong,
@@ -100,7 +100,7 @@ class File_Upload
                 // @see imaging_uploader/php/
                 //     NDB_Menu_Filter_imaging_uploader.class.inc#L265
                 if (is_array($errors)) {
-                    $this->setError($field, $errors);
+                    $this->_setError($field, $errors);
                     continue;
                 }
 
@@ -108,7 +108,7 @@ class File_Upload
                 //will be before the import step, so we can save the new filename
                 //to the database.
                 // @TODO: Remove this check after imaging uploader is refactored
-                if ($this->fileMove) {
+                if ($this->_fileMove) {
                     // Note: The only implementation of the below gets the username
                     // @see imaging_uploader/php/
                     //     NDB_Menu_Filter_imaging_uploader.class.inc#L529
@@ -116,14 +116,14 @@ class File_Upload
                     if (!$this->getNewDirectory($newTargetDirectory)) {
                         continue;
                     }
-                    $this->moveFile());
+                    $this->_moveFile());
                 }
 
                 //Import the file using the importFile method of the handler
                 //class.
                 $fileImported =$this->callFileHandler($field, 'import');
                 if (is_array($fileImported)) {
-                    $this->setError($field, $fileImported);
+                    $this->_setError($field, $fileImported);
                     continue;
                 }
             }
@@ -199,21 +199,21 @@ class File_Upload
     public function moveFile()
     {
         // Prepare the name before moving
-        $this->normalizeDestinationFilename();
+        $this->_normalizeDestinationFilename();
         // Move the file
         if (!$this->file->moveUploadedFile(
-            $this->destinationDirectory,
-            $this->destinationFilename
+            $this->_destinationDirectory,
+            $this->_destinationFilename
         )) {
-            $this->setError(
+            $this->_setError(
                 $this->fieldName,
                 "Could not move file to "
-                . $this->destinationDirectory
-                . $this->destinationFilename
+                . $this->_destinationDirectory
+                . $this->_destinationFilename
             );
             return false;
         }
-        chmod("$this->destinationDirectory$this->destinationFilename", 0666);
+        chmod("$this->_destinationDirectory$this->_destinationFilename", 0666);
         return true;
     }
 
@@ -227,7 +227,7 @@ class File_Upload
      */
     public function getNewDirectory($destination_dir="")
     {
-        $dest_dir =$this->baseUploadDirectory.$destination_dir;
+        $dest_dir =$this->_baseUploadDirectory.$destination_dir;
 
         //Make sure the dir ends with a trailing slash
         if (substr($dest_dir, -1, 1) != "/") {
@@ -236,7 +236,7 @@ class File_Upload
         //Make sure the dir exists, if necessary (and
         //$this->createDirectories==true) then create it.
         if (file_exists($dest_dir) && !is_dir($dest_dir)) {
-            $this->setError(
+            $this->_setError(
                 $this->fieldName,
                 "A file named '$dest_dir' exists in your chosen upload root. "
                 . "Could not create directory with same name."
@@ -250,21 +250,21 @@ class File_Upload
                 chgrp($dest_dir, $grp);
             }
         } else if (!file_exists($dest_dir)) {
-            $this->setError(
+            $this->_setError(
                 $this->fieldName,
                 "Destination directory '$dest_dir' does not exist"
             );
             return false;
         }
         if (!is_writable($dest_dir)) {
-            $this->setError(
+            $this->_setError(
                 $this->fieldName,
                 "Destination directory '$dest_dir' is not writeable"
             );
             return false;
         }
 
-        $this->destinationDirectory =$dest_dir;
+        $this->_destinationDirectory =$dest_dir;
         return true;
     }
 
@@ -275,18 +275,18 @@ class File_Upload
      *
      * @return void
      */
-    public function normalizeDestinationFilename()
+    private function _normalizeDestinationFilename()
     {
         //Strip out any unwanted characters from the filename
-        $safe_name = $this->nameToSafe($this->fileInfo['name']);
+        $safe_name = $this->_nameToSafe($this->fileInfo['name']);
 
         // If there is already a file with this name in the target directory
         // add a numeric suffix to avoid overwriting
-        if (file_exists($this->destinationDirectory . $safe_name)) {
-            $safe_name = $this->nameToIncremental($dest_dir, $safe_name);
+        if (file_exists($this->_destinationDirectory . $safe_name)) {
+            $safe_name = $this->_nameToIncremental($dest_dir, $safe_name);
         }
 
-        $this->destinationFilename = $safe_name;
+        $this->_destinationFilename = $safe_name;
     }
 
 
@@ -308,13 +308,13 @@ class File_Upload
         } else if (class_exists($class)) {
             $test =new $class;
         } else {
-            $this->setError($field, "$class does not exist.");
+            $this->_setError($field, "$class does not exist.");
             return false;
         }
         //Test each method
         foreach ($this->fileHandlers[$field]['methods'] as $method) {
             if (!method_exists($test, $method)) {
-                $this->setError(
+                $this->_setError(
                     $field,
                     "Method '$method' of object does not exist."
                 );
@@ -479,30 +479,28 @@ class File_Upload
         if (substr($dir, -1, 1) != "/") {
             $dir .="/";
         }
-        $this->baseUploadDirectory = $dir;
+        $this->_baseUploadDirectory = $dir;
     }
 
     /**
     * Gets the final destination directory for the uploaded file
     *
     * @return string directory
-    * @see    File_Upload::getNewFilename()
     */
     public function getDestinationDirectory()
     {
-        return $this->destinationDirectory;
+        return $this->_destinationDirectory;
     }
 
 
     /**
     * Gets the final filename for the uploaded file
     *
-    * @see    File_Upload::getNewFilename()
     * @return string filename
     */
     public function getDestinationFilename()
     {
-        return $this->destinationFilename;
+        return $this->_destinationFilename;
     }
 
     /**
@@ -515,13 +513,13 @@ class File_Upload
     */
     private function _setError($field, $msg)
     {
-        if (!is_array($this->errorLog[$field])) {
-            $this->errorLog[$field] = array();
+        if (!is_array($this->_errorLog[$field])) {
+            $this->_errorLog[$field] = array();
         }
         if (is_array($msg)) {
-            $this->errorLog[$field] =array_merge($this->errorLog[$field], $msg);
+            $this->_errorLog[$field] =array_merge($this->_errorLog[$field], $msg);
         } else {
-            $this->errorLog[$field][] =$msg;
+            $this->_errorLog[$field][] =$msg;
         }
     }
 
@@ -529,12 +527,12 @@ class File_Upload
     /**
     * Gets the array of errors
     *
-    * @see    File_Upload::setError()
+    * @see    File_Upload::_setError()
     * @return array   errors
     */
     function getErrors()
     {
-        return $this->errorLog;
+        return $this->_errorLog;
     }
 }
 
