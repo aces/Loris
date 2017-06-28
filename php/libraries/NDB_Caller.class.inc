@@ -460,7 +460,7 @@ class NDB_Caller
         $user =& User::singleton();
 
         $session_id = $instrument->getSessionID();
-        $timepoint = TimePoint::singleton($session_id);
+        $timepoint  = TimePoint::singleton($session_id);
 
         // This prevents users from requesting an unassigned sessionID for
         // a candidate and consequently writing to it.
@@ -519,7 +519,7 @@ class NDB_Caller
         }
 
         $this->page = $instrument;
-        $html = $instrument->display();
+        $html       = $instrument->display();
 
         return $html;
     }
