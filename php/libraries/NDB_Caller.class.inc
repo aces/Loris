@@ -496,24 +496,24 @@ class NDB_Caller
             || $user->hasCenter($timepoint->getCenterID());
         if (!$has_read_permission) {
             throw new Exception("You cannot read this instrument");
-            $has_write_permission = $has_read_permission
-                &&
-                $user->hasCenterPermission("data_entry", $timepoint->getCenterID());
-            // freeze the form to prevent data entry
-            if ($status->getDataEntryStatus() == 'In Progress'
-                && $has_write_permission
-            ) {
-                if (strtoupper($_SERVER["REQUEST_METHOD"]) === "POST") {
-                    $success = $instrument->save();
-                    if ($redirectToOnSuccess != null && $success !== false) {
-                        header("Location: $redirectToOnSuccess");
-                        return "";
-                    }
+        }
+        $has_write_permission = $has_read_permission
+            &&
+            $user->hasCenterPermission("data_entry", $timepoint->getCenterID());
+        // freeze the form to prevent data entry
+        if ($status->getDataEntryStatus() == 'In Progress'
+            && $has_write_permission
+        ) {
+            if (strtoupper($_SERVER["REQUEST_METHOD"]) === "POST") {
+                $success = $instrument->save();
+                if ($redirectToOnSuccess != null && $success !== false) {
+                    header("Location: $redirectToOnSuccess");
+                    return "";
                 }
-            } else {
-                if ($instrument->preview !== true && $this->DataEntry !== 'Direct') {
-                    $instrument->freeze();
-                }
+            }
+        } else {
+            if ($instrument->preview !== true && $this->DataEntry !== 'Direct') {
+                $instrument->freeze();
             }
         }
 
