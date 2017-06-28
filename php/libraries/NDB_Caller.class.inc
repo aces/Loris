@@ -506,9 +506,8 @@ class NDB_Caller
                 if (strtoupper($_SERVER["REQUEST_METHOD"]) === "POST") {
                     $success = $instrument->save();
                     if ($redirectToOnSuccess != null && $success !== false) {
-                        return "script language='javascript'>"
-                            . "window.location='$redirectToOnSuccess'"
-                            . "</script>";
+                        header("Location: $redirectToOnSuccess");
+                        return "";
                     }
                 }
             } else {
