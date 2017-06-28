@@ -1,5 +1,6 @@
 <?php
 /**
+ * File_Upload File Doc Comment
  * This file contains a wrapper for managing and verifying files that are
  * uploaded through LorisForm and handles putting them in the correct place,
  *
@@ -12,12 +13,25 @@
  * @link     https://github.com/aces/Loris
  */
 
+/**
+ * Class for managing file uploads
+ *
+ * This class interoperates with HTML_QuickForm to allow easy verification and
+ * manipulation of uploaded files.
+ *
+ * @category Main
+ * @package  Behavioural
+ * @author   Loris team <info-loris.mni@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
+
 class File_Upload
 {
-    private $errorLog;
-    private $destinationFilename;
-    private $destinationDirectory;
-    private $baseUploadDirectory;
+    private $_errorLog;
+    private $_destinationFilename;
+    private $_destinationDirectory;
+    private $_baseUploadDirectory;
 
     /**
      * Construct the File_Upload class. This sets the default parameters
@@ -29,13 +43,13 @@ class File_Upload
         // It is not a private variable because imaging_uploader currently
         // changes its value manually.
         // @see imaging_uploader/php/NDB_Menu_Filter_imaging_uploader.class.inc#L212
-        $this->fileMove          = true;
-        $this->errorLog          = array();
-        $this->fieldName = '';
-        $this->fieldNames = '';
+        $this->fileMove            = true;
+        $this->errorLog            = array();
+        $this->fieldName           = '';
+        $this->fieldNames          = '';
         $this->destinationFilename = '';
         $this->destinationDirectory = '';
-        $this->baseUploadDirectory = '';
+        $this->baseUploadDirectory  = '';
     }
 
 
@@ -83,7 +97,8 @@ class File_Upload
                 $errors = $this->callFileHandler($field, 'verify');
                 // The above function call returns an array if something goes wrong,
                 // and returns true otherwise.
-                // @see imaging_uploader/php/NDB_Menu_Filter_imaging_uploader.class.inc#L265
+                // @see imaging_uploader/php/
+                //     NDB_Menu_Filter_imaging_uploader.class.inc#L265
                 if (is_array($errors)) {
                     $this->setError($field, $errors);
                     continue;
@@ -95,7 +110,8 @@ class File_Upload
                 // @TODO: Remove this check after imaging uploader is refactored
                 if ($this->fileMove) {
                     // Note: The only implementation of the below gets the username
-                    // @see imaging_uploader/php/NDB_Menu_Filter_imaging_uploader.class.inc#L529
+                    // @see imaging_uploader/php/
+                    //     NDB_Menu_Filter_imaging_uploader.class.inc#L529
                     $newTargetDirectory =$this->callFileHandler($field, 'move');
                     if (!$this->getNewDirectory($newTargetDirectory)) {
                         continue;
@@ -126,7 +142,7 @@ class File_Upload
      *
      * @return bool    $success        if operation succeeded
      */
-    private function preprocessFile()
+    private function _preprocessFile()
     {
         $this->file =& $this->form->getElement($this->fieldName);
         if (!method_exists($this->file, "isUploadedFile")) {
@@ -284,7 +300,7 @@ class File_Upload
      * @return boolean True if the class is valid.
      * @see    File_Upload::processFiles()
      */
-    private function isValidFileHandler($field)
+    private function _isValidFileHandler($field)
     {
         $class =&$this->fileHandlers[$field]['class'];
         if (is_object($class)) {
@@ -341,8 +357,8 @@ class File_Upload
     *                          import, or move.  If any (or all) of these
     *                          are empty the defaults will be used.
     *
-    * @return boolean true
-    * @see    File_Upload::processFiles()
+    * @return  boolean true
+    * @see     File_Upload::processFiles()
     * @cleanup
     */
     public function setFileHandler($fieldName, $className, $methods="")
@@ -354,7 +370,7 @@ class File_Upload
                            "import" => "importFile",
                            "move"   => "getTargetDirectory",
                           );
-        $methods =$default_methods;
+        $methods         =$default_methods;
         $this->fileHandlers[$fieldName]['class']   =$className;
         $this->fileHandlers[$fieldName]['methods'] =$methods;
         $this->fieldNames[] =$fieldName;
@@ -394,7 +410,7 @@ class File_Upload
      * @return string Valid file name
      * @see    File_Upload::moveFile()
      */
-    private function nameToSafe($name, $maxlen=250)
+    private function _nameToSafe($name, $maxlen=250)
     {
         // Non-permitted chars are replaced with "_"
         return preg_replace('/[^a-zA-Z0-9,._\+\()\-]/', '_', $name);
@@ -408,7 +424,7 @@ class File_Upload
       * @return string split file name
       * @see    File_Upload::nameToIncremental()
       */
-    private function getSplitFilename($name)
+    private function _getSplitFilename($name)
     {
         if (strstr($name, ".")) {
             $extpos       =strrpos($name, ".");
@@ -433,7 +449,7 @@ class File_Upload
      * @return string New filename
      * @see    File_Upload::moveFile()
      */
-    private function nameToIncremental($dir, $name)
+    private function _nameToIncremental($dir, $name)
     {
         $done =false;
         $i    =0;
@@ -497,7 +513,7 @@ class File_Upload
     *
     * @return void
     */
-    private function setError($field, $msg)
+    private function _setError($field, $msg)
     {
         if (!is_array($this->errorLog[$field])) {
             $this->errorLog[$field] = array();
