@@ -454,9 +454,8 @@ class NDB_Caller
             );
         }
         if ($page === 'finalpage') {
-            return "<script language='javascript'>"
-                . "window.location='$redirectToOnSuccess'"
-                . "</script>";
+            header("Location: $redirectToOnSuccess");
+            return "";
         }
         $user =& User::singleton();
 
@@ -517,21 +516,21 @@ class NDB_Caller
                     $instrument->freeze();
                 }
             }
-
-            $this->page = $instrument;
-            $html = $instrument->display();
-
-            return $html;
         }
+
+        $this->page = $instrument;
+        $html = $instrument->display();
+
+        return $html;
     }
 
-        /**
-         * Checks if a library exists, and requires it if it does.
-         *
-         * @param string $library name of class to be included.
-         *
-         * @return bool true if file exists, otherwise false
-         */
+    /**
+     * Checks if a library exists, and requires it if it does.
+     *
+     * @param string $library name of class to be included.
+     *
+     * @return bool true if file exists, otherwise false
+     */
     function existsAndRequire($library)
     {
         if (stream_resolve_include_path($library) !== false) {
@@ -542,14 +541,14 @@ class NDB_Caller
         return false;
     }
 
-        /**
-         * Sets the data entry type being performed.
-         *
-         * @param string $type "normal" or "direct", the type of data entry
-         *                     being performed.
-         *
-         * @return none
-         */
+    /**
+     * Sets the data entry type being performed.
+     *
+     * @param string $type "normal" or "direct", the type of data entry
+     *                     being performed.
+     *
+     * @return none
+     */
     function setDataEntryType($type)
     {
         $this->DataEntry = $type;
