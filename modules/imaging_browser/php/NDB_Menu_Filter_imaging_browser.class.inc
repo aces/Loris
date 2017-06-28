@@ -124,7 +124,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             as QCLastChangeTime FROM files
             LEFT JOIN files_qcstatus USING (FileID)
             WHERE OutputType='native' AND AcquisitionProtocolID 
-            NOT IN (1, 2, 3, 52) GROUP BY files.SessionID) nd 
+            IN (".
+            implode(",", array_keys($scan_id_types)) .") GROUP BY files.SessionID) nd
             ON (nd.SessionID=f.SessionID) ";
 
         $left_joins = "";
@@ -145,7 +146,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             s.Active = 'Y' AND
             f.PendingStaging=0 AND 
             f.FileType='mnc' AND 
-            f.AcquisitionProtocolID not in (1, 2, 3, 52)";
+            f.AcquisitionProtocolID IN (".
+            implode(",", array_keys($scan_id_types)) .")";
 
         $this->query .= $left_joins;
         $this->query .= $where;
