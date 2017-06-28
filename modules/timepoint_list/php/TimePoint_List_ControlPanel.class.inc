@@ -62,8 +62,9 @@ Class TimePoint_List_ControlPanel extends Candidate
 
         $this->tpl_data['candID'] = $this->getData('CandID');
 
-        $this->tpl_data['isDataEntryPerson'] = $user->hasPermission('data_entry')
-              && (in_array($cand_CenterID, $user_CenterID) || $user->isUserDCC());
+        $this->tpl_data['isDataEntryPerson']
+            = $user->hasCenterPermission("data_entry", $cand_CenterID)
+            || $user->isUserDCC();
 
         $this->tpl_data['candidate_parameters_view']
             = $user->hasPermission('candidate_parameter_view');
