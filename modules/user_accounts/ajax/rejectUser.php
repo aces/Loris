@@ -9,25 +9,34 @@
  * @category Loris
  * @package  user_accounts
  * @author   Leo T. <lthomas.mcin@gmail.com>
- * @license  Loris license
+ * @license  Loris license    "PSCID has an invalid structure",
+                    PSCID_INVALID_STRUCTURE
  * @link     https://github.com/aces/Loris
  */
-	
-	if (isset($_GET['identifier'])) {
-    	$identifier = $_GET['identifier'];
-    	reject_user($identifier);
-	}
+
+    define('NO_IDENTIFIER_SUPPLIED', 1);
+    define('USER_NOT_FOUND', 2);
+    define('INCORRECT_PERMISSION', 3);
+    define('ACCOUNT_ACTIVE', 4);
+
+
+    if (!isset($_POST['identifier'])){
+        throw new LorisException("No identifier supplied", NO_IDENTIFIER_SUPPLIED);
+        exit(1);
+    }else{
+        $identifier = $_POST["identifier"];
+        reject_user($identifier);
+    }
     
     function _hasPerm(){
-    	$db   =& Database::singleton();
-   	 	$user =& User::singleton();
-   	 	if (isset($user)){
-    		if (!$user->hasPermission('user_accounts')) {
-        		return False;
-    		}
-    		return True;
-    	}
-    	return False;
+        $user =& User::singleton();
+        if (isset($user)){
+            if (!$user->hasPermission('user_accounts')) {
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -44,27 +53,32 @@
     function _canRejectAccount($identifier)
     {
         $DB     = Database::singleton();
-        $fields =  $DB->pselect(
-            "SELECT Password_hash, Pending_approval
-                   FROM users
-                   WHERE UserID=:id",
-            array("id" => $identifier)
-        );
-        if (is_null($fields[0]['Password_hash'])
-            && $fields[0]['Pending_approval']=="Y"
-        ) {
-            return true;
+        try{
+            $fields =  $DB->pselect(
+                "SELECT Password_hash, Pending_approval
+                       FROM users
+                       WHERE UserID=:id",
+                array("id" => $identifier)
+            );
+            if (is_null($fields[0]['Password_hash'])
+                && $fields[0]['Pending_approval']=="Y"
+            ) {
+                return true;
+            }
+            return false;
+        } catch (DatabaseException $e) {
+            throw new LorisException("User not found in database", USER_NOT_FOUND);
+            exit(1);
         }
-        return false;
-    }
+    }   
+
 
     /**
     * Send DB query to remove user based on userID through a GET
-    * request.
-    * The reject user button populates on edit_users page, therefore
-    * any user that has access to the button has user_accounts
-    * privileges.
-    * The URL is redirected to user_account after the operation
+    * request, after checking that the user is logged in as
+    * admin / user accounts, and the user to be removed is 
+    * pending approval and has no password hash. 
+    * The URL is redirected to user_account after the operation.
     *
     * @return void
     */
@@ -73,24 +87,23 @@
     {
     // @codingStandardsIgnoreEnd
         $DB     = Database::singleton();
+        $config = NDB_Config::singleton();
+        $baseURL  = $config->getSetting('url');
 
         $redirect = $baseURL . "/user_accounts/";
-
-        // The $editor variable is set by the edit_user script.
-        // Checking that this is set ensures that the user is
-        // accessing this function through the authorized button
-        // and not by pointing their URL directly to this script.
-     	if (_hasPerm()){ 
-        	if (_canRejectAccount($identifier)){
-        		$DB->delete('users', array("UserID" => $identifier));
-        		header('Location: '.$redirect);
-        	}else{
-	        	header("HTTP/1.1 403 Forbidden");
-
-        	}
-    	}else{
-        	header("HTTP/1.1 403 Forbidden");
-
-    	}
-
+        
+        if (!_hasPerm()){
+            throw new LorisException("You do not have the correct permissions for this operation (need admin or user accounts)", INCORRECT_PERMISSION);
+            exit(1);
+        }else{
+            if (!_canRejectAccount($identifier)){
+                throw new LorisException("This account is active and connot be rejected", ACCOUNT_ACTIVE);
+                exit(1);
+            }else{
+                $DB->delete('users', array("UserID" => $identifier));
+                exit;
+            }   
+        }
     }
+
+?>
