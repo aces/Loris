@@ -116,7 +116,7 @@ class File_Upload
                     if (!$this->getNewDirectory($newTargetDirectory)) {
                         continue;
                     }
-                    $this->_moveFile());
+                    $this->_moveFile();
                 }
 
                 //Import the file using the importFile method of the handler
