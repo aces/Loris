@@ -1093,9 +1093,9 @@ class Utility
         // Add additional project criteria if parameter present
         if (!empty($projectID)) {
             $extraProjectCriteria
-                = ' AND (c.ProjectID IS NULL OR c.ProjectID=:projID)';
+                = ' AND (c.ProjectID IS NULL OR c.ProjectID=:pID)';
             $query .= $extraProjectCriteria;
-            $params = array('projID' => $projectID);
+            $params = array('pID' => $projectID);
         }
         $query      .= 'ORDER BY Visit_label';
         $visitlabels = $db->pselect($query, $params);
