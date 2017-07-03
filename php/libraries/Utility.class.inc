@@ -1087,22 +1087,23 @@ class Utility
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
-
-        if ($projectID != null) {
-            $ExtraProject_Criteria
-                = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $projectID . ')';
-        } else {
-            $ExtraProject_Criteria ='';
-        }
         $query       = "SELECT DISTINCT Visit_label FROM session s
             JOIN candidate c ON (s.CandID = c.Candid)
             JOIN psc ON (s.CenterID = psc.CenterID)
             WHERE c.Active = 'Y'
             AND s.Active = 'Y'
             AND c.Entity_type != 'Scanner'
-            AND psc.CenterID!= '1'
-            $ExtraProject_Criteria ORDER BY Visit_label";
-        $visitlabels = $db->pselect($query, array());
+            AND psc.CenterID!= '1'";
+        $params = array();
+        // Add additional project criteria if parameter present
+        if (!empty($projectID)) {
+            $extraProjectCriteria
+                = ' AND (c.ProjectID IS NULL OR c.ProjectID=:projID)';
+            $query .= $extraProjectCriteria;
+            $params = array('projID' => $projectID);
+        }
+        $query .= 'ORDER BY Visit_label';
+        $visitlabels = $db->pselect($query, $params);
         $visits      = array();
         for ($i = 0; $i < count($visitlabels); $i++) {
             $visits[$visitlabels[$i]['Visit_label']]
