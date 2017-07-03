@@ -1089,16 +1089,16 @@ class Utility
             AND s.Active = 'Y'
             AND c.Entity_type != 'Scanner'
             AND psc.CenterID!= '1'";
-        $params  = array();
+        $qparams  = array();
         // Add additional project criteria if parameter present
         if (!empty($projectID)) {
             $extraProjectCriteria
                 = ' AND (c.ProjectID IS NULL OR c.ProjectID=:pID)';
             $query .= $extraProjectCriteria;
-            $params = array('pID' => $projectID);
+            $qparams = array('pID' => $projectID);
         }
         $query      .= 'ORDER BY Visit_label';
-        $visitlabels = $db->pselect($query, $params);
+        $visitlabels = $db->pselect($query, $qparams);
         $visits      = array();
         for ($i = 0; $i < count($visitlabels); $i++) {
             $visits[$visitlabels[$i]['Visit_label']]
