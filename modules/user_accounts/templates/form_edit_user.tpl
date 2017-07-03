@@ -397,8 +397,7 @@
                             type:'POST',
                             data: {identifier: userID},
                             success: function(data, textStatus){
-                                alert("success");
-                                //location.href=baseurl+'/user_accounts/';
+                                location.href=baseurl+'/user_accounts/';
                             },
                             error: function(jqXHR, textStatus, errorThrown){
                                 alert(textStatus, errorThrown);
