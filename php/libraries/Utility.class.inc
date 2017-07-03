@@ -1076,12 +1076,7 @@ class Utility
      * @return An associated array of study visits in the format array('VL' => 'VL')
      *         where VL is the visit label
      *
-     * @note       THIS FUNCTION USES STRING CONCATENATION TO GENERATE AN
-     *             SQL STATEMENT.
-     *             IT IS VULNERABLE TO AN SQL INJECTION ATTACK.
      * @note       Function comment written by Dave, not the author of this function.
-     * @vulnerable
-     * @cleanup
      */
     static function getExistingVisitLabels($projectID = null)
     {
