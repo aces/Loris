@@ -9,7 +9,7 @@
  * @category Loris
  * @package  User_Accounts
  * @author   Leo T. <lthomas.mcin@gmail.com>
- * @license  Loris license    "PSCID has an invalid structure",
+ * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
 
