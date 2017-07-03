@@ -1,15 +1,27 @@
+import FilterForm from 'FilterForm';
+import {Tabs, TabPane} from 'Tabs';
+
 class QualityControlIndex extends React.Component {
 
   constructor(props) {
     super(props);
   }
+
   render() {
+
+    let uploadTab;
+    let tabList = [
+        {id: "behavioral", label: "Behavioral"},
+        {id: "imaging", label: "Imaging"}
+    ];
+
     return (
-      <div>
-        <h1>Quality Control!</h1>
-        <h2>Other Useless thing</h2>
-        <h3> UselessURL: {this.props.UselessURL}</h3>
-      </div>
+      <Tabs tabs={tabList} defaultTab="behavioral" updateURL={true}>
+        <TabPane TabId={tabList[0].id}>
+        </TabPane>
+        <TabPane TabId={tabList[1].id}>
+        </TabPane>
+      </Tabs>
     );
   }
 }
@@ -24,19 +36,3 @@ $(function() {
   ReactDOM.render(qualityControlIndex, document.getElementById("lorisworkspace"));
 });
 
-
-
-
-/*
-  
-
-$(function() {
-  const qualityControl = (
-    <div className="page-qualityControl">
-     <h1>Quality Control Module!</h1>
-    </div>
-  );
-
-  ReactDOM.render(qualityControl, document.getElementById("lorisworkspace"));
-});
-*/
