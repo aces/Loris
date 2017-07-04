@@ -12,6 +12,8 @@
  * @link     https://github.com/aces/Loris
  */
 
+ require_once __DIR__ . "/../model/require_once.php";
+
 /**
  * This class provides the code to create the menu filter form that allows
  * for data entry of entities that should be acknowledged in publications
@@ -36,9 +38,21 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
      */
     function _hasAccess()
     {
-        // create user object and check appropriate permission
-        $user =& User::singleton();
-        return ($user->hasPermission('acknowledgements_view'));
+        $user   = User::singleton();
+        $userId = $user->userInfo["ID"];
+
+        if (!isset($_GET["centerId"])) {
+            return AcknowledgementPermission::canViewForAtLeastOneCenter(
+                $userId
+            );
+        }
+
+        $centerId = $_GET["centerId"];
+        if (!is_string($centerId) || !preg_match("/^\d+$/", $centerId)) {
+            return false;
+        }
+
+        return AcknowledgementPermission::canViewForCenter($userId, $centerId);
     }
 
     /**
@@ -50,50 +64,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
      */
     function _process($values)
     {
-        // create user object and check appropriate permission
-        $user =& User::singleton();
-        if (!$user->hasPermission('acknowledgements_edit')) {
-            return;
-        }
-
-        if (!is_array($values) || count($values) == 0) {
-            return true;
-        }
-
-        $results = array();
-        foreach ($values as $key => $value) {
-            $results[substr($key, 3)] = $value;
-        }
-        $values = $results;
-
-        $values['affiliations'] = implode(",", $values['affiliations']);
-        $values['degrees']      = implode(",", $values['degrees']);
-        $values['roles']        = implode(",", $values['roles']);
-
-        $DB =& Database::singleton();
-        if (isset($_POST['fire_away'])) {
-
-            if (empty($values['present'])) {
-                $values['present'] = null;
-            }
-
-            if (empty($values['end_date'])) {
-                $values['end_date'] = null;
-            }
-
-            if (empty($values['start_date'])) {
-                $values['start_date'] = null;
-            }
-
-            if ($values['present'] == 'Yes') {
-                $values['end_date'] = null;
-            }
-
-            $DB->insert('acknowledgements', $values);
-            unset($values);
-        }
-
-        $this->tpl_data['success'] = true;
+        return false;
     }
 
     /**
@@ -104,49 +75,13 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
+        $this->query   = " FROM acknowledgement WHERE FALSE";
+        $this->columns = array();
+
         $config = NDB_Config::singleton();
 
-        $this->columns      = array(
-                               'ordering',
-                               'full_name',
-                               'citation_name',
-                               'affiliations',
-                               'degrees',
-                               'roles',
-                               'start_date',
-                               'end_date',
-                               'present',
-                              );
-        $this->query        = " FROM acknowledgements WHERE 1=1";
-        $this->group_by     = '';
-        $this->order_by     = "ordering ASC";
-        $this->validFilters = array(
-                               'full_name',
-                               'citation_name',
-                               'start_date',
-                               'end_date',
-                               'present',
-                              );
-        $this->headers      = array(
-                               'ordering',
-                               'full_name',
-                               'citation_name',
-                               'affiliations',
-                               'degrees',
-                               'roles',
-                               'start_date',
-                               'end_date',
-                               'present',
-                              );
-        $this->formToFilter = array(
-                               'full_name'     => 'full_name',
-                               'citation_name' => 'citation_name',
-                               'start_date'    => 'start_date',
-                               'end_date'      => 'end_date',
-                               'present'       => 'present',
-                              );
-
-        $this->tpl_data['citation_policy'] = $config->getSetting('citation_policy');
+        $this->tpl_data["valid_date_range"] = Acknowledgement::fetchValidDateRange();
+        $this->tpl_data['citation_policy']  = $config->getSetting('citation_policy');
 
         return true;
     }
@@ -158,49 +93,6 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
      */
     function _setFilterForm()
     {
-        // enums should match with acknowledgements table
-        $present = array(
-                    ''    => '',
-                    'Yes' => 'Yes',
-                    'No'  => 'No',
-                   );
-
-        // add filter elements
-        $this->addBasicText('ordering', 'Ordering:');
-        $this->addBasicText('full_name', 'Full Name:');
-        $this->addBasicText('citation_name', 'Citation Name:');
-        $config      =& NDB_Config::singleton();
-        $startYear   = $config->getSetting('startYear');
-        $endYear     = $config->getSetting('endYear');
-        $dateOptions = array(
-                        'language'       => 'en',
-                        'format'         => 'YMd',
-                        'addEmptyOption' => true,
-                        'minYear'        => $startYear,
-                        'maxYear'        => $endYear,
-                       );
-        $this->addBasicDate('start_date', 'Start Date:', $dateOptions);
-        $this->addBasicDate('end_date', 'End Date:', $dateOptions);
-        $this->addSelect('present', 'Present?', $present);
-
-        // add form elements
-        $this->addBasicText('addordering', 'Ordering:');
-        $this->addBasicText('addfull_name', 'Full Name:');
-        $this->addBasicText('addcitation_name', 'Citation Name:');
-        $config      =& NDB_Config::singleton();
-        $startYear   = $config->getSetting('startYear');
-        $endYear     = $config->getSetting('endYear');
-        $dateOptions = array(
-                        'language'       => 'en',
-                        'format'         => 'YMd',
-                        'addEmptyOption' => true,
-                        'minYear'        => $startYear,
-                        'maxYear'        => $endYear,
-                       );
-        $this->addBasicDate('addstart_date', 'Start Date:', $dateOptions);
-        $this->addBasicDate('addend_date', 'End Date:', $dateOptions);
-        $this->addSelect('addpresent', 'Present?', $present);
-
         return true;
     }
 
@@ -212,19 +104,20 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
     function getJSDependencies()
     {
         $factory = NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
+        $baseUrl = $factory->settings()->getBaseURL();
 
         $baseDeps = parent::getJSDependencies();
 
         return array_merge(
             $baseDeps,
             array(
-             $baseurl . '/acknowledgements/js/acknowledgements_helper.js',
+             $baseUrl . "/acknowledgements/js/fetch-all.js",
+             $baseUrl . "/acknowledgements/js/filter.js",
+             $baseUrl . "/acknowledgements/js/btn-add-acknowledgements.js",
+             $baseUrl . "/acknowledgements/js/acknowledgements_helper.js",
+             $baseUrl . "/acknowledgements/js/main.js",
             )
         );
-
     }
-
 }
-
 ?>
