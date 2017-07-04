@@ -1076,33 +1076,29 @@ class Utility
      * @return An associated array of study visits in the format array('VL' => 'VL')
      *         where VL is the visit label
      *
-     * @note       THIS FUNCTION USES STRING CONCATENATION TO GENERATE AN
-     *             SQL STATEMENT.
-     *             IT IS VULNERABLE TO AN SQL INJECTION ATTACK.
-     * @note       Function comment written by Dave, not the author of this function.
-     * @vulnerable
-     * @cleanup
+     * @note Function comment written by Dave, not the author of this function.
      */
     static function getExistingVisitLabels($projectID = null)
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
-
-        if ($projectID != null) {
-            $ExtraProject_Criteria
-                = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $projectID . ')';
-        } else {
-            $ExtraProject_Criteria ='';
-        }
-        $query       = "SELECT DISTINCT Visit_label FROM session s
+        $query   = "SELECT DISTINCT Visit_label FROM session s
             JOIN candidate c ON (s.CandID = c.Candid)
             JOIN psc ON (s.CenterID = psc.CenterID)
             WHERE c.Active = 'Y'
             AND s.Active = 'Y'
             AND c.Entity_type != 'Scanner'
-            AND psc.CenterID!= '1'
-            $ExtraProject_Criteria ORDER BY Visit_label";
-        $visitlabels = $db->pselect($query, array());
+            AND psc.CenterID!= '1'";
+        $qparams = array();
+        // Add additional project criteria if parameter present
+        if (!empty($projectID)) {
+            $extraProjectCriteria
+                = ' AND (c.ProjectID IS NULL OR c.ProjectID=:pID)';
+            $query  .= $extraProjectCriteria;
+            $qparams = array('pID' => $projectID);
+        }
+        $query      .= 'ORDER BY Visit_label';
+        $visitlabels = $db->pselect($query, $qparams);
         $visits      = array();
         for ($i = 0; $i < count($visitlabels); $i++) {
             $visits[$visitlabels[$i]['Visit_label']]
