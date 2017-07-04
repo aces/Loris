@@ -677,45 +677,52 @@ class LorisForm
     protected function selectHTML($el)
     {
         $strOptions    = '';
-        $options       = $el['options'];
+        $options       = $el['options'] ?? '';
         $cls           = '';
         $changehandler = '';
         $multiple      = '';
         $id            = '';
         $disabled      = '';
-        $name          = $el['name'];
+        $name          = $el['name'] ?? '';
 
-        foreach ($options as $optionKey => $optionVal) {
-            $selected = '';
+        if (is_array($options) || $options instanceof Traversable) {
+            foreach ($options as $optionKey => $optionVal) {
+                $selected = '';
 
-            if (!is_null($optionKey)) {
-                $optionKey = (string) $optionKey;
-            }
+                if (!is_null($optionKey)) {
+                    $optionKey = (string) $optionKey;
+                }
 
-            $defaultValue = $this->getValue($el['name']);
+                $defaultValue = $this->getValue($el['name']);
 
-            if (isset($el['multiple'])) {
-                if (!empty($defaultValue)) {
-                    if (in_array($optionKey, $defaultValue)
-                        || $optionKey === $defaultValue
+                if (isset($el['multiple'])) {
+                    if (!empty($defaultValue)) {
+                        if (in_array($optionKey, $defaultValue)
+                            || $optionKey === $defaultValue
+                        ) {
+                            $selected = 'selected="selected"';
+                        }
+                    }
+                } else {
+                    if ($optionKey === $defaultValue) {
+                        $selected = 'selected="selected"';
+                    } elseif (isset($el['selected'])
+                        && $optionKey === $el['selected']
+                        && $defaultValue === null
                     ) {
                         $selected = 'selected="selected"';
                     }
                 }
-            } else {
-                if ($optionKey === $defaultValue) {
-                    $selected = 'selected="selected"';
-                } elseif (isset($el['selected'])
-                    && $optionKey === $el['selected']
-                    && $defaultValue === null
-                ) {
-                    $selected = 'selected="selected"';
-                }
-            }
 
-            $strOptions .= "<option value='$optionKey' $selected>"
-                .$optionVal
-                . "</option>";
+                $strOptions .= "<option value='$optionKey' $selected>"
+                    .$optionVal
+                    . "</option>";
+            }
+        } else  {
+            // $options is not Traversable and will throw an error
+            // if used in a foreach loop.
+            error_log("Options for element '$name' are not an array or are not traversable."
+                . ' Please validate the LorisForm syntax in the calling code.');
         }
 
         if (isset($el['class'])) {
