@@ -26,7 +26,7 @@
             {$study_title}
         </th>
     </tr>
-
+        <script src="{$baseurl}/js/modernizr/modernizr.js" type="text/javascript"></script>
         <script src="{$baseurl}/js/firefoxDates.js" type="text/javascript"></script>
     <tr>
     <!-- user info table -->
