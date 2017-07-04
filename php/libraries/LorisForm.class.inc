@@ -718,11 +718,14 @@ class LorisForm
                     .$optionVal
                     . "</option>";
             }
-        } else  {
+        } else {
             // $options is not Traversable and will throw an error
             // if used in a foreach loop.
-            error_log("Options for element '$name' are not an array or are not traversable."
-                . ' Please validate the LorisForm syntax in the calling code.');
+            error_log(
+                "Options for element '$name' are not an array or are not"
+                . ' traversable. Please validate the LorisForm syntax in '
+                .' the calling code.'
+            );
         }
 
         if (isset($el['class'])) {
