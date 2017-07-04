@@ -249,7 +249,7 @@
                             </label>
                             <div class="col-xs-8">
                                 <select name="parent_id" id="parent_id" class="form-control input-sm">
-                                    <option value=" "> </option>
+                                    <option value="0"></option>
                                     {foreach from = $File_categories item=val key=k}
                                         {if $val != "Any"}
                                                 <option value={$k}>{$val.CategoryName}</option>
@@ -318,7 +318,11 @@
                                 <select name="site" id = "site" class = "form-fields form-control input-sm">
                                 <option value=" "> </option>
                                     {foreach from = $Sites item=val key=k}
-                                        <option value={$k}>{$val}</option>
+                                        {if $val == "Any"}
+                                            <option value="0">Any</option>
+                                            {else}
+                                            <option value={$k}>{$val}</option>
+                                        {/if}
                                     {/foreach}
                                 </select>
                             </div>
@@ -327,7 +331,7 @@
                             <label class="col-xs-4" for="instrument">Instrument</label>
                             <div class="col-xs-8">
                                 <select name="instrument" id = "instrument" class = "form-fields form-control input-sm">
-                                <option value=""> </option>
+                                <option value="0"> </option>
                                     {foreach from = $Instruments item=val key=k}
                                         <option value={$k}>{$val}</option>
                                     {/foreach}
