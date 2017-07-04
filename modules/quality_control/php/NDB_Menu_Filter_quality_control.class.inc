@@ -129,51 +129,9 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     {
         $user =& User::singleton();
         // the base query
-        $query  = " FROM media m LEFT JOIN session s ON m.session_id = s.ID".
-        " LEFT JOIN candidate c ON c.CandID=s.CandID";
-        $query .= " WHERE m.hide_file = FALSE";
-
-        // set the class variables
-        $this->columns
-            = [
-               'm.file_name',
-               '(SELECT PSCID from candidate WHERE CandID=s.CandID) as pscid',
-               's.Visit_label as visit_label',
-               '(SELECT Full_name FROM test_names WHERE Test_name=m.instrument)',
-               '(SELECT name FROM psc WHERE CenterID=s.CenterID) as site',
-               'm.uploaded_by',
-               'm.date_taken',
-               'substring(m.comments, 1, 50) as comments',
-               'm.date_uploaded',
-               'm.file_type',
-               's.CandID as cand_id',
-               's.ID as session_id',
-               'm.id',
-              ];
+        $query  = "FROM quality_control";
 
         $this->query = $query;
-
-        if (!$user->hasPermission('access_all_profiles')) {
-            $site_arr     = implode(",", $user->getCenterIDs());
-            $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
-        }
-
-        $this->group_by = '';
-        $this->order_by = 'm.instrument';
-        $this->headers  = [
-                           'File Name',
-                           'PSCID',
-                           'Visit Label',
-                           'Instrument',
-                           'Site',
-                           'Uploaded By',
-                           'Date Taken',
-                           'Comments',
-                           'Date Uploaded',
-                           'File Type',
-                           'Cand ID',
-                           'Session ID',
-                          ];
 
         // Set header as hidden from the data table
         $this->tpl_data['hiddenHeaders'] = json_encode(['Cand ID', 'Session ID']);
@@ -182,20 +140,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         if ($this->hasWritePermission) {
             array_push($this->headers, 'Edit Metadata');
         }
-
-        $this->validFilters = [
-                               'c.PSCID',
-                               'm.instrument',
-                               's.Visit_label',
-                               's.CenterID',
-                              ];
-        $this->formToFilter = [
-                               'pscid'       => 'c.PSCID',
-                               'instrument'  => 'm.instrument',
-                               'visit_label' => 's.Visit_label',
-                               'for_site'    => 's.CenterID',
-                              ];
-
         return true;
     }
 

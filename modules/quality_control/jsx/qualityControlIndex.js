@@ -5,9 +5,45 @@ class QualityControlIndex extends React.Component {
 
   constructor(props) {
     super(props);
-  }
 
+  this.state = {
+    isloaded: false,
+    filter: {}
+  };
+
+  this.fetchData = this.fetchData.bind(this);
+  //this.updateFilter= this.updateFilter.bind(this);
+  }
+  componentDidMount(){
+    this.fetchData();
+  }
+  fetchData(){
+    $.ajax(this.props.ImgDataURL, {
+      method:"GET",
+      dataType: "json",
+      success: function(data){
+        this.setState({
+          Data:data,
+          isLoaded:true
+        });
+      }.bind(this),
+      error: function(error){
+        console.error(error);
+      }
+    });
+  }
   render() {
+
+    if (!this.state.isLoaded){
+      return(
+        <button className="btn-info has-spinner">
+        Loading
+        <span
+          className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+          </span>
+          </button>
+          );
+    }
 
     let uploadTab;
     let tabList = [
@@ -20,6 +56,9 @@ class QualityControlIndex extends React.Component {
         <TabPane TabId={tabList[0].id}>
         </TabPane>
         <TabPane TabId={tabList[1].id}>
+        <StaticDataTable
+        Data={this.state.Data}
+        />
         </TabPane>
       </Tabs>
     );
@@ -29,7 +68,7 @@ class QualityControlIndex extends React.Component {
 $(function() {
   const qualityControlIndex = (
     <div className="page-qualityControl">
-      <QualityControlIndex UselessURL={`${loris.BaseURL}/quality_control`}/>
+      <QualityControlIndex ImgDataURL={`${loris.BaseURL}/quality_control/ajax/imgQualityControl.php`}/>
     </div>
   );
 
