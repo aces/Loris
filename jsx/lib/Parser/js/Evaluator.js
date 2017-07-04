@@ -57,6 +57,5 @@ function evalAST(tree, scope) {
 
 export default function Evaluator(stringExpression, scope = {}) {
   const tree = parser.parse(stringExpression);
-  console.log(evalAST(tree,scope));
   return evalAST(tree, scope);
 }
