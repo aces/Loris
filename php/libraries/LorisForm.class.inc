@@ -677,7 +677,7 @@ class LorisForm
     protected function selectHTML($el)
     {
         $strOptions    = '';
-        $options       = $el['options'] ?? '';
+        $options       = $el['options'] ?? array();
         $cls           = '';
         $changehandler = '';
         $multiple      = '';
