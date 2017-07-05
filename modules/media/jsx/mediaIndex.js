@@ -9,7 +9,7 @@ class MediaIndex extends React.Component {
   constructor(props) {
     super(props);
 
-    loris.hiddenHeaders = ['Cand ID', 'Session ID', 'File Type'];
+    loris.hiddenHeaders = ['Cand ID', 'Session ID', 'Hide File', 'File Type'];
 
     this.state = {
       isLoaded: false,
@@ -79,7 +79,6 @@ class MediaIndex extends React.Component {
         </TabPane>
       );
     }
-
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
