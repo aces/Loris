@@ -23,6 +23,12 @@
  */
 class NDB_Menu_Statistics_Site extends NDB_Menu
 {
+
+    var $instruments    = array();
+    var $issues         = array();
+    var $query_criteria = '';
+    var $query_vars     = array();
+
     /**
      * Checking user's permission
      *
@@ -33,10 +39,7 @@ class NDB_Menu_Statistics_Site extends NDB_Menu
         $user =& User::singleton();
         return $user->hasPermission('data_entry');
     }
-    var $instruments    = array();
-    var $issues         = array();
-    var $query_criteria = '';
-    var $query_vars     = array();
+
     /**
      * CheckCriteria function
      *
