@@ -1,10 +1,9 @@
 ## Imaging Browser test plan
 	
 #A. Imaging Browser front page
-1. User can load Imaging Browser module front page IFF has permission imaging_browser_view_site or imaging_browser_view_allsites
-   [Automation Testing]
-2. User can see other sites Imaging datasets IFF has permission imaging_browser_view_allsites. User can see only own site Imaging datasets IFF has permission imaging_browser_view_site.[Automation Testing]
-3. Test that all Filters work.  Upon first loading, Site filter should be set to own site IFF user does not have permission imaging_browser_view_allsites
+1. User can load Imaging Browser module front page IFF has permission imaging_browser_view_site or imaging_browser_view_allsites or imaging_browser_phantom_allsites or imaging_browser_phantom_ownsite [Automation Testing]
+2. User can see other sites Imaging datasets IFF has permission imaging_browser_view_allsites. User can see only own site Imaging datasets IFF has permission imaging_browser_view_site. User can see phantom data only from across all sites with the imaging_browser_phantom_allsites, and from own sites with imaging_browser_phantom_ownsite [Automation Testing]
+3. Test that all Filters work.  Upon first loading, Site filter should be set to own site IFF user does not have permission imaging_browser_view_allsites nor imaging_browser_phantom_allsites
 4. Test Selection Filter buttons: Show Data and Clear Forms
 5. Test column table is sortable by headers
 6. Test that Links work, to correct dataset (selected/native)

@@ -59,8 +59,9 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 ))
                      && $user->hasPermission('imaging_browser_view_site')
                    )
+                || $user->hasPermission('imaging_browser_phantom_allsites')
+                || $user->hasPermission('imaging_browser_phantom_ownsite')
         );
-
     }
 
     /**
