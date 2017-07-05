@@ -1,0 +1,31 @@
+/* 
+ * General
+ */
+td {
+    border-bottom: 1px solid #eee;
+}
+
+.track-handle .track-content {
+  padding: 5px;
+}
+
+.yAxis-geneName {
+  margin: 5px;
+}
+
+.snps:not(:root) {
+  overflow: inherit;
+}
+
+.track-content *.focus {
+  stroke: pink;
+  fill: pink;
+  fill-opacity: 1;
+  outline: ;
+}
+
+.snps rect {
+  fill: #053665;
+  stroke: #053665;
+  stroke-width: 1px;
+}

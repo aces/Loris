@@ -1,0 +1,34 @@
+.boxes line {
+  stroke: #999;
+  stroke-width: 0.5px;
+  stroke-dasharray: 5;
+}
+
+.box {
+  font: 10px sans-serif;
+}
+
+.box line,
+.box rect,
+.box circle {
+  stroke: #999;
+  stroke-width: 1px;
+  stroke-dasharray: 0;
+}
+
+.box:not(.focus) rect {
+  fill: orange
+}
+
+.box text {
+  fill-opacity: 0
+}
+
+.box .center {
+  stroke-dasharray: 3,3;
+}
+
+.box .outlier {
+  fill: none;
+  stroke: #ccc;
+}
