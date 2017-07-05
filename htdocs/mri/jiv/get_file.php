@@ -36,8 +36,6 @@ $client = new NDB_Client();
 if ($client->initialize("../../../project/config.xml") == false) {
     return false;
 }
-// needed to resolve paths
-require_once "Utility.class.inc";
 
 // Checks that config settings are set
 $config =& NDB_Config::singleton();
