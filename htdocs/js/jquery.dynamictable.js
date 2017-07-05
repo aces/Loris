@@ -146,7 +146,7 @@
 
     var headers = document.createElement("div");
     $(headers).addClass("frozenHeader");
-    $(headers).html("<table><thead>" +
+    $(headers).html("<table style=\"margin-bottom: 0px\"><thead>" +
         $(table).find("thead").html() +
         "</thead><table>"
     );
