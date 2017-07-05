@@ -136,7 +136,7 @@ class Candidates extends APIBase
                 "implemented in a future release."
             );
             $this->safeExit(0);
-        } 
+        }
 
         $centerID = $centerIDs[0];
         $this->verifyField($data, 'Gender', ['Male', 'Female']);
@@ -219,13 +219,8 @@ class Candidates extends APIBase
      */
     public function createNew($centerID, $DoB, $edc, $gender, $PSCID)
     {
-        $user = \User::singleton();
         return \Candidate::createNew(
-<<<<<<< HEAD
-            $user->getCenterIDs()[0],
-=======
             $centerID,
->>>>>>> 17.1-dev
             $DoB,
             $edc,
             $gender,
