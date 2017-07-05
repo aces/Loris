@@ -122,7 +122,7 @@ function validateRequest()
 function setFullPath(&$fileToUpload)
 {
     $config           = NDB_Config::singleton();
-    $genomic_data_dir = $config->getSetting('GenomicDataPath')
+    $genomic_data_dir = rtrim($config->getSetting('GenomicDataPath'), '/')
         . "/genomic_uploader/";
 
     $fileToUpload->full_path = $genomic_data_dir
