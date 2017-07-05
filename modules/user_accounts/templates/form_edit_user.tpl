@@ -289,13 +289,22 @@ $(document).ready(function() {
         {/if}
     </div>
     {/if}
+    {if $form.errors.sites_group}
+    <div class="row form-group form-inline has-error">
+    {else}
     <div class="row form-group form-inline">
-    	<label class="col-sm-2">
-    		{$form.CenterIDs.label}
-    	</label>	
-    	<div class="col-sm-10">
-    		{$form.CenterIDs.html}
-    	</div>
+    {/if}
+        <label class="col-sm-2">
+            {$form.CenterIDs.label}
+        </label>
+        <div class="col-sm-10">
+            {$form.CenterIDs.html}
+        </div>
+        {if $form.errors.sites_group}
+        <div class="col-sm-offset-2 col-xs-12">
+            <font class="form-error">{$form.errors.sites_group}</font>
+        </div>
+        {/if}
     </div>
         {if $form.errors.examiner_sites}
         <div class="row form-group form-inline form-inline has-error">

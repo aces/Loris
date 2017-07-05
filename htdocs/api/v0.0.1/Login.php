@@ -75,9 +75,13 @@ class Login extends APIBase
         $login = $this->getLoginAuthenticator();
 
         if ($login->passwordAuthenticate($user, $password, false)) {
-            $this->JSON = array(
-                           "token" => $this->getEncodedToken($user),
-                          );
+            $token = $this->getEncodedToken($user);
+            if (!empty($token)) {
+                $this->JSON = array("token" => $token);
+            } else {
+                $this->header("HTTP/1.1 500 Internal Server Error");
+                $this->JSON = array("error" => "Unacceptable JWT key.");
+            }
         } else {
             $this->header("HTTP/1.1 401 Unauthorized");
             if (!empty($login->_lastError)) {
@@ -129,6 +133,13 @@ class Login extends APIBase
                  );
 
         $key = $config->getSetting("JWTKey");
+        if (!self::isKeyStrong($key)) {
+            error_log(
+                'ERROR: JWTKey config variable is weak. '
+                .'Please change the key to a more cryptographically-secure value.'
+            );
+            return "";
+        }
         return \Firebase\JWT\JWT::encode($token, $key, "HS256");
     }
 
@@ -143,6 +154,40 @@ class Login extends APIBase
     function calculateETag()
     {
         return;
+    }
+
+    /**
+    * Verify key meets cryptographic strength requirements
+    *
+    * @param string $key The JWT key to verify
+    *
+    * @return boolean Key passes strength test
+    */
+    static function isKeyStrong($key)
+    {
+        // Note: this code adapted from User::isPasswordStrong
+        $CharTypes = 0;
+        // less than 20 characters
+        if (strlen($key) < 20) {
+            return false;
+        }
+        // nothing but letters
+        if (!preg_match('/[^A-Za-z]/', $key)) {
+            return false;
+        }
+        // nothing but numbers
+        if (!preg_match('/[^0-9]/', $key)) {
+            return false;
+        }
+        // preg_match returns 1 on match, 0 on non-match
+        $CharTypes += preg_match('/[0-9]+/', $key);
+        $CharTypes += preg_match('/[A-Za-z]+/', $key);
+        $CharTypes += preg_match('/[!\\\$\^@#%&\*\(\)]+/', $key);
+        if ($CharTypes < 3) {
+            return false;
+        }
+
+        return true;
     }
 }
 

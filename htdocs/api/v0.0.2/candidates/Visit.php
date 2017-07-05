@@ -61,7 +61,7 @@ class Visit extends \Loris\API\Candidates\Candidate
         // CandID
         parent::__construct($method, $CandID);
         if ($method === 'PUT') {
-            $this->ReceivedJSON = json_decode($InputData, true);
+            $this->ReceivedJSON = $InputData;
         } else {
             $timepoints = $this->Candidate->getListOfVisitLabels();
             $Visits     = array_values($timepoints);
@@ -169,9 +169,36 @@ class Visit extends \Loris\API\Candidates\Candidate
             $this->safeExit(0);
 
         }
-        // need to extract subprojectID
-        $this->createNew($this->CandID, $subprojectID, $this->VisitLabel);
-        $this->header("HTTP/1.1 201 Created");
+        // This version of the API does not handle timepoint creation
+        // when users are at multiple sites
+        $user      = \User::singleton();
+        $centerIDs = $user->getCenterIDs();
+        $num_sites = count($centerIDs);
+        if ($num_sites == 0) {
+            $this->header("HTTP/1.1 401 Unauthorized");
+            $this->error("You are not affiliated with any site");
+            $this->safeExit(0);
+        } else if ($num_sites > 1) {
+            $this->header("HTTP/1.1 501 Not Implemented");
+            $this->error(
+                "This API version does not support timepoint creation " .
+                "by users with multiple site affiliations. This will be ".
+                "implemented in a future release."
+            );
+            $this->safeExit(0);
+        } else {
+            $centerID          = $centerIDs[0];
+            $candidateCenterID = \Candidate::singleton($this->CandID)
+                ->getCenterID();
+            if ($centerID != $candidateCenterID) {
+                $this->header("HTTP/1.1 401 Unauthorized");
+                $this->error("You are not affiliated with the candidate's site");
+                $this->safeExit(0);
+            }
+            // need to extract subprojectID
+            $this->createNew($this->CandID, $subprojectID, $this->VisitLabel);
+            $this->header("HTTP/1.1 201 Created");
+        }
     }
 
     /**
@@ -194,8 +221,8 @@ class Visit extends \Loris\API\Candidates\Candidate
 }
 
 if (isset($_REQUEST['PrintVisit'])) {
-    parse_str(urldecode(file_get_contents("php://input")), $InputDataArray);
-    $InputData = json_encode($InputDataArray);
+    $InputDataArray = file_get_contents("php://input");
+    $InputData      = json_decode($InputDataArray, true);
     if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $obj = new Visit(
             $_SERVER['REQUEST_METHOD'],
