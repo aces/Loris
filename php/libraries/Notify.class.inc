@@ -43,10 +43,11 @@ class Notify
                 "Could not retrieve notification type id for type '$type'"
             );
         }
-
+        $date = new DateTime();
+        $time = $date->format('Y-m-d H:i:s');
         $setArray = array(
                      'NotificationTypeID' => $typeID,
-                     'TimeSpooled'        => time(),
+                     'TimeSpooled'        => $time,
                      'Message'            => $message,
                      'CenterID'           => $centerID,
                     );
