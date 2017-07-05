@@ -76,7 +76,6 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                     array('hash' => $hash)
                 );
                 if (!empty($row)) {
-
                     // insert into conflicts_resolved
                     $user1         = $DB->pselectOne(
                         "SELECT UserID FROM flag WHERE CommentID=:CID",
@@ -130,17 +129,6 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                     );
 
                     $TableName = $row['TableName'];
-                    $date      = explode(
-                        '-',
-                        isset($setArray['Date_taken']) ?
-                            $setArray['Date_taken'] :
-                            null
-                    );
-                    $dateArray = array(
-                                  'Y' => $date[0],
-                                  'M' => isset($date[1]) ? $date[1] : null,
-                                  'd' => isset($date[2]) ? $date[2] : null,
-                                 );
 
                     $Instrument = NDB_BVL_Instrument::factory(
                         $TableName,
@@ -152,7 +140,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                         //calculate candidate age if Date_taken was changed
                         if ($row['FieldName'] == 'Date_taken') {
                             $Instrument->_saveValues(
-                                array('Date_taken' => $dateArray)
+                                array('Date_taken' => $setArray['Date_taken'])
                             );
                         }
 
@@ -174,7 +162,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                         //calculate candidate age if Date_taken was changed
                         if ($row['FieldName'] == 'Date_taken') {
                             $Instrument->_saveValues(
-                                array('Date_taken' => $dateArray)
+                                array('Date_taken' => $setArray['Date_taken'])
                             );
                         }
 
@@ -401,7 +389,75 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
 
         return true;
     }
+    /**
+     * Returns a list of candidates, users, etc.
+     * Need override for when Examiner field is conflicting,
+     * need Examiner's full name
+     *
+     * @return array
+     * @access private
+     */
+    function _getFullList()
+    {
+        // create DB object
+        $DB =& Database::singleton();
 
+        $qparams = array();
+        // add the base query
+        $query  = '';
+        $query .= $this->_getBaseQuery();
+
+        $filterdetails = $this->_getBaseFilter();
+        $query        .= $filterdetails['clause'];
+        $qparams       = $filterdetails['params'];
+        // apply ORDER BY filters
+        $query .= " ORDER BY ";
+        if (!empty($this->filter['order'])) {
+            $query .= $this->filter['order']['field']
+                ." ".$this->filter['order']['fieldOrder'].", ";
+        }
+        $query .= $this->order_by;
+        // get the list
+
+        $pageNum = 1;
+        if (isset($_REQUEST['pageID'])) {
+            $pageNum = $_REQUEST['pageID'];
+        }
+
+        $this->_getNumberPages($query);
+
+        $config         =& NDB_Config::singleton();
+        $resultsPerPage = $config->getSetting('rowsPerPage');
+        $limit          = " LIMIT $resultsPerPage"
+            ." OFFSET " . (($pageNum-1)*$resultsPerPage);
+        $result         = $DB->pselect($query . $limit, $qparams);
+
+        // OVERRIDE START
+        foreach ($result as $k => $r) {
+            if ($r['Question'] === 'Examiner') {
+                if (!empty($r['Value1'])) {
+                    $r['Value1'] = $DB->pselectOne(
+                        'SELECT full_name 
+                         FROM examiners 
+                         WHERE examinerID=:eid',
+                        array('eid' => $r['Value1'])
+                    );
+                }
+                if (!empty($r['Value2'])) {
+                    $r['Value2'] = $DB->pselectOne(
+                        'SELECT full_name 
+                         FROM examiners 
+                         WHERE examinerID=:eid',
+                        array('eid' => $r['Value2'])
+                    );
+                }
+                $result[$k] = $r;
+            }
+        }
+        //OVERRIDE END
+
+        return $result;
+    }
     /**
      * Gathers JS dependecies and merge them with the parent
      *

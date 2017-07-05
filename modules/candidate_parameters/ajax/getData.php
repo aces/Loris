@@ -139,6 +139,27 @@ function getProbandInfoFields()
         array('candid' => $candID)
     );
 
+    $extra_parameters = $db->pselect(
+        "SELECT CONCAT('PTID', pt.ParameterTypeID) AS ParameterTypeID, pt.Name, 
+        pt.Type, pt.Description 
+        FROM parameter_type pt
+        JOIN parameter_type_category_rel ptcr USING (ParameterTypeID) 
+        JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
+        WHERE ptc.Name='Candidate Parameters Proband'
+        ORDER BY pt.ParameterTypeID, pt.name ASC",
+        array()
+    );
+
+    $fields = $db->pselect(
+        "SELECT ParameterTypeID, Value FROM parameter_candidate WHERE CandID=:cid",
+        array('cid' => $candID)
+    );
+
+    $parameter_values = [];
+    foreach ($fields as $row) {
+        $parameter_values[$row['ParameterTypeID']] = $row['Value'];
+    }
+
     // Calculate age difference
     $ageDifference = "Could not calculate age";
     $candidateDOB  = $db->pselectOne(
@@ -156,11 +177,13 @@ function getProbandInfoFields()
     }
 
     $result = [
-               'pscid'         => $pscid,
-               'candID'        => $candID,
-               'ProbandGender' => $gender,
-               'ProbandDoB'    => $dob,
-               'ageDifference' => $ageDifference,
+               'pscid'            => $pscid,
+               'candID'           => $candID,
+               'ProbandGender'    => $gender,
+               'ProbandDoB'       => $dob,
+               'ageDifference'    => $ageDifference,
+               'extra_parameters' => $extra_parameters,
+               'parameter_values' => $parameter_values,
               ];
 
     return $result;

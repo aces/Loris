@@ -174,6 +174,11 @@ var ImagePanelHeadersTable = React.createClass({
                         <td className="col-xs-2">
                             {this.props.HeaderInfo.SlicewiseRejected}
                         </td>
+                        <th className="col-xs-2 info">
+                            Series Instance UID</th>
+                        <td className="col-xs-2" colSpan="2">
+                             {this.props.HeaderInfo.SeriesUID}
+                        </td>
                         <td className="col-xs-4" colSpan="4">&nbsp;</td>
                     </tr>
                 </tbody>
