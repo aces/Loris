@@ -31,6 +31,7 @@ $base_dir = $config->getSetting('base');
 if (empty($base_dir)) {
     error_log('Security problem : base ConfigSettings not set or empty.');
     header("HTTP/1.1 412 Precondition Failed");
+    //TODO: throw an exception here?
     exit;
 }
 
@@ -166,14 +167,27 @@ function moveFileToFS(&$fileToUpload)
 
     $config           = NDB_Config::singleton();
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
+    $validPreconditions = true;
 
+    // update ui to show we are trying to move the file
     reportProgress(98, "Copying file to $genomic_data_dir ");
-    if (move_uploaded_file(
+    // file system validation
+    if (!file_exists($fileToUpload->full_path)) {
+        error_log ("Specified path $fileToUpload->full_path does not exist.");
+        $validPreconditions = false;
+    } else if (!is_dir($fileToUpload->full_path)) {
+        error_log ("$fileToUpload->full_path exists but is not a directory.");
+        $validPreconditions = false;
+    } else if (!is_writable($fileToUpload->full_path)) {
+        error_log ("$fileToUpload->full_path is not writable by web user.");
+        $validPreconditions = false;
+    }
+    // print failure message if preconditions not met or if
+    // file move fails for any other reason
+    if (!($validPreconditions || move_uploaded_file(
         $fileToUpload->tmp_name,
         $fileToUpload->full_path
-    )) {
-        reportProgress(99, "File copied to $genomic_data_dir ");
-    } else {
+    ))) {
         endWithFailure();
         die(
             json_encode(
@@ -185,6 +199,8 @@ function moveFileToFS(&$fileToUpload)
             )
         );
     }
+    // update i to success if no problems encountered
+    reportProgress(99, "File copied to $genomic_data_dir ");
 }
 
 /**
