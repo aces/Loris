@@ -74,20 +74,11 @@ h3 {
     margin-bottom: 0;
     font-size: 16px;
     color: inherit;
-
-<<<<<<< HEAD
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     display: inline-block;
     max-width: 100%;
-=======
-    white-space: "nowrap";
-    overflow: "hidden";
-    text-overflow: "ellipsis";
-    display: "inline-block";
-    max-width: "100%";
->>>>>>> styles moved to css
 }
 .views {
     margin-right: 10px;
