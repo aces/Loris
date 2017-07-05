@@ -57,7 +57,11 @@ class schema_generator
             switch($switchType) {
                 case "radio":
                     $enumOpts = $element['Options']['Values']['en-ca'];
-                    $allowMult = $element['Options']['AllowMultiple'];
+                    if(isset($element['Options']['AllowMultiple'])) {
+                        $allowMult = $element['Options']['AllowMultiple'];
+                    } else {
+                        $allowMult = false;
+                    }
                     if(!$allowMult) {
                         $type = $this->enumizeOptions($enumOpts);
                     } else {
@@ -66,7 +70,11 @@ class schema_generator
                     break;
                 case "select":
                     $enumOpts = $element['Options']['Values']['en-ca'];
-					$allowMult = $element['Options']['AllowMultiple'];
+					if(isset($element['Options']['AllowMultiple'])) {
+                        $allowMult = $element['Options']['AllowMultiple'];
+                    } else {
+                        $allowMult = false;
+                    }
                     if(!$allowMult) {                    
                         $type = $this->enumizeOptions($enumOpts);
                     } else {
