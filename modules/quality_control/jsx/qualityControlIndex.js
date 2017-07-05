@@ -1,5 +1,6 @@
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
+import formatColumn from './columnFormatter';
 
 class QualityControlIndex extends React.Component {
 
@@ -8,7 +9,7 @@ class QualityControlIndex extends React.Component {
 
   this.state = {
     isloaded: false,
-    filter: {}
+    //filter: {}
   };
 
   this.fetchData = this.fetchData.bind(this);
@@ -32,6 +33,11 @@ class QualityControlIndex extends React.Component {
       }
     });
   }
+  
+  updateFilter(filter) {
+    this.setState({filter});
+  }
+
   render() {
 
     if (!this.state.isLoaded){
@@ -57,7 +63,10 @@ class QualityControlIndex extends React.Component {
         </TabPane>
         <TabPane TabId={tabList[1].id}>
         <StaticDataTable
-        Data={this.state.Data}
+        Data={this.state.Data.data}
+        Headers={this.state.Data.headers}
+        getFormattedCell={formatColumn}
+        freezeColumn="PatientName"
         />
         </TabPane>
       </Tabs>
