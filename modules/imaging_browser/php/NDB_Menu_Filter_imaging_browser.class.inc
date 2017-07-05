@@ -159,7 +159,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         if (!$user->hasPermission('imaging_browser_view_allsites')) {
             $site_arr = implode(",", $user->getCenterIDs());
             if (!$user->hasPermission('imaging_browser_view_site')) {
-                // User must havve one of the two phantom permissions to get here
+                // User must have one of the two phantom permissions to get here
                 $this->query .= " AND c.Entity_type = 'Scanner' ";
                 if (!$user->hasPermission('imaging_browser_phantom_allsites')) {
                     // Display only the phantom scans at the user's centers
