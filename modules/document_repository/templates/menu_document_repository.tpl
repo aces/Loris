@@ -347,7 +347,7 @@
                             <label class="col-xs-4" for="instrument">Instrument</label>
                             <div class="col-xs-8">
                                 <select name="instrument" id = "instrument" class = "form-fields form-control input-sm">
-                                <option value="0"> </option>
+                                <option value=""> </option>
                                     {foreach from = $Instruments item=val key=k}
                                         <option value={$k}>{$val}</option>
                                     {/foreach}
