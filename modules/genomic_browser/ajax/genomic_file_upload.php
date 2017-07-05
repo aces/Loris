@@ -173,13 +173,13 @@ function moveFileToFS(&$fileToUpload)
     reportProgress(98, "Copying file to $genomic_data_dir ");
     // file system validation
     if (!file_exists($fileToUpload->full_path)) {
-        error_log ("Specified path $fileToUpload->full_path does not exist.");
+        error_log("Specified path $fileToUpload->full_path does not exist.");
         $validPreconditions = false;
     } else if (!is_dir($fileToUpload->full_path)) {
-        error_log ("$fileToUpload->full_path exists but is not a directory.");
+        error_log("$fileToUpload->full_path exists but is not a directory.");
         $validPreconditions = false;
     } else if (!is_writable($fileToUpload->full_path)) {
-        error_log ("$fileToUpload->full_path is not writable by web user.");
+        error_log("$fileToUpload->full_path is not writable by web user.");
         $validPreconditions = false;
     }
     // print failure message if preconditions not met or if
