@@ -265,7 +265,7 @@
                             </label>
                             <div class="col-xs-8">
                                 <select name="parent_id" id="parent_id" class="form-control input-sm">
-                                    <option value=" "> </option>
+                                    <option value=""> </option>
                                     {foreach from = $File_categories item=val key=k}
                                         {if $val != "Any"}
                                                 <option value={$k}>{$val.CategoryName}</option>
@@ -332,9 +332,13 @@
                             <label class="col-xs-4" for="site">Site<font color="red"><sup> *</sup></font></label>
                             <div class="col-xs-8">
                                 <select name="site" id = "site" class = "form-fields form-control input-sm">
-                                <option value=" "> </option>
+                                <option value=""> </option>
                                     {foreach from = $Sites item=val key=k}
-                                        <option value={$k}>{$val}</option>
+                                        {if $val == "Any"}
+                                             <option value="0">Any</option>
+                                             {else}
+                                             <option value={$k}>{$val}</option>
+                                        {/if}
                                     {/foreach}
                                 </select>
                             </div>
@@ -428,7 +432,11 @@
                                 <select name="site" id = "siteEdit" class = "form-fields form-control input-sm">
                                     <option value=""> </option>
                                     {foreach from = $Sites item=val key=k}
-                                        <option value={$k}>{$val}</option>
+                                        {if $val == "Any"}
+                                             <option value="0">Any</option>
+                                             {else}
+                                             <option value={$k}>{$val}</option>
+                                        {/if}
                                     {/foreach}
                                 </select>
                             </div>
