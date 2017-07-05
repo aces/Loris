@@ -64,32 +64,25 @@ class NDB_Config
     {
         static $config = null;
         if (is_null($config)) {
-            // If calling singleton without any parameter, first check
-            // for a project/config.xml, then check for the config
-            // file in a standard unix filesystem location.
-            // /etc/loris/config.xml
+
+            $config = new NDB_Config();
+
             if ($configFile === null) {
                 // Can't directly check !empty because of a bug
                 // in PHP < 5.5, need to assign to a variable first
-                $env = getenv('LORIS_DB_CONFIG');
-                if (!empty($env)) {
-                    $configFile = $env;
-                } else if (file_exists(__DIR__ . "/../../project/config.xml")) {
-                    // "Classic" Loris location of project directory
-                    // parallel to php directory
-                    $configFile = __DIR__ . "/../../project/config.xml";
-                } else if (file_exists("/etc/loris/config.xml")) {
-                    // Standard Unix filesystem layout
-                    $configFile = "/etc/loris/config.xml";
-                } else if (file_exists("/usr/local/etc/loris/config.xml")) {
-                    // Standard Unix filesystem layout, option 2
-                    $configFile = "/usr/local/etc/loris/config.xml";
-                }
+                $configFile = $config->configFilePath();
             }
 
             // Load the file
-            $config  = new NDB_Config();
-            $success = $config->load($configFile);
+            $config->load($configFile);
+
+            if (!empty($config->_settings['include'])) {
+                // Load all includes found in the config
+                $includes = Utility::asArray($config->_settings['include']);
+                foreach ($includes as $k=>$path) {
+                    $config->load($config->configFilePath($path));
+                }
+            }
         }
 
         return $config;
@@ -100,7 +93,9 @@ class NDB_Config
      *
      * @param string $configFile the neurodb config.xml config file
      *
-     * @return none, but as side-effect loads $this->_settings
+     * @return void, but as side-effect loads $this->_settings
+     *
+     * @throws Exception
      */
     function load($configFile = "../project/config.xml")
     {
@@ -113,8 +108,49 @@ class NDB_Config
             );
         }
 
-        $this->_settings = NDB_Config::convertToArray($newroot);
+        $this->_settings += NDB_Config::convertToArray($newroot);
     }
+
+    /**
+     * Takes a path and checks if file exists under all locations where config file
+     * can exist.
+     *
+     * @param string $pathToFile relative file path or file name
+     *
+     * @return string  absolute path of config file
+     *
+     * @throws LorisException when any config file is missing
+     */
+    function configFilePath($pathToFile = "config.xml")
+    {
+        // first check for a project/config.xml, then check for the config
+        // file in a standard unix filesystem location ->  /etc/loris/config.xml
+
+        $env = getenv('LORIS_DB_CONFIG');
+        if (!empty($env)) {
+            $file = $env;
+        } else if (file_exists(__DIR__ . "/../../project/$pathToFile")) {
+            // "Classic" Loris location of project directory
+            // parallel to php directory
+            $file = __DIR__ . "/../../project/$pathToFile";
+        } else if (file_exists("/etc/loris/$pathToFile")) {
+            // Standard Unix filesystem layout
+            $file = "/etc/loris/$pathToFile";
+        } else if (file_exists("/usr/local/etc/loris/$pathToFile")) {
+            // Standard Unix filesystem layout, option 2
+            $file = "/usr/local/etc/loris/$pathToFile";
+        } else if (file_exists($pathToFile)) {
+            // Absolute path given
+            $file = $pathToFile;
+        } else {
+            throw new ConfigurationException(
+                "Config file $pathToFile does not exist in the defined locations."
+            );
+        }
+
+        return $file;
+    }
+
 
     /**
      * Converts a SimpleXMLElement to an array.

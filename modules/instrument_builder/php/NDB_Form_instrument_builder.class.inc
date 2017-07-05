@@ -96,7 +96,6 @@ class NDB_Form_Instrument_Builder extends NDB_Form
              $baseurl . "/instrument_builder/js/react.questions.js",
              $baseurl . "/instrument_builder/js/react.instrument_builder.js",
              $baseurl . "/js/FileSaver.min.js",
-             $baseurl . "/js/components/Tabs.js",
             )
         );
     }

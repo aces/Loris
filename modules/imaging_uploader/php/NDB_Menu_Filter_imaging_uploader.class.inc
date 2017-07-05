@@ -88,9 +88,10 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                           'UploadLocation',
                           'UploadDate',
                           'UploadedBy',
-                          'TarchiveID AS Tarchive_Info',
+                          'mu.TarchiveID AS Tarchive_Info',
                           'number_of_mincCreated',
                           'number_of_mincInserted',
+                          'ta.PatientName',
                          );
 
         $this->validFilters = array(
@@ -102,6 +103,8 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $this->query        = " FROM mri_upload mu LEFT JOIN session".
                               " s ON (s.ID = mu.SessionID)".
                               " LEFT JOIN candidate c ON (c.CandID = s.CandID)".
+                              " LEFT JOIN tarchive ta ON".
+                              " (mu.TarchiveID = ta.TarchiveID)".
                               " WHERE 1=1 ";
         $this->formToFilter = array(
                                'CandID'      => 's.CandID',

@@ -103,50 +103,75 @@ class Candidates extends APIBase
      */
     public function handlePOST()
     {
-        if (isset($this->RequestData['Candidate'])) {
-            $data = $this->RequestData;
-            if ($data === null) {
-                $this->header("HTTP/1.1 400 Bad Request");
-                $this->error("Can't parse data");
-                $this->safeExit(0);
-            }
+        $data = $this->RequestData;
+        if ($data === null) {
+            $this->header("HTTP/1.1 400 Bad Request");
+            $this->error("Can't parse data");
+            $this->safeExit(0);
+        }
 
-            $this->verifyField($data, 'Gender', ['Male', 'Female']);
-            $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
-
-            //Candidate::createNew
-            try {
-                $candid = $this->createNew(
-                    $data['Candidate']['DoB'],
-                    $data['Candidate']['EDC'],
-                    $data['Candidate']['Gender'],
-                    $data['Candidate']['PSCID']
-                );
-
-                if (isset($data['Candidate']['Project'])) {
-                    $projectName = $data['Candidate']['Project'];
-                    $project     = \Project::singleton($projectName);
-                    if (!empty($project)) {
-                        \Candidate::singleton($candid)->setData(
-                            array('ProjectID' => $project->getId())
-                        );
-                    }
-                }
-
-                $this->header("HTTP/1.1 201 Created");
-                $this->JSON = [
-                               'Meta' => ["CandID" => $candid],
-                              ];
-            } catch(\LorisException $e) {
-                $this->header("HTTP/1.1 500 Internal Server Error");
-                $this->error("Candidate can't be created");
-                $this->safeExit(0);
-            }
-        } else {
+        if (!isset($data['Candidate'])) {
             $this->header("HTTP/1.1 400 Bad Request");
             $this->error("There is no Candidate object in the POST data");
             $this->safeExit(0);
         }
+
+        // This version of the API does not handle candidate creation
+        // when users are at multiple sites
+        $user      = \User::singleton();
+        $centerIDs = $user->getCenterIDs();
+        $num_sites = count($centerIDs);
+
+        if ($num_sites == 0) {
+            $this->header("HTTP/1.1 401 Unauthorized");
+            $this->error("You are not affiliated with any site");
+            $this->safeExit(0);
+        }
+
+        if ($num_sites > 1) {
+            $this->header("HTTP/1.1 501 Not Implemented");
+            $this->error(
+                "This API version does not support candidate creation " .
+                "by users with multiple site affiliations. This will be ".
+                "implemented in a future release."
+            );
+            $this->safeExit(0);
+        } 
+
+        $centerID = $centerIDs[0];
+        $this->verifyField($data, 'Gender', ['Male', 'Female']);
+        $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
+
+        //Candidate::createNew
+        try {
+            $candid = $this->createNew(
+                $centerID,
+                $data['Candidate']['DoB'],
+                $data['Candidate']['EDC'],
+                $data['Candidate']['Gender'],
+                $data['Candidate']['PSCID']
+            );
+
+        } catch(\LorisException $e) {
+            $this->header("HTTP/1.1 500 Internal Server Error");
+            $this->error("Candidate can't be created");
+            $this->safeExit(0);
+        }
+
+        if (isset($data['Candidate']['Project'])) {
+            $projectName = $data['Candidate']['Project'];
+            $project     = \Project::singleton($projectName);
+            if (!empty($project)) {
+                \Candidate::singleton($candid)->setData(
+                    array('ProjectID' => $project->getId())
+                );
+            }
+        }
+
+        $this->header("HTTP/1.1 201 Created");
+        $this->JSON = [
+                       'Meta' => ["CandID" => $candid],
+                      ];
     }
 
     /**
@@ -184,18 +209,23 @@ class Candidates extends APIBase
     /**
      * Testable wrapper for Candidate::createNew
      *
-     * @param string $DoB    Date of birth of the candidate
-     * @param string $edc    EDC of the candidate
-     * @param string $gender Gender of the candidate to be created
-     * @param string $PSCID  PSCID of the candidate to be created
+     * @param string $centerID The center id of the candidate
+     * @param string $DoB      Date of birth of the candidate
+     * @param string $edc      EDC of the candidate
+     * @param string $gender   Gender of the candidate to be created
+     * @param string $PSCID    PSCID of the candidate to be created
      *
      * @return none
      */
-    public function createNew($DoB, $edc, $gender, $PSCID)
+    public function createNew($centerID, $DoB, $edc, $gender, $PSCID)
     {
         $user = \User::singleton();
         return \Candidate::createNew(
+<<<<<<< HEAD
             $user->getCenterIDs()[0],
+=======
+            $centerID,
+>>>>>>> 17.1-dev
             $DoB,
             $edc,
             $gender,

@@ -139,7 +139,7 @@ class TimePoint
             $this->_timePointInfo['SubprojectTitle'] = $subprojectSettings['title'];
         } else {
             // return error when 0 rows to prevent creation of an empty object
-            throw new Exception(
+            throw new LorisException(
                 'Failed to retrieve data for timepoint '
                 . htmlspecialchars($sessionID)
             );

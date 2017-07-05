@@ -192,6 +192,13 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
             $this->form->freeze();
         }
 
+        //DEPRECATION MESSAGE FOR 18.0
+        error_log(
+            "The Final Radiological Review Module is deprecated and will be "
+            . "removed in a future release (Loris 18.0). Please update your code "
+            . "in accordance. If you are actively using this module, "
+            . "it should be moved to the `project/modules` directory."
+        );
     }
 
     /**

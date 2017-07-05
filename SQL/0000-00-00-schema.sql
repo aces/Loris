@@ -360,6 +360,7 @@ CREATE TABLE `instrument_subtests` (
   `Subtest_name` varchar(255) NOT NULL default '',
   `Description` varchar(255) NOT NULL default '',
   `Order_number` int(11) NOT NULL default '0',
+  UNIQUE KEY `unique_index` (`Test_name`, `Subtest_name`),
   PRIMARY KEY  (`ID`),
   KEY `FK_instrument_subtests_1` (`Test_name`),
   CONSTRAINT `FK_instrument_subtests_1` FOREIGN KEY (`Test_name`) REFERENCES `test_names` (`Test_name`)
@@ -1344,7 +1345,7 @@ CREATE TABLE `media` (
 
 CREATE TABLE `issues_categories` (
   `categoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `categoryName` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `categoryName` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`categoryID`),
   UNIQUE KEY `categoryName` (`categoryName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1388,7 +1389,7 @@ CREATE TABLE `issues` (
   CONSTRAINT `fk_issues_2` FOREIGN KEY (`assignee`) REFERENCES `users` (`UserID`),
   CONSTRAINT `fk_issues_3` FOREIGN KEY (`candID`) REFERENCES `candidate` (`CandID`),
   CONSTRAINT `fk_issues_4` FOREIGN KEY (`sessionID`) REFERENCES `session` (`ID`),
-  CONSTRAINT `fk_issues_5` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
+  CONSTRAINT `fk_issues_5` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `fk_issues_6` FOREIGN KEY (`lastUpdatedBy`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
@@ -1864,11 +1865,9 @@ CREATE TABLE `acknowledgements` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 -- ********************************
 -- Feedback
 -- ********************************
-
 
 CREATE TABLE `feedback_bvl_type` (
   `Feedback_type` int(11) unsigned NOT NULL auto_increment,

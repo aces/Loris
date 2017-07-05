@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile.test.db
       args:
         BASE_DIR: /app/
+    volumes:
+      - ./test/mysql-config:/etc/mysql/conf.d
     environment:
       - MYSQL_DATABASE=LorisTest
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
@@ -21,6 +23,7 @@ services:
       dockerfile: Dockerfile.test.php7
     volumes:
       - ./:/app
+      - ./test/test_instrument:/app/project/instruments
     environment:
       - LORIS_DB_CONFIG=/app/test/config.xml
     depends_on:
@@ -69,6 +72,7 @@ services:
       dockerfile: Dockerfile.test.php7.debug
     volumes:
       - ./:/app
+      - ./test/test_instrument:/app/project/instruments
     environment:
       - LORIS_DB_CONFIG=/app/test/config.xml
       - XDEBUG_CONFIG=remote_host=${XDEBUG_REMOTE_HOST}
