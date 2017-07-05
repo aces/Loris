@@ -685,7 +685,7 @@ class LorisForm
         $disabled      = '';
         $name          = $el['name'] ?? '';
 
-        if (!is_array($options) || !$options instanceof Traversable) {
+        if (!is_array($options) || !($options instanceof Traversable)) {
             // $options is not Traversable and will throw an error
             // if used in a foreach loop.
             error_log(
