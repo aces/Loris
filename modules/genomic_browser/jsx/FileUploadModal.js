@@ -92,16 +92,16 @@ var GenomicFileUploadModal = React.createClass({
     var footerButtons = [];
 
     if (this.state.submited) {
-      footerButtons.push(<button className="btn btn-default" onClick={this.reloadPage} data-dismiss="modal">Ok</button>);
+      footerButtons.push(<button key="submited" className="btn btn-default" onClick={this.reloadPage} data-dismiss="modal">Ok</button>);
     } else {
       if (this.state.readyForUpload) {
-        footerButtons.push(<button className="btn btn-primary" onClick={this.handleUploadSubmit} role="button" aria-disabled="false">Upload</button>);
+        footerButtons.push(<button key="readyForUpload" className="btn btn-primary" onClick={this.handleUploadSubmit} role="button" aria-disabled="false">Upload</button>);
       }
 
-      footerButtons.push(<button className="btn btn-default" id="cancelButton" role="reset" type="reset" data-dismiss="modal">Cancel</button>);
+      footerButtons.push(<button key="cancel" className="btn btn-default" id="cancelButton" role="reset" type="reset" data-dismiss="modal">Cancel</button>);
     }
     return (
-            <div className="modal fade" id="fileUploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div className="modal fade" id="fileUploadModal" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -158,29 +158,29 @@ var UploadForm = React.createClass({
     var instructions = [];
     var inputs = [];
 
-    inputs.push(<FileTypeSelect baseURL={this.props.baseURL} multiple={false} onFileTypeChange={this.handleFileTypeChange} name="fileType" label="File type:"/>);
+    inputs.push(<FileTypeSelect key="fileType" baseURL={this.props.baseURL} multiple={false} onFileTypeChange={this.handleFileTypeChange} name="fileType" label="File type:"/>);
 
     switch (this.state.fileType) {
       case 'Methylation beta-values':
-        inputs.push(<FileInput name="fileData" label="File :"/>);
-        inputs.push(<TextAreaInput name="description" label="Description :" />);
+        inputs.push(<FileInput key="fileData" name="fileData" label="File :"/>);
+        inputs.push(<TextAreaInput key="description" name="description" label="Description :" />);
         if (!this.state.useColumnHeaders) {
-          inputs.push(<FileInput name="fileMapping" label="Mapping :"/>);
+          inputs.push(<FileInput key="fileMapping" name="fileMapping" label="Mapping :"/>);
         }
-        inputs.push(<CheckboxInput handleChange={this.handleCheckboxChange} checked={this.state.useColumnHeaders} name="pscidColumn" />);
-        inputs.push(<ProgressBar name="progressbar" label="Progress :" />);
+        inputs.push(<CheckboxInput key="pscidColumn" handleChange={this.handleCheckboxChange} checked={this.state.useColumnHeaders} name="pscidColumn" />);
+        inputs.push(<ProgressBar key="progressbar" name="progressbar" label="Progress :" />);
         break;
       case 'Other':
-        inputs.push(<FileInput name="fileData" label="File :"/>);
-        inputs.push(<TextAreaInput name="description" label="Description :" />);
-        inputs.push(<ProgressBar name="progressbar" label="Progress :" />);
+        inputs.push(<FileInput key="fileData" name="fileData" label="File :"/>);
+        inputs.push(<TextAreaInput key="description" name="description" label="Description :" />);
+        inputs.push(<ProgressBar key="progressbar" name="progressbar" label="Progress :" />);
         break;
       default:
         // noop
     }
 
     return (
-            <form name="uploadForm" id="uploadForm" enctype="multipart/form-data" method="POST">
+            <form name="uploadForm" id="uploadForm" encType="multipart/form-data" method="POST">
                 <div className="row">
                     {instructions}
                     {inputs}
@@ -242,13 +242,13 @@ var FileTypeSelect = React.createClass({
 
   render: function() {
     var options = this.state.availableFileType.map(function(e) {
-      return (<option value={e.genomicFileType}>{e.genomicFileType}</option>);
+      return (<option key={e.genomicFileType} value={e.genomicFileType}>{e.genomicFileType}</option>);
     }
         );
 
     return (
             <div className="col-xs-12 form-group">
-                <label for={this.props.name} className="col-xs-3">{this.props.label}<font color="red"><sup> *</sup></font></label>
+                <label htmlFor={this.props.name} className="col-xs-3">{this.props.label}<font color="red"><sup> *</sup></font></label>
                 <div className="col-xs-9">
                     <select name={this.props.name} id={this.props.name} className="form-fields form-control input-sm" onChange={this.props.onFileTypeChange}>
                         {options}
@@ -269,7 +269,7 @@ var FileInput = React.createClass({
   render: function() {
     return (
             <div className="col-xs-12 form-group">
-                <label className="col-xs-3" for={this.props.name}>{this.props.label}</label>
+                <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
                 <div className="col-xs-9">
                     <input type="file" name={this.props.name} id={this.props.name} onChange={this.handleChange} className="fileUpload"/>
                 </div>
@@ -288,7 +288,7 @@ var TextAreaInput = React.createClass({
   render: function() {
     return (
             <div className="col-xs-12 form-group">
-                <label className="col-xs-3" for={this.props.name}>{this.props.label}</label>
+                <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
                 <div className="col-xs-9">
                     <textarea cols="20" rows="3" name={this.props.name} onChange={this.handleChange} id={this.props.name} style={{border: '2px inset'}} className="ui-corner-all form-fields form-control input-sm" />
                 </div>
@@ -312,10 +312,9 @@ var CheckboxInput = React.createClass({
             <div className="form-group col-sm-12">
                 <label className="col-xs-3"></label>
                 <div className="col-xs-9">
-                    <input className="user-success" name={this.props.name} id={this.props.name} type="checkbox" checked="true" style={{'margin-right': '1em'}}>
-                        Use PSCID in column headers
-                        {this.props.label}
-                    </input>
+                    <input className="user-success" name={this.props.name} id={this.props.name} type="checkbox" defaultChecked="true" style={{marginRight: '1em'}} />
+                    Use PSCID in column headers
+                    {this.props.label}
                 </div>
             </div>
         );
@@ -332,7 +331,7 @@ var ProgressBar = React.createClass({
   render: function() {
     return (
             <div className="col-xs-12 form-group">
-                <label className="col-xs-3" for={this.props.name}>{this.props.label}</label>
+                <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
                 <div className="col-xs-9">
                     <div className="progress" style={{height: "20px"}}>
                         <div className="progress-bar progress-bar-success" id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"/>
