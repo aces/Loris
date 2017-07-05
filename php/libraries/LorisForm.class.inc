@@ -1901,7 +1901,7 @@ class LorisForm
         case 'textarea':
         case 'password':
             $el         = $this->createBase($elname, $label, $options);
-            $el['type'] = 'password';
+            $el['type'] = $type;
             break;
         default:
             throw new LorisException("Unsupported QuickForm type $type");
