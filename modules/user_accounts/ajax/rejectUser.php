@@ -30,8 +30,7 @@ if (!isset($_POST['identifier'])) {
 * Checks that logged in user has user_accounts permissions, which is
 * also included in admin permissions
 *
-* @return boolean true is user has admin permission or user accounts
-                false otherwise
+* @return boolean true if user has admin permission or user accounts false otherwise
 */
 function _hasPerm()
 {
