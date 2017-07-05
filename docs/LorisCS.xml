@@ -62,4 +62,12 @@
              <property name="eolChar" value="\n"/>
          </properties>
      </rule>
+
+    <!-- Increase PHPCS/PEAR limit of 85 chars per line to 120 -->
+     <rule ref="Generic.Files.LineLength">
+         <properties>
+             <property name="lineLimit" value="120"/>
+             <property name="absoluteLineLimit" value="0"/>
+         </properties>
+     </rule>
 </ruleset>
