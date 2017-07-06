@@ -4,10 +4,62 @@ import {Tabs, TabPane} from 'Tabs';
 class QualityControlIndex extends React.Component {
 
   constructor(props) {
-    super(props);
+      super(props);
+
+      this.state = {
+          isLoaded: false,
+          filter: {}
+      };
+
+
+      // Bind component instance to custom methods
+      this.fetchData = this.fetchData.bind(this);
+      this.updateFilter = this.updateFilter.bind(this);
   }
 
+  componentDidMount() {
+      this.fetchData();
+  }
+
+   /**
+   * Retrive data from the provided URL and save it in state
+   * Additionaly add hiddenHeaders to global loris vairable
+   * for easy access by columnFormatter.
+   */
+  fetchData() {
+    $.ajax(this.props.DataURL, {
+      method: "GET",
+      dataType: 'json',
+      success: function(data) {
+        this.setState({
+          Data: data,
+          isLoaded: true
+        });
+      }.bind(this),
+      error: function(error) {
+        console.error(error);
+      }
+    });
+  }
+
+  updateFilter(filter) {
+    this.setState({filter});
+  }
+
+
   render() {
+      // Waiting for async data to load
+      if (!this.state.isLoaded) {
+          return (
+              <button className="btn-info has-spinner">
+              Loading
+              <span
+          className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+              </span>
+              </button>
+      );
+      }
+
 
     let tabList = [
         {id: "behavioral", label: "Behavioral"},
@@ -53,7 +105,7 @@ class QualityControlIndex extends React.Component {
 $(function() {
   const qualityControlIndex = (
     <div className="page-qualityControl">
-      <QualityControlIndex UselessURL={`${loris.BaseURL}/quality_control/?format=json`}/>
+      <QualityControlIndex DataURL={`${loris.BaseURL}/quality_control/?format=json`}/>
     </div>
   );
 
