@@ -44,7 +44,7 @@ var ImagePanelHeader = React.createClass({
             );
     return (
 
-            <div className="panel-heading">
+            <div className="panel-heading clearfix">
             <input type="checkbox" data-file-id={this.props.FileID}
                      className="mripanel user-success" />
                 <h3 className="panel-title">{this.props.Filename} </h3>
