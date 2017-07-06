@@ -83,6 +83,9 @@ var config = [{
   externals: {
     react: 'React'
   },
+  node: {
+    fs: "empty"
+  },
   devtool: 'source-map',
   plugins: [new webpack.optimize.UglifyJsPlugin({mangle: false})]
 }];
