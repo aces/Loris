@@ -151,15 +151,15 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         }
 
         $this->columns = [
-            's.ID',
             's.visit_label',
-            'c.PSCID',
             's.candid',
+            'c.PSCID',
+            't.Full_name',
+            's.ID',
             'f.SessionID',
-            'f.test_name',
             'f.data_entry',
             'f.commentid',
-            't.Full_name'
+            'f.test_name'
         ];
 
         $query = $query . $where;
