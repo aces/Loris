@@ -30,8 +30,10 @@ class InstrumentPreview extends React.Component {
       context: {
         t1_arm_1: {
           lang: '2',
-          age_mths: 100
-        }
+          age_mths: 144
+        },
+        age_mths: 144,
+        lang: '2'
       },
       options: {
         surveyMode: true
@@ -68,7 +70,7 @@ class InstrumentPreview extends React.Component {
   updateAge(age) {
     const t1_arm_1 = Object.assign({}, this.state.context.t1_arm_1, {age_mths: age});
     this.setState({
-      context: Object.assign({}, this.state.context, { t1_arm_1 })
+      context: Object.assign({}, this.state.context, { t1_arm_1, age_mths: age })
     });
   }
 
@@ -82,7 +84,7 @@ class InstrumentPreview extends React.Component {
 
     this.setState({
       lang,
-      context: Object.assign({}, this.state.context, { t1_arm_1 })
+      context: Object.assign({}, this.state.context, { t1_arm_1, lang: langMap[lang] })
     });
   }
 

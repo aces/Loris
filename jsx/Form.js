@@ -172,6 +172,7 @@ const RadioGroupElement = React.createClass({
     disabled: React.PropTypes.bool,
     required: React.PropTypes.bool,
     hasError: React.PropTypes.bool,
+    orientation: React.PropTypes.string,
     errorMessage: React.PropTypes.string,
     onUserInput: React.PropTypes.func
   },
@@ -187,6 +188,7 @@ const RadioGroupElement = React.createClass({
       disabled: false,
       required: false,
       hasError: false,
+      orientation: 'vertical',
       errorMessage: 'The field is required!',
       onUserInput: function() {
         console.warn('onUserInput() callback is not set');
@@ -201,6 +203,7 @@ const RadioGroupElement = React.createClass({
   render: function() {
     var required = this.props.required ? 'required' : null;
     var disabled = this.props.disabled ? 'disabled' : null;
+    var isHorizontal = this.props.orientation === 'horizontal';
     var options = this.props.options;
     var errorMessage = null;
     var requiredHTML = null;
@@ -232,7 +235,7 @@ const RadioGroupElement = React.createClass({
             required={required}
             disabled={disabled}
           >
-            <div style={{display: 'flex', justifyContent: 'space-around'}}>
+            <div style={{display: isHorizontal ? 'flex' : '', justifyContent: 'space-around'}}>
               {Object.keys(options).map(function(optionValue, index) {
                 return (
                   <div key={index}>
@@ -322,10 +325,10 @@ const CheckboxGroupElement = React.createClass({
             onChange={this.handleChange}>
 
             <div style={{}}>
-              {Object.keys(options).map(function(optionValue) {
+              {Object.keys(options).map(function(optionValue, index) {
                 return (
-                  <div>
-                    <Checkbox value={optionValue} key={optionValue}/> {options[optionValue]}
+                  <div key={`${optionValue}-${index}`} >
+                    <Checkbox value={optionValue}/> {options[optionValue]}
                   </div>
                 );
               })}

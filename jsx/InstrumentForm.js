@@ -3,15 +3,22 @@ import { Evaluator } from './lib/Parser';
 
 const { SelectElement, RadioGroupLabels, RadioGroupElement, CheckboxGroupElement, TextboxElement } = Form;
 
-const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave, lang}) => {
+const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave}) => {
   return (
     <div>
-      {renderMeta(instrument.Meta, lang)}
+      {renderMeta(instrument.Meta)}
       {
-        instrument.Elements.filter((element) => {
+        instrument.Elements.filter((element, index) => {
           if (options.surveyMode && element.HiddenSurvey) return false;
           if (!element.DisplayIf) return true;
-          return Evaluator(element.DisplayIf, Object.assign({}, data, context));
+          try {
+            return Evaluator(element.DisplayIf, Object.assign({}, data, context));
+          }  catch(e) {
+            console.error(`Error evaluating DisplayIf property of element ${index} in instrument ${instrument.Meta.ShortName}.`);
+            console.log(element.DisplayIf);
+            console.log(e.message || e);
+            return false;
+          }
         }).map((element, index) => (
           renderElement(element, index, data, onUpdate)
         ))
@@ -21,10 +28,10 @@ const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave, l
 };
 
 // TODO: propTypes
-function renderMeta(meta, lang) {
+function renderMeta(meta) {
   return (
     <div className="title">
-      <h1>{meta.LongName[lang]}</h1>
+      <h1>{meta.LongName}</h1>
     </div>
   )
 
@@ -64,6 +71,7 @@ function renderRadio(radioEl, value, key, onUpdate) {
       name={radioEl.Name}
       label={radioEl.Description}
       options={radioEl.Options.Values}
+      orientation={radioEl.Options.Orientation}
       onUserInput={onUpdate}
       value={value}
     />
