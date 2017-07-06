@@ -677,14 +677,26 @@ class LorisForm
     protected function selectHTML($el)
     {
         $strOptions    = '';
-        $options       = $el['options'];
+        $options       = $el['options'] ?? array();
         $cls           = '';
         $changehandler = '';
         $multiple      = '';
         $id            = '';
         $disabled      = '';
-        $name          = $el['name'];
+        $name          = $el['name'] ?? '';
 
+        if (!(is_array($options) || $options instanceof Traversable)) {
+            // $options is not Traversable and will throw an error
+            // if used in a foreach loop.
+            error_log(
+                "Options for element '$name' are not an array or are not"
+                . ' traversable. Please validate the LorisForm syntax in '
+                .' the calling code.'
+            );
+            throw new InvalidArgumentException(
+                "Options for LorisForm HTML element $name not an array"
+            );
+        }
         foreach ($options as $optionKey => $optionVal) {
             $selected = '';
 
@@ -1189,7 +1201,7 @@ class LorisForm
 
                 if (isset($el['required'])
                     && $el['required'] === true
-                    && empty($value)
+                    && $value === ""
                 ) {
                     $errors[$el['name']] = "required fail";
                 }
@@ -1949,8 +1961,10 @@ class LorisForm
     {
         foreach ($submitKeys as $key) {
             if (!isset($this->form[$key])) {
-                $tp = $this->groupMapping[$key];
-                $el = $this->form[$tp['groupName']]['elements'][$tp['index']];
+                $tp = $this->groupMapping[$key] ?? null;
+                $el = is_null($tp) ?
+                    null :
+                    $this->form[$tp['groupName']]['elements'][$tp['index']];
                 if (!$el) {
                     $arr[$key] = $_REQUEST[$key];
                     continue;

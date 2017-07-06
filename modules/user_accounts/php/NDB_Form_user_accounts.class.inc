@@ -663,6 +663,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                 $siteOptions[$val] = $site[$key]->getCenterName();
             }
         }
+
         $this->addSelect(
             'CenterIDs',
             'Sites',
@@ -1145,6 +1146,16 @@ class NDB_Form_User_Accounts extends NDB_Form
             // No email entered: error
             $errors['Email_Group'] = 'You must enter an email address';
         }
+
+        //======================================
+        //           Validate Site
+        //======================================
+        // Ensure that at least one site is selected
+        if (empty($values['CenterIDs'])) {
+            $errors['sites_group'] = "You must select at least one " .
+                "site/affiliation";
+        }
+
         //======================================
         //        Validate Examiner Status
         //======================================
