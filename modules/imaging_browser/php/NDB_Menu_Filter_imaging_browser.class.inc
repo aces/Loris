@@ -114,6 +114,12 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             END 
             ";
 
+        $acqpid = "";
+        if (!empty($scan_id_types)) {
+            $acqpid = "AND AcquisitionProtocolID IN (".
+                    implode(",", array_keys($scan_id_types)) .")";
+        }
+
         $this->query = " FROM psc AS p 
             JOIN session s ON (s.CenterID=p.CenterID) 
             JOIN candidate c ON (c.CandID=s.CandID) 
@@ -123,9 +129,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             LEFT JOIN (SELECT files.SessionID, MIN(QCLastChangeTime)
             as QCLastChangeTime FROM files
             LEFT JOIN files_qcstatus USING (FileID)
-            WHERE OutputType='native' AND AcquisitionProtocolID 
-            IN (".
-            implode(",", array_keys($scan_id_types)) .") GROUP BY files.SessionID) nd
+            WHERE OutputType='native' $acqpid GROUP BY files.SessionID) nd
             ON (nd.SessionID=f.SessionID) ";
 
         $left_joins = "";
@@ -145,9 +149,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             WHERE 
             s.Active = 'Y' AND
             f.PendingStaging=0 AND 
-            f.FileType='mnc' AND 
-            f.AcquisitionProtocolID IN (".
-            implode(",", array_keys($scan_id_types)) .")";
+            f.FileType='mnc'";
 
         $this->query .= $left_joins;
         $this->query .= $where;
