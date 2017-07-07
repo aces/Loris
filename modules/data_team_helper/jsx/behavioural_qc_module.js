@@ -143,6 +143,32 @@ var IncompleteCandidatesRow = React.createClass({
 });
 
 var InstrumentConflictsRow = React.createClass({
+    handleClick: function handleClick(event) {
+        event.preventDefault();
+        var row = this.props.row;
+        var candID= row.CandID;
+        var instrument=row.TableName;
+        var question = row.FieldName;
+        var form = $('<form />', {
+            "action" : loris.BaseURL + "/conflict_resolver/",
+            "method" : "post"
+        });
+        var values = {
+            "reset"       : "true",
+            "CandID"       : candID,
+            "Instrument"   : instrument,
+            "Question"     : question,
+            "filter"      : "Show Data"
+        };
+        $.each(values, function(name, value) {
+            $("<input />", {
+                type: 'hidden',
+                name: name,
+                value: value
+            }).appendTo(form);
+        });
+        form.appendTo('body').submit();
+    },
   proptypes: {
     row: React.PropTypes.object.isRequired,
     BaseURL: React.PropTypes.string.isRequired
@@ -165,10 +191,7 @@ var InstrumentConflictsRow = React.createClass({
           </td>
         <td>
           <a
-            href={baseURL + "/conflict_resolver/?CandID=" + row.CandID}
-            className="conflict_resolver_link" data-pscid={row.PSCID}
-            data-question={row.FieldName} data-instrument={row.TableName}
-            data-visits={row.visit_label}
+            href='#' onClick={this.handleClick}
           >
             {row.test_name_display}
           </a>
