@@ -96,5 +96,12 @@ describe('Parser Unit Tests', () => {
       const res = Evaluator(LOGIC_STR, CONTEXT);
       expect(res).to.equal('Montreal');
     })
+    it('Accesses correct context (multi-level, array access)', () => {
+      const LOGIC_STR = '[t1_arm_1][visits(v3)][site]';
+      const CONTEXT = {t1_arm_1: {age_mnths: 45, visits: {v1: 'v1',v2: 'v2',v3: {site: 'Montreal', active: 'Y'}}}};
+      const res = Evaluator(LOGIC_STR, CONTEXT);
+      expect(res).to.equal('Montreal');
+    })
+
   });
 })

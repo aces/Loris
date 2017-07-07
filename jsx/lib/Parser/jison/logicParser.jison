@@ -85,6 +85,14 @@ constant
 accessors
     : '[' variable ']' accessors
         { $$ = [$2].concat($4); }
+    | '[' variable '(' NUMBER ')' ']' accessors
+        { $$ = [$2].concat($4, $7); }
+    | '[' variable '(' variable ')' ']' accessors
+        { $$ = [$2].concat($4, $7); }
+    | '[' variable '(' NUMBER ')' ']'
+        { $$ = [$2].concat($4); }
+    | '[' variable '(' variable ')' ']'
+        { $$ = [$2].concat($4); }
     | '[' variable ']'
         { $$ = [$2]; }
     ;
@@ -133,7 +141,15 @@ e
         { $$ = {tag: 'NestedVariables', args: [$2, $4]}; }
     | "[" variable "]"
         { $$ = {tag: 'Variable', args: [$2]}; }
-    | constant
+    | "[" variable "(" NUMBER ")" "]" accessors
+        { $$ = {tag: 'NestedVariables', args: [$2, [$4]]}; }
+    | "[" variable "(" variable ")" "]" accessors
+        { $$ = {tag: 'NestedVariables', args: [$2, [$4]]}; }
+    | "[" variable "(" NUMBER ")" "]"
+        { $$ = {tag: 'NestedVariables', args: [$2, [$4]]}; }
+    | "[" variable "(" variable ")" "]"
+        { $$ = {tag: 'NestedVariables', args: [$2, [$4]]}; }
+	| constant
         { $$ = {tag: 'Literal', args: [$1]}; }
     | NUMBER
         { $$ = {tag: 'Literal', args: [Number(yytext)]}; }
