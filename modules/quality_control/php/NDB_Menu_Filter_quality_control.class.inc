@@ -127,16 +127,18 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 		$where = " WHERE f.CommentID NOT IN (SELECT CommentId FROM mri_parameter_form) OR f.CommentID IN (SELECT CommentID from mri_parameter_form mpf where (mpf.T1_Scan_done !='Complete' or mpf.T1_scan_done!= 'Partial'))";
 		
 		$this->query = $query.$where;
-		error_log($this->query);
 
-		$this->columns = array('UploadID', 'UploadedBy', 'UploadDate', 'f.SessionID' , 'CenterName', 't.PatientName', 'ArchiveLocation');
+		$this->columns = array('UploadedBy', 'UploadDate', 'f.SessionID' , 't.PatientName', 'ArchiveLocation');
 
 		$this->group_by = 't.PatientName, f.SessionID, UploadID, ArchiveLocation, t.CenterName';
 		//$this->order_by = '';
-		$this->headers = ['UploadID','Uploaded By', 'Upload Date', 'SessionID', 'Center Name', 'PatientName', 'Archive Location'];
+		$this->headers = ['Uploaded By', 'Upload Date', 'SessionID', 'PatientName', 'Archive Location', 'Message', 'Action', 'CommentID'];
 
 		$this->validFilters = array('CenterName');
 		$this->formToFilter = array('for_site' => 'CenterName');
+
+		$this->tpl_data['hiddenHeaders'] = json_encode(['CommentID']);
+
 
 		return true;
 

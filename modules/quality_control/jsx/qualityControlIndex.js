@@ -18,12 +18,16 @@ class QualityControlIndex extends React.Component {
   componentDidMount(){
     this.fetchData();
   }
+  getSelectedTabIndex() { 
+    return $("#tabList").tabs('option', 'selected');
+  }
+
   fetchData(){
     $.ajax(this.props.DataURL, {
       method:"GET",
       dataType: "json",
       success: function(data){
-        console.log(data);
+        //console.log(getSelectedTabIndex());
         this.setState({
           Data:data,
           isLoaded:true
@@ -32,6 +36,11 @@ class QualityControlIndex extends React.Component {
     });
   }
   
+  changeData(){
+    alert("clicked new tab");
+    connsole.log("clicked tab");
+  }
+
   updateFilter(filter) {
     this.setState({filter});
   }
@@ -57,11 +66,11 @@ class QualityControlIndex extends React.Component {
         {id: "imaging", label:"Imaging"}
     ];
 
-
-
     return (
       <div>
-      <FilterForm
+      <Tabs tabs={tabList} defaultTab={tabList[0].id} updateURL={true}>
+        <TabPane TabId={tabList[0].id}>
+          <FilterForm
             Module="quality_control"
             name="quality_control_behavioural"
             id="quality_control_behavioural_filter"
@@ -72,15 +81,24 @@ class QualityControlIndex extends React.Component {
             <br/>
             <ButtonElement type="reset" label="Clear Filters" />
        </FilterForm>
-      <Tabs tabs={tabList} defaultTab="behavioral" updateURL={true}>
-        <TabPane TabId={tabList[0].id}>
           <StaticDataTable
-            Data={this.state.Data.behaviouralData}
-            Headers={this.state.Data.behaviouralHeaders}
+            Data={this.state.Data.Data}
+            Headers={this.state.Data.Headers}
             Filter={this.state.filter}
           />
         </TabPane>
         <TabPane TabId={tabList[3].id}>
+        <FilterForm
+            Module="quality_control"
+            name="quality_control"
+            id="quality_control_filter"
+            columns={2}
+            formElements={this.state.Data.form}
+            onUpdate={this.updateFilter}
+            filter={this.state.filter}>
+            <br/>
+            <ButtonElement type="reset" label="Clear Filters" />
+       </FilterForm>
         <StaticDataTable
         Data={this.state.Data.Data}
         Headers={this.state.Data.Headers}
@@ -89,6 +107,12 @@ class QualityControlIndex extends React.Component {
         />
         </TabPane>
       </Tabs>
+      <script>
+      $('#{tabList[3].id}').click(function(){
+      console.log($("#tabList").tabs('option', 'active'))
+    });
+
+      </script>
       </div>
     );
   }
