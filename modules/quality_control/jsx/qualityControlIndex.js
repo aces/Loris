@@ -80,12 +80,11 @@ class QualityControlIndex extends React.Component {
             Filter={this.state.filter}
           />
         </TabPane>
-        <TabPane TabId={tabList[1].id}>
+        <TabPane TabId={tabList[3].id}>
         <StaticDataTable
-        Data={this.state.Data.imgData}
-        Headers={this.state.Data.imgHeaders}
+        Data={this.state.Data.Data}
+        Headers={this.state.Data.Headers}
         Filter={this.state.filter}
-        getFormattedCell={formatColumn}
         freezeColumn="PatientName"
         />
         </TabPane>
@@ -98,7 +97,7 @@ class QualityControlIndex extends React.Component {
 $(function() {
   const qualityControlIndex = (
     <div className="page-qualityControl">
-      <QualityControlIndex DataURL={`${loris.BaseURL}/quality_control/ajax/qualityControl.php`}/>
+      <QualityControlIndex DataURL={`${loris.BaseURL}/quality_control/?format=json`}/>
     </div>
   );
 

@@ -17,3 +17,4 @@ function getData(){
     $data = $db->pselect($query, array());
     return $data;
 }
+

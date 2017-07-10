@@ -191,7 +191,8 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
 
         $query   = $query . $where . $order_by;
         $results = $DB->pselect($query, $qparams);
-        return $results;
+        $this->results = $results;
+        return true;
     }
 
 
