@@ -165,7 +165,7 @@ var InstrumentConflictsRow = React.createClass({
           </td>
         <td>
           <a href="#" onClick={loris.loadFilteredMenuClickHandler(
-                'main.php?test_name=conflict_resolver',
+                 "conflict_resolver/",
                   {CandID: row.CandID,
                   Instrument: row.TableName,
                   Question: row.FieldName}
