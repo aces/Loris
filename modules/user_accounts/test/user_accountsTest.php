@@ -231,7 +231,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      * @return void
      */
     function _verifyUserModification($page, $userId, $fieldName, $newValue)
-   {
+    {
         $this->_accessUser($page, $userId);
         $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
         if ($field->getTagName() == 'input') {
@@ -241,12 +241,12 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $selectField = new WebDriverSelect($field);
             $selectField->selectByVisibleText($newValue);
         }
-        
+
         // if working on edit_user, select at least one site
         if (strpos($page, 'my_preferences') === false) {
-        $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
-        $sitesOption  = new WebDriverSelect($sitesElement);
-        $sitesOption->selectByValue("1");
+            $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
+            $sitesOption  = new WebDriverSelect($sitesElement);
+            $sitesOption->selectByValue("1");
         }
         $this->safeClick(WebDriverBy::Name('fire_away'));
 
