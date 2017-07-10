@@ -50,7 +50,9 @@ var FilterRule = React.createClass({
 				"lessThanEqual" : "<=",
 		    	"greaterThanEqual" : ">=",
 		    	"startsWith" : "startsWith",
-		    	"contains" : "contains"
+		    	"contains" : "contains",
+		    	"isNull" : "isNull",
+		    	"isNotNull" : "isNotNull"
 				// }
 			},
 			value: "",
@@ -97,6 +99,12 @@ var FilterRule = React.createClass({
 			rule.operator = event.target.value;
 		}
 		this.props.updateRule(this.props.index, rule);
+		if (rule.operator === "isNull" || rule.operator === "isNotNull") {
+			this.setState({
+				value: "null"
+			});
+			this.valueSet();
+		}
 	},
 	valueChange: function(event) {
 		var rule = JSON.parse(JSON.stringify(this.props.rule));
@@ -153,9 +161,11 @@ var FilterRule = React.createClass({
 		        };
 		    switch(rule.operator) {
 		    	case "equal":
+		    	case "isNull":
 		    		ajaxRetrieve("queryEqual.php");
 		    		break;
 		    	case "notEqual":
+		    	case "isNotNull":
 		    		ajaxRetrieve("queryNotEqual.php");
 		    		break;
 		    	case "lessThanEqual":
@@ -228,7 +238,10 @@ var FilterRule = React.createClass({
 						{operators}
 					</select>
 				);
-				if(this.props.rule.operator){
+				if (this.props.rule.operator &&
+					this.props.rule.operator !== "isNull" &&
+					this.props.rule.operator !== "isNotNull"
+				){
 					// Only display value input if operator is selected, displaying specific
 					// input type field data type
 					switch(operatorKey){

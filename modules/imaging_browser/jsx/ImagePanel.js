@@ -44,7 +44,7 @@ var ImagePanelHeader = React.createClass({
             );
     return (
 
-            <div className="panel-heading">
+            <div className="panel-heading clearfix">
             <input type="checkbox" data-file-id={this.props.FileID}
                      className="mripanel user-success" />
                 <h3 className="panel-title">{this.props.Filename} </h3>
@@ -173,6 +173,11 @@ var ImagePanelHeadersTable = React.createClass({
                         </th>
                         <td className="col-xs-2">
                             {this.props.HeaderInfo.SlicewiseRejected}
+                        </td>
+                        <th className="col-xs-2 info">
+                            Series Instance UID</th>
+                        <td className="col-xs-2" colSpan="2">
+                             {this.props.HeaderInfo.SeriesUID}
                         </td>
                         <td className="col-xs-4" colSpan="4">&nbsp;</td>
                     </tr>

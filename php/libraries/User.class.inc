@@ -411,5 +411,37 @@ class User extends UserPermissions
 
         $this->update($updateArray);
     }
+
+    /**
+     * Determines if the user has a center
+     *
+     * @param int $center_id The center id
+     *
+     * @return bool
+     */
+    public function hasCenter($center_id)
+    {
+        return in_array(
+            $center_id,
+            $this->getCenterIDs()
+        );
+    }
+    /**
+     * Determines if the user has a permission
+     * for a center
+     *
+     * @param string $code      The permission code
+     * @param int    $center_id The center id
+     *
+     * @return bool
+     */
+    public function hasCenterPermission($code, $center_id)
+    {
+        if ($this->hasPermission("superuser")) {
+            return true;
+        }
+        return $this->hasPermission($code)
+            && $this->hasCenter($center_id);
+    }
 }
 ?>
