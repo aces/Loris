@@ -232,10 +232,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function _verifyUserModification($page, $userId, $fieldName, $newValue)
    {
-            'user_accounts',
-            'UnitTester',
-            'Last_name',
-            'NewLast'
         $this->_accessUser($page, $userId);
         $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
         if ($field->getTagName() == 'input') {
