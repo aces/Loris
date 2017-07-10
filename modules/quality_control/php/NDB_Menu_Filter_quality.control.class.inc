@@ -10,7 +10,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
-
 /**
  * Behavioural QC Class
  *
@@ -26,7 +25,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 {
     public $hasWritePermission = false;
     public $AjaxModule         = true;
-
     /**
      * Check user permissions
      *
@@ -39,7 +37,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $user =& User::singleton();
         return $user->hasPermission('data_team_helper');
     }
-
     /**
      * Override default behaviour, since the page is loaded from qualityControlIndex.js
      *
@@ -50,7 +47,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     {
         return null;
     }
-
     /**
      * Create a form to filter behavioral QC by various criteria
      *
@@ -63,10 +59,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     {
         $user =& User::singleton();
         $db   = Database::singleton();
-
         $siteList  = array();
         $visitList = Utility::getVisitList();
-
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
             $siteList = Utility::getSiteList(false);
@@ -85,7 +79,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                 }
             }
         }
-
         $instrumentList   = [];
         $instrumentsQuery = $db->pselect(
             "SELECT Test_name, Full_name FROM test_names ORDER BY Test_name",
@@ -94,110 +87,40 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         foreach ($instrumentsQuery as $instrument) {
             $instrumentList[$instrument['Full_name']] = $instrument['Full_name'];
         }
-
         $projectList = Utility::getProjectList();
-
-
         // Form Elements
-
         $this->addSelect('visitLabels', 'Visit Label', $visitList);
         $this->addSelect('instruments', 'Instruments', $instrumentList);
         $this->addBasicText('DCCID', 'DCCID', ["size" => 9, "maxlength" => 7]);
         $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
         $this->addSelect('site', 'Site', $siteList);
         $this->addSelect('project', 'Project',$projectList);
-
+        // $this->tpl_data["hasWritePermission"] = $this->hasWritePermission;
         return true;
     }
-
-
     /**
      * Build a list of behavioural QC to display in Data Table
      *
      * @return bool
      * @throws DatabaseException
      */
-
-
     function _setupVariables()
     {
-        $user =& User::singleton();
+        $db =& Database::singleton();
+        $query=
+            " FROM mri_upload m LEFT JOIN tarchive t ON (t.TarchiveID = m.TarchiveID OR t.SessionID = m.SessionID) LEFT JOIN flag f ON (f.SessionID = t.SessionID AND f.CommentID not like 'DDE%')";
+        $where = " WHERE f.CommentID NOT IN (SELECT CommentId FROM mri_parameter_form) OR f.CommentID IN (SELECT CommentID from mri_parameter_form mpf where (mpf.T1_Scan_done !='Complete' or mpf.T1_scan_done!= 'Partial'))";
 
-        $config         =& NDB_Config::singleton();
-        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
-        for ($i=0; $i<count($ddeInstruments); ++$i) {
-            $ddeInstruments[$i] = Database::singleton()->quote($ddeInstruments[$i]);
-        }
-
-        $query = " FROM session s JOIN flag f ON (f.sessionid = s.id)".
-            " JOIN candidate c ON (c.candid = s.candid)".
-            " JOIN test_names t ON (t.Test_name = f.Test_name)".
-            " JOIN psc ON (s.CenterID = psc.CenterID)";
-
-        $where = " WHERE s.Active = 'Y' AND c.Active = 'Y'".
-            " AND coalesce(f.data_entry,'In Progress') = 'In Progress'".
-            " AND psc.Centerid!= '1' AND c.Entity_type != 'Scanner'";
-
-        if (count($ddeInstruments) > 0) {
-            $ddeInstruments = implode(",", $ddeInstruments);
-            $where         .= "
-                AND (f.test_name IN ($ddeInstruments) OR
-                f.commentid NOT LIKE 'DDE_%')
-            ";
-        } else {
-            $where .= "
-                AND (f.commentid NOT LIKE 'DDE_%')
-            ";
-        }
-
-        $this->columns = [
-            's.visit_label',
-            's.candid',
-            'c.PSCID',
-            't.Full_name',
-            's.ID',
-            'f.SessionID',
-            'f.data_entry',
-            'f.commentid',
-            'f.test_name'
-        ];
-
-        $query = $query . $where;
-
-        $this->query = $query;
-
-        /*if (!$user->hasPermission('access_all_profiles')) {
-            $site_arr     = implode(",", $user->getCenterIDs());
-            $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
-        }*/
-
-        $this->group_by = '';
-        $this->order_by = 'f.commentid';
-
-        $this->headers  = [
-            'Visit',
-            'DCCID',
-            'PSCID',
-            'Instrument',
-        ];
-
-        $this->validFilters = [
-            'c.PSCID',
-            't.Full_name',
-            's.Visit_label',
-            's.candid',
-        ];
-        $this->formToFilter = [
-            'pscid'       => 'c.PSCID',
-            'full_name'  => 't.Full_name',
-            'visit_label' => 's.Visit_label',
-            'candid'    => 's.candid',
-        ];
-
-
+        $this->query = $query.$where;
+        $this->columns = array('UploadedBy', 'UploadDate', 'f.SessionID' , 't.PatientName', 'ArchiveLocation');
+        $this->group_by = 't.PatientName, f.SessionID, UploadID, ArchiveLocation, t.CenterName';
+        //$this->order_by = '';
+        $this->headers = ['Uploaded By', 'Upload Date', 'SessionID', 'PatientName', 'Archive Location', 'Message', 'Action', 'CommentID'];
+        $this->validFilters = array('CenterName');
+        $this->formToFilter = array('for_site' => 'CenterName');
+        $this->tpl_data['hiddenHeaders'] = json_encode(['CommentID']);
         return true;
     }
-
     /**
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
@@ -208,10 +131,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     {
         $result         = $this->toArray();
         $result['form'] = $this->form->form;
-
         return json_encode($result);
     }
-
     /**
      * Include additional JS files
      *
@@ -225,9 +146,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/quality_control/js/qualityControlIndex.js",
+                $baseURL . "/quality_control/js/qualityControlIndex.js",
             )
         );
     }
 }
-
