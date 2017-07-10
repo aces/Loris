@@ -116,12 +116,12 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function testUserAccountEdits()
     {
-        $this->_verifyUserModification(
-            'user_accounts',
-            'UnitTester',
-            'First_name',
-            'NewFirst'
-        );
+//        $this->_verifyUserModification(
+//            'user_accounts',
+//            'UnitTester',
+//            'First_name',
+//            'NewFirst'
+//        );
         $this->_verifyUserModification(
             'user_accounts',
             'UnitTester',
