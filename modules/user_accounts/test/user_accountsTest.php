@@ -244,10 +244,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $text=$this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        var_dump($text);
-        printf($text);
-        
-        $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
+        $sitesElement = $this->safeFindElement(WebDriverBy::Xpath('//*[@id="lorisworkspace"]/form/div[17]/div/select'));
         $sitesOption  = new WebDriverSelect($sitesElement);
         $sitesOption->selectByValue("1");
         $this->safeClick(WebDriverBy::Name('fire_away'));
