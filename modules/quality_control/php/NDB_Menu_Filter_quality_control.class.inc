@@ -171,6 +171,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
         }*/
 
+        $this->group_by = '';
         $this->order_by = 'f.commentid';
 
         $this->headers  = [
@@ -179,6 +180,20 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             'PSCID',
             'Instrument',
         ];
+
+        $this->validFilters = [
+            'c.PSCID',
+            't.Full_name',
+            's.Visit_label',
+            's.candid',
+        ];
+        $this->formToFilter = [
+            'pscid'       => 'c.PSCID',
+            'full_name'  => 't.Full_name',
+            'visit_label' => 's.Visit_label',
+            'candid'    => 's.candid',
+        ];
+
 
         return true;
     }

@@ -79,8 +79,8 @@ class QualityControlIndex extends React.Component {
         <TabPane TabId={tabList[0].id}>
           <FilterForm
             Module="quality_control"
-            name="quality_control_behavioural"
-            id="quality_control_behavioural_filter"
+            name="quality_control"
+            id="quality_control"
             columns={2}
             formElements={this.state.Data.form}
             onUpdate={this.updateFilter}
