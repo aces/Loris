@@ -242,9 +242,8 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $selectField->selectByVisibleText($newValue);
         }
         
-        $conditon = $this->assertContains("my_preferences", $page);
         // if working on edit_user, select at least one site
-        if (!$condition) {
+        if (strpos($page, 'my_preferences') !== false) {
         $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
         $sitesOption  = new WebDriverSelect($sitesElement);
         $sitesOption->selectByValue("1");
