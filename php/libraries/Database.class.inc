@@ -877,7 +877,9 @@ class Database
             $userID = 'unknown';
         }
 
-        $prim_keys = join(",", $primaryKeys);
+        if (isset($primaryKeys)) {
+            $prim_keys = join(",", $primaryKeys);
+        }
         $this->_preparedStoreHistory->bindParam(":primaryKeys", $prim_keys);
         $this->_preparedStoreHistory->bindParam(":histtable", $table);
         $this->_preparedStoreHistory->bindParam(":userID", $userID);
@@ -892,12 +894,14 @@ class Database
                 $primaryValues = array();
 
                 $usePDOID = false;
-                foreach ($primaryKeys AS $key) {
-                    if (!isset($set[$key])) {
-                        $usePDOID = true;
-                        break;
+                if (isset($primaryKeys)) {
+                    foreach ($primaryKeys AS $key) {
+                        if (!isset($set[$key])) {
+                            $usePDOID = true;
+                            break;
+                        }
+                        $primaryValues[] = $set[$key];
                     }
-                    $primaryValues[] = $set[$key];
                 }
 
                 if ($usePDOID) {
