@@ -241,6 +241,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $selectField = new WebDriverSelect($field);
             $selectField->selectByVisibleText($newValue);
         }
+            printf($this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText());
         $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
         $sitesOption  = new WebDriverSelect($sitesElement);
         $sitesOption->selectByValue("1");
