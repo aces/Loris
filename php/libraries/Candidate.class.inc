@@ -22,8 +22,6 @@ define('PSCID_INVALID_STRUCTURE', 4);
 // id ranges...
 define('CANDIDATE_MIN_CANDID', 100000);
 define('CANDIDATE_MAX_CANDID', 999999);
-define('CANDIDATE_MIN_PSCID', 1000);
-define('CANDIDATE_MAX_PSCID', 9999);
 
 /**
  * Wrapper around a candidate in Loris. Mostly, it gets information
@@ -208,7 +206,7 @@ class Candidate
         if ($PSCIDSettings['generation'] == 'user') {
             // check pscid is specified
             if (empty($PSCID)) {
-                throw new Exception(
+                throw new LorisException(
                     "PSCID must be specified",
                     PSCID_NOT_SPECIFIED
                 );
@@ -228,10 +226,12 @@ class Candidate
                 array('PID' => $PSCID)
             ) > 0
             ) {
-                throw new Exception("PSCID not unique", PSCID_NOT_UNIQUE);
+                throw new LorisException("PSCID not unique", PSCID_NOT_UNIQUE);
             }
         } else {
-            $PSCID = Candidate::_generatePSCID($site->getSiteAlias());
+            $PSCID = Candidate::_generatePSCID(
+                array("siteAbbrev" => $site->getSiteAlias())
+            );
         }
 
         // insert the new candidate into the database
@@ -700,52 +700,95 @@ class Candidate
     }
 
     /**
-    * Generates a new PSCID in the format defined by the config file
+    * Generates a new id in the format defined by the settings
     *
-    * @param string $prefix The prefix to use for the PSCID
+    * @param string   $name                  The name to display on exception
+    * @param array    $settings              The xml settings
+    * @param array    $static_dict           Maps element names to static,
+    *                                        unchanging values
+    *                                        Example: array("siteAbbrev"=>"DCC")
+    * @param function $is_colliding_callback `bool ($needle)`
     *
-    * @return string Project candidate id in format defined by config.xml
+    * @return string The id
     */
-    static function _generatePSCID($prefix)
-    {
-        // get a database connection
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
-
-        $config = $factory->config();
-
-        $PSCIDSettings = $config->getSetting('PSCID');
-        $pscidArrays   = Candidate::generateArrays($PSCIDSettings, $prefix);
-
-        // run one first time, then loop until the pscid is not used
-        do {
-            // pick a new pscid
-            if ($PSCIDSettings['generation'] == 'sequential') {
-                if (!empty($pscid)) {
-                    $pscid++;
-                } else {
-                    $pscid = Candidate::generateFirstStringFromArrays($pscidArrays);
-                }
-            } else {
-                $pscid = Candidate::generateRandomStringFromArrays($pscidArrays);
-            }
-
-            if ($pscid == '') {
-                throw new LorisException(
-                    "Well this is embarrassing, our automated PSCID generator "
-                    . "is about to enter an infinite loop."
-                );
-            }
-
-            // check if the pscid is used
-        } while (
-            $db->pselectOne(
-                "SELECT count(PSCID) FROM candidate WHERE PSCID=:PID",
-                array('PID' => $pscid)
-            ) > 0
+    private static function _generateId(
+        $name,
+        $settings,
+        $static_dict,
+        $is_colliding_callback
+    ) {
+        $generator = Candidate::idGeneratorFromXMLConfig(
+            $settings,
+            $static_dict
         );
 
-        return $pscid;
+        $is_sequential = (
+            isset($settings["generation"])
+            && $settings["generation"] == "sequential"
+        );
+
+        $result = null;
+        if ($is_sequential === true) {
+            if ($generator->nextNonColliding($is_colliding_callback)) {
+                $result = $generator->cur();
+            }
+        } else {
+            do {
+                $generator->nextRand();
+                $result = $generator->cur();
+            } while (!is_null($result) && $is_colliding_callback($result));
+        }
+
+        if (is_null($result)) {
+            $attempts = $generator->getAttempts();
+            $seqCount = $generator->sequenceCount();
+            $error    = "Could not generate {$name} after {$attempts} attempts. "
+                . "All {$seqCount} possible {$name} have been generated. "
+                . "Please set {$name} generator definition "
+                . "to allow more {$name} to be generated. ";
+            if (!$is_sequential) {
+                $error .= "(expected number of candidates)^3 is recommended "
+                    . "for random generation.";
+            }
+            throw new LorisException($error);
+        }
+        return $result;
+    }
+    /**
+    * Generates a new PSCID in the format defined by the config file
+    *
+    * @param array $static_dict Maps element names to static, unchanging values
+    *                           Example: array("siteAbbrev"=>"DCC")
+    *
+    * @return string id in format defined by config.xml
+    */
+    static function _generatePSCID($static_dict)
+    {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+        $config  = $factory->config();
+
+        return self::_generateId(
+            "PSCID",
+            $config->getSetting("PSCID"),
+            $static_dict,
+            function ($needle) use ($db) {
+                $colliding = $db->pselectOne(
+                    "
+                        SELECT EXISTS (
+                            SELECT
+                                *
+                            FROM
+                                candidate
+                            WHERE
+                                PSCID = :needle
+                        )
+                    ",
+                    array("needle" => $needle)
+                );
+                return $colliding;
+            }
+        );
     }
 
     /**
@@ -757,38 +800,30 @@ class Candidate
     static function _generateExternalID()
     {
         $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
         $config  = $factory->config();
 
-        $ExternalIDSettings = $config->getSetting('ExternalID');
-        $ExternalIDArrays   = Candidate::generateArrays($ExternalIDSettings);
-
-        $db = $factory->database();
-
-        do {
-            // generate a new external ID
-            if ($ExternalIDSettings['generation'] == 'sequential') {
-                if (!empty($externalID)) {
-                    $externalID++;
-                } else {
-                    $externalID = Candidate::generateFirstStringFromArrays(
-                        $ExternalIDArrays
-                    );
-                }
-            } else {
-                $externalID = Candidate::generateRandomStringFromArrays(
-                    $ExternalIDArrays
+        return self::_generateId(
+            "ExternalID",
+            $config->getSetting("ExternalID"),
+            null,
+            function ($needle) use ($db) {
+                $colliding = $db->pselectOne(
+                    "
+                        SELECT EXISTS (
+                            SELECT
+                                *
+                            FROM
+                                candidate
+                            WHERE
+                                ExternalID = :needle
+                        )
+                    ",
+                    array("needle" => $needle)
                 );
+                return $colliding;
             }
-
-            // check if the external ID is used
-        } while (
-            $db->pselectOne(
-                "SELECT count(ExternalID) FROM candidate WHERE ExternalID=:EID",
-                array('EID' => $externalID)
-            )  > 0
         );
-
-        return $externalID;
     }
 
     /**
@@ -817,60 +852,18 @@ class Candidate
 
 
     /**
-     * Helper function used to generate PSCID. This generates a random
-     * number if generation is not "sequential"
-     *
-     * @param array $arrays Array specifying format of random
-     *                      string to be generated
-     *
-     * @return string A random string matching format from arrays
-     */
-    static function generateRandomStringFromArrays($arrays)
-    {
-        $string = "";
-        foreach ($arrays AS $array) {
-            if (is_array($array)) {
-                $string .= $array[array_rand($array)];
-            } else {
-                $string .= $array;
-            }
-        }
-        return $string;
-    }
-
-    /**
-     * Helper function used to generate PSCID. Generate the string for the first
-     * numeric part of the PSCID if generation type is "sequential" and pads with
-     * an appropriate numbers.
-     *
-     * @param array $arrays An array config file specifying format of number
-     *
-     * @return string The first string to be used for the PSCID
-     */
-    static function generateFirstStringFromArrays($arrays)
-    {
-        $string = "";
-        foreach ($arrays AS $array) {
-            $string .= array_shift($array);
-        }
-        return $string;
-    }
-
-    /**
      * Helper function used for generating PSCID.
      * This parses the PSCID format in the config file into a format that
      * can be converted into a regex for validation.
      *
-     * @param array  $idStructure The structure defined in the config file in the
+     * @param array $idStructure The structure defined in the config file in the
      *                            array format returned by NDB_Config.
-     * @param string $siteAbbrev  The candidate being validate's site abbreviation,
-     *                            so that it can be inserted into relevant "site"
-     *                            parts of the regex generated.
+     * @param array $static_dict Maps element names to static, unchanging values
+     *                           Example: array("siteAbbrev"=>"DCC")
      *
-     * @return array An array of regular expressions defining each section of
-     *               the PSCID as defined in config.xml
+     * @return IdGenerator
      */
-    static function generateArrays($idStructure, $siteAbbrev=null)
+    static function idGeneratorFromXMLConfig($idStructure, $static_dict)
     {
         $idStructure = $idStructure['structure']['seq'];
 
@@ -882,51 +875,7 @@ class Candidate
             $idStructure = $temp;
         }
 
-        $arrays = array();
-        foreach ($idStructure AS $seq) {
-            if (isset($seq['@']['length'])) {
-                $length = $seq['@']['length'];
-            } elseif (isset($seq['@']['minLength'])) {
-                $length = $seq['@']['minLength'];
-            } else {
-                $length = 1;
-            }
-
-            for ($i=0; $i<$length; $i++) {
-                switch($seq['@']['type']) {
-                case 'alpha':
-                    $arrays[] = range('a', 'z');
-                    break;
-
-                case 'alphanumeric':
-                    $arrays[] = array_merge(range(0, 9), range('a', 'z'));
-                    break;
-
-                case 'numeric':
-                    $arrays[] = range(0, 9);
-                    break;
-
-                case 'static':
-                    $arrays[] = array($seq['#']);
-                    break;
-
-                case 'set':
-                    if (strpos($seq['#'], '|') !== false) {
-                        $arrays[] = explode('|', $seq['#']);
-                    } else {
-                        $arrays[] = str_split($seq['#']);
-                    }
-                    break;
-
-                case 'siteAbbrev':
-                    $arrays[] = array($siteAbbrev);
-                    break;
-                }
-            }
-        }
-
-        return $arrays;
+        return IdGenerator::fromXMLConfig($idStructure, $static_dict);
     }
-
 }
 ?>
