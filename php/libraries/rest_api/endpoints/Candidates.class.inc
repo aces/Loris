@@ -32,7 +32,32 @@ class Candidates extends Endpoint
      */
     public function getAllowedMethods()
     {
+// TODO :: This should go in the Endpoint bstract class
         return join(',',$this->_allowedMethods);
+    }
+
+    public function getEndpointInstance(array $request = null)
+    {
+        $final_endpoint = null;
+
+        if (empty($request)) {
+            $final_endpoint = $this;
+
+        } else {
+            $endpoint_name = array_shift($request);
+            $endpoint_id   = array_shift($request);
+
+// TODO :: This can be generalized and put in the abstract class 
+            $class_name = '\LORIS\RestAPI\Candidates\\' . $endpoint_name;
+            if (!class_exists($class_name)) {
+                throw new RestApiException("No Endpoint: $endpoint_name", 404);
+            }
+
+            $endpoint = new $class_name($endpoint_id, $this->_candidate->getCandID());
+            $final_endpoint = $endpoint->getEndpointInstance($request);
+        }
+ 
+        return $final_endpoint;
     }
 
     /**
@@ -59,26 +84,4 @@ class Candidates extends Endpoint
         return array($data, 200);
     }
 
-    public function getEndpointInstance(array $request = null)
-    {
-        $final_endpoint = null;
-
-        if (empty($request)) {
-            $final_endpoint = $this;
-
-        } else {
-            $endpoint_name = array_shift($request);
-            $endpoint_id   = array_shift($request);
-
-            $class_name = '\LORIS\RestAPI\Candidates\\' . $endpoint_name;
-            if (!class_exists($class_name)) {
-                throw new RestApiException("No Endpoint: $endpoint_name", 404);
-            }
-
-            $endpoint = new $class_name($endpoint_id, $this->_candidate->getCandID());
-            $final_endpoint = $endpoint->getEndpointInstance($request);
-        }
- 
-        return $final_endpoint;
-    }
 }

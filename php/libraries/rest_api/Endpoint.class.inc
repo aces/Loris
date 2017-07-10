@@ -1,5 +1,30 @@
 <?php
+/**
+ * This file contains the Endpoint astract class
+ *
+ * PHP Version 7
+ *
+ * @category API
+ * @package  LORIS RestAPI
+ * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
+
 namespace LORIS\RestAPI;
+
+/**
+ * The Endpoint abstract class provide default behaviour of
+ * the expected functions of subclasse.
+ *
+ * PHP Version 7
+ *
+ * @category API
+ * @package  LORIS RestAPI
+ * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
 
 abstract class Endpoint
 {
@@ -76,7 +101,7 @@ abstract class Endpoint
      * @throws RestApiException
      * @return array The response body and a status code.
      */
-    public function handleDELETE(array &$input, &$ctx = NULL)
+    final public function handleDELETE(array &$input, &$ctx = NULL)
     {
         $this->_methodNotAllowed();
     }

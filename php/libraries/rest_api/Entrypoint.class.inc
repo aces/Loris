@@ -4,12 +4,11 @@
  *
  * It is inspired from http://coreymaynard.com/blog/creating-a-restful-api-with-php/
  * And also from Dave MacFarlane previous work on LORIS RestAPI v0.0.{1|2}
-e
  *
  * PHP Version 7
  *
- * @category Main
- * @package  Loris
+ * @category API
+ * @package  LORIS RestAPI
  * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
@@ -23,7 +22,7 @@ namespace LORIS\RestAPI;
  * PHP Version 7
  *
  * @category API
- * @package  Loris
+ * @package  LORIS RestAPI
  * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
@@ -37,7 +36,7 @@ class Entrypoint
 
     /**
      * Any additional URI components after the endpoint and verb have been removed, in our
-     * case, an integer ID for the resource. eg: /<endpoint>/<verb>/<arg0>/<arg1>
+     * case, an integer ID for the resource. eg: /<endpoint_1>/<id_1>/<endpoint_2>/<id_2>
      * or /<endpoint>/<arg0>
      */
     private $_args = Array();
@@ -168,7 +167,7 @@ class Entrypoint
     }
 
     public static function _response(array $data, int $status = 200) {
-        $response_body = array('d' => $data);
+        $response_body = array('response' => $data);
 
         switch ($status) {
             case 100: $text = 'Continue'; break;
