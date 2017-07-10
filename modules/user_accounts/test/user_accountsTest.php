@@ -116,12 +116,12 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function testUserAccountEdits()
     {
-//        $this->_verifyUserModification(
-//            'user_accounts',
-//            'UnitTester',
-//            'First_name',
-//            'NewFirst'
-//        );
+        $this->_verifyUserModification(
+            'user_accounts',
+            'UnitTester',
+            'First_name',
+            'NewFirst'
+        );
         $this->_verifyUserModification(
             'user_accounts',
             'UnitTester',
@@ -241,12 +241,14 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $selectField = new WebDriverSelect($field);
             $selectField->selectByVisibleText($newValue);
         }
-        $text=$this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $sitesElement = $this->safeFindElement(WebDriverBy::Xpath('//*[@id="lorisworkspace"]/form/div[17]/div/select'));
+        
+        $conditon = $this->assertContains("my_preferences", $page);
+        // if working on edit_user, select at least one site
+        if (!$condition) {
+        $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
         $sitesOption  = new WebDriverSelect($sitesElement);
         $sitesOption->selectByValue("1");
+        }
         $this->safeClick(WebDriverBy::Name('fire_away'));
 
         $this->_accessUser($page, $userId);
