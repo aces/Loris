@@ -101,7 +101,7 @@ abstract class Endpoint
      * @throws RestApiException
      * @return array The response body and a status code.
      */
-    final public function handleDELETE(array &$input, &$ctx = NULL)
+    public function handleDELETE(array &$input, &$ctx = NULL)
     {
         $this->_methodNotAllowed();
     }
