@@ -11,7 +11,7 @@ class Visits extends Endpoint
 {
     private $_candid;
     private $_visit;
-    private $_allowedMethods = array('GET','POST', 'PUT', 'DELETE');
+    private $_allowedMethods = array('GET','POST', 'PUT');
 
     public function __construct(string $visit_label = null, $candid)
     {

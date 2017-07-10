@@ -6,7 +6,7 @@ use \LORIS\Core\LORIS_DAO_Factory;
 class Candidates extends Endpoint
 {
     private $_candidate;
-    private $_allowedMethods = array('GET','POST', 'PUT', 'DELETE');
+    private $_allowedMethods = array('GET','POST', 'PUT');
 
     public function __construct(string $candid = null)
     {
