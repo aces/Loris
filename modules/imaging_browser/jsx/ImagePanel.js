@@ -61,6 +61,11 @@ var ImagePanelHeadersTable = React.createClass({
   componentDidMount: function() {
     $(ReactDOM.findDOMNode(this)).DynamicTable();
   },
+  componentWillUnmount: function() {
+    // Use DynamicTable's unwrap function so component remains accounted for
+    // in React's virtual DOM
+    $().unwrapTable(ReactDOM.findDOMNode(this));
+  },
   render: function() {
     return (
             <table className=

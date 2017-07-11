@@ -164,7 +164,7 @@
       '<span class="glyphicon glyphicon-chevron-right"></span></a>'
     );
   };
-  var unwrapTable = function(table) {
+  $.fn.unwrapTable = function(table) {
     // Delete links for carousel
     $(table).nextAll().remove();
     // Remove wrapper necessary for dynamictable code
