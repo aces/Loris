@@ -1,4 +1,5 @@
 import InstrumentForm from '../../../jsx/InstrumentForm';
+import { Evaluator } from '../../../jsx/lib/Parser';
 
 const INPUT_ELEMENT_TYPES = ['radio', 'text', 'calc', 'checkbox'];
 
@@ -60,8 +61,25 @@ class InstrumentPreview extends React.Component {
   }
 
   updateInstrumentData(fieldName, value) {
-    const newInstrumentData = Object.assign({}, this.state.data[this.state.selectedInstrument], {[fieldName]: value});
-    const newData = Object.assign({}, this.state.data, {[this.state.selectedInstrument]: newInstrumentData});
+    const castedValue = Number(value) || value;
+    const instrumentData = Object.assign({}, this.state.data[this.state.selectedInstrument], {[fieldName]: castedValue});
+
+    const calcElements = this.props.instruments[this.state.selectedInstrument].Elements.filter(
+      (element) => (element.Type === 'calc')
+    );
+
+    const evaluatorContext = Object.assign({}, this.state.context, instrumentData);
+    const calculatedValues = calcElements.reduce((result, element) => {
+      result[element.Name] = Evaluator(element.Formula, evaluatorContext);
+      return result;
+    }, {});
+
+    const newData = Object.assign(
+      {},
+      this.state.data,
+      {[this.state.selectedInstrument]: Object.assign({}, instrumentData, calculatedValues)}
+    );
+
     this.setState({
       data: newData
     });

@@ -4,6 +4,7 @@ import { Evaluator } from './lib/Parser';
 const { SelectElement, RadioGroupLabels, RadioGroupElement, CheckboxGroupElement, TextboxElement } = Form;
 
 const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave}) => {
+  const contextWithData = Object.assign({}, data, context);
   return (
     <div>
       {renderMeta(instrument.Meta)}
@@ -12,7 +13,7 @@ const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave}) 
           if (options.surveyMode && element.HiddenSurvey) return false;
           if (!element.DisplayIf) return true;
           try {
-            return Evaluator(element.DisplayIf, Object.assign({}, data, context));
+            return Evaluator(element.DisplayIf, contextWithData);
           }  catch(e) {
             console.error(`Error evaluating DisplayIf property of element ${index} in instrument ${instrument.Meta.ShortName}.`);
             console.log(element.DisplayIf);
@@ -20,7 +21,7 @@ const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave}) 
             return false;
           }
         }).map((element, index) => (
-          renderElement(element, index, data, onUpdate, context)
+          renderElement(element, index, data, onUpdate)
         ))
       }
     </div>
@@ -37,7 +38,7 @@ function renderMeta(meta) {
 
 }
 
-function renderElement(element, key, data, onUpdate, context = {}) {
+function renderElement(element, key, data, onUpdate) {
   if (element.Type === 'label') {
     return renderLabel(element, key)
   } else if (element.Type === 'radio-labels') {
@@ -51,7 +52,7 @@ function renderElement(element, key, data, onUpdate, context = {}) {
   } else if (element.Type === 'text') {
     return renderText(element, data[element.Name], key, onUpdate)
   } else if (element.Type === 'calc') {
-    return renderCalc(element, data[element.Name], key, onUpdate, context)
+    return renderCalc(element, data[element.Name], key, onUpdate)
   }
 }
 
@@ -75,7 +76,7 @@ function renderRadio(radioEl, value, key, onUpdate) {
       options={radioEl.Options.Values}
       orientation={radioEl.Options.Orientation}
       onUserInput={onUpdate}
-      value={value}
+      value={value ? String(value) : value}
     />
   );
 }
@@ -117,18 +118,19 @@ function renderText(textEl, value, key, onUpdate) {
       name={textEl.Name}
       label={textEl.Description}
       onUserInput={onUpdate}
-      value={value}
+      value={value ? String(value) : value}
     />
   );
 }
 
-function renderCalc(calcEl, value, key, onUpdate, context) {
-    return {
-      <TextboxElement
-        key={key}
-        name={calcEl.Name}
-        label={calcEl.Description}
-        value={Evaluator(calcEl.Formula, context)}
-      />
+function renderCalc(calcEl, value, key, onUpdate) {
+  return (
+    <TextboxElement
+      key={key}
+      name={calcEl.Name}
+      label={calcEl.Description}
+      value={value ? String(value) : value}
+    />
+  );
 }
 export default InstrumentForm;
