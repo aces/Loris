@@ -20,7 +20,7 @@ const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave}) 
             return false;
           }
         }).map((element, index) => (
-          renderElement(element, index, data, onUpdate)
+          renderElement(element, index, data, onUpdate, context)
         ))
       }
     </div>
