@@ -6,7 +6,7 @@
  *
  * @category Main
  * @package  API
- * @author   Mouna Safi-Harab <mouna.safi-harb@mcgill.ca>
+ * @author   Mouna Safi-Harab <mouna.safiharab@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
@@ -19,7 +19,7 @@ require_once __DIR__ . '/../../Visit.php';
  *
  * @category Main
  * @package  API
- * @author   Mouna Safi-Harab <mouna.safi-harb@mcgill.ca>
+ * @author   Mouna Safi-Harab <mouna.safiharab@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
