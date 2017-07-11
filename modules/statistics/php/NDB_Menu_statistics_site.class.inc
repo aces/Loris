@@ -34,10 +34,10 @@ class NDB_Menu_Statistics_Site extends NDB_Menu
      *
      * @return bool
      */
-    function _hasAccess()
+    function _hasAccess($centerID)
     {
         $user =& User::singleton();
-        return $user->hasPermission('data_entry');
+        return $user->hasCenterPermission('data_entry', $centerID);
     }
 
     /**
