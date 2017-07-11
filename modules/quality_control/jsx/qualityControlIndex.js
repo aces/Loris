@@ -35,8 +35,8 @@ class QualityControlIndex extends React.Component {
                     console.log("ajax call");
 
                     this.setState({
-                        ImgData:data,
-                        isLoadedImg:true
+                        ImgData: data,
+                        isLoadedImg: true
                     });
                 }.bind(this),
             });
@@ -49,8 +49,8 @@ class QualityControlIndex extends React.Component {
                     console.log("ajax call");
 
                     this.setState({
-                        BehavioralData:data,
-                        isLoadedBehavioral:true
+                        BehavioralData: data,
+                        isLoadedBehavioral: true
                     });
                 }.bind(this),
             });

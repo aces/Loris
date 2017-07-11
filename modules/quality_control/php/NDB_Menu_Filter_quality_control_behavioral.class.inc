@@ -153,8 +153,16 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
             'PSCID',
             'Instrument',
         ];
-        $this->validFilters = array('CenterName');
-        $this->formToFilter = array('for_site' => 'CenterName');
+        $this->validFilters = [
+            's.visit_label',
+            's.candid',
+            's.pscid',
+            't.Full_name'];
+        $this->formToFilter = [
+            'visit_label' => 's.visit_label',
+            'dccid' => 's.candid',
+            'pscid' => 's.pscid',
+            'full_instrument_name' => 't.Full_name'];
         return true;
     }
     /**
