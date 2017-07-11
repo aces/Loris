@@ -232,7 +232,7 @@
       unwrapTable(this);
       return this;
     }
-    this.filter("table").each(function () {
+    this.filter("table").each(function() {
       var leftLink;
       var rightLink;
       var table = this;
@@ -255,13 +255,13 @@
       setupScrolling(this.parentElement, rightLink, leftLink);
       checkOverflow(this.parentElement, rightLink, leftLink);
 
-      window.addEventListener("resize", function () {
+      window.addEventListener("resize", function() {
         var headers = $($(table).parent().find("table")[1]).parent();
         checkOverflow(table.parentElement, rightLink, leftLink);
         headerAlign(table, headers);
       });
 
-      window.addEventListener("scroll", function () {
+      window.addEventListener("scroll", function() {
         var thead = $(table).find("thead");
         var eTop = $(thead).offset().top - $(window).scrollTop();  // gets the position from the top
         var headers = $($(table).parent().find("table")[1]).parent();
@@ -293,7 +293,7 @@
       if (options && options.freezeColumn) {
         column = $("#" + options.freezeColumn);
         columnNumber = $(column).parent().children().index($(column));
-        $(this).find("tr").each(function (key, value) {
+        $(this).find("tr").each(function(key, value) {
           if (key === 0) {
             var child2 = $(value).children().get(columnNumber + 1);
             $(child2).addClass(id + 'Next');
@@ -302,7 +302,7 @@
           // height = $(child1).next().outerHeight();
           $(child1).addClass(id + "FrozenColumn");
         });
-        $(this).parent().scroll(function () {
+        $(this).parent().scroll(function() {
           colmStatic = freezeColm(id, colmStatic);
         });
       }

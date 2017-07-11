@@ -64,7 +64,7 @@ var ImagePanelHeadersTable = React.createClass({
   componentWillUnmount: function() {
     // Remove wrapper nodes so React is able to remove component
     $(ReactDOM.findDOMNode(this)).DynamicTable({
-        removeDynamicTable: true
+      removeDynamicTable: true
     });
   },
   render: function() {
