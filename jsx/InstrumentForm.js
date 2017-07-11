@@ -37,7 +37,7 @@ function renderMeta(meta) {
 
 }
 
-function renderElement(element, key, data, onUpdate) {
+function renderElement(element, key, data, onUpdate, context = array()) {
   if (element.Type === 'label') {
     return renderLabel(element, key)
   } else if (element.Type === 'radio-labels') {
@@ -50,6 +50,8 @@ function renderElement(element, key, data, onUpdate) {
     return renderCheckbox(element, data[element.Name], key, onUpdate)
   } else if (element.Type === 'text') {
     return renderText(element, data[element.Name], key, onUpdate)
+  } else if (element.Type === 'calc') {
+    return renderCalc(element, data[element.Name], key, onUpdate, context)
   }
 }
 
@@ -118,5 +120,15 @@ function renderText(textEl, value, key, onUpdate) {
       value={value}
     />
   );
+}
+
+function renderCalc(calcEl, value, key, onUpdate, context) {
+    return {
+      <TextboxElement
+        key={key}
+        name={calcEl.Name}
+        label={calcEl.Description}
+        value={Evaluator(calcEl.Formula, context)}
+      />
 }
 export default InstrumentForm;
