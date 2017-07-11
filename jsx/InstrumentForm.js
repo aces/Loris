@@ -37,7 +37,7 @@ function renderMeta(meta) {
 
 }
 
-function renderElement(element, key, data, onUpdate, context = array()) {
+function renderElement(element, key, data, onUpdate, context = {}) {
   if (element.Type === 'label') {
     return renderLabel(element, key)
   } else if (element.Type === 'radio-labels') {
