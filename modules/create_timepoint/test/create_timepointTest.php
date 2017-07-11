@@ -91,9 +91,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepointSuccessLink()
     {
-        $this->markTestSkipped(
-            'Skipping tests until create timepoint works well'
-        );
         $this->_createTimepoint('900000', 'Experimental', 'V9');
         $this->safeClick(WebDriverBy::LinkText("Click here to continue."));
         $bodyText = $this->webDriver->findElement(
