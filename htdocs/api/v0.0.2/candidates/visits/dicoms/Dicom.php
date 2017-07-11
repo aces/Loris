@@ -1,32 +1,32 @@
 <?php
 /**
- * Handles API requests for the candidate's visit
+ * Handles API requests for the candidate's visit dicom tar file
  *
  * PHP Version 5.5+
  *
  * @category Main
  * @package  API
- * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @author   Mouna Safi-Harab <mouna.safi-harb@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
 namespace Loris\API\Candidates\Candidate\Visit\Dicoms;
 require_once __DIR__ . '/../../Visit.php';
 /**
- * Handles API requests for the candidate's visit. Extends
- * Candidate so that the constructor will validate the candidate
- * portion of URL automatically.
+ * Handles API requests for the candidate's visit dicom tar file. Extends
+ * Visit so that the constructor will validate the candidate
+ * and visit_label portion of URL automatically.
  *
  * @category Main
  * @package  API
- * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @author   Mouna Safi-Harab <mouna.safi-harb@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
 class Dicom extends \Loris\API\Candidates\Candidate\Visit
 {
     /**
-     * Construct a visit class object to serialize candidate visits
+     * Construct a Dicom class object to output the candidate visits dicom tar file
      *
      * @param string $method     The method of the HTTP request
      * @param string $CandID     The CandID to be serialized
@@ -41,18 +41,12 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
         $this->AutoHandleRequestDelegation = false;
 
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = [
-                                     'GET',
-                                     'PUT',
-                                    ];
+            $this->AllowedMethods = ['GET'];
         }
         $this->CandID     = $CandID;
         $this->VisitLabel = $VisitLabel;
         $this->Tarname    = $Tarname;
 
-        //   $this->Timepoint = \Timepoint::singleton($timepointID);
-        // Parent constructor will handle validation of
-        // CandID
         parent::__construct($method, $CandID, $VisitLabel);
 
         $results =  $this->getFullPath();
@@ -71,7 +65,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     /**
      * Handles a GET request
      *
-     * @return none, but populates $this->JSON
+     * @return none, but send the file content to stdout
      */
     public function handleGET()
     {
@@ -104,7 +98,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     }
 
     /**
-     * Gets the root of the assembly directory, so that we know where
+     * Gets the root of the itarchive directory, so that we know where
      * to retrieve images relative to.
      *
      * @return string
@@ -122,9 +116,9 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
      * @return string
      */
     protected function getTarFile()
-    {  
-       $factory = \NDB_Factory::singleton();
-        $db      = $factory->Database();
+    {
+        $factory      = \NDB_Factory::singleton();
+        $db           = $factory->Database();
         $partial_path = $db->pselectRow(
             "SELECT ArchiveLocation
                 FROM tarchive t
@@ -139,7 +133,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
              'Tname' => $this->Tarname,
             )
         );
-    return $partial_path['ArchiveLocation'];
+        return $partial_path['ArchiveLocation'];
     }
 }
 
