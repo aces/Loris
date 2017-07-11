@@ -98,7 +98,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     }
 
     /**
-     * Gets the root of the itarchive directory, so that we know where
+     * Gets the root of the tarchive directory, so that we know where
      * to retrieve images relative to.
      *
      * @return string
