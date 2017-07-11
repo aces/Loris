@@ -230,85 +230,85 @@
   $.fn.DynamicTable = function(options) {
     if (options && options.removeDynamicTable) {
       unwrapTable(this);
-    } else {
-      this.filter("table").each(function () {
-        var leftLink;
-        var rightLink;
-        var table = this;
-        var id = $(table).attr('id');
-        var colmStatic = false;
-        var column;
-        var columnNumber;
-        var child1;
-
-        // check if table is already scollable, if so delete scroll components
-        if ($(this).parent(".dynamicContentWrapper").length === 1) {
-          unwrapTable(this);
-        }
-        // set up table for scrollable side bars
-        wrapTable(this);
-        // Get references to links to pass to Setup and checkOverflow
-        leftLink = this.nextSibling;
-        rightLink = leftLink.nextSibling;
-
-        setupScrolling(this.parentElement, rightLink, leftLink);
-        checkOverflow(this.parentElement, rightLink, leftLink);
-
-        window.addEventListener("resize", function () {
-          var headers = $($(table).parent().find("table")[1]).parent();
-          checkOverflow(table.parentElement, rightLink, leftLink);
-          headerAlign(table, headers);
-        });
-
-        window.addEventListener("scroll", function () {
-          var thead = $(table).find("thead");
-          var eTop = $(thead).offset().top - $(window).scrollTop();  // gets the position from the top
-          var headers = $($(table).parent().find("table")[1]).parent();
-          var height = $(table).height() - $(headers).height();
-          if (eTop <= 50 && height + eTop >= 50) {
-            // near LORIS header
-            var top = 0;
-            if (eTop < 0) {
-              top = Math.abs(eTop) + 50;
-            } else {
-              top = 50 - eTop;
-            }
-            $(headers).css({top: top});
-            $(".headerColm").css({top: top});
-            $(headers).show();
-            headerAlign(table, headers);
-            if ($(table).find(".static-col").length !== 0 &&
-              $(table).parent().find(".headerColm").length === 0
-            ) {
-              addFrozenHeaderColm(headers);
-            }
-          } else {
-            $(headers).hide();
-            $(headers).find(".dynamictableFrozenColumn").css({padding: '8px'});
-            $(".headerColm").remove();
-          }
-        });
-
-        if (options && options.freezeColumn) {
-          column = $("#" + options.freezeColumn);
-          columnNumber = $(column).parent().children().index($(column));
-          $(this).find("tr").each(function (key, value) {
-            if (key === 0) {
-              var child2 = $(value).children().get(columnNumber + 1);
-              $(child2).addClass(id + 'Next');
-            }
-            child1 = $(value).children().get(columnNumber);
-            // height = $(child1).next().outerHeight();
-            $(child1).addClass(id + "FrozenColumn");
-          });
-          $(this).parent().scroll(function () {
-            colmStatic = freezeColm(id, colmStatic);
-          });
-        }
-
-        return this;
-      });
+      return this;
     }
+    this.filter("table").each(function () {
+      var leftLink;
+      var rightLink;
+      var table = this;
+      var id = $(table).attr('id');
+      var colmStatic = false;
+      var column;
+      var columnNumber;
+      var child1;
+
+      // check if table is already scollable, if so delete scroll components
+      if ($(this).parent(".dynamicContentWrapper").length === 1) {
+        unwrapTable(this);
+      }
+      // set up table for scrollable side bars
+      wrapTable(this);
+      // Get references to links to pass to Setup and checkOverflow
+      leftLink = this.nextSibling;
+      rightLink = leftLink.nextSibling;
+
+      setupScrolling(this.parentElement, rightLink, leftLink);
+      checkOverflow(this.parentElement, rightLink, leftLink);
+
+      window.addEventListener("resize", function () {
+        var headers = $($(table).parent().find("table")[1]).parent();
+        checkOverflow(table.parentElement, rightLink, leftLink);
+        headerAlign(table, headers);
+      });
+
+      window.addEventListener("scroll", function () {
+        var thead = $(table).find("thead");
+        var eTop = $(thead).offset().top - $(window).scrollTop();  // gets the position from the top
+        var headers = $($(table).parent().find("table")[1]).parent();
+        var height = $(table).height() - $(headers).height();
+        if (eTop <= 50 && height + eTop >= 50) {
+          // near LORIS header
+          var top = 0;
+          if (eTop < 0) {
+            top = Math.abs(eTop) + 50;
+          } else {
+            top = 50 - eTop;
+          }
+          $(headers).css({top: top});
+          $(".headerColm").css({top: top});
+          $(headers).show();
+          headerAlign(table, headers);
+          if ($(table).find(".static-col").length !== 0 &&
+            $(table).parent().find(".headerColm").length === 0
+          ) {
+            addFrozenHeaderColm(headers);
+          }
+        } else {
+          $(headers).hide();
+          $(headers).find(".dynamictableFrozenColumn").css({padding: '8px'});
+          $(".headerColm").remove();
+        }
+      });
+
+      if (options && options.freezeColumn) {
+        column = $("#" + options.freezeColumn);
+        columnNumber = $(column).parent().children().index($(column));
+        $(this).find("tr").each(function (key, value) {
+          if (key === 0) {
+            var child2 = $(value).children().get(columnNumber + 1);
+            $(child2).addClass(id + 'Next');
+          }
+          child1 = $(value).children().get(columnNumber);
+          // height = $(child1).next().outerHeight();
+          $(child1).addClass(id + "FrozenColumn");
+        });
+        $(this).parent().scroll(function () {
+          colmStatic = freezeColm(id, colmStatic);
+        });
+      }
+
+      return this;
+    });
     return this;
   };
 })(jQuery);
