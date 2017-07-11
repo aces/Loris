@@ -292,7 +292,7 @@ class LorisForm
     }
 
     /**
-     * Adds a checkobox to the current form.
+     * Adds a checkbox to the current form.
      *
      * @param string $name    The element name.
      * @param string $label   The label to attach to this element.
@@ -306,6 +306,29 @@ class LorisForm
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'advcheckbox';
+        return $el;
+    }
+
+    /**
+     * Adds a radio button to the current form.
+     *
+     * @param string $name    The element name.
+     * @param string $label   The label to attach to this element.
+     * @param array  $options An array of options that should
+     *                        get added.
+     * @param array  $attribs An array of attributes that should
+     *                        get added. "value" should be set to compare
+     *                        the value stored in the database to
+     *                        the individual radio button representing
+     *                        that value.
+     *
+     * @return &array
+     */
+    function &addRadio($name, $label, $options, $attribs)
+    {
+        $el            =& $this->addBase($name, $label, $attribs);
+        $el['type']    = 'radio';
+        $el['options'] = $options;
         return $el;
     }
 
@@ -435,6 +458,9 @@ class LorisForm
             } else {
                 $el = $this->addCheckbox($name, $label, $options);
             }
+            break;
+        case 'radio':
+            $el = $this->addRadio($name, $label, $options, $attribs);
             break;
         case 'hidden':
             $el = $this->addHidden($name, $label, $options);
@@ -1458,6 +1484,8 @@ class LorisForm
             return $this->textHTML($el);
         case 'advcheckbox':
             return $this->checkboxHTML($el);
+        case 'radio':
+            return $this->radioHTML($el);
         case 'group':
             return $this->groupHTML($el);
         case 'header':
@@ -1558,6 +1586,35 @@ class LorisForm
             . "<input name=\"$el[name]\" type=\"checkbox\" $checked "
             . "value=\"$value[1]\" $disabled/>"
             . " $el[_text]";
+    }
+
+    /**
+     * Generates the HTML for a radio type element
+     *
+     * @param array $el An array of the form used by $this->form
+     *                  for a radio button
+     *
+     * @return string the HTML for the given radio button element.
+     */
+    function radioHTML($el)
+    {
+        $val      = $this->getValue($el['name']);
+        $checked  = '';
+        $value    = '';
+        $disabled = '';
+        if (isset($el['value'])) {
+            $value = "value=\"$el[value]\"";
+        }
+        if ($val===$el['value']) {
+            $checked = 'checked="checked"';
+        }
+
+        if (isset($el['disabled']) || $this->frozen) {
+            $disabled = 'disabled';
+        }
+        return "<input name=\"$el[name]\" type=\"radio\" $checked $value "
+        . "$disabled/>"
+        . " $el[label]";
     }
 
     /**
@@ -1905,6 +1962,10 @@ class LorisForm
                 $el         = $this->createBase($elname, $label, $options);
                 $el['type'] = $type;
             }
+            break;
+        case 'radio':
+            $el         = $this->createBase($elname, $label, $options, $attribs);
+            $el['type'] = 'radio';
             break;
         case 'time':
         case 'textarea':
