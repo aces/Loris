@@ -19,12 +19,10 @@ class QualityControlIndex extends React.Component {
   this.updateBehavioralFilter = this.updateBehavioralFilter.bind(this);
   this.updateImgFilter = this.updateImgFilter.bind(this);
   }
+
   componentDidMount(){
     this.fetchData("imaging");
     this.fetchData("behavioral");
-  }
-  getSelectedTabIndex() { 
-    return $("#TabPanes").tabs('option', 'selected');
   }
 
   fetchData(flag){
@@ -34,7 +32,7 @@ class QualityControlIndex extends React.Component {
       dataType: "json",
       success: function(data){
         //console.log(getSelectedTabIndex());
-        console.log("ajax call");
+        console.log("loading IMG data");
 
         this.setState({
           ImgData:data,
@@ -48,7 +46,7 @@ class QualityControlIndex extends React.Component {
       dataType: "json",
       success: function(data){
         //console.log(getSelectedTabIndex());
-        console.log("ajax call");
+        console.log("loading Behavioral Data");
 
         this.setState({
           BehavioralData:data,
@@ -58,18 +56,13 @@ class QualityControlIndex extends React.Component {
     });
   }
 }
-  
-  changeData(){
-    console.log("clicked tab");
+
+  updateImgFilter(filter) {
+    this.setState({imgFilter:filter});
   }
 
-  updateImgFilter(imgFilter) {
-    console.log(imgFilter);
-    this.setState({imgFilter});
-  }
-
-  updateBehavioralFilter(behavioralFilter) {
-    this.setState({behavioralFilter});
+  updateBehavioralFilter(filter) {
+    this.setState({behavioralFilter:filter});
   }
 
   render() {
@@ -108,8 +101,6 @@ class QualityControlIndex extends React.Component {
             Data={this.state.BehavioralData.Data}
             Headers={this.state.BehavioralData.Headers}
             Filter={this.state.behavioralFilter} /> 
-
-
         </TabPane>
         );
     
@@ -131,7 +122,6 @@ class QualityControlIndex extends React.Component {
         Data={this.state.ImgData.Data}
         Headers={this.state.ImgData.Headers}
         Filter={this.state.imgFilter}
-
         />
         </TabPane>
     );
