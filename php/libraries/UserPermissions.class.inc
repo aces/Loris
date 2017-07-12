@@ -226,7 +226,14 @@ class UserPermissions
 
         $results = $DB->pselect($query, array('UID' => $this->userID));
 
-        return $results;
+        // isolate and return numeric permission values
+        $toRet = array();
+        foreach ($results as $row) {
+            foreach ($row as $k=>$v) {
+                $toRet[] = $v;
+            }
+        }
+        return $toRet;
     }
 
 
