@@ -89,7 +89,7 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
         }
         $projectList = Utility::getProjectList();
         // Form Elements
-        $this->addSelect('visitLabels', 'Visit Label', $visitList);
+        $this->addSelect('visitLabel', 'Visit Label', $visitList);
         $this->addSelect('instruments', 'Instruments', $instrumentList);
         $this->addBasicText('DCCID', 'DCCID', ["size" => 9, "maxlength" => 7]);
         $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
@@ -130,7 +130,7 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
             ";
         }
         $this->columns = [
-            's.visit_label',
+            's.visit_label as visit_label',
             's.candid',
             'c.PSCID',
             't.Full_name',
@@ -153,8 +153,8 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
             'PSCID',
             'Instrument',
         ];
-        $this->validFilters = array('CenterName');
-        $this->formToFilter = array('for_site' => 'CenterName');
+        $this->validFilters = array('s.visit_label');
+        $this->formToFilter = array('visit_label' => 's.visit_label');
 
         return true;
     }

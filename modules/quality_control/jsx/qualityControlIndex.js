@@ -8,18 +8,20 @@ class QualityControlIndex extends React.Component {
     super(props);
 
   this.state = {
-    isLoaded: false,
-    imgFilter: {},
+    isLoadedImg: false,
+    isLoadedBehavioral: false,
+    imgFilter: {},  
     behavioralFilter:{},
   };
 
 
   this.fetchData = this.fetchData.bind(this);
-  this.updateFilter= this.updateFilter.bind(this);
+  this.updateBehavioralFilter = this.updateBehavioralFilter.bind(this);
+  this.updateImgFilter = this.updateImgFilter.bind(this);
   }
   componentDidMount(){
     this.fetchData("imaging");
-    this.fetchData("behavioral")
+    this.fetchData("behavioral");
   }
   getSelectedTabIndex() { 
     return $("#TabPanes").tabs('option', 'selected');
@@ -61,8 +63,13 @@ class QualityControlIndex extends React.Component {
     console.log("clicked tab");
   }
 
-  updateFilter(filter) {
-    this.setState({filter});
+  updateImgFilter(imgFilter) {
+    console.log(imgFilter);
+    this.setState({imgFilter});
+  }
+
+  updateBehavioralFilter(behavioralFilter) {
+    this.setState({behavioralFilter});
   }
 
   render() {
@@ -71,9 +78,9 @@ class QualityControlIndex extends React.Component {
       return(
         <button className="btn-info has-spinner">
         Loading
-        <span
-          className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-          </span>
+        <span 
+          className="glyphicon glyphicon-refresh glyphicon-refresh-animate"> 
+        </span>
           </button>
           );
     }
@@ -92,29 +99,31 @@ class QualityControlIndex extends React.Component {
             id="quality_control_behavioural_filter"
             columns={2}
             formElements={this.state.BehavioralData.form}
-            onUpdate={this.updateFilter}
             filter={this.state.behavioralFilter}>
+            onUpdate={this.updateBehavioralFilter}
             <br/>
             <ButtonElement type="reset" label="Clear Filters" />
        </FilterForm>
           <StaticDataTable
             Data={this.state.BehavioralData.Data}
             Headers={this.state.BehavioralData.Headers}
-            Filter={this.state.behavioralFilter}
-          />
+            Filter={this.state.behavioralFilter} /> 
+
+
         </TabPane>
         );
     
-    let tab3 = (
-        <TabPane TabId={tabList[3].id} >
+    let tab1= (
+        <TabPane TabId={tabList[1].id} >
         <FilterForm
             Module="quality_control"
             name="quality_control"
             id="quality_control_filter"
             columns={2}
             formElements={this.state.ImgData.form}
-            onUpdate={this.updateFilter}
-            filter={this.state.imgFilter}>
+            onUpdate={this.updateImgFilter}
+            filter={this.state.imgFilter}
+            >
             <br/>
             <ButtonElement type="reset" label="Clear Filters" />
        </FilterForm>
@@ -132,7 +141,7 @@ class QualityControlIndex extends React.Component {
         <Tabs id = "TabPanes" tabs={tabList} defaultTab={tabList[0].id} 
           updateURL={true}>
           {tab0}
-          {tab3}
+          {tab1}
         </Tabs> 
       </div>
 
