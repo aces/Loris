@@ -228,6 +228,10 @@
   };
 
   $.fn.DynamicTable = function(options) {
+    if (options && options.removeDynamicTable) {
+      unwrapTable(this);
+      return this;
+    }
     this.filter("table").each(function() {
       var leftLink;
       var rightLink;
