@@ -407,6 +407,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 );
                 if (!empty($QCExists)) {
                     $updateWhere['FileID'] = $curFileID;
+                    Utility::nullifyEmpty($updateSet, 'QCStatus');
                     $success = $this->DB->update(
                         'files_qcstatus',
                         $updateSet,
@@ -494,6 +495,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                                       'Selected'         => $curSelected,
                                       'QCLastChangeTime' => time(),
                                      );
+                        Utility::nullifyEmpty($updateSet, 'Selected');
                         $success   = $this->DB->update(
                             'files_qcstatus',
                             $updateSet,
