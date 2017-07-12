@@ -201,7 +201,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         $permIDs = array();
         // store the permission IDs
         if (!empty($values['permID'])) {
-            $permIDs = $values['permID'];
+            $permIDs = array_keys($values['permID']);
         }
         unset($values['permID']);
 
