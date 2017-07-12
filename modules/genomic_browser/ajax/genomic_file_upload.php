@@ -167,40 +167,46 @@ function moveFileToFS(&$fileToUpload)
 
     $config           = NDB_Config::singleton();
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
-    $validPreconditions = true;
 
     // update ui to show we are trying to move the file
     reportProgress(98, "Copying file to $genomic_data_dir ");
     // file system validation
-    if (!file_exists($fileToUpload->full_path)) {
-        error_log("Specified path $fileToUpload->full_path does not exist.");
-        $validPreconditions = false;
-    } else if (!is_dir($fileToUpload->full_path)) {
-        error_log("$fileToUpload->full_path exists but is not a directory.");
-        $validPreconditions = false;
-    } else if (!is_writable($fileToUpload->full_path)) {
-        error_log("$fileToUpload->full_path is not writable by web user.");
-        $validPreconditions = false;
-    }
-    // print failure message if preconditions not met or if
-    // file move fails for any other reason
-    if (!($validPreconditions || move_uploaded_file(
-        $fileToUpload->tmp_name,
-        $fileToUpload->full_path
-    ))) {
+error_log("Full path: $fileToUpload->full_path");
+    try {
+        if (!file_exists($fileToUpload->full_path)) {
+            throw new Exception(
+                "Some parts of path $fileToUpload->full_path does not exist."
+            );
+        } else if (!is_dir($fileToUpload->full_path)) {
+            throw new Exception(
+                "$fileToUpload->full_path exists but is not a directory."
+            );
+        } else if (!is_writable($fileToUpload->full_path)) {
+            throw new Exception(
+                "$fileToUpload->full_path is not writable by web user."
+            );
+        }
+        if (move_uploaded_file(
+            $fileToUpload->tmp_name,
+            $fileToUpload->full_path
+        )) {
+            reportProgress(99, "File copied to $genomic_data_dir ");
+        }
+    } catch (Exception $ex){
+        error_log("Cannot move file: $ex");
         endWithFailure();
+        // TODO: The below does not get printed to the frontend.
+        //       Further debugging needed
         die(
             json_encode(
                 array(
-                 'message'  => 'File copy failed',
-                 'progress' => 100,
-                 'error'    => true,
+                    'message'  => "File copy failed",
+                    'progress' => 100,
+                    'error'    => true,
+                    )
                 )
-            )
-        );
+            );
     }
-    // update i to success if no problems encountered
-    reportProgress(99, "File copied to $genomic_data_dir ");
 }
 
 /**
@@ -241,10 +247,12 @@ function registerFile(&$fileToUpload)
 
     } catch (DatabaseException $e) {
         endWithFailure();
+        //TODO: The below validation should be done before running the query.
+        //      Currently, it generates unnecessary PHP warnings
         die(
             json_encode(
                 array(
-                 'message'  => 'File registration failed, is the description empty?',
+                 'message'  => 'File registration failed. Is the description empty?',
                  'progress' => 100,
                  'error'    => true,
                 )
@@ -327,7 +335,7 @@ function createSampleCandidateRelations(&$fileToUpload)
         die(
             json_encode(
                 array(
-                 'message'  => 'Can`t insert into the database.',
+                 'message'  => "Can't insert into the database.",
                  'progress' => 100,
                  'error'    => true,
                 )
@@ -536,7 +544,7 @@ function insertMethylationData(&$fileToUpload)
 
 /**
  * This sends progress status to the client.
- * see XMLHttpRequest.onreadystatechange = 3 (progress)
+ * @see XMLHttpRequest.onreadystatechange = 3 (progress)
  *
  * @param integer $progress The progress percentage to report
  * @param string  $message  The message to send
