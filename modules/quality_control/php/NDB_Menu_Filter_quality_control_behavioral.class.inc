@@ -6,7 +6,7 @@
  *
  * @category Module
  * @package  Quality Control
- * @author   Liza Levitis <lthomas.mcin@gmail.com>
+ * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
@@ -17,7 +17,7 @@
  *
  * @category Module
  * @package  Quality Control
- * @author   Liza Levitis <lthomas.mcin@gmail.com>
+ * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */

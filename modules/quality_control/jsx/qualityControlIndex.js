@@ -8,18 +8,20 @@ class QualityControlIndex extends React.Component {
         super(props);
 
         this.state = {
-            isLoaded: false,
+            isLoadedImg: false,
+            isLoadedBehavioral: false,
             imgFilter: {},
             behavioralFilter:{},
         };
 
 
         this.fetchData = this.fetchData.bind(this);
-        this.updateFilter= this.updateFilter.bind(this);
+        this.updateBehavioralFilter = this.updateBehavioralFilter.bind(this);
+        this.updateImgFilter = this.updateImgFilter.bind(this);
     }
     componentDidMount(){
         this.fetchData("imaging");
-        this.fetchData("behavioral")
+        this.fetchData("behavioral");
     }
     getSelectedTabIndex() {
         return $("#TabPanes").tabs('option', 'selected');
@@ -31,8 +33,6 @@ class QualityControlIndex extends React.Component {
                 method:"GET",
                 dataType: "json",
                 success: function(data){
-                    //console.log(getSelectedTabIndex());
-                    console.log("ajax call");
 
                     this.setState({
                         ImgData: data,
@@ -45,9 +45,6 @@ class QualityControlIndex extends React.Component {
                 method:"GET",
                 dataType: "json",
                 success: function(data){
-                    //console.log(getSelectedTabIndex());
-                    console.log("ajax call");
-
                     this.setState({
                         BehavioralData: data,
                         isLoadedBehavioral: true
@@ -61,8 +58,13 @@ class QualityControlIndex extends React.Component {
         console.log("clicked tab");
     }
 
-    updateFilter(filter) {
-        this.setState({filter});
+    updateBehavioralFilter(filter) {
+        console.log(behavioralFilter);
+        this.setState({behavioralFilter: filter});
+    }
+
+    updateImgFilter(filter) {
+        this.setState({imgFilter: filter})
     }
 
     render() {
@@ -92,8 +94,9 @@ class QualityControlIndex extends React.Component {
                     id="quality_control_behavioural_filter"
                     columns={2}
                     formElements={this.state.BehavioralData.form}
-                    onUpdate={this.updateFilter}
-                    filter={this.state.behavioralFilter}>
+                    filter={this.state.behavioralFilter}
+                    onUpdate={this.updateBehavioralFilter}
+                >
                     <br/>
                     <ButtonElement type="reset" label="Clear Filters" />
                 </FilterForm>
@@ -106,15 +109,15 @@ class QualityControlIndex extends React.Component {
         );
 
         let tab1 = (
-            <TabPane TabId={tabList[1].id} >
+            <TabPane TabId={tabList[1].id}>
                 <FilterForm
                     Module="quality_control"
                     name="quality_control"
                     id="quality_control_filter"
                     columns={2}
                     formElements={this.state.ImgData.form}
-                    onUpdate={this.updateFilter}
                     filter={this.state.imgFilter}>
+                    onUpdate={this.updateImgFilter}
                     <br/>
                     <ButtonElement type="reset" label="Clear Filters" />
                 </FilterForm>
@@ -122,7 +125,6 @@ class QualityControlIndex extends React.Component {
                     Data={this.state.ImgData.Data}
                     Headers={this.state.ImgData.Headers}
                     Filter={this.state.imgFilter}
-
                 />
             </TabPane>
         );
