@@ -164,14 +164,12 @@ var InstrumentConflictsRow = React.createClass({
               <a href={baseURL + "/" + row.CandID + "/"}>{row.PSCID}</a>
           </td>
         <td>
-          <a
-            href={baseURL + "/conflict_resolver/?CandID=" + row.CandID}
-            className="conflict_resolver_link" data-pscid={row.PSCID}
-            data-question={row.FieldName} data-instrument={row.TableName}
-            data-visits={row.visit_label}
-          >
-            {row.test_name_display}
-          </a>
+          <a href="#" onClick={loris.loadFilteredMenuClickHandler(
+                 "conflict_resolver/",
+                  {CandID: row.CandID,
+                  Instrument: row.TableName,
+                  Question: row.FieldName}
+          )}>{row.test_name_display}</a>
         </td>
         <td>{row.FieldName}</td>
       </tr>
