@@ -34,13 +34,13 @@ class schema_generator
         $output = '';
         $output .= "DROP TABLE IF EXISTS `$tableName`;\n";
         $output .= "CREATE TABLE `$tableName` (\n";
-        $output .= "`CommentID` varchar (255) NOT NULL default '',\n";
-        $output .= "`UserID` varchar(255) default NULL,\n";
-        $output .= "`Examiner` varchar(255) default NULL,\n";
+        $output .= "`CommentID` varchar (255) NOT NULL DEFAULT '',\n";
+        $output .= "`UserID` varchar(255) DEFAULT NULL,\n";
+        $output .= "`Examiner` varchar(255) DEFAULT NULL,\n";
         $output .= "`Testdate` timestamp DEFAULT CURRENT_TIMESTAMP ON ";
         $output .= "UPDATE CURRENT_TIMESTAMP,\n";
         $output .= "`Data_entry_completion_status` enum('Incomplete','Complete') ";
-        $output .= "NOT NULL default 'Incomplete',\n";
+        $output .= "NOT NULL DEFAULT 'Incomplete',\n";
 
 		//Handle individual elements
 		foreach($elements['Elements'] AS $element) {
@@ -96,7 +96,7 @@ class schema_generator
                     break;
             }
             $type = htmlspecialchars($type);
-            $output .= "`$elName` $type default NULL,\n";
+            $output .= "`$elName` $type DEFAULT NULL,\n";
 		}
 
         $output .= "PRIMARY KEY (`CommentID`))";
@@ -112,8 +112,13 @@ class schema_generator
      */
     function enumizeOptions($values)
     {
-        $enum = implode(",",array_keys($values));
-        return "enum($enum)";
+        $enumValues = implode(",", array_map(function($val) {
+                                                 if (is_string($val)) {
+                                                     return "$val";
+                                                 }
+                                                 return "'$val'";
+                                             }, array_keys($values)));
+        return "enum($enumValues)";
     }
 }
 ?>
