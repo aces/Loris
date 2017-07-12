@@ -496,7 +496,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                                       'QCLastChangeTime' => time(),
                                      );
                         Utility::nullifyEmpty($updateSet, 'Selected');
-                        $success   = $this->DB->update(
+                        $success = $this->DB->update(
                             'files_qcstatus',
                             $updateSet,
                             $updateWhere
