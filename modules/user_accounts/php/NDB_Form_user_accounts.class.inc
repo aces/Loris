@@ -449,7 +449,8 @@ class NDB_Form_User_Accounts extends NDB_Form
                      */
                     if (!(in_array($permID, $current_permissionids))) {
                         $user->insertIntoUserAccountHistory($permID, 'I');
-                        $permissionsAdded[] = $this->getDescriptionUsingPermID($permID);
+                        $permissionsAdded[]
+                            = $this->getDescriptionUsingPermID($permID);
                     }
                 }
             }
