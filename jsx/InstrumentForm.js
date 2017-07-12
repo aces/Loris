@@ -20,9 +20,11 @@ const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave}) 
             console.log(e.message || e);
             return false;
           }
-        }).map((element, index) => (
-          renderElement(element, index, data, onUpdate)
-        ))
+        }).map((element, index) => {
+          const requireResponse = element.Options.RequireResponse;
+          const required = typeof requireResponse === 'string' ? Evaluator(requireResponse, contextWithData) : requireResponse;
+          return renderElement(element, index, data, onUpdate, required)
+        })
       }
     </div>
   );
@@ -38,19 +40,19 @@ function renderMeta(meta) {
 
 }
 
-function renderElement(element, key, data, onUpdate) {
+function renderElement(element, key, data, onUpdate, required = false) {
   if (element.Type === 'label') {
     return renderLabel(element, key)
   } else if (element.Type === 'radio-labels') {
     return renderRadioLabels(element, key)
   } else if (element.Type === 'radio') {
-    return renderRadio(element, data[element.Name], key, onUpdate)
+    return renderRadio(element, data[element.Name], key, onUpdate, required)
   } else if (element.Type === 'select') {
-    return renderSelect(element, data[element.Name], key, onUpdate)
+    return renderSelect(element, data[element.Name], key, onUpdate, required)
   } else if (element.Type === 'checkbox') {
-    return renderCheckbox(element, data[element.Name], key, onUpdate)
+    return renderCheckbox(element, data[element.Name], key, onUpdate, required)
   } else if (element.Type === 'text') {
-    return renderText(element, data[element.Name], key, onUpdate)
+    return renderText(element, data[element.Name], key, onUpdate, required)
   } else if (element.Type === 'calc') {
     return renderCalc(element, data[element.Name], key, onUpdate)
   }
@@ -67,7 +69,7 @@ function renderRadioLabels(radioLabelsEl, key) {
   );
 }
 
-function renderRadio(radioEl, value, key, onUpdate) {
+function renderRadio(radioEl, value, key, onUpdate, isRequired) {
   return (
     <RadioGroupElement
       key={key}
@@ -77,11 +79,12 @@ function renderRadio(radioEl, value, key, onUpdate) {
       orientation={radioEl.Options.Orientation}
       onUserInput={onUpdate}
       value={value ? String(value) : value}
+      required={isRequired}
     />
   );
 }
 
-function renderSelect(selectEl, value, key, onUpdate) {
+function renderSelect(selectEl, value, key, onUpdate, isRequired) {
   if (selectEl.Options.AllowMultiple) {
     <p>MultiSelects not implemented yet</p>
   } else {
@@ -93,12 +96,13 @@ function renderSelect(selectEl, value, key, onUpdate) {
         options={selectEl.Options.Values}
         onUserInput={onUpdate}
         value={value}
+        required=isRequired
       />
     );
   }
 }
 
-function renderCheckbox(selectEl, value, key, onUpdate) {
+function renderCheckbox(selectEl, value, key, onUpdate, isRequired) {
   return (
     <CheckboxGroupElement
       key={key}
@@ -107,11 +111,12 @@ function renderCheckbox(selectEl, value, key, onUpdate) {
       options={selectEl.Options.Values}
       onUserInput={onUpdate}
       value={value}
+      required=isRequired
     />
   );
 }
 
-function renderText(textEl, value, key, onUpdate) {
+function renderText(textEl, value, key, onUpdate, isRequired) {
   return (
     <TextboxElement
       key={key}
@@ -119,6 +124,7 @@ function renderText(textEl, value, key, onUpdate) {
       label={textEl.Description}
       onUserInput={onUpdate}
       value={value ? String(value) : value}
+      required=isRequired
     />
   );
 }

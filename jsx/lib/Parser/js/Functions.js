@@ -1,4 +1,4 @@
-import moment from 'moment';
+//import moment from 'moment';
 
 export default {
   eq(a, b) {
@@ -138,8 +138,26 @@ export default {
     return Math.sqrt(variance);
   },
   // Assuming 24-hour clock
-  datediff(date1, date2, units, format = 'ymd', returnSigned = false) {
-    let mdate1, mdate2;
+  datediff(date1, date2, units, returnSigned = false) {
+    const d1 = date1.split("-");
+    const d2 = date2.split("-");
+    const dt1 = new Date(d1[0],d1[1],d1[2]);
+    const dt2 = new Date(d2[0],d2[1],d2[2]);
+    let res;
+    switch (units) {
+        case 'y':
+            res = 1000*60*60*24*365.2425
+            break;
+        case 'm':
+            res = 1000*60*60*24*30.44
+            break;
+        case 'd':
+            res = 1000*60*60*24
+            break;
+    }
+    const diff = (dt1.getTime() - dt2.getTime())/res;
+    return diff;
+    /*let mdate1, mdate2;
     switch (format) {
       case 'ymd': {
         mdate1 = moment(date1, ['YYYY-MM-DD', 'YYYY-MM-DD HH:mm:ss']);
@@ -162,6 +180,6 @@ export default {
       return diff;
     } else {
       return Math.abs(diff);
-    }
+    }*/
   }
 }
