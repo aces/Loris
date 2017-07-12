@@ -98,7 +98,7 @@ export default {
   },
   mean(...ns) {
     if (ns.length === 0) {
-      throw 'Cannot find median of 0 arguments'
+      throw 'Cannot find mean of 0 arguments'
     }
     return ns.reduce((a,b) => a+b, 0) / ns.length;
   },
