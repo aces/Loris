@@ -42,7 +42,7 @@ Note that all whitespace (spaces or tabs) is ignored in the parser.
 |-------------------	|------------------------	|----------------------------------------------------	|
 | number            	| 1; 900; 123.456          	|                                                    	|
 | text              	| "this is my text!_123" 	| empty text is supported; ' can be used instead of " 	|
-| variable          	| [my_variable_name]     	|                                                    	|
+| variable          	| [my_variable_name][nested_variable(array_access)]     	|                                                    	|
 | nested expression 	| (expression)           	|                                                    	|
 
 ### Constants
