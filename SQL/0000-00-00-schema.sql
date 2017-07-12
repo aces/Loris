@@ -577,10 +577,10 @@ CREATE TABLE `files_qcstatus` (
     `FileID` int(11) UNIQUE NULL,
     `SeriesUID` varchar(64) DEFAULT NULL,
     `EchoTime` double DEFAULT NULL,
-    `QCStatus` enum('Pass', 'Fail'),
+    `QCStatus` enum('','Pass', 'Fail') DEFAULT NULL,
     `QCFirstChangeTime` int(10) unsigned,
     `QCLastChangeTime` int(10) unsigned,
-    `Selected` enum('true', 'false') DEFAULT NULL
+    `Selected` enum('','true', 'false') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `mri_acquisition_dates` (
