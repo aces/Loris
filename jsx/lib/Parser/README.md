@@ -1,4 +1,4 @@
-# Parser
+# ZAIN Rules (Logic Parser)
 
 The Parser provides a human readable syntax for front end equation building.
 
