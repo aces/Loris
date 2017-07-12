@@ -87,6 +87,9 @@ class NDB_Client
 
         // stop here if this is a command line client
         if (!$this->_isWebClient) {
+            // Set user as unix username.
+            // Requires Loris to have user with this username
+            $user =& User::singleton(get_current_user());
             return true;
         }
 

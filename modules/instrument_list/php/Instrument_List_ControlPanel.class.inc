@@ -209,7 +209,9 @@ Class Instrument_List_ControlPanel extends TimePoint
             return;
         }
         $condition1 = isset($_REQUEST['setSubmitted']);
-        $condition2 = $_REQUEST['setSubmitted'] == 'N';
+        $condition2 = $condition1 ?
+            $_REQUEST['setSubmitted'] == 'N' :
+            false;
         $condition3 = $this->_hasAccess_SendToDCC();
         $condition4 = !in_array(
             $currentStage,

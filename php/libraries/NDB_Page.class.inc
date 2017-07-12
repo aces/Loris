@@ -280,6 +280,39 @@ class NDB_Page
     }
 
     /**
+     * Wrapper to create a radio button
+     *
+     * @param string $name       The field name of this radio button
+     * @param string $groupLabel The label to attach to this group of
+     *                           radio buttons
+     * @param array  $radios     The array of arrays describing radio
+     *                           elements to be added as a group. Ex:
+     *                           array('label'=>'Yes','value'=>'Y')
+     * @param array  $options    Options to pass to LorisForm for this
+     *                           radio button. Do not pass value here.
+     *
+     * @return none
+     */
+    function addRadio($name, $groupLabel, $radios, $options=array())
+    {
+        foreach ($radios as $radElement) {
+            $tempOptions = array_merge(
+                array(
+                 'class' => 'form-control input-sm',
+                 'value' => $radElement['value'],
+                ),
+                $options
+            );
+            $radGroup[]  = $this->createRadio(
+                $name,
+                $radElement['label'],
+                $tempOptions
+            );
+        }
+        $this->addGroup($radGroup, $name . '_group', $groupLabel, null, false);
+    }
+
+    /**
      * Adds a hidden element to the current page. Note if the hidden element
      * needs a value it should be added to the defaults.
      *
@@ -506,6 +539,26 @@ class NDB_Page
     {
         return $this->form->createElement(
             "advcheckbox",
+            $field,
+            $label,
+            $options,
+            array()
+        );
+    }
+
+    /**
+     * Creates an HTML radio button but does not add it to the form.
+     *
+     * @param string $field   The fieldname for this radio button
+     * @param string $label   The label to attach to this radio button
+     * @param string $options Options to pass to LorisForm
+     *
+     * @return QuickForm_Element representing radio button
+     */
+    function createRadio($field, $label, $options=null)
+    {
+        return $this->form->createElement(
+            "radio",
             $field,
             $label,
             $options,
