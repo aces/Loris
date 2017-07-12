@@ -71,7 +71,7 @@
     recoverable: (boolean: TRUE when the parser has a error recovery rule available for this particular error)
   }
 */
-var logicParser = (function(){
+var jsLogicParser = (function(){
 var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,15],$V1=[1,16],$V2=[1,17],$V3=[1,7],$V4=[1,5],$V5=[1,9],$V6=[1,4],$V7=[1,3],$V8=[1,10],$V9=[1,11],$Va=[1,12],$Vb=[1,13],$Vc=[1,14],$Vd=[1,19],$Ve=[1,20],$Vf=[1,21],$Vg=[1,22],$Vh=[1,23],$Vi=[1,24],$Vj=[1,25],$Vk=[1,26],$Vl=[1,27],$Vm=[1,28],$Vn=[1,29],$Vo=[1,30],$Vp=[1,31],$Vq=[1,32],$Vr=[1,33],$Vs=[5,7,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,34],$Vt=[5,7,18,31,32],$Vu=[5,7,18,19,20,21,22,23,24,31,32],$Vv=[5,7,18,19,20,21,22,23,24,25,26,31,32],$Vw=[5,7,18,19,20,21,22,23,24,25,26,27,28,31,32],$Vx=[1,61];
 var parser = {trace: function trace() { },
 yy: {},
@@ -765,9 +765,9 @@ return new Parser;
 
 
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-exports.parser = logicParser;
-exports.Parser = logicParser.Parser;
-exports.parse = function () { return logicParser.parse.apply(logicParser, arguments); };
+exports.parser = jsLogicParser;
+exports.Parser = jsLogicParser.Parser;
+exports.parse = function () { return jsLogicParser.parse.apply(jsLogicParser, arguments); };
 exports.main = function commonjsMain(args) {
     if (!args[1]) {
         console.log('Usage: '+args[0]+' FILE');
