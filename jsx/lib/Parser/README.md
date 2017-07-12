@@ -6,7 +6,6 @@ This Readme breaks down the different parts of the Parser and lists syntax rules
 
 # Prerequisites for Development
 
- * [momentJS](https://momentjs.com/)
  * [Jison](jison.org) (only required for changes in syntax)
 
  Note that end users do not require Jison, only the Jison-generated parser file.
