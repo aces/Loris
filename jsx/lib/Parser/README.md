@@ -1,4 +1,4 @@
-# Parser
+# ZAIN Rules (Logic Parser)
 
 The Parser provides a human readable syntax for front end equation building.
 
@@ -6,7 +6,6 @@ This Readme breaks down the different parts of the Parser and lists syntax rules
 
 # Prerequisites for Development
 
- * [momentJS](https://momentjs.com/)
  * [Jison](jison.org) (only required for changes in syntax)
 
  Note that end users do not require Jison, only the Jison-generated parser file.
@@ -43,7 +42,7 @@ Note that all whitespace (spaces or tabs) is ignored in the parser.
 |-------------------	|------------------------	|----------------------------------------------------	|
 | number            	| 1; 900; 123.456          	|                                                    	|
 | text              	| "this is my text!_123" 	| empty text is supported; ' can be used instead of " 	|
-| variable          	| [my_variable_name]     	|                                                    	|
+| variable          	| [my_variable_name][nested_variable(array_access)]     	|                                                    	|
 | nested expression 	| (expression)           	|                                                    	|
 
 ### Constants
@@ -112,6 +111,6 @@ Note that all whitespace (spaces or tabs) is ignored in the parser.
 | Argument     	| Syntax                                	| Notes                                                                                                                                     	|
 |--------------	|---------------------------------------	|-------------------------------------------------------------------------------------------------------------------------------------------	|
 | date         	| "YYYY-MM-DD" 	| YMD is the only accepted format (ISO standard)                                           |
-| units        	| "y","M","d"               	| specifies the return value unit: years, months, days, |
+| units        	| "y","m","d"               	| specifies the return value unit: years, months, days, |
 | signed       	| true/false                            	| if true, negative differences will be allowed. if false, the difference will always be positive                                           	|
 | return value 	|                                       	| returns date1 - date 2 in the specified unit                                                                                              	|
