@@ -99,7 +99,7 @@ class NDB_Form_User_Accounts extends NDB_Form
 
             // An array of each field that requires front-end sanitization
             $fieldsThatAreStrings = array (
-                'UserId',
+                'UserID',
                 'First_name',
                 'Last_name',
                 'Real_name',
@@ -297,7 +297,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                     $result = $DB->pselectRow(
                         "
                           SELECT full_name, centerID
-                          FROM examiners 
+                          FROM examiners
                           WHERE full_name=:fn AND centerID=:cid",
                         array(
                          "fn"  => $values['Real_name'],
@@ -1194,7 +1194,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         //--- Get current password stored in database
         $passwordQuery
             = "SELECT Password_hash
-               FROM users 
+               FROM users
                WHERE UserID = :UID";
 
         $passwords = $db->pselectRow(
