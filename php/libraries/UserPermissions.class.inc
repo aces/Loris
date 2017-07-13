@@ -227,13 +227,13 @@ class UserPermissions
         $results = $DB->pselect($query, array('UID' => $this->userID));
 
         // isolate and return numeric permission values
-        $toRet = array();
+        $permIDs = array();
         foreach ($results as $row) {
             foreach ($row as $k=>$v) {
-                $toRet[] = $v;
+                $permIDs[] = $v;
             }
         }
-        return $toRet;
+        return $permIDs;
     }
 
 
