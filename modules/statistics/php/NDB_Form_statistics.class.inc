@@ -206,11 +206,10 @@ class NDB_Form_Statistics extends NDB_Form
         foreach ($subprojects as $key=>$val) {
             $subprojList .= $key.",";
         }
-        $subprojList = substr($subprojList, 0, -1);
+        $subprojList      = substr($subprojList, 0, -1);
+        $subproject_query = '';
         if (!empty($subprojList)) {
-            $subproject_query ="AND s.SubprojectID IN ($subprojList)";
-        } else {
-            $subproject_query ='';
+            $subproject_query .= "AND s.SubprojectID IN ($subprojList)";
         }
 
         //SITES
@@ -534,10 +533,8 @@ class NDB_Form_Statistics extends NDB_Form
 
         $currentProject = null;
 
-        if (isset($_REQUEST['BehaviouralProject'])
-            && $_REQUEST['BehaviouralProject'] != ''
-        ) {
-            $currentProject = $_REQUEST['BehaviouralProject'];
+        if ($_REQUEST['BehaviouralSubproject'] ?? '') {
+            $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
             $this->tpl_data['CurrentProject']
                 = array(
                    'ID'   => $currentProject,
@@ -560,32 +557,40 @@ class NDB_Form_Statistics extends NDB_Form
         }
 
         $this->tpl_data['Subprojects'] = $subprojects;
-        $currentSubProject = null;
+        $currentSubproject = null;
         $subprojList       = substr($subprojList, 1, -1);
-        if (isset($_REQUEST['BehaviouralSubproject'])
-            && $_REQUEST['BehaviouralSubproject'] != ''
-            && in_array($_REQUEST['BehaviouralSubproject'], array_keys($subprojects))
+        if ($_REQUEST['BehaviouralSubproject'] ?? ''
+            && in_array(
+                $_REQUEST['BehaviouralSubproject'],
+                array_keys($subprojects),
+                true
+            )
         ) {
-            $currentSubProject = $_REQUEST['BehaviouralSubproject'];
+            $BS = 'BehaviouralSubproject';
+            $currentSubproject = htmlspecialchars($_REQUEST[$BS]);
             $this->tpl_data['CurrentSubproject']
                 = array(
-                   'ID'   => $currentSubProject,
-                   'Name' => $subprojects[$currentSubProject],
+                   'ID'   => $currentSubproject,
+                   'Name' => $subprojects[$currentSubproject],
                   );
             $subproject_query     = "AND (s.SubprojectID IS NULL";
             $subproject_query    .= " OR s.SubprojectID=:spid)";
-            $this->params['spid'] =$currentSubProject;
+            $this->params['spid'] =$currentSubproject;
         } else {
             $subproject_query ="";
         }
-        if (!in_array(
-            $_REQUEST['BehaviouralSubproject'],
-            array_keys($subprojects)
-        )) {
+        if ($_REQUEST['BehaviouralSubproject'] ?? ''
+            && !in_array(
+                $_REQUEST['BehaviouralSubproject'],
+                array_keys(
+                    $subprojects,
+                    true
+                )
+            )) {
             $BS          = 'BehaviouralSubproject';
             $cleanString = htmlspecialchars($_REQUEST[$BS]);
             $this->tpl_data['PreviousSubproject']
-                = Utility::getSubprojectsForProject()[$cleanString];
+                = Utility::getSubprojectList()[$cleanString];
             $this->tpl_data['Warning']            = 1;
         } else {
             $this->tpl_data['Warning'] = null;
@@ -717,11 +722,10 @@ class NDB_Form_Statistics extends NDB_Form
         foreach ($subprojects as $key=>$val) {
             $subprojList .= $key.",";
         }
-        $subprojList = substr($subprojList, 0, -1);
+        $subprojList      = substr($subprojList, 0, -1);
+        $subproject_query = '';
         if (!empty($subprojList)) {
-            $subproject_query ="AND s.SubprojectID IN ($subprojList)";
-        } else {
-            $subproject_query ='';
+            $subproject_query .= "AND s.SubprojectID IN ($subprojList)";
         }
         //SITES
         if (isset($_REQUEST['MRIsite']) && $_REQUEST['MRIsite'] != '') {
@@ -1046,17 +1050,15 @@ class NDB_Form_Statistics extends NDB_Form
             $projects[$key] = $value;
         }
 
-        if (isset($_REQUEST['ReliabilityProject'])
-            && $_REQUEST['ReliabilityProject'] != ''
-        ) {
-            $currentProject = $_REQUEST['ReliabilityProject'];
+        if ($_REQUEST['ReliabilityProject'] ?? '') {
+            $currentProject = htmlspecialchars($_REQUEST['ReliabilityProject']);
             $this->tpl_data['CurrentProject']
                 = array(
                    'ID'   => $currentProject,
                    'Name' => $projects[$currentProject],
                   );
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
-            $this->params['pid'] =$_REQUEST['ReliabilityProject'];
+            $this->params['pid'] = htmlspecialchars($_REQUEST['ReliabilityProject']);
         } else {
             $Param_Project ='';
         }
@@ -1074,43 +1076,49 @@ class NDB_Form_Statistics extends NDB_Form
         }
 
         $this->tpl_data['Subprojects'] = $subprojects;
-        $currentSubProject = null;
+        $currentSubproject = null;
         $subprojList       = substr($subprojList, 1, -1);
-        if (isset($_REQUEST['ReliabilitySubproject'])
-            && $_REQUEST['ReliabilitySubproject'] != ''
-            && in_array($_REQUEST['ReliabilitySubproject'], array_keys($subprojects))
+        if ($_REQUEST['ReliabilitySubproject'] ?? ''
+            && in_array(
+                $_REQUEST['ReliabilitySubproject'],
+                array_keys($subprojects),
+                true
+            )
         ) {
-            $currentSubProject = $_REQUEST['ReliabilitySubproject'];
+            $RS = 'ReliabilitySubproject';
+            $currentSubproject = htmlspecialchars($_REQUEST[$RS]);
             $this->tpl_data['CurrentSubproject']
                 = array(
-                   'ID'   => $currentSubProject,
-                   'Name' => $subprojects[$currentSubProject],
+                   'ID'   => $currentSubproject,
+                   'Name' => $subprojects[$currentSubproject],
                   );
             $subproject_query     = "AND (s.SubprojectID IS NULL ";
             $subproject_query    .= "OR s.SubprojectID=:spid)";
-            $this->params['spid'] =$currentSubProject;
+            $this->params['spid'] =$currentSubproject;
         } else {
             $subproject_query ="";
         }
-        if (!in_array(
-            $_REQUEST['ReliabilitySubproject'],
-            array_keys($subprojects)
-        )) {
-            $BS          = 'ReliabilitySubproject';
-            $cleanString = htmlspecialchars($_REQUEST[$BS]);
+        if ($_REQUEST['ReliabilitySubproject'] ?? ''
+            && !in_array(
+                $_REQUEST['ReliabilitySubproject'],
+                array_keys(
+                    $subprojects,
+                    true
+                )
+            )) {
+            $RS          = 'ReliabilitySubproject';
+            $cleanString = htmlspecialchars($_REQUEST[$RS]);
             $this->tpl_data['PreviousSubproject']
-                = Utility::getSubprojectsForProject()[$cleanString];
+                = Utility::getSubprojectList()[$cleanString];
             $this->tpl_data['Warning']            = 1;
         } else {
             $this->tpl_data['Warning'] = null;
         }
 
         //SITES
-        if (isset($_REQUEST['ReliabilitySite'])
-            && $_REQUEST['ReliabilitySite'] != ''
-        ) {
+        if ($_REQUEST['ReliabilitySite'] ?? '') {
             $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
-            $this->params['sid'] =$_REQUEST['ReliabilitySite'];
+            $this->params['sid'] = htmlspecialchars($_REQUEST['ReliabilitySite']);
         } else {
             $Param_Site = '';
         }
