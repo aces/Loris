@@ -162,7 +162,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 			WHERE f.CommentID IN (
 				SELECT CommentID 
 				FROM mri_parameter_form mpf 
-				WHERE (mpf.T1_Scan_done !='Complete' OR mpf.T1_scan_done!= 'Partial')
+				WHERE (mpf.T1_Scan_done !='Complete' AND mpf.T1_scan_done!= 'Partial')
 				)";
 		$this->query = $query;
 		$this->columns = array("m.UploadedBy", "UploadDate", 't.PatientName', 't.CenterName', '("'.$this->errors[1].'") as message','(" ") as action',  'f.CommentID as CommentID');
