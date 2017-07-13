@@ -1,28 +1,31 @@
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
-import formatColumn from './columnFormatter';
+import formatColumnImg from './columnFormatterImg';
+import formatColumnBehavioral from './columnFormatterBehavioral'
 
 class QualityControlIndex extends React.Component {
 
   constructor(props) {
+    loris.hiddenHeadersImg = ['CommentID'];
+
+    loris.hiddenHeadersBehavioral = [];
     super(props);
 
   this.state = {
     isLoadedImg: false,
-    isLoadedBehavioral: false,
-    imgFilter: {},  
+    isLoadedBehavioral:false,
+    imgFilter: {},
     behavioralFilter:{},
   };
 
 
   this.fetchData = this.fetchData.bind(this);
   this.updateBehavioralFilter = this.updateBehavioralFilter.bind(this);
-  this.updateImgFilter = this.updateImgFilter.bind(this);
+  this.updateImgFilter= this.updateImgFilter.bind(this);
   }
-
   componentDidMount(){
     this.fetchData("imaging");
-    this.fetchData("behavioral");
+    this.fetchData("behavioral")
   }
 
   fetchData(flag){
@@ -31,8 +34,8 @@ class QualityControlIndex extends React.Component {
       method:"GET",
       dataType: "json",
       success: function(data){
-        //console.log(getSelectedTabIndex());
-        console.log("loading IMG data");
+
+        console.log("Got Imaging Data");
 
         this.setState({
           ImgData:data,
@@ -45,8 +48,8 @@ class QualityControlIndex extends React.Component {
       method:"GET",
       dataType: "json",
       success: function(data){
-        //console.log(getSelectedTabIndex());
-        console.log("loading Behavioral Data");
+
+        console.log("Got Behavioral Data");
 
         this.setState({
           BehavioralData:data,
@@ -58,12 +61,12 @@ class QualityControlIndex extends React.Component {
 }
 
   updateImgFilter(filter) {
-    this.setState({imgFilter:filter});
+    this.setState({imgFilter: filter});
+  }
+  updateBehavioralFilter(filter){
+    this.setState({behavioralFilter: filter});
   }
 
-  updateBehavioralFilter(filter) {
-    this.setState({behavioralFilter:filter});
-  }
 
   render() {
 
@@ -71,9 +74,9 @@ class QualityControlIndex extends React.Component {
       return(
         <button className="btn-info has-spinner">
         Loading
-        <span 
-          className="glyphicon glyphicon-refresh glyphicon-refresh-animate"> 
-        </span>
+        <span
+          className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+          </span>
           </button>
           );
     }
@@ -92,19 +95,21 @@ class QualityControlIndex extends React.Component {
             id="quality_control_behavioural_filter"
             columns={2}
             formElements={this.state.BehavioralData.form}
-            filter={this.state.behavioralFilter}>
             onUpdate={this.updateBehavioralFilter}
+            filter={this.state.behavioralFilter}>
             <br/>
             <ButtonElement type="reset" label="Clear Filters" />
        </FilterForm>
           <StaticDataTable
             Data={this.state.BehavioralData.Data}
             Headers={this.state.BehavioralData.Headers}
-            Filter={this.state.behavioralFilter} /> 
+            Filter={this.state.behavioralFilter}
+            getFormattedCell={formatColumnBehavioral}
+          />
         </TabPane>
         );
     
-    let tab1= (
+    let tab1 = (
         <TabPane TabId={tabList[1].id} >
         <FilterForm
             Module="quality_control"
@@ -113,8 +118,7 @@ class QualityControlIndex extends React.Component {
             columns={2}
             formElements={this.state.ImgData.form}
             onUpdate={this.updateImgFilter}
-            filter={this.state.imgFilter}
-            >
+            filter={this.state.imgFilter}>
             <br/>
             <ButtonElement type="reset" label="Clear Filters" />
        </FilterForm>
@@ -122,6 +126,8 @@ class QualityControlIndex extends React.Component {
         Data={this.state.ImgData.Data}
         Headers={this.state.ImgData.Headers}
         Filter={this.state.imgFilter}
+        getFormattedCell={formatColumnImg}
+
         />
         </TabPane>
     );

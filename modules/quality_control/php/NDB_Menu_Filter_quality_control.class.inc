@@ -25,6 +25,12 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 {	
 	public $hasWritePermission = false;
 	public $AjaxModule         = true;
+
+	public $errors  = array(
+						0 => "No MRI paramter form",
+						1 => "T1 Scan done NOT Partial or Complete in MRI parameter form"
+						);
+
 	/**
 	 * Check user permissions
 	 *
@@ -57,10 +63,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 	 */
 	function _setFilterForm()
     {	
-    	$errors  = array(
-						1 => "No MRI paramter form",
-						2 => "T1 Scan done NOT Partial or Complete in MRI paramter Form"
-						);
 
         $user =& User::singleton();
         $db   = Database::singleton();
@@ -104,16 +106,19 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         foreach($uploaders as $up){
         	$uploaderList[$up['UploadedBy']] = $up['UploadedBy'];
         }
+        $namesList =[];
+        $patientNames = $db->pselect(
+        	"SELECT PatientName FROM tarchive GROUP BY PatientName", array());
+        foreach($patientNames as $pn){
+        	$namesList[$pn['PatientName']] = $pn['PatientName'];
+        }
 
         // Form Elements
 
-        $this->addSelect('visitLabel', 'Visit Label', $visitList);
-        $this->addSelect('instruments', 'Instruments', $instrumentList);
-        $this->addSelect('error_message', 'Error Message', $errors);
+        $this->addSelect('error_message', 'Error Message', $this->errors);
         $this->addSelect('UploadedBy', 'Uploaded By', $uploaderList);
-        $this->addBasicText('DCCID', 'DCCID', ["size" => 9, "maxlength" => 7]);
-        $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
-        $this->addSelect('site', 'Site', $siteList);
+		$this->addSelect('PatientName', 'Patient ID', $namesList);
+	    $this->addSelect('site', 'Site', $siteList);
 
 
        // $this->tpl_data["hasWritePermission"] = $this->hasWritePermission;
@@ -130,30 +135,17 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 	 */
 	function _setupVariables()
 	{
-		$errors  = array(
-						1 => "No MRI paramter form",
-						2 => "T1 Scan done NOT Partial or Complete, in MRI paramter Form"
-						);
-
-		$db =& Database::singleton();
-
-		/*
-		$query= 
-		" FROM mri_upload m LEFT JOIN tarchive t ON (t.TarchiveID = m.TarchiveID OR t.SessionID = m.SessionID) LEFT JOIN flag f ON (f.SessionID = t.SessionID AND f.CommentID not like 'DDE%')";
-
-		$where = " WHERE f.CommentID NOT IN (SELECT CommentId FROM mri_parameter_form) OR f.CommentID IN (SELECT CommentID from mri_parameter_form mpf where (mpf.T1_Scan_done !='Complete' or mpf.T1_scan_done!= 'Partial'))";
 		
-		$this->query = $query.$where;
-		*/
-
+		$db =& Database::singleton();
+		/*
 		$query = "
 			FROM mri_upload m 
 			LEFT JOIN tarchive t ON (t.TarchiveID = m.TarchiveID OR t.SessionID = m.SessionID) 
 			LEFT JOIN flag f ON (f.SessionID = t.SessionID and f.CommentID not like 'DDE%') 
 			WHERE f.CommentID NOT IN (SELECT CommentId FROM mri_parameter_form) 
-			GROUP BY t.PatientName ,f.SessionID, UploadID, t.ArchiveLocation, t.CenterName 
+			GROUP BY t.PatientName ,f.SessionID, UploadID, t.CenterName 
 			UNION 
-			SELECT m.UploadedBy, UploadDate, f.SessionID,t.PatientName, t.ArchiveLocation, (\"".$errors[2]."\") as message 
+			SELECT m.UploadedBy, UploadDate, f.SessionID,t.PatientName, t.CenterName, (\"".$this->errors[1]."\") as message, (f.CommentID) as CommentID 
 			FROM mri_upload m 
 			LEFT JOIN tarchive t ON (t.TarchiveID = m.TarchiveID OR t.SessionID = m.SessionID) 
 			LEFT JOIN flag f ON (f.SessionID = t.SessionID and f.CommentID not like 'DDE%') 
@@ -162,14 +154,26 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 				FROM mri_parameter_form mpf 
 				WHERE (mpf.T1_Scan_done !='Complete' or mpf.T1_scan_done!= 'Partial')
 				)";
-
+		*/
+		$query= "
+			FROM mri_upload m 
+			JOIN tarchive t ON (t.TarchiveID = m.TarchiveID OR t.SessionID = m.SessionID) 
+			JOIN flag f ON (f.SessionID = t.SessionID and f.CommentID not like 'DDE%') 
+			WHERE f.CommentID IN (
+				SELECT CommentID 
+				FROM mri_parameter_form mpf 
+				WHERE (mpf.T1_Scan_done !='Complete' OR mpf.T1_scan_done!= 'Partial')
+				)";
 		$this->query = $query;
+		$this->columns = array("m.UploadedBy", "UploadDate", 't.PatientName', 't.CenterName', '("'.$this->errors[1].'") as message','(" ") as action',  'f.CommentID as CommentID');
+		
+		//$this->columns = array('m.UploadedBy', 'UploadDate', 'f.SessionID' , 't.PatientName', 't.CenterName', '("'.$this->errors[0].'") as message ', '(" ") as CommentID ');
+		
+		$this->group_by = 't.PatientName, f.SessionID, UploadID, t.CenterName, CommentID';
 
-		$this->columns = array('m.UploadedBy', 'UploadDate', 'f.SessionID' , 't.PatientName', 't.ArchiveLocation',  '("'.$errors[1].'") as message ');
-
-		$this->group_by = 't.PatientName, f.SessionID, UploadID, ArchiveLocation, t.CenterName';
-		$this->order_by = 'UploadDate';
-		$this->headers = ['Uploaded By', 'Upload Date', 'SessionID', 'PatientName', 'Archive Location', 'Message', 'Action', 'CommentID'];
+		$this->order_by = ' UploadDate ';
+		
+		$this->headers = ['Uploaded By', 'Upload Date', 'Patient Name', 'Location', 'Message', 'Action', 'CommentID'];
 
 		
 		$this->validFilters = array('m.UploadedBy','message');
@@ -177,7 +181,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 			'UploadedBy' => 'm.UploadedBy',
 			'error_message' => 'message');
 		
-		$this->tpl_data['hiddenHeaders'] = json_encode(['CommentID']);
+		//$this->tpl_data['hiddenHeaders'] = json_encode(['CommentID']);
 
 
 		return true;
