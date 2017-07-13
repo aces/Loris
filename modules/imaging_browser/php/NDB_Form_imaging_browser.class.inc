@@ -399,7 +399,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                     $updateSet['QCFirstChangeTime'] = time();
                 }
 
-                $QCExists = $this->DB->pselectOne(
+                $QCExists  = $this->DB->pselectOne(
                     "SELECT 'x' 
                     FROM files_qcstatus 
                     WHERE FileID=:FID",
@@ -496,7 +496,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                                       'QCLastChangeTime' => time(),
                                      );
                         $updateSet = Utility::nullifyEmpty($updateSet, 'Selected');
-                        $success = $this->DB->update(
+                        $success   = $this->DB->update(
                             'files_qcstatus',
                             $updateSet,
                             $updateWhere
@@ -561,7 +561,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                     = $updateSet['MRIQCLastChangeTime'];
             }
             $updateSet = Utility::nullifyEmpty($updateSet, 'MRIQCStatus');
-            $success = $this->DB->update(
+            $success   = $this->DB->update(
                 'session',
                 $updateSet,
                 array('ID' => $this->sessionID)
