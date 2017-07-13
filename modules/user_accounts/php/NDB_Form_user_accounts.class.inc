@@ -98,23 +98,23 @@ class NDB_Form_User_Accounts extends NDB_Form
             }
 
             // An array of each field that requires front-end sanitization
-            $fieldsThatAreStrings = array (
-                'UserID',
-                'First_name',
-                'Last_name',
-                'Real_name',
-                'Email',
-                'Degree',
-                'Institution',
-                'Address',
-                'City',
-                'State',
-                'Zip_code',
-                'Country',
-                'Fax',
-            );
+            $fieldsThatAreStrings = array(
+                                     'UserID',
+                                     'First_name',
+                                     'Last_name',
+                                     'Real_name',
+                                     'Email',
+                                     'Degree',
+                                     'Institution',
+                                     'Address',
+                                     'City',
+                                     'State',
+                                     'Zip_code',
+                                     'Country',
+                                     'Fax',
+                                    );
             // Prevent Javascript injection on all fields
-            foreach($fieldsThatAreStrings as $fieldName) {
+            foreach ($fieldsThatAreStrings as $fieldName) {
                 // this check prevents PHP Notices
                 if (!empty($defaults[$fieldName])) {
                     $defaults[$fieldName] = htmlspecialchars($defaults[$fieldName]);
