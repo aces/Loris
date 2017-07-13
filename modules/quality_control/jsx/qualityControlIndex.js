@@ -1,42 +1,34 @@
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import formatColumn from './columnFormatter';
-
 class QualityControlIndex extends React.Component {
-
     constructor(props) {
         super(props);
-
         this.state = {
             isLoadedImg: false,
-            isLoadedBehavioral: false,
+            isLoadedBehavioral:false,
             imgFilter: {},
             behavioralFilter:{},
+            filter: {}
         };
-
-
         this.fetchData = this.fetchData.bind(this);
-        this.updateBehavioralFilter = this.updateBehavioralFilter.bind(this);
-        this.updateImgFilter = this.updateImgFilter.bind(this);
+        this.updateBehavioralFilter = this.updateBehavioralFilter.bind(this.state);
+        this.updateImgFilter= this.updateImgFilter.bind(this.state);
     }
     componentDidMount(){
         this.fetchData("imaging");
-        this.fetchData("behavioral");
+        this.fetchData("behavioral")
     }
-    getSelectedTabIndex() {
-        return $("#TabPanes").tabs('option', 'selected');
-    }
-
     fetchData(flag){
         if (flag == "imaging"){
             $.ajax(this.props.ImgDataURL, {
                 method:"GET",
                 dataType: "json",
                 success: function(data){
-
+                    console.log("Got Imaging Data");
                     this.setState({
-                        ImgData: data,
-                        isLoadedImg: true
+                        ImgData:data,
+                        isLoadedImg:true
                     });
                 }.bind(this),
             });
@@ -45,30 +37,22 @@ class QualityControlIndex extends React.Component {
                 method:"GET",
                 dataType: "json",
                 success: function(data){
+                    console.log("Got Behavioral Data");
                     this.setState({
-                        BehavioralData: data,
-                        isLoadedBehavioral: true
+                        BehavioralData:data,
+                        isLoadedBehavioral:true
                     });
                 }.bind(this),
             });
         }
     }
-
-    changeData(){
-        console.log("clicked tab");
+    updateImgFilter(imgFilter) {
+        this.setState({imgFilter: imgFilter});
     }
-
-    updateBehavioralFilter(filter) {
-        console.log(behavioralFilter);
-        this.setState({behavioralFilter: filter});
+    updateBehavioralFilter(behavioralFilter){
+        this.setState({behavioralFilter: behavioralFilter});
     }
-
-    updateImgFilter(filter) {
-        this.setState({imgFilter: filter})
-    }
-
     render() {
-
         if (!this.state.isLoadedBehavioral || !this.state.isLoadedImg){
             return(
                 <button className="btn-info has-spinner">
@@ -79,7 +63,6 @@ class QualityControlIndex extends React.Component {
                 </button>
             );
         }
-
         let uploadTab;
         let tabList = [
             {id: "behavioral", label: "Behavioral"},
@@ -94,9 +77,8 @@ class QualityControlIndex extends React.Component {
                     id="quality_control_behavioural_filter"
                     columns={2}
                     formElements={this.state.BehavioralData.form}
-                    filter={this.state.behavioralFilter}
                     onUpdate={this.updateBehavioralFilter}
-                >
+                    filter={this.state.behavioralFilter}>
                     <br/>
                     <ButtonElement type="reset" label="Clear Filters" />
                 </FilterForm>
@@ -109,15 +91,15 @@ class QualityControlIndex extends React.Component {
         );
 
         let tab1 = (
-            <TabPane TabId={tabList[1].id}>
+            <TabPane TabId={tabList[1].id} >
                 <FilterForm
                     Module="quality_control"
                     name="quality_control"
                     id="quality_control_filter"
                     columns={2}
                     formElements={this.state.ImgData.form}
-                    filter={this.state.imgFilter}>
                     onUpdate={this.updateImgFilter}
+                    filter={this.state.imgFilter}>
                     <br/>
                     <ButtonElement type="reset" label="Clear Filters" />
                 </FilterForm>
@@ -128,7 +110,6 @@ class QualityControlIndex extends React.Component {
                 />
             </TabPane>
         );
-
         return (
             <div>
                 <Tabs id = "TabPanes" tabs={tabList} defaultTab={tabList[0].id}
@@ -137,11 +118,9 @@ class QualityControlIndex extends React.Component {
                     {tab1}
                 </Tabs>
             </div>
-
         );
     }
 }
-
 $(function() {
     const qualityControlIndex = (
         <div className="page-qualityControl">
@@ -150,6 +129,5 @@ $(function() {
                 BehavioralDataURL = {`${loris.BaseURL}/quality_control/?submenu=quality_control_behavioral&format=json`}/>
         </div>
     );
-
     ReactDOM.render(qualityControlIndex, document.getElementById("lorisworkspace"));
 });
