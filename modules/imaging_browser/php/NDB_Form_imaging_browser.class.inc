@@ -405,9 +405,9 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                     WHERE FileID=:FID",
                     $params
                 );
+                $updateSet = Utility::nullifyEmpty($updateSet, 'QCStatus');
                 if (!empty($QCExists)) {
                     $updateWhere['FileID'] = $curFileID;
-                    Utility::nullifyEmpty($updateSet, 'QCStatus');
                     $success = $this->DB->update(
                         'files_qcstatus',
                         $updateSet,
@@ -495,7 +495,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                                       'Selected'         => $curSelected,
                                       'QCLastChangeTime' => time(),
                                      );
-                        Utility::nullifyEmpty($updateSet, 'Selected');
+                        $updateSet = Utility::nullifyEmpty($updateSet, 'Selected');
                         $success = $this->DB->update(
                             'files_qcstatus',
                             $updateSet,
@@ -507,6 +507,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                                       'Selected'          => $curSelected,
                                       'QCFirstChangeTime' => time(),
                                      );
+                        $updateSet = Utility::nullifyEmpty($updateSet, 'Selected');
                         $success   = $this->DB->insert('files_qcstatus', $insertSet);
                     }
                 }
@@ -545,7 +546,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
 
             $updateSet       = array(
                                 'MRIQCPending'        => $_POST['visit_pending'],
-                                'MRIQCStatus'         => $_POST['visit_status'],
+                                'MRIQCStatus'         => $save_visit_status,
                                 'MRICaveat'           => $_POST['visit_caveat'],
                                 'MRIQCLastChangeTime' => date("Y-m-d H:i:s"),
                                );
@@ -559,6 +560,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 $updateSet['MRIQCFirstChangeTime']
                     = $updateSet['MRIQCLastChangeTime'];
             }
+            $updateSet = Utility::nullifyEmpty($updateSet, 'MRIQCStatus');
             $success = $this->DB->update(
                 'session',
                 $updateSet,
