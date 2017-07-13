@@ -725,7 +725,7 @@ class NDB_BVL_Instrument extends NDB_Page
             if (strpos($key, '__') === 0) {
                 unset($values[$key]);
             }
-            Utility::nullifyEmpty($values, $key);
+            $values = Utility::nullifyEmpty($values, $key);
         }
         $db     =& Database::singleton();
         $result = $db->update(
