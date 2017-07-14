@@ -141,7 +141,6 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
             'f.test_name'
         ];
         $query = $query . $where;
-        print_r($query);
         $this->query = $query;
         /*if (!$user->hasPermission('access_all_profiles')) {
             $site_arr     = implode(",", $user->getCenterIDs());

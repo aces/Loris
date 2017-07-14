@@ -12,8 +12,8 @@ class QualityControlIndex extends React.Component {
             filter: {}
         };
         this.fetchData = this.fetchData.bind(this);
-        this.updateBehavioralFilter = this.updateBehavioralFilter.bind(this.state);
-        this.updateImgFilter= this.updateImgFilter.bind(this.state);
+        this.updateBehavioralFilter = this.updateBehavioralFilter.bind(this);
+        this.updateImgFilter= this.updateImgFilter.bind(this);
     }
     componentDidMount(){
         this.fetchData("imaging");
@@ -47,10 +47,10 @@ class QualityControlIndex extends React.Component {
         }
     }
     updateImgFilter(imgFilter) {
-        this.setState({imgFilter: imgFilter});
+        this.setState({imgFilter: filter});
     }
     updateBehavioralFilter(behavioralFilter){
-        this.setState({behavioralFilter: behavioralFilter});
+        this.setState({behavioralFilter: filter});
     }
     render() {
         if (!this.state.isLoadedBehavioral || !this.state.isLoadedImg){
