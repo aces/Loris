@@ -46,11 +46,17 @@ class QualityControlIndex extends React.Component {
             });
         }
     }
-    updateImgFilter(imgFilter) {
-        this.setState({imgFilter: filter});
+    updateImgFilter(filter) {
+        this.setState({
+            imgFilter: filter,
+            filter: filter
+        });
     }
-    updateBehavioralFilter(behavioralFilter){
-        this.setState({behavioralFilter: filter});
+    updateBehavioralFilter(filter){
+        this.setState({
+            behavioralFilter: filter,
+            filter: filter
+        });
     }
     render() {
         if (!this.state.isLoadedBehavioral || !this.state.isLoadedImg){
@@ -85,7 +91,7 @@ class QualityControlIndex extends React.Component {
                 <StaticDataTable
                     Data={this.state.BehavioralData.Data}
                     Headers={this.state.BehavioralData.Headers}
-                    Filter={this.state.behavioralFilter}
+                    Filter={this.state.filter}
                 />
             </TabPane>
         );
@@ -99,7 +105,7 @@ class QualityControlIndex extends React.Component {
                     columns={2}
                     formElements={this.state.ImgData.form}
                     onUpdate={this.updateImgFilter}
-                    filter={this.state.imgFilter}>
+                    filter={this.state.vimgFilter}>
                     <br/>
                     <ButtonElement type="reset" label="Clear Filters" />
                 </FilterForm>

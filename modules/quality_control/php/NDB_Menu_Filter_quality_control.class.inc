@@ -58,8 +58,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     function _setFilterForm()
     {
         $errors  = array(
-            1 => "No MRI paramter form",
-            2 => "T1 Scan done NOT Partial or Complete in MRI paramter Form"
+            1 => "No MRI parameter form",
+            2 => "T1 Scan done NOT Partial or Complete in MRI parameter Form"
         );
         $user =& User::singleton();
         $db   = Database::singleton();
@@ -100,12 +100,12 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         }
         // Form Elements
         $this->addSelect('visitLabel', 'Visit Label', $visitList);
-        $this->addSelect('instruments', 'Instruments', $instrumentList);
-        $this->addSelect('error_message', 'Error Message', $errors);
-        $this->addSelect('UploadedBy', 'Uploaded By', $uploaderList);
+    //    $this->addSelect('instruments', 'Instruments', $instrumentList);
+        $this->addSelect('error', 'Error Message', $errors);
+        $this->addSelect('uploadedBy', 'Uploaded By', $uploaderList);
         $this->addBasicText('DCCID', 'DCCID', ["size" => 9, "maxlength" => 7]);
         $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
-        $this->addSelect('site', 'Site', $siteList);
+     //   $this->addSelect('site', 'Site', $siteList);
         // $this->tpl_data["hasWritePermission"] = $this->hasWritePermission;
         return true;
     }
@@ -118,8 +118,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     function _setupVariables()
     {
         $errors  = array(
-            1 => "No MRI paramter form",
-            2 => "T1 Scan done NOT Partial or Complete, in MRI paramter Form"
+            1 => "No MRI parameter form",
+            2 => "T1 Scan done NOT Partial or Complete, in MRI parameter Form"
         );
         $db =& Database::singleton();
         /*
@@ -136,7 +136,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 			WHERE f.CommentID NOT IN (SELECT CommentId FROM mri_parameter_form) 
 			GROUP BY t.PatientName ,f.SessionID, UploadID, t.ArchiveLocation, t.CenterName 
 			UNION 
-			SELECT m.UploadedBy, UploadDate, f.SessionID,t.PatientName, t.ArchiveLocation, (\"".$errors[2]."\") as message 
+			SELECT m.UploadedBy, UploadDate, f.SessionID,t.PatientName, t.ArchiveLocation, (\"".$errors[2]."\") as error 
 			FROM mri_upload m 
 			LEFT JOIN tarchive t ON (t.TarchiveID = m.TarchiveID OR t.SessionID = m.SessionID) 
 			LEFT JOIN flag f ON (f.SessionID = t.SessionID and f.CommentID not like 'DDE%') 
@@ -146,15 +146,15 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 				WHERE (mpf.T1_Scan_done !='Complete' or mpf.T1_scan_done!= 'Partial')
 				)";
         $this->query = $query;
-        $this->columns = array('m.UploadedBy', 'UploadDate', 'f.SessionID' , 't.PatientName', 't.ArchiveLocation',  '("'.$errors[1].'") as message ');
+        $this->columns = array('m.UploadedBy as uploaded_by', 'UploadDate', 'f.SessionID' , 't.PatientName', 't.ArchiveLocation',  '("'.$errors[1].'") as error');
         $this->group_by = 't.PatientName, f.SessionID, UploadID, ArchiveLocation, t.CenterName';
         $this->order_by = 'UploadDate';
-        $this->headers = ['Uploaded By', 'Upload Date', 'SessionID', 'PatientName', 'Archive Location', 'Message', 'Action', 'CommentID'];
+        $this->headers = ['Uploaded By', 'Upload Date', 'SessionID', 'PatientName', 'Archive Location', 'Error Message', 'Action', 'CommentID'];
 
-        $this->validFilters = array('m.UploadedBy','message');
+       /* $this->validFilters = array('m.UploadedBy','message');
         $this->formToFilter = array(
             'UploadedBy' => 'm.UploadedBy',
-            'error_message' => 'message');
+            'error_message' => 'message'); */
 
         $this->tpl_data['hiddenHeaders'] = json_encode(['CommentID']);
         return true;
