@@ -137,6 +137,9 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 	{
 		
 		$db =& Database::singleton();
+		
+		// this query looks for both mri_uploads with no associated mri_parameter_forms, and one with mri_paramter_forms that DO NOT have T1_Scan_done equal to partial or complete. 
+		
 		/*
 		$query = "
 			FROM mri_upload m 
@@ -166,8 +169,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 				)";
 		$this->query = $query;
 		$this->columns = array("m.UploadedBy", "UploadDate", 't.PatientName', 't.CenterName', '("'.$this->errors[1].'") as message','(" ") as action',  'f.CommentID as CommentID');
-		
-		//$this->columns = array('m.UploadedBy', 'UploadDate', 'f.SessionID' , 't.PatientName', 't.CenterName', '("'.$this->errors[0].'") as message ', '(" ") as CommentID ');
 		
 		$this->group_by = 't.PatientName, f.SessionID, UploadID, t.CenterName, CommentID';
 
