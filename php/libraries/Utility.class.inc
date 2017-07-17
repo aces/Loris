@@ -659,7 +659,7 @@ class Utility
      * @param string $field The field for which '' should be converted
      *                      to null.
      *
-     * @return array The same array passed in, after modifications.
+     * @return void
      */
     public static function nullifyEmpty(&$arr, $field)
     {
