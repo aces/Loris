@@ -153,7 +153,6 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
             'PSCID',
             'instrument',
         ];
-
         return true;
     }
     /**
