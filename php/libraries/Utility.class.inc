@@ -666,7 +666,6 @@ class Utility
         if ($arr[$field] === '') {
             $arr[$field] = null;
         }
-        return $arr;
     }
 
     /**
