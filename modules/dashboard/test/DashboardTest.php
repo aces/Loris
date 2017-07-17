@@ -540,7 +540,7 @@ class DashboardTest extends LorisIntegrationTest
     public function testIncompleteForm()
     {
         $this->setupPermissions(
-           array("superuser")
+            array("superuser")
         );
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
