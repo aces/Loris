@@ -533,17 +533,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
     /**
-     * Check that for a user with 'Data Entry' permission, the number of
-     * incomplete forms (instruments with Data Entry  set to 'In Progress')
-     * is displayed in the My Tasks panel. If the user also has 'Across all
-     * sites access candidates profiles' then the site displayed is 'All',
-     * otherwise it is set to the site the user belongs to and only the
-     * candidates that belong to the user's site are considered for the
-     * computation of the number of incomplete forms.
-     * Clicking on this task should take you to the BVL statistics page,
-     * with the stats filtered according to the user's site (or without
-     * any filter if the user has 'Across all sites access candidates
-     * profiles' permission).
+     * Clicking on this task should take you to the BVL statistics page
      *
      *  @return void
      */
