@@ -37,9 +37,6 @@ class DashboardTest extends LorisIntegrationTest
     function setUp()
     {
         parent::setUp();
-        $window = new WebDriverWindow($this->webDriver);
-        $size   = new WebDriverDimension(1280, 1024);
-        $window->setSize($size);
         //Insert a pending user
         $this->DB->insert(
             "users",
@@ -552,14 +549,8 @@ class DashboardTest extends LorisIntegrationTest
      */
     public function testIncompleteForm()
     {
-        $this->markTestSkipped(
-            'Skipping tests until removing test_instrument'
-        );
         $this->setupPermissions(
-            array(
-             "data_entry",
-             "access_all_profiles",
-            )
+           array("superuser")
         );
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
