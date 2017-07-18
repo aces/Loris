@@ -86,6 +86,7 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
                 $sqlSelectOne,
                 array('testname' => $_FILES['install_file']['name'])
             );
+
             if ($exists <= 0) {
                 $db_config = $config->getSetting('database');
                 exec("php generate_tables_sql_and_testNames.php < $new_file");
@@ -97,8 +98,10 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
                 );
 
                 exec(
-                    "mysql -u" . escapeshellarg($db_config['quatUser']).
-                    " -p" . escapeshellarg($db_config['quatPassword']).
+                    "mysql".
+                    " -h" . escapeshellarg($db_config['host']).
+                    " -u" . escapeshellarg($db_config['username']).
+                    " -p" . escapeshellarg($db_config['password']).
                     " " . escapeshellarg($db_config['database']).
                     " < " . $this->path . "project/tables_sql/".
                     $instrument->table.".sql"
