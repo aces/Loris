@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         }
     }
 
-    // For each fields, check the yare well-formed
+    // For each fields, check they are well-formed
     $fields = array(
                'name'     => 'First Name',
                'lastname' => 'Last Name',
@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     $email_error = 'Please provide a valid email.'
     foreach ($fields as $key => $label) {
-        // check that each of the field data are long enough
+        // check that the data entered is long enough
         if (!checkLen($key)) {
             $errstring = '';
             switch ($key) {
@@ -146,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         ) {
                 $errstring = "Invalid characters used in $label.";
         }
-        // for email, check if valid
+        // populate error array with the error message, if any
         if (!empty($errstring)) {
             $err[$key] = $errstring;
         }
@@ -233,8 +233,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
  * @return True if the parameter was sent and meets minimum length, false
  *         otherwise
  */
-function checkLen($str, $len=2)
+function checkLen($str)
 {
+    // The valid string length is 3 except for site, which is 0
+    $len = $str === 'site'? 0 : 3;
     return isset($_REQUEST[$str])
            && mb_strlen(strip_tags($_REQUEST[$str]), "utf-8") > $len;
 }
