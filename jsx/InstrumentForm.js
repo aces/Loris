@@ -21,9 +21,14 @@ const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave}) 
             return false;
           }
         }).map((element, index) => {
-          const requireResponse = element.Options.RequireResponse;
-          const required = typeof requireResponse === 'string' ? Evaluator(requireResponse, contextWithData) : requireResponse;
-          return renderElement(element, index, data, onUpdate, required)
+          if(element.Type === 'radio' || element.Type === 'text' || element.Type === 'checkbox' || element.Type === 'select') {
+              const requireResponse = element.Options.RequireResponse;
+              const required = typeof requireResponse === 'string' ? Evaluator(requireResponse, contextWithData) : requireResponse;
+              return renderElement(element, index, data, onUpdate, required)
+          } 
+          //if(required || required == "true") required = true;
+          //else required = false;
+          return renderElement(element, index, data, onUpdate)
         })
       }
     </div>
@@ -96,7 +101,7 @@ function renderSelect(selectEl, value, key, onUpdate, isRequired) {
         options={selectEl.Options.Values}
         onUserInput={onUpdate}
         value={value}
-        required=isRequired
+        required={isRequired}
       />
     );
   }
@@ -111,7 +116,7 @@ function renderCheckbox(selectEl, value, key, onUpdate, isRequired) {
       options={selectEl.Options.Values}
       onUserInput={onUpdate}
       value={value}
-      required=isRequired
+      required={isRequired}
     />
   );
 }
@@ -124,7 +129,7 @@ function renderText(textEl, value, key, onUpdate, isRequired) {
       label={textEl.Description}
       onUserInput={onUpdate}
       value={value ? String(value) : value}
-      required=isRequired
+      required={isRequired}
     />
   );
 }
