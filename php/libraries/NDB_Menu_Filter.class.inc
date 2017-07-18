@@ -139,15 +139,8 @@ class NDB_Menu_Filter extends NDB_Menu
         // set the headers if necessary
         if (!is_array($this->headers) || count($this->headers) == 0) {
             foreach ($this->columns as $value) {
-                //@note Remove necessity to use regex for this task in future
-                //      Consider more robust methods
-                //Checks if `$value` ends in an alphanumeric/underscore character
-                //with an optional trailing backtick. The backtick will not be part
-                //of `$match[1]` as we're trying to output user-readable text...
-                //From programmer-readable text...
-                //That's the reason for this code's existence, anyway.
-                preg_match('/([0-9A-Za-z_]+)`?$/', $value, $match);
-                $this->headers[] = $match[1];
+                preg_match('/[0-9A-Za-z_]+$/', $value, $match);
+                $this->headers[] = $match[0];
             }
         }
 
