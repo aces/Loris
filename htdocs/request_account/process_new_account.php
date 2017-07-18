@@ -234,8 +234,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
  */
 function checkLen($str)
 {
-    // The valid string length is 3 except for site, which is 0
-    $len = $str === 'site'? 0 : 3;
+    // The valid string length is 2 except for site, which is 0
+    $len = $str === 'site'? 0 : 2;
     return isset($_REQUEST[$str])
            && mb_strlen(strip_tags($_REQUEST[$str]), "utf-8") > $len;
 }
