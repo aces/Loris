@@ -60,6 +60,8 @@ function renderElement(element, key, data, onUpdate, required = false) {
     return renderText(element, data[element.Name], key, onUpdate, required)
   } else if (element.Type === 'calc') {
     return renderCalc(element, data[element.Name], key, onUpdate)
+  } else if (element.Type === 'date') {
+    return renderDate(element, data[element.Name], key, onUpdate, required)
   }
 }
 
@@ -143,5 +145,17 @@ function renderCalc(calcEl, value, key, onUpdate) {
       value={value ? String(value) : value}
     />
   );
+}
+
+function renderDate(dateEl, value, key, onUpdate, isRequired) {
+  return (
+    <DateElement
+      key={key}
+      name={dateEl.Name}
+      label={dateEl.Description}
+      value={value}
+      required={isRequired}
+    />
+  )
 }
 export default InstrumentForm;
