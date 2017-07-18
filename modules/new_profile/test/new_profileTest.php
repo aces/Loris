@@ -24,7 +24,22 @@ require_once __DIR__ .
  * @link     https://github.com/aces/Loris
  */
 class NewProfileTestIntegrationTest extends LorisIntegrationTest
-{
+{   
+   /**
+     * UI elements and locations
+     * breadcrumb - 'Access Profile'
+     * Table headers
+     */
+    private $_loadingUI
+        =  array(
+            'New  Profile' => '#bc2 > a:nth-child(2) > div',
+            'Date of Birth'      => '#new_profile > div:nth-child(1) > label',
+            'Confirm Date of Birth' => '#new_profile > div:nth-child(4) > label',
+            'Expected Date of Confinement'     => '#new_profile > div:nth-child(7) > label',
+            'Confirm EDC'     => '#new_profile > div:nth-child(10) > label',
+            'Gender' => '#new_profile > div:nth-child(13) > label',
+            'Site' => '#new_profile > div:nth-child(16) > label'
+           );
     /**
      * Tests that, when loading the new_profile module with all settings
      * enabled, the correct fields all appear in the body.
@@ -164,37 +179,6 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests that page returns error if PSCID is not filled out
-     *
-     * @return none
-     */
-    function testNewProfilePSCIDError()
-    {
-
-        $this->markTestSkipped(
-            "Config not properly set up to test that PSCID is required"
-        );
-
-        // $this->webDriver->get($this->url . "/new_profile/");
-
-        // $dates = $this->webDriver->findElements(
-        // WebDriverBy::cssSelector(".input-date"));
-        // $dates[0]->sendKeys("01/01/2015");
-        // $dates[1]->sendKeys("01/01/2015");
-
-        // $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
-        // $gender->sendKeys("Male");
-
-        // $startVisit = $this->webDriver->findElement(
-        // WebDriverBy::Name("fire_away"));
-        // $startVisit->click();
-
-        // $bodyText = $this->webDriver->findElement(
-        // WebDriverBy::cssSelector("body"))->getText();
-        // $this->assertContains("PSCID must be specified", $bodyText);
-    }
-
-    /**
      * Tests that page returns error if DoB dates dont match
      *
      * @return none
@@ -304,6 +288,21 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $this->deleteCandidate("BBQ0000");
         $this->deleteCandidate("BBQ0001");
         $this->resetStudySite();
+    }
+    /**
+      * Testing UI elements when page loads
+      *
+      * @return void
+      */
+    function testPageUIs()
+    {
+        $this->safeGet($this->url . "/datadict/");
+        foreach ($this->_loadingUI as $key => $value) {
+            $text = $this->webDriver->executescript(
+                "return document.querySelector('$value').textContent"
+            );
+            $this->assertContains($key, $text);
+        }
     }
 }
 ?>
