@@ -35,7 +35,6 @@ function renderMeta(meta) {
       <h1>{meta.LongName}</h1>
     </div>
   )
-
 }
 
 function renderElement(element, key, data, onUpdate) {
@@ -76,7 +75,7 @@ function renderRadio(radioEl, value, key, onUpdate) {
       options={radioEl.Options.Values}
       orientation={radioEl.Options.Orientation}
       onUserInput={onUpdate}
-      value={value ? String(value) : value}
+      value={value}
     />
   );
 }
@@ -118,7 +117,7 @@ function renderText(textEl, value, key, onUpdate) {
       name={textEl.Name}
       label={textEl.Description}
       onUserInput={onUpdate}
-      value={value ? String(value) : value}
+      value={value}
     />
   );
 }
@@ -129,8 +128,9 @@ function renderCalc(calcEl, value, key, onUpdate) {
       key={key}
       name={calcEl.Name}
       label={calcEl.Description}
-      value={value ? String(value) : value}
+      value={value}
     />
   );
 }
+
 export default InstrumentForm;
