@@ -408,6 +408,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
         if ($this->DataEntryType == 'DirectEntry') {
             $smarty = new Smarty_neurodb;
+            $this->setEscapeHTML(false);
 
             $formArray = $this->form->toElementArray();
             if (isset($this->testName)) {
@@ -425,6 +426,7 @@ class NDB_BVL_Instrument extends NDB_Page
             return $this->toJSON();
         } else {
             $smarty    = new Smarty_neurodb;
+            $this->setEscapeHTML(false);
             $formArray = $this->form->toElementArray();
 
             $smarty->assign('form', $formArray);

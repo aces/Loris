@@ -92,6 +92,8 @@ class Smarty_NeuroDB extends Smarty
             $currentDir = array('base' => $this->loristemplate_dir);
         }
 
+        $this->escape_html = true;
+
         $newdir = array_merge(
             $currentDir,
             array(
@@ -106,6 +108,23 @@ class Smarty_NeuroDB extends Smarty
         //$this->addConfigDir($this->template_dir);
         //$this->addConfigDir($this->project_template_dir);
     }
-}
 
+    /**
+     * Sets whether the Smarty template engine should automatically escape
+     * HTML in templates.
+     *
+     * @param bool $val true if template variables should be automatically HTML escaped
+     *
+     * @return none
+     */
+    public function setEscapeHTML($val) {
+        switch ($val) {
+        case true: // fallthrough
+        case false:
+            $this->escape_html = $val;
+        default:
+            throw new LorisException("Invalid value for attempting to set template HTML escaping");
+        }
+    }
+}
 ?>
