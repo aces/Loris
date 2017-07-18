@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         );
         if (!$resp->isSuccess()) {
             $errors         = $resp->getErrorCodes();
-            $err['captcha'] = 'Please complete the reCaptcha!';
+            $err['captcha'] = 'Please complete the reCaptcha.';
         }
     }
 
@@ -135,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 $errstring = $email_error;
                 break;
             case 'site':
-                $errstring = 'Please choose a site';
+                $errstring = 'Please choose a site.';
                 break;
             }
         }
