@@ -60,14 +60,11 @@ class Utility
      * @param array $array The multi-dimensional array
      *
      * @return string
-     *
-     * @deprecated
      */
     static function reduce($array)
     {
-        throw new DeprecatedException(
-            "Utility::reduce has been deprecated."
-        );
+        $string = array_reduce($array, array('Utility', 'crunch'));
+         return (!empty($string)) ? explode('`', $string) : array();
     }
 
 
@@ -80,14 +77,14 @@ class Utility
      * @note If any element of the array contains a backtick, you'll run into trouble
      *
      * @return string
-     *
-     * @deprecated
      */
     static function crunch($x, $y)
     {
-        throw new DeprecatedException(
-            "Utility::crunch has been deprecated."
-        );
+        $a = (is_array($x)) ? array_reduce($x, array('Utility', 'crunch')) : $x;
+
+             $b = (is_array($y)) ? array_reduce($y, array('Utility', 'crunch')) : $y;
+
+        return (!empty($a)) ? "$a`$b" : $b;
     }
 
 

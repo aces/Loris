@@ -226,7 +226,7 @@ class UserPermissions
 
         $results = $DB->pselect($query, array('UID' => $this->userID));
 
-        return $results;
+        return Utility::reduce($results);
     }
 
 
