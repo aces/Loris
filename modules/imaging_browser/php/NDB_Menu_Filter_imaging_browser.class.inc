@@ -63,6 +63,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $config = NDB_Config::singleton();
         $DB     = Database::singleton();
         $toTable_scan_types = $config->getSetting('tblScanTypes');
+print_r($toTable_scan_types);
 
         $all_scan_types = $DB->pselect(
             "SELECT ID, Scan_type FROM mri_scan_type mri",
@@ -85,10 +86,31 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             )
         );
 
+        
+        if (!empty($scan_id_types)) {
+            $acqpid = "AND AcquisitionProtocolID IN (".
+                    implode(",", array_keys($scan_id_types)) .")";
+            $isFirst = true;
+            foreach ($scan_id_types as $key => $value) {
+                if ($isFirst) {
+                    $acqpif = "IF(FIND_IN_SET({$key},GROUP_CONCAT(
+                        DISTINCT AcquisitionProtocolID))>0 ";
+                } else {
+                    $acqpif .= "OR FIND_IN_SET({$key},GROUP_CONCAT(
+                        DISTINCT AcquisitionProtocolID))>0 ";
+                }
+                $isFirst = false;
+            }
+            $acqpif .= ",'new','')";
+        } else {
+            $acqpid = '';
+            $acqpif = 'new';
+        }
+
         $NewDataSubquery = "CASE 
-            COALESCE(nd.QCLastChangeTime, 'new')
-            WHEN 'new' THEN 'new' 
-            WHEN '' THEN 'new'
+            COALESCE(Max(fqc.QCLastChangeTime), 'new')
+            WHEN 'new' THEN {$acqpif}
+            WHEN ''    THEN {$acqpif}
             ELSE ''
             END";
 
@@ -114,23 +136,12 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             END 
             ";
 
-        $acqpid = "";
-        if (!empty($scan_id_types)) {
-            $acqpid = "AND AcquisitionProtocolID IN (".
-                    implode(",", array_keys($scan_id_types)) .")";
-        }
-
         $this->query = " FROM psc AS p 
             JOIN session s ON (s.CenterID=p.CenterID) 
             JOIN candidate c ON (c.CandID=s.CandID) 
             JOIN files f ON (f.SessionID=s.ID) 
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
-            JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
-            LEFT JOIN (SELECT files.SessionID, MIN(QCLastChangeTime)
-            as QCLastChangeTime FROM files
-            LEFT JOIN files_qcstatus USING (FileID)
-            WHERE OutputType='native' $acqpid GROUP BY files.SessionID) nd
-            ON (nd.SessionID=f.SessionID) ";
+            JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)";
 
         $left_joins = "";
         foreach ($case_desc as $key => $value) {
@@ -429,11 +440,11 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                     $query .= " AND s.MRIQCPending='Y'";
                     break;
                 case "N":
-                    $query .= " AND fqc.QCFirstChangeTime IS NULL";
+                    $query .= " AND fqc.QCFirstChangeTime IS NULL " . $acqpid;
                     break;
                 case "PN":
                     $query .= " AND (s.MRIQCPending='Y' 
-                        OR fqc.QCFirstChangeTime IS NULL)";
+                        OR (fqc.QCFirstChangeTime IS NULL ". $acqpid ."))";
                     break;
                 }
             } else if ($field == 'AcquisitionProtocolID') {
