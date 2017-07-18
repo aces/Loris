@@ -86,7 +86,6 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
                 $sqlSelectOne,
                 array('testname' => $_FILES['install_file']['name'])
             );
-
             if ($exists <= 0) {
                 $db_config = $config->getSetting('database');
                 exec("php generate_tables_sql_and_testNames.php < $new_file");
