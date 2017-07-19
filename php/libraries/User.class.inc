@@ -67,7 +67,7 @@ class User extends UserPermissions
 
         // get user sites
         $user_cid = array();
-        if (!isset($row['ID']) {
+        if (!isset($row['ID'])) {
             error_log(
                 "Could not get user center ID(s) because'
                 . ' user DB query value 'ID' is not set."
@@ -85,7 +85,7 @@ class User extends UserPermissions
         }
 
         // Get examiner information
-        if (!isset($row['Real_name']) {
+        if (!isset($row['Real_name'])) {
             error_log(
                 "Could not get user examiner info because'
                 . ' user DB query value 'Real_name' is not set."
