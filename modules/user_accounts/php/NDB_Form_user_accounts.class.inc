@@ -25,7 +25,7 @@ class NDB_Form_User_Accounts extends NDB_Form
     /**
      * Determines whether this form is in edit or create mode.
      *
-     * @return boolean true if in crete mode, false otherwise.
+     * @return boolean true if in create mode, false otherwise.
      */
     function isCreatingNewUser()
     {
@@ -738,7 +738,12 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         //------------------------------------------------------------
 
+        // checking if the account can be rejected (no password hash
+        // pending approval)
+        $this->tpl_data['can_reject'] =$this->_canRejectAccount($this->identifier);
+
         // get the editor's permissions
+
         $perms    = $editor->getPermissionsVerbose();
         $lastRole = '';
         foreach ($perms as $row) {
@@ -827,6 +832,34 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         // unique key and password rules
         $this->form->addFormRule(array(&$this, '_validateEditUser'));
+    }
+
+    /**
+    * Query database on UserID to check that password has doesn't
+    * exist and account is still pending approval, to ensure the
+    * users with account activity can't be rejected by setting
+    * their status to pending.
+    *
+    * @param string $id identifier of account to verify
+    *
+    * @return boolean true is Password_hash is null and
+    * Pending_approval is Yes, false otherwsie
+    */
+    function _canRejectAccount($id)
+    {
+        $DB     = Database::singleton();
+        $fields =  $DB->pselect(
+            "SELECT Password_hash, Pending_approval
+                   FROM users
+                   WHERE UserID=:id",
+            array("id" => $id)
+        );
+        if (is_null($fields[0]['Password_hash'])
+            && $fields[0]['Pending_approval']=="Y"
+        ) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -1259,6 +1292,7 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         return $errors;
     }
+
 
     /**
      * Validates that en email address entered for a given user
