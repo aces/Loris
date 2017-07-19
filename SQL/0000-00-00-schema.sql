@@ -304,7 +304,7 @@ CREATE TABLE `session` (
   `Date_registered` date DEFAULT NULL,
   `Testdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `Hardcopy_request` enum('-','N','Y') NOT NULL DEFAULT '-',
-  `BVLQCStatus` enum('','Complete') DEFAULT NULL,
+  `BVLQCStatus` enum('Complete') DEFAULT NULL,
   `BVLQCType` enum('Visual','Hardcopy') DEFAULT NULL,
   `BVLQCExclusion` enum('Excluded','Not Excluded') DEFAULT NULL,
   `QCd` enum('Visual','Hardcopy') DEFAULT NULL,
