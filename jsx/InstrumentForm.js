@@ -22,7 +22,7 @@ const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave}) 
             return false;
           }
         }).map((element, index) => {
-          if(INPUT_TYPES.includes(element.Type) {
+          if(INPUT_TYPES.includes(element.Type)) {
               const requireResponse = element.Options.RequireResponse;
               const required = typeof requireResponse === 'string' ? Evaluator(requireResponse, contextWithData) : requireResponse;
               return renderElement(element, index, data, onUpdate, required)
