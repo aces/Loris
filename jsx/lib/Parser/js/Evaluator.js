@@ -50,7 +50,8 @@ function evalAST(tree, scope) {
     }
     case 'BinaryOp': {
       const funcArgs = tree.args.map(ast => evalAST(ast, scope));
-      return Functions[tree.op](...funcArgs);
+      const castedFuncArgs = funcArgs.map(arg => Number(arg) ? Number(arg) : arg);
+      return Functions[tree.op](...castedFuncArgs);
     }
   }
 }

@@ -2,10 +2,10 @@
 
 export default {
   eq(a, b) {
-    return a === b;
+    return a == b;
   },
   neq(a, b) {
-    return a !== b;
+    return a != b;
   },
   gt(a, b) {
     return a > b;
