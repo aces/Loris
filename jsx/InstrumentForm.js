@@ -153,6 +153,7 @@ function renderDate(dateEl, value, key, onUpdate, isRequired) {
       key={key}
       name={dateEl.Name}
       label={dateEl.Description}
+      onUserInput={onUpdate}
       value={value}
       required={isRequired}
     />
