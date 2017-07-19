@@ -1226,12 +1226,12 @@ class Utility
     }
 
     /**
-    * Coverts array into CSV string
-    *
-    * @param array $array the array to be converted
-    *
-    * @return string CSV string of data
-    */
+     * Coverts array into CSV string
+     *
+     * @param array $array the array to be converted
+     *
+     * @return string CSV string of data
+     */
     static function arrayToCSV($array)
     {
         $fp = fopen("php://temp", 'w+');
@@ -1277,5 +1277,32 @@ class Utility
         }
         return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
     }
+
+    /**
+     * Determine if a string starts with another string
+     *
+     * @param string $haystack string to search
+     * @param string $needle   substring to find
+     *
+     * @return boolean if $haystack begins with $needle
+     */
+    static function startsWith($haystack, $needle)
+    {
+        return substr($haystack, 0, strlen($needle)) === $needle;
+    }
+
+    /**
+     * Determine if a string ends with another string
+     *
+     * @param string $haystack string to search
+     * @param string $needle   substring to find
+     *
+     * @return boolean if $haystack ends with $needle
+     */
+    static function endsWith($haystack, $needle)
+    {
+        return substr($haystack, -strlen($needle)) === $needle;
+    }
 }
+
 ?>
