@@ -33,10 +33,7 @@ abstract class Endpoint
      * 
      * @return string A comma separated list of allowed methods
      */
-    public function getAllowedMethods()
-    {
-        return '';
-    }
+    abstract public function getAllowedMethods();
 
     /**
      * Handle a OPTIONS request
@@ -45,16 +42,13 @@ abstract class Endpoint
      */
     public function handleOPTIONS()
     {
-        return array (
-            'body' => '',
-            'status' => 200
-        );
+        return array(null, 200);
     }
 
     /**
      * Handle a GET request
      *
-     * @param $context a Object Value to use as context
+     * @param $context a Object to use as context
      *
      * @throws RestApiException
      * @return array The response body and a status code.
@@ -65,10 +59,23 @@ abstract class Endpoint
     }
 
     /**
+     * Handle a HEAD request
+     *
+     * @param $context a Object to use as context
+     *
+     * @throws RestApiException
+     * @return array The response body and a status code.
+     */
+    public function handleHEAD(&$ctx = NULL)
+    {
+        $this->_methodNotAllowed();
+    }
+
+    /**
      * Handle a POST request
      *
      * @param $input array json_decode of the content of php://input
-     * @param $context a Object Value to use as context
+     * @param $context a Object to use as context
      *
      * @throws RestApiException
      * @return array The response body and a status code.
@@ -82,7 +89,7 @@ abstract class Endpoint
      * Handle a PUT request
      *
      * @param $input array json_decode of the content of php://input
-     * @param $context a Object Value to use as context
+     * @param $context a Object to use as context
      *
      * @throws RestApiException
      * @return array The response body and a status code.
@@ -93,10 +100,24 @@ abstract class Endpoint
     }
 
     /**
+     * Handle a PATCH request
+     *
+     * @param $input array json_decode of the content of php://input
+     * @param $context a Object to use as context
+     *
+     * @throws RestApiException
+     * @return array The response body and a status code.
+     */
+    public function handlePATCH(array &$input, &$ctx = NULL)
+    {
+        $this->_methodNotAllowed();
+    }
+
+    /**
      * Handle a DELETE request
      *
      * @param $input array json_decode of the content of php://input
-     * @param $context a Object Value to use as context
+     * @param $context a Object to use as context
      *
      * @throws RestApiException
      * @return array The response body and a status code.

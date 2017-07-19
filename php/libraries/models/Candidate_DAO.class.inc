@@ -7,7 +7,7 @@
  */
 namespace LORIS\Models;
 
-use \LORIS\Models\Candidate_VO;
+use \LORIS\Models\Candidate_DTO;
 
 class Candidate_DAO
 {
@@ -44,8 +44,7 @@ class Candidate_DAO
             throw new \LorisException("This candidate does not exists.");
         }
 
-        $candidate = new Candidate_VO(); 
-        $candidate->setAll($values);
+        $candidate = new Candidate_DTO($values); 
         return $candidate;
     }
 
@@ -54,7 +53,7 @@ class Candidate_DAO
      */
     public function getAll()
     {
-        $sql_query = 'SELECT * from candidate WHERE 1=1 LIMIT 2';
+        $sql_query = 'SELECT * from candidate WHERE 1=1';
         $params = array();
 
         if (!$this->_user->hasPermission('access_all_profiles')) {
@@ -65,13 +64,16 @@ class Candidate_DAO
         $values = $this->_database->pselect($sql_query, $params);
 
         if (empty($values)) {
-            throw new \LorisException("This candidate does not exists.");
+            throw new \LorisException("No candidate");
         }
 
         return array_map(function($row) {
-            $candidate = new Candidate_VO();
-            $candidate->setAll($row);
-            return $candidate;
+            return new Candidate_DTO($row);
         }, $values);
+    }
+
+    public function update(Candidate_DTO $candidate) {
+        $new_values = $candidate->asArray();
+        $this->_database->update('candidate', $new_values, array('CandID' => $new_values['CandID']));
     }
 }

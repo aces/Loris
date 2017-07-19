@@ -1,16 +1,18 @@
 <?php
 /**
- * Candidate Value Object (VO).
- * This class contains all database handling that is needed to
- * permanently store and retrieve Candidate object instances.
+ * Candidate Data Transfer Object (DTO).
+ * It should be use to encapsulate all candidate related data and should
+ * be used to transfer data between the application layer and the persistance
+ * with minimal knowledge of waht a candidate does.
+ * 
+ * See Candidate_DAO for persistance.
  */
 namespace LORIS\Models;
 
-class Candidate_VO
+class Candidate_DTO
 {
     /**
-     * Persistent Instance variables. This data is directly
-     * mapped to the columns of database table.
+     * This data is directly mapped to the columns of database table.
      */
     private $_ID;
     private $_CandID;
@@ -36,6 +38,7 @@ class Candidate_VO
     private $_ProbandGender;
     private $_ProbandDoB;
 
+    // Getters and Setters
     public function getID() {return $this->_ID;}
     public function setID($ID) {$this->_ID = $ID;}
     public function getCandID() {return $this->_CandID;}
@@ -83,7 +86,8 @@ class Candidate_VO
     public function getProbandDoB() {return $this->_ProbandDoB;}
     public function setProbandDoB($ProbandDoB) {$this->_ProbandDoB = $ProbandDoB;}
 
-    public function setAll(array &$allVals) {
+    // Shortcut to avoid the use of setters during instanciation.
+    private function _setAll(array &$allVals) {
         $this->_ID = $allVals['ID'];
         $this->_CandID = $allVals['CandID'];
         $this->_PSCID = $allVals['PSCID'];
@@ -107,6 +111,22 @@ class Candidate_VO
         $this->_Entity_type = $allVals['Entity_type'];
         $this->_ProbandGender = $allVals['ProbandGender'];
         $this->_ProbandDoB = $allVals['ProbandDoB'];
+    }
+
+    public function __construct(array &$allVals)
+    {
+        $this->_setAll($allVals);
+    }
+
+    public function asArray() 
+    {
+        // get all object vars
+        $object_vars = get_object_vars($this);
+
+        // Remove the '_' prefix from the keys
+        $new_keys = array_map(function($key) {return ltrim($key, '_'); }, array_keys($object_vars));
+
+        return array_combine($new_keys, array_values($object_vars)); 
     }
 
 }

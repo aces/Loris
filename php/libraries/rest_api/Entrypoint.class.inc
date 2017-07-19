@@ -76,6 +76,7 @@ class Entrypoint
         switch($this->_method) {
             case 'POST':
             case 'PUT':
+            case 'PATCH':
             case 'DELETE':
                 $input = json_decode(file_get_contents("php://input"),true);
                 if (!is_array($input)) {
@@ -83,6 +84,7 @@ class Entrypoint
                 }
                 $this->_inputs = $this->_cleanInputs($input);
             case 'GET':
+            case 'HEAD':
             case 'OPTIONS':
                 break;
             default:
@@ -121,6 +123,7 @@ class Entrypoint
             if ($this->_method == 'OPTIONS') {
                 $allowedMethods = $endpoint->getAllowedMethods();
                 $this->_header("Allow: $allowedMethods");
+                $this->_safeExit(204);
             }
 
             list($data, $status) = $endpoint->{$function_name}(
@@ -166,17 +169,22 @@ class Entrypoint
         }
     }
 
-    public static function _response(array $data, int $status = 200) {
-        $response_body = array('response' => $data);
+    public static function _response($response_body, int $status = 200) {
 
         switch ($status) {
             case 100: $text = 'Continue'; break;
             case 101: $text = 'Switching Protocols'; break;
             case 200: $text = 'OK'; break;
-            case 201: $text = 'Created'; break;
+            case 201:
+                $text = 'Created';
+                $response_body = null;
+                break;
             case 202: $text = 'Accepted'; break;
             case 203: $text = 'Non-Authoritative Information'; break;
-            case 204: $text = 'No Content'; break;
+            case 204:
+                $text = 'No Content';
+                $response_body = null;
+                break;
             case 205: $text = 'Reset Content'; break;
             case 206: $text = 'Partial Content'; break;
             case 300: $text = 'Multiple Choices'; break;
