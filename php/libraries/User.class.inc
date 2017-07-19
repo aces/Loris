@@ -66,26 +66,40 @@ class User extends UserPermissions
         $row = $DB->pselectRow($query, array('UID' => $username));
 
         // get user sites
-        $user_centerID_query =  $DB->pselect(
-            "SELECT CenterID FROM user_psc_rel upr 
-                        WHERE upr.UserID= :UID",
-            array('UID' => $row['ID'])
-        );
+        if (!isset($row['ID']) {
+            error_log(
+                "Could not get user center ID(s) because'
+                . ' user DB query value 'ID' is not set."
+            );
+        } else {
+            $user_centerID_query =  $DB->pselect(
+                "SELECT CenterID FROM user_psc_rel upr
+                WHERE upr.UserID= :UID",
+                array('UID' => $row['ID'])
+            );
 
-        foreach ($user_centerID_query as $key=>$val) {
-            $user_cid[$key] =$val['CenterID'];
+            foreach ($user_centerID_query as $key=>$val) {
+                $user_cid[$key] =$val['CenterID'];
+            }
         }
 
         // Get examiner information
-        $examiner_check = $DB->pselect(
-            "SELECT full_name, centerID, radiologist, active, pending_approval 
-                  FROM examiners 
-                  WHERE full_name=:fn 
-                    AND (active='Y' OR (active='N' AND pending_approval='Y'))",
-            array(
-             "fn" => $row['Real_name'],
-            )
-        );
+        if (!isset($row['Real_name']) {
+            error_log(
+                "Could not get user examiner info because'
+                . ' user DB query value 'Real_name' is not set."
+            );
+        } else {
+            $examiner_check = $DB->pselect(
+                "SELECT full_name, centerID, radiologist, active, pending_approval
+                FROM examiners
+                WHERE full_name=:fn
+                AND (active='Y' OR (active='N' AND pending_approval='Y'))",
+                array(
+                 "fn" => $row['Real_name'],
+                )
+            );
+        }
 
         $examiner_info =array();
         if (!empty($examiner_check) && !is_null($examiner_check)) {
@@ -100,8 +114,8 @@ class User extends UserPermissions
             }
         }
         // store user data in object property
-        $row['examiner']  =$examiner_info;
-        $row['CenterIDs'] =$user_cid;
+        $row['examiner']  =$examiner_info ?? '';
+        $row['CenterIDs'] =$user_cid ?? '';
         $obj->userInfo    =$row;
         return $obj;
     }
