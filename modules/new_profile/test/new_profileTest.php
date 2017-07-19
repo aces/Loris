@@ -304,6 +304,10 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
     function testPageUIs()
     {
         $this->safeGet($this->url . "/new_profile/");
+$bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+printf($bodyText);
         foreach ($this->_loadingUI as $key => $value) {
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
