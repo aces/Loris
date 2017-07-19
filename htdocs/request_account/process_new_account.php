@@ -222,7 +222,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 /**
  * Check that the user input for a field meets minimum length requirements
  *
- * @param string  $str The request parameter to check
+ * @param string $str The request parameter to check
  *
  * @return True if the parameter was sent and meets minimum length, false
  *         otherwise
