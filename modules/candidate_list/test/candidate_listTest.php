@@ -386,6 +386,9 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             " td.dynamictableFrozenColumn > a')[0].click()"
         );
         sleep(1);
+        $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        printf($bodyText);
         //make sure that breadcrumb contains DCCID
         $text = $this->webDriver->executescript(
             "return document.querySelector('#bc2 > a:nth-child(3)>div').textContent"
