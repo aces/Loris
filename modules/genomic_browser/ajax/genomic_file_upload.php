@@ -31,7 +31,6 @@ $base_dir = $config->getSetting('base');
 if (empty($base_dir)) {
     error_log('Security problem : base ConfigSettings not set or empty.');
     header("HTTP/1.1 412 Precondition Failed");
-    //TODO: throw an exception here?
     exit;
 }
 
