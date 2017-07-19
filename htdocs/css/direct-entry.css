@@ -11,3 +11,7 @@ body {
 .title {
     margin-bottom: 30px;
 }
+
+label {
+  font-weight: normal;
+}
