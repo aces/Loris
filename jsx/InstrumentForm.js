@@ -11,7 +11,6 @@ const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave}) 
       {renderMeta(instrument.Meta)}
       {
         instrument.Elements.filter((element, index) => {
-          console.log(element.Type);
           if (options.surveyMode && element.HiddenSurvey) return false;
           if (!element.DisplayIf) return true;
           try {
@@ -57,12 +56,10 @@ function renderElement(element, key, data, onUpdate, required = false) {
   } else if (element.Type === 'checkbox') {
     return renderCheckbox(element, data[element.Name], key, onUpdate, required)
   } else if (element.Type === 'text') {
-    console.log("TEXT ELEMENT");
     return renderText(element, data[element.Name], key, onUpdate, required)
   } else if (element.Type === 'calc') {
     return renderCalc(element, data[element.Name], key, onUpdate)
   } else if (element.Type === 'date') {
-    console.log("DATE ELEMENT");
     return renderDate(element, data[element.Name], key, onUpdate, required)
   }
 }
