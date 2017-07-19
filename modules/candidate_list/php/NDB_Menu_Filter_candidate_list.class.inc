@@ -82,7 +82,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         //getConsentStatusFields()
         $consent = $config->getSetting('ConsentModule');
         //String comparison is required, if ("false") { echo "is true"; }
-        if ($consent['useConsent'] ?? "false") {
+        if ($consent['useConsent'] == "true") {
             $consent_details = $consent['Consent'];
             //This check is necessary because of the following,
             //1. Only one consent is configured, an assoc array is returned
