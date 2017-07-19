@@ -71,7 +71,7 @@
     recoverable: (boolean: TRUE when the parser has a error recovery rule available for this particular error)
   }
 */
-var jsLogicParser = (function(){
+var phpLogicParser = (function(){
 var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,15],$V1=[1,16],$V2=[1,17],$V3=[1,7],$V4=[1,5],$V5=[1,9],$V6=[1,4],$V7=[1,3],$V8=[1,10],$V9=[1,11],$Va=[1,12],$Vb=[1,13],$Vc=[1,14],$Vd=[1,19],$Ve=[1,20],$Vf=[1,21],$Vg=[1,22],$Vh=[1,23],$Vi=[1,24],$Vj=[1,25],$Vk=[1,26],$Vl=[1,27],$Vm=[1,28],$Vn=[1,29],$Vo=[1,30],$Vp=[1,31],$Vq=[1,32],$Vr=[1,33],$Vs=[5,7,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,34],$Vt=[5,7,18,31,32],$Vu=[5,7,18,19,20,21,22,23,24,31,32],$Vv=[5,7,18,19,20,21,22,23,24,25,26,31,32],$Vw=[5,7,18,19,20,21,22,23,24,25,26,27,28,31,32],$Vx=[1,61];
 var parser = {trace: function trace() { },
 yy: {},
@@ -87,7 +87,7 @@ case 1:
  return $$[$0-1]; 
 break;
 case 2: case 7:
- this.$ = [$$[$0-2]].concat($$[$0]); 
+ this.$ = [$$[$0-2]].$$[$0]; 
 break;
 case 3:
  this.$ = [$$[$0]]; 
@@ -96,109 +96,109 @@ case 4:
  this.$ = yytext; 
 break;
 case 5:
- this.$ = Math.E; 
+ this.$ = M_E; 
 break;
 case 6:
- this.$ = Math.PI; 
+ this.$ = M_PI; 
 break;
 case 8: case 9:
- this.$ = [$$[$0-5]].concat($$[$0-3], $$[$0]); 
+ this.$ = [$$[$0-5]].$$[$0-3].$$[$0]; 
 break;
 case 10: case 11:
- this.$ = [$$[$0-4]].concat($$[$0-2]); 
+ this.$ = [$$[$0-4]].$$[$0-2]; 
 break;
 case 12:
  this.$ = [$$[$0-1]]; 
 break;
 case 13:
- this.$ = {tag: 'BinaryOp', op: 'eq', args: [$$[$0-2], $$[$0]]}; 
+ this.$ = array('tag'=>'BinaryOp', 'op'=>'eq', 'args'=>[$$[$0-2], $$[$0]]); 
 break;
 case 14:
- this.$ = {tag: 'BinaryOp', op: 'lt', args: [$$[$0-2], $$[$0]]}; 
+ this.$ = array('tag'=>'BinaryOp', 'op'=>'lt', 'args'=>[$$[$0-2], $$[$0]]); 
 break;
 case 15:
- this.$ = {tag: 'BinaryOp', op: 'gt', args: [$$[$0-2], $$[$0]]}; 
+ this.$ = array('tag'=>'BinaryOp', 'op'=>'gt', 'args'=>[$$[$0-2], $$[$0]]); 
 break;
 case 16:
- this.$ = {tag: 'BinaryOp', op: 'neq', args: [$$[$0-2], $$[$0]]}; 
+ this.$ = array('tag'=>'BinaryOp', 'op'=>'neq', 'args'=>[$$[$0-2], $$[$0]]); 
 break;
 case 17:
- this.$ = {tag: 'BinaryOp', op: 'leq', args: [$$[$0-2], $$[$0]]}; 
+ this.$ = array('tag'=>'BinaryOp', 'op'=>'leq', 'args'=>[$$[$0-2], $$[$0]]); 
 break;
 case 18:
- this.$ = {tag: 'BinaryOp', op: 'geq', args: [$$[$0-2], $$[$0]]}; 
+ this.$ = array('tag'=>'BinaryOp', 'op'=>'geq', 'args'=>[$$[$0-2], $$[$0]]); 
 break;
 case 19:
- this.$ = {tag: 'BinaryOp', op: 'add', args: [$$[$0-2], $$[$0]]}; 
+ this.$ = array('tag'=>'BinaryOp', 'op'=>'add', 'args'=>[$$[$0-2], $$[$0]]); 
 break;
 case 20:
- this.$ = {tag: 'BinaryOp', op: 'sub', args: [$$[$0-2], $$[$0]]}; 
+ this.$ = array('tag'=>'BinaryOp', 'op'=>'sub', 'args'=>[$$[$0-2], $$[$0]]); 
 break;
 case 21:
- this.$ = {tag: 'BinaryOp', op: 'mul', args: [$$[$0-2], $$[$0]]}; 
+ this.$ = array('tag'=>'BinaryOp', 'op'=>'mul', 'args'=>[$$[$0-2], $$[$0]]); 
 break;
 case 22:
- this.$ = {tag: 'BinaryOp', op: 'div', args: [$$[$0-2], $$[$0]]}; 
+ this.$ = array('tag'=>'BinaryOp', 'op'=>'div', 'args'=>[$$[$0-2], $$[$0]]); 
 break;
 case 23:
- this.$ = {tag: 'BinaryOp', op: 'pow', args: [$$[$0-2], $$[$0]]}; 
+ this.$ = array('tag'=>'BinaryOp', 'op'=>'pow', 'args'=>[$$[$0-2], $$[$0]]); 
 break;
 case 24:
- this.$ = {tag: 'BinaryOp', op: 'mod', args: [$$[$0-2], $$[$0]]}; 
+ this.$ = array('tag'=>'BinaryOp', 'op'=>'mod', 'args'=>[$$[$0-2], $$[$0]]); 
 break;
 case 25:
- this.$ = {tag: 'BinaryOp', op: 'and', args: [$$[$0-2], $$[$0]]}; 
+ this.$ = array('tag'=>'BinaryOp', 'op'=>'and', 'args'=>[$$[$0-2], $$[$0]]); 
 break;
 case 26:
- this.$ = {tag: 'BinaryOp', op: 'or', args: [$$[$0-2], $$[$0]]}; 
+ this.$ = array('tag'=>'BinaryOp', 'op'=>'or', 'args'=>[$$[$0-2], $$[$0]]); 
 break;
 case 27:
- this.$ = {tag: 'UnaryOp', op: 'not', args: [$$[$0]]}; 
+ this.$ = array('tag'=>'UnaryOp', 'op'=>'not', 'args'=>[$$[$0]]); 
 break;
 case 28:
- this.$ = {tag: 'UnaryOp', op: 'per', args: [$$[$0-1]]}; 
+ this.$ = array('tag'=>'UnaryOp', 'op'=>'per', 'args'=>[$$[$0-1]]); 
 break;
 case 29:
- this.$ = {tag: 'UnaryOp', op: 'fact', args: [$$[$0-1]]}; 
+ this.$ = array('tag'=>'UnaryOp', 'op'=>'fact', 'args'=>[$$[$0-1]]); 
 break;
 case 30:
- this.$ = {tag: 'UnaryOp', op: 'negate', args: [$$[$0]]}; 
+ this.$ = array('tag'=>'UnaryOp', 'op'=>'negate', 'args'=>[$$[$0]]); 
 break;
 case 31:
- this.$ = {tag: 'NestedExpression', args: [$$[$0-1]]}; 
+ this.$ = array('tag'=>'NestedExpression', 'args'=>[$$[$0-1]]); 
 break;
 case 32:
- this.$ = {tag: 'FuncApplication', args:[$$[$0-3], $$[$0-1]]}; 
+ this.$ = array('tag'=>'FuncApplication', 'args'=>[$$[$0-3], $$[$0-1]]); 
 break;
 case 33:
- this.$ = {tag: 'NestedVariables', args: [$$[$0-2], $$[$0]]}; 
+ this.$ = array('tag'=>'NestedVariables', 'args'=>[$$[$0-2], $$[$0]]; 
 break;
 case 34:
- this.$ = {tag: 'Variable', args: [$$[$0-1]]}; 
+ this.$ = array('tag'=>'Variable', 'args'=>[$$[$0-1]]; 
 break;
 case 35: case 36:
- this.$ = {tag: 'NestedVariables', args: [$$[$0-5], [$$[$0-3]]]}; 
+ this.$ = array('tag'=>'NestedVariables', 'args'=>[$$[$0-5], [$$[$0-3]]]); 
 break;
 case 37: case 38:
- this.$ = {tag: 'NestedVariables', args: [$$[$0-4], [$$[$0-2]]]}; 
+ this.$ = array('tag'=>'NestedVariables', 'args'=>[$$[$0-4], [$$[$0-2]]]); 
 break;
 case 39:
- this.$ = {tag: 'Literal', args: [$$[$0]]}; 
+ this.$ = array('tag'=>'Literal', 'args'=>[$$[$0]]); 
 break;
 case 40:
- this.$ = {tag: 'Literal', args: [Number(yytext)]}; 
+ this.$ = array('tag'=>'Literal', 'args'=>[Number(yytext)]); 
 break;
 case 41: case 42:
- this.$ = {tag: 'String', args: [yytext]}; 
+ this.$ = array('tag'=>'String', 'args'=>[yytext]); 
 break;
 case 43:
- this.$ = {tag: 'Literal', args: [false]}; 
+ this.$ = array('tag'=>'Literal', 'args'=>[false]); 
 break;
 case 44:
- this.$ = {tag: 'Literal', args: [true]}; 
+ this.$ = array('tag'=>'Literal', 'args'=>[true]); 
 break;
 case 45:
- this.$ = {tag: 'Literal', args: [null]}; 
+ this.$ = array('tag'=>'Literal', 'args'=>[null]); 
 break;
 }
 },
@@ -765,9 +765,9 @@ return new Parser;
 
 
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-exports.parser = jsLogicParser;
-exports.Parser = jsLogicParser.Parser;
-exports.parse = function () { return jsLogicParser.parse.apply(jsLogicParser, arguments); };
+exports.parser = phpLogicParser;
+exports.Parser = phpLogicParser.Parser;
+exports.parse = function () { return phpLogicParser.parse.apply(phpLogicParser, arguments); };
 exports.main = function commonjsMain(args) {
     if (!args[1]) {
         console.log('Usage: '+args[0]+' FILE');

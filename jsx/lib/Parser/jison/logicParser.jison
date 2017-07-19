@@ -65,7 +65,9 @@ expressions
 
 arguments
     : e ',' arguments
-        { $$ = [$1].concat($3); }
+        //js
+        { $$ = [$1].concat($3); } //
+        //php { $$ = [$1].$3; } //
     | e
         { $$ = [$1]; }
     ;
@@ -77,90 +79,170 @@ variable
 
 constant
     : 'E'
-        { $$ = Math.E; }
+        //js
+        { $$ = Math.E; } //
+        //php { $$ = M_E; } //
     | 'PI'
-        { $$ = Math.PI; }
+        //js
+        { $$ = Math.PI; } //
+        //php { $$ = M_PI; } //
     ;
 
 accessors
     : '[' variable ']' accessors
-        { $$ = [$2].concat($4); }
+        //js
+        { $$ = [$2].concat($4); } //
+        //php { $$ = [$2].$4; } //
     | '[' variable '(' NUMBER ')' ']' accessors
-        { $$ = [$2].concat($4, $7); }
+        //js
+        { $$ = [$2].concat($4, $7); } //
+        //php { $$ = [$2].$4.$7; } //
     | '[' variable '(' variable ')' ']' accessors
-        { $$ = [$2].concat($4, $7); }
+        //js
+        { $$ = [$2].concat($4, $7); } //
+        //php { $$ = [$2].$4.$7; } //
     | '[' variable '(' NUMBER ')' ']'
-        { $$ = [$2].concat($4); }
+        //js
+        { $$ = [$2].concat($4); } //
+        //php { $$ = [$2].$4; } //
     | '[' variable '(' variable ')' ']'
-        { $$ = [$2].concat($4); }
+        //js
+        { $$ = [$2].concat($4); } //
+        //php { $$ = [$2].$4; } //
     | '[' variable ']'
         { $$ = [$2]; }
     ;
 e
     : e '=' e
-        { $$ = {tag: 'BinaryOp', op: 'eq', args: [$1, $3]}; }
+        //js
+        { $$ = {tag: 'BinaryOp', op: 'eq', args: [$1, $3]}; } //
+        //php { $$ = array('tag' => 'BinaryOp', 'op' => 'eq', 'args' => [$1, $3]); } //
     | e '<' e
-        { $$ = {tag: 'BinaryOp', op: 'lt', args: [$1, $3]}; }
+        //js
+        { $$ = {tag: 'BinaryOp', op: 'lt', args: [$1, $3]}; } //
+        //php { $$ = array('tag' => 'BinaryOp', 'op' => 'lt', 'args' => [$1, $3]); } //
     | e '>' e
-        { $$ = {tag: 'BinaryOp', op: 'gt', args: [$1, $3]}; }
+        //js
+        { $$ = {tag: 'BinaryOp', op: 'gt', args: [$1, $3]}; } //
+        //php { $$ = array('tag' => 'BinaryOp', 'op' => 'gt', 'args' => [$1, $3]); } //
     | e '<>' e
-        { $$ = {tag: 'BinaryOp', op: 'neq', args: [$1, $3]}; }
+        //js
+        { $$ = {tag: 'BinaryOp', op: 'neq', args: [$1, $3]}; } //
+        //php { $$ = array('tag' => 'BinaryOp', 'op' => 'neq', 'args' => [$1, $3]); } //
     | e '<=' e
-        { $$ = {tag: 'BinaryOp', op: 'leq', args: [$1, $3]}; }
+        //js
+        { $$ = {tag: 'BinaryOp', op: 'leq', args: [$1, $3]}; } //
+        //php { $$ = array('tag' => 'BinaryOp', 'op' => 'leq', 'args' => [$1, $3]); } //
     | e '>=' e
-        { $$ = {tag: 'BinaryOp', op: 'geq', args: [$1, $3]}; }
+        //js
+        { $$ = {tag: 'BinaryOp', op: 'geq', args: [$1, $3]}; } //
+        //php { $$ = array('tag' => 'BinaryOp', 'op' => 'geq', 'args' => [$1, $3]); } //
 	| e '+' e
-        { $$ = {tag: 'BinaryOp', op: 'add', args: [$1, $3]}; }
+        //js
+        { $$ = {tag: 'BinaryOp', op: 'add', args: [$1, $3]}; } //
+        //php { $$ = array('tag' => 'BinaryOp', 'op' => 'add', 'args' => [$1, $3]); } //
     | e '-' e
-        { $$ = {tag: 'BinaryOp', op: 'sub', args: [$1, $3]}; }
+        //js
+        { $$ = {tag: 'BinaryOp', op: 'sub', args: [$1, $3]}; } //
+        //php { $$ = array('tag' => 'BinaryOp', 'op' => 'sub', 'args' => [$1, $3]); } //
     | e '*' e
-        { $$ = {tag: 'BinaryOp', op: 'mul', args: [$1, $3]}; }
+        //js
+        { $$ = {tag: 'BinaryOp', op: 'mul', args: [$1, $3]}; } //
+        //php { $$ = array('tag' => 'BinaryOp', 'op' => 'mul', 'args' => [$1, $3]); } //
     | e '/' e
-        { $$ = {tag: 'BinaryOp', op: 'div', args: [$1, $3]}; }
+        //js
+        { $$ = {tag: 'BinaryOp', op: 'div', args: [$1, $3]}; } //
+        //php { $$ = array('tag' => 'BinaryOp', 'op' => 'div', 'args' => [$1, $3]); } //
     | e '^' e
-        { $$ = {tag: 'BinaryOp', op: 'pow', args: [$1, $3]}; }
+        //js
+        { $$ = {tag: 'BinaryOp', op: 'pow', args: [$1, $3]}; } //
+        //php { $$ = array('tag' => 'BinaryOp', 'op' => 'pow', 'args' => [$1, $3]); } // 
     | e '%' e
-        { $$ = {tag: 'BinaryOp', op: 'mod', args: [$1, $3]}; }
+        //js
+        { $$ = {tag: 'BinaryOp', op: 'mod', args: [$1, $3]}; } //
+        //php { $$ = array('tag' => 'BinaryOp', 'op' => 'mod', 'args' => [$1, $3]); } //
     | e 'and' e
-        { $$ = {tag: 'BinaryOp', op: 'and', args: [$1, $3]}; }
+        //js
+        { $$ = {tag: 'BinaryOp', op: 'and', args: [$1, $3]}; } //
+        //php { $$ = array('tag' => 'BinaryOp', 'op' => 'and', 'args' => [$1, $3]); } //
     | e 'or' e
-        { $$ = {tag: 'BinaryOp', op: 'or', args: [$1, $3]}; }
+        //js
+        { $$ = {tag: 'BinaryOp', op: 'or', args: [$1, $3]}; } //
+        //php { $$ = array('tag' => 'BinaryOp', 'op' => 'or', 'args' => [$1, $3]); } //
     | 'not' e
-        { $$ = {tag: 'UnaryOp', op: 'not', args: [$2]}; }
+        //js
+        { $$ = {tag: 'UnaryOp', op: 'not', args: [$2]}; } //
+        //php { $$ = array('tag' => 'UnaryOp', 'op' => 'not', 'args' => [$2]); } //
 	| e '%'
-        { $$ = {tag: 'UnaryOp', op: 'per', args: [$1]}; }
+        //js
+        { $$ = {tag: 'UnaryOp', op: 'per', args: [$1]}; } //
+        //php { $$ = array('tag' => 'UnaryOp', 'op' => 'per', 'args' => [$1]); } //
     | e '!'
-        { $$ = {tag: 'UnaryOp', op: 'fact', args: [$1]}; }
+        //js
+        { $$ = {tag: 'UnaryOp', op: 'fact', args: [$1]}; } //
+        //php { $$ = array('tag' => 'UnaryOp', 'op' => 'fact', 'args' => [$1]); } //
     | '-' e %prec UMINUS
-        { $$ = {tag: 'UnaryOp', op: 'negate', args: [$2]}; }
+        //js
+        { $$ = {tag: 'UnaryOp', op: 'negate', args: [$2]}; } //
+        //php { $$ = array('tag' => 'UnaryOp', 'op' => 'negate', 'args' => [$2]); } //
     | '(' e ')'
-        { $$ = {tag: 'NestedExpression', args: [$2]}; }
+        //js
+        { $$ = {tag: 'NestedExpression', args: [$2]}; } //
+        //php { $$ = array('tag' => 'NestedExpression', 'args' => [$2]); } //
     | variable '(' arguments ')'
-        { $$ = {tag: 'FuncApplication', args:[$1, $3]}; }
+        //js
+        { $$ = {tag: 'FuncApplication', args:[$1, $3]}; } //
+        //php { $$ = array('tag' => 'FuncApplication', 'args' => [$1, $3]); } //
     | "[" variable "]" accessors
-        { $$ = {tag: 'NestedVariables', args: [$2, $4]}; }
+        //js
+        { $$ = {tag: 'NestedVariables', args: [$2, $4]}; } //
+        //php { $$ = array('tag' => 'NestedVariables', 'args' => [$2, $4]; } //
     | "[" variable "]"
-        { $$ = {tag: 'Variable', args: [$2]}; }
+        //js
+        { $$ = {tag: 'Variable', args: [$2]}; } //
+        //php { $$ = array('tag' => 'Variable', 'args' => [$2]; } //
     | "[" variable "(" NUMBER ")" "]" accessors
-        { $$ = {tag: 'NestedVariables', args: [$2, [$4]]}; }
+        //js
+        { $$ = {tag: 'NestedVariables', args: [$2, [$4]]}; } //
+        //php { $$ = array('tag' => 'NestedVariables', 'args' => [$2, [$4]]); } //
     | "[" variable "(" variable ")" "]" accessors
-        { $$ = {tag: 'NestedVariables', args: [$2, [$4]]}; }
+        //js
+        { $$ = {tag: 'NestedVariables', args: [$2, [$4]]}; } //
+        //php { $$ = array('tag' => 'NestedVariables', 'args' => [$2, [$4]]); } //
     | "[" variable "(" NUMBER ")" "]"
-        { $$ = {tag: 'NestedVariables', args: [$2, [$4]]}; }
+        //js
+        { $$ = {tag: 'NestedVariables', args: [$2, [$4]]}; } //
+        //php { $$ = array('tag' => 'NestedVariables', 'args' => [$2, [$4]]); } //
     | "[" variable "(" variable ")" "]"
-        { $$ = {tag: 'NestedVariables', args: [$2, [$4]]}; }
+        //js
+        { $$ = {tag: 'NestedVariables', args: [$2, [$4]]}; } //
+        //php { $$ = array('tag' => 'NestedVariables', 'args' => [$2, [$4]]); } //
 	| constant
-        { $$ = {tag: 'Literal', args: [$1]}; }
+        //js
+        { $$ = {tag: 'Literal', args: [$1]}; } //
+        //php { $$ = array('tag' => 'Literal', 'args' => [$1]); } //
     | NUMBER
-        { $$ = {tag: 'Literal', args: [Number(yytext)]}; }
+        //js
+        { $$ = {tag: 'Literal', args: [Number(yytext)]}; } //
+        //php { $$ = array('tag' => 'Literal', 'args' => [floatval(yytext)]); } //
     | STRING
-        { $$ = {tag: 'String', args: [yytext]}; }
+        //js
+        { $$ = {tag: 'String', args: [yytext]}; } //
+        //php { $$ = array('tag' => 'String', 'args' => [yytext]); } //
     | ESTRING
-        { $$ = {tag: 'String', args: [yytext]}; }
+        //js
+        { $$ = {tag: 'String', args: [yytext]}; } //
+        //php { $$ = array('tag' => 'String', 'args' => [yytext]); } //
     | 'false'
-        { $$ = {tag: 'Literal', args: [false]}; }
+        //js
+        { $$ = {tag: 'Literal', args: [false]}; } //
+        //php { $$ = array('tag' => 'Literal', 'args' => [false]); } //
     | 'true'
-        { $$ = {tag: 'Literal', args: [true]}; }
+        //js
+        { $$ = {tag: 'Literal', args: [true]}; } //
+        //php { $$ = array('tag' => 'Literal', 'args' => [true]); } //
     | 'null'
-        { $$ = {tag: 'Literal', args: [null]}; }
+        //js
+        { $$ = {tag: 'Literal', args: [null]}; } //
+        //php { $$ = array('tag' => 'Literal', 'args' => [null]); } //
     ;

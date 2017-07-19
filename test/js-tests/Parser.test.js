@@ -67,11 +67,11 @@ describe('Parser Unit Tests', () => {
   })
   
   describe('Date difference operations', () => {
-    it('Returns "yes" if age >= 6', () => {
-      const LOGIC_STR = 'if(datediff("2017-01-01","2000-01-01 00:00:00","y","ymd", 0)>=6,"yes","no")';
+    it('Returns "yes" if age = 17', () => {
+      const LOGIC_STR = 'datediff("2017-01-01","2000-01-01","y",false)';
       const CONTEXT = {a: 2, b: 4};
       const res = Evaluator(LOGIC_STR, CONTEXT);
-      expect(res).to.equal('yes');
+      expect(res).to.equal(17.002402513398632);
     })
   })
 

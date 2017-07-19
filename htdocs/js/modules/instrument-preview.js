@@ -1,7 +1,7 @@
 import InstrumentForm from '../../../jsx/InstrumentForm';
 import { Evaluator } from '../../../jsx/lib/Parser';
 
-const INPUT_ELEMENT_TYPES = ['radio', 'text', 'calc', 'checkbox'];
+const INPUT_ELEMENT_TYPES = ['date', 'radio', 'text', 'calc', 'checkbox'];
 
 function getInitialData(instrument) {
   return instrument.Elements.filter((element) => (
@@ -192,7 +192,7 @@ function localizeInstrument(rawInstrument, lang = 'en-ca') {
     const convertedElements = [];
 
     instrument['Elements'].forEach((element) => {
-      if (['label', 'text', 'calc'].includes(element.Type)  && element['Description'][lang]) {
+      if (['label', 'text', 'calc', 'date'].includes(element.Type)  && element['Description'][lang]) {
         element['Description'] = element['Description'][lang];
         convertedElements.push(element);
       } else if (['select', 'radio', 'checkbox'].includes(element.Type) && element['Description'][lang]) {
