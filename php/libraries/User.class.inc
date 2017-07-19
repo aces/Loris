@@ -66,6 +66,7 @@ class User extends UserPermissions
         $row = $DB->pselectRow($query, array('UID' => $username));
 
         // get user sites
+        $user_cid = array();
         if (!isset($row['ID']) {
             error_log(
                 "Could not get user center ID(s) because'
@@ -113,9 +114,11 @@ class User extends UserPermissions
                                                   );
             }
         }
-        // store user data in object property
-        $row['examiner']  =$examiner_info ?? '';
-        $row['CenterIDs'] =$user_cid ?? '';
+        // store user data in object property.
+        // if Examiner or CenterID info isn't possible to retrieve,
+        // the two values below will be set to empty arrays
+        $row['examiner']  =$examiner_info;
+        $row['CenterIDs'] =$user_cid;
         $obj->userInfo    =$row;
         return $obj;
     }
