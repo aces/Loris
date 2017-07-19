@@ -24,21 +24,22 @@ require_once __DIR__ .
  * @link     https://github.com/aces/Loris
  */
 class NewProfileTestIntegrationTest extends LorisIntegrationTest
-{   
-   /**
+{
+
+    /**
      * UI elements and locations
      * breadcrumb - 'Access Profile'
      * Table headers
      */
     private $_loadingUI
         =  array(
-            'New  Profile' => '#bc2 > a:nth-child(2) > div',
-            'Date of Birth'      => '#new_profile > div:nth-child(1) > label',
-            'Confirm Date of Birth' => '#new_profile > div:nth-child(4) > label',
-            'Expected Date of Confinement'     => '#new_profile > div:nth-child(7) > label',
-            'Confirm EDC'     => '#new_profile > div:nth-child(10) > label',
-            'Gender' => '#new_profile > div:nth-child(13) > label',
-            'Site' => '#new_profile > div:nth-child(16) > label'
+            'New  Profile'  => '#bc2 > a:nth-child(2) > div',
+            'Date of Birth' => '#new_profile > div:nth-child(1) > label',
+            'Confirm Date'  => '#new_profile > div:nth-child(4) > label',
+            'Expected Date' => '#new_profile > div:nth-child(7) > label',
+            'Confirm EDC'   => '#new_profile > div:nth-child(10) > label',
+            'Gender'        => '#new_profile > div:nth-child(13) > label',
+            'Site'          => '#new_profile > div:nth-child(16) > label',
            );
     /**
      * Tests that, when loading the new_profile module with all settings
@@ -233,7 +234,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("PSCID: BBQ0000", $bodyText);
-        
+
         $this->deleteCandidate("BBQ0000");
         $this->resetStudySite();
     }
@@ -265,11 +266,12 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("PSCID: BBQ0000", $bodyText);
-       // test Recruit another candidate link
+        // test Recruit another candidate link
         $this->webDriver->findElement(
-                WebDriverBy::Xpath("//*[@id='lorisworkspace']/p/a[2]"))->click();
-       
-       // $this->webDriver->get($this->url . "/new_profile/");
+            WebDriverBy::Xpath("//*[@id='lorisworkspace']/p/a[2]")
+        )->click();
+
+        // $this->webDriver->get($this->url . "/new_profile/");
 
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[0].value='2015-01-01'"
@@ -290,7 +292,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         //make sure Access this candidate link exists.
         $this->assertContains("Access this candidate", $bodyText);
         //make sure Recruit another candidate link exists.
-        $this->assertContains("Recruit another candidate", $bodyText); 
+        $this->assertContains("Recruit another candidate", $bodyText);
         $this->deleteCandidate("BBQ0000");
         $this->deleteCandidate("BBQ0001");
         $this->resetStudySite();

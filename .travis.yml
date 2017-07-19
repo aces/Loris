@@ -5,6 +5,7 @@ cache:
         - vendor
 
 php:
+    - "7"
     - "7.1"
 
 sudo: false
