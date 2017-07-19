@@ -43,6 +43,10 @@ class User extends UserPermissions
      */
     static function &factory($username)
     {
+        if (is_null($username)) {
+            throw new LorisException('User factory called with null username');
+            return null;
+        }
         $obj = new User;
 
         // right off, set the username
