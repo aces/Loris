@@ -582,16 +582,14 @@ class NDB_Form_Statistics extends NDB_Form
         if ($_REQUEST['BehaviouralSubproject'] ?? ''
             && !in_array(
                 $_REQUEST['BehaviouralSubproject'],
-                array_keys(
-                    $subprojects,
-                    true
-                )
-            )) {
+                array_keys($subprojects),
+                true
+        )) {
             $BS          = 'BehaviouralSubproject';
             $cleanString = htmlspecialchars($_REQUEST[$BS]);
             $this->tpl_data['PreviousSubproject']
                 = Utility::getSubprojectList()[$cleanString];
-            $this->tpl_data['Warning']            = 1;
+            $this->tpl_data['Warning']            = true;
         } else {
             $this->tpl_data['Warning'] = null;
         }
@@ -1071,13 +1069,8 @@ class NDB_Form_Statistics extends NDB_Form
             $subprojects[$key] = $value;
         }
 
-        foreach ($subprojects as $key=>$val) {
-            $subprojList .= $key.",";
-        }
-
         $this->tpl_data['Subprojects'] = $subprojects;
         $currentSubproject = null;
-        $subprojList       = substr($subprojList, 1, -1);
         if ($_REQUEST['ReliabilitySubproject'] ?? ''
             && in_array(
                 $_REQUEST['ReliabilitySubproject'],
@@ -1101,16 +1094,14 @@ class NDB_Form_Statistics extends NDB_Form
         if ($_REQUEST['ReliabilitySubproject'] ?? ''
             && !in_array(
                 $_REQUEST['ReliabilitySubproject'],
-                array_keys(
-                    $subprojects,
-                    true
-                )
-            )) {
+                array_keys($subprojects),
+                true
+        )) {
             $RS          = 'ReliabilitySubproject';
             $cleanString = htmlspecialchars($_REQUEST[$RS]);
             $this->tpl_data['PreviousSubproject']
                 = Utility::getSubprojectList()[$cleanString];
-            $this->tpl_data['Warning']            = 1;
+            $this->tpl_data['Warning']            = true;
         } else {
             $this->tpl_data['Warning'] = null;
         }
