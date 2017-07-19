@@ -296,7 +296,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
       */
     function testPageUIs()
     {
-        $this->safeGet($this->url . "/datadict/");
+        $this->safeGet($this->url . "/new_profile/");
         foreach ($this->_loadingUI as $key => $value) {
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
