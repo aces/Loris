@@ -689,7 +689,9 @@ class LorisForm
             }
         }
         // Always sanitize user-controlled input
-        $newValue = htmlspecialchars($newValue);
+        if (!is_array($newValue)) {
+            $newValue = htmlspecialchars($newValue);
+        }
 
         return $newValue;
     }
