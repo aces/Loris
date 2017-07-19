@@ -6,7 +6,7 @@
  *
  * @category Module
  * @package  Quality Control
- * @author   Liza Levitis <lthomas.mcin@gmail.com>
+ * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
@@ -17,7 +17,7 @@
  *
  * @category Module
  * @package  Quality Control
- * @author   Liza Levitis <lthomas.mcin@gmail.com>
+ * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
@@ -90,8 +90,8 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
         $projectList = Utility::getProjectList();
         // Form Elements
         $this->addSelect('visitLabel', 'Visit Label', $visitList);
-        $this->addSelect('instruments', 'Instruments', $instrumentList);
-        $this->addBasicText('DCCID', 'DCCID', ["size" => 9, "maxlength" => 7]);
+        $this->addSelect('instrument', 'Instruments', $instrumentList);
+        $this->addBasicText('candId', 'DCCID', ["size" => 9, "maxlength" => 7]);
         $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
         $this->addSelect('site', 'Site', $siteList);
         $this->addSelect('project', 'Project',$projectList);
@@ -130,10 +130,10 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
             ";
         }
         $this->columns = [
-            's.visit_label as visit_label',
-            's.candid',
-            'c.PSCID',
-            't.Full_name',
+            's.Visit_label as visit_label',
+            's.CandID as cand_id',
+            'c.PSCID as pscid',
+            't.Full_name as instrument',
             's.ID',
             'f.SessionID',
             'f.data_entry',
@@ -148,14 +148,11 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
         }*/
         $this->order_by = 'f.commentid';
         $this->headers  = [
-            'Visit',
+            'Visit Label',
             'DCCID',
             'PSCID',
             'Instrument',
         ];
-        $this->validFilters = array('s.visit_label');
-        $this->formToFilter = array('visit_label' => 's.visit_label');
-
         return true;
     }
     /**
@@ -183,7 +180,7 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/quality_control/js/qualityControlIndex.js",
+                $baseURL . "/quality_control/js/qualityControlIndex.js",
             )
         );
     }
