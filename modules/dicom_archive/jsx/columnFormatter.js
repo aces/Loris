@@ -36,8 +36,8 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'Download') {
-    var downloadURL = '/mri/jiv/get_file.php?file=tarchive/'
-      + row['Archive Location'];
+    var downloadURL = '/mri/jiv/get_file.php?file=tarchive/' +
+       row['Archive Location'];
     return <td><a href={downloadURL}>{cell}</a></td>;
   }
 

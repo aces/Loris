@@ -128,7 +128,7 @@ if (strpos("..", $File) !== false) {
 if (strpos($File, "DCM_") ) {
     $FileExt = "DICOMTAR";
 }
- 
+
 
 switch($FileExt) {
 case 'mnc':
