@@ -282,8 +282,9 @@ Class Instrument_List_ControlPanel extends TimePoint
             && $user->hasPermission('bvl_feedback')
         ) {
             $status = Utility::nullifyEmpty(
-                         $_REQUEST['setBVLQCStatus'], 'BVLQCStatus'
-                      );
+                $_REQUEST['setBVLQCStatus'],
+                'BVLQCStatus'
+            );
             $this->setData('BVLQCStatus', $status);
             return;
         }
