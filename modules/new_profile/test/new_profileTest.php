@@ -38,7 +38,6 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             'Confirm Date'  => '#new_profile > div:nth-child(4) > label',
             'Expected Date' => '#new_profile > div:nth-child(7) > label',
             'Confirm EDC'   => '#new_profile > div:nth-child(10) > label',
-            'Gender'        => '#new_profile > div:nth-child(13) > label',
             'Site'          => '#new_profile > div:nth-child(16) > label',
            );
     /**
