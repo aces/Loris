@@ -61,8 +61,7 @@ class InstrumentPreview extends React.Component {
   }
 
   updateInstrumentData(fieldName, value) {
-    const castedValue = Number(value) || value;
-    const instrumentData = Object.assign({}, this.state.data[this.state.selectedInstrument], {[fieldName]: castedValue});
+    const instrumentData = Object.assign({}, this.state.data[this.state.selectedInstrument], {[fieldName]: value});
 
     const calcElements = this.props.instruments[this.state.selectedInstrument].Elements.filter(
       (element) => (element.Type === 'calc')
