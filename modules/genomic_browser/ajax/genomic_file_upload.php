@@ -169,7 +169,7 @@ function moveFileToFS(&$fileToUpload)
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
 
     // update ui to show we are trying to move the file
-    reportProgress(98, "Copying file to $genomic_data_dir ");
+    reportProgress(98, "Copying file...");
     // file system validation
 error_log("Full path: $fileToUpload->full_path");
     try {
@@ -190,7 +190,7 @@ error_log("Full path: $fileToUpload->full_path");
             $fileToUpload->tmp_name,
             $fileToUpload->full_path
         )) {
-            reportProgress(99, "File copied to $genomic_data_dir ");
+            reportProgress(99, "File successfully copied!");
         }
     } catch (Exception $ex){
         error_log("Cannot move file: $ex");
