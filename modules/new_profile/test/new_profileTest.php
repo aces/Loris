@@ -233,7 +233,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("PSCID: BBQ0000", $bodyText);
-
+        
         $this->deleteCandidate("BBQ0000");
         $this->resetStudySite();
     }
@@ -265,8 +265,11 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("PSCID: BBQ0000", $bodyText);
-
-        $this->webDriver->get($this->url . "/new_profile/");
+       // test Recruit another candidate link
+        $this->webDriver->findElement(
+                WebDriverBy::Xpath("//*[@id='lorisworkspace']/p/a[2]"))->click();
+       
+       // $this->webDriver->get($this->url . "/new_profile/");
 
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[0].value='2015-01-01'"
@@ -284,7 +287,10 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("PSCID: BBQ0001", $bodyText);
-
+        //make sure Access this candidate link exists.
+        $this->assertContains("Access this candidate", $bodyText);
+        //make sure Recruit another candidate link exists.
+        $this->assertContains("Recruit another candidate", $bodyText); 
         $this->deleteCandidate("BBQ0000");
         $this->deleteCandidate("BBQ0001");
         $this->resetStudySite();
