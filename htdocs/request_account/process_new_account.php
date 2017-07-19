@@ -41,12 +41,7 @@ $tpl_data = array();
 $config = NDB_Config::singleton();
 $DB     = Database::singleton();
 
-$res = array();
-$DB->select("SELECT Name, CenterID FROM psc", $res);
-$site_list = array();
-foreach ($res as $elt) {
-    $site_list[$elt["CenterID"]] = $elt["Name"];
-}
+$site_list = Utility::getSiteList();
 
 // Get reCATPCHA keys
 $reCAPTCHAPrivate = $config->getSetting('reCAPTCHAPrivate');
@@ -119,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                'site'     => 'Site',
               );
 
-    $email_error = 'Please provide a valid email.'
+    $email_error = 'Please provide a valid email.';
     foreach ($fields as $key => $label) {
         // check that the data entered is long enough
         if (!checkLen($key)) {
