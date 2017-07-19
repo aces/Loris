@@ -1,15 +1,17 @@
 import Form from './Form';
 import { Evaluator } from './lib/Parser';
 
-const { SelectElement, RadioGroupLabels, RadioGroupElement, CheckboxGroupElement, TextboxElement } = Form;
+const { SelectElement, RadioGroupLabels, RadioGroupElement, CheckboxGroupElement, TextboxElement, DateElement } = Form;
 
 const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave}) => {
   const contextWithData = Object.assign({}, data, context);
+  const INPUT_TYPES = ['radio', 'text', 'checkbox', 'select', 'date'];
   return (
     <div>
       {renderMeta(instrument.Meta)}
       {
         instrument.Elements.filter((element, index) => {
+          console.log(element.Type);
           if (options.surveyMode && element.HiddenSurvey) return false;
           if (!element.DisplayIf) return true;
           try {
@@ -21,13 +23,11 @@ const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave}) 
             return false;
           }
         }).map((element, index) => {
-          if(element.Type === 'radio' || element.Type === 'text' || element.Type === 'checkbox' || element.Type === 'select') {
+          if(INPUT_TYPES.includes(element.Type) {
               const requireResponse = element.Options.RequireResponse;
               const required = typeof requireResponse === 'string' ? Evaluator(requireResponse, contextWithData) : requireResponse;
               return renderElement(element, index, data, onUpdate, required)
           } 
-          //if(required || required == "true") required = true;
-          //else required = false;
           return renderElement(element, index, data, onUpdate)
         })
       }
@@ -57,10 +57,12 @@ function renderElement(element, key, data, onUpdate, required = false) {
   } else if (element.Type === 'checkbox') {
     return renderCheckbox(element, data[element.Name], key, onUpdate, required)
   } else if (element.Type === 'text') {
+    console.log("TEXT ELEMENT");
     return renderText(element, data[element.Name], key, onUpdate, required)
   } else if (element.Type === 'calc') {
     return renderCalc(element, data[element.Name], key, onUpdate)
   } else if (element.Type === 'date') {
+    console.log("DATE ELEMENT");
     return renderDate(element, data[element.Name], key, onUpdate, required)
   }
 }
