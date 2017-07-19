@@ -75,7 +75,6 @@ class Dicom_Archive extends \NDB_Menu_Filter
                      't.ArchiveLocation as Archive_Location',
                      "'View Details' as Metadata",
                      "'View Images' as MRI_Browser",
-                     "'Download' as Download",
                      // For constructing links, not in headers array
                      "(SELECT GROUP_CONCAT(SeriesUID) FROM tarchive_series e WHERE ".
                      "e.TarchiveID=t.TarchiveID GROUP BY e.TarchiveID) as SeriesUID",
@@ -105,7 +104,6 @@ class Dicom_Archive extends \NDB_Menu_Filter
              'Archive_Location',
              'Metadata',
              'MRI_Browser',
-             'Download',
              'Seriesuid',
              'Site',
              'TarchiveID',

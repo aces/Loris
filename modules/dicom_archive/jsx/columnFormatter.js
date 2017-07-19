@@ -20,6 +20,17 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     row[header] = rowData[index];
   }, this);
 
+  if (column === 'Archive Location') {
+    var downloadURL = '/mri/jiv/get_file.php?file=tarchive/' + cell;
+    var toRet =
+      <td>
+        <a href={downloadURL}>{cell} &nbsp;
+        <span className="glyphicon glyphicon-cloud-download"/>
+        </a>
+      </td>;
+    return toRet;
+  }
+
   if (column === 'Metadata') {
     var metadataURL = loris.BaseURL +
       "/dicom_archive/viewDetails/?tarchiveID=" + row.TarchiveID;
@@ -33,12 +44,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     var mrlURL = loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" +
       row.SessionID;
     return <td><a href={mrlURL}>{cell}</a></td>;
-  }
-
-  if (column === 'Download') {
-    var downloadURL = '/mri/jiv/get_file.php?file=tarchive/' +
-       row['Archive Location'];
-    return <td><a href={downloadURL}>{cell}</a></td>;
   }
 
   if (cell === "INVALID - HIDDEN") {
