@@ -97,20 +97,29 @@ class NDB_Form_User_Accounts extends NDB_Form
                 $defaults["permID[$value]"] = 'on';
             }
 
+            // An array of each field that requires front-end sanitization
+            $fieldsThatAreStrings = array(
+                                     'UserID',
+                                     'First_name',
+                                     'Last_name',
+                                     'Real_name',
+                                     'Email',
+                                     'Degree',
+                                     'Institution',
+                                     'Address',
+                                     'City',
+                                     'State',
+                                     'Zip_code',
+                                     'Country',
+                                     'Fax',
+                                    );
             // Prevent Javascript injection on all fields
-            $defaults['UserID']      = htmlspecialchars($defaults['UserID']);
-            $defaults['First_name']  = htmlspecialchars($defaults['First_name']);
-            $defaults['Last_name']   = htmlspecialchars($defaults['Last_name']);
-            $defaults['Real_name']   = htmlspecialchars($defaults['Real_name']);
-            $defaults['Email']       = htmlspecialchars($defaults['Email']);
-            $defaults['Degree']      = htmlspecialchars($defaults['Degree']);
-            $defaults['Institution'] = htmlspecialchars($defaults['Institution']);
-            $defaults['Address']     = htmlspecialchars($defaults['Address']);
-            $defaults['City']        = htmlspecialchars($defaults['City']);
-            $defaults['State']       = htmlspecialchars($defaults['State']);
-            $defaults['Zip_code']    = htmlspecialchars($defaults['Zip_code']);
-            $defaults['Country']     = htmlspecialchars($defaults['Country']);
-            $defaults['Fax']         = htmlspecialchars($defaults['Fax']);
+            foreach ($fieldsThatAreStrings as $fieldName) {
+                // this check prevents PHP Notices
+                if (!empty($defaults[$fieldName])) {
+                    $defaults[$fieldName] = htmlspecialchars($defaults[$fieldName]);
+                }
+            }
 
             foreach ($defaults['examiner'] as $cid=>$vals) {
                 //sets pending approval info
@@ -118,7 +127,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                     $defaults['examiner_pending'] = $vals;
                     continue;
                 }
-                //gets radiologist Y/N from any of the acctive sites
+                //gets radiologist Y/N from any of the active sites
                 if ($vals[0]=='Y') {
                     $defaults['examiner_radiologist'] =$vals[1];
                 }
@@ -288,7 +297,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                     $result = $DB->pselectRow(
                         "
                           SELECT full_name, centerID
-                          FROM examiners 
+                          FROM examiners
                           WHERE full_name=:fn AND centerID=:cid",
                         array(
                          "fn"  => $values['Real_name'],
@@ -1218,7 +1227,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         //--- Get current password stored in database
         $passwordQuery
             = "SELECT Password_hash
-               FROM users 
+               FROM users
                WHERE UserID = :UID";
 
         $passwords = $db->pselectRow(
