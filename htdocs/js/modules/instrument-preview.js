@@ -14,6 +14,14 @@ function getInitialData(instrument) {
   }, {})
 }
 
+function getAgeInMonths(dob) {
+  function months_between(date1, date2) {
+    return date2.getMonth() - date1.getMonth() + (12 * (date2.getFullYear() - date1.getFullYear()));
+  }
+  return months_between(dob, new Date())
+
+}
+
 class InstrumentPreview extends React.Component {
   constructor(props) {
     super(props);
@@ -24,6 +32,9 @@ class InstrumentPreview extends React.Component {
       initialData[name] = getInitialData(props.instruments[name]);
     });
 
+    const dob = '2005-07-06';
+    const age_mths = getAgeInMonths(new Date(dob));
+
     this.state = {
       selectedInstrument: this.names[2],
       data: initialData,
@@ -31,10 +42,11 @@ class InstrumentPreview extends React.Component {
       context: {
         t1_arm_1: {
           lang: '2',
-          age_mths: 144
+          age_mths,
         },
-        age_mths: 144,
-        lang: '2'
+        age_mths,
+        lang: '2',
+        dob
       },
       options: {
         surveyMode: true
@@ -84,10 +96,11 @@ class InstrumentPreview extends React.Component {
     });
   }
 
-  updateAge(age) {
-    const t1_arm_1 = Object.assign({}, this.state.context.t1_arm_1, {age_mths: age});
+  updateDOB(date) {
+    const age_mths = getAgeInMonths(new Date(date));
+    const t1_arm_1 = Object.assign({}, this.state.context.t1_arm_1, {age_mths});
     this.setState({
-      context: Object.assign({}, this.state.context, { t1_arm_1, age_mths: age })
+      context: Object.assign({}, this.state.context, { t1_arm_1, age_mths, dob: date })
     });
   }
 
@@ -111,7 +124,7 @@ class InstrumentPreview extends React.Component {
     return (
       <div>
         <div style={{borderBottom: '1px solid black', backgroundColor: '#FFF8E8', padding: '2em'}}>
-          <div style={{width: 100}}>
+          <div style={{width: 460}}>
             <label>
               Instrument
               <select
@@ -129,6 +142,7 @@ class InstrumentPreview extends React.Component {
                 }
               </select>
             </label>
+            <br />
             <label>
               Language
               <select
@@ -146,16 +160,21 @@ class InstrumentPreview extends React.Component {
                 }
               </select>
             </label>
+            <br />
             <label>
-              Age In Months
+              DOB
+              <div className="form-inline">
               <input
-                type="text"
+                type="date"
                 className="form-control"
-                name="age_mths"
-                value={this.state.context.t1_arm_1.age_mths}
-                onChange={(e) => { this.updateAge(Number(e.target.value))}}
+                name="dob"
+                value={this.state.context.dob}
+                onChange={(e) => { this.updateDOB(e.target.value)}}
               />
+              &nbsp;<small>{`(Age In Months: ${this.state.context.age_mths})`}</small>
+              </div>
             </label>
+            <br />
             <label>
               Survey Mode
               <input
