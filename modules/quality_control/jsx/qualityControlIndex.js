@@ -1,15 +1,19 @@
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
-import formatColumn from './columnFormatter';
+import formatColumnImg from './columnFormatterImg';
+
+
+
 class QualityControlIndex extends React.Component {
     constructor(props) {
+        loris.hiddenHeadersImg = ['CommentID'];
+
         super(props);
         this.state = {
             isLoadedImg: false,
-            isLoadedBehavioral:false,
+            isLoadedBehavioral: false,
             imgFilter: {},
-            behavioralFilter:{},
-            filter: {}
+            behavioralFilter: {},
         };
         this.fetchData = this.fetchData.bind(this);
         this.updateBehavioralFilter = this.updateBehavioralFilter.bind(this);
@@ -48,14 +52,12 @@ class QualityControlIndex extends React.Component {
     }
     updateImgFilter(filter) {
         this.setState({
-            imgFilter: filter,
-            filter: filter
+            imgFilter: filter
         });
     }
     updateBehavioralFilter(filter){
         this.setState({
-            behavioralFilter: filter,
-            filter: filter
+            behavioralFilter: filter
         });
     }
     render() {
@@ -113,6 +115,7 @@ class QualityControlIndex extends React.Component {
                     Data={this.state.ImgData.Data}
                     Headers={this.state.ImgData.Headers}
                     Filter={this.state.imgFilter}
+                    getFormattedCell={formatColumnImg}
                 />
             </TabPane>
         );

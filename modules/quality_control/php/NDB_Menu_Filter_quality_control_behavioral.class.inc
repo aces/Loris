@@ -91,7 +91,7 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
         // Form Elements
         $this->addSelect('visitLabel', 'Visit Label', $visitList);
         $this->addSelect('instrument', 'Instruments', $instrumentList);
-        $this->addBasicText('candID', 'DCCID', ["size" => 9, "maxlength" => 7]);
+        $this->addBasicText('candId', 'DCCID', ["size" => 9, "maxlength" => 7]);
         $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
         $this->addSelect('site', 'Site', $siteList);
         $this->addSelect('project', 'Project',$projectList);
@@ -151,9 +151,8 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
             'Visit Label',
             'DCCID',
             'PSCID',
-            'instrument',
+            'Instrument',
         ];
-
         return true;
     }
     /**

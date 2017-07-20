@@ -8,7 +8,7 @@
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
   // If a column if set as hidden, don't display it
-  if (loris.hiddenHeaders.indexOf(column) > -1) {
+  if (loris.hiddenHeadersImg.indexOf(column) > -1) {
     return null;
   }
 
@@ -18,7 +18,12 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     row[header] = rowData[index];
   }, this)
 
-  
+  if (column === "Action"){
+    if (row['Message'] === "T1 Scan done NOT Partial or Complete in MRI parameter form"){
+      var mpfURL = loris.BaseURL+'/mri_parameter_form/?commentID=' + row['CommentID'];
+      return <td> <a href={mpfURL}>MRI Parameter Form</a> </td>;
+    }
+  }
 
   return <td>{cell}</td>;
 }
