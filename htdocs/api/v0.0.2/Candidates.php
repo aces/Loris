@@ -120,6 +120,17 @@ class Candidates extends APIBase
                     $data['Candidate']['Gender'],
                     $data['Candidate']['PSCID']
                 );
+
+                if (isset($data['Candidate']['Project'])) {
+                    $projectName = $data['Candidate']['Project'];
+                    $project     = \Project::singleton($projectName);
+                    if (!empty($project)) {
+                        \Candidate::singleton($candid)->setData(
+                            array('ProjectID' => $project->getId())
+                        );
+                    }
+                }
+
                 $this->header("HTTP/1.1 201 Created");
                 $this->JSON = [
                                'Meta' => ["CandID" => $candid],
