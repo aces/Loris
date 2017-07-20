@@ -2,7 +2,7 @@
 
 <!-- start the selection table -->
 <div class="row">
-    <div class="col-sm-9 col-lg-8">
+    <div class="col-sm-9 col-lg-12">
         <form method="post" action="{$baseurl}/user_accounts/">
             <div class="panel panel-primary">
                 <div class="panel-heading" onclick="hideFilter();">
