@@ -105,7 +105,7 @@ class QualityControlIndex extends React.Component {
                     columns={2}
                     formElements={this.state.ImgData.form}
                     onUpdate={this.updateImgFilter}
-                    filter={this.state.vimgFilter}>
+                    filter={this.state.imgFilter}>
                     <br/>
                     <ButtonElement type="reset" label="Clear Filters" />
                 </FilterForm>
