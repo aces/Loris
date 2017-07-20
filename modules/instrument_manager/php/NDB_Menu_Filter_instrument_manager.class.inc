@@ -97,8 +97,8 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
                 );
 		if(!isset($db_config['quatUser'], $db_config['quatPassword'])){
 			throw new LorisException(
-				"SQL needs to be sourced manually at /project/tables_sql/"
-                       		.$instrument->table.".sql"
+				"SQL needs to be sourced manually at /project/tables_sql/".
+				$instrument->table.".sql"
 			);
 		} 
 	        exec(
