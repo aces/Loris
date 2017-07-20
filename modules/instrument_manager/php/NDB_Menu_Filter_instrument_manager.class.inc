@@ -96,16 +96,31 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
                     null
                 );
 
-                exec(
-                    "mysql".
-                    " -h" . escapeshellarg($db_config['host']).
-                    " -u" . escapeshellarg($db_config['username']).
-                    " -p" . escapeshellarg($db_config['password']).
-                    " " . escapeshellarg($db_config['database']).
-                    " < " . $this->path . "project/tables_sql/".
-                    $instrument->table.".sql"
-                );
-
+		if(isset($db_config['quatUser']) && isset($db_config['quatPassword'])){
+			if(!is_null($db_config['quatUser']) && !is_null($db_config['quatPassword'])){ 
+                		exec(
+                    			"mysql".
+                    			" -h" . escapeshellarg($db_config['host']).
+                   	 		" -u" . escapeshellarg($db_config['quatUser']).
+                   	 		" -p" . escapeshellarg($db_config['quatPassword']).
+                   	 		" " . escapeshellarg($db_config['database']).
+                   	 		" < " . $this->path . "project/tables_sql/".
+                    			$instrument->table.".sql"
+               			 );
+			}
+			else{
+				throw new LorisException(
+					"SQL needs to be sourced manually at /project/tables_sql/"
+					.$instrument->table.".sql"
+				);
+			}
+		}
+		else{
+			throw new LorisException(
+				"SQL needs to be sourced manually at /project/tables_sql/".
+				$instrument->table.".sql"
+			);
+		}
             }
         }
     }
