@@ -101,10 +101,11 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                 //"ps.{$name} AS `{$label}`" (notice the backticks `)
                 //The code that creates the tables on the front end will freak out
                 //if it sees a space in the label name
-                $label = preg_replace("/\s/", "_", $label);
-                $label = str_replace("`", "", $label);
-                $label = str_replace("-", "_", $label);
+                $label           = preg_replace("/\s/", "_", $label);
+                $label           = str_replace("`", "", $label);
+                $label           = str_replace("-", "_", $label);
                 $this->columns[] = "ps.$name AS $label";
+
             }
         }
         if ($useProjects) {
