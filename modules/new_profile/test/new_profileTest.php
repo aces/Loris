@@ -36,7 +36,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             'New  Profile'  => '#bc2 > a:nth-child(2) > div',
             'Date of Birth' => '#new_profile > div:nth-child(1) > label',
             'Confirm Date'  => '#new_profile > div:nth-child(4) > label',
-            'Gender' => '#new_profile > div:nth-child(7) > label',
+            'Gender'        => '#new_profile > div:nth-child(7) > label',
            );
     /**
      * Tests that, when loading the new_profile module with all settings
@@ -302,10 +302,10 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
     function testPageUIs()
     {
         $this->safeGet($this->url . "/new_profile/");
-$bodyText = $this->safeFindElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-printf($bodyText);
+        printf($bodyText);
         foreach ($this->_loadingUI as $key => $value) {
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
