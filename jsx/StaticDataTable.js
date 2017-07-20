@@ -358,12 +358,29 @@ var StaticDataTable = React.createClass({
 
         // Get custom cell formatting if available
         if (this.props.getFormattedCell) {
-          data = this.props.getFormattedCell(
-            this.props.Headers[j],
-            data,
-            this.props.Data[index[i].RowIdx],
-            this.props.Headers
-          );
+          // START QUICK FIX FOR 17.1
+          // Background: imaging_browser should retain row order when opening
+          // the viewer. Pass Sorted Column to columnFormatter so it can then
+          // be passed onto the server side via the "Links" column URLs
+          if (window.location.pathname.indexOf('imaging_browser') > -1) {
+            data = this.props.getFormattedCell(
+              this.props.Headers[j],
+              data,
+              this.props.Data[index[i].RowIdx],
+              this.props.Headers,
+              this.state.SortColumn,
+              this.state.SortOrder
+            );
+          } else {
+            data = this.props.getFormattedCell(
+              this.props.Headers[j],
+              data,
+              this.props.Data[index[i].RowIdx],
+              this.props.Headers
+            );
+          }
+          // END QUICK FIX FOR 17.1
+
           if (data !== null) {
             // Note: Can't currently pass a key, need to update columnFormatter
             // to not return a <td> node. Using createFragment instead.

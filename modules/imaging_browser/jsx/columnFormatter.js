@@ -4,11 +4,13 @@
  * Modify behaviour of specified column cells in the Data Table component
  * @param {string} column - column name
  * @param {string} cell - cell content
- * @param {arrray} rowData - array of cell contents for a specific row
- * @param {arrray} rowHeaders - array of table headers (column names)
+ * @param {array} rowData - array of cell contents for a specific row
+ * @param {array} rowHeaders - array of table headers (column names)
+ * @param {int} sortColumn - index of column sorted by (unique to imaging_browser)
+ * @param {string} sortOrder - determines whether ASC or DESC (unique to imaging_browser)
  * @return {*} a formated table cell for a given column
  */
-function formatColumn(column, cell, rowData, rowHeaders) {
+function formatColumn(column, cell, rowData, rowHeaders, sortColumn, sortOrder) {
   // If a column if set as hidden, don't display it
   if (loris.hiddenHeaders.indexOf(column) > -1) {
     return null;
@@ -28,13 +30,20 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'Links') {
+    var sortColumnName = 'default';
+    if (sortColumn > -1) {
+      sortColumnName = encodeURI(rowHeaders[sortColumn]);
+    }
     var cellTypes = cell.split(",");
     var cellLinks = [];
     for (var i = 0; i < cellTypes.length; i += 1) {
       cellLinks.push(<a href={loris.BaseURL +
         "/imaging_browser/viewSession/?sessionID=" +
         row.SessionID + "&outputType=" +
-        cellTypes[i] + "&backURL=/imaging_browser/"}>
+        cellTypes[i] + "&backURL=/imaging_browser/" +
+        "&sortCol=" + sortColumnName +
+        "&sortOrd=" + sortOrder
+      }>
           {cellTypes[i]}
         </a>);
       cellLinks.push(" | ");
@@ -42,7 +51,10 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     cellLinks.push(<a href={loris.BaseURL +
         "/imaging_browser/viewSession/?sessionID=" +
         row.SessionID +
-        "&selectedOnly=1&backURL=/imaging_browser/"}>
+        "&selectedOnly=1&backURL=/imaging_browser/" +
+        "&sortCol=" + sortColumnName +
+        "&sortOrd=" + sortOrder
+    }>
           selected
       </a>);
 
@@ -50,7 +62,10 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     cellLinks.push(<a href={loris.BaseURL +
         "/imaging_browser/viewSession/?sessionID=" +
         row.SessionID +
-        "&backURL=/imaging_browser/"}>
+        "&backURL=/imaging_browser/" +
+        "&sortCol=" + sortColumnName +
+        "&sortOrd=" + sortOrder
+        }>
           all types
         </a>);
     return (<td>{cellLinks}</td>);
