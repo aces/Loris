@@ -139,7 +139,7 @@ class Edit_Help_Content extends \NDB_Form
             && isset($values['title'])
             && isset($values['content'])
         ) {
-                $help_file = HelpFile::factory($helpID);
+            $help_file = HelpFile::factory($helpID);
             // update the help file
             $success = $help_file->update(
                 array(
