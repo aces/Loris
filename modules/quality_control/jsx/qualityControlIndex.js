@@ -52,12 +52,14 @@ class QualityControlIndex extends React.Component {
     }
     updateImgFilter(filter) {
         this.setState({
-            imgFilter: filter
+            imgFilter: filter,
+            filter: filter
         });
     }
     updateBehavioralFilter(filter){
         this.setState({
-            behavioralFilter: filter
+            behavioralFilter: filter,
+            filter: filter
         });
     }
     render() {
