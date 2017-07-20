@@ -125,7 +125,8 @@ class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
                         $val,
                         $help_section
                     );
-                    $this->tpl_data['items'][$x][$i]['parentID'] = $item['Parent_Topic']; // @codingStandardsIgnoreLine
+                    $this->tpl_data['items'][$x][$i]['parentID']
+                        = $item['Parent_Topic'];
                     $item['Parent_Topic'] = $help_section[$item['Parent_Topic']];
                     // this is to make sure sorting is done
                     // on the topic and not the ID
