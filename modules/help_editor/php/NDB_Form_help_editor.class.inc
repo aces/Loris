@@ -50,8 +50,8 @@ class NDB_Form_Help_Editor extends NDB_Form
         //Get the default values
 
         // Sanitize user input
-        $safeHelpID = htmlspecialchars($_REQUEST['helpID']);
-        $safeSection = htmlspecialchars($_REQUEST['section']);
+        $safeHelpID     = htmlspecialchars($_REQUEST['helpID']);
+        $safeSection    = htmlspecialchars($_REQUEST['section']);
         $safeSubsection = htmlspecialchars($_REQUEST['subsection']);
         if (isset($_REQUEST['helpID'])) {
             $helpID = $safeHelpID;
@@ -111,9 +111,9 @@ class NDB_Form_Help_Editor extends NDB_Form
         //Get the default values
 
         // Sanitize user input
-        $safeHelpID = htmlspecialchars($_REQUEST['helpID']);
-        $safeParentID = htmlspecialchars($_REQUEST['parentID']);
-        $safeSection = htmlspecialchars($_REQUEST['section']);
+        $safeHelpID     = htmlspecialchars($_REQUEST['helpID']);
+        $safeParentID   = htmlspecialchars($_REQUEST['parentID']);
+        $safeSection    = htmlspecialchars($_REQUEST['section']);
         $safeSubsection = htmlspecialchars($_REQUEST['subsection']);
         if (isset($_REQUEST['helpID'])) {
             $helpID = $safeHelpID;
