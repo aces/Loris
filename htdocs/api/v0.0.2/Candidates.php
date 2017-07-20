@@ -111,7 +111,6 @@ class Candidates extends APIBase
             }
 
             $this->verifyField($data, 'Gender', ['Male', 'Female']);
-            $this->verifyField($data, 'EDC', 'YYYY-MM-DD');
             $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
             //Candidate::createNew
             try {
