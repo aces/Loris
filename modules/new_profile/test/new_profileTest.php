@@ -36,9 +36,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
             'New  Profile'  => '#bc2 > a:nth-child(2) > div',
             'Date of Birth' => '#new_profile > div:nth-child(1) > label',
             'Confirm Date'  => '#new_profile > div:nth-child(4) > label',
-            'Expected Date' => '#new_profile > div:nth-child(7) > label',
-            'Confirm EDC'   => '#new_profile > div:nth-child(10) > label',
-            'Site'          => '#new_profile > div:nth-child(16) > label',
+            'Gender' => '#new_profile > div:nth-child(7) > label',
            );
     /**
      * Tests that, when loading the new_profile module with all settings
