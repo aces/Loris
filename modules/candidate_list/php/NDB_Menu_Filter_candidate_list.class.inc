@@ -89,8 +89,9 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             //2. More than one consent is configured, a numeric array of assoc
             //   array elements is returned
             //We want just the numeric array of assoc array elements all the time.
+
             if (!isset($consent_details[0])) {
-                $consent_details = array($consent_details);
+                $consent_details = Utility::toArray($consent_details);
             }
             foreach ($consent_details as $consentType) {
                 $name  = Database::singleton()->escape($consentType["name"]);
@@ -101,8 +102,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                 //The code that creates the tables on the front end will freak out
                 //if it sees a space in the label name
                 $label = preg_replace("/\s/", "_", $label);
-
-                $this->columns[] = "ps.{$name} AS {$label}";
+                $label = str_replace("`", "", $label);
+                $this->columns[] = "ps.$name AS $label";
             }
         }
         if ($useProjects) {
