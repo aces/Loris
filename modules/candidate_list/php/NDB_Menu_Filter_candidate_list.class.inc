@@ -103,6 +103,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                 //if it sees a space in the label name
                 $label = preg_replace("/\s/", "_", $label);
                 $label = str_replace("`", "", $label);
+                $label = str_replace("-", "_", $label);
                 $this->columns[] = "ps.$name AS $label";
             }
         }
