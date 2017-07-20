@@ -108,9 +108,9 @@ class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
     {
         $DB = Database::singleton();
         //Get the default values
-        $help = $DB->pselect("SELECT helpID, topic from help", array());
-        foreach ($help as $row) {
-            $help_section[$row['helpID']] = $row['topic'];
+        $result = $DB->pselect("SELECT helpID, topic from help", array());
+        foreach ($result as $helpID->$helpTopic) {
+            $help_section[$helpID] -> $helpTopic;
         }
         $x = 0;
 
