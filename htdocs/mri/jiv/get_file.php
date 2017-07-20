@@ -117,7 +117,7 @@ unset($path_parts);
 // using a relative filename.
 // No need to check for '/' since all downloads are relative to $imagePath,
 // $DownloadPath or $mincPath
-if (strpos("..", $File) !== false) {
+if (strpos($File, "..") !== false) {
     error_log("ERROR: Invalid filename");
     header("HTTP/1.1 400 Bad Request");
     exit(4);
