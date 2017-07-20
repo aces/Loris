@@ -109,7 +109,7 @@ class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
         $DB = Database::singleton();
         //Get the default values
         // $result will contain an array of size n by 2.
-        // this must be transposed to create a proper dictionary mapping IDs to Topics
+        // this must be transposed to create a dictionary of IDs to Topics
         $result = $DB->pselect("SELECT helpID, topic from help", array());
         foreach ($result as $row) {
             $helpTopics[$row['helpID']] = $row['topic'];
@@ -127,7 +127,7 @@ class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
                     // so this logic statement should not provide unexpected results
                     // should $helpID = "0", for example
                     if (!$helpID) {
-                        error_log("Could not find helpID corresponding to value $val");
+                        error_log("Could not find helpID for value $val");
                     } else {
                         $this->tpl_data['items'][$x][$i]['helpID'] = $helpID;
                     }
