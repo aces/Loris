@@ -48,19 +48,24 @@ class NDB_Form_Help_Editor extends NDB_Form
     {
         $DB = Database::singleton();
         //Get the default values
+
+        // Sanitize user input
+        $safeHelpID = htmlspecialchars($_REQUEST['helpID']);
+        $safeSection = htmlspecialchars($_REQUEST['section']);
+        $safeSubsection = htmlspecialchars($_REQUEST['subsection']);
         if (isset($_REQUEST['helpID'])) {
-            $helpID = $_REQUEST['helpID'];
+            $helpID = $safeHelpID;
         }
         if (!empty($_REQUEST['section'])) {
-            $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
+            $helpID = HelpFile::hashToID(md5($safeSection));
         }
         if (!empty($_REQUEST['section'])
             && $_REQUEST['subsection'] != 'undefined'
         ) {
-            $helpID = HelpFile::hashToID(md5($_REQUEST['subsection']));
+            $helpID = HelpFile::hashToID(md5($safeSubsection));
         }
-        $this->tpl_data['section']    = $_REQUEST['section'] ;
-        $this->tpl_data['subsection'] = $_REQUEST['subsection'] ;
+        $this->tpl_data['section']    = $safeSection;
+        $this->tpl_data['subsection'] = $safeSubsection;
         if (!empty($helpID)) {
             $help_file = HelpFile::factory($helpID);
             $data      = $help_file->toArray();
@@ -76,11 +81,11 @@ class NDB_Form_Help_Editor extends NDB_Form
         // case where no help content exists
         if (empty($defaults['title'])) {
             if (!empty($_REQUEST['section'])) {
-                $defaults['title'] = str_replace("_", " ", $_REQUEST['section']);
+                $defaults['title'] = str_replace("_", " ", $safeSection);
             }
             // if not module and not instrument, should be a subtest
             if ($_REQUEST['subsection'] != 'undefined') {
-                $defaults['title'] = str_replace("_", " ", $_REQUEST['subsection']);
+                $defaults['title'] = str_replace("_", " ", $safeSubsection);
             }
             $this->tpl_data['module_name'] = $defaults['title'];
         }
@@ -104,21 +109,27 @@ class NDB_Form_Help_Editor extends NDB_Form
     {
         $DB = Database::singleton();
         //Get the default values
+
+        // Sanitize user input
+        $safeHelpID = htmlspecialchars($_REQUEST['helpID']);
+        $safeParentID = htmlspecialchars($_REQUEST['parentID']);
+        $safeSection = htmlspecialchars($_REQUEST['section']);
+        $safeSubsection = htmlspecialchars($_REQUEST['subsection']);
         if (isset($_REQUEST['helpID'])) {
-            $helpID = $_REQUEST['helpID'];
+            $helpID = $safeHelpID;
         }
         if (isset($_REQUEST['parentID'])) {
-            $parentID = $_REQUEST['parentID'];
+            $parentID = $safeParentID;
         }
 
         if (!empty($_REQUEST['section'])) {
-            $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
+            $helpID = HelpFile::hashToID(md5($safeSection));
         }
         if (!empty($_REQUEST['section'])
             && $_REQUEST['subsection'] != 'undefined'
         ) {
-            $helpID   = HelpFile::hashToID(md5($_REQUEST['subsection']));
-            $parentID = HelpFile::hashToID(md5($_REQUEST['section']));
+            $helpID   = HelpFile::hashToID(md5($safeSubsection));
+            $parentID = HelpFile::hashToID(md5($safeSection));
         }
         if (!empty($helpID)) {
             $help_file = HelpFile::factory($helpID);
@@ -163,7 +174,7 @@ class NDB_Form_Help_Editor extends NDB_Form
                 $helpID = HelpFile::insert(
                     array(
                      'parentID'       => $parentID,
-                     'hash'           => md5($_REQUEST['subsection']),
+                     'hash'           => md5($safeSubsection),
                      'topic'          => $values['title'],
                      'projectContent' => $values['content'],
                      'created'        => date(
@@ -179,7 +190,7 @@ class NDB_Form_Help_Editor extends NDB_Form
                 //default case
                 $helpID = HelpFile::insert(
                     array(
-                     'hash'           => md5($_REQUEST['section']),
+                     'hash'           => md5($safeSection),
                      'topic'          => $values['title'],
                      'projectContent' => $values['content'],
                      'created'        => date(
