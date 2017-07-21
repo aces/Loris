@@ -16,6 +16,11 @@ ini_set('default_charset', 'utf-8');
 
 require_once "bvl_panel_ajax.php";
 
+$newNotifier = new NDB_Notifier(
+    "bvl_feedback",
+    "new"
+);
+
 //Creating a new array to pass the set values into the DB.
 $newThreadValues = array();
 
@@ -33,7 +38,7 @@ if (isset($_POST['comment']) && isset($_POST['candID'])
         $_POST['comment'],
         'Y'
     );
-
+    $newNotifier->notify();
     //Now setting the array to return as json
     print json_encode($newEntryValues);
 }
@@ -49,6 +54,7 @@ if (isset($_POST['comment']) && isset($_POST['candID'])
         $_POST['comment'],
         'Y'
     );
+    $newNotifier->notify();
 
     //Now setting the array to return as json
     print json_encode($newEntryValues);
@@ -66,6 +72,7 @@ if (isset($_POST['comment']) && isset($_POST['candID'])
         'Y',
         $_POST['fieldName']
     );
+    $newNotifier->notify();
 
     print json_encode($newEntryValues);
 }
