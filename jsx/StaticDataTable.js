@@ -211,8 +211,8 @@ var StaticDataTable = React.createClass({
     index.sort(function(a, b) {
       if (this.state.SortOrder === 'ASC') {
         // Check if null values
-        if (a.Value === null) return -1;
-        if (b.Value === null) return 1;
+        if (a.Value === null || typeof a.Value === 'undefined') return -1;
+        if (b.Value === null || typeof b.Value === 'undefined') return 1;
 
         // Sort by value
         if (a.Value < b.Value) return -1;
@@ -225,8 +225,8 @@ var StaticDataTable = React.createClass({
         if (a.RowIdx > b.RowIdx) return 1;
       } else {
         // Check if null values
-        if (a.Value === null) return 1;
-        if (b.Value === null) return -1;
+        if (a.Value === null || typeof a.Value === 'undefined') return 1;
+        if (b.Value === null || typeof b.Value === 'undefined') return -1;
 
         // Sort by value
         if (a.Value < b.Value) return 1;
