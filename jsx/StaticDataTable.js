@@ -324,6 +324,17 @@ var StaticDataTable = React.createClass({
     var rows = [];
     var curRow = [];
     var index = this.getSortedRows();
+
+    // Start Imaging Browser 17.1 Quickfix
+    var sortedSessIDs = [];
+    var sessIndex = this.props.Headers.indexOf('SessionID');
+    for (var i = 0; i < index.length; i++) {
+      sortedSessIDs.push(
+        this.props.Data[index[i].RowIdx][sessIndex]
+      );
+    }
+    // End Imaging Browser 17.1 Quickfix
+
     var matchesFound = 0; // Keeps track of how many rows where displayed so far across all pages
     var filteredRows = this.countFilteredRows();
     var currentPageRow = (rowsPerPage * (this.state.PageNumber - 1));
@@ -358,12 +369,28 @@ var StaticDataTable = React.createClass({
 
         // Get custom cell formatting if available
         if (this.props.getFormattedCell) {
-          data = this.props.getFormattedCell(
-            this.props.Headers[j],
-            data,
-            this.props.Data[index[i].RowIdx],
-            this.props.Headers
-          );
+          // Start Imaging Browser 17.1 Quickfix
+          // Background: imaging_browser should retain row order when opening
+          // the viewer. Pass Sorted Column to columnFormatter so it can then
+          // be passed onto the server side via the "Links" column URLs
+          if (window.location.pathname.indexOf('imaging_browser') > -1) {
+            data = this.props.getFormattedCell(
+              this.props.Headers[j],
+              data,
+              this.props.Data[index[i].RowIdx],
+              this.props.Headers,
+              sortedSessIDs.join()
+            );
+          } else {
+            data = this.props.getFormattedCell(
+              this.props.Headers[j],
+              data,
+              this.props.Data[index[i].RowIdx],
+              this.props.Headers
+            );
+          }
+          // End Imaging Browser 17.1 Quickfix
+
           if (data !== null) {
             // Note: Can't currently pass a key, need to update columnFormatter
             // to not return a <td> node. Using createFragment instead.

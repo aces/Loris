@@ -201,12 +201,19 @@ class MRINavigation
         if (!is_array($this->FilteredSessionList)) {
             $this->FilteredSessionList = array();
         }
+        $this->urlParams           = $this->_splitURL();
+        $this->urlParams['sorted'] = explode(',', $this->urlParams['sorted']);
+        $this->FilteredSessionList = array_intersect(
+            $this->urlParams['sorted'],
+            $this->FilteredSessionList
+        );
+
         $this->currentListIndex = array_search(
             $this->sessionID,
             $this->FilteredSessionList
         );
-        $this->urlParams        = $this->_splitURL();
     }
+
     /**
     * Parses the request into hostname/params, so that it can be
     * reconstructed into a link which has the same parameters
