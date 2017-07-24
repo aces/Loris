@@ -1,20 +1,14 @@
 <?php
 /**
- * Ajax script used to get the progress of an MRI pipeline run for a specific MRI
- * scan. The upload progress for a scan (identified by its uploadId) consists of:
- *   - Value of column Inserting in table mri_upload for the upload ID.
- *   - Value of column InsertionComplete in table mri_upload for the upload ID.
- *   - The notifications in table notification_spool for that scan (if script
- *     argument summary is true, only those with verbose == 'N' are returned,
- *     otherwise they are all returned).
+ * Used to keep the sorted order of rows in imaging_browser menu for
+ * the navigation links in the imaging viewer
  *
  * PHP Version 5
  *
  * @category Documentation
  * @package  Main
- * @author   Nicolas Brossard <justinkat@gmail.com>
+ * @author   David Blader <dblader.mcin@gmail.com>
  * @license  Loris license
- * @link     https://www.github.com/Jkat/Loris-Trunk/
  */
 
 // Get LORIS user issuing the request

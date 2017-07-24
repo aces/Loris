@@ -197,7 +197,7 @@ class MRINavigation
         $this->sessionID           = $sessionID;
         $this->FilteredSessionList = $_SESSION['State']
             ->getProperty('mriSessionsListed');
-        print_r($this->FilteredSessionList);
+
         if (!is_array($this->FilteredSessionList)) {
             $this->FilteredSessionList = array();
         }
