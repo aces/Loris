@@ -185,11 +185,6 @@ var StaticDataTable = React.createClass({
 
     for (let i = 0; i < this.props.Data.length; i += 1) {
       let val = this.props.Data[i][this.state.SortColumn] || undefined;
-      // If SortColumn is equal to default No. column, set value to be
-      // index + 1
-      if (this.state.SortColumn === -1) {
-        val = i + 1;
-      }
       const isString = (typeof val === 'string' || val instanceof String);
       const isNumber = !isNaN(val) && typeof val !== 'object';
 
@@ -215,31 +210,31 @@ var StaticDataTable = React.createClass({
 
     index.sort(function(a, b) {
       if (this.state.SortOrder === 'ASC') {
-        if (a.Value === b.Value) {
-          // If all values are equal, sort by rownum
-          if (a.RowIdx < b.RowIdx) return -1;
-          if (a.RowIdx > b.RowIdx) return 1;
-        }
         // Check if null values
-        if (a.Value === null || typeof a.Value === 'undefined') return -1;
-        if (b.Value === null || typeof b.Value === 'undefined') return 1;
+        if (a.Value === null) return -1;
+        if (b.Value === null) return 1;
 
         // Sort by value
         if (a.Value < b.Value) return -1;
         if (a.Value > b.Value) return 1;
-      } else {
-        if (a.Value === b.Value) {
-          // If all values are equal, sort by rownum
-          if (a.RowIdx < b.RowIdx) return 1;
-          if (a.RowIdx > b.RowIdx) return -1;
+
+        // If all values are equal, sort by rownum
+        if (a.RowIdx < b.RowIdx) {
+          return -1;
         }
+        if (a.RowIdx > b.RowIdx) return 1;
+      } else {
         // Check if null values
-        if (a.Value === null || typeof a.Value === 'undefined') return 1;
-        if (b.Value === null || typeof b.Value === 'undefined') return -1;
+        if (a.Value === null) return 1;
+        if (b.Value === null) return -1;
 
         // Sort by value
         if (a.Value < b.Value) return 1;
         if (a.Value > b.Value) return -1;
+
+        // If all values are equal, sort by rownum
+        if (a.RowIdx < b.RowIdx) return 1;
+        if (a.RowIdx > b.RowIdx) return -1;
       }
       // They're equal..
       return 0;
@@ -331,15 +326,18 @@ var StaticDataTable = React.createClass({
     var index = this.getSortedRows();
 
     // Start Imaging Browser 17.1 Quickfix
-    var sortedSessIDs = [];
-    var sessIndex = this.props.Headers.indexOf('SessionID');
-    for (var i = 0; i < index.length; i++) {
-      sortedSessIDs.push(
-        this.props.Data[index[i].RowIdx][sessIndex]
-      );
+    if (window.location.pathname.indexOf('imaging_browser') > -1) {
+      var sortedSessIDs = [];
+      var sessIndex = this.props.Headers.indexOf('SessionID');
+      for (var i = 0; i < index.length; i++) {
+        sortedSessIDs.push(
+          this.props.Data[index[i].RowIdx][sessIndex]
+        )
+      }
+      var url = loris.BaseURL + '/imaging_browser/ajax/setSortedRows.php';
+      $.post(url, {sortedIDs: sortedSessIDs});
     }
     // End Imaging Browser 17.1 Quickfix
-
     var matchesFound = 0; // Keeps track of how many rows where displayed so far across all pages
     var filteredRows = this.countFilteredRows();
     var currentPageRow = (rowsPerPage * (this.state.PageNumber - 1));
@@ -374,28 +372,12 @@ var StaticDataTable = React.createClass({
 
         // Get custom cell formatting if available
         if (this.props.getFormattedCell) {
-          // Start Imaging Browser 17.1 Quickfix
-          // Background: imaging_browser should retain row order when opening
-          // the viewer. Pass Sorted Column to columnFormatter so it can then
-          // be passed onto the server side via the "Links" column URLs
-          if (window.location.pathname.indexOf('imaging_browser') > -1) {
-            data = this.props.getFormattedCell(
-              this.props.Headers[j],
-              data,
-              this.props.Data[index[i].RowIdx],
-              this.props.Headers,
-              sortedSessIDs.join()
-            );
-          } else {
-            data = this.props.getFormattedCell(
-              this.props.Headers[j],
-              data,
-              this.props.Data[index[i].RowIdx],
-              this.props.Headers
-            );
-          }
-          // End Imaging Browser 17.1 Quickfix
-
+          data = this.props.getFormattedCell(
+            this.props.Headers[j],
+            data,
+            this.props.Data[index[i].RowIdx],
+            this.props.Headers
+          );
           if (data !== null) {
             // Note: Can't currently pass a key, need to update columnFormatter
             // to not return a <td> node. Using createFragment instead.
