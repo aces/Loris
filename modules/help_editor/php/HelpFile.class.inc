@@ -5,7 +5,19 @@
  *
  * PHP Version 7
  *
- * @category Help Editor
+ * @category Help_Editor
+ * @package  Main
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
+/**
+ * Base class for files containing help text information
+ * as well as DB wrappers for CRUD operations
+ *
+ * PHP Version 7
+ *
+ * @category Help_Editor
  * @package  Main
  * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  * @license  Loris license
