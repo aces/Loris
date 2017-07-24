@@ -185,11 +185,6 @@ var StaticDataTable = React.createClass({
 
     for (let i = 0; i < this.props.Data.length; i += 1) {
       let val = this.props.Data[i][this.state.SortColumn] || undefined;
-      // If SortColumn is equal to default No. column, set value to be
-      // index + 1
-      if (this.state.SortColumn === -1) {
-        val = i + 1;
-      }
       const isString = (typeof val === 'string' || val instanceof String);
       const isNumber = !isNaN(val) && typeof val !== 'object';
 
