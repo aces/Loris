@@ -332,7 +332,7 @@ var StaticDataTable = React.createClass({
       for (var i = 0; i < index.length; i++) {
         sortedSessIDs.push(
           this.props.Data[index[i].RowIdx][sessIndex]
-        )
+        );
       }
       var url = loris.BaseURL + '/imaging_browser/ajax/setSortedRows.php';
       $.post(url, {sortedIDs: sortedSessIDs});

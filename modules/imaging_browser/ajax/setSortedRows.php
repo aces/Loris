@@ -9,17 +9,17 @@
  * @package  Main
  * @author   David Blader <dblader.mcin@gmail.com>
  * @license  Loris license
+ * @link     https://github.com/aces/Loris-Trunk
  */
 
 // Get LORIS user issuing the request
 $user =& User::singleton();
 if (!($user->hasPermission('imaging_browser_view_allsites')
-        || ($oneIsStudySite
-            && $user->hasPermission('imaging_browser_view_site')
-        )
-        || $user->hasPermission('imaging_browser_phantom_allsites')
-        || $user->hasPermission('imaging_browser_phantom_ownsite')
-    )) {
+    || ($oneIsStudySite
+    && $user->hasPermission('imaging_browser_view_site'))
+    || $user->hasPermission('imaging_browser_phantom_allsites')
+    || $user->hasPermission('imaging_browser_phantom_ownsite'))
+) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
@@ -37,8 +37,7 @@ $config = NDB_Config::singleton();
 
 if (!empty($_POST['sortedIDs'])) {
     $filtered = $_SESSION['State']->getProperty('mriSessionsListed');
-    $sorted = $_POST['sortedIDs'];
-
+    $sorted   = $_POST['sortedIDs'];
     $_SESSION['State']
         ->setProperty(
             'mriSessionsListed',
