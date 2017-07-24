@@ -10,7 +10,7 @@
  * @param {string} sortOrder - determines whether ASC or DESC (unique to imaging_browser)
  * @return {*} a formated table cell for a given column
  */
-function formatColumn(column, cell, rowData, rowHeaders, sortColumn, sortOrder) {
+function formatColumn(column, cell, rowData, rowHeaders, sortedIDs) {
   // If a column if set as hidden, don't display it
   if (loris.hiddenHeaders.indexOf(column) > -1) {
     return null;
@@ -30,10 +30,6 @@ function formatColumn(column, cell, rowData, rowHeaders, sortColumn, sortOrder) 
   }
 
   if (column === 'Links') {
-    var sortColumnName = 'default';
-    if (sortColumn > -1) {
-      sortColumnName = encodeURI(rowHeaders[sortColumn]);
-    }
     var cellTypes = cell.split(",");
     var cellLinks = [];
     for (var i = 0; i < cellTypes.length; i += 1) {
@@ -41,8 +37,7 @@ function formatColumn(column, cell, rowData, rowHeaders, sortColumn, sortOrder) 
         "/imaging_browser/viewSession/?sessionID=" +
         row.SessionID + "&outputType=" +
         cellTypes[i] + "&backURL=/imaging_browser/" +
-        "&sortCol=" + sortColumnName +
-        "&sortOrd=" + sortOrder
+        "&sorted=" + sortedIDs
       }>
           {cellTypes[i]}
         </a>);
@@ -52,8 +47,7 @@ function formatColumn(column, cell, rowData, rowHeaders, sortColumn, sortOrder) 
         "/imaging_browser/viewSession/?sessionID=" +
         row.SessionID +
         "&selectedOnly=1&backURL=/imaging_browser/" +
-        "&sortCol=" + sortColumnName +
-        "&sortOrd=" + sortOrder
+        "&sorted=" + sortedIDs
     }>
           selected
       </a>);
@@ -63,8 +57,7 @@ function formatColumn(column, cell, rowData, rowHeaders, sortColumn, sortOrder) 
         "/imaging_browser/viewSession/?sessionID=" +
         row.SessionID +
         "&backURL=/imaging_browser/" +
-        "&sortCol=" + sortColumnName +
-        "&sortOrd=" + sortOrder
+        "&sorted=" + sortedIDs
         }>
           all types
         </a>);
@@ -73,6 +66,7 @@ function formatColumn(column, cell, rowData, rowHeaders, sortColumn, sortOrder) 
 
   return <td>{cell}</td>;
 }
+
 
 window.formatColumn = formatColumn;
 

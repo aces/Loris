@@ -201,109 +201,19 @@ class MRINavigation
         if (!is_array($this->FilteredSessionList)) {
             $this->FilteredSessionList = array();
         }
-
         $this->urlParams           = $this->_splitURL();
-        $this->FilteredSessionList = $this->sortFilteredSessionList();
-        print_r($this->FilteredSessionList);
+        $this->urlParams['sorted'] = explode(',', $this->urlParams['sorted']);
+        $this->FilteredSessionList = array_intersect(
+            $this->urlParams['sorted'],
+            $this->FilteredSessionList
+        );
+
         $this->currentListIndex = array_search(
             $this->sessionID,
             $this->FilteredSessionList
         );
-
-        //print_r($this->urlParams);
     }
 
-    function sortFilteredSessionList() {
-        $db = Database::singleton();
-        $sorted = array();
-        // Note that Links and PSCID are not included as they are equivalent to
-        // the default ordering
-        $orderBy = "";
-        $join = "";
-        switch($this->urlParams['sortCol']) {
-            case 'Site':
-                $orderBy = 'p.MRI_alias';
-                $join    = 'JOIN psc p ON (s.CenterID=p.CenterID)';
-                break;
-
-            case 'DCCID':
-                $orderBy = 'c.CandID';
-                $join = 'JOIN candidate c ON (c.CandID=s.CandID)';
-                break;
-
-            case 'Visit Label':
-                $orderBy = 's.visit_label';
-                break;
-
-            case 'Visit QC Status':
-                $orderBy = "
-                CASE s.MRIQCStatus
-                    WHEN 'Fail' THEN
-                        IF(s.MRIQCPending='Y', 'Pending Fail', 'Fail')
-                    WHEN 'Pass' THEN
-                        IF(s.MRIQCPending='Y', 'Pending Pass', 'Pass')
-                    ELSE s.MRIQCStatus
-                END
-                ";
-                break;
-
-            case 'First Acquisition':
-                $orderBy = 'MIN(md.AcquisitionDate)';
-                $join = "JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)";
-                break;
-
-            case 'First Insertion':
-                $orderBy = 'FROM_UNIXTIME(f.InsertTime)';
-                $join = "JOIN files f ON s.ID=f.SessionID";
-                break;
-
-            case 'Last QC':
-                $orderBy = 'FROM_UNIXTIME(fqc.QCLastChangeTime)';
-                $join = 'JOIN files f ON f.SessionID=s.ID ' .
-                    'JOIN files_qcstatus fqc ON fqc.FileID=f.FileID';
-                break;
-
-            case 'New Data':
-                $orderBy = "CASE 
-                COALESCE(nd.QCLastChangeTime, 'new')
-                WHEN 'new' THEN 'new' 
-                WHEN '' THEN 'new'
-                ELSE ''
-                END";
-                break;
-
-            case 'T1 QC Status':
-                $acqID = $db->pselectOne(
-                    'SELECT ID FROM mri_scan_type WHERE Scan_type="t1"',
-                    array()
-                );
-                break;
-
-            case 'T2 QC Status':
-                $acqID = $db->pselectOne(
-                    'SELECT ID FROM mri_scan_type WHERE Scan_type="t2"',
-                    array()
-                );
-                break;
-
-            default:
-                return $this->FilteredSessionList;
-        }
-
-
-
-        $query = "SELECT DISTINCT ID FROM session s " . $join .
-            " WHERE FIND_IN_SET(s.ID,:filterIDs) ORDER BY " .
-            $orderBy . ' ' . $this->urlParams['sortOrd'];
-
-        $qParams = array(
-            'filterIDs' => implode(',', $this->FilteredSessionList)
-        );
-
-        $sorted = $db->pselect($query, $qParams);
-        $sorted = array_column($sorted, "ID");
-        return $sorted;
-    }
     /**
     * Parses the request into hostname/params, so that it can be
     * reconstructed into a link which has the same parameters
@@ -315,7 +225,6 @@ class MRINavigation
         $linkBase      = $_SERVER['REQUEST_URI'];
         $this->bits[0] = substr($linkBase, 0, strpos($linkBase, '?'));
         $this->bits[1] = substr($linkBase, strpos($linkBase, '?')+1);
-        //print_r($this->bits);
         parse_str($this->bits[1], $urlParams);
         return $urlParams;
     }
