@@ -215,31 +215,31 @@ var StaticDataTable = React.createClass({
 
     index.sort(function(a, b) {
       if (this.state.SortOrder === 'ASC') {
-        if (a.Value === b.Value) {
-          // If all values are equal, sort by rownum
-          if (a.RowIdx < b.RowIdx) return -1;
-          if (a.RowIdx > b.RowIdx) return 1;
-        }
         // Check if null values
-        if (a.Value === null || typeof a.Value === 'undefined') return -1;
-        if (b.Value === null || typeof b.Value === 'undefined') return 1;
+        if (a.Value === null) return -1;
+        if (b.Value === null) return 1;
 
         // Sort by value
         if (a.Value < b.Value) return -1;
         if (a.Value > b.Value) return 1;
-      } else {
-        if (a.Value === b.Value) {
-          // If all values are equal, sort by rownum
-          if (a.RowIdx < b.RowIdx) return 1;
-          if (a.RowIdx > b.RowIdx) return -1;
+
+        // If all values are equal, sort by rownum
+        if (a.RowIdx < b.RowIdx) {
+          return -1;
         }
+        if (a.RowIdx > b.RowIdx) return 1;
+      } else {
         // Check if null values
-        if (a.Value === null || typeof a.Value === 'undefined') return 1;
-        if (b.Value === null || typeof b.Value === 'undefined') return -1;
+        if (a.Value === null) return 1;
+        if (b.Value === null) return -1;
 
         // Sort by value
         if (a.Value < b.Value) return 1;
         if (a.Value > b.Value) return -1;
+
+        // If all values are equal, sort by rownum
+        if (a.RowIdx < b.RowIdx) return 1;
+        if (a.RowIdx > b.RowIdx) return -1;
       }
       // They're equal..
       return 0;
