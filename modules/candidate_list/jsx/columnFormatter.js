@@ -22,15 +22,15 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   // create array of classes to be added to td tag
   var classes = [];
-  if (row['Consent To Study'] === 'yes') {
-    classes.push("bg-danger");
-  }
-  //convert array to string, with blank space separator
-  classes = classes.join(" ");
 
   if (column === 'PSCID') {
     var url = loris.BaseURL + "/" + rowData[1] + "/";
-    return <td><a href ={url}>{cell}</a></td>;
+    return (
+        <td className = {classes}>
+          <a href ={url}>
+            {cell}
+          </a>
+        </td>);
   }
   if (column === 'Feedback') {
     switch (cell) {
@@ -53,7 +53,12 @@ function formatColumn(column, cell, rowData, rowHeaders) {
         </td>
       );
   }
-  return <td>{cell}</td>;
+  if (row['Consent To Study'] === 'no') {
+    classes.push("bg-danger");
+  }
+  //convert array to string, with blank space separator
+  classes = classes.join(" ");
+  return <td className={classes}>{cell}</td>;
 }
 
 window.formatColumn = formatColumn;

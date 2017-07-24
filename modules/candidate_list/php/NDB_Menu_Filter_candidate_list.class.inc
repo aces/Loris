@@ -95,8 +95,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             }
 
             $consentType = $consent_details[0];
-            $name  = Database::singleton()->escape($consentType["name"]);
-            $label = Database::singleton()->escape($consentType["label"]);
+            $name        = Database::singleton()->escape($consentType["name"]);
+            $label       = Database::singleton()->escape($consentType["label"]);
             //This is not foolproof.
             //This is only done because the following does not work,
             //"ps.{$name} AS `{$label}`" (notice the backticks `)
