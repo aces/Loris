@@ -27,7 +27,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     public $AjaxModule         = true;
     public $errors  = array(
         0 => "No MRI parameter form",
-        1 => "T1 Scan done NOT Partial or Complete in MRI parameter form"
+        1 => "T1 Scan done NOT Partial or Complete in MRI parameter form",
+        2 => "MRI PF Complete, Answer = No, No DICOM Logged in Archive but is inserted"
     );
     /**
      * Check user permissions
@@ -105,7 +106,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             $namesList[$pn['PatientName']] = $pn['PatientName'];
         }
         // Form Elements
-        $this->addSelect('error_message', 'Error Message', $this->errors);
+        $this->addSelect('errorMessage', 'Error Message', $this->errors);
         $this->addSelect('UploadedBy', 'Uploaded By', $uploaderList);
         $this->addSelect('PatientName', 'Patient ID', $namesList);
         $this->addSelect('site', 'Site', $siteList);
@@ -153,12 +154,12 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 				WHERE (mpf.T1_Scan_done !='Complete' AND mpf.T1_scan_done!= 'Partial')
 				)";
         $this->query = $query;
-        $this->columns = array("m.UploadedBy", "UploadDate", 't.PatientName', 't.CenterName', '("'.$this->errors[1].'") as message','(" ") as action',  'f.CommentID as CommentID');
+        $this->columns = array("m.UploadedBy", "UploadDate", 't.PatientName', 't.CenterName', '("'.$this->errors[1].'") as error_message','(" ") as action',  'f.CommentID as CommentID');
 
         $this->group_by = 't.PatientName, f.SessionID, UploadID, t.CenterName, CommentID';
         $this->order_by = ' UploadDate ';
 
-        $this->headers = ['Uploaded By', 'Upload Date', 'Patient Name', 'Location', 'Message', 'Action', 'CommentID'];
+        $this->headers = ['Uploaded By', 'Upload Date', 'Patient Name', 'Location', 'Error Message', 'Action', 'CommentID'];
 
         $this->validFilters = array('m.UploadedBy','message');
         $this->formToFilter = array(
