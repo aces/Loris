@@ -1,5 +1,7 @@
 /*global document: false, $: false, window: false, unescape: false, Option: false,isElementsSet, alert*/
 
+loris.hiddenHeaders = ['Consent To Study'];
+
 function checkAccessProfileForm() {
     'use strict';
     var form = document.accessProfileForm;

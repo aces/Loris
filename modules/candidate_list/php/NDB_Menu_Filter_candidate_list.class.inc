@@ -93,20 +93,18 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             if (!isset($consent_details[0])) {
                 $consent_details = Utility::toArray($consent_details);
             }
-            foreach ($consent_details as $consentType) {
-                $name  = Database::singleton()->escape($consentType["name"]);
-                $label = Database::singleton()->escape($consentType["label"]);
-                //This is not foolproof.
-                //This is only done because the following does not work,
-                //"ps.{$name} AS `{$label}`" (notice the backticks `)
-                //The code that creates the tables on the front end will freak out
-                //if it sees a space in the label name
-                $label           = preg_replace("/\s/", "_", $label);
-                $label           = str_replace("`", "", $label);
-                $label           = str_replace("-", "_", $label);
-                $this->columns[] = "ps.$name AS $label";
 
-            }
+            $consentType = $consent_details[0];
+            $name  = Database::singleton()->escape($consentType["name"]);
+            $label = Database::singleton()->escape($consentType["label"]);
+            //This is not foolproof.
+            //This is only done because the following does not work,
+            //"ps.{$name} AS `{$label}`" (notice the backticks `)
+            //The code that creates the tables on the front end will freak out
+            //if it sees a space in the label name
+            //$label           = preg_replace("/\s/", "_", $label);
+            // $label           = str_replace("`", "", $label);
+            $this->columns[] = "ps.$name AS Consent_to_Study";
         }
         if ($useProjects) {
             $this->columns[] = 'p.Name as Project';
