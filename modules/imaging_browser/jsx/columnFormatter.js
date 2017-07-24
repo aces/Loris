@@ -6,8 +6,7 @@
  * @param {string} cell - cell content
  * @param {array} rowData - array of cell contents for a specific row
  * @param {array} rowHeaders - array of table headers (column names)
- * @param {int} sortColumn - index of column sorted by (unique to imaging_browser)
- * @param {string} sortOrder - determines whether ASC or DESC (unique to imaging_browser)
+ * @param {array} sortedIDs - array of sorted Session IDs
  * @return {*} a formated table cell for a given column
  */
 function formatColumn(column, cell, rowData, rowHeaders, sortedIDs) {
@@ -66,7 +65,6 @@ function formatColumn(column, cell, rowData, rowHeaders, sortedIDs) {
 
   return <td>{cell}</td>;
 }
-
 
 window.formatColumn = formatColumn;
 
