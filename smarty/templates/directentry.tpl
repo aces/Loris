@@ -27,7 +27,7 @@
         </th>
     </tr>
         <script src="{$baseurl}/js/modernizr/modernizr.js" type="text/javascript"></script>
-        <script src="{$baseurl}/js/firefoxDates.js" type="text/javascript"></script>
+        <script src="{$baseurl}/js/polyfills.js" type="text/javascript"></script>
     <tr>
     <!-- user info table -->
          <td width="50%" colspan="2" valign="bottom" align="left" nowrap="nowrap" class="controlPanelSection">

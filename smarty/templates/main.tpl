@@ -48,7 +48,6 @@
             });
           });
         </script>
-        <script src="{$baseurl}/js/firefoxDates.js" type="text/javascript"></script>
         <link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="Stylesheet" />
         <link href="{$baseurl}/css/simple-sidebar.css" rel="stylesheet">
 
