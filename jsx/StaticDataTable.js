@@ -66,6 +66,10 @@ var StaticDataTable = React.createClass({
         $("#dynamictable").DynamicTable();
       }
     }
+    if (this.props.onSort) {
+      var index = this.getSortedRows();
+      this.props.onSort(index, this.props.Data, this.props.Headers);
+    }
   },
   getInitialState: function() {
     return {

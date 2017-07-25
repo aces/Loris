@@ -114,10 +114,10 @@
 <div id="datatable">
 
 <script>
-var table = RImagingBrowserDDT({
+var table = DynamicDataTable({
         "DataURL" : "{$baseurl}/imaging_browser/?format=json",
-        "getFormattedCell" : formatColumn
-
+        "getFormattedCell" : formatColumn,
+        "onSort": onSort
 });
 ReactDOM.render(table, document.getElementById("datatable"));
 </script>
