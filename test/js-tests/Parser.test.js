@@ -22,6 +22,18 @@ describe('Parser Unit Tests', () => {
       const res = Evaluator(LOGIC_STR);
       expect(res).to.equal(45);
     })
+	
+	it('Maintains order of operations', () => {
+      const LOGIC_STR = '10+(-5)';
+      const res = Evaluator(LOGIC_STR);
+      expect(res).to.equal(5);
+    })
+    
+	it('Maintains order of operations', () => {
+      const LOGIC_STR = '(median(1,2,6,3,4,5)=3.5) and (median(1,2,3,4,5)=3)';
+      const res = Evaluator(LOGIC_STR);
+      expect(res).to.equal(true);
+    })
   })
 
   describe('Simple if statement', () => {
@@ -67,11 +79,11 @@ describe('Parser Unit Tests', () => {
   })
   
   describe('Date difference operations', () => {
-    it('Returns "yes" if age = 17', () => {
-      const LOGIC_STR = 'datediff("2017-01-01","2000-01-01","y",false)';
+    it('Returns date diff in y', () => {
+      const LOGIC_STR = 'datediff("2017-01-01","2018-07-01","y")';
       const CONTEXT = {a: 2, b: 4};
       const res = Evaluator(LOGIC_STR, CONTEXT);
-      expect(res).to.equal(17.002402513398632);
+      expect(res).to.equal(1.5);
     })
   })
 
