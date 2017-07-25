@@ -102,8 +102,9 @@ class Dicoms extends \Loris\API\Candidates\Candidate\Visit
         }
 
             $rows = $DB->pselect(
-            "SELECT SUBSTRING_INDEX(ArchiveLocation, '/', -1) as Tarname,
-                    GROUP_CONCAT(ts.SeriesDescription SEPARATOR ', ') as SeriesDescription,
+                "SELECT SUBSTRING_INDEX(ArchiveLocation, '/', -1) as Tarname,
+                    GROUP_CONCAT(ts.SeriesDescription SEPARATOR ', ') 
+                        as SeriesDescription,
                     GROUP_CONCAT(ts.SeriesNumber SEPARATOR ', ') as SeriesNumber,
                     GROUP_CONCAT(ts.EchoTime SEPARATOR ', ') as EchoTime,
                     GROUP_CONCAT(ts.SeriesUID SEPARATOR ', ') as SeriesUID 
@@ -111,9 +112,9 @@ class Dicoms extends \Loris\API\Candidates\Candidate\Visit
                     JOIN tarchive_series ts ON (ts.TarchiveID=t.TarchiveID)
                 WHERE t.PatientName LIKE $ID
             GROUP BY t.TarchiveID",
-            $params
-        );
-        return $rows;
+                $params
+            );
+            return $rows;
     }
 
 }
