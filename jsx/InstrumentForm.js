@@ -16,16 +16,17 @@ const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave}) 
           try {
             return Evaluator(element.DisplayIf, contextWithData);
           }  catch(e) {
+            if (e instanceof TypeError) {
+              return true;
+            }
             console.error(`Error evaluating DisplayIf property of element ${index} in instrument ${instrument.Meta.ShortName}.`);
-            console.log(element.DisplayIf);
-            console.log(e.message || e);
             return false;
           }
         }).map((element, index) => {
           if(INPUT_TYPES.includes(element.Type)) {
-              const requireResponse = element.Options.RequireResponse;
-              const required = typeof requireResponse === 'string' ? Evaluator(requireResponse, contextWithData) : requireResponse;
-              return renderElement(element, index, data, onUpdate, required)
+            const requireResponse = element.Options.RequireResponse;
+            const required = typeof requireResponse === 'string' ? Evaluator(requireResponse, contextWithData) : requireResponse;
+            return renderElement(element, index, data, onUpdate, required)
           } 
           return renderElement(element, index, data, onUpdate)
         })
