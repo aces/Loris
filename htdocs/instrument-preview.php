@@ -134,7 +134,9 @@ class InstrumentPreview
         $instruments = [];
 
         foreach (glob($base."project/instruments/*.json") as $file) {
-            array_push($instruments, json_decode(file_get_contents($file)));
+            $instrument = json_decode(file_get_contents($file), true);
+            $instrument["Elements"] = \Loris\Behavioural\NDB_BVL_Instrument_JSON::inlineCalcFormulas($instrument["Elements"]);
+            array_push($instruments, $instrument);
         }
 
         $this->tpl_data['lang'] = $_REQUEST['lang'] ? $_REQUEST['lang'] : 'en-ca';
