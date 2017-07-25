@@ -110,9 +110,9 @@ export default {
     const mid = cpy.length / 2
     cpy.sort();
     if (cpy.length % 2 === 0) {
-      return (cpy[mid] + cpy[mid + 1]) / 2;
+      return (cpy[mid] + cpy[mid - 1]) / 2;
     } else {
-      return cpy[mid + 1];
+      return cpy[mid - 0.5];
     }
   },
   sum(...ns) {
@@ -146,7 +146,7 @@ export default {
     let res;
     switch (units) {
         case 'y':
-            res = 1000*60*60*24*365.2425
+            res = 1000*60*60*24*365
             break;
         case 'm':
             res = 1000*60*60*24*30.44
@@ -155,8 +155,11 @@ export default {
             res = 1000*60*60*24
             break;
     }
-    const diff = (dt1.getTime() - dt2.getTime())/res;
-    return diff;
+    if (returnSigned) {
+        return (dt1.getTime() - dt2.getTime())/res;
+    } else {
+        return Math.abs((dt1.getTime() - dt2.getTime())/res);
+    }
     /*let mdate1, mdate2;
     switch (format) {
       case 'ymd': {
