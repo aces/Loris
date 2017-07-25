@@ -162,7 +162,10 @@ const RadioGroupLabels = ({ labels }) => (
 const RadioGroupElement = React.createClass({
   propTypes: {
     name: React.PropTypes.string.isRequired,
-    options: React.PropTypes.object.isRequired,
+    options: React.PropTypes.oneOfType([
+        React.PropTypes.object,
+        React.PropTypes.array
+    ]),
     label: React.PropTypes.string,
     value: React.PropTypes.string,
     id: React.PropTypes.string,
