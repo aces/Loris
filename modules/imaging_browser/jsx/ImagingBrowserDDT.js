@@ -3,7 +3,6 @@
  */
 /* exported RImagingBrowserDDT */
 class ImagingBrowserDDT extends DynamicDataTable {
-//var ImagingBrowserDDT = DynamicDataTable.extend({
   render() {
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {

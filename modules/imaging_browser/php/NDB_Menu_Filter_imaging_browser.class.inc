@@ -520,9 +520,9 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         return array_merge(
             parent::getJSDependencies(),
             array(
-                $baseurl . "/imaging_browser/js/columnFormatter.js",
-                $baseurl . "/imaging_browser/js/ImagingBrowserDDT.js",
-                $baseurl . "/imaging_browser/js/ImagingBrowserSDT.js",
+             $baseurl . "/imaging_browser/js/columnFormatter.js",
+             $baseurl . "/imaging_browser/js/ImagingBrowserDDT.js",
+             $baseurl . "/imaging_browser/js/ImagingBrowserSDT.js",
             )
         );
     }

@@ -1,22 +1,8 @@
 /**
- * Created by dblader on 7/25/17.
- */
-/* exported RImagingBrowserSDT */
-
-/**
- * This file contains React component for Static Data Table
- *
- * @author Loris Team
- * @version 1.0.0
- *
- */
-
-/**
- * Static Data Table component
- * Displays a set of data that is receives via props.
+ * Need to override static data table in order to maintain sorting order
+ * from the menu filter in imaging viewer
  */
 class ImagingBrowserSDT extends StaticDataTable {
-//var ImagingBrowserSDT = StaticDataTable.extend({
   componentDidUpdate() {
     if (jQuery.fn.DynamicTable) {
       if (this.props.freezeColumn) {
