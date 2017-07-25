@@ -11,7 +11,7 @@
  * @link     https://github.com/aces/Loris
  */
 /**
- * The welcome menu
+ * The module to display study statistics
  *
  * PHP Version 7
  *
