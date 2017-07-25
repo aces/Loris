@@ -24,17 +24,6 @@ if (!($user->hasPermission('imaging_browser_view_allsites')
     exit;
 }
 
-set_include_path(
-    get_include_path().":../../project/libraries:../../php/libraries:"
-);
-require_once "NDB_Client.class.inc";
-require_once "NDB_Config.class.inc";
-
-$client = new NDB_Client();
-$client->initialize("../../project/config.xml");
-
-$config = NDB_Config::singleton();
-
 if (!empty($_POST['sortedIDs'])) {
     $filtered = $_SESSION['State']->getProperty('mriSessionsListed');
     $sorted   = $_POST['sortedIDs'];
