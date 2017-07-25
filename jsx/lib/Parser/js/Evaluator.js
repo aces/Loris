@@ -12,18 +12,27 @@ function evalAST(tree, scope) {
     }
     case 'Variable': {
       if (typeof scope[tree.args[0]] === 'undefined') {
-        throw `Unbound variable: ${tree.args[0]}`;
+        throw new Error(`Unbound variable: ${tree.args[0]}`);
+      }
+      if (scope[tree.args[0]] === null) {
+        throw new TypeError(`Null variable: ${tree.args[0]}`);
       }
       return scope[tree.args[0]];
     }
     case 'NestedVariables': {
       if (typeof scope[tree.args[0]] === 'undefined') {
-        throw `Unbound variable: ${tree.args[0]}`;
+        throw new Error(`Unbound variable: ${tree.args[0]}`);
+      }
+      if (scope[tree.args[0]] === null) {
+        throw new TypeError(`Null variable: ${tree.args[0]}`);
       }
       var res = scope[tree.args[0]];
       for (var i = 0; i < tree.args[1].length; i++) {
         if (typeof res[tree.args[1][i]] === 'undefined') {
-          throw `Unbound sub-variable: ${tree.args[1][i]}`;
+          throw new Error(`Unbound sub-variable: ${tree.args[0]}`);
+        }
+        if (res[tree.args[1][i]] === null) {
+          throw new TypeError(`Null sub-variable: ${tree.args[0]}`);
         }
         res = res[tree.args[1][i]];
       }
