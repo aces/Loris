@@ -197,120 +197,124 @@ class NDB_Form_Statistics extends NDB_Form
             $projects[$key] = $value;
         }
         $demographicProject = $_REQUEST['DemographicProject'] ?? '';
-        $demographicProject = htmlspecialchars($demographicProject);
-        $Param_Project = '';
-        if (!empty($demographicProject)) {
-            $this->tpl_data['CurrentProject']
-                = array(
-                    'ID'   => $demographicProject,
-                    'Name' => $projects[$currentProject],
-                );
-            $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
-            $this->params['pid'] = $demographicProject;
-
-            //SUBPROJECTS
-            $subprojList ="";
-            $subprojects = Utility::getSubprojectsForProject($demographicProject);
-            foreach ($subprojects as $key=>$val) {
-                $subprojList .= $key.",";
-            }
-            $subprojList = substr($subprojList, 0, -1);
-            $subproject_query ='';
-            if (!empty($subprojList)) {
-                $subproject_query ="AND s.SubprojectID IN ($subprojList)";
-            }
-        }
-
-        //SITES
-        $demographicSite = $_REQUEST['DemographicSite'] ?? '';
-        $demographicSite = htmlspecialchars($demographicSite);
-        $Param_Site = '';
-        if (empty($demographicSite)) {
-            error_log('No demographic site specified in request');
+        if (empty($demographicProject)) {
+            error_log('No demographic project specified in request');
             header("HTTP/1.1 400 Bad Request");
             exit;
         }
-        $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
-        $this->params['sid'] = $demographicSite;
-        $centers     = $DB->pselect(
-            "SELECT CONCAT('C', CenterID) as ID,
-                    CenterID as NumericID,
-                    IFNULL(PSCArea,Name) as LongName,
-                    Name as ShortName
-              FROM psc
-              WHERE CenterID <> '1'
-                AND Study_site = 'Y'",
-            array()
-        );
-        $sites[null] ="All sites";
-        foreach ($centers as $row) {
-            $sites[$row['NumericID']] = $row['ShortName'];
-            if ($demographicSite == $row['NumericID']) {
-                $this->tpl_data['CurrentSite'] = array(
-                                                  'ID'   => $row['NumericID'],
-                                                  'Name' => $row['LongName'],
-                                                 );
-            }
+        $demographicProject = htmlspecialchars($demographicProject);
+        $Param_Project = '';
+        $this->tpl_data['CurrentProject']
+            = array(
+                'ID'   => $demographicProject,
+                'Name' => $projects[$currentProject],
+            );
+        $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+        $this->params['pid'] = $demographicProject;
+
+        //SUBPROJECTS
+        $subprojList ='';
+        $subprojects = Utility::getSubprojectsForProject($demographicProject);
+        foreach ($subprojects as $key=>$val) {
+            $subprojList .= $key.",";
         }
-
-        $Visits = Utility::getExistingVisitLabels($demographicProject);
-
-        $this->tpl_data['Sites']       = $sites;
-        $this->tpl_data['Projects']    = $projects;
-        $this->tpl_data['Subprojects'] = $subprojects;
-        $this->tpl_data['Visits']      = $Visits;
-
-        //REGISTERED CANDIDATES ROW
-        $result = $DB->pselect(
-            "SELECT s.subprojectid as rowid,
-                          count(DISTINCT(c.PSCID)) as val
-                      FROM candidate as c
-                          LEFT JOIN session s ON (s.CandID=c.CandID)
-                      WHERE c.CenterID <> '1'
-                          AND c.Entity_type != 'Scanner'
-                          AND c.Active = 'Y'
-                          $Param_Project
-                          $Param_Site
-                      GROUP BY s.subprojectid",
-            $this->params
-        );
-
-        foreach ($result as $row) {
-            $this->tpl_data['registered'][$row['rowid']] = $row['val'];
-            $this->tpl_data['registered']['total']      += $row['val'];
+        $subprojList = substr($subprojList, 0, -1);
+        $subproject_query ='';
+        if (!empty($subprojList)) {
+            $subproject_query ="AND s.SubprojectID IN ($subprojList)";
         }
+    }
 
-        //PARTICIPANT STATUS ACTIVE
-        $result = $DB->pselect(
-            "SELECT s.subprojectid as rowid,
-                          count(DISTINCT(c.PSCID)) as val
-                      FROM candidate as c
-                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
-                          LEFT JOIN session s ON (s.CandID=c.CandID)
-                      WHERE c.CenterID <> '1'
-                          AND c.Entity_type != 'Scanner'
-                          AND c.Active='Y'
-                          AND (ps.participant_status=1
-                               OR ps.participant_status IS NULL)
-                          $Param_Project
-                          $Param_Site
-                      GROUP BY s.subprojectid",
-            $this->params
-        );
-
-        foreach ($result as $row) {
-            $this->tpl_data['ps_active'][$row['rowid']] = $row['val'];
-            $this->tpl_data['ps_active']['total']      += $row['val'];
+    //SITES
+    $demographicSite = $_REQUEST['DemographicSite'] ?? '';
+    if (empty($demographicSite)) {
+        error_log('No demographic site specified in request');
+        header("HTTP/1.1 400 Bad Request");
+        exit;
+    }
+    $demographicSite = htmlspecialchars($demographicSite);
+    $Param_Site = '';
+    $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
+    $this->params['sid'] = $demographicSite;
+    $centers     = $DB->pselect(
+        "SELECT CONCAT('C', CenterID) as ID,
+        CenterID as NumericID,
+        IFNULL(PSCArea,Name) as LongName,
+        Name as ShortName
+        FROM psc
+        WHERE CenterID <> '1'
+        AND Study_site = 'Y'",
+        array()
+    );
+    $sites[null] ="All sites";
+    foreach ($centers as $row) {
+        $sites[$row['NumericID']] = $row['ShortName'];
+        if ($demographicSite == $row['NumericID']) {
+            $this->tpl_data['CurrentSite'] = array(
+                'ID'   => $row['NumericID'],
+                'Name' => $row['LongName'],
+            );
         }
+    }
 
-        //PARTICIPANT STATUS INACTIVE
-        $result = $DB->pselect(
-            "SELECT s.subprojectid as rowid,
-                          count(DISTINCT(c.PSCID)) as val
-                      FROM candidate as c
-                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
-                          LEFT JOIN session s ON (s.CandID=c.CandID)
-                      WHERE c.CenterID <> '1'
+    $Visits = Utility::getExistingVisitLabels($demographicProject);
+
+    $this->tpl_data['Sites']       = $sites;
+    $this->tpl_data['Projects']    = $projects;
+    $this->tpl_data['Subprojects'] = $subprojects;
+    $this->tpl_data['Visits']      = $Visits;
+
+    //REGISTERED CANDIDATES ROW
+    $result = $DB->pselect(
+        "SELECT s.subprojectid as rowid,
+        count(DISTINCT(c.PSCID)) as val
+        FROM candidate as c
+        LEFT JOIN session s ON (s.CandID=c.CandID)
+        WHERE c.CenterID <> '1'
+        AND c.Entity_type != 'Scanner'
+        AND c.Active = 'Y'
+        $Param_Project
+        $Param_Site
+        GROUP BY s.subprojectid",
+        $this->params
+    );
+
+    foreach ($result as $row) {
+        $this->tpl_data['registered'][$row['rowid']] = $row['val'];
+        $this->tpl_data['registered']['total']      += $row['val'];
+    }
+
+    //PARTICIPANT STATUS ACTIVE
+    $result = $DB->pselect(
+        "SELECT s.subprojectid as rowid,
+        count(DISTINCT(c.PSCID)) as val
+        FROM candidate as c
+        LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+        LEFT JOIN session s ON (s.CandID=c.CandID)
+        WHERE c.CenterID <> '1'
+        AND c.Entity_type != 'Scanner'
+        AND c.Active='Y'
+        AND (ps.participant_status=1
+        OR ps.participant_status IS NULL)
+        $Param_Project
+        $Param_Site
+        GROUP BY s.subprojectid",
+        $this->params
+    );
+
+    foreach ($result as $row) {
+        $this->tpl_data['ps_active'][$row['rowid']] = $row['val'];
+        $this->tpl_data['ps_active']['total']      += $row['val'];
+    }
+
+    //PARTICIPANT STATUS INACTIVE
+    $result = $DB->pselect(
+        "SELECT s.subprojectid as rowid,
+        count(DISTINCT(c.PSCID)) as val
+        FROM candidate as c
+        LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+        LEFT JOIN session s ON (s.CandID=c.CandID)
+        WHERE c.CenterID <> '1'
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND ps.participant_status=5
@@ -408,8 +412,8 @@ class NDB_Form_Statistics extends NDB_Form
         $instrument_list = Utility::getAllInstruments();
         $this->tpl_data['all_instruments'] = $instrument_list;
         $demographicInstrument = $_REQUEST['DemographicInstrument'] ?? '';
-        $demographicInstrument = htmlspecialchars($demographicInstrument);
         if (!empty($demographicInstrument)) {
+            $demographicInstrument = htmlspecialchars($demographicInstrument);
             $Subcategories = array(
                               'Complete',
                               'Incomplete',
