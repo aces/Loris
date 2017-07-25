@@ -81,7 +81,13 @@ class InstrumentPreview extends React.Component {
 
     const evaluatorContext = Object.assign({}, this.state.context, instrumentData);
     const calculatedValues = calcElements.reduce((result, element) => {
-      result[element.Name] = Evaluator(element.Formula, evaluatorContext);
+      try {
+        result[element.Name] = String(Evaluator(element.Formula, evaluatorContext));
+      } catch (e) {
+        if (!(e instanceof TypeError)) {
+          throw e;
+        }
+      }
       return result;
     }, {});
 
