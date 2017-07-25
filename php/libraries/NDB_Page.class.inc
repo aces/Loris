@@ -635,7 +635,7 @@ class NDB_Page
      *
      * @return none, but may have side-effects
      */
-    function setup()
+    function setup($commentID, $page)
     {
     }
 
