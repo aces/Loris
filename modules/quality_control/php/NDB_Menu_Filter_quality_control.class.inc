@@ -28,7 +28,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     public $errors  = array(
         0 => "No MRI parameter form",
         1 => "T1 Scan done NOT Partial or Complete in MRI parameter form",
-        2 => "MRI PF Complete, Answer = No, No DICOM Logged in Archive but is inserted"
+        2 => "MRI PF Completed = No T1 Scan, No DICOM logged in Archive but scan is inserted and in browser"
     );
     /**
      * Check user permissions
@@ -106,6 +106,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             $namesList[$pn['PatientName']] = $pn['PatientName'];
         }
         // Form Elements
+        $this->addBasicText('candId', 'DCCID', ["size" => 9, "maxlength" => 7]);
+        $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
         $this->addSelect('errorMessage', 'Error Message', $this->errors);
         $this->addSelect('UploadedBy', 'Uploaded By', $uploaderList);
         $this->addSelect('PatientName', 'Patient ID', $namesList);
@@ -144,23 +146,57 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                 WHERE (mpf.T1_Scan_done !='Complete' or mpf.T1_scan_done!= 'Partial')
                 )";
         */
-        $query= "
-			FROM mri_upload m 
-			JOIN tarchive t ON (t.TarchiveID = m.TarchiveID OR t.SessionID = m.SessionID) 
-			JOIN flag f ON (f.SessionID = t.SessionID and f.CommentID not like 'DDE%') 
+
+       /* $query= "
+			FROM mri_upload m
+			JOIN tarchive t ON (t.TarchiveID = m.TarchiveID OR t.SessionID = m.SessionID)
+			JOIN flag f ON (f.SessionID = t.SessionID and f.CommentID not like 'DDE%')
 			WHERE f.CommentID IN (
-				SELECT CommentID 
-				FROM mri_parameter_form mpf 
+				SELECT CommentID
+				FROM mri_parameter_form mpf
 				WHERE (mpf.T1_Scan_done !='Complete' AND mpf.T1_scan_done!= 'Partial')
-				)";
+				)"; */
+
+        $query =  "
+            FROM flag f 
+            JOIN session s ON (f.SessionID=s.ID)
+            LEFT JOIN files fi ON (fi.SessionID = f.SessionID)
+            LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
+            LEFT JOIN tarchive t ON (s.CandID=MID(t.PatientName, 9, 6) AND MID(t.PatientName, 16, 7)=s.Visit_label)
+            LEFT JOIN candidate c ON (s.CandID=c.CandID)
+            LEFT JOIN files_qcstatus qc ON (qc.FileID=fi.FileID)
+            WHERE f.CommentID NOT LIKE 'DDE%'
+                  AND f.Test_name='mri_parameter_form'
+                  AND f.Administration <> 'None'
+                  AND t.TarchiveID IS NULL
+                  AND s.Active='Y'
+                  AND s.CenterID <> '1'
+                  AND f.Data_entry='Complete'
+                  AND fi.AcquisitionProtocolID=44
+                  AND m.T1_Scan_done != 'Complete'
+                  AND qc.QCStatus = 'Pass'";
         $this->query = $query;
-        $this->columns = array("m.UploadedBy", "UploadDate", 't.PatientName', 't.CenterName', '("'.$this->errors[1].'") as error_message','(" ") as action',  'f.CommentID as CommentID');
+        //$this->columns = array("m.UploadedBy", "UploadDate", 't.PatientName', 't.CenterName', '("'.$this->errors[1].'") as error_message','(" ") as action',  'f.CommentID as CommentID');
+        $this->columns = [
+            'c.PSCID',
+            's.ID as SessionID',
+            's.CandID as cand_id',
+            's.Visit_label as visit_label',
+            '("'.$this->errors[2].'") as error_message',
+            'f.CommentID as CommentID'
+        ];
+       // $this->group_by = 't.PatientName, f.SessionID, UploadID, t.CenterName, CommentID';
+        $this->order_by = 'c.PSCID';
 
-        $this->group_by = 't.PatientName, f.SessionID, UploadID, t.CenterName, CommentID';
-        $this->order_by = ' UploadDate ';
-
-        $this->headers = ['Uploaded By', 'Upload Date', 'Patient Name', 'Location', 'Error Message', 'Action', 'CommentID'];
-
+      //  $this->headers = ['Uploaded By', 'Upload Date', 'Patient Name', 'Location', 'Error Message', 'Action', 'CommentID'];
+        $this->headers = [
+            'PSCID',
+            'Session ID',
+            'DCCID',
+            'Visit Label',
+            'Error Message',
+            'CommentID'
+        ];
         $this->validFilters = array('m.UploadedBy','message');
         $this->formToFilter = array(
             'UploadedBy' => 'm.UploadedBy',
