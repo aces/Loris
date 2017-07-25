@@ -114,7 +114,7 @@
 <div id="datatable">
 
 <script>
-var table = RDynamicDataTable({
+var table = RImagingBrowserDDT({
         "DataURL" : "{$baseurl}/imaging_browser/?format=json",
         "getFormattedCell" : formatColumn
 
