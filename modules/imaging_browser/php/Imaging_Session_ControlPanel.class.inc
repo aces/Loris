@@ -201,7 +201,6 @@ class MRINavigation
         if (!is_array($this->FilteredSessionList)) {
             $this->FilteredSessionList = array();
         }
-        print_r($this->FilteredSessionList);
         $this->currentListIndex = array_search(
             $this->sessionID,
             $this->FilteredSessionList
