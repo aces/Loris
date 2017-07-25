@@ -1,7 +1,7 @@
 /**
  * Created by dblader on 7/25/17.
  */
-/* exported RImagingBrowserDDT */
+/* global DynamicDataTable */
 class ImagingBrowserDDT extends DynamicDataTable {
   render() {
     if (!this.state.isLoaded) {

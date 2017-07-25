@@ -2,6 +2,7 @@
  * Need to override static data table in order to maintain sorting order
  * from the menu filter in imaging viewer
  */
+/* global StaticDataTable */
 class ImagingBrowserSDT extends StaticDataTable {
   componentDidUpdate() {
     if (jQuery.fn.DynamicTable) {
