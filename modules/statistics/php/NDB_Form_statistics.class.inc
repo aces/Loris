@@ -152,7 +152,7 @@ class NDB_Form_Statistics extends NDB_Form
      *
      * @return void
      */
-    function statistics()// @codingStandardsIgnoreLine
+    function statistics()
     {
         $DB =& Database::singleton();
         $this->tpl_data['StatsTabs'] = $DB->pselect(
@@ -168,7 +168,7 @@ class NDB_Form_Statistics extends NDB_Form
      *
      * @return void
      */
-    function stats_general()// @codingStandardsIgnoreLine
+    function stats_general()
     {
         //$DB =& Database::singleton();
     }
@@ -177,7 +177,7 @@ class NDB_Form_Statistics extends NDB_Form
      *
      * @return void
      */
-    function stats_demographic()// @codingStandardsIgnoreLine
+    function stats_demographic()
     {
         $DB          =& Database::singleton();
         $config      = NDB_Config::singleton();
@@ -509,7 +509,7 @@ class NDB_Form_Statistics extends NDB_Form
      *
      * @return void
      */
-    function stats_behavioural()// @codingStandardsIgnoreLine
+    function stats_behavioural()
     {
         $DB          =& Database::singleton();
         $config      = NDB_Config::singleton();
@@ -678,7 +678,7 @@ class NDB_Form_Statistics extends NDB_Form
      *
      * @return bool
      */
-    function stats_MRI()// @codingStandardsIgnoreLine
+    function stats_MRI()
     {
         $DB          =& Database::singleton();
         $config      = NDB_Config::singleton();
@@ -1043,7 +1043,7 @@ class NDB_Form_Statistics extends NDB_Form
      *
      * @return void
      */
-    function stats_reliability()// @codingStandardsIgnoreLine
+    function stats_reliability()
     {
         $DB          =& Database::singleton();
         $config      = NDB_Config::singleton();
