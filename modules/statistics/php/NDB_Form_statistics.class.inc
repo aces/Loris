@@ -1,8 +1,8 @@
 <?php
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -13,7 +13,7 @@
 /**
  * The welcome menu
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -32,6 +32,7 @@ class NDB_Form_Statistics extends NDB_Form
     function _hasAccess()
     {
         $user =& User::singleton();
+        //TODO: Create a permission specifics to statistics
         return $user->hasPermission('data_entry');
     }
     /**
