@@ -1,4 +1,4 @@
-# Loris API - v0.0.2
+# Loris API - v0.0.3
 
 ## 1.0 Overview
 
