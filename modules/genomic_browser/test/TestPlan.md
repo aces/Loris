@@ -50,7 +50,7 @@ The following permissions should be available in the database
 - The only candidate's data that should appear in the Datatable of the Profile, CNV,  SNP and Methylation tabs should be those of the same site then this user's site.  
 
 ***
-#####For a user with genomic_data_manager and one of genomic_data_manager or genomic_browser_view_allsites
+#####For a user with genomic_data_manager and one of genomic_browser_view_site or genomic_browser_view_allsites
 
 - In the File tab of the genomic browser, there should be a *Upload File* button  
 
