@@ -57,7 +57,7 @@ var StaticDataTable = React.createClass({
         // Make prefs accesible within component
     this.modulePrefs = modulePrefs;
   },
-  componentDidUpdate: function() {
+  componentDidUpdate: function(prevProps, prevState) {
     if (jQuery.fn.DynamicTable) {
       if (this.props.freezeColumn) {
         $("#dynamictable").DynamicTable({
@@ -67,7 +67,10 @@ var StaticDataTable = React.createClass({
         $("#dynamictable").DynamicTable();
       }
     }
-    if (this.props.onSort) {
+    if (this.props.onSort &&
+      (this.state.SortColumn !== prevState.SortColumn ||
+      this.state.SortOrder !== prevState.SortOrder)
+    ) {
       var index = this.getSortedRows();
       this.props.onSort(index, this.props.Data, this.props.Headers);
     }
