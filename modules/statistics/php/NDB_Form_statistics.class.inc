@@ -211,7 +211,7 @@ class NDB_Form_Statistics extends NDB_Form
             //SUBPROJECTS
             $subprojects = Utility::getSubprojectsForProject($demographicProject);
             if (empty($subprojects)) {
-                error_log('Could not load subproject data for demographics');
+                error_log('Could not load subproject data for demographic stats');
             } else {
                 foreach ($subprojects as $key=>$val) {
                     $subprojList .= $key.",";
@@ -244,7 +244,9 @@ class NDB_Form_Statistics extends NDB_Form
             array()
         );
         $sites[null] ="All sites";
-        if (!empty($centers) && !empty($demographicSite)) {
+        if (empty($centers)) {
+            error_log('No center data could be retrieved from the database!');
+        } else {
             foreach ($centers as $row) {
                 $sites[$row['NumericID']] = $row['ShortName'];
                 if ($demographicSite == $row['NumericID']) {
@@ -254,9 +256,6 @@ class NDB_Form_Statistics extends NDB_Form
                     );
                 }
             }
-        } else {
-            error_log('Could not populate tpl site info because '.
-                'center data or site data is empty');
         }
 
         $this->tpl_data['Sites']       = $sites;
@@ -552,7 +551,7 @@ class NDB_Form_Statistics extends NDB_Form
             error_log('No center data could be retrieved from the database!');
         } else {
             foreach ($centers as $row) {
-                $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
+                $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'] ?? '';
                 if ($site == $row['NumericID']) {
                     $this->tpl_data['CurrentSite'] = array(
                         'ID'   => $row['NumericID'] ?? '',
@@ -722,15 +721,18 @@ class NDB_Form_Statistics extends NDB_Form
 
             //SUBPROJECTS
             $subprojList = '';
+            $subproject_query ='';
             $subprojects = Utility::getSubprojectsForProject($mriProject);
-            foreach ($subprojects as $key=>$val) {
-                $subprojList .= $key.",";
-            }
-            $subprojList = substr($subprojList, 0, -1);
-            if (!empty($subprojList)) {
-                $subproject_query ="AND s.SubprojectID IN ($subprojList)";
+            if (empty($subprojects)) {
+                error_log('Could not load subproject data for mri stats');
             } else {
-                $subproject_query ='';
+                foreach ($subprojects as $key=>$val) {
+                    $subprojList .= $key.",";
+                }
+                $subprojList = substr($subprojList, 0, -1);
+                if (!empty($subprojList)) {
+                    $subproject_query ="AND s.SubprojectID IN ($subprojList)";
+                }
             }
         }
         //SITES
