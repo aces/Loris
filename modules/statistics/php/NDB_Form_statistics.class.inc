@@ -105,18 +105,10 @@ class NDB_Form_Statistics extends NDB_Form
             // This should probably be refactored in the future,
             // But for now these checks exist to eliminate
             // PHP Notice noise when the keys are not present
-            if (array_key_exists('SubprojectID', $row)) {
-                $subproj = $row['SubprojectID'];
-            }
-            if (array_key_exists('VLabel', $row)) {
-                $vl = $row['VLabel'];
-            }
-            if (array_key_exists('Subcat', $row)) {
-                $subcat = $row['Subcat'];
-            }
-            if (array_key_exists('CenterID', $row)) {
-                $center = $row['CenterID'];
-            }
+                $subproj = $row['SubprojectID'] ?? '';
+                $vl = $row['VLabel'] ?? '';
+                $subcat = $row['Subcat'] ?? '';
+                $center = $row['CenterID'] ?? '';
 
             if (isset($vl) && in_array($vl, $visits)
                 && in_array($subcat, $subcats)
