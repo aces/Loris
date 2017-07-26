@@ -740,14 +740,14 @@ For scans processed in later versions of Loris (v17.2 and on):
     },
     "DicomTars" : [
       {
-        "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-abc123_2.tar",
+        "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-def456_2.tar",
         "SeriesDescription" : "MPRAGE_ipat2",
         "SeriesNumber" : "2",
         "EchoTime" : "2.98",
         "SeriesUID" : "5.6.7.8.1207",
       }, 
       {
-        "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-def_456_5.tar",
+        "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-ghi789_5.tar",
         "SeriesDescription" : "BOLD Resting State",
         "SeriesNumber" : "5",
         "EchoTime" : "30",
@@ -761,9 +761,9 @@ For scans processed in later versions of Loris (v17.2 and on):
 GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname
 ```
 
-Returns a tar file which contains a .meta and .log text files, and a .tar.gz of the raw DICOM 
-data as acquired during the candidate scanning session, and as retrieved from
-`/candidates/$CandID/$Visit/dicoms`.
+Returns a ```tar``` file which contains a ```.meta``` and a ```.log``` text files, 
+and a ```.tar.gz``` of the raw DICOM data as acquired during the candidate s
+canning session, and as retrieved from `/candidates/$CandID/$Visit/dicoms`.
 
 Only `GET` is currently supported, but future versions of this API may include `PUT`
 support.
