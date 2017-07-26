@@ -76,6 +76,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                     array('hash' => $hash)
                 );
                 if (!empty($row)) {
+
                     // insert into conflicts_resolved
                     $user1         = $DB->pselectOne(
                         "SELECT UserID FROM flag WHERE CommentID=:CID",
@@ -129,6 +130,12 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                     );
 
                     $TableName = $row['TableName'];
+                    $date      = explode('-', $setArray['Date_taken']);
+                    $dateArray = array(
+                                  'Y' => $date[0],
+                                  'M' => $date[1],
+                                  'd' => $date[2],
+                                 );
 
                     $Instrument = NDB_BVL_Instrument::factory(
                         $TableName,
@@ -140,7 +147,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                         //calculate candidate age if Date_taken was changed
                         if ($row['FieldName'] == 'Date_taken') {
                             $Instrument->_saveValues(
-                                array('Date_taken' => $setArray['Date_taken'])
+                                array('Date_taken' => $dateArray)
                             );
                         }
 
@@ -162,7 +169,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                         //calculate candidate age if Date_taken was changed
                         if ($row['FieldName'] == 'Date_taken') {
                             $Instrument->_saveValues(
-                                array('Date_taken' => $setArray['Date_taken'])
+                                array('Date_taken' => $dateArray)
                             );
                         }
 
