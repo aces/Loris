@@ -155,7 +155,15 @@ class NDB_Form_Statistics extends NDB_Form
         );
 
     }
-
+    /**
+     * Stats_general function
+     *
+     * @return void
+     */
+    function stats_general()
+    {
+        //$DB =& Database::singleton();
+    }
     /**
      * Stats_demographic function
      *
@@ -554,12 +562,13 @@ class NDB_Form_Statistics extends NDB_Form
             }
         }
 
+        $Param_Project = '';
+        $subproject_query ='';
         $behaviouralProject = $_REQUEST['BehaviouralProject'] ?? '';
         if (empty($behaviouralProject)) {
             error_log('No behavioural project specified in request');
         } else {
             $behaviouralProject = htmlspecialchars($behaviouralProject);
-            $Param_Project = '';
             $this->tpl_data['CurrentProject']
                 = array(
                     'ID'   => $behaviouralProject,
@@ -574,7 +583,6 @@ class NDB_Form_Statistics extends NDB_Form
                 $subprojList .= $key.",";
             }
             $subprojList = substr($subprojList, 0, -1);
-            $subproject_query ='';
             if (!empty($subprojList)) {
                 $subproject_query ="AND s.SubprojectID IN ($subprojList)";
             }
