@@ -62,7 +62,7 @@ class NDB_Form_Statistics extends NDB_Form
      * @param string $dropdown_name     the value of dropdown_name
      * @param string $dropdown_opt      the value of dropdown_opt
      * @param string $dropdown_selected the value of dropdown_selected
-     * @param string $centres           the value of centres
+     * @param string $centers           the value of centers
      * @param string $data              the value of data
      * @param string $Subsection        the value of Subsection=''
      * @param string $disclamer         the value of disclamer=''
@@ -77,9 +77,9 @@ class NDB_Form_Statistics extends NDB_Form
         $dropdown_name,
         $dropdown_opt,
         $dropdown_selected,
-        $centres,
+        $centers,
         $data,
-        $Subsection="",
+        $Subsection='',
         $disclamer='',
         $projectID=null
     ) {
@@ -98,7 +98,7 @@ class NDB_Form_Statistics extends NDB_Form
         $tpl_data['DropdownName']     = $dropdown_name;
         $tpl_data['DropdownOptions']  = $dropdown_opt;
         $tpl_data['DropdownSelected'] = $dropdown_selected;
-        $tpl_data['Centers']          = $centres;
+        $tpl_data['Centers']          = $centers;
         foreach ($data as $row) {
             // TODO: The below fields are not always present
             // in $data, e.g., in the $result for imaging statistics
@@ -112,7 +112,7 @@ class NDB_Form_Statistics extends NDB_Form
 
             if (isset($vl) && in_array($vl, $visits)
                 && in_array($subcat, $subcats)
-                && $this->_inCenter($center, $centres)
+                && $this->_inCenter($center, $centers)
             ) {
                 $C = 'C' . $center;
                 $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
@@ -521,19 +521,7 @@ class NDB_Form_Statistics extends NDB_Form
         $this->tpl_data['useProjects'] = $useProjects;
         $subprojList ='';
 
-        // Get center data
-        $centers = $DB->pselect(
-            "SELECT CONCAT('C', CenterID) as ID,
-            CenterID as NumericID,
-            IFNULL(PSCArea,Name) as LongName,
-            Name as ShortName
-            FROM psc
-            WHERE CenterID <> '1'
-            AND Study_site = 'Y'",
-            array()
-        );
 
-        $this->tpl_data['Centers'] = $centers;
 
         // Get project data
         $projects[null] = 'All Projects';
@@ -547,11 +535,24 @@ class NDB_Form_Statistics extends NDB_Form
         if (empty($site)) {
             error_log('No site data specified in request');
         }
+        $site = htmlspecialchars($site);
+        // Get center data
+        $centers = $DB->pselect(
+            "SELECT CONCAT('C', CenterID) as ID,
+            CenterID as NumericID,
+            IFNULL(PSCArea,Name) as LongName,
+            Name as ShortName
+            FROM psc
+            WHERE CenterID <> '1'
+            AND Study_site = 'Y'",
+            array()
+        );
         if (empty($centers)) {
             error_log('No center data could be retrieved from the database!');
         } else {
             foreach ($centers as $row) {
-                $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'] ?? '';
+                $this->tpl_data['Sites'][$row['NumericID']]
+                    = $row['LongName'] ?? '';
                 if ($site == $row['NumericID']) {
                     $this->tpl_data['CurrentSite'] = array(
                         'ID'   => $row['NumericID'] ?? '',
@@ -559,6 +560,7 @@ class NDB_Form_Statistics extends NDB_Form
                     );
                 }
             }
+            $this->tpl_data['Centers'] = $centers;
         }
 
         $Param_Project = '';
@@ -1116,9 +1118,9 @@ class NDB_Form_Statistics extends NDB_Form
                     );
                 }
             }
+            $this->tpl_data['Centers']  = $centers;
         }
 
-        $this->tpl_data['Centers']  = $centers;
         $this->tpl_data['Projects'] = $projects;
         $this->tpl_data['Sites']    = $sites;
 
