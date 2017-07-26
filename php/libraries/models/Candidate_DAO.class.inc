@@ -72,7 +72,23 @@ class Candidate_DAO
         }, $values);
     }
 
-    public function update(Candidate_DTO $candidate) {
+    public function create()
+    {
+
+    }
+
+    public function delete()
+    {
+
+    }
+
+    public function replace()
+    {
+
+    }
+
+    public function update(Candidate_DTO $candidate)
+    {
         $new_values = $candidate->asArray();
         $this->_database->update('candidate', $new_values, array('CandID' => $new_values['CandID']));
     }

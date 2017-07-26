@@ -56,7 +56,7 @@ class Candidates extends Endpoint
             // TODO :: This can be generalized and put in the abstract class
             $class_name = '\LORIS\RestAPI\Candidates\\' . $endpoint_name;
             if (!class_exists($class_name)) {
-                throw new RestApiException("No Endpoint: $endpoint_name", 404);
+                throw new RestApiException('No Endpoint: ' . htmlspecialchars($endpoint_name), 404);
             }
 
             $endpoint       = new $class_name($endpoint_id, $this->_candidate->getCandID());
@@ -121,7 +121,7 @@ class Candidates extends Endpoint
             $data          = array_map($format_candidate, $candidate_dao->getAll());
         }
         return array(
-                array(),
+                null,
                 200,
                );
     }
@@ -137,7 +137,24 @@ class Candidates extends Endpoint
      */
     public function handlePUT(array &$input, &$ctx = null)
     {
-        var_dump($this->_candidate);
+        if (empty($input['Candidate'])) {
+            throw new RestApiException("Missing Candidate data", 400);
+        };
+
+        $candidate_data = $input['Candidate'];
+        $response = null;
+
+        if (empty($this->_candidate)) {
+            // this should be a creation
+            $candidate_dao = LORIS_DAO_Factory::getCandidateDAO();
+            $candidate_dao->create($candidate_data);
+            $response = array(null, 201);
+        } else {
+            // this should be a replace
+            $response = array('The request method is not supported', 501);
+            
+        }
+        return $response;
     }
 
     /**
@@ -155,7 +172,7 @@ class Candidates extends Endpoint
             throw new RestApiException("Missing Candidate data", 400);
         };
 
-         $new_values = $input['Candidate'];
+        $new_values = $input['Candidate'];
 
         if (empty($new_values['CandID'])) {
             throw new RestApiException("Missing CandID", 400);

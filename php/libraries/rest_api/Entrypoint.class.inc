@@ -123,7 +123,6 @@ class Entrypoint
             if ($this->_method == 'OPTIONS') {
                 $allowedMethods = $endpoint->getAllowedMethods();
                 $this->_header("Allow: $allowedMethods");
-                $this->_safeExit(204);
             }
 
             list($data, $status) = $endpoint->{$function_name}(
