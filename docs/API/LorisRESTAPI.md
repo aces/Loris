@@ -696,3 +696,74 @@ The JSON object is of the form:
     "Value" : string
 }
 ```
+
+# 5.0 DICOM Data
+
+Like the imaging data, the DICOM data mostly lives in the `/candidates/$CandID/$Visit` 
+portion of the REST API namespaces, but is defined in a separate section of this 
+document for clarity purposes.
+
+## 5.1 Candidate DICOMs
+```
+GET /candidates/$CandID/$Visit/dicoms
+```
+
+A GET request to `/candidates/$CandID/$Visit/dicoms` will return a JSON object of
+all the images which have been acquired for that visit. It will return an object of
+the form:
+
+For scans processed in earlier versions of Loris (before v17.2), shown below for a scan with
+two types of series acquired:
+
+```js
+{
+    "Meta" : {
+        "CandID" : $CandID,
+        "Visit" : $VisitLabel,
+    },
+    "DicomTars" : [{
+        "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-abc123.tar",
+        "SeriesDescription" : "MPRAGE_ipat2, BOLD Resting State",
+        "SeriesNumber" : "2, 5",
+        "EchoTime" : "2.98, 30",
+        "SeriesUID" : "1.2.3.4.1107, 3.4.5.6.1507",
+    }
+}
+```
+For scans processed in later versions of Loris (v17.2 and on):
+
+```js
+{
+    "Meta" : {
+        "CandID" : $CandID,
+        "Visit" : $VisitLabel,
+    },
+    "DicomTars" : [
+      {
+        "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-abc123_2.tar",
+        "SeriesDescription" : "MPRAGE_ipat2",
+        "SeriesNumber" : "2",
+        "EchoTime" : "2.98",
+        "SeriesUID" : "5.6.7.8.1207",
+      }, 
+      {
+        "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-def_456_5.tar",
+        "SeriesDescription" : "BOLD Resting State",
+        "SeriesNumber" : "5",
+        "EchoTime" : "30",
+        "SeriesUID" : "3.4.5.6.1507",
+      }]
+}
+```
+
+## 5.2 Tar Level Data
+```
+GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname
+```
+
+Returns a tar file which contains a .meta and .log text files, and a .tar.gz of the raw DICOM 
+data as acquired during the candidate scanning session, and as retrieved from
+`/candidates/$CandID/$Visit/dicoms`.
+
+Only `GET` is currently supported, but future versions of this API may include `PUT`
+support.
