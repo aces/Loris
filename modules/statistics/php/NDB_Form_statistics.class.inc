@@ -194,7 +194,7 @@ class NDB_Form_Statistics extends NDB_Form
             $this->tpl_data['CurrentProject']
                 = array(
                     'ID'   => $demographicProject,
-                    'Name' => $projects[$demographicProject],
+                    'Name' => $projects[$demographicProject] ?? '',
                 );
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
             $this->params['pid'] = $demographicProject;
@@ -241,8 +241,8 @@ class NDB_Form_Statistics extends NDB_Form
                 $sites[$row['NumericID']] = $row['ShortName'];
                 if ($demographicSite == $row['NumericID']) {
                     $this->tpl_data['CurrentSite'] = array(
-                        'ID'   => $row['NumericID'],
-                        'Name' => $row['LongName'],
+                        'ID'   => $row['NumericID'] ?? '',
+                        'Name' => $row['LongName'] ?? '',
                     );
                 }
             }
@@ -547,8 +547,8 @@ class NDB_Form_Statistics extends NDB_Form
                 $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
                 if ($site == $row['NumericID']) {
                     $this->tpl_data['CurrentSite'] = array(
-                        'ID'   => $row['NumericID'],
-                        'Name' => $row['LongName'],
+                        'ID'   => $row['NumericID'] ?? '',
+                        'Name' => $row['LongName'] ?? '',
                     );
                 }
             }
@@ -563,7 +563,7 @@ class NDB_Form_Statistics extends NDB_Form
             $this->tpl_data['CurrentProject']
                 = array(
                     'ID'   => $behaviouralProject,
-                    'Name' => $projects[$behaviouralProject],
+                    'Name' => $projects[$behaviouralProject] ?? '',
                 );
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
             $this->params['pid'] = $behaviouralProject;
@@ -704,7 +704,7 @@ class NDB_Form_Statistics extends NDB_Form
             $this->tpl_data['CurrentProject']
                 = array(
                     'ID'   => $mriProject,
-                    'Name' => $projects[$mriProject],
+                    'Name' => $projects[$mriProject] ?? '',
                 );
             $sqlVar        = 'AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
             $Param_Project =$sqlVar;
@@ -752,8 +752,8 @@ class NDB_Form_Statistics extends NDB_Form
                 $sites[$row['NumericID']] = $row['ShortName'];
                 if ($mriSite == $row['NumericID']) {
                     $this->tpl_data['CurrentSite'] = array(
-                        'ID'   => $row['NumericID'],
-                        'Name' => $row['LongName'],
+                        'ID'   => $row['NumericID'] ?? '',
+                        'Name' => $row['LongName'] ?? '',
                     );
                 }
             }
@@ -1067,7 +1067,7 @@ class NDB_Form_Statistics extends NDB_Form
             $this->tpl_data['CurrentProject']
                 = array(
                     'ID'   => $reliabilityProject,
-                    'Name' => $projects[$reliabilityProject],
+                    'Name' => $projects[$reliabilityProject] ?? '',
                 );
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
             $this->params['pid'] = $reliabilityProject;
@@ -1101,8 +1101,8 @@ class NDB_Form_Statistics extends NDB_Form
                 $sites[$row['NumericID']] = $row['ShortName'];
                 if ($reliabilitySite == $row['NumericID']) {
                     $this->tpl_data['CurrentSite'] = array(
-                        'ID'   => $row['NumericID'],
-                        'Name' => $row['LongName'],
+                        'ID'   => $row['NumericID'] ?? '',
+                        'Name' => $row['LongName'] ?? '',
                     );
                 }
             }
