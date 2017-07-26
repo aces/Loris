@@ -114,10 +114,10 @@
 <div id="datatable">
 
 <script>
-var table = DynamicDataTable({
+var table = RDynamicDataTable({
         "DataURL" : "{$baseurl}/imaging_browser/?format=json",
         "getFormattedCell" : formatColumn,
-        "onSort": onSort
+        "onSort" : onSort
 });
 ReactDOM.render(table, document.getElementById("datatable"));
 </script>

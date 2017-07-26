@@ -30,8 +30,6 @@ var config = {
     './modules/genomic_browser/js/profileColumnFormatter.js': './modules/genomic_browser/jsx/profileColumnFormatter.js',
     './modules/imaging_browser/js/ImagePanel.js': './modules/imaging_browser/jsx/ImagePanel.js',
     './modules/imaging_browser/js/columnFormatter.js': './modules/imaging_browser/jsx/columnFormatter.js',
-    './modules/imaging_browser/js/ImagingBrowserSDT.js': './modules/imaging_browser/jsx/ImagingBrowserSDT.js',
-    './modules/imaging_browser/js/ImagingBrowserDDT.js': './modules/imaging_browser/jsx/ImagingBrowserDDT.js',
     './modules/imaging_browser/js/onSort.js': './modules/imaging_browser/jsx/onSort.js',
     './modules/instrument_builder/js/react.instrument_builder.js': './modules/instrument_builder/jsx/react.instrument_builder.js',
     './modules/instrument_builder/js/react.questions.js': './modules/instrument_builder/jsx/react.questions.js',

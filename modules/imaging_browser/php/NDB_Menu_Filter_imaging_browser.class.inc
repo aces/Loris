@@ -521,9 +521,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             parent::getJSDependencies(),
             array(
              $baseurl . "/imaging_browser/js/columnFormatter.js",
-             $baseurl . "/imaging_browser/js/ImagingBrowserDDT.js",
-             $baseurl . "/imaging_browser/js/ImagingBrowserSDT.js",
-             $baseurl . "/imaging_browser/js/onSort.js"
+             $baseurl . "/imaging_browser/js/onSort.js",
             )
         );
     }
