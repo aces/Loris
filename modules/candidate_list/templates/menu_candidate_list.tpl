@@ -7,7 +7,7 @@
 {/literal}
 
 <div class="row">
-<div class="col-sm-12">
+<div class="col-xs-12">
 <div class="panel panel-primary">
     <div class="panel-heading" onclick="hideFilter(this)">
         Selection Filter
