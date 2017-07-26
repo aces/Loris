@@ -142,6 +142,7 @@ function renderCalc(calcEl, value, key, onUpdate) {
       name={calcEl.Name}
       label={calcEl.Description}
       value={value}
+      disabled={true}
     />
   );
 }
