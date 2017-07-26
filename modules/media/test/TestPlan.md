@@ -88,7 +88,7 @@ In order to use the media module the user might need one or both of the followin
     - PSCID, File name and Uploaded by are text fields, whereas other fields are dropdowns with options pre-filled based on the current project.
     - Default option of dropdown should be blank.
   2. Type text in the PSCID input and verify that the table gets filtered as you type.
-  2. Type text in the File name input and verify that the table gets filtered as you type.
-  2. Type text in the Uploaded by input and verify that the table gets filtered as you type.
-  4. Select Instrument, Visit Label and For Site (independently and combined) to filter table further
-    - The table should update iand display filtered records accordingly
+  3. Type text in the File name input and verify that the table gets filtered as you type.
+  4. Type text in the Uploaded by input and verify that the table gets filtered as you type.
+  5. Select Instrument, Visit Label and For Site (independently and combined) to filter table further
+    - The table should update and display filtered records accordingly
