@@ -1,11 +1,10 @@
-                             User Account module - Test plan
-                             ===============================
+User Account module - Test plan
+===============================
 
 1. Make sure you do not have access to the User Account page if you do not have at least one of these permissions:
       - There can be only one Highlander.
-      - User management / Survey module.
-2. If you have access to the User Module, you should see all the users if you have permission 'Across all sites edit 
-   create users'. Otherwise, only the users that belong to your site are shown.
+      - User management
+2. If you have access to the User Module, you should see all the users if you have permission 'Across all sites create and edit users'. Otherwise, only the users that belong to your site are shown.
 3. Check that the Clear Form button works.
 4. Search according to all criteria: site, user name, active, full name, pending approval, email and examiner. 
 5. Check that if Site is set to 'All' in the filter, users that have a different site than the user logged in are 
@@ -35,7 +34,7 @@ When creating or editing a user: (subtest: edit_user)
 12a. Check that when creating a new user, leading and trailing spaces in the username are stripped.
 12b. Check that you can create a new user with name 00 (double zero).
 12c. Check that you can delete one of the additional fields (organization, fax, etc...) that was previously set and that the save is performed.
-13. Check that if modifying a password for a user an email is sent to that user containing the new password (requires
+13. Check that if generating a new password for a user an email is sent to that user containing the new password (requires
     email server).
 14. Check that when editing a user account it is not possible to set the password to its actual value (i.e. it needs to change).
 15. Check that if the 'Display additional information' entry is set to false in the Configuration module, fields Degree,
