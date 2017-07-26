@@ -157,6 +157,9 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 				WHERE (mpf.T1_Scan_done !='Complete' AND mpf.T1_scan_done!= 'Partial')
 				)"; */
 
+      /* MRI Parameter Form Completed, Answer = No T1 Scan
+      * No DICOM recorded
+      * Scan in Browser and QC Status = Pass*/
         $query =  "
             FROM flag f 
             JOIN session s ON (f.SessionID=s.ID)
@@ -173,7 +176,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                   AND s.CenterID <> '1'
                   AND f.Data_entry='Complete'
                   AND fi.AcquisitionProtocolID=44
-                  AND m.T1_Scan_done != 'Complete'
+                  AND m.T1_Scan_done = 'No'
                   AND qc.QCStatus = 'Pass'";
         $this->query = $query;
         //$this->columns = array("m.UploadedBy", "UploadDate", 't.PatientName', 't.CenterName', '("'.$this->errors[1].'") as error_message','(" ") as action',  'f.CommentID as CommentID');
@@ -185,7 +188,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             '("'.$this->errors[2].'") as error_message',
             'f.CommentID as CommentID'
         ];
-       // $this->group_by = 't.PatientName, f.SessionID, UploadID, t.CenterName, CommentID';
+        $this->group_by = 'c.PSCID, SessionID, cand_id, visit_label, CommentID';
         $this->order_by = 'c.PSCID';
 
       //  $this->headers = ['Uploaded By', 'Upload Date', 'Patient Name', 'Location', 'Error Message', 'Action', 'CommentID'];
@@ -195,7 +198,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             'DCCID',
             'Visit Label',
             'Error Message',
-            'CommentID'
         ];
         $this->validFilters = array('m.UploadedBy','message');
         $this->formToFilter = array(
