@@ -755,7 +755,9 @@ For scans processed in later versions of Loris (v17.2 and on):
       }]
 }
 ```
-
+where the ```_2``` and ```_5``` appended at the end of the ```Tarname``` respresent
+the SeriesNumber for the DICOM files in this specific tar.
+ 
 ## 5.2 Tar Level Data
 ```
 GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname
