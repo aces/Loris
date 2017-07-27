@@ -586,7 +586,8 @@ function getIssueFields()
         );
         $assignee_expanded = $db->pselect(
             "SELECT u.Real_name, u.UserID FROM users u
-WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
+             LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
+WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
             array(
              'CenterID' => $CenterID,
              'DCC'      => $DCCID,
@@ -735,7 +736,7 @@ function getIssueData($issueID)
     return [
             'reporter'      => $user->getData('UserID'),
             'dateCreated'   => date('Y-m-d H:i:s'),
-            'centerID'      => $user->getData('CenterID'),
+            'centerID'      => $user->getData('CenterIDs'),
             'status'        => "new",
             'priority'      => "normal",
             'issueID'       => 0, //TODO: this is dumb
