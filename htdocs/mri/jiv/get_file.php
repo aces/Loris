@@ -1,4 +1,4 @@
-<?php
+i<?php
 /**
  * Controls access to files on the filesystem. This script should ensure that
  * only files relative to the paths specified in the config.xml are accessible.
