@@ -96,3 +96,4 @@ script:
 
     # Run unit tests to make sure functions still do what they should.
     - vendor/bin/phpunit --stop-on-error --verbose --configuration test/phpunit.xml
+    - vendor/bin/phpunit --stop-on-error --verbose --configuration test/integration.xml
