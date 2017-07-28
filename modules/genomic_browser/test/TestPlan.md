@@ -80,7 +80,7 @@ The following permissions should be available in the database
         - *DCCID* filter is an exact filter (Shows only the record with this exact value)
         - *External ID* and *PSCID* are contains filters (Shows all records that contains this value)
     - Genomic filters
-        * For the four filters, selecting 'Any' should only present record that have at least one, and selecting 'None' should present only record that don't have Files, SNP, CNV or CPG accordingly.
+        * For the four filters, selecting 'Yes' should only present record that have at least one, and selecting 'No' should present only record that don't have Files, SNP, CNV or CPG accordingly.
 
 - The datatable should display the folowing columns (Summary fields)
 
