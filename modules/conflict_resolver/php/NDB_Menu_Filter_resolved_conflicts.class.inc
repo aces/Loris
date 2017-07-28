@@ -275,7 +275,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         }
         $query .= $this->order_by;
         // get the list
-        $result         = $DB->pselect($query, $qparams);
+        $result = $DB->pselect($query, $qparams);
 
         // OVERRIDE START
         foreach ($result as $k => $r) {
