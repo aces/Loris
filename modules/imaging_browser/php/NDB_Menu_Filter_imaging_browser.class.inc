@@ -148,7 +148,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             s.Active = 'Y' AND
             f.PendingStaging=0 AND 
             f.FileType='mnc' AND 
-            f.AcquisitionProtocolID not in (1, 2, 3, 52)";
+            f.AcquisitionProtocolID not in (1, 2, 3, 52) AND 
+            f.OutputType='native'";
 
         $this->query .= $left_joins;
         $this->query .= $where;
