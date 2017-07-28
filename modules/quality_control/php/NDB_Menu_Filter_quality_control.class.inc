@@ -6,20 +6,20 @@
  *
  * @category Module
  * @package  Quality Control
- * @author   Liza Levitis <lthomas.mcin@gmail.com>
+ * @author   Leo Thomas <lthomas.mcin@gmail.com>, Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/CCNA/
+ * @link     https://www.github.com/aces/Loris/
  */
 /**
- * Behavioural QC Class
+ * Imaging QC Class
  *
  * PHP Version 5
  *
  * @category Module
  * @package  Quality Control
- * @author   Leo Thomas <lthomas.mcin@gmail.com>
+ * @author   Leo Thomas <lthomas.mcin@gmail.com>, Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/CCNA/
+ * @link     https://www.github.com/aces/Loris/
  */
 class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 {
@@ -40,7 +40,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     {
         //create user object
         $user =& User::singleton();
-        return $user->hasPermission('superuser');
+        return $user->hasPermission('imaging_browser_qc');
     }
     /**
      * Override default behaviour, since the page is loaded from qualityControlIndex.js
@@ -67,7 +67,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $siteList  = array();
         $visitList = Utility::getVisitList();
         // allow to view all sites data through filter
-        if ($user->hasPermission('access_all_profiles')) {
+        if ($user->hasPermission('imaging_browser_qc')) {
             $siteList = Utility::getSiteList(false);
             // Index sites using their names (used to filter react tables)
             foreach ($siteList as $key => $site) {
