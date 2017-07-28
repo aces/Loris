@@ -2,21 +2,20 @@
 
 ## Table of Contents  
 
-### Permissions   
-### Navigation
-### Features
+### [Permissions](#permissions)
+### [Navigation](#navigation)
+### [Features](#features)
 ### [Filtering](#data_filtering)  
 ### [Datatable](#datatable)
 ### [Download](#data_download)  
 ### [Upload](#data_upload)  
-### Help
+### [Help](#help)
 ### [Help content](#help_content)
 ### [Tooltips](#tooltips)
 
 <br>
 
 <a name="permissions">
-#### Permissions
 </a>
 ***
 
