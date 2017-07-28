@@ -1,22 +1,22 @@
-#Genomic Browser module - Test Plan
-<br>
-###Table of Contents  
+## Genomic Browser - Test Plan
 
-####Permissions   
-####Navigation
-####Features
-######[Filtering](#data_filtering)  
-######[Datatable](#datatable)
-######[Download](#data_download)  
-######[Upload](#data_upload)  
-####Help
-######[Help content](#help_content)
-######[Tooltips](#tooltips)
+## Table of Contents  
+
+### Permissions   
+### Navigation
+### Features
+### [Filtering](#data_filtering)  
+### [Datatable](#datatable)
+### [Download](#data_download)  
+### [Upload](#data_upload)  
+### Help
+### [Help content](#help_content)
+### [Tooltips](#tooltips)
 
 <br>
 
 <a name="permissions">
-###Permissions
+#### Permissions
 </a>
 ***
 
@@ -27,6 +27,9 @@ The following permissions should be available in the database
 | genomic_browser_view_site | View Genomic Browser data from own site |
 | genomic_browser_view_allsites | View Genomic Browser data across all sites |
 | genomic_data_manager | Manage the genomic files |
+
+
+
 <br>
 ***
 #####For a user without neither genomic_browser_view_allsites nor genomic_browser_view_site
@@ -166,7 +169,8 @@ No.|PSC|DCCID|PSCID|Gender|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 - Setting the Display filter to All fields and click in the *Show Data* button should present the folowing columns in the Datatable
 
 |No.|PSC|DCCID|PSCID|Gender|Subproject|DoB|ExternalID|Chromosome|Strand|StartLoc|EndLoc|Size|Location|Gene Symbol|Gene Name|CNV Description|CNV Type|Copy Num Change|Event Name|Common CNV|Characteristics|Inheritance|Array Report|Markers|Validation Method|Platform|
-| | | | | | | | | | | | | | | | | | | | | | | | | | | |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | 
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | 
 
 - Clicking the *Clear Form* button should reset the filters and the Datatable should prensent the Summary fields columns only.
 - Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
