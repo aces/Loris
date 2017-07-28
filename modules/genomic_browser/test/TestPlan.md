@@ -57,6 +57,7 @@ The following permissions should be available in the database
 
 - In the File tab of the genomic browser, there should be a *Upload File* button  
 
+*** 
 
 <a name="navigation">
 </a>
@@ -103,7 +104,9 @@ No.|PSC|DCCID|PSCID|Gender|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 - Clicking the *Clear Form* button should reset the filters and the Datatable should prensent the Summary fields columns only.
 - Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
 
-<br>
+
+*** 
+
 #### GWAS tab
 
 - Clicking on the *GWAS filters* block header should hide its content.
@@ -115,7 +118,8 @@ No.|PSC|DCCID|PSCID|Gender|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 - Clicking the *Clear Form* button should reset the filters.
 - Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
 
-<br>
+*** 
+
 #### SNP tab
 - Clicking on the *Candidate filters* block header should hide its content.
 - Clicking on the *Genomic Range filters* block header should hide its content.
@@ -145,7 +149,8 @@ No.|PSC|DCCID|PSCID|Gender|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 
 - Clicking the *Clear Form* button should reset the filters and the Datatable should prensent the Summary fields columns only.
 - Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
-<br>
+
+*** 
 
 #### CNV tab
 
@@ -177,7 +182,8 @@ No.|PSC|DCCID|PSCID|Gender|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 
 - Clicking the *Clear Form* button should reset the filters and the Datatable should prensent the Summary fields columns only.
 - Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
-<br>
+
+*** 
 
 #### Methylation tab
 
@@ -210,7 +216,8 @@ No.|PSC|DCCID|PSCID|Gender|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 
 - Clicking the *Clear Form* button should reset the filters and the Datatable should prensent the Summary fields columns only.
 - Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
-<br>
+
+***
 
 #### Files tab
 
@@ -225,82 +232,90 @@ The following columns should be presented
 
 - Clicking the *Clear Form* button should reset the filters
 
-######Across tab filters
+*** 
+
+##### Across tab filters
+
 
 ***
 <a name="datatable"> 
 </a>
 
-### Datatable
+## Datatable
 
  - For each of the 6 tabs, the Datatable should present the total of records found.
  - For each of the 6 tabs, the Datatable should present the number of row  displayed.
  - For each of the 6 tabs, the Datatable should present a pagination if there is more records to display then the actual *row per page* value.
  - Chnaging the *row per page* dropdown value should be reflected on the pagination and on the number of row displayed.
 
-#####Special formated columns
-######Profile tab
+### Special formated columns
+
+#### Profile tab
  - The *PSCID* column should provide links to the timepoint_list module filtered to this candidate.
  - If there is at least one file for a candidate, the *Files* column should provide links to the **viewGenomicFile** submenu filtered for all files concerning this candidate. There can be multiple files displayed. 
  - If there is at least one SNP for this candidate, the SNPs column should provide links to the SNP tab filtered for this candidate.
  - If there is at least one CNV for this candidate, the CNVs column should provide links to the CNV tab filtered for this candidate.
  - If there is at least one CPG for this candidate, the CPGs column should provide links to the Methylation tab filtered for this candidate.
 
-######GWAS tab
+#### GWAS tab
  - None
-
-######SNP tab
+***
+#### SNP tab
 - The *PSCID* column should provide links to the timepoint_list module filtered to this candidate.
 - The *RsID* column should provide link to the [dbSNP](http://www.ncbi.nlm.nih.gov/SNP/) http://www.ncbi.nlm.nih.gov/SNP/
-
-######CNV tab
+***
+#### CNV tab
 - The *PSCID* column should provide links to the timepoint_list module filtered to this candidate.
-
-######Methylation tab
+***
+#### Methylation tab
 - The *PSCID* column should provide links to the timepoint_list module filtered to this candidate.
 - The *Cpg Name* column should provide links to the [UCSC Genome Browser](https://genome.ucsc.edu/cgi-bin/hgTracks) https://genome.ucsc.edu/cgi-bin/hgTracks at the location centered on that cpg 1000bp wide. 
 - The *Gene* column should provide links to the [UCSC Genome Browser](https://genome.ucsc.edu/cgi-bin/hgTracks) https://genome.ucsc.edu/cgi-bin/hgTracks at the location centered on that gene. There can be many gene name. The links should open new window. 
 - The *Accession Number* column should provide links to the [UCSC Genome Browser](https://genome.ucsc.edu/cgi-bin/hgTracks) https://genome.ucsc.edu/cgi-bin/hgTracks at the location centered on that gene. There can be many gene name. The links should open new window. 
 - The *Island Loc* column should provide links to the [UCSC Genome Browser](https://genome.ucsc.edu/cgi-bin/hgTracks) https://genome.ucsc.edu/cgi-bin/hgTracks at the location centered on that cPG island.
-
-######Files tab
+***
+#### Files tab
 
 - The FileName column should provide links to the **viewGenomicFile** page showing this file only.
 
-***
-<a name="data_download">
-####Data download 
+
+<a name="data_download"> 
 </a>
-######CSV
+
+## Data Download 
+### CSV
 - The 6 tab Datatables should provide a *Download as CSV* button.
 - Clicking on the *Download as CSV* button should trigger a file download.
 - The file content should follow the filtered values of the tab.
 
-######View Genomic File
+### View Genomic File
 - The view genomic file page should provide a *Download* button for each file.
 - Clicking on the *Download* button should trigger a file download.
 
 <a name="data_upload">
-####Data upload 
+## Data upload 
 </a>
-***
+
 > Under construction
 
 <a name="help">
-###Help 
 </a>
+
+## Help
 
 ***
 
 <a name="help_content">
-####Help section content
 </a>
+
+## Help section content
 
 - The help panel should appear when clicking on the question mark in the LORIS menu bar.  
 - The help text should be accurate at formatted properly.
 
 <a name="tooltips">
-####Tooltips
 </a>
+
+## Tooltips
 > Under construction
 
