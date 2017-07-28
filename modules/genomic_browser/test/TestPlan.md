@@ -17,7 +17,8 @@
 
 <a name="permissions">
 </a>
-***
+
+## Permissions
 
 The following permissions should be available in the database
 
@@ -31,7 +32,7 @@ The following permissions should be available in the database
 
 <br>
 ***
-#####For a user without neither genomic_browser_view_allsites nor genomic_browser_view_site
+#### For a user without neither genomic_browser_view_allsites nor genomic_browser_view_site
 
 - The Loris menu should not contain a *Genomic Browser* item.
 - Accessing the http://your-base-url/genomic_browser/ should present the following error message: 
@@ -39,40 +40,43 @@ The following permissions should be available in the database
 > **You do not have access to this page.**  
 
 ***
-#####For a user with genomic_browser_view_allsites only
+#### For a user with genomic_browser_view_allsites only
 
 - There should be a *Genomic Browser* item in the Loris Menu under tools.
 - Accessing the http://your-base-url/genomic_browser/ should load the Genomic Browser Profile tab.  
 
 ***
-#####For a user with genomic_browser_view_site only
+#### For a user with genomic_browser_view_site only
 
 - There should be a *Genomic Browser* item in the Loris Menu under tools.
 - Accessing the http://your-base-url/genomic_browser/ should load the Genomic Browser Profile tab.
 - The only candidate's data that should appear in the Datatable of the Profile, CNV,  SNP and Methylation tabs should be those of the same site then this user's site.  
 
 ***
-#####For a user with genomic_data_manager and one of genomic_data_manager or genomic_browser_view_allsites
+#### For a user with genomic_data_manager and one of genomic_data_manager or genomic_browser_view_allsites
 
 - In the File tab of the genomic browser, there should be a *Upload File* button  
 
+
 <a name="navigation">
-###Page navigation and display
 </a>
-***
+
+## Pave Navigation & Display
 
 - There should be 6 tabs unders the breadcrumb: Profile, GWAS, SNP, CNV, Methylation and Files
 - Clicking each tab should present it as active and the 5 other tabs should remain in te same order.
 
 <a name="features">
-###Features
-</a>
-***
-<a name="data_filtering">
-####Data Filtering
 </a>
 
-######Profile tab
+## Features 
+***
+<a name="data_filtering">
+</a>
+
+### Data Filtering
+
+#### Profile tab
 - Clicking on the *Candidate filters* block header should hide its content.
 - Clicking on the *Genomic filters* block header should hide its content.
 - Filters should filter data presented in the Datatable according to the selected values after clicking on the *Show Data* button.
@@ -100,7 +104,7 @@ No.|PSC|DCCID|PSCID|Gender|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 - Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
 
 <br>
-######GWAS tab
+#### GWAS tab
 
 - Clicking on the *GWAS filters* block header should hide its content.
 - Filters should filter data presented in the Datatable according to the selected values after clicking on the *Show Data* button.
@@ -112,7 +116,7 @@ No.|PSC|DCCID|PSCID|Gender|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 - Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
 
 <br>
-######SNP tab
+#### SNP tab
 - Clicking on the *Candidate filters* block header should hide its content.
 - Clicking on the *Genomic Range filters* block header should hide its content.
 - Clicking on the *SNP filters* block header should hide its content.
@@ -143,7 +147,7 @@ No.|PSC|DCCID|PSCID|Gender|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 - Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
 <br>
 
-######CNV tab
+#### CNV tab
 
 - Clicking on the *Candidate filters* block header should hide its content.
 - Clicking on the *Genomic Range filters* block header should hide its content.
@@ -175,7 +179,7 @@ No.|PSC|DCCID|PSCID|Gender|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 - Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
 <br>
 
-######Methylation tab
+#### Methylation tab
 
 - Clicking on the *Candidate filters* block header should hide its content.
 - Clicking on the *Genomic Range filters* block header should hide its content.
@@ -208,7 +212,7 @@ No.|PSC|DCCID|PSCID|Gender|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 - Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
 <br>
 
-######Files tab
+#### Files tab
 
 - *Type* filter is an exact filter (Shows only the record with this exact value)
 - All other filters are contains filters (Shows all records that contains this value)
@@ -224,9 +228,10 @@ The following columns should be presented
 ######Across tab filters
 
 ***
-<a name="datatable">
-####Datatable 
+<a name="datatable"> 
 </a>
+
+### Datatable
 
  - For each of the 6 tabs, the Datatable should present the total of records found.
  - For each of the 6 tabs, the Datatable should present the number of row  displayed.
