@@ -98,7 +98,7 @@ class NDB_Form_Statistics extends NDB_Form
         $tpl_data['DropdownName']     = $dropdown_name;
         $tpl_data['DropdownOptions']  = $dropdown_opt;
         $tpl_data['DropdownSelected'] = $dropdown_selected;
-        $tpl_data['Centers']          = $centers;
+        $tpl_data['Centers']          = $centers ?? array();
         foreach ($data as $row) {
             // TODO: The below fields are not always present
             // in $data, e.g., in the $result for imaging statistics
@@ -160,7 +160,7 @@ class NDB_Form_Statistics extends NDB_Form
      *
      * @return void
      */
-    function stats_general()
+    function stats_general()// @codingStandardsIgnoreLine
     {
         //$DB =& Database::singleton();
     }
@@ -169,7 +169,7 @@ class NDB_Form_Statistics extends NDB_Form
      *
      * @return void
      */
-    function stats_demographic()
+    function stats_demographic()// @codingStandardsIgnoreLine
     {
         $DB          =& Database::singleton();
         $config      = NDB_Config::singleton();
@@ -248,11 +248,14 @@ class NDB_Form_Statistics extends NDB_Form
             error_log('No center data could be retrieved from the database!');
         } else {
             foreach ($centers as $row) {
-                $sites[$row['NumericID']] = $row['ShortName'];
-                if ($demographicSite == $row['NumericID']) {
+                $id         = $row['NumericID'] ?? '';
+                $shortName  = $row['ShortName'] ?? '';
+                $longName   = $row['LongName'] ?? '';
+                $sites[$id] = $shortName;
+                if ($demographicSite == $id) {
                     $this->tpl_data['CurrentSite'] = array(
-                                                      'ID'   => $row['NumericID'] ?? '',
-                                                      'Name' => $row['LongName'] ?? '',
+                                                      'ID'   => $id,
+                                                      'Name' => $longName,
                                                      );
                 }
             }
@@ -512,7 +515,7 @@ class NDB_Form_Statistics extends NDB_Form
      *
      * @return void
      */
-    function stats_behavioural()
+    function stats_behavioural()// @codingStandardsIgnoreLine
     {
         $DB          =& Database::singleton();
         $config      = NDB_Config::singleton();
@@ -548,12 +551,15 @@ class NDB_Form_Statistics extends NDB_Form
             error_log('No center data could be retrieved from the database!');
         } else {
             foreach ($centers as $row) {
-                $this->tpl_data['Sites'][$row['NumericID']]
-                    = $row['LongName'] ?? '';
-                if ($site == $row['NumericID']) {
+                $id        = $row['NumericID'] ?? '';
+                $shortName = $row['ShortName'] ?? '';
+                $longName  = $row['LongName'] ?? '';
+                $this->tpl_data['Sites'][$id]
+                    = $longName;
+                if ($site == $id) {
                     $this->tpl_data['CurrentSite'] = array(
-                                                      'ID'   => $row['NumericID'] ?? '',
-                                                      'Name' => $row['LongName'] ?? '',
+                                                      'ID'   => $id,
+                                                      'Name' => $longName,
                                                      );
                 }
             }
@@ -570,11 +576,12 @@ class NDB_Form_Statistics extends NDB_Form
             $this->tpl_data['CurrentProject']
                 = array(
                    'ID'   => $behaviouralProject,
-                   'Name' => $projects[$behaviouralProject] ?? '',
+                   'Name' => $projects[$behaviouralProject],
                   );
-            $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+            $Param_Project ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+            $subprojects   = Utility::getSubprojectsForProject($behaviouralProject);
+
             $this->params['pid'] = $behaviouralProject;
-            $subprojects         = Utility::getSubprojectsForProject($behaviouralProject);
 
             $this->tpl_data['Subprojects'] = $subprojects;
             foreach ($subprojects as $key=>$val) {
@@ -617,7 +624,10 @@ class NDB_Form_Statistics extends NDB_Form
             $c      =& $this->tpl_data['behaviour']['C' . $center];
 
             if (is_null($c)) {
-                error_log("Error: no tpl_data for C$center in behavioural statistics");
+                error_log(
+                    "Error: no tpl_data for C$center ."
+                    " in behavioural statistics"
+                );
                 return;
             }
 
@@ -689,7 +699,7 @@ class NDB_Form_Statistics extends NDB_Form
      *
      * @return bool
      */
-    function stats_MRI()
+    function stats_MRI()//@codingStandardsIgnoreLine
     {
         $DB          =& Database::singleton();
         $config      = NDB_Config::singleton();
@@ -761,11 +771,14 @@ class NDB_Form_Statistics extends NDB_Form
         } else {
             $sites[null] ="All sites";
             foreach ($centers as $row) {
-                $sites[$row['NumericID']] = $row['ShortName'];
-                if ($mriSite == $row['NumericID']) {
+                $id         = $row['NumericID'] ?? '';
+                $shortName  = $row['ShortName'] ?? '';
+                $longName   = $row['LongName'] ?? '';
+                $sites[$id] = $shortName;
+                if ($mriSite == $shortName) {
                     $this->tpl_data['CurrentSite'] = array(
-                                                      'ID'   => $row['NumericID'] ?? '',
-                                                      'Name' => $row['LongName'] ?? '',
+                                                      'ID'   => $id,
+                                                      'Name' => $longName,
                                                      );
                 }
             }
@@ -1059,7 +1072,7 @@ class NDB_Form_Statistics extends NDB_Form
      *
      * @return void
      */
-    function stats_reliability()
+    function stats_reliability()//@codingStandardsIgnoreLine
     {
         $DB          =& Database::singleton();
         $config      = NDB_Config::singleton();
@@ -1109,11 +1122,14 @@ class NDB_Form_Statistics extends NDB_Form
             error_log('No center data could be retrieved from the database!');
         } else {
             foreach ($centers as $row) {
-                $sites[$row['NumericID']] = $row['ShortName'];
-                if ($reliabilitySite == $row['NumericID']) {
+                $id         = $row['NumericID'] ?? '';
+                $shortName  = $row['ShortName'] ?? '';
+                $longName   = $row['LongName'] ?? '';
+                $sites[$id] = $shortName;
+                if ($reliabilitySite == $shortName) {
                     $this->tpl_data['CurrentSite'] = array(
-                                                      'ID'   => $row['NumericID'] ?? '',
-                                                      'Name' => $row['LongName'] ?? '',
+                                                      'ID'   => $id,
+                                                      'Name' => $longName,
                                                      );
                 }
             }
