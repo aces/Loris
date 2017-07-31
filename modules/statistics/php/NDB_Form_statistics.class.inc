@@ -620,7 +620,7 @@ class NDB_Form_Statistics extends NDB_Form
             $c      =& $this->tpl_data['behaviour']['C' . $center];
 
             if (is_null($c)) {
-                error_log("Error: no tpl_data for C$center");
+                error_log("Error: no tpl_data for C$center in behavioural statistics");
                 return;
             }
 
@@ -664,7 +664,8 @@ class NDB_Form_Statistics extends NDB_Form
             $c      =& $this->tpl_data['dde']['C' . $center];
 
             if (is_null($c)) {
-                error_log("Error: no tpl_data for C$center");
+                error_log("Error: no tpl_data for C$center in behavioural"
+                    . " dde statistics");
                 return;
             }
 
