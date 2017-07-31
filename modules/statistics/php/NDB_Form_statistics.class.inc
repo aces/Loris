@@ -706,6 +706,8 @@ class NDB_Form_Statistics extends NDB_Form
         }
         $mriProject = $_REQUEST['MRIProject'] ?? '';
         $Param_Project = '';
+        $subproject_query ='';
+        $subprojects = array();
         if (empty($mriProject)) {
             error_log('No MRI project specified in request');
         } else {
@@ -723,7 +725,6 @@ class NDB_Form_Statistics extends NDB_Form
 
             //SUBPROJECTS
             $subprojList = '';
-            $subproject_query ='';
             $subprojects = Utility::getSubprojectsForProject($mriProject);
             if (empty($subprojects)) {
                 error_log('Could not load subproject data for mri stats');
