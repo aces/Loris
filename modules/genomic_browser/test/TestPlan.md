@@ -47,7 +47,7 @@ The following permissions should be available in the database
 
 - There should be a *Genomic Browser* item in the Loris Menu under tools.
 - Accessing the http://your-base-url/genomic_browser/ should load the Genomic Browser Profile tab.
-- The only candidate's data that should appear in the Datatable of the Profile, CNV,  SNP and Methylation tabs should be those of the same site then this user's site.  
+- The only candidate's data that should appear in the Datatable of the Profile, CNV,  SNP and Methylation tabs should be those of the same site as this user's site.  
 
 ***
 #### For a user with genomic_data_manager and one of genomic_data_manager or genomic_browser_view_allsites
@@ -62,7 +62,7 @@ The following permissions should be available in the database
 ## Pave Navigation and Display
 
 - There should be 6 tabs unders the breadcrumb: Profile, GWAS, SNP, CNV, Methylation and Files
-- Clicking each tab should present it as active and the 5 other tabs should remain in te same order.
+- Clicking each tab should present it as active and the 5 other tabs should remain in the same order.
 
 <a name="features">
 </a>
@@ -243,7 +243,7 @@ The following columns should be presented
  - For each of the 6 tabs, the Datatable should present the total of records found.
  - For each of the 6 tabs, the Datatable should present the number of row  displayed.
  - For each of the 6 tabs, the Datatable should present a pagination if there is more records to display then the actual *row per page* value.
- - Chnaging the *row per page* dropdown value should be reflected on the pagination and on the number of row displayed.
+ - Changing the *row per page* drop-down value should be reflected on the pagination and on the number of row displayed.
 
 ### Special formated columns
 
