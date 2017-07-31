@@ -91,9 +91,7 @@ class CouchDBIntegrityChecker
                 Deleting Doc.\n";
 
                 $this->CouchDB->deleteDoc($row['id']);
-            }
-
-            if (!empty($sqlDB) && $sqlDB['Active'] != 'Y') {
+            } else if (!empty($sqlDB) && $sqlDB['Active'] != 'Y') {
                 $numActive = $this->SQLDB->execute(
                     $activeExists, array(
                     'PID' => $pscid, 
