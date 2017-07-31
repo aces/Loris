@@ -191,8 +191,8 @@ class NDB_Form_Statistics extends NDB_Form
         }
         $demographicProject = $_REQUEST['DemographicProject'] ?? '';
         $Param_Project      = '';
-        $subprojList        ='';
-        $subproject_query   ='';
+        $subprojList        = '';
+        $subproject_query   = '';
         $subprojects        = array();
         $Visits = array();
         if (empty($demographicProject)) {
@@ -625,7 +625,7 @@ class NDB_Form_Statistics extends NDB_Form
 
             if (is_null($c)) {
                 error_log(
-                    "Error: no tpl_data for C$center ."
+                    "Error: no tpl_data for C$center ".
                     " in behavioural statistics"
                 );
                 return;
