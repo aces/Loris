@@ -1237,7 +1237,7 @@ class NDB_BVL_Instrument extends NDB_Page
             //at the pipe.  ex: q_1{@}=={@}yes|q_2{@}=={@}yes
             $isInterfieldOr = false;
             if (substr_count($rule, '{@}') > 2 && strstr($rule, '|')) {
-                $rules_array = explode("|", $rule);
+                $rules_array    = explode("|", $rule);
                 $isInterfieldOr = true;
             } else {  //Otherwise its a regular rule.  ex: q_1{@}=={@}yes
                 $rules_array[] = $rule;
@@ -1249,7 +1249,6 @@ class NDB_BVL_Instrument extends NDB_Page
                 //Some rules compare against multiple values, handle this here.
                 if (stristr($rule[2], "|")) {  //ex: q_1{@}=={@}yes|no
                     $values = explode("|", $rule[2]);
-                    //print_r($values);
                 } else {  //ex: q_1{@}=={@}yes
                     $values = array($rule[2]);
                 }
