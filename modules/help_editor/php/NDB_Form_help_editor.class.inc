@@ -57,12 +57,12 @@ class NDB_Form_Help_Editor extends NDB_Form
             $helpID = $safeHelpID;
         }
         if (!empty($_REQUEST['section'])) {
-            $helpID = HelpFile::hashToID(md5($safeSection));
+            $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
         }
         if (!empty($_REQUEST['section'])
             && $_REQUEST['subsection'] != 'undefined'
         ) {
-            $helpID = HelpFile::hashToID(md5($safeSubsection));
+            $helpID = HelpFile::hashToID(md5($_REQUEST['subsection']));
         }
         $this->tpl_data['section']    = $safeSection;
         $this->tpl_data['subsection'] = $safeSubsection;
@@ -123,13 +123,13 @@ class NDB_Form_Help_Editor extends NDB_Form
         }
 
         if (!empty($_REQUEST['section'])) {
-            $helpID = HelpFile::hashToID(md5($safeSection));
+            $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
         }
         if (!empty($_REQUEST['section'])
             && $_REQUEST['subsection'] != 'undefined'
         ) {
-            $helpID   = HelpFile::hashToID(md5($safeSubsection));
-            $parentID = HelpFile::hashToID(md5($safeSection));
+            $helpID   = HelpFile::hashToID(md5($_REQUEST['subsection']));
+            $parentID = HelpFile::hashToID(md5($_REQUEST['section']));
         }
         if (!empty($helpID)) {
             $help_file = HelpFile::factory($helpID);
@@ -174,7 +174,7 @@ class NDB_Form_Help_Editor extends NDB_Form
                 $helpID = HelpFile::insert(
                     array(
                      'parentID'       => $parentID,
-                     'hash'           => md5($safeSubsection),
+                     'hash'           => md5($_REQUEST['subsection']),
                      'topic'          => $values['title'],
                      'projectContent' => $values['content'],
                      'created'        => date(
@@ -190,7 +190,7 @@ class NDB_Form_Help_Editor extends NDB_Form
                 //default case
                 $helpID = HelpFile::insert(
                     array(
-                     'hash'           => md5($safeSection),
+                     'hash'           => md5($_REQUEST['section']),
                      'topic'          => $values['title'],
                      'projectContent' => $values['content'],
                      'created'        => date(
