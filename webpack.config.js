@@ -1,7 +1,8 @@
 var webpack = require('webpack');
 var path = require('path');
+var fs = require('fs');
 
-var config = {
+var config = [{
   entry: {
     './htdocs/js/components/DynamicDataTable.js': './jsx/DynamicDataTable.js',
     './htdocs/js/components/PaginationLinks.js': './jsx/PaginationLinks.js',
@@ -84,8 +85,17 @@ var config = {
   externals: {
     react: 'React'
   },
+  node: {
+    fs: "empty"
+  },
   devtool: 'source-map',
   plugins: [new webpack.optimize.UglifyJsPlugin({mangle: false})]
-};
+}];
+
+// Support project overrides
+if (fs.existsSync('./project/webpack-project.config.js')) {
+  var projConfig = require('./project/webpack-project.config.js');
+  config.push(projConfig);
+}
 
 module.exports = config;
