@@ -100,7 +100,7 @@ class NDB_BVL_Instrument_XIN_Rule_Test extends NDB_BVL_Instrument
             "Not required."
         );
 
-        $this->addBasicText(
+        $this->addTextElement(
             "q3",
             "Q3) Required if Q1 equals A"
         );
@@ -108,10 +108,11 @@ class NDB_BVL_Instrument_XIN_Rule_Test extends NDB_BVL_Instrument
         $this->XINRegisterRule(
             "q3",
             array("q1{@}=={@}A"),
-            "Required."
+            "Required.",
+            "q3_group"
         );
 
-        $this->addBasicText(
+        $this->addTextElement(
             'q4',
             "Q4) Required if Q1 equals A, B, or C"
         );
@@ -119,10 +120,11 @@ class NDB_BVL_Instrument_XIN_Rule_Test extends NDB_BVL_Instrument
         $this->XINRegisterRule(
             'q4',
             array('q1{@}=={@}A|B|C'),
-            'Required.'
+            'Required.',
+            "q4_group"
         );
 
-        $this->addBasicText(
+        $this->addTextElement(
             'q5',
             'Q5) Required if Q1 equals A and Q2 equals D'
         );
@@ -130,18 +132,20 @@ class NDB_BVL_Instrument_XIN_Rule_Test extends NDB_BVL_Instrument
         $this->XINRegisterRule(
             'q5',
             array('q1{@}=={@}A', 'q2{@}=={@}D'),
-            'Required.'
+            'Required.',
+            "q5_group"
         );
 
-        $this->addBasicText(
+        $this->addTextElement(
             'q6',
-            'Q6) Required if Q1 equals A or Q2 equals D'
+            'Q6) Required if Q1 equals B or Q2 equals C'
         );
 
         $this->XINRegisterRule(
             'q6',
-            array('q1{@}=={@}A|q2{@}=={@}D'),
-            'Required'
+            array('q1{@}=={@}B|q2{@}=={@}C'),
+            'Required',
+            "q6_group"
         );
     }
 
