@@ -29,9 +29,6 @@ The following permissions should be available in the database
 | genomic_data_manager | Manage the genomic files |
 
 
-
-<br>
-***
 #### For a user without neither genomic_browser_view_allsites nor genomic_browser_view_site
 
 - The Loris menu should not contain a *Genomic Browser* item.
@@ -62,7 +59,7 @@ The following permissions should be available in the database
 <a name="navigation">
 </a>
 
-## Pave Navigation & Display
+## Pave Navigation and Display
 
 - There should be 6 tabs unders the breadcrumb: Profile, GWAS, SNP, CNV, Methylation and Files
 - Clicking each tab should present it as active and the 5 other tabs should remain in te same order.
@@ -293,8 +290,9 @@ The following columns should be presented
 - Clicking on the *Download* button should trigger a file download.
 
 <a name="data_upload">
-## Data upload 
 </a>
+
+## Data Upload
 
 > Under construction
 
