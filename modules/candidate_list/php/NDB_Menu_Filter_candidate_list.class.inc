@@ -208,14 +208,19 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
      */
     function _setFilterForm()
     {
-        include_once __DIR__
-            . "/../../candidate_parameters/php/"
-            . "NDB_Form_candidate_parameters.class.inc";
-            //+  NDB_Form_candidate_parameters::getParticipantStatusOptions();
-        // create user object
         $user   =& User::singleton();
         $config =& NDB_Config::singleton();
+        $base   = $config->getSetting('base');
 
+        $moduleToCP = '/modules/candidate_parameters/'.
+        'php/NDB_Form_candidate_parameters.class.inc';
+        $overrideCP = $base."/project".$moduleToCP;
+        $originalCP = $base.$moduleToCP;
+        if (stream_resolve_include_path($overrideCP) !== false) {
+            include_once $overrideCP;
+        } else {
+            include_once $originalCP;
+        }
         // PSC
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
