@@ -268,7 +268,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      *
      * @return void.
      */
-    function testFilterByDccId()
+    private function _testFilterByDccId()
     {
         $this->safeGet($this->url . "/candidate_list/");
         // Search using an invalid DCCID
@@ -400,6 +400,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
       $this->_testPSCIDLink();
       $this->_testPageUIs();
+      $this->_testFilterByDccId();
     }
 }
 ?>
