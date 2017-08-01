@@ -32,8 +32,6 @@ install:
 
     # Install node modules specified in package.json
     - npm install
-    # Update phpunit 
-    - wget https://phar.phpunit.de/phpunit.phar
  
     # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
@@ -54,8 +52,6 @@ before_script:
     # Set up the Loris environment
     - mkdir -p project smarty/templates_c project/instruments project/tables_sql
     - chmod 777 smarty/templates_c project/instruments project/tables_sql
-    - chmod +x phpunit.phar
-    - mv phpunit.phar /usr/local/bin/phpunit
     # Set up the MySQL database, install the Schema, create a MySQL user
     # for the config file, and reset the Loris user's password for testing
     - mysql -e 'CREATE DATABASE LorisTest'
