@@ -309,7 +309,7 @@ CREATE TABLE `session` (
   `BVLQCExclusion` enum('Excluded','Not Excluded') DEFAULT NULL,
   `QCd` enum('Visual','Hardcopy') DEFAULT NULL,
   `Scan_done` enum('N','Y') DEFAULT NULL,
-  `MRIQCStatus` enum('','Pass','Fail') NULL DEFAULT NULL,
+  `MRIQCStatus` enum('','Pass','Fail') NOT NULL DEFAULT '',
   `MRIQCPending` enum('Y','N') NOT NULL DEFAULT 'N',
   `MRIQCFirstChangeTime` datetime DEFAULT NULL,
   `MRIQCLastChangeTime` datetime DEFAULT NULL,
