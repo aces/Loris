@@ -96,6 +96,6 @@ script:
     - npm run lint:javascript
 
     # Run unit tests to make sure functions still do what they should.
-    - phpunit --configuration test/phpunit.xml
+    - /vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise
