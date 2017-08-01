@@ -362,7 +362,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
       *
       * @return void
       */
-    function testPageUIs()
+    private function testPageUIs()
     {
         $this->safeGet($this->url . "/candidate_list/");
         foreach ($this->_loadingUI as $key => $value) {
@@ -390,6 +390,10 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             "return document.querySelector('#bc2 > a:nth-child(3)>div').textContent"
         );
         $this->assertContains('900000', $text);
+    }
+    function tests()
+    {
+      $this->testPageUIs();
     }
 }
 ?>
