@@ -99,3 +99,5 @@ script:
 
     # Run unit tests to make sure functions still do what they should.
     - phpunit --configuration test/phpunit.xml
+
+dist: precise
