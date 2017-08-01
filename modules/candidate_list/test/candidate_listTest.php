@@ -362,7 +362,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
       *
       * @return void
       */
-    function testPageUIs()
+    private function _testPageUIs()
     {
         $this->safeGet($this->url . "/candidate_list/");
         foreach ($this->_loadingUI as $key => $value) {
@@ -399,6 +399,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function groupTest()
     {
       $this->_testPSCIDLink();
+      $this->_testPageUIs();
     }
 }
 ?>
