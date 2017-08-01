@@ -32,7 +32,9 @@ install:
 
     # Install node modules specified in package.json
     - npm install
-
+    # Update phpunit 
+    - wget https://phar.phpunit.de/phpunit.phar
+  
     # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
 
