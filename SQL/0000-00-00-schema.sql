@@ -1296,7 +1296,6 @@ INSERT INTO StatisticsTabs (ModuleName, SubModuleName, Description, OrderNo) VAL
   ('statistics', 'stats_general', 'General Description', 1),
   ('statistics', 'stats_demographic', 'Demographic Statistics', 2),
   ('statistics', 'stats_behavioural', 'Behavioural Statistics', 3),
-  ('statistics', 'stats_reliability', 'Reliability Statistics', 4),
   ('statistics', 'stats_MRI', 'Imaging Statistics', 5);
 
 -- ********************************
