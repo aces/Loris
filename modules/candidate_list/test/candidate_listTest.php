@@ -268,7 +268,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      *
      * @return void.
      */
-    private function _testFilterByDccId()
+    function testFilterByDccId()
     {
         $this->safeGet($this->url . "/candidate_list/");
         // Search using an invalid DCCID
@@ -362,7 +362,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
       *
       * @return void
       */
-    private function _testPageUIs()
+    function testPageUIs()
     {
         $this->safeGet($this->url . "/candidate_list/");
         foreach ($this->_loadingUI as $key => $value) {
@@ -377,7 +377,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
       *
       * @return void
       */
-    private function _testPSCIDLink()
+    function testPSCIDLink()
     {
         $this->safeGet($this->url . "/candidate_list/");
         //find PSCID link and click
@@ -390,17 +390,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             "return document.querySelector('#bc2 > a:nth-child(3)>div').textContent"
         );
         $this->assertContains('900000', $text);
-    }
-    /**
-      * Group Testing 
-      *
-      * @return void
-      */
-    function groupTest()
-    {
-      $this->_testPSCIDLink();
-      $this->_testPageUIs();
-      $this->_testFilterByDccId();
     }
 }
 ?>
