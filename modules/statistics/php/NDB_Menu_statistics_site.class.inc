@@ -38,7 +38,7 @@ class NDB_Menu_Statistics_Site extends NDB_Menu
      */
     function _hasAccess($centerID)
     {
-        if (is_null($centerID) {
+        if (is_null($centerID)) {
             error_log("CenterID passed in statistics module is null.");
             return false;
         }
