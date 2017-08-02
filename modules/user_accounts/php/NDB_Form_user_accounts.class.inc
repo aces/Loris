@@ -307,7 +307,6 @@ class NDB_Form_User_Accounts extends NDB_Form
 
                     // examiner was not previously added, add and set to active
                     if (empty($result) || is_null($result)) {
-                        $values = Utility::nullifyEmpty($values, 'examiner_pending');
                         $DB->insert(
                             'examiners',
                             array(
@@ -319,7 +318,6 @@ class NDB_Form_User_Accounts extends NDB_Form
                             )
                         );
                     } else {
-                        $values = Utility::nullifyEmpty($values, 'examiner_pending');
                         $DB->update(
                             'examiners',
                             array(
