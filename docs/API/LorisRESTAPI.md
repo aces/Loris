@@ -1,4 +1,4 @@
-# Loris API - v0.0.2
+# Loris API - v0.0.3
 
 ## 1.0 Overview
 
@@ -265,7 +265,8 @@ The body of the POST request should be a candidate key with a JSON object of the
         "PSCID"   : PSCID,
         "EDC"     : "YYYY-MM-DD",
         "DoB"     : "YYYY-MM-DD",
-        "Gender"  : "Male|Female"
+        "Gender"  : "Male|Female",
+        "Site"    : SiteName,
     }
 }
 ```
@@ -276,12 +277,15 @@ project settings.
 PSCID is only required if the generation type in the Loris config is set to
 "prompt".
 
-The candidate will be created at the site of the user using the API's site.
+Site is only required if the user using the API is affiliated with multiple sites.
+Otherwise, the candidate will be automatically created at the one site the user 
+using the API is affiliated with.
+
 A response code of 201 Created will be returned on success, 409 Conflict if
 the PSCID already exists, and a 400 Bad Request if any data provided is invalid
 (PSCID format, date format, gender something other than Male|Female, invalid project
-name, etc). A successful POST request will return the CandID for the newly
-created candidate.
+name, Site other than the list of sitenames the user is affiliated with, etc). 
+A successful POST request will return a CandidateObject for the newly created candidate.
 
 PUT / PATCH methods are not supported on /candidate in this
 version of the Loris API.
@@ -332,7 +336,8 @@ The JSON object is of the form:
     "Meta" : {
         "CandID" : CandID,
         "Visit"  : VisitLabel,
-        "Battery" : "NameOfSubproject"
+        "Site"   : SiteName,
+        "Battery": "NameOfSubproject"
     },
     "Stages" : {
         "Screening" :  {
@@ -353,6 +358,7 @@ The JSON object is of the form:
 
 A PUT of the same format but with only the Meta fields will create the VisitLabel
 for this candidate, in an unstarted stage if the Visit label provided is valid.
+The SiteName is only required for users affiliated with multiple sites.
 
 PATCH is not supported for Visit Labels.
 
