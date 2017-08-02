@@ -625,8 +625,8 @@ class NDB_Form_Statistics extends NDB_Form
 
             if (is_null($c)) {
                 error_log(
-                    "Error: no tpl_data for C$center ".
-                    " in behavioural statistics"
+                    "Error: no tpl_data for C$center "
+                    . ' in behavioural statistics'
                 );
                 return;
             }
