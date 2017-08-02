@@ -362,11 +362,11 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
       *
       * @return void
       */
-    function testPageUIs()
+    private function _testPageUIs($wd)
     {
-        $this->safeGet($this->url . "/candidate_list/");
+        $wd->get($this->url . "/candidate_list/");
         foreach ($this->_loadingUI as $key => $value) {
-            $text = $this->webDriver->executescript(
+            $text = $wd->executescript(
                 "return document.querySelector('$value').textContent"
             );
             $this->assertContains($key, $text);
@@ -377,19 +377,29 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
       *
       * @return void
       */
-    function testPSCIDLink()
+    private function _testPSCIDLink($wd)
     {
-        $this->safeGet($this->url . "/candidate_list/");
+        $wd->get($this->url . "/candidate_list/");
         //find PSCID link and click
-        $this->webDriver->executescript(
+        $wd->executescript(
             "document.querySelectorAll('#dynamictable > tbody > tr >".
             " td.dynamictableFrozenColumn > a')[0].click()"
         );
         //make sure that breadcrumb contains DCCID
-        $text = $this->webDriver->executescript(
+        $text = $wd->executescript(
             "return document.querySelector('#bc2 > a:nth-child(3)>div').textContent"
         );
         $this->assertContains('900000', $text);
+    }
+    /**
+      * Testing UI elements when page loads
+      *
+      * @return void
+      */
+    function tests()
+    {
+      $this->_testPageUIs($this->webDriver); 
+      $this->_testPSCIDLink($this->webDriver);
     }
 }
 ?>
