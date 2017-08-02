@@ -1210,7 +1210,8 @@ class NDB_Form_User_Accounts extends NDB_Form
                     "radiologist";
             }
             if (preg_match("/^ex_[1-9]+$/", $k)
-                && $values['examiner_radiologist'] !== '' && $values['examiner_pending'] == ''
+                && $values['examiner_radiologist'] !== '' 
+                && $values['examiner_pending'] == ''
             ) {
                 $errors['examiner_group'] = "Please set pending approval Yes or No";
             }
