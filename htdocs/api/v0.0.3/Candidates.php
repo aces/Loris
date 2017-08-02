@@ -112,10 +112,10 @@ class Candidates extends APIBase
 
             // When users are at multiple sites, the API requires
             // siteName as an input to candidate creation
-            $user      = \User::singleton();
-            $centerIDs = $user->getCenterIDs();
+            $user         = \User::singleton();
+            $centerIDs    = $user->getCenterIDs();
             $allUserSites = array();
-            $num_sites = count($centerIDs);
+            $num_sites    = count($centerIDs);
             if ($num_sites == 0) {
                 $this->header("HTTP/1.1 401 Unauthorized");
                 $this->error("You are not affiliated with any site");

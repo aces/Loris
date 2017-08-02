@@ -94,9 +94,9 @@ class Visit extends \Loris\API\Candidates\Candidate
         $SubProjTitle = $this->Timepoint->getData("SubprojectTitle");
         $centerID     = $this->Timepoint->getData("CenterID");
         $center       = $this->DB->pselectRow(
-                             "SELECT Name FROM psc WHERE CenterID =:cid",
-                              array('cid' => $centerID)
-                        );
+            "SELECT Name FROM psc WHERE CenterID =:cid",
+            array('cid' => $centerID)
+        );
         $centerName   = $center['Name'];
 
         $this->JSON = [
@@ -105,7 +105,7 @@ class Visit extends \Loris\API\Candidates\Candidate
                                   'Visit'   => $this->VisitLabel,
                                   'Site'    => $centerName,
                                   'Battery' => $SubProjTitle,
-                       ],
+                                 ],
                       ];
         if ($this->Timepoint) {
             $stages = [];
@@ -190,12 +190,13 @@ class Visit extends \Loris\API\Candidates\Candidate
             if (!isset($this->ReceivedJSON['Meta']['Site'])
             ) {
                 $this->header("HTTP/1.1 400 Bad Request");
-                $this->error("Users affiliated with multiple sites " .
-                             "need to specify the name of the site at " .
-                             "which the visit took place.");
+                $this->error(
+                    "Users affiliated with multiple sites " .
+                    "need to specify the name of the site at " .
+                    "which the visit took place."
+                );
                 $this->safeExit(0);
-            }
-            else {
+            } else {
                 $siteName = $this->ReceivedJSON['Meta']['Site'];
                 foreach ($centerIDs as $key => $centerID) {
                     $center = $this->DB->pselectRow(
@@ -208,11 +209,18 @@ class Visit extends \Loris\API\Candidates\Candidate
                 $centerID = array_search($siteName, $allUserSites);
                 if (!in_array($centerID, $centerIDs)) {
                     $this->header("HTTP/1.1 401 Unauthorized");
-                    $this->error("You are creating a visit at a site you " .
-                                 "are not affiliated with.");
+                    $this->error(
+                        "You are creating a visit at a site you " .
+                        "are not affiliated with."
+                    );
                     $this->safeExit(0);
                 }
-                $this->createNew($this->CandID, $subprojectID, $this->VisitLabel, $centerID);
+                $this->createNew(
+                    $this->CandID,
+                    $subprojectID,
+                    $this->VisitLabel,
+                    $centerID
+                );
                 $this->header("HTTP/1.1 201 Created");
             }
         } else {
@@ -225,7 +233,12 @@ class Visit extends \Loris\API\Candidates\Candidate
                 $this->safeExit(0);
             }
             // need to extract subprojectID
-            $this->createNew($this->CandID, $subprojectID, $this->VisitLabel, $centerID);
+            $this->createNew(
+                $this->CandID,
+                $subprojectID,
+                $this->VisitLabel,
+                $centerID
+            );
             $this->header("HTTP/1.1 201 Created");
         }
     }
