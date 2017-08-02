@@ -161,11 +161,13 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      * Tests that, when loading the candidate_list module, the breadcrumb
      * appears and the default filters are set to "Basic" mode.
      *
+     * @param webdriver $wd  an instance of webdriver
+     *
      * @return void
      */
-    function testCandidateListPageLoads()
+    private function _testCandidateListPageLoads($wd)
     {
-        $this->safeGet($this->url . "/candidate_list/");
+        $wd->get($this->url . "/candidate_list/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Access Profile", $bodyText);
@@ -178,11 +180,13 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      * Tests that, after clicking the "Advanced" button, all of the
      * advanced filters appear on the page and are the correct element type.
      *
+     * @param webdriver $wd  an instance of webdriver
+     *
      * @return void
      */
-    function testCandidateListAdvancedOptionsAppear()
+    private function _testCandidateListAdvancedOptionsAppear($wd)
     {
-        $this->safeGet($this->url . "/candidate_list/");
+        $wd->get($this->url . "/candidate_list/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Access Profile", $bodyText);
@@ -226,11 +230,13 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     /**
      * Performs various searches by PSCID (and PSCID only).
      *
+     * @param webdriver $wd  an instance of webdriver
+     *
      * @return void.
      */
-    function testFilterByPscid()
+    private function _testFilterByPscid($wd)
     {
-        $this->safeGet($this->url . "/candidate_list/");
+        $wd->get($this->url . "/candidate_list/");
         // Search using PSCID TST0001
         // Verify that only one candidate is returned: TST0001
         $this->_assertSearchBy(
@@ -266,11 +272,13 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     /**
      * Performs various searches by DCCID (and DCCID only).
      *
+     * @param webdriver $wd  an instance of webdriver
+     *
      * @return void.
      */
-    function testFilterByDccId()
-    {
-        $this->safeGet($this->url . "/candidate_list/");
+    private function _testFilterByDccId($wd)
+    {   
+        $wd->get($this->url . "/candidate_list/");
         // Search using an invalid DCCID
         // Verify that no candidates are returned
         $this->_assertSearchBy(
@@ -360,13 +368,15 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     /**
       * Testing UI elements when page loads
       *
+      * @param webdriver $wd  an instance of webdriver
+      *      
       * @return void
       */
     private function _testPageUIs($wd)
     {
         $wd->get($this->url . "/candidate_list/");
         foreach ($this->_loadingUI as $key => $value) {
-            $text = $wd->executescript(
+            $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
             );
             $this->assertContains($key, $text);
@@ -375,29 +385,35 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     /**
       * Testing link of PSCID
       *
+      * @param webdriver $wd  an instance of webdriver
+      *
       * @return void
       */
     private function _testPSCIDLink($wd)
     {
         $wd->get($this->url . "/candidate_list/");
         //find PSCID link and click
-        $wd->executescript(
+        $this->webDriver->executescript(
             "document.querySelectorAll('#dynamictable > tbody > tr >".
             " td.dynamictableFrozenColumn > a')[0].click()"
         );
         //make sure that breadcrumb contains DCCID
-        $text = $wd->executescript(
+        $text = $this->webDriver->executescript(
             "return document.querySelector('#bc2 > a:nth-child(3)>div').textContent"
         );
         $this->assertContains('900000', $text);
     }
     /**
-      * Testing UI elements when page loads
+      * Group Testing 
       *
       * @return void
       */
-    function tests()
+    function groupTest()
     {
+      $this->_testCandidateListPageLoads($this->webDriver);
+      $this->_testCandidateListAdvancedOptionsAppear($this->webDriver);
+      $this->_testFilterByPscid($this->webDriver);
+      $this->_testFilterByDccId($this->webDriver);
       $this->_testPageUIs($this->webDriver); 
       $this->_testPSCIDLink($this->webDriver);
     }
