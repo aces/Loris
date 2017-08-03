@@ -102,7 +102,6 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                                       'ConflictID'     => $row['ConflictID'],
                                      );
 
-                    $DB->insert('conflicts_resolved', $resolutionLog);
 
                     // update the source tables
                     $setArray    = array(
@@ -116,17 +115,13 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                         $whereArray1[$row['ExtraKeyColumn']] = $row['ExtraKey1'];
                         $whereArray2[$row['ExtraKeyColumn']] = $row['ExtraKey2'];
                     }
-                    $DB->update($row['TableName'], $setArray, $whereArray1);
-                    $DB->update($row['TableName'], $setArray, $whereArray2);
-
-                    // delete from conflicts_unresolved
-                    $DB->run(
-                        "DELETE FROM conflicts_unresolved
-                        WHERE MD5(
-                            CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1,
-                            ExtraKey2, FieldName, CommentId1, CommentId2)
-                        ) = '$hash'"
-                    );
+                    
+                    try {
+                        $DB->update($row['TableName'], $setArray, $whereArray1);
+                        $DB->update($row['TableName'], $setArray, $whereArray2);
+                    } catch (DatabaseException $e) {
+                        showError("Could not update the database.");
+                    }
 
                     $TableName = $row['TableName'];
 
@@ -168,6 +163,18 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
 
                         $Instrument->score();
                     }
+                    
+                    // inserting after scoring in case of exceptions above
+                    $DB->insert('conflicts_resolved', $resolutionLog);
+                    
+                    // delete from conflicts_unresolved
+                    $DB->run(
+                        "DELETE FROM conflicts_unresolved
+                        WHERE MD5(
+                            CONCAT_WS(':',TableName, ExtraKeyColumn, ExtraKey1,
+                            ExtraKey2, FieldName, CommentId1, CommentId2)
+                        ) = '$hash'"
+                    );                    
                 }
             }
         }
