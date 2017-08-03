@@ -14,7 +14,7 @@
 
 $user =& User::singleton();
 
-$File   = $_GET['File'];
+$File = $_GET['File'];
 // Make sure that the user isn't trying to break out of the $path by
 // using a relative filename.
 // No need to check for '/' since all downloads are relative to $basePath
