@@ -2,7 +2,7 @@
 /**
  * Handles requests to the projects portion of the API
  *
- * PHP Version 7.5+
+ * PHP Version 5.5+
  *
  * @category Main
  * @package  API

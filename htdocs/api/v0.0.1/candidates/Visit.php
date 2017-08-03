@@ -2,7 +2,7 @@
 /**
  * Handles API requests for the candidate's visit
  *
- * PHP Version 7.5+
+ * PHP Version 5.5+
  *
  * @category Main
  * @package  API
