@@ -439,7 +439,6 @@ class NDB_Form_Statistics extends NDB_Form
                 "Breakdown of Registered Candidates",
                 "Data Entry Completion Status for ".
                       $instrument_list[$_REQUEST['DemographicInstrument']],
-                '',
                 $Subcategories,
                 $Visits,
                 "DemographicInstrument",
@@ -448,6 +447,7 @@ class NDB_Form_Statistics extends NDB_Form
                 $centers,
                 $result,
                 "demographics",
+                '',
                 $currentProject
             );
         } else {
@@ -473,7 +473,6 @@ class NDB_Form_Statistics extends NDB_Form
             $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
                 "Breakdown of Registered Candidates",
                 "Breakdown by Sex",
-                '',
                 $Subcategories,
                 $Visits,
                 "DemographicInstrument",
@@ -482,6 +481,7 @@ class NDB_Form_Statistics extends NDB_Form
                 $centers,
                 $result,
                 "demographics",
+                '',
                 $currentProject
             );
         }
