@@ -4,7 +4,7 @@
  * This class features the code for the menu portion of the Loris issue
  * tracker.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category   Loris
  * @package    Main
@@ -194,7 +194,7 @@ class Resolved_Issue_Tracker extends \NDB_Menu_Filter_Form
 
         //modules
         $modules_expanded = $db->pselect(
-            "SELECT DISTINCT Label, ID FROM LorisMenu 
+            "SELECT DISTINCT Label, ID FROM LorisMenu
 WHERE Parent IS NOT NULL ORDER BY Label ",
             []
         );
@@ -273,7 +273,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
         $this->addBasicDate('maxDate', 'Created Before', $dateOptions);
         $this->addCheckbox('watching', 'Watching', array('value' => '1'));
 
-        $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
+        //$this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
     }
 
 
