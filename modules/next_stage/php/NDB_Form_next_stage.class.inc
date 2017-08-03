@@ -2,7 +2,7 @@
 /**
  * The forms for the start next stage menu
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Main
@@ -13,7 +13,7 @@
 /**
  * The forms for the start next stage menu
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Main

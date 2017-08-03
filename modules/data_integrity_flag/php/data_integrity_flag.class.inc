@@ -2,7 +2,7 @@
 /**
  * This file contains the Data_Integrity_Flag class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Module
  * @package  Data_Integrity_Flag
@@ -16,7 +16,7 @@ namespace LORIS\data_integrity_flag;
  * Main class for data_integrity_flag module
  * corresponding to /data_integrity_flag/ URL
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Module
  * @package  Data_Integrity_Flag

@@ -2,7 +2,7 @@
 /**
  * Handles a request to the login API endpoint in Loris
  *
- * PHP Version 5.4+
+ * PHP Version 7.4+
  *
  * @category Main
  * @package  API

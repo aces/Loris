@@ -4,7 +4,7 @@
  *
  * Handles issue edits and returns data in response to a front end call.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Issue_Tracker
@@ -18,7 +18,7 @@
  *
  * Handles issue edits and returns data in response to a front end call.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Issue Tracker

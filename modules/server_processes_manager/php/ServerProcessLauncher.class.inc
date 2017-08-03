@@ -3,7 +3,7 @@
  * Provides a way to asynchronously execute a process on the server.
  * The process will be run in the background, as a stand-alone Unix process
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category ServerProcessesLauncher
  * @package  Loris
@@ -21,7 +21,7 @@ require_once "MriUploadServerProcess.class.inc";
  * Allows processes to be executed on the server, as background Unix processes.
  * Records the processes successfully started in the database.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category ServerProcessesLauncher
  * @package  Loris

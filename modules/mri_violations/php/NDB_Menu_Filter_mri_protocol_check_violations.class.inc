@@ -8,7 +8,7 @@
  * Inability to determine the scan type is logged in the mri_protocol_violations
  * table to which the NDB_Menu_Filter_mri_protocol_violations provides a frontend.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category MRI
  * @package  Main

@@ -5,7 +5,7 @@
  * from the dropdown, it's corresponding instruments are
  * retrieved and rendered in the instrument dropdown.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Loris

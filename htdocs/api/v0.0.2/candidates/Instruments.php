@@ -3,7 +3,7 @@
  * Contains class to get the list of instruments for a candidate's
  * visit through the API.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  API

@@ -2,7 +2,7 @@
 /**
  * The menu for user accounts
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  User_Account
@@ -14,7 +14,7 @@
 /**
  * The menu for user accounts
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  User_Account

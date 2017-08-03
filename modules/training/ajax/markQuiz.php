@@ -2,7 +2,7 @@
 /**
  * Certification training: Checks if the answers given for training quiz are correct.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Loris

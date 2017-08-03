@@ -2,7 +2,7 @@
 /**
  * A static class to encapsulate the notification spooling system
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Imaging
  * @package  Imaging

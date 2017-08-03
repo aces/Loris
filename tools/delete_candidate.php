@@ -9,7 +9,7 @@
  * "Example: php delete_candidate.php delete_candidate 965327 dcc0007 confirm";
  * "Example: php delete_candidate.php delete_candidate 965327 dcc0007 tosql";
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris

@@ -3,7 +3,7 @@
  * This file contains a TimePoint class which represent's a single session
  * for a single candidate in Loris.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris

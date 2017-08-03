@@ -9,7 +9,7 @@
  *
  * Used by "new" style modules.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  *  @category Loris
  *  @package  MRI

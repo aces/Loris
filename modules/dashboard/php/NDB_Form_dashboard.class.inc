@@ -3,7 +3,7 @@
  * Dashboard: displays recruitment and study progression charts,
  * user tasks and document repository notifications
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris

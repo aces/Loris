@@ -3,7 +3,7 @@
 /**
   * Upload files, wow.
   *
-  * PHP Version 5
+  * PHP Version 7
   *
   *  @category Loris
   *  @package  Data_Release

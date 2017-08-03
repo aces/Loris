@@ -2,7 +2,7 @@
 /**
  * This script allows recreation of conflicts
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris

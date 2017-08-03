@@ -4,7 +4,7 @@
  * will not mock the Database class and therefore will use
  * DBUnit to set up the test database's initial state using fixtures.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Tests
  * @package  Test

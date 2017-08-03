@@ -8,7 +8,7 @@
  * identifier.  Thus, we use the session table's ID column to identify
  * any battery.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  *  @category Main
  *  @package  Behavioural

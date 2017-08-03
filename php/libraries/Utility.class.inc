@@ -3,7 +3,7 @@
  * This file contains any static helper functions used by Loris that don't
  * fit elsewhere or are used in many different modules.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris

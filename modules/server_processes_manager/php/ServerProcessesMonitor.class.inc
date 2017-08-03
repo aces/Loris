@@ -6,7 +6,7 @@
  * for the monitored processes if they are not in sync with whatever the
  * monitor computes
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category ServerProcessLauncher
  * @package  Loris

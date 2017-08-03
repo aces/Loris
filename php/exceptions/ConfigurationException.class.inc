@@ -3,7 +3,7 @@
  * This class is a wrapper around Configuration errors thrown from
  * the Loris database
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Errors
  * @package  Loris

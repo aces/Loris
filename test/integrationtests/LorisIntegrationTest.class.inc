@@ -6,7 +6,7 @@
  * the module being tested and not the overhead of logging in
  * to Loris.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Test

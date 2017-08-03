@@ -2,7 +2,7 @@
 /**
  * Script for handling a new (sub)category addition to the Document Repository
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Documentation
  * @package  Main

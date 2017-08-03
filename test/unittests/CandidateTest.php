@@ -2,7 +2,7 @@
 /**
  * Unit test for Candidate class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Tests
  * @package  Main

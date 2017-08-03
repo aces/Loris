@@ -2,7 +2,7 @@
 /**
  * Examiner module: Form used to update examiner certification status
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Loris
@@ -14,7 +14,7 @@
 /**
  * Examiner module: Form used to update examiner certification status
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Loris

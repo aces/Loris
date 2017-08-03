@@ -2,7 +2,7 @@
 /**
  * NDB_Menu_Filter_Reliability
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  MRI

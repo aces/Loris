@@ -3,7 +3,7 @@
  * This file contains code to process user input from
  * Request Account form
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris

@@ -8,7 +8,7 @@
  *     argument summary is true, only those with verbose == 'N' are returned,
  *     otherwise they are all returned).
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Documentation
  * @package  Main

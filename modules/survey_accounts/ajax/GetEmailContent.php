@@ -4,7 +4,7 @@
  * template for the current instrument. It is used in the survey_accounts
  * page via AJAX to update the email template with the current page
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Survey
  * @package  Loris

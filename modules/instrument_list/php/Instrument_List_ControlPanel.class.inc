@@ -5,7 +5,7 @@
  * This class provides the management GUI for the status flags
  * (session table) of a time point in the NeuroDB framework.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Instrument_List
  * @package  Loris
@@ -19,7 +19,7 @@
  * This class provides the management GUI for the status flags
  * (session table) of a time point in the NeuroDB framework.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Instrument_List
  * @package  Loris

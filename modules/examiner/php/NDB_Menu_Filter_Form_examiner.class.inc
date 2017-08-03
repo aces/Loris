@@ -2,7 +2,7 @@
 /**
  * Examiner module menu filter form
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Clinical
  * @package  Loris
@@ -14,7 +14,7 @@
 /**
  * Examiner module menu filter form
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Clinical
  * @package  Loris

@@ -4,7 +4,7 @@
  * See NDB_Menu_Filter_final_radiological_review for description
  * of how module works.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Final_Radiological_Review
  * @package  Main
@@ -17,7 +17,7 @@
  * See NDB_Menu_Filter_final_radiological_review for description
  * of how module works.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Final_Radiological_Review
  * @package  Main

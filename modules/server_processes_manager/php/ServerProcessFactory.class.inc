@@ -2,7 +2,7 @@
 /**
  * Provides a way to create ServerProcess objects of the appropriate type
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category ServerProcessLauncher
  * @package  Loris

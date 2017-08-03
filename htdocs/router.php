@@ -3,7 +3,7 @@
 /**
  * Implementation of .htacces as a PHP router file
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Test

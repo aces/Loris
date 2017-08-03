@@ -3,7 +3,7 @@
  * Provides an interface to LORIS configuration settings
  * Wrapper/Proxy to LORIS Config (NDB_Config)
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris

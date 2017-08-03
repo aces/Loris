@@ -2,7 +2,7 @@
 /**
  * Data_integrity_flag automated integration tests
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Loris
@@ -17,7 +17,7 @@ require_once __DIR__ .
 /**
  * Data_integrity_flag automated integration tests
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Loris

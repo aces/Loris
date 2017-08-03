@@ -2,7 +2,7 @@
 /**
  * Data Querying Module
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Data_Querying_Module
  * @package  Loris

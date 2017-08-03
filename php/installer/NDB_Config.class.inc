@@ -6,7 +6,7 @@
  * NDB_Config, and the installer uses smarty, so this is required to make things
  * not crash.
  *
- * PHP Version 5.4+
+ * PHP Version 7.4+
  *
  * @category Installer
  * @package  Installer
@@ -22,7 +22,7 @@
  * NDB_Config, and the installer uses smarty, so this is required to make things
  * not crash.
  *
- * PHP Version 5.4+
+ * PHP Version 7.4+
  *
  * @category Installer
  * @package  Installer

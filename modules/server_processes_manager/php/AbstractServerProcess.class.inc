@@ -2,7 +2,7 @@
 /**
  * Template for all tasks used by the task manager
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category ServerProcessLauncher
  * @package  Loris

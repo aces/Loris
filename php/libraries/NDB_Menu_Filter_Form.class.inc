@@ -3,7 +3,7 @@
  * This class over-rides the NDB_Menu_Filter class by including the functionality
  * of saving/processing the form.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Main

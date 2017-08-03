@@ -36,7 +36,7 @@
  * Usage:
  *    php data_dictionary_builder.php
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Main

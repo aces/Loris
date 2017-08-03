@@ -5,7 +5,7 @@
  * NDB_BVL_Instrument, and implement their comparison of calculation
  * of reliability scores.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris

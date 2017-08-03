@@ -5,7 +5,7 @@
  * This ensures that the file exists and the user is logged in to
  * Loris before trying to return the file to the user.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Media

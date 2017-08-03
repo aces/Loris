@@ -3,7 +3,7 @@
  * This class provides the code to create the menu filter form that allows
  * for data entry of entities that should be acknowledged in publications
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Main
@@ -16,7 +16,7 @@
  * This class provides the code to create the menu filter form that allows
  * for data entry of entities that should be acknowledged in publications
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Main

@@ -10,7 +10,7 @@
  * trusted radiologist does the second review. Conflicts between any of the radiology
  * reviews are flagged for the radiologists to consult over before finalizing.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  *  @category Loris
  *  @package  Document_Repository

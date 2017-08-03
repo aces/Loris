@@ -2,7 +2,7 @@
 /**
  * This file represents an SQL database abstraction layer for use in Loris
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris

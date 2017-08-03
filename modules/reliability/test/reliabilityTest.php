@@ -2,7 +2,7 @@
 /**
  * Reliability automated integration tests
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Loris
@@ -16,7 +16,7 @@ require_once __DIR__ .
 /**
  * Reliability automated integration tests
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Loris

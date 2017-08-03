@@ -2,7 +2,7 @@
 /**
  * Encapsulates informations and methods regarding a process.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category TaskManager
  * @package  Loris

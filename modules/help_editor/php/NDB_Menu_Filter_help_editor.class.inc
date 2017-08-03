@@ -2,7 +2,7 @@
 /**
  * This file contains code for editing context help section
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -14,7 +14,7 @@
 /**
  * This file contains code for editing context help section
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris

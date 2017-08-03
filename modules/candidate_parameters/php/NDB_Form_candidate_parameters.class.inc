@@ -2,7 +2,7 @@
 /**
  * This file contains the NDB_Form_candidate_parameters class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Candidate_Parameters
@@ -19,7 +19,7 @@
  * Displays a list of candidate_parameter categories
  * and tabs to view them.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Candidate_Parameters

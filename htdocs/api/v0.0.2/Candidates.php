@@ -2,7 +2,7 @@
 /**
  * Handles a request to the candidates portion of the Loris API
  *
- * PHP Version 5.5+
+ * PHP Version 7.5+
  *
  * @category Main
  * @package  API

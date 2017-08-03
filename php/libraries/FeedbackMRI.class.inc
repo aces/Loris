@@ -2,7 +2,7 @@
 /**
  * This file contains a wrapper around imaging comments for a session or File.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Imaging
  * @package  Imaging

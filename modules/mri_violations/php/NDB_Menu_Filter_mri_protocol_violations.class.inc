@@ -6,7 +6,7 @@
  * all the header information that was used for that purpose as well as
  * a table on top which shows what the valid protocols for this study are
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category MRI
  * @package  Main

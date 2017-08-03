@@ -3,7 +3,7 @@
  * This is used by the survey accounts module to validate inputs
  * before the email message popup appears
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Survey
  * @package  Loris

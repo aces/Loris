@@ -7,7 +7,7 @@
  * If the Factory is in testing mode (setTesting(true) was called), a mock will
  * be returned. Otherwise, the normal NDB_ prefixed object will be returned.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  *  @category Main
  *  @package  Main

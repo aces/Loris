@@ -2,7 +2,7 @@
 /**
  * Instrument_manager
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Instrument_Manager
@@ -13,7 +13,7 @@
 /**
  * Instrument_manager
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Instrument_Manager

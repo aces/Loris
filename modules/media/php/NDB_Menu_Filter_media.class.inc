@@ -2,7 +2,7 @@
 /**
  * This file contains the NDB_Menu_Filter_media class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Module
  * @package  Media
@@ -18,7 +18,7 @@
  * Displays a list of media files and control panel to search them and upload
  * new ones.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Module
  * @package  Media

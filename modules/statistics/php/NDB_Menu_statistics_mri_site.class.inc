@@ -2,7 +2,7 @@
 /**
  * The welcome menu
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -14,7 +14,7 @@ require_once 'NDB_Menu_statistics_site.class.inc';
 /**
  * The welcome menu
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
