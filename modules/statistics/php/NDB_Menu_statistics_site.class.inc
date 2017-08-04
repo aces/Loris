@@ -32,14 +32,12 @@ class NDB_Menu_Statistics_Site extends NDB_Menu
     /**
      * Checking user's permission
      *
-     * @param string $centerID the value of centerID
-     *
      * @return bool
      */
-    function _hasAccess($centerID)
+    function _hasAccess()
     {
         $user     =& User::singleton();
-        $centerID =$user->getData('CenterID');
+        $centerID = htmlspecialchars($_REQUEST['CenterID']);
         return $user->hasCenterPermission('data_entry', $centerID);
     }
 
