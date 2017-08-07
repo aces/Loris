@@ -2,7 +2,7 @@
 /**
  * This file contains the NDB_Form_create_timepoint class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Create_Timepoint

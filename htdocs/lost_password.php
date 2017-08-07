@@ -5,7 +5,7 @@
  * means the user is not logged in, and the main.php will only work
  * for logged in users.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Loris

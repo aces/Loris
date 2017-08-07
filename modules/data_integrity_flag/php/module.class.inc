@@ -3,7 +3,7 @@
  * This serves as a hint to LORIS that this module is a real module.
  * It does nothing but implement the module class in the module's namespace.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category   Behavioural
  * @package    Main

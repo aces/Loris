@@ -2,7 +2,7 @@
 /**
  * This file contains a database wrapper around the CouchDB API for Loris.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  *  @category Main
  *  @package  Main

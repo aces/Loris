@@ -4,7 +4,7 @@
  * that the exit can be caught in unit testing instead of the program exiting
  * directly.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  API

@@ -2,7 +2,7 @@
 /**
  * File to handle instrument data request through Loris REST API
  *
- * PHP Version 5.5+
+ * PHP Version 7.5+
  *
  * @category Main
  * @package  API

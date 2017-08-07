@@ -3,7 +3,7 @@
  * This class provides the php code to create the menu filter form that
  * allows unresolved conflicts to be processed as part of the conflict resolver
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Main

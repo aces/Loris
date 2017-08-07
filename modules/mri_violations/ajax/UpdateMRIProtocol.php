@@ -2,7 +2,7 @@
 /**
  * Update MRI Protocol
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category MRI
  * @package  Main

@@ -3,7 +3,7 @@
  * This class provides a single point to deal with user authentication
  * and validation of login, displaying the login page if necessary.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Main

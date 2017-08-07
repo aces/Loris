@@ -7,7 +7,7 @@
  *
  * Usage: php mri_violations_resolver.php [confirm]
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category MRI
  * @package  Main

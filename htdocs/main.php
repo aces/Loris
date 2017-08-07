@@ -4,7 +4,7 @@
  * the setup required for every page, and then dispatches to the
  * appropriate Loris module.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris

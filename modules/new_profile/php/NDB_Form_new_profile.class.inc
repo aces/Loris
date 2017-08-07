@@ -2,7 +2,7 @@
 /**
  * New_profile
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -13,7 +13,7 @@
 /**
  * New_profile
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris

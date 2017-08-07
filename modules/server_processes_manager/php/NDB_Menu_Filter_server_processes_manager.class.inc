@@ -2,7 +2,7 @@
 /**
  * Page used to view/manage the processes launched asynchronously by LORIS users.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category ServerProcessLauncher
  * @package  Loris
@@ -17,7 +17,7 @@ require_once "ServerProcessesMonitor.class.inc";
  * Builds a new filter to view/manage processes launched asynchronously by LORIS
  * users.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category ServerProcessLauncher
  * @package  Loris

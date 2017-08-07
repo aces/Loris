@@ -2,7 +2,7 @@
 /**
  * This file represents the MRI Feedback popup window in Loris.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category MRI
  * @package  Loris

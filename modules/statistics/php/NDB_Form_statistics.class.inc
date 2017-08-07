@@ -2,7 +2,7 @@
 /**
  * The welcome menu
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -13,7 +13,7 @@
 /**
  * The welcome menu
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main

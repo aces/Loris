@@ -6,7 +6,7 @@
  * loading the correct instrument, displaying it to them in a user-friendly
  * manner and saving the data to the database.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Survey
  * @package  Loris

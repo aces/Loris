@@ -2,7 +2,7 @@
 /**
  * This file implements a class used for detecting conflicts for an instrument.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris

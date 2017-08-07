@@ -2,7 +2,7 @@
 /**
  * Automated integration tests for the dicom_archive module.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Loris
@@ -16,7 +16,7 @@ require_once __DIR__
 /**
  * Automated integration tests for the dicom_archive module.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Loris

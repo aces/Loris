@@ -2,7 +2,7 @@
 /**
  * This file handles the Document Repository for LORIS
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Documentation
  * @package  Main

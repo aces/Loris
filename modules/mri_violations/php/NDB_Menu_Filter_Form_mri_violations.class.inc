@@ -6,7 +6,7 @@
  * scan, etc) and link to the appropriate module to further investigate
  * why a scan was excluded by the imaging pipeline scripts.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category MRI
  * @package  Main

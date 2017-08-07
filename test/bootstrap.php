@@ -12,7 +12,7 @@
  * NOTE: It is best to run tests using integration.sh and unittests.sh
  *          bash scripts
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Main

@@ -9,7 +9,7 @@
  * delete both (and then the import script will reimport the correct one if run
  * in that order.)
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris

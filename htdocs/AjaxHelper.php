@@ -8,7 +8,7 @@
  *
  * Note that right now only PHP ajax helper's are supported.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  *  @category Loris
  *  @package  MRI

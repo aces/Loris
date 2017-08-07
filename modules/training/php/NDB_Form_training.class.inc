@@ -3,7 +3,7 @@
  * Training module: Allows examiners to undergo training in order
  * to receive certification to administer an instrument.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Loris
@@ -16,7 +16,7 @@
  * Training module: Allows examiners to undergo training in order
  * to receive certification to administer an instrument.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Loris

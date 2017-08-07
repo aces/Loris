@@ -4,7 +4,7 @@
  * instrument via AJAX. It's used so that ScatterPlot-SVG.php can be run for
  * any scorable in an instrument, dynamically
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main

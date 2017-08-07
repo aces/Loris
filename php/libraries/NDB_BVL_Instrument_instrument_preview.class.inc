@@ -2,7 +2,7 @@
 /**
  * File contains Instrument Preview class.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Behavioural

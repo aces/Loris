@@ -7,7 +7,7 @@
  * representing the headers necessary to render the file. If raw_data is set,
  * it will return a byte array of the raw data for brainbrowser to display.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Imaging
  * @package  Loris/Modules/BrainBrowser

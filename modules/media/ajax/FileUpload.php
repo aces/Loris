@@ -4,7 +4,7 @@
  *
  * Handles media upload and update actions received from a front-end ajax call
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Media

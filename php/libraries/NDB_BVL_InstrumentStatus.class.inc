@@ -2,7 +2,7 @@
 /**
  * Class for managing the status of instrument flags
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Behavioural

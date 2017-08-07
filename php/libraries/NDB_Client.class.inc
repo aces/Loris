@@ -2,7 +2,7 @@
 /**
  * This file contains the NDB_Client class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Main

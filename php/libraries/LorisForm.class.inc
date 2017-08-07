@@ -9,7 +9,7 @@
  * PHP warnings that QuickForm1 generates since QuickForm1 was written
  * for PHP4.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Main

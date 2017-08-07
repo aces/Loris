@@ -2,7 +2,7 @@
 /**
   * Document_repository module
   *
-  * PHP Version 5
+  * PHP Version 7
   *
   * @category Test
   * @package  Loris

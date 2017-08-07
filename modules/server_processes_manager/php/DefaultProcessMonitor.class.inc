@@ -3,7 +3,7 @@
  * Provides a default way to determine whether a process is running
  * or not.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category ServerProcessLauncher
  * @package  Loris

@@ -3,7 +3,7 @@
  * Provides a way to determine if a process is running
  * for the classes related to the ServerProcessLauncher
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category ServerProcessLauncher
  * @package  Loris

@@ -3,7 +3,7 @@
  * Handles HTTP requests to the Candidate portion of the
  * Loris REST API.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  API

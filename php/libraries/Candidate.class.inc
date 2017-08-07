@@ -3,7 +3,7 @@
  * This file contains a class which is a wrapper around the concept
  * of a candidate in Loris.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris

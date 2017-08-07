@@ -5,7 +5,7 @@
  * Emailed site/pending,
  * Inserted, Rejected, Inserted with flag, Other.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category MRI
  * @package  Main

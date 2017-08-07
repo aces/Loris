@@ -4,7 +4,7 @@
  * is called it can include either the candidates, visits, instruments,
  * or all of the above that should be serialized.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  API
@@ -22,7 +22,7 @@ require_once 'APIBase.php';
  * is called it can include either the candidates, visits, instruments,
  * or all of the above that should be serialized.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  API

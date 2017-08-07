@@ -7,7 +7,7 @@
  *   - process current progress text
  *   - process return text
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category TaskManager
  * @package  Loris

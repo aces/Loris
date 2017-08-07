@@ -2,7 +2,7 @@
 /**
  * Script for handling (sub)category comments in the Document Repository
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Documentation
  * @package  Main

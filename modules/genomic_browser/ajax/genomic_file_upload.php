@@ -6,7 +6,7 @@
  * GenomicDataPath directory specified in the cconfigSettings.
  * This directory needs to be accessible w/r to the apache user.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  *  @category   Loris
  *  @package    Genomic_Module

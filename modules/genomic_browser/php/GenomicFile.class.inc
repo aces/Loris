@@ -2,7 +2,7 @@
 /**
 * Contains the GenomicFile class used for LORIS Genomic data
 *
-* PHP Version 5
+* PHP Version 7
 *
 * @category   Genomic
 * @package    Main

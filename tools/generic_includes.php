@@ -3,7 +3,7 @@
 /**
  * This script contains useful generic stuff to include
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Main

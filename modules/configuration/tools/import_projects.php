@@ -13,7 +13,7 @@
  *
  *     -a -> Imports both the subprojects and the projects
  *           from the XML.
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Configuration

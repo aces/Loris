@@ -3,7 +3,7 @@
  * This returns the instrument passed in by the Instrument GET parameter
  * and serializes it as JSON for the REST API.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  API

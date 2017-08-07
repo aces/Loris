@@ -2,7 +2,7 @@
 /**
  * Instrument_List
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Instrument_List
@@ -19,7 +19,7 @@ require_once __DIR__ ."/Instrument_List_ControlPanel.class.inc";
 /**
  * Instrument_List
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Instrument_List

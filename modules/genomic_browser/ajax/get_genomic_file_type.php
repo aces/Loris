@@ -2,7 +2,7 @@
 /**
  * This provide the accepted file type in the genomic browser
  *
- * PHP Version 5
+ * PHP Version 7
  *
  *  @category   Loris
  *  @package    Genomic_Module

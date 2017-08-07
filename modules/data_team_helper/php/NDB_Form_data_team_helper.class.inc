@@ -4,7 +4,7 @@
  * auto-complete to retrieve candidates for a given
  * instrument and/or visit.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Loris

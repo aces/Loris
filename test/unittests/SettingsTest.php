@@ -2,7 +2,7 @@
 /**
  * Setting class tests
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Tests
  * @package  Test

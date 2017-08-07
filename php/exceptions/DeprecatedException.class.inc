@@ -4,7 +4,7 @@
  * Exception from the case when a class function has been deprecated
  * and is no longer supported
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Errors
  * @package  Loris

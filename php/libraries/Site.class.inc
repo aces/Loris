@@ -2,7 +2,7 @@
 /**
  * This file contains the class for the Site object
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Main

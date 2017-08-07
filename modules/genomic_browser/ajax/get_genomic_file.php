@@ -2,7 +2,7 @@
 /**
  * Used by genomic_browser modules for accessing genomic_files
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  MRI

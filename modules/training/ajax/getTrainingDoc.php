@@ -4,7 +4,7 @@
  * The file is only opened if the user is logged in and is either an examiner
  * or has the 'examiner' permission
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Loris

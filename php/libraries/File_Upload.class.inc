@@ -3,7 +3,7 @@
  * This file contains a wrapper for managing and verifying files that are
  * uploaded through PHP QuickForm and handles putting them in the correct place,
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Behavioural

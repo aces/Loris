@@ -2,7 +2,7 @@
 /**
  * Certification training: Creates the html for the requested training tab
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Loris

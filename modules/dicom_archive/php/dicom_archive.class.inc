@@ -4,7 +4,7 @@
  * This class features the code for the menu portion
  * of the Loris dicom archive.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category   Behavioural
  * @package    Main

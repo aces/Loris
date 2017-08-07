@@ -2,7 +2,7 @@
 /**
  * The timepoint list menu
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Timepoint_List
@@ -14,7 +14,7 @@ require_once __DIR__ . '/TimePoint_List_ControlPanel.class.inc';
 /**
  * The timepoint list menu
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Timepoint_List

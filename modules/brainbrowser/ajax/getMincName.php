@@ -3,7 +3,7 @@
  * This is an AJAX script which returns the file name for a MINC,
  * given a minc_id request parameter
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category BrainBrowser
  * @package  LorisModules

@@ -3,7 +3,7 @@
  * Base class to handle requests to the Loris API and perform
  * validation common to all API requests.
  *
- * PHP Version 5.5+
+ * PHP Version 7.5+
  *
  * @category Main
  * @package  API

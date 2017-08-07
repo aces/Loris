@@ -2,7 +2,7 @@
 /**
  * This file contains the State class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Main

@@ -3,7 +3,7 @@
  * Certification training: Creates the html for the tab navigation,
  * and the divs that will hold the tab content.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Loris
