@@ -523,7 +523,8 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     {
         if (!empty($_POST['visit_status'])) {
             $save_visit_status
-                = $_POST['visit_status'] == 'Unrated' ? Null : $_POST['visit_status'];
+                = $_POST['visit_status']
+                        == 'Unrated' ? null : $_POST['visit_status'];
             $params            = array('SID' => $this->sessionID);
             $old_visit_status  = $this->DB->pselectOne(
                 "SELECT MRIQCStatus 
