@@ -585,7 +585,7 @@ function getIssueFields()
             array()
         );
         $assignee_expanded = $db->pselect(
-            "SELECT u.Real_name, u.UserID FROM users u
+            "SELECT DISTINCT u.Real_name, u.UserID FROM users u
              LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
 WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
             array(
