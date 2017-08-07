@@ -54,7 +54,7 @@ if ($userSingleton->hasPermission('document_repository_view')
     if ($action == 'upload') {
         $puser      = $_POST['user'];
         $category   = $_POST['category'];
-        $site       = $_POST['site'];
+        $site       = $_POST['site'] !== '' ? $_POST['site'] : null;
         $instrument = $_POST['instrument'];
         $pscid      = $_POST['pscid'];
         $visit      = $_POST['visit'];
