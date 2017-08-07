@@ -26,12 +26,13 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     public $hasWritePermission = false;
     public $AjaxModule         = true;
     public $errors = array(
-                      0 => "No MRI parameter form",
-                      1 => "T1 Scan done NOT Partial or Complete in MRI parameter form",
-                      2 => "MRI PF Completed = No T1 Scan, No DICOM logged in Archive but scan is inserted and in browser",
-                      3 => "MRI Parameter Form Incomplete, Tarchive exists, QC pass",
+                        1 => "MRI PF Completed = No T1 Scan, No DICOM logged in Archive but scan is inserted and in browser",
+                        2 => "MRI Parameter Form Incomplete, Tarchive exists, QC pass"
                      );
-    /**
+    
+    
+
+    /**quality_control
      * Check user permissions
      *
      * @return bool
@@ -93,6 +94,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         foreach ($instrumentsQuery as $instrument) {
             $instrumentList[$instrument['Full_name']] = $instrument['Full_name'];
         }
+
         $projectList  = Utility::getProjectList();
         $uploaderList =[];
         $uploaders    = $db -> pselect(
@@ -110,10 +112,14 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         foreach($patientNames as $pn){
             $namesList[$pn['PatientName']] = $pn['PatientName'];
         }
+        $errorList =[];
+        foreach ($this->errors as $error){
+            $errorList[$error] = $error;
+        }
         // Form Elements
         $this->addBasicText('candId', 'DCCID', ["size" => 9, "maxlength" => 7]);
         $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
-        $this->addSelect('errorMessage', 'Error Message', $this->errors);
+        $this->addSelect('errorMessage', 'Error Message', $errorList);
         $this->addSelect('UploadedBy', 'Uploaded By', $uploaderList);
         $this->addSelect('PatientName', 'Patient ID', $namesList);
         $this->addSelect('site', 'Site', $siteList);
@@ -131,37 +137,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 
         $db =& Database::singleton();
 
-        // this query looks for both mri_uploads with no associated mri_parameter_forms, and one with mri_paramter_forms that DO NOT have T1_Scan_done equal to partial or complete.
-
-        /*
-        $query = "
-            FROM mri_upload m
-            LEFT JOIN tarchive t ON (t.TarchiveID = m.TarchiveID OR t.SessionID = m.SessionID)
-            LEFT JOIN flag f ON (f.SessionID = t.SessionID and f.CommentID not like 'DDE%')
-            WHERE f.CommentID NOT IN (SELECT CommentId FROM mri_parameter_form)
-            GROUP BY t.PatientName ,f.SessionID, UploadID, t.CenterName
-            UNION
-            SELECT m.UploadedBy, UploadDate, f.SessionID,t.PatientName, t.CenterName, (\"".$this->errors[1]."\") as message, (f.CommentID) as CommentID
-            FROM mri_upload m
-            LEFT JOIN tarchive t ON (t.TarchiveID = m.TarchiveID OR t.SessionID = m.SessionID)
-            LEFT JOIN flag f ON (f.SessionID = t.SessionID and f.CommentID not like 'DDE%')
-            WHERE f.CommentID IN (
-                SELECT CommentID
-                FROM mri_parameter_form mpf
-                WHERE (mpf.T1_Scan_done !='Complete' or mpf.T1_scan_done!= 'Partial')
-                )";
-        */
-
-        /* $query= "
-        FROM mri_upload m
-        JOIN tarchive t ON (t.TarchiveID = m.TarchiveID OR t.SessionID = m.SessionID)
-        JOIN flag f ON (f.SessionID = t.SessionID and f.CommentID not like 'DDE%')
-        WHERE f.CommentID IN (
-        SELECT CommentID
-        FROM mri_parameter_form mpf
-        WHERE (mpf.T1_Scan_done !='Complete' AND mpf.T1_scan_done!= 'Partial')
-        )"; */
-
         /* MRI Parameter Form Completed, Answer = No T1 Scan
         * No DICOM recorded
         * Scan in Browser and QC Status = Pass*/
@@ -172,7 +147,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                    s.ID as SessionID,  
                    s.CandID as cand_id,
                    s.Visit_label as visit_label,
-                   ('" .$this->errors[2] . "') as error_message, 
+                   ('" .$this->errors[1] . "') as error_message, 
                    f.CommentID as CommentID
             FROM flag f
             LEFT JOIN session s ON (f.SessionID=s.ID)
@@ -194,7 +169,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                 s.ID as SessionID,  
                 s.CandID as cand_id,
                 s.Visit_label as visit_label,
-                ('" .$this->errors[3] . "') as error_message, 
+                ('" .$this->errors[2] . "') as error_message, 
                 f.CommentID as CommentID
             FROM flag f 
             LEFT JOIN session s ON (f.SessionID=s.ID)

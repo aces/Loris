@@ -73,7 +73,6 @@ class QualityControlIndex extends React.Component {
                 </button>
             );
         }
-        let uploadTab;
         let tabList = [
             {id: "behavioral", label: "Behavioral"},
             {id: "imaging", label:"Imaging"}
