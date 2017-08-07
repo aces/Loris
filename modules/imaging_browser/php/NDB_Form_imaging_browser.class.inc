@@ -59,8 +59,9 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 ))
                      && $user->hasPermission('imaging_browser_view_site')
                    )
+                || $user->hasPermission('imaging_browser_phantom_allsites')
+                || $user->hasPermission('imaging_browser_phantom_ownsite')
         );
-
     }
 
     /**
@@ -218,6 +219,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             $FileInsertDate      = $FileObj->getParameter('InsertTime');
             $SeriesDescription   = $FileObj->getParameter('series_description');
             $SeriesNumber        = $FileObj->getParameter('series_number');
+            $SeriesUID           = $FileObj->getParameter('series_instance_uid');
             $EchoTime            = number_format(
                 $FileObj->getParameter('echo_time')*1000,
                 2
@@ -289,6 +291,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                      'FileInsertDate'        => $FileInsertDate,
                      'SeriesDescription'     => $SeriesDescription,
                      'SeriesNumber'          => $SeriesNumber,
+                     'SeriesUID'             => $SeriesUID,
                      'EchoTime'              => $EchoTime,
                      'RepetitionTime'        => $RepetitionTime,
                      'SliceThickness'        => $SliceThickness,

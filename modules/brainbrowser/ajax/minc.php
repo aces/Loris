@@ -20,10 +20,49 @@ require_once "Utility.class.inc";
 require_once "NDB_Config.class.inc";
 require_once "MincEnv.php.inc";
 
+if (strpos($_REQUEST['minc_id'], 'l') !== false) {
+    list($l, $id) = explode('l', $_REQUEST['minc_id']);
 
-$query     = "select File from files where FileID = :MincID";
-$minc_file = $DB->pselectOne($query, array('MincID' => $_REQUEST['minc_id']));
-$minc_path = getMincLocation() . $minc_file;
+    switch ($l) {
+    case 1:
+        $query = "SELECT minc_location FROM mri_protocol_violated_scans " .
+        "WHERE ID = :LogID";
+        break;
+    case 2:
+        $query = "SELECT MincFile FROM mri_violations_log WHERE LogID = :LogID";
+        break;
+    case 3:
+        $query = "SELECT MincFile FROM MRICandidateErrors WHERE ID = :LogID";
+        break;
+    default:
+        header("HTTP/1.1 400 Bad Request");
+        exit();
+    }
+
+    if (!empty($query)) {
+        $minc_file = $DB->pselectOne($query, array('LogID' => $id));
+        $file      = implode('/', array_slice(explode('/', $minc_file), -2));
+
+        if (strpos($minc_file, 'assembly') !== false) {
+            if (strpos($minc_file, 'assembly') === 0) {
+                $minc_path = getMincLocation() . $minc_file;
+            } else {
+                $minc_path = $minc_file;
+            }
+        } else {
+            $minc_path = getMincLocation() . "trashbin/" . $file;
+        }
+    }
+} else {
+    $query     = "select File from files where FileID = :MincID";
+    $minc_file = $DB->pselectOne(
+        $query,
+        array(
+         'MincID' => $_REQUEST['minc_id'],
+        )
+    );
+    $minc_path = getMincLocation() . $minc_file;
+}
 
 if (!empty($minc_file)) {
     readfile($minc_path);

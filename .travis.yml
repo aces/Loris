@@ -67,6 +67,8 @@ before_script:
     - cp docs/config/config.xml test/config.xml
     - sed -i -e "s/%HOSTNAME%/127.0.0.1/g" -e "s/%USERNAME%/SQLTestUser/g" -e "s/%PASSWORD%/TestPassword/g" -e "s/%DATABASE%/LorisTest/g" project/config.xml
     - sed -i -e "s/%HOSTNAME%/127.0.0.1/g" -e "s/%USERNAME%/SQLTestUser/g" -e "s/%PASSWORD%/TestPassword/g" -e "s/%DATABASE%/LorisTest/g" test/config.xml
+    - mysql LorisTest -e "INSERT INTO users (UserID, Password, Real_name, First_name, Last_name, Degree, Position_title, Institution, Department, Address, City, State, Zip_code, Country, Fax, Email, Privilege, PSCPI, DBAccess, Active, Password_hash, Password_expiry, Pending_approval, Doc_Repo_Notifications, Phone) VALUES('travis', NULL, 'unix account', 'unix', 'account', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'unixtest@mail.com', 0, 'N', '', 'Y', '$2y$10$6JvNxHFCugACdUPvCpm3zeSLCEwSKsUyBbfv0/tWKAa8Ga8MmeZIG', '2019-12-06', 'N', 'N', NULL)"
+    - mysql LorisTest -e "INSERT INTO user_psc_rel VALUES ((SELECT ID FROM users WHERE UserID='travis'), 1)"
     # Set the admin account password to a known value for testing. This needs to be done
     # after the config.xml is setup.
     - cd tools
@@ -94,3 +96,5 @@ script:
 
     # Run unit tests to make sure functions still do what they should.
     - vendor/bin/phpunit --configuration test/phpunit.xml
+
+dist: precise

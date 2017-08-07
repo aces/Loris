@@ -1087,10 +1087,12 @@ class Utility
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
+        $qparams = array();
 
         if ($projectID != null) {
             $ExtraProject_Criteria
-                = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $projectID . ')';
+                = ' AND (c.ProjectID IS NULL OR c.ProjectID=:ProjectID)';
+            $qparams["ProjectID"]  = $projectID;
         } else {
             $ExtraProject_Criteria ='';
         }
@@ -1102,7 +1104,7 @@ class Utility
             AND c.Entity_type != 'Scanner'
             AND psc.CenterID!= '1'
             $ExtraProject_Criteria ORDER BY Visit_label";
-        $visitlabels = $db->pselect($query, array());
+        $visitlabels = $db->pselect($query, $qparams);
         $visits      = array();
         for ($i = 0; $i < count($visitlabels); $i++) {
             $visits[$visitlabels[$i]['Visit_label']]

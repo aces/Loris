@@ -35,7 +35,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
                                 '900000',
                                 'TST0001',
                                 '',
-                                '"Active"',
+                                'Active',
                                 '',
                                 '',
                                 '',
@@ -44,6 +44,27 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
                                 'Not Started',
                                 'None',
                                );
+    /**
+     * UI elements and locations
+     * breadcrumb - 'Access Profile'
+     * Table headers
+     */
+    private $_loadingUI
+        =  array(
+            'Access Profile'      => '#bc2 > a:nth-child(2) > div',
+            'Site'                => '#dynamictable > thead > tr > th:nth-child(2)',
+            'PSCID'               => '#PSCID',
+            'Gender'              => '#dynamictable > thead>tr>th.dynamictableNext',
+            'Entity Type'         => '#dynamictable > thead > tr > th:nth-child(6)',
+            'Participant Status'  => '#dynamictable > thead > tr > th:nth-child(7)',
+            'Subproject'          => '#dynamictable > thead > tr > th:nth-child(8)',
+            'DoB'                 => '#dynamictable > thead > tr > th:nth-child(9)',
+            'Scan Done'           => '#dynamictable > thead > tr > th:nth-child(10)',
+            'EDC'                 => '#dynamictable > thead > tr > th:nth-child(11)',
+            'Visit Count'         => '#dynamictable > thead > tr > th:nth-child(12)',
+            'Latest Visit Status' => '#dynamictable > thead > tr > th:nth-child(13)',
+            'Feedback'            => '#dynamictable > thead > tr > th:nth-child(14)',
+           );
     /**
      * Backs up the useEDC config value and sets the value to a known
      * value (true) for testing.
@@ -209,11 +230,13 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testFilterByPscid()
     {
-        $this->markTestSkipped(
-            'Skipped until Travis and React work well together'
-        );
-
         $this->safeGet($this->url . "/candidate_list/");
+        // Search using PSCID TST0001
+        // Verify that only one candidate is returned: TST0001
+        $this->_assertSearchBy(
+            array('PSCID' => 'TST0001'),
+            'TST0001'
+        );
         // Enter something that does not even make sense in the PSCID field
         // Verify that no candidates are returned
         $this->_assertSearchBy(
@@ -226,24 +249,18 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             array('PSCID' => 'TST0003'),
             null
         );
-        // Search using PSCID TST0001
-        // Verify that only one candidate is returned: TST0001
-        $this->_assertSearchBy(
-            array('PSCID' => 'TST0001'),
-            array(self::$_TST0001)
-        );
         // Search for candidate with PSCID tst0001
         // Verify that candidate TST0001 is returned (checks that searches
         // are case-insensitive)
         $this->_assertSearchBy(
             array('PSCID' => 'tst0001'),
-            array(self::$_TST0001)
+            'TST0001'
         );
         // Search for PSCID that contains string t0
         // Verify that candidate TST0001 is returned
         $this->_assertSearchBy(
             array('PSCID' => 't0'),
-            array(self::$_TST0001)
+            'TST0001'
         );
     }
     /**
@@ -253,10 +270,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testFilterByDccId()
     {
-        $this->markTestSkipped(
-            'Skipped until Travis and React work well together'
-        );
-
         $this->safeGet($this->url . "/candidate_list/");
         // Search using an invalid DCCID
         // Verify that no candidates are returned
@@ -280,7 +293,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         // Verify that candidate TST0001 is returned
         $this->_assertSearchBy(
             array('DCCID' => '0'),
-            array(self::$_TST0001)
+            'TST0001'
         );
     }
     /**
@@ -317,64 +330,66 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             WebDriverBy::Id("showdata_advanced_options")
         );
         $showDataButton->click();
-        $this->_assertCandidateTableContents('datatable', $expectedResults);
+        $this->_assertCandidateTableContents($expectedResults);
     }
     /**
      * Compares the content of the candidate table with an expected content.
      *
-     * @param string $tableName    name of the HTML table.
      * @param string $expectedRows array of candidates that the table should contain.
      *
      * @return void
      */
-    private function _assertCandidateTableContents($tableName, $expectedRows)
+    private function _assertCandidateTableContents($expectedRows)
     {
-        if (is_null($expectedRows)) {
-            $wait = new WebDriverWait($this->webDriver, 15);
-            $wait->until(
-                WebDriverExpectedCondition::presenceOfElementLocated(
-                    WebDriverBy::ClassName('no-result-found-panel')
-                )
+        if (!is_null($expectedRows)) {
+            $text = $this->webDriver->executescript(
+                "return document.querySelector('#dynamictable > tbody').textContent"
             );
-            $element = $this->webDriver->findElement(
-                WebDriverBy::ClassName('no-result-found-panel')
-            );
-            $this->assertContains('No result found', $element->getText());
+             $this->assertContains($expectedRows, $text);
+
         } else {
-            $wait = new WebDriverWait($this->webDriver, 15);
-            $wait->until(
-                WebDriverExpectedCondition::presenceOfElementLocated(
-                    WebDriverBy::Id('dynamictable')
-                )
-            );
-            $dataTable  = $this->webDriver->findElement(
-                WebDriverBy::Id('dynamictable')
-            );
-            $actualRows = $dataTable->findElements(
-                WebDriverBy::xpath('.//tbody//tr')
-            );
-            $this->assertEquals(
-                count($actualRows),
-                count($expectedRows),
-                "Number of candidates returned should be "
-                . count($expectedRows) . ", not " . count($actualRows)
-            );
-            for ($i=0; $i<count($actualRows); $i++) {
-                $elements      = $actualRows[$i]->findElements(
-                    WebDriverBy::xpath('.//td')
-                );
-                $actualColumns = array();
-                foreach ($elements as $e) {
-                    $actualColumns[] = $e->getText();
-                }
-                $expectedColumns = $expectedRows[$i];
-                $this->assertEquals(
-                    $actualColumns,
-                    $expectedColumns,
-                    "Candidates at row $i differ"
-                );
-            }
+             $text = $this->webDriver->executescript(
+                 "return document.querySelector".
+                 "('#datatable > div > strong').textContent"
+             );
+             $this->assertContains("No result found.", $text);
+
         }
+
+    }
+    /**
+      * Testing UI elements when page loads
+      *
+      * @return void
+      */
+    function testPageUIs()
+    {
+        $this->safeGet($this->url . "/candidate_list/");
+        foreach ($this->_loadingUI as $key => $value) {
+            $text = $this->webDriver->executescript(
+                "return document.querySelector('$value').textContent"
+            );
+            $this->assertContains($key, $text);
+        }
+    }
+    /**
+      * Testing link of PSCID
+      *
+      * @return void
+      */
+    function testPSCIDLink()
+    {
+        $this->safeGet($this->url . "/candidate_list/");
+        //find PSCID link and click
+        $this->webDriver->executescript(
+            "document.querySelectorAll('#dynamictable > tbody > tr >".
+            " td.dynamictableFrozenColumn > a')[0].click()"
+        );
+        //make sure that breadcrumb contains DCCID
+        $text = $this->webDriver->executescript(
+            "return document.querySelector('#bc2 > a:nth-child(3)>div').textContent"
+        );
+        $this->assertContains('900000', $text);
     }
 }
 ?>

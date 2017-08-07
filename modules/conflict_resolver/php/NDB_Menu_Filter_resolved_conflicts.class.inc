@@ -275,19 +275,8 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         }
         $query .= $this->order_by;
         // get the list
+        $result = $DB->pselect($query, $qparams);
 
-        $pageNum = 1;
-        if (isset($_REQUEST['pageID'])) {
-            $pageNum = $_REQUEST['pageID'];
-        }
-
-        $this->_getNumberPages($query);
-
-        $config         =& NDB_Config::singleton();
-        $resultsPerPage = $config->getSetting('rowsPerPage');
-        $limit          = " LIMIT $resultsPerPage"
-            ." OFFSET " . (($pageNum-1)*$resultsPerPage);
-        $result         = $DB->pselect($query . $limit, $qparams);
         // OVERRIDE START
         foreach ($result as $k => $r) {
             if ($r['Question'] === 'Examiner') {

@@ -164,7 +164,8 @@ INSERT INTO subproject (title, useEDC, WindowDifference) VALUES
 
 CREATE TABLE `project_rel` (
   `ProjectID` int(2) DEFAULT NULL,
-  `SubprojectID` int(2) DEFAULT NULL
+  `SubprojectID` int(2) DEFAULT NULL,
+  PRIMARY KEY (ProjectID, SubprojectID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `psc` (
@@ -1064,7 +1065,7 @@ CREATE TABLE `participant_accounts` (
   `Test_name` varchar(255) DEFAULT NULL,
   `Email` varchar(255) DEFAULT NULL,
   `Status` enum('Created','Sent','In Progress','Complete') DEFAULT NULL,
-  `OneTimePassword` varchar(8) DEFAULT NULL,
+  `OneTimePassword` varchar(16) DEFAULT NULL,
   `CommentID` varchar(255) DEFAULT NULL,
   `UserEaseRating` varchar(1) DEFAULT NULL,
   `UserComments` text,
@@ -1518,7 +1519,7 @@ CREATE TABLE `parameter_file` (
   `ParameterFileID` int(10) unsigned NOT NULL auto_increment,
   `FileID` int(10) unsigned NOT NULL default '0',
   `ParameterTypeID` int(10) unsigned NOT NULL default '0',
-  `Value` text,
+  `Value` longtext,
   `InsertTime` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`ParameterFileID`),
   UNIQUE KEY `file_type_uniq` (`FileID`,`ParameterTypeID`),
