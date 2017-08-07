@@ -26,8 +26,10 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     public $hasWritePermission = false;
     public $AjaxModule         = true;
     public $errors = array(
-                        1 => "MRI PF Completed = No T1 Scan, No DICOM logged in Archive but scan is inserted and in browser",
-                        2 => "MRI Parameter Form Incomplete, Tarchive exists, QC pass"
+                        1 => "(T1) MRI PF Completed = No Scan, No DICOM logged in Archive but scan is inserted and in browser",
+                        2 => "(T1) MRI Parameter Form Incomplete, Tarchive exists, QC pass",
+                        3 => "(T2) MRI PF Completed = No Scan, No DICOM logged in Archive but scan is inserted and in browser",
+                        4 => "(T2) MRI Parameter Form Incomplete, Tarchive exists, QC pass"
                      );
     
     
@@ -187,6 +189,52 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                   AND f.Data_entry='Complete'
                   AND fi.AcquisitionProtocolID = 44
                   AND m.T1_Scan_done = 'No'
+                  AND qc.QCStatus = 'Pass'"
+                  ." UNION ALL ". 
+            "SELECT c.PSCID,
+               s.ID as SessionID,  
+               s.CandID as cand_id,
+               s.Visit_label as visit_label,
+               ('" .$this->errors[3] . "') as error_message, 
+               f.CommentID as CommentID
+            FROM flag f
+            LEFT JOIN session s ON (f.SessionID=s.ID)
+            LEFT JOIN files fi ON (fi.SessionID = f.SessionID)
+            LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
+            LEFT JOIN tarchive t ON (t.SessionID=s.ID)
+            LEFT JOIN candidate c ON (s.CandID=c.CandID)
+            LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
+            WHERE f.CommentID NOT LIKE 'DDE%'
+                  AND f.Test_name='mri_parameter_form'
+                  AND s.Active='Y'
+                  AND s.CenterID <> '1'
+                  AND t.TarchiveID IS NOT NULL
+                  AND fi.AcquisitionProtocolID=45
+                  AND m.T2_Scan_done IS NULL
+                  AND qc.QCStatus = 'Pass'"
+                   . " UNION ALL " .
+            "SELECT c.PSCID,
+                s.ID as SessionID,  
+                s.CandID as cand_id,
+                s.Visit_label as visit_label,
+                ('" .$this->errors[4] . "') as error_message, 
+                f.CommentID as CommentID
+            FROM flag f 
+            LEFT JOIN session s ON (f.SessionID=s.ID)
+            LEFT JOIN files fi ON (fi.SessionID = f.SessionID)
+            LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
+            LEFT JOIN tarchive t ON (t.SessionID=s.ID)
+            LEFT JOIN candidate c ON (s.CandID=c.CandID)
+            LEFT JOIN files_qcstatus qc ON (qc.FileID=fi.FileID)
+            WHERE f.CommentID NOT LIKE 'DDE%'
+                  AND f.Test_name='mri_parameter_form'
+                  AND f.Administration <> 'None'
+                  AND t.TarchiveID IS NULL
+                  AND s.Active='Y'
+                  AND s.CenterID <> '1'
+                  AND f.Data_entry='Complete'
+                  AND fi.AcquisitionProtocolID = 45
+                  AND m.T2_Scan_done = 'No'
                   AND qc.QCStatus = 'Pass') as tmp";
 
         $this->query = $query;
