@@ -25,7 +25,7 @@ class NDB_Form_User_Accounts extends NDB_Form
     /**
      * Determines whether this form is in edit or create mode.
      *
-     * @return boolean true if in crete mode, false otherwise.
+     * @return boolean true if in create mode, false otherwise.
      */
     function isCreatingNewUser()
     {
@@ -97,20 +97,29 @@ class NDB_Form_User_Accounts extends NDB_Form
                 $defaults["permID[$value]"] = 'on';
             }
 
+            // An array of each field that requires front-end sanitization
+            $fieldsThatAreStrings = array(
+                                     'UserID',
+                                     'First_name',
+                                     'Last_name',
+                                     'Real_name',
+                                     'Email',
+                                     'Degree',
+                                     'Institution',
+                                     'Address',
+                                     'City',
+                                     'State',
+                                     'Zip_code',
+                                     'Country',
+                                     'Fax',
+                                    );
             // Prevent Javascript injection on all fields
-            $defaults['UserID']      = htmlspecialchars($defaults['UserID']);
-            $defaults['First_name']  = htmlspecialchars($defaults['First_name']);
-            $defaults['Last_name']   = htmlspecialchars($defaults['Last_name']);
-            $defaults['Real_name']   = htmlspecialchars($defaults['Real_name']);
-            $defaults['Email']       = htmlspecialchars($defaults['Email']);
-            $defaults['Degree']      = htmlspecialchars($defaults['Degree']);
-            $defaults['Institution'] = htmlspecialchars($defaults['Institution']);
-            $defaults['Address']     = htmlspecialchars($defaults['Address']);
-            $defaults['City']        = htmlspecialchars($defaults['City']);
-            $defaults['State']       = htmlspecialchars($defaults['State']);
-            $defaults['Zip_code']    = htmlspecialchars($defaults['Zip_code']);
-            $defaults['Country']     = htmlspecialchars($defaults['Country']);
-            $defaults['Fax']         = htmlspecialchars($defaults['Fax']);
+            foreach ($fieldsThatAreStrings as $fieldName) {
+                // this check prevents PHP Notices
+                if (!empty($defaults[$fieldName])) {
+                    $defaults[$fieldName] = htmlspecialchars($defaults[$fieldName]);
+                }
+            }
 
             foreach ($defaults['examiner'] as $cid=>$vals) {
                 //sets pending approval info
@@ -118,7 +127,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                     $defaults['examiner_pending'] = $vals;
                     continue;
                 }
-                //gets radiologist Y/N from any of the acctive sites
+                //gets radiologist Y/N from any of the active sites
                 if ($vals[0]=='Y') {
                     $defaults['examiner_radiologist'] =$vals[1];
                 }
@@ -288,7 +297,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                     $result = $DB->pselectRow(
                         "
                           SELECT full_name, centerID
-                          FROM examiners 
+                          FROM examiners
                           WHERE full_name=:fn AND centerID=:cid",
                         array(
                          "fn"  => $values['Real_name'],
@@ -738,7 +747,12 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         //------------------------------------------------------------
 
+        // checking if the account can be rejected (no password hash
+        // pending approval)
+        $this->tpl_data['can_reject'] =$this->_canRejectAccount($this->identifier);
+
         // get the editor's permissions
+
         $perms    = $editor->getPermissionsVerbose();
         $lastRole = '';
         foreach ($perms as $row) {
@@ -827,6 +841,34 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         // unique key and password rules
         $this->form->addFormRule(array(&$this, '_validateEditUser'));
+    }
+
+    /**
+    * Query database on UserID to check that password has doesn't
+    * exist and account is still pending approval, to ensure the
+    * users with account activity can't be rejected by setting
+    * their status to pending.
+    *
+    * @param string $id identifier of account to verify
+    *
+    * @return boolean true is Password_hash is null and
+    * Pending_approval is Yes, false otherwsie
+    */
+    function _canRejectAccount($id)
+    {
+        $DB     = Database::singleton();
+        $fields =  $DB->pselect(
+            "SELECT Password_hash, Pending_approval
+                   FROM users
+                   WHERE UserID=:id",
+            array("id" => $id)
+        );
+        if (is_null($fields[0]['Password_hash'])
+            && $fields[0]['Pending_approval']=="Y"
+        ) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -1167,6 +1209,12 @@ class NDB_Form_User_Accounts extends NDB_Form
                 $errors['examiner_group'] = "Please specify if examiner is a ".
                     "radiologist";
             }
+            if (preg_match("/^ex_[1-9]+$/", $k)
+                && $values['examiner_radiologist'] !== ''
+                && $values['examiner_pending'] == ''
+            ) {
+                $errors['examiner_group'] = "Please set pending approval Yes or No";
+            }
         }
         return $errors;
     }
@@ -1185,7 +1233,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         //--- Get current password stored in database
         $passwordQuery
             = "SELECT Password_hash
-               FROM users 
+               FROM users
                WHERE UserID = :UID";
 
         $passwords = $db->pselectRow(
@@ -1259,6 +1307,7 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         return $errors;
     }
+
 
     /**
      * Validates that en email address entered for a given user
