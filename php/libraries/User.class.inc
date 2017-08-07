@@ -195,6 +195,12 @@ class User extends UserPermissions
                                         is deprecated and is replaced 
                                         with getData('CenterIDs')"
             );
+        } elseif ($var === 'Site') {
+            throw new \LorisException(
+                "The function getData('Site') 
+                                        is deprecated and is replaced 
+                                        with getData('Sites')"
+            );
         } else {
             return $this->userInfo[$var];
         }
