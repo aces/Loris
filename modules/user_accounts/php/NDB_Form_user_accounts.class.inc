@@ -2,7 +2,7 @@
 /**
 * The user account page
 *
-* PHP Version 7
+* PHP Version 5,7
 *
 * @category Main
 * @package  User_Account
