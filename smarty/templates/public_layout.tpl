@@ -6,12 +6,38 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="DC.identifier" content="https://doi.org/10.18116/c6159z">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>{$page_title}</title>
   <link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="{$baseurl}/css/public_layout.css">
   <link type="image/x-icon" rel="icon" href="{$baseurl}/images/favicon.ico">
+  <script src="https://xavier-dev.loris.ca/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
+  <script>
+  $(document).ready(function() {
+    const dcIdentifier = $("meta[name='DC.identifier']").attr("content");
+    if (dcIdentifier === undefined) {
+      return;
+    }
+    const doi = dcIdentifier.substr(16);
+    let url = 'https://data.datacite.org/application/vnd.schemaorg.ld+json/' + doi;
+
+    $.ajax({
+      url: url,
+      dataType: 'text', // don't convert JSON to Javascript object
+      success: function(data) {
+        $('<script>')
+          .attr('type', 'application/ld+json')
+          .text(data)
+          .appendTo('head');
+      },
+      error: function (error) {
+        console.error(error.responseText);
+      }
+   }); 
+  });
+  </script>
 </head>
 <body>
   <header class="header">
