@@ -410,11 +410,9 @@
                             <label class="col-xs-4" for="site">Site</label>
                             <div class="col-xs-8">
                                 <select name="site" id = "siteEdit" class = "form-fields form-control input-sm">
-                                    <option value=" ">Any </option>
+                                    <option value=""> </option>
                                     {foreach from = $Sites item=val key=k}
-                                       {if $val !== "Any"}
                                         <option value={$k}>{$val}</option>
-                                       {/if}
                                     {/foreach}
                                 </select>
                             </div>
