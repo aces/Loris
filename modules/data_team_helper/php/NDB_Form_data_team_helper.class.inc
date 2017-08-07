@@ -146,14 +146,8 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
                     $list_of_sites = array('' => 'All Sites') + $list_of_sites;
                 }
             } else {
-                // allow only to view own site data
-                $site_arr = $user->getData('CenterIDs');
-                foreach ($site_arr as $key => $val) {
-                    $site[$key] = &Site::singleton($val);
-                    if ($site[$key]->isStudySite()) {
-                        $list_of_sites[$val] = $site[$key]->getCenterName();
-                    }
-                }
+                // allow only to view own study site data
+                $list_of_sites = $user->getStudySites();
                 $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
             }
             $this->tpl_data['siteList'] = $list_of_sites;

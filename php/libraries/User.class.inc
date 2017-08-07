@@ -252,6 +252,24 @@ class User extends UserPermissions
     }
 
     /**
+     * Returns all user's sites that are StudySites
+     *
+     * @return array
+     */
+    function getStudySites()
+    {
+        $site_arr = $this->userInfo['CenterIDs'];
+        $user_study_sites = array();
+        foreach ($site_arr as $key => $val) {
+            $site[$key] = &Site::singleton($val);
+            if ($site[$key]->isStudySite()) {
+                $user_study_sites[$val] = $site[$key]->getCenterName();
+            }
+        }
+        return $user_study_sites;
+    }
+
+    /**
      * Checks that the user's email is valid
      *
      * @return boolean
