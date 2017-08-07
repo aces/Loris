@@ -45,18 +45,17 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        $DB            = Database::singleton();
         $config        = NDB_Config::singleton();
         $certification = $config->getSetting('Certification');
 
         if (isset($certification['EnableCertification'])) {
             $this->useCertification = $certification['EnableCertification'];
         } else {
-            $useCertification = false;
+            $this->useCertification = false;
         }
 
         $user     = User::singleton();
-        $centerID = $DB->quote($user->getData('CenterID'));
+        $centerIDs = implode(',', $user->getCenterIDs());
 
         if ($user->hasPermission('examiner_multisite')) {
                 $query = " 
@@ -78,7 +77,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
                             LEFT JOIN certification c ON 
                                 (c.examinerID=e.examinerID and c.pass = 'certified') 
                             LEFT JOIN test_names tn ON (tn.ID = c.testID)
-                        WHERE epr.centerID =".$centerID." ";
+                        WHERE FIND_IN_SET(epr.centerID =$centerIDs)";
         }
 
         // set the class variables
