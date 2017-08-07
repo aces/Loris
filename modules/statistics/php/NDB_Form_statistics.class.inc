@@ -819,7 +819,6 @@ class NDB_Form_Statistics extends NDB_Form
         $this->tpl_data['MRI_Done_Table'] = $this->renderStatsTable(
             "Breakdown By Scan Type",
             $MRIHeader,
-            "",
             $MRISubcategories,
             $M_Visits,
             "mri_type",
@@ -828,6 +827,7 @@ class NDB_Form_Statistics extends NDB_Form
             $centers,
             $result,
             "mri",
+            "",
             $currentProject
         );
         //END BIGTABLE
