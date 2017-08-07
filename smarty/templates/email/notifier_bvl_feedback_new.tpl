@@ -1,4 +1,5 @@
 Subject: [LORIS Notification] New Feedback Thread Created
+
 Hello {$notified_user},
 
 {$notifier_user} started a new feedback thread.

@@ -1,4 +1,5 @@
 Subject: [LORIS Notification] Feedback Thread Closed
+
 Hello {$notified_user},
 
 {$notifier_user} closed a feedback thread.
