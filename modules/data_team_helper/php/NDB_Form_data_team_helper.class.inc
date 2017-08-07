@@ -135,8 +135,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
 
             /* Visit_labels
              */
-            $visit_array =Utility::getExistingVisitLabels();
-            $visit_array = array_combine($visit_array, $visit_array);
+            $visit_array   =Utility::getExistingVisitLabels();
+            $visit_array   = array_combine($visit_array, $visit_array);
+            $list_of_sites = array();
             $this->tpl_data['visitLabels'] = $visit_array;
             if ($user->hasPermission('access_all_profiles')) {
                 // get the list of study sites - to be replaced by the Site object
