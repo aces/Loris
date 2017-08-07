@@ -170,7 +170,7 @@ function moveFileToFS(&$fileToUpload)
     // update ui to show we are trying to move the file
     reportProgress(98, "Copying file...");
     // file system validation
-error_log("Full path: $fileToUpload->full_path");
+    error_log("Full path: $fileToUpload->full_path");
     try {
         if (!file_exists($fileToUpload->full_path)) {
             throw new Exception(
@@ -199,12 +199,12 @@ error_log("Full path: $fileToUpload->full_path");
         die(
             json_encode(
                 array(
-                    'message'  => "File copy failed",
-                    'progress' => 100,
-                    'error'    => true,
-                    )
+                 'message'  => "File copy failed",
+                 'progress' => 100,
+                 'error'    => true,
                 )
-            );
+            )
+        );
     }
 }
 
@@ -543,10 +543,11 @@ function insertMethylationData(&$fileToUpload)
 
 /**
  * This sends progress status to the client.
- * @see XMLHttpRequest.onreadystatechange = 3 (progress)
  *
  * @param integer $progress The progress percentage to report
  * @param string  $message  The message to send
+ *
+ * @see XMLHttpRequest.onreadystatechange = 3 (progress)
  *
  * @return void
  */
