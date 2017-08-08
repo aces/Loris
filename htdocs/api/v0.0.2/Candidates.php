@@ -111,36 +111,6 @@ class Candidates extends APIBase
         }
 
         if (!isset($data['Candidate'])) {
-            $this->verifyField($data, 'Gender', ['Male', 'Female']);
-            $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
-            //Candidate::createNew
-            try {
-                $candid = $this->createNew(
-                    $data['Candidate']['DoB'],
-                    $data['Candidate']['EDC'],
-                    $data['Candidate']['Gender'],
-                    $data['Candidate']['PSCID']
-                );
-
-                if (isset($data['Candidate']['Project'])) {
-                    $projectName = $data['Candidate']['Project'];
-                    $project     = \Project::singleton($projectName);
-                    if (!empty($project)) {
-                        \Candidate::singleton($candid)->setData(
-                            array('ProjectID' => $project->getId())
-                        );
-                    }
-                }
-
-                $this->header("HTTP/1.1 201 Created");
-                $this->JSON = [
-                               'Meta' => ["CandID" => $candid],
-                              ];
-            } catch(\LorisException $e) {
-                $this->header("HTTP/1.1 400 Bad Request");
-                $this->safeExit(0);
-            }
-        } else {
             $this->header("HTTP/1.1 400 Bad Request");
             $this->error("There is no Candidate object in the POST data");
             $this->safeExit(0);
