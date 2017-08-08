@@ -722,7 +722,7 @@ function getIssueData($issueID=null)
     $user =& User::singleton();
     $db   =& Database::singleton();
 
-    if ($issueID) {
+    if (!empty($issueID)) {
         return $db->pselectRow(
             "SELECT i.*, c.PSCID, s.Visit_label as visitLabel FROM issues as i " .
             "LEFT JOIN candidate c ON (i.candID=c.CandID)" .
