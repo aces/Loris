@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS `examiners_psc_rel`;
 CREATE TABLE `examiners_psc_rel` (
   `examinerID` int(10) unsigned NOT NULL,
   `centerID` tinyint(2) unsigned NOT NULL,
