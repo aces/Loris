@@ -2,20 +2,20 @@
 
 ## Table of Contents  
 
-### [Permissions](#permissions)
-### [Navigation](#navigation)
-### [Features](#features)
-### [Filtering](#data_filtering)  
-### [Datatable](#datatable)
-### [Download](#data_download)  
-### [Upload](#data_upload)  
-### [Help](#help)
-### [Help content](#help_content)
-### [Tooltips](#tooltips)
+### [Permissions](#permissions_link)
+### [Navigation](#navigation_link)
+### [Features](#features_link)
+### [Filtering](#data_filtering_link)  
+### [Datatable](#datatable_link)
+### [Download](#data_download_link)  
+### [Upload](#data_upload_link)  
+### [Help](#help_link)
+### [Help content](#help_content_link)
+### [Tooltips](#tooltips_link)
 
 <br>
 
-<a name="permissions">
+<a name="permissions_link">
 </a>
 
 ## Permissions
@@ -56,7 +56,7 @@ The following permissions should be available in the database
 
 *** 
 
-<a name="navigation">
+<a name="navigation_link">
 </a>
 
 ## Page Navigation and Display
@@ -64,12 +64,12 @@ The following permissions should be available in the database
 - There should be 6 tabs unders the breadcrumb: Profile, GWAS, SNP, CNV, Methylation and Files
 - Clicking each tab should present it as active and the 5 other tabs should remain in the same order.
 
-<a name="features">
+<a name="features_link">
 </a>
 
 ## Features 
 ***
-<a name="data_filtering">
+<a name="data_filtering_link">
 </a>
 
 ### Data Filtering
@@ -235,7 +235,7 @@ The following columns should be presented
 
 
 ***
-<a name="datatable"> 
+<a name="datatable_link"> 
 </a>
 
 ## Datatable
@@ -276,7 +276,7 @@ The following columns should be presented
 - The FileName column should provide links to the **viewGenomicFile** page showing this file only.
 
 
-<a name="data_download"> 
+<a name="data_download_link"> 
 </a>
 
 ## Data Download 
@@ -289,21 +289,21 @@ The following columns should be presented
 - The view genomic file page should provide a *Download* button for each file.
 - Clicking on the *Download* button should trigger a file download.
 
-<a name="data_upload">
+<a name="data_upload_link">
 </a>
 
 ## Data Upload
 
 > Under construction
 
-<a name="help">
+<a name="help_link">
 </a>
 
 ## Help
 
 ***
 
-<a name="help_content">
+<a name="help_content_link">
 </a>
 
 ## Help section content
@@ -311,7 +311,7 @@ The following columns should be presented
 - The help panel should appear when clicking on the question mark in the LORIS menu bar.  
 - The help text should be accurate at formatted properly.
 
-<a name="tooltips">
+<a name="tooltips_link">
 </a>
 
 ## Tooltips
