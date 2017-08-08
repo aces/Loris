@@ -286,13 +286,13 @@ function getParticipantStatusFields()
     $statusOptions = NDB_Form_candidate_parameters::getParticipantStatusOptions();
     $reasonOptions = array();
 
-    $req    = $db->pselect(
+    $req      = $db->pselect(
         'SELECT ID from participant_status_options where Required=1',
         array()
     );
     $required = array();
-    foreach($req as $k=>$row){
-        $required[$k]=$row['ID'];
+    foreach ($req as $k=>$row) {
+        $required[$k] =$row['ID'];
     }
     $parentIDs   = $db->pselect(
         'SELECT distinct(parentID) from participant_status_options',
@@ -316,14 +316,13 @@ function getParticipantStatusFields()
             }
         }
     }
-error_log(print_r($required,true));
+
     $query = "SELECT participant_status, participant_suboptions, 
     reason_specify FROM participant_status WHERE CandID=:candid";
     $row   = $db->pselectRow($query, ['candid' => $candID]);
 
     $status    = !empty($row['participant_status']) ? $row['participant_status']
-        : null;   
-
+        : null;
     $suboption = !empty($row['participant_suboptions'])
         ? $row['participant_suboptions'] : null;
     $reason    = !empty($row['reason_specify']) ? $row['reason_specify'] : null;
