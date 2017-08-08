@@ -288,7 +288,7 @@ Class Instrument_List_ControlPanel extends TimePoint
             $this->setData('BVLQCStatus', $status);
             return;
         }
-        if (isset($_REQUEST['setBVLQCType'])
+        if (isset($_REQUEST['setBVLQCType']) && !empty($_REQUEST['setBVLQCType'])
             && $user->hasPermission('bvl_feedback')
         ) {
             $QCtype = Utility::nullifyEmpty(
@@ -296,6 +296,12 @@ Class Instrument_List_ControlPanel extends TimePoint
                 'BVLQCType'
             );
             $this->setData('BVLQCType', $QCtype);
+            return;
+        }
+        if (empty($_REQUEST['setBVLQCType'])
+            && $user->hasPermission('bvl_feedback')
+        ) {
+            $this->setData('BVLQCType', null);
             return;
         }
     }
