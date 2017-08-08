@@ -24,8 +24,10 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     var downloadURL = '/mri/jiv/get_file.php?file=tarchive/' + cell;
     var toRet =
       <td>
-        <a href={downloadURL}>{cell} &nbsp;
-        <span className="glyphicon glyphicon-cloud-download"/>
+        <a href={downloadURL}>
+          <span className="glyphicon glyphicon-cloud-download"/>
+          &nbsp;
+          {cell}
         </a>
       </td>;
     return toRet;
