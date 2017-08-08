@@ -38,7 +38,6 @@ set_time_limit(0);
 ob_implicit_flush(true);
 ob_end_flush();
 header('Content-Type: application/json; charset=UTF-8');
-
 $fileToUpload
     = (object) array(
                 'file_type'         => $_FILES["fileData"]["type"],
@@ -122,6 +121,45 @@ function moveFileToFS(&$fileToUpload)
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
     $DB =& Database::singleton();
     reportProgress(40, "Copying file to $genomic_data_dir ");
+
+    if (!is_file($fileToUpload->tmp_name)) {
+        die(
+            json_encode(
+                array(
+                 'message'  => 'Uploaded file missing',
+                 'progress' => 100,
+                 'error'    => true,
+                )
+            )
+        );
+    }
+
+    $target_dir = $genomic_data_dir . 'genomic_uploader/';
+
+    if (!is_dir($target_dir)) {
+        die(
+            json_encode(
+                array(
+                 'message'  => 'Genomic directory does not exists',
+                 'progress' => 100,
+                 'error'    => true,
+                )
+            )
+        );
+    }
+
+    if (!is_writable($target_dir)) {
+        die(
+            json_encode(
+                array(
+                 'message'  => 'Genomic directory not writable',
+                 'progress' => 100,
+                 'error'    => true,
+                )
+            )
+        );
+    }
+
     if (move_uploaded_file(
         $fileToUpload->tmp_name,
         $genomic_data_dir . 'genomic_uploader/'

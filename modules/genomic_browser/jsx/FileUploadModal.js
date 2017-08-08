@@ -45,13 +45,15 @@ var GenomicFileUploadModal = React.createClass({
 
     var xhr = new XMLHttpRequest();
     xhr.previousText = '';
-    xhr.onerror = function() {
-      console.error("[XHR] Fatal Error.");
-    };
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 3 || xhr.readyState == 4) {
         var bar = document.getElementById("progressBar");
         var newResponse = xhr.responseText.substring(xhr.previousText.length);
+        if (newResponse.length == 0 && xhr.readyState == 4) {
+            self.setState({submited: true});
+            newResponse = '{"progress": 100, "message":"Complete"}';
+        }
+
         var result = JSON.parse(newResponse);
 
         xhr.previousText = xhr.responseText;
@@ -62,9 +64,6 @@ var GenomicFileUploadModal = React.createClass({
         if (result.error !== undefined) {
           bar.className = 'progress-bar progress-bar-danger';
         }
-        if (xhr.readyState == 4) {
-          self.setState({submited: true});
-        }
       }
     };
     var url = this.props.baseURL + "/genomic_browser/ajax/genomic_file_upload.php";
@@ -72,22 +71,8 @@ var GenomicFileUploadModal = React.createClass({
     xhr.send(formData);
   },
 
-  updateProgressBar: function(bar, xhr) {
-    var newResponse = xhr.responseText.substring(xhr.previousText.length);
-    var result = JSON.parse(newResponse);
-
-    bar.innerHTML = String(result.message);
-    bar.style.width = "100%";
-    if (result.error !== undefined) {
-      bar.className = 'progress-bar progress-bar-danger';
-    } else {
-      self.setState({submited: true});
-    }
-  },
-
   render: function() {
     var footerButtons = [];
-
     if (this.state.submited) {
       footerButtons.push(<button className="btn btn-default" onClick={this.reloadPage} data-dismiss="modal">Ok</button>);
     } else {
