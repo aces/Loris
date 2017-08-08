@@ -111,10 +111,13 @@ class NDB_Form_Dashboard extends NDB_Form
         // New scans
         if ($user->hasPermission('imaging_browser_qc')) {
             $this->tpl_data['new_scans']      = $DB->pselectOne(
-                "SELECT COUNT(*) FROM session s LEFT JOIN candidate c ON 
-                 (s.CandID=c.CandID) WHERE Scan_done='Y' 
-                 AND (MRIQCStatus='' OR MRIQCPending='Y') 
-                 AND s.Active='Y' AND s.CenterID <> 1;",
+                "SELECT COUNT(DISTINCT s.ID)
+                 FROM files f 
+                 LEFT JOIN session s ON (s.ID=f.SessionID)
+                 LEFT JOIN candidate c ON (s.CandID=c.CandID)
+                 WHERE AND (MRIQCStatus='' OR MRIQCPending='Y')
+                 AND s.Active='Y' AND c.Active='Y'
+                 AND s.CenterID <> 1",
                 array()
             );
             $this->tpl_data['new_scans_site'] = 'Sites: all';
