@@ -49,43 +49,40 @@ var GenomicFileUploadModal = React.createClass({
       console.error("[XHR] Fatal Error.");
     };
     xhr.onreadystatechange = function() {
-      var bar = document.getElementById("progressBar");
-      try {
-        switch (xhr.readyState) {
-          case 0:
-            break;
-          case 1:
-            break;
-          case 2:
-            break;
-          case 3:
+      if (xhr.readyState == 3 || xhr.readyState == 4) {
+        var bar = document.getElementById("progressBar");
+        var newResponse = xhr.responseText.substring(xhr.previousText.length);
+        var result = JSON.parse(newResponse);
 
-            var newResponse = xhr.responseText.substring(xhr.previousText.length);
-            var result = JSON.parse(newResponse);
-            bar.innerHTML = String(result.message);
-            bar.style.width = result.progress + "%";
-            if (result.error !== undefined) {
-              bar.className = 'progress-bar progress-bar-danger';
-            }
+        xhr.previousText = xhr.responseText;
 
-            xhr.previousText = xhr.responseText;
-            break;
-          case 4:
-            self.setState({submited: true});
-            break;
-          default:
-            break;
+        bar.innerHTML = String(result.message);
+        bar.style.width = result.progress + "%";
+
+        if (result.error !== undefined) {
+          bar.className = 'progress-bar progress-bar-danger';
         }
-      } catch (e) {
-        console.error("[XHR STATECHANGE] Exception: " + e);
-        bar.innerHTML = 'An error occured';
-        bar.className = 'progress-bcar progress-bar-danger';
-        bar.style.width = "100%";
+        if (xhr.readyState == 4) {
+          self.setState({submited: true});
+        }
       }
     };
     var url = this.props.baseURL + "/genomic_browser/ajax/genomic_file_upload.php";
     xhr.open("POST", url, true);
     xhr.send(formData);
+  },
+
+  updateProgressBar: function(bar, xhr) {
+    var newResponse = xhr.responseText.substring(xhr.previousText.length);
+    var result = JSON.parse(newResponse);
+
+    bar.innerHTML = String(result.message);
+    bar.style.width = "100%";
+    if (result.error !== undefined) {
+      bar.className = 'progress-bar progress-bar-danger';
+    } else {
+      self.setState({submited: true});
+    }
   },
 
   render: function() {
