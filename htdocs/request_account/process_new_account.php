@@ -3,7 +3,7 @@
  * This file contains code to process user input from
  * Request Account form
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -41,12 +41,7 @@ $tpl_data = array();
 $config = NDB_Config::singleton();
 $DB     = Database::singleton();
 
-$res = array();
-$DB->select("SELECT Name, CenterID FROM psc", $res);
-$site_list = array();
-foreach ($res as $elt) {
-    $site_list[$elt["CenterID"]] = $elt["Name"];
-}
+$site_list = Utility::getSiteList();
 
 // Get reCATPCHA keys
 $reCAPTCHAPrivate = $config->getSetting('reCAPTCHAPrivate');
@@ -59,7 +54,6 @@ if ($reCAPTCHAPrivate && $reCAPTCHAPublic) {
 
 $tpl_data['baseurl']     = $config->getSetting('url');
 $tpl_data['css']         = $config->getSetting('css');
-$tpl_data['rand']        = rand(0, 9999);
 $tpl_data['success']     = false;
 $tpl_data['study_title'] = $config->getSetting('title');
 $tpl_data['currentyear'] = date('Y');
@@ -73,6 +67,7 @@ $tpl_data['page_title']  = 'Request LORIS Account';
 try {
     $tpl_data['study_logo'] = "../".$config->getSetting('studylogo');
 } catch(ConfigurationException $e) {
+    error_log('No study logo is configured for this LORIS instance.');
     $tpl_data['study_logo'] = '';
 }
 try {
@@ -92,6 +87,7 @@ try {
                                     );
     }
 } catch(ConfigurationException $e) {
+    error_log('An error occurred when processing study links:' . $e->getMessage());
 }
 
 $err = array();
@@ -106,130 +102,135 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         );
         if (!$resp->isSuccess()) {
             $errors         = $resp->getErrorCodes();
-            $err['captcha'] = 'Please complete the reCaptcha!';
+            $err['captcha'] = 'Please complete the reCaptcha.';
         }
     }
 
-    if (!checkLen('name')) {
-        $err['name'] = 'The minimum length for First Name field is 3 characters!';
-    }
-    if (!checkLen('lastname')) {
-        $err['lastname'] = 'The minimum length for Last Name field is 3 characters!';
-    }
-    if (!checkLen('from')) {
-        $err['from'] = 'Please provide a valid email!';
-    } else if (!filter_var($_REQUEST['from'], FILTER_VALIDATE_EMAIL) ) {
-        $err['from'] = 'Please provide a valid email!';
-    }
-    if (!checkLen('site', 0)) {
-        $err['site'] = 'Please choose a site!';
-    }
-    if (isset($_SESSION['tntcon'])
-        && md5($_REQUEST['verif_box']).'a4xn' != $_SESSION['tntcon']
-    ) {
-        $err[] = 'The verification code is incorrect';
-    }
-
+    // For each fields, check they are well-formed
     $fields = array(
                'name'     => 'First Name',
                'lastname' => 'Last Name',
                'from'     => 'Email',
+               'site'     => 'Site',
               );
 
-    // For each fields, check if quotes or if some HTML/PHP
-    // tags have been entered
-    foreach ($fields as $key => $field) {
-        $value = $_REQUEST[$key];
-        if (preg_match('/["]/', html_entity_decode($value))) {
-            $err[$field] = "You can't use quotes in $field";
+    $email_error = 'Please provide a valid email.';
+    foreach ($fields as $key => $label) {
+        // check that the data entered is long enough
+        if (!checkLen($key)) {
+            $errstring = '';
+            switch ($key) {
+            case 'name':
+                $errstring = 'The minimum length for first name is 3 characters.';
+                break;
+            case 'lastname':
+                $errstring = 'The minimum length for last name is 3 characters.';
+                break;
+            case 'from':
+                $errstring = $email_error;
+                break;
+            case 'site':
+                $errstring = 'Please choose a site.';
+                break;
+            }
         }
-        if (strlen($value) > strlen(strip_tags($value))) {
-            $err[$field] = "You can't use tags in $field";
+        // check for invalid characters
+        $value = $_REQUEST[$key];
+        if (preg_match('/["]/', html_entity_decode($value))
+            || strlen($value) > strlen(strip_tags($value))
+        ) {
+                $errstring = "Invalid characters used in $label.";
+        }
+        // populate error array with the error message, if any
+        if (!empty($errstring)) {
+            $err[$key] = $errstring;
         }
     }
+    // check email is valid
+    if (!(filter_var($_REQUEST['from'], FILTER_VALIDATE_EMAIL))) {
+        $err['from'] = $email_error;
+    }
 
+    // print errors if there are any and halt execution
     if (count($err)) {
         $tpl_data['error_message'] = $err;
+        $tpl_data['success']       = false;
+        exit;
     }
 
-    if (!count($err)) {
-        $name      = htmlspecialchars($_REQUEST["name"], ENT_QUOTES);
-        $lastname  = htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES);
-        $from      = htmlspecialchars($_REQUEST["from"], ENT_QUOTES);
-        $verif_box = htmlspecialchars($_REQUEST["verif_box"], ENT_QUOTES);
-        $site      = htmlspecialchars($_REQUEST["site"], ENT_QUOTES);
+    // insert into database
+    $name     = htmlspecialchars($_REQUEST["name"], ENT_QUOTES);
+    $lastname = htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES);
+    $from     = htmlspecialchars($_REQUEST["from"], ENT_QUOTES);
+    $site     = htmlspecialchars($_REQUEST["site"], ENT_QUOTES);
 
-        // check to see if verification code was correct
-        // if verification code was correct send the message and show this page
-        $fullname = $name." ".$lastname;
-        $vals     = array(
-                     'UserID'           => $from,
-                     'Real_name'        => $fullname,
-                     'First_name'       => $name,
-                     'Last_name'        => $lastname,
-                     'Pending_approval' => 'Y',
-                     'Email'            => $from,
-                    );
+    $fullname = $name." ".$lastname;
+    $vals     = array(
+                 'UserID'           => $from,
+                 'Real_name'        => $fullname,
+                 'First_name'       => $name,
+                 'Last_name'        => $lastname,
+                 'Pending_approval' => 'Y',
+                 'Email'            => $from,
+                );
 
-        if ($_REQUEST['examiner']=='on') {
-            $rad =0;
-            if ($_REQUEST['radiologist']=='on') {
-                $rad =1;
-            }
-            //insert in DB as inactive until account approved
-            $DB->insert(
-                'examiners',
-                array(
-                 'full_name'        => $fullname,
-                 'centerID'         => $site,
-                 'radiologist'      => $rad,
-                 'active'           => 'N',
-                 'pending_approval' => 'Y',
-                )
-            );
+    if ($_REQUEST['examiner']=='on') {
+        $rad =0;
+        if ($_REQUEST['radiologist']=='on') {
+            $rad =1;
         }
+        //insert in DB as inactive until account approved
+        $DB->insert(
+            'examiners',
+            array(
+             'full_name'        => $fullname,
+             'centerID'         => $site,
+             'radiologist'      => $rad,
+             'active'           => 'N',
+             'pending_approval' => 'Y',
+            )
+        );
+    }
 
-        // check email address' uniqueness
-        $result = $DB->pselectOne(
-            "SELECT COUNT(*) FROM users WHERE Email = :VEmail",
+    // check email address' uniqueness
+    $result = $DB->pselectOne(
+        "SELECT COUNT(*) FROM users WHERE Email = :VEmail",
+        array('VEmail' => $from)
+    );
+
+    // insert into DB only if email address doesn't exist
+    if ($result == 0) {
+        $success = $DB->insert('users', $vals);
+        // Get the ID of the new user and insert into user_psc_rel
+        $user_id = $DB->pselectOne(
+            "SELECT ID FROM users WHERE Email = :VEmail",
             array('VEmail' => $from)
         );
 
-        if ($result == 0) {
-            // insert into DB only if email address doesn't exist
-            $success = $DB->insert('users', $vals);
-            // Get the ID of the new user and insert into user_psc_rel
-            $user_id = $DB->pselectOne(
-                "SELECT ID FROM users WHERE Email = :VEmail",
-                array('VEmail' => $from)
-            );
-
-            $DB->insert(
-                'user_psc_rel',
-                array(
-                 'UserID'   => $user_id,
-                 'CenterID' => $site,
-                )
-            );
-        }
-        // Show success message even if email already exists for security reasons
-        $tpl_data['success'] = true;
-
-        unset($_SESSION['tntcon']);
+        $DB->insert(
+            'user_psc_rel',
+            array(
+             'UserID'   => $user_id,
+             'CenterID' => $site,
+            )
+        );
     }
+    // Show success message even if email already exists for security reasons
+    $tpl_data['success'] = true;
 }
 
 /**
  * Check that the user input for a field meets minimum length requirements
  *
- * @param string  $str The request parameter to check
- * @param integer $len The minimum length - 1 for the parameter
+ * @param string $str The request parameter to check
  *
  * @return True if the parameter was sent and meets minimum length, false
  *         otherwise
  */
-function checkLen($str, $len=2)
+function checkLen($str)
 {
+    // The valid string length is 2 except for site, which is 0
+    $len = $str === 'site'? 0 : 2;
     return isset($_REQUEST[$str])
            && mb_strlen(strip_tags($_REQUEST[$str]), "utf-8") > $len;
 }
