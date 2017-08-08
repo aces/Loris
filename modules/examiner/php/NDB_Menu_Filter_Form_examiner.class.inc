@@ -54,7 +54,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             $this->useCertification = false;
         }
 
-        $user     = User::singleton();
+        $user      = User::singleton();
         $centerIDs = implode(',', $user->getCenterIDs());
 
         if ($user->hasPermission('examiner_multisite')) {
@@ -77,7 +77,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
                             LEFT JOIN certification c ON 
                                 (c.examinerID=e.examinerID and c.pass = 'certified') 
                             LEFT JOIN test_names tn ON (tn.ID = c.testID)
-                        WHERE FIND_IN_SET(epr.centerID =$centerIDs)";
+                        WHERE FIND_IN_SET(epr.centerID, '$centerIDs')";
         }
 
         // set the class variables
