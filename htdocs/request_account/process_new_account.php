@@ -198,7 +198,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         }
 
         if ($_REQUEST['examiner']=='on') {
-            $rad =0;
+            $rad = 0;
             if ($_REQUEST['radiologist']=='on') {
                 $rad =1;
             }
