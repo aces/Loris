@@ -66,7 +66,7 @@ class NDB_Form_Examiner extends NDB_Form
                 $centerIDs[] = $row['centerID'];
             }
 
-            // Access is only granted if user ENGLOBES all sites of examiner
+            // Access is only granted if user sites are a superset of examiner sites
             // considering that certification changes affect all sites
             return $user->hasPermission('examiner_view')
                 && (($user->hasPermission('examiner_multisite')
