@@ -345,6 +345,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
             }
         } else {
             // allow only to view own site data
+            $sites    = array();
             $site_arr = $user->getData('CenterIDs');
             foreach ($site_arr as $key => $val) {
                 $site[$key] = &Site::singleton($val);
@@ -418,19 +419,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
         }
         $query .= $this->order_by;
         // get the list
-
-        $pageNum = 1;
-        if (isset($_REQUEST['pageID'])) {
-            $pageNum = $_REQUEST['pageID'];
-        }
-
-        $this->_getNumberPages($query);
-
-        $config         =& NDB_Config::singleton();
-        $resultsPerPage = $config->getSetting('rowsPerPage');
-        $limit          = " LIMIT $resultsPerPage"
-            ." OFFSET " . (($pageNum-1)*$resultsPerPage);
-        $result         = $DB->pselect($query . $limit, $qparams);
+        $result = $DB->pselect($query, $qparams);
 
         // OVERRIDE START
         foreach ($result as $k => $r) {

@@ -553,8 +553,9 @@ function emailUser($issueID, $changed_assignee)
 function getIssueFields()
 {
 
-    $db   =& Database::singleton();
-    $user =& User::singleton();
+    $db    =& Database::singleton();
+    $user  =& User::singleton();
+    $sites = array();
 
     //get field options
     if ($user->hasPermission('access_all_profiles')) {

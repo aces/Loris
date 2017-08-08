@@ -1277,5 +1277,36 @@ class Utility
         }
         return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
     }
+
+    /**
+     * Effectively resolve '..' characters in a file path
+     *
+     * @param string $path A potentially-relative filepath to be resolved
+     *
+     * @return string $resolvedPath a path containing no .. sequences
+     */
+    static function resolvePath($path)
+    {
+        $resolvedPath = array();
+        // do some normalization
+        $path        = str_replace('//', '/', $path);
+        $path_pieces = explode('/', $path);
+        foreach ($path_pieces as $piece) {
+            if ($piece == '.') {
+                continue;
+            }
+            if ($piece == '..') {
+                if (!is_array($resolvedPath)) {
+                    error_log("ERROR: Resolved path not an array");
+                    return "";
+                }
+                array_pop($resolvedPath);
+                continue;
+            }
+            array_push($resolvedPath, $piece);
+        }
+        $resolvedPath = implode('/', $resolvedPath);
+        return $resolvedPath;
+    }
 }
 ?>

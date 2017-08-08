@@ -1,15 +1,15 @@
 <?php
 /**
- * The user account page
- *
- * PHP Version 5
- *
- * @category Main
- * @package  User_Account
- * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
+* The user account page
+*
+* PHP Version 5,7
+*
+* @category Main
+* @package  User_Account
+* @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+* @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+* @link     https://www.github.com/aces/Loris/
+*/
 
 /**
  * Implements the user account page
@@ -210,7 +210,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         $permIDs = array();
         // store the permission IDs
         if (!empty($values['permID'])) {
-            $permIDs = $values['permID'];
+            $permIDs = array_keys($values['permID']);
         }
         unset($values['permID']);
 
@@ -488,27 +488,28 @@ class NDB_Form_User_Accounts extends NDB_Form
 
             // Check for new permissions
             if (!empty($permIDs)) {
-                foreach ($permIDs as $key => $value) {
+                foreach ($permIDs as $permID) {
                     /* if the user didn't have the permission
                        and the permission is now assigned then insert
                        insert into the user_account_history as 'I'
                      */
-                    if (!(in_array($key, $current_permissionids))) {
-                        $user->insertIntoUserAccountHistory($key, 'I');
-                        $permissionsAdded[] = $this->getDescriptionUsingPermID($key);
+                    if (!(in_array($permID, $current_permissionids))) {
+                        $user->insertIntoUserAccountHistory($permID, 'I');
+                        $permissionsAdded[]
+                            = $this->getDescriptionUsingPermID($permID);
                     }
                 }
             }
 
             if (!empty($current_permissionids)) {
                 // Check for permissions that are to be deleted
-                foreach ($current_permissionids as $key) {
+                foreach ($current_permissionids as $currentPermID) {
                     //if the permission existed before and it's removed now///
                     ///Then insert into the user_account_history as 'D'
-                    if (!in_array($key, array_keys($permIDs))) {
-                        $user->insertIntoUserAccountHistory($key, 'D');
+                    if (!in_array($currentPermID, $permIDs)) {
+                        $user->insertIntoUserAccountHistory($currentPermID, 'D');
                         $permissionsRemoved[]
-                            = $this->getDescriptionUsingPermID($key);
+                            = $this->getDescriptionUsingPermID($currentPermID);
                     }
                 }
             }
@@ -536,7 +537,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             }
 
             if (!empty($permIDs)) {
-                $user->addPermissions(array_keys($permIDs));
+                $user->addPermissions($permIDs);
             }
         }
 
@@ -865,12 +866,12 @@ class NDB_Form_User_Accounts extends NDB_Form
 
             // add hidden permissions if editor has less permissions than user
             // being edited
-            $perms = array_diff(
+            $permDiff = array_diff(
                 $user->getPermissionIDs(),
                 $editor->getPermissionIDs()
             );
-            foreach ($perms as $value) {
-                $this->addHidden("permID[$value]", 1);
+            foreach ($permDiff as $permID) {
+                $this->addHidden("permID[$permID]", 1);
             }
         }
 
@@ -1245,6 +1246,12 @@ class NDB_Form_User_Accounts extends NDB_Form
             ) {
                 $errors['examiner_group'] = "Please specify if examiner is a ".
                     "radiologist";
+            }
+            if (preg_match("/^ex_[1-9]+$/", $k)
+                && $values['examiner_radiologist'] !== ''
+                && $values['examiner_pending'] == ''
+            ) {
+                $errors['examiner_group'] = "Please set pending approval Yes or No";
             }
         }
         return $errors;

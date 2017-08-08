@@ -20,7 +20,8 @@ var StaticDataTable = React.createClass({
     RowNumLabel: React.PropTypes.string,
     // Function of which returns a JSX element for a table cell, takes
     // parameters of the form: func(ColumnName, CellData, EntireRowData)
-    getFormattedCell: React.PropTypes.func
+    getFormattedCell: React.PropTypes.func,
+    onSort: React.PropTypes.func
   },
   componentDidMount: function() {
     if (jQuery.fn.DynamicTable) {
@@ -56,7 +57,7 @@ var StaticDataTable = React.createClass({
         // Make prefs accesible within component
     this.modulePrefs = modulePrefs;
   },
-  componentDidUpdate: function() {
+  componentDidUpdate: function(prevProps, prevState) {
     if (jQuery.fn.DynamicTable) {
       if (this.props.freezeColumn) {
         $("#dynamictable").DynamicTable({
@@ -65,6 +66,13 @@ var StaticDataTable = React.createClass({
       } else {
         $("#dynamictable").DynamicTable();
       }
+    }
+    if (this.props.onSort &&
+      (this.state.SortColumn !== prevState.SortColumn ||
+      this.state.SortOrder !== prevState.SortOrder)
+    ) {
+      var index = this.getSortedRows();
+      this.props.onSort(index, this.props.Data, this.props.Headers);
     }
   },
   getInitialState: function() {
