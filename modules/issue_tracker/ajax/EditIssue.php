@@ -716,7 +716,7 @@ ORDER BY dateAdded",
  *
  * @return array
  */
-function getIssueData($issueID)
+function getIssueData($issueID=null)
 {
 
     $user =& User::singleton();
