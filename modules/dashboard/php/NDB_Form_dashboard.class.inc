@@ -115,7 +115,7 @@ class NDB_Form_Dashboard extends NDB_Form
                  FROM files f 
                  LEFT JOIN session s ON (s.ID=f.SessionID)
                  LEFT JOIN candidate c ON (s.CandID=c.CandID)
-                 WHERE AND (MRIQCStatus='' OR MRIQCPending='Y')
+                 WHERE (MRIQCStatus='' OR MRIQCPending='Y')
                  AND s.Active='Y' AND c.Active='Y'
                  AND s.CenterID <> 1",
                 array()
