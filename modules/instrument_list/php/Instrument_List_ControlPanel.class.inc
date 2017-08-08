@@ -291,7 +291,11 @@ Class Instrument_List_ControlPanel extends TimePoint
         if (isset($_REQUEST['setBVLQCType'])
             && $user->hasPermission('bvl_feedback')
         ) {
-            $this->setData('BVLQCType', $_REQUEST['setBVLQCType']);
+            $QCtype = Utility::nullifyEmpty(
+                $_REQUEST['setBVLQCType'],
+                'BVLQCType'
+            );
+            $this->setData('BVLQCType', $QCtype);
             return;
         }
     }
