@@ -59,7 +59,7 @@ The following permissions should be available in the database
 <a name="navigation">
 </a>
 
-## Pave Navigation and Display
+## Page Navigation and Display
 
 - There should be 6 tabs unders the breadcrumb: Profile, GWAS, SNP, CNV, Methylation and Files
 - Clicking each tab should present it as active and the 5 other tabs should remain in the same order.
