@@ -522,9 +522,6 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     function _updateVisitStatus()
     {
         if (!empty($_POST['visit_status'])) {
-            $save_visit_status
-                = $_POST['visit_status']
-                        == 'Unrated' ? null : $_POST['visit_status'];
             $params            = array('SID' => $this->sessionID);
             $old_visit_status  = $this->DB->pselectOne(
                 "SELECT MRIQCStatus 
@@ -547,7 +544,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
 
             $updateSet       = array(
                                 'MRIQCPending'        => $_POST['visit_pending'],
-                                'MRIQCStatus'         => $save_visit_status,
+                                'MRIQCStatus'         => $_POST['visit_status'],
                                 'MRICaveat'           => $_POST['visit_caveat'],
                                 'MRIQCLastChangeTime' => date("Y-m-d H:i:s"),
                                );
