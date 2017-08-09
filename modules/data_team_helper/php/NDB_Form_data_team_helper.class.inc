@@ -135,8 +135,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
 
             /* Visit_labels
              */
-            $visit_array =Utility::getExistingVisitLabels();
-            $visit_array = array_combine($visit_array, $visit_array);
+            $visit_array   =Utility::getExistingVisitLabels();
+            $visit_array   = array_combine($visit_array, $visit_array);
+            $list_of_sites = array();
             $this->tpl_data['visitLabels'] = $visit_array;
             if ($user->hasPermission('access_all_profiles')) {
                 // get the list of study sites - to be replaced by the Site object
@@ -145,13 +146,9 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
                     $list_of_sites = array('' => 'All Sites') + $list_of_sites;
                 }
             } else {
-                // allow only to view own site data
-                $site =& Site::singleton($user->getData('CenterID'));
-                if ($site->isStudySite()) {
-                    $list_of_sites = array();
-                    $user_site     =$user->getData('Site');
-                    $list_of_sites[$user->getData('CenterID')] = $user_site;
-                }
+                // allow only to view own study site data
+                $list_of_sites = $user->getStudySites();
+                $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
             }
             $this->tpl_data['siteList'] = $list_of_sites;
             // Project list, if applicable
