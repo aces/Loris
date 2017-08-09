@@ -45,42 +45,25 @@ var GenomicFileUploadModal = React.createClass({
 
     var xhr = new XMLHttpRequest();
     xhr.previousText = '';
-    xhr.onerror = function() {
-      console.error("[XHR] Fatal Error.");
-    };
     xhr.onreadystatechange = function() {
-      var bar = document.getElementById("progressBar");
-      try {
-        switch (xhr.readyState) {
-          case 0:
-            break;
-          case 1:
-            break;
-          case 2:
-            break;
-          case 3:
-
-            var newResponse = xhr.responseText.substring(xhr.previousText.length);
-            var result = JSON.parse(newResponse);
-            bar.innerHTML = String(result.message);
-            bar.style.width = result.progress + "%";
-            if (result.error !== undefined) {
-              bar.className = 'progress-bar progress-bar-danger';
-            }
-
-            xhr.previousText = xhr.responseText;
-            break;
-          case 4:
+      if (xhr.readyState == 3 || xhr.readyState == 4) {
+        var bar = document.getElementById("progressBar");
+        var newResponse = xhr.responseText.substring(xhr.previousText.length);
+        if (newResponse.length == 0 && xhr.readyState == 4) {
             self.setState({submited: true});
-            break;
-          default:
-            break;
+            newResponse = '{"progress": 100, "message":"Complete"}';
         }
-      } catch (e) {
-        console.error("[XHR STATECHANGE] Exception: " + e);
-        bar.innerHTML = 'An error occured';
-        bar.className = 'progress-bcar progress-bar-danger';
-        bar.style.width = "100%";
+
+        var result = JSON.parse(newResponse);
+
+        xhr.previousText = xhr.responseText;
+
+        bar.innerHTML = String(result.message);
+        bar.style.width = result.progress + "%";
+
+        if (result.error !== undefined) {
+          bar.className = 'progress-bar progress-bar-danger';
+        }
       }
     };
     var url = this.props.baseURL + "/genomic_browser/ajax/genomic_file_upload.php";
@@ -90,7 +73,6 @@ var GenomicFileUploadModal = React.createClass({
 
   render: function() {
     var footerButtons = [];
-
     if (this.state.submited) {
       footerButtons.push(<button className="btn btn-default" onClick={this.reloadPage} data-dismiss="modal">Ok</button>);
     } else {
