@@ -261,6 +261,23 @@ class Database
     }
 
     /**
+     * Insert a row into the database
+     *
+     * This will insert a row. HTML from any field in the row will be automatically
+     * escaped to avoid injection.
+     *
+     * @param string $table the table into which to insert the row
+     * @param array  $set   the values with which to fill the new row
+     *
+     * @return none
+     */
+    public function insertIgnore($table, $set)
+    {
+        $ignore = true;
+        return $this->_realinsert($table, $set, true, $ignore);
+    }
+
+    /**
      * Escapes the HTML from an array that is about to be inserted into the database
      *
      * @param array $set The array to be inserted as a new row
@@ -285,18 +302,24 @@ class Database
      * @param array  $set        the values with which to fill the new row
      * @param bool   $autoescape determines whether the values to be set should
      *                           automatically have the html escaped
+     * @param bool   $ignore     determines whether the insert throws and error or
+     *                           is discarded when value exists in DB
      *
      * @return none
      */
-    private function _realinsert($table, $set, $autoescape = true)
+    private function _realinsert($table, $set, $autoescape = true, $ignore = false)
     {
         if ($autoescape === true) {
             $set = $this->_HTMLEscapeArray($set);
         }
-        $query  = "INSERT INTO $table SET ";
+        if ($ignore) {
+            $query = "INSERT IGNORE INTO $table SET ";
+        } else {
+            $query = "INSERT INTO $table SET ";
+        }
+        $prepQ  = $query;
         $query .= $this->_implodeWithKeys(', ', $set);
 
-        $prepQ       = "INSERT INTO $table SET ";
         $exec_params = array();
         $prepQ      .= $this->_implodeAsPrepared(",", $set, $exec_params);
 

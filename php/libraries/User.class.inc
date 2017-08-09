@@ -78,10 +78,17 @@ class User extends UserPermissions
 
         // Get examiner information
         $examiner_check = $DB->pselect(
-            "SELECT full_name, centerID, radiologist, active, pending_approval 
-                  FROM examiners 
-                  WHERE full_name=:fn 
-                    AND (active='Y' OR (active='N' AND pending_approval='Y'))",
+            "SELECT e.full_name, 
+                    epr.centerID, 
+                    e.radiologist, 
+                    epr.active, 
+                    epr.pending_approval 
+                  FROM examiners e
+                  JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
+                  WHERE e.full_name=:fn 
+                    AND (epr.active='Y' 
+                          OR (epr.active='N' AND epr.pending_approval='Y')
+                        )",
             array(
              "fn" => $row['Real_name'],
             )
