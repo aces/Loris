@@ -189,6 +189,18 @@ class User extends UserPermissions
     {
         if (is_null($var)) {
             return $this->userInfo;
+        } elseif ($var === 'CenterID') {
+            throw new \LorisException(
+                "The function getData('CenterID') 
+                                        is deprecated and is replaced 
+                                        with getData('CenterIDs')"
+            );
+        } elseif ($var === 'Site') {
+            throw new \LorisException(
+                "The function getData('Site') 
+                                        is deprecated and is replaced 
+                                        with getData('Sites')"
+            );
         } else {
             return $this->userInfo[$var];
         }
@@ -225,6 +237,20 @@ class User extends UserPermissions
     }
 
     /**
+     * Get the user's sites' name
+     *
+     * @return string
+     */
+    function getSiteName()
+    {
+        throw new \LorisException(
+            "The function getSiteName 
+                                   is deprecated and is replaced 
+                                   with getSiteNames"
+        );
+    }
+
+    /**
      * Get the user's sites' names, concatenated with
      * a semi-colon if the User is at more than one site
      *
@@ -233,6 +259,20 @@ class User extends UserPermissions
     function getSiteNames()
     {
         return $this->userInfo['Sites'];
+    }
+
+    /**
+     * Get the user's site's ID number
+     *
+     * @return array
+     */
+    function getCenterID()
+    {
+        throw new \LorisException(
+            "The function getCenterID 
+                                   is deprecated and is replaced 
+                                   with getCenterIDs"
+        );
     }
 
     /**
