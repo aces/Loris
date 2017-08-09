@@ -507,7 +507,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                                       'Selected'          => $curSelected,
                                       'QCFirstChangeTime' => time(),
                                      );
-                        $updateSet = Utility::nullifyEmpty($updateSet, 'Selected');
+                        $insertSet = Utility::nullifyEmpty($insertSet, 'Selected');
                         $success   = $this->DB->insert('files_qcstatus', $insertSet);
                     }
                 }
