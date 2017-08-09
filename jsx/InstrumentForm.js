@@ -12,20 +12,25 @@ const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave}) 
       {
         instrument.Elements.filter((element, index) => {
           if (options.surveyMode && element.HiddenSurvey) return false;
-          if (!element.DisplayIf) return true;
+          if (element.DisplayIf === false) return false;
+          if (element.DisplayIf === '') return true;
           try {
             return Evaluator(element.DisplayIf, contextWithData);
           }  catch(e) {
-            if (e instanceof TypeError) {
-              return true;
-            }
-            console.error(`Error evaluating DisplayIf property of element ${index} in instrument ${instrument.Meta.ShortName}.`);
+            console.log(`Error evaluating DisplayIf property of element ${index} in instrument ${instrument.Meta.ShortName}.\n${e}`);
             return false;
           }
         }).map((element, index) => {
           if(INPUT_TYPES.includes(element.Type)) {
             const requireResponse = element.Options.RequireResponse;
-            const required = typeof requireResponse === 'string' ? Evaluator(requireResponse, contextWithData) : requireResponse;
+            const required = typeof requireResponse === 'string' ? function() {
+                                                                     try {
+                                                                       Evaluator(requireResponse, contextWithData);
+                                                                     } catch (e) {
+                                                                       console.log(`Error evaluating RequireResponse property of element ${index} in instrument ${instrument.Meta.ShortName}.\n${e}`);
+                                                                       return false;
+                                                                     }
+                                                                   } : requireResponse;
             return renderElement(element, index, data, onUpdate, required)
           } 
           return renderElement(element, index, data, onUpdate)

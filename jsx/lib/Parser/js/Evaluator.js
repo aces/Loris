@@ -46,7 +46,7 @@ function evalAST(tree, scope) {
         return evalAST(tree.args[1][2],scope);
       }
       if (!Functions[tree.args[0]]) {
-        throw `'${tree.args[0]}' is not a defined function.`;
+        throw new Error(`${tree.args[0]} is not a defined function.`);
       }
       const funcArgs = tree.args[1].map(ast => evalAST(ast, scope));
       return Functions[tree.args[0]](...funcArgs);
@@ -66,6 +66,17 @@ function evalAST(tree, scope) {
 }
 
 export default function Evaluator(stringExpression, scope = {}) {
-  const tree = parser.parse(stringExpression);
+  if (stringExpression === '') {
+      return '';
+  }
+  if (stringExpression === null) {
+      return null;
+  }
+  let tree;
+  try {
+      tree = parser.parse(stringExpression);
+  } catch (e) {
+      throw new Error(`Parsing error; please review Syntax\n${e}`);
+  }
   return evalAST(tree, scope);
 }

@@ -139,10 +139,16 @@ export default {
   },
   // Assuming 24-hour clock
   datediff(date1, date2, units, returnSigned = false) {
-    const d1 = date1.split("-");
-    const d2 = date2.split("-");
-    const dt1 = new Date(d1[0],d1[1],d1[2]);
-    const dt2 = new Date(d2[0],d2[1],d2[2]);
+    let dt1;
+    let dt2;
+    try {
+        const d1 = date1.split("-");
+        const d2 = date2.split("-");
+        dt1 = new Date(d1[0],d1[1],d1[2]);
+        dt2 = new Date(d2[0],d2[1],d2[2]);
+    } catch (e) {
+        return 0;
+    }
     let res;
     switch (units) {
         case 'y':
@@ -155,10 +161,14 @@ export default {
             res = 1000*60*60*24
             break;
     }
-    if (returnSigned) {
-        return (dt1.getTime() - dt2.getTime())/res;
-    } else {
-        return Math.abs((dt1.getTime() - dt2.getTime())/res);
+    try {
+        if (returnSigned) {
+            return (dt1.getTime() - dt2.getTime())/res;
+        } else {
+            return Math.abs((dt1.getTime() - dt2.getTime())/res);
+        }
+    } catch (e) {
+        return 0;
     }
     /*let mdate1, mdate2;
     switch (format) {
