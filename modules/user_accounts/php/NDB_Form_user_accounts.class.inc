@@ -216,6 +216,13 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
         unset($values['permID']);
 
+        // store the role IDs
+        $roleIDs = array();
+        if (!empty($values['roleID'])) {
+            $roleIDs = $values['roleID'];
+        }
+        unset($values['roleID']);
+
         // store whether to send an email or not
         if (!empty($values['SendEmail'])) {
             $send = $values['SendEmail'];
@@ -568,6 +575,28 @@ class NDB_Form_User_Accounts extends NDB_Form
 
             if (!empty($permIDs)) {
                 $user->addPermissions($permIDs);
+            }
+
+            // Update roles
+            if (!empty($roleIDs)) {
+                $userID = $user->getData('ID');
+
+                $DB->delete(
+                    'users_permission_categories_rel',
+                    array(
+                     'user_id' => $userID,
+                    )
+                );
+
+                foreach ($roleIDs as $roleID) {
+                    $DB->insert(
+                        'users_permission_categories_rel',
+                        array(
+                         'user_id'                => $userID,
+                         'permission_category_id' => $roleID,
+                        )
+                    );
+                }
             }
         }
 
@@ -1439,6 +1468,40 @@ class NDB_Form_User_Accounts extends NDB_Form
             list(,$description) = each($permission[0]);
         }
         return $permission;
+    }
+
+    /**
+     * Include additional CSS files:
+     *
+     * @return array of css to be included
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . "/user_accounts/css/user_accounts.css"]
+        );
+    }
+
+    /**
+     * Get javascript dependencies
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/user_accounts/js/permissions.js"
+            )
+        );
     }
 }
 ?>
