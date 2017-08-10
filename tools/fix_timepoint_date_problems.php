@@ -1,4 +1,4 @@
-?php
+<?php
 #!/data/web/neurodb/software/bin/php
 /**
  * @version $Id: fix_timepoint_date_problems.php,v 1.21 2006/05/05 15:42:25 dario Exp $
