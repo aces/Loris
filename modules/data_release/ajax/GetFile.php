@@ -61,7 +61,6 @@ if (empty($permission)) {
 
 // Output file in downloadable format
 header('Content-Description: File Transfer');
-header('Content-Type: application/force-download');
 header("Content-Transfer-Encoding: Binary");
 header("Content-disposition: attachment; filename=\"" . basename($FullPath) . "\"");
 readfile($FullPath);
