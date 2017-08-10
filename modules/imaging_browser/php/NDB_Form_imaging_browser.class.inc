@@ -522,8 +522,8 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     function _updateVisitStatus()
     {
         if (!empty($_POST['visit_status'])) {
-            $params            = array('SID' => $this->sessionID);
-            $old_visit_status  = $this->DB->pselectOne(
+            $params           = array('SID' => $this->sessionID);
+            $old_visit_status = $this->DB->pselectOne(
                 "SELECT MRIQCStatus 
                 FROM session 
                 WHERE ID=:SID",
