@@ -565,7 +565,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 array('ID' => $this->sessionID)
             );
             // spool a message to the mri qc status rss channel
-            if (($save_visit_status != $old_visit_status)
+            if (($_POST['visit_status'] != $old_visit_status)
                 || ($old_pending_status != $_POST['visit_pending'])
                 || ($old_caveat_status != $_POST['visit_caveat'])
             ) {
