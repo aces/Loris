@@ -31,6 +31,7 @@ $filename = __DIR__ . "/../project/tables_sql/update_zero_fields_statements.sql"
 $output= "";
 $alters="";
 $updates="";
+$nonNullUpdates="";
 
 // Begin Script
 echo "\n#################################################################\n\n".
