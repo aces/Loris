@@ -500,7 +500,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
                 // the form WAS submitted but validate() failed...
                 // main error message
-                $this->form->addElement('static', 'mainError');
+                $this->form->addElement('static', 'mainError', '');
                 $this->form->setElementError(
                     'mainError',
                     "<p>
