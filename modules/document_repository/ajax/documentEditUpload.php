@@ -54,12 +54,12 @@ if ($userSingleton->hasPermission('document_repository_view')
     if ($action == 'upload') {
         $puser      = $_POST['user'];
         $category   = $_POST['category'];
-        $site       = $_POST['site'];
-        $instrument = $_POST['instrument'];
-        $pscid      = $_POST['pscid'];
-        $visit      = $_POST['visit'];
-        $comments   = $_POST['comments'];
-        $version    = $_POST['version'];
+        $site       = $_POST['site']       !== '' ? $_POST['site'] : null;
+        $instrument = $_POST['instrument'] !== '' ? $_POST['instrument'] : null;
+        $pscid      = $_POST['pscid']      !== '' ? $_POST['pscid'] : null;
+        $visit      = $_POST['visit']      !== '' ? $_POST['visit'] : null;
+        $comments   = $_POST['comments']   !== '' ? $_POST['commnets'] : null;
+        $version    = $_POST['version']    !== '' ? $_POST['version'] : null;
 
         $fileSize = $_FILES["file"]["size"];
         $fileName = $_FILES["file"]["name"];
