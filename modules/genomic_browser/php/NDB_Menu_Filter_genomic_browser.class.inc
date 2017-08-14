@@ -317,6 +317,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
+             $baseURL . "/genomic_browser/js/genomic_browser.js",
              $baseURL . "/genomic_browser/js/profileColumnFormatter.js",
             )
         );
