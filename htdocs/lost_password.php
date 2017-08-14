@@ -50,7 +50,7 @@ if (isset($_POST['username'])) {
     // check that the email is valid
     if (!$user->isEmailValid()) {
         error_log(
-            'Could not send password reset email to user' . $user::getUsername()
+            'Could not send password reset email to user' . $user->getUsername()
             . " with email $email. Email is invalid"
         );
     } else {
