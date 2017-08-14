@@ -37,9 +37,6 @@ class ExaminerTest extends LorisIntegrationTest
     public function setUp()
     {
         parent::setUp();
-         $window = new WebDriverWindow($this->webDriver);
-         $size   = new WebDriverDimension(1024, 1768);
-         $window->setSize($size);
         $this->DB->insert(
             "psc",
             array(
