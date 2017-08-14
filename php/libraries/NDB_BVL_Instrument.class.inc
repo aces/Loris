@@ -1231,16 +1231,18 @@ class NDB_BVL_Instrument extends NDB_Page
     function XINRunElementRules($elname, $elements, $rules)
     {
         $errors = array();
+        //Conditions for the rule to be true, thus the element to be required.
+        $rule_outcomes = array();
 
         foreach ($rules['rules'] AS $rule) {
-            //Conditions for the rule to be true, thus the element to be required.
-            $rule_outcomes = array();
             //Loop through the assigned rules (which is the array of formatted
             //statements passed in XINRegisterRule)
             //If this is an OR rule using two different controllers explode it
             //at the pipe.  ex: q_1{@}=={@}yes|q_2{@}=={@}yes
-            if (stristr(substr($rule, strpos($rule, "|")), "{@}")) {
-                $rules_array = explode("|", $rule);
+            $isInterfieldOr = false;
+            if (substr_count($rule, '{@}') > 2 && strstr($rule, '|')) {
+                $rules_array    = explode("|", $rule);
+                $isInterfieldOr = true;
             } else {  //Otherwise its a regular rule.  ex: q_1{@}=={@}yes
                 $rules_array[] = $rule;
             }
@@ -1277,6 +1279,8 @@ class NDB_BVL_Instrument extends NDB_Page
 
                     if ($ElementResult) {
                         $or_conditions = true; //If any of the OR rules is true
+                    } else if (!$isInterfieldOr) {
+                        $or_conditions = false;
                     }
                 }
             }
