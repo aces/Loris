@@ -30,7 +30,6 @@ $base_dir = $config->getSetting('base');
 if (empty($base_dir)) {
     error_log('Security problem : base ConfigSettings not set or empty.');
     header("HTTP/1.1 412 Precondition Failed");
-    //TODO: throw an exception here?
     exit;
 }
 
@@ -170,9 +169,8 @@ function moveFileToFS(&$fileToUpload)
 
     $dest_dir = dirname($fileToUpload->full_path);
     // update ui to show we are trying to move the file
-    reportProgress(98, "Copying file to $genomic_data_dir ");
+    reportProgress(98, "Copying file...");
     // file system validation
-
     try {
         if (!file_exists($fileToUpload->tmp_name)) {
             throw new Exception(
@@ -191,7 +189,7 @@ function moveFileToFS(&$fileToUpload)
             $fileToUpload->tmp_name,
             $fileToUpload->full_path
         )) {
-            reportProgress(99, "File copied to $genomic_data_dir ");
+            reportProgress(99, "File successfully copied!");
         }
     } catch (Exception $ex){
         error_log("Cannot move file: $ex");
