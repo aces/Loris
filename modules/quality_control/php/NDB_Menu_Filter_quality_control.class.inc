@@ -31,8 +31,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                         3 => "(T2) MRI PF Completed = No Scan, No DICOM logged in Archive but scan is inserted and in browser",
                         4 => "(T2) MRI Parameter Form Incomplete, Tarchive exists, QC pass"
                      );
-    
-    
+
+
 
     /**quality_control
      * Check user permissions
@@ -97,7 +97,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             $instrumentList[$instrument['Full_name']] = $instrument['Full_name'];
         }
 
-        $projectList  = Utility::getProjectList();
         $uploaderList =[];
         $uploaders    = $db -> pselect(
             "SELECT UploadedBy FROM mri_upload GROUP BY UploadedBy",
@@ -122,7 +121,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $this->addBasicText('candId', 'DCCID', ["size" => 9, "maxlength" => 7]);
         $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
         $this->addSelect('errorMessage', 'Error Message', $errorList);
-        $this->addSelect('UploadedBy', 'Uploaded By', $uploaderList);
+        $this->addSelect('uploadedBy', 'Uploaded By', $uploaderList);
         $this->addSelect('PatientName', 'Patient ID', $namesList);
         $this->addSelect('site', 'Site', $siteList);
         // $this->tpl_data["hasWritePermission"] = $this->hasWritePermission;
@@ -146,10 +145,12 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
        // print_r($this->errors[3]);
         $query =  " FROM (
             SELECT c.PSCID,
-                   s.ID as SessionID,  
+                   s.ID as SessionID,
                    s.CandID as cand_id,
                    s.Visit_label as visit_label,
-                   ('" .$this->errors[1] . "') as error_message, 
+                   ('" .$this->errors[1] . "') as error_message,
+                   mu.UploadedBy as uploaded_by,
+                   (' ') as action,
                    f.CommentID as CommentID
             FROM flag f
             LEFT JOIN session s ON (f.SessionID=s.ID)
@@ -158,6 +159,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             LEFT JOIN tarchive t ON (t.SessionID=s.ID)
             LEFT JOIN candidate c ON (s.CandID=c.CandID)
             LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
+            LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID)
             WHERE f.CommentID NOT LIKE 'DDE%'
                   AND f.Test_name='mri_parameter_form'
                   AND s.Active='Y'
@@ -168,18 +170,21 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                   AND qc.QCStatus = 'Pass'"
              . " UNION ALL " .
             "SELECT c.PSCID,
-                s.ID as SessionID,  
+                s.ID as SessionID,
                 s.CandID as cand_id,
                 s.Visit_label as visit_label,
-                ('" .$this->errors[2] . "') as error_message, 
+                ('" .$this->errors[2] . "') as error_message,
+                mu.UploadedBy as uploaded_by,
+                (' ') as action,
                 f.CommentID as CommentID
-            FROM flag f 
+            FROM flag f
             LEFT JOIN session s ON (f.SessionID=s.ID)
             LEFT JOIN files fi ON (fi.SessionID = f.SessionID)
             LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
             LEFT JOIN tarchive t ON (t.SessionID=s.ID)
             LEFT JOIN candidate c ON (s.CandID=c.CandID)
             LEFT JOIN files_qcstatus qc ON (qc.FileID=fi.FileID)
+            LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID)
             WHERE f.CommentID NOT LIKE 'DDE%'
                   AND f.Test_name='mri_parameter_form'
                   AND f.Administration <> 'None'
@@ -190,12 +195,14 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                   AND fi.AcquisitionProtocolID = 44
                   AND m.T1_Scan_done = 'No'
                   AND qc.QCStatus = 'Pass'"
-                  ." UNION ALL ". 
+                  ." UNION ALL ".
             "SELECT c.PSCID,
-               s.ID as SessionID,  
+               s.ID as SessionID,
                s.CandID as cand_id,
                s.Visit_label as visit_label,
-               ('" .$this->errors[3] . "') as error_message, 
+               ('" .$this->errors[3] . "') as error_message,
+               mu.UploadedBy as uploaded_by,
+               (' ') as action,
                f.CommentID as CommentID
             FROM flag f
             LEFT JOIN session s ON (f.SessionID=s.ID)
@@ -204,6 +211,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             LEFT JOIN tarchive t ON (t.SessionID=s.ID)
             LEFT JOIN candidate c ON (s.CandID=c.CandID)
             LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
+            LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID)
             WHERE f.CommentID NOT LIKE 'DDE%'
                   AND f.Test_name='mri_parameter_form'
                   AND s.Active='Y'
@@ -214,18 +222,21 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                   AND qc.QCStatus = 'Pass'"
                    . " UNION ALL " .
             "SELECT c.PSCID,
-                s.ID as SessionID,  
+                s.ID as SessionID,
                 s.CandID as cand_id,
                 s.Visit_label as visit_label,
-                ('" .$this->errors[4] . "') as error_message, 
+                ('" .$this->errors[4] . "') as error_message,
+                mu.UploadedBy as uploaded_by,
+                (' ') as action,
                 f.CommentID as CommentID
-            FROM flag f 
+            FROM flag f
             LEFT JOIN session s ON (f.SessionID=s.ID)
             LEFT JOIN files fi ON (fi.SessionID = f.SessionID)
             LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
             LEFT JOIN tarchive t ON (t.SessionID=s.ID)
             LEFT JOIN candidate c ON (s.CandID=c.CandID)
             LEFT JOIN files_qcstatus qc ON (qc.FileID=fi.FileID)
+            LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID)
             WHERE f.CommentID NOT LIKE 'DDE%'
                   AND f.Test_name='mri_parameter_form'
                   AND f.Administration <> 'None'
@@ -238,36 +249,33 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                   AND qc.QCStatus = 'Pass') as tmp";
 
         $this->query = $query;
-        //$this->columns = array("m.UploadedBy", "UploadDate", 't.PatientName', 't.CenterName', '("'.$this->errors[1].'") as error_message','(" ") as action',  'f.CommentID as CommentID');
         $this->columns = [
                           'PSCID',
                           'SessionID',
                           'cand_id',
                           'visit_label',
                           'error_message',
+                          'uploaded_by',
+                          'action',
                           'CommentID',
                          ];
-        // $this->group_by = 'c.PSCID, SessionID, cand_id, visit_label, CommentID';
+
+        $this->group_by = 'PSCID, SessionID, cand_id, visit_label, error_message, uploaded_by, CommentID, Action';
         $this->order_by = 'PSCID';
 
-        //  $this->headers = ['Uploaded By', 'Upload Date', 'Patient Name', 'Location', 'Error Message', 'Action', 'CommentID'];
         $this->headers      = [
                                'PSCID',
                                'Session ID',
                                'DCCID',
                                'Visit Label',
                                'Error Message',
-                              ];
-//        $this->validFilters = array(
-//                               'm.UploadedBy',
-//                               'message',
-//                              );
-//        $this->formToFilter = array(
-//                               'UploadedBy'    => 'm.UploadedBy',
-//                               'error_message' => 'message',
-//                              );
+                               'Uploaded By',
+                               'Action',
+                                'CommentID',
+                            ];
 
-        $this->tpl_data['hiddenHeaders'] = json_encode(['CommentID']);
+        //$this->tpl_data['hiddenHeaders'] = json_encode(['CommentID']);
+
         return true;
     }
     /**

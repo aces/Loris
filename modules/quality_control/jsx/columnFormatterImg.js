@@ -8,9 +8,16 @@
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
   // If a column if set as hidden, don't display it
-  if (loris.hiddenHeadersImg.indexOf(column) > -1) {
+  if (loris.hiddenHeaders.indexOf(column) > -1) {
     return null;
   }
+
+  var errors = {
+                        1 : "(T1) MRI PF Completed = No Scan, No DICOM logged in Archive but scan is inserted and in browser",
+                        2 : "(T1) MRI Parameter Form Incomplete, Tarchive exists, QC pass",
+                        3 : "(T2) MRI PF Completed = No Scan, No DICOM logged in Archive but scan is inserted and in browser",
+                        4 : "(T2) MRI Parameter Form Incomplete, Tarchive exists, QC pass"
+  };
 
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
@@ -18,9 +25,12 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     row[header] = rowData[index];
   }, this)
 
+  console.log(row);
+
   if (column === "Action"){
-    if (row['Message'] === "T1 Scan done NOT Partial or Complete in MRI parameter form"){
-      var mpfURL = loris.BaseURL+'/mri_parameter_form/?commentID=' + row['CommentID'];
+    if (row['Error Message'] === errors[1] || row['Error Message'] === errors[3]){
+      var mpfURL = loris.BaseURL+'/mri_parameter_form/?commentID=' + row['CommentID'] +
+        '&sessionID=' + row['Session ID'] + '&candID=' + row['DCCID'];
       return <td> <a href={mpfURL}>MRI Parameter Form</a> </td>;
     }
   }

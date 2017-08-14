@@ -6,7 +6,8 @@ import formatColumnImg from './columnFormatterImg';
 
 class QualityControlIndex extends React.Component {
     constructor(props) {
-        loris.hiddenHeadersImg = ['CommentID'];
+
+        loris.hiddenHeaders = ['CommentID'];
 
         super(props);
         this.state = {
