@@ -2,7 +2,7 @@
 /**
  * This file contains the Loris user class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Main
@@ -67,7 +67,7 @@ class User extends UserPermissions
 
         // get user sites
         $user_centerID_query =  $DB->pselect(
-            "SELECT CenterID FROM user_psc_rel upr 
+            "SELECT CenterID FROM user_psc_rel upr
                         WHERE upr.UserID= :UID",
             array('UID' => $row['ID'])
         );
@@ -78,15 +78,15 @@ class User extends UserPermissions
 
         // Get examiner information
         $examiner_check = $DB->pselect(
-            "SELECT e.full_name, 
-                    epr.centerID, 
-                    e.radiologist, 
-                    epr.active, 
-                    epr.pending_approval 
+            "SELECT e.full_name,
+                    epr.centerID,
+                    e.radiologist,
+                    epr.active,
+                    epr.pending_approval
                   FROM examiners e
                   JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
-                  WHERE e.full_name=:fn 
-                    AND (epr.active='Y' 
+                  WHERE e.full_name=:fn
+                    AND (epr.active='Y'
                           OR (epr.active='N' AND epr.pending_approval='Y')
                         )",
             array(
@@ -191,14 +191,14 @@ class User extends UserPermissions
             return $this->userInfo;
         } elseif ($var === 'CenterID') {
             throw new \LorisException(
-                "The function getData('CenterID') 
-                                        is deprecated and is replaced 
+                "The function getData('CenterID')
+                                        is deprecated and is replaced
                                         with getData('CenterIDs')"
             );
         } elseif ($var === 'Site') {
             throw new \LorisException(
-                "The function getData('Site') 
-                                        is deprecated and is replaced 
+                "The function getData('Site')
+                                        is deprecated and is replaced
                                         with getData('Sites')"
             );
         } else {
@@ -244,8 +244,8 @@ class User extends UserPermissions
     function getSiteName()
     {
         throw new \LorisException(
-            "The function getSiteName 
-                                   is deprecated and is replaced 
+            "The function getSiteName
+                                   is deprecated and is replaced
                                    with getSiteNames"
         );
     }
@@ -269,8 +269,8 @@ class User extends UserPermissions
     function getCenterID()
     {
         throw new \LorisException(
-            "The function getCenterID 
-                                   is deprecated and is replaced 
+            "The function getCenterID
+                                   is deprecated and is replaced
                                    with getCenterIDs"
         );
     }
@@ -355,13 +355,13 @@ class User extends UserPermissions
 
         // add random characters to $password until $length is reached
         for ($i = 0; $i < $length-2; $i++) {
-            $password .= substr($possible, mt_rand(0, $possible_cnt), 1);
+            $password .= substr($possible, random_int(0, $possible_cnt), 1);
         }
 
         if (strpbrk($password, $specialChars) === false) {
             $password .= substr(
                 $specialChars,
-                mt_rand(0, strlen($specialChars)-1),
+                random_int(0, strlen($specialChars)-1),
                 1
             );
         }
