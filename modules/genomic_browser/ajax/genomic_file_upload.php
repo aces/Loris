@@ -15,7 +15,6 @@
  *  @license    Loris license
  *  @link       https://github.com/aces/Loris-Trunk
  */
-
 $userSingleton =& User::singleton();
 if (!$userSingleton->hasPermission('genomic_browser_view_site')
     && !$userSingleton->hasPermission('genomic_browser_view_allsites')
@@ -39,13 +38,14 @@ set_time_limit(0);
 ob_implicit_flush(true);
 ob_end_flush();
 header('Content-Type: application/json; charset=UTF-8');
+$bytes = $_FILES["fileData"]['size'];
 
 $fileToUpload
     = (object) array(
                 'file_type'         => $_FILES["fileData"]["type"],
                 'file_name'         => $_FILES["fileData"]["name"],
                 'tmp_name'          => $_FILES["fileData"]["tmp_name"],
-                'size'              => $_FILES["fileData"]['size'],
+                'size'              => round($bytes / 1048576, 0),
                 'inserted_by'       => $userSingleton->getData('UserID'),
                 'genomic_file_type' => empty($_POST['fileType']) ?
                     null : str_replace('_', ' ', $_POST['fileType']),
@@ -149,7 +149,7 @@ function setFullPath(&$fileToUpload)
         $ext = pathinfo($fileToUpload->file_name, PATHINFO_EXTENSION);
         $nme = pathinfo($fileToUpload->file_name, PATHINFO_FILENAME);
         $fileToUpload->full_path = $genomic_data_dir
-            . $nme . "-" . $collision_count . $ext;
+            . $nme . "-" . $collision_count . '.' .$ext;
     }
 }
 
@@ -168,22 +168,23 @@ function moveFileToFS(&$fileToUpload)
     $config           = NDB_Config::singleton();
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
 
+    $dest_dir = dirname($fileToUpload->full_path);
     // update ui to show we are trying to move the file
     reportProgress(98, "Copying file to $genomic_data_dir ");
     // file system validation
-error_log("Full path: $fileToUpload->full_path");
+
     try {
-        if (!file_exists($fileToUpload->full_path)) {
+        if (!file_exists($fileToUpload->tmp_name)) {
             throw new Exception(
-                "Some parts of path $fileToUpload->full_path does not exist."
+                "Some parts of path $fileToUpload->tmp_name does not exist."
             );
-        } else if (!is_dir($fileToUpload->full_path)) {
+        } else if (!is_dir($dest_dir)) {
             throw new Exception(
-                "$fileToUpload->full_path exists but is not a directory."
+                "$dest_dir exists but is not a directory."
             );
-        } else if (!is_writable($fileToUpload->full_path)) {
+        } else if (!is_writable($dest_dir)) {
             throw new Exception(
-                "$fileToUpload->full_path is not writable by web user."
+                "$dest_dir is not writable by web user."
             );
         }
         if (move_uploaded_file(
@@ -200,12 +201,12 @@ error_log("Full path: $fileToUpload->full_path");
         die(
             json_encode(
                 array(
-                    'message'  => "File copy failed",
-                    'progress' => 100,
-                    'error'    => true,
-                    )
+                 'message'  => "File copy failed",
+                 'progress' => 100,
+                 'error'    => true,
                 )
-            );
+            )
+        );
     }
 }
 
@@ -291,6 +292,8 @@ function createSampleCandidateRelations(&$fileToUpload)
     $headers = explode(',', $line);
     array_shift($headers);
 
+    $headers = array_map('trim', $headers);
+
     $headers = array_filter(
         $headers,
         'candidateExists'
@@ -373,6 +376,8 @@ function insertBetaValues(&$fileToUpload)
         $line    = fgets($f);
         $headers = explode(',', $line);
         array_shift($headers);
+
+        $headers = array_map('trim', $headers);
 
         $headers = array_filter(
             $headers,
@@ -544,10 +549,11 @@ function insertMethylationData(&$fileToUpload)
 
 /**
  * This sends progress status to the client.
- * @see XMLHttpRequest.onreadystatechange = 3 (progress)
  *
  * @param integer $progress The progress percentage to report
  * @param string  $message  The message to send
+ *
+ * @see XMLHttpRequest.onreadystatechange = 3 (progress)
  *
  * @return void
  */
