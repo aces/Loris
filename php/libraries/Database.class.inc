@@ -288,7 +288,11 @@ class Database
     {
         $retVal = array();
         foreach ($set as $key => $val) {
-            $retVal[$key] = is_null($val) ? null : htmlspecialchars($val);
+            if ($val === 'Unrated') {
+                $retVal[$key] = '';
+            } else {
+                $retVal[$key] = is_null($val) ? null : htmlspecialchars($val);
+            }
         }
         return $retVal;
     }
