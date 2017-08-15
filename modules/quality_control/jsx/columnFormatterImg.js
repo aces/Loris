@@ -25,18 +25,23 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     row[header] = rowData[index];
   }, this)
 
-  if (column === "Action"){
-    if (inObject(row['Error Message'], errors) ){
+  console.log(row);
+
+  if (column === "MRI PF"){
       var mpfURL = loris.BaseURL+'/mri_parameter_form/?commentID=' + row['CommentID'] +
         '&sessionID=' + row['Session ID'] + '&candID=' + row['DCCID'];
-      return <td> <a href={mpfURL}>MRI Parameter Form</a> </td>;
-    }
+      return <td> <a href={mpfURL}>{cell}</a> </td>;
+
+  }
+  else if (column === "Scan" && cell==="In browser"){
+    var imgURL = loris.BaseURL+'imaging_browser/viewSession/?sessionID='+row['SessionID'];
+    return <td><a href={imgURL}>{cell}</a></td>;
   }
 
   return <td>{cell}</td>;
 }
+
 function inObject(key, object){
-  console.log("checking");
   for (var i = 0; i<Object.keys(object).length; i++){
     if (key === object[i]){
       return true;
