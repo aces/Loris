@@ -25,14 +25,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 {
     public $hasWritePermission = false;
     public $AjaxModule         = true;
-    public $errors = array(
-                        1 => " MRI PF incomplete, Tarchive exists, scan inserted in browser, QC pass",
-                        2 => " MRI PF Completed = No Scan, No Tarchive, scan inserted in browser, QC pass",
-                        3 => " MRI PF incomplete, No Tarchive, scan inserted in browser, QC pass",
-                        4 => " MRI PF Completed = No Scan, Tarchive exists, scan inserted in browser, QC pass"
-                     );
-
-
 
     /**quality_control
      * Check user permissions
@@ -120,9 +112,13 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         // Form Elements
         $this->addBasicText('candId', 'DCCID', ["size" => 9, "maxlength" => 7]);
         $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
-        $this->addSelect('errorMessage', 'Error Message', $errorList);
+        //$this->addSelect('errorMessage', 'Error Message', $errorList);
+        $this->addSelect('t1ScanDoneInMRIPF', 'T1 Scan Done', array("Yes"=>"Yes", "No"=>"No"));
+        $this->addSelect('mriParameterForm', "MRI Parameter Form", array("Complete"=>"Complete", "Incomplete"=>"Incomplete"));
+        $this->addSelect('t1QCStatus', 'T1 QC Status', array( "Pass"=>"Pass", "Fail"=>"Fail"));
+        $this->addSelect('scanInImagingBrowser', 'Scan Status', array("Found"=>"Found in Imaging Browser", "Missing"=> "Missing From Imaging Browser"));
         $this->addSelect('uploadedBy', 'Uploaded By', $uploaderList);
-        $this->addSelect('PatientName', 'Patient ID', $namesList);
+        //$this->addSelect('PatientName', 'Patient ID', $namesList);
         $this->addSelect('site', 'Site', $siteList);
         // $this->tpl_data["hasWritePermission"] = $this->hasWritePermission;
         return true;
@@ -138,17 +134,18 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 
         $db =& Database::singleton();
 
-        $query1 =  " FROM (
+        // MRI PF incomplete, QC Pass, Tarchive Exists, scan in browser
+        $query =  " FROM (
                    SELECT c.PSCID,
                    s.ID as SessionID,
                    s.CandID as cand_id,
                    s.Visit_label as visit_label,
                    'Incomplete' as mri_parameter_form,
                    ' ' as t1_scan_done,
-                   t.ArchiveLocation as tarchive_loc,
-                   'Pass' as qc_status,
-                   'In browser' as scan_loc,
-                   mu.UploadedBy as uploaded_by,
+                   t.tarchiveID as tarchive_loc,
+                   'Found' as scan_location,
+                   qc.QCStatus as qc_status,
+                   mu.uploadedBy as uploaded_by,
                    f.CommentID as CommentID
             FROM flag f
             LEFT JOIN session s ON (f.SessionID=s.ID)
@@ -162,21 +159,21 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                   AND f.Test_name='mri_parameter_form'
                   AND s.Active='Y'
                   AND s.CenterID <> '1'
-                  AND t.TarchiveID IS NOT NULL
+                  AND t.ArchiveLocation IS NOT NULL
                   AND fi.AcquisitionProtocolID=44
-                  AND m.T1_Scan_done IS NULL
-                  AND qc.QCStatus = 'Pass'";
+                  AND m.T1_Scan_done IS NULL";
 
-      $query2 =  "SELECT c.PSCID,
+      // MRI PF complete, T1_Scan_done = NO, QC = Pass, Scan in Browser
+      $query = $query . " UNION ALL " . "SELECT c.PSCID,
                    s.ID as SessionID,
                    s.CandID as cand_id,
                    s.Visit_label as visit_label,
                    'Complete' as mri_parameter_form,
                    'No' as t1_scan_done,
-                   ' ' as tarchive_loc,
-                   'Pass' as qc_status,
-                   'In browser' as scan_loc,
-                   mu.UploadedBy as uploaded_by,
+                   t.tarchiveID as tarchive_loc,
+                   'Found' as scan_location,
+                   qc.QCStatus as qc_status,
+                   mu.uploadedBy as uploaded_by,
                    f.CommentID as CommentID
             FROM flag f
             LEFT JOIN session s ON (f.SessionID=s.ID)
@@ -189,77 +186,38 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             WHERE f.CommentID NOT LIKE 'DDE%'
                   AND f.Test_name='mri_parameter_form'
                   AND f.Administration <> 'None'
-                  AND t.TarchiveID IS NULL
                   AND s.Active='Y'
                   AND s.CenterID <> '1'
                   AND f.Data_entry='Complete'
                   AND fi.AcquisitionProtocolID = 44
-                  AND m.T1_Scan_done IS NOT NULL
-                  AND m.T1_Scan_done != 'Complete'
-                  AND qc.QCStatus = 'Pass'";
+                  AND (m.T1_Scan_done IS NOT NULL
+                    AND m.T1_Scan_done != 'Complete'
+                    AND m.T1_Scan_done != 'Partial')";
 
-      $query3 =  " SELECT c.PSCID,
-                   s.ID as SessionID,
-                   s.CandID as cand_id,
-                   s.Visit_label as visit_label,
-                   'Incomplete' as mri_parameter_form,
-                   ' ' as t1_scan_done,
-                   ' ' as tarchive_loc,
-                   'Pass' as qc_status,
-                   'In browser' as scan_loc,
-                   mu.UploadedBy as uploaded_by,
-                   f.CommentID as CommentID
-            FROM flag f
-            LEFT JOIN session s ON (f.SessionID=s.ID)
-            LEFT JOIN files fi ON (fi.SessionID = f.SessionID)
-            LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
-            LEFT JOIN tarchive t ON (t.SessionID=s.ID)
-            LEFT JOIN candidate c ON (s.CandID=c.CandID)
-            LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
-            LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID)
-            WHERE f.CommentID NOT LIKE 'DDE%'
-                  AND f.Test_name='mri_parameter_form'
-                  AND s.Active='Y'
-                  AND s.CenterID <> '1'
-                  AND t.TarchiveID IS NULL
-                  AND fi.AcquisitionProtocolID=44
-                  AND m.T1_Scan_done IS NULL
-                  AND qc.QCStatus = 'Pass'";
-
-      $query4 = "SELECT c.PSCID,
+      // MRI PF Complete, scan done = No,
+     $query = $query . " UNION ALL " . " SELECT c.PSCID,
                    s.ID as SessionID,
                    s.CandID as cand_id,
                    s.Visit_label as visit_label,
                    'Complete' as mri_parameter_form,
-                   'No' as t1_scan_done,
-                   t.ArchiveLocation as tarchive_loc,
-                   'Pass' as qc_status,
-                   'In browser' as scan_loc,
-                   mu.UploadedBy as uploaded_by,
+                   'Yes' as t1_scan_done,
+                   t.tarchiveID as tarchive_loc,
+                   'Missing' as scan_location,
+                    ' ' as qc_status,
+                   mu.uploadedBy as uploaded_by,
                    f.CommentID as CommentID
-            FROM flag f
+                   FROM flag f
             LEFT JOIN session s ON (f.SessionID=s.ID)
-            LEFT JOIN files fi ON (fi.SessionID = f.SessionID)
             LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
             LEFT JOIN tarchive t ON (t.SessionID=s.ID)
             LEFT JOIN candidate c ON (s.CandID=c.CandID)
-            LEFT JOIN files_qcstatus qc ON (qc.FileID=fi.FileID)
             LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID)
             WHERE f.CommentID NOT LIKE 'DDE%'
                   AND f.Test_name='mri_parameter_form'
-                  AND f.Administration <> 'None'
-                  AND t.TarchiveID IS NOT NULL
                   AND s.Active='Y'
                   AND s.CenterID <> '1'
-                  AND f.Data_entry='Complete'
-                  AND fi.AcquisitionProtocolID = 44
-                  AND m.T1_Scan_done != 'Complete'
-                  AND qc.QCStatus = 'Pass') as tmp";
-
-        $query = $query1 . " UNION ALL " .
-                 $query2 . " UNION ALL " .
-                 $query3 . " UNION ALL " .
-                 $query4 ;
+                  AND (m.T1_Scan_done = 'Complete' OR m.T1_Scan_done = 'Partial')
+                  AND s.ID NOT IN (SELECT SessionID FROM files fi where fi.AcquisitionProtocolID=44)) as tmp";
 
         $this->query = $query;
         $this->columns = [
@@ -270,8 +228,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                           'mri_parameter_form',
                           't1_scan_done',
                           'tarchive_loc',
+                          'scan_location',
                           'qc_status',
-                          'scan_loc',
                           'uploaded_by',
                           'CommentID',
                          ];
@@ -284,8 +242,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             mri_parameter_form,
             t1_scan_done,
             tarchive_loc,
+            scan_location,
             qc_status,
-            scan_loc,
             uploaded_by,
             CommentID';
 
@@ -296,11 +254,11 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                                'Session ID',
                                'DCCID',
                                'Visit Label',
-                               'MRI PF',
-                               'T1 Scan Done',
+                               'MRI Parameter Form',
+                               'T1 Scan Done in MRI PF',
                                'Tarchive',
-                               'QC Status',
-                               'Scan',
+                               'Scan in Imaging Browser',
+                               'T1 QC Status',
                                'Uploaded By',
                                'CommentID',
                             ];

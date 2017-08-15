@@ -12,30 +12,26 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     return null;
   }
 
-  var errors = {
-                        1 : " MRI PF incomplete, Tarchive exists, scan inserted in browser, QC pass",
-                        2 : " MRI PF Completed = No Scan, No Tarchive, scan inserted in browser, QC pass",
-                        3 : " MRI PF incomplete, No Tarchive, scan inserted in browser, QC pass",
-                        4 : " MRI PF Completed = No Scan, Tarchive exists, scan inserted in browser, QC pass"
-  };
-
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this)
 
-  console.log(row);
-
-  if (column === "MRI PF"){
-      var mpfURL = loris.BaseURL+'/mri_parameter_form/?commentID=' + row['CommentID'] +
+  if (column === "MRI Parameter Form"){
+      var mpfURL = loris.BaseURL + '/mri_parameter_form/?commentID=' + row['CommentID'] +
         '&sessionID=' + row['Session ID'] + '&candID=' + row['DCCID'];
       return <td> <a href={mpfURL}>{cell}</a> </td>;
 
   }
-  else if (column === "Scan" && cell==="In browser"){
-    var imgURL = loris.BaseURL+'imaging_browser/viewSession/?sessionID='+row['SessionID'];
+  else if (column === "Scan In Imaging Browser" && cell==="Found"){
+    var imgURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID='+row['Session ID'];
     return <td><a href={imgURL}>{cell}</a></td>;
+  }
+
+  else if (column === "Tarchive" && cell !== null ){
+    var tarchiveURL = loris.BaseURL + '/dicom_archive/viewDetails/?tarchiveID='+cell;
+    return <td><a href = {tarchiveURL}>Tarchive</a></td>;
   }
 
   return <td>{cell}</td>;
