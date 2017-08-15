@@ -138,12 +138,9 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 
         $db =& Database::singleton();
 
-        /* MRI Parameter Form Completed, Answer = No T1 Scan
-        * No DICOM recorded
-        * Scan in Browser and QC Status = Pass*/
-
-       // print_r($this->errors[3]);
-        $query =  " FROM (
+        // errors[1]= "(T1) MRI PF Completed = No Scan, No DICOM logged in Archive but scan is inserted and in browser",
+        // errors[1] = "(T1) MRI PF incomplete, Tarchive exists, QC Pass"
+        $query1 =  " FROM (
             SELECT c.PSCID,
                    s.ID as SessionID,
                    s.CandID as cand_id,
@@ -167,9 +164,10 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                   AND t.TarchiveID IS NOT NULL
                   AND fi.AcquisitionProtocolID=44
                   AND m.T1_Scan_done IS NULL
-                  AND qc.QCStatus = 'Pass'"
-             . " UNION ALL " .
-            "SELECT c.PSCID,
+                  AND qc.QCStatus = 'Pass'";
+
+      // errors[2] = "(T1) MRI PF Complete = No scan, No DICOM Logged in Archive, QC pass, scan inserted in browser",
+      $query2 =  "SELECT c.PSCID,
                 s.ID as SessionID,
                 s.CandID as cand_id,
                 s.Visit_label as visit_label,
@@ -193,10 +191,11 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                   AND s.CenterID <> '1'
                   AND f.Data_entry='Complete'
                   AND fi.AcquisitionProtocolID = 44
-                  AND m.T1_Scan_done = 'No'
-                  AND qc.QCStatus = 'Pass'"
-                  ." UNION ALL ".
-            "SELECT c.PSCID,
+                  AND m.T1_Scan_done != 'Complete'
+                  AND qc.QCStatus = 'Pass'";
+
+      //errors[3]
+      $query3 =  "SELECT c.PSCID,
                s.ID as SessionID,
                s.CandID as cand_id,
                s.Visit_label as visit_label,
@@ -219,9 +218,10 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                   AND t.TarchiveID IS NOT NULL
                   AND fi.AcquisitionProtocolID=45
                   AND m.T2_Scan_done IS NULL
-                  AND qc.QCStatus = 'Pass'"
-                   . " UNION ALL " .
-            "SELECT c.PSCID,
+                  AND qc.QCStatus = 'Pass'";
+
+      // errors[4]
+      $query4 =  "SELECT c.PSCID,
                 s.ID as SessionID,
                 s.CandID as cand_id,
                 s.Visit_label as visit_label,
@@ -245,8 +245,13 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                   AND s.CenterID <> '1'
                   AND f.Data_entry='Complete'
                   AND fi.AcquisitionProtocolID = 45
-                  AND m.T2_Scan_done = 'No'
+                  AND m.T2_Scan_done != 'Complete'
                   AND qc.QCStatus = 'Pass') as tmp";
+
+        $query = $query1 . " UNION ALL " .
+                 $query2 . " UNION ALL " .
+                 $query3 . " UNION ALL " .
+                 $query4 ;
 
         $this->query = $query;
         $this->columns = [
