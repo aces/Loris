@@ -139,13 +139,16 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $db =& Database::singleton();
 
         $query1 =  " FROM (
-            SELECT c.PSCID,
+                   SELECT c.PSCID,
                    s.ID as SessionID,
                    s.CandID as cand_id,
                    s.Visit_label as visit_label,
-                   ('" .$this->errors[1] . "') as error_message,
+                   'Incomplete' as mri_parameter_form,
+                   ' ' as t1_scan_done,
+                   t.ArchiveLocation as tarchive_loc,
+                   'Pass' as qc_status,
+                   'In browser' as scan_loc,
                    mu.UploadedBy as uploaded_by,
-                   (' ') as action,
                    f.CommentID as CommentID
             FROM flag f
             LEFT JOIN session s ON (f.SessionID=s.ID)
@@ -165,13 +168,16 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                   AND qc.QCStatus = 'Pass'";
 
       $query2 =  "SELECT c.PSCID,
-                s.ID as SessionID,
-                s.CandID as cand_id,
-                s.Visit_label as visit_label,
-                ('" .$this->errors[2] . "') as error_message,
-                mu.UploadedBy as uploaded_by,
-                (' ') as action,
-                f.CommentID as CommentID
+                   s.ID as SessionID,
+                   s.CandID as cand_id,
+                   s.Visit_label as visit_label,
+                   'Complete' as mri_parameter_form,
+                   'No' as t1_scan_done,
+                   ' ' as tarchive_loc,
+                   'Pass' as qc_status,
+                   'In browser' as scan_loc,
+                   mu.UploadedBy as uploaded_by,
+                   f.CommentID as CommentID
             FROM flag f
             LEFT JOIN session s ON (f.SessionID=s.ID)
             LEFT JOIN files fi ON (fi.SessionID = f.SessionID)
@@ -188,6 +194,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                   AND s.CenterID <> '1'
                   AND f.Data_entry='Complete'
                   AND fi.AcquisitionProtocolID = 44
+                  AND m.T1_Scan_done IS NOT NULL
                   AND m.T1_Scan_done != 'Complete'
                   AND qc.QCStatus = 'Pass'";
 
@@ -195,9 +202,12 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                    s.ID as SessionID,
                    s.CandID as cand_id,
                    s.Visit_label as visit_label,
-                   ('" .$this->errors[3] . "') as error_message,
+                   'Incomplete' as mri_parameter_form,
+                   ' ' as t1_scan_done,
+                   ' ' as tarchive_loc,
+                   'Pass' as qc_status,
+                   'In browser' as scan_loc,
                    mu.UploadedBy as uploaded_by,
-                   (' ') as action,
                    f.CommentID as CommentID
             FROM flag f
             LEFT JOIN session s ON (f.SessionID=s.ID)
@@ -216,14 +226,17 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                   AND m.T1_Scan_done IS NULL
                   AND qc.QCStatus = 'Pass'";
 
-      $query4 =  "SELECT c.PSCID,
-                s.ID as SessionID,
-                s.CandID as cand_id,
-                s.Visit_label as visit_label,
-                ('" .$this->errors[4] . "') as error_message,
-                mu.UploadedBy as uploaded_by,
-                (' ') as action,
-                f.CommentID as CommentID
+      $query4 = "SELECT c.PSCID,
+                   s.ID as SessionID,
+                   s.CandID as cand_id,
+                   s.Visit_label as visit_label,
+                   'Complete' as mri_parameter_form,
+                   'No' as t1_scan_done,
+                   t.ArchiveLocation as tarchive_loc,
+                   'Pass' as qc_status,
+                   'In browser' as scan_loc,
+                   mu.UploadedBy as uploaded_by,
+                   f.CommentID as CommentID
             FROM flag f
             LEFT JOIN session s ON (f.SessionID=s.ID)
             LEFT JOIN files fi ON (fi.SessionID = f.SessionID)
@@ -254,13 +267,28 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                           'SessionID',
                           'cand_id',
                           'visit_label',
-                          'error_message',
+                          'mri_parameter_form',
+                          't1_scan_done',
+                          'tarchive_loc',
+                          'qc_status',
+                          'scan_loc',
                           'uploaded_by',
-                          'action',
                           'CommentID',
                          ];
 
-        $this->group_by = 'PSCID, SessionID, cand_id, visit_label, error_message, uploaded_by, CommentID, Action';
+
+        $this->group_by = 'PSCID,
+            SessionID,
+            cand_id,
+            visit_label,
+            mri_parameter_form,
+            t1_scan_done,
+            tarchive_loc,
+            qc_status,
+            scan_loc,
+            uploaded_by,
+            CommentID';
+
         $this->order_by = 'PSCID';
 
         $this->headers      = [
@@ -268,10 +296,13 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                                'Session ID',
                                'DCCID',
                                'Visit Label',
-                               'Error Message',
+                               'MRI PF',
+                               'T1 Scan Done',
+                               'Tarchive',
+                               'QC Status',
+                               'Scan',
                                'Uploaded By',
-                               'Action',
-                                'CommentID',
+                               'CommentID',
                             ];
 
         //$this->tpl_data['hiddenHeaders'] = json_encode(['CommentID']);
