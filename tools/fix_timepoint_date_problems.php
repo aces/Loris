@@ -18,10 +18,10 @@
  * The procedure to correct the problems is:
  * run w/ fix_date option to UPDATE the date fields in the candidate/session table (as needed)
  * run w/ diagnose option to get the difference in batteries
- * run the tool w/ add_instrument option to add missing instruments, and create new feedback 
+ * run the tool w/ add_instrument option to add missing instruments, and create new feedback
  * send email to PSC
  * close Mantis bug
- * 
+ *
  * ways to use this script:
  * -- get a help screen
  * fix_timepoint_date_problems.php help
@@ -47,8 +47,6 @@ set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 $configFile = "../project/config.xml";
 
 require_once __DIR__ . "/../vendor/autoload.php";
-require_once "NDB_Client.class.inc";
-require_once "NDB_BVL_Battery.class.inc";
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize($configFile);
@@ -97,11 +95,13 @@ switch ($action) {
      // new date
      if (!empty($argv[3])) $newDate = $argv[3];
      // date type
-     if (!empty($argv[4])) $dateType = strtolower($argv[4]);
-     // sessionID
-     if (in_array($dateType, array('screening','visit'))) $sessionID = $argv[5];
+     if (!empty($argv[4])){
+         $dateType = strtolower($argv[4]);
+         // sessionID only present when dateType defined
+         if (in_array($dateType, array('screening','visit'))) $sessionID = $argv[5];
+     }
      break;
-    
+
  case 'add_instrument':
      // sessionID
      $sessionID = $argv[3];
@@ -116,13 +116,13 @@ switch ($action) {
 */
 // check the $action options
 if (!in_array($action, array('diagnose', 'fix_date', 'add_instrument'))) {
-    fwrite(STDERR, "Error, invalid 1st argument ($action).\n Available options are:'diagnose','fix_date','add_instrument'\n");
+    fwrite(STDERR, "Error: invalid 1st argument ($action).\n Available options are:'diagnose','fix_date','add_instrument'\n");
     fwrite(STDERR, "For the script syntax type: fix_timepoint_date_problems.php help \n");
     return false;
 }
 // check $candID
 if (!preg_match("/^([0-9]{6})$/", $candID)) {
-    fwrite(STDERR, "Error, invalid 2st argument CandID ($candID).\n It has to be a 6-digit number\n");
+    fwrite(STDERR, "Error: invalid 2st argument CandID ($candID).\n It has to be a 6-digit number\n");
     fwrite(STDERR, "For the script syntax type: fix_timepoint_date_problems.php help \n");
     return false;
 }
@@ -168,9 +168,14 @@ switch ($action)
    */
  case 'fix_date':
      // fix the date (arguments are checked by the function
-     $success = fixDate($candID, $dateType, $newDate, $sessionID);
+     // wrapping in an if/else statement to avoid PHP Notice when $sessionID is empty
+     if (!empty($sessionID)){
+         $success = fixDate($candID, $dateType, $newDate, $sessionID);
+     }else{
+         $success = fixDate($candID, $dateType, $newDate);
+     }
      break;
-    
+
   /**
    * Timepoint Diagnostics
    * Recommended: run the diagnostics once the dates have been fixed, you can also pass the 'correct' date and the date type to see what changes would happen if the dates were different
@@ -195,16 +200,25 @@ switch ($action)
 
        // diagnose - get the list of missing instruments
        try {
-           $listNewInstruments = diagnose($sessionID, $dateType, $newDate);
+           // wrapping in if statement to avoid PHP notice. Checking for both dateType and newDate at the same time since
+           // one should not be set without the other.
+           if (isset($dateType) && isset($newDate)){
+               $listNewInstruments = diagnose($sessionID, $dateType, $newDate);
+           }else{
+               $listNewInstruments = diagnose($sessionID);
+           }
+
        } catch (LorisException $e) {
-       // handle the error and skip to next time point
-           fwrite(STDERR, "Error, failed to get the list of needed instruments for candidate ($candID), timepoint ($sessionID):\n");
-           fwrite(STDERR, $listNewInstruments->getMessage()."\n");
+          // handle the error and skip to next time point
+           fwrite(STDERR, "Error: failed to get the list of needed instruments for candidate ($candID), timepoint ($sessionID):\n");
+           //print error message from dianose function
+           fwrite(STDERR, $e->getMessage(). "\n");
            continue;
        }
 
        // if there are missing instruments
-       if (count($listNewInstruments) > 0) {
+       //if (count($listNewInstruments) > 0) {
+       if (!empty($listNewInstruments) >0){
 
            fwrite(STDERR, "\n Missing instruments are:\n");
 
@@ -249,13 +263,13 @@ function addInstrument($sessionID, $testName)
 
     // create timepoint object
     $timePoint =& TimePoint::singleton($sessionID);
-    
+
     // create battery object
-    $battery =& new NDB_BVL_Battery();
+    $battery = new NDB_BVL_Battery();
 
     // set the SessionID for the battery
     $success = $battery->selectBattery($sessionID);
-    
+
     // check if the instrument is already in the battery
     $existingBattery = $battery->getBattery();
 
@@ -263,13 +277,13 @@ function addInstrument($sessionID, $testName)
     if (in_array($testName, $existingBattery)) {
         throw new LorisException("WARNING, cannot add new instrument ($testName) b/c it's already part of the battery for timepoint ($sessionID) \n");
     }
-    
+
     // add to battery - this method check if the $testName is valid
     $success = $battery->addInstrument($testName);
-    
+
     // get CommentID of the newly assigned instrument
     $query = "SELECT CommentID FROM flag WHERE SessionID='$sessionID' AND Test_name='$testName'";
-    
+
     /*
      * add Feedback
      */
@@ -290,15 +304,15 @@ function addInstrument($sessionID, $testName)
 
     // activate threads
     $success = $feedback->activateThread();
-    
+
     // print the success msg
     fwrite(STDERR,"Added the instrument ($testName) to the battery of the timepoint ($sessionID)\n");
-    
+
     // destroy objects
     unset($timePoint);
     unset($battery);
     unset($feedback);
-    
+
     return;
 }
 
@@ -316,12 +330,13 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
 {
     // check the user $_ENV['USER']
     $user =& User::singleton(getenv('USER'));
+
     if($user->getUsername() == null) {
         throw new LorisException("Error: Database user named " . getenv('USER') . " does not exist. Please create and then retry script\n");
     }
 
     $db =& Database::singleton();
-    
+
     // check the args
     if (empty($dateType) || !in_array($dateType, array('dob', 'edc', 'screening', 'visit')) || empty($newDate)
     || (in_array($dateType, array('screening', 'visit')) && empty($sessionID))) {
@@ -344,16 +359,16 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
         // set and where arrays
         $setArray = array($dateType => $newDate);
         $whereArray = array('CandID' => $candID);
-        
+
         // update candidate table record
         $success = $db->update('candidate', $setArray, $whereArray);
-        
+
         /*
         * add Feedback
         */
         // feedback object
         $feedback =& NDB_BVL_Feedback::singleton($user->getUsername(), $candID);
-        
+
         // add the new thread
         $success = $feedback->createThread('profile', '5', "The date of $dateType has been changed to $newDate.", 'N');
 
@@ -361,7 +376,7 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
         fwrite (STDERR, "Updated $dateType to: $newDate, for candidate $candID. Check the record in the DB! \n");
 
     } else {
-        
+
         // fixing Date_screening or Date_visit
 
         // create timepoint object
@@ -383,7 +398,7 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
         // set and where arrays for the update
         $setArray = array("Date_".$dateType => $newDate);
         $whereArray = array("ID" => $sessionID);
-        
+
         // update session table record
         $success = $db->update('session', $setArray, $whereArray);
 
@@ -392,14 +407,14 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
         */
         // feedback object
         $feedback =& NDB_BVL_Feedback::singleton($user->getUsername(), null, $sessionID);
-        
+
         // add the new thread
         $success = $feedback->createThread('visit', '5', "The date of $dateType has been changed to $newDate.", 'N');
-        
+
         // log the change
         fwrite(STDERR, "Updated date of $dateType to $newDate, for candidate $candID, timepoint $sessionID. Check the DB record!\n");
     } // end if
-    
+
     return;
 }
 
@@ -417,7 +432,7 @@ function diagnose($sessionID, $dateType=null, $newDate=null)
 {
     // check args: sessionID
     if (empty($sessionID)) {
-        throw new LorisException("Error, SessionID missing!");
+        throw new LorisException("Error: SessionID missing!");
     }
     // check args: dateType and newDate
     if (!empty($dateType) || !empty($newDate)) {
@@ -434,12 +449,12 @@ function diagnose($sessionID, $dateType=null, $newDate=null)
         }
         unset($dateArray);
     }
-    
+
     // create timepoint object
     $timePoint =& TimePoint::singleton($sessionID);
 
     // candidate object - needed to get the dob/edc
-//    $candidate =& Candidate::singleton($timePoint->getCandID());
+   // $candidate =& Candidate::singleton($timePoint->getCandID());
 
     // get the statuses and dates of the screening and visit stages to decide what to do w/ each of them
     $stageList['screening']['status'] = $timePoint->getScreeningStatus();
@@ -447,30 +462,30 @@ function diagnose($sessionID, $dateType=null, $newDate=null)
     $stageList['visit']['status'] = $timePoint->getVisitStatus();
     $stageList['visit']['date'] = $timePoint->getDateOfVisit();
     $subProjectID = $timePoint->getSubprojectID();
-    
+
     // define the date of birth to use (dob or edc)
     if (($dateType=='dob' && $subProjectID==1) || ($dateType=='edc' && $subProjectID==2)) $dateBirth=$newDate;
     else $dateBirth = $timePoint->getEffectiveDateOfBirth();
 
     // check if the timepoint is started before attempting to make changes to it
     if ($timePoint->getCurrentStage() == 'Not Started' || empty($stageList['screening']['status'])) {
-        throw new LorisException("Error: Cannot diagnose the non-started timepoints!");
+        throw new LorisException("Error: Cannot diagnose the non-started timepoint ($sessionID) for candidate (".$timePoint->getCandID().")!");
     }
     // check the subProjectID
     if (empty($subProjectID)) {
         throw new LorisException("SubProjectID ($subProjectID) is empty for timepoint ($sessionID)");
     }
-    
+
 
     // initialize the array
     $missingInstruments = array();
-    
+
     // check/diagnose the battery for each stage
     foreach ($stageList as $stage => $stageData) {
-        
+
         // if the stage is started
         if (!empty($stageData['status'])) {
-            
+
             $dateOfStage = (!empty($newDate) && strtolower($dateType)==$stage) ? $newDate : $stageList[$stage]['date'];
 
             // compute subject age for the current stage
@@ -483,20 +498,20 @@ function diagnose($sessionID, $dateType=null, $newDate=null)
             fwrite(STDERR, "Age at $stage: $age [ $dateBirth $dateOfStage]\n");
 
             // create battery object
-            $battery =& new NDB_BVL_Battery();
+            $battery = new NDB_BVL_Battery();
 
             // set the SessionID for the battery
             $success = $battery->selectBattery($sessionID);
-            
+
             // get the existing battery for the stage
             $existingTests = $battery->getBattery($stage);
-            
+
             // determine the correct list of instruments
             $neededTests = Utility::lookupBattery($age, $stage);
 
             // get the differnce between the two batteries
             $difference = array_diff($neededTests, $existingTests);
-            
+
             // add to array to missing instruments
             $missingInstruments = array_merge($missingInstruments, $difference);
 
@@ -508,7 +523,7 @@ function diagnose($sessionID, $dateType=null, $newDate=null)
             unset($difference);
         }
     } // end foreach
-    
+
     return $missingInstruments;
 }
 ?>
