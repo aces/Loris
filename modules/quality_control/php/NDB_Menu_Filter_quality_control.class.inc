@@ -26,10 +26,10 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     public $hasWritePermission = false;
     public $AjaxModule         = true;
     public $errors = array(
-                        1 => "(T1) MRI PF incomplete, Tarchive exists, QC pass",
-                        2 => "(T1) MRI PF Completed = No Scan, scan inserted in browser, QC pass",
-                        3 => "(T2) MRI PF incomplete, Tarchive exists, QC pass",
-                        4 => "(T2) MRI PF Completed = No Scan, scan inserted in browser, QC pass"
+                        1 => " MRI PF incomplete, Tarchive exists, scan inserted in browser, QC pass",
+                        2 => " MRI PF Completed = No Scan, No Tarchive, scan inserted in browser, QC pass",
+                        3 => " MRI PF incomplete, No Tarchive, scan inserted in browser, QC pass",
+                        4 => " MRI PF Completed = No Scan, Tarchive exists, scan inserted in browser, QC pass"
                      );
 
 
@@ -138,8 +138,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 
         $db =& Database::singleton();
 
-        // errors[1]= "(T1) MRI PF Completed = No Scan, No DICOM logged in Archive but scan is inserted and in browser",
-        // errors[1] = "(T1) MRI PF incomplete, Tarchive exists, QC Pass"
         $query1 =  " FROM (
             SELECT c.PSCID,
                    s.ID as SessionID,
@@ -166,7 +164,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                   AND m.T1_Scan_done IS NULL
                   AND qc.QCStatus = 'Pass'";
 
-      // errors[2] = "(T1) MRI PF Complete = No scan, No DICOM Logged in Archive, QC pass, scan inserted in browser",
       $query2 =  "SELECT c.PSCID,
                 s.ID as SessionID,
                 s.CandID as cand_id,
@@ -194,15 +191,14 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                   AND m.T1_Scan_done != 'Complete'
                   AND qc.QCStatus = 'Pass'";
 
-      //errors[3]
-      $query3 =  "SELECT c.PSCID,
-               s.ID as SessionID,
-               s.CandID as cand_id,
-               s.Visit_label as visit_label,
-               ('" .$this->errors[3] . "') as error_message,
-               mu.UploadedBy as uploaded_by,
-               (' ') as action,
-               f.CommentID as CommentID
+      $query3 =  " SELECT c.PSCID,
+                   s.ID as SessionID,
+                   s.CandID as cand_id,
+                   s.Visit_label as visit_label,
+                   ('" .$this->errors[3] . "') as error_message,
+                   mu.UploadedBy as uploaded_by,
+                   (' ') as action,
+                   f.CommentID as CommentID
             FROM flag f
             LEFT JOIN session s ON (f.SessionID=s.ID)
             LEFT JOIN files fi ON (fi.SessionID = f.SessionID)
@@ -215,12 +211,11 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                   AND f.Test_name='mri_parameter_form'
                   AND s.Active='Y'
                   AND s.CenterID <> '1'
-                  AND t.TarchiveID IS NOT NULL
-                  AND fi.AcquisitionProtocolID=45
-                  AND m.T2_Scan_done IS NULL
+                  AND t.TarchiveID IS NULL
+                  AND fi.AcquisitionProtocolID=44
+                  AND m.T1_Scan_done IS NULL
                   AND qc.QCStatus = 'Pass'";
 
-      // errors[4]
       $query4 =  "SELECT c.PSCID,
                 s.ID as SessionID,
                 s.CandID as cand_id,
@@ -240,12 +235,12 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             WHERE f.CommentID NOT LIKE 'DDE%'
                   AND f.Test_name='mri_parameter_form'
                   AND f.Administration <> 'None'
-                  AND t.TarchiveID IS NULL
+                  AND t.TarchiveID IS NOT NULL
                   AND s.Active='Y'
                   AND s.CenterID <> '1'
                   AND f.Data_entry='Complete'
-                  AND fi.AcquisitionProtocolID = 45
-                  AND m.T2_Scan_done != 'Complete'
+                  AND fi.AcquisitionProtocolID = 44
+                  AND m.T1_Scan_done != 'Complete'
                   AND qc.QCStatus = 'Pass') as tmp";
 
         $query = $query1 . " UNION ALL " .
