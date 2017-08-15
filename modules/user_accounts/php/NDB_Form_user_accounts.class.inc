@@ -119,6 +119,9 @@ class NDB_Form_User_Accounts extends NDB_Form
                 if (!empty($defaults[$fieldName])) {
                     $defaults[$fieldName] = htmlspecialchars($defaults[$fieldName]);
                 }
+                else {
+                  $defaults[$fieldName] = "";
+                }
             }
 
             foreach ($defaults['examiner'] as $cid=>$vals) {
