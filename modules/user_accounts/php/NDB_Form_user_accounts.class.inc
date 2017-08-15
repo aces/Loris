@@ -120,7 +120,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                     $defaults[$fieldName] = htmlspecialchars($defaults[$fieldName]);
                 }
                 else {
-                  $defaults[$fieldName] = "";
+                  $defaults[$fieldName] = null;
                 }
             }
 
