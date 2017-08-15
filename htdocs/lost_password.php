@@ -44,7 +44,7 @@ try {
 if (isset($_POST['username'])) {
 
     // create the user object
-    $user =& User::singleton($_POST['username']);
+    $user  =& User::singleton($_POST['username']);
     $email = $user->getData('Email');
 
     // check that the email is valid
