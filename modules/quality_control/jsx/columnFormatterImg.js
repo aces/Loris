@@ -13,10 +13,10 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   var errors = {
-                        1 : "(T1) MRI PF Completed = No Scan, No DICOM logged in Archive but scan is inserted and in browser",
-                        2 : "(T1) MRI Parameter Form Incomplete, Tarchive exists, QC pass",
-                        3 : "(T2) MRI PF Completed = No Scan, No DICOM logged in Archive but scan is inserted and in browser",
-                        4 : "(T2) MRI Parameter Form Incomplete, Tarchive exists, QC pass"
+                        1 : "(T1) MRI PF incomplete, Tarchive exists, QC pass",
+                        2 : "(T1) MRI PF Completed = No Scan, scan inserted in browser, QC pass",
+                        3 : "(T2) MRI PF incomplete, Tarchive exists, QC pass",
+                        4 : "(T2) MRI PF Completed = No Scan, scan inserted in browser, QC pass",
   };
 
   // Create the mapping between rowHeaders and rowData in a row object.
