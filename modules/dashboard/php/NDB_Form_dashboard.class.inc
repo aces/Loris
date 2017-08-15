@@ -113,12 +113,11 @@ class NDB_Form_Dashboard extends NDB_Form
             $this->tpl_data['new_scans']      = $DB->pselectOne(
                 "SELECT COUNT(DISTINCT s.ID)
                  FROM files f 
-                 LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID)
                  LEFT JOIN session s ON (s.ID=f.SessionID)
-		LEFT JOIN candidate c ON (s.CandID=c.CandID)
-                 WHERE fqc.QCStatus IS NULL
-			AND s.Active='Y' AND c.Active='Y'
-			AND s.CenterID <> 1",
+                 LEFT JOIN candidate c ON (s.CandID=c.CandID)
+                 WHERE (MRIQCStatus='' OR MRIQCPending='Y')
+                 AND s.Active='Y' AND c.Active='Y'
+                 AND s.CenterID <> 1",
                 array()
             );
             $this->tpl_data['new_scans_site'] = 'Sites: all';
