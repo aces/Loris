@@ -52,29 +52,38 @@ class Project
     static function &singleton($projectName)
     {
         if (!isset(self::$_instances[$projectName])) {
-            $factory     = \NDB_Factory::singleton();
-            $projectData = $factory->database()->pSelectRow(
-                "
-                SELECT
-                  projectId,
-                  name,
-                  recruitmentTarget as recTarget
-                FROM
-                  Project
-                WHERE name = :v_project_name
-                ",
-                array('v_project_name' => $projectName)
-            );
+            $factory = \NDB_Factory::singleton();
+            $config  = $factory->config();
 
-            if (empty($projectData)) {
-                throw new \LorisException("There is no project named: $projectName");
+            if ($config->getSetting("useProjects") == 'true') {
+                $projectData = $factory->database()->pSelectRow(
+                    "
+                    SELECT
+                      projectId,
+                      name,
+                      recruitmentTarget as recTarget
+                    FROM
+                      Project
+                    WHERE name = :v_project_name
+                    ",
+                    array('v_project_name' => $projectName)
+                );
+
+                if (empty($projectData)) {
+                    throw new \LorisException("No project named: $projectName");
+                }
+
+                $project = new Project();
+
+                $project->projectId         = $projectData['projectId'];
+                $project->projectName       = $projectData['name'];
+                $project->recruitmentTarget = (integer) $projectData['recTarget'];
+            } else {
+                if ($projectName != 'loris') {
+                    throw new \LorisException("This study is not using projects");
+                }
+                $project =& ProjectDefault::singleton('loris');
             }
-
-            $project = new Project();
-
-            $project->projectId         = $projectData['projectId'];
-            $project->projectName       = $projectData['name'];
-            $project->recruitmentTarget = (integer) $projectData['recTarget'];
 
             self::$_instances[$projectName] = $project;
         }
@@ -146,6 +155,18 @@ class Project
     }
 
     /**
+     * Set this project's id
+     *
+     * @param integer $projectId This project's id
+     *
+     * @return void
+     */
+    public function setId($projectId)
+    {
+        $this->projectId = $projectId;
+    }
+
+    /**
      * Get this project's name
      *
      * @return string This project's name
@@ -153,6 +174,18 @@ class Project
     public function getName()
     {
         return $this->projectName;
+    }
+
+    /**
+     * Set this project's name
+     *
+     * @param string $projectName This project's name
+     *
+     * @return void
+     */
+    public function setName($projectName)
+    {
+        $this->projectName = $projectName;
     }
 
     /**

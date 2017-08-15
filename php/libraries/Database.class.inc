@@ -288,7 +288,11 @@ class Database
     {
         $retVal = array();
         foreach ($set as $key => $val) {
-            $retVal[$key] = is_null($val) ? null : htmlspecialchars($val);
+            if ($val === 'Unrated') {
+                $retVal[$key] = '';
+            } else {
+                $retVal[$key] = is_null($val) ? null : htmlspecialchars($val);
+            }
         }
         return $retVal;
     }
@@ -1182,5 +1186,83 @@ class Database
         }
     }
 
+    /**
+     * Checks if we're in a transaction
+     *
+     * @return bool `true`, if in transaction
+     * @throws DatabaseException
+     */
+    public function inTransaction()
+    {
+        return $this->_PDO->inTransaction();
+    }
+
+    /**
+     * Attempts to begin a transaction
+     *
+     * @return bool `true`, on success
+     * @throws DatabaseException
+     */
+    public function beginTransaction()
+    {
+        if ($this->inTransaction()) {
+            throw new DatabaseException(
+                "There is already a database transaction in progress; "
+                . "rollBack() or commit() the current transaction first"
+            );
+        }
+        try {
+            return $this->_PDO->beginTransaction();
+        } catch (PDOException $ex) {
+            //Probably because the driver doesn't support transactions
+            throw new DatabaseException(
+                $ex->getMessage()
+            );
+        }
+    }
+
+    /**
+     * Attempts to roll back a transaction
+     *
+     * @return bool `true`, on success
+     * @throws DatabaseException
+     */
+    public function rollBack()
+    {
+        if (!$this->inTransaction()) {
+            throw new DatabaseException(
+                "Cannot rollBack() when not in a transaction"
+            );
+        }
+        try {
+            return $this->_PDO->rollBack();
+        } catch (PDOException $ex) {
+            throw new DatabaseException(
+                $ex->getMessage()
+            );
+        }
+    }
+
+    /**
+     * Attempts to commit a transaction
+     *
+     * @return bool `true`, on success
+     * @throws DatabaseException
+     */
+    public function commit()
+    {
+        if (!$this->inTransaction()) {
+            throw new DatabaseException(
+                "Cannot commit() when not in a transaction"
+            );
+        }
+        try {
+            return $this->_PDO->commit();
+        } catch (PDOException $ex) {
+            throw new DatabaseException(
+                $ex->getMessage()
+            );
+        }
+    }
 }
 ?>

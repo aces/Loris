@@ -2,7 +2,6 @@
 ALTER TABLE users ADD COLUMN `Phone` varchar(15) default NULL;
 
 -- Associates modules with the service available for each
-DROP TABLE IF EXISTS `notification_modules`;
 CREATE TABLE `notification_modules` (
       `id` int(10) unsigned auto_increment NOT NULL,
       `module_name` varchar(100) NOT NULL,
@@ -16,7 +15,6 @@ CREATE TABLE `notification_modules` (
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
 -- Associates modules with the service available for each
-DROP TABLE IF EXISTS `notification_services`;
 CREATE TABLE `notification_services` (
       `id` int(10) unsigned auto_increment NOT NULL,
       `service` VARCHAR(50) NOT NULL,
@@ -25,7 +23,6 @@ CREATE TABLE `notification_services` (
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
 -- saves users preferences for notification type
-DROP TABLE IF EXISTS `notification_modules_services_rel`;
 CREATE TABLE `notification_modules_services_rel` (
       `module_id` int(10) unsigned NOT NULL,
       `service_id` int(10) unsigned NOT NULL,
@@ -37,7 +34,6 @@ CREATE TABLE `notification_modules_services_rel` (
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
 -- saves users preferences for notification type
-DROP TABLE IF EXISTS `users_notifications_rel`;
 CREATE TABLE `users_notifications_rel` (
       `user_id` int(10) unsigned NOT NULL,
       `module_id` int(10) unsigned NOT NULL,
@@ -52,7 +48,6 @@ CREATE TABLE `users_notifications_rel` (
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
 -- history log
-DROP TABLE IF EXISTS `notification_history`;
 CREATE TABLE `notification_history` (
       `id` int(10) unsigned auto_increment NOT NULL,
       `module_id` int(10) unsigned NOT NULL,
@@ -87,7 +82,6 @@ INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notificat
 INSERT INTO users_notifications_rel SELECT u.ID, nm.id, ns.id FROM users u JOIN notification_modules nm JOIN notification_services ns WHERE nm.module_name='document_repository' AND ns.service='email_text' AND u.Doc_Repo_Notifications='Y';
 
 -- permissions for each notification module
-DROP TABLE IF EXISTS `notification_modules_perm_rel`;
 CREATE TABLE `notification_modules_perm_rel` (
       `notification_module_id` int(10) unsigned NOT NULL,
       `perm_id` int(10) unsigned NOT NULL default '0',
