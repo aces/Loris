@@ -407,7 +407,7 @@ class LorisForm
     public function addElement(
         $type,
         $name,
-        $label,
+        $label='',
         $options=array(),
         $attribs=array()
     ) {
@@ -1922,7 +1922,7 @@ class LorisForm
      *
      * @return array of the form supported by $this->form
      */
-    function createElement($type, $elname, $label, $options, $attribs=array())
+    function createElement($type, $elname, $label='', $options=array(), $attribs=array())
     {
         switch($type) {
         case 'text':
