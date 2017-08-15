@@ -280,8 +280,6 @@ class NDB_Form_User_Accounts extends NDB_Form
                  "fn" => $values['Real_name'],
                 )
             );
-            // set empty string to null
-            
             // If examiner not in table add him,
             // otherwise update the radiologist field
             if (empty($examinerID)) {
