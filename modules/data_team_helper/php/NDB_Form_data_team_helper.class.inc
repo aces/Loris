@@ -242,7 +242,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param null       $test_name   the value of test name
      * @param null       $candID      the value of candidate ID
      * @param null       $visit_label the value of visit label
-     * @param int|string $site        the value of the site
+     * @param int|string $site        the id or default value of the site
      * @param int|null   $project     the id of the project or can be null
      *
      * @return   Array containing a list of feedbacks for
@@ -377,7 +377,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
-     * @param int|string   $site        the value of the site
+     * @param int|string   $site        the id or default value of the site
      * @param int|null     $project     the id of the project or can be null
      *
      * @return unknown
