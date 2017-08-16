@@ -445,11 +445,11 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         // make the set
         foreach ($values as $key => $value) {
-          if (!empty($value)) {
-              $set[$key] = $value; 
-           } else {
-            $set[$key] = null;
-           }
+            if (!empty($value)) {
+                $set[$key] = $value;
+            } else {
+                $set[$key] = null;
+            }
         }
 
         // update the user
