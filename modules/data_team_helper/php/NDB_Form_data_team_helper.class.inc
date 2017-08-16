@@ -143,7 +143,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $visit_array   = array_combine($visit_array, $visit_array);
             $list_of_sites = array();
             $this->tpl_data['visitLabels'] = $visit_array;
-            if (!$user->hasPermission('access_all_profiles')) {
+            if ($user->hasPermission('access_all_profiles')) {
                 // get the list of study sites - to be replaced by the Site object
                 $list_of_sites      = Utility::getSiteList();
                 $default_site_array =array('All Sites' => 'All Sites');
@@ -222,7 +222,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
     function getDefaultSite()
     {
         $user =& User::singleton();
-        if (!$user->hasPermission('access_all_profiles')) {
+        if ($user->hasPermission('access_all_profiles')) {
             $site_default ='All Sites';
         } else {
             $site_default = 'All User Sites';
