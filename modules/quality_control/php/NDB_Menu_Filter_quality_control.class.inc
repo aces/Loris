@@ -114,7 +114,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
         //$this->addSelect('errorMessage', 'Error Message', $errorList);
         $this->addSelect('t1ScanDoneInMRIPF', 'T1 Scan Done', array("Yes"=>"Yes", "No"=>"No"));
-        $this->addSelect('mriParameterForm', "MRI Parameter Form", array("Complete"=>"Complete", "Incomplete"=>"Incomplete"));
+        $this->addSelect('mRIParameterForm', "MRI Parameter Form", array("Complete"=>"Complete", "Incomplete"=>"Incomplete"));
         $this->addSelect('t1QCStatus', 'T1 QC Status', array( "Pass"=>"Pass", "Fail"=>"Fail"));
         $this->addSelect('scanInImagingBrowser', 'Scan Status', array("Found"=>"Found in Imaging Browser", "Missing"=> "Missing From Imaging Browser"));
         $this->addSelect('uploadedBy', 'Uploaded By', $uploaderList);
