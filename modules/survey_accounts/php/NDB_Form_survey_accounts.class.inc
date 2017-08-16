@@ -219,7 +219,7 @@ class NDB_Form_Survey_Accounts extends NDB_Form
 
             $msg_data = array(
                          'study'     => $config->getSetting("title"),
-                         'url'       => $www['url'] . '/survey.php?key=' .
+                         'url'       => $www['url'] . '/survey-react.php?key=' .
                                          urlencode($key),
                          'EmailForm' => $values['email_dialog'],
                         );

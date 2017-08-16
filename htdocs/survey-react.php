@@ -14,6 +14,8 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
+namespace Loris\Behavioural;
+
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
 require_once __DIR__ . "/../vendor/autoload.php";
@@ -21,7 +23,7 @@ require_once 'NDB_Config.class.inc';
 require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Caller.class.inc';
 require_once 'NDB_Client.class.inc';
-require_once 'NDB_BVL_Instrument.class.inc';
+require_once 'NDB_BVL_Instrument_JSON.class.inc';
 require_once 'Log.class.inc';
 
 /**
@@ -56,13 +58,12 @@ class DirectDataEntryMainPage
     function initialize()
     {
         ob_start('ob_gzhandler');
-        $client = new NDB_Client();
+        $client = new \NDB_Client();
         $client->makeCommandLine();
         $client->initialize();
-        $config =& NDB_Config::singleton();
+        $config =& \NDB_Config::singleton();
 
-        $this->caller =& NDB_Caller::singleton();
-
+        $this->caller =& \NDB_Caller::singleton();
         $this->caller->setDataEntryType('Direct');
 
         if (empty($_REQUEST['key'])) {
@@ -70,7 +71,7 @@ class DirectDataEntryMainPage
         }
         $this->key = $_REQUEST['key'];
 
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
         $this->TestName  = $DB->pselectOne(
             "SELECT Test_name FROM participant_accounts
             WHERE OneTimePassword=:key AND Status <> 'Complete'",
@@ -119,7 +120,7 @@ class DirectDataEntryMainPage
      */
     function getCommentID()
     {
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
         return $DB->pselectOne(
             "SELECT CommentID FROM participant_accounts
             WHERE OneTimePassword=:key AND Status <> 'Complete'",
@@ -165,7 +166,7 @@ class DirectDataEntryMainPage
      */
     function updateStatus($status)
     {
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
 
         $currentStatus = $DB->pselectOne(
             'SELECT Status FROM participant_accounts
@@ -200,7 +201,7 @@ class DirectDataEntryMainPage
      */
     function updateComments($ease, $comments)
     {
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
         $DB->update(
             "participant_accounts",
             array(
@@ -220,7 +221,7 @@ class DirectDataEntryMainPage
      */
     function logRequest()
     {
-        $log    = new Log("direct_entry");
+        $log    = new \Log("direct_entry");
         $logmsg = $_SERVER['REMOTE_ADDR'];
         if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             $logmsg .= " (" . $_SERVER['HTTP_X_FORWARDED_FOR'] . ")";
@@ -239,14 +240,19 @@ class DirectDataEntryMainPage
     function display()
     {
         $this->logRequest();
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
+        $json_class = new NDB_BVL_Instrument_JSON();
         $base    = $config->getSetting('base');
         $json    = file_get_contents($base."project/instruments/$this->TestName.json");
         $this->updateStatus('In Progress');
-        $this->tpl_data['lang'] = $_REQUEST['lang'] ? $_REQUEST['lang'] : 'en-ca';
+        $this->tpl_data['lang'] = $json_class->_getLang();
         $this->tpl_data['json'] = htmlspecialchars($json);
-        $smarty = new Smarty_neurodb;
+        $this->tpl_data['initialData'] = $_REQUEST['initialData'];
+        $contextArray = $json_class->_getContext();
+        $contextJSON = json_encode($contextArray);
+        $this->tpl_data['context'] = htmlspecialchars($contextJSON);
+		$smarty = new \Smarty_neurodb;
         $smarty->assign($this->tpl_data);
         $smarty->display('directentry-react.tpl');
     }

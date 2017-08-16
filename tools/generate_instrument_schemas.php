@@ -90,6 +90,9 @@ class schema_generator
                 case "calc":
                     $type = "varchar(255)";
                     break;
+                case "date":
+                    $type = "date(10)";
+                    break;
                 default:
                     echo("unhandled type: $switchType\n");
                     continue 2;

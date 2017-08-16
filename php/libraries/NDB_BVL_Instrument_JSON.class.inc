@@ -39,10 +39,16 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
         $this->page          = $page;
     }
 
+    /**
+     * Returns candidate-related context variables to be accessed during runtime
+     * Allows access to: date of birth, age in months (calculated)
+     * 
+     * @return array containing context variables
+     */
     function _getContext() {
         return array(
-            't1_arm_1' => array(
-                "age_mths" => 1000
+            "t1_arm_1" => array(
+                "age_mths" => 200
             )
         );
     }
@@ -68,7 +74,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
      *                          when no file has yet been saved to the
      *                          instruments/ directory
      *
-     * @return none, but as a side effect displays the Instrument page
+     * @return json   returns the instrument from the .json
      */
     function loadInstrumentFile($filename, $base64 = false)
     {
@@ -79,6 +85,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
             $this->instrument = json_decode($json, true);
             $this->instrument["Elements"] = self::inlineCalcFormulas($this->instrument["Elements"]);
             $this->table = $this->instrument['Meta']['ShortName'];
+            return $json;
         }
     }
 

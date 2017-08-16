@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    <div data-json="{$json}" id="instrument"></div>
+    <div data-json="{$json}" data-initial="{$initialData}" data-inst_lang="{$lang}" data-context="{$context}" id="instrument"></div>
     <div id="container"></div>
 </body>
 </html>

@@ -11,7 +11,11 @@ const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave}) 
       {renderMeta(instrument.Meta)}
       {
         instrument.Elements.filter((element, index) => {
-          if (options.surveyMode && element.HiddenSurvey) return false;
+          if(options) {
+            if (options.surveyMode && element.HiddenSurvey) return false;
+          } else {
+            if (element.HiddenSurvey === true) return false;
+          }
           if (element.DisplayIf === false) return false;
           if (element.DisplayIf === '') return true;
           if (element.Hidden) return false;
