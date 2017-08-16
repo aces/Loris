@@ -24,7 +24,7 @@ cg00021762,0.747602724,0.4233800573,0.1582679939,0.5039519868,0.2587142177,0.229
 
 To enable uploading of large files via the genomic file uploader, update apache configurations to increase size and time limits.  (Sample values suggested below)
 
-Apache configuration file to update : /etc/php5/apache2/php.ini
+Apache configuration file to update is either: /etc/php%phpVersionNumber%/apache2/php.ini OR /etc/php/%phpVersionNumber%/apache2.ini
 
 Sample values:
 
