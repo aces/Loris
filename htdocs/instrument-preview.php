@@ -135,7 +135,12 @@ class InstrumentPreview
 
         foreach (glob($base."project/instruments/*.json") as $file) {
             $instrument = json_decode(file_get_contents($file), true);
-            $instrument["Elements"] = \Loris\Behavioural\NDB_BVL_Instrument_JSON::inlineCalcFormulas($instrument["Elements"]);
+            try {
+                $instrument["Elements"] = \Loris\Behavioural\NDB_BVL_Instrument_JSON::inlineCalcFormulas($instrument["Elements"]);
+            } catch (Exception $e) {
+                 echo "Error in instrument {$instrument["Meta"]["ShortName"]}: $e";
+                 continue;
+            }
             array_push($instruments, $instrument);
         }
 

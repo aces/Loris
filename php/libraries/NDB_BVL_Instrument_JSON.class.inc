@@ -11,7 +11,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 namespace Loris\Behavioural;
-
+use \Exception;
 /**
  * JSON Instrument class
  *
@@ -23,7 +23,6 @@ namespace Loris\Behavioural;
  */
 class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
 {
-
     var $InstrumentType = 'JSON';
 
     /**
@@ -134,9 +133,38 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
         return true;
     }
 
-    static function inlineCalcFormulas($elements) {
-      // TODO: Must check for circular references
+    static private function checkForCircularRefs($formulaMap) {
+      foreach ($formulaMap as $key => $formula) {
+        $encounteredVars = [];
+        array_push($encounteredVars, $key);
+        $res = self::referenceTree($formula, $formulaMap, $encounteredVars);
+        if($res !== false)
+          throw new Exception ("Circular reference at $res");
+      }
+    }
 
+    static private function referenceTree($formula, $formulaMap, $encounteredVars) {
+      preg_match_all("/\[\w+\]*/", $formula, $matches);
+      
+      $variables = array_unique(array_map(function($match) {
+        return substr($match, 1, -1);
+      }, $matches[0]));
+         
+      foreach ($variables as $variable) {
+        if (array_key_exists($variable, $formulaMap)) {
+          if (in_array($variable, $encounteredVars))
+            return "$variable";
+ 
+          array_push($encounteredVars, $variable);
+          
+          return self::referenceTree($formulaMap[$variable], $formulaMap, $encounteredVars);
+        }
+      }
+      
+      return false;
+    }
+
+    static function inlineCalcFormulas($elements) {
       $calcElements = array_filter($elements, function ($element) {
           return $element["Type"] === 'calc';
       });
@@ -145,6 +173,8 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
           $result[$element["Name"]] = $element["Formula"];
           return $result;
       }, array());
+      
+      self::checkForCircularRefs($formulaMap);
 
       return array_map(function ($element) use ($formulaMap) {
           if ($element["Type"] !== 'calc') { return $element; }
@@ -165,7 +195,6 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
 
         $variables = array_map(function($match) {
             return substr($match, 1, -1);
-
         }, $matches[0]);
 
         $inlinedFormula = array_reduce($variables, function($result, $variable) use ($formulaMap) {
