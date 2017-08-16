@@ -1922,8 +1922,13 @@ class LorisForm
      *
      * @return array of the form supported by $this->form
      */
-    function createElement($type, $elname, $label='', $options=array(), $attribs=array())
-    {
+    function createElement(
+        $type,
+        $elname,
+        $label='',
+        $options=array(),
+        $attribs=array()
+    ) {
         switch($type) {
         case 'text':
             return $this->createText($elname, $label, $options, $attribs);
