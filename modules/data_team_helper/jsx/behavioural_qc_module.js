@@ -405,13 +405,13 @@ var dataTeamGraphics = React.createClass({
       this.props.instrument ? ("On Instrument " + this.props.instrument) :
         "Across All Instruments"
     );
-      var siteStatus = (
-          this.props.site ? (this.props.site) :
-              "Across All Sites"
+    var siteStatus = (
+      this.props.site ? (this.props.site) :
+        "Across All Sites"
       );
-      var projectStatus = (
-          this.props.project ? (this.props.project) :
-              "Across All Projects"
+    var projectStatus = (
+      this.props.project ? (this.props.project) :
+        "Across All Projects"
       );
 
     return (
