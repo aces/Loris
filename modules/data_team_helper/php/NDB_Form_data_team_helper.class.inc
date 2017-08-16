@@ -64,16 +64,17 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
 
                 $defaults[$percent_completed] = $data['percent_completed'] ?? null;
             }
+            $site_default =$this->getDefaultSite();
         }//sanitizing the input coming from the request
         $sanitize = array_map('htmlspecialchars', $_REQUEST);
-        $defaults["feedback_status"]    = $sanitize['feedback_status'] ?? null;
+        $defaults["feedback_status"]    = $sanitize['feedback_status'] ?? null ;
         $defaults["completion_status"]  = $sanitize['completion_status'] ?? null;
         $defaults["sent_to_dcc_status"] = $sanitize['sent_to_dcc_status'] ?? null;
         $defaults["instrument"]         = $sanitize['instrument'] ?? null;
         $defaults["FieldName"]          = $sanitize['FieldName'] ?? null;
         $defaults["candidate"]          = $sanitize['candidate'] ?? null;
         $defaults["visit_label"]        = $sanitize['visit_label'] ?? null;
-        $defaults["site"]    = $sanitize['site'] ?? $this->getDefaultSite();;
+        $defaults["site"]    = $sanitize['site'] ?? $site_default;
         $defaults["project"] = $sanitize['project'] ?? null;
         $this->tpl_data['instrumentvalue'] = $sanitize['instrument'] ?? null;
         return $defaults;
@@ -95,13 +96,14 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         $config   =& NDB_Config::singleton();
         $sanitize = array_map('htmlspecialchars', $_REQUEST);
 
-        $instrument = $this->getTestNameusingMappedName(
+        $instrument   = $this->getTestNameusingMappedName(
             $sanitize['instrument'] ?? null
         );
+        $site_default =$this->getDefaultSite();
         //construct the instrument drop down..
         $this->tpl_data['visit_label'] = $sanitize['visit_label'] ?? null;
         $this->tpl_data['FieldName']   = $sanitize['FieldName'] ?? null;
-        $this->tpl_data['site']        = $sanitize['site'] ?? $this->getDefaultSite();
+        $this->tpl_data['site']        = $sanitize['site'] ?? $site_default;
         $this->tpl_data['project']     = $sanitize['project'] ?? null;
         if (isset($sanitize['PSCID']) && !empty($sanitize['PSCID'])) {
             $this->tpl_data['PSCID'] = $sanitize['PSCID'];
@@ -130,7 +132,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
                 $instrument,
                 $sanitize['visit_label'] ?? null,
                 $candID,
-                $sanitize['site'] ?? $this->getDefaultSite(),
+                $sanitize['site'] ?? $site_default,
                 $sanitize['project'] ?? null
             );
             $this->tpl_data['percent_completed'] = $percent_completed;
@@ -164,7 +166,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
                      $instrument,
                      $sanitize['visit_label'] ?? null,
                      $candID,
-                     $sanitize['site'] ?? $this->getDefaultSite(),
+                     $sanitize['site'] ?? $site_default,
                      $sanitize['project'] ?? null
                  );
 
@@ -179,7 +181,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
                 $instrument,
                 $sanitize['visit_label'] ?? null,
                 $candID,
-                $sanitize['site'] ?? $this->getDefaultSite(),
+                $sanitize['site'] ?? $site_default,
                 $sanitize['project'] ?? null
             );
 
@@ -191,7 +193,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
                 $instrument,
                 $candID,
                 $sanitize['visit_label'] ?? null,
-                $sanitize['site'] ?? $this->getDefaultSite(),
+                $sanitize['site'] ?? $site_default,
                 $sanitize['project'] ?? null
             );
 
@@ -204,19 +206,23 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
                     $instrument,
                     $sanitize['visit_label'] ?? null,
                     $candID,
-                    $sanitize['site'] ?? $this->getDefaultSite(),
+                    $sanitize['site'] ?? $site_default,
                     $sanitize['project'] ?? null
-
                 );
 
     }
+    /**
+     * Returns the default site value.
+     *
+     * @return string
+     * @throws DatabaseException
+     */
     function getDefaultSite()
     {
-        $user      =& User::singleton();
+        $user =& User::singleton();
         if ($user->hasPermission('access_all_profiles')) {
-            $site_default='All Sites';
-        }
-        else{
+            $site_default ='All Sites';
+        } else {
             $site_default = 'All User Sites';
         }
         return $site_default;
@@ -231,11 +237,11 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * all the feedback at all levels. In the case of just a candidate
      * set we return all feedbacks at every level for that candidate.
      *
-     * @param null     $test_name   the value of test name
-     * @param null     $candID      the value of candidate ID
-     * @param null     $visit_label the value of visit label
+     * @param null       $test_name   the value of test name
+     * @param null       $candID      the value of candidate ID
+     * @param null       $visit_label the value of visit label
      * @param int|string $site        the id of the site or can be the default value
-     * @param int|null $project     the id of the project or can be null
+     * @param int|null   $project     the id of the project or can be null
      *
      * @return   Array containing a list of feedbacks for
      * the appropriate feedback level.
@@ -245,7 +251,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
     function getFeedbacks($test_name = null,
         $candID=null,
         $visit_label=null,
-        $site,
+        $site=null,
         $project=null
     ) {
 
@@ -278,13 +284,11 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         }
         if ($site!='All Sites') {
             if ($site == 'All User Sites') {
-                $user = User::singleton();
-                $siteID = $user->getCenterIDs();
-                $where .= " AND FIND_IN_SET(psc.CenterID, :CID)";
+                $user           = User::singleton();
+                $siteID         = $user->getCenterIDs();
+                $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
                 $qparams['CID'] = implode(',', $siteID);
-            }
-            else
-            {
+            } else {
                 $where         .= " AND s.CenterID = :CID";
                 $qparams['CID'] = $site;
             }
@@ -371,7 +375,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
-     * @param int|string     $site        the id of the site or can be the default value
+     * @param int|string   $site        the id of the site or can be the default value
      * @param int|null     $project     the id of the project or can be null
      *
      * @return unknown
@@ -379,7 +383,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
     function instrumentInConflict($test_name,
         $visit_label=null,
         $candidate=null,
-        $site,
+        $site=null,
         $project=null
     ) {
 
@@ -437,13 +441,11 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         //filter for sites
         if ($site!='All Sites') {
             if ($site == 'All User Sites') {
-                $user = User::singleton();
-                $siteID = $user->getCenterIDs();
-                $where .= " AND FIND_IN_SET(psc.CenterID, :CID)";
+                $user           = User::singleton();
+                $siteID         = $user->getCenterIDs();
+                $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
                 $qparams['CID'] = implode(',', $siteID);
-            }
-            else
-            {
+            } else {
                 $where         .= " AND s.CenterID = :CID";
                 $qparams['CID'] = $site;
             }
@@ -521,7 +523,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
-     * @param int|string     $site        the id of of the site or can be the default value
+     * @param int|string   $site        the id of of the site or can be the default value
      * @param int|null     $project     the id of the project or can be null
      *
      * @return unknown
@@ -529,7 +531,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
     function getIncompleteCandidates($test_name,
         $visit_label=null,
         $candidate=null,
-        $site,
+        $site=null,
         $project=null
     ) {
         $config         =& NDB_Config::singleton();
@@ -582,13 +584,11 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         }
         if ($site!='All Sites') {
             if ($site == 'All User Sites') {
-                $user = User::singleton();
-                $siteID = $user->getCenterIDs();
-                $where .= " AND FIND_IN_SET(psc.CenterID, :CID)";
+                $user           = User::singleton();
+                $siteID         = $user->getCenterIDs();
+                $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
                 $qparams['CID'] = implode(',', $siteID);
-            }
-            else
-            {
+            } else {
                 $where         .= " AND s.CenterID = :CID";
                 $qparams['CID'] = $site;
             }
@@ -612,7 +612,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
-     * @param int|string     $site        the id of the site or can be the default value
+     * @param int|string   $site        the id of the site or can be the default value
      * @param int|null     $project     the id of the project or can be null
      *
      * @return unknown
@@ -620,7 +620,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
     function getInstrumentCount($test_name,
         $visit_label=null,
         $candidate=null,
-        $site,
+        $site=null,
         $project=null
     ) {
         global $DB;
@@ -658,13 +658,11 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         }
         if ($site!='All Sites') {
             if ($site == 'All User Sites') {
-                $user = User::singleton();
-                $siteID = $user->getCenterIDs();
-                $where .= " AND FIND_IN_SET(psc.CenterID, :CID)";
+                $user           = User::singleton();
+                $siteID         = $user->getCenterIDs();
+                $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
                 $qparams['CID'] = implode(',', $siteID);
-            }
-            else
-            {
+            } else {
                 $where         .= " AND s.CenterID = :CID";
                 $qparams['CID'] = $site;
             }
@@ -685,7 +683,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $test_name   the value of test name
      * @param string       $visit_label the value of visit label
      * @param string       $candidate   the value of candidate
-     * @param int|string     $site        the id of the site or can be the default value
+     * @param int|string   $site        the id of the site or can be the default value
      * @param int|null     $project     the id of the project or can be null
      *
      * @return unknown
@@ -693,7 +691,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
     function getCompleteInstrumentCount($test_name,
         $visit_label=null,
         $candidate=null,
-        $site,
+        $site=null,
         $project=null
     ) {
         global $DB;
@@ -732,13 +730,11 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         }
         if ($site!='All Sites') {
             if ($site == 'All User Sites') {
-                $user = User::singleton();
-                $siteID = $user->getCenterIDs();
-                $where .= " AND FIND_IN_SET(psc.CenterID, :CID)";
+                $user           = User::singleton();
+                $siteID         = $user->getCenterIDs();
+                $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
                 $qparams['CID'] = implode(',', $siteID);
-            }
-            else
-            {
+            } else {
                 $where         .= " AND s.CenterID = :CID";
                 $qparams['CID'] = $site;
             }
@@ -762,7 +758,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      * @param unknown_type $instrument  the value of instrument
      * @param null         $visit_label the value of visit lable
      * @param null         $candidate   the value of candidate
-     * @param int|string     $site        the id of the site or can be the default value
+     * @param int|string   $site        the id of the site or can be the default value
      * @param int|null     $project     the id of the project or can be null
      *
      * @return unknown
@@ -770,13 +766,13 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
     function _getPercentCompleted($instrument,
         $visit_label=null,
         $candidate=null,
-        $site,
+        $site=null,
         $project=null
     ) {
 
         $percent_completed =0;
         $total_count       = $this
-            ->getInstrumentCount($instrument, $visit_label, $candidate,$site, $project);
+            ->getInstrumentCount($instrument, $visit_label, $candidate, $site, $project);
 
         $complete_count = $this->getCompleteInstrumentCount(
             $instrument,
