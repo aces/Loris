@@ -14,6 +14,7 @@ const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave}) 
           if (options.surveyMode && element.HiddenSurvey) return false;
           if (element.DisplayIf === false) return false;
           if (element.DisplayIf === '') return true;
+          if (element.Hidden) return false;
           try {
             return Evaluator(element.DisplayIf, contextWithData);
           }  catch(e) {
