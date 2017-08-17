@@ -3,7 +3,7 @@
 /**
  * Add permissions through Ajax, how crazy.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  *  @category Loris
  *  @package  Data_Release
@@ -14,11 +14,12 @@
 
 $DB =& Database::singleton();
 
+$user     = User::singleton();
 $factory  = NDB_Factory::singleton();
 $settings = $factory->settings();
-$baseURL = $settings->getBaseURL();
+$baseURL  = $settings->getBaseURL();
 
-if ($_POST['action'] == 'addpermission') {
+if ($_POST['action'] == 'addpermission' && $user->hasPermission('superuser')) {
     if (!empty($_POST['data_release_id']) && empty($_POST['data_release_version'])) {
         $userid          = $_POST['userid'];
         $data_release_id = $_POST['data_release_id'];
@@ -53,7 +54,7 @@ if ($_POST['action'] == 'addpermission') {
     }
 
     header("Location: {$baseURL}/data_release/?addpermissionSuccess=true");
-} elseif ($_POST['action'] == 'managepermissions') {
+} elseif ($_POST['action'] == 'managepermissions' && $user->hasPermission('superuser')) {
     try {
         $DB->_PDO->beginTransaction();
         $DB->run("TRUNCATE data_release_permissions");

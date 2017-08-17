@@ -2,7 +2,7 @@
 /**
  * This file handles the Data Release for LORIS
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category LORIS
  * @package  Main
@@ -107,8 +107,8 @@ class Data_Release extends \NDB_Menu_Filter
             if (!isset($manage_permissions[$row['UserID']])) {
                 $version = array();
             }
-                $version[] = $row['version'];
-                $manage_permissions[$row['UserID']] = $version;
+            $version[] = $row['version'];
+            $manage_permissions[$row['UserID']] = $version;
         }
 
         $this->tpl_data['superuser']        = $superuser;
