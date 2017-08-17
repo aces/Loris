@@ -72,11 +72,77 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="data_release_id">Data Release Version</label>
+                            <div class="col-xs-8">
+                                <select name="data_release_version" id = "data_release_version" class = "form-fields form-control input-sm">
+                                <option value=""> </option>
+                                    {foreach from = $data_release_versions item=val key=k}
+                                        <option value={$k}>{$val}</option>
+                                    {/foreach}
+                                </select>
+                            </div>
+                        </div>
                         <input type="hidden" name = "action" id = "action" value = "addpermission">
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" id = "uploadButton" role="button" aria-disabled="false">Add Permission</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<button type="button" name = "managepermissions" class = "btn btn-sm btn-primary" data-toggle="modal" data-target="#managePermissionsModal">Manage Permissions</button>
+
+<div class="modal fade" id="managePermissionsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h3 class="modal-title" id="myModalLabel">Manage Permissions</h3>
+            </div>
+            <form name = "uploadForm" id = "uploadForm" method = "POST" enctype="multipart/form-data" action="{$baseurl}/data_release/ajax/AddPermission.php">
+                <div class="modal-body">
+                    <div class="row">
+                        <table  class="table table-hover table-primary table-bordered dynamictable" border="0" width="100%">
+                            <thead>
+                                <tr class="info">
+                                    <th>Users</th>
+                                    <th>Permissions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {foreach from = $manage_permissions key=k item=elem}
+                                <tr>
+                                    <td>
+                                        {$k}
+                                        <!--<input type="hidden" name="{$k}" value="{$k}" readonly>{$k}</input>-->
+                                    </td>
+                                    <td>
+                                    {foreach from = $data_release_versions item=vv key=kk}
+                                        {foreach from = $elem key=key item=value}
+                                           {if in_array($vv, $elem)}
+                                               <input type='checkbox' name='permissions_{$k}[]' value='{$vv}' checked>{$vv}</input>
+                                           {else}
+                                               <input type='checkbox' name='permissions_{$k}[]' value='{$vv}'>{$vv}</input>
+                                           {/if}
+                                           {break} 
+                                        {/foreach}
+                                    {/foreach}
+
+                                    </td>
+                                </tr>
+                                {/foreach}
+                            </tbody>                        
+                        </table>
+                        <input type="hidden" name = "action" id = "action" value = "managepermissions">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id = "uploadButton" role="button" aria-disabled="false">Manage Permissions</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 </div>
             </form>

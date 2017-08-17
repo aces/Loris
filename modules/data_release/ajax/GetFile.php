@@ -3,7 +3,7 @@
 /**
  * Controls access to data release files.
  *
- * PHP Version 7
+ * PHP Version 5
  *
  *  @category Loris
  *  @package  Data_Release
@@ -52,11 +52,8 @@ if (empty($permission)) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
-
-// Output file in downloadable format
-header('Content-Description: File Transfer');
-header("Content-Transfer-Encoding: Binary");
-header("Content-disposition: attachment; filename=\"" . basename($FullPath) . "\"");
-readfile($FullPath);
+$fp = fopen($FullPath, 'r');
+fpassthru($fp);
+fclose($fp);
 
 ?>
