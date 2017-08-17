@@ -12,7 +12,7 @@
 ### B. ViewSession / Volume List
 
 8. Sidebar:  all links work 
-9. 3d panel overlay etc - they work.  add panel checkbox works. 3D only or 3D+Overlay loads files if at least one image exists and is selected
+9. 3d panel overlay etc - they work.  Add panel checkbox works. 3D only or 3D+Overlay loads files if at least one image exists and is selected
 10. "Visit Level Feedback" - pops up QC window (see section E below)
 11. Visit level QC controls (Pass/Fail, Pending, Visit Level Caveat) viewable to all, editable IFF permission imaging_browser_qc
 12. Save button appears IFF permission imaging_browser_qc
@@ -23,7 +23,7 @@
 ### C. Main panel:  per acquisition:
 
 16. Files can be downloaded (links clickable) only IFF has permission (future feature not implemented yet)
-17. Scan-level QC flags (Selected, pass/fail, Caveat emptor) viewable to all, modifiable iff permission imaging_browser_qc. Caveat List link is viewable with the Violated Scans: View all-sites Violated Scans permission
+17. Scan-level QC flags (Selected, pass/fail, Caveat emptor) viewable to all, modifiable IFF permission imaging_browser_qc. Caveat List link is viewable with the Violated Scans: View all-sites Violated Scans permission
 18. Selected:  can be set back to Null (blank)
 19. BrainBrowser link works (launches window)
 20. Link to Comments link works (launches window)
@@ -34,7 +34,7 @@
 22. Viewable by all, editable IFF permission imaging_browser_qc
 23. Comments save, checkboxes save, dropdown values save
 24. Save button works
-25. Comments can be deleted (field cleared). checkboxes, dropdown values too. 
+325. Comments can be deleted (field cleared). checkboxes, dropdown values too. 
 
 ### E. Visit-level QC feedback dialog window
 26. editable IFF permission imaging_browser_qc
