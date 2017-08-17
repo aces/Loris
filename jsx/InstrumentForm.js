@@ -1,45 +1,57 @@
 import Form from './Form';
-import { Evaluator } from './lib/Parser';
+import { Evaluator, UndefinedVariableError, NullVariableError } from './lib/Parser';
 
 const { SelectElement, RadioGroupLabels, RadioGroupElement, CheckboxGroupElement, TextboxElement, DateElement } = Form;
+const INPUT_TYPES = ['radio', 'text', 'checkbox', 'select', 'date'];
+
+function isDisplayed(element, index, data, context, options) {
+  if (options) {
+    if (options.surveyMode && element.HiddenSurvey) return false;
+  } else {
+    if (element.HiddenSurvey === true) return false;
+  }
+  if (element.DisplayIf === false) return false;
+  if (element.DisplayIf === '') return true;
+  if (element.Hidden) return false;
+
+  try {
+    return Evaluator(element.DisplayIf, { ...data, context});
+  } catch(e) {
+    if (!(e instanceof NullVariableError)) {
+      console.log(`Error evaluating DisplayIf property of element ${index}.\n${e}`);
+    }
+
+    return false;
+  }
+}
+
+function isRequired(element, data, context) {
+  if (!INPUT_TYPES.includes(element.Type)) return false;
+
+  const requireResponse = element.Options.RequireResponse;
+  if (typeof(requireResponse) === 'boolean') return requireResponse;
+
+  try {
+    return Evaluator(requireResponse, { ...data, context });
+  } catch (e) {
+    if (!(e instanceof NullVariableError)) {
+      console.log(`Error evaluating RequireResponse property of element ${index}.\n${e}`);
+    }
+
+    return false;
+  }
+}
 
 const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave}) => {
-  const contextWithData = Object.assign({}, data, context);
-  const INPUT_TYPES = ['radio', 'text', 'checkbox', 'select', 'date'];
   return (
     <div>
       {renderMeta(instrument.Meta)}
       {
-        instrument.Elements.filter((element, index) => {
-          if(options) {
-            if (options.surveyMode && element.HiddenSurvey) return false;
-          } else {
-            if (element.HiddenSurvey === true) return false;
-          }
-          if (element.DisplayIf === false) return false;
-          if (element.DisplayIf === '') return true;
-          if (element.Hidden) return false;
-          try {
-            return Evaluator(element.DisplayIf, contextWithData);
-          }  catch(e) {
-            console.log(`Error evaluating DisplayIf property of element ${index} in instrument ${instrument.Meta.ShortName}.\n${e}`);
-            return false;
-          }
-        }).map((element, index) => {
-          if(INPUT_TYPES.includes(element.Type)) {
-            const requireResponse = element.Options.RequireResponse;
-            const required = typeof requireResponse === 'string' ? function() {
-                                                                     try {
-                                                                       Evaluator(requireResponse, contextWithData);
-                                                                     } catch (e) {
-                                                                       console.log(`Error evaluating RequireResponse property of element ${index} in instrument ${instrument.Meta.ShortName}.\n${e}`);
-                                                                       return false;
-                                                                     }
-                                                                   } : requireResponse;
-            return renderElement(element, index, data, onUpdate, required)
-          } 
-          return renderElement(element, index, data, onUpdate)
-        })
+        instrument.Elements.filter(
+          (element, index) => (isDisplayed(element, index, data, context, options))
+        ).map((element, index) => (
+          renderElement(element, index, data, onUpdate, isRequired(element, data, context))
+        ))
       }
     </div>
   );

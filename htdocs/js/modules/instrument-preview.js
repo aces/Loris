@@ -1,7 +1,7 @@
 import InstrumentForm from '../../../jsx/InstrumentForm';
-import { Evaluator } from '../../../jsx/lib/Parser';
+import { Evaluator, NullVariableError } from '../../../jsx/lib/Parser';
 
-const INPUT_ELEMENT_TYPES = ['date', 'radio', 'text', 'calc', 'checkbox'];
+const INPUT_ELEMENT_TYPES = ['select', 'date', 'radio', 'text', 'calc', 'checkbox'];
 
 function getInitialData(instrument) {
   return instrument.Elements.filter((element) => (
@@ -40,10 +40,6 @@ class InstrumentPreview extends React.Component {
       data: initialData,
       lang: 'en-ca',
       context: {
-        t1_arm_1: {
-          lang: '2',
-          age_mths,
-        },
         age_mths,
         lang: '2',
         dob
@@ -84,7 +80,7 @@ class InstrumentPreview extends React.Component {
       try {
         result[element.Name] = String(Evaluator(element.Formula, evaluatorContext));
       } catch (e) {
-        if (!(e instanceof TypeError)) {
+        if (!(e instanceof NullVariableError)) {
           throw e;
         }
       }
@@ -104,9 +100,9 @@ class InstrumentPreview extends React.Component {
 
   updateDOB(date) {
     const age_mths = getAgeInMonths(new Date(date));
-    const t1_arm_1 = Object.assign({}, this.state.context.t1_arm_1, {age_mths});
+    const context = Object.assign({}, this.state.context, {age_mths});
     this.setState({
-      context: Object.assign({}, this.state.context, { t1_arm_1, age_mths, dob: date })
+      context: Object.assign({}, this.state.context, { age_mths, dob: date })
     });
   }
 
@@ -116,11 +112,11 @@ class InstrumentPreview extends React.Component {
       'fr-ca': '1'
     };
 
-    const t1_arm_1 = Object.assign({}, this.state.context.t1_arm_1, {lang: langMap[lang]});
+    const context = Object.assign({}, this.state.context, {lang: langMap[lang]});
 
     this.setState({
       lang,
-      context: Object.assign({}, this.state.context, { t1_arm_1, lang: langMap[lang] })
+      context: Object.assign({}, this.state.context, { lang: langMap[lang] })
     });
   }
 
