@@ -476,7 +476,9 @@ class NDB_Caller
         }
 
         // save instrument form data
-        $success = $instrument->save();
+        if (empty($_POST['login'])) {
+            $success = $instrument->save();
+        }
 
         if ($redirectToOnSuccess !== null && $success !== false) {
             header("Location: $redirectToOnSuccess");
