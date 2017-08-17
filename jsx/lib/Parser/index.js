@@ -1,2 +1,2 @@
-import Evaluator from './js/Evaluator';
-export { Evaluator };
+import Evaluator, { NullVariableError, UndefinedVariableError, ParseError } from './js/Evaluator';
+export { Evaluator, NullVariableError, UndefinedVariableError, ParseError };

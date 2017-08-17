@@ -1,10 +1,22 @@
 import 'mocha';
 import { expect } from 'chai';
-import { Evaluator } from '../../jsx/lib/Parser';
+import { Evaluator, UndefinedVariableError, NullVariableError } from '../../jsx/lib/Parser';
 describe('Parser Unit Tests', () => {
   describe('When passed an empty string', () => {
-    it('Throws an error', () => {
-      expect(() => Evaluator('')).to.throw();
+    it('Returns an empty string', () => {
+      expect(Evaluator('')).to.equal('');
+    })
+  })
+
+  describe('When the expression contains a variable not defined in the scope', () => {
+    it('Throws an UndefinedVariableError', () => {
+      expect(() => Evaluator('[a] + 2', { b: 2 })).to.throw(UndefinedVariableError);
+    })
+  })
+
+  describe('When the expression contains a variable set to null', () => {
+    it('Throws an NullVariableError', () => {
+      expect(() => Evaluator('[a] + 2', { a: null })).to.throw(NullVariableError);
     })
   })
 
@@ -83,7 +95,7 @@ describe('Parser Unit Tests', () => {
       const LOGIC_STR = 'datediff("2017-01-01","2018-07-01","y")';
       const CONTEXT = {a: 2, b: 4};
       const res = Evaluator(LOGIC_STR, CONTEXT);
-      expect(res).to.equal(1.5);
+      expect(res).to.be.closeTo(1.5, 0.01);
     })
   })
 
