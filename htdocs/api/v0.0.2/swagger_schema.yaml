@@ -30,6 +30,7 @@ securityDefinitions:
 produces:
   - application/json
 paths:
+
   /Login:
     post:
       description: >-
@@ -356,7 +357,7 @@ paths:
       description: >-
         Get an object representation of the metadata for that candidate's visit. Any of the Stages may not be present in the returned result if the stage has not started yet or is not enabled for this project (ie. if useScreening is false in Loris, or Approval has not occured)
       tags:
-        - Candidate
+        - Visit
       security:
         - Bearer: []
       parameters:
@@ -381,7 +382,7 @@ paths:
       description: >-
         create the VisitLabel for this candidate, in an unstarted stage if the Visit label provided is valid.
       tags:
-        - Candidate
+        - Visit
       security:
         - Bearer: []
       parameters:
@@ -416,7 +417,135 @@ paths:
             type: object
           examples: 
             error: You are not affiliated with the candidate's site
-          
+
+  /candidates/{candid}/{visit}/instruments:
+    get:
+      description: >-
+        Get a list of the instruments that were administered for that candidate at that visit
+      tags:
+        - Instrument
+      security:
+        - Bearer: []
+      parameters:
+        - name: candid
+          in: path
+          description: The id of the candidate
+          required: true
+          type: string
+        - name: visit
+          in: path
+          description: The visit_label of that candidate's visit
+          required: true
+          type: string
+      responses:
+        '200':
+          description: An array of instruments short_names
+          schema:
+            type: object
+            properties:
+              Meta:
+                type: object
+                properties:
+                  CandID:
+                    type: string
+                  Visit:
+                    type: string
+              Instruments:
+                type: array
+                items:
+                  type: string
+                  description: >-
+                    The instrument short name
+          examples: 
+            Meta:
+              CandID: 123456
+              Visit: V1
+            Instruments:
+              - InstrumentName
+              - AnotherInstrument
+              - ...
+
+  /candidates/{candid}/{visit}/instruments/{instrument}:
+    get:
+      description: >-
+        Get a list of the instruments that were administered for that candidate at that visit
+      tags:
+        - Instrument
+      security:
+        - Bearer: []
+      parameters:
+        - name: candid
+          in: path
+          description: The id of the candidate
+          required: true
+          type: string
+        - name: visit
+          in: path
+          description: The visit_label of that candidate's visit
+          required: true
+          type: string
+        - name: instrument
+          in: path
+          description: The instrument short_name
+          required: true
+          type: string
+      responses:
+        '200':
+          description: And object representation of that candidate instrument's data
+          schema:
+            type: object
+            properties:
+              Meta:
+                $ref: '#/definitions/InstrumentMetadata'
+              $instrument:
+                type: object
+                description: >-
+                  A key-value representation of that instrument data.
+          examples: 
+            Meta:
+              Instrument: $InstrumentName
+              Visit: $VisitLabel
+              Candidate: $CandID
+              DDE: boolean
+            $InstrumentName:
+              FieldName1: Value1
+              FieldName2: Value2
+              ...: ...
+        '404':
+          description: Not Found
+          schema:
+            type: object
+          examples: 
+            error: Invalid instrument for candidate
+            
+    put:
+      description: >-
+        Create of replace an instrument data. Any keys specified in the document that do not match a corresponding field in the form may be ignored. Ommited fields will be nullified. Calculated fields will be overwritten on score calculation.
+      tags:
+        - Instrument
+      security:
+        - Bearer: []
+      parameters:
+        - name: candid
+          in: path
+          description: The id of the candidate
+          required: true
+          type: string
+        - name: visit
+          in: path
+          description: The visit_label of that candidate's visit
+          required: true
+          type: string
+        - name: instrument
+          in: path
+          description: The instrument short_name
+          required: true
+          type: string
+      responses:
+        '201':
+          description: Created
+
+
 definitions:
   Candidate:
     type: object
@@ -479,3 +608,24 @@ definitions:
           - Failure
           - Withdrawal
           - In Progress
+  
+  InstrumentMetadata:
+    type: object
+    description: That instrument metadata
+    properties:
+      Instrument:
+        type: string
+        description: >-
+          The instrument's short name
+      Visit:
+        type: string
+        description: >-
+          The visit label
+      Candidate:
+        type: string
+        description: >-
+          The candidate's CandId
+      DDE:
+        type: boolean
+        description: >-
+          True if the instrument is the double data entry version
