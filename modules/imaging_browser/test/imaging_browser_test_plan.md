@@ -34,7 +34,7 @@
 22. Viewable by all, editable IFF permission imaging_browser_qc
 23. Comments save, checkboxes save, dropdown values save
 24. Save button works
-325. Comments can be deleted (field cleared). checkboxes, dropdown values too. 
+25. Comments can be deleted (field cleared). checkboxes, dropdown values too. 
 
 ### E. Visit-level QC feedback dialog window
 26. editable IFF permission imaging_browser_qc
