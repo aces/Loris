@@ -2,7 +2,7 @@
 /**
  * This file handles the Data Release for LORIS
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category LORIS
  * @package  Main
@@ -72,41 +72,85 @@ class Data_Release extends \NDB_Menu_Filter
                                'upload_date' => 'upload_date',
                               );
 
-        $user_ID   = $DB->pselectOne(
-            "SELECT ID FROM users WHERE userid=:UserID",
-            array('UserID' => $user->getUsername())
-        );
-        $superuser = $DB->pselectOne(
-            "SELECT true FROM users WHERE ID IN "
-            . "(SELECT userid FROM user_perm_rel WHERE "
-            . "permid=1 AND userid=:UserID)",
-            array('UserID' => $user_ID)
-        );
+        $userUpload     = $user->hasPermission("data_release_upload");
+        $userEditAccess = $user->hasPermission("data_release_edit_file_access");
 
-        $results = $DB->pselect(
+        $userids = $DB->pselectColWithIndexKey(
             "SELECT ID, UserID FROM users",
+            array(),
+            "ID"
+        );
+
+        $versionedFiles = $DB->pselect(
+            "SELECT id, file_name, version 
+                  FROM data_release
+                  WHERE version IS NOT NULL AND version <> ''",
             array()
         );
-        $userids = array();
-        foreach ($results as $row) {
-            $userids[$row['ID']] =$row['UserID'];
+
+        $data_release_ids      = array();
+        $data_release_versions = array();
+
+        // TODO clean the 2 forloops below !!!!!
+        foreach ($versionedFiles as $row) {
+            $data_release_ids[$row['id']]           = $row['file_name']
+                . " - "
+                . $row['version'];
+            $data_release_versions[$row['version']] = $row['version'];
         }
 
-        $results          = $DB->pselect(
-            "SELECT id, file_name FROM data_release",
+        //format array in the form $version=>(array of all files with that version)
+        $vFFormatted = array();
+        foreach ($versionedFiles as $fileRow) {
+            $vFFormatted[$fileRow['version']][] = $fileRow['id'];
+        }
+
+        $userFileAccess = $DB->pselect(
+            "SELECT u.UserID, drp.data_release_id, version 
+             FROM users u
+                LEFT JOIN data_release_permissions drp ON (u.ID=drp.userid) 
+                LEFT JOIN data_release dr ON (drp.data_release_id=dr.id)",
             array()
         );
-        $data_release_ids = array();
-        foreach ($results as $row) {
-            $data_release_ids[$row['id']] =$row['file_name'];
+
+        //in order to have a checked box a user must have permission to see all
+        //files belonging to a release version
+
+        //TODO: add these to a function which could be called from the ajax scripts to avoid code duplication
+        //array to hold checked checkboxes in the manage permissions menu
+        $userFileAccessFormatted = array();
+        foreach ($userFileAccess as $row) {
+            $userID = $row['UserID'];
+            $version = $row['version'] ?? null;
+            $releaseFileID = $row['data_release_id'] ?? null;
+            if (isset($version) && $version !== '') {
+                $userFileAccessFormatted[$userID][$version][] = $releaseFileID;
+            } else {
+                $userFileAccessFormatted[$userID] = array();
+            }
         }
 
-        $this->tpl_data['superuser']        = $superuser;
+        //now we can compare the $userFileAccessFormatted to $versionedFilesFormatted
+        //to identify which checkboxes should be checked
+        $manage_permissions = array();
+        foreach ($userFileAccessFormatted as $userID=>$userVersions) {
+            if (empty($userVersions)) {
+                $manage_permissions[$userID] = array();
+            }
+            foreach ($userVersions as $versionName=>$versionFiles) {
+                if (empty(array_diff($vFFormatted[$versionName], $versionFiles))) {
+                    $manage_permissions[$userID][]=$versionName;
+                }
+            }
+        }
+
+        $this->tpl_data['user_upload']      = $userUpload;
+        $this->tpl_data['user_edit_access'] = $userEditAccess;
         $this->tpl_data['userids']          = $userids;
         $this->tpl_data['data_release_ids'] = $data_release_ids;
+        $this->tpl_data['data_release_versions'] = $data_release_versions;
+        $this->tpl_data['manage_permissions']    = $manage_permissions;
 
     }
 
 }
-
-?>
