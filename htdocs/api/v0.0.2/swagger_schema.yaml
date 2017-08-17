@@ -248,3 +248,234 @@ paths:
               - '123456'
               - '342332'
               - ...
+  /candidates:
+    get:
+      description: >-
+        Return a list of the project names in this Loris instance
+      tags:
+        - Candidate
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: >-
+            Returns an array containing all candidates present in this Loris instance
+          schema:
+            type: object
+            properties:
+              Candidates:
+                type: array
+                items:
+                  $ref: '#/definitions/Candidate'
+    post:
+      description: >-
+        Candidate creation endpoint. The candidate will be created at the site of the user using the API's site.
+      tags:
+        - Candidate
+      security:
+        - Bearer: []
+      parameters:
+        - name: candidate
+          in: body
+          schema:
+            type: object
+            properties:
+              Project:
+                type: string
+                default: LORIS
+                description: The name of the project to add this candidate to.
+              PSCID:
+                type: string
+                description: Required if the pscid setting of the project is set to `prompt`
+              DoB:
+                type: string
+                format: date
+              EDC:
+                type: string
+                format: date
+                description: 'Expected date of confinement, required only if the project use EDC.'
+              Gender:
+                type: string
+                enum:
+                  - Male
+                  - Female
+            required:
+              - DoB
+              - Gender
+          required: true
+      responses:
+        '201':
+          description: Candidate created
+          schema:
+            type: object
+            description: The newly created candidate's id
+            example: 
+              Meta:
+                CandID: 123456
+        '409':
+          description: Conflict (The PSCID already exists)
+        '400':
+          description: Bad Request (if any data provided is invalid (PSCID format, date format, gender something other than Male|Female, invalid project name, etc))
+          
+  /candidates/{candid}:
+    get:
+      description: >-
+        Get a specific candidate object along with a list of its visit labels
+      tags:
+        - Candidate
+      security:
+        - Bearer: []
+      parameters:
+        - name: candid
+          in: path
+          description: The id of the candidate
+          required: true
+          type: string
+      responses:
+        '200':
+          description: >-
+            An object representation of that candidate and an array of visit labels
+          schema:
+            type: object
+            properties:
+              Meta:
+                $ref: '#/definitions/Candidate'
+              Visits:
+                type: array
+                description: >-
+                  A list of existing visit label for that candidate
+                items:
+                  type: string
+        '404':
+          description: Not Found
+        '400':
+          description: Bad Request (CandID is invalid of the provided inputs can't be parsed)
+
+  /candidates/{candid}/{visit}:
+    get:
+      description: >-
+        Get an object representation of the metadata for that candidate's visit. Any of the Stages may not be present in the returned result if the stage has not started yet or is not enabled for this project (ie. if useScreening is false in Loris, or Approval has not occured)
+      tags:
+        - Candidate
+      security:
+        - Bearer: []
+      parameters:
+        - name: candid
+          in: path
+          description: The id of the candidate
+          required: true
+          type: string
+        - name: visit
+          in: path
+          description: The visit_label of that candidate's visit
+          required: true
+          type: string
+      responses:
+        '200':
+          description: An object representation of that candidate's visits
+          schema:
+            $ref: '#/definitions/VisitsData'
+        '404':
+          description: Not Found
+    put:
+      description: >-
+        create the VisitLabel for this candidate, in an unstarted stage if the Visit label provided is valid.
+      tags:
+        - Candidate
+      security:
+        - Bearer: []
+      parameters:
+        - name: candid
+          in: path
+          description: The id of the candidate
+          required: true
+          type: string
+        - name: visit
+          in: path
+          description: The visit_label of that candidate's visit
+          required: true
+          type: string
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+          examples:
+            error: Candidate from URL does not match metadata
+        '404':
+          description: Not Found
+          schema:
+            type: object
+          examples:
+            error: Unknown CandID
+        '401':
+          description: Unauthorized
+          schema:
+            type: object
+          examples: 
+            error: You are not affiliated with the candidate's site
+          
+definitions:
+  Candidate:
+    type: object
+    properties:
+      CandID:
+        type: string
+      Project:
+        type: string
+        description: The name of the project that this candidate is from
+      PSCID:
+        type: string
+      EDC:
+        type: string
+        format: date
+        description: Estimated date of confinement
+      DoB:
+        type: string
+        format: date
+        description: date of Birth
+      Gender:
+        type: string
+        enum:
+          - Male
+          - Female
+
+  VisitsData:
+    type: object
+    properties:
+      Meta:
+        $ref: '#/definitions/VisitMetadata'
+      Stages:
+        properties:
+          Screening:
+            $ref: '#/definitions/VisitSummary'
+          Visit:
+            $ref: '#/definitions/VisitSummary'
+          Approval:
+            $ref: '#/definitions/VisitSummary'
+            
+  VisitMetadata:
+    type: object
+    properties:
+      CandID:
+        type: string
+      Visits:
+        type: string
+      Battery:
+        type: string
+        description: Name of the cohort
+        
+  VisitSummary:
+    type: object
+    properties:
+      Date:
+        type: string
+        format: date
+      Status:
+        enum:
+          - Pass
+          - Failure
+          - Withdrawal
+          - In Progress
