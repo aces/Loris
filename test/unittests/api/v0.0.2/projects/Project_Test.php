@@ -14,6 +14,7 @@ class Project_Test extends BaseTestCase
         // Create the Mock classes, so that the factory doesn't die.
         $this->getMockBuilder('NDB_Config')->setMockClassName("MockNDB_Config")->getMock();
         $this->getMockBuilder('Database')->setMockClassName("MockDatabase")->getMock();
+        $this->getMockBuilder('Project')->disableOriginalConstructor()->setMockClassName("MockProject")->getMock();
 
         $this->Factory = \NDB_Factory::singleton();
         $this->Factory->setTesting(true);

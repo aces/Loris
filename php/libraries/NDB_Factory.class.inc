@@ -290,7 +290,15 @@ class NDB_Factory
      */
     public function project($projectName)
     {
-        return \Project::singleton($projectName);
+        $project = null;
+
+        if ($this->Testing) {
+            $project = MockProject::singleton($projectName);
+        } else {
+            $project = \Project::singleton($projectName);
+        }
+
+        return $project;
     }
 
     /**
