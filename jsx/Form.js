@@ -260,7 +260,10 @@ const RadioGroupElement = React.createClass({
 const CheckboxGroupElement = React.createClass({
   propTypes: {
     name: React.PropTypes.string.isRequired,
-    options: React.PropTypes.object.isRequired,
+    options: React.PropTypes.oneOfType([
+      React.PropTypes.array,
+      React.PropTypes.object
+    ]),
     label: React.PropTypes.string,
     value: React.PropTypes.string,
     id: React.PropTypes.string,
@@ -351,7 +354,10 @@ var SelectElement = React.createClass({
 
   propTypes: {
     name: React.PropTypes.string.isRequired,
-    options: React.PropTypes.object.isRequired,
+    options: React.PropTypes.oneOfType([
+      React.PropTypes.array,
+      React.PropTypes.object
+    ]),
     label: React.PropTypes.string,
     value: React.PropTypes.oneOfType([
       React.PropTypes.string,
