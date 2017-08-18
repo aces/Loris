@@ -1,5 +1,4 @@
-import InstrumentForm from '../../../jsx/InstrumentForm';
-import { Evaluator, NullVariableError } from '../../../jsx/lib/Parser';
+import InstrumentFormContainer from '../../../jsx/InstrumentFormContainer';
 
 const INPUT_ELEMENT_TYPES = ['select', 'date', 'radio', 'text', 'calc', 'checkbox'];
 
@@ -37,7 +36,6 @@ class InstrumentPreview extends React.Component {
 
     this.state = {
       selectedInstrument: this.names[2],
-      data: initialData,
       lang: 'en-ca',
       context: {
         age_mths,
@@ -50,7 +48,6 @@ class InstrumentPreview extends React.Component {
     };
 
     this.updateSelectedInstrument = this.updateSelectedInstrument.bind(this);
-    this.updateInstrumentData = this.updateInstrumentData.bind(this);
     this.updateLang = this.updateLang.bind(this);
     this.updateSurveyMode = this.updateSurveyMode.bind(this);
   }
@@ -65,36 +62,6 @@ class InstrumentPreview extends React.Component {
   updateSelectedInstrument(name) {
     this.setState({
       selectedInstrument: name
-    });
-  }
-
-  updateInstrumentData(fieldName, value) {
-    const instrumentData = Object.assign({}, this.state.data[this.state.selectedInstrument], {[fieldName]: value});
-
-    const calcElements = this.props.instruments[this.state.selectedInstrument].Elements.filter(
-      (element) => (element.Type === 'calc')
-    );
-
-    const evaluatorContext = Object.assign({}, this.state.context, instrumentData);
-    const calculatedValues = calcElements.reduce((result, element) => {
-      try {
-        result[element.Name] = String(Evaluator(element.Formula, evaluatorContext));
-      } catch (e) {
-        if (!(e instanceof NullVariableError)) {
-          throw e;
-        }
-      }
-      return result;
-    }, {});
-
-    const newData = Object.assign(
-      {},
-      this.state.data,
-      {[this.state.selectedInstrument]: Object.assign({}, instrumentData, calculatedValues)}
-    );
-
-    this.setState({
-      data: newData
     });
   }
 
@@ -190,60 +157,20 @@ class InstrumentPreview extends React.Component {
           </div>
         </div>
         <div style={{padding: '2em 5em 2em 5em'}}>
-          <InstrumentForm
-            instrument={localizeInstrument(instruments[this.state.selectedInstrument], this.state.lang)}
+          <InstrumentFormContainer
+            key={this.state.selectedInstrument}
+            instrument={instruments[this.state.selectedInstrument]}
             lang={this.state.lang}
-            data={this.state.data[this.state.selectedInstrument]}
+            initialData={getInitialData(this.props.instruments[this.state.selectedInstrument])}
             context={this.state.context}
-            onUpdate={this.updateInstrumentData}
             options={this.state.options}
+            onSave={() => { console.log('save!') }}
           />
         </div>
       </div>
     );
   }
 }
-
-function localizeInstrument(rawInstrument, lang = 'en-ca') {
-  const instrument = JSON.parse(JSON.stringify(rawInstrument));
-
-  try {
-    instrument['Meta']['LongName'] = instrument['Meta']['LongName'][lang];
-
-    const convertedElements = [];
-
-    instrument['Elements'].forEach((element) => {
-      if (['label', 'text', 'calc', 'date', 'select', 'radio', 'checkbox'].includes(element.Type)) {
-        if (element['Description'][lang]) {
-          element['Description'] = element['Description'][lang];
-        } else {
-          if (['text', 'date'].includes(element.Type)) {
-            element['Description'] = element.fieldNote ? element.fieldNote : "Enter a value: ";
-          } else if (['select', 'radio', 'checkbox'].includes(element.Type)) {
-            element['Description'] = "Choose a value: ";
-          } else if (['label'].includes(element.Type)) {
-            element['Description'] = "";
-          } else if (['calc'].includes(element.Type)) {
-            element['Description'] = "Result: ";
-          }
-        }
-        if (['select', 'radio', 'checkbox'].includes(element.Type)) {
-          element['Options']['Values'] = element['Options']['Values'][lang];
-        }
-        convertedElements.push(element);
-      } else if (['radio-labels'].includes(element.Type) && element['Labels'][lang]) {
-        element['Labels'] = element['Labels'][lang];
-        convertedElements.push(element);
-      }
-    });
-
-    instrument['Elements'] = convertedElements;
-    return instrument;
-  } catch (e) {
-    console.log(e);
-  }
-}
-
 
 window.onload = function() {
   const instrumentsEl = document.querySelector('#instruments');
