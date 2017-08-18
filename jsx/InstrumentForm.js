@@ -1,18 +1,19 @@
 import Form from './Form';
-import { Evaluator, UndefinedVariableError, NullVariableError } from './lib/Parser';
+import { Evaluator, NullVariableError } from './lib/Parser';
 
 const { SelectElement, RadioGroupLabels, RadioGroupElement, CheckboxGroupElement, TextboxElement, DateElement } = Form;
 const INPUT_TYPES = ['radio', 'text', 'checkbox', 'select', 'date'];
 
-function isDisplayed(element, index, data, context, options) {
-  if (options) {
-    if (options.surveyMode && element.HiddenSurvey) return false;
-  } else {
-    if (element.HiddenSurvey === true) return false;
+function isDisplayed(element, index, data, context, options = {}) {
+  if (
+    (element.Hidden) ||
+    (options.surveyMode && element.HiddenSurvey) ||
+    (element.DisplayIf === false)
+  ) {
+    return false;
   }
-  if (element.DisplayIf === false) return false;
+
   if (element.DisplayIf === '') return true;
-  if (element.Hidden) return false;
 
   try {
     return Evaluator(element.DisplayIf, { ...data, context});
@@ -25,7 +26,7 @@ function isDisplayed(element, index, data, context, options) {
   }
 }
 
-function isRequired(element, data, context) {
+function isRequired(element, index, data, context) {
   if (!INPUT_TYPES.includes(element.Type)) return false;
 
   const requireResponse = element.Options.RequireResponse;
@@ -42,6 +43,14 @@ function isRequired(element, data, context) {
   }
 }
 
+const SaveButton = ({onSave}) => {
+  return (
+    <button onClick={onSave} type="button" className="btn btn-default btn-lg">
+      <span className="glyphicon glyphicon-star" aria-hidden="true"></span> Save
+    </button>
+  );
+}
+
 const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave}) => {
   return (
     <div>
@@ -50,9 +59,10 @@ const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave}) 
         instrument.Elements.filter(
           (element, index) => (isDisplayed(element, index, data, context, options))
         ).map((element, index) => (
-          renderElement(element, index, data, onUpdate, isRequired(element, data, context))
+          renderElement(element, index, data, onUpdate, isRequired(element, index, data, context))
         ))
       }
+      <SaveButton onSave={onSave}/>
     </div>
   );
 };
