@@ -30,11 +30,6 @@
 24. Returning to the behavioural statistics page, verify that if you do not have the access_all_profiles permission you should not be able to click through to forms for candidates from other sites.
 25. Check the the breadcrumbs from Completion stats page back to BVL stats tab within Statistics appear and allow you to use the "back" button to previous pages (future feature).
 
-### Reliability Statistics
-26. Click on the Reliability Statistics tab. Try using the reliability filter. Check that you can filter by site and by projects, separately.
-27. For one of the reliability modules, check that the data in each column makes sense in comparison to data in the database.
-28. There should only be one reliability table on this page right?
-
 ### MRI Statistics
 29. Click on the MRI statistics tab. Try using the filter query. Filter by site and by project separately to ensure they are both working.
 30. Look at the first table on this page (the first row is 'Complete' in MRI parameter form). Do the numbers in each cell match what is in the database. Should these columns have headers?
