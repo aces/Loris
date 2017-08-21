@@ -91,6 +91,7 @@ class NDB_Caller
             $url .= Utility::removeCommonAffix($url, $_SERVER['REQUEST_URI']);
             // sending user to the url that was requested
             header("Location: $url");
+            return;
         }
         if (empty($CommentID) && isset($_REQUEST['commentID'])) {
             $CommentID = $_REQUEST['commentID'];
@@ -476,9 +477,7 @@ class NDB_Caller
         }
 
         // save instrument form data
-        if (empty($_POST['login'])) {
-            $success = $instrument->save();
-        }
+        $success = $instrument->save();
 
         if ($redirectToOnSuccess !== null && $success !== false) {
             header("Location: $redirectToOnSuccess");
