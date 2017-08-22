@@ -15,12 +15,10 @@ set_include_path(
     get_include_path()
     . ":" . __DIR__ . "/../"
     . ':' . __DIR__ . "/../../../../php/libraries/"
-    . ':' . __DIR__ . "/../../../../modules/create_timepoint/php/"
 );
 
 require_once 'Candidate.php';
 require_once 'TimePoint.class.inc';
-require_once 'create_timepoint.class.inc';
 
 /**
  * Handles API requests for the candidate's visit. Extends
@@ -218,21 +216,13 @@ class Visit extends \Loris\API\Candidates\Candidate
      */
     function createNew($CandID, $subprojectID, $VL)
     {
-        $controller = new \LORIS\create_timepoint\Create_Timepoint();
-        $controller->identifier = $CandID;
-
-        $values = array(
-                   "visitLabel"   => $VL,
-                   "subprojectID" => $subprojectID,
-                  );
-        $errors = $controller->_validate($values);
-        if (!empty($errors)) {
+        try {
+            \TimePoint::createNew($CandID, $subprojectID, $VL);
+        } catch (\LorisException $e) {
             $this->header("HTTP/1.1 400 Bad Request");
-            $this->error(join(", ", $errors));
+            $this->error($e-getMessage());
             $this->safeExit(0);
         }
-
-        \TimePoint::createNew($CandID, $subprojectID, $VL);
     }
 }
 
