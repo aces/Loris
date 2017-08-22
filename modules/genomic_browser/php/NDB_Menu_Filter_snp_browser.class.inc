@@ -432,7 +432,8 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
             } elseif ($field == "genomic_range") {
                 $temp_array = explode(':', $val);
                 $chr        = str_replace('chr', '', $temp_array[0]);
-                $query     .= " AND genome_loc.Chromosome = '$chr'";
+                $query     .= " AND (genome_loc.Chromosome = '$chr'";
+                $query     .= " OR genome_loc.Chromosome = 'chr$chr')";
 
                 if (!empty($temp_array[1]) AND strpos($temp_array[1], '-') ) {
                     $temp_array = explode('-', $temp_array[1]);

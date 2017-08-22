@@ -391,8 +391,9 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
                 $query .= " AND $field = CONVERT( :v_$prepared_key, DECIMAL) ";
             } elseif ($field == "genomic_range") {
                 $temp_array = explode(':', $val);
-                $chr        = $temp_array[0];
-                $query     .= " AND genome_loc.Chromosome = '$chr'";
+                $chr        = str_replace('chr', '', $temp_array[0]);
+                $query     .= " AND (genome_loc.Chromosome = '$chr'";
+                $query     .= " OR genome_loc.Chromosome = 'chr$chr')";
 
                 if (!empty($temp_array[1]) AND strpos($temp_array[1], '-') ) {
                     $temp_array = explode('-', $temp_array[1]);
