@@ -232,8 +232,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $this->headers = array_merge(
             $this->headers,
             $as,
-            'sessionID'
-        );
+            array('sessionID')
+      );
 
         // Insert project column after DCCID, if useProject config is enabled
         if ($config->getSetting('useProjects') === "true") {
@@ -317,7 +317,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         }
 
         $DB    = Database::singleton();
-        $allAr = array('' => All);
+        $allAr = array('' => 'All');
 
         $this->addBasicText(
             'pscid',
