@@ -251,7 +251,7 @@ class TimePoint
 
     /**
      * Validates if a given visit_label follows the study's config settings
-     * and if that same visit label can be created for the given candidate. 
+     * and if that same visit label can be created for the given candidate.
      *
      * @param integer $candid       The candidate identifier
      * @param integer $subprojectID The subprojectID
