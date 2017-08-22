@@ -170,7 +170,10 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
             $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
         }
 
-        $this->order_by     = 'psc.Name, candidate.CandID DESC';
+        $this->order_by = 'psc.Name, candidate.CandID DESC';
+
+        $this->limit = 10000;
+
         $this->validFilters = array(
                                'candidate.CenterID',
                                'candidate.CandID',
@@ -268,7 +271,8 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $site_arr = $user->getData('CenterIDs');
+            $list_of_sites = array();
+            $site_arr      = $user->getData('CenterIDs');
             foreach ($site_arr as $key => $val) {
                 $site[$key] = &Site::singleton($val);
                 if ($site[$key]->isStudySite()) {

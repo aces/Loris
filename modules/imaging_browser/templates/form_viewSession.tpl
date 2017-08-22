@@ -45,6 +45,7 @@
                           "AcquisitionProtocol" : "{$files[file].AcquisitionProtocol}",
                           "SeriesDescription" : "{$files[file].SeriesDescription}",
                           "SeriesNumber" : "{$files[file].SeriesNumber}",
+                          "SeriesUID" : "{$files[file].SeriesUID}",
                           "EchoTime" : "{$files[file].EchoTime}",
                           "RepetitionTime" : "{$files[file].RepetitionTime}",
                           "SliceThickness" : "{$files[file].SliceThickness}",

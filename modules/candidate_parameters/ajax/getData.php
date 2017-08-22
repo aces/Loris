@@ -139,6 +139,27 @@ function getProbandInfoFields()
         array('candid' => $candID)
     );
 
+    $extra_parameters = $db->pselect(
+        "SELECT CONCAT('PTID', pt.ParameterTypeID) AS ParameterTypeID, pt.Name, 
+        pt.Type, pt.Description 
+        FROM parameter_type pt
+        JOIN parameter_type_category_rel ptcr USING (ParameterTypeID) 
+        JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
+        WHERE ptc.Name='Candidate Parameters Proband'
+        ORDER BY pt.ParameterTypeID, pt.name ASC",
+        array()
+    );
+
+    $fields = $db->pselect(
+        "SELECT ParameterTypeID, Value FROM parameter_candidate WHERE CandID=:cid",
+        array('cid' => $candID)
+    );
+
+    $parameter_values = [];
+    foreach ($fields as $row) {
+        $parameter_values[$row['ParameterTypeID']] = $row['Value'];
+    }
+
     // Calculate age difference
     $ageDifference = "Could not calculate age";
     $candidateDOB  = $db->pselectOne(
@@ -156,11 +177,13 @@ function getProbandInfoFields()
     }
 
     $result = [
-               'pscid'         => $pscid,
-               'candID'        => $candID,
-               'ProbandGender' => $gender,
-               'ProbandDoB'    => $dob,
-               'ageDifference' => $ageDifference,
+               'pscid'            => $pscid,
+               'candID'           => $candID,
+               'ProbandGender'    => $gender,
+               'ProbandDoB'       => $dob,
+               'ageDifference'    => $ageDifference,
+               'extra_parameters' => $extra_parameters,
+               'parameter_values' => $parameter_values,
               ];
 
     return $result;
@@ -263,16 +286,19 @@ function getParticipantStatusFields()
     $statusOptions = NDB_Form_candidate_parameters::getParticipantStatusOptions();
     $reasonOptions = array();
 
-    $required    = $db->pselect(
+    $req      = $db->pselect(
         'SELECT ID from participant_status_options where Required=1',
         array()
     );
+    $required = array();
+    foreach ($req as $k=>$row) {
+        $required[$k] =$row['ID'];
+    }
     $parentIDs   = $db->pselect(
         'SELECT distinct(parentID) from participant_status_options',
         array()
     );
     $parentIDMap = array();
-
     foreach ($parentIDs as $ID) {
         $reasonOptions = array();
         foreach ($ID as $parentID) {
@@ -307,7 +333,7 @@ function getParticipantStatusFields()
                'pscid'                 => $pscid,
                'candID'                => $candID,
                'statusOptions'         => $statusOptions,
-               'required'              => \Utility::reduce($required),
+               'required'              => $required,
                'reasonOptions'         => $reasonOptions,
                'parentIDs'             => $parentIDMap,
                'participantStatus'     => $status,
@@ -439,7 +465,7 @@ function getConsentStatusHistory($candID, $consents)
             . $db->escape($consent) . ", "
             . $db->escape($consent . '_date') . ", "
             . $db->escape($consent . '_withdrawal')
-            ." FROM consent_info_history WHERE CandID=:cid",
+            ." FROM consent_info_history WHERE $consent IS NOT NULL and CandID=:cid",
             array('cid' => $candID)
         );
 

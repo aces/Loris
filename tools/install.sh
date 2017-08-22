@@ -81,33 +81,26 @@ elif [[ -x ../composer ]]; then
     echo "PHP Composer appears to be installed."
     composer_scr="./composer install --no-dev"
 else
-    echo "PHP Composer does not appear to be installed. Attempting to install now..."
-    curl -sS https://getcomposer.org/installer | php
-    mv composer.phar ../composer
-    if [[ -x ../composer ]]; then
-        echo ""
-        echo "PHP Composer successfully installed."
-        composer_scr="./composer install --no-dev"
-    else
-        echo ""
-        echo "PHP Composer failed to install. Aborting."
-        exit 2;
-    fi
+    echo ""
+    echo "PHP Composer does not appear to be installed. Please install it before running this script."
+    echo ""
+    echo "(e.g. curl -sS https://getcomposer.org/installer | php)"
+    exit 2;
 fi
 
 echo ""
 
 cat <<QUESTIONS
-This install script will ask you to provide inputs for different steps. 
-Please ensure you have the following information ready (if applicable):  
+This install script will ask you to provide inputs for different steps.
+Please ensure you have the following information ready (if applicable):
 
-  1) Your project directory name.   
+  1) Your project directory name.
      (Will be used to modify the paths for Imaging data in the generated
      config.xml file for LORIS, and may also be used to automatically
      create/install apache config files.) If unsure, a default like "LORIS"
      should be acceptable.
 
-Please also consult the Loris WIKI on GitHub for more information on these 
+Please also consult the Loris WIKI on GitHub for more information on these
 Install Script input parameters.
 QUESTIONS
 
@@ -249,7 +242,7 @@ while true; do
                 -e "s#%PROJECTNAME%#$projectname#g" \
                 -e "s#%LOGDIRECTORY%#$logdirectory#g" \
                 < ../docs/config/apache2-site | sudo tee /etc/httpd/conf.d/$projectname.conf > /dev/null
-            
+
             sudo service httpd restart
             echo "You may need to manually uncomment the load rewrite module line of your conf."
             break;;

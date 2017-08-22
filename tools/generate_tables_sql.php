@@ -106,7 +106,7 @@ foreach($instruments AS $instrument){
 
     }
     $output.="PRIMARY KEY  (`CommentID`)\n
-              );\n";
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8;\n";
     $fp=fopen($filename, "w");
     fwrite($fp, $output);
     fclose($fp);

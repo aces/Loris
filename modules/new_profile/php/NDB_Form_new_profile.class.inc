@@ -61,6 +61,7 @@ class NDB_Form_New_Profile extends NDB_Form
         $config =& NDB_Config::singleton();
         $dob    = empty($values['dob1']) ? null : $values['dob1'];
 
+        $edc = null;
         if ($config->getSetting('useEDC') == "true") {
             $edc = empty($values['edc1']) ? null : $values['edc1'];
         }
@@ -76,7 +77,7 @@ class NDB_Form_New_Profile extends NDB_Form
                 $dob,
                 $edc,
                 $values['gender'],
-                $values['PSCID']
+                $values['PSCID'] ?? null
             );
         } else {
             $centerIDs = $user->getData('CenterIDs');
@@ -86,7 +87,7 @@ class NDB_Form_New_Profile extends NDB_Form
                 $dob,
                 $edc,
                 $values['gender'],
-                $values['PSCID']
+                $values['PSCID'] ?? null
             );
         }
 

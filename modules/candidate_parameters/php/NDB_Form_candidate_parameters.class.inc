@@ -150,7 +150,6 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/js/components/Tabs.js",
              $baseURL . "/candidate_parameters/js/index.js",
             )
         );

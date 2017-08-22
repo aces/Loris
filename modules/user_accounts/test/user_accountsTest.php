@@ -204,6 +204,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $field->clear();
         $field->sendKeys('email@example.com');
         $this->safeClick(WebDriverBy::Name('SendEmail'));
+        $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
+        $sitesOption  = new WebDriverSelect($sitesElement);
+        $sitesOption->selectByValue("1");
         $this->safeClick(WebDriverBy::Name('fire_away'));
         $this->_accessUser('user_accounts', 'userid');
         $field = $this->safeFindElement(WebDriverBy::Name('First_name'));
@@ -237,6 +240,13 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         } else {
             $selectField = new WebDriverSelect($field);
             $selectField->selectByVisibleText($newValue);
+        }
+
+        // if working on edit_user, select at least one site
+        if (strpos($page, 'my_preferences') === false) {
+            $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
+            $sitesOption  = new WebDriverSelect($sitesElement);
+            $sitesOption->selectByValue("1");
         }
         $this->safeClick(WebDriverBy::Name('fire_away'));
 

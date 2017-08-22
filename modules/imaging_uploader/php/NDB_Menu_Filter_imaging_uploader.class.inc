@@ -88,9 +88,10 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                           'UploadLocation',
                           'UploadDate',
                           'UploadedBy',
-                          'TarchiveID AS Tarchive_Info',
+                          'mu.TarchiveID AS Tarchive_Info',
                           'number_of_mincCreated',
                           'number_of_mincInserted',
+                          'ta.PatientName',
                          );
 
         $this->validFilters = array(
@@ -102,6 +103,8 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $this->query        = " FROM mri_upload mu LEFT JOIN session".
                               " s ON (s.ID = mu.SessionID)".
                               " LEFT JOIN candidate c ON (c.CandID = s.CandID)".
+                              " LEFT JOIN tarchive ta ON".
+                              " (mu.TarchiveID = ta.TarchiveID)".
                               " WHERE 1=1 ";
         $this->formToFilter = array(
                                'CandID'      => 's.CandID',
@@ -268,7 +271,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $errors    = array();
         $config    = NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
-            'dicom_archive'
+            'imaging_modules'
         );
         $corect_name            = $dicom_archive_settings['patientNameRegex'];
         $header_patient_name    = array();
@@ -378,12 +381,11 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function importFile($file, $args)
     {
-        $feedbacks = array();
-        $db        = Database::singleton();
-        $file_name =  $file->fileInfo['name'];
-
-        $pname     = '';
-        $IsPhantom = $args['values']['IsPhantom'];
+        $feedbacks  = array();
+        $db         = Database::singleton();
+        $pname      = '';
+        $IsPhantom  = $args['values']['IsPhantom'];
+        $updateFile = $args['values']['overwrite'] ? true : false;
         ///////////////////////////////////////////////////////////////////////
         ///////////////If empty get it using User class////////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -440,6 +442,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         } else {
                 $this->uploaded_file_path = $this->getTempPath();
         }
+
         $values = array(
                    'UploadedBy'     => $user_name,
                    'UploadDate'     => $date,
@@ -448,10 +451,25 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                    'PatientName'    => $pname,
                    'IsPhantom'      => $IsPhantom,
                   );
-        $db->Insert(
-            'mri_upload',
-            $values
-        );
+
+        if ($updateFile) {
+            // Only overwrite file if it failed MRI pipeline. Need to use
+            // wildcard for files that were uploaded to a random temp path.
+            $fileName = $file->fileInfo['name'];
+            $id       = $db->pselectOne(
+                "SELECT 
+                IF (InsertionComplete=0 AND 
+                (ISNULL(Inserting) OR Inserting=0), UploadID, NULL) as UploadID 
+                FROM mri_upload WHERE UploadLocation LIKE :ul",
+                array('ul' => "%$fileName")
+            );
+            if (!empty($id)) {
+                $db->update('mri_upload', $values, array('UploadID' => $id));
+                return true;
+            }
+        }
+
+        $db->insert('mri_upload', $values);
         $this->mri_upload_id = $db->getLastInsertId();
 
         return true;
@@ -569,6 +587,46 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
     }
 
     /**
+     * The function returns an array of filenames that exist in the mri
+     * upload directory.
+     *
+     * @param array $data data retrieved from mri_upload table
+     *
+     * @return array list of filenames
+     */
+    function _getFileList($data)
+    {
+
+        $files = array();
+
+        foreach ($data as $row) {
+            $filePath     = $row[5];
+            $fileName     = basename($filePath);
+            $uploadStatus = $row[1];
+
+            // Checks if a file is already in files array
+            $isDuplicate = (
+                array_search(
+                    $fileName,
+                    array_column($files, 'fileName')
+                ) > -1
+            );
+
+            if (file_exists($filePath) && !$isDuplicate) {
+                array_push(
+                    $files,
+                    [
+                     "fileName" => $fileName,
+                     "status"   => $uploadStatus,
+                    ]
+                );
+            }
+        }
+
+        return $files;
+    }
+
+    /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu
      *
@@ -613,8 +671,9 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function toJSON()
     {
-        $result         = $this->toArray();
-        $result['form'] = $this->form->form;
+        $result            = $this->toArray();
+        $result['form']    = $this->form->form;
+        $result['mriList'] = $this->_getFileList($result['Data']);
 
         return json_encode($result);
     }

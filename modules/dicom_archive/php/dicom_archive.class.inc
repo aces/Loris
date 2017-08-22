@@ -48,6 +48,11 @@ class Dicom_Archive extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
+        // Rest the filter because this is broken with react modules
+        $this->_resetFilters();
+
+        $this->skipTemplate = true;
+
         $this->_setDicomArchiveSettings();
 
         $this->query = " FROM tarchive t
@@ -146,7 +151,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
     function _setDicomArchiveSettings()
     {
         $config =& \NDB_Config::singleton();
-        $this->dicomArchiveSettings = $config->getSetting('dicom_archive');
+        $this->dicomArchiveSettings = $config->getSetting('imaging_modules');
     }
 
     /**

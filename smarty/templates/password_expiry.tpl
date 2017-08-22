@@ -7,7 +7,7 @@
       <p><b>Password Strength Rules</b></p>
       <ul>
         <li>The password must be at least 8 characters long</li>
-        <li>The password must contain at least 1 letter, 1 number and 1 character from !@#$%^&amp;*()</li>
+        <li>The password must contain at least 1 letter, 1 number and 1 character from !@#$%^*()</li>
         <li>The password and the user name must not be the same</li>
         <li>The password and the email address must not be the same</li>
       </ul>

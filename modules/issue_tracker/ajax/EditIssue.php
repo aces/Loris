@@ -66,6 +66,7 @@ function editIssue()
     $fieldsToValidateFirst = array(
                               'PSCID',
                               'visitLabel',
+                              'centerID',
                              );
 
     foreach ($fields as $field) {
@@ -179,18 +180,65 @@ function validateInput($values)
     $db         =& Database::singleton();
     $pscid      = (isset($values['PSCID']) ? $values['PSCID'] : null);
     $visitLabel = (isset($values['visitLabel']) ? $values['visitLabel'] : null);
+    $centerID   = (isset($values['centerID']) ? $values['centerID'] : null);
     $result     = [
-                   'PSCID'     => $pscid,
-                   'visit'     => $visitLabel,
-                   'candID'    => null,
-                   'sessionID' => null,
+                   'PSCID'             => $pscid,
+                   'visit'             => $visitLabel,
+                   'centerID'          => $centerID,
+                   'candID'            => null,
+                   'sessionID'         => null,
+                   'isValidSubmission' => true,
+                   'invalidMessage'    => null,
                   ];
 
+    if (isset($result['PSCID'], $result['centerID'])) {
+        $validCenter = $db->pselectOne(
+            "
+            SELECT
+                CenterID = :center_id
+            FROM
+                candidate
+            WHERE
+                PSCID = :psc_id
+        ",
+            array(
+             "center_id" => $result['centerID'],
+             "psc_id"    => $result['PSCID'],
+            )
+        );
+        if (!$validCenter) {
+            $validCenter = $db->pselectOne(
+                "
+                SELECT
+                    EXISTS (
+                        SELECT
+                            *
+                        FROM
+                            session s
+                        JOIN
+                            candidate c
+                        ON
+                            c.CandID = s.CandID
+                        WHERE
+                            s.CenterID = :center_id AND
+                            c.PSCID = :psc_id
+                    )
+            ",
+                array(
+                 "center_id" => $result['centerID'],
+                 "psc_id"    => $result['PSCID'],
+                )
+            );
+        }
+        if (!$validCenter) {
+            showError("PSCID and Center ID do not match a valid session!");
+        }
+    }
     // If both are set, return SessionID and CandID
     if (isset($result['PSCID']) && isset($result['visit'])) {
         $session = $db->pSelect(
-            "SELECT s.ID as sessionID, c.candID as candID FROM candidate c 
-            INNER JOIN session s on (c.CandID = s.CandID) 
+            "SELECT s.ID as sessionID, c.candID as candID FROM candidate c
+            INNER JOIN session s on (c.CandID = s.CandID)
             WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
             [
              'PSCID'      => $result['PSCID'],
@@ -442,7 +490,7 @@ function emailUser($issueID, $changed_assignee)
     $baseurl = $factory->settings()->getBaseURL();
 
     $title = $db->pSelectOne(
-        "SELECT title FROM issues 
+        "SELECT title FROM issues
         WHERE issueID=:issueID",
         array('issueID' => $issueID)
     );
@@ -505,8 +553,9 @@ function emailUser($issueID, $changed_assignee)
 function getIssueFields()
 {
 
-    $db   =& Database::singleton();
-    $user =& User::singleton();
+    $db    =& Database::singleton();
+    $user  =& User::singleton();
+    $sites = array();
 
     //get field options
     if ($user->hasPermission('access_all_profiles')) {
@@ -537,8 +586,9 @@ function getIssueFields()
             array()
         );
         $assignee_expanded = $db->pselect(
-            "SELECT u.Real_name, u.UserID FROM users u 
-WHERE FIND_IN_SET(u.CenterID,:CenterID) OR FIND_IN_SET(u.CenterID,:DCC)",
+            "SELECT DISTINCT u.Real_name, u.UserID FROM users u
+             LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
+WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
             array(
              'CenterID' => $CenterID,
              'DCC'      => $DCCID,
@@ -603,7 +653,7 @@ WHERE FIND_IN_SET(u.CenterID,:CenterID) OR FIND_IN_SET(u.CenterID,:DCC)",
 
     $modules          = array();
     $modules_expanded = $db->pselect(
-        "SELECT DISTINCT Label, ID FROM LorisMenu 
+        "SELECT DISTINCT Label, ID FROM LorisMenu
 WHERE Parent IS NOT NULL ORDER BY Label ",
         []
     );
@@ -617,7 +667,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
         $issueID    = $_GET['issueID'];
         $issueData  = getIssueData($issueID);
         $isWatching = $db->pselectOne(
-            "SELECT userID, issueID FROM issues_watching 
+            "SELECT userID, issueID FROM issues_watching
             WHERE issueID=:issueID AND userID=:userID",
             array(
              'issueID' => $issueID,
@@ -628,8 +678,8 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
         $issueData['commentHistory'] = getComments($issueID);
         $issueData['othersWatching'] = getWatching($issueID);
         $issueData['desc']           = $db->pSelectOne(
-            "SELECT issueComment 
-FROM issues_comments WHERE issueID=:issueID 
+            "SELECT issueComment
+FROM issues_comments WHERE issueID=:issueID
 ORDER BY dateAdded",
             array('issueID' => $issueID)
         );
@@ -668,13 +718,13 @@ ORDER BY dateAdded",
  *
  * @return array
  */
-function getIssueData($issueID)
+function getIssueData($issueID=null)
 {
 
     $user =& User::singleton();
     $db   =& Database::singleton();
 
-    if ($issueID) {
+    if (!empty($issueID)) {
         return $db->pselectRow(
             "SELECT i.*, c.PSCID, s.Visit_label as visitLabel FROM issues as i " .
             "LEFT JOIN candidate c ON (i.candID=c.CandID)" .
@@ -687,7 +737,7 @@ function getIssueData($issueID)
     return [
             'reporter'      => $user->getData('UserID'),
             'dateCreated'   => date('Y-m-d H:i:s'),
-            'centerID'      => $user->getData('CenterID'),
+            'centerID'      => $user->getData('CenterIDs'),
             'status'        => "new",
             'priority'      => "normal",
             'issueID'       => 0, //TODO: this is dumb

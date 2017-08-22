@@ -367,7 +367,7 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         foreach ($this->headers as $header) {
             $this->tpl_data['headers'][$i]['name'] = $header;
             // format header
-            $this->tpl_dta['headers'][$i]['displayName']
+            $this->tpl_data['headers'][$i]['displayName']
                 = ucwords(str_replace('_', ' ', $header));
             // set field ordering
             if (isset($this->filter['order'])) {

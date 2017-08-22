@@ -192,6 +192,13 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
             $this->form->freeze();
         }
 
+        //DEPRECATION MESSAGE FOR 18.0
+        error_log(
+            "The Final Radiological Review Module is deprecated and will be "
+            . "removed in a future release (Loris 18.0). Please update your code "
+            . "in accordance. If you are actively using this module, "
+            . "it should be moved to the `project/modules` directory."
+        );
     }
 
     /**
@@ -199,6 +206,7 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
      * information from the final_radiological_review table for
      * smarty
      *
+     * @throws LorisException
      * @return array defaults for smarty to use
      */
     function _getDefaults()
@@ -229,6 +237,14 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
                                  'Final_Incidental_Findings2' => '',
                                  'Finalized'                  => '',
                                 );
+            }
+
+            if ($DB->tableExists('radiology_review') === false) {
+                throw new LorisException(
+                    "Table 'radiology_review' does not exist."
+                    . " Please have this instrument set up in order"
+                    . " to use this module properly."
+                );
             }
 
             $original_review = $DB->pselectRow(

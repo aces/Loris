@@ -44,7 +44,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      *
      * @return none
      */
-    function setup($commentID, $page)
+    function setup($commentID = null, $page = null)
     {
         $this->commentID = $commentID;
         $this->page      = $page;

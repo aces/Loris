@@ -317,7 +317,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @access   public
      * @abstract
      */
-    function setup($commentID, $page)
+    function setup($commentID = null, $page = null)
     {
         $this->_setupPage(null, $page, null, $commentID, 'test_form');
     }
@@ -559,10 +559,10 @@ class NDB_BVL_Instrument extends NDB_Page
             if (empty($age)) {
                 throw new LorisException("Candidate age could not be found.");
             }
-            $agedays   = $age['year']*365 + $age['mon']*30 + $age['day'];
-            $agemonths = $age['year']*12 + $age['mon'] + ($age['day']/30);
-            // 1 Decimal.
-            $agemonths = (round($agemonths*10) / 10.0);
+
+            $agedays   = $this->calculateAgeDays($age);
+            $agemonths = $this->calculateAgeMonths($age);
+
             if (!empty($age)) {
                 $query_params = array(
                                  'TN'  => $this->testName,
@@ -617,6 +617,34 @@ class NDB_BVL_Instrument extends NDB_Page
                 }
             }
         }
+    }
+
+    /**
+     * Calculate age in months given and array with years months and days
+     *
+     * @param array $age containing the years, months and days of the age
+     *
+     * @return float
+     */
+    function calculateAgeMonths($age)
+    {
+        $months = $age['year']*12 + $age['mon'] + ($age['day']/30);
+        // 1 Decimal.
+        $months = (round($months*10) / 10.0);
+        return $months;
+    }
+
+    /**
+     * Calculate age in days given and array with years months and days
+     *
+     * @param array $age containing the years, months and days of the age
+     *
+     * @return int
+     */
+    function calculateAgeDays($age)
+    {
+        $days = $age['year']*365 + $age['mon']*30 + $age['day'];
+        return $days;
     }
 
     /**
@@ -879,13 +907,15 @@ class NDB_BVL_Instrument extends NDB_Page
                 array('tst_name' => $this->testName)
             );
             $results = $db->pselect(
-                "SELECT certification.examinerID, full_name
-                 FROM certification
-                     JOIN examiners
-                         ON (certification.examinerID = examiners.examinerID)
-                 WHERE testID =:tid
-                    AND pass =:cert_id
-                    AND centerID =:cid
+                "SELECT c.examinerID, e.full_name
+                 FROM certification c
+                     JOIN examiners e
+                         ON (c.examinerID = e.examinerID)
+                     JOIN examiners_psc_rel epr
+                         ON (epr.examinerID=e.examinerID)
+                 WHERE c.testID =:tid
+                    AND c.pass =:cert_id
+                    AND epr.centerID =:cid
                  ORDER BY full_name",
                 array(
                  'tid'     => $test_id,
@@ -895,9 +925,11 @@ class NDB_BVL_Instrument extends NDB_Page
             );
         } else {
             $results = $db->pselect(
-                "SELECT examinerID, full_name
-                     FROM examiners
-                 WHERE centerID=:centID
+                "SELECT e.examinerID, e.full_name
+                     FROM examiners e
+                         JOIN examiners_psc_rel epr
+                             ON (epr.examinerID=e.examinerID)
+                 WHERE epr.centerID=:centID
                      ORDER BY full_name",
                 array('centID' => $centerID)
             );
@@ -1208,16 +1240,18 @@ class NDB_BVL_Instrument extends NDB_Page
     function XINRunElementRules($elname, $elements, $rules)
     {
         $errors = array();
+        //Conditions for the rule to be true, thus the element to be required.
+        $rule_outcomes = array();
 
         foreach ($rules['rules'] AS $rule) {
-            //Conditions for the rule to be true, thus the element to be required.
-            $rule_outcomes = array();
             //Loop through the assigned rules (which is the array of formatted
             //statements passed in XINRegisterRule)
             //If this is an OR rule using two different controllers explode it
             //at the pipe.  ex: q_1{@}=={@}yes|q_2{@}=={@}yes
-            if (stristr(substr($rule, strpos($rule, "|")), "{@}")) {
-                $rules_array = explode("|", $rule);
+            $isInterfieldOr = false;
+            if (substr_count($rule, '{@}') > 2 && strstr($rule, '|')) {
+                $rules_array    = explode("|", $rule);
+                $isInterfieldOr = true;
             } else {  //Otherwise its a regular rule.  ex: q_1{@}=={@}yes
                 $rules_array[] = $rule;
             }
@@ -1254,6 +1288,8 @@ class NDB_BVL_Instrument extends NDB_Page
 
                     if ($ElementResult) {
                         $or_conditions = true; //If any of the OR rules is true
+                    } else if (!$isInterfieldOr) {
+                        $or_conditions = false;
                     }
                 }
             }

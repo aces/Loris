@@ -3,7 +3,7 @@
 /**
  * Controls access to data release files.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  *  @category Loris
  *  @package  Data_Release
@@ -24,7 +24,7 @@ $File   = $_GET['File'];
 // Make sure that the user isn't trying to break out of the $path by
 // using a relative filename.
 // No need to check for '/' since all downloads are relative to $basePath
-if (strpos("..", $File) !== false) {
+if (strpos($File, "..") !== false) {
     error_log("ERROR: Invalid filename");
     header("HTTP/1.1 400 Bad Request");
     exit(4);
@@ -58,8 +58,11 @@ if (empty($permission)) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
-$fp = fopen($FullPath, 'r');
-fpassthru($fp);
-fclose($fp);
+
+// Output file in downloadable format
+header('Content-Description: File Transfer');
+header("Content-Transfer-Encoding: Binary");
+header("Content-disposition: attachment; filename=\"" . basename($FullPath) . "\"");
+readfile($FullPath);
 
 ?>

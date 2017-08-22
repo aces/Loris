@@ -18,6 +18,7 @@ define('CANDIDATE_INVALID', 1);
 define('PSCID_NOT_SPECIFIED', 2);
 define('PSCID_NOT_UNIQUE', 3);
 define('PSCID_INVALID_STRUCTURE', 4);
+define('EDC_NOT_SPECIFIED', 5);
 
 // id ranges...
 define('CANDIDATE_MIN_CANDID', 100000);
@@ -86,7 +87,8 @@ class Candidate
         $db = $factory->database();
 
         // get candidate data from database
-        $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, c.EDC, c.Gender,
+        $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, 
+            c.EDC, c.Gender, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
             c.Active, u1.Real_name as RegisteredBy, c.UserID, c.ProjectID
             FROM candidate as c
@@ -203,6 +205,14 @@ class Candidate
         // figure out how to generate PSCID
         $config        = $factory->config();
         $PSCIDSettings = $config->getSetting('PSCID');
+        $useEDC        = $config->getSetting('useEDC');
+
+        if (($useEDC === '1' || $useEDC === 'true') && empty($edc)) {
+            throw new \LorisException(
+                "EDC must be specified",
+                EDC_NOT_SPECIFIED
+            );
+        }
 
         if ($PSCIDSettings['generation'] == 'user') {
             // check pscid is specified

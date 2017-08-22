@@ -118,7 +118,9 @@ class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
             $i = 1;
             foreach ($item as $key => $val) {
-                if (substr($key, "Topic") == 0) {
+                // Check if key starts with $needle ("Topic")
+                $needle = "Topic";
+                if (substr($key, 0, strlen($needle)) === $needle) {
                     $this->tpl_data['items'][$x][$i]['helpID']   = array_search(
                         $val,
                         $help_section

@@ -154,7 +154,7 @@ class HelpFile
                 array('HID' => $this->helpID)
             );
             // add the children to the array
-            $childIDs = Utility::reduce($result);
+            $childIDs = $result;
 
             // check if we're done recursing
             if ($level != $stopat) {

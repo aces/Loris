@@ -56,6 +56,13 @@ curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 sudo apt-get install -y nodejs
 sudo apt-get install -y build-essential
 ```
+>**Note**: Older LTS version (14.04<=)
+```
+curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+sudo apt-get install -y nodejs
+sudo apt-get install -y build-essential
+```
+
 
 **CentOS**
 
@@ -86,6 +93,11 @@ Follow these steps in your terminal:
 ```bash
   cd $loris$ # your LORIS home directory
   npm install --only=dev
+```
+
+>**Note**: Permissions might be adjusted using
+```bash
+sudo chown -R $USER:$(id -gn $USER) ./node_modules
 ```
 
 >**Note**: to see a list of all dependencies refer to `package.json` under LORIS home directory

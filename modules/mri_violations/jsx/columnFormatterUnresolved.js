@@ -22,6 +22,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   var patientname = row.PatientName;
   var uid = row.SeriesUID;
   var url;
+  var log;
 
   if (column === "Problem" && row.Problem === "Protocol Violation") {
     url = loris.BaseURL +
@@ -69,9 +70,17 @@ function formatColumn(column, cell, rowData, rowHeaders) {
              </td>
            );
   }
-  if (column === "MincFileViolated") {
+  if (column === "MincFile") {
+    if (row.Problem === "Could not identify scan type") {
+      log = 1;
+    } else if (row.Problem === "Protocol Violation") {
+      log = 2;
+    } else {
+      log = 3;
+    }
+
     url = loris.BaseURL +
-            "/brainbrowser/?minc_location=" + row.MincFileViolated;
+            "/brainbrowser/?minc_id=" + log + "l" + row.JoinID;
     return (
            <td>
             <a href= {url} target="_blank" >
