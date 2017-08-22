@@ -67,7 +67,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $site_default =$this->getDefaultSite();
         }//sanitizing the input coming from the request
         $sanitize = array_map('htmlspecialchars', $_REQUEST);
-        $defaults["feedback_status"]    = $sanitize['feedback_status'] ?? null ;
+        $defaults["feedback_status"]    = $sanitize['feedback_status'] ?? null;
         $defaults["completion_status"]  = $sanitize['completion_status'] ?? null;
         $defaults["sent_to_dcc_status"] = $sanitize['sent_to_dcc_status'] ?? null;
         $defaults["instrument"]         = $sanitize['instrument'] ?? null;
