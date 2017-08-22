@@ -80,9 +80,4 @@ $(document).ready(function() {
       addEmptyOption(form, $(this));
     });
   });
-
-  // If candidate age outside window difference, apply error css
-  if ($('#cand-age-error')) {
-    $('#cand-age-error').removeClass().addClass('error');
-  }
 });
