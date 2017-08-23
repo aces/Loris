@@ -136,7 +136,7 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
                         'language'       => 'en',
                         'format'         => 'YMd',
                         'addEmptyOption' => true,
-                        'minYear'        => $study['startYear'],
+                        'minYear'        => $study['startYear'] - $study['ageMax'],
                         'maxYear'        => $study['endYear'],
                        );
 

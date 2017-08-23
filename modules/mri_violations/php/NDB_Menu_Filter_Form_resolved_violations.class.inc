@@ -329,7 +329,7 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
         $user        =&        User::singleton();
         $config      =&        NDB_Config::singleton();
         $study       = $config->getSetting('study');
-        $minYear     = $study['startYear'];
+        $minYear     = $study['startYear'] - $study['ageMax'];
         $maxYear     = $study['endYear'];
         $dateOptions = array(
                         'language'       => 'en',
