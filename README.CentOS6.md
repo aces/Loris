@@ -14,7 +14,7 @@ For further details on the install process, please see the LORIS GitHub Wiki Cen
 
 Default dependencies installed by CentOS 6.x may not meet the version requirements LORIS deployment or development.
 * MySQL 5.7 is supported for LORIS 17.*
-* PHP 7 is supported for LORIS 17.* - see below to upgrade your PHP manually
+* PHP 7 is supported for LORIS 17.* - see below for instructions on how to upgrade your PHP manually
 
 The yum packages to be installed vary from any Ubuntu packages referenced in the LORIS README.
 
@@ -34,7 +34,7 @@ sudo service httpd start
 sudo yum install php php-pdo php-mysql 
 ```
 
-*NOTE:* As of Loris 18.0 php7 is required (but not yet officially supported by CentOS). To upgrade php follow the following instructions
+*NOTE:* As of Loris 17.0 php7 is required (but not yet officially supported by CentOS). To upgrade php follow the following instructions:
 ``` 
 # update php5 -> php7
 curl 'https://setup.ius.io/' -o setup-ius.sh
@@ -46,7 +46,7 @@ sudo yum install php70u-json php70-xml mod_php70u php70u-cli php70u-mysqlnd php7
 ``` 
 **MySQL:**
 
-*Note:* Loris developers (those NOT working with a .zip release codebase) should skip steps relating to hosting mysql locally. Contact sysadmins for database credentials directly.
+*Note:* Loris developers (those NOT working with a .zip release codebase) should skip steps relating to hosting mysql locally. Contact your sysadmins for database credentials directly.
 ``` 
 sudo yum install mysql mysql-server
 ```
@@ -81,21 +81,21 @@ sudo mv composer.phar /usr/local/bin/composer
 ```
 # LORIS code base
 
-Download the latest release from the [releases page](https://github.com/aces/Loris/releases) to the home directory (~/), unzip it, and copy the contents to the project directory, `/var/www/loris` (we recommend naming your project directory `loris`, although you can use a different naming convention). 
+Download the latest release from the [releases page](https://github.com/aces/Loris/releases) to the home directory (~/), unzip it, and copy the contents to your project directory, `/var/www/loris` (we recommend naming your project directory `loris`, although you can use a different naming convention if you prefer). 
 ```
-wget https://github.com/aces/Loris/archive/v%VERSION%.zip
+wget https://github.com/aces/Loris/archive/v$VERSION.zip
 unzip Loris-%VERSION%.zip
 cp -r Loris-%VERSION%/* /var/www/loris
 ```
 
-Alternatively the latest development branch can be cloned directly [from github] (http://github.com/aces/Loris.git), for development purposes. We do not support unstable dev branches. 
+Alternatively the latest development branch can be obtained by forking the [LORIS repository] (http://github.com/aces/Loris) for development purposes. We do not support unstable dev branches. 
 
 # Setup:
 
 **Composer:**
 
 Composer will download all of LORIS's library requirements, assuming an active internet connection.
-This must be donw from the LORIS project directory `/var/www/loris`. There may be additional packages
+This must be done from the LORIS project directory `/var/www/loris`. There may be additional packages
 to install at this setp for composer to exist succesfully, be sure to install the php 7 compatible 
 versions of these packages, if necessary. 
 
@@ -114,28 +114,33 @@ To perform this step manually, copy the sample file to the apache configuration 
 cp docs/config/apache-site /etc/httpd/conf.d/apache-site.conf
 ```
 
-Ensure that paths and settings in this new file are populated appropriately for your server, e.g. replacing placeholders such as `%LORISROOT% --> /var/www/loris`, `%PROJECTNAME% --> loris`, `%LOGDIRECTORY% --> /var/log/httpd/loris-error.log`. Ensure that the DocumentRoot is pointing to `/var/www/loris/htdocs`.
+Ensure the following: 
 
-Also ensure that your new `smarty/templates_c/` directory under the LORIS
-root is writable by Apache.
-```
-chmod 775 /var/www/loris/smarty/templates_c
-```
+ * Paths and settings in `/etc/heepd/conf.d/apache-site.conf` are populated appropriately for your server, (replacing placeholders such as `%LORISROOT% --> /var/www/loris`, `%PROJECTNAME% --> loris`, `%LOGDIRECTORY% --> /var/log/httpd/loris-error.log`. 
+ * DocumentRoot is pointing to `/var/www/loris/htdocs`.
+ * The `smarty/templates_c/` directory under the LORIS root is writable by Apache.
+ (This can be done by running: `chmod 775 /var/www/loris/smarty/templates_c)
+
+`
 Finally, restart apache:
 ```
 sudo service httpd restart
 sudo service httpd status
 ```
 # Install LORIS
+
 For the purpose of following LORIS conventions and easy understanding of all LORIS documentation, we recommend the following account names: 
 
 * lorisadmin : Linux user with sudo permission who will setup and manage Loris
 * lorisuser : MySQL user with limited (insert, delete, update, select...) permissions on the Loris database, for database transactions requested by the Loris front end
 * admin : default username for Loris front-end admin account (browser login)
+
+**Run the loris install script:**
 ```
 cd /var/www/loris/tools
 ./install.sh
 ```
+**Configure your databse:*
 point your URL to: `http://%IPADDRESS%/installdb.php`
 
 (%IPADDRESS% will likely be the IP address of the VM you are ssh'ed into)
@@ -148,7 +153,7 @@ The web page will prompt you for the following information:
 
  * `Admin Password`: whatever password you set when running the `mysql_secure_installation` step
 
- * `Database Name`: already set to "LORIS", can be customised
+ * `Database Name`: set to "LORIS" by default, can be customised
 
 Click submit, and follow the instructions to enter the username and password of your backend user, and front end admin user. 
 
