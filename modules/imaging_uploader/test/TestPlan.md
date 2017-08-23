@@ -2,7 +2,7 @@
       
 1. Check that you have access to the Imaging Uploader page if you have either the imaging_uploader or superuser permission.
    [Automation Testing]
-2. Ensure that upon loading, the Imaging Uploader page has the 'Browse' and 'Upload' tabs appear  
+2. Ensure that upon loading, the Imaging Uploader page has the 'Browse' and 'Upload' tabs.  
    [Manual Testing]
 3. Check that when accessing the Imaging Uploader page, the 'Browse' tab displays all the uploads done for all users.
    [Automation Testing]
@@ -17,9 +17,9 @@
 6. Try uploading an invalid file (a .jpg or .txt) with syntactically correct CandID, PSCID and visit labels. Make sure
    an appropriate message is displayed in the Console Output at the top of the page.
    [Manual Testing]
-7. Execute step 10 again, but with a .tgz and .zip file.
+7. Execute step 6 again, but with a .tgz and .zip file.
    [Manual Testing]
-8. Upload a scan which was already uploaded and which was either 'Not Started' or 'Failure' status in the Progress column. 
+8. Upload a scan which was already uploaded and which has either 'Not Started' or 'Failure' status in the Progress column. 
    Make sure you get the Warning message 'Are you sure? A file with this name already exists! Would you like to override 
    existing file?'. Ensure the correct behavior of the two possible actions by the user: 'Yes, I am sure!' or 'No, cancel it!'.  
    [Manual Testing]      
@@ -43,7 +43,7 @@
       the MRI Browser page with all the valid scans loaded in the result table (with view imaging browser pages permission).
     - check that the Number Of MincCreated >= Number Of MincInserted. If there is difference between the number in
       the Number Of MincCreated and Number Of MincInserted columns, then check that the Number Of MincInserted column has a 
-      clickable link that take the user to the MRI violations page, displaying the violated scans of this upload.
+      clickable link that takes the user to the MRI violations page, displaying the violated scans of this upload.
     [Manual Testing]      
 12. Go to the Candidate Profile page and search for the CandID of the candidate to which the scan belongs. Make sure 
     that column scan done is set to yes. Click on the 'Yes' link and verify that it takes you to the Imaging Browser
