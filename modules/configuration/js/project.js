@@ -18,7 +18,7 @@ $(document).ready(function() {
         
         var errorClosure = function(i, form) {
             return function() {
-                $(form.find(".saveStatus")).text("Failed to save, same name already exist!").css({ 'color': 'red'}).fadeIn(500).delay(1000).fadeOut(500);
+                $(form.find(".saveStatus")).text("Recruitment target is required.").css({ 'color': 'red'}).fadeIn(500).delay(1000).fadeOut(500);
             }
         }
 
