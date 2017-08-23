@@ -455,7 +455,7 @@ class NDB_BVL_Instrument extends NDB_Page
             && $defaults['Window_Difference'] != 0
         ) {
             $defaults['Candidate_Age']
-                = '<span class="error">' . $defaults['Candidate_Age'] . '</span>';
+                = $defaults['Candidate_Age'] . " (Age out of range)";
         }
         //Convert select multiple elements into a quickform array
         if (!empty($this->_selectMultipleElements)) {
