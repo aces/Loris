@@ -95,17 +95,17 @@ class Data_Release extends \NDB_Menu_Filter
         $data_release_ids = array();
         $data_release_versions = array();
         foreach ($results as $row) {
-            $data_release_ids[$row['id']] = $row['file_name'];
+            $data_release_ids[$row['id']]           = $row['file_name'];
             $data_release_versions[$row['version']] = $row['version'];
         }
 
         $results = $DB->pselect(
-            "SELECT DISTINCT users.UserID, version FROM users
-             LEFT JOIN data_release_permissions
-             ON (users.ID=data_release_permissions.userid)
-             LEFT JOIN data_release
-             ON (data_release_permissions.data_release_id=data_release.id)
-             ORDER BY users.UserID, version",
+            "SELECT DISTINCT users.UserID, version FROM users"
+             . " LEFT JOIN data_release_permissions"
+             . " ON (users.ID=data_release_permissions.userid)"
+             . " LEFT JOIN data_release"
+             . " ON (data_release_permissions.data_release_id=data_release.id)"
+             . " ORDER BY users.UserID, version",
             array()
         );
         foreach ($results as $row) {
