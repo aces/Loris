@@ -14,8 +14,7 @@
         "squizlabs/php_codesniffer" : "2.5.*",
         "phpunit/phpunit" : "4.3.*",
         "phpunit/dbunit": ">=1.2",
-        "facebook/webdriver" : "dev-master",
-        "mockery/mockery": "dev-master"
+        "facebook/webdriver" : "dev-master"
     },
     "scripts": {
       "pre-install-cmd": "mkdir -p project/libraries"
