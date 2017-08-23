@@ -51,6 +51,7 @@ var config = [{
     './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js',
     './htdocs/js/modules/direct-entry-react.compiled.js': './htdocs/js/modules/direct-entry-react.js',
     './htdocs/js/modules/instrument-preview.compiled.js': './htdocs/js/modules/instrument-preview.js',
+    './htdocs/js/modules/instrument-view.compiled.js': './htdocs/js/modules/instrument-view.js',
   },
   output: {
     path: './',
