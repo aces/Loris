@@ -30,11 +30,13 @@ if ($_POST['action'] == 'addpermission' && $user->hasPermission('superuser')) {
              'data_release_id' => $data_release_id,
             )
         );
-    } elseif (empty($_POST['data_release_id']) && !empty($_POST['data_release_version'])) {
+    } elseif (empty($_POST['data_release_id'])
+        && !empty($_POST['data_release_version'])
+    ) {
         $userid               = $_POST['userid'];
         $data_release_version = $_POST['data_release_version'];
 
-        $IDs      = $DB->pselect(
+        $IDs = $DB->pselect(
             "SELECT id FROM data_release WHERE "
             . "version=:data_release_version",
             array(
@@ -43,29 +45,42 @@ if ($_POST['action'] == 'addpermission' && $user->hasPermission('superuser')) {
         );
 
         foreach ($IDs as $ID) {
-            $success         = $DB->insert(
-             'data_release_permissions',
-             array(
-              'userid'          => $userid,
-              'data_release_id' => $ID['id'],
-             )
+            $success = $DB->insert(
+                'data_release_permissions',
+                array(
+                 'userid'          => $userid,
+                 'data_release_id' => $ID['id'],
+                )
             );
         }
     }
 
     header("Location: {$baseURL}/data_release/?addpermissionSuccess=true");
-} elseif ($_POST['action'] == 'managepermissions' && $user->hasPermission('superuser')) {
+} elseif ($_POST['action'] == 'managepermissions'
+    && $user->hasPermission('superuser')
+) {
     try {
         $DB->_PDO->beginTransaction();
         $DB->run("TRUNCATE data_release_permissions");
         foreach ($_POST as $key => $value) {
             if (strpos($key, 'permissions') !== false) {
-                $user = str_replace("_" , "%", str_replace("permissions_", "", $key));
-                $userid = $DB->pselectOne("SELECT ID FROM users WHERE UserID LIKE :userid", array('userid' => $user));
+                $user   = str_replace(
+                    "_", "%", str_replace("permissions_", "", $key)
+                );
+                $userid = $DB->pselectOne(
+                    "SELECT ID FROM users WHERE UserID LIKE :userid",
+                    array('userid' => $user)
+                );
                 foreach ($value as $k => $v) {
-                    $data_release_ids = $DB->pselect("SELECT id FROM data_release WHERE version=:version", array('version' => $v));
+                    $data_release_ids = $DB->pselect(
+                        "SELECT id FROM data_release WHERE version=:version",
+                        array('version' => $v)
+                    );
                     foreach ($data_release_ids as $data_release_id) {
-                        $success = $DB->run("INSERT IGNORE INTO data_release_permissions VALUES ($userid, {$data_release_id['id']})");
+                        $success = $DB->run(
+                            "INSERT IGNORE INTO data_release_permissions VALUES "
+                            . "($userid, {$data_release_id['id']})"
+                        );
                     }
                 }
             }
