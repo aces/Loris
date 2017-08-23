@@ -17,10 +17,18 @@ $(document).ready(function() {
         }
         
         var errorClosure = function(i, form) {
+            console.log(form);
+            return function() {
+                $(form.find(".saveStatus")).text("Failed to save, same name already exists!").css({ 'color': 'red'}).fadeIn(500).delay(1000).fadeOut(500);
+            }
+        }
+
+        var errorNullClosure = function(i, form) {
             return function() {
                 $(form.find(".saveStatus")).text("Recruitment target is required.").css({ 'color': 'red'}).fadeIn(500).delay(1000).fadeOut(500);
             }
         }
+
 
         jQuery.ajax(
                 {
@@ -32,7 +40,8 @@ $(document).ready(function() {
                         "recruitmentTarget" : recruitmentTarget,
                     },
                     "success" : successClosure(ProjectID, form),
-                    "error" : errorClosure(ProjectID, form)   
+                    "error" : errorClosure(ProjectID, form)
+                    "error_null" : errorNullClosure(ProjectID, form)
                 }
 
           );
