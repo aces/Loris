@@ -1,6 +1,5 @@
 <?php
-    include "lexer.php";
-
+    namespace LorisScript;
 
     class Parser {
         private $expression;

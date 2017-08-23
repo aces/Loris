@@ -1,4 +1,7 @@
 <?php
+
+namespace LorisScript;
+
 function factHelper1 ($n) {
     if ($n == 0) return 1;
     return factHelper1($n-1)*$n;
@@ -158,8 +161,8 @@ function getFunctions() {
   	        return sqrt($variance);
     	},
     	'_datediff' => function ($date1, $date2, $units, $returnSigned=false) {
-    	    $dt1 = new DateTime($date1);
-    	    $dt2 = new DateTime($date2);
+    	    $dt1 = new \DateTime($date1);
+    	    $dt2 = new \DateTime($date2);
     	    $interval = date_diff($dt1, $dt2, !$returnSigned);
     	    $res;
             if ($units === 'y') {

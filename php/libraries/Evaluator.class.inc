@@ -1,6 +1,7 @@
 <?php
-    include 'functions.php';
-    include 'parser.php';
+
+    namespace LorisScript;
+    require_once("Functions.php");
 
     class Evaluator {
         static function evalAST($tree, $scope) {
@@ -81,7 +82,6 @@
                 throw new Exception("Parser error; review Syntax\n$e");
             }
             $res = static::evalAST($tree, $scope);
-            var_dump($res);
             return $res;
         }
     }
