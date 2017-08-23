@@ -131,7 +131,7 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
     function _setFilterForm()
     {
         $config      =& NDB_Config::singleton();
-        $study       = $config->getSetting('study');
+        $study       = $config->getSetting('Study');
         $dateOptions = array(
                         'language'       => 'en',
                         'format'         => 'YMd',
