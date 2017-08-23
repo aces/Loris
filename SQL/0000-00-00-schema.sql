@@ -170,7 +170,7 @@ CREATE TABLE `project_rel` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `psc` (
-  `CenterID` tinyint(2) unsigned NOT NULL AUTO_INCREMENT,
+  `CenterID` integer unsigned NOT NULL AUTO_INCREMENT,
   `Name` varchar(150) NOT NULL DEFAULT '',
   `PSCArea` varchar(150) DEFAULT NULL,
   `Address` varchar(150) DEFAULT NULL,
