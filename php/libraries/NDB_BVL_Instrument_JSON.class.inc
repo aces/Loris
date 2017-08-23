@@ -47,9 +47,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
      */
     function _getContext() {
         return array(
-            "t1_arm_1" => array(
-                "age_mths" => 200
-            )
+          "age_mths" => 200
         );
     }
 
