@@ -328,8 +328,9 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
         // create user object
         $user        =&        User::singleton();
         $config      =&        NDB_Config::singleton();
-        $minYear = $config->getSetting('startYear') - $config->getSetting('ageMax');
-        $maxYear = $config->getSetting('endYear');
+        $minYear     = $config->getSetting('startYear')
+            - $config->getSetting('ageMax');
+        $maxYear     = $config->getSetting('endYear');
         $dateOptions = array(
                         'language'       => 'en',
                         'format'         => 'YMd',
