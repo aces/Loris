@@ -25,14 +25,12 @@ $client->initialize();
 $factory     = NDB_Factory::singleton();
 $db          = $factory->database();
 $ProjectList = Utility::getProjectList();
-
+$recTarget   = empty($_POST['recruitmentTarget'])
+    ? null : $_POST['recruitmentTarget'];
 // if a new project is created add the new project.php
 // Otherwise, update the existing project.
 if ($_POST['ProjectID'] === 'new') {
     if (!in_array($_POST['Name'], $ProjectList) && !empty($_POST['Name'])) {
-        $recTarget
-            = empty($_POST['recruitmentTarget'])
-            ? null : $_POST['recruitmentTarget'];
         $db->insert(
             "Project",
             array(
@@ -46,9 +44,6 @@ if ($_POST['ProjectID'] === 'new') {
         exit();
     }
 } else {
-    $recTarget
-        = empty($_POST['recruitmentTarget'])
-        ? null : $_POST['recruitmentTarget'];
     $db->update(
         "Project",
         array(
