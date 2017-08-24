@@ -41,9 +41,6 @@ class ExaminerTest extends LorisIntegrationTest
             'Examiner'  => '#bc2 > a:nth-child(2) > div',
             'Selection Filter' => '#lorisworkspace > div.row > div.col-sm-12.col-md-7 > div > div.panel-heading',
             'Add Examiner'  => '#lorisworkspace > div.row > div.col-sm-12.col-md-5 > div > div.panel-heading',
-            'Examiner'     => '#dynamictable > thead > tr > th:nth-child(2)',
-            'Site'     => '#dynamictable > thead > tr > th:nth-child(3)',
-            'Radiologist'     => '#dynamictable > thead > tr > th:nth-child(4)',
             'Add'           => '#examiner > div:nth-child(3) > div > button'
            );
     /**
