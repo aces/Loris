@@ -207,11 +207,9 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                          );
         $this->columns = array_merge(
             $this->columns,
-            array(
-             "GROUP_CONCAT(DISTINCT OutputType) as Links",
-             's.ID as sessionID',
-            ),
-            $modalities_subquery_as
+            array("GROUP_CONCAT(DISTINCT OutputType) as Links"),
+            $modalities_subquery_as,
+            array('s.ID as sessionID')
         );
 
         $this->order_by = 'c.PSCID, s.Visit_label';
@@ -232,7 +230,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $this->headers = array_merge(
             $this->headers,
             $as,
-            'sessionID'
+            array('sessionID')
         );
 
         // Insert project column after DCCID, if useProject config is enabled
@@ -317,7 +315,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         }
 
         $DB    = Database::singleton();
-        $allAr = array('' => All);
+        $allAr = array('' => 'All');
 
         $this->addBasicText(
             'pscid',
