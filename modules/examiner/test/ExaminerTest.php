@@ -38,10 +38,12 @@ class ExaminerTest extends LorisIntegrationTest
      */
     private $_loadingUI
         =  array(
-            'Examiner'  => '#bc2 > a:nth-child(2) > div',
-            'Selection Filter' => '#lorisworkspace > div.row > div.col-sm-12.col-md-7 > div > div.panel-heading',
-            'Add Examiner'  => '#lorisworkspace > div.row > div.col-sm-12.col-md-5 > div > div.panel-heading',
-            'Add'           => '#examiner > div:nth-child(3) > div > button'
+            'Examiner'         => '#bc2 > a:nth-child(2) > div',
+            'Selection Filter' => '#lorisworkspace > div.row > '.
+                                  'div.col-sm-12.col-md-7 > div > div.panel-heading',
+            'Add Examiner'     => '#lorisworkspace > div.row > div.col'.
+                                  '-sm-12.col-md-5 > div > div.panel-heading',
+            'Add'              => '#examiner > div:nth-child(3) > div > button',
            );
     /**
     * Insert testing data
@@ -204,10 +206,10 @@ class ExaminerTest extends LorisIntegrationTest
             WebDriverBy::Name("filter")
         )->click();
         $text = $this->webDriver->executescript(
-                "return document.querySelector".
+            "return document.querySelector".
                 "('#dynamictable > tbody > tr:nth-child(1) > td:nth-child(2) > a')".
                 ".textContent"
-            );
+        );
         $this->assertContains("Test_Examiner", $text);
 
     }
@@ -222,7 +224,6 @@ class ExaminerTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        printf($bodyText);
         foreach ($this->_loadingUI as $key => $value) {
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
