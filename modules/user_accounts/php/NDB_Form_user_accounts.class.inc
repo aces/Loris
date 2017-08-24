@@ -277,7 +277,6 @@ class NDB_Form_User_Accounts extends NDB_Form
                  "fn" => $values['Real_name'],
                 )
             );
-
             // If examiner not in table add him,
             // otherwise update the radiologist field
             if (empty($examinerID)) {
@@ -446,7 +445,11 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         // make the set
         foreach ($values as $key => $value) {
-            $set[$key] = $value;
+            if (!empty($value)) {
+                $set[$key] = $value;
+            } else {
+                $set[$key] = null;
+            }
         }
 
         // update the user
