@@ -4,6 +4,13 @@ class AccessProfilePanel extends React.Component {
   constructor(props) {
     super(props);
 
+    // FIXME: Figure out why this is in loris. instead of props.
+    // This seems very broken, but this is how media does it..
+    // FIXME 2: There's not any good reason for Visits to be hidden,
+    //  but that's the way it was done before, so this just keeps that
+    //  behaviour (The data table also seems to have some weird graphical
+    //  glitches when Visits isn't hidden, but that's a separate issue..)
+     loris.hiddenHeaders = ['Visits' ];
     this.state = {
       error: {
         message: '',

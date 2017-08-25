@@ -149,7 +149,7 @@ var SelectElement = React.createClass({
       React.PropTypes.array
     ]),
     id: React.PropTypes.string,
-    class: React.PropTypes.string,
+    'class': React.PropTypes.string,
     multiple: React.PropTypes.bool,
     disabled: React.PropTypes.bool,
     required: React.PropTypes.bool,
