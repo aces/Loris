@@ -24,14 +24,18 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       return <td> <a href={mpfURL}>{cell}</a> </td>;
 
   }
-  else if (column === "Scan In Imaging Browser" && cell==="Found"){
+  else if (column === "Scan" && cell==="In Imaging Browser"){
     var imgURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID='+row['Session ID'];
     return <td><a href={imgURL}>{cell}</a></td>;
   }
 
-  else if (column === "Tarchive" && cell !== null ){
-    var tarchiveURL = loris.BaseURL + '/dicom_archive/viewDetails/?tarchiveID='+cell;
-    return <td><a href = {tarchiveURL}>Tarchive</a></td>;
+  else if (column === "Tarchive"){
+    if (cell ==="In DICOM" ){
+      var tarchiveURL = loris.BaseURL + '/dicom_archive/viewDetails/?tarchiveID='+row['TarchiveID'];
+      return <td><a href = {tarchiveURL}>{cell}</a></td>;
+  } else{
+      return <td>Missing</td>;
+    } 
   }
 
   return <td>{cell}</td>;
