@@ -164,8 +164,8 @@ INSERT INTO subproject (title, useEDC, WindowDifference) VALUES
   ('Experimental', false, 'optimal');
 
 CREATE TABLE `project_rel` (
-  `ProjectID` int(2) DEFAULT NULL,
-  `SubprojectID` int(2) DEFAULT NULL,
+  `ProjectID` int(2) NOT NULL,
+  `SubprojectID` int(2) NOT NULL,
   PRIMARY KEY (ProjectID, SubprojectID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
