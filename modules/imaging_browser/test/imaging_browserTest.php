@@ -164,7 +164,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             'files',
             array(
-             'FileID'                => 1,
+             'FileID'                => 1111,
              'SessionID'             => 999998,
              'File'                  => 'assembly/506145/V1/mri/native/' .
               'loris-MRI_506145_V1_t2_001.mnc',
