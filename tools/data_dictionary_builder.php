@@ -11,9 +11,12 @@
  *
  * Input:
  * data_dictionary_builder.php takes as input the ip_output.txt file (generated
- * by quickform_parser.php) and inserts records for each field of each
+ * by lorisform_parser.php) and inserts records for each field of each
  * discovered NDB_BVL_Instrument. To be complete, this tool must be run on an
  * ip_output.txt file that was constructed from all instruments.
+ * You will also need to concatenate the linst instruments (which are the same 
+ * format as ip_output.txt internally) to the end of the file 
+ * before running the script.
  *
  * *
  * * WARNING THIS FILE ACTIVELY AFFECTS THE DATABASE INDICATED BY CONFIG.XML.

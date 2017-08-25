@@ -118,6 +118,7 @@ function parseElements($elements, $groupLabel="")
         } else {
             $label = trim(preg_replace('/\s+/', ' ', $groupLabel));
         }
+        $label = strip_tags($label);
 
         switch ($element['type']) {
         case "select":
@@ -237,7 +238,10 @@ function getExcludedInstruments()
     // Get the abbreviated instruments
     $config =& NDB_Config::singleton();
     $excluded_instruments = $config->getSetting('excluded_instruments');
-
+    if (strlen(trim($excluded_instruments)) == 0) {
+        $excluded_instruments = array();
+    }
+    
     $ex_instruments =array();
     foreach ($excluded_instruments as $instruments) {
         foreach (Utility::asArray($instruments) as $instrument) {
