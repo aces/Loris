@@ -67,6 +67,16 @@ class HelpFile
              created, updated FROM help WHERE helpID = :HID",
             array('HID' => $helpID)
         );
+
+        $linksCol = $DB->pselect(
+            "SELECT url, title FROM help_link WHERE helpID=:HID",
+            array('HID' => $helpID)
+        );
+        $links    = array();
+        foreach ($linksCol as $k=>$row) {
+            $links[$row['url']] =$row['title'];
+        }
+        $result['links'] = $links;
         // set the help file
         $obj->data = $result;
 

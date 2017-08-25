@@ -44,6 +44,18 @@ $(document).ready(function() {
           wrap.innerHTML = "<h3></h3>";
         }
         wrap.innerHTML += content.content;
+
+        var links = content.links;
+        if (links != 0) {
+          wrap.innerHTML += "<br><br><h4>Helpful Links</h4>";
+          wrap.innerHTML += "<ul>";
+          for (var link in links) {
+            if (links.hasOwnProperty(link)) {
+              wrap.innerHTML += "<li><a href=\"" + link + "\" target=\"_blank\">" + links[link] + "</a></li>";
+            }
+          }
+          wrap.innerHTML += "</ul>";
+        }
         if (content.updated) {
           wrap.innerHTML = wrap.innerHTML + "<hr>Last updated: " + content.updated;
         }
