@@ -1,14 +1,9 @@
-# DICOM Archive Details
+# DICOM Archive: Tarchive Metadata
 
-The ViewDetails page shows the details of a particular dicom tar.
 
-It displays the various session summary headers in a table, 
-followed by a hash of the file, followed by a table of all series
-which are part of the dicom tar.
+The “View Details” page of the DICOM Archive displays metadata for a given DICOM tarchive (compressed package of DICOM files). 
 
-After the series is an expandable (by default collapsed) list of all
-*files* in the dicomTar. You can expand or collapse this list by clicking
-Show/Hide files.
+All DICOM header fields and other metadata from the DICOM dataset are presented in the page, including information about the candidate, number of acquisitions, where the files were acquired, and all files contained within the given archive.
 
-Finally, Show/Hide Metadata shows all information stored in the dicom tar's
-meta file, which is created by dicomTar.
+Clicking on the Acquisition ID number (in blue text) will bring users to the MRI Violated Scans module displaying any issues encountered for this scan regarding protocol checks or data integrity. 
+Users can easily view the history of protocol check violations or data loading concerns associated with this scan.
