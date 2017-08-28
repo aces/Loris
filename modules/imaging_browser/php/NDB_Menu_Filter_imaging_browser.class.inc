@@ -85,11 +85,10 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             )
         );
 
-        
         if (!empty($scan_id_types)) {
             $this->acqpid = "AND AcquisitionProtocolID IN (".
                     implode(",", array_keys($scan_id_types)) .")";
-            $isFirst = true;
+            $isFirst      = true;
             foreach ($scan_id_types as $key => $value) {
                 if ($isFirst) {
                     $acqpif = "IF(FIND_IN_SET({$key},GROUP_CONCAT(
@@ -103,7 +102,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             $acqpif .= ",'new','')";
         } else {
             $this->acqpid = '';
-            $acqpif = 'new';
+            $acqpif       = 'new';
         }
 
         $NewDataSubquery = "CASE 
