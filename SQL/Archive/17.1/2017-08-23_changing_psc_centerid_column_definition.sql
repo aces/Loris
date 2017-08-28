@@ -1,43 +1,92 @@
-WARNINGS;
-SELECT 'Droping foreign keys' as 'Step #1';
-ALTER TABLE candidate DROP FOREIGN KEY `FK_candidate_1`;
-ALTER TABLE examiners_psc_rel DROP FOREIGN KEY `FK_examiners_psc_rel_2`;
-ALTER TABLE issues DROP FOREIGN KEY `fk_issues_5`;
-ALTER TABLE notification_spool DROP FOREIGN KEY `FK_notification_spool_2`;
-ALTER TABLE session DROP FOREIGN KEY `FK_session_2`;
-ALTER TABLE user_psc_rel DROP FOREIGN KEY `FK_user_psc_rel_2`;
+DELIMITER $$
 
-SELECT 'Changing column definitions' as 'Step #2-A';
-ALTER TABLE candidate CHANGE `CenterID` `CenterID` integer unsigned NOT NULL;
-ALTER TABLE examiners_psc_rel CHANGE `centerID` `centerID` integer unsigned NOT NULL;
-ALTER TABLE issues CHANGE `centerID` `centerID` integer unsigned DEFAULT NULL;
-ALTER TABLE session CHANGE `CenterID` `CenterID` integer unsigned DEFAULT NULL;
-ALTER TABLE user_psc_rel CHANGE `CenterID` `CenterID` integer unsigned NOT NULL;
-ALTER TABLE psc CHANGE `CenterID` `CenterID` integer unsigned NOT NULL AUTO_INCREMENT;
+CREATE PROCEDURE `change_psc_centerid_column_definition`()
+BEGIN
 
-SELECT 'Changing column definitions for notification_spool' as 'Step #2-B';
--- There might be values with invalid dates (e.g.: 0000-00-00 00:00:00)
+  DECLARE v_finish INTEGER DEFAULT 0;
 
--- save current setting of sql_mode
-SET @old_sql_mode := @@sql_mode ;
+  DECLARE v_schema_name VARCHAR(255) DEFAULT database();
+  DECLARE v_table_name VARCHAR(255) DEFAULT "";
+  DECLARE v_column_name VARCHAR(255) DEFAULT "";
+  DECLARE v_constraint_name VARCHAR(255) DEFAULT "";
+  DECLARE v_column_default VARCHAR(255) DEFAULT "";
+  DECLARE v_nullable VARCHAR(255) DEFAULT "";
 
--- derive a new value by removing NO_ZERO_DATE and NO_ZERO_IN_DATE
-SET @new_sql_mode := @old_sql_mode ;
-SET @new_sql_mode := TRIM(BOTH ',' FROM REPLACE(CONCAT(',',@new_sql_mode,','),',NO_ZERO_DATE,'  ,','));
-SET @new_sql_mode := TRIM(BOTH ',' FROM REPLACE(CONCAT(',',@new_sql_mode,','),',NO_ZERO_IN_DATE,',','));
-SET @@sql_mode := @new_sql_mode ;
+  DECLARE stmt VARCHAR(1024);
 
-ALTER TABLE notification_spool CHANGE `CenterID` `CenterID` integer unsigned DEFAULT NULL;
+  DECLARE c_constraints CURSOR FOR
+    SELECT TABLE_NAME, COLUMN_NAME, CONSTRAINT_NAME FROM tmp_centerid_contraints;
 
--- when we are done with required operations, we can revert back
--- to the original sql_mode setting, from the value we saved
-SET @@sql_mode := @old_sql_mode ;
+  DECLARE CONTINUE HANDLER FOR NOT FOUND
+    SET v_finish = 1;
 
+  CREATE TEMPORARY TABLE tmp_centerid_contraints SELECT TABLE_NAME, COLUMN_NAME, CONSTRAINT_NAME FROM information_schema.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = v_schema_name AND ((TABLE_NAME = 'psc' AND LOWER(COLUMN_NAME) = 'centerid') OR (REFERENCED_TABLE_NAME = 'psc' AND LOWER(REFERENCED_COLUMN_NAME) = 'centerid')) AND TABLE_NAME != 'psc';
 
-SELECT 'Adding foreign keys back' as 'Step #3';
-ALTER TABLE candidate ADD CONSTRAINT `FK_candidate_1` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`);
-ALTER TABLE examiners_psc_rel ADD CONSTRAINT `FK_examiners_psc_rel_2` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`);
-ALTER TABLE issues ADD CONSTRAINT `fk_issues_5` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`);
-ALTER TABLE notification_spool ADD CONSTRAINT `FK_notification_spool_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`);
-ALTER TABLE session ADD CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`);
-ALTER TABLE user_psc_rel ADD CONSTRAINT `FK_user_psc_rel_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`);
+  -- Drop foreign keys
+  OPEN c_constraints;
+  
+  drop_constraints: LOOP
+    FETCH c_constraints INTO v_table_name, v_column_name, v_constraint_name;
+
+    IF v_finish = 1 THEN
+      LEAVE drop_constraints;
+    END IF;
+
+    SET @SQL := CONCAT('ALTER TABLE ',v_table_name,' DROP FOREIGN KEY ',v_constraint_name);
+    SELECT @SQL;
+    PREPARE stmt FROM @SQL;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+
+  END LOOP drop_constraints;
+  CLOSE c_constraints;
+  
+  SET v_finish = false;
+  OPEN c_constraints;
+  alter_tables: LOOP
+    FETCH c_constraints INTO v_table_name, v_column_name, v_constraint_name;
+    
+    IF v_finish = 1 THEN
+      LEAVE alter_tables;
+    END IF;
+
+    SELECT IFNULL(CONCAT('DEFAULT ', COLUMN_DEFAULT), ''), IF(IS_NULLABLE = 'YES', '', 'NOT NULL') INTO v_column_default, v_nullable FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = v_schema_name AND TABLE_NAME = v_table_name AND column_name = v_column_name;
+    SET @SQL := CONCAT('ALTER TABLE ',v_table_name,' CHANGE ',v_column_name,' ',v_column_name,' INTEGER UNSIGNED ',v_nullable,' ', v_column_default);    
+
+    SELECT @SQL;
+    PREPARE stmt FROM @SQL;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+
+  END LOOP alter_tables;
+  CLOSE c_constraints;
+
+  ALTER TABLE psc CHANGE `CenterID` `CenterID` integer unsigned NOT NULL;
+
+  SET v_finish = false;
+  OPEN c_constraints;
+  add_constraints: LOOP
+    FETCH c_constraints INTO v_table_name, v_column_name, v_constraint_name;
+
+    IF v_finish = 1 THEN
+      LEAVE add_constraints;
+    END IF;
+
+    SET @SQL := CONCAT('ALTER TABLE ',v_table_name,' ADD CONSTRAINT `',v_constraint_name,'` FOREIGN KEY (`',v_column_name,'`) REFERENCES `psc` (`CenterID`)');
+    SELECT @SQL;
+    PREPARE stmt FROM @SQL;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+
+  END LOOP add_constraints;
+  CLOSE c_constraints;
+
+  DROP TABLE tmp_centerid_contraints;
+
+  SELECT 'Success' as 'Exit';
+
+END $$
+DELIMITER ;
+
+call change_psc_centerid_column_definition();
+DROP PROCEDURE `change_psc_centerid_column_definition`;
