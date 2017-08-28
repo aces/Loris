@@ -234,7 +234,7 @@ class Create_Timepoint extends \NDB_Form
         try {
             \TimePoint::isValidVisitLabel($candid, $subprojectID, $visitLabel);
         } catch ( \LorisException $e) {
-            $errors[] = $e->getMessage();
+            $errors['visitLabel'] = $e->getMessage();
         }
 
         return $errors;
