@@ -13,7 +13,7 @@ Deploy and log in with username <i>admin</i> and the password that's set up duri
 This Readme covers installation of the <b>17.1</b> LORIS release on <b>Ubuntu</b>.
 ([CentOS Readme also available](https://github.com/aces/Loris/blob/master/README.CentOS6.md)).
 
-Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information not included in this Readme. The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki. 
+Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information not included in this Readme. The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki. 
 
 # Prerequisites for Installation
 
@@ -28,7 +28,7 @@ Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/S
  * If you are upgrading your LORIS, you'll also want to upgrade to both PHP 7 and MySQL 5.7, since these dependency versions were not supported in the last release. 
  * Composer should be run with --no-dev option unless you are an active LORIS developer. 
 
-Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information.
+Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
 
 # Installation
 
@@ -55,7 +55,7 @@ Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this 
 
 3. Run installer script to install core code, and libraries. The script will prompt for information and so that it can create directories automatically.
 
-    For more information, please read the [Install Script wiki page](https://github.com/aces/Loris/wiki/Install-Script).
+    For more information, please read the [Installing Loris wiki page](https://github.com/aces/Loris/wiki/Installing-Loris).
 
     ```
     cd /var/www/$projectname/tools
