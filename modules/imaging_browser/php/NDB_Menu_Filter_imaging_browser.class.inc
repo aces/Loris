@@ -87,7 +87,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
 
         
         if (!empty($scan_id_types)) {
-            $acqpid = "AND AcquisitionProtocolID IN (".
+            $this->acqpid = "AND AcquisitionProtocolID IN (".
                     implode(",", array_keys($scan_id_types)) .")";
             $isFirst = true;
             foreach ($scan_id_types as $key => $value) {
@@ -102,7 +102,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             }
             $acqpif .= ",'new','')";
         } else {
-            $acqpid = '';
+            $this->acqpid = '';
             $acqpif = 'new';
         }
 
@@ -439,11 +439,11 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                     $query .= " AND s.MRIQCPending='Y'";
                     break;
                 case "N":
-                    $query .= " AND fqc.QCFirstChangeTime IS NULL " . $acqpid;
+                    $query .= " AND fqc.QCFirstChangeTime IS NULL " . $this->acqpid;
                     break;
                 case "PN":
                     $query .= " AND (s.MRIQCPending='Y' 
-                        OR (fqc.QCFirstChangeTime IS NULL ". $acqpid ."))";
+                        OR (fqc.QCFirstChangeTime IS NULL ". $this->acqpid ."))";
                     break;
                 }
             } else if ($field == 'AcquisitionProtocolID') {
