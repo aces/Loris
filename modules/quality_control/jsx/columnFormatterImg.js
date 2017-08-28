@@ -24,7 +24,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       return <td> <a href={mpfURL}>{cell}</a> </td>;
 
   }
-  else if (column === "Scan" && cell==="In Imaging Browser"){
+  else if (column === "Scan Location" && cell==="In Imaging Browser"){
     var imgURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID='+row['Session ID'];
     return <td><a href={imgURL}>{cell}</a></td>;
   }

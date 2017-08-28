@@ -113,7 +113,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         //    2) No Data - MRI PF Incomplete, No scan in browser,
         //       No DICOM.
 
-        $query =  "  SELECT 
+        $select =  "  SELECT 
                    c.PSCID,
                    s.ID as SessionID,
                    s.CandID as cand_id,
@@ -128,7 +128,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                       WHEN m.".$scan_done." = 'Complete' THEN 'Yes'
                       WHEN m.".$scan_done." = 'Partial' THEN 'Yes'
                       ELSE 'No'
-                    END as t1_scan_done,
+                    END as scan_done,
                     CASE 
                       WHEN t.tarchiveID IS NULL THEN 'Missing'
                       ELSE 'In DICOM'
@@ -141,8 +141,9 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                    qc.QCStatus as qc_status,
                    mu.uploadedBy as uploaded_by,
                    f.CommentID as CommentID,
-                   t.tarchiveID as tarchiveID
-            FROM flag f
+                   t.tarchiveID as tarchiveID ";
+            
+            $joins = " FROM flag f
             LEFT JOIN session s ON (f.SessionID=s.ID)
             LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
             LEFT JOIN tarchive t ON (t.SessionID=s.ID)
@@ -150,8 +151,9 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             LEFT JOIN mri_protocol_violated_scans mpv ON (mpv.CandID = s.CandID AND mpv.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))
             LEFT JOIN candidate c ON (s.CandID=c.CandID)
             LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
-            LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID)
-            WHERE 1=1
+            LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID) ";
+           
+            $where = " WHERE 1=1
             AND NOT (((m.".$scan_done."='Complete' OR m.".$scan_done."='Partial') AND m.".$scan_done." IS NOT NULL) AND ((fi.fileID IS NOT NULL OR mpv.PatientName IS NOT NULL) AND t.tarchiveID IS NOT NULL))
             AND NOT (((m.".$scan_done."!='Complete' AND m.".$scan_done."!='Partial') OR m.".$scan_done." IS NULL) AND ((fi.fileID IS NULL AND mpv.PatientName IS NULL) AND t.tarchiveID IS NULL))
               AND NOT f.CommentID LIKE 'DDE%'
@@ -159,7 +161,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
               AND s.Active='Y'
               AND s.CenterID <> '1' ";
 
-              //var_dump($query);
+              $query = $select.$joins.$where;
+
               return $query;
     }
     /**
@@ -206,7 +209,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             $uploaderList[$up['UploadedBy']] = $up['UploadedBy'];
         }
 
-        $scan_status = array(
+        $scan_location = array(
                         "In Imaging Browser"    => "Found in Imaging Browser",
                         "In MRI Violated Scans" => "Found in MRI Violated Scans",
                         "Missing"               => "Missing",
@@ -216,10 +219,10 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
         $this->addSelect('scanType', 'Scan Type', $scan_types);
         $this->addSelect('mRIParameterForm', "MRI Parameter Form", array("Complete" => "Complete", "Incomplete" => "Incomplete"));
-        $this->addSelect('t1ScanDoneInMRIPF', 'T1 Scan Done', array("Yes" => "Yes", "No" => "No"));
+        $this->addSelect('scanDoneInMRIPF', 'Scan Done in MRI PF', array("Yes" => "Yes", "No" => "No"));
         $this->addSelect('tarchive', 'Tarchive Status', array("In DICOM" => "In DICOM Archives", "Missing" => "Missing"));
-        $this->addSelect('scanStatus', 'Scan Status', $scan_status);
-        $this->addSelect('t1QCStatus', 'T1 QC Status', array( "Pass" => "Pass", "Fail" => "Fail"));
+        $this->addSelect('scanLocation', 'Scan Location', $scan_location);
+        $this->addSelect('qCStatus', 'QC Status', array( "Pass" => "Pass", "Fail" => "Fail"));
         $this->addSelect('uploadedBy', 'Uploaded By', $uploaderList);
         return true;
     }
@@ -262,7 +265,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                           'visit_label',
                           'scan_type',
                           'mri_parameter_form',
-                          't1_scan_done',
+                          'scan_done',
                           'tarchive_loc',
                           'scan_location',
                           'qc_status',
@@ -277,7 +280,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             visit_label,
             scan_type,
             mri_parameter_form,
-            t1_scan_done,
+            scan_done,
             tarchive_loc,
             scan_location,
             qc_status,
@@ -294,10 +297,10 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                           'Visit Label',
                           'Scan Type',
                           'MRI Parameter Form',
-                          'T1 Scan Done in MRI PF',
+                          'Scan Done in MRI PF',
                           'Tarchive',
-                          'Scan',
-                          'T1 QC Status',
+                          'Scan Location',
+                          'QC Status',
                           'Uploaded By',
                           'CommentID',
                           'TarchiveID',
