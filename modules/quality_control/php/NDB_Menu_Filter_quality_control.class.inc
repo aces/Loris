@@ -5,8 +5,9 @@
  * PHP Version 5
  *
  * @category Module
- * @package  Quality Control
- * @author   Leo Thomas <lthomas.mcin@gmail.com>, Liza Levitis <llevitis.mcin@gmail.com>
+ * @package  Quality_Control
+ * @author   Leo Thomas <lthomas.mcin@gmail.com>
+ * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
@@ -16,8 +17,9 @@
  * PHP Version 5
  *
  * @category Module
- * @package  Quality Control
- * @author   Leo Thomas <lthomas.mcin@gmail.com>, Liza Levitis <llevitis.mcin@gmail.com>
+ * @package  Quality_Control
+ * @author   Leo Thomas <lthomas.mcin@gmail.com>
+ * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
@@ -26,7 +28,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     public $hasWritePermission = false;
     public $AjaxModule         = true;
 
-    /**quality_control
+    /**
      * Check user permissions
      *
      * @return bool
@@ -39,7 +41,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         return $user->hasPermission('imaging_browser_qc');
     }
     /**
-     * Override default behaviour, since the page is loaded from qualityControlIndex.js
+     * Override default behaviour, since the page is loaded from
+     * qualityControlIndex.js
      *
      * @return void
      * @access public
@@ -48,71 +51,69 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     {
         return null;
     }
-    /**
-     * Create a form to filter behavioral QC by various criteria
-     *
-     * @return bool
-     * @throws ConfigurationException
-     * @throws DatabaseException
-     * @throws Exception
-     */
-    function _setFilterForm()
-    {
-        $user      =& User::singleton();
-        $db        = Database::singleton();
-        $siteList  = array();
-        $visitList = Utility::getVisitList();
-        // allow to view all sites data through filter
-        if ($user->hasPermission('imaging_browser_qc')) {
-            $siteList = Utility::getSiteList(false);
-            // Index sites using their names (used to filter react tables)
-            foreach ($siteList as $key => $site) {
-                unset($siteList[$key]);
-                $siteList[$site] = $site;
-            }
-        } else {
-            // allow only to view own site data
-            $siteIDs = $user->getData('CenterIDs');
-            foreach ($siteIDs as $val) {
-                $site = &Site::singleton($val);
-                if ($site->isStudySite()) {
-                    $siteList[$site->getCenterName()] = $site->getCenterName();
-                }
-            }
-        }
 
-        $uploaderList =[];
-        $uploaders    = $db -> pselect(
-            "SELECT UploadedBy FROM mri_upload GROUP BY UploadedBy",
+    /**
+    * Checks connfiguration module to find which scans are relevant
+    * to the given project
+    *
+    * @return array $scan_types of desired scan types.
+    */
+    function _getScanTypes()
+    {
+        $config = NDB_Config::singleton();
+        $db     = Database::singleton();
+
+        $toTable_scan_types = $config->getSetting('tblScanTypes');
+
+        $all_scan_types_2d = $db->pselect(
+            "SELECT ID, Scan_type FROM mri_scan_type mri",
             array()
         );
-        foreach($uploaders as $up){
-            $uploaderList[$up['UploadedBy']] = $up['UploadedBy'];
-        }
-        
-        $scan_status = array(
-          "In Imaging Browser"=>"Found in Imaging Browser", 
-          "In MRI Violated Scans"=>"Found in MRI Violated Scans", 
-          "Missing"=> "Missing"
-          );
-        // Form Elements
-        $this->addBasicText('candId', 'DCCID', ["size" => 9, "maxlength" => 7]);
-        $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
-        $this->addSelect('scan_type', 'Scan Type', array("T1"=>"T1", "T2"=>"T2"));
-        $this->addSelect('mRIParameterForm', "MRI Parameter Form", array("Complete"=>"Complete", "Incomplete"=>"Incomplete"));
-        $this->addSelect('t1ScanDoneInMRIPF', 'T1 Scan Done', array("Yes"=>"Yes", "No"=>"No"));
-        $this->addSelect('tarchive', 'Tarchive Status', array("In DICOM"=> "In DICOM Archives", "Missing"=>"Missing"));
-        $this->addSelect('scan', 'Scan Status', $scan_status);
-        $this->addSelect('t1QCStatus', 'T1 QC Status', array( "Pass"=>"Pass", "Fail"=>"Fail"));
-        $this->addSelect('uploadedBy', 'Uploaded By', $uploaderList);
-        //$this->addSelect('site', 'Site', $siteList);
-        return true;
-    }
 
-    function _buildQuery($scan_type, $scan_done, $acqID){
-      
-      $query =  "  
-                  SELECT 
+        foreach ($all_scan_types_2d as $row) {
+            $type = $row['Scan_type'];
+            $all_scan_types[$row['ID']] = $type;
+        }
+
+        // Get the intersection between all the scan types and those
+        // that are desired to go into imaging browser table, based on
+        // array values rather than keys (hence the array_flip), then flip
+        // the resulting array back to revert it to a key/value (i.e.
+        // acquisition protocol ID/scan type) combination.
+        $scan_id_types =array_flip(
+            array_intersect_key(
+                array_flip($all_scan_types),
+                array_flip($toTable_scan_types)
+            )
+        );
+        $scan_types    =[];
+        foreach ($scan_id_types as $scan) {
+            $scan_types[$scan] = $scan;
+        }
+        return $scan_types;
+    }
+    /**
+    * Builds query for given modality. Works with t1w, t2w, dti.
+    *
+    * @param string $scan_type One of 't1w', 't2w', 'dti'
+    * @param string $scan_done Name of column to check in mri_parameter_form
+    * @param string $acqID     Aquisition protocol ID for given modality
+    *
+    * @return string $query for the given modality
+    */
+    function _buildQuery($scan_type, $scan_done, $acqID)
+    {
+
+        // joins tarchive, files and mri_violated_scans to
+        // Session table and then filters out
+        // the "normal" cases:
+        //    1) Data correct - MRI PF = Complete, Scan Done = Yes,
+        //       scan in MRI Violations or in Imaging Browser,
+        //       DICOM exists
+        //    2) No Data - MRI PF Incomplete, No scan in browser,
+        //       No DICOM.
+
+        $query =  "  SELECT 
                    c.PSCID,
                    s.ID as SessionID,
                    s.CandID as cand_id,
@@ -156,14 +157,74 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
               AND NOT f.CommentID LIKE 'DDE%'
               AND f.Test_name='mri_parameter_form'
               AND s.Active='Y'
-              AND s.CenterID <> '1' 
-              ";
+              AND s.CenterID <> '1' ";
 
               //var_dump($query);
               return $query;
     }
     /**
-     * Build a list of behavioural QC to display in Data Table
+     * Create a form to filter behavioral QC by various criteria
+     *
+     * @return bool
+     * @throws ConfigurationException
+     * @throws DatabaseException
+     * @throws Exception
+     */
+    function _setFilterForm()
+    {
+        $user      =& User::singleton();
+        $db        = Database::singleton();
+        $siteList  = array();
+        $visitList = Utility::getVisitList();
+        // allow to view all sites data through filter
+        if ($user->hasPermission('imaging_browser_qc')) {
+            $siteList = Utility::getSiteList(false);
+            // Index sites using their names (used to filter react tables)
+            foreach ($siteList as $key => $site) {
+                unset($siteList[$key]);
+                $siteList[$site] = $site;
+            }
+        } else {
+            // allow only to view own site data
+            $siteIDs = $user->getData('CenterIDs');
+            foreach ($siteIDs as $val) {
+                $site = &Site::singleton($val);
+                if ($site->isStudySite()) {
+                    $siteList[$site->getCenterName()] = $site->getCenterName();
+                }
+            }
+        }
+
+        $scan_types = $this->_getScanTypes();
+
+        $uploaderList =[];
+        $uploaders    = $db -> pselect(
+            "SELECT UploadedBy FROM mri_upload GROUP BY UploadedBy",
+            array()
+        );
+        foreach ($uploaders as $up) {
+            $uploaderList[$up['UploadedBy']] = $up['UploadedBy'];
+        }
+
+        $scan_status = array(
+                        "In Imaging Browser"    => "Found in Imaging Browser",
+                        "In MRI Violated Scans" => "Found in MRI Violated Scans",
+                        "Missing"               => "Missing",
+                       );
+        // Form Elements
+        $this->addBasicText('candId', 'DCCID', ["size" => 9, "maxlength" => 7]);
+        $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
+        $this->addSelect('scanType', 'Scan Type', $scan_types);
+        $this->addSelect('mRIParameterForm', "MRI Parameter Form", array("Complete" => "Complete", "Incomplete" => "Incomplete"));
+        $this->addSelect('t1ScanDoneInMRIPF', 'T1 Scan Done', array("Yes" => "Yes", "No" => "No"));
+        $this->addSelect('tarchive', 'Tarchive Status', array("In DICOM" => "In DICOM Archives", "Missing" => "Missing"));
+        $this->addSelect('scanStatus', 'Scan Status', $scan_status);
+        $this->addSelect('t1QCStatus', 'T1 QC Status', array( "Pass" => "Pass", "Fail" => "Fail"));
+        $this->addSelect('uploadedBy', 'Uploaded By', $uploaderList);
+        return true;
+    }
+    /**
+     * Build a list of imaging QC to display in Data Table
      *
      * @return bool
      * @throws DatabaseException
@@ -173,16 +234,27 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 
         $db =& Database::singleton();
 
-        // joins tarchive, files and mri_violated_scans to Session table and then filters out 
-        // the "normal" cases: 
-        //    1) Data correct - MRI PF = Complete, Scan Done = Yes, scan in MRI Violations or in Imaging Browser, DICOM exists
-        //    2) No Data - MRI PF Incomplete, No scan in browser, No DICOM.
+        $scan_types = $this->_getScanTypes();
 
-        $query_t1 = $this->_buildQuery("T1", "T1_Scan_done", "44");
-        $query_t2 = $this->_buildQuery("T2", "T2_Scan_done", "45");
-        
-        $this->query = "FROM ( " . $query_t1 . " UNION ALL ". $query_t2 . ") as tmp;";
-        var_dump($this->query);
+        if (array_key_exists('t1w', $scan_types)) {
+            $scan_types['t1w'] = $this->_buildQuery("t1w", "T1_Scan_done", "44");
+        }
+        if (array_key_exists('t2w', $scan_types)) {
+            $scan_types['t2w'] = $this->_buildQuery("t2w", "T2_Scan_done", "45");
+        }
+        if (array_key_exists('dti', $scan_types)) {
+            $scan_types['dti'] = $this->_buildQuery("dti", "dti_Scan_done", "48");
+        }
+
+        $query = implode(
+            " 
+          UNION ALL
+          ",
+            $scan_types
+        );
+
+        $this->query = " FROM ( " . $query . " ) as tmp";
+
         $this->columns = [
                           'PSCID',
                           'SessionID',
@@ -198,7 +270,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                           'CommentID',
                           'TarchiveID',
                          ];
-
 
         $this->group_by = 'PSCID,
             SessionID,
@@ -216,23 +287,21 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 
         $this->order_by = 'PSCID';
 
-        $this->headers      = [
-                               'PSCID',
-                               'Session ID',
-                               'DCCID',
-                               'Visit Label',
-                               'Scan Type',
-                               'MRI Parameter Form',
-                               'T1 Scan Done in MRI PF',
-                               'Tarchive',
-                               'Scan',
-                               'T1 QC Status',
-                               'Uploaded By',
-                               'CommentID',
-                               'TarchiveID',
-                            ];
-
-        //$this->tpl_data['hiddenHeaders'] = json_encode(['CommentID']);
+        $this->headers = [
+                          'PSCID',
+                          'Session ID',
+                          'DCCID',
+                          'Visit Label',
+                          'Scan Type',
+                          'MRI Parameter Form',
+                          'T1 Scan Done in MRI PF',
+                          'Tarchive',
+                          'Scan',
+                          'T1 QC Status',
+                          'Uploaded By',
+                          'CommentID',
+                          'TarchiveID',
+                         ];
 
         return true;
     }
