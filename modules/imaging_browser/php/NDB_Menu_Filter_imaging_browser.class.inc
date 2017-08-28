@@ -63,7 +63,6 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $config = NDB_Config::singleton();
         $DB     = Database::singleton();
         $toTable_scan_types = $config->getSetting('tblScanTypes');
-print_r($toTable_scan_types);
 
         $all_scan_types = $DB->pselect(
             "SELECT ID, Scan_type FROM mri_scan_type mri",
