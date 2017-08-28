@@ -346,13 +346,12 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
     function _setFilterForm()
     {
         // create user object
-        $user        =& User::singleton();
-        $config      =& NDB_Config::singleton();
-        $db          =& Database::singleton();
-        $minYear     = $config->getSetting('startYear')
-            - $config->getSetting('ageMax');
-        $maxYear     = $config->getSetting('endYear')
-            - $config->getSetting('ageMin');
+        $user    =& User::singleton();
+        $config  =& NDB_Config::singleton();
+        $db      =& Database::singleton();
+        $minYear = $config->getSetting('startYear') - $config->getSetting('ageMax');
+        $maxYear = $config->getSetting('endYear');
+
         $dateOptions = array(
                         'language'       => 'en',
                         'format'         => 'YMd',
