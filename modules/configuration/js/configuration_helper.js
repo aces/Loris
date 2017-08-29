@@ -80,7 +80,7 @@ $(function () {
             data: form,
             success: function () {
                 var html = "<label>Submitted</label>";
-                $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000).fadeOut(500)
+                $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000).fadeOut(500);
                 $('input[type="reset"]').attr('disabled','disabled');
                 window.location = location;
             },
