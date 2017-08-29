@@ -279,12 +279,13 @@ class NDB_Form_User_Accounts extends NDB_Form
             );
             // If examiner not in table add him,
             // otherwise update the radiologist field
+            $values = Utility::nullifyEmpty($values, 'examiner_radiologist');
             if (empty($examinerID)) {
                 $DB->insert(
                     'examiners',
                     array(
                      'full_name'   => $values['Real_name'],
-                     'radiologist' => $values['examiner_radiologist'],
+                     'radiologist' => $values['examiner_radiologist'] ?? 0,
                      'userID'      => $uid,
                     )
                 );
@@ -298,7 +299,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                 $DB->update(
                     'examiners',
                     array(
-                     'radiologist' => $values['examiner_radiologist'],
+                     'radiologist' => $values['examiner_radiologist'] ?? 0,
                      'userID'      => $uid,
                     ),
                     array(
