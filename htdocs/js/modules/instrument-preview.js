@@ -158,7 +158,7 @@ class InstrumentPreview extends React.Component {
         </div>
         <div style={{padding: '2em 5em 2em 5em'}}>
           <InstrumentFormContainer
-            key={this.state.selectedInstrument}
+            key={`${this.state.selectedInstrument}-${this.state.lang}`}
             instrument={instruments[this.state.selectedInstrument]}
             lang={this.state.lang}
             initialData={getInitialData(this.props.instruments[this.state.selectedInstrument])}

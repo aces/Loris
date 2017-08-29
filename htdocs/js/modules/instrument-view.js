@@ -1,8 +1,8 @@
 import InstrumentFormContainer from '../../../jsx/InstrumentFormContainer';
 
-function onSave() {
+function onSave(data) {
   const saveURL = window.location.href;
-  $.post(saveURL, this.state.data, function( responseData, textStatus, jqXHR ) {
+  $.post(saveURL, {instrumentData: JSON.stringify(data)}, function( responseData, textStatus, jqXHR ) {
     console.log('saved!');
   }).fail(() => {
     console.log('failed to save!');
