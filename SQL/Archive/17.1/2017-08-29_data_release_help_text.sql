@@ -1,0 +1,3 @@
+UPDATE help
+  SET content = 'The Data Release Module enables a study to easily distribute packaged data releases. Click the "Upload File" button to upload a file and tag it with a version label. Grant access to a data release by clicking the "Add Permission" button, to grant or restrict user access to certain data release versions. Note these buttons will be visible only for “superuser” users.', created = '2017-08-29 00:00:00'
+WHERE topic = 'Data Release'; 
