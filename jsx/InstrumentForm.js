@@ -1,73 +1,24 @@
 import Form from './Form';
-import { Evaluator, NullVariableError } from './lib/Parser';
 
 const { SelectElement, RadioGroupLabels, RadioGroupElement, CheckboxGroupElement, TextboxElement, DateElement } = Form;
-const INPUT_TYPES = ['radio', 'text', 'checkbox', 'select', 'date'];
 
-function isDisplayed(element, index, data, context, options = {}) {
-  if (
-    (element.Hidden) ||
-    (options.surveyMode && element.HiddenSurvey) ||
-    (element.DisplayIf === false)
-  ) {
-    return false;
-  }
-
-  if (element.DisplayIf === '') return true;
-
-  try {
-    return Evaluator(element.DisplayIf, { ...data, context});
-  } catch(e) {
-    if (!(e instanceof NullVariableError)) {
-      console.log(`Error evaluating DisplayIf property of element ${index}.\n${e}`);
-    }
-
-    return false;
-  }
-}
-
-function isRequired(element, index, data, context) {
-  if (!INPUT_TYPES.includes(element.Type)) return false;
-
-  const requireResponse = element.Options.RequireResponse;
-  if (typeof(requireResponse) === 'boolean') return requireResponse;
-
-  try {
-    return Evaluator(requireResponse, { ...data, context });
-  } catch (e) {
-    if (!(e instanceof NullVariableError)) {
-      console.log(`Error evaluating RequireResponse property of element ${index}.\n${e}`);
-    }
-
-    return false;
-  }
-}
-
-const SaveButton = ({onSave}) => {
-  return (
-    <button onClick={onSave} type="button" className="btn btn-default btn-lg">
-      <span className="glyphicon glyphicon-star" aria-hidden="true"></span> Save
-    </button>
-  );
-}
-
-const InstrumentForm = ({instrument, data, context, options, onUpdate, onSave}) => {
+const InstrumentForm = ({meta, elements, showRequired, errorMessage, onUpdate, onSave}) => {
   return (
     <div>
-      {renderMeta(instrument.Meta)}
+      <div id="instrument-error">
+        { errorMessage ? <div className="alert alert-danger">{errorMessage}</div> : null }
+      </div>
+      {renderMeta(meta)}
       {
-        instrument.Elements.filter(
-          (element, index) => (isDisplayed(element, index, data, context, options))
-        ).map((element, index) => (
-          renderElement(element, index, data, onUpdate, isRequired(element, index, data, context))
+        elements.map((element, index) => (
+          renderElement(element, index, onUpdate, showRequired && element.Required)
         ))
       }
-      <SaveButton onSave={onSave}/>
+      <SaveButton onClick={onSave}/>
     </div>
   );
 };
 
-// TODO: propTypes
 function renderMeta(meta) {
   return (
     <div className="title">
@@ -76,119 +27,125 @@ function renderMeta(meta) {
   )
 }
 
-function renderElement(element, key, data, onUpdate, required = false) {
+function renderElement(element, key, onUpdate, required = false) {
   if (element.Type === 'label') {
     return renderLabel(element, key)
   } else if (element.Type === 'radio-labels') {
     return renderRadioLabels(element, key)
   } else if (element.Type === 'radio') {
-    return renderRadio(element, data[element.Name], key, onUpdate, required)
+    return renderRadio(element, key, onUpdate, required)
   } else if (element.Type === 'select') {
-    return renderSelect(element, data[element.Name], key, onUpdate, required)
+    return renderSelect(element, key, onUpdate, required)
   } else if (element.Type === 'checkbox') {
-    return renderCheckbox(element, data[element.Name], key, onUpdate, required)
+    return renderCheckbox(element, key, onUpdate, required)
   } else if (element.Type === 'text') {
-    return renderText(element, data[element.Name], key, onUpdate, required)
+    return renderText(element, key, onUpdate, required)
   } else if (element.Type === 'calc') {
-    return renderCalc(element, data[element.Name], key, onUpdate)
+    return renderCalc(element, key, onUpdate)
   } else if (element.Type === 'date') {
-    return renderDate(element, data[element.Name], key, onUpdate, required)
+    return renderDate(element, key, onUpdate, required)
   }
 }
 
-function renderLabel(labelEl, key) {
+function renderLabel(element, key) {
   // Form's StaticElement doesn't allow us to set HTML.
-  return (<div className="instrument-label" key={key} dangerouslySetInnerHTML={{__html: labelEl.Description}} />);
+  return (<div className="instrument-label" key={key} dangerouslySetInnerHTML={{__html: element.Description}} />);
 }
 
-function renderRadioLabels(radioLabelsEl, key) {
+function renderRadioLabels(element, key) {
   return (
-    <RadioGroupLabels key={key} labels={radioLabelsEl.Labels}/>
+    <RadioGroupLabels key={key} labels={element.Labels}/>
   );
 }
 
-function renderRadio(radioEl, value, key, onUpdate, isRequired) {
+function renderRadio(element, key, onUpdate, isRequired) {
   return (
-    <RadioGroupElement
-      key={key}
-      name={radioEl.Name}
-      label={radioEl.Description}
-      options={radioEl.Options.Values}
-      orientation={radioEl.Options.Orientation}
-      onUserInput={onUpdate}
-      required={isRequired}
-      value={value}
-    />
+      <RadioGroupElement
+        key={key}
+        name={element.Name}
+        label={element.Description}
+        options={element.Options.Values}
+        orientation={element.Options.Orientation}
+        onUserInput={onUpdate}
+        value={element.Value}
+        hasError={isRequired && (!element.Value)}
+        errorMessage="This field is required"
+      />
   );
 }
 
-function renderSelect(selectEl, value, key, onUpdate, isRequired) {
-  if (selectEl.Options.AllowMultiple) {
+function renderSelect(element, key, onUpdate, isRequired) {
+  if (element.Options.AllowMultiple) {
     <p>MultiSelects not implemented yet</p>
   } else {
     return (
       <SelectElement
         key={key}
-        name={selectEl.Name}
-        label={selectEl.Description}
-        options={selectEl.Options.Values}
+        name={element.Name}
+        label={element.Description}
+        options={element.Options.Values}
         onUserInput={onUpdate}
-        value={value}
-        required={isRequired}
+        value={element.Value}
       />
     );
   }
 }
 
-function renderCheckbox(selectEl, value, key, onUpdate, isRequired) {
+function renderCheckbox(element, key, onUpdate, isRequired) {
   return (
     <CheckboxGroupElement
       key={key}
-      name={selectEl.Name}
-      label={selectEl.Description}
-      options={selectEl.Options.Values}
+      name={element.Name}
+      label={element.Description}
+      options={element.Options.Values}
       onUserInput={onUpdate}
-      value={value}
-      required={isRequired}
+      value={element.Value}
     />
   );
 }
 
-function renderText(textEl, value, key, onUpdate, isRequired) {
+function renderText(element, key, onUpdate, isRequired) {
   return (
     <TextboxElement
       key={key}
-      name={textEl.Name}
-      label={textEl.Description}
+      name={element.Name}
+      label={element.Description}
       onUserInput={onUpdate}
-      required={isRequired}
-      value={value}
+      value={element.Value}
     />
   );
 }
 
-function renderCalc(calcEl, value, key, onUpdate) {
+function renderCalc(element, key, onUpdate) {
   return (
     <TextboxElement
       key={key}
-      name={calcEl.Name}
-      label={calcEl.Description}
-      value={value}
+      name={element.Name}
+      label={element.Description}
+      value={element.Value}
       disabled={true}
     />
   );
 }
 
-function renderDate(dateEl, value, key, onUpdate, isRequired) {
+function renderDate(element, key, onUpdate, isRequired) {
   return (
     <DateElement
       key={key}
-      name={dateEl.Name}
-      label={dateEl.Description}
+      name={element.Name}
+      label={element.Description}
       onUserInput={onUpdate}
-      value={value}
-      required={isRequired}
+      value={element.Value}
     />
   )
 }
+
+const SaveButton = ({onClick}) => {
+  return (
+    <button onClick={onClick} type="button" className="btn btn-default btn-lg">
+      <span className="" aria-hidden="true"></span> Save
+    </button>
+  );
+}
+
 export default InstrumentForm;
