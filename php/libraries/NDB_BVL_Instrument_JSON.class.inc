@@ -37,6 +37,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
     {
         $this->commentID     = $commentID;
         $this->page          = $page;
+        parent::setup($commentID, $page);
     }
 
     /**
@@ -46,15 +47,34 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
      * @return array containing context variables
      */
     function _getContext() {
+        $timepoint = \TimePoint::singleton($this->getSessionID());
+        $candID = $timepoint->getCandID();
+        $candidate = \Candidate::singleton($candID);
+        $dob = $candidate->getCandidateDoB();
+        $dobDT = new \DateTime($dob);
+        $curDate = new \DateTime("now");
+        $interval = date_diff($curDate, $dobDT, true);
+        $ageM = $this->calculateAgeMonths(array('year' => $interval->format("%y"),
+                                         'mon'  => $interval->format("%m"),
+                                         'day'  => $interval->format("%d")));
+        //$ageTEST = $this->getCandidateAge($curDate); //TODO replace the hacky age function with this
+        $gender = $candidate->getCandidateGender();
         return array(
-          "age_mths" => 200
+            "age_mths" => $ageM,
+            "dob" => $dob,
+            "gender" => $gender
         );
     }
 
     function _getLang() {
-        // This should grab lang from the timepoint associated with this instrument instance
-        return 'en-ca';
+        //$timepoint = \TimePoint::singleton($this->getSessionID());
+        //$candID = $timepoint->getCandID();
+        //$candidate = \Candidate::singleton($candID);
+        //$lang = $candidate->getCandidateLanguage();
+        $lang = "en-ca";
+        return $lang ? $lang : "en-ca";
     }
+
 
     function _getInstrumentData($db) {
         $result = $db->pselect(
@@ -83,6 +103,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
             $this->instrument = json_decode($json, true);
             $this->instrument["Elements"] = self::inlineCalcFormulas($this->instrument["Elements"]);
             $this->table = $this->instrument['Meta']['ShortName'];
+            $this->testName = $this->table;
             return $json;
         }
     }
