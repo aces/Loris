@@ -102,7 +102,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             $acqpif .= ",'new','')";
         } else {
             $this->acqpid = '';
-            $acqpif       = 'new';
+            $acqpif       = "'new'";
         }
 
         $NewDataSubquery = "CASE 
