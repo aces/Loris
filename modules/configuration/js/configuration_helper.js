@@ -73,15 +73,16 @@ $(function () {
         var form = $(this).serialize();
 
         //validate(form);
-
+        var location = window.location.href;
         $.ajax({
             type: 'post',
             url: loris.BaseURL + '/configuration/ajax/process.php',
             data: form,
             success: function () {
                 var html = "<label>Submitted</label>";
-                $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000).fadeOut(500)
+                $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000).fadeOut(500);
                 $('input[type="reset"]').attr('disabled','disabled');
+                window.location = location;
             },
             error: function(xhr, desc, err) {
                 console.log(xhr);
