@@ -176,21 +176,6 @@ class NDB_Form_Dashboard extends NDB_Form
                 $this->tpl_data['incomplete_forms_site'] = $site;
             }
         }
-        // Final radiological review
-        if ($user->hasPermission('edit_final_radiological_review')
-            && $user->hasPermission('view_final_radiological_review')
-        ) {
-            $this->tpl_data['radiology_review']      = $DB->pselectOne(
-                "SELECT COUNT(*) FROM final_radiological_review f
-			LEFT JOIN flag fg ON (fg.CommentID=f.CommentID)
-			LEFT JOIN session s ON (s.ID=fg.SessionID)
-			LEFT JOIN candidate c ON (c.CandID=s.CandID)
-                WHERE Review_Done IS NULL
-			AND c.Active='Y' AND s.Active='Y'",
-                array()
-            );
-            $this->tpl_data['radiology_review_site'] = 'Sites: all';
-        }
 
         // Accounts pending approval
         if ($user->hasPermission('user_accounts_multisite')

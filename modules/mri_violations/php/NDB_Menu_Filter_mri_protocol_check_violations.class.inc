@@ -29,8 +29,7 @@
 class NDB_Menu_Filter_Mri_Protocol_Check_Violations extends NDB_Menu_Filter
 {
     /**
-     * Determine who has access to this page. At the moment, tied to
-     * access to the final_radiological_review module.
+     * Determine who has access to this page. 
      *
      * @return boolean true if access is permitted
      */
