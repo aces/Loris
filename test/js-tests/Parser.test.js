@@ -88,6 +88,13 @@ describe('Parser Unit Tests', () => {
       const res = Evaluator(LOGIC_STR, CONTEXT);
       expect(res).to.equal(2.0000);
     })
+
+    it('Handles un-specified place value', () => {
+      const LOGIC_STR = 'round(1.6843)';
+      const CONTEXT = {};
+      const res = Evaluator(LOGIC_STR, CONTEXT);
+      expect(res).to.equal(2);
+    })
   })
   
   describe('Date difference operations', () => {
