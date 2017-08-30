@@ -70,13 +70,14 @@ class InstrumentFormContainer extends React.Component {
       this.props.context
     );
 
-    return annotatedElements.reduce((result, element, index) => {
-      if (element.Options && element.Options.RequireResponse) {
-        return result || element.Required;
-      } 
+    let incompleteExists = false;
+    annotatedElements.forEach((element) => {
+      if (element.Options.RequireResponse && (!element.Value)) {
+        incompleteExists = true;
+      }
+    });
 
-      return result || false;
-    }, false);
+    return incompleteExists;
   }
 
   isDisplayed(element, index, data, context, surveyMode) {
@@ -141,7 +142,9 @@ class InstrumentFormContainer extends React.Component {
     return elements.map(
       (element, index) => Object.assign(element, { 
         Value: data[element.Name],
-        Required: this.isRequired(element, index, data, context)
+        Options: Object.assign({}, element.Options, {
+          RequireResponse: this.isRequired(element, index, data, context)
+        })
       })
     );
   }
