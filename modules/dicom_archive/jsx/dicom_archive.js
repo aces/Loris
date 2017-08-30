@@ -19,6 +19,7 @@ class DicomArchive extends React.Component {
   constructor(props) {
     super(props);
 
+    loris.hiddenHeaders = ['Site', 'TarchiveID', 'SessionID'];
     this.state = {
       isLoaded: false,
       filter: {}
@@ -44,7 +45,6 @@ class DicomArchive extends React.Component {
       method: "GET",
       dataType: 'json',
       success: function(data) {
-        loris.hiddenHeaders = data.hiddenHeaders ? data.hiddenHeaders : [];
         this.setState({
           Data: data,
           isLoaded: true
