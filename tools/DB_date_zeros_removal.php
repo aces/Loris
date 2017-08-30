@@ -62,7 +62,7 @@ $field_names = $db->pselect("
 // avoid them being updated to the time the script was run
 $autoUpdateFields = array();
 foreach ($field_names as $key=>$field) {
-    if (strstr('on update CURRENT_TIMESTAMP',$field['EXTRA']) !== false) {
+    if (strstr($field['EXTRA'],'on update CURRENT_TIMESTAMP') !== false) {
         $autoUpdateFields[$field['TABLE_NAME']][]= $field['COLUMN_NAME'];
     }
 }
