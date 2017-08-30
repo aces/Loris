@@ -242,20 +242,21 @@ class DirectDataEntryMainPage
         $this->logRequest();
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
-        $json_class = new NDB_BVL_Instrument_JSON();
-        $json_class->setup($this->CommentID);
         $base    = $config->getSetting('base');
-        $json    = file_get_contents($base."project/instruments/$this->TestName.json");
-        //$json = $json_class->loadInstrumentFile($base."project/instruments/$this->TestName.json"); //TODO
-        $this->updateStatus('In Progress');
-        $this->tpl_data['lang'] = $json_class->_getLang();
-        $this->tpl_data['json'] = htmlspecialchars($json);
-        $this->tpl_data['initialData'] = $_REQUEST['initialData'];
-        $contextArray = $json_class->_getContext();
-        $contextJSON = json_encode($contextArray);
-        $this->tpl_data['context'] = htmlspecialchars($contextJSON);
-		$smarty = new \Smarty_neurodb;
+        $db     =& \Database::singleton();
+
+        $instrument = new NDB_BVL_Instrument_JSON();
+        $instrument->setup($this->CommentID);
+
+        $file = $base."project/instruments/{$this->TestName}.json";
+        $instrument->loadInstrumentFile($file);
+        $smarty = new \Smarty_neurodb;
         $smarty->assign($this->tpl_data);
+
+        $smarty->assign('instrumentJSON', htmlspecialchars($instrument->toJSON()));
+        $smarty->assign('initialData', htmlspecialchars(json_encode($instrument->_getInstrumentData($db))));
+        $smarty->assign('context', htmlspecialchars(json_encode($instrument->_getContext())));
+        $smarty->assign('lang', htmlspecialchars($instrument->_getLang()));
         $smarty->display('directentry-react.tpl');
     }
 }
