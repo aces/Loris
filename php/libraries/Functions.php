@@ -94,15 +94,15 @@ function getFunctions() {
                 return true;
             }
 		},
-		'_round' => function ($n, $places) {
+		'_round' => function ($n, $places = 0) {
 			$shift = 10 ** $places;
 			return round($n * $shift) / $shift;
 		},
-		'_roundup' => function ($n, $places) {
-        $shift = 10 ** $places;
+		'_roundup' => function ($n, $places = 0) {
+            $shift = 10 ** $places;
     	    return ceil($n * $shift) / $shift;
     	},
-    	'_rounddown' => function ($n, $places) {
+    	'_rounddown' => function ($n, $places = 0) {
     	    $shift = 10 ** $places;
     	    return floor($n * $shift) / $shift;
     	},

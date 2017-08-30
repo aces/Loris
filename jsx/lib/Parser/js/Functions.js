@@ -73,14 +73,17 @@ export default {
     return isNaN(a);
   },
   round(n, places) {
+    places = places ? places : 0;
     const shift = Math.pow(10, places);
     return Math.round(n * shift) / shift;
   },
   roundup(n, places) {
+    places = places ? places : 0;
     const shift = Math.pow(10, places);
     return Math.ceil(n * shift) / shift;
   },
   rounddown(n, places) {
+    places = places ? places : 0;
     const shift = Math.pow(10, places);
     return Math.floor(n * shift) / shift;
   },
