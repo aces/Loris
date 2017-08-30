@@ -83,26 +83,19 @@ function getFunctions() {
 			return rec($n-1)*$n;
 		},
 		'_isNan' => function ($a) {
-			/*if(is_nan($a) === false) {
-				return false;
-			} else {
-				return true;
-			}*/
-            try{
-                $res = is_nan($a);
-            } catch (Exception $e) {
-                return true;
-            }
+            if (is_numeric($a)) {
+                return false;
+            } else return true;
 		},
-		'_round' => function ($n, $places) {
+		'_round' => function ($n, $places = 0) {
 			$shift = 10 ** $places;
 			return round($n * $shift) / $shift;
 		},
-		'_roundup' => function ($n, $places) {
-        $shift = 10 ** $places;
+		'_roundup' => function ($n, $places = 0) {
+            $shift = 10 ** $places;
     	    return ceil($n * $shift) / $shift;
     	},
-    	'_rounddown' => function ($n, $places) {
+    	'_rounddown' => function ($n, $places = 0) {
     	    $shift = 10 ** $places;
     	    return floor($n * $shift) / $shift;
     	},

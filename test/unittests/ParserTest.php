@@ -194,7 +194,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testIsNaN(){
-      $this->markTestSkipped("Following error must be fixed: is_nan() expects parameter 1 to be float, string given");
         $equation = '(isNan(45)=false) and (isNan("f")=true)';
         $expected = true;
         try {
@@ -206,7 +205,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testRounding(){
-        $equation = '(round(1.873524,3)=1.874) and (roundup(1.873,2)=1.88) and (rounddown(1.87,1)=1.8)';
+        $equation = '(round(1.6532442)=2) and (round(1.873524,3)=1.874) and (roundup(1.873,2)=1.88) and (rounddown(1.87,1)=1.8)';
         $expected = true;
         try {
             $res = Evaluator::evaluate($equation, $this->scope);
