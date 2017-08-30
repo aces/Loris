@@ -57,12 +57,14 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             'Gender'              => '#dynamictable > thead>tr>th.dynamictableNext',
             'Entity Type'         => '#dynamictable > thead > tr > th:nth-child(6)',
             'Participant Status'  => '#dynamictable > thead > tr > th:nth-child(7)',
-            'Subproject'          => '#dynamictable > thead > tr > th:nth-child(8)',
-            'Scan Done'           => '#dynamictable > thead > tr > th:nth-child(10)',
-            'EDC'                 => '#dynamictable > thead > tr > th:nth-child(11)',
-            'Visit Count'         => '#dynamictable > thead > tr > th:nth-child(12)',
-            'Latest Visit Status' => '#dynamictable > thead > tr > th:nth-child(13)',
-            'Feedback'            => '#dynamictable > thead > tr > th:nth-child(14)',
+            'Project'             => '#dynamictable > thead > tr > th:nth-child(8)',
+            'Subproject'          => '#dynamictable > thead > tr > th:nth-child(9)',
+            'DoB'                 => '#dynamictable > thead > tr > th:nth-child(10)',
+            'Scan Done'           => '#dynamictable > thead > tr > th:nth-child(11)',
+            'EDC'                 => '#dynamictable > thead > tr > th:nth-child(12)',
+            'Visit Count'         => '#dynamictable > thead > tr > th:nth-child(13)',
+            'Latest Visit Status' => '#dynamictable > thead > tr > th:nth-child(14)',
+            'Feedback'            => '#dynamictable > thead > tr > th:nth-child(15)',
            );
     /**
      * Backs up the useEDC config value and sets the value to a known
