@@ -65,12 +65,12 @@ class InstrumentFormContainer extends React.Component {
    */
   incompleteRequiredFieldExists() {
     const annotatedElements = this.annotateElements(
-      this.state.localizedInstruments.Elements,
+      this.state.localizedInstrument.Elements,
       this.state.data,
       this.props.context
     );
 
-    return annotateElements.reduce((result, element, index) => {
+    return annotatedElements.reduce((result, element, index) => {
       if (element.Options && element.Options.RequireResponse) {
         return result || element.Required;
       } 
