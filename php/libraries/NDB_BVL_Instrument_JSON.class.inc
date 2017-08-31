@@ -25,6 +25,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
 {
     var $InstrumentType = 'JSON';
 
+
     /**
      * Sets up the variables required for a JSON instrument to load
      *
@@ -108,6 +109,45 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
         }
     }
 
+    static function isRequired($element, $values, $context) {
+        $inputTypes = ['select', 'date', 'radio', 'text', 'calc', 'checkbox'];
+
+        if (!in_array($element["Type"], $inputTypes)) return false;
+
+        $requireResponse = $element["Options"]["RequireResponse"];
+        if (!isset($requireResponse)) return false;
+
+        if (is_bool($requireResponse)) return $requireResponse;
+
+        return \LorisScript\Evaluator::evaluate($requireResponse, array_merge($values, $context));
+    }
+
+    function incompleteExists($values) {
+        $incompleteExists = false;
+        foreach ($this->instrument["Elements"] as &$element) {
+            if (isset($values[$element["Name"]])) {
+                continue;
+            } else {
+                $isRequired = self::isRequired($element, $values, $this->_getContext());
+                if ($isRequired) { $incompleteExists = true; }
+            }
+        }
+
+        return $incompleteExists;
+    }
+
+    function calculateFields($values) {
+        $calculatedValues = array();
+
+        foreach ($this->instrument["Elements"] as &$element) {
+            if ($element["Type"] == 'calc') {
+                $calculatedValues[$element["Name"]] = \LorisScript\Evaluator::evaluate($element["Formula"], array_merge($values, $this->_getContext()));
+            }
+        }
+
+        return $calculatedValues;
+    }
+
     /**
      * Returns a JSON representation of the currently instantiated
      * instrument.
@@ -135,7 +175,18 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
 
     function save() {
         $db     =& \Database::singleton();
-        $values = json_decode($_POST['instrumentData'], true) ?: array();
+        $isDataSubmission = isset($_POST['instrumentData']);
+
+        if ($isDataSubmission) {
+            $frontEndValues = json_decode($_POST['instrumentData'], true);
+            $calculatedValues = $this->calculateFields($frontEndValues);
+            $values = array_merge(array(), $frontEndValues, $calculatedValues);
+            if ($this->incompleteExists($values)) {
+                throw new \Exception("A required field was left incomplete", 400);
+            }
+        } else {
+            $values = array();
+        }
 
         $recordExists = !empty(
             $db->pselect(
