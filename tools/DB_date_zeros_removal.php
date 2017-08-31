@@ -66,7 +66,6 @@ foreach ($field_names as $key=>$field) {
         $autoUpdateFields[$field['TABLE_NAME']][]= $field['COLUMN_NAME'];
     }
 }
-print_r($autoUpdateFields);
 
 // BEGIN building script
 
