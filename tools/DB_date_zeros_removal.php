@@ -27,7 +27,7 @@ $base = $config->getSetting('base');
 $db->_trackChanges = false;
 
 // Set up variables
-$filename = __DIR__ . "/../project/tables_sql/update_zero_fields_statements.sql";
+$filename = __DIR__ . "/../SQL/Archive/17.1/2016-06-01-update_zero_fields_statements.sql";
 $output= "";
 $alters="";
 $updates="";
