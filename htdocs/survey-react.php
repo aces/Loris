@@ -248,6 +248,13 @@ class DirectDataEntryMainPage
         $instrument = new NDB_BVL_Instrument_JSON();
         $instrument->setup($this->CommentID);
 
+        $workspace = $this->caller->load(
+            $this->TestName,
+            $this->Subtest,
+            $this->CommentID,
+            null
+        );
+
         $file = $base."project/instruments/{$this->TestName}.json";
         $instrument->loadInstrumentFile($file);
         $smarty = new \Smarty_neurodb;
