@@ -135,7 +135,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
 
     function save() {
         $db     =& \Database::singleton();
-        $values = json_decode($_POST['instrumentData']) ?: array();
+        $values = json_decode($_POST['instrumentData'], true) ?: array();
 
         $recordExists = !empty(
             $db->pselect(

@@ -155,11 +155,14 @@ export default {
     let res;
     switch (units) {
         case 'y':
+        case 'Y':
             res = 1000*60*60*24*365
             break;
+        case 'M':
         case 'm':
             res = 1000*60*60*24*30.44
             break;
+        case 'D':
         case 'd':
             res = 1000*60*60*24
             break;
@@ -173,29 +176,5 @@ export default {
     } catch (e) {
         return 0;
     }
-    /*let mdate1, mdate2;
-    switch (format) {
-      case 'ymd': {
-        mdate1 = moment(date1, ['YYYY-MM-DD', 'YYYY-MM-DD HH:mm:ss']);
-        mdate2 = moment(date2, ['YYYY-MM-DD', 'YYYY-MM-DD HH:mm:ss']);
-        break;
-      }
-      case 'mdy': {
-        mdate1 = moment(date1, ['MM-DD-YYYY', 'MM-DD-YYYY HH:mm:ss']);
-        mdate2 = moment(date2, ['MM-DD-YYYY', 'MM-DD-YYYY HH:mm:ss']);
-        break;
-      }
-      case 'dmy': {
-        mdate1 = moment(date1, ['DD-MM-YYYY', 'DD-MM-YYYY HH:mm:ss']);
-        mdate2 = moment(date2, ['DD-MM-YYYY', 'DD-MM-YYYY HH:mm:ss']);
-        break;
-      }
-    }
-    const diff = mdate1.diff(mdate2, units, true);
-    if (returnSigned) {
-      return diff;
-    } else {
-      return Math.abs(diff);
-    }*/
   }
 }

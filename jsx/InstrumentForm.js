@@ -11,7 +11,7 @@ const InstrumentForm = ({meta, elements, showRequired, errorMessage, onUpdate, o
       {renderMeta(meta)}
       {
         elements.map((element, index) => (
-          renderElement(element, index, onUpdate, showRequired && element.Required)
+          renderElement(element, index, onUpdate, showRequired && element.Options.RequireResponse)
         ))
       }
       <SaveButton onClick={onSave}/>

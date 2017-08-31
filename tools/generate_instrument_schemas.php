@@ -41,6 +41,9 @@ class schema_generator
         $output .= "UPDATE CURRENT_TIMESTAMP,\n";
         $output .= "`Data_entry_completion_status` enum('Incomplete','Complete') ";
         $output .= "NOT NULL DEFAULT 'Incomplete',\n";
+        $output .= "`Date_taken` date DEFAULT NULL,\n";
+        $output .= "`Candidate_Age` varchar(255) DEFAULT NULL,\n";
+        $output .= "`Window_Difference` int(11) DEFAULT NULL,\n";
 
 		//Handle individual elements
 		foreach($elements['Elements'] AS $element) {
