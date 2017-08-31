@@ -1,4 +1,4 @@
-reateUserSitesRelTable.sql
+-- 2016-11-21-CreateUserSitesRelTable.sql
 ALTER TABLE users DROP foreign key FK_users_1;
 ALTER TABLE users DROP column `CenterID`;
 
