@@ -1,7 +1,12 @@
 import InstrumentFormContainer from '../../../jsx/InstrumentFormContainer';
 
-function onSave() {
-  console.log('save not implemented!');
+function onSave(data) {
+  const saveURL = window.location.href;
+  $.post(saveURL, {instrumentData: JSON.stringify(data)}, function( responseData, textStatus, jqXHR ) {
+    console.log('saved!');
+  }).fail(() => {
+    console.log('failed to save!');
+  });
 }
 
 window.onload = function() {
