@@ -38,7 +38,10 @@ if (isset($_POST['comment']) && isset($_POST['candID'])
         $_POST['comment'],
         'Y'
     );
-    $newNotifier->notify();
+    //build url for email
+    $link = $feedbackThread->getFeedbackURL();
+
+    $newNotifier->notify(array("feedback" => $link));
     //Now setting the array to return as json
     print json_encode($newEntryValues);
 }
@@ -54,7 +57,10 @@ if (isset($_POST['comment']) && isset($_POST['candID'])
         $_POST['comment'],
         'Y'
     );
-    $newNotifier->notify();
+    //build url for email
+    $link = $feedbackThread->getFeedbackURL();
+
+    $newNotifier->notify(array("feedback" => $link));
 
     //Now setting the array to return as json
     print json_encode($newEntryValues);
@@ -72,8 +78,10 @@ if (isset($_POST['comment']) && isset($_POST['candID'])
         'Y',
         $_POST['fieldName']
     );
-    $newNotifier->notify();
+    //build url for email
+    $link = $feedbackThread->getFeedbackURL();
 
+    $newNotifier->notify(array("feedback" => $link));
     print json_encode($newEntryValues);
 }
 

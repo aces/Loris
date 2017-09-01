@@ -32,7 +32,10 @@ if (isset($_POST['comment']) && isset($_POST['feedbackID'])) {
         $_POST['comment'],
         $username
     );
-    $commentNotifier->notify(array("feedback" => $_POST['feedbackID']));
+    //build url for email
+    $link = $feedbackThread->getFeedbackURL();
+
+    $commentNotifier->notify(array("feedback" => $link));
 } else {
     print json_encode('error');
     exit();

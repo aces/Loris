@@ -20,7 +20,10 @@ $openNotifier = new NDB_Notifier(
 
 if (isset($_POST['feedbackID']) && isset($_POST['candID'])) {
     $feedbackThread->openThread($_POST['feedbackID']);
-    $openNotifier->notify(array("feedback" => $_POST['feedbackID']));
+
+    //build url for email
+    $link = $feedbackThread->getFeedbackURL();
+    $openNotifier->notify(array("feedback" => $link));
 }
 
 exit();

@@ -25,7 +25,9 @@ $username = $user->getUsername();
 if (isset($_POST['feedbackID']) && isset($_POST['candID'])) {
     $feedbackThread =& NDB_BVL_Feedback::Singleton($username, $_POST['candID']);
     $feedbackThread->closeThread($_POST['feedbackID']);
-    $closeNotifier->notify(array("feedback" => $_POST['feedbackID']));
+    //build url for email
+    $link = $feedbackThread->getFeedbackURL();
+    $closeNotifier->notify(array("feedback" => $link));
 
 }
 
