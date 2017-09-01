@@ -81,6 +81,9 @@ class LorisForm
         if (isset($attribs['onchange'])) {
             $el['onchange'] = $attribs['onchange'];
         }
+        if (isset($attribs['oninput'])) {
+            $el['oninput'] = $attribs['oninput'];
+        }
         if (isset($attribs['value'])) {
             $el['value'] = $attribs['value'];
         }
@@ -889,6 +892,10 @@ class LorisForm
             . (
                 isset($el['onchange']) && $el['onchange']
                 ? " onchange=\"{$el['onchange']}\"" : ''
+              )
+            . (
+                isset($el['oninput']) && $el['oninput']
+                ? " oninput=\"{$el['oninput']}\"" : ''
               )
             . (
                 isset($el['oninvalid']) && $el['oninvalid']
