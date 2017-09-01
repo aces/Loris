@@ -53,7 +53,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     }
 
     /**
-    * Checks connfiguration module to find which scans are relevant
+    * Checks configuration module to find which scans are relevant
     * to the given project
     *
     * @return array $scan_types of desired scan types.

@@ -30,11 +30,11 @@ class QualityControlIndex extends React.Component {
                 method:"GET",
                 dataType: "json",
                 success: function(data){
-                    console.log("Got Imaging Data");
                     this.setState({
                         ImgData:data,
                         isLoadedImg:true
-                    });
+                    }),
+                    console.log("Got Imaging Data");;
                 }.bind(this),
             });
         }else if (flag == "behavioral"){
