@@ -23,6 +23,7 @@ window.onload = function() {
       lang={lang}
       context={context}
       onSave={onSave}
+      options={{}}
     />,
     document.getElementById("container")
   );

@@ -31,20 +31,20 @@
                     if (isset($scope[$tree['args'][0]])) {
                         return $scope[$tree['args'][0]];
                     }
-                    throw new Exception("Unbound variable: " . $tree['args'][0]);
+                    throw new \Exception("Unbound variable: " . $tree['args'][0]);
                 case 'NestedVariable':
                     if (isset($scope[$tree['args'][0]])) {
                         $res = $scope[$tree['args'][0]];
                         $i = 0;
                         for($i; $i < count($tree['args'][1]); $i++) {
                             if (!isset($res[$tree['args'][1][$i]])) {
-                                throw new Exception("Unbound sub-variable: " . $tree['args'][1][$i]);
+                                throw new \Exception("Unbound sub-variable: " . $tree['args'][1][$i]);
                             }
                             $res = $res[$tree['args'][1][$i]];
                         }
                         return $res;
                     }
-                    throw new Exception("Unbound variable: " . $tree['args'][0]);
+                    throw new \Exception("Unbound variable: " . $tree['args'][0]);
                 case 'FuncApplication':
                     if ($tree['args'][0] == 'if') {
                         if (static::evalAST($tree['args'][1][0], $scope)) {
@@ -54,7 +54,7 @@
                     }
                     $funcName = '_'.$tree['args'][0];
                     if (!isset($FUNCTIONS[$funcName])) {
-                        throw new Exception(`{$tree['args'][0]} is not a defined function.`);
+                        throw new \Exception(`{$tree['args'][0]} is not a defined function.`);
                     }
                     $funcArgs = array_map($evalarg, $tree['args'][1]);
                     return $FUNCTIONS[$funcName](...$funcArgs);
@@ -78,8 +78,8 @@
             }
             try {
                 $tree = (new Parser($expression))->parse();
-            } catch (Exception $e) {
-                throw new Exception("Parser error; review Syntax\n$e");
+            } catch (\Exception $e) {
+                throw new \Exception("Parser error; review Syntax\n$e");
             }
             $res = static::evalAST($tree, $scope);
             return $res;

@@ -88,7 +88,7 @@ class DirectDataEntryMainPage
         );
 
         if (empty($this->TestName) && empty($this->CommentID)) {
-            throw new Exception("Data has already been submitted.", 403);
+            throw new \Exception("Data has already been submitted.", 403);
         }
 
         $this->CommentID = $this->getCommentID();
@@ -108,7 +108,7 @@ class DirectDataEntryMainPage
         try {
             $this->initialize();
             $this->display();
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             $this->displayError($e);
         }
     }
@@ -147,11 +147,14 @@ class DirectDataEntryMainPage
         case 403:
             header("HTTP/1.1 403 Forbidden");
             break;
+        case 400:
+            header("HTTP/1.1 400 Bad Request");
+            break;
         }
 
         $this->tpl_data['workspace'] = $e->getMessage();
         $this->tpl_data['complete']  = false;
-        $smarty = new Smarty_neurodb;
+        $smarty = new \Smarty_neurodb;
         $smarty->assign($this->tpl_data);
         $smarty->display('directentry.tpl');
 
@@ -245,6 +248,7 @@ class DirectDataEntryMainPage
         $base    = $config->getSetting('base');
         $db     =& \Database::singleton();
 
+        $isDataSubmission = isset($_POST['instrumentData']);
         $instrument = new NDB_BVL_Instrument_JSON();
         $instrument->setup($this->CommentID);
 
@@ -257,6 +261,33 @@ class DirectDataEntryMainPage
 
         $file = $base."project/instruments/{$this->TestName}.json";
         $instrument->loadInstrumentFile($file);
+
+        if ($isDataSubmission) {
+            /* TODO Uncomment out. It is just annoying to test with this enabled.
+            $this->updateStatus('Complete');
+            $db->update(
+                $this->TestName,
+                array(
+                    'Date_taken' => date('Y-m-d'),
+                ),
+                array(
+                    'CommentID' => $this->CommentID,
+                )
+            );
+
+            $db->update(
+                'flag',
+                array(
+                    'Data_entry'     => 'Complete',
+                    'Administration' => 'All',
+                ),
+                array(
+                    'CommentID' => $this->CommentID,
+                )
+            );
+            */
+        }
+
         $smarty = new \Smarty_neurodb;
         $smarty->assign($this->tpl_data);
 
