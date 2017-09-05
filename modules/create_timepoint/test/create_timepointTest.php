@@ -57,7 +57,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     function testCreateTimepointDoespageLoad()
     {
         $this->safeGet(
-            $this->url . "/create_timepoint/?candID=300002&identifier=300003"
+            $this->url . "/create_timepoint/?candID=300003&identifier=300003"
         );
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
