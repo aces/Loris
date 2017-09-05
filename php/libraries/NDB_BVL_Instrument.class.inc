@@ -2483,6 +2483,66 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
+     * Returns a JSON representation of the currently instantiated
+     * instrument capatible with the survey module
+     *
+     * @return string containing valid JSON
+     */
+    function toDirectJSON()
+    {
+        $smarty = new Smarty_neurodb;
+        //$renderer = new HTML_QuickForm_Renderer_Array($smarty);
+
+        $instrumentJSON = array(
+         "form" => array(),
+         "testname" => $this->testName,
+         "fullname" => $this->getFullName()
+        );
+        
+        $tempForm = array();
+        $tempPage = array(
+            "Description" => "Top Page",
+            "Elements" => array(),
+            "GroupType" => "Page",
+            "Type" => "ElementGroup",
+        );
+        $this->_setupForm();
+        foreach ($this->form->form as $key => $value) {
+            $tempForm[] = PageElementsFormatter::formatElement($value, $key);
+        }
+        $tempPage["Elements"] = $tempForm;
+        $this->form->form = array();
+        $tempForm = array();
+        $instrumentJSON['form'][] = $tempPage;
+
+        $subtests = $this->getSubtestList();
+        foreach ($subtests as $subtest) {
+            $this->page = $subtest['Name'];
+            $this->_setupForm();
+
+            $tempPage = array(
+                "Description" => $subtest['Description'],
+                "Elements" => array(),
+                "GroupType" => "Page",
+                "Type" => "ElementGroup",
+            );
+            foreach ($this->form->form as $key => $value) {
+                $tempForm[] = PageElementsFormatter::formatElement($value, $key);
+            }
+            $tempPage["Elements"] = $tempForm;
+            $this->form->form = array();
+            $tempForm = array();
+            $instrumentJSON['form'][] = $tempPage;
+        }
+
+        $instrument = array(
+            "Meta" => array(),
+            "Elements" => $instrumentJSON["form"],
+        );
+        return json_encode($instrument);
+    }
+
+    /**
      * Determines whether data entry should be allowed for this instrument
      * or not.
      *
