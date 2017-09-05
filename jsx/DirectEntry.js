@@ -109,6 +109,7 @@ class DirectEntry extends React.Component {
 				});
 
 				that.setupPageValues(page);
+				window.scrollTo(0,0);
 		   },
 		}).fail((responseData) => {
 			if(responseData.status === 400) {
@@ -119,6 +120,8 @@ class DirectEntry extends React.Component {
 				alert("Please resolve page errors before continuing");
 			}
 		});
+
+		
 	}
 
 	prevPage() {
@@ -129,6 +132,8 @@ class DirectEntry extends React.Component {
 			errors: {}
 		});
 		this.setupPageValues(page);
+
+		window.scrollTo(0,0);
 	}
 
 	updateAnswer(fieldName, value) {

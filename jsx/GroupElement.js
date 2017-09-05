@@ -128,6 +128,8 @@ class BaseElement extends React.Component {
 				break;
 			case 'select':
 				let options = [];
+				const value = this.props.value != null ? this.props.value : '';
+
 				for (var key in this.props.element.Options.Values) {
 					options.push(
 						<option value={key}>{this.props.element.Options.Values[key]}</option>
@@ -137,7 +139,7 @@ class BaseElement extends React.Component {
 					<select
 						className="form-control"
 						onChange={this.updateValue}
-						value={this.props.value}
+						value={value}
 					>
 						{options}
 					</select>
