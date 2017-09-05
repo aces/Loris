@@ -31,6 +31,7 @@ $filename = __DIR__ . "/../SQL/Archive/17.1/2016-06-01-update_zero_fields_statem
 $output= "";
 $alters="";
 $updates="";
+$nonNullUpdates="";
 
 // Begin Script
 echo "\n#################################################################\n\n".
