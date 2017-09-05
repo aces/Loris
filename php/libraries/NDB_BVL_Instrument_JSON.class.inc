@@ -34,7 +34,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
      *
      * @return none
      */
-    function setup($commentID, $page)
+    function setup($commentID = NULL, $page = NULL)
     {
         $this->commentID     = $commentID;
         $this->page          = $page;
