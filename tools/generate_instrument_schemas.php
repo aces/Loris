@@ -94,7 +94,7 @@ class schema_generator
                     $type = "varchar(255)";
                     break;
                 case "date":
-                    $type = "date(10)";
+                    $type = "date";
                     break;
                 default:
                     echo("unhandled type: $switchType\n");
@@ -119,9 +119,9 @@ class schema_generator
     function enumizeOptions($values)
     {
         $enumValues = implode(",", array_map(function($val) {
-                                                 if (is_string($val)) {
-                                                     return "$val";
-                                                 }
+                                                 //if (is_string($val)) {
+                                                 //    return "$val";
+                                                 //}
                                                  return "'$val'";
                                              }, array_keys($values)));
         return "enum($enumValues)";
