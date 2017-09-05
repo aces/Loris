@@ -94,7 +94,7 @@ class schema_generator
                     $type = "TEXT";
                     break;
                 case "date":
-                    $type = "date(10)";
+                    $type = "date";
                     break;
                 default:
                     echo("unhandled type: $switchType\n");
