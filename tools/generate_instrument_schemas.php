@@ -68,7 +68,7 @@ class schema_generator
                     if(!$allowMult) {
                         $type = $this->enumizeOptions($enumOpts);
                     } else {
-                        $type = "varchar(255)";
+                        $type = "TEXT";
                     }
                     break;
                 case "select":
@@ -81,17 +81,17 @@ class schema_generator
                     if(!$allowMult) {                    
                         $type = $this->enumizeOptions($enumOpts);
                     } else {
-                        $type = "varchar(255)";
+                        $type = "TEXT";
                     }
                     break;
                 case "text":
-                    $type = "varchar(255)";
+                    $type = "TEXT";
                     break;
                 case "checkbox":
-                    $type = "varchar(255)";
+                    $type = "TEXT";
                     break;
                 case "calc":
-                    $type = "varchar(255)";
+                    $type = "TEXT";
                     break;
                 case "date":
                     $type = "date(10)";
