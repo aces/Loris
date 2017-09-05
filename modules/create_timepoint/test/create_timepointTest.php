@@ -81,7 +81,10 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      * @return void
      */
     function testCreateTimepointAndCheckLink()
-    {
+    {   $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        print($bodyText);
         $this->_createTimepoint('300003', 'Fresh', 'V2');
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
