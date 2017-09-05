@@ -263,7 +263,6 @@ class DirectDataEntryMainPage
         $instrument->loadInstrumentFile($file);
 
         if ($isDataSubmission) {
-            /* TODO Uncomment out. It is just annoying to test with this enabled.
             $this->updateStatus('Complete');
             $db->update(
                 $this->TestName,
@@ -285,7 +284,6 @@ class DirectDataEntryMainPage
                     'CommentID' => $this->CommentID,
                 )
             );
-            */
         }
 
         $smarty = new \Smarty_neurodb;
