@@ -33,6 +33,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function setUp()
     {
+        $this->login('admin','testpassword');
         parent::setUp();
 
     }
