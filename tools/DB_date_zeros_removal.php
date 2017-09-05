@@ -36,7 +36,7 @@ $nonNullUpdates="";
 // Begin Script
 echo "\n#################################################################\n\n".
     "This Script will generate an UPDATE statement for every date field ".
-    "currently in the database. \nThe output file is ".
+    "currently in the database. \nThe output file is project/".
     "tables_sql/update_zero_fields_statements.sql and includes foreign key ".
     "checks disabling and re-enabling.\n".
     "\n#################################################################\n\n";
