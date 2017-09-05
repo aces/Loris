@@ -65,36 +65,9 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         );
         $this->url = $this->config->getSetting("url");
 
-        $this->DB->insert(
-            "users",
-            array(
-             'ID'               => 999990,
-             'UserID'           => 'UnitTester',
-             'Real_name'        => 'Unit Tester',
-             'First_name'       => 'Unit',
-             'Last_name'        => 'Tester',
-             'Email'            => 'tester@example.com',
-             'Privilege'        => 0,
-             'PSCPI'            => 'N',
-             'Active'           => 'Y',
-             'Password_hash'    => password_hash("4test4", PASSWORD_DEFAULT),
-             'Password_expiry'  => '2099-12-31',
-             'Pending_approval' => 'N',
-            )
-        );
 
-        $this->DB->insert(
-            "user_psc_rel",
-            array(
-                'UserID'    => 999990,
-                'CenterID'  => 1,
-            )
-        );
 
         $this->resetPermissions();
-
-        $user = User::factory('UnitTester');
-        $user->updatePassword('4test4');
 
         $dev = $this->config->getSettingFromXML('dev');
         $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
@@ -109,7 +82,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             $capabilities
         );
 
-        $this->login("UnitTester", "4test4");
+        $this->login("admin", "password");
 
         if (extension_loaded('xdebug')) {
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
@@ -169,16 +142,11 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             xdebug_stop_code_coverage(false);
         }
 
-        // Delete the temporary user.
-        $this->DB->delete("user_login_history", array('userID' => 'UnitTester'));
-        $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
-        $this->DB->delete("users", array("UserID" => 'UnitTester'));
         // Close the browser and end the session
         if ($this->webDriver) {
             $this->webDriver->quit();
         }
 
-        $this->factory->reset();
     }
 
     /**

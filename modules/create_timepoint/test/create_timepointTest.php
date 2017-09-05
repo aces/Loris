@@ -34,13 +34,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     function setUp()
     {
         parent::setUp();
-        $this->safeGet($this->url."/main.php?logout=true");
-        $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
-        $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
-        $usernameEl->sendKeys("admin");
-        $passwordEl->sendKeys("testpassword");
-        $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
-        $login->click();
 
     }
 
