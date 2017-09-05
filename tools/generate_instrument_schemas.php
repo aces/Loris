@@ -119,9 +119,6 @@ class schema_generator
     function enumizeOptions($values)
     {
         $enumValues = implode(",", array_map(function($val) {
-                                                 if (is_string($val)) {
-                                                     return "$val";
-                                                 }
                                                  return "'$val'";
                                              }, array_keys($values)));
         return "enum($enumValues)";
