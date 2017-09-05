@@ -246,8 +246,8 @@ class DirectDataEntryMainPage
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
         $base    = $config->getSetting('base');
+        $logo    = "/".$config->getSetting('studylogo');
         $db     =& \Database::singleton();
-
         $isDataSubmission = isset($_POST['instrumentData']);
         $instrument = new NDB_BVL_Instrument_JSON();
         $instrument->setup($this->CommentID);
@@ -263,7 +263,6 @@ class DirectDataEntryMainPage
         $instrument->loadInstrumentFile($file);
 
         if ($isDataSubmission) {
-            /* TODO Uncomment out. It is just annoying to test with this enabled.
             $this->updateStatus('Complete');
             $db->update(
                 $this->TestName,
@@ -285,7 +284,6 @@ class DirectDataEntryMainPage
                     'CommentID' => $this->CommentID,
                 )
             );
-            */
         }
 
         $smarty = new \Smarty_neurodb;
@@ -295,6 +293,7 @@ class DirectDataEntryMainPage
         $smarty->assign('initialData', htmlspecialchars(json_encode($instrument->_getInstrumentData($db))));
         $smarty->assign('context', htmlspecialchars(json_encode($instrument->_getContext())));
         $smarty->assign('lang', htmlspecialchars($instrument->_getLang()));
+        $smarty->assign('logo', htmlspecialchars($logo));
         $smarty->display('directentry-react.tpl');
     }
 }

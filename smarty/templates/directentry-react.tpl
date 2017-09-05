@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    <div data-instrument="{$instrumentJSON}" data-initial="{$initialData}" data-lang="{$lang}" data-context="{$context}" id="instrument"></div>
+    <div data-instrument="{$instrumentJSON}" data-initial="{$initialData}" data-lang="{$lang}" data-context="{$context}" data-logo="{$logo}" id="instrument"></div>
     <div id="container"></div>
 </body>
 </html>
