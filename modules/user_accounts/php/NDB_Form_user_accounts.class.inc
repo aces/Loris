@@ -389,9 +389,9 @@ class NDB_Form_User_Accounts extends NDB_Form
                         )
                     );
                 }
-                unset($values['examiner_pending']);
-                unset($values['examiner_radiologist']);
             }
+            unset($values['examiner_pending']);
+            unset($values['examiner_radiologist']);
             //END EXAMINER UPDATE
         }
 
@@ -449,6 +449,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
         // END NOTIFICATIONS UPDATE
 
+        print_r($values);
         // make the set
         foreach ($values as $key => $value) {
             if (!empty($value)) {
