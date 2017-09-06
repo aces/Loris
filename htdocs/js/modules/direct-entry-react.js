@@ -34,19 +34,20 @@ class DirectEntryReact extends React.Component {
 
     return (
       <div>
-        <div id="bannerEls">
-            <img id="banner"/>
-            <img id="logo" src={logo}/>
-            <p id="study"> {study}</p>
-            </div>
-            <InstrumentFormContainer
-              instrument={instrument}
-              initialData={initialData}
-              lang={lang}
-              context={context}
-              options={options}
-              onSave={this.onSave}
-            />
+        <div id="banner">
+          <img id="logo" src={logo}/>
+          <span className="studyTitle">{study}</span>
+        </div>
+        <div className="instrumentContainer">
+          <InstrumentFormContainer
+            instrument={instrument}
+            initialData={initialData}
+            lang={lang}
+            context={context}
+            options={options}
+            onSave={this.onSave}
+          />
+        </div>
       </div>
     );
   }

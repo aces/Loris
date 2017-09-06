@@ -6,15 +6,15 @@ h1 {
     font-size: 24px;
 }
 
-body {
-    margin-left: 5%;
-    margin-right: 5%;
-    margin-bottom: 5%;
-}
-
 .title {
     text-align: center;
     margin-bottom: 0px;
+}
+
+.title h1 {
+    text-align: center;
+    margin-top: 0px;
+    margin-bottom: 16px;
 }
 
 label {
@@ -23,36 +23,22 @@ label {
 }
 
 #banner {
-    background: #08245b;
-    top: 0;
-    position: absolute;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: 75px;
-    z-index: -1;
+    background-color: #08245b;
+    padding: 10px;
 }
 
 #logo {
-    float: left;
     max-height: 55px;
-    width: auto;
-    z-index: 0;
     padding-right: 5px;
 }
 
-#study {
+.studyTitle {
     color: white;
     font-size: 28px;
-}
-
-#bannerEls {
-    margin-top: 10px;
-    left: 0;
-    right: 0;
-    line-height: 89px;
-}
-
-#bannerEls > * {
     vertical-align: bottom;
+    line-height: 1;
+}
+
+.instrumentContainer {
+  padding: 1% 2% 2% 2%;
 }
