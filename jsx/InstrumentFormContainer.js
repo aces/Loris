@@ -133,7 +133,7 @@ class InstrumentFormContainer extends React.Component {
   }
 
   filterElements(elements, data, context, surveyMode) {
-    return this.state.localizedInstrument.Elements.filter(
+    return elements.filter(
       (element, index) => this.isDisplayed(element, index, data, context, surveyMode)
     );
   }
@@ -158,7 +158,7 @@ class InstrumentFormContainer extends React.Component {
         meta={localizedInstrument.Meta}
         elements={
           this.annotateElements(
-            this.filterElements(localizeInstrument.Elements, data, context, options.surveyMode),
+            this.filterElements(localizedInstrument.Elements, data, context, options.surveyMode),
             data,
             context
           )
