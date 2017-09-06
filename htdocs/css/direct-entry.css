@@ -42,3 +42,11 @@ label {
 .instrumentContainer {
   padding: 1% 2% 2% 2%;
 }
+
+.complete {
+  display: flex;
+  margin-top: 100px;
+  justify-content: center;
+  align-items: center;
+  font-size: 2em;
+}

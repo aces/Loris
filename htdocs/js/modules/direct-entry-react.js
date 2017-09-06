@@ -29,7 +29,7 @@ class DirectEntryReact extends React.Component {
     }
 
     if (complete) {
-      return (<div>Survey successfully submitted.</div>);
+      return (<div className="complete">Survey completed. You can now exit this browser window.</div>);
     }
 
     return (
