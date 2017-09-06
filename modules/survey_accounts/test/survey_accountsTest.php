@@ -210,7 +210,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
                WebDriverBy::cssSelector(".error")
            )->getText();
            $this->assertContains(
-               "Visit does not exist for given candidate",
+               "Visit V1 does not exist for given candidate",
                $bodyText
            );
            //PSCID and DCC ID do not match or candidate does not exist.
