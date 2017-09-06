@@ -35,6 +35,7 @@ class DirectEntryReact extends React.Component {
     return (
       <div>
         <div id="bannerEls">
+            <img id="banner"/>
             <img id="logo" src={logo}/>
             <p id="study"> {study}</p>
             </div>
