@@ -2,6 +2,11 @@ import Form from './Form';
 
 const { SelectElement, RadioGroupLabels, RadioGroupElement, CheckboxGroupElement, TextboxElement, DateElement } = Form;
 
+/* InstrumentForm and InstrumentFormContainer follow the `presentational vs container`
+ * pattern (https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0). 
+ * The meta and elements passed to this component must already be 'localized' 
+ * (see ./lib/localize-instrument).
+ */
 const InstrumentForm = ({meta, elements, showRequired, errorMessage, onUpdate, onSave}) => {
   return (
     <div>

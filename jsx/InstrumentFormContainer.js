@@ -4,6 +4,11 @@ import localizeInstrument from './lib/localize-instrument';
 
 const INPUT_TYPES = ['select', 'date', 'radio', 'text', 'calc', 'checkbox'];
 
+/* InstrumentForm and InstrumentFormContainer follow the `presentational vs container`
+ * pattern (https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0).
+ * InstrumentFormContainer is concerned with how things work (managing state) and
+ * InstrumentForm is concerned only with how things look.
+ */
 class InstrumentFormContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -80,6 +85,14 @@ class InstrumentFormContainer extends React.Component {
     return incompleteExists;
   }
 
+  /**
+   * Determines whether a field should be displayed. The Hidden property can cause a field
+   * to be hidden, as can the HiddenSurvey property (only if SurveyMode is enabled). The
+   * DisplayIf may contain a string of LorisScript which will be evaluated using the context
+   * and current data.
+   *
+   * @returns {boolean} Boolean indicating whether the field should be displayed
+   */
   isDisplayed(element, index, data, context, surveyMode) {
     if (
       (element.Hidden) ||
@@ -102,6 +115,13 @@ class InstrumentFormContainer extends React.Component {
     }
   }
 
+  /**
+   * Determines whether a field is required. The RequireResponse of an element can
+   * be a simple boolean in which case it is returned. RequireResponse can also be
+   * a string of LorisScript which will be evaluated using the context and current data.
+   *
+   * @returns {boolean} Boolean indicating whether the field is required
+   */
   isRequired(element, index, data, context) {
     if (!INPUT_TYPES.includes(element.Type)) return false;
 
@@ -132,12 +152,27 @@ class InstrumentFormContainer extends React.Component {
     }
   }
 
+  /**
+   * Helper function which filters an instruments elements by applying isDisplay
+   * to each.
+   *
+   * @returns {array} Array of the filtered elements
+   */
   filterElements(elements, data, context, surveyMode) {
     return elements.filter(
       (element, index) => this.isDisplayed(element, index, data, context, surveyMode)
     );
   }
 
+  /**
+   * Adds a Value property which contains the current value contained in this.state.data
+   * to each element. This allows us to avoid passing this.state.data to InstrumentForm and
+   * simplifies things in that component. This function will also evaluate any LorisScript contained
+   * in a RequireResponse property of an element and replace it with a boolean. Again, this
+   * simplifies things in InstrumentForm.
+   *
+   * @returns {array} Array of the filtered elements
+   */
   annotateElements(elements, data, context) {
     return elements.map(
       (element, index) => Object.assign(element, { 
