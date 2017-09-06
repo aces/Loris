@@ -30,7 +30,11 @@ Instrument format:
         "InstrumentVersion": string,
         "InstrumentFormatVersion" : "v0.0.2-dev",
         "ShortName" : "InstrumentName", /* Required */
-        "LongName"  : "The Human Readable Instrument Name", /* Required */
+        "LongName": {
+          "en-ca": "The Human Readable Instrument Name",
+          "fr-ca": "Bonjour"
+        }, /* An object keyed by language - Required */
+        "SupportedLanguages": array(string),
         "IncludeMetaDataFields" : boolean
     },
     "Elements" : [ PageElements ]
@@ -60,7 +64,12 @@ Where each key should be interpreted as so:
 
 `Meta.ShortName`: A short name for this test suitable for a database table or file name.
 
-`Meta.LongName`: The long, human readable version of this instrument name.
+`Meta.LongName`: An object keyed by language (which are specified in SupportedLanguages), the values of which
+               are the human readable instrument names in those languages.
+
+`Meta.SupportedLanguages`: An array which specifies which languages this instrument supports. These will used as
+                         keys in Meta.LongName as well as the Description, Labels, and Options.Values properties of
+                         PageElements.
 
 `Meta.IncludeMetaDataFields`: An implementation (such as Loris) may have special fields
               that are included with every instrument such as a scored Candidate Age or
@@ -69,7 +78,7 @@ Where each key should be interpreted as so:
               them.
               Default: true
 
-`Elements`: An array of elements which this instrument consits of. Elements are described by
+`Elements`: An array of elements which this instrument consists of. Elements are described by
        JSON objects defined below and can be either an individual element, or an ElementGroup.
 
 
@@ -89,7 +98,10 @@ the following format:
 {
     "Type" : string,
     "Name" : UniqueQuestionIdentifier,
-    "Description" : "Human readable question text",
+    "Description" : {} // Object keyed by language with string values,
+    "Hidden": boolean,
+    "HiddenSurvey": boolean,
+    "DisplayIf": boolean or string of LorisScript,
     "Options" : {
         /* TypeDependent JSON Options */
     }
@@ -106,8 +118,8 @@ the following format:
         descriptions of the types below only specify if it's required,
         but these restrictions apply to all types where it's required.
 
-`Description`: The human readable description of this element, such
-               as question or label text. This may or may not be required
+`Description`: An object containing the human readable descriptions of this element keyed by language, 
+`              used as question or label text. This may or may not be required
                depending on element type.
 
 `Options`: An object containing the type dependent options for this element. If omitted
@@ -133,12 +145,16 @@ as follows. It denotes a group of values of which the user must select one optio
     "Description" : REQUIRED,
     "Options" : {
         "Values" : {
+          'en-ca': {
             "SaveValue"       : "Human Readable Description",
             "SaveValue2"      : "Another human readable description"
             ...
+          }
         },
         "AllowMultiple"   : boolean,
-        "RequireResponse" : boolean
+        "RequireResponse" : boolean || string,
+        "Hidden": boolean,
+        "HiddenSurvey": boolean
     }
 }
 ```
@@ -149,8 +165,9 @@ as follows. It denotes a group of values of which the user must select one optio
 
 `Description`: Required. Follows PageElement.Name rules.
 
-`Options.Values`: REQUIRED. Contains a JSON object specifying the
-                options to be selected. Each key/value corresponds
+
+`Options.Values`: REQUIRED. Contains a JSON object, keyed by language, the values of which are 
+                JSON objects specifying the options to be selected. Each key/value corresponds
                 to <option value="JSONKey">JSONValue</option> in an
                 HTML implementation. The JSONKey contains the value
                 to be saved if selected, and the JSONValue contains
@@ -161,7 +178,7 @@ as follows. It denotes a group of values of which the user must select one optio
                          one option can be selected.
                          Default: false
 
-`Options.RequireResponse`: Boolean. If true, an implementation should
+`Options.RequireResponse`: Boolean || String. If true, an implementation should
                        automatically add a not_answered option to the
                        select box in addition to the values specified
                        to allow the user to explicitly not answer a question
@@ -170,6 +187,8 @@ as follows. It denotes a group of values of which the user must select one optio
                        This is done instead of simply adding the option to
                        Values to ensure consistency with other PageElement types
                        such as date or text.
+                       If it is a string it is interpreted as LorisScript and
+                       evaluated.
                        Default: true.
 
 
@@ -211,6 +230,8 @@ save it. The format is as follows:
 `Options.RequireResponse`: If true, there MUST be some way for the user to specify
               that the question is not answered, regardless of other rules. If false,
               the not answered option is supressed.
+              If it is a string it is interpreted as LorisScript and
+              evaluated.
               Default: true
 
 
@@ -244,7 +265,6 @@ as follows:
 `Options.MaxDate`: The maximum date that can be chosen by the user. Format is YYYY-MM-DD
 
 `Options.RequireResponse`: Follows the same rules as TextElement:Options.RequireResponse
-
 
 
 
@@ -313,6 +333,104 @@ the user. It has the following form.
                score will be displayed with no accompagning text.
 
 
+### 2.1.6: CalcFieldElement
+
+A calc field represents a placeholder to display/save values based on other
+data entered by the user in the instrument but does not directly get input from
+the user. It has the following form.
+
+```js
+{
+    "Type": "calc",
+    "Name": REQUIRED,
+    "Description": OPTIONAL,
+    "Formula": string,
+    "Options": {
+        /* None currently */
+    }
+}
+```
+
+`Type`: MUST be "score".
+
+`Name`: Required. Follows `PageElement.Name` rules. The Name MAY be used by an
+        implementation as a field name to save calculated data into.
+
+`Description`: Optional. Follows `PageElement.Name` rules. If not specified, the
+               score will be displayed with no accompagning text.
+
+`Formula`: A string of LorisScript which will determine the displayed value of this field.
+
+### 2.1.7: RadioElement
+
+A Radio element represents a HTML radio type and appears as follows. 
+It denotes a group of values of which the user must select one option.
+
+```js
+{
+    "Type" : "radio",
+    "Name" : REQUIRED,
+    "Description" : REQUIRED,
+    "Options" : {
+        "Values" : {
+          'en-ca': {
+            "SaveValue"       : "Human Readable Description",
+            "SaveValue2"      : "Another human readable description"
+            ...
+          }
+        },
+        "AllowMultiple"   : boolean,
+        "RequireResponse" : boolean || string,
+        "Hidden": boolean,
+        "HiddenSurvey": boolean
+    }
+}
+```
+
+`Type`: MUST be select.
+
+`Name`: Required. Follows PageElement.Name rules.
+
+`Description`: Required. Follows PageElement.Name rules.
+
+
+`Options.Values`: REQUIRED. Contains a JSON object, keyed by language, the values of which are 
+                JSON objects specifying the options to be selected. Each key/value corresponds
+                to <option value="JSONKey">JSONValue</option> in an
+                HTML implementation. The JSONKey contains the value
+                to be saved if selected, and the JSONValue contains
+                the human friendly text to display to the user.
+
+A DateElement represents a way for a user to enter a date. The general format is
+as follows:
+
+```js
+{
+    "Type": "date",
+    "Name": REQUIRED,
+    "Description": REQUIRED,
+    "Options" : {
+        "MinDate" : "YYYY-MM-DD",
+        "MaxDate" : "YYYY-MM-DD",
+        "RequireResponse" : boolean
+    }
+}
+```
+
+`Type`: MUST be "date"
+
+`Name`: Required. Follows `PageElement.Name` rules.
+
+`Description`: Required. Follows `PageElement.Name` rules.
+
+`Options.MinDate`: The minimum date that can be chosen by the user. Format is YYYY-MM-DD
+
+`Options.MaxDate`: The maximum date that can be chosen by the user. Format is YYYY-MM-DD
+
+`Options.RequireResponse`: Follows the same rules as TextElement:Options.RequireResponse
+
+
+
 ## 2.2: Layout related types
 
 The following types are related to page layout and not directly related to user input,
@@ -357,6 +475,30 @@ input. It has the following form:
 {
     "Type": "label",
     "Description" : REQUIRED,
+    "Options": {
+        /* None currently */
+
+    }
+}
+```
+
+`Type`: MUST be "label"
+
+`Description`: Required. The text to display in the label.
+
+`Options`: None
+
+### 2.2.3: RadioLabelElement
+
+To be used above one or more RadioElements of the same cardinality. The labels are
+aligned above the radio inputs.
+
+```js
+{
+    "Type": "radio-labels",
+    "Labels": {
+      "languageKey": array
+    },
     "Options": {
         /* None currently */
 
