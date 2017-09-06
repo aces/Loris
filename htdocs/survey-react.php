@@ -247,6 +247,7 @@ class DirectDataEntryMainPage
         $config  = $factory->config();
         $base    = $config->getSetting('base');
         $logo    = "/".$config->getSetting('studylogo');
+        $study   = $config->getSetting('title');
         $db     =& \Database::singleton();
         $isDataSubmission = isset($_POST['instrumentData']);
         $instrument = new NDB_BVL_Instrument_JSON();
@@ -294,6 +295,7 @@ class DirectDataEntryMainPage
         $smarty->assign('context', htmlspecialchars(json_encode($instrument->_getContext())));
         $smarty->assign('lang', htmlspecialchars($instrument->_getLang()));
         $smarty->assign('logo', htmlspecialchars($logo));
+        $smarty->assign('study', htmlspecialchars($study));
         $smarty->display('directentry-react.tpl');
     }
 }
