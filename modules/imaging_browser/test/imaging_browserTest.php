@@ -345,6 +345,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         // With permission imaging_browser_view_site
+        $this->resetStudySite();
         $this->setupPermissions(array('imaging_browser_view_site'));
         $this->webDriver->navigate()->refresh();
         $this->safeGet(
