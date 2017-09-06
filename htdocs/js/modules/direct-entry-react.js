@@ -21,7 +21,7 @@ class DirectEntryReact extends React.Component {
   }
 
   render() {
-    const { instrument, initialData, lang, context, options, logo, curDateSt } = this.props;
+    const { instrument, initialData, lang, context, options, logo, study } = this.props;
     const { complete, error } = this.state;
 
     if (error) {
@@ -34,17 +34,18 @@ class DirectEntryReact extends React.Component {
 
     return (
       <div>
-        <img id="banner" className="banner"/>
-        <img id="logo" src={logo}/>
-        <div><font color="white">Date: {curDateSt}</font></div>
-        <InstrumentFormContainer
-          instrument={instrument}
-          initialData={initialData}
-          lang={lang}
-          context={context}
-          options={options}
-          onSave={this.onSave}
-        />
+        <div id="bannerEls">
+            <img id="logo" src={logo}/>
+            <p id="study"> {study}</p>
+            </div>
+            <InstrumentFormContainer
+              instrument={instrument}
+              initialData={initialData}
+              lang={lang}
+              context={context}
+              options={options}
+              onSave={this.onSave}
+            />
       </div>
     );
   }
@@ -58,9 +59,8 @@ window.onload = function() {
   const initialData = JSON.parse(instrumentEl.dataset.initial);
   const lang = instrumentEl.dataset.lang;
   const logo = instrumentEl.dataset.logo ? instrumentEl.dataset.logo : "";
+  const study = instrumentEl.dataset.study ? instrumentEl.dataset.study : "";
   const options = { surveyMode: true };
-  const curDate = new Date();
-  const curDateSt = (curDate.getMonth()+1) + "/" + curDate.getDate() + "/" + curDate.getFullYear();
   ReactDOM.render(
     <DirectEntryReact
       instrument={instrument}
@@ -69,7 +69,7 @@ window.onload = function() {
       context={context}
       options={options}
       logo={logo}
-      curDateSt={curDateSt}
+      study={study}
     />,
     document.getElementById("container")
   );

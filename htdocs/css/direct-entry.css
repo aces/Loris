@@ -3,7 +3,7 @@
 }
 
 h1 {
-    font-size: 28px;
+    font-size: 24px;
 }
 
 body {
@@ -19,21 +19,40 @@ body {
 
 label {
     font-weight: normal;
+    text-align: justify;
 }
 
 #banner {
     background: #08245b;
-    position: absolute;
     top: 0;
+    position: absolute;
     left: 0;
     right: 0;
     width: 100%;
-    height: 105px;
+    height: 75px;
     z-index: -1;
 }
 
 #logo {
-    max-height: 75px;
-    margin-top: 10px;
+    float: left;
+    max-height: 55px;
+    width: auto;
     z-index: 0;
+    padding-right: 5px;
+}
+
+#study {
+    color: white;
+    font-size: 28px;
+}
+
+#bannerEls {
+    margin-top: 10px;
+    left: 0;
+    right: 0;
+    line-height: 89px;
+}
+
+#bannerEls > * {
+    vertical-align: bottom;
 }
