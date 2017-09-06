@@ -83,7 +83,7 @@ class DicomArchive extends React.Component {
           Module="dicom_archive"
           name="dicom_filter"
           id="dicom_filter"
-          ref='dicomFilter'
+          ref="dicomFilter"
           columns={2}
           formElements={this.state.Data.form}
           onUpdate={this.updateFilter}
