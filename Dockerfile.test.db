@@ -9,7 +9,7 @@ COPY SQL/0000-00-03-ConfigTables.sql /0000-00-03-ConfigTables.sql
 COPY SQL/0000-00-04-Help.sql /0000-00-04-Help.sql
 COPY test/test_instrument/testtest.sql /test_instrument.sql
 COPY test/Loris17.1withTestingDataRaisinBread.sql /Loris17.1withTestingDataRaisinBread.sql
-
+COPY test/test_instrument/medical_history.sql /medical_history.sql
 COPY docs/instruments/radiology_review.sql /radiology_review.sql
 
 RUN echo "Use LorisTest;" | cat - \
@@ -20,6 +20,7 @@ RUN echo "Use LorisTest;" | cat - \
     0000-00-04-Help.sql \
     test_instrument.sql \
     Loris17.1withTestingDataRaisinBread.sql \
+    medical_history.sql \
     radiology_review.sql > /docker-entrypoint-initdb.d/0000-compiled.sql 
 
 RUN echo "Use LorisTest;" >> /docker-entrypoint-initdb.d/0001-paths.sql
