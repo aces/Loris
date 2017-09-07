@@ -100,7 +100,6 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         $this->validFilters = array(
                                'pso.ID',
                                'c.CenterID',
-                               'c.ProjectID',
                                'c.CandID',
                                'c.PSCID',
                                'c.Gender',
@@ -140,11 +139,6 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
 
             $site_arr     = implode(",", $user->getCenterIDs());
             $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
-        }
-
-        if ($config->getSetting("useProjectPermissions")) {
-            $projectIds     = $user->getProjectIds();
-            $this->query .= " AND c.ProjectID IN (" . implode(",", $projectIds) . ")";
         }
 
         //'COALESCE(pso.ID,1) AS Participant_Status',
@@ -327,11 +321,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         // Project list, if applicable
         if ($config->getSetting("useProjects")==="true") {
             $list_of_projects = array(null => 'All');
-            if ($config->getSetting("useProjectPermissions")) {
-                $projectList = $user->getProjects();
-            } else {
-                $projectList = Utility::getProjectList();
-            }
+            $projectList      = Utility::getProjectList();
             foreach ($projectList as $key => $value) {
                 $list_of_projects[$key] =$value;
             }

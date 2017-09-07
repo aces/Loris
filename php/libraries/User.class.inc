@@ -106,29 +106,10 @@ class User extends UserPermissions
                                                   );
             }
         }
-
-        // Get user projects
-        $project_rows = $DB->pselect(
-            "SELECT p.Name, p.ProjectID from user_project_rel upr
-             LEFT JOIN Project p on (p.ProjectID=upr.ProjectID)
-             WHERE (upr.UserID=:UserID)",
-            array(
-             "UserID" => $row['ID'],
-            )
-        );
-        $projects     = array();
-        $project_IDs  = array();
-        foreach ($project_rows as $project_row) {
-            $projects[$project_row['ProjectID']] = $project_row['Name'];
-            array_push($project_IDs, $project_row['ProjectID']);
-        }
-
         // store user data in object property
-        $row['examiner']   =$examiner_info;
-        $row['CenterIDs']  =$user_cid;
-        $row['Projects']   =$projects;
-        $row['ProjectIDs'] =$project_IDs;
-        $obj->userInfo     =$row;
+        $row['examiner']  =$examiner_info;
+        $row['CenterIDs'] =$user_cid;
+        $obj->userInfo    =$row;
         return $obj;
     }
 
@@ -318,43 +299,6 @@ class User extends UserPermissions
     }
 
     /**
-     * Get the user's projects
-     *
-     * @return array
-     */
-    function getProjects()
-    {
-        return $this->userInfo['Projects'];
-    }
-
-    /**
-     * Get the user's project ids
-     *
-     * @return array
-     */
-    function getProjectIds()
-    {
-        return array_keys($this->userInfo['Projects']);
-    }
-
-    /* Returns all user's sites that are StudySites
-     *
-     * @return array
-     */
-    function getStudySites()
-    {
-        $site_arr         = $this->userInfo['CenterIDs'];
-        $user_study_sites = array();
-        foreach ($site_arr as $key => $val) {
-            $site[$key] = &Site::singleton($val);
-            if ($site[$key]->isStudySite()) {
-                $user_study_sites[$val] = $site[$key]->getCenterName();
-            }
-        }
-        return $user_study_sites;
-    }
-
-    /**
      * Checks that the user's email is valid
      *
      * @return boolean
@@ -513,50 +457,6 @@ class User extends UserPermissions
         );
 
         $this->update($updateArray);
-    }
-
-    /**
-     * Checks if a user has access to a project
-     *
-     * @param int $projectID The project's unique ID
-     *
-     * @return bool
-     */
-    function hasAccessToProject($projectID)
-    {
-        $userProjectIds = array_keys($this->getData("Projects"));
-        return (in_array($projectID, $userProjectIds));
-    }
-
-    /* Determines if the user has a center
-     *
-     * @param int $center_id The center id
-     *
-     * @return bool
-     */
-    public function hasCenter($center_id)
-    {
-        return in_array(
-            $center_id,
-            $this->getCenterIDs()
-        );
-    }
-    /**
-     * Determines if the user has a permission
-     * for a center
-     *
-     * @param string $code      The permission code
-     * @param int    $center_id The center id
-     *
-     * @return bool
-     */
-    public function hasCenterPermission($code, $center_id)
-    {
-        if ($this->hasPermission("superuser")) {
-            return true;
-        }
-        return $this->hasPermission($code)
-            && $this->hasCenter($center_id);
     }
 }
 ?>

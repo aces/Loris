@@ -38,18 +38,11 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        $config =& NDB_Config::singleton();
 
         $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
         $candID    = $timePoint->getCandID();
 
         $candidate =& Candidate::singleton($candID);
-
-        if ($config->getSetting("useProjectPermissions")) {
-            if (!$user->hasAccessToProject($candidate->getData("ProjectID"))) {
-                return false;
-            }
-        }
 
         // check user permissions
         return ($user->hasPermission('access_all_profiles')

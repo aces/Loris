@@ -115,22 +115,18 @@ class NDB_Form_New_Profile extends NDB_Form
      */
     function new_profile()//@codingStandardsIgnoreLine
     {
-        $config    =& NDB_Config::singleton();
-        $user      =& User::singleton();
-        $startYear = $config->getSetting('startYear');
-        $endYear   = $config->getSetting('endYear');
-        $ageMax    = $config->getSetting('ageMax');
-        $ageMin    = $config->getSetting('ageMin');
-        $dobFormat = $config->getSetting('dobFormat');
-
-        $dateOptions = array(
-                        'language'       => 'en',
-                        'format'         => $dobFormat,
-                        'addEmptyOption' => true,
-                        'minYear'        => $startYear - $ageMax,
-                        'maxYear'        => $endYear - $ageMin,
-                       );
-
+        $config         =& NDB_Config::singleton();
+        $startYear      = $config->getSetting('startYear');
+        $endYear        = $config->getSetting('endYear');
+        $ageMax         = $config->getSetting('ageMax');
+        $ageMin         = $config->getSetting('ageMin');
+        $dateOptions    = array(
+                           'language'       => 'en',
+                           'format'         => 'YMd',
+                           'addEmptyOption' => true,
+                           'minYear'        => $startYear - $ageMax,
+                           'maxYear'        => $endYear - $ageMin,
+                          );
         $dateAttributes = ['class' => 'form-control input-sm input-date'];
 
         // add date of birth
@@ -190,11 +186,7 @@ class NDB_Form_New_Profile extends NDB_Form
         }
 
         if ($config->getSetting("useProjects") == "true") {
-            if ($config->getSetting("useProjectPermissions")) {
-                $projects = $user->getProjects();
-            } else {
-                $projects = Utility::getProjectList();
-            }
+            $projects = Utility::getProjectList();
             $projList = array('' => '');
             foreach ($projects as $projectID => $projectName) {
                 $projList[$projectID] = $projectName;
@@ -305,15 +297,6 @@ class NDB_Form_New_Profile extends NDB_Form
         $useProjects = $config->getSetting('useProjects');
         if ($useProjects === "true" && empty($values['ProjectID'])) {
             $errors['ProjectID'] = "Project is required";
-        }
-
-        $useProjectsPermissions = $config->getSetting('useProjectPermissions');
-        if ($useProjectsPermissions === "true" && !empty($values['ProjectID'])) {
-            $user =& User::singleton();
-
-            if (!$user->hasAccessToProject($values['ProjectID'])) {
-                $errors['ProjectID'] = "User does not belong to this project";
-            }
         }
 
         return $errors;

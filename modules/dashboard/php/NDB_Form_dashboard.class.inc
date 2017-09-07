@@ -73,34 +73,25 @@ class NDB_Form_Dashboard extends NDB_Form
             }
         }
 
-        $useProjects = $config->getSetting('useProjects');
-        $useProjectPermissions = $config->getSetting('useProjectPermissions');
-        $projectIDs = $useProjectPermissions ?
-            $user->getProjectIds() :
-            array_keys(Utility::getProjectList());
-
         $recruitmentTarget = $config->getSetting('recruitmentTarget');
-
-        $overallRecruitment = Project::getRecruitment($projectIDs);
-
         $this->createProjectProgressBar(
             'overall',
             "Overall Recruitment",
             $recruitmentTarget,
-            $overallRecruitment,
-            $projectIDs
+            $this->getTotalRecruitment()
         );
 
+        $useProjects = $config->getSetting('useProjects');
         $this->tpl_data['useProjects'] = $useProjects;
         if ($useProjects == "true") {
-            foreach ($projectIDs as $projectID) {
+            $projects = Utility::getProjectList();
+            foreach ($projects as $projectID => $project) {
                 $projectInfo = $config->getProjectSettings($projectID);
                 $this->createProjectProgressBar(
                     $projectID,
                     $projectInfo['Name'],
                     $projectInfo['recruitmentTarget'],
-                    Project::getRecruitment(array($projectID)),
-                    $projectIDs
+                    $this->getTotalRecruitmentByProject($projectID)
                 );
             }
         }
@@ -111,9 +102,8 @@ class NDB_Form_Dashboard extends NDB_Form
 		LEFT JOIN session s ON (s.ID=f.SessionID)
 		LEFT JOIN candidate c ON (s.CandID=c.CandID)
 		WHERE s.Active='Y' AND c.Active='Y'
-            AND c.ProjectID IN (:projectIDs)
 			AND s.CenterID <> 1",
-            array('projectIDs' => implode(',', $projectIDs))
+            array()
         );
 
         // Tasks
@@ -124,12 +114,11 @@ class NDB_Form_Dashboard extends NDB_Form
                 "SELECT COUNT(DISTINCT s.ID)
                  FROM files f 
                  LEFT JOIN session s ON (s.ID=f.SessionID)
-                 LEFT JOIN candidate c ON (s.CandID=c.CandID)
-                 WHERE (MRIQCStatus='' OR MRIQCPending='Y')
-                 AND s.Active='Y' AND c.Active='Y'
-                 AND c.ProjectID IN (:projectIDs)
-                 AND s.CenterID <> 1",
-                array('projectIDs' => implode(',', $projectIDs))
+		LEFT JOIN candidate c ON (s.CandID=c.CandID)
+                 WHERE fqc.QCStatus IS NULL
+			AND s.Active='Y' AND c.Active='Y'
+			AND s.CenterID <> 1",
+                array()
             );
             $this->tpl_data['new_scans_site'] = 'Sites: all';
         }
@@ -143,9 +132,8 @@ class NDB_Form_Dashboard extends NDB_Form
                      LEFT JOIN session s ON (flag.SessionID=s.ID)
 			LEFT JOIN candidate c ON (s.CandID=c.CandID)
                       WHERE s.CenterID <> 1
-                      AND c.ProjectID IN (:projectIDs)
 			AND s.Active='Y' AND c.Active='Y'",
-                    array('projectIDs' => implode(',', $projectIDs))
+                    array()
                 );
                 $this->tpl_data['conflicts_site'] = 'Sites: all';
             } else {
@@ -156,12 +144,8 @@ class NDB_Form_Dashboard extends NDB_Form
 		             LEFT JOIN candidate c ON (c.CandID=s.CandID)
                      LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
                      WHERE FIND_IN_SET(psc.CenterID, :siteID) 
-                        AND c.ProjectID IN (:projectIDs)
 			            AND s.Active='Y' AND c.Active='Y'",
-                    array(
-                        'siteID' => implode(',', $siteID),
-                        'projectIDs' => implode(',', $projectIDs)
-                    )
+                    array('siteID' => implode(',', $siteID))
                 );
                 $this->tpl_data['conflicts_site'] = 'Sites: All User Sites';
             }
@@ -174,9 +158,8 @@ class NDB_Form_Dashboard extends NDB_Form
 			LEFT JOIN session s ON (s.ID=flag.SessionID)
 			LEFT JOIN candidate c ON (s.CandID=c.CandID)
 		     WHERE flag.Data_entry='In Progress'
-		    AND c.ProjectID IN (:projectIDs)
 			AND s.Active='Y' AND c.Active='Y' AND s.CenterID <> 1",
-                    array('projectIDs' => implode(',', $projectIDs))
+                    array()
                 );
                 $this->tpl_data['incomplete_forms_site'] = 'Sites: all';
             } else {
@@ -187,12 +170,8 @@ class NDB_Form_Dashboard extends NDB_Form
                     LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
                     WHERE Data_entry='In Progress' 
                     AND FIND_IN_SET(psc.CenterID, :siteID)
-                    AND c.ProjectID IN (:projectIDs)
 			          AND s.Active='Y' AND c.Active='Y'",
-                    array(
-                        'siteID' => implode(',', $siteID),
-                        'projectIDs' => implode(',', $projectIDs)
-                    )
+                    array('siteID' => implode(',', $siteID))
                 );
                 $this->tpl_data['incomplete_forms_site'] = $site;
             }
@@ -207,9 +186,8 @@ class NDB_Form_Dashboard extends NDB_Form
 			LEFT JOIN session s ON (s.ID=fg.SessionID)
 			LEFT JOIN candidate c ON (c.CandID=s.CandID)
                 WHERE Review_Done IS NULL
-            AND c.ProjectID IN (:projectIDs)
 			AND c.Active='Y' AND s.Active='Y'",
-                array('projectIDs' => implode(',', $projectIDs))
+                array()
             );
             $this->tpl_data['radiology_review_site'] = 'Sites: all';
         }
@@ -243,11 +221,10 @@ class NDB_Form_Dashboard extends NDB_Form
             $this->tpl_data['violated_scans'] = $DB->pselectOne(
                 "SELECT COUNT(*) FROM mri_protocol_violated_scans
 			LEFT JOIN candidate c USING (CandID)
-            WHERE COALESCE(c.CenterID, 0) <> 1
-            AND c.ProjectID IN (:projectIDs)",
+		WHERE COALESCE(c.CenterID, 0) <> 1",
                 /* include null CenterIDs so we don't accidentally
                 filter things out */
-                array('projectIDs' => implode(',', $projectIDs))
+                array()
             );
             $this->tpl_data['violated_scans_site'] = 'Sites: all';
         }
@@ -330,6 +307,87 @@ class NDB_Form_Dashboard extends NDB_Form
     }
 
     /**
+     * Gets the total count of candidates associated with a specific project
+     *
+     * @return int
+     */
+    function getTotalRecruitment()
+    {
+        $DB = Database::singleton();
+        $totalRecruitment = $DB->pselectOne(
+            "SELECT COUNT(*) FROM candidate c
+             WHERE c.Active='Y' AND c.Entity_type='Human' AND c.CenterID <> 1",
+            array()
+        );
+        return $totalRecruitment;
+    }
+
+    /**
+     * Gets the total count of candidates associated with a specific project
+     *
+     * @param int $projectID Project ID
+     *
+     * @return int
+     */
+    function getTotalRecruitmentByProject($projectID)
+    {
+        $DB = Database::singleton();
+        $totalRecruitment = $DB->pselectOne(
+            "SELECT COUNT(*)
+             FROM candidate c
+             WHERE c.Active='Y' AND c.ProjectID=:PID AND c.Entity_type='Human'
+             AND c.CenterID <> 1",
+            array('PID' => $projectID)
+        );
+        return $totalRecruitment;
+    }
+
+    /**
+     * Gets the total count of candidates of a specific gender
+     *
+     * @param string $gender gender (male or female)
+     *
+     * @return int
+     */
+    function getTotalGender($gender)
+    {
+        $DB    = Database::singleton();
+        $total = $DB->pselectOne(
+            "SELECT COUNT(c.CandID)
+             FROM candidate c
+             WHERE c.Gender=:Gender AND c.Active='Y' AND c.Entity_type='Human'
+             AND c.CenterID <> 1",
+            array('Gender' => $gender)
+        );
+        return $total;
+    }
+
+    /**
+     * Gets the total count of candidates of a specific gender,
+     * associated with a specific project
+     *
+     * @param string $gender    gender (male or female)
+     * @param int    $projectID Project ID
+     *
+     * @return int
+     */
+    function getTotalGenderByProject($gender, $projectID)
+    {
+        $DB    = Database::singleton();
+        $total = $DB->pselectOne(
+            "SELECT COUNT(c.CandID)
+             FROM candidate c
+             WHERE c.Gender=:Gender AND c.Active='Y' AND c.ProjectID=:PID
+             AND c.Entity_type='Human' AND c.CenterID <> 1",
+            array(
+             'Gender' => $gender,
+             'PID'    => $projectID,
+            )
+        );
+        return $total;
+    }
+
+    /**
      * Creates the template data for a progress bar
      *
      * @param mixed  $ID                ID for the progress bar
@@ -351,18 +409,18 @@ class NDB_Form_Dashboard extends NDB_Form
                 = $recruitmentTarget;
 
             if ($ID == 'overall') {
-                $totalFemales = Project::getTotalFemales();
+                $totalFemales = $this->getTotalGender("Female");
             } else {
-                $totalFemales = Project::getTotalFemales(array($ID));
+                $totalFemales = $this->getTotalGenderByProject("Female", $ID);
             }
             $this->tpl_data['recruitment'][$ID]['female_total']   = $totalFemales;
             $this->tpl_data['recruitment'][$ID]['female_percent']
                 = round($totalFemales / $recruitmentTarget * 100);
 
             if ($ID == 'overall') {
-                $totalMales = Project::getTotalMales();
+                $totalMales = $this->getTotalGender("Male");
             } else {
-                $totalMales = Project::getTotalMales(array($ID));
+                $totalMales = $this->getTotalGenderByProject("Male", $ID);
             }
             $this->tpl_data['recruitment'][$ID]['male_total']   = $totalMales;
             $this->tpl_data['recruitment'][$ID]['male_percent']
