@@ -4,12 +4,9 @@
         verbose="true"
         colors="true">
     <testsuites>
-        <testsuite name='PHPParserTest'>
-            <file>./unittests/ParserTest.php</file>
-        </testsuite>
-        
-        <testsuite name='NAIPTests'>
+        <testsuite name='InstrumentTest'>
           <file>./unittests/NDB_BVL_Instrument_JSON.php</file>
+          <file>./unittests/ParserTest.php</file>
         </testsuite>
 
         <testsuite name='LorisUnitTests'>
