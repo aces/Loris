@@ -91,6 +91,7 @@ class NDB_Caller
             $url .= Utility::removeCommonAffix($url, $_SERVER['REQUEST_URI']);
             // sending user to the url that was requested
             header("Location: $url");
+            return;
         }
         if (empty($CommentID) && isset($_REQUEST['commentID'])) {
             $CommentID = $_REQUEST['commentID'];
@@ -209,9 +210,9 @@ class NDB_Caller
             // removed it in 17.0.
             error_log(
                 "php/libraries 'modules' are deprecated and will be "
-                . " removed in a future release. Please update your code to use"
-                . " proper LORIS style modules. See the loris-dev mailing list"
-                . " for help if required."
+                . " removed in a future release. Please update your code in "
+                . "$test_name to use proper LORIS style modules. See the loris-dev"
+                . "  mailing list for help if required."
             );
             // it is a menu
             $proj_menu = $base . "project/libraries/NDB_Menu_$test_name.class.inc";

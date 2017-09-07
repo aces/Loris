@@ -235,7 +235,7 @@ class NDB_Form_Dashboard extends NDB_Form
                 array('CID' => implode(",", $site_arr))
             );
 
-            $this->tpl_data['pending_users_site'] = 'Sites: ' . $site;
+            $this->tpl_data['pending_users_site'] = 'Sites: All User Sites';
         }
 
         // Violated scans
@@ -287,8 +287,7 @@ class NDB_Form_Dashboard extends NDB_Form
             if ($user->hasPermission('access_all_profiles')) {
                 $this->tpl_data['issues_assigned_site'] = 'Sites: all';
             } else {
-                $this->tpl_data['issues_assigned_site'] = 'Sites: '.
-                    $user->getSiteNames();
+                $this->tpl_data['issues_assigned_site'] = 'Sites: All User Sites';
             }
         }
 

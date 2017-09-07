@@ -88,10 +88,30 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             )
         );
 
+        if (!empty($scan_id_types)) {
+            $this->acqpid = "AND AcquisitionProtocolID IN (".
+                    implode(",", array_keys($scan_id_types)) .")";
+            $isFirst      = true;
+            foreach ($scan_id_types as $key => $value) {
+                if ($isFirst) {
+                    $acqpif = "IF(FIND_IN_SET({$key},GROUP_CONCAT(
+                        DISTINCT AcquisitionProtocolID))>0 ";
+                } else {
+                    $acqpif .= "OR FIND_IN_SET({$key},GROUP_CONCAT(
+                        DISTINCT AcquisitionProtocolID))>0 ";
+                }
+                $isFirst = false;
+            }
+            $acqpif .= ",'new','')";
+        } else {
+            $this->acqpid = '';
+            $acqpif       = "'new'";
+        }
+
         $NewDataSubquery = "CASE 
-            COALESCE(nd.QCLastChangeTime, 'new')
-            WHEN 'new' THEN 'new' 
-            WHEN '' THEN 'new'
+            COALESCE(Max(fqc.QCLastChangeTime), 'new')
+            WHEN 'new' THEN {$acqpif}
+            WHEN ''    THEN {$acqpif}
             ELSE ''
             END";
 
@@ -122,13 +142,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             JOIN candidate c ON (c.CandID=s.CandID) 
             JOIN files f ON (f.SessionID=s.ID) 
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
-            JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
-            LEFT JOIN (SELECT files.SessionID, MIN(QCLastChangeTime)
-            as QCLastChangeTime FROM files
-            LEFT JOIN files_qcstatus USING (FileID)
-            WHERE OutputType='native' AND AcquisitionProtocolID 
-            NOT IN (1, 2, 3, 52) GROUP BY files.SessionID) nd 
-            ON (nd.SessionID=f.SessionID) ";
+            JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)";
 
         $left_joins = "";
         foreach ($case_desc as $key => $value) {
@@ -147,8 +161,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             WHERE 
             s.Active = 'Y' AND
             f.PendingStaging=0 AND 
-            f.FileType='mnc' AND 
-            f.AcquisitionProtocolID not in (1, 2, 3, 52)";
+            f.FileType='mnc'";
 
         $this->query .= $left_joins;
         $this->query .= $where;
@@ -212,11 +225,9 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                          );
         $this->columns = array_merge(
             $this->columns,
-            array(
-             "GROUP_CONCAT(DISTINCT OutputType) as Links",
-             's.ID as sessionID',
-            ),
-            $modalities_subquery_as
+            array("GROUP_CONCAT(DISTINCT OutputType) as Links"),
+            $modalities_subquery_as,
+            array('s.ID as sessionID')
         );
 
         $this->order_by = 'c.PSCID, s.Visit_label';
@@ -237,7 +248,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $this->headers = array_merge(
             $this->headers,
             $as,
-            'sessionID'
+            array('sessionID')
         );
 
         // Insert project column after DCCID, if useProject config is enabled
@@ -322,7 +333,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         }
 
         $DB    = Database::singleton();
-        $allAr = array('' => All);
+        $allAr = array('' => 'All');
 
         $this->addBasicText(
             'pscid',
@@ -460,11 +471,11 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                     $query .= " AND s.MRIQCPending='Y'";
                     break;
                 case "N":
-                    $query .= " AND fqc.QCFirstChangeTime IS NULL";
+                    $query .= " AND fqc.QCFirstChangeTime IS NULL " . $this->acqpid;
                     break;
                 case "PN":
                     $query .= " AND (s.MRIQCPending='Y' 
-                        OR fqc.QCFirstChangeTime IS NULL)";
+                        OR (fqc.QCFirstChangeTime IS NULL ". $this->acqpid ."))";
                     break;
                 }
             } else if ($field == 'AcquisitionProtocolID') {
