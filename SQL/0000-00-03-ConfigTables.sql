@@ -129,7 +129,6 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, Or
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'JWTKey', 'Secret key for signing JWT tokens on this server. This should be unique and never shared with anyone. ', 1, 0, 'text', ID, 'JWT Secret Key', 1 FROM ConfigSettings WHERE Name="APIKeys";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'reCAPTCHAPrivate', 'Private Key for Google reCAPTCHA', 1, 0, 'text', ID, 'reCAPTCHA Private Key', 2 FROM ConfigSettings WHERE Name="APIKeys";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'reCAPTCHAPublic', 'Public Key for Google reCaptcha', 1, 0, 'text', ID, 'reCAPTCHA Public Key', 3 FROM ConfigSettings WHERE Name="APIKeys";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'useProjectPermissions', "Enable project level permissions", 1, 0, 'boolean', ID, 'Use project-level permissions', 4 FROM ConfigSettings WHERE Name="study";
 
 -- Loris-MRI/Imaging Pipeline options from the $profile (commonly "prod") file
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('imaging_pipeline', 'Imaging Pipeline settings', 1, 0, 'Imaging Pipeline', 12);
@@ -223,6 +222,7 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "Produced by LorisDB" FROM Confi
 
 INSERT INTO Config (ConfigID, Value) SELECT ID, "S3cret" FROM ConfigSettings WHERE Name="JWTKey";
 
+
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/PATH/TO/DATA/location" FROM ConfigSettings cs WHERE cs.Name="Loris-MRI Data Directory";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "project" FROM ConfigSettings cs WHERE cs.Name="prefix";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "yourname\@example.com" FROM ConfigSettings cs WHERE cs.Name="mail_user";
@@ -240,4 +240,3 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "adniT1" FROM ConfigSettings cs 
 INSERT INTO Config (ConfigID, Value) SELECT ID, 19 FROM ConfigSettings cs WHERE cs.Name="reject_thresh";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/opt/niak-0.6.4.1/" FROM ConfigSettings cs WHERE cs.Name="niak_path";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "INTERLACE_outputDWIFileNameSuffix" FROM ConfigSettings cs WHERE cs.Name="QCed2_step";
-INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useProjectPermissions";
