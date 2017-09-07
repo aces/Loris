@@ -27,7 +27,7 @@ $base = $config->getSetting('base');
 $db->_trackChanges = false;
 
 // Set up variables
-$filename = __DIR__ . "/../SQL/Archive/17.1/2016-06-01-update_zero_fields_statements.sql";
+$filename = __DIR__ . "/../SQL/Archive/18.0/2016-06-01-update_zero_fields_statements.sql";
 $output= "";
 $alters="";
 $updates="";
@@ -36,7 +36,7 @@ $nonNullUpdates="";
 // Begin Script
 echo "\n#################################################################\n\n".
     "This Script will generate an UPDATE statement for every date field ".
-    "currently in the database. \nThe output file is SQL/Archive/17.1/".
+    "currently in the database. \nThe output file is SQL/Archive/18.0/".
     "2016-06-01-update_zero_fields_statements.sql and includes foreign key ".
     "checks disabling and re-enabling.\n".
     "\n#################################################################\n\n";
