@@ -983,27 +983,58 @@ class Database
     }
 
     /**
-     * Print a query if showDatabaseQueries defined in config file
+     * Print database queries to screen (1), error log (2) or both (3).
+     *
+     * Note: In order to print to screen the function writes all database queries
+     * for HTTP request to a single temporary file and saves a reference to it
+     * in $GLOBALS. $GLOBALS is used in main.php which reads file contents and
+     * prints them to the Loris page, then closes and deletes the file.
+     * This is done to prevent sending response headers before the page is
+     * actually rendered.
      *
      * @param string $query  The query to replace
      * @param array  $params The prepared statement parameters used for this query
      *                       They will be replaced in the print statement so that the
      *                       user knows what parameters were used.
      *
-     * @return null As a side-effect, prints to the screen if config option is
-     *              enabled
+     * @return null
      */
-    function _printQuery($query, $params=null)
+    function _printQuery($query, $params = null)
     {
+        // Don't print queries
         if (!$this->_showQueries) {
             return;
         }
+
+        // Remove multispaces, line breaks to show query inline
         if ($params) {
             $query = str_replace(array_keys($params), array_values($params), $query);
         }
-        print "$this->_databaseName:"
-            . date("j-M-Y G:i:s", time())
-            .": $query<br>\n";
+        $query = str_replace(["\r", "\n", "\t"], " ", trim($query));
+        while (strpos($query, "  ") !== false) {
+            $query = str_replace("  ", " ", $query);
+        }
+        $dateTime = date("j-M-Y G:i:s", time());
+        $output   = "[$dateTime] [$this->_databaseName]: $query\n";
+
+        // Print queries to screen
+        if ($this->_showQueries === "1" || $this->_showQueries === "3") {
+            if (isset($GLOBALS['file_sql_queries'])) {
+                $tempFile = $GLOBALS['file_sql_queries'];
+            } else {
+                $tempFile = tempnam("/tmp", "SQL");
+                $GLOBALS['file_sql_queries'] = $tempFile;
+            }
+
+            $handle = fopen($tempFile, "a");
+            fwrite($handle, $output);
+            fclose($handle);
+        }
+
+        // Print queries to error log
+        if ($this->_showQueries === "2" || $this->_showQueries === "3") {
+            error_log($output);
+        }
     }
 
     /**
