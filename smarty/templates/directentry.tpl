@@ -7,7 +7,6 @@
 <link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
 <title>{$study_title}</title>
 
-<link type="text/css" href="{$baseurl}/bootstrap/css/bootstrap.min.css" rel="Stylesheet" />
 <link type="text/css" href="{$baseurl}/css/overcast/jquery-ui-1.10.4.custom.css" rel="Stylesheet" />
 <link type="text/css" href="{$baseurl}/js/jquery/datepicker/datepicker.css" rel="Stylesheet" />
 <script src="{$baseurl}/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
@@ -32,15 +31,10 @@
     <tr>
     <!-- user info table -->
          <td width="50%" colspan="2" valign="bottom" align="left" nowrap="nowrap" class="controlPanelSection">
-            <small>
-                Date: {$smarty.now|date_format:"%B %e %Y"}
-            </small>
-             </br>
+            Date: {$smarty.now|date_format:"%B %e %Y"}
             {if $finalpage || $complete}
             {elseif $pageNum && $totalPages}
-            <small>
-                Page {$pageNum} / {$totalPages}
-            </small>
+            Page {$pageNum} of {$totalPages}
             {/if}
         </td>
     </tr>
@@ -105,7 +99,7 @@
 </table>
 <input type="hidden" name="FinalPageSubmission" value="Yes">
 <input type="button" onclick="location.href='survey.php?key={$key}&pageNum={$prevpage}'" value="Go Back">
-<button class="btn btn-default" id="complete" style="font-weight: bold;">
+<button id="complete" style="font-weight: bold;">
 <span style="display: none" id="key">{$key}</span>
 Submit data
 </button>
@@ -125,31 +119,23 @@ Submit data
     <td colspan="2">
     {if $prevpage}
         {if $prevpage eq 'top'}
-            <button class="btn btn-default" id="goback">Save and Go Back</button>
+            <button id="goback">Save and Go Back</button>
         {else}
-            <button class="btn btn-default" id="goback">Save and Go Back</button>
+            <button id="goback">Save and Go Back</button>
         {/if}
         <span style="display: none" id="prevpage">{$prevpage}</span>
     {/if}
 
     {if $nextpage} 
-    <button class="btn btn-default" id="savecontinue">
+    <button id="savecontinue">
         <span style="display: none" id="nextpage">{$nextpage}</span>
         <span style="display: none" id="key">{$key}</span>
-        {if $lang eq "fr-ca"}
-            Enregistrer et Continuer
-        {else}
-            Save and Continue
-        {/if}
+        Save and Continue
     </button>
     {else}
     <button id="finalize">
         <span style="display: none" id="key">{$key}</span>
-        {if $lang eq "fr-ca"}
-            Enregistrer et Confirmer
-        {else}
-            Save and Finalize
-        {/if}
+        Save and Finalize
     </button>
     {/if}
     </td>

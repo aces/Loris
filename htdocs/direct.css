@@ -315,24 +315,17 @@ vertical-align:top;
 border-bottom: 1px solid #CCCCCC;
 }
 
-td.lab {
-width: 50%;
-}
-
 tr.directentry {
     background: #BDDDBD;
 }
-table.instrument {
-    border: solid 1px #888;
-}
 
 table.instrument tbody tr:nth-child(even) {
-    background: #fff;
+    background: #BCC6CC;
    /* background: #E5E4E2; */
 }
 
 table.instrument tbody tr:nth-child(odd) {
-    background: #f2f2f2;
+    background: #98AFC7;
     /* background: #CCDDFF;
     background: #D6FFFF; */
 }
@@ -360,13 +353,11 @@ table.instrument_review tbody tr:nth-child(odd) {
 #goback {
     padding-top: 5px;
     font-size: 1.1em;
-    margin: 5px;
 }
 #savecontinue {
     padding-top: 5px;
     float: right;
     font-size: 1.1em;
-    margin: 5px;
 }
 
 #finalize {

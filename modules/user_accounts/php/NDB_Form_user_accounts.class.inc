@@ -267,38 +267,16 @@ class NDB_Form_User_Accounts extends NDB_Form
             }
             unset($values['CenterIDs']);
             // END multi-site UPDATE
-        }
-        // EXAMINER UPDATE
-        $ex_curr_sites =array();
-        $ex_prev_sites =array();
 
-        //get sites where user is already an examiner at for compare
-        $prev_sites = $DB->pselect(
-            "
-                        SELECT centerID
-                        FROM examiners
-                        WHERE full_name=:fn",
-            array(
-             "fn" => $values['Real_name'],
-            )
-        );
-        foreach ($prev_sites as $row=>$center) {
-            array_push($ex_prev_sites, $center['centerID']);
-        }
-        foreach ($values as $k=>$v) {
-            //examiner fields
-            if (preg_match("/^ex_[0-9]+$/", $k)) {
-                //get centerID
-                $parse_key =explode('_', $k);
-                $cid       = $parse_key[1];
-                array_push($ex_curr_sites, $cid);
-
-                //Check if examiner already in db for site
-                $result = $DB->pselectRow(
-                    "
-                          SELECT full_name, centerID
-                          FROM examiners 
-                          WHERE full_name=:fn AND centerID=:cid",
+            // EXAMINER UPDATE
+            // first check if an update is needed then actually do it
+            if (!empty($values['examiner_radiologist'])
+                && !empty($values['examiner_pending'])
+            ) {
+                $examinerID = $DB->pselect(
+                    "SELECT e.examinerID
+                     FROM examiners e
+                     WHERE e.full_name=:fn",
                     array(
                      "fn" => $values['Real_name'],
                     )

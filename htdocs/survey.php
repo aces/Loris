@@ -406,7 +406,6 @@ class DirectDataEntryMainPage
             $this->updateStatus('In Progress');
             $this->tpl_data['workspace'] = $workspace;
         }
-        $this->tpl_data['lang'] = $_REQUEST['lang'] ? $_REQUEST['lang'] : 'en-ca';
         $smarty = new Smarty_neurodb;
         $smarty->assign($this->tpl_data);
         $smarty->display('directentry.tpl');

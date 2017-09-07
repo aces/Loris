@@ -299,6 +299,24 @@ class User extends UserPermissions
     }
 
     /**
+     * Returns all user's sites that are StudySites
+     *
+     * @return array
+     */
+    function getStudySites()
+    {
+        $site_arr         = $this->userInfo['CenterIDs'];
+        $user_study_sites = array();
+        foreach ($site_arr as $key => $val) {
+            $site[$key] = &Site::singleton($val);
+            if ($site[$key]->isStudySite()) {
+                $user_study_sites[$val] = $site[$key]->getCenterName();
+            }
+        }
+        return $user_study_sites;
+    }
+
+    /**
      * Checks that the user's email is valid
      *
      * @return boolean
@@ -457,6 +475,38 @@ class User extends UserPermissions
         );
 
         $this->update($updateArray);
+    }
+
+    /**
+     * Determines if the user has a center
+     *
+     * @param int $center_id The center id
+     *
+     * @return bool
+     */
+    public function hasCenter($center_id)
+    {
+        return in_array(
+            $center_id,
+            $this->getCenterIDs()
+        );
+    }
+    /**
+     * Determines if the user has a permission
+     * for a center
+     *
+     * @param string $code      The permission code
+     * @param int    $center_id The center id
+     *
+     * @return bool
+     */
+    public function hasCenterPermission($code, $center_id)
+    {
+        if ($this->hasPermission("superuser")) {
+            return true;
+        }
+        return $this->hasPermission($code)
+            && $this->hasCenter($center_id);
     }
 }
 ?>
