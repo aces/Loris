@@ -21,7 +21,6 @@
     "jison": "^0.4.17",
     "mocha": "3.4.2",
     "mocha-webpack": "0.7.0",
-    "moment": "^2.18.1",
     "react-checkbox-group": "3.1.1",
     "react-radio-group": "3.0.2",
     "webpack": "1.14.0",
