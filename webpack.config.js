@@ -1,7 +1,7 @@
 var webpack = require('webpack');
 var path = require('path');
 
-var config = [{
+var config = {
   entry: {
     './htdocs/js/components/DynamicDataTable.js': './jsx/DynamicDataTable.js',
     './htdocs/js/components/PaginationLinks.js': './jsx/PaginationLinks.js',
@@ -49,7 +49,6 @@ var config = [{
     './modules/data_integrity_flag/js/index.js': './modules/data_integrity_flag/jsx/index.js',
     './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js',
     './htdocs/js/modules/direct-entry-react.compiled.js': './htdocs/js/modules/direct-entry-react.js',
-    './htdocs/js/modules/instrument-preview.compiled.js': './htdocs/js/modules/instrument-preview.js',
     './htdocs/js/modules/instrument-view.compiled.js': './htdocs/js/modules/instrument-view.js',
   },
   output: {
@@ -91,11 +90,6 @@ var config = [{
   },
   devtool: 'source-map',
   plugins: [new webpack.optimize.UglifyJsPlugin({mangle: false})]
-}];
-
-var fs = require('fs');
-if (fs.existsSync('./project/webpack.config.js')) {
-  config.push(require('./project/webpack.config'));
-}
+};
 
 module.exports = config;
