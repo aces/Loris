@@ -62,29 +62,12 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
     {
         $config = NDB_Config::singleton();
         $DB     = Database::singleton();
-        $toTable_scan_types = $config->getSetting('tblScanTypes');
-
-        $all_scan_types = $DB->pselect(
-            "SELECT ID, Scan_type FROM mri_scan_type mri",
-            array()
-        );
-        foreach ($all_scan_types as $row) {
-            $type = $row['Scan_type'];
-            $all_scan_types[$row['ID']] = $type;
-        }
 
         // Get the intersection between all the scan types and those
         // that are desired to go into imaging browser table, based on
         // array values rather than keys (hence the array_flip), then flip
         // the resulting array back to revert it to a key/value (i.e.
         // acquisition protocol ID/scan type) combination.
-        $scan_id_types =array_flip(
-            array_intersect_key(
-                array_flip($all_scan_types),
-                array_flip($toTable_scan_types)
-            )
-        );
-
         $NewDataSubquery = "CASE 
             COALESCE(nd.QCLastChangeTime, 'new')
             WHEN 'new' THEN 'new' 
@@ -92,17 +75,6 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             ELSE ''
             END";
 
-        foreach ($scan_id_types as $id => $type) {
-            $pass[$id]          = $type . 'pass';
-            $qc[$id]            = $type . 'QC';
-            $coalesce_desc[$id] = $pass[$id] . '.' . $qc[$id];
-            $case_desc[$id]     = "CASE
-                COALESCE($coalesce_desc[$id], '')
-                WHEN '' THEN ''
-                WHEN 1 THEN 'Passed'
-                WHEN 2 THEN 'Failed'
-                END";
-        }
 
         $PendingFailSubquery = "
             CASE s.MRIQCStatus
@@ -127,18 +99,6 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             NOT IN (1, 2, 3, 52) GROUP BY files.SessionID) nd 
             ON (nd.SessionID=f.SessionID) ";
 
-        $left_joins = "";
-        foreach ($case_desc as $key => $value) {
-            $left_joins .= "
-            LEFT JOIN (SELECT files.SessionID, 
-            MIN(files_qcstatus.QCStatus+0) as " . $DB->escape($qc[$key]) . " 
-            FROM files 
-            JOIN files_qcstatus USING (FileID) 
-            WHERE files.AcquisitionProtocolID=" . $DB->quote($key) . " 
-            AND files_qcstatus.QCStatus IN (1, 2) 
-            GROUP BY files.SessionID) " . $DB->escape($pass[$key]) . "
-            ON (" . $DB->escape($pass[$key]) . ".SessionID=f.SessionID) ";
-        }
 
         $where = "
             WHERE 
@@ -164,13 +124,6 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $modalities_subquery_as = array();
         $as = array();
 
-        foreach ($case_desc as $key => $value) {
-            $modalities_subquery[$key] = $value;
-            $as[$key] = $scan_id_types[$key] . '_QC_Status';
-            $modalities_subquery_as[$key] = $modalities_subquery[$key] .
-                                            ' as ' .
-                                            $as[$key];
-        }
 
         $this->columns = array(
                           'p.MRI_alias as Site',
