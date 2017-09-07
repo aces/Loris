@@ -345,8 +345,9 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         // With permission imaging_browser_view_site
-        $this->resetStudySite();
-        $this->setupPermissions(array('imaging_browser_view_site'));
+        $this->DB->insert("user_psc_rel", array("CenterID" => 1), array("UserID" => 999990));
+        $this->DB->insert("user_psc_rel", array("CenterID" => 253), array("UserID" => 999990));
+        $this->DB->insert("user_psc_rel", array("CenterID" => 254), array("UserID" => 999990));
         $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
