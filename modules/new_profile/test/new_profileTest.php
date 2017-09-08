@@ -31,6 +31,24 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
+    /**
+     * Insert testing data into the database
+     *
+     * @return none
+     */
+    function setUp()
+    {
+        parent::setUp();
+    }
+    /**
+     * Delete testing data from database
+     *
+     * @return none
+     */
+    function tearDown()
+    {
+        parent::tearDown();
+    }
     function testNewProfilePageLoads()
     {
 

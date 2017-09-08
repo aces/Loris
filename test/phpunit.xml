@@ -12,7 +12,6 @@
 
         <testsuite name='LorisModuleIntegrationTests'>
             <directory>../modules/new_profile/test/</directory>
-            <directory>../modules/dashboard/test/</directory>
         </testsuite>
 
     </testsuites>
