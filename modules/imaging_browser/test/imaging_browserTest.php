@@ -346,7 +346,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
     }
 
-    function testImagingBrowserDoespageLoadWithPermissions()
+    function testImagingBrowserDoespageLoadWithPermissionsSite()
     {
         // With permission imaging_browser_view_site
         $this->setupPermissions(array('imaging_browser_view_site'));
@@ -360,7 +360,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("Imaging Browser", $breadcrumbText);
     }
 
-    function testImagingBrowserDoespageLoadWithPermissions()
+    function testImagingBrowserDoespageLoadWithPermissionsAllSites()
     {
         // With permission imaging_browser_view_allsites
         $this->setupPermissions(array('imaging_browser_view_allsites'));
