@@ -522,7 +522,7 @@ class DashboardTest extends LorisIntegrationTest
     {
 
         $this->setupPermissions(
-            array("superuser")
+            array("issue_tracker_developer")
         );
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
