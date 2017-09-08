@@ -327,7 +327,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testImagingBrowserDoespageLoadPermissions()
+    function testImagingBrowserDoespageLoadWithoutPermissions()
     {
         // Without permissions
         $this->setupPermissions(array(''));
@@ -344,27 +344,30 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             $errorText
         );
 
+    }
+
+    function testImagingBrowserDoespageLoadWithPermissions()
+    {
         // With permission imaging_browser_view_site
-        $this->DB->insert("user_psc_rel", array("CenterID" => 1), array("UserID" => 999990));
-        $this->DB->insert("user_psc_rel", array("CenterID" => 253), array("UserID" => 999990));
-        $this->DB->insert("user_psc_rel", array("CenterID" => 254), array("UserID" => 999990));
+        $this->setupPermissions(array('imaging_browser_view_site'));
         $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
-
         $breadcrumbText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("Imaging Browser", $breadcrumbText);
+    }
 
+    function testImagingBrowserDoespageLoadWithPermissions()
+    {
         // With permission imaging_browser_view_allsites
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
-
         $breadcrumbText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
