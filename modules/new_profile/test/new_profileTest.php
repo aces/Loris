@@ -136,7 +136,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        print($bodyText);
+        printf($bodyText);
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[0].value='2000-05-05'"
         );
@@ -206,7 +206,10 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
     function testNewProfileDoBDateError()
     {
         $this->webDriver->get($this->url . "/new_profile/");
-
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        printf($bodyText);
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[0].value='2000-05-05'"
         );
@@ -267,7 +270,10 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
     {
         $this->changeStudySite();
         $this->webDriver->get($this->url . "/new_profile/");
-
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        printf($bodyText);
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[0].value='2015-01-01'"
         );
