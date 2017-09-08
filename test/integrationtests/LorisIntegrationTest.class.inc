@@ -109,7 +109,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             $capabilities
         );
 
-        $this->login("admin", "testpassword");
+        $this->login("UnitTester", "4test4");
 
         if (extension_loaded('xdebug')) {
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
