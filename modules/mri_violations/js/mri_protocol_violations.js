@@ -20,7 +20,7 @@ function change() {
 
 function save() {
     "use strict";
-    var default_value, id, value;
+    var default_value, id, value, default_bgclr;
     /**To get the default value**/
     $('.description').focus(function (event) {
         id = event.target.id;
@@ -32,10 +32,9 @@ function save() {
           event.stopImmediatePropagation();
           id = event.target.id;
           value = $('#'+id).text();
-          if (value != default_value) {
-            $('#' + id).css({});
+          if (value !== default_value) {
             $('.description').attr('contenteditable', false);
-            var userIsSure = confirm('Are you sure you want to edit ?');
+            var userIsSure = confirm('Are you sure you want to edit this field?');
             if (userIsSure) {
               $.post(
                 loris.BaseURL + '/mri_violations/ajax/UpdateMRIProtocol.php',
