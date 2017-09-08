@@ -1,4 +1,4 @@
-# ZAIN Rules
+# LorisScript
 
 [JS Use](#js)<br>
 [PHP Use](#php)<br>
