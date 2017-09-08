@@ -453,7 +453,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".new-scans",
-            "1",
+            "9",
             "Imaging  Browser"
         );
         $this->resetPermissions();
@@ -481,7 +481,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".conflict_resolver",
-            "1",
+            "585",
             "-  Conflict  Resolver"
         );
         $this->resetPermissions();
