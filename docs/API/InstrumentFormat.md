@@ -28,13 +28,12 @@ Instrument format:
 {
     "Meta" : {
         "InstrumentVersion": string,
-        "InstrumentFormatVersion" : "v0.0.2-dev",
+        "InstrumentFormatVersion" : "v0.0.3-dev",
         "ShortName" : "InstrumentName", /* Required */
         "LongName": {
-          "en-ca": "The Human Readable Instrument Name",
-          "fr-ca": "Bonjour"
+          "en-CA": "The Human Readable Instrument Name",
+          "fr-CA": "Le nom de l'instrument lisible par l'homme"
         }, /* An object keyed by language - Required */
-        "SupportedLanguages": array(string),
         "IncludeMetaDataFields" : boolean
     },
     "Elements" : [ PageElements ]
@@ -145,7 +144,7 @@ as follows. It denotes a group of values of which the user must select one optio
     "Description" : REQUIRED,
     "Options" : {
         "Values" : {
-          'en-ca': {
+          'en-CA': {
             "SaveValue"       : "Human Readable Description",
             "SaveValue2"      : "Another human readable description"
             ...
@@ -318,32 +317,6 @@ the user. It has the following form.
     "Type": "score",
     "Name": REQUIRED,
     "Description": OPTIONAL,
-    "Options": {
-        /* None currently */
-    }
-}
-```
-
-`Type`: MUST be "score".
-
-`Name`: Required. Follows `PageElement.Name` rules. The Name MAY be used by an
-        implementation as a field name to save calculated data into.
-
-`Description`: Optional. Follows `PageElement.Name` rules. If not specified, the
-               score will be displayed with no accompagning text.
-
-
-### 2.1.6: CalcFieldElement
-
-A calc field represents a placeholder to display/save values based on other
-data entered by the user in the instrument but does not directly get input from
-the user. It has the following form.
-
-```js
-{
-    "Type": "calc",
-    "Name": REQUIRED,
-    "Description": OPTIONAL,
     "Formula": string,
     "Options": {
         /* None currently */
@@ -361,7 +334,8 @@ the user. It has the following form.
 
 `Formula`: A string of LorisScript which will determine the displayed value of this field.
 
-### 2.1.7: RadioElement
+
+### 2.1.6: RadioElement
 
 A Radio element represents a HTML radio type and appears as follows. 
 It denotes a group of values of which the user must select one option.
@@ -373,14 +347,14 @@ It denotes a group of values of which the user must select one option.
     "Description" : REQUIRED,
     "Options" : {
         "Values" : {
-          'en-ca': {
+          'en-CA': {
             "SaveValue"       : "Human Readable Description",
             "SaveValue2"      : "Another human readable description"
             ...
           }
         },
         "AllowMultiple"   : boolean,
-        "RequireResponse" : boolean || string,
+        "RequireResponse" : boolean|string,
         "Hidden": boolean,
         "HiddenSurvey": boolean
     }
