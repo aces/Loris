@@ -20,7 +20,7 @@ function change() {
 
 function save() {
     "use strict";
-    var default_value, id, value, default_bgclr;
+    var default_value, id, value;
     /**To get the default value**/
     $('.description').focus(function (event) {
         id = event.target.id;
