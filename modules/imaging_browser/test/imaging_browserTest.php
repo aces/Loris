@@ -501,7 +501,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     function testImagingBrowserSiteDependingOnPermissions()
     {
         // With permission imaging_browser_view_site
-        $this->setupPermissions(array('imaging_browser_view_site'));
+        $this->setupPermissions(array('imaging_browser_phantom_ownsite'));
         $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
