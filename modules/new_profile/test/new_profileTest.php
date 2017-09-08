@@ -133,6 +133,10 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $this->setUpConfigSetting("useEDC", "true");
 
         $this->webDriver->get($this->url . "/new_profile/");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        print($bodyText);
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[0].value='2000-05-05'"
         );
