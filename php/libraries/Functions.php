@@ -1,6 +1,6 @@
 <?php
 
-namespace LorisScript;
+namespace LORIS\LorisScript;
 
 function factHelper1 ($n) {
     if ($n == 0) return 1;

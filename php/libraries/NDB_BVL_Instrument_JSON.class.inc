@@ -11,7 +11,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 namespace Loris\Behavioural;
-use \Exception;
 /**
  * JSON Instrument class
  *
@@ -68,12 +67,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
     }
 
     function _getLang() {
-        //$timepoint = \TimePoint::singleton($this->getSessionID());
-        //$candID = $timepoint->getCandID();
-        //$candidate = \Candidate::singleton($candID);
-        //$lang = $candidate->getCandidateLanguage();
-        $lang = "en-ca";
-        return $lang ? $lang : "en-ca";
+        return "en-CA";
     }
 
 
@@ -82,7 +76,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
             "SELECT * FROM $this->table WHERE CommentID=:CID",
             array('CID' => $this->getCommentID())
         );
-        return $result ? $result[0] : array();
+        return $result;
     }
 
     /**
@@ -166,7 +160,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
         $db     =& \Database::singleton();
         $smarty = new \Smarty_NeuroDB();
         $smarty->assign('instrumentJSON', htmlspecialchars($this->toJSON()));
-        $smarty->assign('initialData', htmlspecialchars(json_encode($this->_getInstrumentData($db))));
+        $smarty->assign('initialData', htmlspecialchars(json_encode(\NDB_BVL_Instrument::loadInstanceData($this))));
         $smarty->assign('context', htmlspecialchars(json_encode($this->_getContext())));
         $smarty->assign('lang', htmlspecialchars($this->_getLang()));
         $html = $smarty->fetch("instrument_react.tpl");
@@ -216,7 +210,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
         array_push($encounteredVars, $key);
         $res = self::referenceTree($formula, $formulaMap, $encounteredVars);
         if($res !== false)
-          throw new Exception ("Circular reference at $res");
+          throw new \Exception ("Circular reference at $res");
       }
     }
 

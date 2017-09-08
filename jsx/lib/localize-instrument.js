@@ -1,4 +1,4 @@
-function localizeInstrument(rawInstrument, lang = 'en-ca') {
+function localizeInstrument(rawInstrument, lang = 'en-CA') {
   const instrument = JSON.parse(JSON.stringify(rawInstrument));
 
   try {
