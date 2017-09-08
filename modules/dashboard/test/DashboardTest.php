@@ -37,6 +37,9 @@ class DashboardTest extends LorisIntegrationTest
     function setUp()
     {
         parent::setUp();
+        $window = new WebDriverWindow($this->webDriver);
+        $size   = new WebDriverDimension(1280, 1024);
+        $window->setSize($size);
         //Insert a pending user
         $this->DB->insert(
             "users",
@@ -450,7 +453,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".new-scans",
-            "9",
+            "1",
             "Imaging  Browser"
         );
         $this->resetPermissions();
@@ -478,7 +481,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".conflict_resolver",
-            "585",
+            "1",
             "-  Conflict  Resolver"
         );
         $this->resetPermissions();
@@ -522,7 +525,7 @@ class DashboardTest extends LorisIntegrationTest
     {
 
         $this->setupPermissions(
-            array("issue_tracker_developer")
+            array("superuser")
         );
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
