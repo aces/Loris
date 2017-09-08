@@ -17,14 +17,32 @@ class InstrumentFormContainer extends React.Component {
       data: this.props.initialData,
       localizedInstrument: localizeInstrument(this.props.instrument, this.props.lang),
       showRequired: false,
-      errorMessage: null
+      errorMessage: null,
     };
-
+    
     this.updateInstrumentData = this.updateInstrumentData.bind(this);
     this.incompleteRequiredFieldExists = this.incompleteRequiredFieldExists.bind(this);
     this.onSaveButtonClick = this.onSaveButtonClick.bind(this);
   }
 
+  getSaveText(lang) {
+    switch(lang) {
+      case 'en-ca':
+        return 'Save';
+      case 'fr-ca':
+        return 'Enregistrer';
+    }
+  }
+
+  getSaveWarning(lang) {
+    switch(lang) {
+      case 'en-ca':
+        return 'You cannot modify your answers after clicking this button. Please ensure all answers are correct.';
+      case 'fr-ca':
+        return 'Vous ne pouvez pas modifier vos réponses après avoir cliqué sur ce bouton. Assurez-vous que toutes les réponses sont correctes.';
+    }
+  }
+  
   /**
    * This function is called when the user inputs or updates an instrument
    * field. It is responsible for updating `state.data`, which involves not
@@ -186,7 +204,7 @@ class InstrumentFormContainer extends React.Component {
 
   render() {
     const { data, localizedInstrument } = this.state;
-    const { context, options } = this.props;
+    const { context, options, lang } = this.props;
 
     return (
       <InstrumentForm
@@ -202,6 +220,8 @@ class InstrumentFormContainer extends React.Component {
         errorMessage={this.state.errorMessage}
         onUpdate={this.updateInstrumentData}
         onSave={this.onSaveButtonClick}
+        saveText={this.getSaveText(lang)}
+        saveWarning={this.getSaveWarning(lang)}
       />
     );
   }
