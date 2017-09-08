@@ -38,6 +38,8 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
+        printf("====================");
+        printf($bodyText);
         $this->assertContains("New Profile", $bodyText);
 
         $dobField = $this->webDriver->findElement(WebDriverBy::Name("dob1"));
