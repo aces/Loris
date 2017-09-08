@@ -33,8 +33,6 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
      */
     function testNewProfilePageLoads()
     {
-        $this->setUpConfigSetting("useEDC", "true");
-        $this->setUpConfigSetting("useProjects", "true");
 
         $this->safeGet($this->url . "/new_profile/");
         $bodyText = $this->webDriver->findElement(
@@ -78,7 +76,6 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
      */
     function testNewProfileLoadsWithoutProjects()
     {
-        $this->setUpConfigSetting("useProjects", "false");
 
         $this->safeGet($this->url . "/new_profile/");
 
@@ -102,7 +99,6 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
      */
     function testNewProfileLoadsWithoutEDC()
     {
-        $this->setUpConfigSetting("useEDC", "false");
 
         $this->safeGet($this->url . "/new_profile/");
 
@@ -130,7 +126,6 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
      */
     function testNewProfileEDCDateError()
     {
-        $this->setUpConfigSetting("useEDC", "true");
 
         $this->webDriver->get($this->url . "/new_profile/");
         $bodyText = $this->safeFindElement(
