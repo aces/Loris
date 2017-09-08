@@ -348,8 +348,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
     function testImagingBrowserDoespageLoadWithPermissionsSite()
     {
-        // With permission imaging_browser_view_site
-        $this->setupPermissions(array('imaging_browser_view_site'));
+        // With permission imaging_browser_phantom_ownsite
+        $this->setupPermissions(array('imaging_browser_phantom_ownsite'));
         $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
@@ -364,6 +364,19 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     {
         // With permission imaging_browser_view_allsites
         $this->setupPermissions(array('imaging_browser_view_allsites'));
+        $this->webDriver->navigate()->refresh();
+        $this->safeGet(
+            $this->url . "/imaging_browser/"
+        );
+        $breadcrumbText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains("Imaging Browser", $breadcrumbText);
+    }
+    function testImagingBrowserDoespageLoadWithPermissionsPhontomAllSites()
+    {
+        // With permission imaging_browser_phantom_allsites
+        $this->setupPermissions(array('imaging_browser_phantom_allsites'));
         $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
@@ -493,7 +506,10 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
-
+                $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        printf($bodyText);
         $SiteFilterText = $this->webDriver->findElement(
             WebDriverBy::Name("SiteID")
         )->getText();
