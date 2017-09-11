@@ -31,35 +31,15 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    /**
-     * Insert testing data into the database
-     *
-     * @return none
-     */
-    function setUp()
-    {
-        parent::setUp();
-    }
-    /**
-     * Delete testing data from database
-     *
-     * @return none
-     */
-    function tearDown()
-    {
-        parent::tearDown();
-    }
     function testNewProfilePageLoads()
     {
-        
+        $this->setUpConfigSetting("useEDC", "true");
+        $this->setUpConfigSetting("useProjects", "true");
 
         $this->safeGet($this->url . "/new_profile/");
-
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        printf("====================");
-        printf($bodyText);
         $this->assertContains("New Profile", $bodyText);
 
         $dobField = $this->webDriver->findElement(WebDriverBy::Name("dob1"));
@@ -98,6 +78,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
      */
     function testNewProfileLoadsWithoutProjects()
     {
+        $this->setUpConfigSetting("useProjects", "false");
 
         $this->safeGet($this->url . "/new_profile/");
 
@@ -121,6 +102,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
      */
     function testNewProfileLoadsWithoutEDC()
     {
+        $this->setUpConfigSetting("useEDC", "false");
 
         $this->safeGet($this->url . "/new_profile/");
 
@@ -148,12 +130,9 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
      */
     function testNewProfileEDCDateError()
     {
+        $this->setUpConfigSetting("useEDC", "true");
 
         $this->webDriver->get($this->url . "/new_profile/");
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        printf($bodyText);
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[0].value='2000-05-05'"
         );
@@ -223,10 +202,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
     function testNewProfileDoBDateError()
     {
         $this->webDriver->get($this->url . "/new_profile/");
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        printf($bodyText);
+
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[0].value='2000-05-05'"
         );
@@ -287,10 +263,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
     {
         $this->changeStudySite();
         $this->webDriver->get($this->url . "/new_profile/");
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        printf($bodyText);
+
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[0].value='2015-01-01'"
         );
