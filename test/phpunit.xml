@@ -11,9 +11,6 @@
         </testsuite>
 
         <testsuite name='LorisModuleIntegrationTests'>
-            <directory>../modules/create_timepoint/test/</directory>
-            <directory>../modules/dashboard/test/</directory>
-            <directory>../modules/next_stage/test/</directory>
             <directory>../modules/new_profile/test/</directory>
         </testsuite>
 
