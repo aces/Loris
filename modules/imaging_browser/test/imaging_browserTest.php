@@ -509,7 +509,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        printf($bodyText);
         $SiteFilterText = $this->webDriver->findElement(
             WebDriverBy::Name("SiteID")
         )->getText();
