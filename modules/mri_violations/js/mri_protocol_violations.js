@@ -27,6 +27,16 @@ function save() {
         default_value = $("#" + id).text();
     });
 
+    $('.description').keypress(
+      function(event) {
+        if (event.which === 13 ||  event.keyCode === 13) {
+          event.preventDefault();
+          var id = '#' + event.target.id;
+          $(id).blur();
+        }
+      }
+    );
+
     $('.description').blur(
       function(event) {
           event.stopImmediatePropagation();
