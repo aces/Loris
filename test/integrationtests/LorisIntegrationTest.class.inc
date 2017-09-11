@@ -532,6 +532,27 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             );
         }
     }
+    function loginWithRBAdmin(WebDriver $webdriver)
+    {
+        $webdriver->get($this->url . '/main.php?logout=true');    
+        $usernameEl = $webdriver->findElement(WebDriverBy::Name("admin"));
+        $passwordEl = $webdriver->findElement(WebDriverBy::Name("testpassword"));
+
+        $usernameEl->sendKeys($username);
+        $passwordEl->sendKeys($password);
+
+        $login = $webdriver(WebDriverBy::Name("login"));
+        $login->click();
+
+        // Explicitly wait until the page is loaded.
+        // Wait up to a minute, because sometimes when multiple tests
+        // are run one will fail due to the login taking too long?
+        $webdriver->wait(120, 1000)->until(
+            WebDriverExpectedCondition::presenceOfElementLocated(
+                WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
+            )
+        );      
+    }
 }
 ?>
 

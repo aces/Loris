@@ -48,9 +48,11 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
     function tearDown()
     {
         parent::tearDown();
+        $this->loginWithRBAdmin($this->webDriver);
     }
     function testNewProfilePageLoads()
     {
+        
 
         $this->safeGet($this->url . "/new_profile/");
         $bodyText = $this->webDriver->findElement(
