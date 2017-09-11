@@ -259,6 +259,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
      */
     function testNewProfilePSCIDSequential()
     {
+        $this->changeStudySite();
         $this->webDriver->get($this->url . "/new_profile/");
 
         $this->webDriver->executescript(
@@ -300,6 +301,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
 
         $this->deleteCandidate("BBQ0000");
         $this->deleteCandidate("BBQ0001");
+        $this->resetStudySite();
     }
 }
 ?>
