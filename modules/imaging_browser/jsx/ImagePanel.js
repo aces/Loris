@@ -42,12 +42,15 @@ var ImagePanelHeader = React.createClass({
                 </div>
             </div>
             );
+    $(".panel-title").tooltip();
     return (
 
             <div className="panel-heading clearfix">
             <input type="checkbox" data-file-id={this.props.FileID}
                      className="mripanel user-success" />
-                <h3 className="panel-title">{this.props.Filename} </h3>
+                <h3 className="panel-title" data-toggle="tooltip" title={this.props.Filename}>
+                  {this.props.Filename}
+                </h3>
                 {QCStatusLabel}
                 {arrow}
                 {headerButton}
