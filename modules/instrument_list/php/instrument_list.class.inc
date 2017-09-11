@@ -15,7 +15,8 @@
  *
  * @package behavioural
  */
-require_once __DIR__ ."/Instrument_List_ControlPanel.class.inc";
+namespace LORIS\instrument_list;
+
 /**
  * Instrument_List
  *
@@ -27,7 +28,7 @@ require_once __DIR__ ."/Instrument_List_ControlPanel.class.inc";
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
+class Instrument_List extends \NDB_Menu_Filter
 {
     /**
     * Checking permissions
@@ -37,12 +38,12 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
-        $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
+        $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
         $candID    = $timePoint->getCandID();
 
-        $candidate =& Candidate::singleton($candID);
+        $candidate =& \Candidate::singleton($candID);
 
         // check user permissions
         return ($user->hasPermission('access_all_profiles')
@@ -59,6 +60,7 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
         );
 
     }
+
     /**
     * GetControlPanel function
     *
@@ -76,10 +78,11 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
         $html = $controlPanel->display();
         // I don't know why this is here, but it
         // was in main.php, so moved it to be safe.
-        $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
+        $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
         $timePoint->select($_REQUEST['sessionID']);
         return $html;
     }
+
     /**
     * Setup function
     *
@@ -93,13 +96,13 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
 
         $this->_setupPage(null, null, null, null, 'filter');
         // get behavioral battery for this visit (time point)
-        $battery = new NDB_BVL_Battery;
+        $battery = new \NDB_BVL_Battery;
         $success = $battery->selectBattery($_REQUEST['sessionID']);
 
-        $this->tpl_data['stage']        = Utility::getStageUsingCandID(
+        $this->tpl_data['stage']        = \Utility::getStageUsingCandID(
             $this->tpl_data['candID']
         );
-        $this->tpl_data['subprojectID'] = Utility::getSubprojectIDUsingCandID(
+        $this->tpl_data['subprojectID'] = \Utility::getSubprojectIDUsingCandID(
             $this->tpl_data['candID']
         );
 
@@ -111,7 +114,7 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
 
         // display list of instruments
         if (!empty($listOfInstruments)) {
-            $user     =& User::singleton();
+            $user     =& \User::singleton();
             $username = $user->getData('UserID');
 
             $feedback_select_inactive = null;
@@ -132,10 +135,10 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
                 $prevSubgroup = $instrument['Sub_group'];
 
                 // make an instrument status object
-                $status  = new NDB_BVL_InstrumentStatus;
+                $status  = new \NDB_BVL_InstrumentStatus;
                 $success = $status->select($instrument['CommentID']);
 
-                $ddeStatus = new NDB_BVL_InstrumentStatus;
+                $ddeStatus = new \NDB_BVL_InstrumentStatus;
                 $success   = $ddeStatus->select($instrument['DDECommentID']);
 
                 $Ins = "instruments";
@@ -156,7 +159,7 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
                 $ins = $instrument['CommentID'];
                 $this->tpl_data[$Ins][$x][$i]['commentID'] = $ins;
 
-                $ins = NDB_BVL_Battery::isDoubleDataEntryEnabledForInstrument(
+                $ins = \NDB_BVL_Battery::isDoubleDataEntryEnabledForInstrument(
                     $instrument['Test_name']
                 );
                 $this->tpl_data[$Ins][$x][$i]['isDdeEnabled'] = $ins;
@@ -174,7 +177,7 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
                 $this->tpl_data[$Ins][$x][$i]['instrumentOrder'] = $ins;
 
                 // create feedback object for the time point
-                $feedback = NDB_BVL_Feedback::singleton(
+                $feedback = \NDB_BVL_Feedback::singleton(
                     $username,
                     null,
                     null,
@@ -205,10 +208,10 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
             }
         }
 
-        $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
+        $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
         $candID    = $timePoint->getCandID();
 
-        $candidate =& Candidate::singleton($candID);
+        $candidate =& \Candidate::singleton($candID);
 
         $this->tpl_data['display']
             = array_merge($candidate->getData(), $timePoint->getData());
@@ -224,7 +227,7 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
      */
     function getFeedbackPanel($candID, $sessionID)
     {
-        $feedbackPanel = new BVL_Feedback_Panel($candID, $sessionID);
+        $feedbackPanel = new \BVL_Feedback_Panel($candID, $sessionID);
         $html          =  $feedbackPanel->display();
         return $html;
     }
@@ -243,7 +246,7 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
      */
     function getBatteryInstrumentList($stage=null, $SubprojectID=null)
     {
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
 
         // assert that a battery has already been selected
         if (is_null($_REQUEST['sessionID'])) {
@@ -278,7 +281,7 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
         $query .= " WHERE f.SessionID=:SID
             AND LEFT(f.CommentID, 3) != 'DDE'";
 
-        if (Utility::columnsHasNull('test_subgroups', 'group_order')) {
+        if (\Utility::columnsHasNull('test_subgroups', 'group_order')) {
             $query .= " ORDER BY Subgroup_name";
         } else {
             $query .= " ORDER BY Subgroup_order";
@@ -304,7 +307,7 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
