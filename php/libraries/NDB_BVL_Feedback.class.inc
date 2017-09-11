@@ -390,7 +390,7 @@ class NDB_BVL_Feedback
         $query .= " ORDER BY Status ASC";
         $result = $db->pselectOne($query, $qparams);
 
-        if (isset($result)) {
+        if (!empty($result)) {
             return $result;
         }
         return null;
