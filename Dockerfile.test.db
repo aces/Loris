@@ -19,7 +19,7 @@ RUN echo "Use LorisTest;" | cat - \
     0000-00-03-ConfigTables.sql \
     0000-00-04-Help.sql \
     test_instrument.sql \
-    Loris17.1withTestingDataRaisinBread.sql \
+    RBdata.sql \
     medical_history.sql \
     radiology_review.sql > /docker-entrypoint-initdb.d/0000-compiled.sql 
 
