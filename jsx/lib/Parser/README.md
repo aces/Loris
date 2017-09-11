@@ -1,5 +1,6 @@
 # LorisScript
 
+[Formula Building](#formula)<br>
 [JS Use](#js)<br>
 [PHP Use](#php)<br>
 [Development](#dev)<br>
@@ -18,8 +19,31 @@ This ReadMe breaks down the different parts of the Parser and lists syntax rules
 
 Note that this parser is made up of two separate components: a JS parser and a PHP parser, both of which use the same syntax detailed below.
 
+# <a name="formula"></a>Formula Building
+When building a formula, be sure to reference the [Syntax](#syntax) section.
+
+Starting simply, basic mathematical notation such as addition, subtraction, etc..., follows standard notation. Similarly, syntax such as parentheses and semantics such as order of operatitraction, etc..., follows standard notation.
+
+Some examples of standard calculations include totalling a set of fields, calculating their mean, calculating date differences, and if statements. In these examples, we will also be covering variable reference, and function nesting.
+
+### Example: Functions and variable access: 
+First of all, to refer to a context variable, use `[variable_name]`. For nested variables, use `[context][variable_name]`. For array access, use `[variable(index)]`.
+
+Now, to sum a set of fields, say `q1`, through `q5`, use `sum(q1,q2,q3,q4,q5)`. This is an example of a function. The sum function takes at least one parameter, with no upper limit.
+
+To calculate the mean, similarly apply the mean function: `mean(q1,q2,q3,q4,q5)`.
+
+For date difference calculations, use the `datediff()` function. Say the candidate's birthday is stored in `[context][dob]`. Then, let's assume we use January 6th, 1996 as a standard example date. To calculate the difference we would use `datediff('1996-01-06', [context][dob], $U, $F)`. This function will return `1996-01-06` - `[context][dob]`. `$U` is the unit that will be returned, Y for year, M for month, and D for day. Lowercase can also be used. Notice the ISO standard date format YYYY-MM-DD. `$F` is a sign flag. If false, the result will always be positive, i.e. if the candidate's date of birth is before January 6th, 1996, then the function would retrun `[context][dob]` - `1996-01-06`. If true, the result will always be `1996-01-06` - `[context][dob]`, even if the result is negative. The sign flag is not required.
+
+Function nesting is as simple as passing a function as an argument of another function. Say we calculate the candidate's age in months using `datediff([testDate], [context][dob], 'M')`. Now we want to check if the user's age in months is greater than 56. We could assign the candidate's age in a calculated field, and then reference it, or we can skip the middleman! We could use the `if()` function: `if(datediff([testDate], [context][dob], 'M')>56, $val1, $val2)`. If the 1st parameter is true, i.e. if the candidate is older than 56 months, `$val1` will be returned. If the candidate is younger than or exactly 56 months old, `$val2` will be returned.
+
+As mentioned before, other basic math can be computed. Make sure to see the [Syntax](#syntax) section to take advantage of all of the functions and logic available to use.
+
+### Example Two: Ne
+
 # <a name="js"></a>JS Use
-At the top of your JS file add `import { Evaluator } from 'Parser';` (change the path based on your directory location).
+At the top of your JS file add `import { Evaluator } from 'Parser';` (change the path based on your directons are also standard notation.<br>
+Starting simply, basic mathematical notation such as addition, subory location).
 <br>Call `Evaluator(LOGIC_STRING, SCOPE)` to evaluate an equation.
 
 # <a name="php"></a>PHP Use
