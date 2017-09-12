@@ -77,7 +77,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepoint()
     {
-        $this->_createTimepoint('900000', 'Fresh', 'V1');
+        $this->_createTimepoint('300059', 'Fresh', 'V3');
          sleep(10);
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -102,24 +102,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         )->getText();
         $this->assertContains(
             "Could not select Candidate data from the database (DCCID: )",
-            $bodyText
-        );
-
-    }
-
-    /**
-     * Tests that, create a timepoint and input a error format visit label
-     * get Error message
-     *
-     * @return void
-     */
-    function testCreateTimepointErrorVisitLabel()
-    {
-        $this->_createTimepoint('900000', 'Fresh', 'V9999');
-       sleep(10);
-        $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains(
-            "This visit label does not match the required structure.",
             $bodyText
         );
 
@@ -151,6 +133,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->webDriver->findElement(
             WebDriverBy::Name("fire_away")
         )->click();
+        sleep(2);
 
     }
 
