@@ -146,6 +146,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->webDriver->findElement(
             WebDriverBy::Name("fire_away")
         )->click();
+        sleep(1);
 
     }
 
