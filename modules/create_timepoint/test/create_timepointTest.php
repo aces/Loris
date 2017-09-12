@@ -35,8 +35,8 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     {
         parent::setUp();
 
-        $this->createSubproject("subprojet 1");
-        $this->createSubproject("subprojet 2");
+        $this->createSubproject(1,"subprojet 1");
+        $this->createSubproject(2,"subprojet 2");
     }
 
     /**
@@ -61,7 +61,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     function testCreateTimepointDoespageLoad()
     {
         $this->safeGet(
-            $this->url . "/create_timepoint/?candID=900000&identifier=900000"
+            $this->url . "/create_timepoint/?candID=900000&identifier=900000&subprojectID=1"
         );
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -77,8 +77,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepoint()
     {
-        $this->_createTimepoint('300059', 'Fresh', 'V3');
-         sleep(10);
+        $this->_createTimepoint('900000', 'subprojet 1', 'V1');
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -92,16 +91,30 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepointSuccessLink()
     {
-        $this->markTestSkipped(
-            'Skipping tests until create timepoint works well'
-        );
-        $this->_createTimepoint('900000', 'Fresh', 'V9');
+        $this->_createTimepoint('900000', 'subprojet 2', 'V9');
         $this->safeClick(WebDriverBy::LinkText("Click here to continue."));
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains(
             "Could not select Candidate data from the database (DCCID: )",
+            $bodyText
+        );
+
+    }
+
+    /**
+     * Tests that, create a timepoint and input a error format visit label
+     * get Error message
+     *
+     * @return void
+     */
+    function testCreateTimepointErrorVisitLabel()
+    {
+        $this->_createTimepoint('900000', 'Experimental', 'V9999');
+        $bodyText = $this->webDriver->getPageSource();
+        $this->assertContains(
+            "This visit label does not match the required structure.",
             $bodyText
         );
 
@@ -133,7 +146,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->webDriver->findElement(
             WebDriverBy::Name("fire_away")
         )->click();
-        sleep(2);
 
     }
 
