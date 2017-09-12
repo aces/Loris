@@ -85,28 +85,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
 
     }
     /**
-     * Tests that, create a timepoint and test the success link
-     *
-     * @return void
-     */
-    function testCreateTimepointSuccessLink()
-    {
-        $this->_createTimepoint('900000', 'subprojet 2', 'V3');
-        $this->webDriver->findElement(
-            WebDriverBy::LinkText("Click here to continue.")
-        )->click();
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        printf($bodyText);
-        $this->assertContains(
-            "Could not select Candidate data from the database (DCCID: )",
-            $bodyText
-        );
-
-    }
-
-    /**
      * Tests that, create a timepoint and input a error format visit label
      * get Error message
      *
