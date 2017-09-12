@@ -30,7 +30,7 @@ class schema_generator
 		//Handle meta info
 		$metaInfo = $elements['Meta'];
 		$tableName = htmlspecialchars($metaInfo['ShortName']);
-        $fullName = htmlspecialchars($metaInfo['LongName']);
+        $fullName = htmlspecialchars($metaInfo['LongName']['en-ca']);
         
         $output = '';
         $output .= "DROP TABLE IF EXISTS `$tableName`;\n";
