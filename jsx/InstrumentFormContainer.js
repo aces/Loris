@@ -88,7 +88,12 @@ class InstrumentFormContainer extends React.Component {
    */
   incompleteRequiredFieldExists() {
     const annotatedElements = this.annotateElements(
-      this.state.localizedInstrument.Elements,
+      this.filterElements(
+        this.state.localizedInstrument.Elements,
+        this.state.data,
+        this.props.context,
+        this.props.options.surveyMode
+      ),
       this.state.data,
       this.props.context
     );
@@ -166,7 +171,11 @@ class InstrumentFormContainer extends React.Component {
       const errorDiv = document.getElementById("instrument-error");
       errorDiv.scrollIntoView(false);
     } else {
-      this.props.onSave(this.state.data)
+      this.props.onSave(this.state.data);
+      this.setState({
+        errorMessage: '',
+        showRequired: false
+      });
     }
   }
 
