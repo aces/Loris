@@ -91,12 +91,10 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepointSuccessLink()
     {
-        $this->_createTimepoint('900000', 'subprojet 2', 'V2');
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        printf($bodyText);
-        $this->safeClick(WebDriverBy::LinkText("Click here to continue."));
+        $this->_createTimepoint('900000', 'subprojet 2', 'V3');
+        $this->webDriver->findElement(
+            WebDriverBy::LinkText("Click here to continue.")
+        )->click();
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
