@@ -96,6 +96,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
+        printf($bodyText);
         $this->assertContains(
             "Could not select Candidate data from the database (DCCID: )",
             $bodyText
