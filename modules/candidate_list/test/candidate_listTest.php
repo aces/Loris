@@ -110,13 +110,13 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      *
      * @return void
      */
-    function testPageLoadsOnlyHasPermissionsDataEntry()
+    function testPageLoadsWithPermissionsDataEntry()
     {
         $this->setupPermissions(array("data_entry"));
         $this->safeGet($this->url . "/candidate_list/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains(
+        $this->assertNotContains(
             "You do not have access to this page.",
             $bodyText
         );
