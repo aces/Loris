@@ -78,6 +78,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     function testCreateTimepoint()
     {
         $this->_createTimepoint('900000', 'Fresh', 'V1');
+         sleep(10);
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -115,6 +116,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     function testCreateTimepointErrorVisitLabel()
     {
         $this->_createTimepoint('900000', 'Fresh', 'V9999');
+       sleep(10);
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains(
             "This visit label does not match the required structure.",
