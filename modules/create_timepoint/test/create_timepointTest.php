@@ -111,7 +111,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepointErrorVisitLabel()
     {
-        $this->_createTimepoint('900000', 'Experimental', 'V9999');
+        $this->_createTimepoint('900000', 'subprojet 2', 'V9999');
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains(
             "This visit label does not match the required structure.",
