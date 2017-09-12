@@ -231,7 +231,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
                $bodyText
            );
     }
-// todo add a survey successful.
+    // todo add a survey successful.
 
     /**
      * Tests clear button in the filter section, input some data,

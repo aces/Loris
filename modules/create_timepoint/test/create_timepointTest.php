@@ -192,4 +192,3 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     }
 }
 ?>
-

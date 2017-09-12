@@ -249,7 +249,7 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertContains("New candidate created", $bodyText);
 
-//        $this->deleteCandidate("BBQ0000");
+        //        $this->deleteCandidate("BBQ0000");
     }
 
     /**
