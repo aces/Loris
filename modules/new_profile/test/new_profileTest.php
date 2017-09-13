@@ -154,7 +154,6 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
 
         $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
-        sleep(3);
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -216,7 +215,6 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
 
         $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
-        sleep(3);
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -243,7 +241,6 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
 
         $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
-        sleep(3);
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -274,7 +271,6 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
 
         $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
-        sleep(3);
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -293,7 +289,6 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
 
         $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
-        sleep(3);
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();

@@ -602,12 +602,10 @@ class DashboardTest extends LorisIntegrationTest
     private function _testMytaskPanelAndLink($className,$value,$dataSeed)
     {
         $this->safeGet($this->url . '/dashboard/');
-        sleep(5);
         $link     =$this->safeFindElement(WebDriverBy::cssSelector($className));
         $bodyText = $link->findElement(WebDriverBy::cssSelector(".huge"))->getText();
         $this->assertContains($value, $bodyText);
         $link->click();
-        sleep(5);
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains($dataSeed, $bodyText);
 
@@ -642,7 +640,6 @@ class DashboardTest extends LorisIntegrationTest
     private function _testPlan1()
     {
         $this->safeGet($this->url . '/main.php?logout=true');
-        sleep(120);
          $this->login("UnitTester", "4test4");
         $welcomeText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
