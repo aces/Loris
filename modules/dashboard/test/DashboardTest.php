@@ -497,9 +497,7 @@ class DashboardTest extends LorisIntegrationTest
             'Skipping tests until merging the fixing PR'
         );
         $this->setupPermissions(
-            array(
-             "issue_tracker_developer"
-            )
+            array("issue_tracker_developer")
         );
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
@@ -529,12 +527,12 @@ class DashboardTest extends LorisIntegrationTest
         $this->setupPermissions(
             array(
              "data_entry",
-             "access_all_profiles"
+             "access_all_profiles",
             )
         );
         $this->safeGet($this->url . '/dashboard/');
         $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("Incomplete forms", $bodyText); 
+        $this->assertContains("Incomplete forms", $bodyText);
         $this->resetPermissions();
     }
     /**

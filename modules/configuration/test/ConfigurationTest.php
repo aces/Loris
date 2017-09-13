@@ -124,7 +124,7 @@ class ConfigurationTest extends LorisIntegrationTest
          $webElement = $this->safeFindElement(
              WebDriverBy::Xpath("//*[@id='bc2']/a[2]/div")
          )->click();
-         $bodyText = $this->webDriver->findElement(
+         $bodyText   = $this->webDriver->findElement(
              WebDriverBy::cssSelector("body")
          )->getText();
 
