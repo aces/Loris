@@ -5,8 +5,11 @@
         colors="true">
     <testsuites>
         <testsuite name='InstrumentTest'>
-          <file>./unittests/NDB_BVL_Instrument_JSON.php</file>
-          <file>./unittests/ParserTest.php</file>
+            <file>./unittests/NDB_BVL_Instrument_JSON.php</file>
+        </testsuite>
+
+        <testsuite name='ParserTest'>
+            <file>./unittests/ParserTest.php</file>
         </testsuite>
 
         <testsuite name='LorisUnitTests'>
