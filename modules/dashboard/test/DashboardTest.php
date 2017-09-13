@@ -493,7 +493,7 @@ class DashboardTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . '/dashboard/');
         $bodyText = $this->webDriver->getPageSource();
-        printf($bodyText);
+        var_dump($bodyText);
         $this->_testMytaskPanelAndLink(
             ".issue_tracker",
             "1",
