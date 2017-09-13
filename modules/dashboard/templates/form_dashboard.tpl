@@ -120,7 +120,7 @@
 
     <div class="col-lg-4">
         <!-- My Tasks -->
-        {if $new_scans neq "" or $conflicts neq "" or $incomplete_forms neq "" or $radiology_review neq "" or $violated_scans neq "" or $pending_users neq ""}
+        {if $new_scans neq "" or $conflicts neq "" or $incomplete_forms neq "" or $radiology_review neq "" or $violated_scans neq "" or $pending_users neq "" or $issues_assigned neq ""}
             <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
