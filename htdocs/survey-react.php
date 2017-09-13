@@ -252,6 +252,7 @@ class DirectDataEntryMainPage
         $isDataSubmission = isset($_POST['instrumentData']);
         $instrument = new NDB_BVL_Instrument_JSON();
         $instrument->setup($this->CommentID);
+        $instrument->setOptions(array('surveyMode' => true));
 
         $workspace = $this->caller->load(
             $this->TestName,
