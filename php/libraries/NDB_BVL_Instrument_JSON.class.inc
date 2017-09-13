@@ -11,6 +11,8 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 namespace Loris\Behavioural;
+
+use LORIS\LorisScript\Evaluator;
 /**
  * JSON Instrument class
  *
@@ -103,6 +105,32 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
         }
     }
 
+    function setOptions($options = array()) {
+        $this->options = $options;
+    }
+
+    static function isDisplayed($element, $values, $context, $surveyMode) {
+        if (
+            ($element["Hidden"]) ||
+            ($surveyMode && $element["HiddenSurvey"]) ||
+            ($element.DisplayIf === false)
+        ) {
+            return false;
+        }
+
+        if ($element["DisplayIf" === ""]) return true;
+
+        $displayIf = $element["DisplayIf"];
+
+        return Evaluator::evaluate($displayIf, array_merge($values, $context));
+    }
+
+    static function filterElements($elements, $values, $context, $surveyMode) {
+        return array_filter($elements, function($element) use ($values, $context, $surveyMode) {
+            return self::isDisplayed($element, $values, $context, $surveyMode);
+        });
+    }
+
     static function isRequired($element, $values, $context) {
         $inputTypes = ['select', 'date', 'radio', 'text', 'calc', 'checkbox'];
 
@@ -113,12 +141,20 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
 
         if (is_bool($requireResponse)) return $requireResponse;
 
-        return \LorisScript\Evaluator::evaluate($requireResponse, array_merge($values, $context));
+        return Evaluator::evaluate($requireResponse, array_merge($values, $context));
     }
 
     function incompleteExists($values) {
         $incompleteExists = false;
-        foreach ($this->instrument["Elements"] as &$element) {
+        $context = $this->_getContext();
+        $visibleElements = self::filterElements(
+            $this->instrument["Elements"],
+            $values,
+            $context,
+            $this->options["surveyMode"]
+        );
+
+        foreach ($visibleElements as &$element) {
             if (isset($values[$element["Name"]])) {
                 continue;
             } else {
@@ -135,7 +171,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
 
         foreach ($this->instrument["Elements"] as &$element) {
             if ($element["Type"] == 'calc') {
-                $calculatedValues[$element["Name"]] = \LorisScript\Evaluator::evaluate($element["Formula"], array_merge($values, $this->_getContext()));
+                $calculatedValues[$element["Name"]] = Evaluator::evaluate($element["Formula"], array_merge($values, $this->_getContext()));
             }
         }
 

@@ -1,6 +1,8 @@
 <?php
 namespace LORIS\LorisScript;
 
+use \Exception;
+
 class Lexer {
     private static $terminals = array(
         "/^null/" => "null",
