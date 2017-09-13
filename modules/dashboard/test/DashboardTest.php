@@ -492,6 +492,8 @@ class DashboardTest extends LorisIntegrationTest
     public function testIssues()
     {
         $this->safeGet($this->url . '/dashboard/');
+        $bodyText = $this->webDriver->getPageSource();
+        printf($bodyText);
         $this->_testMytaskPanelAndLink(
             ".issue_tracker",
             "1",
@@ -524,19 +526,6 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains("Incomplete forms", $bodyText); 
-        $this->resetPermissions();
-    }
-    public function testIncompleteFormWithSuperuser()
-    {
-        $this->setupPermissions(
-            array("superuser")
-        );
-        $this->safeGet($this->url . '/dashboard/');
-        $this->_testMytaskPanelAndLink(
-            ".statistics",
-            "1",
-            "All Completion Statistics"
-        );
         $this->resetPermissions();
     }
     /**
