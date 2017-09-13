@@ -30,7 +30,7 @@ function getFunctions() {
 			return $a >= $b;
 		},
 		'_leq' => function ($a, $b) {
-			return $a >= $b;
+			return $a <= $b;
 		},
 		'_add' => function ($a, $b) {
 			return $a + $b;

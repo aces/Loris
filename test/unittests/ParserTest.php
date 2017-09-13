@@ -1,6 +1,6 @@
 <?php
 
-namespace LorisScript;
+namespace LORIS\LorisScript;
 /**
  *
  * PHP Version 7.0
@@ -367,6 +367,32 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $expected = false;
         try {
             $res = Evaluator::evaluate($equation, $this->scope);
+        } catch (Exception $e) {
+            $res = "$e";
+        }
+        $this->assertEquals($res, $expected);
+    }
+
+    public function testLessThanOrEqualTo(){
+        $equation = '1 <= 2';
+        $expected = true;
+
+        try {
+            $res = Evaluator::evaluate($equation, $this->scope);
+            var_dump($res);
+        } catch (Exception $e) {
+            $res = "$e";
+        }
+        $this->assertEquals($res, $expected);
+    }
+
+    public function testLessThanOrEqualToAgain(){
+        $equation = '2 <= 1';
+        $expected = false;
+
+        try {
+            $res = Evaluator::evaluate($equation, $this->scope);
+            var_dump($res);
         } catch (Exception $e) {
             $res = "$e";
         }
