@@ -494,17 +494,12 @@ class DashboardTest extends LorisIntegrationTest
      */
     public function testIssues()
     {
-
-        $this->setupPermissions(
-            array("superuser")
-        );
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".issue_tracker",
             "1",
             "-  Issue  Tracker"
         );
-        $this->resetPermissions();
     }
     /**
      * Check that for a user with 'Data Entry' permission, the number of
