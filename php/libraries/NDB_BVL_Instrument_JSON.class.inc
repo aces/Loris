@@ -78,7 +78,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
             "SELECT * FROM $this->table WHERE CommentID=:CID",
             array('CID' => $this->getCommentID())
         );
-        return $result;
+        return $result[0];
     }
 
     /**
@@ -122,7 +122,9 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
 
         $displayIf = $element["DisplayIf"];
 
-        return Evaluator::evaluate($displayIf, array_merge($values, $context));
+        $scope = array_merge($values, array("context" => $context));
+        $res = Evaluator::evaluate($displayIf, $scope);
+        return $res;
     }
 
     static function filterElements($elements, $values, $context, $surveyMode) {
@@ -141,7 +143,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
 
         if (is_bool($requireResponse)) return $requireResponse;
 
-        return Evaluator::evaluate($requireResponse, array_merge($values, $context));
+        return Evaluator::evaluate($requireResponse, array_merge($values, array("context" => $context)));
     }
 
     function incompleteExists($values) {
@@ -171,7 +173,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
 
         foreach ($this->instrument["Elements"] as &$element) {
             if ($element["Type"] == 'calc') {
-                $calculatedValues[$element["Name"]] = Evaluator::evaluate($element["Formula"], array_merge($values, $this->_getContext()));
+                $calculatedValues[$element["Name"]] = Evaluator::evaluate($element["Formula"], array_merge($values, array("context" => $this->_getContext())));
             }
         }
 
