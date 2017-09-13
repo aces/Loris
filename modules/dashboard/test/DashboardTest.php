@@ -518,8 +518,18 @@ class DashboardTest extends LorisIntegrationTest
         $this->setupPermissions(
             array(
              "data_entry",
-             "access_all_profiles",
+             "access_all_profiles"
             )
+        );
+        $this->safeGet($this->url . '/dashboard/');
+        $bodyText = $this->webDriver->getPageSource();
+        $this->assertContains("Incomplete forms", $bodyText); 
+        $this->resetPermissions();
+    }
+    public function testIncompleteFormWithSuperuser()
+    {
+        $this->setupPermissions(
+            array("superuser")
         );
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
