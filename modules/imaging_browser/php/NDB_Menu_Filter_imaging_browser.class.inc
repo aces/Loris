@@ -62,6 +62,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
+        $this->skipTemplate = true;
         $config = NDB_Config::singleton();
         $DB     = Database::singleton();
         $toTable_scan_types = $config->getSetting('tblScanTypes');
@@ -142,7 +143,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             JOIN candidate c ON (c.CandID=s.CandID) 
             JOIN files f ON (f.SessionID=s.ID) 
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
-            JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)";
+            JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
+            LEFT JOIN mri_scan_type modality ON (f.AcquisitionProtocolID=modality.ID)";
 
         $left_joins = "";
         foreach ($case_desc as $key => $value) {
@@ -222,7 +224,16 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             $this->columns,
             array("GROUP_CONCAT(DISTINCT OutputType) as Links"),
             $modalities_subquery_as,
-            array('s.ID as sessionID')
+            array('s.ID as sessionID'),
+            array("CASE 
+                        WHEN s.MRIQCPending='Y' AND fqc.QCFirstChangeTime IS NULL THEN
+                        'PNB'
+                        WHEN s.MRIQCPending='Y' THEN
+                        'PB'
+                        WHEN fqc.QCFirstChangeTime IS NULL THEN
+                        'NB'
+                    END as pending"),
+            array('GROUP_CONCAT(DISTINCT modality.Scan_type) as modalities')
         );
 
         $this->order_by = 'c.PSCID, s.Visit_label';
@@ -243,7 +254,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $this->headers = array_merge(
             $this->headers,
             $as,
-            array('sessionID')
+            array('sessionID', 'pending', 'modalities')
         );
 
         // Insert project column after DCCID, if useProject config is enabled
@@ -531,8 +542,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         return array_merge(
             parent::getJSDependencies(),
             array(
-             $baseurl . "/imaging_browser/js/columnFormatter.js",
-             $baseurl . "/imaging_browser/js/onSort.js",
+             $baseurl . "/js/components/Form.js",
+             $baseurl . "/imaging_browser/js/onLoad.js",
             )
         );
     }
