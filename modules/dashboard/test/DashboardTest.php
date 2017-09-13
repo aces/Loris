@@ -238,6 +238,7 @@ class DashboardTest extends LorisIntegrationTest
                'issueID'  => '999999',
                'assignee' => 'UnitTester',
                'status'   => 'new',
+               'priority' => 'low',
                'reporter' => 'UnitTester',
               )
           );
@@ -491,15 +492,15 @@ class DashboardTest extends LorisIntegrationTest
      */
     public function testIssues()
     {
-        $this->safeGet($this->url . '/dashboard/');
-        $this->safeGet($this->url . '/issue_tracker/?submenu=my_issue_tracker/');
-        $bodyText = $this->webDriver->getPageSource();
-        var_dump($bodyText);
-        $this->_testMytaskPanelAndLink(
-            ".issue_tracker",
-            "1",
-            "-  Issue  Tracker"
+        $this->setupPermissions(
+            array(
+             "superuser"
+            )
         );
+        $this->safeGet($this->url . '/dashboard/');
+        $bodyText = $this->webDriver->getPageSource();
+        $this->assertContains("Issue assigned to you", $bodyText);
+        $this->resetPermissions();
     }
     /**
      * Check that for a user with 'Data Entry' permission, the number of
