@@ -7,7 +7,7 @@ function localizeInstrument(rawInstrument, lang = 'en-CA') {
     const convertedElements = [];
 
     instrument['Elements'].forEach((element) => {
-      if (['label', 'text', 'calc', 'date', 'select', 'radio', 'checkbox'].includes(element.Type)) {
+      if (['label', 'text', 'score', 'date', 'select', 'radio', 'checkbox'].includes(element.Type)) {
         if (element['Description'][lang]) {
           element['Description'] = element['Description'][lang];
         } else {
@@ -17,7 +17,7 @@ function localizeInstrument(rawInstrument, lang = 'en-CA') {
             element['Description'] = "Choose a value: ";
           } else if (['label'].includes(element.Type)) {
             element['Description'] = "";
-          } else if (['calc'].includes(element.Type)) {
+          } else if (['score'].includes(element.Type)) {
             element['Description'] = "Result: ";
           }
         }

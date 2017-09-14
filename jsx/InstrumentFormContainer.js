@@ -2,7 +2,7 @@ import InstrumentForm from './InstrumentForm';
 import { Evaluator, NullVariableError } from './lib/Parser';
 import localizeInstrument from './lib/localize-instrument';
 
-const INPUT_TYPES = ['select', 'date', 'radio', 'text', 'calc', 'checkbox'];
+const INPUT_TYPES = ['select', 'date', 'radio', 'text', 'score', 'checkbox'];
 
 /* InstrumentForm and InstrumentFormContainer follow the `presentational vs container`
  * pattern (https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0).
@@ -55,12 +55,12 @@ class InstrumentFormContainer extends React.Component {
   updateInstrumentData(name, value) {
     const instrumentData = Object.assign({}, this.state.data, {[name]: value});
 
-    const calcElements = this.props.instrument.Elements.filter(
-      (element) => (element.Type === 'calc')
+    const scoreElements = this.props.instrument.Elements.filter(
+      (element) => (element.Type === 'score')
     );
 
     const evaluatorContext = { ...instrumentData, context: this.props.context };
-    const calculatedValues = calcElements.reduce((result, element) => {
+    const calculatedValues = scoreElements.reduce((result, element) => {
       try {
         result[element.Name] = String(Evaluator(element.Formula, evaluatorContext));
       } catch (e) {

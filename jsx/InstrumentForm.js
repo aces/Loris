@@ -45,8 +45,8 @@ function renderElement(element, key, onUpdate, required = false) {
     return renderCheckbox(element, key, onUpdate, required)
   } else if (element.Type === 'text') {
     return renderText(element, key, onUpdate, required)
-  } else if (element.Type === 'calc') {
-    return renderCalc(element, key, onUpdate)
+  } else if (element.Type === 'score') {
+    return renderScore(element, key, onUpdate)
   } else if (element.Type === 'date') {
     return renderDate(element, key, onUpdate, required)
   }
@@ -126,7 +126,7 @@ function renderText(element, key, onUpdate, isRequired) {
   );
 }
 
-function renderCalc(element, key, onUpdate) {
+function renderScore(element, key, onUpdate) {
   return (
     <TextboxElement
       key={key}

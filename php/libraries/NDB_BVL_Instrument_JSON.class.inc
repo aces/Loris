@@ -134,7 +134,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
     }
 
     static function isRequired($element, $values, $context) {
-        $inputTypes = ['select', 'date', 'radio', 'text', 'calc', 'checkbox'];
+        $inputTypes = ['select', 'date', 'radio', 'text', 'score', 'checkbox'];
 
         if (!in_array($element["Type"], $inputTypes)) return false;
 
@@ -172,7 +172,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
         $calculatedValues = array();
 
         foreach ($this->instrument["Elements"] as &$element) {
-            if ($element["Type"] == 'calc') {
+            if ($element["Type"] == 'score') {
                 $calculatedValues[$element["Name"]] = Evaluator::evaluate($element["Formula"], array_merge($values, array("context" => $this->_getContext())));
             }
         }
@@ -275,7 +275,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
 
     static function inlineCalcFormulas($elements) {
       $calcElements = array_filter($elements, function ($element) {
-          return $element["Type"] === 'calc';
+          return $element["Type"] === 'score';
       });
 
       $formulaMap = array_reduce($calcElements, function ($result, $element) {
@@ -286,7 +286,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
       self::checkForCircularRefs($formulaMap);
 
       return array_map(function ($element) use ($formulaMap) {
-          if ($element["Type"] !== 'calc') { return $element; }
+          if ($element["Type"] !== 'score') { return $element; }
           $recusivelyInlinedFormula = $element["Formula"];
           $resultIsSame = false;
           while (!$resultIsSame) {
