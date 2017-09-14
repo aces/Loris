@@ -35,6 +35,8 @@ namespace LORIS\Data;
  */
 abstract class Provisioner
 {
+    private $parent = null;
+
     /**
      * Filters (and Mappers) to apply to the data from this Provisioner
      * before returning it to the user.
@@ -42,9 +44,13 @@ abstract class Provisioner
      * Filters and Maps are lazily evaluated, and applied in the order that
      * they were added to the Provisioner.
      *
-     * @var array of Filters and/or Mappers.
+     * (Since filters can only be created by calling filter or map on
+     * an existing provisioner, we only need to store the new filter and
+     * a reference to the parent.)
+     *
+     * @var Filter | Mapper
      */
-    private $_filters = [];
+    protected $modifier;
 
     /**
      * Filter returns a new Provisioner which is identical to this one, except
@@ -57,7 +63,8 @@ abstract class Provisioner
     public function filter(Filter $filter) : Provisioner
     {
         $d = clone $this;
-        $d->_filters[] = $filter;
+        $d->parent = &$this;
+        $d->modifier = $filter;
         return $d;
     }
 
@@ -72,7 +79,8 @@ abstract class Provisioner
     public function map(Mapper $map) : Provisioner
     {
         $d = clone $this;
-        $d->_filters[] = $map;
+        $d->parent = &$this;
+        $d->modifier = $map;
         return $d;
     }
 
@@ -84,7 +92,7 @@ abstract class Provisioner
      *
      * @return Instance[] array of all resources provided by this data source.
      */
-    abstract protected function getAllInstances() : array;
+    abstract protected function getAllInstances() : \Traversable;
 
     /**
      * Execute gets the rows for this data source, and applies all
@@ -94,31 +102,41 @@ abstract class Provisioner
      *
      * @return Instance[]
      */
-    public function execute(\User $user) : array
+    public function execute(\User $user) : \Traversable
     {
+        $rows = new \EmptyIterator();
+        if ($this->parent != null) {
+            $rows = $this->parent->execute($user);
+        } else {
             $rows = $this->getAllInstances();
-
-        foreach ($this->filters as $filter) {
-            if ($filter instanceof Filter) {
-                $rows = array_filter(
-                    $rows,
-                    function ($row) use ($user, $filter) {
-                            return $filter->Filter($user, $row);
-                    }
-                );
-            } else if ($filter instanceof Mapper) {
-                $rows = array_map(
-                    function ($row) use ($user,
-                        $filter
-                    ) {
-                            return $filter->Map($user, $row);
-                    },
-                    $rows
-                );
-            } else {
-                throw new \Exception("Invalid filter");
-            }
         }
-            return $rows;
+
+        if ($this->modifier !== null && !($this->modifier instanceof Filter) && !($this->modifier instanceof Mapper)) {
+            throw new \Exception("Invalid modifier on provisioner");
+        }
+
+        // If it implements both Filter and Mapper, run the filter first so that the mapping
+        // is less expensive.
+        if ($this->modifier instanceof Filter) {
+            $callback = function($current, $key, $iterator) use ($user) {
+                return $this->modifier->Filter($user, $current);
+            };
+
+            if ($rows instanceof \Iterator) {
+                $rows = new \CallbackFilterIterator($rows, $callback);
+            } else {
+                // Convert non-iterator traversables to iterators.
+                $rows = new \CallbackFilterIterator(new \IteratorIterator($rows), $callback);
+            }
+
+        }
+
+        if ($this->modifier instanceof Mapper) {
+            // Convert rows to an iterator where current() returns the map, not the existing
+            // value.
+            $rows = new MapIterator($rows, $this->modifier, $user); 
+        }
+           
+        return $rows;
     }
 };
