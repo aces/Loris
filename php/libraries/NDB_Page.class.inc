@@ -680,7 +680,6 @@ class NDB_Page
                   $baseurl . '/js/polyfills.js',
                   $baseurl . '/js/react/react-with-addons' . $min . '.js',
                   $baseurl . '/js/react/react-dom' . $min . '.js',
-                  $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
                   $baseurl . '/js/jquery.dynamictable.js',
                   $baseurl . '/js/jquery.fileupload.js',
                   $baseurl . '/bootstrap/js/bootstrap.min.js',
