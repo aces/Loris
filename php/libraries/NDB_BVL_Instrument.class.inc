@@ -185,14 +185,15 @@ class NDB_BVL_Instrument extends NDB_Page
             $obj = new \Loris\Behavioural\NDB_BVL_Instrument_JSON();
 
             $obj->setup($commentID, $page);
-            $lang        = $_REQUEST["lang"] ? $_REQUEST["lang"] : "en-ca";
+            $lang     = $_REQUEST["lang"] ? $_REQUEST["lang"] : "en-ca";
             $filename = $base."project/instruments/$instrument.json";
 
             $obj->loadInstrumentFile($filename);
         } else if (file_exists($base."project/instruments/$instrument.linst")) {
             include_once 'NDB_BVL_Instrument_LINST.class.inc';
             $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST();
-            // if a script is loading this form without a commentID, display all fields
+            // if a script is loading this form without a commentID,
+            // display all fields
             if (!isset($commentID)) {
                 $obj->displayAllFields = true;
             }
