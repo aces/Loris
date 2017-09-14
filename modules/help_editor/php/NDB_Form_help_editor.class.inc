@@ -213,6 +213,10 @@ class NDB_Form_Help_Editor extends NDB_Form
       */
     function edit_help_content()// @codingStandardsIgnoreLine
     {
+        // Magical 5 value restricting number of links for each page
+        $maxLinks = 5;
+        $this->tpl_data['number_links'] = $maxLinks;
+
         $this->addBasicText('title', 'Title');
         $this->addBasicTextArea(
             'content',
@@ -223,6 +227,11 @@ class NDB_Form_Help_Editor extends NDB_Form
             )
         );
 
+        $this->form->addElement('static', 'links_header', 'Useful Links:');
+        for ($i=0; $i<$maxLinks; $i++) {
+            $this->addBasicText("link_$i",'');
+        }
+        print_r($this);
     }
 
     /**

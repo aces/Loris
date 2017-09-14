@@ -23,6 +23,14 @@
                 {$form.content.html}
             </div>
         </div>
+        <div class="row">
+            <label class="col-sm-2">{$form.links_header.label}</label>
+        </div>
+        <div class="row">
+            <div class="col-sm-8">
+                {$form.content.html}
+            </div>
+        </div>
         {foreach from=$elements_list item=element}
             <div class="row">
                 <label class="col-sm-4">{$form.$element.label}</label>
