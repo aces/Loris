@@ -248,9 +248,9 @@ class DirectDataEntryMainPage
         $base    = $config->getSetting('base');
         $logo    = "/".$config->getSetting('studylogo');
         $study   = $config->getSetting('title');
-        $db     =& \Database::singleton();
+        $db      =& \Database::singleton();
         $isDataSubmission = isset($_POST['instrumentData']);
-        $instrument = new NDB_BVL_Instrument_JSON();
+        $instrument       = new NDB_BVL_Instrument_JSON();
         $instrument->setup($this->CommentID);
         $instrument->setOptions(array('surveyMode' => true));
 
@@ -269,21 +269,21 @@ class DirectDataEntryMainPage
             $db->update(
                 $this->TestName,
                 array(
-                    'Date_taken' => date('Y-m-d'),
+                 'Date_taken' => date('Y-m-d'),
                 ),
                 array(
-                    'CommentID' => $this->CommentID,
+                 'CommentID' => $this->CommentID,
                 )
             );
 
             $db->update(
                 'flag',
                 array(
-                    'Data_entry'     => 'Complete',
-                    'Administration' => 'All',
+                 'Data_entry'     => 'Complete',
+                 'Administration' => 'All',
                 ),
                 array(
-                    'CommentID' => $this->CommentID,
+                 'CommentID' => $this->CommentID,
                 )
             );
         }
@@ -292,8 +292,14 @@ class DirectDataEntryMainPage
         $smarty->assign($this->tpl_data);
 
         $smarty->assign('instrumentJSON', htmlspecialchars($instrument->toJSON()));
-        $smarty->assign('initialData', htmlspecialchars(json_encode($instrument->_getInstrumentData($db))));
-        $smarty->assign('context', htmlspecialchars(json_encode($instrument->_getContext())));
+        $smarty->assign(
+            'initialData',
+            htmlspecialchars(json_encode($instrument->_getInstrumentData($db)))
+        );
+        $smarty->assign(
+            'context',
+            htmlspecialchars(json_encode($instrument->_getContext()))
+        );
         $smarty->assign('lang', htmlspecialchars($instrument->_getLang()));
         $smarty->assign('logo', htmlspecialchars($logo));
         $smarty->assign('study', htmlspecialchars($study));
