@@ -10,7 +10,8 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris/
  */
-require_once __DIR__ . '/TimePoint_List_ControlPanel.class.inc';
+namespace LORIS\timepoint_list;
+
 /**
  * The timepoint list menu
  *
@@ -22,7 +23,7 @@ require_once __DIR__ . '/TimePoint_List_ControlPanel.class.inc';
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Menu_Timepoint_List extends NDB_Menu
+class Timepoint_List extends \NDB_Menu
 {
     /**
      * Overloading this method to allow access to timepoint list
@@ -32,9 +33,9 @@ class NDB_Menu_Timepoint_List extends NDB_Menu
     function _hasAccess()
     {
         // create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
-        $candidate =& Candidate::singleton($_REQUEST['candID']);
+        $candidate =& \Candidate::singleton($_REQUEST['candID']);
 
         // check user permissions
         if ($user->hasPermission('access_all_profiles')
@@ -52,7 +53,7 @@ class NDB_Menu_Timepoint_List extends NDB_Menu
 
         foreach ($listOfTimePoints as $sessionID) {
             // create timepoint object
-            $timePoint =& TimePoint::singleton($sessionID);
+            $timePoint =& \TimePoint::singleton($sessionID);
             // check if at least one timepoint belongs to the user's site
             if (in_array(
                 $timePoint->getData('CenterID'),
@@ -73,8 +74,8 @@ class NDB_Menu_Timepoint_List extends NDB_Menu
     function setup()
     {
         // create candidate object
-        $candidate =& Candidate::singleton($_REQUEST['candID']);
-        $DB        =& Database::singleton();
+        $candidate =& \Candidate::singleton($_REQUEST['candID']);
+        $DB        =& \Database::singleton();
 
         $numberOfVisits           = 0;
         $this->tpl_data['candID'] = $_REQUEST['candID'];
@@ -82,7 +83,7 @@ class NDB_Menu_Timepoint_List extends NDB_Menu
         $listOfTimePoints         = $candidate->getListOfTimePoints();
 
         if (!empty($listOfTimePoints)) {
-            $user     =& User::singleton();
+            $user     =& \User::singleton();
             $username = $user->getData('UserID');
 
             $feedback_select_inactive = null;
@@ -95,7 +96,7 @@ class NDB_Menu_Timepoint_List extends NDB_Menu
              */
             $x = 0;
             foreach ($listOfTimePoints as $currentTimePoint) {
-                $timePoint =& TimePoint::singleton($currentTimePoint);
+                $timePoint =& \TimePoint::singleton($currentTimePoint);
 
                 // get the first date of visit in order to
                 // turn on the future time points bit if we have a date of visit
@@ -127,7 +128,7 @@ class NDB_Menu_Timepoint_List extends NDB_Menu
                 $this->tpl_data['timePoints'][$x]['CenterName'] = $center['Alias'];
 
                 // create feedback object for the time point
-                $feedback = NDB_BVL_Feedback::singleton(
+                $feedback = \NDB_BVL_Feedback::singleton(
                     $username,
                     null,
                     $timePoint->getData('SessionID')
@@ -191,7 +192,7 @@ class NDB_Menu_Timepoint_List extends NDB_Menu
              * List of future visits
              */
             if (isset($firstDateOfVisit)) {
-                $timePoint = TimePoint::singleton($listOfTimePoints[0]);
+                $timePoint = \TimePoint::singleton($listOfTimePoints[0]);
 
                 $this->tpl_data['SubprojectID'] = $timePoint->getSubprojectID();
 
@@ -210,7 +211,7 @@ class NDB_Menu_Timepoint_List extends NDB_Menu
     function _determinePreviousStage($sessionID)
     {
         // create timepoint object
-        $timePoint =& TimePoint::singleton($sessionID);
+        $timePoint =& \TimePoint::singleton($sessionID);
 
         // outcome stage is the last stage
         //(approval || visit || screening || not started, in that order)
@@ -235,7 +236,7 @@ class NDB_Menu_Timepoint_List extends NDB_Menu
      */
     function getFeedbackPanel($candID, $sessionID = null)
     {
-        $feedbackPanel = new BVL_Feedback_Panel($candID);
+        $feedbackPanel = new \BVL_Feedback_Panel($candID);
         $html          = $feedbackPanel->display();
         return $html;
     }
@@ -257,7 +258,7 @@ class NDB_Menu_Timepoint_List extends NDB_Menu
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(

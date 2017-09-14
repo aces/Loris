@@ -12,6 +12,7 @@
  * @access   public
  */
 
+namespace LORIS\timepoint_list;
 /**
  * This class provides the management GUI for the status flags
  *
@@ -23,7 +24,7 @@
  * @access   public
  */
 
-Class TimePoint_List_ControlPanel extends Candidate
+Class TimePoint_List_ControlPanel extends \Candidate
 {
     /**
      * The template data for Smarty
@@ -55,7 +56,7 @@ Class TimePoint_List_ControlPanel extends Candidate
      */
     function display()
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
         $user_CenterID = $user->getData('CenterIDs');
         $cand_CenterID = $this->getData('CenterID');
@@ -72,11 +73,11 @@ Class TimePoint_List_ControlPanel extends Candidate
             = $user->hasPermission('candidate_parameter_edit');
 
         //set the baseurl of the tpl_data
-        $factory  = NDB_Factory::singleton();
+        $factory  = \NDB_Factory::singleton();
         $settings = $factory->settings();
         $this->tpl_data['baseurl'] = $settings->getBaseURL();
 
-        $smarty = new Smarty_neurodb('timepoint_list');
+        $smarty = new \Smarty_neurodb('timepoint_list');
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("timepoint_list_controlpanel.tpl");
         return $html;
