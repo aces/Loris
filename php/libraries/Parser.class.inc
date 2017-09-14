@@ -1,18 +1,50 @@
 <?php
+/**
+ * This file contains the Parser class
+ *
+ * PHP Version 5
+ *
+ * @category Main
+ * @package  Behavioural
+ * @author   Unknown <example@example.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
 
 namespace LORIS\LorisScript;
 
 use \Exception;
-
-class Parser {
+/**
+ * Parser
+ *
+ * @category Main
+ * @package  Behavioural
+ * @author   Unknown <example@example.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
+class Parser
+{
     private $expression;
     private $tokens;
     private $offset;
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function __construct($expression) {
         $this->expression = $expression;
-        $this->tokens = Lexer::lex($expression);
-        $this->offset = 0;
+        $this->tokens     = Lexer::lex($expression);
+        $this->offset     = 0;
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parse() {
         $ast = $this->parseBoolTerm();
         if ($ast === false) {
@@ -23,18 +55,42 @@ class Parser {
         }
         return $ast;
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function next() {
         $this->offset += 1;
         if ($this->offset > count($this->tokens)) {
             throw new Exception("Invalid expression ending: " . $this->expression);
         }
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function getBacktrack() {
       return $this->offset;
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function backtrack($backtrack) {
       $this->offset = $backtrack;
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function expect($token) {
         if ($this->offset >= count($this->tokens)) {
             return false;
@@ -45,6 +101,12 @@ class Parser {
         }
         return $currentTok['match'];
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parseBoolTerm() {
         $bt = $this->getBacktrack();
         $left = $this->parseUnaryBool();
@@ -65,6 +127,12 @@ class Parser {
             'args' => array($left, $right),
         );
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parseUnaryBool() {
         $bt = $this->getBacktrack();
         $op = $this->expect("not");
@@ -83,6 +151,12 @@ class Parser {
             'args' => array($arg),
         );
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parseBoolComp() {
         $bt = $this->getBacktrack();
         $left = $this->parseNumTerm();
@@ -103,6 +177,12 @@ class Parser {
             'args' => array($left, $right),
         );
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parseNumTerm() {
         $bt = $this->getBacktrack();
         $left = $this->parseNumFactor();
@@ -123,6 +203,12 @@ class Parser {
             'args' => array($left, $right),
         );
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parseNumFactor() {
         $bt = $this->getBacktrack();
         $left = $this->parseNumPower();
@@ -143,6 +229,12 @@ class Parser {
             'args' => array($left, $right),
         );
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parseNumPower() {
         $bt = $this->getBacktrack();
         $left = $this->parseUnaryFact();
@@ -162,6 +254,12 @@ class Parser {
             'args' => array($left, $right),
         );
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parseUnaryFact() {
         $arg = $this->parseUnaryPercent();
         $op = $this->expect("!");
@@ -175,6 +273,12 @@ class Parser {
             'args' => array($arg),
         );
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parseUnaryPercent() {
         $arg = $this->parseUnaryMinus();
         $op = $this->expect("%");
@@ -188,6 +292,12 @@ class Parser {
             'args' => array($arg),
         );
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parseUnaryMinus() {
         $op = $this->expect("-");
         if ($op === false) {
@@ -201,6 +311,12 @@ class Parser {
             'args' => array($arg),
         );
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parseTerminal() {
         return (
             $this->parseFuncCall() ?:
@@ -211,6 +327,12 @@ class Parser {
             $this->parseConstant()
         );
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parseNested() {
         $bt = $this->getBacktrack();
         if ($this->expect("(") === false) {
@@ -229,6 +351,12 @@ class Parser {
         $this->next();
         return $expr;
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parseNumber() {
         $num = $this->expect("NUMBER");
         if ($num === false) {
@@ -240,6 +368,12 @@ class Parser {
             'args' => array($num),
         );
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parseString() {
         $str = $this->expect("STRING");
         if ($str === false) {
@@ -259,6 +393,12 @@ class Parser {
             'args' => array($str),
         );
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parseConstant() {
         $filt = array_values(array_filter(["false", "true", "null", "E", "PI"], array($this, 'expect')));
         if (count($filt) === 0) {
@@ -270,6 +410,12 @@ class Parser {
             'args' => array($filt[0]),
         );
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parseFuncCall() {
         $bt = $this->getBacktrack();
         $func = $this->expect("VARIABLE");
@@ -293,6 +439,12 @@ class Parser {
             'args' => array($func, $args),
         );
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parseArguments() {
         $bt = $this->getBacktrack();
         $arg = $this->parseBoolTerm();
@@ -310,6 +462,12 @@ class Parser {
         }
         return array_merge([$arg], $nextArgs);;
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parseVariable() {
         $sym = $this->parseVarSymbol();
         if ($sym === false) {
@@ -336,6 +494,12 @@ class Parser {
             'args' => array($var, $accessors),
         );
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parseVarSymbol() {
         $bt = $this->getBacktrack();
         if ($this->expect("[") === false) {
@@ -359,6 +523,12 @@ class Parser {
         }
         return array('var' => $var, 'num' => $nest);
     }
+
+    /**
+     * TODO:
+     *
+     * @return TODO
+     */
     function parseNestedVar() {
         $bt = $this->getBacktrack();
         if ($this->expect("(") === false) {
