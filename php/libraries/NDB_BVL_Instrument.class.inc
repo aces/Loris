@@ -216,6 +216,7 @@ class NDB_BVL_Instrument extends NDB_Page
             // Now go ahead and instantiate it
             $obj = new $class;
             // Now go ahead and instantiate it
+            $success = $obj->setup($commentID, $page);
         }
 
         // Adds all of the form element and form rules to the page after
