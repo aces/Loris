@@ -30,7 +30,7 @@ class schema_generator
 		//Handle meta info
 		$metaInfo = $elements['Meta'];
 		$tableName = htmlspecialchars($metaInfo['ShortName']);
-        $fullName = htmlspecialchars($metaInfo['LongName']['en-ca']);
+        $fullName = htmlspecialchars($metaInfo['LongName']['en-CA']);
         
         $output = '';
         $output .= "DROP TABLE IF EXISTS `$tableName`;\n";
@@ -60,7 +60,7 @@ class schema_generator
             $elName = htmlspecialchars($element['Name']);
             switch($switchType) {
                 case "radio":
-                    $enumOpts = $element['Options']['Values']['en-ca'];
+                    $enumOpts = $element['Options']['Values']['en-CA'];
                     if(isset($element['Options']['AllowMultiple'])) {
                         $allowMult = $element['Options']['AllowMultiple'];
                     } else {
@@ -73,7 +73,7 @@ class schema_generator
                     }
                     break;
                 case "select":
-                    $enumOpts = $element['Options']['Values']['en-ca'];
+                    $enumOpts = $element['Options']['Values']['en-CA'];
 					if(isset($element['Options']['AllowMultiple'])) {
                         $allowMult = $element['Options']['AllowMultiple'];
                     } else {
@@ -91,7 +91,7 @@ class schema_generator
                 case "checkbox":
                     $type = "TEXT";
                     break;
-                case "calc":
+                case "score":
                     $type = "TEXT";
                     break;
                 case "date":
