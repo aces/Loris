@@ -65,8 +65,8 @@ function renderRadioLabels(element, key) {
 
 function renderRadio(element, key, onUpdate, isRequired) {
   return (
+    <div key={key}>
       <RadioGroupElement
-        key={key}
         name={element.Name}
         label={element.Description}
         options={element.Options.Values}
@@ -76,6 +76,11 @@ function renderRadio(element, key, onUpdate, isRequired) {
         hasError={isRequired && (!element.Value)}
         errorMessage="This field is required"
       />
+      <button className="asText" onClick={() => { onUpdate(element.Name, null); }
+                                         } type="button">
+        Reset
+      </button> 
+    </div>
   );
 }
 

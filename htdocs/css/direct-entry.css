@@ -61,3 +61,11 @@ label {
 #warning {
     color: red;
 }
+
+.asText {
+    background: none;
+    border: none;
+    margin: 0;
+    padding-bottom: 15px;
+    text-decoration: underline;
+}
