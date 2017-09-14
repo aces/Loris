@@ -590,14 +590,6 @@ class NDB_Page
      */
     function display()
     {
-        if (isset($_REQUEST['format'])) {
-            switch($_REQUEST['format']) {
-                case 'json':
-                    header('Content-Type: application/json');
-                    return $this->toJSON();
-            }
-        }
-
         if ($this->skipTemplate) {
             return "";
         }
