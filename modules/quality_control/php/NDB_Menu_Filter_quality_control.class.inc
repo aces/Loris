@@ -222,8 +222,9 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $this->addSelect('scanDoneInMRIPF', 'Scan Done in MRI PF', array("Yes" => "Yes", "No" => "No"));
         $this->addSelect('tarchive', 'Tarchive Status', array("In DICOM" => "In DICOM Archives", "Missing" => "Missing"));
         $this->addSelect('scanLocation', 'Scan Location', $scan_location);
-        $this->addSelect('qCStatus', 'QC Status', array( "Pass" => "Pass", "Fail" => "Fail"));
+        $this->addSelect('qCStatus', 'QC Status', array("Pass" => "Pass", "Fail" => "Fail"));
         $this->addSelect('uploadedBy', 'Uploaded By', $uploaderList);
+        $this->addSelect('selected', 'Selected', array("true" => "True"));
         return true;
     }
     /**
