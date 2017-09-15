@@ -596,9 +596,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function _getFileList($data)
     {
-
         $files = array();
-        $db    = Database::singleton();
         foreach ($data as $row) {
             $uploadStatus = $row[1];
             $filePath     = $row[5];
