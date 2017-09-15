@@ -58,7 +58,7 @@ var Markdown = React.createClass({
       if (paragraphs[i][0] === '#') {
         var hlevel = 1;
         paragraphs[i] = paragraphs[i].replace(headersRe,
-          function(match, headerLevel, headerContent, offset, val, hlevel) {
+          function(match, headerLevel, headerContent, offset, val) {
             hlevel = headerLevel.length;
             return headerContent;
           }
