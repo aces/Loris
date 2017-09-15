@@ -128,16 +128,20 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                       WHEN m.".$scan_done." = 'Complete' THEN 'Yes'
                       WHEN m.".$scan_done." = 'Partial' THEN 'Yes'
                       ELSE 'No'
-                    END as scan_done,
-                    CASE 
+                   END as scan_done,
+                   CASE 
                       WHEN t.tarchiveID IS NULL THEN 'Missing'
                       ELSE 'In DICOM'
-                    END as tarchive_loc,
-                    CASE 
+                   END as tarchive_loc,
+                   CASE 
                       WHEN fi.fileID IS NULL AND mpv.PatientName IS NULL THEN 'Missing'
                       WHEN fi.fileID IS NOT NULL THEN 'In Imaging Browser'
                       WHEN mpv.PatientName IS NOT NULL THEN 'In MRI Violated Scans'
-                    END as scan_location,
+                   END as scan_location,
+                   CASE 
+                      WHEN qc.Selected = '' THEN 'False' 
+                      WHEN qc.Selected = 'true' THEN 'True'
+                   END as selected,
                    qc.QCStatus as qc_status,
                    mu.uploadedBy as uploaded_by,
                    f.CommentID as CommentID,
@@ -224,7 +228,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $this->addSelect('scanLocation', 'Scan Location', $scan_location);
         $this->addSelect('qCStatus', 'QC Status', array("Pass" => "Pass", "Fail" => "Fail"));
         $this->addSelect('uploadedBy', 'Uploaded By', $uploaderList);
-        $this->addSelect('selected', 'Selected', array("true" => "True"));
+        $this->addSelect('selected', 'Selected', array("True" => "True", "False" => "False"));
         return true;
     }
     /**
@@ -271,6 +275,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                           'scan_location',
                           'qc_status',
                           'uploaded_by',
+                          'selected',
                           'CommentID',
                           'TarchiveID',
                          ];
@@ -285,6 +290,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             tarchive_loc,
             scan_location,
             qc_status,
+            selected,
             uploaded_by,
             CommentID,
             TarchiveID ';
@@ -303,6 +309,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                           'Scan Location',
                           'QC Status',
                           'Uploaded By',
+                          'Selected',
                           'CommentID',
                           'TarchiveID',
                          ];
