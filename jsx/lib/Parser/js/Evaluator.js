@@ -1,10 +1,39 @@
 import Functions from './Functions';
-import { parser } from './logicParser';
+import {parser} from './logicParser';
+
+class ParseError {
+  constructor(message) {
+    this.name = 'ParseError';
+    this.message = message;
+    this.stack = new Error().stack;
+  }
+}
+
+ParseError.prototype = Object.create(Error.prototype);
+
+class UndefinedVariableError {
+  constructor(message) {
+    this.name = 'UndefinedVariableError';
+    this.message = message;
+    this.stack = new Error().stack;
+  }
+}
+UndefinedVariableError.prototype = Object.create(Error.prototype);
+
+class NullVariableError {
+  constructor(message) {
+    this.name = 'NullVariableError';
+    this.message = message;
+    this.stack = new Error().stack;
+  }
+}
+
+NullVariableError.prototype = Object.create(Error.prototype);
 
 function evalAST(tree, scope) {
-  switch(tree.tag) {
+  switch (tree.tag) {
     case 'String': {
-      return String(tree.args[0].slice(1,-1));
+      return String(tree.args[0].slice(1, -1));
     }
     case 'Literal': {
       return tree.args[0];
@@ -40,9 +69,9 @@ function evalAST(tree, scope) {
     case 'FuncApplication': {
       if (tree.args[0] === 'if') {
         if (evalAST(tree.args[1][0], scope)) {
-          return evalAST(tree.args[1][1],scope);
+          return evalAST(tree.args[1][1], scope);
         }
-        return evalAST(tree.args[1][2],scope);
+        return evalAST(tree.args[1][2], scope);
       }
       if (!Functions[tree.args[0]]) {
         throw new Error(`${tree.args[0]} is not a defined function.`);
@@ -54,60 +83,33 @@ function evalAST(tree, scope) {
       return evalAST(tree.args[0], scope);
     }
     case 'UnaryOp': {
-      return Functions[tree.op](evalAST(tree.args[0],scope));
+      return Functions[tree.op](evalAST(tree.args[0], scope));
     }
     case 'BinaryOp': {
       const funcArgs = tree.args.map(ast => evalAST(ast, scope));
       const castedFuncArgs = funcArgs.map(arg => (Number(arg) || Number(arg) === 0) ? Number(arg) : arg);
       return Functions[tree.op](...castedFuncArgs);
     }
+    default: {
+      return;
+    }
   }
 }
 
 export default function Evaluator(stringExpression, scope = {}) {
   if (stringExpression === '') {
-      return '';
+    return '';
   }
   if (stringExpression === null) {
-      return null;
+    return null;
   }
   let tree;
   try {
-      tree = parser.parse(stringExpression);
+    tree = parser.parse(stringExpression);
   } catch (e) {
-      throw new ParseError(`Parsing error; please review Syntax\n${e}`);
+    throw new ParseError(`Parsing error; please review Syntax\n${e}`);
   }
   return evalAST(tree, scope);
 }
 
-class ParseError {
-  constructor(message) {
-    this.name = 'ParseError';
-    this.message = message;
-    this.stack = new Error().stack;
-  }
-}
-
-ParseError.prototype = Object.create(Error.prototype);
-
-class UndefinedVariableError {
-  constructor(message) {
-    this.name = 'UndefinedVariableError';
-    this.message = message;
-    this.stack = new Error().stack;
-  }
-}
-UndefinedVariableError.prototype = Object.create(Error.prototype);
-
-
-class NullVariableError {
-  constructor(message) {
-    this.name = 'NullVariableError';
-    this.message = message;
-    this.stack = new Error().stack;
-  }
-}
-
-NullVariableError.prototype = Object.create(Error.prototype);
-
-export { ParseError, UndefinedVariableError, NullVariableError };
+export {ParseError, UndefinedVariableError, NullVariableError};

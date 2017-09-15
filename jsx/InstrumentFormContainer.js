@@ -1,5 +1,5 @@
 import InstrumentForm from './InstrumentForm';
-import { Evaluator, NullVariableError } from './lib/Parser';
+import {Evaluator, NullVariableError} from './lib/Parser';
 import localizeInstrument from './lib/localize-instrument';
 
 const INPUT_TYPES = ['select', 'date', 'radio', 'text', 'score', 'checkbox'];
@@ -17,32 +17,36 @@ class InstrumentFormContainer extends React.Component {
       data: this.props.initialData,
       localizedInstrument: localizeInstrument(this.props.instrument, this.props.lang),
       showRequired: false,
-      errorMessage: null,
+      errorMessage: null
     };
-    
+
     this.updateInstrumentData = this.updateInstrumentData.bind(this);
     this.incompleteRequiredFieldExists = this.incompleteRequiredFieldExists.bind(this);
     this.onSaveButtonClick = this.onSaveButtonClick.bind(this);
   }
 
   getSaveText(lang) {
-    switch(lang) {
-      case 'en-ca':
+    switch (lang) {
+      case 'en-CA':
         return 'Save';
-      case 'fr-ca':
+      case 'fr-CA':
         return 'Enregistrer';
+      default:
+        return 'en-CA';
     }
   }
 
   getSaveWarning(lang) {
-    switch(lang) {
-      case 'en-ca':
+    switch (lang) {
+      case 'en-CA':
         return 'You cannot modify your answers after clicking this button. Please ensure all answers are correct.';
-      case 'fr-ca':
+      case 'fr-CA':
         return 'Vous ne pouvez pas modifier vos réponses après avoir cliqué sur ce bouton. Assurez-vous que toutes les réponses sont correctes.';
+      default:
+        return '';
     }
   }
-  
+
   /**
    * This function is called when the user inputs or updates an instrument
    * field. It is responsible for updating `state.data`, which involves not
@@ -50,19 +54,19 @@ class InstrumentFormContainer extends React.Component {
    * that may have changed as a result.
    *
    * @param {string} name - The name of the data point that changed
-   * @param value - The new value of the data point
+   * @param {any} value - The new value of the data point
    */
   updateInstrumentData(name, value) {
     const instrumentData = Object.assign({}, this.state.data, {[name]: value});
 
     const scoreElements = this.props.instrument.Elements.filter(
-      (element) => (element.Type === 'score')
+      element => (element.Type === 'score')
     );
 
-    const evaluatorContext = { ...instrumentData, context: this.props.context };
+    const evaluatorContext = {...instrumentData, context: this.props.context};
     const calculatedValues = scoreElements.reduce((result, element) => {
       try {
-        result[element.Name] = String(Evaluator(element.Formula, evaluatorContext));
+        result[element.Name] = String(Evaluator(element.Formula, evaluatorContext)); // eslint-disable-line new-cap
       } catch (e) {
         if (!(e instanceof NullVariableError)) {
           throw e;
@@ -84,7 +88,7 @@ class InstrumentFormContainer extends React.Component {
    * Intended to be called before submitting data to the server as part of
    * the front-end validation process.
    *
-   * @returns {boolean} Boolean indicating whether any required fields have been left incomplete
+   * @return {boolean} Boolean indicating whether any required fields have been left incomplete
    */
   incompleteRequiredFieldExists() {
     const annotatedElements = this.annotateElements(
@@ -99,7 +103,7 @@ class InstrumentFormContainer extends React.Component {
     );
 
     let incompleteExists = false;
-    annotatedElements.forEach((element) => {
+    annotatedElements.forEach(element => {
       if (element.Options.RequireResponse && (!element.Value)) {
         incompleteExists = true;
       }
@@ -114,7 +118,13 @@ class InstrumentFormContainer extends React.Component {
    * DisplayIf may contain a string of LorisScript which will be evaluated using the context
    * and current data.
    *
-   * @returns {boolean} Boolean indicating whether the field should be displayed
+   * @param {object} element - The element to check
+   * @param {number} index - The element's index
+   * @param {object} data - The instrument data
+   * @param {object} context - The context
+   * @param {boolean} surveyMode - Boolean indicating whether we are in surveyMode
+   *
+   * @return {boolean} Boolean indicating whether the field should be displayed
    */
   isDisplayed(element, index, data, context, surveyMode) {
     if (
@@ -128,10 +138,10 @@ class InstrumentFormContainer extends React.Component {
     if (element.DisplayIf === '') return true;
 
     try {
-      return Evaluator(element.DisplayIf, { ...data, context});
-    } catch(e) {
+      return Evaluator(element.DisplayIf, {...data, context}); // eslint-disable-line new-cap
+    } catch (e) {
       if (!(e instanceof NullVariableError)) {
-        console.log(`Error evaluating DisplayIf property of element ${index}.\n${e}`);
+        console.log(`Error evaluating DisplayIf property of element ${index}.\n${e}`); // eslint-disable-line no-console
       }
 
       return false;
@@ -143,19 +153,24 @@ class InstrumentFormContainer extends React.Component {
    * be a simple boolean in which case it is returned. RequireResponse can also be
    * a string of LorisScript which will be evaluated using the context and current data.
    *
-   * @returns {boolean} Boolean indicating whether the field is required
+   * @param {object} element - The element to check
+   * @param {number} index - The element's index
+   * @param {object} data - The instrument data
+   * @param {object} context - The context
+   *
+   * @return {boolean} Boolean indicating whether the field is required
    */
   isRequired(element, index, data, context) {
     if (!INPUT_TYPES.includes(element.Type)) return false;
 
     const requireResponse = element.Options.RequireResponse || false;
-    if (typeof(requireResponse) === 'boolean') return requireResponse;
+    if (typeof (requireResponse) === 'boolean') return requireResponse;
 
     try {
-      return Evaluator(requireResponse, { ...data, context });
+      return Evaluator(requireResponse, {...data, context}); // eslint-disable-line new-cap
     } catch (e) {
       if (!(e instanceof NullVariableError)) {
-        console.log(`Error evaluating RequireResponse property of element ${index}.\n${e}`);
+        console.log(`Error evaluating RequireResponse property of element ${index}.\n${e}`); // eslint-disable-line no-console
       }
 
       return false;
@@ -183,7 +198,12 @@ class InstrumentFormContainer extends React.Component {
    * Helper function which filters an instruments elements by applying isDisplay
    * to each.
    *
-   * @returns {array} Array of the filtered elements
+   * @param {array} elements - The elements
+   * @param {object} data - The instrument data
+   * @param {object} context - The context
+   * @param {boolean} surveyMode - Boolean indicating whether we are in surveyMode
+   *
+   * @return {array} Array of the filtered elements
    */
   filterElements(elements, data, context, surveyMode) {
     return elements.filter(
@@ -198,11 +218,15 @@ class InstrumentFormContainer extends React.Component {
    * in a RequireResponse property of an element and replace it with a boolean. Again, this
    * simplifies things in InstrumentForm.
    *
-   * @returns {array} Array of the filtered elements
+   * @param {array} elements - The elements
+   * @param {object} data - The instrument data
+   * @param {object} context - The context
+   *
+   * @return {array} Array of the filtered elements
    */
   annotateElements(elements, data, context) {
     return elements.map(
-      (element, index) => Object.assign(element, { 
+      (element, index) => Object.assign(element, {
         Value: data[element.Name],
         Options: Object.assign({}, element.Options, {
           RequireResponse: this.isRequired(element, index, data, context)
@@ -212,8 +236,8 @@ class InstrumentFormContainer extends React.Component {
   }
 
   render() {
-    const { data, localizedInstrument } = this.state;
-    const { context, options, lang } = this.props;
+    const {data, localizedInstrument} = this.state;
+    const {context, options, lang} = this.props;
 
     return (
       <InstrumentForm

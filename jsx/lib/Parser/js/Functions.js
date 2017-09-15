@@ -1,4 +1,4 @@
-//import moment from 'moment';
+/* eslint-disable */
 
 export default {
   eq(a, b) {
@@ -61,12 +61,12 @@ export default {
     return !a;
   },
   fact(a) {
-    if (a >= 0 && a%1 == 0) {
-      return (function fact (n) { return n==0 ? 1 : fact(n-1) * n })(a);
-    } else if (a >= 0 && a%1 == 0.5) {
-      return (function fact (n) { return n==0.5 ? Math.sqrt(Math.PI)/2 : fact(n-1) * n })(a);
+    if (a >= 0 && a % 1 == 0) {
+      return (function fact(n) { return n == 0 ? 1 : fact(n - 1) * n; })(a);
+    } else if (a >= 0 && a % 1 == 0.5) {
+      return (function fact(n) { return n == 0.5 ? Math.sqrt(Math.PI) / 2 : fact(n - 1) * n; })(a);
     } else {
-      throw 'Factorial for a number not divisible by 0.5 or greater than 0 is not supported.'
+      throw new Error('Factorial for a number not divisible by 0.5 or greater than 0 is not supported.');
     }
   },
   isNaN(a) {
@@ -101,16 +101,16 @@ export default {
   },
   mean(...ns) {
     if (ns.length === 0) {
-      throw 'Cannot find mean of 0 arguments'
+      throw new Error('Cannot find mean of 0 arguments');
     }
-    return ns.reduce((a,b) => a+b, 0) / ns.length;
+    return ns.reduce((a, b) => a + b, 0) / ns.length;
   },
   median(...ns) {
     if (ns.length === 0) {
-      throw 'Cannot find median of 0 arguments'
+      throw new Error('Cannot find median of 0 arguments');
     }
-    const cpy = ns.map(x => x)
-    const mid = cpy.length / 2
+    const cpy = ns.map(x => x);
+    const mid = cpy.length / 2;
     cpy.sort();
     if (cpy.length % 2 === 0) {
       return (cpy[mid] + cpy[mid - 1]) / 2;
@@ -119,25 +119,25 @@ export default {
     }
   },
   sum(...ns) {
-    return ns.reduce((a,b) => a + b, 0);
+    return ns.reduce((a, b) => a + b, 0);
   },
   product(...ns) {
-	return ns.reduce((a,b) => a * b, 1);
+    return ns.reduce((a, b) => a * b, 1);
   },
   variance(...ns) {
-    const mean = ns.reduce((a,x) => a + x, 0) / ns.length;
+    const mean = ns.reduce((a, x) => a + x, 0) / ns.length;
     const sqDiffs = ns.map(function(value) {
-      return Math.pow(value-mean, 2);
+      return Math.pow(value - mean, 2);
     });
-    const variance = sqDiffs.reduce((a,x) => a + x, 0) / sqDiffs.length;
+    const variance = sqDiffs.reduce((a, x) => a + x, 0) / sqDiffs.length;
     return variance;
   },
   stdev(...ns) {
-    const mean = ns.reduce((a,x) => a + x, 0) / ns.length;
+    const mean = ns.reduce((a, x) => a + x, 0) / ns.length;
     const sqDiffs = ns.map(function(value) {
-      return Math.pow(value-mean, 2);
+      return Math.pow(value - mean, 2);
     });
-    const variance = sqDiffs.reduce((a,x) => a + x, 0) / sqDiffs.length;
+    const variance = sqDiffs.reduce((a, x) => a + x, 0) / sqDiffs.length;
     return Math.sqrt(variance);
   },
   // Assuming 24-hour clock
@@ -145,36 +145,36 @@ export default {
     let dt1;
     let dt2;
     try {
-        const d1 = date1.split("-");
-        const d2 = date2.split("-");
-        dt1 = new Date(d1[0],d1[1],d1[2]);
-        dt2 = new Date(d2[0],d2[1],d2[2]);
+      const d1 = date1.split("-");
+      const d2 = date2.split("-");
+      dt1 = new Date(d1[0], d1[1], d1[2]);
+      dt2 = new Date(d2[0], d2[1], d2[2]);
     } catch (e) {
-        return 0;
+      return 0;
     }
     let res;
     switch (units) {
-        case 'y':
-        case 'Y':
-            res = 1000*60*60*24*365
-            break;
-        case 'M':
-        case 'm':
-            res = 1000*60*60*24*30.44
-            break;
-        case 'D':
-        case 'd':
-            res = 1000*60*60*24
-            break;
+      case 'y':
+      case 'Y':
+        res = 1000 * 60 * 60 * 24 * 365;
+        break;
+      case 'M':
+      case 'm':
+        res = 1000 * 60 * 60 * 24 * 30.44;
+        break;
+      case 'D':
+      case 'd':
+        res = 1000 * 60 * 60 * 24;
+        break;
     }
     try {
-        if (returnSigned) {
-            return (dt1.getTime() - dt2.getTime())/res;
-        } else {
-            return Math.abs((dt1.getTime() - dt2.getTime())/res);
-        }
+      if (returnSigned) {
+        return (dt1.getTime() - dt2.getTime()) / res;
+      } else {
+        return Math.abs((dt1.getTime() - dt2.getTime()) / res);
+      }
     } catch (e) {
-        return 0;
+      return 0;
     }
   }
-}
+};

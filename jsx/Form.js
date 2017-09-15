@@ -140,20 +140,24 @@ var FormElement = React.createClass({
  * RadioGroupLabels
  * Aligned labels for rows of radio buttons
  */
-const RadioGroupLabels = ({ labels }) => (
-  <div className="row form-group">
-    <label className="col-sm-3 control-label">
-      &nbsp;
-    </label>
-    <div style={{marginTop: 30, display: 'flex', justifyContent: 'space-around'}} className="col-sm-9">
-      {labels.map((label, index) => (
-        <div key={index} style={{color: 'brown', textAlign: 'center', minWidth: '10em', maxWidth: '10em'}}>
-          {label}
+const RadioGroupLabels = React.createClass({
+  render() {
+    return (
+      <div className="row form-group">
+        <label className="col-sm-3 control-label">
+          &nbsp;
+        </label>
+        <div style={{marginTop: 30, display: 'flex', justifyContent: 'space-around'}} className="col-sm-9">
+          {this.props.labels.map((label, index) => (
+            <div key={index} style={{color: 'brown', textAlign: 'center', minWidth: '10em', maxWidth: '10em'}}>
+              {label}
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-  </div>
-);
+      </div>
+    );
+  }
+});
 
 /**
  * RadioGroup Component
@@ -163,8 +167,8 @@ const RadioGroupElement = React.createClass({
   propTypes: {
     name: React.PropTypes.string.isRequired,
     options: React.PropTypes.oneOfType([
-        React.PropTypes.object,
-        React.PropTypes.array
+      React.PropTypes.object,
+      React.PropTypes.array
     ]),
     label: React.PropTypes.string,
     value: React.PropTypes.string,
@@ -299,7 +303,6 @@ const CheckboxGroupElement = React.createClass({
 
   render: function() {
     var required = this.props.required ? 'required' : null;
-    var disabled = this.props.disabled ? 'disabled' : null;
     var options = this.props.options;
     var errorMessage = null;
     var requiredHTML = null;
@@ -344,7 +347,6 @@ const CheckboxGroupElement = React.createClass({
     );
   }
 });
-
 
 /**
  * Select Component
