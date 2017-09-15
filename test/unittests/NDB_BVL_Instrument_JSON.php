@@ -27,7 +27,7 @@ class NDB_BVL_Instrument_JSON_Test extends PHPUnit_Framework_TestCase
         parent::setUp();
     }
 
-    public function testInlineCalcFormulas()
+    public function testInlineScoreFormulas()
     {
         
         $ELEMENTS = [
@@ -37,17 +37,17 @@ class NDB_BVL_Instrument_JSON_Test extends PHPUnit_Framework_TestCase
             ],
             [
               "Name" => "b",
-              "Type" => "calc",
+              "Type" => "score",
               "Formula" => "2 + 2",
             ],
             [
               "Name" => "c",
-              "Type" => "calc",
+              "Type" => "score",
               "Formula" => "[a] + [b]",
             ],
             [
               "Name" => "d",
-              "Type" => "calc",
+              "Type" => "score",
               "Formula" => "[c] - 3",
             ]
         ];
@@ -59,24 +59,24 @@ class NDB_BVL_Instrument_JSON_Test extends PHPUnit_Framework_TestCase
             ],
             [
               "Name" => "b",
-              "Type" => "calc",
+              "Type" => "score",
               "Formula" => "2 + 2",
             ],
             [
               "Name" => "c",
-              "Type" => "calc",
+              "Type" => "score",
               "Formula" => "[a] + (2 + 2)",
             ],
             [
               "Name" => "d",
-              "Type" => "calc",
+              "Type" => "score",
               "Formula" => "([a] + (2 + 2)) - 3"
             ]
         ];
 
         $this->assertEquals(
           $EXPECTED,
-          \Loris\Behavioural\NDB_BVL_Instrument_JSON::inlineCalcFormulas($ELEMENTS)
+          \Loris\Behavioural\NDB_BVL_Instrument_JSON::inlineScoreFormulas($ELEMENTS)
         );
     }
 

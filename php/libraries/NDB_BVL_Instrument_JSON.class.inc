@@ -120,7 +120,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
             $json = file_get_contents($filename);
             $this->instrumentJSON = $json;
             $this->instrument     = json_decode($json, true);
-            $this->instrument["Elements"] = self::inlineCalcFormulas(
+            $this->instrument["Elements"] = self::inlineScoreFormulas(
                 $this->instrument["Elements"]
             );
             $this->table    = $this->instrument['Meta']['ShortName'];
@@ -443,7 +443,7 @@ class NDB_BVL_Instrument_JSON extends \NDB_BVL_Instrument
      *
      * @return array Inlined Elements
      */
-    static function inlineCalcFormulas($elements)
+    static function inlineScoreFormulas($elements)
     {
         $calcElements = array_filter(
             $elements,
