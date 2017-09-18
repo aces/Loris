@@ -44,18 +44,26 @@ function save() {
           value = $('#'+id).text();
           if (value !== default_value) {
             $('.description').attr('contenteditable', false);
-            var userIsSure = confirm('Are you sure you want to edit this field?');
-            if (userIsSure) {
-              $.post(
-                loris.BaseURL + '/mri_violations/ajax/UpdateMRIProtocol.php',
-                {
-                  field_id: id,
-                  field_value: value
-                }
-              );
-            } else {
-              $('#' + id).text(default_value);
-            }
+            swal({
+              title: "Are you sure?",
+              text: "Are you sure want to edit this field?",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonText: 'Yes, I am sure!',
+              cancelButtonText: "No, cancel it!"
+            }, function(isConfirm) {
+              if (isConfirm) {
+                $.post(
+                  loris.BaseURL + '/mri_violations/ajax/UpdateMRIProtocol.php',
+                  {
+                    field_id: id,
+                    field_value: value
+                  }
+                );
+              } else {
+                $('#' + id).text(default_value);
+              }
+            });
             $('.description').attr('contenteditable', true);
           }
       }
