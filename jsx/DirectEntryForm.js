@@ -7,6 +7,7 @@
  */
 
 import GroupElement from './GroupElement.js';
+// import Markdown from './Markdown.js';
 
 
 /**
@@ -181,7 +182,9 @@ class SelectElement extends React.Component {
 
 		return (
 			<div>
-				<h4 className={classInfo}>{this.props.element.Description}</h4>
+				<h3 className={classInfo}>
+					<Markdown content={this.props.element.Description} />
+				</h3>
 				{element}
 			</div>
 		);
@@ -200,7 +203,27 @@ class TextElement extends React.Component {
 	}
 
 	render() {
-		const type = (this.props.element.Options.Type === 'small') ? "text" : "textArea";
+		let type;
+		if (this.props.element.Options.Type === 'small') {
+			type = (
+				<input
+					name = {this.props.element.Name}
+					type='text'
+					className="form-control"
+					onChange = {this.updateText}
+					value = {value}
+				/>
+			);
+		} else {
+			type = (
+				<textarea
+					name = {this.props.element.Name}
+					className="form-control"
+					onChange = {this.updateText}
+					value = {value}
+				/>
+			);
+		}
 		let classInfo = 'col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4';
 		let value = '';
 
@@ -214,15 +237,11 @@ class TextElement extends React.Component {
 
 		return (
 			<div>
-				<h4 className='col-xs-12 field_question'>{this.props.element.Description}</h4>
+				<h3 className='col-xs-12 field_question'>
+					<Markdown content={this.props.element.Description} />
+				</h3>
 				<div className={classInfo}>
-					<input
-						name = {this.props.element.Name}
-						type={type}
-						className="form-control"
-						onChange = {this.updateText}
-						value = {value}
-					/>
+					{type}
 				</div>
 			</div>
 		);
@@ -251,7 +270,9 @@ class DateElement extends React.Component {
 
 		return (
 			<div>
-				<h4 className={classInfo}>{this.props.element.Description}</h4>
+				<h3 className={classInfo}>
+					<Markdown content={this.props.element.Description} />
+				</h3>
 				<div className='col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4'>
 					<input
 						name = {this.props.element.Name}
@@ -276,7 +297,7 @@ class LabelElement extends React.Component {
 	render() {
 		return (
 			<div>
-				<h3>{this.props.element.Description}</h3>
+				<Markdown content={this.props.element.Description} />
 			</div>
 		);
 	}

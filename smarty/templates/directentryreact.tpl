@@ -3,6 +3,7 @@
 <script src="{$baseurl}/js/react/react-with-addons.js" type="text/javascript"></script>
 <script src="{$baseurl}/js/react/react-dom.js" type="text/javascript"></script>
 <script src="{$baseurl}/js/components/DirectEntry.js"></script>
+<script src="{$baseurl}/js/components/Markdown.js"></script>
 <link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
 <style type="text/css">
 	#page {
@@ -14,6 +15,8 @@
 	}
 	.field_question {
 		margin-bottom: 25px;
+        text-align: left;
+        color: #064785;
 	}
 	.field_input {
 		text-align: left;
@@ -44,6 +47,9 @@
     .has-error, .form-error {
 		color: #b94a48;
 	}
+    .reviewPage{
+        text-align: left;
+    }
 </style>
 
 <div id="reactInput">

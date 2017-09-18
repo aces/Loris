@@ -33,6 +33,7 @@ class DirectEntry extends React.Component {
 	    this.prevPage = this.prevPage.bind(this);
 	    this.updateAnswer = this.updateAnswer.bind(this);
 	    this.setupPageValues = this.setupPageValues.bind(this);
+	    this.submit = this.submit.bind(this);
 
 
 	    this.state = {
@@ -87,11 +88,22 @@ class DirectEntry extends React.Component {
 
 	nextPage() {
 
-		const data = {
+		let page = 0;
+		let finalPage = false;
+		if(this.state.page > 0) {
+			page = this.state.page + 1;
+		}
+
+		let data = {
 			"data" : this.state.pageValues,
-			"page" : this.state.page
+			"page" : page
 		};
 		const that = this;
+
+		if(this.state.page === this.state.InstrumentJSON.Elements.length - 1) {
+			data['FinalPage'] = true;
+			finalPage = true;
+		}
 
 		$.ajax({
 		    url : window.location.href,
@@ -100,12 +112,21 @@ class DirectEntry extends React.Component {
 		    contentType : 'application/json',
 		    success : function(result){
 		        const page = that.state.page + 1;
-		        const InstrumentJSON = JSON.parse(result);
+		        let InstrumentJSON;
+		        let reviewPage;
+
+		        if(finalPage) {
+		        	InstrumentJSON = that.state.InstrumentJSON;
+		        	reviewPage = JSON.parse(result);
+		        } else {
+		        	InstrumentJSON = JSON.parse(result);
+		        }
 
 		        that.setState({
 					page: page,
 					errors: {},
-					InstrumentJSON: InstrumentJSON
+					InstrumentJSON: InstrumentJSON,
+					ReviewData: reviewPage
 				});
 
 				that.setupPageValues(page);
@@ -161,10 +182,22 @@ class DirectEntry extends React.Component {
 		});
 	}
 
+	submit() {
+		$.ajax({
+		    url : window.location.href,
+		    type : 'POST',
+		    contentType : 'application/json'
+		}); 
+	}
+
 	render() {
 		let DirectEntryFormElements;
 		let buttons;
-		if (this.state.page >= 0) {
+		if (this.state.page === this.state.InstrumentJSON.Elements.length) {
+			DirectEntryFormElements = (
+				<ReviewPage reviewData={this.state.ReviewData} />
+			);
+		} else if (this.state.page >= 0) {
 			DirectEntryFormElements = (
 				<Page
 					elements={this.state.InstrumentJSON.Elements[this.state.page].Elements}
@@ -183,7 +216,15 @@ class DirectEntry extends React.Component {
 				/>
 			);
 		}
-		if (this.state.page === -1 || (this.state.page === 0 && this.state.InstrumentJSON.Elements.length === 1)) {
+			
+		if (this.state.page === this.state.InstrumentJSON.Elements.length) {
+			buttons = (
+				<div>
+				 	<button type="button" className="btn btn-primary btn-lg" onClick={this.prevPage}>Prev</button>
+				 	<button type="button" className="btn btn-primary btn-lg" onClick={this.submit}>Submit</button>
+				 </div>
+			 );
+		} else if (this.state.page === -1 || (this.state.page === 0 && this.state.InstrumentJSON.Elements.length === 1)) {
 			 buttons = (
 			 	<button type="button" className="btn btn-primary btn-lg">Done</button>
 			 );
@@ -195,7 +236,7 @@ class DirectEntry extends React.Component {
 			buttons = (
 				<div>
 				 	<button type="button" className="btn btn-primary btn-lg" onClick={this.prevPage}>Prev</button>
-				 	<button type="button" className="btn btn-primary btn-lg">Done</button>
+				 	<button type="button" className="btn btn-primary btn-lg" onClick={this.nextPage}>Done</button>
 				 </div>
 			 );
 		} else {
@@ -220,6 +261,37 @@ class DirectEntry extends React.Component {
 			</div>
 		);
 	}
+}
+
+class ReviewPage extends React.Component {
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+
+		let questions = this.props.reviewData.questions.map((element) => {
+			console.log(element);
+			return (
+				<tr className='reviewPage'>
+					<td>{element.question}</td>
+					<td>{element.response}</td>
+				</tr>
+			);
+		});
+
+		return (
+			<div className='question-container col-xs-12 col-sm-10 col-sm-offset-1'>
+				<h3>Review You Submission</h3>
+				<table className="table table-striped table-bordered">
+					
+					<tbody>
+					{questions}
+					</tbody>
+				</table>
+			</div>
+		)
+	}	
 }
 
 window.DirectEntry = DirectEntry;

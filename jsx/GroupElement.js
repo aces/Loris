@@ -85,7 +85,9 @@ class ElementGroup extends React.Component {
 
 		return (
 			<div className='col-xs-12'>
-				<label className={labelClass}>{this.props.element.Description}</label>
+				<div className={labelClass}>
+					<Markdown content={this.props.element.Description} />
+				</div>
 				{elements}
 			</div>
 		);
@@ -147,7 +149,7 @@ class BaseElement extends React.Component {
 				break;
 			case 'label':
 				element = (
-					<label>{this.props.element.Description}</label>
+					<Markdown content={this.props.element.Description} />
 				);
 				break;
 			default:

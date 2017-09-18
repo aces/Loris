@@ -88,8 +88,11 @@ class DirectDataEntryMainPage
         case 'PATCH':
             $this->handlePATCH();
             break;
+        case 'POST':
+            $this->handlePOST();
+            break;
         default:
-            // $this->header("HTTP/1.1 501 Not Implemented");
+            $this->header("HTTP/1.1 501 Not Implemented");
             break;
         }
     }
@@ -215,11 +218,58 @@ class DirectDataEntryMainPage
         $this->Instrument->form->directValues = $data['data'];
 
         if($this->Instrument->form->validate()) {
-            error_log("VALID");
-            echo $this->Instrument->toDirectJSON();
+            if($data['FinalPage']) {
+                echo $this->Instrument->getReactReview();
+            } else {
+                echo $this->Instrument->toDirectJSON();
+            }
         } else {
             header("HTTP/1.0 400 Bad Request");
             echo json_encode($this->Instrument->form->errors);
+        }
+
+    }  
+
+    /**
+     * Handle a PATCH request. This will update a single field
+     *
+     * @return none
+     */
+    function handlePOST() {
+        
+        $fp   = fopen("php://input", "r");
+        $data = '';
+        while (!feof($fp)) {
+            $data .= fread($fp, 1024);
+        }
+        fclose($fp);
+
+        $data = json_decode($data, true);
+
+        try {
+            $this->Instrument = \NDB_BVL_Instrument::factory(
+                $this->SurveyInfo['Test_name'],
+                $this->SurveyInfo['CommentID'],
+                null,
+                true
+            );
+        } catch(\Exception $e) {
+            throw new Exception("Instrument not found", 405);
+        }
+
+        $valid = $this->Instrument->directEntryValidation();
+
+        if($valid === true) {
+            header("HTTP/1.0 200 OK");
+            $DB = Database::singleton();
+            $DB->update(
+                "participant_accounts",
+                array('Status' => "Complete"),
+                array('OneTimePassword' => $this->key)
+            );
+        } else {
+            header("HTTP/1.0 400 Bad Request");
+            echo json_encode($valid);
         }
 
     }   

@@ -12,6 +12,7 @@ class PageElementsFormatter {
 			case 'select':
 				$tempElement = self::formatSelect($element, $tempElement);
 				break;
+			case 'textarea':
 			case 'text':
 				$tempElement = self::formatText($element, $tempElement);
 				break;
@@ -52,6 +53,11 @@ class PageElementsFormatter {
 			'RequireResponse' => false,
 		);
 
+		if($oldElem['type'] === 'textarea') {
+			$newElem['Type'] = 'text';
+			$newElem['Options']['Type'] = 'large';
+		} 
+
 		return $newElem;
 	}
 
@@ -59,7 +65,6 @@ class PageElementsFormatter {
 	private function formatDate($oldElem, $newElem) {
 		$newElem['Options'] = array('RequireResponse' => false);
 		if($oldElem['options']['minYear']) {
-			error_log("IN HERE");
 			$newElem['Options']['MinDate'] = $oldElem['options']['minYear'] . "-01-01";
 		}
 		if($oldElem['options']['maxYear']) {
