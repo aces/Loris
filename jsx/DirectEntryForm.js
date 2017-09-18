@@ -42,6 +42,7 @@ class DirectEntryFormElement extends React.Component {
 						element={this.props.element}
 						value={this.props.values[this.props.element.Name]}
 						updateAnswer={this.props.updateAnswer}
+						error={this.props.errors[this.props.element.Name]}
 					/>
 				);
 				break;
@@ -61,6 +62,7 @@ class DirectEntryFormElement extends React.Component {
 						element={this.props.element}
 						value={this.props.values[this.props.element.Name]}
 						updateAnswer={this.props.updateAnswer}
+						error={this.props.errors[this.props.element.Name]}
 					/>
 				);
 				break;
@@ -171,9 +173,15 @@ class SelectElement extends React.Component {
 			</div>
 		);
 
+		let classInfo = 'col-xs-12 field_question';
+
+		if(this.props.error) {
+			classInfo += ' has-error';
+		}
+
 		return (
 			<div>
-				<h4 className='col-xs-12 field_question'>{this.props.element.Description}</h4>
+				<h4 className={classInfo}>{this.props.element.Description}</h4>
 				{element}
 			</div>
 		);
@@ -235,9 +243,15 @@ class DateElement extends React.Component {
 
 	render() {
 
+		let classInfo = 'col-xs-12 field_question';
+
+		if(this.props.error) {
+			classInfo += ' has-error';
+		}
+
 		return (
 			<div>
-				<h4 className='col-xs-12 field_question'>{this.props.element.Description}</h4>
+				<h4 className={classInfo}>{this.props.element.Description}</h4>
 				<div className='col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4'>
 					<input
 						name = {this.props.element.Name}
