@@ -148,8 +148,9 @@ class BaseElement extends React.Component {
 				);
 				break;
 			case 'label':
+				let content = this.props.value ? this.props.value : this.props.element.Description;
 				element = (
-					<Markdown content={this.props.element.Description} />
+					<Markdown content={content} />
 				);
 				break;
 			default:
