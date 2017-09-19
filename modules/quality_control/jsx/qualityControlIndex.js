@@ -106,7 +106,7 @@ class QualityControlIndex extends React.Component {
                     Module="quality_control"
                     name="quality_control"
                     id="quality_control_filter"
-                    columns={2}
+                    columns={3}
                     formElements={this.state.ImgData.form}
                     onUpdate={this.updateImgFilter}
                     filter={this.state.imgFilter}>

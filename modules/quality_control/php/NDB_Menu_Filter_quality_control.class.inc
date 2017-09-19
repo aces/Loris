@@ -117,6 +117,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                    c.PSCID,
                    s.ID as SessionID,
                    s.CandID as cand_id,
+                   (SELECT name FROM psc WHERE CenterID=s.CenterID) as site,
                    s.Visit_label as visit_label,
                    '".$scan_type."' as scan_type,
                    CASE
@@ -216,6 +217,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                         "Missing"               => "Missing",
                        );
         // Form Elements
+        $this->addSelect('site', 'Site', $siteList);
         $this->addBasicText('candId', 'DCCID', ["size" => 9, "maxlength" => 7]);
         $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
         $this->addSelect('scanType', 'Scan Type', $scan_types);
@@ -264,6 +266,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                           'PSCID',
                           'SessionID',
                           'cand_id',
+                          'site',
                           'visit_label',
                           'scan_type',
                           'mri_parameter_form',
@@ -280,6 +283,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $this->group_by = 'PSCID,
             SessionID,
             cand_id,
+            site,
             visit_label,
             scan_type,
             mri_parameter_form,
@@ -298,6 +302,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                           'PSCID',
                           'Session ID',
                           'DCCID',
+                          'Site',
                           'Visit Label',
                           'Scan Type',
                           'MRI Parameter Form',
