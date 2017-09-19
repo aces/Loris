@@ -102,7 +102,7 @@ class UploadForm extends React.Component {
     }
 
     // File in the middle of insertion pipeline
-    if (mriFile.status === "In progress") {
+    if (mriFile.status === "In Progress") {
       swal({
         title: "File is currently processing!",
         text: "A file with this name is currently going through the MRI pipeline!\n",
