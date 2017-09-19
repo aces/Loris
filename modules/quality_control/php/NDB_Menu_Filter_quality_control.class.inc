@@ -113,7 +113,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         //    2) No Data - MRI PF Incomplete, No scan in browser,
         //       No DICOM.
 
-        $select =  "  SELECT 
+        $select =  "  SELECT DISTINCT
                    c.PSCID,
                    s.ID as SessionID,
                    s.CandID as cand_id,
@@ -125,8 +125,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                    END AS mri_parameter_form,
                    CASE 
                       WHEN m.".$scan_done." IS NULL THEN ''
-                      WHEN m.".$scan_done." = 'Complete' THEN 'Yes'
-                      WHEN m.".$scan_done." = 'Partial' THEN 'Yes'
+                      WHEN (m.".$scan_done." = 'Complete' OR m.".$scan_done." = 'Partial') THEN 'Yes'
                       ELSE 'No'
                    END as scan_done,
                    CASE 
@@ -134,9 +133,9 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                       ELSE 'In DICOM'
                    END as tarchive_loc,
                    CASE 
-                      WHEN fi.fileID IS NULL AND mpv.PatientName IS NULL THEN 'Missing'
+                      WHEN (fi.fileID IS NULL AND mvl.PatientName IS NULL) THEN 'Missing'
                       WHEN fi.fileID IS NOT NULL THEN 'In Imaging Browser'
-                      WHEN mpv.PatientName IS NOT NULL THEN 'In MRI Violated Scans'
+                      WHEN mvl.PatientName IS NOT NULL THEN 'In MRI Violated Scans'
                    END as scan_location,
                    CASE 
                       WHEN qc.Selected = '' THEN 'False' 
@@ -152,14 +151,12 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
             LEFT JOIN tarchive t ON (t.SessionID=s.ID)
             LEFT JOIN files fi ON (fi.SessionID = s.ID AND fi.AcquisitionProtocolID=".$acqID.")
-            LEFT JOIN mri_protocol_violated_scans mpv ON (mpv.CandID = s.CandID AND mpv.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))
+            LEFT JOIN mri_violations_log mvl ON (mvl.CandID = s.CandID AND mvl.Scan_type=".$acqID." AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))
             LEFT JOIN candidate c ON (s.CandID=c.CandID)
             LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
             LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID) ";
            
             $where = " WHERE 1=1
-            AND NOT (((m.".$scan_done."='Complete' OR m.".$scan_done."='Partial') AND m.".$scan_done." IS NOT NULL) AND ((fi.fileID IS NOT NULL OR mpv.PatientName IS NOT NULL) AND t.tarchiveID IS NOT NULL))
-            AND NOT (((m.".$scan_done."!='Complete' AND m.".$scan_done."!='Partial') OR m.".$scan_done." IS NULL) AND ((fi.fileID IS NULL AND mpv.PatientName IS NULL) AND t.tarchiveID IS NULL))
               AND NOT f.CommentID LIKE 'DDE%'
               AND f.Test_name='mri_parameter_form'
               AND s.Active='Y'
