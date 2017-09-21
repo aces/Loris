@@ -1,74 +1,71 @@
 # Candidate Parameters Test Plan
 
-1. Check Permissions. Try removing each of these permissions/conditions one at a time. You should not be able to access the page
-    * Edit Candidate Parameters
-	* data_entry ("Data Entry", in front-end)
-	* having the same site as the candidate you are accessing	
-2. Make sure that the candidate date of birth and gender, shown in the table at the top of the page, match what is stored in the candidate table for this given candidate.
-3. Click on the Return to Timepoint List button and ensure it goes to the correct timepoint list page.
+1. Check Permissions:
+    * _candidate_parameter_view_ (_Edit Candidate Parameters_) permission (you should be able to edit fields)
+	* _candidate_parameter_edit_ (_View Candidate Parameters_) permission (you should not be able to edit fields)
+	* You need to belong to the same site as the candidate you are accessing, unless...
+	* If you have _access_all_profiles_ you should be able to access all candidate profiles (even without candidate_parameters permissions)
+2. Make sure that the candidate date of birth and gender in the table at the top of the page, match what is stored in the candidate table for this given candidate.
+3. Click on the *Return to Timepoint List* button and ensure it goes to the correct timepoint list page.
+4. Make sure all tabs render. 
+5. Ensure you stay on the same tab when you refresh.
 
-### Candidate Information Panel
-4. Confirm that all the fields in this panel correspond to what's stored in the candidate table.
+### Candidate Information Tab
+5. Confirm that all the fields in this panel correspond to what's stored in the candidate table and the corresponding parameter_candidate.
 	* PSCID
 	* Caveat Emptor flag for Candidate
 	* Reason for Caveat Emptor flag
-	* Additional Comments for flag
-	* Comment
-5. Click on update Candidate Info and make sure it takes you to the correct form for that candidate
+	* Any other fields in `SELECT * FROM parameter_type WHERE ParameterTypeID IN (SELECT distinct(ptcr.ParameterTypeID) FROM parameter_type_category ptc JOIN parameter_type_category_rel ptcr USING (ParameterTypeCategoryID) WHERE ptc.NAME='Candidate Parameters');`
+6. Change each field and click on *Update* and make sure it updates in the front-end and back-end.
+7. If you set the *Caveat Emptor flag* to Yes, check that a reason must be specified. If the reason is set to 'Other', check that an explanation must be provided. If 'Other' does not exist as an option in the caveat_options table, the field should not show up in the front-end.
+8. Add fields to the parameter_type table and check if it shows up on this page.
 
-### Update Candidate Info
-6. For each field, change it and make sure that it saves when the "Save" button is clicked. Do each field one at a
-time. You should still be able to save the Caveat Emptor Reason without the Caveat Emptor flag set because
-abnormalities may be deemed satisfactory and the reason may be logged.
-7. If you set the Caveat Emptor flag to Yes, check that a reason must be specified. If the reason is set to other, check that an explanation must be provided.
-8. Check that the return candidate info button is working.
-9. Check if your changes are displayed in the Candidate Information panel
-10. Add fields to the parameter_candidate table and check if it shows up on this page
+### Proband Information Tab
+9. Check that the proband tab only shows up if _useProband_ is set to true in the configuration module.
+10. Check that the age difference in months between the candidate and proband is correct and is updated if DoB Proband is updated.
+11. Remove the proband DoB. Check that the age difference field says that the age difference could not be calculated.
+12. For DoB fields:
+    * 'Confirm DoB Proband' must be entered
+    * 'Confirm DoB Proband' must match 'DoB Proband'
+    * Cannot be later than today's date.
+13. Click on Update and make sure it updates in the front-end and back-end.
 
-### Proband Information Panel
-11. Check that the proband section only shows up if "show proband section..." is set to true in the configuration module.
-12. Proband GUID, DoB Proband and Proband Gender should match what is stored in the candidate table. (Note: I don't even have Proband GUID in my table. It says "array" for this field on the module front-end. Perhaps it should take a different action.)
-13. Check that the age difference in months between the candidate and proband is correct.
-14. Remove the proband DoB. Check that the age difference field says that the age difference could not be calculated.
-15. Click on Update Proband Info and make sure that it goes to the correct form for this candidate
+### Family Information Tab
+14. Check that the family tab only shows up if _Use family ID_ is set to true in the configuration module.
+15. Check that these family members match what can be found in the family table.
+16. Click on the add family button and ensure that it adds in the front-end and back-end.
+17. Click on the DCCID and check that it takes you to the family member's candidate profile.
+18. Try changing the family member ID without specifying the relationship type. An error should appear.
+19. Ensure the candidate's DCCID cannot be chosen in the family member ID dropdown.
+20. Try deleting a family member and check it is updated in the front-end and back-end.
 
-### Update Proband Info
-16. For each field, change it and make sure that it saves when the "Save" button is clicked. Do each field one at a time.
-17. Try entering two different DoB and make sure an error appears if that is done.
-18. Try entering only one DoB and make sure an error appears if that is done.
-19. Try changing the DoB. Ensure that the age difference in the Proband Information Panel gets recalculated
-20. Check that the return candidate info button is working and that any changes you have made are now showing up.
+### Participant Status Tab
+21. Ensure that this panel shows all status changes for the participant.
+22. Change the participant status and try to save it and check it is updated in the front-end (including the history table) and back-end.
+23. Change the participant status to inactivate or incomplete and do not edit the specify reason input. Try saving the form and ensure that an error appears.
+24. Try editing the Comments field and saving.
 
-### Family Information Panel
-21. Check that the family panel only shows up if "Use family ID" is set to true in the configuration module.
-22. Check that these family members match what can be found in the family table.
-23. Click on the add family button and ensure that it takes you to the appropriate form.
-24. Click on the DCCID and check that it takes you to the family members candidate profile.
-
-### Add Family Info
-25. Try changing the family member ID to an ID that does not exist and make sure that an error appears.
-26. Try changing the family member ID to an ID that does exist. Save without specifying the relationship type. An error should appear.
-27. Enter the candidate's DCCID as the family member ID. Enter a relationship type. Make sure that an error appears. 
-28. Enter a valid DCCID as the family member ID and a relationship type. Check that these values are saved when the save button is clicked.
-29. Check that the return candidate info button is working.
-Note: Is there no way to edit/remove a family member from the front-end?
-
-### Participant Status Panel
-30. Ensure that this panel shows all status changes for the participant
-31. Click on the update participant status button and ensure that it takes you to the appropriate form. 
-
-### Update Participant Status
-32. Change the participant status and try to save it. See if it is successful.
-33. Change the participant status to inactivate or incomplete and do not edit the specify reason input. Try saving the form and ensure that an error appears
-34. Try editing the Comments field and saving
-
-### Participation Consent Status Panel
-35. Add a new consent type following [the guide](https://github.com/aces/Loris/wiki/Candidate-Information-Page) on the LORIS Wiki. Does it show up in this panel when you refresh the page?
-36. Does the consent info shown in this table match what is stored in the participant_status table?
-
-### Update Consent Info
-37. Check that there is a set of form inputs for each type of consent. Does your new type of consent you just added appear here, with form inputs?
-38. Try updating the consent information. Do not fill out all required fields. Ensure that an error appears when you try to save.
-39. Try entering two different dates for the date of consent. Make sure that an error appears when you try to save.
-40. Try entering two different dates for the date of withdrawal of consent. Make sure that an error appears when you try to save.
-41. For each of the date fields, try entering only one part of the date (eg. the year). Make sure there is an error when you try to save.
+### Consent Status Tab
+25. Check that the consent status tab only shows up if `<useConsent>true</useConsent>` in the config.xml.
+26. Tab should render with only one consent type.
+27. Add a new consent type following [the guide](https://github.com/aces/Loris/wiki/Candidate-Information-Page) on the LORIS Wiki. Does it show up in this tab when you refresh the page?
+28. Does the consent info shown in this table match what is stored in the participant_status table?
+29. Check that there is a set of form inputs for each type of consent. Does your new type of consent you just added appear here, with form inputs?
+30. Try updating the consent information. Do not fill out all required fields. Ensure that an error appears when you try to save.
+31. For each of the date fields, try entering only one part of the date (eg. the year). Make sure there is an error when you try to save.
+32. Enter the following combinations:
+    * Consent to Study = No
+    * Consent to Study = Yes (error: must enter Date of Consent)
+    * Consent to Study = Yes; Date of Consent = random date
+        * Error: must enter Confirmation Date of Consent
+    * Consent to Study = Yes; Date (Withdrawal) of Consent = random date; Confirmation Date (Withdrawal) of Consent = a different random date
+        * Error: dates do not match
+    * Consent to Study = Yes; Date (Withdrawal) of Consent = random date after today; Confirmation (Withdrawal) Date of Consent = same random date
+        Error: date cannot be later than today
+    * Consent to Study = Yes; Date (Withdrawal) of Consent = valid random date; Confirmation (Withdrawal) Date of Consent = same random date
+        * No error
+        * Make sure they update properly in the front-end and backend 
+    * Consent_status = No; Date of Consent = valid random date; Confirmation Date of Consent = same random date
+        * No error
+        * Make sure they update properly in the front-end and backend (dates should not save)
+    

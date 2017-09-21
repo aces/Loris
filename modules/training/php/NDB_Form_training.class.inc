@@ -50,7 +50,7 @@ class NDB_Form_Training extends NDB_Form
 
         $user         = User::singleton();
         $userFullName = $user->getFullname();
-        $userSite     = $user->getCenterID();
+        $userSite     = $user->getCenterIDs();
 
         $isExaminer = $this->isExaminer($userFullName, $userSite);
 
@@ -91,11 +91,8 @@ class NDB_Form_Training extends NDB_Form
         $examinerID = $DB->pselectOne(
             "SELECT examinerID 
              FROM examiners
-             WHERE full_name=:FN AND centerID=:CID",
-            array(
-             'FN'  => $fullName,
-             'CID' => $site,
-            )
+             WHERE full_name=:FN",
+            array('FN' => $fullName)
         );
 
         if (!empty($examinerID)) {
@@ -148,17 +145,19 @@ class NDB_Form_Training extends NDB_Form
     {
         $user         = User::singleton();
         $userFullName = $user->getFullname();
-        $userCenter   = $user->getCenterID();
+        $userCenter   = $user->getCenterIDs();
 
         $DB = Database::singleton();
         $certificationStatus = $DB->pselectOne(
             "SELECT c.pass
              FROM certification c
              LEFT JOIN examiners e ON (c.examinerID=e.examinerID) 
-             WHERE e.full_name=:name AND e.centerID=:CID AND c.testID=:TID",
+             LEFT JOIN examiners_psc_rel epr ON (epr.examinerId=e.examinerID)
+             WHERE e.full_name=:name 
+             AND FIND_IN_SET(epr.centerID,:CID) AND c.testID=:TID",
             array(
              'name' => $userFullName,
-             'CID'  => $userCenter,
+             'CID'  => implode(',', $userCenter),
              'TID'  => $instrumentID,
             )
         );
@@ -189,6 +188,42 @@ class NDB_Form_Training extends NDB_Form
         } else {
             return true;
         }
+    }
+
+    /**
+     * Gathers JS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/training/js/training_helper.js",
+            )
+        );
+    }
+
+    /**
+     * Gathers CSS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/training/css/training.css",
+            )
+        );
     }
 }
 ?>

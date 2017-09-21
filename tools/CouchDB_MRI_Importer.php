@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/../vendor/autoload.php";
+require_once 'generic_includes.php';
 
 /**
  * Wrapper around CouchDB MRI functions
@@ -79,22 +81,28 @@ class CouchDBMRIImporter
      */
     function _generateCandidatesQuery($ScanTypes)
     {
+
+       $s = $ScanTypes;
         $Query = "SELECT c.PSCID, s.Visit_label, s.ID as SessionID, fmric.Comment
-                  as QCComment";
-        foreach ($ScanTypes as $Scan) {
-            $Query .= ", (SELECT f.File FROM files f LEFT JOIN files_qcstatus fqc
-                      USING(FileID)
-                      WHERE f.SessionID=s.ID AND fqc.Selected='$Scan[ScanType]' LIMIT 1)
-                            as `Selected_$Scan[ScanType]`, (SELECT fqc.QCStatus
-                      FROM files f LEFT JOIN files_qcstatus fqc USING(FileID)
-                      WHERE f.SessionID=s.ID AND fqc.Selected='$Scan[ScanType]' LIMIT 1)
-                             as `$Scan[ScanType]_QCStatus`";
+          as QCComment";
+
+        foreach($s as $scan){
+            $scantype=$scan['ScanType'];
+            $Query .= ", (SELECT f.File FROM files f LEFT JOIN mri_scan_type msc
+              ON (msc.ID= f.AcquisitionProtocolID)
+              WHERE f.SessionID=s.ID AND msc.Scan_type='$scantype' LIMIT 1)
+                    as Selected_$scantype, (SELECT fqc.QCStatus
+                    FROM files f 
+                    LEFT JOIN files_qcstatus fqc USING(FileID)
+                    LEFT JOIN mri_scan_type msc ON(msc.ID= f.AcquisitionProtocolID)
+              WHERE f.SessionID=s.ID AND msc.Scan_type='$scantype' LIMIT 1)
+                     as $scantype"."_QCStatus";
         }
         $Query .= " FROM session s JOIN candidate c USING (CandID)
-                    LEFT JOIN feedback_mri_comments fmric
-                    ON (fmric.CommentTypeID=7 AND fmric.SessionID=s.ID)
-                    WHERE c.PSCID <> 'scanner' AND c.PSCID NOT LIKE '%9999'
-                          AND c.Active='Y' AND s.Active='Y' AND c.CenterID <> 1";
+            LEFT JOIN feedback_mri_comments fmric
+            ON (fmric.CommentTypeID=7 AND fmric.SessionID=s.ID)
+            WHERE c.Entity_type != 'Scanner' AND c.PSCID NOT LIKE '%9999'
+                  AND c.Active='Y' AND s.Active='Y' AND c.CenterID <> 1";
         return $Query;
     }
 
@@ -118,7 +126,7 @@ class CouchDBMRIImporter
         $inter_rej = 'IntergradientRejected_'.$type;
         $pipeline  = 'processing:pipeline';
 
-        $header['ScannerID_'.$type]           = $FileObj->getParameter('ScannerID');
+        $header['ScannerID_'.$type]           = $this->_getScannerID((int)$FileObj->getParameter('FileID'));
         $header['Pipeline_'.$type]            = $FileObj->getParameter('Pipeline');
         $header['OutputType_'.$type]          = $FileObj->getParameter('OutputType');
         $header['AcquisitionProtocol_'.$type] = $FileObj->getAcquisitionProtocol();
@@ -192,6 +200,24 @@ class CouchDBMRIImporter
         }
     }
 
+    /**
+     * Gets the scannerID
+     *
+     * @param MRIFile $file  file object
+     *
+     * @return scannerID
+     */
+     function _getScannerID($FileID){
+ 
+         $scannerID = $this->SQLDB->pselectOne("SELECT ScannerID FROM files ".
+             "WHERE FileID =:FileID",
+             array(
+                 'FileID' => $FileID
+             )
+         );
+         return $scannerID;
+     }
+ 
     /**
      * Gets a rejected parameter according to its type
      *
@@ -297,61 +323,6 @@ class CouchDBMRIImporter
             );
             print $docid . ": " . $success . "\n";
 
-            $config = NDB_Config::singleton();
-            $paths  = $config->getSetting('paths');
-
-            foreach ($ScanTypes as $Scan) {
-                // This isn't very efficient to get the document a second time, but
-                // we need the rev for adding the attachments. This whole section
-                // should be optimized/cleaned up. For now it's just a hack to get
-                // the data into CouchDB, it isn't very clean.
-                // This should all be done using a single multipart request
-                // eventually.
-                $latestDoc = $this->CouchDB->getDoc($docid);
-
-                $fileName = $doc['Selected_' . $Scan['ScanType']];
-                $fullPath = $paths['mincPath'] . $fileName;
-                if (file_exists($fullPath)) {
-                    if (!empty($fileName)) {
-                        $toUpload = null;
-                        if (!empty($latestDoc['_attachments'])) {
-
-                            if (isset($latestDoc['_attachments'][$fileName])) {
-                                $latest_doc = $latestDoc['_attachments'][$fileName];
-                                $size       = $latest_doc['length'];
-                                if ($size != filesize($fullPath)) {
-                                    // File has been modified, upload it.
-                                    $toUpload = $fileName;
-
-                                }
-                            } else {
-                                // This attachment not been uploaded - ever
-                                $toUpload = $fileName;
-                            }
-
-                        } else {
-                            // No current attachments, so this file has not
-                            // been uploaded
-                            $toUpload = $fileName;
-                        }
-
-                        if (!empty($toUpload)) {
-                            $data = file_get_contents($fullPath);
-                            print "Adding $fileName to $docid\n";
-                            $latest = $latestDoc['_rev'];
-                            $rev    = $docid .'/' .$fileName.'?rev='.$latest;
-                            $output = $this->CouchDB->_postRelativeURL(
-                                $rev,
-                                $data,
-                                'PUT',
-                                'application/x-minc'
-                            );
-                        }
-                    }
-                } else {
-                    print "****COULD NOT FIND $fullPath TO ADD TO $docid***\n";
-                }
-            }
         }
         return;
     }
@@ -363,12 +334,14 @@ class CouchDBMRIImporter
      */
     public function getScanTypes()
     {
+
         $ScanTypes = $this->SQLDB->pselect(
-            "SELECT DISTINCT fqc.Selected as ScanType
-                     FROM files_qcstatus fqc
-                     WHERE COALESCE(fqc.Selected, '') <> ''",
+            "SELECT DISTINCT msc.Scan_type as ScanType from mri_scan_type msc
+JOIN files f ON msc.ID= f.AcquisitionProtocolID
+JOIN files_qcstatus fqc ON f.FileID=fqc.FileID ORDER BY f.AcquisitionProtocolID",
             array()
         );
+
         return $ScanTypes;
     }
 
@@ -545,4 +518,10 @@ class CouchDBMRIImporter
             }
         }
     }
+}
+
+// Don't run if we're doing the unit tests; the unit test will call run.
+if(!class_exists('UnitTestCase')) {
+    $Runner = new CouchDBMRIImporter();
+    $Runner->run();
 }

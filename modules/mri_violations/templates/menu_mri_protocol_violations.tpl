@@ -124,44 +124,20 @@
                     <td align="right" id="pageLinks"></td>
                 </tr>
             </table>
-
-            <table class="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
-                <thead>
-                <tr class="info">
-                    <th nowrap="nowrap">No.</th>
-                    {section name=header loop=$headers}
-                        <th nowrap="nowrap"><a href="{$baseurl}/mri_violations/?submenu=mri_protocol_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-                    {/section}
-                </tr>
-                </thead>
-                <tbody>
-                {section name=item loop=$items}
-                    <tr>
-                        <!-- print out data rows -->
-                        {section name=piece loop=$items[item]}
-                            <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                {$items[item][piece].value}
-                            </td>
-                        {/section}
-                    </tr>
-                    {sectionelse}
-                    <tr><td colspan="19">No data found</td></tr>
-                {/section}
-                </tbody>
-            </table>
-        </div>
+          <div class="dynamictable" id="datatable"></div> 
+             
+      </div>
     </div>
 </div>
 <script>
-var pageLinks = RPaginationLinks(
-{
-    RowsPerPage : {$rowsPerPage},
-    Total: {$TotalItems},
-    onChangePage: function(pageNum) {
-        location.href="{$baseurl}/mri_violations/?submenu=mri_protocol_violations&filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
-    },
-    Active: {$pageID}
-});
-React.render(pageLinks, document.getElementById("pageLinks"));
-</script>
 
+loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+var table = RDynamicDataTable({
+     "DataURL" : "{$baseurl}/mri_violations/?submenu=mri_protocol_violations&format=json",
+     "getFormattedCell" : formatColumn,
+     "freezeColumn" : "PatientName"
+     
+  });
+ReactDOM.render(table, document.getElementById("datatable"));
+
+</script>

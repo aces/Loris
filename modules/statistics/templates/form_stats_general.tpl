@@ -1,6 +1,18 @@
-        <h2>Welcome to the statistics page.</h2>
-        <p> This will display all of the statistics related to data acquisition, data processing and data entry as it relates to both the behavioural and imaging parts of this project. This is a work in progress, and as such more statistics will appear with time. Please feel free to contact us with feedback and suggestions.</p>
-        <p>The demographics tab currently includes statistics about the number of candidates registered in each cohort and provides statistics by site and gender. In the drop-down menu, you are also able to view per instrument the number of complete and incomplete instruments per site, timepoint, and cohort.</p>
-        <p>The behavioural tab currently includes statistics on the number of candidates who have completed each instrument per site and timepoint. The number of instruments for which data entry hasn't commenced is also displayed. This is a great tool for completing data entry. The same statistics are also available for double data entry.
-        <p>The MRI statistics tab currently displays the number of scans per site. For T1 scans based on the MRI parameter form entries, there is a breakdown of scans per site, cohort and timepoint. There is also a table depicting common issues that need to be dealt with regarding incomplete MRI parameter forms, scans not transferred properly, or missing scan archives.</p>
-
+<h1>Welcome to the statistics page</h1>
+<p>This page will display statistics related to data acquisition, data processing and data entry as it relates to both the
+behavioural and imaging aspects of this study.</p>
+<h3>Demographics Statistics</h3>
+The <b>Demographics Statistics</b> tab currently includes general statistics relating to the number of candidates
+registered in each cohort as well as customizable categories displaying statistics relating to candidate demographics
+(participant status, sex, age etc.). You may also view statistics broken down per instrument, displaying the number
+of complete and incomplete instruments per site, as it pertains to each visit label and cohort by selecting an
+instrument from the dropdown menu with the option to hide visit labels to only display total visit counts per site.
+<h3>Behavioural Statistics</h3>
+The <b>Behavioural Statistics</b> tab currently includes data entry statistics relating to the number of candidates who
+have completed each instrument per site and timepoint. As well, there is an option to view the data entry statistics per
+instrument as well a breakdown per participant, which will reveal an in-depth table, listing candidate PSCIDs, completion
+count, and incomplete candidates. The same statistics are also available for double data entry.
+<h3>MRI Statistics</h3>
+The <b>MRI statistics</b> tab currently displays the number of scans inserted per site as well as their QC (Quality Control)
+status. For various scans within a study based on the MRI parameter form entries, there is a breakdown of scan completion,
+arranged by site, cohort and timepoint, with the option to hide visit labels to only display total visit counts per site.

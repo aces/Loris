@@ -45,69 +45,81 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        $DB            = Database::singleton();
         $config        = NDB_Config::singleton();
         $certification = $config->getSetting('Certification');
 
         if (isset($certification['EnableCertification'])) {
             $this->useCertification = $certification['EnableCertification'];
         } else {
-            $useCertification = false;
+            $this->useCertification = false;
         }
 
-        // base queries
-        $query     = " FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID)";
-        $certQuery = " LEFT JOIN certification c ON (c.examinerID = e.examinerID) 
-            LEFT JOIN test_names tn ON (c.testID = tn.ID)";
+        $user      = User::singleton();
+        $centerIDs = implode(',', $user->getCenterIDs());
 
-        if ($this->useCertification == '1') {
-            $query .= $certQuery;
-        }
+        if ($user->hasPermission('examiner_multisite')) {
+                $query = " 
+                        FROM examiners e 
+                            LEFT JOIN examiners_psc_rel epr ON 
+                                (epr.examinerID=e.examinerID)
+                            LEFT JOIN psc ON (epr.centerID=psc.CenterID) 
+                            LEFT JOIN certification c ON 
+                                (c.examinerID=e.examinerID and c.pass = 'certified') 
+                            LEFT JOIN test_names tn ON (tn.ID = c.testID) 
+                        WHERE 1=1 ";
+        } else {
 
-        $query .= ' WHERE 1=1';
-
-        $user = User::singleton();
-        if (!$user->hasPermission('examiner_multisite')) {
-            $query .= " AND e.CenterID=" . $DB->quote($user->getData('CenterID'));
+              $query = "
+                        FROM examiners e 
+                            LEFT JOIN examiners_psc_rel epr ON 
+                                (epr.examinerID=e.examinerID)
+                            LEFT JOIN psc ON (epr.centerID=psc.CenterID) 
+                            LEFT JOIN certification c ON 
+                                (c.examinerID=e.examinerID and c.pass = 'certified') 
+                            LEFT JOIN test_names tn ON (tn.ID = c.testID)
+                        WHERE FIND_IN_SET(epr.centerID, '$centerIDs')";
         }
 
         // set the class variables
         $this->columns      = array(
                                'e.full_name as Examiner',
+                               'e.examinerID as ID',
                                'psc.Name as Site',
                                'e.radiologist as Radiologist',
+                               'GROUP_CONCAT(tn.full_name) as Certification',
                               );
+        $this->group_by     = "e.full_name,psc.Name,e.examinerID";
         $this->query        = $query;
         $this->order_by     = 'e.full_name';
         $this->headers      = array(
                                'Examiner',
+                               'ID',
                                'Site',
                                'Radiologist',
+                               'Certification',
                               );
         $this->validFilters = array(
                                'e.full_name',
-                               'e.centerID',
+                               'epr.centerID',
                                'COALESCE(e.radiologist, 0)',
                               );
 
         $this->formToFilter = array(
                                'examiner'    => 'e.full_name',
-                               'site'        => 'e.centerID',
+                               'site'        => 'epr.centerID',
                                'radiologist' => 'COALESCE(e.radiologist, 0)',
                               );
 
         // If certification is turned on, update the class variables to include
         // certification information
         if ($this->useCertification == '1') {
-            array_push(
-                $this->columns,
-                'tn.Full_name as Certification',
-                'e.examinerID as ID',
-                'c.pass as Pass'
-            );
-            array_push($this->headers, 'Certification');
-            array_push($this->validFilters, 'tn.Full_name');
-            array_push($this->formToFilter, array('instrument' => 'tn.Full_name'));
+
+            $this->tpl_data['hiddenHeaders'] = json_encode(['ID']);
+
+        } else {
+
+            $this->tpl_data['hiddenHeaders'] = json_encode(['ID', 'Certification']);
+
         }
         return true;
     }
@@ -130,10 +142,15 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             }
         } else {
             // allow only to view own site data
-            $site = Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $sites = array($user->getData('CenterID') => $user->getData('Site'));
+            $sites    = array();
+            $site_arr = $user->getData('CenterIDs');
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $sites[$val] = $site[$key]->getCenterName();
+                }
             }
+            $sites = array('' => 'All User Sites') + $sites;
         }
 
         // Radiologist options
@@ -162,91 +179,6 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
     }
 
     /**
-     * Sets the template data for the data table's rows
-     *
-     * @param int $count Page offset
-     *
-     * @return void
-     */
-    function _setDataTableRows($count)
-    {
-        // Code from old certification module
-
-        if ($this->useCertification == '1') {
-            $IDs        = array();
-            $duplicates = array();
-            $i          = 0;
-
-            foreach ($this->list as $li) {
-                $id            = $li['ID'];
-                $certification = $li['Certification'];
-
-                $str           = explode(' ', $certification);
-                $certification = $str[0];
-
-                if (array_key_exists($id, $IDs)) {
-                    if ($li['Pass'] == 'certified') {
-                        if ($IDs[$id] == 'none') {
-                            $IDs[$id] = $certification;
-                        } else {
-                            $IDs[$id] .= ", " . $certification;
-                        }
-                    }
-                    array_push($duplicates, $i);
-                } else {
-                    if ($li['Pass'] == 'certified') {
-                        $IDs[$id] = $certification;
-                    } else {
-                        $IDs[$id] = "none";
-                    }
-                }
-                $i++;
-            }
-
-            // create concatenated list of certifications for each examiner
-            foreach ($this->list as &$l) {
-                if (array_key_exists($l['ID'], $IDs)) {
-                    $l['Certification'] = $IDs[$l['ID']];
-                }
-            }
-
-            $list =& $this->list;
-            foreach ($duplicates as $k=>$v) {
-                unset($list[$v]);
-
-            }
-        }
-
-        $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
-            $i = 1;
-            foreach ($item as $key => $val) {
-                if ($key == 'Examiner') {
-                    $this->tpl_data['items'][$x][$i]['ID'] = $item['ID'];
-                }
-
-                if ($key == 'Radiologist') {
-                    $this->tpl_data['items'][$x][$i]['name'] = $key;
-                    if ($val == 1) {
-                        $this->tpl_data['items'][$x][$i]['value'] = 'Yes';
-                    } else {
-                        $this->tpl_data['items'][$x][$i]['value'] = 'No';
-                    }
-                } else if ($key != 'ID' && $key != 'Pass') {
-                    $this->tpl_data['items'][$x][$i]['name']  = $key;
-                    $this->tpl_data['items'][$x][$i]['value'] = $val;
-                }
-                $i++;
-            }
-            $x++;
-        }
-    }
-
-    /**
      * Validates the examiner form values.
      *
      * @param array $values Add Examiner form values
@@ -264,6 +196,9 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             $errors['addName'] = 'Please include both a name and site';
         } else if ($this->examinerExists($name, $site)) {
             $errors['addName'] = 'This examiner already exists';
+        } else if (trim($name) !== $name || preg_match('/\s[\s]+/', $name) === 1) {
+            $errors['addName'] = 'Please remove all trailing '.
+            'spaces and double spaces in name';
         }
 
         return $errors;
@@ -285,19 +220,55 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         $fullName    = $values['addName'];
         $siteID      = $values['addSite'];
         $radiologist = $values['addRadiologist'];
+        $radiologist = (empty($radiologist)) ? 0:$radiologist;
         //$values['addRadiologist'] should be used once addCheckbox is
         // supported by LorisForm and once addRadiologist checkbox is added
         // to the form using the addCheckbox method
         //$radiologist = $values['addRadiologist'];
 
+        //Check if examiner is already in the database 'examiners', if not add them
+        $examinerID = $DB->pselectOne(
+            "SELECT examinerID
+             FROM examiners
+             WHERE full_name=:fullName",
+            array('fullName' => $fullName)
+        );
+
+        //Check if examiner is already a loris user, if so add foreign key
+        $isUser = $DB->pselectOne(
+            "SELECT ID FROM users WHERE Real_name=:fullName",
+            array('fullName' => $fullName)
+        );
+
+        $user_id = null;
+        if (!empty($isUser)) {
+            $user_id = $isUser;
+        }
+        if (empty($examinerID)) {
+            $DB->insert(
+                'examiners',
+                array(
+                 'full_name'   => $fullName,
+                 'radiologist' => $radiologist,
+                 'userID'      => $user_id,
+                )
+            );
+        } else {
+            $DB->update(
+                'examiners',
+                array('radiologist' => $radiologist),
+                array('examinerID' => $examinerID)
+            );
+        }
+
         $DB->insert(
-            'examiners',
+            'examiners_psc_rel',
             array(
-             'full_name'   => $fullName,
-             'centerID'    => $siteID,
-             'radiologist' => $radiologist,
+             'examinerID' => $this->getExaminerID($fullName),
+             'centerID'   => $siteID,
             )
         );
+
         header("Location: {$baseurl}/examiner/", true, 303);
     }
 
@@ -313,9 +284,10 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
     {
         $DB         = Database::singleton();
         $examinerID = $DB->pselectOne(
-            "SELECT examinerID
-             FROM examiners
-             WHERE full_name=:fullName AND centerID=:siteID",
+            "SELECT e.examinerID
+             FROM examiners e
+                  LEFT JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
+             WHERE e.full_name=:fullName AND epr.centerID=:siteID",
             array(
              'fullName' => $fullName,
              'siteID'   => $siteID,
@@ -327,6 +299,46 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         } else {
             return true;
         }
+    }
+
+    /**
+     * Getter for the examinerID value from the database
+     *
+     * @param string $fullName name associated to examiner in the DB table
+     *
+     * @return string   ID of the examiner
+     */
+    function getExaminerID($fullName)
+    {
+        $DB         = Database::singleton();
+        $examinerID = $DB->pselectOne(
+            "SELECT examinerID
+             FROM examiners
+             WHERE full_name=:fullName",
+            array('fullName' => $fullName)
+        );
+
+        //returned as a string
+        return $examinerID;
+    }
+
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/examiner/js/columnFormatter.js",
+            )
+        );
     }
 }
 ?>

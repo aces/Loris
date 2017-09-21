@@ -530,7 +530,8 @@ class NDB_Menu_Filter extends NDB_Menu
             }
         }
 
-        if (is_array($this->searchKeyword)
+        if (isset($this->searchKeyword)
+            && is_array($this->searchKeyword)
             && count($this->searchKeyword) > 0
             && !empty($this->searchKey['keyword'])
         ) {
@@ -590,11 +591,10 @@ class NDB_Menu_Filter extends NDB_Menu
     {
         $wheredetails = $this->_getBaseFilter();
         $db           = Database::singleton();
-        if (empty($this->group_by)) {
+        if (empty($this->group_by) && empty($this->having)) {
             $query = "SELECT COUNT(*)" . $this->query . $wheredetails['clause'];
-        } else if (!empty($this->group_by)) {
+        } else {
             $query = "SELECT COUNT(*) FROM ($query) as tmptable";
-
         }
         $this->TotalItems = $db->pselectOne($query, $wheredetails['params']);
 
@@ -615,14 +615,24 @@ class NDB_Menu_Filter extends NDB_Menu
 
         $pageID = isset($_GET['pageID']) ? $_GET['pageID'] : 1;
 
-        $this->tpl_data['rowsPerPage']      = $rowsPerPage;
-        $this->tpl_data['pageID']           = $pageID;
-        $this->tpl_data['filterfield']      = $_GET['filter'][order][field];
-        $this->tpl_data['filterfieldOrder'] = $_GET['filter'][order][fieldOrder];
+        $this->setTemplateVar('rowsPerPage', $rowsPerPage);
+        $this->setTemplateVar('pageID', $pageID);
 
-        $this->tpl_data['TotalItems'] = $this->TotalItems;
+        $this->setTemplateVar(
+            'filterfield',
+            $_GET['filter']['order']['field'] ?? ''
+        );
+        $this->setTemplateVar(
+            'filterfieldOrder',
+            $_GET['filter']['order']['fieldOrder'] ?? ''
+        );
+        $this->setTemplateVar('TotalItems', $this->TotalItems);
+
         // print out column headings
         $i = 0;
+
+        // FIXME: Someone needs to investigate if this can use setTemplateVar, or if
+        // that would break anything.
         foreach ($this->headers as $header) {
             $this->tpl_data['headers'][$i]['name'] = $header;
             // format header
@@ -661,6 +671,7 @@ class NDB_Menu_Filter extends NDB_Menu
         $x = 0;
         foreach ($this->list as $item) {
             //count column
+            // FIXME: Someone should investigate if this can use setTemplateVar
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
 
             //print out data rows
@@ -684,23 +695,32 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function display()
     {
+        if (isset($_REQUEST['format'])) {
+            switch($_REQUEST['format']) {
+            case 'json':
+                       header('Content-Type: application/json');
+                return $this->toJSON();
+            }
+        }
+        if ($this->skipTemplate) {
+            return "";
+        }
         // Set the csvFile links
         $uri    = ltrim($_SERVER['REQUEST_URI'], "/");
         $suffix = strpos($uri, '?') ? '&format=csv' : '?&format=csv';
-        $this->tpl_data['csvUrl']  = $uri . $suffix;
-        $this->tpl_data['csvFile'] = $_REQUEST['test_name'];
-        if (isset($_REQUEST['subtest'])) {
-            $this->tpl_data['csvFile'] .= '-' . $_REQUEST['subtest'];
-        } elseif (isset($_REQUEST['submenu'])) {
-            $this->tpl_data['csvFile'] .= '-' . $_REQUEST['submenu'];
-        }
-        $this->tpl_data['csvFile'] .= date('-Y_m_d');
+        $this->setTemplateVar('csvURL', $uri . $suffix);
+        $this->setTemplateVar(
+            'csvFile',
+            $_REQUEST['test_name']
+            . ($_REQUEST['subtest'] ?? $_REQUEST['submenu'] ?? '')
+            . date('-Y_m_d')
+        );
 
         // dump the html for the menu
         $smarty = new Smarty_neurodb($this->Module);
         $smarty->assign('mode', $this->mode);
         $smarty->assign('form', $this->form->toArray());
-        $smarty->assign($this->tpl_data);
+        $smarty->assign($this->getTemplateData());
         $html = $smarty->fetch("menu_$this->menu.tpl");
         return $html;
     }
@@ -789,8 +809,12 @@ class NDB_Menu_Filter extends NDB_Menu
                 ." ".$this->filter['order']['fieldOrder'].", ";
         }
         $query .= $this->order_by;
-        // get the list
 
+        if (!empty($this->limit)) {
+            $query .= " LIMIT $this->limit";
+        }
+
+        // get the list
         $this->_getNumberPages($query);
 
         $config         =& NDB_Config::singleton();
@@ -834,7 +858,6 @@ class NDB_Menu_Filter extends NDB_Menu
             $depends,
             array(
              $baseURL . '/js/components/PaginationLinks.js',
-             $baseURL . '/js/components/FilterTable.js',
              $baseURL . '/js/components/StaticDataTable.js',
              $baseURL . '/js/components/DynamicDataTable.js',
             )

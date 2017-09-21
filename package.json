@@ -1,0 +1,41 @@
+{
+  "name": "loris",
+  "version": "1.0.0",
+  "description": "Note that the README in LORIS assumes that LORIS is being run on Ubuntu.",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.8.0",
+    "babel-loader": "6.2.10",
+    "babel-preset-es2015": "6.22.0",
+    "babel-preset-react": "^6.5.0",
+    "eslint": "3.8.1",
+    "eslint-config-google": "0.6.0",
+    "eslint-plugin-react": "^5.2.2",
+    "webpack": "1.14.0"
+  },
+  "scripts": {
+    "lint:javascript": "./test/run-js-linter.sh",
+    "lint:php": "./test/run-php-linter.sh",
+    "tests:unit": "./test/dockerized-unit-tests.sh",
+    "tests:unit:debug": "DEBUG=true ./test/dockerized-unit-tests.sh",
+    "tests:integration": "./test/dockerized-integration-tests.sh",
+    "tests:integration:debug": "DEBUG=true ./test/dockerized-integration-tests.sh",
+    "compile": "webpack",
+    "watch": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aces/Loris.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aces/Loris/issues"
+  },
+  "homepage": "https://github.com/aces/Loris"
+}

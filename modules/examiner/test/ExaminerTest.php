@@ -7,6 +7,7 @@
  * @category Test
  * @package  Loris
  * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
+ * @author   Wang Shen <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -22,11 +23,53 @@ require_once __DIR__ .
  * @category Test
  * @package  Loris
  * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
+ * @author   Wang Shen <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
 class ExaminerTest extends LorisIntegrationTest
 {
+    /**
+    * Insert testing data
+    *
+    * @return void
+    */
+    public function setUp()
+    {
+        parent::setUp();
+         $window = new WebDriverWindow($this->webDriver);
+         $size   = new WebDriverDimension(1024, 1768);
+         $window->setSize($size);
+        $this->DB->insert(
+            "psc",
+            array(
+             'CenterID'   => '99',
+             'Name'       => 'TEST_Site',
+             'Study_site' => 'Y',
+             'StateID'    => '0',
+             'Alias'      => 'DDD',
+             'MRI_alias'  => 'TEST',
+            )
+        );
+    }
+    /**
+    * Delete testing data
+    *
+    * @return void
+    */
+    public function tearDown()
+    {
+        $this->DB->delete(
+            "examiners",
+            array('full_name' => 'Test_Examiner')
+        );
+
+        $this->DB->delete(
+            "psc",
+            array('Name' => 'TEST_Site')
+        );
+         parent::tearDown();
+    }
 
     /**
      * Tests that the breadcrumb loads, which it should regardless of the user's
@@ -90,7 +133,6 @@ class ExaminerTest extends LorisIntegrationTest
 
         $this->resetPermissions();
     }
-
     /**
      * Tests that the Add Examiner form loads if the user has the correct permission
      *
@@ -136,20 +178,18 @@ class ExaminerTest extends LorisIntegrationTest
     function testResultTableLoadsWithPermission()
     {
         $this->setupPermissions(array("examiner_view"));
-        $this->safeGet($this->url . "/examiner/");
+        $this->safeGet($this->url . "/examiner/?format=json");
 
         // Check the table column headers
         $tableText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".table-responsive")
+            WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("No.", $tableText);
         $this->assertContains("Examiner", $tableText);
         $this->assertContains("Site", $tableText);
         $this->assertContains("Radiologist", $tableText);
 
         $this->resetPermissions();
     }
-
     /**
      * Tests that the certification column loads if EnableCertification is set in
      * the config
@@ -208,5 +248,65 @@ class ExaminerTest extends LorisIntegrationTest
         $this->assertContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
+    /**
+     * Tests that examiner selection filter, search a Examiner name
+     * and click clear form, the input data should disappear.
+     *
+     * @return void
+     */
+    function testExaminerFilterClearForm()
+    {
+        $this->safeGet($this->url . "/examiner/");
+        $this->webDriver->findElement(
+            WebDriverBy::Name("examiner")
+        )->sendKeys("XXXX");
+        $this->webDriver->findElement(
+            WebDriverBy::Name("reset")
+        )->click();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::Name("examiner")
+        )->getText();
+        $this->assertEquals("", $bodyText);
+    }
+    /**
+     * Tests that Add examiner section, insert an Examiner and find it.
+     *
+     * @return void
+     */
+    function testExaminerAddExaminer()
+    {
+        //insert a new exmainer with name "Test_Examiner" and radiologist
+        //in the TEST_Site.
+        $this->safeGet($this->url . "/examiner/");
+        $this->safeFindElement(
+            WebDriverBy::Name("addName")
+        )->sendKeys("Test_Examiner");
+        $this->safeFindElement(
+            WebDriverBy::Name("addRadiologist")
+        )->click();
+        $select  = $this->safeFindElement(WebDriverBy::Name("addSite"));
+        $element = new WebDriverSelect($select);
+        $element->selectByVisibleText("TEST_Site");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::Name("fire_away")
+        )->click();
+        sleep(5);
+        //search the examiner which inserted
+        $this->webDriver->findElement(
+            WebDriverBy::Name("examiner")
+        )->sendKeys("Test_Examiner");
+        $this->webDriver->findElement(
+            WebDriverBy::Name("filter")
+        )->click();
+
+        $this->safeGet($this->url . "/examiner/?format=json");
+
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains("Test_Examiner", $bodyText);
+
+    }
+
 }
 ?>

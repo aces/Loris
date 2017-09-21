@@ -55,15 +55,61 @@ class User extends UserPermissions
         $DB =& Database::singleton();
 
         // get user data from database
-        $query = "SELECT users.*, psc.Name AS Site FROM users
-            LEFT JOIN psc ON (users.centerID=psc.CenterID)
-            WHERE users.UserID = :UID";
+        $query = "SELECT users.*,
+            GROUP_CONCAT(psc.Name SEPARATOR ';') AS Sites
+            FROM users
+            LEFT JOIN user_psc_rel ON (user_psc_rel.UserID=users.ID)
+            LEFT JOIN psc ON (user_psc_rel.CenterID=psc.CenterID)
+            WHERE users.UserID = :UID
+            GROUP BY users.ID";
 
         $row = $DB->pselectRow($query, array('UID' => $username));
 
-        // store user data in object property
-        $obj->userInfo = $row;
+        // get user sites
+        $user_centerID_query =  $DB->pselect(
+            "SELECT CenterID FROM user_psc_rel upr 
+                        WHERE upr.UserID= :UID",
+            array('UID' => $row['ID'])
+        );
 
+        foreach ($user_centerID_query as $key=>$val) {
+            $user_cid[$key] =$val['CenterID'];
+        }
+
+        // Get examiner information
+        $examiner_check = $DB->pselect(
+            "SELECT e.full_name, 
+                    epr.centerID, 
+                    e.radiologist, 
+                    epr.active, 
+                    epr.pending_approval 
+                  FROM examiners e
+                  JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
+                  WHERE e.full_name=:fn 
+                    AND (epr.active='Y' 
+                          OR (epr.active='N' AND epr.pending_approval='Y')
+                        )",
+            array(
+             "fn" => $row['Real_name'],
+            )
+        );
+
+        $examiner_info =array();
+        if (!empty($examiner_check) && !is_null($examiner_check)) {
+            foreach ($examiner_check as $rw=>$val) {
+                if ($val['active'] == 'Y') {
+                    $examiner_info['pending'] = $val['pending_approval'];
+                }
+                $examiner_info[$val['centerID']] =array(
+                                                   $val['active'],
+                                                   $val['radiologist'],
+                                                  );
+            }
+        }
+        // store user data in object property
+        $row['examiner']  =$examiner_info;
+        $row['CenterIDs'] =$user_cid;
+        $obj->userInfo    =$row;
         return $obj;
     }
 
@@ -143,6 +189,18 @@ class User extends UserPermissions
     {
         if (is_null($var)) {
             return $this->userInfo;
+        } elseif ($var === 'CenterID') {
+            throw new \LorisException(
+                "The function getData('CenterID') 
+                                        is deprecated and is replaced 
+                                        with getData('CenterIDs')"
+            );
+        } elseif ($var === 'Site') {
+            throw new \LorisException(
+                "The function getData('Site') 
+                                        is deprecated and is replaced 
+                                        with getData('Sites')"
+            );
         } else {
             return $this->userInfo[$var];
         }
@@ -159,6 +217,16 @@ class User extends UserPermissions
     }
 
     /**
+     * Get the user's id
+     *
+     * @return int
+     */
+    function getId()
+    {
+        return $this->userInfo['ID'];
+    }
+
+    /**
      * Get the user's username
      *
      * @return string
@@ -169,42 +237,83 @@ class User extends UserPermissions
     }
 
     /**
-     * Get the user's site's name
+     * Get the user's sites' name
      *
      * @return string
      */
     function getSiteName()
     {
-        return $this->userInfo['Site'];
+        throw new \LorisException(
+            "The function getSiteName 
+                                   is deprecated and is replaced 
+                                   with getSiteNames"
+        );
+    }
+
+    /**
+     * Get the user's sites' names, concatenated with
+     * a semi-colon if the User is at more than one site
+     *
+     * @return string
+     */
+    function getSiteNames()
+    {
+        return $this->userInfo['Sites'];
     }
 
     /**
      * Get the user's site's ID number
      *
-     * @return integer
+     * @return array
      */
     function getCenterID()
     {
-        return $this->userInfo['CenterID'];
+        throw new \LorisException(
+            "The function getCenterID 
+                                   is deprecated and is replaced 
+                                   with getCenterIDs"
+        );
     }
 
     /**
-     * Unknown what this does. Maybe it should be removed?
-     * - Dave
+     * Get the user's sites' ID numbers
      *
-     * @return boolean
+     * @return array
      */
-    function isMultiSiteEnabled()
+    function getCenterIDs()
     {
-        // if $userID is not passed,then look-up current user
-        // if CenterID = 0 then admin staff
-        // like dcc ccc nih or similar
-        // change 2002-10-23 Dario
-        $config =& NDB_Config::singleton();
-        return in_array(
-            $this->userInfo['CenterID'],
-            $config->getSetting('multiSiteEnabledCenters')
-        );
+        return $this->userInfo['CenterIDs'];
+    }
+
+
+    /**
+     * Returns all sites where Examiner is active
+     *
+     * @return array
+     */
+    function getExaminerSites()
+    {
+        $site_list = $this->userInfo['examiner'];
+        unset($site_list['pending']);
+        return $site_list;
+    }
+
+    /**
+     * Returns all user's sites that are StudySites
+     *
+     * @return array
+     */
+    function getStudySites()
+    {
+        $site_arr         = $this->userInfo['CenterIDs'];
+        $user_study_sites = array();
+        foreach ($site_arr as $key => $val) {
+            $site[$key] = &Site::singleton($val);
+            if ($site[$key]->isStudySite()) {
+                $user_study_sites[$val] = $site[$key]->getCenterName();
+            }
+        }
+        return $user_study_sites;
     }
 
     /**
@@ -221,46 +330,6 @@ class User extends UserPermissions
         return true;
     }
 
-
-    /**
-     * Makes an md5 hash with a salt
-     *
-     * @param string $word The word to hash
-     *
-     * @return string
-     * @access public
-     * @static
-     */
-    static function MD5Salt($word)
-    {
-        // get a two-character hexadecimal salt from 10 to ff
-        $salt = dechex(rand(16, 255));
-
-        // return the salted md5 hash
-        return $salt . md5($salt . $word);
-    }
-
-
-    /**
-     * Checks an md5 salt
-     *
-     * @param string $word The word to compare to the hash
-     * @param string $hash The hash
-     *
-     * @return boolean
-     * @access public
-     * @static
-     */
-    static function MD5Unsalt($word, $hash)
-    {
-        // get the first two characters of the hash
-        $salt = substr($hash, 0, 2);
-
-        // return whether the hash matches the word
-        return ($salt . md5($salt . $word) == $hash);
-    }
-
-
     /**
      * Generates a random alphanumeric password
      *
@@ -276,7 +345,8 @@ class User extends UserPermissions
         $password = '';
 
         $numbers      = '0123456789';
-        $specialChars = '!@#$%^&*()';
+        $specialChars = '!@#$%^*()';
+        // & not part of $specialChars since it causes URL to break
 
         $possible = $numbers . $specialChars . 'abcdefghijklmnopqrstuvwxyz';
 
@@ -386,16 +456,10 @@ class User extends UserPermissions
      * @param string $expiry   The password expiry date. If not supplied, the
      *                         password expiry date will be set to now+6months.
      *
-     * @return none
+     * @return void
      */
     function updatePassword($password, $expiry = null)
     {
-        // Check if the PHP 5.5 password hashing API is available.
-        $php55 = false;
-        if (function_exists("password_verify")) {
-            $php55 = true;
-        }
-
         if (is_null($expiry)) {
             $expiry = date(
                 'Y-m-d',
@@ -405,76 +469,44 @@ class User extends UserPermissions
 
         $updateArray = array('Password_expiry' => $expiry);
 
-        // Update the appropriate password field, null the other one
-        // for security.
-        if ($php55) {
-            $updateArray['Password_hash'] = password_hash(
-                $password,
-                PASSWORD_DEFAULT
-            );
-            $updateArray['Password_MD5']  = null;
-        } else {
-            $updateArray['Password_hash'] = null;
-            $updateArray['Password_MD5']  = User::MD5Salt($password);
-        }
+        $updateArray['Password_hash'] = password_hash(
+            $password,
+            PASSWORD_DEFAULT
+        );
 
         $this->update($updateArray);
+    }
 
-        $config       =& NDB_Config::singleton();
-        $couch_config = $config->getSetting("CouchDB");
-        if ($couch_config['SyncAccounts'] === "true") {
-            $this->updateCouchUser($password);
-        }
+    /**
+     * Determines if the user has a center
+     *
+     * @param int $center_id The center id
+     *
+     * @return bool
+     */
+    public function hasCenter($center_id)
+    {
+        return in_array(
+            $center_id,
+            $this->getCenterIDs()
+        );
     }
     /**
-     * Updates the CouchDB user for this user to synchronize
-     * the password with Loris.
+     * Determines if the user has a permission
+     * for a center
      *
-     * @param string $password Plaintext password to synchronize
+     * @param string $code      The permission code
+     * @param int    $center_id The center id
      *
-     * @return none
+     * @return bool
      */
-    function updateCouchUser($password)
+    public function hasCenterPermission($code, $center_id)
     {
-        $factory = NDB_Factory::singleton();
-        $cdb     = $factory->CouchDB();
-        $config  = $factory->Config();
-
-        $c_config = $config->getSetting('CouchDB');
-        if ($c_config['SyncAccounts'] !== 'true') {
-            return false;
+        if ($this->hasPermission("superuser")) {
+            return true;
         }
-        $username = $this->getUsername();
-        $authkey  = base64_encode(
-            $c_config['admin']
-            . ':'
-            . $c_config['adminpass']
-        );
-
-        $auth     = array('Authorization' => 'Basic ' . $authkey);
-        $userjson = $cdb->_getURL(
-            "/_users/org.couchdb.user:" . $username,
-            'GET',
-            $auth
-        );
-        $userobj  = json_decode($userjson, true);
-        if (isset($userobj['error']) && $userobj['error'] == 'not_found') {
-            $userobj = array(
-                        '_id'   => 'org.couchdb.user:' . $username,
-                        'type'  => 'user',
-                        'name'  => $username,
-                        'roles' => array(
-                                    'dqg',
-                                    $c_config['database'],
-                                   ),
-                       );
-        }
-        $userobj['password'] = $password;
-
-        $response = $cdb->_postURL(
-            "PUT /_users/org.couchdb.user:" . $username,
-            json_encode($userobj)
-        );
+        return $this->hasPermission($code)
+            && $this->hasCenter($center_id);
     }
 }
 ?>

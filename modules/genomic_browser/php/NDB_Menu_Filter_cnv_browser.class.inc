@@ -36,6 +36,12 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
     var $_displayBrief = true;  // default: display only Brief results
 
     /**
+     * Tell the Caller that data will be queried using ajax and after
+     * the HTML page rendering.
+     */
+    var $AjaxModule = true;
+
+    /**
      * Overloading this method to allow access to site users (own site only)
      * and users w/ multisite privs
      *
@@ -139,11 +145,14 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
         $DB   = Database::singleton();
         $user = User::singleton();
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
-            $this->query .= " AND candidate.CenterID=";
-            $this->query .= $DB->quote($user->getCenterID());
+            $site_arr     = implode(",", $user->getCenterIDs());
+            $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
         }
 
-        $this->order_by     = 'psc.Name, candidate.CandID DESC';
+        $this->order_by = 'psc.Name, candidate.CandID DESC';
+
+        $this->limit = 10000;
+
         $this->validFilters = array(
                                'candidate.CenterID',
                                'candidate.CandID',
@@ -221,11 +230,14 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $site = Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $centerIDdata  = $user->getData('CenterID');
-                $siteData      = $user->getData('Site');
-                $list_of_sites = array($centerIDdata => $siteData);
+            $list_of_sites = array();
+            $site_arr      = $user->getData('CenterIDs');
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $list_of_sites[$val] = $site[$key]->getCenterName();
+                }
+                $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
             }
         }
 
@@ -379,8 +391,11 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
                 $query .= " AND $field = CONVERT( :v_$prepared_key, DECIMAL) ";
             } elseif ($field == "genomic_range") {
                 $temp_array = explode(':', $val);
-                $chr        = $temp_array[0];
-                $query     .= " AND genome_loc.Chromosome = '$chr'";
+                $chr        = $GLOBALS['DB']->quote($temp_array[0]);
+                $chrchr     = $GLOBALS['DB']->quote('chr'.$temp_array[0]);
+
+                $query .= " AND (genome_loc.Chromosome = $chr";
+                $query .= " OR genome_loc.Chromosome = $chrchr)";
 
                 if (!empty($temp_array[1]) AND strpos($temp_array[1], '-') ) {
                     $temp_array = explode('-', $temp_array[1]);

@@ -45,6 +45,18 @@ class NDB_Form_Configuration extends NDB_Form
     function configuration()
     {
         $config =& NDB_Config::singleton();
+        $DB     =& Database::singleton();
+
+        $scans = $DB->pselect(
+            "SELECT Scan_type
+             FROM mri_scan_type",
+            array()
+        );
+        foreach ($scans as $type) {
+            $val = $type['Scan_type'];
+            $scan_types[$val] =$val;
+        }
+        $scan_types = array_merge(array('' => ''), $scan_types);
 
         $instruments = Utility::getAllInstruments();
         $instruments = array_merge(array('' => ''), $instruments);
@@ -54,6 +66,7 @@ class NDB_Form_Configuration extends NDB_Form
         $this->tpl_data['config']          = $this->_getConfigSettingTree();
         $this->tpl_data['instruments']     = $instruments;
         $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
+        $this->tpl_data['scan_types']      = $scan_types;
 
     }
 
@@ -198,6 +211,43 @@ class NDB_Form_Configuration extends NDB_Form
             throw new ConfigurationException("Projects are not used in this study.");
         }
     }
+
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/configuration/js/configuration_helper.js",
+            )
+        );
+    }
+
+     /**
+        * Include additional CSS files:
+        *  1. configuration
+        *
+        * @return array of CSS to be inserted
+        */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . "/configuration/css/configuration.css"]
+        );
+    }
+
 }
 
 ?>

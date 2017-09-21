@@ -1,124 +1,168 @@
 #LORIS CentOS 6.x Notes
 
+This document contains supplemental details on how to perform a basic CentOS 6.x install of LORIS.
 Note that the main README in LORIS assumes that LORIS is being run on Ubuntu.
+As of Loris 17.0, the install script and web-based install steps as described in the main (Ubuntu) readme are applicable to CentOS installs. 
 
-This document contains details on how to manually perform a basic CentOS 6.x
-install of LORIS without using the install script (as the install script
-makes some assumptions about apt-get being installed.)
-
-It assumes you already understand basic UNIX, MySQL and Apache setup and
+This Readme assumes you already understand basic UNIX, MySQL and Apache setup and
 settings. If you're not already comfortable troubleshooting sysadmin issues,
 you should not follow this guide.
 
-# 1. System Requirements
+For further details on the install process, please see the LORIS GitHub Wiki CentOS Install page.  
 
-The yum packages to be installed vary from the Ubuntu packages referenced
-in the LORIS README
+# System Requirements
+
+Default dependencies installed by CentOS 6.x may not meet the version requirements LORIS deployment or development.
+* MySQL 5.7 is supported for LORIS 18.*
+* PHP 7 is supported for LORIS 18.* - upgrade your PHP manually
+
+The yum packages to be installed vary from any Ubuntu packages referenced in the LORIS README.
 
 The following should be installed with yum:
- 
-```bash
-yum install httpd
-yum install php
-yum install php-pear
-yum install php-pdo
-yum install php-mysql
-yum install mysql
+ * Apache2
+ * PHP
+ * MySQL
+ * PHP Composer
+
+**Apache2:**
+```
+sudo yum install httpd 
+sudo service httpd start
+```
+**PHP:**
+```
+sudo yum install php php-pdo php-mysql 
 ```
 
-PHP Composer must also be installed:
+*NOTE:* As of Loris 17.0 php7 is required (but not yet officially supported by CentOS). To upgrade php follow the following instructions:
+``` 
+# update php5 -> php7
+curl 'https://setup.ius.io/' -o setup-ius.sh
+sudo bash setup-ius.sh
 
-```bash
-curl -sS https://getcomposer.org/installer | php
+# update php7 specific packages
+sudo yum remove php-cli mod_php php-common
+sudo yum install php70u-json php70-xml mod_php70u php70u-cli php70u-mysqlnd php70u-mbstring
+``` 
+**MySQL:**
+
+*Note:* Loris developers (those NOT working with a .zip release codebase) should skip steps relating to hosting mysql locally. Contact your sysadmins for database credentials directly.
+``` 
+sudo yum install mysql mysql-server
+```
+The above command will download MariaDB by default in CentOS7 [(see paragraph2)](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-centos-7).
+
+Check what version you have installed by running:
+```
+mysql -v
+```
+If you have MySQL:
+```
+sudo service mysqld start
+sudo service mysqld status
+```
+If you have MariaDB:
+```
+sudo service mariadb start
+sudo service mariadb status
+```
+The two versions should act nearly identically in all other respects. 
+
+To finalise the MySQL/MariaDB installation: 
+```
+mysql_secure_installation
+```
+(follow instructions to create a password the root user):
+
+**PHP Composer:**
+```
+sudo curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 ```
+# LORIS code base
 
-Note that the default dependencies installed by CentOS 6.x may not meet the version requirements LORIS deployment or development.
-* MySQL 5.5 or lower is supported for LORIS 16.0
-* PHP 5.6 (or 5.5) is required for LORIS 16.0 - upgrade your PHP manually
-Or run composer with the `--no-dev` option. (Upgrading PHP is preferred, but for now we'll
-assume you just want to get it running, so we'll run it with `--no-dev`.)
+Download the latest release from the [releases page](https://github.com/aces/Loris/releases) to the home directory (~/), unzip it, and copy the contents to your project directory, `/var/www/loris` (we recommend naming your project directory `loris`, although you can use a different naming convention if you prefer). 
+```
+wget https://github.com/aces/Loris/archive/v$VERSION.zip
+unzip Loris-%VERSION%.zip
+cp -r Loris-%VERSION%/* /var/www/loris
+```
+
+Alternatively the latest development branch can be obtained by forking the [LORIS repository] (http://github.com/aces/Loris) for development purposes. We do not support unstable dev branches. 
+
+# Setup:
+
+**Composer:**
+
+Composer will download all of LORIS's library requirements, assuming an active internet connection.
+This must be done from the LORIS project directory `/var/www/loris`. There may be additional packages
+to install at this setp for composer to exist succesfully, be sure to install the php 7 compatible 
+versions of these packages, if necessary. 
 
 ```bash
-# Will download all of LORIS's library requirements, assuming an
-# active internet connection. This must be done from the LORIS
-# root directory that you downloaded and extracted LORIS into
+# It may be necessary to create the project/libraries/ directory before running composer install 
 composer install --no-dev
 ```
 
-## 1.1 MySQL
-
-This details how to manual populate the MySQL database which is assumed
-to already exist (if not, create one before proceeding)
-
-Connect to MySQL, use your database and source all the files in the
-SQL/ directory of LORIS which are prefixed with `0000-00-` into it
-(ie `SQL/0000-00-00-schema.sql`, `SQL/0000-00-01-Permission.sql`, 
-`SQL/0000-00-02-Menus.sql`, etc.)
-
-There are a few settings in the Config module that LORIS currently depends
-on being updated to load correctly that must be set manually from MySQL as
-they're normally set by the install script.
-
-```SQL
-UPDATE Config SET Value='/var/www/loris/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base');
-UPDATE Config SET Value='localhost' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='host');
-UPDATE Config SET Value='http://localhost' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url');
-```
-
-Where `/var/www/loris/` is the location where LORIS is installed and assuming
-you'll be running on localhost (otherwise update host and url appropriately)
-
-While connected to MySQL, you can also reset the admin password:
-
-```SQL
--- Reset password to YOURPASSWORD
-UPDATE users SET Password_md5=CONCAT('aa', MD5('aaYOURPASSWORD')) WHERE ID=1;
-```
-
-## 1.2 Config.xml
-
-Create a directory named "project" directory under the LORIS root, and copy
-the sample config.xml from `docs/config/config.xml` to `project/config.xml`
-
-Update the database section of the config.xml to point to the database you
-just configured with an appropriate user.
-
-## 1.3 Apache
+**Apache2:**
 
 A sample apache configuration file is in `docs/config/apache2-site`. 
-You can copy this file to the apache configuration directory (`/etc/httpd/conf.d/`), adding the appropriate suffix:
+The install script will ask if you want to automatically create/install apache config files.
+To perform this step manually, copy the sample file to the apache configuration directory (`/etc/httpd/conf.d/`), and add the `.conf` file extension:
 
 ```bash
 cp docs/config/apache-site /etc/httpd/conf.d/apache-site.conf
 ```
 
-Update the paths and settings in this new file as appropriate for your server, ensuring that all placeholders (`%LORISROOT%`, `%PROJECTNAME%`, `%LOGDIRECTORY%`) are populated. Ensure that the DocumentRoot is pointing to the htdocs/ directory under your LORIS root (usually `/var/www/loris/htdocs`).
+Ensure the following: 
 
-You'll have to create a `smarty/templates_c/` directory under the LORIS
-root and assure that it's writable by Apache.
+ * Paths and settings in `/etc/heepd/conf.d/apache-site.conf` are populated appropriately for your server, (replacing placeholders such as `%LORISROOT% --> /var/www/loris`, `%PROJECTNAME% --> loris`, `%LOGDIRECTORY% --> /var/log/httpd/loris-error.log`. 
+ * DocumentRoot is pointing to `/var/www/loris/htdocs`.
+ * The `smarty/templates_c/` directory under the LORIS root is writable by Apache.
+ (This can be done by running: `chmod 775 /var/www/loris/smarty/templates_c)
 
-## 1.4 Last steps
-
-Finally, SELinux will block MySQL connections from PHP. For now, we'll 
-disable SELinux (though on a production server you should learn how to
-properly configure it instead.)
-
-```bash
-echo 0 >/selinux/enforce
+`
+Finally, restart apache:
 ```
-
-And restart apache
-```bash
-service httpd stop
-service httpd start
+sudo service httpd restart
+sudo service httpd status
 ```
+# Install LORIS
 
-At this point, you should be able to log in to LORIS
-at http://localhost/ using the username "admin" and the password that
-you set in section 1.1. Further configuration can be done using the
-LORIS configuration module.
+For the purpose of following LORIS conventions and easy understanding of all LORIS documentation, we recommend the following account names: 
+
+* lorisadmin : Linux user with sudo permission who will setup and manage Loris
+* lorisuser : MySQL user with limited (insert, delete, update, select...) permissions on the Loris database, for database transactions requested by the Loris front end
+* admin : default username for Loris front-end admin account (browser login)
+
+**Run the loris install script:**
+```
+cd /var/www/loris/tools
+./install.sh
+```
+**Configure your databse:*
+point your URL to: `http://%IPADDRESS%/installdb.php`
+
+(%IPADDRESS% will likely be the IP address of the VM you are ssh'ed into)
+
+The web page will prompt you for the following information: 
+
+ * `Server Hostname`: localhost if your database if hosted on your VM or the IP address of your database server
+
+ * `Admin Username`: should be "root" 
+
+ * `Admin Password`: whatever password you set when running the `mysql_secure_installation` step
+
+ * `Database Name`: set to "LORIS" by default, can be customised
+
+Click submit, and follow the instructions to enter the username and password of your backend user, and front end admin user. 
+
+You may have to manually paste the xml output to `/var/www/loris/project/config.xml`
+
+Your Loris instance should now be accessible by pointing your url to `http://%IPADDRESS%`
+
+Further configuration can be done using the LORIS configuration module.
 
 If there are any errors or you get a blank page, you'll have to troubleshoot
 based on the errors in your apache error log (by default
- `/var/log/httpd/error_log`) 
+ `/var/log/httpd/lorris-error.log`) 

@@ -1,0 +1,1 @@
+UPDATE Config SET Value="images/neurorgb_web.jpg" WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name="studylogo") AND Value="images/neuro_logo_blue.gif";

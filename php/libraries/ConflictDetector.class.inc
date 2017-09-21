@@ -53,14 +53,14 @@ class ConflictDetector
         }
 
         // Create the instrument instance for $commentId1
-        $instance1 =& NDB_BVL_Instrument::factory(
+        $instance1 = NDB_BVL_Instrument::factory(
             $instrumentName,
             $commentId1,
             null
         );
 
         // Create the instrument instance for $commentId2
-        $instance2 =& NDB_BVL_Instrument::factory(
+        $instance2 = NDB_BVL_Instrument::factory(
             $instrumentName,
             $commentId2,
             null
@@ -124,7 +124,7 @@ class ConflictDetector
      *
      * @return null As a side-effect deletes from database
      */
-    function clearConflictsForInstance($commentId)
+    static function clearConflictsForInstance($commentId)
     {
         $deleteWhere = array('CommentId1' => $commentId);
 

@@ -28,10 +28,6 @@
  * to parameter_type_category.Type Metafields or manually entered custom fields
  * of parameter_type_category.Type != 'Instrument' are preserved.
  *
- * Optional:
- * If an instrument has a long name, a shorter identifier may be entered in the
- * $abbreviations array.  This helps unclutter the DQG display interface.
- *
  * Further Improvements:
  * It is recommended that this script be changed to be intelligent about its
  * methods, possibly with command line options that allow it to be more
@@ -58,12 +54,19 @@ $client->makeCommandLine();
 $client->initialize($configFile);
 $DB = Database::singleton();
 
+// Set a user for the history table
+if (!isset($_SESSION['State'])) {
+    $_SESSION['State'] =& State::singleton();
+}
+$_SESSION['State']->setUsername(get_current_user());
+
 // define which configuration file we're using for this installation
 //Get the entries we already have in the DB
 getColumns(
     "Select Name, ParameterTypeID from parameter_type",
     $DB,
-    $parameter_types
+    $parameter_types,
+    array()
 );
 
 //Delete in the parameter_type table relating to
@@ -72,27 +75,26 @@ getColumns(
 getColumn(
     "SELECT ParameterTypeCategoryID
         FROM parameter_type_category
-        WHERE Type = 'Instrument'",
+        WHERE Type = :in",
     $DB,
-    $instrumentParameterTypeCategoryIDs
+    $instrumentParameterTypeCategoryIDs,
+    array('in' => 'Instrument')
 );
 
-$instrumentParameterTypeCategoryIDString = implode(
-    ', ',
-    $instrumentParameterTypeCategoryIDs
-);
+if (!empty($instrumentParameterTypeCategoryIDs)) {
+    // Prepare for the IN () SQL quandary
+    $prepIn = prepareIn($instrumentParameterTypeCategoryIDs);
 
-if (!empty($instrumentParameterTypeCategoryIDString)) {
     //get all 'Instrument' ParameterTypeIDs
     getColumn(
         "SELECT ParameterTypeID
             FROM parameter_type_category_rel
             WHERE ParameterTypeCategoryID
-            IN ($instrumentParameterTypeCategoryIDString)",
+            IN (" . $prepIn['query'] . ")",
         $DB,
-        $instrumentParameterTypeIDs
+        $instrumentParameterTypeIDs,
+        $prepIn['array']
     );
-
     $instrumentParameterTypeIDString = implode(', ', $instrumentParameterTypeIDs);
 }
 
@@ -120,30 +122,7 @@ if (!empty($instrumentParameterTypeIDString)) {
     );
 }
 
-
 print "Cleared data from BVL instruments\n";
-
-//Instruments with excessively wordy names.  Entries are OPTIONAL
-//It would be really nice to have a table_names.Abbreviation
-//field, but messy to change the names *everywhere*.
-$abbreviations =array(
-                 'childs_health_questions_12'           => 'chq12',
-                 'childs_health_questions_18_36'        => 'chq18_36',
-                 'childs_health_questions_6'            => 'chq6',
-                 'child_bearing_attitudes'              => 'cba',
-                 'ecbq_temperament'                     => 'ecbq',
-                 'edinburgh_postnatal_depression_scale' => 'epds',
-                 'health_well_being'                    => 'hwb',
-                 'home_environment_evaluation'          => 'hee',
-                 'ibq_temperament'                      => 'ibq',
-                 'montreal_prenatal'                    => 'montreal_prenatal',
-                 'parental_bonding_inventory'           => 'pbi',
-                 'state_trait_anxiety_inventory'        => 'stai',
-                 'med_records_24'                       => 'med_rec_24',
-                 'med_records_recruit'                  => 'med_rec_recr',
-                );
-
-
 
 print "Reading instruments\n";
 //Read the ip_output.txt staging file.
@@ -218,28 +197,29 @@ foreach ($instruments AS $instrument) {
             $parameterCount++;
             $bits[2] = htmlspecialchars($bits[2]);
             //find values to insert
-            $Name = (
-                array_key_exists($table, $abbreviations)
-                ? $abbreviations[$table]
-                : $table )
-                . "_" . $bits[1];
+            $Name = $table . "_" . $bits[1];
 
-            $ParameterTypeID = array_key_exists($Name, $parameter_types)
-                ? $parameter_types[$Name]
-                : '';
-            $error           = $DB->insert(
+            $query_params = array(
+                             'Name'            => $Name,
+                             'Type'            => $bits[0],
+                             'Description'     => $bits[2],
+                             'SourceField'     => $bits[1],
+                             'SourceFrom'      => $table,
+                             'CurrentGUITable' => 'quat_table_'
+                                     . ceil(($parameterCount  - 0.5) / 200),
+                             'Queryable'       => '1',
+                            );
+
+            if (array_key_exists($Name, $parameter_types)) {
+                $ParameterTypeID = $parameter_types[$Name];
+                $query_params['ParameterTypeID'] = $ParameterTypeID;
+            } else {
+                $ParameterTypeID = '';
+            }
+
+            $error = $DB->insert(
                 "parameter_type",
-                array(
-                 'ParameterTypeID' => $ParameterTypeID,
-                 'Name'            => $Name,
-                 'Type'            => $bits[0],
-                 'Description'     => $bits[2],
-                 'SourceField'     => $bits[1],
-                 'SourceFrom'      => $table,
-                 'CurrentGUITable' => 'quat_table_'
-                                      . ceil(($parameterCount  - 0.5) / 200),
-                 'Queryable'       => '1',
-                )
+                $query_params
             );
             print_r($error);
             if ($ParameterTypeID === '') {
@@ -262,26 +242,30 @@ foreach ($instruments AS $instrument) {
     }
     print "Inserting validity for $table\n";
     // Insert validity
-    $Name            = (
-                        array_key_exists($table, $abbreviations)
-                        ? $abbreviations[$table]
-                        : $table
-                       ) . "_Validity";
-    $ParameterTypeID = array_key_exists($Name, $parameter_types)
-        ? $parameter_types[$Name]
-        : '';
-    $error           =$DB->insert(
+    $Name = $table . "_Validity";
+
+    $_type_enum = 'enum(\'Questionable\', \'Invalid\', \'Valid\')';
+    $_CurrentGUITable_value = 'quat_table_' . ceil(($parameterCount  - 0.5) / 150);
+
+    $query_params = array(
+                     'Name'            => $Name,
+                     'Type'            => $_type_enum,
+                     'Description'     => "Validity of $table",
+                     'SourceField'     => 'Validity',
+                     'SourceFrom'      => $table,
+                     'CurrentGUITable' => $_CurrentGUITable_value,
+                     'Queryable'       => '1',
+                    );
+
+    if (array_key_exists($Name, $parameter_types)) {
+        $ParameterTypeID = $parameter_types[$Name];
+        $query_params['ParameterTypeID'] = $ParameterTypeID;
+    } else {
+        $ParameterTypeID = '';
+    }
+    $error =$DB->insert(
         "parameter_type",
-        array(
-         'ParameterTypeID' => $ParameterTypeID,
-         'Name'            => $Name,
-         'Type'            => 'enum(\'Questionable\', \'Invalid\', \'Valid\')',
-         'Description'     => "Validity of $table",
-         'SourceField'     => 'Validity',
-         'SourceFrom'      => $table,
-         'CurrentGUITable' => 'quat_table_' . ceil(($parameterCount  - 0.5) / 150),
-         'Queryable'       => '1',
-        )
+        $query_params
     );
     if ($ParameterTypeID === '') {
         $paramId = $DB->lastInsertID;
@@ -297,28 +281,30 @@ foreach ($instruments AS $instrument) {
     );
     // Insert administration
     print "Inserting administration for $table\n";
-    $Name = (
-             array_key_exists($table, $abbreviations)
-             ? $abbreviations[$table]
-             : $table
-            ) . "_Administration";
+    $Name = $table . "_Administration";
 
-    $ParameterTypeID = array_key_exists($Name, $parameter_types)
-        ? $parameter_types[$Name]
-        : '';
+    $_type_enum = 'enum(\'None\', \'Partial\', \'All\')';
+    $_CurrentGUITable_value = 'quat_table_' . ceil(($parameterCount  - 0.5) / 150);
+    $query_params           = array(
+                               'Name'            => $Name,
+                               'Type'            => $_type_enum,
+                               'Description'     => "Administration for $table",
+                               'SourceField'     => 'Administration',
+                               'SourceFrom'      => $table,
+                               'CurrentGUITable' => $_CurrentGUITable_value,
+                               'Queryable'       => '1',
+                              );
+
+    if (array_key_exists($Name, $parameter_types)) {
+        $ParameterTypeID = $parameter_types[$Name];
+        $query_params['ParameterTypeID'] = $ParameterTypeID;
+    } else {
+        $ParameterTypeID = '';
+    }
 
     $error = $DB->insert(
         "parameter_type",
-        array(
-         'ParameterTypeID' => $ParameterTypeID,
-         'Name'            => $Name,
-         'Type'            => 'enum(\'None\', \'Partial\', \'All\')',
-         'Description'     => "Administration for $table",
-         'SourceField'     => 'Administration',
-         'SourceFrom'      => $table,
-         'CurrentGUITable' => 'quat_table_' . ceil(($parameterCount  - 0.5) / 150),
-         'Queryable'       => '1',
-        )
+        $query_params
     );
     if ($ParameterTypeID === '') {
         $paramId = $DB->lastInsertID;
@@ -387,16 +373,17 @@ function enumizeOptions($options, $table, $name)
 /**
  * Runs a MySQL query and returns the result in
  *
- * @param string   $query  The SQL query to run
- * @param Database $DB     Reference to the Database object
- * @param array    $result A reference to an array in which to
+ * @param string   $query     The SQL query to run
+ * @param Database $DB        Reference to the Database object
+ * @param array    $result    A reference to an array in which to
+ * @param array    $preparray Values for the prepared statements
  *                         store the output.
  *
  * @return an array of the results of the query
  */
-function getColumn($query, &$DB, &$result)
+function getColumn($query, &$DB, &$result, $preparray)
 {
-    $DB->select($query, $TwoDArray);
+    $TwoDArray = $DB->pselect($query, $preparray);
     foreach ($TwoDArray as $container=>$cell) {
         foreach ($cell as $key=>$value) {
             $result[] = $value;
@@ -408,22 +395,48 @@ function getColumn($query, &$DB, &$result)
 /**
  * Builds an array parameterTypeID=>Name
  *
- * @param string   $query  The SQL query to run
- * @param Database $DB     Reference to the Database object
- * @param array    $result A reference to an array in which to
+ * @param string   $query     The SQL query to run
+ * @param Database $DB        Reference to the Database object
+ * @param array    $result    A reference to an array in which to
+ * @param array    $preparray Values for the prepared statements
  *                         store the output.
  *
  * @return array An array of the query where the index of the
  *               array is the ParameterTypeID and the value
  *               is the row from the query supplied.
  */
-function getColumns($query, &$DB, &$result)
+function getColumns($query, &$DB, &$result, $preparray)
 {
-    $DB->select($query, $TwoDArray);
+    $TwoDArray = $DB->pselect($query, $preparray);
     foreach ($TwoDArray as $containers=>$cells) {
         $values = array_values($cells);
         $result[$values[0]] = $values[1];
     }
+    return $result;
+}
+
+/**
+ * Builds an array and a string to allow IN () to be prepared
+ *
+ * @param array $preparray Values for the prepared statements
+ *
+ * @return array   a string of keys for the query, and key value pairs to prepare
+ */
+function prepareIn($preparray)
+{
+    $varray = array();
+    $karray = array();
+    $i      = 0;
+
+    foreach ($preparray as $value) {
+        $key          = 'zqx' . $i;
+        $karray[]     = ':' . $key;
+        $varray[$key] = $value;
+        $i++;
+    }
+
+    $result['query'] = implode(',', $karray);
+    $result['array'] = $varray;
     return $result;
 }
 

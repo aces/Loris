@@ -24,6 +24,14 @@
     </select>
 {/function}
 
+{function name=createScanType}
+    <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
+        {foreach from=$scan_types key=name item=label}
+            <option {if $v eq $name}selected{/if} value="{$name}">{$label}</option>
+        {/foreach}
+    </select>
+{/function}
+
 {function name=createEmail}
     <input class="form-control" type="email" name="{$k}" value="{$v}" {if $d eq "Yes"}disabled{/if}>
 {/function}
@@ -66,6 +74,8 @@
             {call createRadio k=$k v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'instrument'}
             {call createInstrument k=$k v=$v d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'scan_type'}
+            {call createScanType k=$k v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'email'}
             {call createEmail k=$k v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'textarea'}
@@ -86,6 +96,8 @@
         {assign var=id value={"add-"|cat:$node['ID']} }
         {if $node['DataType'] eq 'instrument'}
             {call createInstrument k=$id d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'scan_type'}
+            {call createScanType k=$id d=$node['Disabled']}
         {elseif $node['DataType'] eq 'email'}
             {call createEmail k=$id d=$node['Disabled']}
         {elseif $node['DataType'] eq 'textarea'}

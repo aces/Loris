@@ -46,6 +46,7 @@ canvas.slice-display {
   margin: 3px 5px;
 }
 
+/* Not currently used in Loris
 .volume-viewer-controls {
   font-size: 12px;
   padding: 10px;
@@ -58,7 +59,7 @@ canvas.slice-display {
   border-top: none;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
-}
+} */
 
 .volume-viewer-controls > div {
   margin-top: 0px;

@@ -261,6 +261,23 @@ class Database
     }
 
     /**
+     * Insert a row into the database
+     *
+     * This will insert a row. HTML from any field in the row will be automatically
+     * escaped to avoid injection.
+     *
+     * @param string $table the table into which to insert the row
+     * @param array  $set   the values with which to fill the new row
+     *
+     * @return none
+     */
+    public function insertIgnore($table, $set)
+    {
+        $ignore = true;
+        return $this->_realinsert($table, $set, true, $ignore);
+    }
+
+    /**
      * Escapes the HTML from an array that is about to be inserted into the database
      *
      * @param array $set The array to be inserted as a new row
@@ -271,7 +288,11 @@ class Database
     {
         $retVal = array();
         foreach ($set as $key => $val) {
-            $retVal[$key] = htmlspecialchars($val);
+            if ($val === 'Unrated') {
+                $retVal[$key] = '';
+            } else {
+                $retVal[$key] = is_null($val) ? null : htmlspecialchars($val);
+            }
         }
         return $retVal;
     }
@@ -285,18 +306,24 @@ class Database
      * @param array  $set        the values with which to fill the new row
      * @param bool   $autoescape determines whether the values to be set should
      *                           automatically have the html escaped
+     * @param bool   $ignore     determines whether the insert throws and error or
+     *                           is discarded when value exists in DB
      *
      * @return none
      */
-    private function _realinsert($table, $set, $autoescape = true)
+    private function _realinsert($table, $set, $autoescape = true, $ignore = false)
     {
         if ($autoescape === true) {
             $set = $this->_HTMLEscapeArray($set);
         }
-        $query  = "INSERT INTO $table SET ";
+        if ($ignore) {
+            $query = "INSERT IGNORE INTO $table SET ";
+        } else {
+            $query = "INSERT INTO $table SET ";
+        }
+        $prepQ  = $query;
         $query .= $this->_implodeWithKeys(', ', $set);
 
-        $prepQ       = "INSERT INTO $table SET ";
         $exec_params = array();
         $prepQ      .= $this->_implodeAsPrepared(",", $set, $exec_params);
 
@@ -543,6 +570,11 @@ class Database
      */
     function select($query, &$result)
     {
+        error_log(
+            "LORIS's Database::select() wrappers are deprecated and will be "
+            . "removed in a future version of LORIS. Please use prepared statements "
+            . " in the Database::pselect() variety instead."
+        );
         $result = array();
 
         if (strpos(strtoupper($query), 'SELECT') !== 0
@@ -1080,5 +1112,157 @@ class Database
         return false;
     }
 
+    /**
+     * Checks to see if a table contains a specified column
+     *
+     * @param string $test_name The table to check for a column.
+     * @param string $column    The column name to check the table for.
+     *
+     * @return boolean true if the table has a the given column
+     */
+    function columnExists($test_name,$column)
+    {
+        $config   =& NDB_Config::singleton();
+        $database = $config->getSetting('database');
+        $query    = "SELECT DISTINCT table_name
+            FROM information_schema.columns
+            WHERE table_name = :tn
+            AND COLUMN_NAME = :cn
+            AND TABLE_SCHEMA = :db";
+        $effected = $this->pselectOne(
+            $query,
+            array(
+             'tn' => $test_name,
+             'cn' => $column,
+             'db' => $database['database'],
+            )
+        );
+        if ($effected) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Escapes a string properly for mysql and appends and prepends backticks.
+     * Any backticks you append or prepend will be escaped.
+     *
+     * @param string $tableName The column or table name that needs to be escaped
+     *
+     * @return string surrounded by backticks and with special characters escaped.
+     */
+    function escape($tableName)
+    {
+        //with help from
+        // http://php.net/manual/en/function.mysql-real-escape-string.php
+        if (!empty($tableName) && is_string($tableName)) {
+            $stringWithEscapedChars = str_replace(
+                array(
+                 '\\',
+                 "\0",
+                 "\n",
+                 "\r",
+                 "'",
+                 '"',
+                 "\x1a",
+                 "`",
+                ),
+                array(
+                 '\\\\',
+                 '\\0',
+                 '\\n',
+                 '\\r',
+                 "\\'",
+                 '\\"',
+                 '\\Z',
+                 "\\`",
+                ),
+                $tableName
+            );
+            $fullyEscapedString     = "`".$stringWithEscapedChars."`";
+            return $fullyEscapedString;
+        } else {
+            return $tableName;
+        }
+    }
+
+    /**
+     * Checks if we're in a transaction
+     *
+     * @return bool `true`, if in transaction
+     * @throws DatabaseException
+     */
+    public function inTransaction()
+    {
+        return $this->_PDO->inTransaction();
+    }
+
+    /**
+     * Attempts to begin a transaction
+     *
+     * @return bool `true`, on success
+     * @throws DatabaseException
+     */
+    public function beginTransaction()
+    {
+        if ($this->inTransaction()) {
+            throw new DatabaseException(
+                "There is already a database transaction in progress; "
+                . "rollBack() or commit() the current transaction first"
+            );
+        }
+        try {
+            return $this->_PDO->beginTransaction();
+        } catch (PDOException $ex) {
+            //Probably because the driver doesn't support transactions
+            throw new DatabaseException(
+                $ex->getMessage()
+            );
+        }
+    }
+
+    /**
+     * Attempts to roll back a transaction
+     *
+     * @return bool `true`, on success
+     * @throws DatabaseException
+     */
+    public function rollBack()
+    {
+        if (!$this->inTransaction()) {
+            throw new DatabaseException(
+                "Cannot rollBack() when not in a transaction"
+            );
+        }
+        try {
+            return $this->_PDO->rollBack();
+        } catch (PDOException $ex) {
+            throw new DatabaseException(
+                $ex->getMessage()
+            );
+        }
+    }
+
+    /**
+     * Attempts to commit a transaction
+     *
+     * @return bool `true`, on success
+     * @throws DatabaseException
+     */
+    public function commit()
+    {
+        if (!$this->inTransaction()) {
+            throw new DatabaseException(
+                "Cannot commit() when not in a transaction"
+            );
+        }
+        try {
+            return $this->_PDO->commit();
+        } catch (PDOException $ex) {
+            throw new DatabaseException(
+                $ex->getMessage()
+            );
+        }
+    }
 }
 ?>

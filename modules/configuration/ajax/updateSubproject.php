@@ -25,17 +25,26 @@ $client->initialize();
 
 $factory = NDB_Factory::singleton();
 $db      = $factory->database();
+$SubprojectList = Utility::getSubprojectList();
+$recTarget      = empty($_POST['RecruitmentTarget'])
+    ? null : $_POST['RecruitmentTarget'];
 
-if ($_POST['subprojectID'] === 'new' && !empty($_POST['title'])) {
-    $db->insert(
-        "subproject",
-        array(
-         "title"             => $_POST['title'],
-         "useEDC"            => $_POST['useEDC'],
-         "WindowDifference"  => $_POST['WindowDifference'],
-         "RecruitmentTarget" => $_POST['RecruitmentTarget'],
-        )
-    );
+if ($_POST['subprojectID'] === 'new') {
+    if (!in_array($_POST['title'], $SubprojectList) && !empty($_POST['title'])) {
+        $db->insert(
+            "subproject",
+            array(
+             "title"             => $_POST['title'],
+             "useEDC"            => $_POST['useEDC'],
+             "WindowDifference"  => $_POST['WindowDifference'],
+             "RecruitmentTarget" => $recTarget,
+            )
+        );
+    } else {
+        header("HTTP/1.1 409 Conflict");
+        print '{ "error" : "Conflict" }';
+        exit();
+    }
 } else {
     $db->update(
         "subproject",
@@ -43,7 +52,7 @@ if ($_POST['subprojectID'] === 'new' && !empty($_POST['title'])) {
          "title"             => $_POST['title'],
          "useEDC"            => $_POST['useEDC'],
          "WindowDifference"  => $_POST['WindowDifference'],
-         "RecruitmentTarget" => $_POST['RecruitmentTarget'],
+         "RecruitmentTarget" => $recTarget,
         ),
         array("SubprojectID" => $_POST['subprojectID'])
     );

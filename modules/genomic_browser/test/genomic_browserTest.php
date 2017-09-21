@@ -76,8 +76,10 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                 'SNP_Name',
                 'SNP_Description',
                 'SNP_External_Source',
-                'Observed_Base',
+                'Allele_A',
+                'Allele_B',
                 'Reference_Base',
+                'Minor_Allele',
                 'Array_Report',
                 'Markers',
                 'Validation_Method',
@@ -308,14 +310,14 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete("CNV", array("CNVID" => '9999999997'));
         $this->DB->delete("CNV", array("CNVID" => '9999999996'));
         $this->DB->delete("CNV", array("CNVID" => '9999999995'));
+        $this->DB->delete("SNP_candidate_rel", array("SNPID" => '9999999999'));
+        $this->DB->delete("SNP_candidate_rel", array("SNPID" => '9999999998'));
+        $this->DB->delete("SNP_candidate_rel", array("SNPID" => '9999999997'));
         $this->DB->delete("SNP", array("SNPID" => '9999999999'));
         $this->DB->delete("SNP", array("SNPID" => '9999999998'));
         $this->DB->delete("SNP", array("SNPID" => '9999999997'));
         $this->DB->delete("SNP", array("SNPID" => '9999999996'));
         $this->DB->delete("SNP", array("SNPID" => '9999999995'));
-        $this->DB->delete("SNP_candidate_rel", array("SNPID" => '9999999999'));
-        $this->DB->delete("SNP_candidate_rel", array("SNPID" => '9999999998'));
-        $this->DB->delete("SNP_candidate_rel", array("SNPID" => '9999999997'));
         $this->DB->delete("candidate", array('CandID' => '000771'));
         $this->DB->delete("candidate", array('CandID' => '000772'));
         $this->DB->delete("psc", array('CenterID' => 92));
@@ -1104,8 +1106,10 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                              'SNP Name',
                              'SNP Description',
                              'External Source',
-                             'Observed Base',
+                             'Minor Allele',
                              'Reference Base',
+                             'Allele A',
+                             'Allele B',
                              'Array Report',
                              'Markers',
                              'Validation Method',

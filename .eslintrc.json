@@ -1,0 +1,37 @@
+{
+  "extends": "google",
+  "plugins": [
+    "react"
+  ],
+  "env": {
+    "browser": true,
+    "jquery": true
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+      "globalReturn": false
+    }
+  },
+  "rules": {
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error",
+    "no-alert": 0,
+    "no-implicit-globals": 0,
+    "array-callback-return": 0,
+    "new-cap": ["error", {
+        "capIsNewExceptions": ["DynamicTable"]
+    }],
+    "no-console": ["error", {
+      "allow": ["info", "warn", "error"]
+    }]
+  },
+  "globals": {
+    "React": true,
+    "ReactDOM": true,
+    "loris": true,
+    "QueryString": true,
+    "swal": true
+  }
+}

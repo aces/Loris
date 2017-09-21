@@ -29,8 +29,9 @@ require_once __DIR__ . "/../vendor/autoload.php";
 // Ensures the user is logged in, and parses the config file.
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
-$client->initialize("../project/config.xml");
-
+if ($client->initialize("../project/config.xml") == false) {
+    return false;
+}
 
 // Checks that config settings are set
 $config =& NDB_Config::singleton();
@@ -58,7 +59,7 @@ if (empty($Module) || empty($File)) {
 // using a relative filename.
 // No need to check for '/' since all scripts are relative to $basePath
 // and there's no way to go up a level.
-if (strpos("..", $File) !== false) {
+if (strpos($File, "..") !== false) {
     error_log("ERROR: Invalid filename");
     header("HTTP/1.1 400 Bad Request");
     exit(4);

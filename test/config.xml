@@ -11,39 +11,22 @@
 <config>
     <!-- set to 1 if development environment -->
     <dev>
-        <sandbox>1</sandbox>
+        <sandbox>0</sandbox>
+        <selenium_url>http://selenium:4444/wd/hub</selenium_url>
     </dev>
 
     <!-- database settings -->
     <database>
-        <host>%HOSTNAME%</host>
-        <username>%USERNAME%</username>
-        <password>%PASSWORD%</password>
-        <database>%DATABASE%</database>
+        <host>db</host>
+        <username>SQLTestUser</username>
+        <password>TestPassword</password>
+        <database>LorisTest</database>
         <quatUser>SQLTestUser</quatUser>
         <quatPassword>TestPassword</quatPassword>
-        <name>Test database</name>
+        <name>Example database</name>
     </database>
 
-    <!-- Following links will appear on the footer of the home page of loris installation -->
-    <Studylinks>
-        <link url='http://www.loris.ca'>Loris Website</link>
-        <link url='https://github.com/aces'>GitHub</link>
-    </Studylinks>
-
-    <links>
-        <link url='http://www.loris.ca'>Loris Website</link>
-        <link url='https://github.com/aces'>GitHub</link>
-    </links>
-
-    <dashboard>
-        <!-- The dashboard links will appear just below the project description on the Dashboard. -->
-        <dashboardLinks>
-            <link url='http://www.loris.ca'>Important Website</link>
-        </dashboardLinks>
-    </dashboard>
     <CouchDB>
-        <SyncAccounts>false</SyncAccounts>
     </CouchDB>
 
     <!-- study variables -->
@@ -53,7 +36,7 @@
             <generation>sequential</generation>
             <structure>
                 <seq type="siteAbbrev"/>
-                <seq type="numeric" length="4"/>
+                <seq type="alphanumeric" minLength="4"/> <!-- Ex: AAA1-->
             </structure>
         </PSCID>
         
@@ -71,38 +54,33 @@
             <candidate>ProbandDoB</candidate>
             <parameter_session>MRI_Done</parameter_session>
         </HeaderTable>
-        <Projects>
-            <project>
-                <id>1</id>
-                <title>Sample Project</title>
-                <recruitmentTarget>50</recruitmentTarget>
-            </project>
-            <project>
-                <id>2</id>
-                <title>Another Sample Project</title>
-                <recruitmentTarget>50</recruitmentTarget>
-            </project>
-        </Projects>
-
         <!-- defines how visit labels are assigned -->
         <visitLabel subprojectID="1">
             <!-- generation can have either 'user' or 'sequence' to denote user entered or a pre-defined sequence -->
+            <!-- if 'user', the frontend will display a textbox for the user to enter date which is
+                 enforced against the regex. If 'sequence', a dropdown will be displayed
+                 based on the options in the labelSet tag -->
             <generation>user</generation>
             <regex>/^[A-Z0-9]{2}$/i</regex>
             <length>2</length>
             <suggest>V%value%</suggest> <!-- %value% will be substituted for the next unique number -->
             <labelSet>
-                <item value="V%value%">V%value%</item>
+                <item value="V01">V01</item>
+                <item value="V02">V02</item>
             </labelSet>
         </visitLabel>
         <visitLabel subprojectID="2">
             <!-- generation can have either 'user' or 'sequence' to denote user entered or a pre-defined sequence -->
+            <!-- if 'user', the frontend will display a textbox for the user to enter date which is
+                 enforced against the regex. If 'sequence', a dropdown will be displayed
+                 based on the options in the labelSet tag -->
             <generation>user</generation>
             <regex>/^[A-Z0-9]{2}$/i</regex>
             <length>2</length>
             <suggest>V%value%</suggest> <!-- %value% will be substituted for the next unique number -->
             <labelSet>
-                <item value="V%value%">V%value%</item>
+                <item value="V01">V01</item>
+                <item value="V02">V02</item>
             </labelSet>
         </visitLabel>
         <!-- Instruments for relability module -->
@@ -151,8 +129,6 @@
                 <!--test value=InstrumentName>InstrumentName</test-->
             </CertificationInstruments>
         </Certification>
-        <!--This permission allows users from sites to have access to other sites bvl feedback info -->
-        <multiSiteEnabledCenters></multiSiteEnabledCenters>
 
         <!-- Consent module allows addition of consent information in the candidate information page-->
          <ConsentModule>

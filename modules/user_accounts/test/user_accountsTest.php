@@ -35,7 +35,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                                     'Data Coordinating Center',
                                     'admin',
                                     'Admin account',
-                                    'admin@localhost',
+                                    'admin@example.com',
                                     'Y',
                                     'N',
                                    );
@@ -69,7 +69,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $this->assertEquals(
             "password",
             $this->safeFindElement(
-                WebDriverBy::Name("Password_md5")
+                WebDriverBy::Name("Password_hash")
             )->getAttribute("type")
         );
         $this->assertEquals(
@@ -106,30 +106,8 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function testSearchForUsers()
     {
-        $this->safeGet($this->url . "/user_accounts/");
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-        );
-        $bodyText->getText();
-        $this->_assertSearchBy(
-            array('userID' => 'my_nonexistent_user_ID'),
-            null
-        );
-        $this->_assertSearchBy(
-            array('userID' => 'UnitTester'),
-            array(self::$_UNIT_TESTER)
-        );
-        $this->_assertSearchBy(
-            array('userID' => 'unittester'),
-            array(self::$_UNIT_TESTER)
-        );
-        $this->_assertSearchBy(
-            array('userID' => 'n'),
-            array(
-             self::$_ADMIN,
-             self::$_UNIT_TESTER,
-            )
-        );
+        $this->_assertSearchBy("userID", "my_nonexistent_user_ID", null);
+        $this->_assertSearchBy("userID", "UnitTester", "UnitTester");
     }
     /**
      * Tests various user account edit operations.
@@ -160,7 +138,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             'user_accounts',
             'UnitTester',
             'Email',
-            'newemail@gmail.com'
+            'newemail@example.com'
         );
         $this->_verifyUserModification(
             'user_accounts',
@@ -192,7 +170,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             'user_accounts/my_preferences',
             'UnitTester',
             'Email',
-            'newemail@gmail.com'
+            'newemail@example.com'
         );
     }
     /**
@@ -211,7 +189,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         // Click somehow does not work but this should be
         // equivalent
         $element = $this->safeFindElement(WebDriverBy::Name('NA_Password'));
-        $element->sendKeys(WebDriverKeys::RETURN_KEY);
+        $element->sendKeys(WebDriverKeys::SPACE);
 
         $field = $this->safeFindElement(WebDriverBy::Name('First_name'));
         $field->clear();
@@ -221,11 +199,14 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $field->sendKeys('last');
         $field = $this->safeFindElement(WebDriverBy::Name('Email'));
         $field->clear();
-        $field->sendKeys('email@gmail.com');
+        $field->sendKeys('email@example.com');
         $field = $this->safeFindElement(WebDriverBy::Name('__ConfirmEmail'));
         $field->clear();
-        $field->sendKeys('email@gmail.com');
+        $field->sendKeys('email@example.com');
         $this->safeClick(WebDriverBy::Name('SendEmail'));
+        $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
+        $sitesOption  = new WebDriverSelect($sitesElement);
+        $sitesOption->selectByValue("1");
         $this->safeClick(WebDriverBy::Name('fire_away'));
         $this->_accessUser('user_accounts', 'userid');
         $field = $this->safeFindElement(WebDriverBy::Name('First_name'));
@@ -233,7 +214,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $field = $this->safeFindElement(WebDriverBy::Name('Last_name'));
         $this->assertEquals($field->getAttribute('value'), 'last');
         $field = $this->safeFindElement(WebDriverBy::Name('Email'));
-        $this->assertEquals($field->getAttribute('value'), 'email@gmail.com');
+        $this->assertEquals($field->getAttribute('value'), 'email@example.com');
     }
 
     /**
@@ -260,7 +241,15 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $selectField = new WebDriverSelect($field);
             $selectField->selectByVisibleText($newValue);
         }
+
+        // if working on edit_user, select at least one site
+        if (strpos($page, 'my_preferences') === false) {
+            $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
+            $sitesOption  = new WebDriverSelect($sitesElement);
+            $sitesOption->selectByValue("1");
+        }
         $this->safeClick(WebDriverBy::Name('fire_away'));
+
         $this->_accessUser($page, $userId);
         $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
         if ($field->getTagName() == 'input') {
@@ -288,29 +277,36 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/$page/");
         if ($page == 'user_accounts') {
-            $this->safeClick(WebDriverBy::LinkText($userId));
+            //     $this->safeClick(WebDriverBy::LinkText($userId));
+            $this->safeGet(
+                $this->url . "/user_accounts/edit_user/?identifier="
+                ."$userId"
+            );
         }
     }
     /**
      * Performs a candidate search using the specified criteria and verifies
      * the candidates obtained.
      *
-     * @param array  $criteria        criteria for the search.
-     * @param string $expectedResults the candidates that should be returned.
+     * @param array  $elementName     name of the element.
+     * @param string $testData        the testing data
+     * @param string $expectedResults the result that should be returned.
      *
      * @return void.
      */
-    private function _assertSearchBy(array $criteria, $expectedResults)
+    private function _assertSearchBy($elementName,$testData,$expectedResults)
     {
-        foreach ($criteria as $elementName => $elementValue) {
+        {
+            $this->safeGet($this->url . "/user_accounts/");
             $element = $this->safeFindElement(
                 WebDriverBy::Name($elementName)
             );
             $element->clear();
-            $element->sendKeys($elementValue);
-        }
-        $this->safeClick(WebDriverBy::Name("filter"));
-        $this->_assertUserTableContents('dynamictable', $expectedResults);
+            $element->sendKeys($testData);
+            }
+            $this->safeClick(WebDriverBy::Name("filter"));
+
+            $this->_assertUserReactTableContents($testData, $expectedResults);
     }
     /**
      * Compares the content of the candidate table with an expected content.
@@ -353,6 +349,27 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                     "Users at row $i differ"
                 );
             }
+        }
+    }
+    /**
+     * Compares the content of the candidate table with an expected content.
+     *
+     * @param string $testData     the test data
+     * @param string $expectedRows array of candidates that the table
+     *                                                       should contain.
+     *
+     * @return void
+     */
+    private function _assertUserReactTableContents($testData,$expectedRows)
+    {
+        $dataTable =  $this->safeGet($this->url . "/user_accounts/?format=json")
+            ->getPageSource();
+        if (is_null($expectedRows)) {
+            $this->assertContains('"Data":[]', $dataTable);
+        } else {
+
+             $this->assertContains($testData, $dataTable);
+
         }
     }
     /**

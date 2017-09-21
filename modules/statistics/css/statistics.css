@@ -1,0 +1,111 @@
+.no-js #loader { display: none;  }
+.js #loader { display: block; position: absolute; left: 100px; top: 0; }
+.se-pre-con {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: url(images/loader-64x/Preloader_2.gif) center no-repeat #fff;
+}
+
+.timesheet-daily-checkbox {
+    margin-left: 10px !important;
+    margin-right: 5px !important;
+    padding: 2px;
+    display:inline-block;
+    overflow:hidden
+}
+
+td {
+    white-space: nowrap;
+}
+
+
+td.total {
+    background-color: #F0F0F0 ;
+    font-weight: bold;
+}
+
+td.subtotal {
+    background-color: #F0F0F0 !important;
+    font-weight: bold;
+}
+
+td.total.subtotal {
+    background-color: #F0F0F0 !important;
+    font-weight: bold;
+}
+
+/*BEHAVIOURAL subtests tables*/
+table.fancytable th {
+    background-color: #1c70b6;
+    color: white;
+    padding: 0.3em;
+    border-right:2px groove silver;
+    border-bottom:1px groove #999999;
+    text-align: center;
+}
+
+table.fancytable th:hover, table.listColorCoded th:hover {
+    /*background: #efefef; */
+    background: #1c70b6;
+    color: white;
+    text-align: center;
+}
+
+/*MRI general scan table*/
+/*DEMOGRAPHICS general table*/
+.pass, .status_active{
+    background-color: #E5FFCC !important;
+}
+.fail, .status_inactive{
+    background-color: #FFCCCC !important;
+}
+.noqc {
+    background-color: #FFFFCC !important;
+}
+.gender_male{
+    background-color: #CCFFFF !important;
+}
+.gender_female{
+    background-color: #FFCCE5 !important;
+}
+
+
+/*MRI big table*/
+.data tr td.total, .data tr td.visit_complete.total {
+    background-color: #F0F0F0
+}
+.data tr td.complete
+{
+    background-color: #E5FFCC;
+}
+.data tr td.partial_run, .data tr td.partial_run.total
+{
+    background-color: #FFFFCC;
+}
+.data tr td.incomplete, .data tr td.no_scan, .data tr td.incomplete.total, .data tr td.no_scan.total
+{
+    background-color: #FFCCCC;
+}
+.data tr td.male
+{
+    background-color: #CCFFFF;
+}
+.data tr td.female
+{
+    background-color: #FFCCE5;
+}
+
+.data tr td.male.total
+{
+    background-color: #CCFFFF;
+    font-weight: bold;
+}
+.data tr td.female.total
+{
+    background-color: #FFCCE5;
+    font-weight: bold;
+}

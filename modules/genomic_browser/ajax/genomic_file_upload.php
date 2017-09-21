@@ -6,7 +6,7 @@
  * GenomicDataPath directory specified in the cconfigSettings.
  * This directory needs to be accessible w/r to the apache user.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  *  @category   Loris
  *  @package    Genomic_Module
@@ -15,7 +15,6 @@
  *  @license    Loris license
  *  @link       https://github.com/aces/Loris-Trunk
  */
-
 $userSingleton =& User::singleton();
 if (!$userSingleton->hasPermission('genomic_browser_view_site')
     && !$userSingleton->hasPermission('genomic_browser_view_allsites')
@@ -38,30 +37,36 @@ set_time_limit(0);
 ob_implicit_flush(true);
 ob_end_flush();
 header('Content-Type: application/json; charset=UTF-8');
-reportProgress(1, 'Validating...');
+$bytes = $_FILES["fileData"]['size'];
 
 $fileToUpload
     = (object) array(
                 'file_type'         => $_FILES["fileData"]["type"],
                 'file_name'         => $_FILES["fileData"]["name"],
                 'tmp_name'          => $_FILES["fileData"]["tmp_name"],
-                'size'              => $_FILES["fileData"]['size'],
+                'size'              => round($bytes / 1048576, 0),
                 'inserted_by'       => $userSingleton->getData('UserID'),
                 'genomic_file_type' => empty($_POST['fileType']) ?
                     null : str_replace('_', ' ', $_POST['fileType']),
                 'description'       => $_POST['description'],
                );
 
+setFullPath($fileToUpload);
+
 switch ($fileToUpload->genomic_file_type) {
 case 'Methylation beta-values':
     validateRequest();
-    moveFileToFS($fileToUpload);
+    begin();
     registerFile($fileToUpload);
     insertMethylationData($fileToUpload);
+    moveFileToFS($fileToUpload);
+    endWithSuccess();
     break;
 case 'Other':
-    moveFileToFS($fileToUpload);
+    begin();
     registerFile($fileToUpload);
+    moveFileToFS($fileToUpload);
+    endWithSuccess();
     break;
 default:
     die(
@@ -86,6 +91,7 @@ exit;
  */
 function validateRequest()
 {
+    reportProgress(10, 'Validating...');
     if (( empty($_POST['pscidColumn'])
         && empty($_POST['fileMapping']) )
         || empty($_FILES['fileData'])
@@ -103,7 +109,47 @@ function validateRequest()
         // Should compare the header and existing data to inform
         // the user about predicted no-insertion.
     }
-    reportProgress(4, "Validation completed");
+    reportProgress(25, "Validation completed");
+}
+
+/**
+ * Sets $fileToUpload->full_path
+ *
+ * @param stdClass $fileToUpload The file to upload
+ *
+ * @return void
+ */
+function setFullPath(&$fileToUpload)
+{
+    $config           = NDB_Config::singleton();
+    $genomic_data_dir = rtrim($config->getSetting('GenomicDataPath'), '/')
+        . "/genomic_uploader/";
+
+    $fileToUpload->full_path = $genomic_data_dir
+            . $fileToUpload->file_name;
+
+    $collision_count = 0;
+    $collision_max   = 100;
+
+    while (file_exists($fileToUpload->full_path)) {
+        ++$collision_count;
+        if ($collision_count > $collision_max) {
+            die(
+                json_encode(
+                    array(
+                     'message'  => 'That file already exists, '
+                        . 'could not generate a non-colliding name',
+                     'progress' => 100,
+                     'error'    => true,
+                    )
+                )
+            );
+        }
+        $ext = pathinfo($fileToUpload->file_name, PATHINFO_EXTENSION);
+        $nme = pathinfo($fileToUpload->file_name, PATHINFO_FILENAME);
+        $fileToUpload->full_path = $genomic_data_dir
+            . $nme . "-" . $collision_count . '.' .$ext;
+    }
 }
 
 /**
@@ -119,21 +165,41 @@ function moveFileToFS(&$fileToUpload)
 {
 
     $config           = NDB_Config::singleton();
-    $base_dir         = $config->getSetting('base');
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
-    $DB =& Database::singleton();
-    reportProgress(5, "Copying file to $genomic_data_dir ");
-    if (move_uploaded_file(
-        $fileToUpload->tmp_name,
-        $base_dir . $genomic_data_dir . 'genomic_uploader/'
-        . $fileToUpload->file_name
-    )) {
-        reportProgress(5, "File copied to $genomic_data_dir ");
-    } else {
+
+    $dest_dir = dirname($fileToUpload->full_path);
+    // update ui to show we are trying to move the file
+    reportProgress(98, "Copying file...");
+    // file system validation
+    try {
+        if (!file_exists($fileToUpload->tmp_name)) {
+            throw new Exception(
+                "Some parts of path $fileToUpload->tmp_name does not exist."
+            );
+        } else if (!is_dir($dest_dir)) {
+            throw new Exception(
+                "$dest_dir exists but is not a directory."
+            );
+        } else if (!is_writable($dest_dir)) {
+            throw new Exception(
+                "$dest_dir is not writable by web user."
+            );
+        }
+        if (move_uploaded_file(
+            $fileToUpload->tmp_name,
+            $fileToUpload->full_path
+        )) {
+            reportProgress(99, "File successfully copied!");
+        }
+    } catch (Exception $ex){
+        error_log("Cannot move file: $ex");
+        endWithFailure();
+        // TODO: The below does not get printed to the frontend.
+        //       Further debugging needed
         die(
             json_encode(
                 array(
-                 'message'  => 'File copy failed',
+                 'message'  => "File copy failed",
                  'progress' => 100,
                  'error'    => true,
                 )
@@ -157,8 +223,7 @@ function registerFile(&$fileToUpload)
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
 
     $values = array(
-               'FileName'         => $genomic_data_dir
-                   . 'genomic_uploader/' . $fileToUpload->file_name,
+               'FileName'         => $fileToUpload->full_path,
                'Description'      => $fileToUpload->description,
                'FileType'         => $fileToUpload->file_type,
                'AnalysisModality' => $fileToUpload->genomic_file_type,
@@ -167,9 +232,7 @@ function registerFile(&$fileToUpload)
                'InsertedByUserID' => $fileToUpload->inserted_by,
               );
     try {
-
         $DB->replace('genomic_files', $values);
-
         //TODO :: This should select using date_insert and
         //        validate if a record is found.
         $last_id = $DB->pselectOne(
@@ -182,18 +245,20 @@ function registerFile(&$fileToUpload)
         $fileToUpload->date_inserted = $values['Date_inserted'];
 
     } catch (DatabaseException $e) {
+        endWithFailure();
+        //TODO: The below validation should be done before running the query.
+        //      Currently, it generates unnecessary PHP warnings
         die(
             json_encode(
                 array(
-                 'message'  => 'File registration failed',
+                 'message'  => 'File registration failed. Is the description empty?',
                  'progress' => 100,
                  'error'    => true,
                 )
             )
         );
     }
-    reportProgress(15, "File copied");
-
+    reportProgress(80, "File registered");
 }
 
 /**
@@ -210,20 +275,12 @@ function registerFile(&$fileToUpload)
 function createSampleCandidateRelations(&$fileToUpload)
 {
 
-    reportProgress(20, "Creating sample-candidate relations");
+    reportProgress(85, "Creating sample-candidate relations");
 
-    $config           = NDB_Config::singleton();
-    $base_dir         = $config->getSetting('base');
-    $genomic_data_dir = $config->getSetting('GenomicDataPath');
     $DB =& Database::singleton();
 
-    $stmt = 'INSERT IGNORE INTO genomic_sample_candidate_rel (sample_label, CandID)
-             VALUES ';
-    $rows = array();
-
     $f = fopen(
-        $base_dir . $genomic_data_dir . 'genomic_uploader/'
-            . $fileToUpload->file_name,
+        $fileToUpload->tmp_name,
         'r'
     );
 
@@ -232,6 +289,8 @@ function createSampleCandidateRelations(&$fileToUpload)
 
     $headers = explode(',', $line);
     array_shift($headers);
+
+    $headers = array_map('trim', $headers);
 
     $headers = array_filter(
         $headers,
@@ -247,28 +306,37 @@ function createSampleCandidateRelations(&$fileToUpload)
         $sample_label_prefix
     );
 
-    $rows = array_map(
-        function ($pscid) {
-            return "( '$pscid', 
-           (SELECT CandID FROM candidate WHERE PSCID = '"
-            . explode('_', $pscid)[1]
-            . "'))";
-        },
-        $headers
+    $stmt = $DB->prepare(
+        "
+        INSERT IGNORE INTO
+            genomic_sample_candidate_rel (sample_label, CandID)
+        VALUES (
+            :sample_label,
+            (SELECT CandID FROM candidate WHERE PSCID = :pscid)
+        )
+    "
     );
 
-    $stmt .= join(',', $rows);
     try {
-        $prep   = $DB->prepare($stmt);
-        $result = $DB->execute($prep, array(), array('nofetch' => true));
+        foreach ($headers as $pscid) {
+            $success = $stmt->execute(
+                array(
+                 "sample_label" => $pscid,
+                 "pscid"        => explode(
+                     '_',
+                     $pscid
+                 )[1],
+                )
+            );
+        }
         // Report number on relation created (candidate founded)
-        reportProgress(24, "Relation created");
-
+        reportProgress(90, "Relation created");
     } catch (Exception $e) {
+        endWithFailure();
         die(
             json_encode(
                 array(
-                 'message'  => 'Can`t insert into the database.',
+                 'message'  => "Can't insert into the database.",
                  'progress' => 100,
                  'error'    => true,
                 )
@@ -291,29 +359,23 @@ function createSampleCandidateRelations(&$fileToUpload)
 function insertBetaValues(&$fileToUpload)
 {
 
-    reportProgress(25, "Inserting beta-values");
+    reportProgress(95, "Inserting beta-values");
     // Assuming genomic_cpg_annotation have ialready been created.
     // see: /module/genomic_browser/tool/human...
 
-    $config           = NDB_Config::singleton();
-    $base_dir         = $config->getSetting('base');
-    $genomic_data_dir = $config->getSetting('GenomicDataPath');
     $DB =& Database::singleton();
 
     $f = fopen(
-        $base_dir . $genomic_data_dir . 'genomic_uploader/'
-            . $fileToUpload->file_name,
+        $fileToUpload->tmp_name,
         "r"
     );
 
     if ($f) {
-
-        $stmt_prefix = 'INSERT IGNORE INTO genomic_cpg 
-           (sample_label, cpg_name, beta_value) VALUES ';
-
         $line    = fgets($f);
         $headers = explode(',', $line);
         array_shift($headers);
+
+        $headers = array_map('trim', $headers);
 
         $headers = array_filter(
             $headers,
@@ -331,27 +393,40 @@ function insertBetaValues(&$fileToUpload)
 
         $sample_count = count($headers);
 
+        $stmt = $DB->prepare(
+            "
+            INSERT IGNORE INTO
+                genomic_cpg (sample_label, cpg_name, beta_value)
+            VALUES (
+                :sample_label,
+                :cpg_name,
+                :beta_value
+            )
+        "
+        );
+
         while (($line = fgets($f)) !== false) {
-            $stmt = '';
-
-            $values   = explode(',', $line);
-            $values   = array_map('trim', $values);
-            $probe_id = $values[0];
-            // TODO validate probe value
-
-            array_shift($values);
-            $rows = array();
-            foreach ($values as $key => $value) {
-                $row = "('$headers[$key]', '$probe_id', $value)";
-                array_push($rows, $row);
-            }
-
-            $stmt .= join(',', $rows);
-
             try {
-                $prep   = $DB->prepare($stmt_prefix . $stmt);
-                $result = $DB->execute($prep, array(), array('nofetch' => true));
+                $values   = explode(',', $line);
+                $values   = array_map('trim', $values);
+                $probe_id = $values[0];
+                // TODO validate probe value
+
+                array_shift($values);
+                foreach ($values as $key => $value) {
+                    $success = $stmt->execute(
+                        array(
+                         "sample_label" => $headers[$key],
+                         "cpg_name"     => $probe_id,
+                         "beta_value"   => $value,
+                        )
+                    );
+                    if (!$success) {
+                        throw new DatabaseException("Failed to insert row");
+                    }
+                }
             } catch (Exception $e) {
+                endWithFailure();
                 die(
                     json_encode(
                         array(
@@ -365,6 +440,7 @@ function insertBetaValues(&$fileToUpload)
         }
         fclose($f);
     } else {
+        endWithFailure();
         die(
             json_encode(
                 array(
@@ -388,46 +464,46 @@ function insertBetaValues(&$fileToUpload)
  */
 function createCandidateFileRelations(&$fileToUpload)
 {
-    $config           = NDB_Config::singleton();
-    $base_dir         = $config->getSetting('base');
-    $genomic_data_dir = $config->getSetting('GenomicDataPath');
     $DB =& Database::singleton();
 
     $f = fopen(
-        $base_dir . $genomic_data_dir . 'genomic_uploader/'
-            . $fileToUpload->file_name,
+        $fileToUpload->tmp_name,
         "r"
     );
 
     if ($f) {
-
-        $stmt_prefix = 'INSERT IGNORE INTO genomic_candidate_files_rel
-            (CandID, GenomicFileID) VALUES ';
-        $stmt        = '';
-
-        $line = fgets($f);
-        fclose($f);
-
-        $headers = explode(',', $line);
-        array_shift($headers);
-
-        $rows = array();
-        foreach ($headers as $pscid) {
-            $pscid = trim($pscid);
-            $row   = "(
-               (select CandID from candidate where PSCID = '$pscid'),
-               $fileToUpload->GenomicFileID
-            )";
-            array_push($rows, $row);
-        }
-        $stmt .= join(',', $rows);
-
         try {
+            $line = fgets($f);
+            fclose($f);
 
-            $prep   = $DB->prepare($stmt_prefix . $stmt);
-            $result = $DB->execute($prep, array(), array('nofetch' => true));
+            $headers = explode(',', $line);
+            array_shift($headers);
 
+            $stmt = $DB->prepare(
+                "
+                INSERT IGNORE INTO
+                    genomic_candidate_files_rel (CandID, GenomicFileID)
+                VALUES (
+                    (select CandID from candidate where PSCID = :pscid),
+                    :genomic_file_id
+                )
+            "
+            );
+
+            foreach ($headers as $pscid) {
+                $pscid   = trim($pscid);
+                $success = $stmt->execute(
+                    array(
+                     "pscid"           => $pscid,
+                     "genomic_file_id" => $fileToUpload->GenomicFileID,
+                    )
+                );
+                if (!$success) {
+                    throw new DatabaseException("Failed to insert row");
+                }
+            }
         } catch (DatabaseException $e) {
+            endWithFailure();
             die(
                 json_encode(
                     array(
@@ -439,6 +515,7 @@ function createCandidateFileRelations(&$fileToUpload)
             );
         }
     } else {
+        endWithFailure();
         die(
             json_encode(
                 array(
@@ -449,7 +526,7 @@ function createCandidateFileRelations(&$fileToUpload)
             )
         );
     }
-    reportProgress(50, "Creating file-candidate relations");
+    reportProgress(95, "Creating file-candidate relations");
 
 }
 
@@ -470,10 +547,11 @@ function insertMethylationData(&$fileToUpload)
 
 /**
  * This sends progress status to the client.
- * see XMLHttpRequest.onreadystatechange = 3 (progress)
  *
  * @param integer $progress The progress percentage to report
  * @param string  $message  The message to send
+ *
+ * @see XMLHttpRequest.onreadystatechange = 3 (progress)
  *
  * @return void
  */
@@ -498,14 +576,46 @@ function reportProgress($progress, $message)
 function candidateExists($pscid)
 {
 
-    $DB    =& Database::singleton();
-    $pscid = $DB->quote(trim($pscid));
+    $DB =& Database::singleton();
 
     $CandID = $DB->pselectOne(
-        "SELECT CandID from candidate WHERE PSCID = $pscid",
-        array()
+        "SELECT CandID from candidate WHERE PSCID = :pscid",
+        array("pscid" => $pscid)
     );
 
     return !empty($CandID);
+}
+
+/**
+ * Begins the transaction for the file upload
+ *
+ * @return void
+ */
+function begin()
+{
+    $DB = Database::singleton();
+    $DB->beginTransaction();
+}
+
+/**
+ * Ends the transaction for the file upload with failure
+ *
+ * @return void
+ */
+function endWithFailure()
+{
+    $DB = Database::singleton();
+    $DB->rollBack();
+}
+
+/**
+ * Ends the transaction for the file upload with success
+ *
+ * @return void
+ */
+function endWithSuccess()
+{
+    $DB = Database::singleton();
+    $DB->commit();
 }
 ?>

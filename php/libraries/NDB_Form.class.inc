@@ -46,12 +46,6 @@ class NDB_Form extends NDB_Page
     var $_GUIDelimiter = "&nbsp;\n";
 
     /**
-    * Additional template data
-    */
-    var $tpl_data = array();
-
-
-    /**
      * Generates a new form instance and runs the appropriate method
      *
      * @param string $name       Identifies the form
@@ -93,11 +87,9 @@ class NDB_Form extends NDB_Page
             throw new Exception("Form does not exist: $name $page", 404);
         }
 
-        //set the baseurl of the tpl_data
         $factory  = NDB_Factory::singleton();
         $settings = $factory->settings();
-
-        $obj->tpl_data['baseurl'] = $settings->getBaseURL();
+        $obj->setTemplateVar('baseurl', $settings->getBaseURL());
 
         return $obj;
     }
@@ -112,28 +104,6 @@ class NDB_Form extends NDB_Page
     function registerDefaultFilter()
     {
         $this->form->applyFilter('__ALL__', 'trim');
-    }
-
-    /**
-     * Returns false if user does not have access to page.
-     *
-     * Usage: the hasAccess() function in a child class should contain
-     * something like:
-     *
-     *     // create user object
-     *     $user =& User::singleton();
-     *
-     *     return $user->hasPermission('superuser');
-     *
-     * You do not need to overload hasAccess() if there are no access restrictions
-     *
-     * @note   overloaded function
-     * @return bool
-     * @access private
-     */
-    function _hasAccess()
-    {
-        return true;
     }
 
 

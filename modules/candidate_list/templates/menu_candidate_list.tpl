@@ -10,7 +10,7 @@
 <div class="col-sm-9">
 <div class="panel panel-primary">
     <div class="panel-heading" onclick="hideFilter(this)">
-        Selection Filter 
+        Selection Filter
         <label class="advancedOptions" id="advanced-label" style="display:none">(Advanced Options)</label>
         <span class="glyphicon arrow glyphicon-chevron-up pull-right"></span>
     </div>
@@ -71,6 +71,14 @@
                     </div>
                   </div>
              {/if}
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-12 col-md-4">
+                        {$form.Entity_type.label}
+                    </label>
+                    <div class="col-sm-12 col-md-8">
+                        {$form.Entity_type.html}
+                    </div>
+                </div>
             </div>
             <div class="advancedOptions" id="advanced-options" style="display:none">
                 <div class="row">
@@ -118,12 +126,13 @@
                     </div>
                     <div class="form-group col-sm-4">
                         <label class="col-sm-12 col-md-4">
-                            {$form.edc.label}
+                            {$form.Feedback.label}
                         </label>
                         <div class="col-sm-12 col-md-8">
-                            {$form.edc.html}
+                            {$form.Feedback.html}
                         </div>
                     </div>
+
                 </div>
                 <div class="row">
                     <div class="form-group col-sm-4">
@@ -136,18 +145,10 @@
                     </div>
                     <div class="form-group col-sm-4">
                         <label class="col-sm-12 col-md-4">
-                            &nbsp;
+                            {$form.edc.label}
                         </label>
                         <div class="col-sm-12 col-md-8">
-                            &nbsp;
-                        </div>
-                    </div>
-                    <div class="form-group col-sm-4">
-                        <label class="col-sm-12 col-md-4">
-                            {$form.Feedback.label}
-                        </label>
-                        <div class="col-sm-12 col-md-8">
-                            {$form.Feedback.html}
+                            {$form.edc.html}
                         </div>
                     </div>
                 </div>
@@ -223,5 +224,5 @@ var table = RDynamicDataTable({
     "freezeColumn" : "PSCID"
 });
 
-React.render(table, document.getElementById("datatable"));
+ReactDOM.render(table, document.getElementById("datatable"));
 </script>

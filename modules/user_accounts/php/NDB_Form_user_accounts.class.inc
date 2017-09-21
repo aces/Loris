@@ -2,7 +2,7 @@
 /**
 * The user account page
 *
-* PHP Version 5
+* PHP Version 5,7
 *
 * @category Main
 * @package  User_Account
@@ -12,20 +12,20 @@
 */
 
 /**
-* Implements the user account page
-*
-* @category Main
-* @package  User_Account
-* @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
-* @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
-* @link     https://www.github.com/aces/Loris/
-*/
+ * Implements the user account page
+ *
+ * @category Main
+ * @package  User_Account
+ * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 class NDB_Form_User_Accounts extends NDB_Form
 {
     /**
      * Determines whether this form is in edit or create mode.
      *
-     * @return boolean true if in crete mode, false otherwise.
+     * @return boolean true if in create mode, false otherwise.
      */
     function isCreatingNewUser()
     {
@@ -43,11 +43,11 @@ class NDB_Form_User_Accounts extends NDB_Form
     function _hasAccess()
     {
         // create user object
-        $editor =& User::singleton();
+        $editor = User::singleton();
 
         if ($this->page == 'edit_user') {
             if (!$this->isCreatingNewUser()) {
-                $user =& User::factory($this->identifier);
+                $user = User::factory($this->identifier);
             }
 
             if ($editor->hasPermission('user_accounts')) {
@@ -58,8 +58,12 @@ class NDB_Form_User_Accounts extends NDB_Form
                 if ($this->isCreatingNewUser()) {
                     return true;
                 }
-
-                return $editor->getData('CenterID') == $user->getData('CenterID');
+                return array_intersect(
+                    $user->getData('CenterIDs'),
+                    $editor->getData('CenterIDs')
+                ) == $user->getData(
+                    'CenterIDs'
+                );
             }
 
             return false;
@@ -79,11 +83,11 @@ class NDB_Form_User_Accounts extends NDB_Form
         $defaults = array();
 
         if (!$this->isCreatingNewUser()) {
-            $user =& User::factory($this->identifier);
+            $user = User::factory($this->identifier);
             // get the user defaults
             $defaults = $user->getData();
             // remove the password hash
-            unset($defaults['Password_md5']);
+            unset($defaults['Password_hash']);
 
             // get the user's permissions
             $perms = $user->getPermissionIDs();
@@ -93,23 +97,65 @@ class NDB_Form_User_Accounts extends NDB_Form
                 $defaults["permID[$value]"] = 'on';
             }
 
+            // An array of each field that requires front-end sanitization
+            $fieldsThatAreStrings = array(
+                                     'UserID',
+                                     'First_name',
+                                     'Last_name',
+                                     'Real_name',
+                                     'Email',
+                                     'Degree',
+                                     'Institution',
+                                     'Address',
+                                     'City',
+                                     'State',
+                                     'Zip_code',
+                                     'Country',
+                                     'Fax',
+                                    );
             // Prevent Javascript injection on all fields
-            $defaults['UserID']      = htmlspecialchars($defaults['UserID']);
-            $defaults['First_name']  = htmlspecialchars($defaults['First_name']);
-            $defaults['Last_name']   = htmlspecialchars($defaults['Last_name']);
-            $defaults['Real_name']   = htmlspecialchars($defaults['Real_name']);
-            $defaults['Email']       = htmlspecialchars($defaults['Email']);
-            $defaults['Degree']      = htmlspecialchars($defaults['Degree']);
-            $defaults['Institution'] = htmlspecialchars($defaults['Institution']);
-            $defaults['Address']     = htmlspecialchars($defaults['Address']);
-            $defaults['City']        = htmlspecialchars($defaults['City']);
-            $defaults['State']       = htmlspecialchars($defaults['State']);
-            $defaults['Zip_code']    = htmlspecialchars($defaults['Zip_code']);
-            $defaults['Country']     = htmlspecialchars($defaults['Country']);
-            $defaults['Fax']         = htmlspecialchars($defaults['Fax']);
+            foreach ($fieldsThatAreStrings as $fieldName) {
+                // this check prevents PHP Notices
+                if (!empty($defaults[$fieldName])) {
+                    $defaults[$fieldName] = htmlspecialchars($defaults[$fieldName]);
+                }
+            }
 
+            foreach ($defaults['examiner'] as $cid=>$vals) {
+                //sets pending approval info
+                if ($cid=='pending') {
+                    $defaults['examiner_pending'] = $vals;
+                    continue;
+                }
+                //gets radiologist Y/N from any of the active sites
+                if ($vals[0]=='Y') {
+                    $defaults['examiner_radiologist'] =$vals[1];
+                }
+                if ($vals[0]=='Y'
+                    || ($vals[0]=='N' && $defaults['examiner_pending']=='Y')
+                ) {
+                    $defaults['ex_'.$cid] ='on';
+                }
+            }
+
+            // Notification defaults
+            // "notif_".$module."_".$operation."_".$service
+            $curr_sub = NDB_Notifier::getUserNotificationModuleServices(
+                $user->getData("ID")
+            );
+            foreach ($curr_sub as $module=>$operations) {
+                foreach ($operations as $operation => $services) {
+                    unset($services['desc']);
+                    foreach ($services as $service => $subscribed) {
+                        $var_name = "notif_".$module."_".$operation."_".$service;
+
+                        if ($subscribed==='Y') {
+                            $defaults[$var_name] = 'on';
+                        }
+                    }
+                }
+            }
         }
-
         return $defaults;
     }
 
@@ -120,7 +166,7 @@ class NDB_Form_User_Accounts extends NDB_Form
      */
     function _isEditingOwnAccount()
     {
-        $editor = &User::singleton();
+        $editor = User::singleton();
         return !$this->isCreatingNewUser()
             && ($editor->getUsername() == $this->identifier);
     }
@@ -135,26 +181,27 @@ class NDB_Form_User_Accounts extends NDB_Form
     function _process($values)
     {
         $config = NDB_Config::singleton();
+        $DB     = Database::singleton();
 
         //The arrays that contain the edited permissions
         $permissionsRemoved = array();
         $permissionsAdded   = array();
 
-        $editor =& User::singleton();
+        $editor = User::singleton();
 
         // build the "real name"
         $values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
 
         //create the user
         if (!is_null($this->identifier)) {
-            $user =& User::factory($this->identifier);
+            $user = User::factory($this->identifier);
         } else {
             // Since the form has been validated there are two possibilities:
             //    - UID is set
             //    - UID is not set but the "Match UID to email" checkbox is checked
             $effectiveUID = $values['NA_UserID'] == 'on'
                 ? $values['Email'] : $values['UserID'];
-            $user         =& User::factory($effectiveUID);
+            $user         = User::factory($effectiveUID);
         }
 
         ////Get the current permissions/////
@@ -163,7 +210,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         $permIDs = array();
         // store the permission IDs
         if (!empty($values['permID'])) {
-            $permIDs = $values['permID'];
+            $permIDs = array_keys($values['permID']);
         }
         unset($values['permID']);
 
@@ -190,40 +237,254 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         // generate new password
         if (!empty($values['NA_Password'])) {
-            $values['Password_md5']    = User::newPassword();
-            $values['Password_expiry'] = '0000-00-00';
+            $values['Password_hash']   = User::newPassword();
+            $values['Password_expiry'] = '1990-04-01';
         }
         unset($values['NA_Password']);
 
         // If editing a user and nothing was specified in the password text field
         // remove Password_md5 from the value set, otherwise Password_md5
         // will be set to '' by the system
-        if ($values['Password_md5'] == '' && !$this->isCreatingNewUser()) {
-            unset($values['Password_md5']);
+        if ($values['Password_hash'] == '' && !$this->isCreatingNewUser()) {
+            unset($values['Password_hash']);
         }
+
+        if ($this->page === 'edit_user') {
+            // multi-site UPDATE
+            $uid           = $user->getData('ID');
+            $us_curr_sites = $values['CenterIDs'];
+            if (!$this->isCreatingNewUser()) {
+                $DB->delete('user_psc_rel', array("UserID" => $uid));
+                foreach ($us_curr_sites as $site) {
+                    $DB->insert(
+                        'user_psc_rel',
+                        array(
+                         "UserID"   => $uid,
+                         "CenterID" => $site,
+                        )
+                    );
+                }
+            }
+            unset($values['CenterIDs']);
+            // END multi-site UPDATE
+
+            // EXAMINER UPDATE
+            // first check if an update is needed then actually do it
+            if (!empty($values['examiner_radiologist'])
+                && !empty($values['examiner_pending'])
+            ) {
+                $examinerID = $DB->pselect(
+                    "SELECT e.examinerID
+                     FROM examiners e
+                     WHERE e.full_name=:fn",
+                    array(
+                     "fn" => $values['Real_name'],
+                    )
+                );
+                // If examiner not in table add him,
+                // otherwise update the radiologist field
+                $values = Utility::nullifyEmpty($values, 'examiner_radiologist');
+                if (empty($examinerID)) {
+                    $DB->insert(
+                        'examiners',
+                        array(
+                         'full_name'   => $values['Real_name'],
+                         'radiologist' => $values['examiner_radiologist'] ?? 0,
+                         'userID'      => $uid,
+                        )
+                    );
+                    $examinerID = $examinerID = $DB->pselectOne(
+                        "SELECT examinerID
+                         FROM examiners
+                         WHERE full_name=:fullName",
+                        array('fullName' => $values['Real_name'])
+                    );
+                } else {
+                    $DB->update(
+                        'examiners',
+                        array(
+                         'radiologist' => $values['examiner_radiologist'] ?? 0,
+                         'userID'      => $uid,
+                        ),
+                        array(
+                         "full_name" => $values['Real_name'],
+                        )
+                    );
+                    $examinerID = $examinerID[0]['examinerID'];
+                }
+
+                // Update CenterIDs
+                $ex_curr_sites = array();
+                $ex_prev_sites = array();
+
+                $prev_sites = $DB->pselect(
+                    "SELECT centerID
+                     FROM examiners_psc_rel epr
+                     WHERE examinerID=:eid",
+                    array("eid" => $examinerID)
+                );
+
+                //get sites where user is already an examiner at for compare
+                foreach ($prev_sites as $row => $center) {
+                    array_push($ex_prev_sites, $center['centerID']);
+                }
+
+                foreach ($values as $k => $v) {
+                    //examiner fields
+                    if (preg_match("/^ex_[0-9]+$/", $k)) {
+                        //get centerID
+                        $parse_key = explode('_', $k);
+                        $cid       = $parse_key[1];
+                        array_push($ex_curr_sites, $cid);
+
+                        //Check if examiner already in db for site
+                        $result = $DB->pselectRow(
+                            "SELECT epr.centerID
+                             FROM examiners_psc_rel epr 
+                             WHERE epr.examinerID=:eid AND epr.centerID=:cid",
+                            array(
+                             "eid" => $examinerID,
+                             "cid" => $cid,
+                            )
+                        );
+
+                        // examiner was not previously added, add and set to active
+                        if (empty($result)) {
+                            $DB->insert(
+                                'examiners_psc_rel',
+                                array(
+                                 'examinerID'       => $examinerID,
+                                 'centerID'         => $cid,
+                                 'active'           => 'Y',
+                                 'pending_approval' => $values['examiner_pending'],
+                                )
+                            );
+                        } else {
+                            $DB->update(
+                                'examiners_psc_rel',
+                                array(
+                                 'active'           => 'Y',
+                                 'pending_approval' => $values['examiner_pending'],
+                                ),
+                                array(
+                                 'examinerID' => $examinerID,
+                                 'centerID'   => $cid,
+                                )
+                            );
+                        }
+                        unset($values[$k]);
+                    }
+                }
+
+                //de-activate examiner if sites where no longer checked
+                $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
+
+                foreach ($ex_inactive as $cid) {
+                    $DB->update(
+                        'examiners_psc_rel',
+                        array("active" => 'N'),
+                        array(
+                         'examinerID' => $examinerID,
+                         'centerID'   => $cid,
+                        )
+                    );
+                }
+            }
+            unset($values['examiner_pending']);
+            unset($values['examiner_radiologist']);
+            //END EXAMINER UPDATE
+        }
+
+        // START NOTIFICATIONS UPDATE
+        if ($this->page==='my_preferences') {
+            // get current notifications for user
+            $curr_sub = NDB_Notifier::getUserNotificationModuleServices(
+                $user->getData("ID")
+            );
+
+            if (!$this->isCreatingNewUser()) {
+                // get notification details
+                foreach ($curr_sub as $module => $operations) {
+                    foreach ($operations as $operation => $services) {
+                        $module_id = NDB_Notifier::getNotificationModuleID(
+                            $module,
+                            $operation
+                        );
+                        unset($services['desc']);
+                        foreach ($services as $service => $subscribed) {
+                            $service_id = NDB_Notifier::getNotificationServiceID(
+                                $service
+                            );
+                            $var_name   = "notif_" . $module . "_"
+                                . $operation . "_" . $service;
+
+                            if ($values[$var_name] === 'on') {
+                                if ($subscribed === 'N') {
+                                    $DB->insert(
+                                        'users_notifications_rel',
+                                        array(
+                                         "module_id"  => $module_id,
+                                         "service_id" => $service_id,
+                                         "user_id"    => $user->getData("ID"),
+                                        )
+                                    );
+                                }
+                            } else {
+                                if ($subscribed === 'Y') {
+                                    $DB->delete(
+                                        'users_notifications_rel',
+                                        array(
+                                         "module_id"  => $module_id,
+                                         "service_id" => $service_id,
+                                         "user_id"    => $user->getData("ID"),
+                                        )
+                                    );
+                                }
+                            }
+                            unset($values[$var_name]);
+                        }
+                    }
+                }
+            }
+        }
+        // END NOTIFICATIONS UPDATE
 
         // make the set
         foreach ($values as $key => $value) {
-            $set[$key] = $value;
+            if (!empty($value)) {
+                $set[$key] = $value;
+            } else {
+                $set[$key] = null;
+            }
         }
 
         // update the user
         if ($this->isCreatingNewUser()) {
             // insert a new user
             $success = User::insert($set);
-            $user    =& User::factory($set['UserID']);
+            $user    = User::factory($set['UserID']);
+            $uid     = $user->getData('ID');
+            foreach ($us_curr_sites as $site) {
+                $DB->insert(
+                    'user_psc_rel',
+                    array(
+                     "UserID"   => $uid,
+                     "CenterID" => $site,
+                    )
+                );
+            }
         } else {
             // update the user
-            $user    =& User::factory($this->identifier);
+            $user    = User::factory($this->identifier);
             $success = $user->update($set);
         }
 
         // prepend two random characters
-        if (isset($set['Password_md5'])) {
+        if (isset($set['Password_hash'])) {
             // Update CouchDB. Must do before password is salted/hashed.
             $expiry = isset($values['Password_expiry'])
                 ? $values['Password_expiry'] : null;
-            $user->updatePassword($set['Password_md5'], $expiry);
+            $user->updatePassword($set['Password_hash'], $expiry);
         }
 
         // update the user permissions if applicable
@@ -233,29 +494,31 @@ class NDB_Form_User_Accounts extends NDB_Form
         // disabled)
         if (!$this->_isEditingOwnAccount()) {
             $success = $user->removePermissions();
+
             // Check for new permissions
             if (!empty($permIDs)) {
-                foreach ($permIDs as $key => $value) {
+                foreach ($permIDs as $permID) {
                     /* if the user didn't have the permission
                        and the permission is now assigned then insert
                        insert into the user_account_history as 'I'
                      */
-                    if (!(in_array($key, $current_permissionids))) {
-                        $user->insertIntoUserAccountHistory($key, 'I');
-                        $permissionsAdded[] = $this->getDescriptionUsingPermID($key);
+                    if (!(in_array($permID, $current_permissionids))) {
+                        $user->insertIntoUserAccountHistory($permID, 'I');
+                        $permissionsAdded[]
+                            = $this->getDescriptionUsingPermID($permID);
                     }
                 }
             }
 
             if (!empty($current_permissionids)) {
                 // Check for permissions that are to be deleted
-                foreach ($current_permissionids as $key) {
+                foreach ($current_permissionids as $currentPermID) {
                     //if the permission existed before and it's removed now///
                     ///Then insert into the user_account_history as 'D'
-                    if (!in_array($key, array_keys($permIDs))) {
-                        $user->insertIntoUserAccountHistory($key, 'D');
+                    if (!in_array($currentPermID, $permIDs)) {
+                        $user->insertIntoUserAccountHistory($currentPermID, 'D');
                         $permissionsRemoved[]
-                            = $this->getDescriptionUsingPermID($key);
+                            = $this->getDescriptionUsingPermID($currentPermID);
                     }
                 }
             }
@@ -283,21 +546,21 @@ class NDB_Form_User_Accounts extends NDB_Form
             }
 
             if (!empty($permIDs)) {
-                $user->addPermissions(array_keys($permIDs));
+                $user->addPermissions($permIDs);
             }
         }
 
         // send the user an email
         if (!empty($send)) {
             // create an instance of the config object
-            $config =& NDB_Config::singleton();
+            $config = NDB_Config::singleton();
 
             // send the user an email
             $msg_data['study']    = $config->getSetting('title');
             $msg_data['url']      = $config->getSetting('url');
             $msg_data['realname'] = $values['Real_name'];
             $msg_data['username'] = $user->getUsername();
-            $msg_data['password'] = $values['Password_md5'];
+            $msg_data['password'] = $values['Password_hash'];
 
             $template = (is_null($this->identifier))
                 ? 'new_user.tpl' : 'edit_user.tpl';
@@ -305,7 +568,14 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
 
         $this->tpl_data['success'] = true;
-        $this->form->freeze();
+
+        if ($this->isCreatingNewUser()) {
+            $baseURL  = $config->getSetting('url');
+            $redirect = $baseURL
+                . "/user_accounts/edit_user/?identifier="
+                . $values['UserID'];
+            header('Location: '. $redirect);
+        }
     }
 
     /**
@@ -317,11 +587,11 @@ class NDB_Form_User_Accounts extends NDB_Form
     // @codingStandardsIgnoreStart
     function edit_user()
     {
-    // @codingStandardsIgnoreEnd
+        // @codingStandardsIgnoreEnd
         $this->redirect = "test_name=$this->name";
 
         ///get the value for additional_user_info flag
-        $config =& NDB_Config::singleton();
+        $config = NDB_Config::singleton();
         $additional_user_info = $config->getSetting('additional_user_info');
 
         //------------------------------------------------------------
@@ -350,7 +620,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
 
         // password
-        $group[] = $this->createPassword('Password_md5');
+        $group[] = $this->createPassword('Password_hash');
         $group[] = $this->createCheckbox('NA_Password', 'Generate new password');
         $this->addGroup(
             $group,
@@ -368,7 +638,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         //       not exceed 120 chars
         $onInvalidMsg
             = "this.setCustomValidity('First name is required and "
-              . "should not exceed 120 characters')";
+            . "should not exceed 120 characters')";
         $this->addBasicText(
             'First_name',
             'First name',
@@ -385,7 +655,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         //       not exceed 120 chars
         $onInvalidMsg
             = "this.setCustomValidity('Last name is required and "
-              . "should not exceed 120 characters')";
+            . "should not exceed 120 characters')";
         $this->addBasicText(
             'Last_name',
             'Last name',
@@ -435,20 +705,81 @@ class NDB_Form_User_Accounts extends NDB_Form
         //------------------------------------------------------------
 
         // get user permissions
-        $editor =& User::singleton();
+        $editor = User::singleton();
 
         // center ID
         if ($editor->hasPermission('user_accounts_multisite')) {
             // get the list of study sites - to be replaced by the Site object
-            $siteOptions =& Utility::getSiteList(false);
+            $siteOptions = Utility::getSiteList(false);
         } else {
             // allow only to add to their own site
-            $siteOptions
-                = array(
-                   $editor->getData('CenterID') => $editor->getData('Site'),
-                  );
+            $site_arr = $editor->getData('CenterIDs');
+            foreach ($site_arr as $key => $val) {
+                $site[$key]        = &Site::singleton($val);
+                $siteOptions[$val] = $site[$key]->getCenterName();
+            }
         }
-        $this->addSelect('CenterID', 'Site', $siteOptions);
+
+        $this->addSelect(
+            'CenterIDs',
+            'Sites',
+            $siteOptions,
+            array('multiple' => 'multiple')
+        );
+
+        if ($editor->hasPermission('examiner_multisite')) {
+            //get site aliases
+            $DB      =& Database::singleton();
+            $aliases = $DB->pselect("SELECT CenterID, Alias FROM psc ", array());
+
+            foreach ($aliases as $row) {
+                $groupA[] = $this->createCheckbox(
+                    'ex_'.$row['CenterID'],
+                    $row['Alias'],
+                    array()
+                );
+            }
+            $groupB[] = $this->createLabel(
+                "Radiologist: "
+            );
+            $groupB[] = $this->createSelect(
+                "examiner_radiologist",
+                "Radiologist: ",
+                array(
+                 null => "",
+                 '1'  => 'Yes',
+                 '0'  => 'No',
+                )
+            );
+            $groupB[] = $this->createLabel(
+                "Pending Approval:"
+            );
+            $groupB[] = $this->createSelect(
+                "examiner_pending",
+                "Pending Approval: ",
+                array(
+                 null => "",
+                 'Y'  => 'Yes',
+                 'N'  => 'No',
+                )
+            );
+            $this->addGroup(
+                $groupA,
+                'examiner_sites',
+                'Examiner At:',
+                $this->_GUIDelimiter,
+                false
+            );
+            $this->addGroup(
+                $groupB,
+                'examiner_group',
+                'Examiner Status',
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($groupA);
+            unset($groupB);
+        }
 
         // active
         $this->addSelect('Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
@@ -463,7 +794,12 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         //------------------------------------------------------------
 
+        // checking if the account can be rejected (no password hash
+        // pending approval)
+        $this->tpl_data['can_reject'] =$this->_canRejectAccount($this->identifier);
+
         // get the editor's permissions
+
         $perms    = $editor->getPermissionsVerbose();
         $lastRole = '';
         foreach ($perms as $row) {
@@ -501,7 +837,7 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         //getting users name and emails to create checkboxes
         // to email supervisors on permissions changes
-        $DB_factory =& NDB_Factory::singleton();
+        $DB_factory = NDB_Factory::singleton();
         $DB         = $DB_factory->database();
 
         $query = "SELECT u.Real_Name, u.email FROM permissions p
@@ -535,16 +871,16 @@ class NDB_Form_User_Accounts extends NDB_Form
         unset($group);
 
         if (!$this->isCreatingNewUser()) {
-            $user =& User::factory($this->identifier);
+            $user = User::factory($this->identifier);
 
             // add hidden permissions if editor has less permissions than user
             // being edited
-            $perms = array_diff(
+            $permDiff = array_diff(
                 $user->getPermissionIDs(),
                 $editor->getPermissionIDs()
             );
-            foreach ($perms as $value) {
-                $this->addHidden("permID[$value]", 1);
+            foreach ($permDiff as $permID) {
+                $this->addHidden("permID[$permID]", 1);
             }
         }
 
@@ -552,6 +888,34 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         // unique key and password rules
         $this->form->addFormRule(array(&$this, '_validateEditUser'));
+    }
+
+    /**
+    * Query database on UserID to check that password has doesn't
+    * exist and account is still pending approval, to ensure the
+    * users with account activity can't be rejected by setting
+    * their status to pending.
+    *
+    * @param string $id identifier of account to verify
+    *
+    * @return boolean true is Password_hash is null and
+    * Pending_approval is Yes, false otherwsie
+    */
+    function _canRejectAccount($id)
+    {
+        $DB     = Database::singleton();
+        $fields =  $DB->pselect(
+            "SELECT Password_hash, Pending_approval
+                   FROM users
+                   WHERE UserID=:id",
+            array("id" => $id)
+        );
+        if (is_null($fields[0]['Password_hash'])
+            && $fields[0]['Pending_approval']=="Y"
+        ) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -563,13 +927,18 @@ class NDB_Form_User_Accounts extends NDB_Form
     // @codingStandardsIgnoreStart
     function my_preferences()
     {
-    // @codingStandardsIgnoreEnd
+        // @codingStandardsIgnoreEnd
         $this->identifier = $_SESSION['State']->getUsername();
 
+        $user =& User::singleton($this->identifier);
+
         ///get the value for additional_user_info flag
-        $config =& NDB_Config::singleton();
+        $config = NDB_Config::singleton();
         $additional_user_info = $config->getSetting('additional_user_info');
 
+        //get notification details
+        $notifier_list     = NDB_Notifier::getNotificationModuleServices();
+        $notifier_services = NDB_Notifier::getNotificationServices();
         //------------------------------------------------------------
 
         // user name
@@ -580,7 +949,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         //   - must have at least one non-whitespace characters (i.e. required)
         //   - once leading and trailing spaces are stripped, the field should
         //       not exceed 120 chars
-        $fistNameInvalidMsg = "First name is required and "
+        $firstNameInvalidMsg = "First name is required and "
             . "should not exceed 120 characters";
         $this->addBasicText(
             'First_name',
@@ -645,26 +1014,75 @@ class NDB_Form_User_Accounts extends NDB_Form
         );
 
         // password
-        $this->form->addElement('password', 'Password_md5', 'New Password');
+        $this->form->addElement('password', 'Password_hash', 'New Password');
         $this->form->addElement('password', '__Confirm', 'Confirm Password');
 
         // document repository notifications
-        $editor =& User::singleton();
-        if ($editor->hasPermission('document_repository_view')
-            || $editor->hasPermission('document_repository_delete')
-        ) {
-                $doc_Repo_Notifications_Options
-                    = array(
-                       'N' => 'No',
-                       'Y' => 'Yes',
-                      );
-                $this->addSelect(
-                    'Doc_Repo_Notifications',
-                    'Receive Document Repository email notifications',
-                    $doc_Repo_Notifications_Options
-                );
+        $editor = User::singleton();
+
+        // Notification headers
+        $nGroup[] = &$this->createLabel("Module");
+        $nGroup[] = &$this->createLabel("Operation");
+        $nGroup[] = &$this->createLabel("Description");
+
+        foreach ($notifier_services as $id=>$serv) {
+            $nGroup[] = &$this->createLabel($serv);
         }
 
+        $this->addGroup(
+            $nGroup,
+            "notification_headers",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($nGroup);
+
+        // Notification rows
+        $notification_rows =array();
+        foreach ($notifier_list as $module=>$operation_services) {
+            foreach ($operation_services as $operation=>$services) {
+                $nGroup[] = &$this->createLabel($module);
+                $nGroup[] = &$this->createLabel($operation);
+                $nGroup[] = &$this->createLabel($services['desc']);
+                unset($services['desc']);
+
+                // Check for permissions
+                $display =true;
+                foreach ($services['perm'] as $k=>$permission) {
+                    if (!$user->hasPermission($permission)) {
+                        $display =false;
+                        break;
+                    }
+                }
+                unset($services['perm']);
+
+                foreach ($services as $service=>$avail) {
+                    if ($avail==='Y' && $display) {
+                        $nGroup[] = &$this->createCheckbox(
+                            "notif_".$module."_".$operation."_".$service,
+                            ""
+                        );
+                    } else {
+                        $nGroup[] = &$this->createLabel(
+                            "N/A"
+                        );
+                    }
+
+                }
+
+                $this->addGroup(
+                    $nGroup,
+                    "row_".$module."_".$operation,
+                    null,
+                    $this->_GUIDelimiter,
+                    false
+                );
+                $notification_rows[] ="row_".$module."_".$operation;
+                unset($nGroup);
+            }
+        }
+        $this->tpl_data['notification_rows'] = $notification_rows;
         //------------------------------------------------------------
 
         // unique key and password rules
@@ -682,7 +1100,7 @@ class NDB_Form_User_Accounts extends NDB_Form
     function _validateEditUser($values)
     {
         // create DB object
-        $DB     =& Database::singleton();
+        $DB     = Database::singleton();
         $errors = array();
 
         //============================================
@@ -731,7 +1149,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         //==================================
         if (!is_null($this->identifier)) {
             $pass = $DB->pselectOne(
-                "SELECT COALESCE(Password_hash, Password_md5) "
+                "SELECT COALESCE(Password_hash) "
                 . "as Current_password FROM users WHERE UserID = :UID",
                 array('UID' => $this->identifier)
             );
@@ -740,7 +1158,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             //so either password should be set or
             // password should be generated
             if (is_null($pass)
-                && empty($values['Password_md5'])
+                && empty($values['Password_hash'])
                 && $values['NA_Password'] != 'on'
             ) {
                 $errors['Password_Group']
@@ -750,10 +1168,10 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         // if password is user-defined, and user wants to change password
         if (empty($values['NA_Password'])
-            && (!empty($values['Password_md5']) || !empty($values['__Confirm']))
+            && (!empty($values['Password_hash']) || !empty($values['__Confirm']))
         ) {
             $isPasswordStrong = User::isPasswordStrong(
-                $values['Password_md5'],
+                $values['Password_hash'],
                 array(
                  $values['__Confirm'],
                  isset($values['UserID']) ? $values['UserID'] : $this->identifier,
@@ -772,7 +1190,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                     = 'The password is weak, or the passwords do not match';
             } else {
                 // New password must be different than current one
-                if (!$this->_passwordChanged($DB, $values['Password_md5'])) {
+                if (!$this->_passwordChanged($DB, $values['Password_hash'])) {
                     $errors['Password_Group'] = 'New and old passwords '
                         . 'are identical: please choose another one';
                 }
@@ -781,21 +1199,21 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         // if password is generated then the email user button should be clicked
         if ($values['NA_Password'] == "on" && $values['SendEmail'] != "on") {
-               $errors['Email_Group']
-                   = 'When generating a new password, '
-                   . 'please notify the user by checking Send email to user box';
+            $errors['Email_Group']
+                = 'When generating a new password, '
+                . 'please notify the user by checking Send email to user box';
         }
 
-        if ($values['NA_Password'] == 'on' && $values['Password_md5'] != '') {
+        if ($values['NA_Password'] == 'on' && $values['Password_hash'] != '') {
             $errors['Password_Group'] = 'You must leave the password field empty '
                 . 'if you want the system to generate one for you';
         }
 
         if (is_null($this->identifier)
             && ($values['NA_Password'] != 'on')
-            && empty($values['Password_md5'])
+            && empty($values['Password_hash'])
         ) {
-               $errors['Password_Group'] = 'Password is required';
+            $errors['Password_Group'] = 'Password is required';
         }
 
         //======================================
@@ -818,6 +1236,33 @@ class NDB_Form_User_Accounts extends NDB_Form
             $errors['Email_Group'] = 'You must enter an email address';
         }
 
+        //======================================
+        //           Validate Site
+        //======================================
+        // Ensure that at least one site is selected
+        if (empty($values['CenterIDs'])) {
+            $errors['sites_group'] = "You must select at least one " .
+                "site/affiliation";
+        }
+
+        //======================================
+        //        Validate Examiner Status
+        //======================================
+
+        foreach ($values as $k=>$v) {
+            if (preg_match("/^ex_[1-9]+$/", $k)
+                && $values['examiner_radiologist'] == ''
+            ) {
+                $errors['examiner_group'] = "Please specify if examiner is a ".
+                    "radiologist";
+            }
+            if (preg_match("/^ex_[1-9]+$/", $k)
+                && $values['examiner_radiologist'] !== ''
+                && $values['examiner_pending'] == ''
+            ) {
+                $errors['examiner_group'] = "Please set pending approval Yes or No";
+            }
+        }
         return $errors;
     }
 
@@ -834,8 +1279,8 @@ class NDB_Form_User_Accounts extends NDB_Form
     {
         //--- Get current password stored in database
         $passwordQuery
-            = "SELECT Password_hash, Password_md5
-               FROM users 
+            = "SELECT Password_hash
+               FROM users
                WHERE UserID = :UID";
 
         $passwords = $db->pselectRow(
@@ -850,11 +1295,11 @@ class NDB_Form_User_Accounts extends NDB_Form
         ) {
             return !password_verify($newPassword, $passwords['Password_hash']);
         } elseif (!function_exists('password_verify')
-            && !is_null($passwords['Password_md5'])
+            && !is_null($passwords['Password_hash'])
         ) {
             // If PHP version < 5.5, use old MD5Unsalt method to check for
             // password change
-            return !User::MD5Unsalt($newPassword, $passwords['Password_md5']);
+            return !User::MD5Unsalt($newPassword, $passwords['Password_hash']);
         }
 
         return true;
@@ -870,14 +1315,14 @@ class NDB_Form_User_Accounts extends NDB_Form
     function _validateMyPreferences($values)
     {
         // create DB object
-        $DB     =& Database::singleton();
+        $DB     = Database::singleton();
         $errors = array();
 
         // if password is user-defined, and user wants to change password
-        if (!empty($values['Password_md5'])) {
+        if (!empty($values['Password_hash'])) {
             // check password strength
             $isPasswordStrong = User::isPasswordStrong(
-                $values['Password_md5'],
+                $values['Password_hash'],
                 array(
                  $values['__Confirm'],
                  $this->identifier,
@@ -890,12 +1335,12 @@ class NDB_Form_User_Accounts extends NDB_Form
                 )
             );
             if (!$isPasswordStrong) {
-                $errors['Password_md5']
+                $errors['Password_hash']
                     = 'The password is weak, or the passwords do not match';
             } else {
                 // New password must be different than current one
-                if (!$this->_passwordChanged($DB, $values['Password_md5'])) {
-                    $errors['Password_Group'] = 'New and old passwords '
+                if (!$this->_passwordChanged($DB, $values['Password_hash'])) {
+                    $errors['Password_hash'] = 'New and old passwords '
                         . 'are identical: please choose another one';
                 }
             }
@@ -910,6 +1355,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         return $errors;
     }
 
+
     /**
      * Validates that en email address entered for a given user
      * (either new or existing) is valid and unique.
@@ -921,6 +1367,9 @@ class NDB_Form_User_Accounts extends NDB_Form
      */
     private function _getEmailError($DB, $email)
     {
+        // remove illegal characters
+        $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+
         // check email address' uniqueness
         $query  = "SELECT COUNT(*) FROM users WHERE Email = :VEmail ";
         $params = array('VEmail' => $email);
@@ -950,7 +1399,7 @@ class NDB_Form_User_Accounts extends NDB_Form
      */
     function getDescriptionUsingPermID($permID)
     {
-        $db_factory =& NDB_Factory::singleton();
+        $db_factory = NDB_Factory::singleton();
         $db         = $db_factory->database();
 
         $permission = $db->pselectOne(

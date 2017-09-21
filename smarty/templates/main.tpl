@@ -3,35 +3,23 @@
     {if $dynamictabs neq "dynamictabs"}
     <head>
         <link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
-        <link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
+        <link type="image/x-icon" rel="icon" href="/images/favicon.ico">
 
-        {* 
+        {*
         This can't be loaded from getJSDependencies(), because it's needs access to smarty
            variables to be instantiated, so that other js files don't need access to smarty variables
            and can access them through the loris global (ie. loris.BaseURL) *}
         <script src="{$baseurl}/js/loris.js" type="text/javascript"></script>
         <script language="javascript" type="text/javascript">
-        var loris = new LorisHelper({$jsonParams}, {$userPerms|json_encode});
+        var loris = new LorisHelper({$jsonParams}, {$userPerms|json_encode}, {$studyParams|json_encode});
         </script>
         {section name=jsfile loop=$jsfiles}
             <script src="{$jsfiles[jsfile]}" type="text/javascript"></script>
         {/section}
-        <script>
-            $.webshims.polyfill();
-        </script>
 
-        <!-- Custom JavaScript for the Menu Toggle -->
-   
-        <link type="text/css" href="{$baseurl}/css/loris-jquery/jquery-ui-1.10.4.custom.min.css" rel="Stylesheet" />
-
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
-        <link rel="stylesheet" href="{$baseurl}/bootstrap/css/custom-css.css">
-
-        <!-- Module-specific CSS -->
-        {if $test_name_css}
-            <link rel="stylesheet" href="{$baseurl}/{$test_name_css}" type="text/css" />
-        {/if}
+        {section name=cssfile loop=$cssfiles}
+            <link rel="stylesheet" href="{$cssfiles[cssfile]}">
+        {/section}
 
         <title>
             {$study_title}
@@ -41,19 +29,25 @@
                 {/section}
             {/if}
         </title>
-            <script language="javascript" type="text/javascript">
-                $(document).ready(function(){
-                    {if $crumbs != "" && empty($error_message)}
-                        var crumbs = {$crumbs|@json_encode},
-                            baseurl = "{$baseurl}",
-                            breadcrumbs = RBreadcrumbs({
-                                breadcrumbs: crumbs,
-                                baseURL: baseurl
-                            });
-                        React.render(breadcrumbs, document.getElementById("breadcrumbs"));
-                    {/if}
-                })
-            </script>
+        <script type="text/javascript">
+          $(document).ready(function() {
+            {if $crumbs != "" && empty($error_message)}
+              var crumbs = {$crumbs|@json_encode},
+                      baseurl = "{$baseurl}",
+                      breadcrumbs = RBreadcrumbs({
+                        breadcrumbs: crumbs,
+                        baseURL: baseurl
+                      });
+              ReactDOM.render(breadcrumbs, document.getElementById("breadcrumbs"));
+            {/if}
+
+            // Initialize bootstrap tooltip for site affiliations
+            $('#site-affiliations').tooltip({
+              html: true,
+              container: 'body'
+            });
+          });
+        </script>
         <link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="Stylesheet" />
         <link href="{$baseurl}/css/simple-sidebar.css" rel="stylesheet">
 
@@ -66,10 +60,10 @@
        and the workspace. This let's us put controls for the main
        page inside of the side panel.
     *}
-        {if $FormAction} 
+        {if $FormAction}
         <form action="{$FormAction}" method="post">
         {/if}
-	    
+
     <div id="wrap">
         {if $dynamictabs neq "dynamictabs"}
             <nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="nav-left">
@@ -130,14 +124,14 @@
                                             {/if}
                                         {/foreach}
                                     </ul>
-                                </li> 
+                                </li>
                             {/if}
                         {/foreach}
                     </ul>
                     <ul class="nav navbar-nav navbar-right" id="nav-right">
                         {if $bvl_feedback}
                         <li class="hidden-xs hidden-sm">
-                            <a class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
+                            <a href="#" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
                                 <span class="glyphicon glyphicon-edit"></span>
                             </a>
                         </li>
@@ -148,11 +142,16 @@
                                 <img width=17 src="{$baseurl}/images/help.gif">
                             </a>
                         </li>
-                        <li>
-                            <p class="navbar-text">
-                                &nbsp;&nbsp;  Site: {$user.Site} &nbsp;
-                            </p>
+                        <li class="nav">
+                            <a href="#"
+                               id="site-affiliations"
+                               data-toggle="tooltip"
+                               data-placement="bottom"
+                               title="{$user.SitesTooltip}">
+                                Site Affiliations: {$userNumSites}
+                            </a>
                         </li>
+
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding-right:25px;">
                                 {$user.Real_name|escape} <b class="caret"></b>
@@ -208,7 +207,7 @@
             {if $dynamictabs neq "dynamictabs"}
             {* Add enough spacing to get below the menu *}
                 <br><br><br>
-            <div class="page-content inset">  
+            <div class="page-content inset">
 
                 {if $console}
                     <div class="alert alert-warning" role="alert">
@@ -236,7 +235,7 @@
                                         {/section}
                                     </ul>
 
-                                    If this error persists, please 
+                                    If this error persists, please
                                     <a target="mantis" href="{$mantis_url}">
                                         report a bug to your administrator
                                     </a>.
@@ -294,10 +293,10 @@
                                                             <th>
                                                                 MR Scan Done
                                                             </th>
-                                                            {* 
+                                                            {*
                                                                 <th>
                                                                     Age During Visit
-                                                                </th> 
+                                                                </th>
                                                             *}
                                                             <th>
                                                                 Within Optimal
@@ -315,8 +314,8 @@
                                                         {/if}
                                                 </tr>
                                             </thead>
-                                            <!-- candidate data --> 
-                                            <tbody>   
+                                            <!-- candidate data -->
+                                            <tbody>
                                                     <tr>
                                                         <td>
                                                             {$candidate.DoB}
@@ -354,10 +353,10 @@
                                                             <td>
                                                                 {$timePoint.Scan_done|default:"<img alt=\"Data Missing\" src=\"$baseurl/images/help2.gif\" width=\"12\" height=\"12\" />"}
                                                             </td>
-                                                            {* 
+                                                            {*
                                                                 <td>
                                                                     {$timePoint.WindowInfo.AgeDays}
-                                                                </td> 
+                                                                </td>
                                                             *}
                                                             <td>
                                                                 {if $timePoint.WindowInfo.Optimum}
@@ -382,7 +381,7 @@
                                                             {/if}
                                                         {/if}
                                                     </tr>
-                                            </tbody>  
+                                            </tbody>
                                         </table>
 
                                     {if $sessionID != ""}
@@ -443,7 +442,7 @@
                                 {/if}
                                 <div id="lorisworkspace">
                                     {$workspace}
-                                </div>  
+                                </div>
                             {/if}
                         </div>
                     </div>
@@ -482,10 +481,10 @@
                                     |
                                 </li>
                         {/foreach}
-                    </ul>    
+                    </ul>
                 </center>
                 <div align="center" colspan="1">
-                    Powered by LORIS &copy; {$currentyear}. All rights reserved.
+                    Powered by LORIS version {$version} &copy; {$currentyear}. All rights reserved.
                 </div>
       		<div align="center" colspan="1">
                     Created by <a href="http://mcin-cnim.ca/" target="_blank">
@@ -494,8 +493,38 @@
                 </div>
             </div>
         {/if}
-        {if $FormAction} 
-        </form> 
+        {if $FormAction}
+        </form>
         {/if}
+
+        <a id="login-modal-button" href="#" data-toggle="modal" data-target="#login-modal" style="display: none;">Login</a>
+
+        <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        Login to Your Account
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <font color="red" align="middle" id="login-modal-error" style="display: none;">
+                                    Incorrect username or password
+                                </font>
+                            </div>
+                            <div class="form-group col-xs-12">
+                                <input id="modal-username" name="username" class="form-control" type="text" value="" placeholder="User">
+                            </div>
+                            <div class="form-group col-xs-12">
+                                <input id="modal-password" name="password" class="form-control" type="password" placeholder="Password">
+                            </div>
+                            <div class="form-group col-xs-12">
+                                <input class="btn btn-primary col-xs-12" id="modal-login" name="login" type="submit" value="Login">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

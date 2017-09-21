@@ -13,7 +13,6 @@
 #       Changes to make in this config.xml file:
 #       *  Database connection credentials: specify credentials to LorisTest DB which you create in step 1
 #       *  Set sandbox mode to 1: <sandbox>1</sandbox>
-#       *  Set SyncAccounts to false: <SyncAccounts>false</SyncAccounts>
 
 # set environment variable LORIS_DB_CONFIG to test config.xml file
 host="127.0.0.1"
@@ -38,5 +37,5 @@ elif [ $# -eq 1 ]; then
   ../vendor/bin/phpunit --configuration phpunit.xml   $1 ./unittests/$1.php
 else
  # Run all unittest
-../vendor/bin/phpunit --debug --configuration phpunit.xml --testsuite 'LorisUnitTests for php/libraries'
+../vendor/bin/phpunit --debug --configuration phpunit.xml --testsuite 'LorisUnitTests'
 fi

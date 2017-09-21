@@ -39,15 +39,21 @@ $(function() {
     // Change viewer panel canvas size.
     $("#panel-size").change(function() {
       var size = parseInt($(this).val(), 10);
-
-      viewer.setPanelSize(size, size, { scale_image: true });
+      if (size < 0) {
+        viewer.setAutoResize(true, 'volume-controls');
+        viewer.doAutoResize();
+      } else {
+        viewer.setAutoResize(false, 'volume-controls');
+        viewer.setPanelSize(size, size, { scale_image: true });
+      }
     });
 
     // Should cursors in all panels be synchronized?
-    $("#sync-volumes").change(function() {
-      var synced = $(this).is(":checked");
-
-      viewer.synced = synced;
+    var isChecked = false;
+    $("#sync-volumes").click(function() {
+      isChecked = !isChecked;
+      $(this).toggleClass('isChecked');
+      viewer.synced = isChecked;
     });
 
     // Reset button
@@ -114,57 +120,64 @@ $(function() {
       img.src = canvas.toDataURL();
     });
 
-    // Load a new model from a MINC file that the user has
-    // selected.
-    $("#volume-file-minc-submit").click(function() {
-      viewer.clearVolumes();
-      viewer.loadVolume({
-        type: "minc",
-        header_file: document.getElementById("header-file"),
-        raw_data_file: document.getElementById("raw-data-file"),
-        template: {
-          element_id: "volume-ui-template",
-          viewer_insert_class: "volume-viewer-display"
-        }
-      }, function() {
-        $(".slice-display").css("display", "inline");
-        $(".volume-controls").css("width", "auto");
-      });
+    $(document).keypress(function(e) {
+      if (e.keyCode === 114) {
+        // Reset displays if user presses 'r' key.
+        viewer.resetDisplays();
+        viewer.redrawVolumes();
+      }
     });
 
-    // Load a new model from a NIfTI-1 file that the user has
-    // selected.
-    $("#volume-file-nifti1-submit").click(function() {
-      viewer.clearVolumes();
-      viewer.loadVolume({
-        type: "nifti1",
-        nii_file: document.getElementById("nifti1-file"),
-        template: {
-          element_id: "volume-ui-template",
-          viewer_insert_class: "volume-viewer-display"
-        }
-      }, function() {
-        $(".slice-display").css("display", "inline");
-        $(".volume-controls").css("width", "auto");
-      });
-    });
+    /**
+     * @doc function
+     * @name viewer.setAutoResize
+     * @param {boolean} flag Whether we should auto-resize the views.
+     * @param {string} class_name The name of the class associated with volume
+     * controls.
+     *
+     * @description
+     * Enable or disable auto-resizing mode.
+     * ```js
+     * viewer.setAutoResize(true, 'volume-controls');
+     * ```
+     */
+    viewer.setAutoResize = function(flag, class_name) {
+      viewer.auto_resize = flag;
+      viewer.volume_control_class = class_name;
+    };
 
-    // Load a new model from a MGH file that the user has
-    // selected.
-    $("#volume-file-mgh-submit").click(function() {
-      viewer.clearVolumes();
-      viewer.loadVolume({
-        type: "mgh",
-        file: document.getElementById("mgh-file"),
-        template: {
-          element_id: "volume-ui-template",
-          viewer_insert_class: "volume-viewer-display"
-        }
-      }, function() {
-        $(".slice-display").css("display", "inline");
-        $(".volume-controls").css("width", "auto");
-      });
-    });
+    /**
+     * @doc function
+     * @name viewer.doAutoResize
+     * @description
+     * This function implements auto-resizing of the volume panels
+     * when the window itself is resized. It should therefore be invoked
+     * as part of a window resize notification.
+     */
+    viewer.doAutoResize = function() {
+      if (!viewer.auto_resize) {
+        return;
+      }
+      function getIntProperty(class_name, prop_name) {
+        return parseInt($(class_name).css(prop_name).replace('px', ''), 10);
+      }
+      /* Assumes at least three views or three volumes across.
+       */
+      var n = Math.max(viewer.volumes.length, 3);
+      var ml = getIntProperty('.slice-display', 'margin-left');
+      var mr = getIntProperty('.slice-display', 'margin-right');
+      var vv = getIntProperty('.volume-viewer-display', 'width');
+
+      // Divide panel container size (.volume-viewer-display) by
+      // number of panels and subtract the margins for each panel.
+      // Note: (Subtract 1, because float widths are rounded up by jQuery)
+      var size = ((vv - 1) / n) - (ml + mr);
+
+      viewer.setDefaultPanelSize(size, size);
+      viewer.setPanelSize(size, size, { scale_image: true });
+    };
+
+    window.addEventListener('resize', viewer.doAutoResize, false);
 
     //////////////////////////////////
     // Per volume UI hooks go in here.
@@ -202,8 +215,7 @@ $(function() {
           viewer.volumes.forEach(function(volume) {
             volume.setWorldCoords(x, y, z);
           });
-        }
-        else {
+        } else {
           viewer.volumes[vol_id].setWorldCoords(x, y, z);
         }
 
@@ -361,12 +373,13 @@ $(function() {
         }
 
         var slider = div.find(".slider");
-        var time_input = div.find("#time-val-" + vol_id);
-        var play_button = div.find("#play-" + vol_id);
+        var timeInput = div.find("#time-val-" + vol_id);
+        var playButton = div.find("#play-" + vol_id);
+        var isPlaying = false;
 
         var min = 0;
         var max = volume.header.time.space_length - 1;
-        var play_interval;
+        var playInterval;
 
         slider.slider({
           min: min,
@@ -375,7 +388,7 @@ $(function() {
           step: 1,
           slide: function(event, ui) {
             var value = +ui.value;
-            time_input.val(value);
+            timeInput.val(value);
             volume.current_time = value;
             viewer.redrawVolumes();
           },
@@ -384,7 +397,7 @@ $(function() {
           }
         });
 
-        time_input.change(function() {
+        timeInput.change(function() {
           var value = parseInt(this.value, 10);
           if (!BrainBrowser.utils.isNumeric(value)) {
             value = 0;
@@ -393,28 +406,31 @@ $(function() {
           value = Math.max(min, Math.min(value, max));
 
           this.value = value;
-          time_input.val(value);
+          timeInput.val(value);
           slider.slider("value", value);
           volume.current_time = value;
           viewer.redrawVolumes();
         });
 
-        play_button.change(function() {
-          if(play_button.is(":checked")){
-            clearInterval(play_interval);
-            play_interval = setInterval(function() {
+        playButton.click(function() {
+          if (!isPlaying) {
+            clearInterval(playInterval);
+            playInterval = setInterval(function() {
               var value = volume.current_time + 1;
               value = value > max ? 0 : value;
               volume.current_time = value;
-              time_input.val(value);
+              timeInput.val(value);
               slider.slider("value", value);
               viewer.redrawVolumes();
             }, 200);
+            isPlaying = true;
+            playButton.text("Pause");
           } else {
-            clearInterval(play_interval);
+            clearInterval(playInterval);
+            isPlaying = false;
+            playButton.text("Play");
           }
         });
-
       });
 
       // Create an image of all slices in a certain
@@ -525,7 +541,10 @@ $(function() {
           url: loris.BaseURL + '/brainbrowser/ajax/getMincName.php',
           method: 'GET',
           success: function(data) {
-            $("#filename-"+vol_id).html(data);
+              var fileName = $("#filename-" + vol_id);
+              fileName.html(data);
+              fileName.data("title", data);
+              fileName.tooltip();
           }
       });
 
@@ -733,8 +752,8 @@ $(function() {
 
         minc_volumes.push({
             type: 'minc',
-	    header_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + minc_ids_arr[i] + "&minc_headers=true",
-	    raw_data_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + minc_ids_arr[i] + "&raw_data=true",
+	    header_url: "",
+	    raw_data_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + minc_ids_arr[i],
             template: {
                 element_id: "volume-ui-template4d",
                 viewer_insert_class: "volume-viewer-display"
@@ -763,6 +782,8 @@ $(function() {
     loading_div.show();
     bboptions.complete = function() {
       loading_div.hide();
+      // Trigger change event when page is loaded to auto-resize panels if necessary
+      $("#panel-size").change();
     }
 
     //////////////////////////////
@@ -773,7 +794,14 @@ $(function() {
     ////////////////////////////////////////
     // Set the size of slice display panels.
     ////////////////////////////////////////
-    viewer.setDefaultPanelSize(256, 256);
+
+    // Use the size from dropdown as deafault size
+    var panelSize = Number.parseInt($("#panel-size").val(), 10);
+
+    // If not a real size, set to default value
+    if (panelSize < 0) { panelSize = 300; }
+
+    viewer.setDefaultPanelSize(panelSize, panelSize);
 
     ///////////////////
     // Start rendering.

@@ -116,9 +116,9 @@
 <script>
 var table = RDynamicDataTable({
         "DataURL" : "{$baseurl}/imaging_browser/?format=json",
-        "getFormattedCell" : formatColumn
-
+        "getFormattedCell" : formatColumn,
+        "onSort" : onSort
 });
-React.render(table, document.getElementById("datatable"));
+ReactDOM.render(table, document.getElementById("datatable"));
 </script>
 
