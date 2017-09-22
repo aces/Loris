@@ -6,7 +6,7 @@ Uploaders: Michael Hanke <mih@debian.org>,
 Section: science
 Priority: optional
 Build-Depends: debhelper (>= 9~),
-Standards-Version: 3.9.6
+Standards-Version: 4.1.0
 Vcs-Browser: https://github.com/aces/Loris
 Vcs-Git: https://github.com/aces/Loris.git
 Homepage: http://loris.ca
