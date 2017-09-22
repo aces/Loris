@@ -18,4 +18,5 @@ override_dh_install:
 	tools/create-project.sh debian/loris/var/lib/loris
 
 
-
+override_dh_fixperms:
+	dh_fixperms -Xvar/lib/loris/smarty/templates_c
