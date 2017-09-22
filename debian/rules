@@ -16,6 +16,10 @@ override_dh_install:
 	find debian/* -iname '.git*' -delete
 
 	tools/create-project.sh debian/loris/var/lib/loris
+	mkdir -p debian/loris-standalone/etc/apache2/sites-available
+	sed -e 's,%LORISROOT%,/usr/share/loris,g' \
+		-e 's,%LOGDIRECTORY%,/var/log/apache2,g' \
+		docs/config/apache2-site > debian/loris-standalone/etc/apache2/sites-available/666-loris.conf
 
 
 override_dh_fixperms:

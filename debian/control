@@ -27,3 +27,10 @@ Depends: php-mysql,
          ${misc:Depends}
 Description: web-accessible database for longitudinal multi-site studies
  Whis should I install this one over XNAT?
+
+Package: loris-standalone
+Architecture: all
+Depends: loris,
+		 apache2,
+		 mariadb-server-10.3 | virtual-mysql-server,
+Description: standalone complete installation of LORIS
