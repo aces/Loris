@@ -1,4 +1,4 @@
-#!/data/web/neurodb/software/bin/php
+#!/usr/bin/php
 <?php
 
 /**
