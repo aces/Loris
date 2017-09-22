@@ -5,7 +5,7 @@ Uploaders: Michael Hanke <mih@debian.org>,
            Cecile Madjar <cecile.madjar@mail.mcgill.ca>
 Section: science
 Priority: optional
-Build-Depends: debhelper (>= 9~), composer
+Build-Depends: debhelper (>= 9~), composer, php-xml
 Standards-Version: 3.9.6
 Vcs-Browser: https://github.com/aces/Loris
 Vcs-Git: https://github.com/aces/Loris.git
