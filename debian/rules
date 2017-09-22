@@ -10,6 +10,10 @@ upstreamver = $(shell echo $(debver) | cut -d '-' -f 1,1 )
 # master or whatever other source branch.
 gitver = $(shell [ -x /usr/bin/git ] && git describe --tags --match 'v[0-9]*' $$(git merge-base -a HEAD releases) | sed -e 's/^v//' -e 's/-rc/~rc/' -e 's/-/+git/')
 
+override_dh_install:
+	composer install --no-dev
+	dh_install
+
 # one ring to rule them all ...
 %:
 	dh $@
