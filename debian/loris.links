@@ -1,0 +1,2 @@
+var/lib/loris usr/share/loris/project
+var/lib/loris/smarty/templates_c usr/share/loris/project/smarty/templates_c
