@@ -1,4 +1,4 @@
-loris (18.0.0~rc1-1) UNRELEASED; urgency=medium
+loris (18.0.0~rc1+git3-gce377d10-1) UNRELEASED; urgency=medium
 
   * Initial packaging.
 
