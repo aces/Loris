@@ -15,4 +15,7 @@ override_dh_install:
 	# Cleanup unneeded VCS files to shut lintian up
 	find debian/* -iname '.git*' -delete
 
+	tools/create-project.sh debian/loris/var/lib/loris
+
+
 
