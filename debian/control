@@ -18,6 +18,8 @@ Depends: php-mysql,
          php-sqlite,
          php-json,
          libapache2-mod-php,
+         libjs-jquery-mousewheel,
+         libjs-excanvas,
          ${misc:Depends}
 Description: web-accessible database for longitudinal multi-site studies
  Whis should I install this one over XNAT?
