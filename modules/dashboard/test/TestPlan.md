@@ -49,7 +49,7 @@
     more important to check without this permission.
     [Automate Test]
 15. Verify that if a user has 'issue_tracker_reporter / issue_tracker_developer' permission,
-    the issue tracker panel should be found without this permission.
+    the issue tracker panel should not be found without this permission.
     [Automate Test on Travis_CI]
 16. Verify that if a user has 'User Management / Survey Participant Management' permission, the number of pending
     account approvals is displayed in the My Task panel. This should be the number of entries in the User Account
