@@ -32,5 +32,5 @@ Package: loris-standalone
 Architecture: all
 Depends: loris,
 		 apache2,
-		 mariadb-server-10.3 | virtual-mysql-server,
+		 mysql-server (>> 5.1) | mariadb-server-10.3 | virtual-mysql-server,
 Description: standalone complete installation of LORIS
