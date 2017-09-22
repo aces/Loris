@@ -1,7 +1,9 @@
 loris (18.0.0~rc1+git3-gce377d10-1) UNRELEASED; urgency=medium
 
+  [ Michael Hanke & Yaroslav Halchenko & LORIS Folks ]
+
   * Initial packaging.
 
- -- Michael Hanke <mih@debian.org>  Fri, 11 Dec 2015 20:30:35 +0100
+ -- Yaroslav Halchenko <debian@onerussian.com>  Fri, 22 Sep 2017 15:08:37 -0400
 
 
