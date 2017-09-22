@@ -4,7 +4,11 @@
 	dh $@
 
 override_dh_install:
+	# We need to remove the project directory created by composer install, which we'll
+	# be replacing with a symlink to /var/lib/loris when we create the project here in
+	# the future.
 	dh_install
+	(cd debian/loris/usr/share/loris && composer install --no-dev && rm -rf project)
 	# Remove the files which later dh_link would create symlinks for
 	rm debian/*/usr/share/loris/htdocs/js/shims/excanvas.js
 	rm debian/*/usr/share/loris/modules/brainbrowser/js/jquery.mousewheel.min.js
