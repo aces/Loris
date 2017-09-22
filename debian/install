@@ -6,3 +6,5 @@ test usr/share/loris/
 php usr/share/loris/
 tools usr/share/loris/
 
+composer.json usr/share/loris/
+composer.lock usr/share/loris/

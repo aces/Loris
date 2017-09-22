@@ -10,6 +10,13 @@ upstreamver = $(shell echo $(debver) | cut -d '-' -f 1,1 )
 # master or whatever other source branch.
 gitver = $(shell [ -x /usr/bin/git ] && git describe --tags --match 'v[0-9]*' $$(git merge-base -a HEAD releases) | sed -e 's/^v//' -e 's/-rc/~rc/' -e 's/-/+git/')
 
+override_dh_install:
+	# We need to remove the project directory created by composer install, which we'll
+	# be replacing with a symlink to /var/lib/loris when we create the project here in
+	# the future.
+	dh_install
+	(cd debian/loris/usr/share/loris && composer install --no-dev && rm -rf project)
+
 # one ring to rule them all ...
 %:
 	dh $@
