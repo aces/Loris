@@ -493,9 +493,6 @@ class DashboardTest extends LorisIntegrationTest
      */
     public function testIssues()
     {
-        $this->markTestSkipped(
-            'Skipping tests until merging the fixing PR'
-        );
         $this->setupPermissions(
             array("issue_tracker_developer")
         );
