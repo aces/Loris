@@ -128,6 +128,8 @@ class NDB_Client
         if (isset($_REQUEST['logout']) && $_REQUEST['logout']) {
             session_destroy();
             setcookie("FeedbackButtonBoolean", "");
+            header("HTTP/1.1 303 See Other");
+            header("Location: /");
             session_start();
         }
 
