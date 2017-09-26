@@ -94,11 +94,14 @@ if (!$anonymous) {
             $site[$key]        = & Site::singleton($val);
             $isStudySite[$key] = $site[$key]->isStudySite();
         }
-        $oneIsStudySite   = in_array("1", $isStudySite);
+        $oneIsStudySite = in_array("1", $isStudySite);
 
         $tpl_data['user'] = $user->getData();
-        $tpl_data['user']['permissions']          = $user->getPermissions();
-        $tpl_data['hasHelpEditPermission']        = $user->hasPermission('context_help');
+        $tpl_data['user']['permissions'] = $user->getPermissions();
+
+        $tpl_data['hasHelpEditPermission']
+            = $user->hasPermission('context_help');
+
         $tpl_data['user']['user_from_study_site'] = $oneIsStudySite;
     } catch(Exception $e) {
         $tpl_data['error_message'][] = "Error: " . $e->getMessage();
@@ -146,7 +149,9 @@ if (!empty($TestName)) {
             $tpl_data['timePoint'] = $timePoint->getData();
         } catch(Exception $e) {
             $tpl_data['error_message'][]
-                = htmlspecialchars("TimePoint Error (".$_REQUEST['sessionID']."): ".$e->getMessage());
+                = htmlspecialchars(
+                    "TimePoint Error (".$_REQUEST['sessionID']."): ".$e->getMessage()
+                );
         }
     }
 }
