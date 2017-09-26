@@ -108,7 +108,8 @@ class NDB_Form_Survey_Accounts extends NDB_Form
              'v_VL'     => $values['VL'],
             )
         );
-        $reminder        = ": can't add survey -- data entry is already in progress";
+        $reminder        = ": can't add survey -- data entry in this instrument".
+                           " form is already in progress or complete";
         foreach ($instrument_list as $instrument) {
             if ($values['Test_name'] == $instrument['Test_name']) {
                 return array(
