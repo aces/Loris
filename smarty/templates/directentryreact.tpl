@@ -50,6 +50,11 @@
     .reviewPage{
         text-align: left;
     }
+    .footer-bar {
+        margin-top: 20px;
+        color: white;
+        text-align: right;
+    }
 </style>
 
 <div id="reactInput">

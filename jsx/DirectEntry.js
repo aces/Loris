@@ -35,13 +35,26 @@ class DirectEntry extends React.Component {
 	    this.setupPageValues = this.setupPageValues.bind(this);
 	    this.submit = this.submit.bind(this);
 
+	    let total = 0;
+		let completed = 0;
+		for (let key in this.props.Values) {
+			if(this.props.Values[key] != null && this.props.Values[key] != '') {
+				completed++;
+			}
+			total++;
+		}
+
 
 	    this.state = {
 	    	style: style,
 	    	page: page,
 	    	values: this.props.Values,
 	    	errors: {},
-	    	InstrumentJSON: props.InstrumentJSON
+	    	InstrumentJSON: props.InstrumentJSON,
+	    	completionStats: {
+				total: total,
+				completed: completed
+			}
 	    };
 
 	}
@@ -161,8 +174,6 @@ class DirectEntry extends React.Component {
 		let data = {};
 		data[fieldName] = value;
 
-		console.log(data);
-
 		$.ajax({
 		    url : window.location.href,
 		    data : JSON.stringify(data),
@@ -173,11 +184,20 @@ class DirectEntry extends React.Component {
 		this.setState(function(state) {
 			let values = state.values;
 			let pageValues = state.pageValues;
+			let stats = state.completionStats;
+
+			if(values[fieldName] == null || values[fieldName] == '') {
+				stats.completed = stats.completed + 1;
+			} else if (value == null || value == '') {
+				stats.completed = stats.completed - 1;
+			}
+
 			values[fieldName] = value;
 			pageValues[fieldName] = value;
 			return {
 				values: values,
-				pageValues: pageValues
+				pageValues: pageValues,
+				completionStats: stats
 			}
 		});
 	}
@@ -247,6 +267,9 @@ class DirectEntry extends React.Component {
 				</div>
 			 );
 		}
+		const style = {
+			width: this.state.completionStats.completed / this.state.completionStats.total * 100 + '%'
+		}
 		return (
 			<div>
 				<nav className="navbar navbar-default navbar-fixed-top">
@@ -258,6 +281,18 @@ class DirectEntry extends React.Component {
 						{buttons}
 					</div>
 				</div>
+				<div className="navbar navbar-default navbar-fixed-bottom">
+					<div className="col-xs-5 footer-bar">
+						{this.state.completionStats.completed} of {this.state.completionStats.total} Answered
+					</div>
+				    <div className="col-xs-4 footer-bar">
+				      	<div className="progress">
+						  <div className="progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style={style}>
+						    &nbsp;
+						  </div>
+						</div>
+				    </div>
+			    </div>
 			</div>
 		);
 	}
