@@ -1201,8 +1201,8 @@ class NDB_Form_User_Accounts extends NDB_Form
             }
 
             if ($values['NA_Password'] == 'on' && $values['Password_hash'] != '') {
-                $errors['Password_Group'] = 'You must leave the password field empty '
-                    . 'if you want the system to generate one for you';
+                $errors['Password_Group'] = 'You must leave the password field empty'
+                    . ' if you want the system to generate one for you';
             }
         }
 

@@ -82,7 +82,10 @@ function getPermissions()
     );
 
     foreach ($permissions as &$permission) {
-        $permission['checked'] = $userToEdit->hasPermission($permission['code'], true);
+        $permission['checked']  = $userToEdit->hasPermission(
+            $permission['code'],
+            true
+        );
         $permission['disabled'] = !$userEditing->hasPermission($permission['code']);
     }
 
