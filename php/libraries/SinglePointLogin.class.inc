@@ -297,7 +297,7 @@ class SinglePointLogin
                   GROUP BY UserID";
         $row   = $DB->pselectRow($query, array('username' => $username));
 
-        if ($row['User_count'] == 1) {
+        if (($row['User_count'] ?? 0) == 1) {
             // validate passsword
             $oldhash = $row['Password_hash'];
             if (password_verify($password, $oldhash)) {

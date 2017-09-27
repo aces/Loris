@@ -82,8 +82,7 @@ class NDB_Caller
             return;
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST'
-            && isset($_POST['login'])
-        ) {
+            && isset($_POST['login']) && $test_name != 'login') {
             header("HTTP/1.1 303 See Other");
             $url  = $settings->getBaseURL();
             $url .= Utility::removeCommonAffix($url, $_SERVER['REQUEST_URI']);

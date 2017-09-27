@@ -43,6 +43,10 @@ class Login extends \NDB_Page
      */
     function __construct()
     {
+        $login = $_SESSION['State']->getProperty('login');
+        if (!empty($login->_lastError)) {
+            $this->tpl_data['error_message'] = $login->_lastError;
+        }
         $config =& \NDB_Config::singleton();
 
         $study_links = $config->getExternalLinks('Studylinks');
