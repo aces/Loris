@@ -105,8 +105,10 @@ class UserPermissions
     /**
      * Determines if the user has a permission
      *
-     * @param string $code The permission code
-     * @param bool $superuserIgnore
+     * @param string $code            The permission code
+     * @param bool   $superuserIgnore Flag to check if the user actually has a
+     *                                certain permission, ignoring the superuser
+     *                                override
      *
      * @return bool
      */
