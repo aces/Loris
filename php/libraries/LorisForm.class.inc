@@ -1880,9 +1880,9 @@ class LorisForm
         foreach ($array as $key => $value) {
             if (isset($value['name'])) {
                 $this->groupMapping[$value['name']] = array(
-                                                   'groupName' => $name,
-                                                   'index'     => $key,
-                                                  );
+                                                       'groupName' => $name,
+                                                       'index'     => $key,
+                                                      );
             }
         }
         $this->form[$name] = array(
