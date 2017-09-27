@@ -879,20 +879,6 @@ class NDB_Form_User_Accounts extends NDB_Form
         $this->addGroup($group, 'Supervisors_Group', 'Supervisors', "", false);
         unset($group);
 
-        if (!$this->isCreatingNewUser()) {
-            $user = User::factory($this->identifier);
-
-            // add hidden permissions if editor has less permissions than user
-            // being edited
-            $permDiff = array_diff(
-                $user->getPermissionIDs(),
-                $editor->getPermissionIDs()
-            );
-            foreach ($permDiff as $permID) {
-                $this->addHidden("permID[$permID]", 1);
-            }
-        }
-
         //------------------------------------------------------------
 
         // unique key and password rules
