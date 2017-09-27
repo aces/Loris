@@ -1207,15 +1207,17 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
 
         // if password is generated then the email user button should be clicked
-        if ($values['NA_Password'] == "on" && $values['SendEmail'] != "on") {
-            $errors['Email_Group']
-                = 'When generating a new password, '
-                . 'please notify the user by checking Send email to user box';
-        }
+        if (isset($values['NA_Password'])) {
+            if ($values['NA_Password'] == "on" && $values['SendEmail'] != "on") {
+                $errors['Email_Group']
+                    = 'When generating a new password, '
+                    . 'please notify the user by checking Send email to user box';
+            }
 
-        if ($values['NA_Password'] == 'on' && $values['Password_hash'] != '') {
-            $errors['Password_Group'] = 'You must leave the password field empty '
-                . 'if you want the system to generate one for you';
+            if ($values['NA_Password'] == 'on' && $values['Password_hash'] != '') {
+                $errors['Password_Group'] = 'You must leave the password field empty '
+                    . 'if you want the system to generate one for you';
+            }
         }
 
         if (is_null($this->identifier)
