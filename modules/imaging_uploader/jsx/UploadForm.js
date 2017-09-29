@@ -101,6 +101,7 @@ class UploadForm extends React.Component {
         type: "error",
         confirmButtonText: "OK"
       });
+      return;
     }
 
     // Checks if a file with a given fileName has already been uploaded
