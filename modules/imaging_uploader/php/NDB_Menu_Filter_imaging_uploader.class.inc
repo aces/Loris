@@ -689,9 +689,29 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function toJSON()
     {
-        $result            = $this->toArray();
-        $result['form']    = $this->form->form;
-        $result['mriList'] = $this->_getFileList($result['Data']);
+        $db   = Database::singleton();
+        $user = User::singleton();
+        $ids  = $db->pselect(
+            "SELECT PSCID, CandID ".
+            "FROM candidate ".
+            "WHERE FIND_IN_SET(CenterID, :cids) ".
+            "AND Entity_type='Human' " .
+            "ORDER BY PSCID",
+            array('cids' => implode(',', $user->getCenterIDs()))
+        );
+        $candToPSCID = array();
+        $pscToCandID = array();
+        foreach ($ids as $id) {
+            $c = $id['CandID'];
+            $p = $id['PSCID'];
+            $candToPSCID[$c] = $p;
+            $pscToCandID[$p] = $c;
+        }
+        $result                = $this->toArray();
+        $result['form']        = $this->form->form;
+        $result['mriList']     = $this->_getFileList($result['Data']);
+        $result['candToPSCID'] = $candToPSCID;
+        $result['pscToCandID'] = $pscToCandID;
 
         return json_encode($result);
     }
