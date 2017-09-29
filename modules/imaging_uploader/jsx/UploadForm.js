@@ -22,6 +22,9 @@ class UploadForm extends React.Component {
     form.visitLabel.required = true;
     form.mri_file.required = true;
 
+    console.log(form.candID.options);
+    console.log(form.pSCID.options);
+
     this.state = {
       formData: {},
       form: form,
@@ -59,8 +62,36 @@ class UploadForm extends React.Component {
       }
     }
 
-    formData[field] = value;
+    if (field === 'candID' || field === 'pSCID') {
+      const otherName = field === 'candID' ? 'pSCID' : 'candID';
+      formData[otherName] = value;
+    }
 
+    // Validate file name on the front end
+    if (formData.mri_file && formData.IsPhantom == 'N' &&
+      formData.pSCID && formData.candID && formData.visitLabel) {
+      const pscid = $('#PSCID').find('option[value="'+formData.pSCID+'"]').text();
+      const candid = $('#CandID').find('option[value="'+formData.candID+'"]').text();
+      const pcv = pscid + '_' + candid + '_' + formData.visitLabel;
+      const pcvu = pcv + '_';
+      const properName = new RegExp(pcv+"\.(zip|tgz|tar.gz)");
+      const properNameExt = new RegExp("^"+pcvu+".*(\.(zip|tgz|tar.gz))");
+
+      if (!value.name.match(properName) && !value.name.match(properNameExt)) {
+        console.log('PCV ' + !value.name.match(properName));
+        console.log('PCVU ' + !value.name.match(properNameExt));
+        swal({
+          title: "File improperly named!",
+          text: "File name must match " + pcv +
+          " or begin with " + "\""+ pcvu + "\"" +
+          ", and have the extension of .tgz, tar.gz or .zip",
+          type: "error",
+          confirmButtonText: "OK"
+        });
+      }
+    }
+
+    formData[field] = value;
     this.setState({
       form: form,
       formData: formData

@@ -125,16 +125,34 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function _setFilterForm()
     {
-        $phantomOtions = [
+        $db = Database::singleton();
+        $user = User::singleton();
+        $phantomOptions = [
                           'N' => 'No',
                           'Y' => 'Yes',
                          ];
         $visitlabels   = Utility::getExistingVisitLabels();
+        $ids        = $db->pselect(
+            "SELECT PSCID, CandID ".
+            "FROM candidate ".
+            "WHERE FIND_IN_SET(CenterID, :cids) ".
+            "AND Entity_type='Human' " .
+            "ORDER BY PSCID",
+            array('cids' => implode(',', $user->getCenterIDs()))
+        );
+        $pscids  = array();
+        $candids = array();
+        foreach($ids as $id) {
+            $p = $id['PSCID'];
+            $c = $id['CandID'];
+            $pscids[$p]  = $p;
+            $candids[$c] = $c;
+        }
 
         // Fields used for selection filter and upload form
-        $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOtions);
-        $this->addBasicText('candID', 'CandID');
-        $this->addBasicText('pSCID', 'PSCID');
+        $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOptions);
+        $this->addSelect('pSCID', 'PSCID', $pscids);
+        $this->addSelect('candID', 'CandID', $candids);
         $this->addSelect('visitLabel', 'Visit Label', $visitlabels);
         $this->addFile('mri_file', 'File to Upload');
 
