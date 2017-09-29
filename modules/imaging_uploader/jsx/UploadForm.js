@@ -92,19 +92,18 @@ class UploadForm extends React.Component {
     const properName = new RegExp(pcv+"\.(zip|tgz|tar.gz)");
     const properNameExt = new RegExp("^"+pcvu+".*(\.(zip|tgz|tar.gz))");
     const fileName = data.mri_file.name;
-
     if (!fileName.match(properName) && !fileName.match(properNameExt)) {
       swal({
         title: "File improperly named!",
         text: "File name must match " + pcv +
-        " or begin with " + "\""+ pcvu + "\"" +
+        " or begin with " + "\"" + pcvu + "\"" +
         ", and have the extension of .tgz, tar.gz or .zip",
         type: "error",
         confirmButtonText: "OK"
       });
+    }
 
     // Checks if a file with a given fileName has already been uploaded
-    const fileName = data.mri_file.name;
     const mriFile = this.props.mriList.find(
       mriFile => mriFile.fileName.indexOf(fileName) > -1
     );
