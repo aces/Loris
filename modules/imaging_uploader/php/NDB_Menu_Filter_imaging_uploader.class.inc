@@ -73,7 +73,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-
+        $this->_resetFilters();
         $progressSelectPart = "IF(ISNULL(Inserting), 'Not Started',"
             . "IF(Inserting=1, 'In Progress...', "
             . "IF(InsertionComplete=0, 'Failure', 'Success'))) as Progress";

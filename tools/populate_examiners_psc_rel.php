@@ -195,19 +195,5 @@ foreach ($examinersOrganized as $name=>$data_array) {
     }
 }
 
-echo "\n\nThe script ran successfully, make sure to run the following clean-up commands.\n
-These commands will drop the now redundant fields and add new constraints to the examiner tables.\n\n
-ALTER TABLE examiners DROP FOREIGN KEY FK_examiners_1;\n
-ALTER TABLE examiners DROP INDEX full_name;\n
-ALTER TABLE examiners DROP KEY FK_examiners_1;\n
-ALTER TABLE examiners DROP COLUMN `CenterID`;\n
-ALTER TABLE examiners DROP COLUMN `active`;\n
-ALTER TABLE examiners DROP COLUMN `pending_approval`;\n
-
-ALTER TABLE certification ADD CONSTRAINT `FK_certifcation_2` FOREIGN KEY (`examinerID`) REFERENCES `examiners` (`examinerID`);\n
-ALTER TABLE examiners ADD CONSTRAINT `U_examiners_1` UNIQUE KEY `full_name` (`full_name`);\n
-UPDATE examiners SET full_name=REPLACE(full_name, '   ', ' ');
-UPDATE examiners SET full_name=REPLACE(full_name, '  ', ' ');
-UPDATE examiners e SET full_name=IFNULL((SELECT Real_name FROM users WHERE LOWER(TRIM(Real_name))=LOWER(e.full_name) AND pending_approval='N' LIMIT 1), e.full_name);\n
-UPDATE examiners e SET e.userID=(SELECT ID FROM users WHERE TRIM(Real_name)=e.full_name AND pending_approval='N' LIMIT 1);\n
-";
+echo "\n\nThe script ran successfully, make sure to run the clean-up commands available in the SQL/Archive/18.0/clean-up directory. \n
+These commands will drop the now redundant fields and add new constraints to the examiner tables.\n\n";
