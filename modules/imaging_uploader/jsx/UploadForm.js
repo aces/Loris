@@ -63,10 +63,9 @@ class UploadForm extends React.Component {
 
     if (field === 'candID' || field === 'pSCID') {
       const otherName = field === 'candID' ? 'pSCID' : 'candID';
-      const otherMap  = field === 'candID' ? candToPSCID : pscToCandID;
+      const otherMap = field === 'candID' ? candToPSCID : pscToCandID;
       formData[otherName] = otherMap[value];
     }
-
 
     formData[field] = value;
     this.setState({
@@ -89,15 +88,15 @@ class UploadForm extends React.Component {
     // Make sure file follows PSCID_CandID_VL[_*].zip|.tgz|.tar.gz format
     const pcv = data.pSCID + '_' + data.candID + '_' + data.visitLabel;
     const pcvu = pcv + '_';
-    const properName = new RegExp(pcv+"\.(zip|tgz|tar.gz)");
-    const properNameExt = new RegExp("^"+pcvu+".*(\.(zip|tgz|tar.gz))");
+    const properName = new RegExp(pcv + ".(zip|tgz|tar.gz)");
+    const properNameExt = new RegExp("^" + pcvu + ".*(.(zip|tgz|tar.gz))");
     const fileName = data.mri_file.name;
     if (!fileName.match(properName) && !fileName.match(properNameExt)) {
       swal({
         title: "File improperly named!",
         text: "File name must match " + pcv +
-        " or begin with " + "\"" + pcvu + "\"" +
-        ", and have the extension of .tgz, tar.gz or .zip",
+        ' or begin with "' + pcvu +
+        '", and have the extension of .tgz, tar.gz or .zip',
         type: "error",
         confirmButtonText: "OK"
       });

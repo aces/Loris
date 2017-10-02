@@ -125,14 +125,14 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function _setFilterForm()
     {
-        $db = Database::singleton();
+        $db   = Database::singleton();
         $user = User::singleton();
         $phantomOptions = [
-                          'N' => 'No',
-                          'Y' => 'Yes',
-                         ];
-        $visitlabels   = Utility::getExistingVisitLabels();
-        $ids        = $db->pselect(
+                           'N' => 'No',
+                           'Y' => 'Yes',
+                          ];
+        $visitlabels    = Utility::getExistingVisitLabels();
+        $ids            = $db->pselect(
             "SELECT PSCID, CandID ".
             "FROM candidate ".
             "WHERE FIND_IN_SET(CenterID, :cids) ".
@@ -140,11 +140,13 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             "ORDER BY PSCID",
             array('cids' => implode(',', $user->getCenterIDs()))
         );
+
         $pscids  = array();
         $candids = array();
-        foreach($ids as $id) {
-            $p = $id['PSCID'];
-            $c = $id['CandID'];
+
+        foreach ($ids as $id) {
+            $p           = $id['PSCID'];
+            $c           = $id['CandID'];
             $pscids[$p]  = $p;
             $candids[$c] = $c;
         }
@@ -699,17 +701,21 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             "ORDER BY PSCID",
             array('cids' => implode(',', $user->getCenterIDs()))
         );
+
         $candToPSCID = array();
         $pscToCandID = array();
+
         foreach ($ids as $id) {
             $c = $id['CandID'];
             $p = $id['PSCID'];
+
             $candToPSCID[$c] = $p;
             $pscToCandID[$p] = $c;
         }
-        $result                = $this->toArray();
-        $result['form']        = $this->form->form;
-        $result['mriList']     = $this->_getFileList($result['Data']);
+
+        $result            = $this->toArray();
+        $result['form']    = $this->form->form;
+        $result['mriList'] = $this->_getFileList($result['Data']);
         $result['candToPSCID'] = $candToPSCID;
         $result['pscToCandID'] = $pscToCandID;
 
