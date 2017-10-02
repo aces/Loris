@@ -13,7 +13,7 @@
           {/if}
           <form method="POST" action="{$action}">
             <div class="form-group">
-              <input type="text" name="username" class="form-control" placeholder="Email" value="{$username}"/>
+              <input type="text" name="username" class="form-control" placeholder="Username" value="{$username}"/>
             </div>
             <div class="form-group">
               <input type="password" name="password" class="form-control" placeholder="Password" aria-describedby="helpBlock" />
