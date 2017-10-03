@@ -781,7 +781,7 @@ class Database
 
         $result = array();
         foreach ($unprocessed as $k=>$row) {
-            $result[$k]=reset($row);
+            $result[$k] =reset($row);
         }
         return $result;
     }
