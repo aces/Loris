@@ -1,6 +1,10 @@
--- This table needs to be MyISAM because InnoDB doesn't
--- support full text indexes
+--
+-- Table structure for table `help`
+--
+
 DROP TABLE IF EXISTS `help`;
+
+
 CREATE TABLE `help` (
     `helpID` int(10) unsigned NOT NULL AUTO_INCREMENT, 
     `parentID` int(11) NOT NULL DEFAULT '-1',
@@ -11,18 +15,12 @@ CREATE TABLE `help` (
     `created` datetime DEFAULT NULL,
     `updated` datetime DEFAULT NULL, 
     PRIMARY KEY (`helpID`), 
-    UNIQUE KEY `hash` (`hash`), 
-    FULLTEXT KEY `topic` (`topic`), 
-    FULLTEXT KEY `content` (`content`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-DROP TABLE IF EXISTS `help_related_links`;
-CREATE TABLE `help_related_links` (
-    `helpID` int(10) unsigned NOT NULL DEFAULT '0',
-    `relatedID` int(10) unsigned NOT NULL DEFAULT '0', 
-    PRIMARY KEY (`helpID`,`relatedID`)
+    UNIQUE KEY `hash` (`hash`) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `help`
+--
 
 INSERT INTO `help` (helpID, parentID, hash, topic, content, created, updated) VALUES  (1,-1,md5('dashboard'),'LORIS HELP: Using the Database','Welcome to the LORIS database. \r\nThis Help section provides you with guidelines for adding and updating information in the database. On each page, click on the question mark icon in the Menu Bar across the top of the screen to access detailed information specific to the current page.\r\n\r\nUpon logging into the LORIS database, the user will come to the home page. Here, key user information can automatically be seen at the right-hand side of the Menu Bar at the top of the screen indicating the user’s name and the site to which the user belongs. To return to the home page at any time, the user can click on the \"LORIS\" button at the far left corner of the Menu Bar.\r\nThe menus spanning horizontally across the Menu Bar represent different categories of features within the database that allow data acquisition, storage, processing and dissemination using the web based interface. Please note that when accessing LORIS via tablet, mobile device, or in a narrow-width desktop browser window, these main menus will be hidden under the downward-pointing arrow icon in the Menu Bar. Clicking on this button will show or hide all main menus in a vertical list.\r\nThere are five main drop-down menus: Candidate, Clinical, Imaging, Reports and Admin. Hover over on each menu to display a list of features or modules, organized by category:\r\n- Candidate: New Profile, Access Profile\r\n- Clinical: Reliability Coding, Conflict Resolver, Certification, Document Repository\r\n- Imaging: Radiological Review, DICOM Archive, Imaging Browser, Imaging Uploader\r\n- Reports: Database Statistics, Data Dictionary, Data Querying Tool, Data Team Helper, Data Integrity Tool\r\n- Admin: User Accounts, Instrument Builder\r\n\r\nOn the right side of the Menu Bar there are two icons linking to the Feedback Module, a pencil on paper icon , and Help, a question mark icon. Each of these modules will open in a new pop-up window, or new tab on a mobile browser.\r\n\r\nAll five main menus, the two icons listed above, the user’s site and the user’s name are accessible from any page in LORIS, via the Menu Bar at the top of the screen. \r\n\r\nTo log out of the database, click on the username displayed at the right edge of the Menu Bar, and select the \"Log Out\" option from the drop-down menu. \r\n\r\nThe \"My Preferences\" feature, also listed in this menu, can be used to update certain user profile settings and change the user’s password. \r\n','2014-09-01 00:00:00',NULL),
 (2,-1,NULL,'HOW TO - Guide','Under Construction. Please visit us later',NULL,NULL),

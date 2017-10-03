@@ -18,42 +18,33 @@ var BrainBrowser = React.createClass({
   },
 
   componentDidMount: function() {
-    // Retrieve module preferences and set panelSize
-    var modulePrefs = JSON.parse(localStorage.getItem('modulePrefs'));
-    var panelSize = this.state.defaultPanelSize;
+    // Retrieve module preferences
+    let modulePrefs = JSON.parse(localStorage.getItem('modulePrefs'));
 
-    if (modulePrefs !== null) {
-      this.modulePrefs = modulePrefs; // make prefs accesible within component
-      if (modulePrefs[loris.TestName].panelSize !== undefined) {
-        panelSize = modulePrefs[loris.TestName].panelSize;
-      }
+    if (!modulePrefs) {
+      modulePrefs = {};
     }
 
-    this.setState({
-      panelSize: panelSize
-    });
+    if (!modulePrefs[loris.TestName]) {
+      modulePrefs[loris.TestName] = {};
+      modulePrefs[loris.TestName].panelSize = this.state.defaultPanelSize;
+    }
+
+    const panelSize = modulePrefs[loris.TestName].panelSize;
+    this.setState({panelSize});
+
+    // Make prefs accesible within component
+    this.modulePrefs = modulePrefs;
   },
 
   handleChange: function(e) {
-    var value = e.target.value;
-    var modulePrefs = {};
-
-    if (value === "") {
-      value = this.state.defaultPanelSize;
-    }
-
-    if (this.modulePrefs) {
-      modulePrefs = this.modulePrefs;
-    } else {
-      modulePrefs[loris.TestName] = {};
-    }
+    const panelSize = e.target.value || this.state.defaultPanelSize;
 
     // Save panelSize in localStorage
-    modulePrefs[loris.TestName].panelSize = value;
-    localStorage.setItem('modulePrefs', JSON.stringify(modulePrefs));
-    this.setState({
-      panelSize: value
-    });
+    this.modulePrefs[loris.TestName].panelSize = panelSize;
+    localStorage.setItem('modulePrefs', JSON.stringify(this.modulePrefs));
+
+    this.setState({panelSize});
   },
 
   render: function() {
@@ -99,3 +90,8 @@ var BrainBrowser = React.createClass({
 });
 
 var RBrainBrowser = React.createFactory(BrainBrowser);
+
+window.BrainBrowser = BrainBrowser;
+window.RBrainBrowser = RBrainBrowser;
+
+export default BrainBrowser;

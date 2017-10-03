@@ -27,29 +27,46 @@ $base = $config->getSetting('base');
 $db->_trackChanges = false;
 
 // Set up variables
-$filename = __DIR__ . "/../project/tables_sql/update_zero_fields_statements.sql";
+$filename = __DIR__ . "/../SQL/Archive/18.0/2016-06-01-update_zero_fields_statements.sql";
 $output= "";
 $alters="";
 $updates="";
+$nonNullUpdates="";
 
 // Begin Script
 echo "\n#################################################################\n\n".
     "This Script will generate an UPDATE statement for every date field ".
-    "currently in the database. \nThe output file is ".
-    "tables_sql/update_zero_fields_statements.sql and includes foreign key ".
+    "currently in the database. \nThe output file is SQL/Archive/18.0/".
+    "2016-06-01-update_zero_fields_statements.sql and includes foreign key ".
     "checks disabling and re-enabling.\n".
     "\n#################################################################\n\n";
 
 $database_name= $database['database'];
 
 $field_names = $db->pselect("
-                      SELECT TABLE_NAME,COLUMN_NAME,COLUMN_DEFAULT,DATA_TYPE,IS_NULLABLE,COLUMN_TYPE 
+                      SELECT 
+                          TABLE_NAME,
+                          COLUMN_NAME,
+                          COLUMN_DEFAULT,
+                          DATA_TYPE,
+                          IS_NULLABLE,
+                          COLUMN_TYPE,
+                          EXTRA 
                       FROM INFORMATION_SCHEMA.COLUMNS 
                       WHERE DATA_TYPE IN ('date','timestamp','datetime') 
                           AND TABLE_SCHEMA=:dbn",
     array("dbn"=>$database['database'])
 );
 
+// First pass detecting all 'on update CURRENT_TIMESTAMP' fields.
+// these fields need to be included in the update statements to
+// avoid them being updated to the time the script was run
+$autoUpdateFields = array();
+foreach ($field_names as $key=>$field) {
+    if (strstr($field['EXTRA'],'on update CURRENT_TIMESTAMP') !== false) {
+        $autoUpdateFields[$field['TABLE_NAME']][]= $field['COLUMN_NAME'];
+    }
+}
 
 // BEGIN building script
 
@@ -63,6 +80,14 @@ $output .="SET sql_mode = ''; \n";
 
 foreach ($field_names as $key=>$field)
 {
+    //check for auto-updated fields and generate SQL string if needed
+    $autoUpdateSQL = '';
+    if (array_key_exists($field['TABLE_NAME'], $autoUpdateFields)) {
+        foreach ($autoUpdateFields[$field['TABLE_NAME']] as $col) {
+            $autoUpdateSQL .= ", $col=$col";
+        }
+    }
+
     if ($field['COLUMN_DEFAULT']=='0000-00-00') {
         echo "The script will modify the date schema for TABLE: `".$field['TABLE_NAME']."` FIELD: `".$field['COLUMN_NAME']."` to default to NULL\n";
         $alters .= "ALTER TABLE `".$field['TABLE_NAME']."` MODIFY `".$field['COLUMN_NAME']."` ".$field['COLUMN_TYPE']." DEFAULT NULL;\n";
@@ -74,17 +99,17 @@ foreach ($field_names as $key=>$field)
 
     if ($field['DATA_TYPE'] == 'date' && $field['IS_NULLABLE']=='YES') {
         $updates .= "UPDATE ".$database['database'].".".$field['TABLE_NAME'].
-            " SET ".$field['COLUMN_NAME']."=NULL".
+            " SET ".$field['COLUMN_NAME']."=NULL".$autoUpdateSQL.
             " WHERE CAST(".$field['COLUMN_NAME']." AS CHAR(20))='0000-00-00';\n";
     } else if (($field['DATA_TYPE'] == 'datetime' || $field['DATA_TYPE'] == 'timestamp') && $field['IS_NULLABLE']=='YES') {
         $updates .= "UPDATE ".$database['database'].".".$field['TABLE_NAME'].
-            " SET ".$field['COLUMN_NAME']."=NULL".
+            " SET ".$field['COLUMN_NAME']."=NULL".$autoUpdateSQL.
             " WHERE CAST(".$field['COLUMN_NAME']." AS CHAR(20))='0000-00-00 00:00:00';\n";
     } else {
 	echo "COLUMN ".$field['COLUMN_NAME']." in TABLE ".$field['TABLE_NAME']." is NOT NULLABLE. ".
 	    "A date '1000-01-01' will be entered instead of '0000-00-00' values.\n"; 
         $nonNullUpdates .= "UPDATE ".$database['database'].".".$field['TABLE_NAME'].
-            " SET ".$field['COLUMN_NAME']."='1000-01-01'".
+            " SET ".$field['COLUMN_NAME']."='1000-01-01'".$autoUpdateSQL.
             " WHERE CAST(".$field['COLUMN_NAME']." AS CHAR(20))='0000-00-00';\n";
     }
 

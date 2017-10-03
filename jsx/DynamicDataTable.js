@@ -78,9 +78,15 @@ var DynamicDataTable = React.createClass({
                                  Filter={this.props.Filter}
                                  getFormattedCell={this.props.getFormattedCell}
                                  freezeColumn={this.props.freezeColumn}
+                                 onSort={this.props.onSort}
                 />
             );
   }
 });
 
 var RDynamicDataTable = React.createFactory(DynamicDataTable);
+
+window.DynamicDataTable = DynamicDataTable;
+window.RDynamicDataTable = RDynamicDataTable;
+
+export default DynamicDataTable;

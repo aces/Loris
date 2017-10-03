@@ -49,7 +49,7 @@
                         ProjectID : {$ProjectID},
                         Relations: {$project.subprojects|@json_encode}
                     });
-                    React.render(filterTable, document.getElementById("subprojects{$ProjectID}"));
+                    ReactDOM.render(filterTable, document.getElementById("subprojects{$ProjectID}"));
                 </script>
 
             </fieldset>

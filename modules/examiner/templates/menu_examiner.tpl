@@ -79,7 +79,7 @@
         </div>
     </div>
 </div>
-<div class="dynamictable" id="datatable"></div> 
+<div class="dynamictable" id="datatable"></div>
 <script>
 loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
 var table = RDynamicDataTable({
@@ -87,5 +87,5 @@ var table = RDynamicDataTable({
      "getFormattedCell" : formatColumn,
      "freezeColumn" : "PSCID"
   });
-React.render(table, document.getElementById("datatable"));
+ReactDOM.render(table, document.getElementById("datatable"));
 </script>

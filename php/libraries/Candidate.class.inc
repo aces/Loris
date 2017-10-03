@@ -18,6 +18,7 @@ define('CANDIDATE_INVALID', 1);
 define('PSCID_NOT_SPECIFIED', 2);
 define('PSCID_NOT_UNIQUE', 3);
 define('PSCID_INVALID_STRUCTURE', 4);
+define('EDC_NOT_SPECIFIED', 5);
 
 // id ranges...
 define('CANDIDATE_MIN_CANDID', 100000);
@@ -86,7 +87,8 @@ class Candidate
         $db = $factory->database();
 
         // get candidate data from database
-        $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, c.EDC, c.Gender,
+        $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, 
+            c.EDC, c.Gender, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
             c.Active, u1.Real_name as RegisteredBy, c.UserID, c.ProjectID
             FROM candidate as c
@@ -203,6 +205,14 @@ class Candidate
         // figure out how to generate PSCID
         $config        = $factory->config();
         $PSCIDSettings = $config->getSetting('PSCID');
+        $useEDC        = $config->getSetting('useEDC');
+
+        if (($useEDC === '1' || $useEDC === 'true') && empty($edc)) {
+            throw new \LorisException(
+                "EDC must be specified",
+                EDC_NOT_SPECIFIED
+            );
+        }
 
         if ($PSCIDSettings['generation'] == 'user') {
             // check pscid is specified
@@ -729,6 +739,13 @@ class Candidate
                 $pscid = Candidate::generateRandomStringFromArrays($pscidArrays);
             }
 
+            if ($pscid == '') {
+                throw new LorisException(
+                    "Well this is embarrassing, our automated PSCID generator "
+                    . "is about to enter an infinite loop."
+                );
+            }
+
             // check if the pscid is used
         } while (
             $db->pselectOne(
@@ -865,6 +882,14 @@ class Candidate
     static function generateArrays($idStructure, $siteAbbrev=null)
     {
         $idStructure = $idStructure['structure']['seq'];
+
+        if (!$idStructure[0]) {
+            // There's only one seq tag so the param format
+            // needs to be fixed
+            $temp        = array();
+            $temp[]      = $idStructure;
+            $idStructure = $temp;
+        }
 
         $arrays = array();
         foreach ($idStructure AS $seq) {

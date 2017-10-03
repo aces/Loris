@@ -69,14 +69,14 @@ var PaginationLinks = React.createClass({
         classList = "active";
       }
       pageLinks.push(
-        <li onClick={this.changePage(i)} className={classList}>
+        <li key={"table_page_" + i} onClick={this.changePage(i)} className={classList}>
           <a href="#">{i}</a>
         </li>
       );
     }
     if (lastShownPage !== lastPage) {
       pageLinks.push(
-        <li onClick={this.changePage(lastPage)}>
+        <li key={"table_page_more"} onClick={this.changePage(lastPage)}>
           <a href="#">&raquo;</a>
         </li>
       );
@@ -90,3 +90,8 @@ var PaginationLinks = React.createClass({
 });
 
 var RPaginationLinks = React.createFactory(PaginationLinks);
+
+window.PaginationLinks = PaginationLinks;
+window.RPaginationLinks = RPaginationLinks;
+
+export default PaginationLinks;

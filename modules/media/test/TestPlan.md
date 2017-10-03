@@ -4,7 +4,7 @@
 
 Media module allows users to upload, browse and edit media files associated with a specific timepoint in Loris.
 
-### 🔒 Permissions
+### 🔒 Permissions 
 
 In order to use the media module the user might need one or both of the following permissions:
 
@@ -26,20 +26,20 @@ In order to use the media module the user might need one or both of the followin
 
 ### 💻 Testing Procedure
 
-**Install Module**
+**Install Module** 
   1. Run associated SQL patch to create a "media" table and add "Media" module under _Clinical_ section in Loris.
 
 
-**Testing with no permissions**
+**Testing with no permissions** [Automation Testing]
   1. Access the module with a regular user (without superuser permissions)
   2. By default, the access to module should be denied
 
 
-**Testing with read-only permission**
+**Testing with read-only permission** [Automation Testing]
   1. Add read permission to the aforementioned user
   2. Media module should be accessible and only present with **one** tab (Browse) with an empty datatable
 
-**Testing with write-permission**
+**Testing with write-permission** [Automation Testing]
   1. Add write permission
   2. Media module should now have **two** tabs (Browse) and (Upload)
   3. Clicking on Upload tab should hide the data table and display a form with the following fields: PSCID, Visit Label, Instrument, For Site, Data of Administration, Comments, File to Upload
@@ -84,12 +84,11 @@ In order to use the media module the user might need one or both of the followin
     - _Note: only a person with direct database access could revert the hide file action._
 
 **Test filters**
-  1. Under **Browse** tab, a selection filter should be present on top of the page containing the following fields: PSCID, Visit Label, Instrument, For Site.
-    - PSCID is a text field, whereas other fields are dropdowns with options pre-filled based on the current project.
-    - Default option is "Any"
-  2. Enter an invalid PSCID and click 👉 **Show Data**
-    - The page should display a message "No results found"
-  3. Enter a valid PSCID and click 👉 **Show Data**
-    - The page should display a data table with records corresponding to this PSCID only
-  4. Select Instrument, Visit Label and For Site (independently and combined) to filter table further
-    - Clicking 👉 **Show Data** should update the table and display filtered records accordingly
+  1. Under **Browse** tab, a selection filter should be present on top of the page containing the following fields: PSCID, Visit Label, Instrument, File name, For Site, File type and Uploaded by.
+    - PSCID, File name and Uploaded by are text fields, whereas other fields are dropdowns with options pre-filled based on the current project.
+    - Default option of dropdown should be blank.
+  2. Type text in the PSCID input and verify that the table gets filtered as you type.
+  3. Type text in the File name input and verify that the table gets filtered as you type.
+  4. Type text in the Uploaded by input and verify that the table gets filtered as you type.
+  5. Select Instrument, Visit Label and For Site (independently and combined) to filter table further
+    - The table should update and display filtered records accordingly

@@ -74,14 +74,20 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
              'First_name'       => 'Unit',
              'Last_name'        => 'Tester',
              'Email'            => 'tester@example.com',
-             'CenterID'         => 1,
              'Privilege'        => 0,
              'PSCPI'            => 'N',
              'Active'           => 'Y',
-             'Password_md5'     => 'a601e42ba82bb37a68ca3c8b7752f2e222',
-             'Password_hash'    => null,
+             'Password_hash'    => password_hash("4test4", PASSWORD_DEFAULT),
              'Password_expiry'  => '2099-12-31',
              'Pending_approval' => 'N',
+            )
+        );
+
+        $this->DB->insert(
+            "user_psc_rel",
+            array(
+                'UserID'    => 999990,
+                'CenterID'  => 1,
             )
         );
 
@@ -90,13 +96,16 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $user = User::factory('UnitTester');
         $user->updatePassword('4test4');
 
+        $dev = $this->config->getSettingFromXML('dev');
+        $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
+
         $capabilities = array(
                          WebDriverCapabilityType::BROWSER_NAME       => 'firefox',
                          WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
                         );
 
         $this->webDriver = RemoteWebDriver::create(
-            'http://localhost:4444/wd/hub',
+            $selenium_url,
             $capabilities
         );
 
@@ -185,11 +194,11 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     function setupConfigSetting($configName, $value)
     {
-        if (isset($this->_oldConfig[$configName])) {
+      /*  if (isset($this->_oldConfig[$configName])) {
             throw new LorisException(
                 "Attempted to change already changed config setting"
             );
-        }
+        }*/
 
         $configID = $this->DB->pselectOne(
             "SELECT ID FROM ConfigSettings WHERE Name=:configName",
@@ -292,7 +301,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     function changeStudySite()
     {
         $this->DB->insert("psc", array("CenterID" => 99, "Alias" => "BBQ"));
-        $this->DB->update("users", array("CenterID" => 99), array("ID" => 999990));
+        $this->DB->update("user_psc_rel", array("CenterID" => 99), array("UserID" => 999990));
     }
 
     /**
@@ -302,7 +311,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     function resetStudySite()
     {
-        $this->DB->update("users", array("CenterID" => 1), array("ID" => 999990));
+        $this->DB->update("user_psc_rel", array("CenterID" => 1), array("UserID" => 999990));
         $this->DB->delete("psc", array("CenterID" => 99));
     }
 

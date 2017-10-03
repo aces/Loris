@@ -100,8 +100,7 @@ class Installer
         && file_exists(__DIR__ . "/../../SQL/0000-00-01-Permission.sql")
         && file_exists(__DIR__ . "/../../SQL/0000-00-02-Menus.sql")
         && file_exists(__DIR__ . "/../../SQL/0000-00-03-ConfigTables.sql")
-        && file_exists(__DIR__ . "/../../SQL/0000-00-04-Help.sql")
-        && file_exists(__DIR__ . "/../../SQL/0000-00-99-indexes.sql");
+        && file_exists(__DIR__ . "/../../SQL/0000-00-04-Help.sql");
     }
 
     /**
@@ -247,9 +246,6 @@ class Installer
             return false;
         };
         if ($this->_sourceSchemaFile($DB, "04-Help.sql") == false) {
-            return false;
-        };
-        if ($this->_sourceSchemaFile($DB, "99-indexes.sql") == false) {
             return false;
         };
         return true;

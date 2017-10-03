@@ -40,15 +40,6 @@ class NDB_Menu extends NDB_Page
     var $mode;
 
     /**
-     * The template data for Smarty
-     *
-     * @var    array
-     * @access private
-     */
-    var $tpl_data;
-
-
-    /**
      * Generates a new menu instance
      *
      * @param string $menu The name of the menu to use
@@ -87,38 +78,12 @@ class NDB_Menu extends NDB_Page
             throw new Exception("You do not have access to this page.", 403);
         }
 
-        //set the baseurl of the tpl_data
         $factory  = NDB_Factory::singleton();
         $settings = $factory->settings();
-
-        $obj->tpl_data['baseurl'] = $settings->getBaseURL();
+        $obj->setTemplateVar('baseurl', $settings->getBaseURL());
 
         return $obj;
     }
-
-
-    /**
-     * Returns false if user does not have access to page
-     *
-     * Usage: the hasAccess() function in a child class should contain
-     *    something like:
-     *
-     *     // create user object
-     *     $user =& User::singleton();
-     *
-     *     return $user->hasPermission('superuser');
-     *
-     * You do not need to overload hasAccess() if there are no access restrictions
-     *
-     * @note   overloaded function
-     * @return bool
-     * @access private
-     */
-    function _hasAccess()
-    {
-        return true;
-    }
-
 
     /**
      * Calls other member functions to do all the work necessary to create the menu
@@ -166,10 +131,13 @@ class NDB_Menu extends NDB_Page
      */
     function display()
     {
+        if ($this->skipTemplate) {
+            return "";
+        }
         // dump the html for the menu
         $smarty = new Smarty_neurodb($this->Module);
         $smarty->assign('mode', $this->mode);
-        $smarty->assign($this->tpl_data);
+        $smarty->assign($this->getTemplateData());
         $html = $smarty->fetch("menu_$this->menu.tpl");
         return $html;
     }

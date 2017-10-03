@@ -23,6 +23,17 @@
 class NDB_Form_Media extends NDB_Form
 {
     /**
+     * Override default behaviour, since the page is loaded from editIndex.js
+     *
+     * @return void
+     * @access public
+     */
+    function display()
+    {
+        return null;
+    }
+
+    /**
      * Entry point for /media/edit/
      * Checks if file id is provided and otherwise redirects to /media/ page
      *
@@ -82,7 +93,7 @@ class NDB_Form_Media extends NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/media/js/editForm.js"]
+            [$baseURL . "/media/js/editFormIndex.js"]
         );
     }
 

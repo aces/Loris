@@ -88,8 +88,8 @@ class Imaging_Session_ControlPanel
         $params     = array();
         $EntityType = $candidate->getData('Entity_type');
         if ($EntityType == 'Scanner') {
-            $ID = ":PPSCID";
-            $params['PPSCID'] = $timePoint->getData('PSCID');
+            $ID            = ":PVL";
+            $params['PVL'] = $timePoint->getVisitLabel();
         } else {
             $ID = "LOWER(CONCAT(:PPSCID, '_', :PCandID, '_', :PVL, '%'))";
             $params['PPSCID']  = $candidate->getPSCID();
@@ -107,8 +107,11 @@ class Imaging_Session_ControlPanel
         $config =& NDB_Config::singleton();
 
         //if table is not in database return false to not display in the template
-        $this->tpl_data['mri_param_form_table_exists'] = $DB->tableExists('mri_parameter_form');
-        $this->tpl_data['rad_review_table_exists'] = $DB->tableExists('radiology_review');
+        $this->tpl_data['mri_param_form_table_exists']
+            = $DB->tableExists('mri_parameter_form');
+        $this->tpl_data['rad_review_table_exists']     = $DB->tableExists(
+            'radiology_review'
+        );
         $this->tpl_data['mantis']       = $config->getSetting('mantis_url');
         $subjectData['mantis']          = $config->getSetting('mantis_url');
         $subjectData['has_permission']  = $this->_hasAccess();
@@ -121,24 +124,26 @@ class Imaging_Session_ControlPanel
                                            'Y' => 'Yes',
                                            'N' => 'No',
                                           );
-        $subjectData['caveat_options'] = array(
-                                           'true' => 'True',
+        $subjectData['caveat_options']  = array(
+                                           'true'  => 'True',
                                            'false' => 'False',
                                           );
-
+        $query    = "SELECT MRIQCStatus, MRIQCPending,".
+                    " MRICaveat FROM session WHERE ID=:sid";
         $qcstatus = $DB->pselectRow(
-            "SELECT MRIQCStatus, MRIQCPending, MRICaveat FROM session WHERE ID=:sid",
+            $query,
             array("sid" => $this->sessionID)
         );
 
         $subjectData['mriqcstatus']  = $qcstatus['MRIQCStatus'];
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
-        $subjectData['mricaveat'] = $qcstatus['MRICaveat'];
-
+        $subjectData['mricaveat']    = $qcstatus['MRICaveat'];
 
         $factory = NDB_Factory::singleton();
-        $subjectData['backURL'] = $factory->settings()->getBaseURL()
-            . urldecode($_REQUEST['backURL']);
+        $subjectData['backURL'] = isset($_REQUEST['backURL']) ?
+            $factory->settings()->getBaseURL()
+                . "/imaging_browser/" :
+            null;
 
         $NavBar = new MRINavigation($this->sessionID);
         $subjectData['nextTimepoint']['URL'] = $NavBar->nextLink();
@@ -225,7 +230,8 @@ class MRINavigation
     */
     function _otherLink($delta)
     {
-        if (isset($this->FilteredSessionList[$this->currentListIndex+$delta])) {
+        if (isset($this->FilteredSessionList[$this->currentListIndex+$delta])
+        ) {
             $urlParams = $this->urlParams;
             $urlParams['sessionID'] = $this
                 ->FilteredSessionList[$this->currentListIndex+$delta];

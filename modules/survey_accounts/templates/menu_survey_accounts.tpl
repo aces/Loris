@@ -29,7 +29,7 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-2 hidden-sm">
-                            <input type="button" name="button" value="Add Survey" class="btn btn-sm btn-primary" onclick="location.href='{$baseurl}/survey_accounts/add_survey/'"/>
+                            <input type="button" name="button" value="Add Survey" class="btn btn-sm btn-primary" onclick="location.href='{$baseurl}/survey_accounts/addSurvey/'"/>
                         </div>
                         <div class="form-group col-sm-5 col-sm-offset-5 hidden-sm">
                             <div class="col-sm-6 col-xs-12">
@@ -46,7 +46,7 @@
                     </div>
                     <div class="row visible-sm">
                         <div class="col-sm-4">
-                            <input type="button" name="button" value="Add Survey" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/survey_accounts/add_survey/'"/>
+                            <input type="button" name="button" value="Add Survey" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/survey_accounts/addSurvey/'"/>
                         </div>
                         <div class="col-sm-4">
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
@@ -71,5 +71,5 @@ var table = RDynamicDataTable({
      "getFormattedCell" : formatColumn,
      "freezeColumn" : "PSCID"
   });
-React.render(table, document.getElementById("datatable"));
+ReactDOM.render(table, document.getElementById("datatable"));
 </script>

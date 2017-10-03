@@ -1,4 +1,4 @@
-/* exported RMediaUploadForm */
+import ProgressBar from 'ProgressBar';
 
 /**
  * Media Upload Form
@@ -10,25 +10,29 @@
  * @version 1.0.0
  *
  * */
-var MediaUploadForm = React.createClass({
+class MediaUploadForm extends React.Component {
+  constructor(props) {
+    super(props);
 
-  propTypes: {
-    DataURL: React.PropTypes.string.isRequired,
-    action: React.PropTypes.string.isRequired
-  },
-
-  getInitialState: function() {
-    return {
+    this.state = {
       Data: {},
       formData: {},
       uploadResult: null,
       errorMessage: null,
       isLoaded: false,
-      loadedData: 0
+      loadedData: 0,
+      uploadProgress: -1
     };
-  },
 
-  componentDidMount: function() {
+    this.getValidFileName = this.getValidFileName.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.isValidFileName = this.isValidFileName.bind(this);
+    this.isValidForm = this.isValidForm.bind(this);
+    this.setFormData = this.setFormData.bind(this);
+    this.uploadFile = this.uploadFile.bind(this);
+  }
+
+  componentDidMount() {
     var self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
@@ -45,9 +49,9 @@ var MediaUploadForm = React.createClass({
         });
       }
     });
-  },
+  }
 
-  render: function() {
+  render() {
     // Data loading error
     if (this.state.error !== undefined) {
       return (
@@ -71,111 +75,103 @@ var MediaUploadForm = React.createClass({
       );
     }
 
-    var helpText = [
-      "File name should begin with ",
-      <b>[PSCID]_[Visit Label]_[Instrument]</b>,
-      <br/>,
-      " For example, for candidate ",
-      <i>ABC123</i>,
-      ", visit ",
-      <i>V1</i>,
-      " for ",
-      <i>Body Mass Index</i>,
-      " the file name should be prefixed by: ",
-      <b>ABC123_V1_Body_Mass_Index</b>
-    ];
-    var alertMessage = "";
-    var alertClass = "alert text-center hide";
-
-    if (this.state.uploadResult) {
-      if (this.state.uploadResult === "success") {
-        alertClass = "alert alert-success text-center";
-        alertMessage = "Upload Successful!";
-      } else if (this.state.uploadResult === "error") {
-        var errorMessage = this.state.errorMessage;
-        alertClass = "alert alert-danger text-center";
-        alertMessage = errorMessage ? errorMessage : "Failed to upload!";
-      }
-    }
+    var helpText = (
+      <span>
+        File name should begin with <b>[PSCID]_[Visit Label]_[Instrument]</b><br/>
+        For example, for candidate <i>ABC123</i>, visit <i>V1</i> for
+        <i>Body Mass Index</i> the file name should be prefixed by:
+        <b> ABC123_V1_Body_Mass_Index</b>
+      </span>
+    );
 
     return (
-      <div>
-        <div className={alertClass} role="alert" ref="alert-message">
-          {alertMessage}
+      <div className="row">
+        <div className="col-md-8 col-lg-7">
+          <FormElement
+            name="mediaUpload"
+            fileUpload={true}
+            onSubmit={this.handleSubmit}
+            ref="form"
+          >
+            <h3>Upload a media file</h3><br/>
+            <StaticElement
+              label="Note"
+              text={helpText}
+            />
+            <SelectElement
+              name="pscid"
+              label="PSCID"
+              options={this.state.Data.candidates}
+              onUserInput={this.setFormData}
+              ref="pscid"
+              hasError={false}
+              required={true}
+              value={this.state.formData.pscid}
+            />
+            <SelectElement
+              name="visitLabel"
+              label="Visit Label"
+              options={this.state.Data.visits}
+              onUserInput={this.setFormData}
+              ref="visitLabel"
+              required={true}
+              value={this.state.formData.visitLabel}
+            />
+            <SelectElement
+              name="forSite"
+              label="Site"
+              options={this.state.Data.sites}
+              onUserInput={this.setFormData}
+              ref="forSite"
+              required={true}
+              value={this.state.formData.forSite}
+            />
+            <SelectElement
+              name="instrument"
+              label="Instrument"
+              options={this.state.Data.instruments}
+              onUserInput={this.setFormData}
+              ref="instrument"
+              value={this.state.formData.instrument}
+            />
+            <DateElement
+              name="dateTaken"
+              label="Date of Administration"
+              minYear="2000"
+              maxYear="2017"
+              onUserInput={this.setFormData}
+              ref="dateTaken"
+              value={this.state.formData.dateTaken}
+            />
+            <TextareaElement
+              name="comments"
+              label="Comments"
+              onUserInput={this.setFormData}
+              ref="comments"
+              value={this.state.formData.comments}
+            />
+            <FileElement
+              name="file"
+              id="mediaUploadEl"
+              onUserInput={this.setFormData}
+              ref="file"
+              label="File to upload"
+              required={true}
+              value={this.state.formData.file}
+            />
+            <ButtonElement label="Upload File"/>
+            <div className="row">
+              <div className="col-sm-9 col-sm-offset-3">
+                <ProgressBar value={this.state.uploadProgress}/>
+              </div>
+            </div>
+          </FormElement>
         </div>
-        <FormElement
-          name="mediaUpload"
-          fileUpload={true}
-          onSubmit={this.handleSubmit}
-          ref="form"
-        >
-          <h3>Upload a media file</h3>
-          <br />
-          <StaticElement
-            label="Note"
-            text={helpText}
-          />
-          <SelectElement
-            name="pscid"
-            label="PSCID"
-            options={this.state.Data.candidates}
-            onUserInput={this.setFormData}
-            ref="pscid"
-            hasError={false}
-            required={true}
-          />
-          <SelectElement
-            name="visitLabel"
-            label="Visit Label"
-            options={this.state.Data.visits}
-            onUserInput={this.setFormData}
-            ref="visitLabel"
-            required={true}
-          />
-          <SelectElement
-            name="forSite"
-            label="Site"
-            options={this.state.Data.sites}
-            onUserInput={this.setFormData}
-            ref="forSite"
-            required={true}
-          />
-          <SelectElement
-            name="instrument"
-            label="Instrument"
-            options={this.state.Data.instruments}
-            onUserInput={this.setFormData}
-            ref="instrument"
-          />
-          <DateElement
-            name="dateTaken"
-            label="Date of Administration"
-            minYear="2000"
-            maxYear="2017"
-            onUserInput={this.setFormData}
-            ref="dateTaken"
-          />
-          <TextareaElement
-            name="comments"
-            label="Comments"
-            onUserInput={this.setFormData}
-            ref="comments"
-          />
-          <FileElement
-            name="file"
-            id="mediaUploadEl"
-            onUserInput={this.setFormData}
-            ref="file"
-            label="File to upload"
-            required={true}
-          />
-          <ButtonElement label="Upload File" />
-        </FormElement>
       </div>
     );
-  },
+  }
 
- /** *******************************************************************************
+/** *******************************************************************************
  *                      ******     Helper methods     *******
  *********************************************************************************/
 
@@ -187,122 +183,139 @@ var MediaUploadForm = React.createClass({
    * @param {string} instrument - Instrument selected from the dropdown
    * @return {string} - Generated valid filename for the current selection
    */
-  getValidFileName: function(pscid, visitLabel, instrument) {
+  getValidFileName(pscid, visitLabel, instrument) {
     var fileName = pscid + "_" + visitLabel;
     if (instrument) fileName += "_" + instrument;
 
     return fileName;
-  },
+  }
 
   /**
    * Handle form submission
    * @param {object} e - Form submission event
    */
-  handleSubmit: function(e) {
+  handleSubmit(e) {
     e.preventDefault();
 
-    var myFormData = this.state.formData;
-    var formRefs = this.refs;
+    let formData = this.state.formData;
+    let formRefs = this.refs;
+    let mediaFiles = this.state.Data.mediaFiles ? this.state.Data.mediaFiles : [];
 
     // Validate the form
-    if (!this.isValidForm(formRefs, myFormData)) {
+    if (!this.isValidForm(formRefs, formData)) {
       return;
     }
 
     // Validate uploaded file name
-    var instrument = myFormData.instrument ? myFormData.instrument : null;
-    var fileName = myFormData.file ? myFormData.file.name : null;
-    var requiredFileName = this.getValidFileName(
-      myFormData.pscid, myFormData.visitLabel, instrument
+    let instrument = formData.instrument ? formData.instrument : null;
+    let fileName = formData.file ? formData.file.name.replace(/\s+/g, '_') : null;
+    let requiredFileName = this.getValidFileName(
+      formData.pscid, formData.visitLabel, instrument
     );
-
     if (!this.isValidFileName(requiredFileName, fileName)) {
-      alert("File name should begin with: " + requiredFileName);
+      swal(
+        "Invalid file name!",
+        "File name should begin with: " + requiredFileName,
+        "error"
+      );
       return;
     }
 
+    // Check for duplicate file names
+    let isDuplicate = mediaFiles.indexOf(fileName);
+    if (isDuplicate >= 0) {
+      swal({
+        title: "Are you sure?",
+        text: "A file with this name already exists!\n Would you like to override existing file?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: 'Yes, I am sure!',
+        cancelButtonText: "No, cancel it!"
+      }, function(isConfirm) {
+        if (isConfirm) {
+          this.uploadFile();
+        } else {
+          swal("Cancelled", "Your imaginary file is safe :)", "error");
+        }
+      }.bind(this));
+    } else {
+      this.uploadFile();
+    }
+  }
+
+  /*
+   * Uploads the file to the server
+   */
+  uploadFile() {
     // Set form data and upload the media file
-    var self = this;
-    var formData = new FormData();
-    for (var key in myFormData) {
-      if (myFormData[key] !== "") {
-        formData.append(key, myFormData[key]);
+    let formData = this.state.formData;
+    let formObj = new FormData();
+    for (let key in formData) {
+      if (formData[key] !== "") {
+        formObj.append(key, formData[key]);
       }
     }
 
-    $('#mediaUploadEl').hide();
-    $("#file-progress").removeClass('hide');
-
     $.ajax({
       type: 'POST',
-      url: self.props.action,
-      data: formData,
+      url: this.props.action,
+      data: formObj,
       cache: false,
       contentType: false,
       processData: false,
       xhr: function() {
-        var xhr = new window.XMLHttpRequest();
+        let xhr = new window.XMLHttpRequest();
         xhr.upload.addEventListener("progress", function(evt) {
           if (evt.lengthComputable) {
-            var progressbar = $("#progressbar");
-            var progresslabel = $("#progresslabel");
-            var percent = Math.round((evt.loaded / evt.total) * 100);
-            $(progressbar).width(percent + "%");
-            $(progresslabel).html(percent + "%");
-            progressbar.attr('aria-valuenow', percent);
+            let percentage = Math.round((evt.loaded / evt.total) * 100);
+            this.setState({uploadProgress: percentage});
           }
-        }, false);
+        }.bind(this), false);
         return xhr;
-      },
-      success: function(data) {
-        $("#file-progress").addClass('hide');
-        self.setState({
-          uploadResult: "success",
-          formData: {} // reset form data after successful file upload
-        });
+      }.bind(this),
+      success: function() {
+        // Add git pfile to the list of exiting files
+        let mediaFiles = JSON.parse(JSON.stringify(this.state.Data.mediaFiles));
+        mediaFiles.push(formData.file.name);
 
         // Trigger an update event to update all observers (i.e DataTable)
-        var event = new CustomEvent('update-datatable');
+        let event = new CustomEvent('update-datatable');
         window.dispatchEvent(event);
 
-        self.showAlertMessage();
-
-        // Iterates through child components and resets state
-        // to initial state in order to clear the form
-        Object.keys(formRefs).map(function(ref) {
-          if (formRefs[ref].state && formRefs[ref].state.value) {
-            formRefs[ref].state.value = "";
-          }
+        this.setState({
+          mediaFiles: mediaFiles,
+          formData: {}, // reset form data after successful file upload
+          uploadProgress: -1
         });
-        // rerender components
-        self.forceUpdate();
-      },
+        swal("Upload Successful!", "", "success");
+      }.bind(this),
       error: function(err) {
-        var errorMessage = JSON.parse(err.responseText).message;
-        self.setState({
-          uploadResult: "error",
-          errorMessage: errorMessage
+        console.error(err);
+        let msg = err.responseJSON ? err.responseJSON.message : "Upload error!";
+        this.setState({
+          errorMessage: msg,
+          uploadProgress: -1
         });
-        self.showAlertMessage();
-      }
-
+        swal(msg, "", "error");
+      }.bind(this)
     });
-  },
+  }
 
   /**
    * Checks if the inputted file name is valid
    *
    * @param {string} requiredFileName - Required file name
    * @param {string} fileName - Provided file name
-   * @return {boolean} - true if fileName starts with requiredFileName, false otherwise
+   * @return {boolean} - true if fileName starts with requiredFileName, false
+   *   otherwise
    */
-  isValidFileName: function(requiredFileName, fileName) {
+  isValidFileName(requiredFileName, fileName) {
     if (fileName === null || requiredFileName === null) {
       return false;
     }
 
     return (fileName.indexOf(requiredFileName) === 0);
-  },
+  }
 
   /**
    * Validate the form
@@ -311,8 +324,9 @@ var MediaUploadForm = React.createClass({
    * @param {object} formData - Object containing form data inputed by user
    * @return {boolean} - true if all required fields are filled, false otherwise
    */
-  isValidForm: function(formRefs, formData) {
+  isValidForm(formRefs, formData) {
     var isValidForm = true;
+
     var requiredFields = {
       pscid: null,
       visitLabel: null,
@@ -330,7 +344,7 @@ var MediaUploadForm = React.createClass({
     this.forceUpdate();
 
     return isValidForm;
-  },
+  }
 
   /**
    * Set the form data based on state values of child elements/componenets
@@ -338,11 +352,26 @@ var MediaUploadForm = React.createClass({
    * @param {string} formElement - name of the selected element
    * @param {string} value - selected value for corresponding form element
    */
-  setFormData: function(formElement, value) {
+  setFormData(formElement, value) {
     // Only display visits and sites available for the current pscid
+    let visitLabel = this.state.formData.visitLabel;
+    let pscid = this.state.formData.pscid;
+
     if (formElement === "pscid" && value !== "") {
       this.state.Data.visits = this.state.Data.sessionData[value].visits;
       this.state.Data.sites = this.state.Data.sessionData[value].sites;
+      if (visitLabel) {
+        this.state.Data.instruments =
+          this.state.Data.sessionData[value].instruments[visitLabel];
+      } else {
+        this.state.Data.instruments =
+          this.state.Data.sessionData[value].instruments.all;
+      }
+    }
+
+    if (formElement === "visitLabel" && value !== "" && pscid) {
+      this.state.Data.instruments =
+        this.state.Data.sessionData[pscid].instruments[value];
     }
 
     var formData = this.state.formData;
@@ -351,26 +380,12 @@ var MediaUploadForm = React.createClass({
     this.setState({
       formData: formData
     });
-  },
-
-  /**
-   * Display a success/error alert message after form submission
-   */
-  showAlertMessage: function() {
-    var self = this;
-
-    if (this.refs["alert-message"] === null) {
-      return;
-    }
-
-    var alertMsg = this.refs["alert-message"].getDOMNode();
-    $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function() {
-      self.setState({
-        uploadResult: null
-      });
-    });
   }
+}
 
-});
+MediaUploadForm.propTypes = {
+  DataURL: React.PropTypes.string.isRequired,
+  action: React.PropTypes.string.isRequired
+};
 
-var RMediaUploadForm = React.createFactory(MediaUploadForm);
+export default MediaUploadForm;

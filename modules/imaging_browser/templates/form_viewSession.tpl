@@ -19,7 +19,7 @@
       {section name=file loop=$files}
           <div id="image-{$files[file].FileID}"></div>
           <script>
-          React.render(
+          ReactDOM.render(
                   RImagePanel({
                       'BaseURL' : "{$baseurl}",
 
@@ -45,6 +45,7 @@
                           "AcquisitionProtocol" : "{$files[file].AcquisitionProtocol}",
                           "SeriesDescription" : "{$files[file].SeriesDescription}",
                           "SeriesNumber" : "{$files[file].SeriesNumber}",
+                          "SeriesUID" : "{$files[file].SeriesUID}",
                           "EchoTime" : "{$files[file].EchoTime}",
                           "RepetitionTime" : "{$files[file].RepetitionTime}",
                           "SliceThickness" : "{$files[file].SliceThickness}",

@@ -149,11 +149,10 @@
                     <br>
                     <div class="row">
                         <div class="form-group col-sm-4 col-md-2 col-xs-12">
-                            <input type="button"
-                                   name="newIssue"
-                                   value="Add Issue"
-                                   class="btn btn-sm btn-primary col-xs-12"
-                                   onclick="location.href='{$baseurl}/issue_tracker/edit/?issueID=0&backURL=/issue_tracker/&subtest=newIssue'"/></div>
+                          <a class="btn btn-sm btn-primary col-xs-12"
+                             href="{$baseurl}/issue_tracker/issue/?issueID=0"
+                          >Add Issue</a>
+                        </div>
                         <div class="form-group col-sm-4 col-md-2 col-xs-12 col-sm-offset-2 col-md-offset-5">
                             <input type="submit"
                                    class="btn btn-sm btn-primary col-xs-12"
@@ -196,11 +195,12 @@
                         </table>
                         <div id="datatable">
                             <script>
+                                loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
                                 var table = RDynamicDataTable({
                                     "DataURL": "{$baseurl}/issue_tracker/?submenu=my_issue_tracker&format=json",
                                     "getFormattedCell": formatColumn
                                 });
-                                React.render(table, document.getElementById("datatable"));
+                                ReactDOM.render(table, document.getElementById("datatable"));
                             </script>
                         </div>
                     </div>

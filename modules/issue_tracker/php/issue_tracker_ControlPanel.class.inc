@@ -68,8 +68,10 @@ class Issue_Tracker_ControlPanel
     function getData()
     {
         $factory = NDB_Factory::singleton();
-        $issueData['backURL'] = $factory->settings()->getBaseURL()
-            . urldecode($_REQUEST['backURL']);
+        $issueData['backURL'] = isset($_REQUEST['backURL']) ?
+            $factory->settings()->getBaseURL()
+                . "/issue_tracker/" :
+            null;
 
         $NavBar = new IssueNavigation($this->issueID);
         if ($this->issueID != 0) {

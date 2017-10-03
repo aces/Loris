@@ -59,11 +59,8 @@
   Once variables are populated template is inserted in #brainbrowser div
 -->
 <script id="volume-ui-template4d" type="x-volume-ui-template">
-<div class="row">
-  <div class="col-xs-12 col-sm-12 col-md-7 col-md-push-5 col-lg-8 col-lg-push-4">
-    <div class="volume-viewer-display"></div>
-  </div>
-  <div class="col-xs-12 col-sm-12 col-md-5 col-md-pull-7 col-lg-4 col-lg-pull-8">
+<div class="brainbrowser-template clearfix">
+  <div class="control-panel">
     <div class="panel panel-default" id="subpanel-filename-{{VOLID}}">
       <div class="panel-heading" id="mri-panel-filename-{{VOLID}}">
         <div class="filename clickable" id="filename-{{VOLID}}">
@@ -171,6 +168,7 @@
       </div>
     </div>
   </div>
+  <div class="volume-viewer-display"></div>
 </div>
 </script>
 {/literal}
@@ -181,5 +179,5 @@
 
 <script>
   var brainBrowserPage = RBrainBrowser();
-  React.render(brainBrowserPage, document.getElementById('brainbrowserPage'));
+  ReactDOM.render(brainBrowserPage, document.getElementById('brainbrowserPage'));
 </script>

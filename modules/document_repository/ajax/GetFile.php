@@ -7,14 +7,16 @@
  * PHP Version 5
  *
  *  @category Loris
- *  @package  Document Repository
+ *  @package  Document_Repository
  *  @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  *  @license  Loris license
  *  @link     https://github.com/aces/Loris-Trunk
  */
 
 $user =& User::singleton();
-if (!$user->hasPermission('document_repository_view') && !$user->hasPermission('document_repository_delete')) {
+if (!$user->hasPermission('document_repository_view')
+    && !$user->hasPermission('document_repository_delete')
+) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
@@ -48,7 +50,7 @@ if (empty($record)) {
     error_log("ERROR: Invalid filename");
     header("HTTP/1.1 400 Bad Request");
     exit(4);
-} 
+}
 
 $path = __DIR__ . "/../user_uploads/$file";
 

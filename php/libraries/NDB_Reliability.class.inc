@@ -397,15 +397,17 @@ class NDB_Reliability extends NDB_Form
     {
         $db       =& Database::singleton();
         $user     =& User::singleton();
-        $centerID = $user->getCenterID();
+        $centerID = $user->getCenterIDs();
 
         // UofA is a special case--they never enter their own data.
         // So the available examiners are either the ones at the logged
         // in user's site, or UofA
         $results = $db->pselect(
-            "SELECT examinerID, full_name
-                FROM examiners
-            WHERE centerID IN (:CentID, 6)
+            "SELECT e.examinerID, e.full_name
+                FROM examiners e
+                    JOIN examiners_psc_rel epr
+                       ON (epr.examinerID=e.examinerID)
+            WHERE epr.centerID IN (:CentID, 6)
                 ORDER BY full_name",
             array('CentID' => $centerID)
         );

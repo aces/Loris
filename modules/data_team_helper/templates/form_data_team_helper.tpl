@@ -8,7 +8,7 @@
 <div class="row">
 	<div class="col-sm-12 col-md-7">
 		<div class="panel panel-primary">
-			<div class="panel-heading" onclick="hideFilter();">
+			<div class="panel-heading">
 				Selection Filter
 			</div>
 			<div class="panel-body" id="panel-body">
@@ -38,20 +38,51 @@
 								</select>
 							</div>
 						</div>
-					</div>	
+					</div>
 					<div class ="row">
 						<div class ="form-group col-sm-6">
 							<label class ="col-sm-12 col-md-4">DCCID:</label>
 							<div class="col-sm-12 col-md-8">
-								<input name = "candidate" type="text" id="autocomplete-ajax" class="form-control"/>
+								<input name = "candidate" value="{$candID}" type="text" id="autocomplete-ajax" class="form-control"/>
 							</div>
 						</div>
 						<div class ="form-group col-sm-6">
 							<label class ="col-sm-12 col-md-4">PSCID:</label>
 							<div class="col-sm-12 col-md-8">
-								<input name = "PSCID" type="text" class="form-control"/>
-							</div>							
-						</div>					
+								<input name = "PSCID" value="{$PSCID}" type="text" class="form-control"/>
+							</div>
+						</div>
+					</div>
+					<div class ="row">
+						<div class ="form-group col-sm-6">
+							<label class ="col-sm-12 col-md-4">Site:</label>
+							<div class="col-sm-12 col-md-8">
+								<select name="site" id="site" class="form-control input-sm">
+                                    {foreach from=$siteList item=val key=name}
+                                        {if $name eq $site}
+											<option value="{$name}" selected="selected"> {$val}</option>
+                                        {else}
+											<option value="{$name}"> {$val}</option>
+                                        {/if}
+                                    {/foreach}
+								</select>
+							</div>
+						</div>
+						<div class ="form-group col-sm-6">
+							<label class ="col-sm-12 col-md-4">Project:</label>
+							<div class="col-sm-12 col-md-8">
+								<select name="project" id="project" class="form-control input-sm">
+									<option value="All Projects" selected="selected">All Projects</option>
+                                    {foreach from=$projectList item=val key=name}
+                                        {if $name eq $project}
+											<option value="{$name}" selected="selected"> {$val}</option>
+                                        {else}
+											<option value="{$name}"> {$val}</option>
+                                        {/if}
+                                    {/foreach}
+								</select>
+							</div>
+						</div>
 					</div>
 					<div class="row">
 						<div id="selction-ajax" class="col-sm-12 col-md-offset-2"></div>
@@ -69,7 +100,7 @@
 					    <div class="col-sm-6 col-md-offset-6">
 					      <input type="submit" name="filter" value="Show Data" id="filter" class="btn btn-sm btn-primary col-xs-12"/>
 					    </div>
-					    
+
 							</div>
 					</div>
 					<input type="hidden" name="test_name" value="data_team_helper" />
@@ -86,14 +117,14 @@
  <ul class="nav nav-tabs" role="tablist">
    <li role="presentation" class="active"><a href="#incomplete" aria-controls="incomplete" role="tab" data-toggle="tab">Incomplete Forms <span class="badge">{$Incomplete_candidates_length}</span></a></li>
    <li role="presentation"><a href="#conflicts" aria-controls="conflicts" role="tab" data-toggle="tab">Data Conflicts <span class="badge">{$Conflicts_length}</span></a></li>
-   <li role="presentation"><a href="#feedback" aria-controls="feedback" role="tab" data-toggle="tab">Behavioural Feedback <span class="badge">{$Bvl_Feedback_length}</span></a></li>    
+   <li role="presentation"><a href="#feedback" aria-controls="feedback" role="tab" data-toggle="tab">Behavioural Feedback <span class="badge">{$Bvl_Feedback_length}</span></a></li>
   </ul>
 
 
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="incomplete"></div>
     <div role="tabpanel" class="tab-pane" id="conflicts"></div>
-    <div role="tabpanel" class="tab-pane" id="feedback"></div>    
+    <div role="tabpanel" class="tab-pane" id="feedback"></div>
   </div>
 
 
@@ -105,7 +136,7 @@ incomplete = JSON.parse(incomplete);
 
 var CandiPanel = IncompleteCandidatesPanel({
 	title: "Incomplete Forms",
-	header: ["Visit", "DCCID", "Instrument"],
+	header: ["Visit", "DCCID", "PSCID", "Instrument"],
 	incomplete_candidates: incomplete,
     BaseURL : loris.BaseURL
 });
@@ -115,17 +146,17 @@ conflicts = JSON.parse(conflicts);
 
 var ConflictsPanel = InstrumentConflictsPanel({
 	title: "Data Entry Conflicts",
-	header: ["Visit", "DCCID", "Instrument", "Field Name"],
+	header: ["Visit", "DCCID", "PSCID", "Instrument", "Field Name"],
 	conflicts: conflicts,
     BaseURL : loris.BaseURL
-}); 
+});
 
 var feedback = {$Bvl_Feedback|@json_encode};
 feedback = JSON.parse(feedback);
 
 var FeedbackTab = BehaviouralFeedbackTab({
 	title: "Behvarioural Feedback",
-	header:["DCCID", "Feedback Level", "Field Name"],
+	header:["DCCID", "PSCID", "Feedback Level", "Field Name"],
 	feedback: feedback,
     BaseURL : loris.BaseURL
 });
@@ -134,20 +165,24 @@ var percentCompleted = {$percent_completed|@json_encode};
 var pscid = {$candidate|@json_encode};
 var visit = {$visit_label|@json_encode};
 var instrument = {$test_name|@json_encode};
+var site = $("#site option:selected").text();
+var project =$("#project option:selected").text();
 
 var DataTeamGraphics = GraphicsPanel({
 	percentCompleted: percentCompleted,
     pscid: pscid,
     visit: visit,
-    instrument: instrument
+    instrument: instrument,
+	site: site,
+	project: project
 });
-	
-React.render(CandiPanel, document.getElementById("incomplete"));
 
-React.render(ConflictsPanel, document.getElementById("conflicts"));
+ReactDOM.render(CandiPanel, document.getElementById("incomplete"));
 
-React.render(FeedbackTab, document.getElementById("feedback"));
+ReactDOM.render(ConflictsPanel, document.getElementById("conflicts"));
 
-React.render(DataTeamGraphics, document.getElementById("graphics"));
+ReactDOM.render(FeedbackTab, document.getElementById("feedback"));
+
+ReactDOM.render(DataTeamGraphics, document.getElementById("graphics"));
 
 </script>

@@ -87,6 +87,9 @@ class NDB_Client
 
         // stop here if this is a command line client
         if (!$this->_isWebClient) {
+            // Set user as unix username.
+            // Requires Loris to have user with this username
+            $user =& User::singleton(get_current_user());
             return true;
         }
 
@@ -164,7 +167,7 @@ class NDB_Client
             // Check to see if passwordExpired flag is set
             if (!$login->passwordExpired()) {
                 // If not show login page
-                $login->showLoginScreen();
+                header("HTTP/1.1 401 Unauthorized");
             }
             //terminate script
             return false;

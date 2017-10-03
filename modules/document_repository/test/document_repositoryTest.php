@@ -14,7 +14,19 @@
 
 require_once __DIR__ .
        "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
+/**
+ * Document_repository automated integration tests
+ *
+ * PHP Version 5
+ *
+ * @category Test
+ * @package  Loris
+ * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Wang Shen <wangshen.mcin@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
+class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
 {
 
     /**
@@ -27,7 +39,7 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
     {
         parent::setUp();
         $window = new WebDriverWindow($this->webDriver);
-        $size   = new WebDriverDimension(1024,1768);
+        $size   = new WebDriverDimension(1024, 1768);
         $window->setSize($size);
         $this->DB->insert(
             "document_repository_categories",
@@ -57,7 +69,11 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
         );
 
     }
-
+    /**
+     * Deleting test data
+     *
+     * @return none
+     */
     public function tearDown()
     {
         $this->DB->delete(
@@ -69,12 +85,12 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
             array('category_name' => 'test')
         );
         $this->DB->delete(
-            "document_repository_categories",
-            array('id' => '9999999')
-        );
-        $this->DB->delete(
             "document_repository",
             array('record_id' => '9999999')
+        );
+        $this->DB->delete(
+            "document_repository_categories",
+            array('id' => '9999999')
         );
         parent::tearDown();
     }
@@ -125,7 +141,8 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/document_repository/");
         $this->safeFindElement(
             WebDriverBy::Name("addCategory"),
-            3000)->click();
+            3000
+        )->click();
         sleep(10);
         $this->safeFindElement(
             WebDriverBy::Name(
@@ -186,7 +203,8 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
      * @return void
      */
     function testDocumentRepositoryUploadFileEditDeleteComment()
-    {    $this->markTestSkipped("This method isn't working properly on travis.");
+    {
+        $this->markTestSkipped("This method isn't working properly on travis.");
          $this->safeGet($this->url . "/document_repository/");
          $this->safeFindElement(
              WebDriverBy::Xpath("//*[@id='TESTTESTTESTTESTa']/td/span")

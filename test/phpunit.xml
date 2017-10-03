@@ -4,18 +4,17 @@
         verbose="true"
         colors="true">
     <testsuites>
-        <testsuite name='LorisUnitTests for php/libraries'>
+        <testsuite name='LorisUnitTests'>
             <directory>./unittests/</directory>
             <directory>./unittests/api</directory>
         </testsuite>
 
-        <testsuite name='Loris Core Integration Tests'>
+        <testsuite name='LorisCoreIntegrationTests'>
             <directory>./integrationtests/</directory>
         </testsuite>
 
-        <testsuite name='Loris Module Integration Tests'>
-            <directory>../modules/candidate_list/test/</directory>
-            <directory>../modules/candidate_parameters/test/</directory>
+        <testsuite name='LorisModuleIntegrationTests'>
+            <directory>../modules/acknowledgements/test/</directory>
             <directory>../modules/brainbrowser/test/</directory>
             <directory>../modules/candidate_list/test/</directory>
             <directory>../modules/candidate_parameters/test/</directory>
@@ -33,6 +32,7 @@
             <directory>../modules/genomic_browser/test/</directory>
             <directory>../modules/help_editor/test/</directory>
             <directory>../modules/imaging_browser/test/</directory>
+            <directory>../modules/imaging_uploader/test/</directory>
             <directory>../modules/instrument_builder/test/</directory>
             <directory>../modules/instrument_list/test/</directory>
             <directory>../modules/instrument_manager/test/</directory>
@@ -48,6 +48,8 @@
             <directory>../modules/training/test/</directory>
             <directory>../modules/user_accounts/test/</directory>
             <directory>../modules/media/test/</directory>
+            <directory>../modules/issue_tracker/test/</directory>
+            <directory>../test/test_instrument/</directory>
         </testsuite>
 
     </testsuites>

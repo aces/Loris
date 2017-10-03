@@ -9,7 +9,7 @@
 /*
  *  The following component is used for displaying operator for the group component
  */
-LogicOperator = React.createClass({
+var LogicOperator = React.createClass({
 	changeOperator: function(op) {
 		// Wrapper function updating operator
 		this.props.updateGroupOperator(op);
@@ -40,7 +40,7 @@ LogicOperator = React.createClass({
 /*
  *  The following component is used for displaying a filter rule
  */
-FilterRule = React.createClass({
+var FilterRule = React.createClass({
 	getInitialState: function() {
 		return {
 			operators: {
@@ -50,7 +50,9 @@ FilterRule = React.createClass({
 				"lessThanEqual" : "<=",
 		    	"greaterThanEqual" : ">=",
 		    	"startsWith" : "startsWith",
-		    	"contains" : "contains"
+		    	"contains" : "contains",
+		    	"isNull" : "isNull",
+		    	"isNotNull" : "isNotNull"
 				// }
 			},
 			value: "",
@@ -97,6 +99,12 @@ FilterRule = React.createClass({
 			rule.operator = event.target.value;
 		}
 		this.props.updateRule(this.props.index, rule);
+		if (rule.operator === "isNull" || rule.operator === "isNotNull") {
+			this.setState({
+				value: "null"
+			});
+			this.valueSet();
+		}
 	},
 	valueChange: function(event) {
 		var rule = JSON.parse(JSON.stringify(this.props.rule));
@@ -153,9 +161,11 @@ FilterRule = React.createClass({
 		        };
 		    switch(rule.operator) {
 		    	case "equal":
+		    	case "isNull":
 		    		ajaxRetrieve("queryEqual.php");
 		    		break;
 		    	case "notEqual":
+		    	case "isNotNull":
 		    		ajaxRetrieve("queryNotEqual.php");
 		    		break;
 		    	case "lessThanEqual":
@@ -208,7 +218,7 @@ FilterRule = React.createClass({
 					);
 				}),
 				operators = [],
-				inputOptions, input, operatorKey, operatorSelect, options, value;
+				inputOptions, input, operatorKey, operatorSelect, options, value, inputType;
 
 			if(this.props.rule.fieldType) {
 				// Only display operators if field is selected
@@ -228,7 +238,10 @@ FilterRule = React.createClass({
 						{operators}
 					</select>
 				);
-				if(this.props.rule.operator){
+				if (this.props.rule.operator &&
+					this.props.rule.operator !== "isNull" &&
+					this.props.rule.operator !== "isNotNull"
+				){
 					// Only display value input if operator is selected, displaying specific
 					// input type field data type
 					switch(operatorKey){
@@ -328,7 +341,7 @@ FilterRule = React.createClass({
 /*
  *  The following component is used for displaying a filter group
  */
-FilterGroup = React.createClass({
+var FilterGroup = React.createClass({
 	updateChild: function(index, child) {
 		// Update a specified child in the groups children
 
@@ -512,7 +525,7 @@ FilterGroup = React.createClass({
 /*
  *  The following component is the base componenet for the filter builder
  */
-FilterBuilder = React.createClass({
+var FilterBuilder = React.createClass({
     render: function() {
         return (
         	<div>
@@ -530,3 +543,15 @@ FilterBuilder = React.createClass({
         );
     }
 });
+
+window.LogicOperator = LogicOperator;
+window.FilterRule = FilterRule;
+window.FilterGroup = FilterGroup;
+window.FilterBuilder = FilterBuilder;
+
+export default {
+  LogicOperator,
+  FilterRule,
+  FilterGroup,
+  FilterBuilder
+};

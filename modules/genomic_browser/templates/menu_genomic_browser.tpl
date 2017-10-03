@@ -3,7 +3,7 @@
 </script>
 <div class="col-sm-12">
   <div class="row">
-    <div id="tabs"> 
+    <div id="tabs">
       <ul class="nav nav-tabs">
         <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>Profiles</strong></a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=gwas_browser">GWAS</a></li>
@@ -72,10 +72,10 @@
                           {$form.PSCID.html}
                         </div>
                       </div>
-                    </div> 
-                  </div> 
-                </div> 
-              </div> 
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="col-sm-12">
@@ -91,34 +91,34 @@
                     <div class="row">
                       <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-3 col-lg-3">
-                          {$form.Files.label}
+                          {$form.File.label}
                         </label>
                         <div class="col-sm-12 col-md-3 col-lg-2">
-                          {$form.Files.html}
+                          {$form.File.html}
                         </div>
                         <label class="col-sm-12 col-md-3">
-                          {$form.CPGs.label}
+                          {$form.CPG.label}
                         </label>
                         <div class="col-sm-12 col-md-3">
-                          {$form.CPGs.html}
+                          {$form.CPG.html}
                         </div>
                         <label class="col-sm-12 col-md-3 col-lg-3">
-                          {$form.SNPs.label} 
+                          {$form.SNP.label}
                         </label>
                         <div class="col-sm-12 col-md-3 col-lg-2">
-                          {$form.SNPs.html}
+                          {$form.SNP.html}
                         </div>
                         <label class="col-sm-12 col-md-3">
-                          {$form.CNVs.label} 
+                          {$form.CNV.label}
                         </label>
                         <div class="col-sm-12 col-md-3 pull-left">
-                          {$form.CNVs.html} 
+                          {$form.CNV.html}
                         </div>
                       </div>
-                    </div> 
-                  </div> 
-                </div> 
-              </div> 
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div class="form-group col-sm-4">
                 <div class="row"><!-- fixed vertical spacing-->
 		          <br><br><br><br>
@@ -126,7 +126,7 @@
                 <div class="row">
                   <div class="form-group col-sm-12">
                     <label class="col-sm-4 col-md-3">
-                      {$form.Show_Brief_Results.label} 
+                      {$form.Show_Brief_Results.label}
                     </label>
                     <div class="col-sm-8 col-md-8">
 	                  {$form.Show_Brief_Results.html}
@@ -182,5 +182,5 @@ var table = RDynamicDataTable({
     "getFormattedCell" : formatColumn,
     "freezeColumn" : "PSCID"
 });
-React.render(table, document.getElementById("datatable"));
+ReactDOM.render(table, document.getElementById("datatable"));
 </script>

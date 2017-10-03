@@ -27,6 +27,12 @@ $config   =& NDB_Config::singleton();
 $path     = $config->getSetting('mediaPath');
 $filePath = $path . $file;
 
+$downloadNotifier = new NDB_Notifier(
+    "media",
+    "download",
+    array("file" => $file)
+);
+
 if (!file_exists($filePath)) {
     error_log("ERROR: File $filePath does not exist");
     header("HTTP/1.1 404 Not Found");
@@ -39,3 +45,4 @@ header('Content-Type: application/force-download');
 header("Content-Transfer-Encoding: Binary");
 header("Content-disposition: attachment; filename=\"" . basename($filePath) . "\"");
 readfile($filePath);
+$downloadNotifier->notify();

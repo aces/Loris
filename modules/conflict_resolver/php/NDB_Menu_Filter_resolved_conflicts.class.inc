@@ -88,8 +88,8 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         $user = User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {
             // restrict data to own site
-            $this->query .= " AND candidate.CenterID=";
-            $this->query .= $user->getCenterID();
+            $site_arr     = implode(",", $user->getCenterIDs());
+            $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
         }
 
         $this->group_by     = '';
@@ -200,10 +200,15 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $site =& Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $sites = array($user->getData('CenterID') => $user->getData('Site'));
+            $sites    = array();
+            $site_arr = $user->getData('CenterIDs');
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $sites[$val] = $site[$key]->getCenterName();
+                }
             }
+            $sites = array('' => 'All User Sites') + $sites;
         }
 
         // Add form elements
@@ -271,19 +276,8 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         }
         $query .= $this->order_by;
         // get the list
+        $result = $DB->pselect($query, $qparams);
 
-        $pageNum = 1;
-        if (isset($_REQUEST['pageID'])) {
-            $pageNum = $_REQUEST['pageID'];
-        }
-
-        $this->_getNumberPages($query);
-
-        $config         =& NDB_Config::singleton();
-        $resultsPerPage = $config->getSetting('rowsPerPage');
-        $limit          = " LIMIT $resultsPerPage"
-            ." OFFSET " . (($pageNum-1)*$resultsPerPage);
-        $result         = $DB->pselect($query . $limit, $qparams);
         // OVERRIDE START
         foreach ($result as $k => $r) {
             if ($r['Question'] === 'Examiner') {

@@ -12,9 +12,7 @@
  */
 
 require_once __DIR__ . "/../vendor/autoload.php";
-require_once "../php/libraries/NDB_Client.class.inc";
-require_once "../php/libraries/NDB_Config.class.inc";
-require_once "../php/libraries/ConflictDetector.class.inc";
+set_include_path(get_include_path().":".__DIR__."/../project/libraries:".":".__DIR__."/../php/libraries:");
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
@@ -45,16 +43,17 @@ if (empty($argv[1]) || $argv[1] == 'help') {
 }
 
 /**
-* Get cmd-line arguments
-*/
+ * Get cmd-line arguments
+ */
 // get $action argument
 $action         = $argv[1];
-$ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 
 if ($action=='all') {
     $allInstruments = Utility::getAllInstruments();
+    $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 } else {
     $allInstruments = array($action => $action);
+    $ddeInstruments = array($action => $action);
 }
 // clear the unresolved conflicts for all the instruments
 foreach ($allInstruments as $instrument=>$Full_name) {
@@ -70,11 +69,12 @@ foreach ($allInstruments as $instrument=>$Full_name) {
                                            AND c.Active='Y'",
         array('testname' => $instrument)
     );
-    
+
     foreach ($clear_conflicts as $conflict) {
         ConflictDetector::clearConflictsForInstance($conflict['CommentID']);
     }
 }
+
 foreach ($ddeInstruments as $test) {
     $instruments = $db->pselect(
         "SELECT CommentID, Test_name, CONCAT('DDE_',
@@ -95,7 +95,7 @@ foreach ($ddeInstruments as $test) {
         // If the instrument requires double data entry, check that DDE is also done
         if (in_array($instrument['Test_name'], $ddeInstruments)) {
             print "Recreating conflicts for " . $instrument['Test_name'] .
-                   ':'. $instrument['CommentID'] . "\n";
+                ':'. $instrument['CommentID'] . "\n";
             $diff = ConflictDetector::detectConflictsForCommentIds(
                 $instrument['Test_name'],
                 $instrument['CommentID'],
