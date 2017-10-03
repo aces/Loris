@@ -176,7 +176,6 @@ class Visit extends \Loris\API\Candidates\Candidate
             $this->safeExit(0);
 
         }
-
         // When users are at multiple sites, the API requires
         // siteName as an input to timepoint creation
         $user      = \User::singleton();
@@ -259,7 +258,15 @@ class Visit extends \Loris\API\Candidates\Candidate
      */
     function createNew($CandID, $subprojectID, $VL, $CID)
     {
-        \TimePoint::createNew($CandID, $subprojectID, $VL, $CID);
+        try {
+            \TimePoint::isValidVisitLabel($CandID, $subprojectID, $VL, $CID);
+        } catch (\LorisException $e) {
+            $this->header("HTTP/1.1 400 Bad Request");
+            $this->error($e->getMessage());
+            $this->safeExit(0);
+        }
+
+        \TimePoint::createNew($CandID, $subprojectID, $VL);
     }
 }
 

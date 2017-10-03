@@ -103,85 +103,101 @@ class Candidates extends APIBase
      */
     public function handlePOST()
     {
-        if (isset($this->RequestData['Candidate'])) {
-            $data = $this->RequestData;
-            if ($data === null) {
+        $data = $this->RequestData;
+        if ($data === null) {
+            $this->header("HTTP/1.1 400 Bad Request");
+            $this->error("Can't parse data");
+            $this->safeExit(0);
+        }
+
+        if (!isset($data['Candidate'])) {
+            $this->header("HTTP/1.1 400 Bad Request");
+            $this->error("There is no Candidate object in the POST data");
+            $this->safeExit(0);
+        }
+        // When users are at multiple sites, the API requires
+        // siteName as an input to candidate creation
+        $user         = \User::singleton();
+        $centerIDs    = $user->getCenterIDs();
+        $allUserSites = array();
+        $num_sites    = count($centerIDs);
+        if ($num_sites == 0) {
+            $this->header("HTTP/1.1 401 Unauthorized");
+            $this->error("You are not affiliated with any site");
+            $this->safeExit(0);
+        } else if ($num_sites > 1) {
+            foreach ($centerIDs as $key => $centerID) {
+                $center = $this->DB->pselectRow(
+                    "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
+                    array('cid' => $centerID)
+                );
+                $allUserSites[$centerID] = $center['Name'];
+            }
+
+            $siteName = $data['Candidate']['Site'];
+            $this->verifyField($data, 'Site', $allUserSites);
+            $this->verifyField($data, 'Gender', ['Male', 'Female']);
+            $this->verifyField($data, 'EDC', 'YYYY-MM-DD');
+            $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
+            //Get the CenterID from the provided SiteName
+            $centerID = array_search($siteName, $allUserSites);
+
+            //Candidate::createNew
+            try {
+                $candid = $this->createNew(
+                    $centerID,
+                    $data['Candidate']['DoB'],
+                    $data['Candidate']['EDC'],
+                    $data['Candidate']['Gender'],
+                    $data['Candidate']['PSCID']
+                );
+                $this->header("HTTP/1.1 201 Created");
+                $this->JSON = [
+                               'Meta' => ["CandID" => $candid],
+                              ];
+            } catch(\LorisException $e) {
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->safeExit(0);
             }
 
-            // When users are at multiple sites, the API requires
-            // siteName as an input to candidate creation
-            $user         = \User::singleton();
-            $centerIDs    = $user->getCenterIDs();
-            $allUserSites = array();
-            $num_sites    = count($centerIDs);
-            if ($num_sites == 0) {
-                $this->header("HTTP/1.1 401 Unauthorized");
-                $this->error("You are not affiliated with any site");
-                $this->safeExit(0);
-            } else if ($num_sites > 1) {
-                foreach ($centerIDs as $key => $centerID) {
-                    $center = $this->DB->pselectRow(
-                        "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
-                        array('cid' => $centerID)
-                    );
-                    $allUserSites[$centerID] = $center['Name'];
-                }
-
-                $siteName = $data['Candidate']['Site'];
-                $this->verifyField($data, 'Site', $allUserSites);
-                $this->verifyField($data, 'Gender', ['Male', 'Female']);
-                $this->verifyField($data, 'EDC', 'YYYY-MM-DD');
-                $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
-                //Get the CenterID from the provided SiteName
-                $centerID = array_search($siteName, $allUserSites);
-
-                //Candidate::createNew
-                try {
-                    $candid = $this->createNew(
-                        $centerID,
-                        $data['Candidate']['DoB'],
-                        $data['Candidate']['EDC'],
-                        $data['Candidate']['Gender'],
-                        $data['Candidate']['PSCID']
-                    );
-                    $this->header("HTTP/1.1 201 Created");
-                    $this->JSON = [
-                                   'Meta' => ["CandID" => $candid],
-                                  ];
-                } catch(\LorisException $e) {
-                    $this->header("HTTP/1.1 400 Bad Request");
-                    $this->safeExit(0);
-                }
-
-            } else {
-                $centerID = $centerIDs[0];
-                $this->verifyField($data, 'Gender', ['Male', 'Female']);
-                $this->verifyField($data, 'EDC', 'YYYY-MM-DD');
-                $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
-                //Candidate::createNew
-                try {
-                    $candid = $this->createNew(
-                        $centerID,
-                        $data['Candidate']['DoB'],
-                        $data['Candidate']['EDC'],
-                        $data['Candidate']['Gender'],
-                        $data['Candidate']['PSCID']
-                    );
-                    $this->header("HTTP/1.1 201 Created");
-                    $this->JSON = [
-                                   'Meta' => ["CandID" => $candid],
-                                  ];
-                } catch(\LorisException $e) {
-                    $this->header("HTTP/1.1 400 Bad Request");
-                    $this->safeExit(0);
-                }
-            }
         } else {
-            $this->header("HTTP/1.1 400 Bad Request");
-            $this->safeExit(0);
+            $centerID = $centerIDs[0];
+            $this->verifyField($data, 'Gender', ['Male', 'Female']);
+            $this->verifyField($data, 'EDC', 'YYYY-MM-DD');
+            $this->verifyField($data, 'DoB', 'YYYY-MM-DD');
+            //Candidate::createNew
+            try {
+                $candid = $this->createNew(
+                    $centerID,
+                    $data['Candidate']['DoB'],
+                    $data['Candidate']['EDC'],
+                    $data['Candidate']['Gender'],
+                    $data['Candidate']['PSCID']
+                );
+                $this->header("HTTP/1.1 201 Created");
+                $this->JSON = [
+                               'Meta' => ["CandID" => $candid],
+                              ];
+            } catch(\LorisException $e) {
+                $this->header("HTTP/1.1 400 Bad Request");
+                $this->safeExit(0);
+            }
         }
+
+        if (isset($data['Candidate']['Project'])) {
+            $projectName = $data['Candidate']['Project'];
+            $project     = \Project::singleton($projectName);
+            if (!empty($project)) {
+                \Candidate::singleton($candid)->setData(
+                    array('ProjectID' => $project->getId())
+                );
+            }
+        }
+
+        $this->header("HTTP/1.1 201 Created");
+        $this->JSON = [
+                       'Meta' => ["CandID" => $candid],
+                      ];
     }
 
     /**
@@ -199,16 +215,19 @@ class Candidates extends APIBase
     {
         if (!isset($data['Candidate'][$field])) {
             $this->header("HTTP/1.1 400 Bad Request");
+            $this->error("Candidate's field missing");
             $this->safeExit(0);
         }
         if (is_array($values) && !in_array($data['Candidate'][$field], $values)) {
             $this->header("HTTP/1.1 400 Bad Request");
+            $this->error("Value not permitted");
             $this->safeExit(0);
         }
         if ($values === 'YYYY-MM-DD'
             && !preg_match("/\d\d\d\d\-\d\d\-\d\d/", $data['Candidate'][$field])
         ) {
             $this->header("HTTP/1.1 400 Bad Request");
+            $this->error("Invalid date format");
             $this->safeExit(0);
         }
     }
@@ -226,7 +245,6 @@ class Candidates extends APIBase
      */
     public function createNew($centerID, $DoB, $edc, $gender, $PSCID)
     {
-        $user = \User::singleton();
         return \Candidate::createNew(
             $centerID,
             $DoB,
