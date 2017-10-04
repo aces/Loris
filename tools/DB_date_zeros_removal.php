@@ -84,7 +84,7 @@ foreach ($field_names as $key=>$field)
     $autoUpdateSQL = '';
     if (array_key_exists($field['TABLE_NAME'], $autoUpdateFields)) {
         foreach ($autoUpdateFields[$field['TABLE_NAME']] as $col) {
-            $autoUpdateSQL .= ", $col=$col";
+            $autoUpdateSQL .= ", `$col`=$col";
         }
     }
 
@@ -98,13 +98,13 @@ foreach ($field_names as $key=>$field)
 
 
     if ($field['DATA_TYPE'] == 'date' && $field['IS_NULLABLE']=='YES') {
-        $updates .= "UPDATE ".$database['database'].".".$field['TABLE_NAME'].
-            " SET ".$field['COLUMN_NAME']."=NULL".$autoUpdateSQL.
-            " WHERE CAST(".$field['COLUMN_NAME']." AS CHAR(20))='0000-00-00';\n";
+        $updates .= "UPDATE `".$database['database']."`.`".$field['TABLE_NAME'].
+            "` SET `".$field['COLUMN_NAME']."`=NULL".$autoUpdateSQL.
+            " WHERE CAST(`".$field['COLUMN_NAME']."` AS CHAR(20))='0000-00-00';\n";
     } else if (($field['DATA_TYPE'] == 'datetime' || $field['DATA_TYPE'] == 'timestamp') && $field['IS_NULLABLE']=='YES') {
-        $updates .= "UPDATE ".$database['database'].".".$field['TABLE_NAME'].
-            " SET ".$field['COLUMN_NAME']."=NULL".$autoUpdateSQL.
-            " WHERE CAST(".$field['COLUMN_NAME']." AS CHAR(20))='0000-00-00 00:00:00';\n";
+        $updates .= "UPDATE `".$database['database']."`.`".$field['TABLE_NAME'].
+            "` SET `".$field['COLUMN_NAME']."`=NULL".$autoUpdateSQL.
+            " WHERE CAST(`".$field['COLUMN_NAME']."` AS CHAR(20))='0000-00-00 00:00:00';\n";
     } else {
 	echo "COLUMN ".$field['COLUMN_NAME']." in TABLE ".$field['TABLE_NAME']." is NOT NULLABLE. ".
 	    "A date '1000-01-01' will be entered instead of '0000-00-00' values.\n"; 
