@@ -119,7 +119,7 @@ extract it to `~/Sites/$projectname`
 
 <i>$projectname ⇾ “loris” or one-word project name</i>
 
-##2.2 Installing LORIS
+## 2.2 Installing LORIS
 
 Run installer script to install core code, libraries, and MySQL schema (see Loris Installation Schematic). 
 The script will prompt for information, including usernames and folders which it will create automatically.
