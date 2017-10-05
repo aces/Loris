@@ -397,8 +397,11 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    function isPasswordStrong($password, $values = array(), $operators = array())
-    {
+    static function isPasswordStrong(
+        $password,
+        $values = array(),
+        $operators = array()
+    ) {
         $CharTypes = 0;
         // less than 6 characters
         if (strlen($password) < 8) {
