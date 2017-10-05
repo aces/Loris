@@ -36,7 +36,7 @@
 
  # Add trailing slash to all directories
  RewriteCond %{REQUEST_FILENAME} !-f
- RewriteRule ^(.*[^/])$ /$1/ [L,R=301]
+ RewriteRule ^(.*[^/])$ /$1/ [L,R=307]
 
 </IfModule>
 
