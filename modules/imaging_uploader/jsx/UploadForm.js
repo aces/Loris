@@ -90,7 +90,7 @@ class UploadForm extends React.Component {
       // Make sure file follows PSCID_CandID_VL[_*].zip|.tgz|.tar.gz format
       const pcv = data.pSCID + '_' + data.candID + '_' + data.visitLabel;
       const pcvu = pcv + '_';
-      const properName = new RegExp(pcv + ".(zip|tgz|tar.gz)");
+      const properName = new RegExp("^" + pcv + ".(zip|tgz|tar.gz)");
       const properNameExt = new RegExp("^" + pcvu + ".*(.(zip|tgz|tar.gz))");
       if (!fileName.match(properName) && !fileName.match(properNameExt)) {
         swal({
