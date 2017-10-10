@@ -100,8 +100,8 @@ class Dicoms extends \Loris\API\Candidates\Candidate\Visit
             $params['PCandID'] = $this->CandID;
             $params['PVL']     = $this->VisitLabel;
         }
-        try {
-            $query = "SELECT SUBSTRING_INDEX(ArchiveLocation, '/', -1) as Tarname,
+
+        $query = "SELECT SUBSTRING_INDEX(ArchiveLocation, '/', -1) as Tarname,
            ts.SeriesDescription as SeriesDescription,
            ts.SeriesNumber as SeriesNumber,                    
            ts.EchoTime as EchoTime,                    
@@ -112,9 +112,6 @@ class Dicoms extends \Loris\API\Candidates\Candidate\Visit
            GROUP BY t.TarchiveID, ts.SeriesDescription, ts.SeriesNUmber, 
            ts.EchoTime, ts.SeriesUID
            ORDER BY Tarname";
-        } catch(\Exception $e) {
-            error_log($e);
-        }
 
         $rows = $DB->pselect($query, $params);
 
