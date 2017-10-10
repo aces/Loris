@@ -100,8 +100,8 @@ class Dicoms extends \Loris\API\Candidates\Candidate\Visit
             $params['PCandID'] = $this->CandID;
             $params['PVL']     = $this->VisitLabel;
         }
-
-        $query = "SELECT SUBSTRING_INDEX(ArchiveLocation, '/', -1) as Tarname,
+        try {
+            $query = "SELECT SUBSTRING_INDEX(ArchiveLocation, '/', -1) as Tarname,
            ts.SeriesDescription as SeriesDescription,
            ts.SeriesNumber as SeriesNumber,                    
            ts.EchoTime as EchoTime,                    
@@ -109,33 +109,35 @@ class Dicoms extends \Loris\API\Candidates\Candidate\Visit
            FROM tarchive t                      
            JOIN tarchive_series ts ON (ts.TarchiveID=t.TarchiveID)                
            WHERE t.PatientName LIKE $ID            
-           GROUP BY t.TarchiveID, ts.SeriesDescription, ts.SeriesNUmber, ts.EchoTime, ts.SeriesUID
+           GROUP BY t.TarchiveID, ts.SeriesDescription, ts.SeriesNUmber, 
+           ts.EchoTime, ts.SeriesUID
            ORDER BY Tarname";
+        } catch(\Exception $e) {
+            error_log($e);
+        }
 
-        $rows = $DB->pselect($query, array());
+        $rows = $DB->pselect($query, $params);
 
         $result = array();
-        $i = 0;
-        $j = 0;
+        $entry  = array();
 
         foreach ($rows as $row) {
-            if (!empty($result[$i]['Tarname']) &&
-                $result[$i]['Tarname'] !== $row['Tarname']) {
-                $i++;
-                $j = 0;
-                $result[$i]['Tarname'] = $row['Tarname'];
+            if (empty($entry)) {
+                $entry['Tarname']    = $row['Tarname'];
+                $entry['SeriesInfo'] = array();
+            } else if ($entry['Tarname'] !== $row['Tarname']) {
+                $result[] = $entry;
+                unset($entry);
+                $entry['Tarname']    = $row['Tarname'];
+                $entry['SeriesInfo'] = array();
             }
-            foreach ($row as $k => $v) {
-                if ($k === 'Tarname') {
-                    continue;
-                }
-                $result[$i]['SeriesInfo'][$j][$k] = $v;
-            }
-            $j++;
+            unset($row['Tarname']);
+            $entry['SeriesInfo'][] = $row;
         }
+
+        $result[] = $entry;
         return $result;
     }
-
 }
 
 if (isset($_REQUEST['PrintDicoms'])) {
