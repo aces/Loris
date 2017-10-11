@@ -49,7 +49,7 @@ class User extends UserPermissions
         $obj->userInfo['UserID'] = $username;
 
         // get the user's permissions
-        $success = $obj->select($username);
+        $obj->select($username);
 
         // create DB object
         $DB =& Database::singleton();
@@ -96,7 +96,7 @@ class User extends UserPermissions
 
         $examiner_info =array();
         if (!empty($examiner_check) && !is_null($examiner_check)) {
-            foreach ($examiner_check as $rw=>$val) {
+            foreach ($examiner_check as $val) {
                 if ($val['active'] == 'Y') {
                     $examiner_info['pending'] = $val['pending_approval'];
                 }
@@ -148,7 +148,7 @@ class User extends UserPermissions
         // create DB object
         $DB =& Database::singleton();
 
-        $success = $DB->insert('users', $set);
+        $DB->insert('users', $set);
 
         return true;
     }
@@ -167,7 +167,7 @@ class User extends UserPermissions
         // create DB object
         $DB =& Database::singleton();
 
-        $success = $DB->update(
+        $DB->update(
             'users',
             $set,
             array('UserID' => $this->userInfo['UserID'])

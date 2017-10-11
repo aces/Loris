@@ -45,7 +45,7 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
             || !empty($_REQUEST['fire_away'])
         ) {
             if ($this->form->validate()) {
-                $success = $this->form->process(array(&$this, "_save"), false);
+                $this->form->process(array(&$this, "_save"), false);
             }
         }
     }
@@ -77,7 +77,7 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
             }
         }
 
-        $success = $this->_process($values);
+        $this->_process($values);
     }
 
 

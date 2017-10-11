@@ -90,7 +90,7 @@ class NDB_BVL_Feedback
         if (!isset($feedbackList[$objectName])) {
             try {
                 $feedbackList[$objectName] = new NDB_BVL_Feedback();
-                $error = $feedbackList[$objectName]->setup(
+                $feedbackList[$objectName]->setup(
                     $username,
                     $candID,
                     $sessionID,
@@ -144,7 +144,7 @@ class NDB_BVL_Feedback
         $this->_username = $username;
 
         // get CandID (and SessionID)
-        $success = $this->_setCandidateProfileInfo();
+        $this->_setCandidateProfileInfo();
     }
 
     /**
@@ -713,7 +713,7 @@ class NDB_BVL_Feedback
             );
         }
 
-        $success = $DB->insert('feedback_bvl_thread', $setArray);
+        $DB->insert('feedback_bvl_thread', $setArray);
 
         // get the FeedbackID for the new thread
         $feedbackID = $DB->getLastInsertId();
@@ -760,7 +760,7 @@ class NDB_BVL_Feedback
                      'UserID'     => $username,
                     );
 
-        $success = $db->insert('feedback_bvl_entry', $setArray);
+        $db->insert('feedback_bvl_entry', $setArray);
 
         // Returning the set array so the data can be returned as JSON to the GUI.
         return $setArray;
@@ -791,9 +791,6 @@ class NDB_BVL_Feedback
     ) {
         // new DB Object
         $db =& Database::singleton();
-
-        // create user object
-        $user =& User::singleton($this->_username);
 
         // create the new entry - every update need to be follow up with a comment
         $success = $this->createEntry($feedbackID, $comment);
@@ -847,7 +844,7 @@ class NDB_BVL_Feedback
         // DELETE the thread's entries
         $success = $db->delete(
             'feedback_bvl_entry',
-            array("FeedbackID" => '$feedbackID')
+            array("FeedbackID" => $feedbackID)
         );
 
         // DELETE the thread
@@ -871,7 +868,7 @@ class NDB_BVL_Feedback
         $db =& Database::singleton();
 
         // DELETE the thread entries
-        $success = $db->delete('feedback_bvl_entry', array("ID" => $entryID));
+        $db->delete('feedback_bvl_entry', array("ID" => $entryID));
     }
 
     /**
@@ -885,8 +882,6 @@ class NDB_BVL_Feedback
     {
         // new DB Object
         $db =& Database::singleton();
-
-        $user =& User::singleton($this->_username);
 
         $setArray = array(
                      "Active"   => 'Y',
@@ -924,7 +919,7 @@ class NDB_BVL_Feedback
             throw new Exception("Error: No threads selected to activate");
         }
 
-        $success = $db->update('feedback_bvl_thread', $setArray, $whereArray);
+        $db->update('feedback_bvl_thread', $setArray, $whereArray);
     }
 
     /**
@@ -939,9 +934,6 @@ class NDB_BVL_Feedback
      */
     function closeThread($feedbackID=null)
     {
-        // create user object
-        $user =& User::singleton();
-
         // new DB Object
         $db =& Database::singleton();
 
@@ -986,7 +978,7 @@ class NDB_BVL_Feedback
         }
 
         // close the threads - update feedback_bvl_thread table
-        $success = $db->update('feedback_bvl_thread', $setArray, $whereArray);
+        $db->update('feedback_bvl_thread', $setArray, $whereArray);
     }
 
     /**
@@ -1000,8 +992,6 @@ class NDB_BVL_Feedback
      */
     function openThread($feedbackID)
     {
-        $user =& User::singleton();
-
         $db =& Database::singleton();
 
         $setArray = array(
@@ -1021,7 +1011,7 @@ class NDB_BVL_Feedback
             );
         }
 
-        $success = $db->update('feedback_bvl_thread', $setArray, $whereArray);
+        $db->update('feedback_bvl_thread', $setArray, $whereArray);
 
     }
 

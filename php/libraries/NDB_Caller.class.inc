@@ -384,7 +384,8 @@ class NDB_Caller
         if (method_exists($form, 'getControlPanel')) {
             $this->controlPanel = $form->getControlPanel();
         }
-        $success = $form->save();
+
+        $form->save();
 
         if (method_exists($form, 'getControlPanel')) {
             $this->controlPanel = $form->getControlPanel();
@@ -415,7 +416,7 @@ class NDB_Caller
             $reliability_center_id
         );
 
-        $success = $form->save();
+        $form->save();
 
         $this->page = $form;
         $html       = $form->display();

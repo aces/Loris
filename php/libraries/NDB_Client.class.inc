@@ -144,7 +144,7 @@ class NDB_Client
         if (!$login->isLoggedIn()) {
             $auth = $login->authenticate();
             if ($auth === true) {
-                $error = $login->setState();
+                $login->setState();
             } elseif ($auth === false) {
                 // only send a 403 error if they were attempting to log in,
                 // otherwise the login page returns a 403 when first accessing
