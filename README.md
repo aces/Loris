@@ -14,7 +14,7 @@ Deploy and log in with username <i>admin</i> and the password that's set up duri
 | --------------------- | -------- |
 | master         |  [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=master)](https://travis-ci.org/aces/Loris)
 
-This Readme covers installation of the <b>18.0</b> LORIS release on <b>Ubuntu</b>.
+This Readme covers installation of the LORIS <b>v18.0.0</b> release on <b>Ubuntu</b>.
 ([CentOS Readme also available](https://github.com/aces/Loris/blob/master/README.CentOS6.md)).
 
 Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information not included in this Readme. The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki. 
