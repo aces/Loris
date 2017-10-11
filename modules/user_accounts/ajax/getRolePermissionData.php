@@ -31,6 +31,7 @@ function getRoles()
     $DB          = Database::singleton();
     $userEditing = User::singleton();
 
+
     $roles = $DB->pselect(
         "SELECT id, label as name
          FROM permission_categories",
@@ -39,20 +40,27 @@ function getRoles()
 
     if (!empty($roles)) {
         foreach ($roles as &$role) {
-            // Determine if checked
-            $role['checked'] = userHasRole($role['id']);
+
+            if (!creatingNewUser()) {
+                // Determine if checked
+                $role['checked'] = userHasRole($role['id']);
+            }
 
             // Get permissions associated with role
             $role['permissions'] = getRolePermissions($role['id']);
 
             // Determine if the role should be enabled based on editing user
             // permissions
-            foreach ($role['permissions'] as &$permission) {
-                $enabled = $userEditing->hasPermission($permission['code']);
+            if (editingSelf()) {
+                $role['disabled'] = true;
+            } else {
+                foreach ($role['permissions'] as &$permission) {
+                    $enabled = $userEditing->hasPermission($permission['code']);
 
-                if (!$enabled) {
-                    $role['disabled'] = true;
-                    break;
+                    if (!$enabled) {
+                        $role['disabled'] = true;
+                        break;
+                    }
                 }
             }
         }
@@ -72,21 +80,27 @@ function getPermissions()
 {
     $DB = Database::singleton();
 
-    $userToEdit  = User::factory($_REQUEST['identifier']);
-    $userEditing = User::singleton();
-
     $permissions = $DB->pselect(
         "SELECT permID as id, code, description as name
          FROM permissions",
         array()
     );
 
-    foreach ($permissions as &$permission) {
-        $permission['checked']  = $userToEdit->hasPermission(
-            $permission['code'],
-            true
-        );
-        $permission['disabled'] = !$userEditing->hasPermission($permission['code']);
+    if (!creatingNewUser()) {
+        $userEditing = User::singleton();
+        $userToEdit  = User::factory($_REQUEST['identifier']);
+
+        foreach ($permissions as &$permission) {
+            $permission['checked']  = $userToEdit->hasPermission(
+                $permission['code'],
+                true
+            );
+            if (editingSelf()) {
+                $permission['disabled'] = true;
+            } else {
+                $permission['disabled'] = !$userEditing->hasPermission($permission['code']);
+            }
+        }
     }
 
     return $permissions;
@@ -140,5 +154,36 @@ function getRolePermissions($roleID)
     );
 
     return $permissions;
+}
+
+/**
+ * Checks if the user is editing their own permissions
+ *
+ * @return boolean
+ */
+function editingSelf()
+{
+    $userEditingID = User::singleton()->getUsername();
+    $userToEditID  = $_REQUEST['identifier'];
+
+    if ($userEditingID === $userToEditID) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
+ * Checks is a new user is being created
+ *
+ * @return boolean
+ */
+function creatingNewUser()
+{
+    if ($_REQUEST['identifier'] == '') {
+        return true;
+    } else {
+        return false;
+    }
 }
 ?>

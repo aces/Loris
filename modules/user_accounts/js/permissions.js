@@ -188,9 +188,7 @@ var Access = React.createClass({
     });
   },
   componentDidMount: function componentDidMount() {
-    if (this.props.identifier) {
-      this.loadDataFromServer();
-    }
+    this.loadDataFromServer();
   },
   componentWillUnmount: function componentWillUnmount() {
     this.serverRequest.abort();
@@ -372,9 +370,13 @@ var Access = React.createClass({
 });
 
 window.onload = function () {
+  var userID = QueryString.get().identifier;
+  if (typeof userID == 'undefined') {
+    userID = '';
+  }
   var access = React.createElement(Access, {
     dataURL: loris.BaseURL + '/user_accounts/ajax/getRolePermissionData.php',
-    identifier: QueryString.get().identifier
+    identifier: userID
   });
 
   ReactDOM.render(access, document.getElementById("access"));
