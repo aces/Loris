@@ -203,22 +203,24 @@ class NDB_BVL_Battery
             )
         );
 
-        // generate the double data entry commentid
-        $ddeCommentID = 'DDE_'.$commentID;
+        if (NDB_BVL_Instrument::isDoubleDataEntryEnabledForInstrument($testName)) {
+            // generate the double data entry commentid
+            $ddeCommentID = 'DDE_' . $commentID;
 
-        // insert the dde into the test table
-        $success = $DB->insert($testName, array('CommentID' => $ddeCommentID));
+            // insert the dde into the test table
+            $success = $DB->insert($testName, array('CommentID' => $ddeCommentID));
 
-        // insert the dde into the flag table
-        $success = $DB->insert(
-            'flag',
-            array(
-             'SessionID' => $sessionData['SessionID'],
-             'Test_name' => $testName,
-             'CommentID' => $ddeCommentID,
-             'UserID'    => $sessionData['UserID'],
-            )
-        );
+            // insert the dde into the flag table
+            $success = $DB->insert(
+                'flag',
+                array(
+                 'SessionID' => $sessionData['SessionID'],
+                 'Test_name' => $testName,
+                 'CommentID' => $ddeCommentID,
+                 'UserID'    => $sessionData['UserID'],
+                )
+            );
+        }
 
         return $commentID;
 
