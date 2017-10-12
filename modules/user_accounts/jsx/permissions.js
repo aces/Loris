@@ -331,7 +331,7 @@ var Access = React.createClass({
 
 window.onload = function() {
   var userID = QueryString.get().identifier;
-  if (typeof userID == 'undefined') {
+  if (typeof userID === 'undefined') {
     userID = '';
   }
   var access = <Access
