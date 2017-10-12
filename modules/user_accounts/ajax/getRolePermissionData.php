@@ -11,6 +11,13 @@
  * @link     https://github.com/aces/Loris
  */
 
+// Check that the user has permission to access user_accounts
+$user = User::singleton();
+if (!$user->hasPermission('user_accounts')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit();
+}
+
 $data = array(
          'roles'       => getRoles(),
          'permissions' => getPermissions(),
@@ -30,7 +37,6 @@ function getRoles()
 {
     $DB          = Database::singleton();
     $userEditing = User::singleton();
-
 
     $roles = $DB->pselect(
         "SELECT id, label as name
@@ -91,14 +97,15 @@ function getPermissions()
         $userToEdit  = User::factory($_REQUEST['identifier']);
 
         foreach ($permissions as &$permission) {
-            $permission['checked']  = $userToEdit->hasPermission(
+            $permission['checked'] = $userToEdit->hasPermission(
                 $permission['code'],
                 true
             );
             if (editingSelf()) {
                 $permission['disabled'] = true;
             } else {
-                $permission['disabled'] = !$userEditing->hasPermission($permission['code']);
+                $permission['disabled']
+                    = !$userEditing->hasPermission($permission['code']);
             }
         }
     }
@@ -166,7 +173,7 @@ function editingSelf()
     $userEditingID = User::singleton()->getUsername();
     $userToEditID  = $_REQUEST['identifier'];
 
-    if ($userEditingID === $userToEditID) {
+    if ($userEditingID == $userToEditID) {
         return true;
     } else {
         return false;

@@ -9,10 +9,10 @@
  *
  * To see the permissions in the database:
  *     php update_roles.php permissions
- * 
+ *
  * To see the permissions for a role:
  *     php update_roles.php [role]
- * 
+ *
  * To add a permission to the role:
  *     php update_roles.php [role] add [permission]
  *
@@ -34,56 +34,53 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/generic_includes.php";
 
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize(__DIR__."/../project/config.xml");
-
 $roles       = getRoles();
 $permissions = getPermissions();
 
-// User did not provide any
+// User did not provide any args
 if (count($argv) === 1) {
     syntaxIncorrect();
-    exit();
+    exit(1);
 }
 
 // User asking for the list of roles
 if (isset($argv[1]) && $argv[1] === "roles") {
     if (!empty($roles)) {
-        print "The roles in the database are:\n\n";
+        echo "The roles in the database are:\n\n";
         prettyPrint($roles);
     } else {
-        print "There are currently no roles in the database.\n";
+        echo "There are currently no roles in the database.\n";
     }
-    
-    exit();
+
+    exit(2);
 }
 
 // User asking for the list of permissions
 if (isset($argv[1]) && $argv[1] === "permissions") {
-    print "The permissions in the database are:\n\n";
+    echo "The permissions in the database are:\n\n";
     prettyPrint($permissions);
-    exit();
+    exit(3);
 }
 
 // User asking to reassign roles based on the user permissions
 if (isset($argv[1]) && $argv[1] === "refresh") {
     refresh();
-    exit();
+    exit(4);
 }
 
+// Arg syntax not correct
 if (isset($argv[1]) && !isRole($argv[1])) {
     syntaxIncorrect();
-    exit();
+    exit(5);
 }
 
 $role = $argv[1];
 
 // User asking for the permissions associated with a role
 if (count($argv) === 2) {
-    print "The permissions for the " . $role . " role are :\n\n";
+    echo "The permissions for the $role role are:\n\n";
     prettyPrint(getRolePermissions($role));
-    exit();
+    exit(6);
 }
 
 // User looking to add a permission to a role
@@ -92,14 +89,14 @@ if (isset($argv[2]) && $argv[2] === "add") {
         $permission = $argv[3];
         if (isPermission($permission)) {
             addPermission($role, $permission);
-            exit();
+            exit(7);
         } else {
-            echo $permission . " is not a valid permission.\n";
-            exit();
+            echo "$permission is not a valid permission.\n";
+            exit(8);
         }
     } else {
         echo "You must include the permission you would like to add.\n";
-        exit();
+        exit(9);
     }
 }
 
@@ -111,17 +108,17 @@ if (isset($argv[2]) && $argv[2] === "remove") {
             removePermission($role, $permission);
             exit();
         } else {
-            echo $permission . " is not a valid permission.\n";
-            exit();
+            echo "$permission is not a valid permission.\n";
+            exit(10);
         }
     } else {
         echo "You must include the permission you would like to remove.\n";
-        exit();
+        exit(11);
     }
 }
 
 syntaxIncorrect();
-exit();
+exit(12);
 
 /**
  * SyntaxIncorrect
@@ -132,17 +129,14 @@ exit();
  */
 function syntaxIncorrect()
 {
-    print "You have not used the correct argument syntax for this script.\n\n".
-          "To see the roles in the database: php update_roles.php roles\n".
-          "To see the permissions in the database: php update_roles.php " .
-          "permissions\n".
-          "To see the permissions for a role: php update_roles.php [role]\n".
-          "To add a permission to the role: php update_roles.php [role] add " .
-          "[permission]\n".
-          "To remove a permission from the role: php update_roles.php [role] " .
-          "remove [permission]\n".
-          "To recalculate and reasign the roles for every user: php " .
-          "update_roles.php refresh\n";
+    echo "You have not used the correct argument syntax for this script.
+
+To see the roles in the database:        php update_roles.php roles
+To see the permissions in the database:  php update_roles.php permissions
+To see the permissions for a role:       php update_roles.php [role]
+To add a permission to the role:         php update_roles.php [role] add [perm]
+To remove a permission from the role:    php update_roles.php [role] remove [perm]
+To recalculate the roles for every user: php update_roles.php refresh";
 }
 
 /**
@@ -157,7 +151,7 @@ function syntaxIncorrect()
 function prettyPrint($array)
 {
     foreach ($array as $child) {
-        echo $child . "\n";
+        echo "$child\n";
     }
 }
 
@@ -392,7 +386,7 @@ function getUsersWithRole($role)
     $usersWithRole = array();
 
     foreach (getUserIDs() as $userID) {
-        if (userHasRole($userID, $role)) {
+        if (userHasRole($userID['ID'], $role)) {
             array_push($usersWithRole, $userID);
         }
     }
@@ -522,7 +516,7 @@ function refresh()
 
         $userID = $user['ID'];
 
-        echo "Updating roles for " . $user['Real_name'] . "\n";
+        echo "Updating roles for ${user['Real_name']}\n";
 
         // delete existing roles
         $DB->delete(
@@ -535,7 +529,7 @@ function refresh()
 
         // update their roles in the database
         foreach ($newRoles as $role) {
-            echo "\tAdding " . $role . "\n";
+            echo "\tAdding $role\n";
             $DB->insert(
                 'users_permission_categories_rel',
                 array(
@@ -564,13 +558,12 @@ function addPermission($role, $permission)
 {
     $DB = Database::singleton();
 
-    echo "Adding the " . $permission . " permission to the " . $role .
-        " role...\n\n";
+    echo "Adding the $permission permission to the $role role...\n\n";
 
     // Check is it has that permission already
     if (roleHasPermission($role, $permission)) {
-        echo "The " . $role . " role already has the " . $permission .
-            " permission. No changes to be made.\n";
+        echo "The $role role already has the $permission permission." .
+             "No changes to be made.\n";
         exit();
     }
 
@@ -586,10 +579,10 @@ function addPermission($role, $permission)
         )
     );
 
-    echo "\n" . $permission . " was added to the " . $role . " category.\n\n";
+    echo "\n$permission was added to the $role category.\n\n";
 
     // Update the permissions for the user with the role
-    echo "Updating the users with the " . $role . " role...\n\n";
+    echo "Updating the users with the $role role...\n\n";
 
     foreach (getUsersWithRole($role) as $user) {
         if (!userHasPermission($user['ID'], $permission)) {
@@ -601,11 +594,9 @@ function addPermission($role, $permission)
                 )
             );
 
-            echo $user['Real_name'] . " was granted the " . $permission .
-                " permission.\n";
+            echo "${user['Real_name']} was granted the $permission permission.\n";
         } else {
-            echo $user['Real_name'] . " already has the " . $permission .
-                " permission.\n";
+            echo "${user['Real_name']} already has the $permission permission.\n";
         }
     }
 }
@@ -625,13 +616,12 @@ function removePermission($role, $permission)
 {
     $DB = Database::singleton();
 
-    echo "Removing the " . $permission . " permission from the " . $role .
-        " role...\n\n";
+    echo "Removing the $permission permission from the $role role...\n\n";
 
     // Check is it has that permission already
     if (!roleHasPermission($role, $permission)) {
-        echo "The " . $role . " role does not contain the " . $permission .
-            " permission. No changes to be made.\n";
+        echo "The $role role does not contain the $permission permission." .
+             " No changes to be made.\n";
         exit();
     }
 
@@ -644,10 +634,10 @@ function removePermission($role, $permission)
         )
     );
 
-    echo "\n" . $permission . " was removed from the " . $role . " category.\n";
+    echo "\n$permission was removed from the $role category.\n";
 
     // Update the users with that role
-    echo "Updating the user with the " . $role . " role...\n\n";
+    echo "Updating the users with the $role role...\n\n";
 
     foreach (getUsersWithRole($role) as $user) {
         if (userHasPermission($user['ID'], $permission)) {
@@ -659,10 +649,10 @@ function removePermission($role, $permission)
                 )
             );
 
-            echo $user['Real_name'] . " lost the " . $permission . " permission.\n";
+            echo "${user['Real_name']} lost the $permission permission.\n";
         } else {
-            echo $user['Real_name'] . " does not have the " . $permission .
-                " permission. Nothing to delete.\n";
+            echo "${user['Real_name']} does not have the $permission permission." .
+                 "Nothing to delete.\n";
         }
     }
 }
