@@ -131,11 +131,16 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     {
         $this->webDriver->get($this->url . "/dicom_archive/?" . $name ."=". $key);
        printf($location);
+
        printf("00000000000000000000000000000000");
+        $script = "return document.querySelector('$location').value";
+printf($script);
         $text = $this->webDriver->executescript(
-                "return document.querySelector('$location').value"
+                $script
                );
        
+        printf("===============================");
+        printf($text);
          
         //make sure that filter works well
         $this->assertEquals($text, $key);
