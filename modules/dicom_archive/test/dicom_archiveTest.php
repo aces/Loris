@@ -26,6 +26,16 @@ require_once __DIR__
  */
 class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
 {
+    //$location: css selector for react items 
+      static $patientID   = "#dicom_filter>div>div:nth-child(1)>div>div>input";
+      static $PatientName = "#dicom_filter>div>div:nth-child(2)>div>div>input";
+      static $site        = "#Site";
+      static $Gender      = "#dicom_filter>div>div:nth-child(4)>div>div>input";
+      static $dateOfBirth = "#dicom_filter>div>div:nth-child(5)>div>div>input";
+      static $Acquisition = "#dicom_filter>div>div:nth-child(6)>div>div>input";
+      static $Archive     = "#dicom_filter>div>div:nth-child(7)>div>div>input";
+      static $SeriesUID   = "#dicom_filter>div>div:nth-child(8)>div>div>input";
+      static $clearButton = "#dicom_filter>div>div:nth-child(9)>div>div>button";
     /**
      * Insert testing data into the database
      *
@@ -97,28 +107,19 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testdicomArchivFilterClearBtn()
     {
-        //$location: css selector for items 
-        $patientID   = "#dicom_filter > div > div:nth-child(1) > div > div > input";
-        $PatientName = "#dicom_filter > div > div:nth-child(2) > div > div > input";
-        $site        = "#Site";
-        $Gender      = "#dicom_filter > div > div:nth-child(4) > div > div > input";
-        $dateOfBirth = "#dicom_filter > div > div:nth-child(5) > div > div > input";
-        $Acquisition = "#dicom_filter > div > div:nth-child(6) > div > div > input";
-        $Archive     = "#dicom_filter > div > div:nth-child(7) > div > div > input";
-        $SeriesUID   = "#dicom_filter > div > div:nth-child(8) > div > div > input";
         $this->safeGet($this->url . "/dicom_archive/"); 
         //testing data from RBdata.sql
-        $this-> _filter('patientID', "ibis",$patientID,"ibis");
-        $this-> _filter('patientName', "MTL022_300022_V1",$PatientName,"ibis");
-        $this-> _filter('site', "2",$site,"ibis");
-        $this-> _filter('gender', "M",$Gender,"D568405");
-        $this-> _filter('dateOfBirth', '2011-10-20',$dateOfBirth,"LIVING_PHANTOM_UNC_SD_HOS_20111020");
-        $this-> _filter('acquisition', '2009-06-09',$Acquisition,"ibis");
-        $this-> _filter('archiveLocation', "2009/DCM_2009-06-09_ImagingUpload-14-14-qM69wJ.tar",$Archive,"ibis");
-        $this-> _filter('seriesuid', "1.3.12.2.1107.5.2.32.35182.2009060916513929723684064.0.0.0",$SeriesUID,"ibis");
+        $this-> _filter('patientID', "ibis",self::$patientID,"ibis");
+        $this-> _filter('patientName', "MTL022_300022_V1",self::$PatientName,"ibis");
+        $this-> _filter('site', "2",self::$site,"ibis");
+        $this-> _filter('gender', "M",self::$Gender,"D568405");
+        $this-> _filter('dateOfBirth', '2011-10-20',self::$dateOfBirth,"LIVING_PHANTOM_UNC_SD_HOS_20111020");
+        $this-> _filter('acquisition', '2009-06-09',self::$Acquisition,"ibis");
+        $this-> _filter('archiveLocation', "2009/DCM_2009-06-09_ImagingUpload-14-14-qM69wJ.tar",self::$Archive,"ibis");
+        $this-> _filter('seriesuid', "1.3.12.2.1107.5.2.32.35182.2009060916513929723684064.0.0.0",self::$SeriesUID,"ibis");
     }
     /**
-     * clear button function
+     * Tests filter function
      * 
      * @param $name the name of this element in html
      * @param $key  the test key for query
@@ -137,9 +138,49 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         //make sure that filter table works well
         $text = $this->webDriver->executescript(
                 "return document.querySelector(".
-                "'#dynamictable > tbody > tr:nth-child(1) > td:nth-child(2)').textContent"
+                "'#dynamictable > tbody > tr:nth-child(1) >".
+                " td:nth-child(2)').textContent"
                ); 
          $this->assertEquals($text, $expect);      
+    }
+    /**
+     * Tests clear button 
+     * 
+     * @return void
+     */
+    function testClearBtn()
+    {
+        $this->safeGet($this->url . "/dicom_archive/");
+        $this->_clear('patientID',self::$patientID,'testtesttest');
+        $this->_clear('patientName',self::$PatientName,'testtesttest');
+        $this->_clear('site',self::$site,'testtesttest');
+        $this->_clear('gender',self::$Gender,'testtesttest');
+        $this->_clear('dateOfBirth',self::$dateOfBirth,'testtesttest');
+        $this->_clear('acquisition',self::$Acquisition,'testtesttest');
+        $this->_clear('archiveLocation',self::$Archive,'testtesttest');
+        $this->_clear('seriesuid',self::$SeriesUID,'testtesttest');
+    }
+    /**
+     * Clear function : Inputing 'testtesttest' into textarea, after clicking
+     * button, the textarea should be null.
+     * 
+     * @param $name the name of this element in html
+     * @param $key  the test key for query
+     * @param $location the location of the element (css selector)
+     *
+     * @return void
+     */
+    function _clear($name,$location ,$key)
+    {
+        $this->webDriver->get($this->url . "/dicom_archive/?" . $name ."=". $key);
+        $script = "document.querySelector('".self::$clearButton."').click()";
+        $this->webDriver->executescript(
+                $script 
+               );
+        $text = $this->webDriver->executescript(
+                "return document.querySelector('$location').value"
+               );
+        $this->assertEquals('', $text);
     }
 
 }
