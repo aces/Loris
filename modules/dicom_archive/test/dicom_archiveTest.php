@@ -130,8 +130,6 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     function _filter($name, $key,$location,$expect)
     {
         $this->webDriver->get($this->url . "/dicom_archive/?" . $name ."=". $key);
-        $bodyText = $this->webDriver->getPageSource();
-printf($bodyText);
         $text = $this->webDriver->executescript(
                 "return document.querySelector('$location').value"
                );
