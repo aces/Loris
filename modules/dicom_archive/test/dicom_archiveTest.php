@@ -110,13 +110,13 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/dicom_archive/"); 
         //testing data from RBdata.sql
         $this-> _filter('patientID', "ibis",self::$patientID,"ibis");
-        /*$this-> _filter('patientName', "MTL022_300022_V1",self::$PatientName,"ibis");
+        $this-> _filter('patientName', "MTL022_300022_V1",self::$PatientName,"ibis");
         $this-> _filter('site', "2",self::$site,"ibis");
         $this-> _filter('gender', "M",self::$Gender,"D568405");
         $this-> _filter('dateOfBirth', '2011-10-20',self::$dateOfBirth,"LIVING_PHANTOM_UNC_SD_HOS_20111020");
         $this-> _filter('acquisition', '2009-06-09',self::$Acquisition,"ibis");
         $this-> _filter('archiveLocation', "2009/DCM_2009-06-09_ImagingUpload-14-14-qM69wJ.tar",self::$Archive,"ibis");
-        $this-> _filter('seriesuid', "1.3.12.2.1107.5.2.32.35182.2009060916513929723684064.0.0.0",self::$SeriesUID,"ibis");*/
+        $this-> _filter('seriesuid', "1.3.12.2.1107.5.2.32.35182.2009060916513929723684064.0.0.0",self::$SeriesUID,"ibis");
     }
     /**
      * Tests filter function
@@ -130,20 +130,11 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     function _filter($name, $key,$location,$expect)
     {
         $this->webDriver->get($this->url . "/dicom_archive/?" . $name ."=". $key);
-       printf($location);
-       sleep(1);
-//       $t = $this->webDriver->getPageSource();
-//    var_dump($t);
-       printf("00000000000000000000000000000000");
+        sleep(1);
         $script = "return document.querySelector('$location').value";
-printf($script);
         $text = $this->webDriver->executescript(
                 $script
                );
-       
-        printf("===============================");
-        printf($text);
-         
         //make sure that filter works well
         $this->assertEquals($text, $key);
         //make sure that filter table works well
@@ -163,13 +154,13 @@ printf($script);
     {
         $this->safeGet($this->url . "/dicom_archive/");
         $this->_clear('patientID',self::$patientID,'testtesttest');
-/*        $this->_clear('patientName',self::$PatientName,'testtesttest');
+        $this->_clear('patientName',self::$PatientName,'testtesttest');
         $this->_clear('site',self::$site,'testtesttest');
         $this->_clear('gender',self::$Gender,'testtesttest');
         $this->_clear('dateOfBirth',self::$dateOfBirth,'testtesttest');
         $this->_clear('acquisition',self::$Acquisition,'testtesttest');
         $this->_clear('archiveLocation',self::$Archive,'testtesttest');
-        $this->_clear('seriesuid',self::$SeriesUID,'testtesttest');*/
+        $this->_clear('seriesuid',self::$SeriesUID,'testtesttest');
     }
     /**
      * Clear function : Inputing 'testtesttest' into textarea, after clicking
@@ -184,6 +175,7 @@ printf($script);
     function _clear($name,$location ,$key)
     {
         $this->webDriver->get($this->url . "/dicom_archive/?" . $name ."=". $key);
+        sleep(1);
         $script = "document.querySelector('".self::$clearButton."').click()";
         $this->webDriver->executescript(
                 $script 
