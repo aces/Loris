@@ -354,7 +354,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $text = $this->webDriver->executescript(
             "return document.querySelector('#bc2 > a:nth-child(3)>div').textContent"
         );
-        $this->assertContains('Candidate Profile 587630 / DCC090', $text);
+        $this->assertContains('Candidate Profile ', $text);
     }
 }
 ?>
