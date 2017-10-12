@@ -843,7 +843,8 @@ class NDB_Form_User_Accounts extends NDB_Form
         // checking if the account can be rejected (no password hash
         // pending approval)
         if (!$this->isCreatingNewUser()) {
-            $this->tpl_data['can_reject'] =$this->_canRejectAccount($this->identifier);
+            $this->tpl_data['can_reject']
+                = $this->_canRejectAccount($this->identifier);
         }
 
         //getting users name and emails to create checkboxes
