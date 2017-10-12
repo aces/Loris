@@ -130,9 +130,13 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     function _filter($name, $key,$location,$expect)
     {
         $this->webDriver->get($this->url . "/dicom_archive/?" . $name ."=". $key);
+       printf($location);
+       printf("00000000000000000000000000000000");
         $text = $this->webDriver->executescript(
                 "return document.querySelector('$location').value"
                );
+       
+         
         //make sure that filter works well
         $this->assertEquals($text, $key);
         //make sure that filter table works well
@@ -141,8 +145,6 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
                 "'#dynamictable > tbody > tr:nth-child(1) >".
                 " td:nth-child(2)').textContent"
                ); 
-$bodyText = $this->webDriver->getPageSource(); 
-printf($bodyText);
          $this->assertEquals($text, $expect);      
     }
     /**
