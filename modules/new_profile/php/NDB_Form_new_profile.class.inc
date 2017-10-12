@@ -37,7 +37,7 @@ class NDB_Form_New_Profile extends NDB_Form
         foreach ($site_arr as $key=>$val) {
             $site[$key]        = & Site::singleton($val);
             $isStudySite[$key] = $site[$key]->isStudySite();
-            $isDCCSite[$key]   = $site[$key]->getCenterName();
+            $isDCCSite[$key]   = $site[$key]->getSiteAlias();
         }
         $oneIsStudySite = in_array("1", $isStudySite);
         $oneIsDCCSite   = in_array("DCC", $isDCCSite);
