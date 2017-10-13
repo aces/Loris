@@ -207,11 +207,11 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->assertEquals('', $text);
     }
     /**
-     * Tests that all the links works (view-Details and view-Images)
+     * Tests that the (view-Details) link works
      * 
      * @return void
      */
-    function testLinks()
+    function testLinksViewDetails()
     {
       $this->safeGet($this->url . "/dicom_archive/");
       $location = "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(8) > a";
@@ -219,11 +219,31 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
                 "return document.querySelector('$location').textContent"
                );
       $this->assertEquals('View Details', $text);
+      $this->webDriver->executescript(
+                "document.querySelector('$location').click()"
+               );
+      $text = $this->webDriver->getPageSource();
+      $this->assertEquals('View Details', $text);
+    }
+    /**
+     * Tests that the (view-Images) link works
+     * 
+     * @return void
+     */
+    function testLinksViewDetails()
+    {
+      $this->safeGet($this->url . "/dicom_archive/");
       $location = "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(9) > a";
       $text = $this->webDriver->executescript(
                 "return document.querySelector('$location').textContent"
                );
       $this->assertEquals('View Images', $text);
-    }    
+      $this->webDriver->executescript(
+                "document.querySelector('$location').click()"
+               );
+      $text = $this->webDriver->getPageSource();
+      $this->assertEquals('View Session', $text);
+
+    }
 }
 ?>
