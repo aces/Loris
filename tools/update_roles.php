@@ -63,15 +63,21 @@ if (isset($argv[1]) && $argv[1] === "permissions") {
 }
 
 // User asking to reassign roles based on the user permissions
-if (isset($argv[1]) && $argv[1] === "refresh") {
-    refresh();
+if (isset($argv[1]) && $argv[1] === "refreshRoles") {
+    refreshRoles();
     exit(4);
+}
+
+// User asking to reassign permissions based on the user roles
+if (isset($argv[1]) && $argv[1] === "refreshPermissions") {
+    refreshPermissions();
+    exit(5);
 }
 
 // Arg syntax not correct
 if (isset($argv[1]) && !isRole($argv[1])) {
     syntaxIncorrect();
-    exit(5);
+    exit(6);
 }
 
 $role = $argv[1];
@@ -80,7 +86,7 @@ $role = $argv[1];
 if (count($argv) === 2) {
     echo "The permissions for the $role role are:\n\n";
     prettyPrint(getRolePermissions($role));
-    exit(6);
+    exit(7);
 }
 
 // User looking to add a permission to a role
@@ -89,14 +95,14 @@ if (isset($argv[2]) && $argv[2] === "add") {
         $permission = $argv[3];
         if (isPermission($permission)) {
             addPermission($role, $permission);
-            exit(7);
+            exit(8);
         } else {
             echo "$permission is not a valid permission.\n";
-            exit(8);
+            exit(9);
         }
     } else {
         echo "You must include the permission you would like to add.\n";
-        exit(9);
+        exit(10);
     }
 }
 
@@ -106,19 +112,19 @@ if (isset($argv[2]) && $argv[2] === "remove") {
         $permission = $argv[3];
         if (isPermission($permission)) {
             removePermission($role, $permission);
-            exit();
+            exit(11);
         } else {
             echo "$permission is not a valid permission.\n";
-            exit(10);
+            exit(12);
         }
     } else {
         echo "You must include the permission you would like to remove.\n";
-        exit(11);
+        exit(13);
     }
 }
 
 syntaxIncorrect();
-exit(12);
+exit(14);
 
 /**
  * SyntaxIncorrect
@@ -131,12 +137,13 @@ function syntaxIncorrect()
 {
     echo "You have not used the correct argument syntax for this script.
 
-To see the roles in the database:        php update_roles.php roles
-To see the permissions in the database:  php update_roles.php permissions
-To see the permissions for a role:       php update_roles.php [role]
-To add a permission to the role:         php update_roles.php [role] add [perm]
-To remove a permission from the role:    php update_roles.php [role] remove [perm]
-To recalculate the roles for every user: php update_roles.php refresh";
+To see the roles in the database:       php update_roles.php roles
+To see the permissions in the database: php update_roles.php permissions
+To see the permissions for a role:      php update_roles.php [role]
+To add a permission to the role:        php update_roles.php [role] add [perm]
+To remove a permission from the role:   php update_roles.php [role] remove [perm]
+To rebuild the roles for every user:    php update_roles.php refreshRoles
+To rebuild permissions for every user:  php update_roles.php refreshPermissions";
 }
 
 /**
@@ -396,7 +403,7 @@ function getUsersWithRole($role)
 /**
  * GetUserRolesByPermission
  *
- * Returns all the users with the permissions matching to a role
+ * Returns all the user's roles based on their permissions
  *
  * @param int $userID the UserID
  *
@@ -414,6 +421,32 @@ function getUserRolesByPermission($userID)
             array_push($userRoles, $role);
         }
     }
+
+    return $userRoles;
+}
+
+/**
+ * GetUserRoles
+ *
+ * Returns all the user's roles
+ *
+ * @param int $userID the UserID
+ *
+ * @return array
+ */
+function getUserRoles($userID)
+{
+    $DB = Database::singleton();
+
+    $userRoles = $DB->pselect(
+        "SELECT upc.permission_category_id
+         FROM users_permission_categories_rel upc
+         LEFT JOIN users u ON u.ID=upc.user_id
+         WHERE u.UserID=:userID",
+        array(
+         'userID' => $userID,
+        )
+    );
 
     return $userRoles;
 }
@@ -501,15 +534,17 @@ function roleHasPermission($role, $permission)
 }
 
 /**
- * RoleHasPermission
+ * RefreshRoles
  *
- * Checks if a given role contains a given permission
+ * Rebuilds roles based on user permissions
  *
  * @return boolean
  */
-function refresh()
+function refreshRoles()
 {
     $DB = Database::singleton();
+
+    echo "Rebuilding roles based on user permissions\n\n";
 
     // Iterate over each user, update their roles based on their permissions
     foreach (getUserIDs() as $user) {
@@ -537,6 +572,48 @@ function refresh()
                  'permission_category_id' => getRoleID($role),
                 )
             );
+        }
+
+        echo "\n";
+    }
+}
+
+/**
+ * RefreshPermissions
+ *
+ * Tops up user permissions based on their roles
+ * Adds any permissions a user may be missing from a role they are assigned
+ *
+ * @return boolean
+ */
+function refreshPermissions()
+{
+    $DB = Database::singleton();
+
+    echo "Updating permissions based on user roles\n\n";
+
+    // Iterate over each user, update their roles based on their permissions
+    foreach (getUserIDs() as $user) {
+
+        echo "Updating permissions for ${user['Real_name']}\n";
+
+        // get user roles
+        $roles = getUserRoles($user['ID']);
+
+        // update their permissions in the database
+        foreach ($roles as $role) {
+            $permissions = getRolePermissions($role);
+
+            foreach ($permissions as $permission) {
+                echo "\tAdding $permission\n";
+                $DB->insertIgnore(
+                    'user_perm_rel',
+                    array(
+                     'userID' => $user['ID'],
+                     'permID' => getRoleID($role),
+                    )
+                );
+            }
         }
 
         echo "\n";
@@ -599,6 +676,9 @@ function addPermission($role, $permission)
             echo "${user['Real_name']} already has the $permission permission.\n";
         }
     }
+
+    // Rebuild roles in case anyone gets a new role based on a new permission
+    refreshRoles();
 }
 
 /**
@@ -655,5 +735,10 @@ function removePermission($role, $permission)
                  "Nothing to delete.\n";
         }
     }
+
+    // Add permissions back if the user has it in another role
+
+    // Rebuild roles in case anyone gets a new role based on changed role permissions
+    refreshRoles();
 }
 ?>
