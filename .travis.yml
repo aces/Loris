@@ -1,3 +1,14 @@
+language: php
+
+cache:
+    directories:
+        - vendor
+
+php:
+    - "7"
+    - "7.1"
+
+sudo: true
 env:
   # You may want to update this to whatever the latest version is, or keep it
   # the same as your local machines. However, I have only tested it with 1.8.0+.
