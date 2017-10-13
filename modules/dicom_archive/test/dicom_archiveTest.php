@@ -133,7 +133,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->get($this->url . "/dicom_archive/?" . $name ."=". $key);
         $script = "return document.querySelector('$location').value";
         try {
-        $this->webDriver->executescript($script);
+        $text = $this->webDriver->executescript($script);
         // something
         } catch (Exception $e) {
         $caught = true;
@@ -141,7 +141,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
 
         if ($caught) {
         sleep(1);
-        $this->webDriver->executescript($script);
+        $text = $this->webDriver->executescript($script);
         }
         //make sure that filter works well
         $this->assertEquals($text, $key);
