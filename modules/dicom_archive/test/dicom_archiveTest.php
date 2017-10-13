@@ -175,6 +175,7 @@ sleep(1);
      */
     function _clear($name,$location ,$key)
     {
+        $caught = false;
         $this->webDriver->get($this->url . "/dicom_archive/?" . $name ."=". $key);
         $script = "document.querySelector('".self::$clearButton."').click()";
         try {
