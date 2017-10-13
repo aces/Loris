@@ -153,7 +153,6 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     function testClearBtn()
     {
         $this->safeGet($this->url . "/dicom_archive/");
-sleep(1);
         $this->_clear('patientID',self::$patientID,'testtesttest');
         $this->_clear('patientName',self::$PatientName,'testtesttest');
         $this->_clear('site',self::$site,'testtesttest');
