@@ -206,6 +206,19 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
                );
         $this->assertEquals('', $text);
     }
-
+    /**
+     * Tests that all the links works (view-Details and view-Images)
+     * 
+     * @return void
+     */
+    function testLinks()
+    {
+      $this->safeGet($this->url . "/dicom_archive/");
+      $location = "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(8) > a";
+      $text = $this->webDriver->executescript(
+                "return document.querySelector('$location').textContent"
+               );
+      $this->assertEquals('View Details', $text);
+    }    
 }
 ?>
