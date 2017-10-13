@@ -241,6 +241,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
       $this->webDriver->executescript(
                 "document.querySelector('$location').click()"
                );
+      sleep(1);
       $text = $this->webDriver->executescript(
                 "return document.querySelector('#bc2>a:nth-child(3)>div').textContent"
                );
