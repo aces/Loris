@@ -28,7 +28,6 @@ before_install:
 install:
     - curl -L https://github.com/docker/compose/releases/download/1.8.1/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
     - chmod +x ~/docker-compose
-    - mv ~/docker-compose /usr/local/bin/docker-compose
     # Install composer modules
     - composer install
     - phpenv rehash
