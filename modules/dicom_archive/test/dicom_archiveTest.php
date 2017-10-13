@@ -223,7 +223,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
                 "document.querySelector('$location').click()"
                );
       $text = $this->webDriver->getPageSource();
-      $this->assertEquals('View Details', $text);
+      $this->assertContains('View Details', $text);
     }
     /**
      * Tests that the (view-Images) link works
@@ -242,7 +242,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
                 "document.querySelector('$location').click()"
                );
       $text = $this->webDriver->getPageSource();
-      $this->assertEquals('View Session', $text);
+      $this->assertContains($text,'View Session');
 
     }
 }
