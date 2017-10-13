@@ -242,8 +242,24 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $db =& Database::singleton();
 
         $scan_types = $this->_getScanTypes();
+        foreach ($scan_types as $scan_type) {
+            $query_params = array('scan_type' => $scan_type);
+            $acq_IDs[$scan_type] = $db->pselectOne("SELECT ID FROM mri_scan_type WHERE Scan_type=:scan_type", $query_params);
+            if (substr("$scan_type", 0, 2) == "t1") {
+                $scans_done[$scan_type] = "T1_Scan_done";
+            } elseif (substr("$scan_type", 0, 2) == "t2") {
+                $scans_done[$scan_type] = "T2_Scan_done";
+            } elseif (substr("$scan_type", 0, 3) == "dti") {
+                $scans_done[$scan_type] = "dti_Scan_done";
+            }
+        }
 
-        if (array_key_exists('t1w', $scan_types)) {
+       // error_log(print_r($scans_done));
+
+        foreach ($scan_types as $scan_type) {
+            $scan_types[$scan_type] = $this->_buildQuery($scan_type, $scans_done[$scan_type], $acq_IDs[$scan_type]);
+        }
+       /* if (array_key_exists('t1w', $scan_types)) {
             $scan_types['t1w'] = $this->_buildQuery("t1w", "T1_Scan_done", "44");
         }
         if (array_key_exists('t2w', $scan_types)) {
@@ -251,7 +267,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         }
         if (array_key_exists('dti', $scan_types)) {
             $scan_types['dti'] = $this->_buildQuery("dti", "dti_Scan_done", "48");
-        }
+        } */
 
         $query = implode(
             " 
