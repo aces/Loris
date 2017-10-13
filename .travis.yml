@@ -8,43 +8,46 @@ php:
     - "7"
     - "7.1"
 
-sudo: true
-env:
-  # You may want to update this to whatever the latest version is, or keep it
-  # the same as your local machines. However, I have only tested it with 1.8.0+.
-  # There should be a time in the future when this is not necessary - it is
-  # explained in more detail below.
-  DOCKER_COMPOSE_VERSION: 1.8.0
+sudo: false
+
+addons:
+    firefox: "44.0"
 
 before_install:
-  # update is required to update the repositories to see the new packages for
-  # Docker.
-  # As of the writing of this script Travis has docker-compose v1.4.2, we need
-  # to update it to 1.8+. $DOCKER_COMPOSE_VERSION is provide from the `env`
-  # above.
-   - sudo rm /usr/local/bin/docker-compose
-   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-   - chmod +x docker-compose
-   - sudo mv docker-compose /usr/local/bin
+    # Start Xvfb in a desktop screen size,
+    # otherwise some tests will fail because the links
+    # are hidden when Selenium tries to find them.
+    - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1600x1200x16"
+    #- "export DISPLAY=:99.0"
+    #- "sh -e /etc/init.d/xvfb start"
+    # Ensure node version is up to date
+    - nvm install node
+    - mkdir -p project project/libraries
+    - phpenv config-rm xdebug.ini
 
-  # Check that docker-compose is now running the latest version (or at least the
-  # one we specified). This is not to be confused with the version we printed
-  # before doing the update.
-   - docker-compose --version
+install:
+    - curl -L https://github.com/docker/compose/releases/download/1.8.1/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+    - chmod +x ~/docker-compose
+    - sudo mv ~/docker-compose /usr/local/bin/docker-compose
+    # Install composer modules
+    - composer install
+    - phpenv rehash
 
-  # Setup your application stack. You may need to tweak these commands if you
-  # doing out-of-the-ordinary docker-compose builds.
+    # Install node modules specified in package.json
+    - npm install
+    
+
+before_script:
+    # Set up the Loris environment
+#env:
+ # - "LORIS_DB_CONFIG=test/config.xml"
    - docker-compose pull
    - docker-compose build
    - docker-compose start
-
-  # You will want this for logging. If one of your containers does not build for
-  # whatever reason it's best to report that now before your tests start
-  # otherwise it can be really tricky to debug why tests are failing sometimes.
-   - docker ps
-
-  # This is just our script to setup all the database tables and other fixtures
-  # we need. You should remove this if it's not necessary or you have other
-  # scripts handling this.
-  script:
+script:
+    - npm run lint:php
     - npm run tests:integration
+
+    # Run unit tests to make sure functions still do what they should.
+
+dist: precise
