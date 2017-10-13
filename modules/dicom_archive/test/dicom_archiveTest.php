@@ -219,6 +219,11 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
                 "return document.querySelector('$location').textContent"
                );
       $this->assertEquals('View Details', $text);
+      $location = "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(9) > a";
+      $text = $this->webDriver->executescript(
+                "return document.querySelector('$location').textContent"
+               );
+      $this->assertEquals('View Images', $text)
     }    
 }
 ?>
