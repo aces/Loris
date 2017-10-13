@@ -35,15 +35,15 @@ install:
 
     # Install node modules specified in package.json
     - npm install
-    
+    - docker-compose build
+    - docker-compose start
 
 before_script:
     # Set up the Loris environment
 #env:
  # - "LORIS_DB_CONFIG=test/config.xml"
-   - docker-compose pull
-   - docker-compose build
-   - docker-compose start
+
+
 script:
     - npm run lint:php
     - npm run tests:integration
