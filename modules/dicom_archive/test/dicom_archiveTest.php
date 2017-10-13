@@ -108,7 +108,6 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     function testdicomArchivFilterClearBtn()
     {
         $this->safeGet($this->url . "/dicom_archive/"); 
-       sleep(1);
         //testing data from RBdata.sql
         $this-> _filter('patientID', "ibis",self::$patientID,"ibis");
         $this-> _filter('patientName', "MTL022_300022_V1",self::$PatientName,"ibis");
@@ -130,11 +129,20 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function _filter($name, $key,$location,$expect)
     {
+        $caught = false;
         $this->webDriver->get($this->url . "/dicom_archive/?" . $name ."=". $key);
         $script = "return document.querySelector('$location').value";
-        $text = $this->webDriver->executescript(
-                $script
-               );
+        try {
+        $this->webDriver->executescript($script);
+        // something
+        } catch (Exception $e) {
+        $caught = true;
+        }
+
+        if ($caught) {
+        sleep(1);
+        $this->webDriver->executescript($script);
+        }
         //make sure that filter works well
         $this->assertEquals($text, $key);
         //make sure that filter table works well
@@ -184,10 +192,10 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $caught = true;
         }
 
-if ($caught) {
+        if ($caught) {
         sleep(1);    
         $this->webDriver->executescript($script);
-}
+        }
         $script = "document.querySelector('".self::$clearButton."').click()";
         
         $this->webDriver->executescript(
