@@ -254,20 +254,9 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             }
         }
 
-       // error_log(print_r($scans_done));
-
         foreach ($scan_types as $scan_type) {
             $scan_types[$scan_type] = $this->_buildQuery($scan_type, $scans_done[$scan_type], $acq_IDs[$scan_type]);
         }
-       /* if (array_key_exists('t1w', $scan_types)) {
-            $scan_types['t1w'] = $this->_buildQuery("t1w", "T1_Scan_done", "44");
-        }
-        if (array_key_exists('t2w', $scan_types)) {
-            $scan_types['t2w'] = $this->_buildQuery("t2w", "T2_Scan_done", "45");
-        }
-        if (array_key_exists('dti', $scan_types)) {
-            $scan_types['dti'] = $this->_buildQuery("dti", "dti_Scan_done", "48");
-        } */
 
         $query = implode(
             " 
