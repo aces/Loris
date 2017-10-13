@@ -2134,7 +2134,7 @@ class LorisForm
     function getSubmitValues()
     {
         $retVal     = array();
-        $submitKeys = array_merge($_POST, $_FILES);
+        $submitKeys = $_POST + $_FILES;
 
         $this->getGroupValues(array_keys($submitKeys), $retVal);
         return $retVal;
