@@ -177,6 +177,19 @@ sleep(1);
     {
         $this->webDriver->get($this->url . "/dicom_archive/?" . $name ."=". $key);
         $script = "document.querySelector('".self::$clearButton."').click()";
+        try {
+        $this->webDriver->executescript($script);
+        // something
+        } catch (Exception $e) {
+        $caught = true;
+        }
+
+if ($caught) {
+        sleep(1);    
+        $this->webDriver->executescript($script);
+}
+        $script = "document.querySelector('".self::$clearButton."').click()";
+        
         $this->webDriver->executescript(
                 $script 
                );
