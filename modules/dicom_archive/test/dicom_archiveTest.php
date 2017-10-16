@@ -36,7 +36,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     static $Archive     = "#dicom_filter>div>div:nth-child(7)>div>div>input";
     static $SeriesUID   = "#dicom_filter>div>div:nth-child(8)>div>div>input";
     static $clearButton = "#dicom_filter>div>div:nth-child(9)>div>div>button";
-        /**
+    /**
      * Insert testing data into the database
      *
      * @return none
@@ -110,21 +110,42 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/dicom_archive/");
         //testing data from RBdata.sql
         $this-> _filter('patientID', "ibis", self::$patientID, "ibis");
-        $this-> _filter('patientName', "MTL022_300022_V1", self::$PatientName, "ibis");
+        $this-> _filter(
+            'patientName',
+            "MTL022_300022_V1",
+            self::$PatientName,
+            "ibis"
+        );
         $this-> _filter('site', "2", self::$site, "ibis");
         $this-> _filter('gender', "M", self::$Gender, "D568405");
-        $this-> _filter('dateOfBirth', '2011-10-20', self::$dateOfBirth, "LIVING_PHANTOM_UNC_SD_HOS_20111020");
+        $this-> _filter(
+            'dateOfBirth',
+            '2011-10-20',
+            self::$dateOfBirth,
+            "LIVING_PHANTOM_UNC_SD_HOS_20111020"
+        );
         $this-> _filter('acquisition', '2009-06-09', self::$Acquisition, "ibis");
-        $this-> _filter('archiveLocation', "2009/DCM_2009-06-09_ImagingUpload-14-14-qM69wJ.tar", self::$Archive, "ibis");
-        $this-> _filter('seriesuid', "1.3.12.2.1107.5.2.32.35182.2009060916513929723684064.0.0.0", self::$SeriesUID, "ibis");
+        $this-> _filter(
+            'archiveLocation',
+            "2009/DCM_2009-06-09_ImagingUpload-14-14-qM69wJ.tar",
+            self::$Archive,
+            "ibis"
+        );
+        $this-> _filter(
+            'seriesuid',
+            "1.3.12.2.1107.5.2.32.35182.2009060916513929723684064.0.0.0",
+            self::$SeriesUID,
+            "ibis"
+        );
     }
     /**
      * Tests filter function
      *
-     * @param  $name the name of this element in html
-     * @param  $key  the test key for query
-     * @param  $location the location of the element (css selector)
-     * @param  $expectKey the expect result
+     * @param string $name     the name of this element in html
+     * @param string $key      the test key for query
+     * @param string $location the location of the element (css selector)
+     * @param string $expect   Key the expect result
+     *
      * @return void
      */
     function _filter($name, $key,$location,$expect)
@@ -174,9 +195,9 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      * Clear function : Inputing 'testtesttest' into textarea, after clicking
      * button, the textarea should be null.
      *
-     * @param $name the name of this element in html
-     * @param $key  the test key for query
-     * @param $location the location of the element (css selector)
+     * @param string $name     the name of this element in html
+     * @param string $location the location of the element (css selector)
+     * @param string $key      the test key for query
      *
      * @return void
      */
