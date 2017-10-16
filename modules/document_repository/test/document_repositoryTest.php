@@ -137,7 +137,6 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
     function testDocumentRepositoryCreateCategory()
     {
         //insert a category TestTestTest
-        $this->markTestSkipped("This method isn't working properly on travis.");
         $this->safeGet($this->url . "/document_repository/");
         $this->safeFindElement(
             WebDriverBy::Name("addCategory"),
