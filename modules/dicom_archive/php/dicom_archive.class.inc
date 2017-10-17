@@ -28,6 +28,7 @@ namespace LORIS\dicom_archive;
 class Dicom_Archive extends \NDB_Menu_Filter
 {
     var $dicomArchiveSettings;
+    public $AjaxModule = true;
 
     /**
      * Determine whether the user has permission to view this page
@@ -142,6 +143,45 @@ class Dicom_Archive extends \NDB_Menu_Filter
                               );
 
     }
+
+    /**
+     * Override default behaviour, since the page is loaded from mediaIndex.js
+     *
+     * @return void
+     * @access public
+     */
+    function display()
+    {
+        $content = null;
+        $format  = $_REQUEST['format'] ?? '';
+
+        if ($format == 'json') {
+            $content = $this->toJSON();
+        }
+
+        return $content;
+    }
+
+    /**
+     * Create a form to filter media by various criteria
+     *
+     * @return bool
+     * @throws ConfigurationException
+     * @throws DatabaseException
+     * @throws Exception
+     */
+    function _setFilterForm()
+    {
+        $this->addBasicText('patientID', 'Patient ID');
+        $this->addBasicText('patientName', 'Patient Name');
+        $this->addSelect('site', 'Site', \Utility::getSiteList());
+        $this->addBasicText('gender', 'Gender');
+        $this->addBasicDate('dateOfBirth', 'Date of Birth');
+        $this->addBasicDate('acquisition', 'Acquisition Date');
+        $this->addBasicText('archiveLocation', 'Archive Location');
+        $this->addBasicText('seriesuid', 'Series UI');
+    }
+
     /**
     * Sets transfer status according to the data in the
     * config file.
@@ -187,14 +227,14 @@ class Dicom_Archive extends \NDB_Menu_Filter
      */
     function toJSON()
     {
-        $result          = $this->toArray();
-        $result['Sites'] = \Utility::getSiteList();
+        $result = $this->toArray();
         $result['hiddenHeaders'] = [
                                     'Seriesuid',
                                     'Site',
                                     'TarchiveID',
                                     'SessionID',
                                    ];
+        $result['form']          = $this->form->form;
 
         return json_encode($result);
     }
@@ -238,6 +278,9 @@ class Dicom_Archive extends \NDB_Menu_Filter
 
             $data[] = $row;
         }
+
+        $this->_setFilterForm();
+
         return array(
                 'Headers' => $unanonymized['Headers'],
                 'Data'    => $data,

@@ -1,6 +1,6 @@
 <?php
 
-#!/data/web/neurodb/software/bin/php
+#!/usr/bin/php
 
 /**
  * this tools scores any registered instrument that was build using the NDB_BVL_Instrument class and that has a working score() method.
