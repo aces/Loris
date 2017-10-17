@@ -161,6 +161,7 @@ class UploadForm extends React.Component {
         // Last remaining part of the old module.
         // Need to update to use proper AJAX request/response
         if (data.indexOf(errMessage) > -1) {
+          data = data.replace('history.back()', 'location.reload()');
           document.open();
           document.write(data);
           document.close();
