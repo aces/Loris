@@ -509,24 +509,25 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     function testNotResolvedSaveButton()
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better'
-        );
         $this->safeGet($this->url . "/mri_violations/");
-        $resolutionElement =  $this->safeFindElement(
-            WebDriverBy::Name("resolvable[c57b919a921eaa1a43bb5e0c44cd4226]")
+        $this->webDriver->findElement(
+            WebDriverBy::Name("PatientName")
+        )->sendKeys("[Test]PatientName");
+        $this->webDriver->findElement(
+            WebDriverBy::Name("filter")
+        )->click();
+        $resolutionStatus = "#dynamictable > tbody:nth-child(2) >".
+                    " tr:nth-child(1) > td:nth-child(8) > select:nth-child(1)";
+        $savebtn = ".tab-pane>div:nth-child(1)>form:nth-child(1)".
+                   ">div:nth-child(2)>input:nth-child(1)";
+        $this->webDriver->executescript(
+                 "document.querySelector('$resolutionStatus').value='other'"
         );
-        $resolution        = new WebDriverSelect($resolutionElement);
-        $resolution->selectByVisibleText("Inserted");
-        $this->safeClick(WebDriverBy::Name("fire_away"));
-
-        $resolutionElement = $this->safeFindElement(
-            WebDriverBy::Name("resolvable[c57b919a921eaa1a43bb5e0c44cd4226]")
+        $this->webDriver->executescript(
+                 "document.querySelector('$savebtn').click()"
         );
-        $resolution        = new WebDriverSelect($resolutionElement);
 
-        $value = $resolution->getFirstSelectedOption()->getAttribute('value');
-        $this->assertEquals("inserted", $value);
+        $this->assertEquals("inserted", "aaa");
     }
     /**
      * Testing UI when page loads
