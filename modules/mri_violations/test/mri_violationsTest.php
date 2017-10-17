@@ -526,7 +526,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
                  "document.querySelector('$savebtn').click()"
         );
-       sleep(50);
+        $this->safeGet($this->url . "/mri_violations/?submenu=resolved_violations");
         $this->webDriver->findElement(
             WebDriverBy::Name("PatientName")
         )->sendKeys("[Test]PatientName");
@@ -537,7 +537,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $text = $this->webDriver->executescript(
                  "return document.querySelector('$table').content"
         );
-        $this->assertEquals("other", $text);
+        $this->assertContains("[Test]PatientName", $text);
     }
     /**
      * Testing UI when page loads
