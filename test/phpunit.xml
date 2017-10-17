@@ -11,7 +11,7 @@
         </testsuite>
 
         <testsuite name='LorisModuleIntegrationTests'>
-            <directory>../modules/dicom_archive/test/</directory>
+            <directory>../modules/mri_violations/test/</directory>
         </testsuite>
 
     </testsuites>
