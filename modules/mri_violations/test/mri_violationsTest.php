@@ -516,8 +516,8 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->findElement(
             WebDriverBy::Name("filter")
         )->click();
-        $resolutionStatus = "#dynamictable > tbody:nth-child(2) >".
-                    " tr:nth-child(1) > td:nth-child(8) > select:nth-child(1)";
+#violationsTable > tbody > tr > td:nth-child(8) > select
+        $resolutionStatus = "#violationsTable > tbody > tr > td:nth-child(8)>select";
         $savebtn = ".tab-pane>div:nth-child(1)>form:nth-child(1)".
                    ">div:nth-child(2)>input:nth-child(1)";
         $this->webDriver->executescript(
