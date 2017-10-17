@@ -526,8 +526,18 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
                  "document.querySelector('$savebtn').click()"
         );
-
-        $this->assertEquals("inserted", "aaa");
+       sleep(50);
+        $this->webDriver->findElement(
+            WebDriverBy::Name("PatientName")
+        )->sendKeys("[Test]PatientName");
+        $this->webDriver->findElement(
+            WebDriverBy::Name("filter")
+        )->click();
+        $table = "#violationsTable > tbody > tr > td:nth-child(3)";
+        $text = $this->webDriver->executescript(
+                 "return document.querySelector('$table').content"
+        );
+        $this->assertEquals("other", $text);
     }
     /**
      * Testing UI when page loads
