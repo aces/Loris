@@ -11,6 +11,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
+namespace LORIS\user_accounts;
 /**
  * The menu for user accounts
  *
@@ -23,7 +24,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
+class User_Accounts extends \NDB_Menu_Filter
 {
     /**
      * Overloading this method to allow access to users account
@@ -33,7 +34,7 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
         return $user->hasPermission('user_accounts');
     }
@@ -46,7 +47,7 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
     */
     function _setupVariables()
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
         // the base query
         $query = " FROM users
             LEFT JOIN user_psc_rel ON (user_psc_rel.UserID=users.ID)
@@ -101,12 +102,12 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
     function _setFilterForm()
     {
         // create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
         // PSC
         if ($user->hasPermission('user_accounts_multisite')) {
             // get the list of study sites - to be replaced by the Site object
-            $list_of_sites = Utility::getSiteList(false);
+            $list_of_sites = \Utility::getSiteList(false);
             if (is_array($list_of_sites)) {
                 $list_of_sites = array('' => 'All') + $list_of_sites;
             }
@@ -115,7 +116,7 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
             $list_of_sites = array();
             $site_arr      = $user->getData('CenterIDs');
             foreach ($site_arr as $key=>$val) {
-                $site[$key]          = & Site::singleton($val);
+                $site[$key]          = & \Site::singleton($val);
                 $list_of_sites[$val] = $site[$key]->getCenterName();
             }
             $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
@@ -153,7 +154,7 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(

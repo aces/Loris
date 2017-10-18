@@ -15,11 +15,11 @@
       {else}
         <form method="POST">
           <p class="text-center">
-            Please enter your email below, and a new password will be sent to you.
+            Please enter your username below, and a new password will be sent to you.
           </p>
           <div class="form-group">
             <input type="text" name="username" size="40" class="form-control"
-                   placeholder="Email" value="{$username}"
+                   placeholder="Username" value="{$username}"
                    aria-describedby="helpBlock"/>
             {if $error_message}
               <span id="helpBlock" class="help-block">
