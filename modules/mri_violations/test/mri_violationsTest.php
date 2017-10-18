@@ -490,7 +490,9 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                  "document.querySelector('$savebtn').click()"
         );
         $this->safeGet($this->url . "/mri_violations/?submenu=resolved_violations");
-        sleep(1);
+        sleep(10);
+        $body  = $this->webDriver->getPageSource();
+        var_dump($body);
         $table = "#datatable > div > div.table-header.panel-heading > div > div"; 
         $text = $this->webDriver->executescript(
                  "return document.querySelector('$table').textConent"
