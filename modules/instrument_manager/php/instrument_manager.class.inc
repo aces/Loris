@@ -70,7 +70,6 @@ class Instrument_Manager extends \NDB_Menu_Filter
         } else {
             $writable = true;
         }
-var_dump($this->path . "project/instruments");
         $this->tpl_data['writable'] = $writable;
         if ($writable && $_POST['install'] == 'Install Instrument') {
             $db       = \Database::singleton();
