@@ -491,14 +491,11 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         );
         $this->safeGet($this->url . "/mri_violations/?submenu=resolved_violations");
         sleep(1);
-        $body= $this->webDriver->getPageResource();
-        var_dump($body);
-        $table = "td.dynamictableFrozenColumn";
+        $table = "#datatable > div > div.table-header.panel-heading > div > div"; 
         $text = $this->webDriver->executescript(
                  "return document.querySelector('$table').textConent"
         );
-        var_dump($text);
-        $this->assertContains("[Test]PatientName", $text);
+        $this->assertContains("1 rows displayed of 1", $text);
     }
     /**
      * Testing UI when page loads
