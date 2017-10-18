@@ -367,10 +367,6 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("SeriesUID")
         )->sendKeys("5555");
         $this->webDriver->findElement(WebDriverBy::Name("filter"))->click();
-        $this->safeGet(
-            $this->url .
-            "/mri_violations/?submenu=resolved_violations&format=json"
-        );
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains("[Test]PatientName", $bodyText);
     }
@@ -391,7 +387,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         //testing search by Filename
         $this->_searchTest(
             "Filename",
-            "assembly/test2/test2/mri/test2/test2.mnc",
+            "assembly/test/test/mri/test/test.mnc",
             "[Test]PatientName"
         );
         //testing search by Description
