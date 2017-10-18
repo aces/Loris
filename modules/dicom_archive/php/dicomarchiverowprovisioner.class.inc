@@ -30,7 +30,12 @@ namespace LORIS\dicom_archive;
  */
 class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
-    function __construct() {
+    /**
+     * Create a DicomArchiveRowProvisioner, which gets rows for the dicom_archive
+     * menu table.
+     */
+    function __construct()
+    {
         parent::__construct(
             "SELECT t.PatientID as `Patient ID`,
             t.PatientName as `Patient Name`,
@@ -52,7 +57,16 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
         );
     }
 
-    public function getInstance($row) : \LORIS\Data\Instance {
+    /**
+     * Returns an instance of a DICOMArchiveRow object for a given
+     * table row.
+     *
+     * @param array $row The database row from the LORIS Database class.
+     *
+     * @return \LORIS\Data\Instance An instance representing this row.
+     */
+    public function getInstance($row) : \LORIS\Data\Instance
+    {
             $cid = $row['CenterID'];
             unset($row['CenterID']);
             return new DICOMArchiveRow($row, $cid);
