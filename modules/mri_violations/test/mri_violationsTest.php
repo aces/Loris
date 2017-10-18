@@ -58,11 +58,31 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             )
         );
         $this->DB->insert(
+            "candidate",
+            array(
+             'CandID'    => '999777',
+             'CenterID'  => '55',
+             'UserID'    => '2',
+             'PSCID'     => '6666',
+             'ProjectID' => '5555',
+            )
+        );
+        $this->DB->insert(
             "session",
             array(
              'CandID'       => '999888',
              'CenterID'     => '55',
              'UserID'       => '1',
+             'MRIQCStatus'  => 'Pass',
+             'SubprojectID' => '6666',
+            )
+        );
+        $this->DB->insert(
+            "session",
+            array(
+             'CandID'       => '999777',
+             'CenterID'     => '55',
+             'UserID'       => '2',
              'MRIQCStatus'  => 'Pass',
              'SubprojectID' => '6666',
             )
@@ -75,8 +95,29 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
              'PatientName'        => '[Test]PatientName',
              'time_run'           => '2009-06-29 04:00:44',
              'minc_location'      => 'assembly/test/test/mri/test/test.mnc',
-             'series_description' => 'Test Series Description',
+             'series_description' => 'Test Description',
              'SeriesUID'          => '5555',
+            )
+        );
+        $this->DB->insert(
+            "mri_protocol_violated_scans",
+            array(
+             'ID'                 => '1002',
+             'CandID'             => '999777',
+             'PatientName'        => '[name]test',
+             'time_run'           => '2008-06-29 04:00:44',
+             'minc_location'      => 'assembly/test2/test2/mri/test2/test2.mnc',
+             'series_description' => 'Test Series Description',
+             'SeriesUID'          => '5556',
+            )
+        );
+        $this->DB->insert(
+            "violations_resolved",
+            array(
+             'ExtID'     => '1001',
+             'hash'      => '123456',
+             'TypeTable' => 'mri_protocol_violated_scans',
+             'Resolved'  => 'other',
             )
         );
 
@@ -97,6 +138,13 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             )
         );
         $this->DB->delete(
+            "session",
+            array(
+             'CandID'   => '999777',
+             'CenterID' => '55',
+            )
+        );
+        $this->DB->delete(
             "candidate",
             array(
              'CandID'   => '999888',
@@ -104,11 +152,30 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             )
         );
         $this->DB->delete(
-            "mri_protocol_violated_scans",
+            "candidate",
             array(
-             'ID'     => '1001',
-             'CandID' => '999888',
+             'CandID'   => '999777',
+             'CenterID' => '55',
             )
+        );
+        $this->DB->delete(
+            "violations_resolved",
+            array(
+             'ExtID'     => '1001',
+             'TypeTable' => 'mri_protocol_violated_scans',
+            )
+        );
+        $this->DB->delete(
+            "violations_resolved",
+            array('ExtID' => '1002')
+        );
+        $this->DB->delete(
+            "mri_protocol_violated_scans",
+            array('ID' => '1001')
+        );
+        $this->DB->delete(
+            "mri_protocol_violated_scans",
+            array('ID' => '1002')
         );
         $this->DB->delete(
             "psc",
@@ -296,141 +363,34 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testResolvedSearchButton()
-    {
-        //testing search by PatientName
-        $this->safeGet($this->url . "/mri_violations/?submenu=resolved_violations");
-        $this->webDriver->findElement(
-            WebDriverBy::Name("PatientName")
-        )->sendKeys("[Test]PatientName");
-        $this->webDriver->findElement(WebDriverBy::Name("filter"))->click();
-        $this->safeGet(
-            $this->url .
-            "/mri_violations/?submenu=resolved_violations&format=json"
-        );
-        $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("[Test]PatientName", $bodyText);
-
-        //testing search by Filename
-        $this->safeGet(
-            $this->url .
-            "/mri_violations/?submenu=resolved_violations"
-        );
-        $this->webDriver->findElement(WebDriverBy::Name("Filename"))
-            ->sendKeys("assembly/test/test/mri/test/test.mnc");
-        $this->webDriver->findElement(WebDriverBy::Name("filter"))->click();
-        $this->safeGet(
-            $this->url .
-            "/mri_violations/?submenu=resolved_violations&format=json"
-        );
-        $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("[Test]PatientName", $bodyText);
-
-        //testing search by Description
-        $this->safeGet(
-            $this->url .
-            "/mri_violations/?submenu=resolved_violations"
-        );
-        $this->webDriver->findElement(
-            WebDriverBy::Name("Description")
-        )->sendKeys("Test Series Description");
-        $this->webDriver->findElement(WebDriverBy::Name("filter"))->click();
-        $this->safeGet(
-            $this->url .
-            "/mri_violations/?submenu=resolved_violations&format=json"
-        );
-        $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("[Test]PatientName", $bodyText);
-
-        //testing search by site
-        $this->safeGet(
-            $this->url .
-            "/mri_violations/?submenu=resolved_violations"
-        );
-        $siteElement =  $this->safeFindElement(WebDriverBy::Name("Site"));
-        $site        = new WebDriverSelect($siteElement);
-        $site->selectByVisibleText("TESTinPSC");
-        $this->webDriver->findElement(WebDriverBy::Name("filter"))->click();
-        $this->safeGet(
-            $this->url .
-            "/mri_violations/?submenu=resolved_violations&format=json"
-        );
-        $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("[Test]PatientName", $bodyText);
-
-        //testing search by Description
-        $this->safeGet(
-            $this->url .
-            "/mri_violations/?submenu=resolved_violations"
-        );
-        $this->webDriver->findElement(
-            WebDriverBy::Name("SeriesUID")
-        )->sendKeys("5555");
-        $this->webDriver->findElement(WebDriverBy::Name("filter"))->click();
-        $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("[Test]PatientName", $bodyText);
-    }
-
-    /**
-     * Tests that, input some data and click search button, check the results.
-     *
-     * @return void
-     */
     function testNotResolvedSearchButton()
     {
+        $this->safeGet($this->url . "/mri_violations/");
         //testing search by PatientName
         $this->_searchTest(
             "PatientName",
-            "[Test]PatientName",
-            "[Test]PatientName"
+            "[name]test"
         );
         //testing search by Filename
         $this->_searchTest(
             "Filename",
-            "assembly/test/test/mri/test/test.mnc",
-            "[Test]PatientName"
+            "assembly/test2/test2/mri/test2/test2.mnc"
         );
         //testing search by Description
         $this->_searchTest(
             "Description",
-            "Test Series Description",
-            "[Test]PatientName"
-        );
-        //testing search by site
-        $this->_searchTest(
-            "Site",
-            "TESTinPSC",
-            "[Test]PatientName"
+            "Test Series Description"
         );
         //testing search by SeriesUID
         $this->_searchTest(
             "SeriesUID",
-            "5556",
-            "[Test]PatientName"
+            "5556"
         );
-
-    }
-    /**
-     * Tests search button and search form.
-     *
-     * @param string $searchBy    the value of searchBy
-     * @param string $testValue   the value of testValue
-     * @param string $expectValue the value of expectValue
-     *
-     * @return void
-     */
-    function _searchTest($searchBy,$testValue,$expectValue)
-    {
-        $this->safeGet($this->url . "/mri_violations/");
-        $this->webDriver->findElement(
-            WebDriverBy::Name($searchBy)
-        )->sendKeys($testValue);
-        $this->webDriver->findElement(
-            WebDriverBy::Name("filter")
-        )->click();
-        $this->safeGet($this->url . "/mri_violations/?format=json");
-        $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains($expectValue, $bodyText);
+        //testing search by site
+        $this->_searchTest(
+            "Site",
+            "TESTinPSC"
+        );
     }
     /**
      * Tests that,in the not resolved menu,
@@ -444,13 +404,13 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/mri_violations/");
         $this->webDriver->findElement(
             WebDriverBy::Name("PatientName")
-        )->sendKeys("[Test]PatientName");
+        )->sendKeys("[name]test");
         $this->webDriver->findElement(
             WebDriverBy::Name("filter")
         )->click();
         sleep(1);
-        $resolutionStatus = "#dynamictable > tbody:nth-child(2) > tr:nth-child(1)".
-                   " > td:nth-child(8) > select:nth-child(1)";
+        $resolutionStatus = "#dynamictable > tbody:nth-child(2) >".
+                " tr:nth-child(1) > td:nth-child(8) > select:nth-child(1)";
         $savebtn          = ".tab-pane>div:nth-child(1)>form:nth-child(1)".
                    ">div:nth-child(2)>input:nth-child(1)";
         $this->webDriver->executescript(
@@ -462,8 +422,74 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/mri_violations/?submenu=resolved_violations");
         sleep(1);
         $body = $this->webDriver->getPageSource();
-        var_dump($body);
-        $this->assertContains("[Test]PatientName", $body);
+        $this->assertContains("[name]test", $body);
+    }
+    /**
+     * Tests that, input some data and click search button, check the results.
+     *
+     * @return void
+     */
+    function testResolvedSearchButton()
+    {
+        //testing search by PatientName
+        $this->safeGet($this->url . "/mri_violations/?submenu=resolved_violations");
+
+        //testing search by PatientName
+        $this->_searchTest(
+            "PatientName",
+            "[Test]PatientName"
+        );
+        //testing search by Filename
+        $this->_searchTest(
+            "Filename",
+            "assembly/test/test/mri/test/test.mnc"
+        );
+        //testing search by Description
+        $this->_searchTest(
+            "Description",
+            "Test Description"
+        );
+        //testing search by SeriesUID
+        $this->_searchTest(
+            "SeriesUID",
+            "5555"
+        );
+        //testing search by site
+        $this->_searchTest(
+            "Site",
+            "TESTinPSC"
+        );
+
+    }
+
+    /**
+     * Tests search button and search form.
+     *
+     * @param string $searchBy  the value of searchBy
+     * @param string $testValue the value of testValue
+     *
+     * @return void
+     */
+    function _searchTest($searchBy,$testValue)
+    {
+        //$this->safeGet($this->url . "/mri_violations/");
+        $this->webDriver->findElement(
+            WebDriverBy::Name($searchBy)
+        )->sendKeys($testValue);
+        $this->webDriver->findElement(
+            WebDriverBy::Name("filter")
+        )->click();
+        sleep(1);
+        $bodyText = $this->webDriver->executescript(
+            "return document.querySelector(
+                    '#datatable > div > div.table-header.panel-heading > div')
+                 .textContent"
+        );
+
+        $this->assertContains("1 rows displayed of 1", $bodyText);
+        $this->webDriver->findElement(
+            WebDriverBy::Name("reset")
+        )->click();
     }
     /**
      * Testing UI when page loads
