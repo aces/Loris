@@ -13,6 +13,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+
+namespace LORIS\instrument_builder;
 /**
  * Instrument_builder
  * Stub class.. all this does is check permissions, since everything else is
@@ -27,7 +29,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class NDB_Form_Instrument_Builder extends NDB_Form
+class Instrument_Builder extends \NDB_Form
 {
     /**
      * Tests that, when loading the Instrument builder module, some
@@ -48,7 +50,7 @@ class NDB_Form_Instrument_Builder extends NDB_Form
      */
     function _hasPerm($perm)
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
         return $user->hasPermission($perm);
     }
     /**
@@ -69,7 +71,7 @@ class NDB_Form_Instrument_Builder extends NDB_Form
      */
     function getCSSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getCSSDependencies();
         return array_merge(
@@ -85,7 +87,7 @@ class NDB_Form_Instrument_Builder extends NDB_Form
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseurl = $factory->settings()->getBaseURL();
         $depends = parent::getJSDependencies();
         return array_merge(
