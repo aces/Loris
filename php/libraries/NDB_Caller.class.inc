@@ -145,9 +145,11 @@ class NDB_Caller
             // this code. If we do it right now, absolutely every page will
             // include an error.. at the very least, this should be uncommented
             // in 18.0 so that we can delete the old code for 19.0.
-            error_log("Module $test_name is missing Module class descriptor. "
-                 . "Modules missing a Module file will stop working in a future"
-                 . "version of LORIS.");
+            error_log(
+                "Module $test_name is missing Module class descriptor. "
+                . "Modules missing a Module file will stop working in a future"
+                . "version of LORIS."
+            );
             $ModuleDir = is_dir($base . "project/modules/$test_name")
                 ? $base . "project/modules/$test_name"
                 : $base . "modules/$test_name";
@@ -203,8 +205,8 @@ class NDB_Caller
             error_log("Could not load Loris module $test_name.");
             exit(-1);
         } else {
-            // Reliability and instruments aren't "real" modules. They probably should be
-            // at some point in the future.
+            // Reliability and instruments aren't "real" modules. They probably
+            // should be at some point in the future.
             $proj_reliable = $base . "project/reliability/"
                                    . "NDB_Reliability_$test_name.class.inc";
             if ($this->existsAndRequire($proj_reliable)
