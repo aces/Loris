@@ -2,7 +2,9 @@
 <phpunit
         bootstrap="bootstrap.php"
         verbose="true"
-        colors="true">
+        colors="true"
+        stopOnFailure="true"
+        >
     <testsuites>
         <testsuite name='LorisUnitTests'>
             <directory>./unittests/</directory>
