@@ -13,6 +13,7 @@ Deploy and log in with username <i>admin</i> and the password that's set up duri
 | Branch      | Status |
 | --------------------- | -------- |
 | master         |  [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=master)](https://travis-ci.org/aces/Loris)
+| minor         |  [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=minor)](https://travis-ci.org/aces/Loris)
 
 This Readme covers installation of the LORIS <b>v18.0.0</b> release on <b>Ubuntu</b>.
 ([CentOS Readme also available](https://github.com/aces/Loris/blob/master/README.CentOS6.md)).
