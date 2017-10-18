@@ -135,10 +135,9 @@ class Module
         $commentID  = isset($_REQUEST['commentID']) ? $_REQUEST['commentID'] : '';
         $formname   = $page;
         $cls->setup();
-        $cls->_setupPage($this->name, $page, $identifier, $commentID, $formname);
 
-        if ($cls instanceof \NDB_Menu_Filter) {
-            $cls->_setFilterForm();
+        if (!($cls instanceof \NDB_Menu_Filter)) {
+            $cls->_setupPage($this->name, $page, $identifier, $commentID, $formname);
         }
 
         if (!$cls->_hasAccess()) {
