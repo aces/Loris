@@ -293,7 +293,7 @@ class NDB_Form_Dashboard extends NDB_Form
                         "SELECT Test_name from flag WHERE CommentID=:cid",
                         array('cid' => $bvl_feedback[$i]['CommentID'])
                     );
-                    if ($instrument !== null) {
+                    if (!empty($instrument)) {
                         $bvl_feedback[$i]['URL'] = '/' . $instrument . '/?candID='
                             . $bvl_feedback[$i]['CandID'] . '&sessionID='
                             . $bvl_feedback[$i]['SessionID'] . '&commentID='
