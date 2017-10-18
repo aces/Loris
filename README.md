@@ -10,10 +10,12 @@ Deploy and log in with username <i>admin</i> and the password that's set up duri
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/master)
 <hr>
 
-| Branch      | Status |
-| --------------------- | -------- |
-| master         |  [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=master)](https://travis-ci.org/aces/Loris)
-| minor         |  [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=minor)](https://travis-ci.org/aces/Loris)
+| Branch | Status |
+| ------ | ------ |
+| master | [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=master)](https://travis-ci.org/aces/Loris)
+| major  | [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=major)](https://travis-ci.org/aces/Loris)
+| minor  | [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=minor)](https://travis-ci.org/aces/Loris)
+| bugfix | [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=bugfix)](https://travis-ci.org/aces/Loris)
 
 This Readme covers installation of the LORIS <b>v18.0.0</b> release on <b>Ubuntu</b>.
 ([CentOS Readme also available](https://github.com/aces/Loris/blob/master/README.CentOS6.md)).
