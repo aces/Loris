@@ -62,6 +62,13 @@ class Login extends \NDB_Page
         $this->tpl_data['study_description'] = html_entity_decode(
             $config->getSetting("StudyDescription")
         );
+        $this->tpl_data['study_title'] = $config->getSetting('title');
+        try {
+            $this->tpl_data['study_logo'] = $config->getSetting('studylogo');
+        } catch(ConfigurationException $e) {
+            $this->tpl_data['study_logo'] = '';
+        }
+
     }
 }
 ?>
