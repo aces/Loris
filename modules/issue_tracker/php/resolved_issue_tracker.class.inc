@@ -25,7 +25,7 @@ namespace LORIS\issue_tracker;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
-class Resolved_Issue_Tracker extends \NDB_Menu_Filter_Form
+class Resolved_Issue_Tracker extends \NDB_Menu_Filter
 {
     //aka building-table-using-react
     var $AjaxModule = true;
@@ -146,141 +146,6 @@ class Resolved_Issue_Tracker extends \NDB_Menu_Filter_Form
     }
 
     /**
-     * Setup $this->tpl_data for use by Smarty
-     *
-     * @return null
-     */
-    function _setFilterForm()
-    {
-        $user  =& \User::singleton();
-        $db    = \Database::singleton();
-        $sites = array();
-
-        //sites
-        if ($user->hasPermission('access_all_profiles')) {
-            $list_of_sites = \Utility::getSiteList();
-            if (is_array($list_of_sites)) {
-                $list_of_sites = array('' => 'All') + $list_of_sites;
-            }
-        } else {// allow only to view own site data
-            $site_arr = $user->getData('CenterIDs');
-            foreach ($site_arr as $key => $val) {
-                $site[$key] =& \Site::singleton($val);
-                if ($site[$key]->isStudySite()) {
-                    $sites[$val] = $site[$key]->getCenterName();
-                }
-            }
-            $list_of_sites = array('' => 'All User Sites') + $sites;
-        }
-
-        //reporters
-        $reporters         = array('' => 'All');
-        $reporter_expanded = $db->pselect(
-            "SELECT u.UserID, u.Real_name FROM issues i " .
-            "INNER JOIN users u ON(i.assignee=u.UserID)",
-            array()
-        );
-        foreach ($reporter_expanded as $r_row) {
-            $reporters[$r_row['UserID']] = $r_row['Real_name'];
-        }
-
-        //assignees
-        $assignees         = array('' => 'All');
-        $assignee_expanded = $db->pselect(
-            "SELECT u.UserID, u.Real_name FROM issues i " .
-            "INNER JOIN users u ON(i.assignee=u.UserID)",
-            array()
-        );
-        foreach ($assignee_expanded as $a_row) {
-            $assignees[$a_row['UserID']] = $a_row['Real_name'];
-        }
-
-        //modules
-        $modules_expanded = $db->pselect(
-            "SELECT DISTINCT Label, ID FROM LorisMenu 
-WHERE Parent IS NOT NULL ORDER BY Label ",
-            []
-        );
-        $modules          = $this->reorganizeQueryResults(
-            $modules_expanded,
-            'Label'
-        );
-
-        $priorities = array(
-                       ''          => 'All',
-                       'low'       => 'Low',
-                       'normal'    => 'Normal',
-                       'high'      => 'High',
-                       'urgent'    => 'Urgent',
-                       'immediate' => 'Immediate',
-                      );
-
-        $unorgCategories = $db -> pselect(
-            "SELECT categoryName
-        FROM issues_categories",
-            []
-        );
-        $categories      = array('' => "All");
-        foreach ($unorgCategories as $r_row) {
-            $categoryName = $r_row['categoryName'];
-            if ($categoryName) {
-                $categories[$categoryName] = $categoryName;
-            }
-        }
-
-        $dateOptions = array(
-                        'language'       => 'en',
-                        'format'         => 'YMdHis',
-                        'addEmptyOption' => true,
-                       );
-
-        $this->addBasicText(
-            'keyword',
-            'Keyword',
-            array(
-             "size"      => 10,
-             "maxlength" => 50,
-            )
-        );
-        $this->addBasicText(
-            'issueID',
-            'Issue ID',
-            array(
-             "size"      => 10,
-             "maxlength" => 25,
-            )
-        );
-        $this->addSelect('module', 'Module', $modules);
-        $this->addSelect('category', 'Category', $categories);
-        $this->addBasicText(
-            'PSCID',
-            'PSCID',
-            array(
-             "size"      => 10,
-             "maxlength" => 25,
-            )
-        );
-        $this->addBasicText(
-            'visitLabel',
-            'Visit Label',
-            array(
-             'size'      => "5",
-             "maxlength" => "15",
-            )
-        );
-        $this->addSelect('site', 'Site', $list_of_sites);
-        $this->addSelect('reporter', 'Reporter', $reporters);
-        $this->addSelect('assignee', 'Assignee', $assignees);
-        $this->addSelect('priority', 'Priority', $priorities);
-        $this->addBasicDate('minDate', 'Created After', $dateOptions);
-        $this->addBasicDate('maxDate', 'Created Before', $dateOptions);
-        $this->addCheckbox('watching', 'Watching', array('value' => '1'));
-
-        $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
-    }
-
-
-    /**
      * Overwrites the function to add a customized filter
      * for watching and include closed
      *
@@ -368,21 +233,5 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
             }
         }
         return $result;
-    }
-
-
-    /**
-     * Include the column formatter
-     *
-     * @return array of javascript to be inserted
-     */
-    function getJSDependencies()
-    {
-        $factory = \NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
-        return array_merge(
-            parent::getJSDependencies(),
-            array($baseurl . "/issue_tracker/js/columnFormatter.js")
-        );
     }
 }
