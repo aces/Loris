@@ -176,44 +176,4 @@
         </div>
     </div>
 </div>
-
-<div class="row">
-    <div class="col-sm-12">
-        <div id="tabs" style="background: white">
-            <ul class="nav nav-tabs">
-                <li class="statsTab active"><a class="statsTabLink" id="onLoad" href="{$baseurl}/issue_tracker/">All Active
-                        Issues</a></li>
-                <li class="statsTab"><a class="statsTabLink"
-                                        href="{$baseurl}/issue_tracker/?submenu=resolved_issue_tracker">Closed
-                        Issues</a></li>
-                <li class="statsTab"><a class="statsTabLink"
-                                               href="{$baseurl}/issue_tracker/?submenu=my_issue_tracker">My
-                        Issues</a></li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane active">
-                    <div>
-                        <!--  title table with pagination -->
-                        <table id="LogEntries" border="0" valign="bottom" width="100%">
-                            <tr>
-                                <!-- display pagination links -->
-                                <td align="right" id="pageLinks"></td>
-                            </tr>
-                        </table>
-                        <div id="datatable">
-                            <script>
-                                loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
-                                var table = RDynamicDataTable({
-                                    "DataURL": "{$baseurl}/issue_tracker/?format=json",
-                                    "getFormattedCell": formatColumn
-                                });
-                                ReactDOM.render(table, document.getElementById("datatable"));
-                            </script>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
+<div id="issue_tracker_app"></div>

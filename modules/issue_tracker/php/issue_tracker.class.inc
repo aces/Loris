@@ -393,7 +393,7 @@ WHERE Parent IS NOT NULL ORDER BY Label",
         $baseurl = $factory->settings()->getBaseURL();
         return array_merge(
             parent::getJSDependencies(),
-            array($baseurl . "/issue_tracker/js/columnFormatter.js")
+            array($baseurl . "/issue_tracker/js/issue_tracker_app.js")
         );
     }
 }
