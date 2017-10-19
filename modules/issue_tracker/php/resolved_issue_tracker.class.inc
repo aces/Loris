@@ -13,6 +13,7 @@
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
+namespace LORIS/issue_tracker;
 
 /**
  * Provides the PHP code for the menu filter for the issue tracker
@@ -24,7 +25,7 @@
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
+class Resolved_Issue_Tracker extends \NDB_Menu_Filter_Form
 {
     //aka building-table-using-react
     var $AjaxModule = true;
@@ -38,8 +39,8 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
     function _setupVariables()
     {
 
-        $user =& User::singleton();
-        $db   = Database::singleton();
+        $user =& \User::singleton();
+        $db   = \Database::singleton();
 
         $this->query = " FROM issues as i " .
             "LEFT JOIN candidate c ON (i.candID=c.CandID) " .
@@ -152,20 +153,20 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
      */
     function _setFilterForm()
     {
-        $user  =& User::singleton();
-        $db    = Database::singleton();
+        $user  =& \User::singleton();
+        $db    = \Database::singleton();
         $sites = array();
 
         //sites
         if ($user->hasPermission('access_all_profiles')) {
-            $list_of_sites = Utility::getSiteList();
+            $list_of_sites = \Utility::getSiteList();
             if (is_array($list_of_sites)) {
                 $list_of_sites = array('' => 'All') + $list_of_sites;
             }
         } else {// allow only to view own site data
             $site_arr = $user->getData('CenterIDs');
             foreach ($site_arr as $key => $val) {
-                $site[$key] = &Site::singleton($val);
+                $site[$key] =& \Site::singleton($val);
                 if ($site[$key]->isStudySite()) {
                     $sites[$val] = $site[$key]->getCenterName();
                 }
@@ -292,7 +293,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
      */
     function _addValidFilters($prepared_key, $field, $val)
     {
-        $user  =& User::singleton();
+        $user  =& \User::singleton();
         $query = '';
         if ((!empty($val) || $val === '0') && $field != 'order') {
             if (($field != 'w.userID')
@@ -378,7 +379,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseurl = $factory->settings()->getBaseURL();
         return array_merge(
             parent::getJSDependencies(),
