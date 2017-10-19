@@ -198,9 +198,13 @@ try {
     switch($e->getCode()) {
     case 404:
         header("HTTP/1.1 404 Not Found");
+        $errorPage = new Smarty_neurodb;
+        $tpl_data['workspace'] = $errorPage->fetch('404.tpl');
         break;
     case 403:
         header("HTTP/1.1 403 Forbidden");
+        $errorPage = new Smarty_neurodb;
+        $tpl_data['workspace'] = $errorPage->fetch('403.tpl');
         break;
     }
     $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());

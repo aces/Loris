@@ -82,6 +82,7 @@ if (is_dir($basePath . "project/modules/$Module")
 $public = false;
 try {
     $m = Module::factory($Module);
+
     $public = $m->isPublicModule();
 } catch(LorisModuleMissingException $e) {
     $public = false;
