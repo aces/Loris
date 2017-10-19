@@ -20,6 +20,19 @@ BEGIN
   DECLARE CONTINUE HANDLER FOR NOT FOUND
     SET v_finish = 1;
 
+  -- Cleanup the notification_spool table in case of bad datetime format.
+  CREATE TEMPORARY TABLE hist_tmp AS 
+    (SELECT h.changeDate, h.primaryVals FROM history h WHERE h.tbl='notification_spool' AND h.col='TimeSpooled');
+
+  CREATE TEMPORARY TABLE hist_list_tmp AS 
+    (SELECT h.primaryVals FROM history h WHERE h.tbl='notification_spool' AND h.col='TimeSpooled');
+
+  UPDATE notification_spool SET TimeSpooled=(SELECT ChangeDate FROM hist_tmp WHERE primaryVals=NotificationID) WHERE NotificationID IN (SELECT primaryVals FROM hist_list_tmp);
+
+  DROP TABLE hist_tmp;
+  DROP TABLE hist_list_tmp;
+
+  -- Store the current foreign keys for the cursor.
   CREATE TEMPORARY TABLE tmp_centerid_contraints SELECT TABLE_NAME, COLUMN_NAME, CONSTRAINT_NAME FROM information_schema.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = v_schema_name AND ((TABLE_NAME = 'psc' AND LOWER(COLUMN_NAME) = 'centerid') OR (REFERENCED_TABLE_NAME = 'psc' AND LOWER(REFERENCED_COLUMN_NAME) = 'centerid')) AND TABLE_NAME != 'psc';
 
   -- Drop foreign keys
