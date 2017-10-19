@@ -199,11 +199,13 @@ try {
     case 404:
         header("HTTP/1.1 404 Not Found");
         $errorPage = new Smarty_neurodb;
+        $errorPage->assign($tpl_data);
         $tpl_data['workspace'] = $errorPage->fetch('404.tpl');
         break;
     case 403:
         header("HTTP/1.1 403 Forbidden");
         $errorPage = new Smarty_neurodb;
+        $errorPage->assign($tpl_data);
         $tpl_data['workspace'] = $errorPage->fetch('403.tpl');
         break;
     }
