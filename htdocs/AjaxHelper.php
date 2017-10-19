@@ -79,7 +79,13 @@ if (is_dir($basePath . "project/modules/$Module")
     exit(5);
 }
 
-$m = Module::factory($Module);
+$public = false;
+try {
+    $m = Module::factory($Module);
+    $public = $m->isPublicModule();
+} catch(LorisModuleMissingException $e) {
+    $public = false;
+}
 if ($anonymous === true && $m->isPublicModule() === false) {
     header("HTTP/1.1 403 Forbidden");
     exit(6);
