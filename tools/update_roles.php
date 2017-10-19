@@ -137,13 +137,13 @@ function syntaxIncorrect()
 {
     echo "You have not used the correct argument syntax for this script.
 
-To see the roles in the database:       php update_roles.php roles
-To see the permissions in the database: php update_roles.php permissions
-To see the permissions for a role:      php update_roles.php [role]
-To add a permission to the role:        php update_roles.php [role] add [perm]
-To remove a permission from the role:   php update_roles.php [role] remove [perm]
-To rebuild the roles for every user:    php update_roles.php refreshRoles
-To rebuild permissions for every user:  php update_roles.php refreshPermissions";
+To see the roles in the database:                               php update_roles.php roles
+To see the permissions in the database:                         php update_roles.php permissions
+To see the permissions for a role:                              php update_roles.php [role]
+To add a permission to the role:                                php update_roles.php [role] add [perm]
+To remove a permission from the role:                           php update_roles.php [role] remove [perm]
+To rebuild the roles for every user based on their permissions: php update_roles.php refreshRoles
+To rebuild permissions for every user based on their role:      php update_roles.php refreshPermissions\n";
 }
 
 /**
@@ -442,11 +442,19 @@ function getUserRoles($userID)
         "SELECT upc.permission_category_id
          FROM users_permission_categories_rel upc
          LEFT JOIN users u ON u.ID=upc.user_id
-         WHERE u.UserID=:userID",
+         WHERE u.ID=:userID",
         array(
          'userID' => $userID,
         )
     );
+
+    $processedUserRoles = array();
+
+    foreach ($userRoles as $userRole) {
+        array_push($processedUserRoles, $userRole['permission_category_id']);
+    }
+
+    return $processedUserRoles;
 
     return $userRoles;
 }
@@ -678,6 +686,9 @@ function addPermission($role, $permission)
     }
 
     // Rebuild roles in case anyone gets a new role based on a new permission
+
+    echo "\nRebuilding roles in case anyone a new role based on a new permission...\n\n";
+
     refreshRoles();
 }
 
@@ -737,6 +748,7 @@ function removePermission($role, $permission)
     }
 
     // Add permissions back if the user has it in another role
+    refreshPermissions();
 
     // Rebuild roles in case anyone gets a new role based on changed role permissions
     refreshRoles();
