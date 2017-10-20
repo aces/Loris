@@ -4,6 +4,14 @@
         verbose="true"
         colors="true">
     <testsuites>
+        <testsuite name='InstrumentTest'>
+            <file>./unittests/NDB_BVL_Instrument_JSON.php</file>
+        </testsuite>
+
+        <testsuite name='ParserTest'>
+            <file>./unittests/ParserTest.php</file>
+        </testsuite>
+
         <testsuite name='LorisUnitTests'>
             <directory>./unittests/</directory>
             <directory>./unittests/api</directory>

@@ -5,6 +5,9 @@ htdocs/js/components/*
 # Ignore until ESLint is run
 modules/dataquery/
 
+# Ignore generated parser
+jsx/lib/Parser/js/logicParser.js
+
 # Ignore external libs
 htdocs/js/flot/*
 htdocs/js/jquery/*

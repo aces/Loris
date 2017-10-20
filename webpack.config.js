@@ -7,7 +7,7 @@ var config = {
     './htdocs/js/components/PaginationLinks.js': './jsx/PaginationLinks.js',
     './htdocs/js/components/StaticDataTable.js': './jsx/StaticDataTable.js',
     './htdocs/js/components/Breadcrumbs.js': './jsx/Breadcrumbs.js',
-    './htdocs/js/components/Form.js': './jsx/Form.js',
+    './htdocs/js/components/Form.js': ['./jsx/Form.js'],
     './htdocs/js/components/Markdown.js': './jsx/Markdown.js',
     './modules/media/js/mediaIndex.js': './modules/media/jsx/mediaIndex.js',
     './modules/media/js/editFormIndex.js': './modules/media/jsx/editFormIndex.js',
@@ -47,7 +47,9 @@ var config = {
     './modules/help_editor/js/columnFormatter.js': './modules/help_editor/jsx/columnFormatter.js',
     './modules/brainbrowser/js/Brainbrowser.js': './modules/brainbrowser/jsx/Brainbrowser.js',
     './modules/data_integrity_flag/js/index.js': './modules/data_integrity_flag/jsx/index.js',
-    './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js'
+    './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js',
+    './htdocs/js/modules/direct-entry-react.compiled.js': './htdocs/js/modules/direct-entry-react.js',
+    './htdocs/js/modules/instrument-view.compiled.js': './htdocs/js/modules/instrument-view.js'
   },
   output: {
     path: './',
@@ -82,6 +84,9 @@ var config = {
   },
   externals: {
     react: 'React'
+  },
+  node: {
+    fs: "empty"
   },
   devtool: 'source-map',
   plugins: [new webpack.optimize.UglifyJsPlugin({mangle: false})]

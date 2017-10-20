@@ -278,6 +278,7 @@ class NDB_Caller
             $phpfile   = $base . "project/instruments/"
                                . "NDB_BVL_Instrument_$test_name.class.inc";
             $linstfile = $base."project/instruments/$test_name.linst";
+            $jsonfile  = $base."project/instruments/$test_name.json";
 
             if ($this->existsAndRequire($phpfile)
                 || $test_name=='instrument_preview'
@@ -291,7 +292,7 @@ class NDB_Caller
 
                 $this->type = 'instrument';
                 return $html;
-            } else if (file_exists($linstfile)) {
+            } else if (file_exists($linstfile) || file_exists($jsonfile)) {
                 $html = $this->loadInstrument($test_name, $subtest, $CommentID);
 
                 $this->type = 'instrument';

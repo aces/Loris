@@ -593,6 +593,7 @@ class NDB_Page
         if ($this->skipTemplate) {
             return "";
         }
+
         if (!$this->form->isFrozen()) {
             // hidden values
               $this->addHidden('test_name', $this->name);

@@ -1,6 +1,8 @@
 /* exported FormElement, SelectElement, TextareaElement, TextboxElement, DateElement,
 NumericElement, FileElement, StaticElement, ButtonElement, LorisElement
 */
+import {RadioGroup, Radio} from 'react-radio-group';
+import {Checkbox, CheckboxGroup} from 'react-checkbox-group';
 
 /**
  * This file contains React components for Loris form elements.
@@ -135,6 +137,218 @@ var FormElement = React.createClass({
 });
 
 /**
+ * RadioGroupLabels
+ * Aligned labels for rows of radio buttons
+ */
+const RadioGroupLabels = React.createClass({
+  render() {
+    return (
+      <div className="row form-group">
+        <label className="col-sm-3 control-label">
+          &nbsp;
+        </label>
+        <div style={{marginTop: 30, display: 'flex', justifyContent: 'space-around'}} className="col-sm-9">
+          {this.props.labels.map((label, index) => (
+            <div key={index} style={{color: 'brown', textAlign: 'center', minWidth: '10em', maxWidth: '10em'}}>
+              {label}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+});
+
+/**
+ * RadioGroup Component
+ * React wrapper for a group of radio buttons
+ */
+const RadioGroupElement = React.createClass({
+  propTypes: {
+    name: React.PropTypes.string.isRequired,
+    options: React.PropTypes.oneOfType([
+      React.PropTypes.object,
+      React.PropTypes.array
+    ]),
+    label: React.PropTypes.string,
+    value: React.PropTypes.string,
+    id: React.PropTypes.string,
+    class: React.PropTypes.string,
+    disabled: React.PropTypes.bool,
+    required: React.PropTypes.bool,
+    hasError: React.PropTypes.bool,
+    orientation: React.PropTypes.string,
+    errorMessage: React.PropTypes.string,
+    onUserInput: React.PropTypes.func
+  },
+
+  getDefaultProps: function() {
+    return {
+      name: '',
+      options: {},
+      label: '',
+      value: undefined,
+      id: '',
+      class: '',
+      disabled: false,
+      required: false,
+      hasError: false,
+      orientation: 'vertical',
+      errorMessage: 'The field is required!',
+      onUserInput: function() {
+        console.warn('onUserInput() callback is not set');
+      }
+    };
+  },
+
+  handleChange: function(value) {
+    this.props.onUserInput(this.props.name, value);
+  },
+
+  render: function() {
+    var required = this.props.required ? 'required' : null;
+    var disabled = this.props.disabled ? 'disabled' : null;
+    var isHorizontal = this.props.orientation === 'horizontal';
+    var options = this.props.options;
+    var errorMessage = null;
+    var requiredHTML = null;
+    var elementClass = 'row form-group';
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    // Add error message
+    if (this.props.hasError || (this.props.required && this.props.value === "")) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
+    return (
+      <div className={elementClass}>
+        <label className="col-sm-3 control-label">
+          {this.props.label}
+          {requiredHTML}
+        </label>
+        <div className="col-sm-9">
+          <RadioGroup
+            name={this.props.name}
+            selectedValue={this.props.value}
+            onChange={this.handleChange}
+            id={this.props.label}
+            required={required}
+            disabled={disabled}
+          >
+            <div style={{display: isHorizontal ? 'flex' : '', justifyContent: 'space-around'}}>
+              {Object.keys(options).map(function(optionValue, index) {
+                return (
+                  <div key={index}>
+                    <Radio value={optionValue} key={optionValue}/> {options[optionValue]}
+                  </div>
+                );
+              })}
+            </div>
+          </RadioGroup>
+          {errorMessage}
+        </div>
+      </div>
+    );
+  }
+});
+
+/**
+ * CheckboxGroupElement Component
+ * React wrapper for a group of checkboxes
+ */
+const CheckboxGroupElement = React.createClass({
+  propTypes: {
+    name: React.PropTypes.string.isRequired,
+    options: React.PropTypes.oneOfType([
+      React.PropTypes.array,
+      React.PropTypes.object
+    ]),
+    label: React.PropTypes.string,
+    value: React.PropTypes.string,
+    id: React.PropTypes.string,
+    class: React.PropTypes.string,
+    disabled: React.PropTypes.bool,
+    required: React.PropTypes.bool,
+    hasError: React.PropTypes.bool,
+    errorMessage: React.PropTypes.string,
+    onUserInput: React.PropTypes.func
+  },
+
+  getDefaultProps: function() {
+    return {
+      name: '',
+      options: {},
+      label: '',
+      value: undefined,
+      id: '',
+      class: '',
+      disabled: false,
+      required: false,
+      hasError: false,
+      errorMessage: 'The field is required!',
+      onUserInput: function() {
+        console.warn('onUserInput() callback is not set');
+      }
+    };
+  },
+
+  handleChange: function(value) {
+    this.props.onUserInput(this.props.name, value);
+  },
+
+  render: function() {
+    var required = this.props.required ? 'required' : null;
+    var options = this.props.options;
+    var errorMessage = null;
+    var requiredHTML = null;
+    var elementClass = 'row form-group';
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    // Add error message
+    if (this.props.hasError || (this.props.required && this.props.value === "")) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
+    return (
+      <div className={elementClass}>
+        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+        <div className="col-sm-9">
+          <CheckboxGroup
+            name="fruits"
+            value={this.props.value}
+            onChange={this.handleChange}>
+
+            <div style={{}}>
+              {Object.keys(options).map(function(optionValue, index) {
+                return (
+                  <div key={`${optionValue}-${index}`} >
+                    <Checkbox value={optionValue}/> {options[optionValue]}
+                  </div>
+                );
+              })}
+            </div>
+          </CheckboxGroup>
+          {errorMessage}
+        </div>
+      </div>
+    );
+  }
+});
+
+/**
  * Select Component
  * React wrapper for a simple or 'multiple' <select> element.
  */
@@ -142,7 +356,10 @@ var SelectElement = React.createClass({
 
   propTypes: {
     name: React.PropTypes.string.isRequired,
-    options: React.PropTypes.object.isRequired,
+    options: React.PropTypes.oneOfType([
+      React.PropTypes.array,
+      React.PropTypes.object
+    ]),
     label: React.PropTypes.string,
     value: React.PropTypes.oneOfType([
       React.PropTypes.string,
@@ -805,5 +1022,8 @@ export default {
   FileElement,
   StaticElement,
   ButtonElement,
-  LorisElement
+  LorisElement,
+  RadioGroupLabels,
+  RadioGroupElement,
+  CheckboxGroupElement
 };

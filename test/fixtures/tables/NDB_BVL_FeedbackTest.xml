@@ -94,7 +94,7 @@
 		<field name="UserID">admin</field>
 		<field name="Date_registered">2014-05-02</field>
 		<field name="flagged_caveatemptor">false</field>
-		<field name="flagged_reason">1</field>
+		<field name="flagged_reason" xsi:nil="true" />
 		<field name="flagged_other">Testing</field>
 		<field name="flagged_other_status" xsi:nil="true" />
 		<field name="Testdate">2015-05-08 18:26:49</field>

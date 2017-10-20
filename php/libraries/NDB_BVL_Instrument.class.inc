@@ -181,10 +181,29 @@ class NDB_BVL_Instrument extends NDB_Page
         ) {
             return;
         }
-        if (file_exists($base."project/instruments/$instrument.linst")
-        ) {
+        if (file_exists($base."project/instruments/$instrument.json")) {
+            $obj = new \Loris\Behavioural\NDB_BVL_Instrument_JSON();
+
+            $obj->setup($commentID, $page);
+            $lang     = $_REQUEST["lang"] ? $_REQUEST["lang"] : "en-ca";
+            $filename = $base."project/instruments/$instrument.json";
+
+            $obj->loadInstrumentFile($filename);
+        } else if (file_exists($base."project/instruments/$instrument.linst")) {
             include_once 'NDB_BVL_Instrument_LINST.class.inc';
             $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST();
+            // if a script is loading this form without a commentID,
+            // display all fields
+            if (!isset($commentID)) {
+                $obj->displayAllFields = true;
+            }
+
+            // Sets up page variables such as $this->commentID and $this->form
+            $success = $obj->setup($commentID, $page);
+
+            $obj->loadInstrumentFile(
+                $base . "project/instruments/$instrument.linst"
+            );
         } else {
             if (!class_exists($class)
                 && ($guarantee_exists === true
@@ -198,21 +217,12 @@ class NDB_BVL_Instrument extends NDB_Page
             // Now go ahead and instantiate it
             $obj = new $class;
             // Now go ahead and instantiate it
+            $success = $obj->setup($commentID, $page);
         }
-
-        // if a script is loading this form without a commentID, display all fields
-        if (!isset($commentID)) {
-            $obj->displayAllFields = true;
-        }
-
-        // Sets up page variables such as $this->commentID and $this->form
-        $success = $obj->setup($commentID, $page);
 
         // Adds all of the form element and form rules to the page after
         // having instantiated the form above
-        $obj->loadInstrumentFile(
-            $base . "project/instruments/$instrument.linst"
-        );
+
         // Add rules only if they exist.
         if (file_exists($base."project/instruments/$instrument.rules")) {
             $obj->loadInstrumentRules(
@@ -416,6 +426,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 $formArray['tableID'] = "instrument";
             }
 
+            $formArray['lang'] = $_REQUEST["lang"] ?? "en-CA";
             $smarty->assign('form', $formArray);
             $html = $smarty->fetch("directentry_form.tpl");
         } elseif (isset($_REQUEST['json']) == 'true') {

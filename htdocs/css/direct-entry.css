@@ -1,0 +1,71 @@
+.instrument-label {
+    margin-bottom: 0px;
+}
+
+h1 {
+    font-size: 24px;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 0px;
+}
+
+.title h1 {
+    text-align: center;
+    margin-top: 0px;
+    margin-bottom: 16px;
+}
+
+label {
+    font-weight: normal;
+    text-align: justify;
+}
+
+#banner {
+    background-color: #08245b;
+    padding: 10px;
+}
+
+#logo {
+    max-height: 55px;
+    padding-right: 5px;
+}
+
+.studyTitle {
+    color: white;
+    font-size: 24px;
+    vertical-align: bottom;
+    line-height: 1;
+}
+
+.instrumentContainer {
+  padding: 1% 2% 2% 2%;
+}
+
+.complete {
+  display: flex;
+  margin-top: 100px;
+  justify-content: center;
+  align-items: center;
+  font-size: 2em;
+}
+
+#save {
+    margin: auto;
+    display: block;
+    color: white;
+    background-color: #08245b;
+}
+
+#warning {
+    color: red;
+}
+
+.asText {
+    background: none;
+    border: none;
+    margin: 0;
+    padding-bottom: 15px;
+    text-decoration: underline;
+}
