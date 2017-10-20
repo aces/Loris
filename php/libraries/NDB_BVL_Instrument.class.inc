@@ -455,7 +455,7 @@ class NDB_BVL_Instrument extends NDB_Page
             && $defaults['Window_Difference'] != 0
         ) {
             $defaults['Candidate_Age']
-                = '<span class="error">' . $defaults['Candidate_Age'] . '</span>';
+                = $defaults['Candidate_Age'] . " (Age out of range)";
         }
         //Convert select multiple elements into a quickform array
         if (!empty($this->_selectMultipleElements)) {
@@ -725,7 +725,7 @@ class NDB_BVL_Instrument extends NDB_Page
             if (strpos($key, '__') === 0) {
                 unset($values[$key]);
             }
-            Utility::nullifyEmpty($values, $key);
+            $values = Utility::nullifyEmpty($values, $key);
         }
         $db     =& Database::singleton();
         $result = $db->update(
@@ -898,13 +898,15 @@ class NDB_BVL_Instrument extends NDB_Page
                 array('tst_name' => $this->testName)
             );
             $results = $db->pselect(
-                "SELECT certification.examinerID, full_name
-                 FROM certification
-                     JOIN examiners
-                         ON (certification.examinerID = examiners.examinerID)
-                 WHERE testID =:tid
-                    AND pass =:cert_id
-                    AND centerID =:cid
+                "SELECT c.examinerID, e.full_name
+                 FROM certification c
+                     JOIN examiners e
+                         ON (c.examinerID = e.examinerID)
+                     JOIN examiners_psc_rel epr
+                         ON (epr.examinerID=e.examinerID)
+                 WHERE c.testID =:tid
+                    AND c.pass =:cert_id
+                    AND epr.centerID =:cid
                  ORDER BY full_name",
                 array(
                  'tid'     => $test_id,
@@ -914,9 +916,11 @@ class NDB_BVL_Instrument extends NDB_Page
             );
         } else {
             $results = $db->pselect(
-                "SELECT examinerID, full_name
-                     FROM examiners
-                 WHERE centerID=:centID
+                "SELECT e.examinerID, e.full_name
+                     FROM examiners e
+                         JOIN examiners_psc_rel epr
+                             ON (epr.examinerID=e.examinerID)
+                 WHERE epr.centerID=:centID
                      ORDER BY full_name",
                 array('centID' => $centerID)
             );
@@ -1227,16 +1231,18 @@ class NDB_BVL_Instrument extends NDB_Page
     function XINRunElementRules($elname, $elements, $rules)
     {
         $errors = array();
+        //Conditions for the rule to be true, thus the element to be required.
+        $rule_outcomes = array();
 
         foreach ($rules['rules'] AS $rule) {
-            //Conditions for the rule to be true, thus the element to be required.
-            $rule_outcomes = array();
             //Loop through the assigned rules (which is the array of formatted
             //statements passed in XINRegisterRule)
             //If this is an OR rule using two different controllers explode it
             //at the pipe.  ex: q_1{@}=={@}yes|q_2{@}=={@}yes
-            if (stristr(substr($rule, strpos($rule, "|")), "{@}")) {
-                $rules_array = explode("|", $rule);
+            $isInterfieldOr = false;
+            if (substr_count($rule, '{@}') > 2 && strstr($rule, '|')) {
+                $rules_array    = explode("|", $rule);
+                $isInterfieldOr = true;
             } else {  //Otherwise its a regular rule.  ex: q_1{@}=={@}yes
                 $rules_array[] = $rule;
             }
@@ -1273,6 +1279,8 @@ class NDB_BVL_Instrument extends NDB_Page
 
                     if ($ElementResult) {
                         $or_conditions = true; //If any of the OR rules is true
+                    } else if (!$isInterfieldOr) {
+                        $or_conditions = false;
                     }
                 }
             }

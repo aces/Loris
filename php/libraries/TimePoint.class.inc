@@ -250,6 +250,61 @@ class TimePoint
     }
 
     /**
+     * Validates if a given visit_label follows the study's config settings
+     * and if that same visit label can be created for the given candidate.
+     *
+     * @param integer $candid       The candidate identifier
+     * @param integer $subprojectID The subprojectID
+     * @param string  $visitLabel   The visit label
+     *
+     * @throws LorisException
+     *
+     * @return void
+     */
+    static function isValidVisitLabel($candid, $subprojectID, $visitLabel)
+    {
+        $config =& \NDB_Config::singleton();
+        $visitLabelSettings = $config->getSetting('visitLabel');
+        foreach (\Utility::toArray($visitLabelSettings) as $setting) {
+            if ($setting['@']['subprojectID'] == $subprojectID) {
+                $visitLabelSettings =$setting;
+                break;
+            }
+        }
+
+        // This can happen if the user quickly clicks "Create Time Point" before the
+        // page has loaded and the Visit Label dropdown hasn't been selected yet.
+        // The page will create "V1" when this is the case without this check.
+        if (empty($visitLabel)) {
+            throw new \LorisException(
+                'A visit label is required.'
+            );
+        }
+
+        // make sure the user entered a valid visit label
+        if ($visitLabelSettings['generation'] == 'user') {
+            if (!preg_match($visitLabelSettings['regex'], $visitLabel)) {
+                throw new \LorisException(
+                    'This visit label does not match the required structure.'
+                );
+            }
+        }
+
+        $candidate =& \Candidate::singleton($candid);
+
+        $timePointArray = $candidate->getListOfVisitLabels();
+
+        //If the visitLabel is already in use then let the user pick another
+        foreach ($timePointArray AS $used_label) {
+            if (strcasecmp($visitLabel, $used_label) == 0) {
+                throw new \LorisException(
+                    'This visit label is not unique.'
+                );
+            }
+        }
+    }
+
+    /**
      * Gets a piece of data regarding this TimePoint. Usually, you should
      * use one of the get* methods below, but in cases where it does not
      * exist you can use this function directly.

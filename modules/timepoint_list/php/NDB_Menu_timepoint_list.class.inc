@@ -54,7 +54,11 @@ class NDB_Menu_Timepoint_List extends NDB_Menu
             // create timepoint object
             $timePoint =& TimePoint::singleton($sessionID);
             // check if at least one timepoint belongs to the user's site
-            if ($user->getData('CenterID') == $timePoint->getData('CenterID')) {
+            if (in_array(
+                $timePoint->getData('CenterID'),
+                $user->getData('CenterIDs')
+            )
+            ) {
                 return true;
             }
         }

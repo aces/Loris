@@ -295,7 +295,6 @@ function getParticipantStatusFields()
         array()
     );
     $parentIDMap = array();
-
     foreach ($parentIDs as $ID) {
         $reasonOptions = array();
         foreach ($ID as $parentID) {

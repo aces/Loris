@@ -1,24 +1,24 @@
-#Genomic Browser module - Test Plan
+## Genomic Browser - Test Plan
+
+## Table of Contents  
+
+### [Permissions](#permissions_link)
+### [Navigation](#navigation_link)
+### [Features](#features_link)
+### [Filtering](#data_filtering_link)  
+### [Datatable](#datatable_link)
+### [Download](#data_download_link)  
+### [Upload](#data_upload_link)  
+### [Help](#help_link)
+### [Help content](#help_content_link)
+### [Tooltips](#tooltips_link)
+
 <br>
-###Table of Contents  
 
-####Permissions   
-####Navigation
-####Features
-######[Filtering](#data_filtering)  
-######[Datatable](#datatable)
-######[Download](#data_download)  
-######[Upload](#data_upload)  
-####Help
-######[Help content](#help_content)
-######[Tooltips](#tooltips)
-
-<br>
-
-<a name="permissions">
-###Permissions
+<a name="permissions_link">
 </a>
-***
+
+## Permissions
 
 The following permissions should be available in the database
 
@@ -27,9 +27,9 @@ The following permissions should be available in the database
 | genomic_browser_view_site | View Genomic Browser data from own site |
 | genomic_browser_view_allsites | View Genomic Browser data across all sites |
 | genomic_data_manager | Manage the genomic files |
-<br>
-***
-#####For a user without neither genomic_browser_view_allsites nor genomic_browser_view_site
+
+
+#### For a user without neither genomic_browser_view_allsites nor genomic_browser_view_site
 
 - The Loris menu should not contain a *Genomic Browser* item.
 - Accessing the http://your-base-url/genomic_browser/ should present the following error message: 
@@ -37,40 +37,44 @@ The following permissions should be available in the database
 > **You do not have access to this page.**  
 
 ***
-#####For a user with genomic_browser_view_allsites only
+#### For a user with genomic_browser_view_allsites only
 
 - There should be a *Genomic Browser* item in the Loris Menu under tools.
 - Accessing the http://your-base-url/genomic_browser/ should load the Genomic Browser Profile tab.  
 
 ***
-#####For a user with genomic_browser_view_site only
+#### For a user with genomic_browser_view_site only
 
 - There should be a *Genomic Browser* item in the Loris Menu under tools.
 - Accessing the http://your-base-url/genomic_browser/ should load the Genomic Browser Profile tab.
-- The only candidate's data that should appear in the Datatable of the Profile, CNV,  SNP and Methylation tabs should be those of the same site then this user's site.  
+- The only candidate's data that should appear in the Datatable of the Profile, CNV,  SNP and Methylation tabs should be those of the same site as this user's site.  
 
 ***
-#####For a user with genomic_data_manager and one of genomic_data_manager or genomic_browser_view_allsites
+#### For a user with genomic_data_manager and one of genomic_data_manager or genomic_browser_view_allsites
 
 - In the File tab of the genomic browser, there should be a *Upload File* button  
 
-<a name="navigation">
-###Page navigation and display
+*** 
+
+<a name="navigation_link">
 </a>
-***
+
+## Page Navigation and Display
 
 - There should be 6 tabs unders the breadcrumb: Profile, GWAS, SNP, CNV, Methylation and Files
-- Clicking each tab should present it as active and the 5 other tabs should remain in te same order.
+- Clicking each tab should present it as active and the 5 other tabs should remain in the same order.
 
-<a name="features">
-###Features
+<a name="features_link">
 </a>
+
+## Features 
 ***
-<a name="data_filtering">
-####Data Filtering
+<a name="data_filtering_link">
 </a>
 
-######Profile tab
+### Data Filtering
+
+#### Profile tab
 - Clicking on the *Candidate filters* block header should hide its content.
 - Clicking on the *Genomic filters* block header should hide its content.
 - Filters should filter data presented in the Datatable according to the selected values after clicking on the *Show Data* button.
@@ -97,8 +101,10 @@ No.|PSC|DCCID|PSCID|Gender|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 - Clicking the *Clear Form* button should reset the filters and the Datatable should prensent the Summary fields columns only.
 - Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
 
-<br>
-######GWAS tab
+
+*** 
+
+#### GWAS tab
 
 - Clicking on the *GWAS filters* block header should hide its content.
 - Filters should filter data presented in the Datatable according to the selected values after clicking on the *Show Data* button.
@@ -109,8 +115,9 @@ No.|PSC|DCCID|PSCID|Gender|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 - Clicking the *Clear Form* button should reset the filters.
 - Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
 
-<br>
-######SNP tab
+*** 
+
+#### SNP tab
 - Clicking on the *Candidate filters* block header should hide its content.
 - Clicking on the *Genomic Range filters* block header should hide its content.
 - Clicking on the *SNP filters* block header should hide its content.
@@ -139,9 +146,10 @@ No.|PSC|DCCID|PSCID|Gender|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 
 - Clicking the *Clear Form* button should reset the filters and the Datatable should prensent the Summary fields columns only.
 - Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
-<br>
 
-######CNV tab
+*** 
+
+#### CNV tab
 
 - Clicking on the *Candidate filters* block header should hide its content.
 - Clicking on the *Genomic Range filters* block header should hide its content.
@@ -166,13 +174,15 @@ No.|PSC|DCCID|PSCID|Gender|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 - Setting the Display filter to All fields and click in the *Show Data* button should present the folowing columns in the Datatable
 
 |No.|PSC|DCCID|PSCID|Gender|Subproject|DoB|ExternalID|Chromosome|Strand|StartLoc|EndLoc|Size|Location|Gene Symbol|Gene Name|CNV Description|CNV Type|Copy Num Change|Event Name|Common CNV|Characteristics|Inheritance|Array Report|Markers|Validation Method|Platform|
-| | | | | | | | | | | | | | | | | | | | | | | | | | | |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | 
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | 
 
 - Clicking the *Clear Form* button should reset the filters and the Datatable should prensent the Summary fields columns only.
 - Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
-<br>
 
-######Methylation tab
+*** 
+
+#### Methylation tab
 
 - Clicking on the *Candidate filters* block header should hide its content.
 - Clicking on the *Genomic Range filters* block header should hide its content.
@@ -203,9 +213,10 @@ No.|PSC|DCCID|PSCID|Gender|Subproject|DoB|ExternalID|Files|SNPs|CNVs|CPGs|
 
 - Clicking the *Clear Form* button should reset the filters and the Datatable should prensent the Summary fields columns only.
 - Clicking on column headers should sort data in ascending order on the first click then descending order on the second click.
-<br>
 
-######Files tab
+***
+
+#### Files tab
 
 - *Type* filter is an exact filter (Shows only the record with this exact value)
 - All other filters are contains filters (Shows all records that contains this value)
@@ -218,81 +229,91 @@ The following columns should be presented
 
 - Clicking the *Clear Form* button should reset the filters
 
-######Across tab filters
+*** 
+
+##### Across tab filters
+
 
 ***
-<a name="datatable">
-####Datatable 
+<a name="datatable_link"> 
 </a>
+
+## Datatable
 
  - For each of the 6 tabs, the Datatable should present the total of records found.
  - For each of the 6 tabs, the Datatable should present the number of row  displayed.
  - For each of the 6 tabs, the Datatable should present a pagination if there is more records to display then the actual *row per page* value.
- - Chnaging the *row per page* dropdown value should be reflected on the pagination and on the number of row displayed.
+ - Changing the *row per page* drop-down value should be reflected on the pagination and on the number of row displayed.
 
-#####Special formated columns
-######Profile tab
+### Special formated columns
+
+#### Profile tab
  - The *PSCID* column should provide links to the timepoint_list module filtered to this candidate.
  - If there is at least one file for a candidate, the *Files* column should provide links to the **viewGenomicFile** submenu filtered for all files concerning this candidate. There can be multiple files displayed. 
  - If there is at least one SNP for this candidate, the SNPs column should provide links to the SNP tab filtered for this candidate.
  - If there is at least one CNV for this candidate, the CNVs column should provide links to the CNV tab filtered for this candidate.
  - If there is at least one CPG for this candidate, the CPGs column should provide links to the Methylation tab filtered for this candidate.
 
-######GWAS tab
+#### GWAS tab
  - None
-
-######SNP tab
+***
+#### SNP tab
 - The *PSCID* column should provide links to the timepoint_list module filtered to this candidate.
 - The *RsID* column should provide link to the [dbSNP](http://www.ncbi.nlm.nih.gov/SNP/) http://www.ncbi.nlm.nih.gov/SNP/
-
-######CNV tab
+***
+#### CNV tab
 - The *PSCID* column should provide links to the timepoint_list module filtered to this candidate.
-
-######Methylation tab
+***
+#### Methylation tab
 - The *PSCID* column should provide links to the timepoint_list module filtered to this candidate.
 - The *Cpg Name* column should provide links to the [UCSC Genome Browser](https://genome.ucsc.edu/cgi-bin/hgTracks) https://genome.ucsc.edu/cgi-bin/hgTracks at the location centered on that cpg 1000bp wide. 
 - The *Gene* column should provide links to the [UCSC Genome Browser](https://genome.ucsc.edu/cgi-bin/hgTracks) https://genome.ucsc.edu/cgi-bin/hgTracks at the location centered on that gene. There can be many gene name. The links should open new window. 
 - The *Accession Number* column should provide links to the [UCSC Genome Browser](https://genome.ucsc.edu/cgi-bin/hgTracks) https://genome.ucsc.edu/cgi-bin/hgTracks at the location centered on that gene. There can be many gene name. The links should open new window. 
 - The *Island Loc* column should provide links to the [UCSC Genome Browser](https://genome.ucsc.edu/cgi-bin/hgTracks) https://genome.ucsc.edu/cgi-bin/hgTracks at the location centered on that cPG island.
-
-######Files tab
+***
+#### Files tab
 
 - The FileName column should provide links to the **viewGenomicFile** page showing this file only.
 
-***
-<a name="data_download">
-####Data download 
+
+<a name="data_download_link"> 
 </a>
-######CSV
+
+## Data Download 
+### CSV
 - The 6 tab Datatables should provide a *Download as CSV* button.
 - Clicking on the *Download as CSV* button should trigger a file download.
 - The file content should follow the filtered values of the tab.
 
-######View Genomic File
+### View Genomic File
 - The view genomic file page should provide a *Download* button for each file.
 - Clicking on the *Download* button should trigger a file download.
 
-<a name="data_upload">
-####Data upload 
+<a name="data_upload_link">
 </a>
-***
+
+## Data Upload
+
 > Under construction
 
-<a name="help">
-###Help 
+<a name="help_link">
 </a>
+
+## Help
 
 ***
 
-<a name="help_content">
-####Help section content
+<a name="help_content_link">
 </a>
+
+## Help section content
 
 - The help panel should appear when clicking on the question mark in the LORIS menu bar.  
 - The help text should be accurate at formatted properly.
 
-<a name="tooltips">
-####Tooltips
+<a name="tooltips_link">
 </a>
+
+## Tooltips
 > Under construction
 

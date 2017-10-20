@@ -405,12 +405,20 @@ var dataTeamGraphics = React.createClass({
       this.props.instrument ? ("On Instrument " + this.props.instrument) :
         "Across All Instruments"
     );
+    var siteStatus = (
+      this.props.site ? (this.props.site) :
+        "Across All Sites"
+      );
+    var projectStatus = (
+      this.props.project ? (this.props.project) :
+        "Across All Projects"
+      );
 
     return (
       <div className="col-sm-12 col-md-5">
         <div className="panel panel-primary">
           <div className="panel-heading">
-            At A Glance: {pscidStatus} - {visitStatus} - {instrumentStatus}
+            At A Glance: {pscidStatus} - {visitStatus} - {instrumentStatus} - {siteStatus} -{projectStatus}
           </div>
           <div className="panel-body">
             <div id="completedChart"></div>

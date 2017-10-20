@@ -41,8 +41,8 @@ $tpl_data = array();
 $config = NDB_Config::singleton();
 $DB     = Database::singleton();
 
-$res = array();
-$DB->select("SELECT Name, CenterID FROM psc", $res);
+$res       = array();
+$res       = $DB->pselect("SELECT Name, CenterID FROM psc", array());
 $site_list = array();
 foreach ($res as $elt) {
     $site_list[$elt["CenterID"]] = $elt["Name"];
@@ -171,29 +171,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                      'Email'            => $from,
                     );
 
-        if ($_REQUEST['examiner']=='on') {
-            $rad =0;
-            if ($_REQUEST['radiologist']=='on') {
-                $rad =1;
-            }
-            //insert in DB as inactive until account approved
-            $DB->insert(
-                'examiners',
-                array(
-                 'full_name'        => $fullname,
-                 'centerID'         => $site,
-                 'radiologist'      => $rad,
-                 'active'           => 'N',
-                 'pending_approval' => 'Y',
-                )
-            );
-        }
-
         // check email address' uniqueness
         $result = $DB->pselectOne(
             "SELECT COUNT(*) FROM users WHERE Email = :VEmail",
             array('VEmail' => $from)
         );
+
+        $user_id = null;
 
         if ($result == 0) {
             // insert into DB only if email address doesn't exist
@@ -211,6 +195,48 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                  'CenterID' => $site,
                 )
             );
+        }
+
+        if ($_REQUEST['examiner']=='on') {
+            $rad = 0;
+            if ($_REQUEST['radiologist']=='on') {
+                $rad =1;
+            }
+            //insert in DB as inactive until account approved
+            $examinerID = $DB->pselect(
+                "SELECT e.examinerID
+                 FROM examiners e
+                 WHERE e.full_name=:fn",
+                array("fn" => $fullname)
+            );
+
+            // If examiner not in table add him, otherwise update
+            // the radiologist field
+            if (empty($examinerID)) {
+                $DB->insert(
+                    'examiners',
+                    array(
+                     'full_name'   => $fullname,
+                     'radiologist' => $rad,
+                     'userID'      => $user_id,
+                    )
+                );
+                $examinerID = $DB->pselectOne(
+                    "SELECT examinerID
+                     FROM examiners
+                     WHERE full_name=:fullname",
+                    array('fullname' => $fullname)
+                );
+                $DB->insert(
+                    'examiners_psc_rel',
+                    array(
+                     'examinerID'       => $examinerID,
+                     'centerID'         => $site,
+                     'active'           => 'Y',
+                     'pending_approval' => 'Y',
+                    )
+                );
+            }
         }
         // Show success message even if email already exists for security reasons
         $tpl_data['success'] = true;

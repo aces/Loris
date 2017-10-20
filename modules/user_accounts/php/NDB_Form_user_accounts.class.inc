@@ -1,25 +1,25 @@
 <?php
 /**
-* The user account page
-*
-* PHP Version 5
-*
-* @category Main
-* @package  User_Account
-* @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
-* @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
-* @link     https://www.github.com/aces/Loris/
-*/
+ * The user account page
+ *
+ * PHP Version 5,7
+ *
+ * @category Main
+ * @package  User_Account
+ * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 
 /**
-* Implements the user account page
-*
-* @category Main
-* @package  User_Account
-* @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
-* @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
-* @link     https://www.github.com/aces/Loris/
-*/
+ * Implements the user account page
+ *
+ * @category Main
+ * @package  User_Account
+ * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 class NDB_Form_User_Accounts extends NDB_Form
 {
     /**
@@ -129,11 +129,13 @@ class NDB_Form_User_Accounts extends NDB_Form
                 }
                 //gets radiologist Y/N from any of the active sites
                 if ($vals[0]=='Y') {
-                    $defaults['examiner_radiologist'] =$vals[1];
+                    if ($vals[1]==='1') {
+                        $defaults['examiner_radiologist'] = 'Y';
+                    } else {
+                        $defaults['examiner_radiologist'] = 'N';
+                    }
                 }
-                if ($vals[0]=='Y'
-                    || ($vals[0]=='N' && $defaults['examiner_pending']=='Y')
-                ) {
+                if ($vals[0]=='Y') {
                     $defaults['ex_'.$cid] ='on';
                 }
             }
@@ -168,7 +170,7 @@ class NDB_Form_User_Accounts extends NDB_Form
     {
         $editor = User::singleton();
         return !$this->isCreatingNewUser()
-            && ($editor->getUsername() == $this->identifier);
+        && ($editor->getUsername() == $this->identifier);
     }
 
     /**
@@ -210,7 +212,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         $permIDs = array();
         // store the permission IDs
         if (!empty($values['permID'])) {
-            $permIDs = $values['permID'];
+            $permIDs = array_keys($values['permID']);
         }
         unset($values['permID']);
 
@@ -269,87 +271,148 @@ class NDB_Form_User_Accounts extends NDB_Form
             // END multi-site UPDATE
 
             // EXAMINER UPDATE
-            $ex_curr_sites = array();
-            $ex_prev_sites = array();
+            // get all fields that are related to examiners
+            $ex_curr_sites  = array();
+            $ex_prev_sites  = array();
+            $ex_radiologist = 'N';
+            $ex_pending     = 'Y';
 
-            //get sites where user is already an examiner at for compare
-            $prev_sites = $DB->pselect(
-                "
-                        SELECT centerID
-                        FROM examiners
-                        WHERE full_name=:fn",
-                array(
-                 "fn" => $values['Real_name'],
-                )
-            );
-            foreach ($prev_sites as $row => $center) {
-                array_push($ex_prev_sites, $center['centerID']);
-            }
             foreach ($values as $k => $v) {
                 //examiner fields
                 if (preg_match("/^ex_[0-9]+$/", $k)) {
                     //get centerID
                     $parse_key = explode('_', $k);
                     $cid       = $parse_key[1];
-                    array_push($ex_curr_sites, $cid);
+                    $ex_curr_sites[$k] = $cid;
+                }
+                if ($k === 'examiner_radiologist') {
+                    $ex_radiologist = $v;
+                }
+                if ($k === 'examiner_pending') {
+                    $ex_pending = $v;
+                }
+            }
+
+            // first check if an update is needed then actually do it
+            if (!empty($ex_radiologist)
+                && !empty($ex_pending)
+                && !empty($ex_curr_sites)
+            ) {
+                //modify examiner radiologist to be in the binary format 0-1
+                $ex_radiologist = $ex_radiologist === 'Y' ? 1:0;
+
+                $examinerID = $DB->pselect(
+                    "SELECT e.examinerID
+                     FROM examiners e
+                     WHERE e.full_name=:fn",
+                    array(
+                     "fn" => $values['Real_name'],
+                    )
+                );
+
+                // If examiner not in table add him,
+                // otherwise update the radiologist field and get the current sites
+                $values = Utility::nullifyEmpty($values, 'examiner_radiologist');
+                if (empty($examinerID)) {
+
+                    $DB->insert(
+                        'examiners',
+                        array(
+                         'full_name'   => $values['Real_name'],
+                         'radiologist' => $ex_radiologist,
+                         'userID'      => $uid,
+                        )
+                    );
+                    $examinerID = $examinerID = $DB->pselectOne(
+                        "SELECT examinerID
+                         FROM examiners
+                         WHERE full_name=:fullName",
+                        array('fullName' => $values['Real_name'])
+                    );
+                } else {
+
+                    $DB->update(
+                        'examiners',
+                        array(
+                         'radiologist' => $ex_radiologist,
+                         'userID'      => $uid,
+                        ),
+                        array(
+                         "full_name" => $values['Real_name'],
+                        )
+                    );
+                    $examinerID = $examinerID[0]['examinerID'];
+
+                    //get existing sites for examiner
+                    $prev_sites = $DB->pselect(
+                        "SELECT centerID
+                     FROM examiners_psc_rel epr
+                     WHERE examinerID=:eid",
+                        array("eid" => $examinerID)
+                    );
+
+                    //get sites where user is already an examiner at for compare
+                    foreach ($prev_sites as $row => $center) {
+                        array_push($ex_prev_sites, $center['centerID']);
+                    }
+                }
+
+                foreach ($ex_curr_sites as $k => $v) {
 
                     //Check if examiner already in db for site
                     $result = $DB->pselectRow(
-                        "
-                          SELECT full_name, centerID
-                          FROM examiners
-                          WHERE full_name=:fn AND centerID=:cid",
+                        "SELECT epr.centerID
+                             FROM examiners_psc_rel epr 
+                             WHERE epr.examinerID=:eid AND epr.centerID=:cid",
                         array(
-                         "fn"  => $values['Real_name'],
-                         "cid" => $cid,
+                         "eid" => $examinerID,
+                         "cid" => $v,
                         )
                     );
 
                     // examiner was not previously added, add and set to active
-                    if (empty($result) || is_null($result)) {
+                    if (empty($result)) {
                         $DB->insert(
-                            'examiners',
+                            'examiners_psc_rel',
                             array(
-                             'full_name'        => $values['Real_name'],
-                             'centerID'         => $cid,
-                             'radiologist'      => $values['examiner_radiologist'],
+                             'examinerID'       => $examinerID,
+                             'centerID'         => $v,
                              'active'           => 'Y',
-                             'pending_approval' => $values['examiner_pending'],
+                             'pending_approval' => $ex_pending,
                             )
                         );
                     } else {
                         $DB->update(
-                            'examiners',
+                            'examiners_psc_rel',
                             array(
-                             'radiologist'      => $values['examiner_radiologist'],
-                             'Active'           => 'Y',
-                             'pending_approval' => $values['examiner_pending'],
+                             'active'           => 'Y',
+                             'pending_approval' => $ex_pending,
                             ),
                             array(
-                             "full_name" => $values['Real_name'],
-                             "centerID"  => $cid,
+                             'examinerID' => $examinerID,
+                             'centerID'   => $v,
                             )
                         );
                     }
                     unset($values[$k]);
                 }
-            }
 
-            //de-activate examiner if sites where no longer checked
-            $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
+                //de-activate examiner if sites where no longer checked
+                $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
 
-            foreach ($ex_inactive as $cid) {
-                $DB->update(
-                    'examiners',
-                    array("Active" => 'N'),
-                    array(
-                     "full_name" => $values['Real_name'],
-                     "centerID"  => $cid,
-                    )
-                );
+                foreach ($ex_inactive as $cid) {
+                    $DB->update(
+                        'examiners_psc_rel',
+                        array("active" => 'N'),
+                        array(
+                         'examinerID' => $examinerID,
+                         'centerID'   => $cid,
+                        )
+                    );
+                }
             }
-            unset($values['examiner_pending']);
             unset($values['examiner_radiologist']);
+            unset($values['examiner_pending']);
             //END EXAMINER UPDATE
         }
 
@@ -404,12 +467,16 @@ class NDB_Form_User_Accounts extends NDB_Form
                     }
                 }
             }
-            // END NOTIFICATIONS UPDATE
         }
+        // END NOTIFICATIONS UPDATE
 
         // make the set
         foreach ($values as $key => $value) {
-            $set[$key] = $value;
+            if (!empty($value)) {
+                $set[$key] = $value;
+            } else {
+                $set[$key] = null;
+            }
         }
 
         // update the user
@@ -451,27 +518,28 @@ class NDB_Form_User_Accounts extends NDB_Form
 
             // Check for new permissions
             if (!empty($permIDs)) {
-                foreach ($permIDs as $key => $value) {
+                foreach ($permIDs as $permID) {
                     /* if the user didn't have the permission
                        and the permission is now assigned then insert
                        insert into the user_account_history as 'I'
                      */
-                    if (!(in_array($key, $current_permissionids))) {
-                        $user->insertIntoUserAccountHistory($key, 'I');
-                        $permissionsAdded[] = $this->getDescriptionUsingPermID($key);
+                    if (!(in_array($permID, $current_permissionids))) {
+                        $user->insertIntoUserAccountHistory($permID, 'I');
+                        $permissionsAdded[]
+                            = $this->getDescriptionUsingPermID($permID);
                     }
                 }
             }
 
             if (!empty($current_permissionids)) {
                 // Check for permissions that are to be deleted
-                foreach ($current_permissionids as $key) {
+                foreach ($current_permissionids as $currentPermID) {
                     //if the permission existed before and it's removed now///
                     ///Then insert into the user_account_history as 'D'
-                    if (!in_array($key, array_keys($permIDs))) {
-                        $user->insertIntoUserAccountHistory($key, 'D');
+                    if (!in_array($currentPermID, $permIDs)) {
+                        $user->insertIntoUserAccountHistory($currentPermID, 'D');
                         $permissionsRemoved[]
-                            = $this->getDescriptionUsingPermID($key);
+                            = $this->getDescriptionUsingPermID($currentPermID);
                     }
                 }
             }
@@ -499,7 +567,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             }
 
             if (!empty($permIDs)) {
-                $user->addPermissions(array_keys($permIDs));
+                $user->addPermissions($permIDs);
             }
         }
 
@@ -540,7 +608,7 @@ class NDB_Form_User_Accounts extends NDB_Form
     // @codingStandardsIgnoreStart
     function edit_user()
     {
-    // @codingStandardsIgnoreEnd
+        // @codingStandardsIgnoreEnd
         $this->redirect = "test_name=$this->name";
 
         ///get the value for additional_user_info flag
@@ -591,7 +659,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         //       not exceed 120 chars
         $onInvalidMsg
             = "this.setCustomValidity('First name is required and "
-              . "should not exceed 120 characters')";
+            . "should not exceed 120 characters')";
         $this->addBasicText(
             'First_name',
             'First name',
@@ -608,7 +676,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         //       not exceed 120 chars
         $onInvalidMsg
             = "this.setCustomValidity('Last name is required and "
-              . "should not exceed 120 characters')";
+            . "should not exceed 120 characters')";
         $this->addBasicText(
             'Last_name',
             'Last name',
@@ -700,8 +768,8 @@ class NDB_Form_User_Accounts extends NDB_Form
                 "Radiologist: ",
                 array(
                  null => "",
-                 '1'  => 'Yes',
-                 '0'  => 'No',
+                 'Y'  => 'Yes',
+                 'N'  => 'No',
                 )
             );
             $groupB[] = $this->createLabel(
@@ -828,12 +896,12 @@ class NDB_Form_User_Accounts extends NDB_Form
 
             // add hidden permissions if editor has less permissions than user
             // being edited
-            $perms = array_diff(
+            $permDiff = array_diff(
                 $user->getPermissionIDs(),
                 $editor->getPermissionIDs()
             );
-            foreach ($perms as $value) {
-                $this->addHidden("permID[$value]", 1);
+            foreach ($permDiff as $permID) {
+                $this->addHidden("permID[$permID]", 1);
             }
         }
 
@@ -844,16 +912,16 @@ class NDB_Form_User_Accounts extends NDB_Form
     }
 
     /**
-    * Query database on UserID to check that password has doesn't
-    * exist and account is still pending approval, to ensure the
-    * users with account activity can't be rejected by setting
-    * their status to pending.
-    *
-    * @param string $id identifier of account to verify
-    *
-    * @return boolean true is Password_hash is null and
-    * Pending_approval is Yes, false otherwsie
-    */
+     * Query database on UserID to check that password has doesn't
+     * exist and account is still pending approval, to ensure the
+     * users with account activity can't be rejected by setting
+     * their status to pending.
+     *
+     * @param string $id identifier of account to verify
+     *
+     * @return boolean true is Password_hash is null and
+     * Pending_approval is Yes, false otherwsie
+     */
     function _canRejectAccount($id)
     {
         $DB     = Database::singleton();
@@ -880,7 +948,7 @@ class NDB_Form_User_Accounts extends NDB_Form
     // @codingStandardsIgnoreStart
     function my_preferences()
     {
-    // @codingStandardsIgnoreEnd
+        // @codingStandardsIgnoreEnd
         $this->identifier = $_SESSION['State']->getUsername();
 
         $user =& User::singleton($this->identifier);
@@ -1152,9 +1220,9 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         // if password is generated then the email user button should be clicked
         if ($values['NA_Password'] == "on" && $values['SendEmail'] != "on") {
-               $errors['Email_Group']
-                   = 'When generating a new password, '
-                   . 'please notify the user by checking Send email to user box';
+            $errors['Email_Group']
+                = 'When generating a new password, '
+                . 'please notify the user by checking Send email to user box';
         }
 
         if ($values['NA_Password'] == 'on' && $values['Password_hash'] != '') {
@@ -1166,7 +1234,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             && ($values['NA_Password'] != 'on')
             && empty($values['Password_hash'])
         ) {
-               $errors['Password_Group'] = 'Password is required';
+            $errors['Password_Group'] = 'Password is required';
         }
 
         //======================================
@@ -1201,14 +1269,28 @@ class NDB_Form_User_Accounts extends NDB_Form
         //======================================
         //        Validate Examiner Status
         //======================================
-
+        $matched =false;
         foreach ($values as $k=>$v) {
-            if (preg_match("/^ex_[1-9]+$/", $k)
-                && $values['examiner_radiologist'] == ''
-            ) {
-                $errors['examiner_group'] = "Please specify if examiner is a ".
-                    "radiologist";
+            if (preg_match("/^ex_[1-9]+$/", $k)) {
+                $matched =true;
+                if ($values['examiner_radiologist'] == '') {
+                    $errors['examiner_group'] = "Please specify if examiner is a " .
+                        "radiologist";
+
+                }
+                if ($values['examiner_radiologist'] !== ''
+                    && $values['examiner_pending'] == ''
+                ) {
+                    $errors['examiner_group'] = "Please set pending approval Yes ".
+                        "or No";
+                }
             }
+        }
+        if (!$matched
+            && ($values['examiner_radiologist'] !== ''
+            || $values['examiner_pending'] !== '')
+        ) {
+            $errors['examiner_sites'] = "Please select at least one examiner site.";
         }
         return $errors;
     }

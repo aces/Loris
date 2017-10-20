@@ -21,7 +21,6 @@ ob_start('ob_gzhandler');
 
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
-$client->makeCommandLine();
 $client->initialize();
 
 require_once "Email.class.inc";

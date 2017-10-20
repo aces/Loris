@@ -205,7 +205,7 @@ class Candidate
         // figure out how to generate PSCID
         $config        = $factory->config();
         $PSCIDSettings = $config->getSetting('PSCID');
-        $EDCSettings   = $config->getSetting('useEDC');
+        $useEDC        = $config->getSetting('useEDC');
 
         if (($useEDC === '1' || $useEDC === 'true') && empty($edc)) {
             throw new \LorisException(

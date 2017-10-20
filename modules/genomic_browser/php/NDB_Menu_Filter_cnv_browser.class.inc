@@ -230,7 +230,8 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $site_arr = $user->getData('CenterIDs');
+            $list_of_sites = array();
+            $site_arr      = $user->getData('CenterIDs');
             foreach ($site_arr as $key => $val) {
                 $site[$key] = &Site::singleton($val);
                 if ($site[$key]->isStudySite()) {
@@ -390,8 +391,11 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
                 $query .= " AND $field = CONVERT( :v_$prepared_key, DECIMAL) ";
             } elseif ($field == "genomic_range") {
                 $temp_array = explode(':', $val);
-                $chr        = $temp_array[0];
-                $query     .= " AND genome_loc.Chromosome = '$chr'";
+                $chr        = $GLOBALS['DB']->quote($temp_array[0]);
+                $chrchr     = $GLOBALS['DB']->quote('chr'.$temp_array[0]);
+
+                $query .= " AND (genome_loc.Chromosome = $chr";
+                $query .= " OR genome_loc.Chromosome = $chrchr)";
 
                 if (!empty($temp_array[1]) AND strpos($temp_array[1], '-') ) {
                     $temp_array = explode('-', $temp_array[1]);

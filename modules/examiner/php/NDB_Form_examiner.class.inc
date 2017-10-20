@@ -54,16 +54,23 @@ class NDB_Form_Examiner extends NDB_Form
         }
 
         if ($useCertification) {
-            $centerID = $DB->pselectOne(
-                "SELECT centerID 
-                 FROM examiners
-                 WHERE examinerID=:EID",
+            $cids      = $DB->pselect(
+                "SELECT epr.centerID 
+                 FROM examiners e 
+                  LEFT JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
+                 WHERE e.examinerID=:EID",
                 array('EID' => $this->identifier)
             );
+            $centerIDs =array();
+            foreach ($cids as $k=>$row) {
+                $centerIDs[] = $row['centerID'];
+            }
 
+            // Access is only granted if user sites are a superset of examiner sites
+            // considering that certification changes affect all sites
             return $user->hasPermission('examiner_view')
                 && (($user->hasPermission('examiner_multisite')
-                || in_array($centerID, $user->getData('CenterIDs'))));
+                || empty(array_diff($centerIDs, $user->getData('CenterIDs')))));
         }
         return false;
     }
@@ -319,17 +326,15 @@ class NDB_Form_Examiner extends NDB_Form
 
         // Get the examiner name and site name, to be added the form panel header
         $row = $DB->pselectRow(
-            "SELECT full_name, psc.Name as site_name
-              FROM examiners
-               JOIN psc ON psc.CenterID = examiners.centerID
-              WHERE examinerID=:EID",
+            "SELECT e.full_name
+              FROM examiners e
+              WHERE e.examinerID=:EID",
             array('EID' => $this->identifier)
         );
         // Get identifier, to be added to the Reset button href
         $this->tpl_data['identifier'] = $this->identifier;
 
         $this->tpl_data['examiner_name'] = $row['full_name'];
-        $this->tpl_data['site_name']     = $row['site_name'];
 
         $this->form->addFormRule(array(&$this, '_validateEditExaminer'));
     }
