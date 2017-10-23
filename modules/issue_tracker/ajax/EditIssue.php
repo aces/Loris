@@ -429,8 +429,7 @@ function getComments($issueID)
         "FROM issues_history where issueID=:issueID " .
         "UNION " .
         "SELECT issueComment, 'comment', dateAdded, addedBy " .
-        "FROM issues_comments where issueID=:issueID " .
-        "ORDER BY dateAdded DESC",
+        "FROM issues_comments where issueID=:issueID ",
         array('issueID' => $issueID)
     );
 
