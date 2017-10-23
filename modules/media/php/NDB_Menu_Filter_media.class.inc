@@ -29,6 +29,7 @@
 class NDB_Menu_Filter_Media extends NDB_Menu_Filter
 {
     public $hasWritePermission = false;
+    public $hasHidePermission  = false;
     public $AjaxModule         = true;
 
     /**
@@ -44,6 +45,9 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
 
         // Set global permission to control access to different modules of media page
         $this->hasWritePermission = $user->hasPermission('media_write');
+
+        // Set permission to access user-hidden files, currently based on superuser
+        $this->hasHidePermission = $user->hasPermission("superuser");
 
         return $user->hasPermission('media_read');
     }
@@ -72,32 +76,26 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $user =& User::singleton();
         $db   = Database::singleton();
 
-        $siteList  = Utility::getSiteList(false);
+        $siteList  = array();
         $visitList = Utility::getVisitList();
-
-        // Index sites using their names (used to filter react tables)
-        foreach ($siteList as $key => $site) {
-            unset($siteList[$key]);
-            $siteList[$site] = $site;
-        }
 
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
-            // get the list of study sites - to be replaced by the Site object
-            if (is_array($siteList)) {
-                $siteList = $siteList;
+            $siteList = Utility::getSiteList(false);
+            // Index sites using their names (used to filter react tables)
+            foreach ($siteList as $key => $site) {
+                unset($siteList[$key]);
+                $siteList[$site] = $site;
             }
         } else {
             // allow only to view own site data
-            $siteList ='';
-            $site_arr = $user->getData('CenterIDs');
-            foreach ($site_arr as $key => $val) {
-                $site[$key] = &Site::singleton($val);
-                if ($site[$key]->isStudySite()) {
-                    $siteList[$val] = $site[$key]->getCenterName();
+            $siteIDs = $user->getData('CenterIDs');
+            foreach ($siteIDs as $val) {
+                $site = &Site::singleton($val);
+                if ($site->isStudySite()) {
+                    $siteList[$site->getCenterName()] = $site->getCenterName();
                 }
             }
-            $siteList = array('' => 'All User Sites') + $siteList;
         }
 
         $instrumentList   = [];
@@ -124,7 +122,21 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $this->addBasicText('uploadedBy', 'Uploaded By');
         $this->addSelect('instrument', 'Instrument', $instrumentList);
 
+        // Add hidden files filter is user is admin
+        if ($this->hasHidePermission) {
+            // Unable to create checkbox using addCheckbox(), using addSelect for
+            // the time being
+            // select options
+            $hiddenOptions = array(
+                              ""  => 'Both',
+                              "0" => 'Visible only',
+                              "1" => 'Hidden only',
+                             );
+            $this->addSelect('hideFile', 'File Visibility', $hiddenOptions);
+        }
+
         $this->tpl_data["hasWritePermission"] = $this->hasWritePermission;
+        $this->tpl_data["hasHidePermission"]  = $this->hasHidePermission;
 
         return true;
     }
@@ -141,7 +153,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         // the base query
         $query  = " FROM media m LEFT JOIN session s ON m.session_id = s.ID".
         " LEFT JOIN candidate c ON c.CandID=s.CandID";
-        $query .= " WHERE m.hide_file = FALSE";
+        $query .= " WHERE 1=1 ";
 
         // set the class variables
         $this->columns
@@ -158,14 +170,19 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
                'm.file_type',
                's.CandID as cand_id',
                's.ID as session_id',
+               'm.hide_file',
                'm.id',
               ];
 
         $this->query = $query;
 
         if (!$user->hasPermission('access_all_profiles')) {
-            $site_arr     = implode(",", $user->getCenterID());
+            $site_arr     = implode(",", $user->getCenterIDs());
             $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
+        }
+
+        if (!$user->hasPermission("superuser")) {
+            $this->query .= " AND m.hide_file = FALSE";
         }
 
         $this->group_by = '';
@@ -183,10 +200,8 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
                            'File Type',
                            'Cand ID',
                            'Session ID',
+                           'Hide File',
                           ];
-
-        // Set header as hidden from the data table
-        $this->tpl_data['hiddenHeaders'] = json_encode(['Cand ID', 'Session ID']);
 
         // Add Edit field if user has permissions
         if ($this->hasWritePermission) {
@@ -198,14 +213,15 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
                                'm.instrument',
                                's.Visit_label',
                                's.CenterID',
+                               'm.hide_file',
                               ];
         $this->formToFilter = [
                                'pscid'       => 'c.PSCID',
                                'instrument'  => 'm.instrument',
                                'visit_label' => 's.Visit_label',
                                'for_site'    => 's.CenterID',
+                               'hide_file'   => 'm.hide_file',
                               ];
-
         return true;
     }
 
@@ -219,7 +235,6 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
     {
         $result         = $this->toArray();
         $result['form'] = $this->form->form;
-
         return json_encode($result);
     }
 
@@ -252,11 +267,9 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            [
-             $baseURL . "/js/components/Tabs.js",
-             $baseURL . "/js/components/ProgressBar.js",
+            array(
              $baseURL . "/media/js/mediaIndex.js",
-            ]
+            )
         );
     }
 }

@@ -120,56 +120,12 @@ $(function() {
       img.src = canvas.toDataURL();
     });
 
-    // Load a new model from a MINC file that the user has
-    // selected.
-    $("#volume-file-minc-submit").click(function() {
-      viewer.clearVolumes();
-      viewer.loadVolume({
-        type: "minc",
-        header_file: document.getElementById("header-file"),
-        raw_data_file: document.getElementById("raw-data-file"),
-        template: {
-          element_id: "volume-ui-template",
-          viewer_insert_class: "volume-viewer-display"
-        }
-      }, function() {
-        $(".slice-display").css("display", "inline");
-        $(".volume-controls").css("width", "auto");
-      });
-    });
-
-    // Load a new model from a NIfTI-1 file that the user has
-    // selected.
-    $("#volume-file-nifti1-submit").click(function() {
-      viewer.clearVolumes();
-      viewer.loadVolume({
-        type: "nifti1",
-        nii_file: document.getElementById("nifti1-file"),
-        template: {
-          element_id: "volume-ui-template",
-          viewer_insert_class: "volume-viewer-display"
-        }
-      }, function() {
-        $(".slice-display").css("display", "inline");
-        $(".volume-controls").css("width", "auto");
-      });
-    });
-
-    // Load a new model from a MGH file that the user has
-    // selected.
-    $("#volume-file-mgh-submit").click(function() {
-      viewer.clearVolumes();
-      viewer.loadVolume({
-        type: "mgh",
-        file: document.getElementById("mgh-file"),
-        template: {
-          element_id: "volume-ui-template",
-          viewer_insert_class: "volume-viewer-display"
-        }
-      }, function() {
-        $(".slice-display").css("display", "inline");
-        $(".volume-controls").css("width", "auto");
-      });
+    $(document).keypress(function(e) {
+      if (e.keyCode === 114) {
+        // Reset displays if user presses 'r' key.
+        viewer.resetDisplays();
+        viewer.redrawVolumes();
+      }
     });
 
     /**
@@ -780,39 +736,24 @@ $(function() {
     });      // Should cursors in all panels be synchronized?
 
     link = window.location.search;
-    var minc_tag;
 
-    if (getQueryVariable("minc_location")) {
+    minc_ids = getQueryVariable("minc_id");
+    if (minc_ids[0] === '[') {
+        // An array was passed. Get rid of the brackets and then split on ","
+        minc_ids = minc_ids.substring(1, minc_ids.length - 1);
+        minc_ids_arr = minc_ids.split(",");
 
-        minc_ids = getQueryVariable("minc_location");
-        minc_ids_arr = [minc_ids];
-        minc_tag = "minc_location";
     } else {
-
-        minc_ids = getQueryVariable("minc_id");
-        minc_tag = "minc_id";
-
-        if (minc_ids[0] === '[') {
-
-            // An array was passed. Get rid of the brackets and then split on ","
-            minc_ids = minc_ids.substring(1, minc_ids.length - 1);
-            minc_ids_arr = minc_ids.split(",");
-
-        } else {
-
-            // Only one passed
-            minc_ids_arr = [minc_ids];
-        }
+        // Only one passed
+        minc_ids_arr = [minc_ids];
     }
-
-
 
     for (i = 0; i < minc_ids_arr.length; i += 1) {
 
         minc_volumes.push({
             type: 'minc',
-	    header_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?" + minc_tag + "=" + minc_ids_arr[i] + "&minc_headers=true",
-	    raw_data_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?" + minc_tag + "=" + minc_ids_arr[i] + "&raw_data=true",
+	    header_url: "",
+	    raw_data_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + minc_ids_arr[i],
             template: {
                 element_id: "volume-ui-template4d",
                 viewer_insert_class: "volume-viewer-display"

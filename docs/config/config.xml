@@ -26,7 +26,11 @@
     </database>
 
     <CouchDB>
-        <SyncAccounts>false</SyncAccounts>
+        <dbName>%COUCH_DATABASE%</dbName>
+        <hostname>%COUCH_HOSTNAME%</hostname>
+        <port>%COUCH_PORT%</port>
+        <admin>%COUCH_USERNAME%</admin>
+        <adminpass>%COUCH_PASSWORD%</adminpass>
     </CouchDB>
 
     <!-- study variables -->

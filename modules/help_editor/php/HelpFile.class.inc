@@ -1,14 +1,33 @@
 <?php
-
 /**
- * HelpFile class
- * @package main
- * @subpackage unused
+ * Base class for files containing help text information
+ * as well as DB wrappers for CRUD operations
+ *
+ * PHP Version 7
+ *
+ * @category Help_Editor
+ * @package  Main
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
+/**
+ * Base class for files containing help text information
+ * as well as DB wrappers for CRUD operations
+ *
+ * PHP Version 7
+ *
+ * @category Help_Editor
+ * @package  Main
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class HelpFile
 {
     /**
      * Identifies the help file
+     *
      * @var    array
      * @access private
      */
@@ -16,6 +35,7 @@ class HelpFile
 
     /**
      * The help file's data
+     *
      * @var    array
      * @access private
      */
@@ -26,9 +46,9 @@ class HelpFile
      *
      * Selects and populates a help file
      *
-     * @param  int         Help file's ID
+     * @param int $helpID help file's ID
+     *
      * @return HelpFile
-     * @access public
      */
     static function &factory($helpID)
     {
@@ -40,9 +60,11 @@ class HelpFile
         // set the help ID
         $obj->helpID = $helpID;
         $result      = $DB->pselectRow(
-            "SELECT helpID, parentID, hash, topic, COALESCE(projectContent, content) AS content,
-                                   created, updated FROM help WHERE helpID = :HID", array('HID' => $helpID)
-                       );
+            "SELECT helpID, parentID, hash, topic,
+             COALESCE(projectContent, content) AS content,
+             created, updated FROM help WHERE helpID = :HID",
+            array('HID' => $helpID)
+        );
         // set the help file
         $obj->data = $result;
 
@@ -53,10 +75,9 @@ class HelpFile
     /**
      * Inserts a help file
      *
-     * @param  array       Associative array of values
-     * @return int         New help file's ID
-     * @access public
-     * @static
+     * @param array $set Associative array of values
+     *
+     * @return int  New help file's ID
      */
     function insert($set)
     {
@@ -73,9 +94,9 @@ class HelpFile
     /**
      * Updates a help file
      *
-     * @param  array       Associative array of values
+     * @param array $set Associative array of values
+     *
      * @return void
-     * @access public
      */
     function update($set)
     {
@@ -92,14 +113,16 @@ class HelpFile
      * Returns whether or not the topic has subtopics
      *
      * @return bool
-     * @access public
      */
     function hasChild()
     {
         // create DB object
         $DB =& Database::singleton();
 
-        $result = $DB->pselectOne("SELECT COUNT(*) FROM help WHERE parentID = :HID", array('HID' => $this->helpID));
+        $result = $DB->pselectOne(
+            "SELECT COUNT(*) FROM help WHERE parentID = :HID",
+            array('HID' => $this->helpID)
+        );
         return ($result > 0);
     }
 
@@ -107,10 +130,10 @@ class HelpFile
     /**
      * Returns an array of its subtopics' IDs
      *
-     * @param  int         Stop at this depth
-     * @param  int         Depth
+     * @param int $stopat Stop at this depth
+     * @param int $level  Depth
+     *
      * @return array
-     * @access public
      */
     function childIDs($stopat = 1, $level = 1)
     {
@@ -124,9 +147,12 @@ class HelpFile
 
         // get its children
         if ($hasChild) {
-            $result = $DB->pselect("SELECT helpID FROM help WHERE parentID = :HID", array('HID' => $this->helpID));
+            $result = $DB->pselect(
+                "SELECT helpID FROM help WHERE parentID = :HID",
+                array('HID' => $this->helpID)
+            );
             // add the children to the array
-            $childIDs = Utility::reduce($result);
+            $childIDs = $result;
 
             // check if we're done recursing
             if ($level != $stopat) {
@@ -150,8 +176,8 @@ class HelpFile
     /**
      * Returns an array of its subtopics's IDs and topics
      *
-     * @param  int $stopat Stop at this depth
-     * @param  int $level  Depth
+     * @param int $stopat Stop at this depth
+     * @param int $level  Depth
      *
      * @return array
      */

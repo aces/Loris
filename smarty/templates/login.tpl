@@ -8,7 +8,7 @@
         <div class="panel-body">
           {if $study_logo}
             <section class="study-logo">
-              <img src="/{$study_logo}" alt="{$study_title}"/>
+              <img src="{$baseurl}/{$study_logo}" alt="{$study_title}"/>
             </section>
           {/if}
           <form method="POST" action="{$action}">
@@ -28,8 +28,8 @@
             </div>
           </form>
           <div class="help-links">
-            <a href="/password-reset">Forgot your password?</a><br/>
-            <a href="/request-account">Request Account</a>
+            <a href="{$baseurl}/password-reset/">Forgot your password?</a><br/>
+            <a href="{$baseurl}/request-account/">Request Account</a>
           </div>
           <div class="help-text">
             A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)

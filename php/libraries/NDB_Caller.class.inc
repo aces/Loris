@@ -91,6 +91,7 @@ class NDB_Caller
             $url .= Utility::removeCommonAffix($url, $_SERVER['REQUEST_URI']);
             // sending user to the url that was requested
             header("Location: $url");
+            return;
         }
         if (empty($CommentID) && isset($_REQUEST['commentID'])) {
             $CommentID = $_REQUEST['commentID'];
@@ -180,7 +181,7 @@ class NDB_Caller
             ) {
                 // No subtest, load the menu
 
-                $mode = isset($_REQUEST['mode']) ? $_REQUEST['mode'] : '';
+                $mode = $_REQUEST['mode'] ?? '';
                 if ($submenu !== null) {
                     $html = $this->loadMenu($submenu, $mode);
                 } else {
@@ -190,9 +191,7 @@ class NDB_Caller
                 $this->type = 'menu';
                 return $html;
             } else if ($this->existsAndRequire("NDB_Form_$test_name.class.inc")) {
-                $identifier = isset($_REQUEST['identifier'])
-                    ? $_REQUEST['identifier']
-                    : '';
+                $identifier = $_REQUEST['identifier'] ?? '';
                 $html       = $this->loadForm($test_name, $subtest, $identifier);
 
                 $this->type = 'form';
@@ -211,9 +210,9 @@ class NDB_Caller
             // removed it in 17.0.
             error_log(
                 "php/libraries 'modules' are deprecated and will be "
-                . " removed in a future release. Please update your code to use"
-                . " proper LORIS style modules. See the loris-dev mailing list"
-                . " for help if required."
+                . " removed in a future release. Please update your code in "
+                . "$test_name to use proper LORIS style modules. See the loris-dev"
+                . "  mailing list for help if required."
             );
             // it is a menu
             $proj_menu = $base . "project/libraries/NDB_Menu_$test_name.class.inc";
@@ -237,7 +236,7 @@ class NDB_Caller
                 || $this->existsAndRequire($php_menu_filter_form))
             ) {
 
-                $mode = isset($_REQUEST['mode']) ? $_REQUEST['mode'] : '';
+                $mode = $_REQUEST['mode'] ?? '';
                 $html = $this->loadMenu($test_name, $mode);
 
                 $this->type = 'menu';
@@ -251,9 +250,7 @@ class NDB_Caller
                 || $this->existsAndRequire($php_form)
             ) {
 
-                $identifier = isset($_REQUEST['identifier'])
-                    ? $_REQUEST['identifier']
-                    : '';
+                $identifier = $_REQUEST['identifier'] ?? '';
                 $html       = $this->loadForm($test_name, $subtest, $identifier);
 
                 $this->type = 'form';
@@ -358,7 +355,7 @@ class NDB_Caller
         if (method_exists($menu, 'getFeedbackPanel')) {
             $this->feedbackPanel = $menu->getFeedbackPanel(
                 $_REQUEST['candID'],
-                $_REQUEST['sessionID']
+                $_REQUEST['sessionID'] ?? null
             );
         }
         if (method_exists($menu, 'save')) {
@@ -451,9 +448,8 @@ class NDB_Caller
             );
 
             $this->instrument = $instrument;
-            return "<script language='javascript'>"
-                . "window.location='$redirectToOnSuccess'"
-                . "</script>";
+            header("Location: $redirectToOnSuccess");
+            return "";
         }
         $user =& User::singleton();
 
@@ -484,9 +480,8 @@ class NDB_Caller
         $success = $instrument->save();
 
         if ($redirectToOnSuccess !== null && $success !== false) {
-            return "<script language='javascript'>"
-                .   "window.location='$redirectToOnSuccess'"
-                . "</script>";
+            header("Location: $redirectToOnSuccess");
+            return "";
         }
         // create an instrument status object
         $status  = new NDB_BVL_InstrumentStatus;

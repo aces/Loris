@@ -2,7 +2,7 @@
 /**
  * This page implements a front end which is used to unify all
  * of the different MRI violation types (could not identify scan,
- * header violation in the scan after identifying scan type, mislabeled 
+ * header violation in the scan after identifying scan type, mislabeled
  * scan, etc) and link to the appropriate module to further investigate
  * why a scan was excluded by the imaging pipeline scripts.
  *
@@ -11,7 +11,7 @@
  * @category MRI
  * @package  Main
  * @author   Ted Strauss <ted.strauss@mcgill.ca>
- * @license  GPLv3
+ * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 /**
@@ -20,10 +20,10 @@
  * @category MRI
  * @package  Main
  * @author   Ted Strauss <ted.strauss@mcgill.ca>
- * @license  GPLv3
+ * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
- */      
-class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
+ */
+class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
 {
     var $AjaxModule = true;
     /**
@@ -35,134 +35,165 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
     {
         // create user object
         $user =& User::singleton();
-        $this->tpl_data['violated_scans_modifications'] 
+        $this->tpl_data['violated_scans_modifications']
             = $user->hasPermission('violated_scans_edit');
         return ($user->hasPermission('violated_scans_view_allsites'));
     }
-
+    /**
+     * Process function
+     *
+     * @param string $values the value of values
+     *
+     * @return boolean true if the user is permitted to see violated scans
+     */
     function _process($values)
     {
         if (!is_array($values) || count($values) ==0) {
             return true;
         }
-        $DB =& Database::singleton();
+        $DB   =& Database::singleton();
         $user =& User::singleton();
         foreach ($values['resolvable'] AS $key=>$val) {
             $hash = $key;
-            $row = $DB->pselectRow(
-                    "SELECT * FROM violations_resolved
-                    WHERE hash = :hash", array('hash' => $hash));
-            
+            $row  = $DB->pselectRow(
+                "SELECT * FROM violations_resolved
+                    WHERE hash = :hash",
+                array('hash' => $hash)
+            );
+
             //if row is found it means that resolve status was previously assigned,
             // check the value and update if needed, else break.
             if (!empty($row)) {
-                foreach($row as $key2 => $val2){
+                foreach ($row as $key2 => $val2) {
                     //found matching
                     if ($key2 == 'Resolved') {
                         // user input matches DB content, so do nothing.
                         if ($val==$val2) {
                             break;
-                        } else { 
-                        // user input doesn't match DB, so we update the DB 
-                            $setArray = array('Resolved'=>(string)$val,'ChangeDate'=>date("Y-m-d H:i:s"));
-                            $whereArray = array('hash'=>$hash);
-                            $DB->update('violations_resolved', $setArray, $whereArray);
+                        } else {
+                            // user input doesn't match DB, so we update the DB
+                            $setArray   = array(
+                                           'Resolved'   => (string)$val,
+                                           'ChangeDate' => date("Y-m-d H:i:s"),
+                                          );
+                            $whereArray = array('hash' => $hash);
+                            $DB->update(
+                                'violations_resolved',
+                                $setArray,
+                                $whereArray
+                            );
                         }
                     }
                 }
             } else {
-            //if row is not found no resolve status was assigned,
-            // if selection<>0, then insert new row.
+                //if row is not found no resolve status was assigned,
+                // if selection<>0, then insert new row.
                 // no need to insert to DB for Unresolved value.
                 if ($val=='unresolved') {
                     continue;
                 }
-                $newlyResolved = array();
-                $newlyResolved['hash'] = $key;                
-                $newlyResolved['Resolved'] = (string)$val;
-                $newlyResolved['User'] = $user->getUsername();
+                $newlyResolved         = array();
+                $newlyResolved['hash'] = $key;
+                $newlyResolved['Resolved']   = (string)$val;
+                $newlyResolved['User']       = $user->getUsername();
                 $newlyResolved['ChangeDate'] = date("Y-m-d H:i:s");
 
                 // Table 1: mri_protocol_violated_scans
                 $ID_mri_protocol_violated_scans = $DB->pselectOne(
                     "SELECT ID
                     FROM mri_protocol_violated_scans 
-                    WHERE (:hash = md5(concat_WS(':',minc_location,PatientName,SeriesUID,time_run)))",
+                    WHERE (:hash = md5(concat_WS(
+                              ':',minc_location,PatientName,SeriesUID,time_run)
+                                   )
+                    )",
                     array('hash' => $key)
-                    );
+                );
                 if (!empty($ID_mri_protocol_violated_scans)) {
                     $newlyResolved['TypeTable'] = 'mri_protocol_violated_scans';
-                    $newlyResolved['ExtID'] = $ID_mri_protocol_violated_scans;
+                    $newlyResolved['ExtID']     = $ID_mri_protocol_violated_scans;
                 }
                 // Table 2: mri_violations_log
                 $ID_mri_violations_log = $DB->pselectOne(
                     "SELECT LogID
                     FROM mri_violations_log
-                    WHERE (:hash = md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)))",
+                    WHERE (:hash = md5(concat_WS(
+                                    ':',MincFile,PatientName,SeriesUID,TimeRun)
+                                   )
+                    )",
                     array('hash' => $key)
-                    );
-                //echo "ID[2] = ".$ID_mri_violations_log."\n";
+                );
+
                 if (!empty($ID_mri_violations_log)) {
                     $newlyResolved['TypeTable'] = 'mri_violations_log';
-                    $newlyResolved['ExtID'] = $ID_mri_violations_log;
-                } 
-                
+                    $newlyResolved['ExtID']     = $ID_mri_violations_log;
+                }
+
                 // Table 3: MRICandidateErrors
                 $ID_MRICandidateErrors = $DB->pselectOne(
                     "SELECT ID
                     FROM MRICandidateErrors
-                    WHERE (:hash = md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)))",
+                    WHERE (:hash = md5(concat_WS(
+                                    ':',MincFile,PatientName,SeriesUID,TimeRun)
+                                   )
+                    )",
                     array('hash' => $key)
-                    );
-                //echo "ID[3] = ".$ID_MRICandidateErrors."\n";
+                );
+
                 if (!empty($ID_MRICandidateErrors)) {
                     $newlyResolved['TypeTable'] = 'MRICandidateErrors';
-                    $newlyResolved['ExtID'] = $ID_MRICandidateErrors;
-                } 
+                    $newlyResolved['ExtID']     = $ID_MRICandidateErrors;
+                }
                 $DB->insert('violations_resolved', $newlyResolved);
             }
         }
-        
+
         $this->tpl_data['success'] = true;
     }
-
     /**
-     * Set up the class and smarty variables to use for the menu filter to 
+     * Set up the class and smarty variables to use for the menu filter to
      * generate the proper query for the menu filter
-     * 
+     *
      * @return none
      */
     function _setupVariables()
     {
         // set the class variables
         // create user object
-        $user =& User::singleton();
-        $DB   =& Database::singleton();
-        $config =& NDB_Config::singleton();
+        $user        =& User::singleton();
+        $DB          =& Database::singleton();
+        $config      =& NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         if ($useProjects === "false") {
             $useProjects = false;
         } else {
             $useProjects = true;
         }
-        $dir_path = $config->getSetting("imagePath");
+        $dir_path      = $config->getSetting("imagePath");
         $this->columns = array(
-            'v.PatientName',
-            'site.Name as Site',
-            'v.TimeRun',
-            'v.MincFile',
-            'v.MincFileViolated',
-            'v.Series_Description as Series_Description_Or_Scan_Type',
-            'v.Problem',
-            'v.SeriesUID',
-            'v.hash',
-            'v.join_id',
-            'v.Resolved'
-        );
+                          'v.PatientName',
+                          'site.Name as Site',
+                          'v.TimeRun',
+                          'v.MincFile',
+                          'v.Series_Description as Series_Description_Or_Scan_Type',
+                          'v.Problem',
+                          'v.SeriesUID',
+                          'v.hash',
+                          'v.join_id',
+                          'v.Resolved',
+                         );
 
-        $this->headers  = array('PatientName','Site','TimeRun',
-          'MincFile','MincFileViolated','Series_Description_Or_Scan_Type','Problem','SeriesUID','Hash',
-          'JoinID','Resolution_status');
+        $this->headers = array(
+                          'PatientName',
+                          'Site',
+                          'TimeRun',
+                          'MincFile',
+                          'Series_Description_Or_Scan_Type',
+                          'Problem',
+                          'SeriesUID',
+                          'Hash',
+                          'JoinID',
+                          'Resolution_status',
+                         );
 
         if ($useProjects) {
             array_splice($this->columns, 1, 0, 'pjct.Name as Project');
@@ -170,23 +201,35 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             array_splice($this->headers, 1, 0, 'Project');
             array_splice($this->headers, 2, 0, 'Subproject');
         }
-        $this->tpl_data['hiddenHeaders'] = json_encode(['SeriesUID','Hash','JoinID']);
-        // Recreating the path (MincFileViolated field) to the minc file for the table mri_violations_log is more complicated 
-        // because of the 3 cases that can occur as we pull the data from the db.  
-        //   1. if the Mincfile starts with "assembly" then we need to add the directory path in front of it.
-        //   2. if the word "assembly" is there but not at the beginning, then uses it as is, the path is correct.
-        //   3. if it is not in the assembly dir, then it is in the trashbin, so we fix the path with that in mind.
-        $this->query = " FROM (
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            [
+             'SeriesUID',
+             'Hash',
+             'JoinID',
+            ]
+        );
+
+        // Recreating the path (MincFileViolated field) to the minc file
+        // for the table mri_violations_log is more complicated
+        // because of the 3 cases that can occur as we pull the data
+        // from the db.
+        //   1. if the Mincfile starts with "assembly" then we need to
+        //      add the directory path in front of it.
+        //   2. if the word "assembly" is there but not at the beginning,
+        //      then uses it as is, the path is correct.
+        //   3. if it is not in the assembly dir, then it is in the trashbin,
+        //      so we fix the path with that in mind.
+        $this->query    = " FROM (
             SELECT PatientName as PatientName,
                 time_run as TimeRun,
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 minc_location as MincFile,
-CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_location, '/', -2)) as MincFileViolated,
                 series_description as Series_Description,
                 'Could not identify scan type' as Problem,
                 SeriesUID,
-                md5(concat_WS(':',minc_location,PatientName,SeriesUID,time_run)) as hash,
+                md5(concat_WS(':',minc_location,PatientName,SeriesUID,time_run))
+                  as hash,
                 mri_protocol_violated_scans.ID as join_id,
                 p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
@@ -207,11 +250,16 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 MincFile,
-                IF(INSTR('MincFile', 'assembly'), IF(LEFT('MincFile', 8) = 'assembly',CONCAT_WS(''," . $DB->quote($dir_path) . ",'MincFile'),'MincFile'), CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(MincFile, '/', -2))) as MincFileViolated,
                 mri_scan_type.Scan_type,
                 'Protocol Violation',
                 SeriesUID,
-                md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)) as hash,
+                md5(concat_WS(':',
+                              MincFile,
+                              PatientName,
+                              SeriesUID,
+                              TimeRun
+                   )
+                ) as hash,
                 mri_violations_log.LogID as join_id,
                 p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
@@ -234,11 +282,16 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 MincFile,
-                CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(MincFile, '/', -2)) as MincFileViolated,
                 null,
                 Reason,
                 SeriesUID,
-                md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)) as hash,
+                md5(concat_WS(':',
+                              MincFile,
+                              PatientName,
+                              SeriesUID,
+                              TimeRun
+                   )
+                ) as hash,
                 MRICandidateErrors.ID as join_id,
                 p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
@@ -255,36 +308,36 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
             WHERE Resolved is NULL)
             as v LEFT JOIN psc site ON (site.CenterID = v.Site) 
             LEFT JOIN Project as pjct ON (v.Project = pjct.ProjectID)
-            LEFT JOIN subproject as subpjct ON (v.Subproject = subpjct.SubprojectID)
+            LEFT JOIN subproject as subpjct
+                ON (v.Subproject = subpjct.SubprojectID)
             WHERE 1=1";
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
-                'PatientName'   => 'v.PatientName',
-                'Project'       => 'v.Project',
-                'Subproject'    => 'v.Subproject',
-                'TimeRun'       => 'v.TimeRun',
-                'ProblemType'   => 'v.Problem',
-                'Filename'      => 'v.MincFile',
-                'Description'   => 'v.Series_Description',
-                'SeriesUID'     => 'v.SeriesUID',
-                'Site'          => 'v.Site',
-        );
+                               'PatientName' => 'v.PatientName',
+                               'Project'     => 'v.Project',
+                               'Subproject'  => 'v.Subproject',
+                               'TimeRun'     => 'v.TimeRun',
+                               'ProblemType' => 'v.Problem',
+                               'Filename'    => 'v.MincFile',
+                               'Description' => 'v.Series_Description',
+                               'SeriesUID'   => 'v.SeriesUID',
+                               'Site'        => 'v.Site',
+                              );
 
         $this->validFilters = array(
-            'v.PatientName',
-            'v.Project',
-            'v.Subproject',
-            'v.TimeRun',
-            'v.MincFile',
-            'v.Problem',
-            'v.Series_Description',
-            'v.SeriesUID',
-            'v.Site',
-        );
+                               'v.PatientName',
+                               'v.Project',
+                               'v.Subproject',
+                               'v.TimeRun',
+                               'v.MincFile',
+                               'v.Problem',
+                               'v.Series_Description',
+                               'v.SeriesUID',
+                               'v.Site',
+                              );
         return true;
     }
-
     /**
      * Generate the quickform elements necessary for filter form
      *
@@ -293,27 +346,35 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
     function _setFilterForm()
     {
         // create user object
-        $user =& User::singleton();
-        $config =& NDB_Config::singleton();
-        $study = $config->getSetting('study');
+        $user    =& User::singleton();
+        $config  =& NDB_Config::singleton();
+        $db      =& Database::singleton();
+        $minYear = $config->getSetting('startYear') - $config->getSetting('ageMax');
+        $maxYear = $config->getSetting('endYear');
+
         $dateOptions = array(
-            'language'        => 'en',
-            'format'          => 'YMd',
-            'addEmptyOption'  => true,
-            'minYear'         => $study['startYear'] - $study['ageMax'],
-            'maxYear'         => $study['endYear'] - $study['ageMin']
+                        'language'       => 'en',
+                        'format'         => 'YMd',
+                        'addEmptyOption' => true,
+                        'minYear'        => $minYear,
+                        'maxYear'        => $maxYear,
+                       );
+
+        $problemOptions = ['' => 'Any'];
+
+        // Build a list of existing problem types based on data in db
+        $problemTypes = $db->pselect(
+            "SELECT DISTINCT MRICandidateErrors.Reason FROM MRICandidateErrors
+            UNION 
+            SELECT DISTINCT 'Could not identify scan type' 
+            FROM mri_protocol_violated_scans
+            UNION
+            SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log",
+            array()
         );
-        $problemOptions = array(
-            '' => 'Any',
-            'CandID and PSCID do not match database'
-            => 'Candidate Mismatch',
-            'Could not identify scan type'
-            => 'Could not identify scan type',
-            'Protocol Violation'
-            => 'MRI Protocol Check violation',
-            'Visit label does not exist'
-            => 'Visit label does not exist'
-        );
+        foreach ($problemTypes as $problem) {
+            $problemOptions[$problem['Reason']] = $problem['Reason'];
+        }
 
         $this->addBasicText('PatientName', 'Patient Name');
         $this->addBasicText('Description', 'Series Description or Scan Type');
@@ -331,7 +392,8 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
         );
 
         // Subproject
-        $list_of_subprojects = array('' => 'Any') + Utility::getSubprojectList();
+        $list_of_subprojects = array('' => 'Any') +
+            Utility::getSubprojectList();
         $this->addSelect(
             'Subproject',
             'Subproject',
@@ -342,11 +404,12 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $sites = Utility::getSiteList();
-            if(is_array($sites)){
+            if (is_array($sites)) {
                 $sites = array('' => 'All') + $sites;
             }
         } else {
             // allow only to view own site data
+            $sites    = array();
             $site_arr = $user->getData('CenterIDs');
             foreach ($site_arr as $key => $val) {
                 $site[$key] = &Site::singleton($val);
@@ -355,9 +418,9 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
                 }
             }
             $sites = array('' => 'All User Sites') + $sites;
-        } 
+        }
         $this->addSelect('Site', 'Site', $sites);
-                
+
         return true;
     }
 
@@ -375,9 +438,7 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
         return array_merge(
             $deps,
             array(
-
-              $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
-
+             $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
             )
         );
     }

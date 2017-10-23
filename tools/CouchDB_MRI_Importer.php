@@ -323,61 +323,6 @@ class CouchDBMRIImporter
             );
             print $docid . ": " . $success . "\n";
 
-            $config = NDB_Config::singleton();
-            $paths  = $config->getSetting('paths');
-
-            foreach ($ScanTypes as $Scan) {
-                // This isn't very efficient to get the document a second time, but
-                // we need the rev for adding the attachments. This whole section
-                // should be optimized/cleaned up. For now it's just a hack to get
-                // the data into CouchDB, it isn't very clean.
-                // This should all be done using a single multipart request
-                // eventually.
-                $latestDoc = $this->CouchDB->getDoc($docid);
-
-                $fileName = $doc['Selected_' . $Scan['ScanType']];
-                $fullPath = $paths['mincPath'] . $fileName;
-                if (file_exists($fullPath)) {
-                    if (!empty($fileName)) {
-                        $toUpload = null;
-                        if (!empty($latestDoc['_attachments'])) {
-
-                            if (isset($latestDoc['_attachments'][$fileName])) {
-                                $latest_doc = $latestDoc['_attachments'][$fileName];
-                                $size       = $latest_doc['length'];
-                                if ($size != filesize($fullPath)) {
-                                    // File has been modified, upload it.
-                                    $toUpload = $fileName;
-
-                                }
-                            } else {
-                                // This attachment not been uploaded - ever
-                                $toUpload = $fileName;
-                            }
-
-                        } else {
-                            // No current attachments, so this file has not
-                            // been uploaded
-                            $toUpload = $fileName;
-                        }
-
-                        if (!empty($toUpload)) {
-                            $data = file_get_contents($fullPath);
-                            print "Adding $fileName to $docid\n";
-                            $latest = $latestDoc['_rev'];
-                            $rev    = $docid .'/' .$fileName.'?rev='.$latest;
-                            $output = $this->CouchDB->_postRelativeURL(
-                                $rev,
-                                $data,
-                                'PUT',
-                                'application/x-minc'
-                            );
-                        }
-                    }
-                } else {
-                    print "****COULD NOT FIND $fullPath TO ADD TO $docid***\n";
-                }
-            }
         }
         return;
     }
@@ -392,11 +337,11 @@ class CouchDBMRIImporter
 
         $ScanTypes = $this->SQLDB->pselect(
             "SELECT DISTINCT msc.Scan_type as ScanType from mri_scan_type msc
-JOIN files f ON msc.ID= f.AcquisitionProtocolID 
-JOIN files_qcstatus fqc ON f.FileID=fqc.FileID",
+JOIN files f ON msc.ID= f.AcquisitionProtocolID
+JOIN files_qcstatus fqc ON f.FileID=fqc.FileID ORDER BY f.AcquisitionProtocolID",
             array()
         );
-        
+
         return $ScanTypes;
     }
 

@@ -11,8 +11,8 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-if (file_exists('../project')) {
-    die("Directory 'project' already exists in LORIS root. Aborting deploy.");
+if (file_exists('../project/config.xml')) {
+    die("Project config.xml already exists. Aborting deploy.");
 }
 
 $url      = parse_url(getenv("CLEARDB_DATABASE_URL"));
@@ -62,7 +62,6 @@ $conn->query(
 
 mkdir('../project');
 mkdir('../project/data');
-mkdir('../project/libraries');
 mkdir('../project/instruments');
 mkdir('../project/templates');
 mkdir('../project/tables_sql');

@@ -27,6 +27,20 @@ require_once __DIR__ .
 class DatadictTestIntegrationTest extends LorisIntegrationTest
 {
     /**
+     * UI elements and locations
+     * breadcrumb - 'Access Profile'
+     * Table headers
+     */
+    private $_loadingUI
+        =  array(
+            'Data Dictionary' => '#bc2 > a:nth-child(2) > div',
+            'SourceFrom'      => '#dynamictable > thead > tr > th:nth-child(2)',
+            'Name'            => '#dynamictable > thead > tr > th:nth-child(3)',
+            'SourceField'     => '#dynamictable > thead > tr > th:nth-child(4)',
+            'Description'     => '#dynamictable > thead > tr > th:nth-child(5)',
+           );
+
+    /**
      * Inserting testing data
      *
      * @return void
@@ -89,77 +103,92 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     function testDataDictSearchKeywordFilters()
     {
         $this->webDriver->get($this->url . "/datadict/");
-        $this->webDriver->wait(120, 1000)->until(
-            WebDriverExpectedCondition::presenceOfElementLocated(
-                WebDriverBy::Name("keyword")
-            )
-        );
 
         $searchKey = $this->webDriver->findElements(
             WebDriverBy::Name("keyword")
         );
 
-        switch (count($searchKey)) {
-        case 1:
-            break;
-        case 0:
-            $this->fail("Could not find search keyword field");
-            return;
-        default:
-            $this->fail("Too many search keyword fields.");
-            return;
-        }
-
         $searchKey[0]->sendKeys("NotRealMAGICNUMBER335");
         $searchButton = $this->webDriver->findElement(
             WebDriverBy::Name("filter")
         );
-
+        //search exist data
         $searchButton->click();
 
-        $this->markTestSkipped("Data Dict test not yet updated for React");
-        /*
-        try {
-            while (true) {
-                $oldBody->isDisplayed();
+        $name = $this->webDriver->executescript(
+            "return document.querySelector".
+                  "('#dynamictable > tbody > tr > td:nth-child(3)').textContent"
+        );
+            $this->assertContains("TestParameterNotRealMAGICNUMBER335", $name);
+    }
+    /**
+     * Testing keyword filter with testing data not case-sensitive
+     *
+     * @return void
+     */
+    function testDataDictSearchKeywordFiltersnotCaseSensitvie()
+    {
+        $this->webDriver->get($this->url . "/datadict/");
+
+        $searchKey = $this->webDriver->findElements(
+            WebDriverBy::Name("keyword")
+        );
+
+        $searchKey[0]->sendKeys("notrealMAGICNUMBER335");
+        $searchButton = $this->webDriver->findElement(
+            WebDriverBy::Name("filter")
+        );
+        //search exist data
+        $searchButton->click();
+
+        $name = $this->webDriver->executescript(
+            "return document.querySelector".
+                  "('#dynamictable > tbody > tr > td:nth-child(3)').textContent"
+        );
+            $this->assertContains("TestParameterNotRealMAGICNUMBER335", $name);
+    }
+    /**
+     * Testing keyword filter without testing data
+     *
+     * @return void
+     */
+    function testDataDictSearchKeywordFiltersWithoutData()
+    {
+        $this->webDriver->get($this->url . "/datadict/");
+
+        $searchKey = $this->webDriver->findElements(
+            WebDriverBy::Name("keyword")
+        );
+
+        $searchKey[0]->sendKeys("noExist");
+        $searchButton = $this->webDriver->findElement(
+            WebDriverBy::Name("filter")
+        );
+        //search exist data
+        $searchButton->click();
+
+        $res = $this->webDriver->executescript(
+            "return document.querySelector".
+                  "('#datatable > div > strong').textContent"
+        );
+        $this->assertContains("No result found.", $res);
+
+    }
+
+    /**
+      * Testing UI elements when page loads
+      *
+      * @return void
+      */
+    function testPageUIs()
+    {
+        $this->safeGet($this->url . "/datadict/");
+        foreach ($this->_loadingUI as $key => $value) {
+            $text = $this->webDriver->executescript(
+                "return document.querySelector('$value').textContent"
+            );
+            $this->assertContains($key, $text);
         }
-        } catch(Exception $e) {
-        $this->webDriver->executescript("document.documentElement.outerHTML");
-
-        }
-         */
-
-        $rows = $this->webDriver->findElements(
-            WebDriverBy::cssSelector("table tbody tr")
-        );
-
-        $this->assertTrue(
-            count($rows) == 1,
-            "Incorrect number of rows returned" .
-            print_r($rows, true)
-        );
-
-        $cols = $this->webDriver->findElements(
-            WebDriverBy::cssSelector("table tbody tr td")
-        );
-
-        // Rownumber
-        $this->assertEquals($cols[0]->getText(), "1");
-        // SourceFrom
-        $this->assertEquals($cols[1]->getText(), "nowhere");
-        // Name
-        $this->assertEquals(
-            $cols[2]->getText(),
-            "TestParameterNotRealMAGICNUMBER335"
-        );
-        // SourceField
-        $this->assertEquals($cols[3]->getText(), "imaginary");
-        // Description
-        $this->assertEquals(
-            $cols[4]->getText(),
-            "I am a fake description used only for testing you".
-            "should not see me. MAGICNUMBER335"
-        );
     }
 }
 ?>

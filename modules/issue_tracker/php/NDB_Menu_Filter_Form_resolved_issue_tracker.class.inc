@@ -51,7 +51,7 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
             "WHERE i.status = 'closed'";
 
         if (!$user->hasPermission('access_all_profiles')) {
-            $site_arr     = implode(",", $user->getCenterID());
+            $site_arr     = implode(",", $user->getCenterIDs());
             $this->query .= " AND i.CenterID IN (" . $site_arr . ")";
         }
 
@@ -152,8 +152,9 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
      */
     function _setFilterForm()
     {
-        $user =& User::singleton();
-        $db   = Database::singleton();
+        $user  =& User::singleton();
+        $db    = Database::singleton();
+        $sites = array();
 
         //sites
         if ($user->hasPermission('access_all_profiles')) {
@@ -169,7 +170,7 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
                     $sites[$val] = $site[$key]->getCenterName();
                 }
             }
-            $sites = array('' => 'All User Sites') + $sites;
+            $list_of_sites = array('' => 'All User Sites') + $sites;
         }
 
         //reporters

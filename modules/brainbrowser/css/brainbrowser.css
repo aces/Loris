@@ -27,7 +27,7 @@ body {
 
 .brainbrowser .panel-default {
   width: auto;
-  min-width: 330px;
+  min-width: 300px;
   border: 1px solid #ccc;
   border-bottom-left-radius: 0px;
   border-bottom-right-radius: 0px;
@@ -46,6 +46,7 @@ body {
   max-height: 660px;
   min-width: 300px;
 }
+
 
 .control-heading {
   font-weight: normal !important;
@@ -153,6 +154,10 @@ body {
   width: 100%;
 }
 
+.volume-viewer-controls .coords {
+  max-width: 270px;
+}
+
 .loading-message {
   display: block;
   color: #064785;
@@ -178,4 +183,12 @@ body {
 .brainbrowser-wrapper .global-controls .control:active,
 .brainbrowser-wrapper .global-controls .control.isChecked {
   background-color: #042d54;
+}
+
+@media(min-width: 768px) {
+  .brainbrowser-template .control-panel {
+    max-width: 300px;
+    float: left;
+    margin: 0 10px 0 0;
+  }
 }

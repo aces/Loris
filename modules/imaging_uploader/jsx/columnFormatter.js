@@ -1,6 +1,6 @@
 /* exported formatColumn */
 
-loris.hiddenHeaders = [];
+loris.hiddenHeaders = ['PatientName'];
 
 /**
  * Modify behaviour of specified column cells in the Data Table component
@@ -17,13 +17,13 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   // Create the mapping between rowHeaders and rowData in a row object.
-  let row = {};
+  const row = {};
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
 
   // Default cell style
-  let cellStyle = {
+  const cellStyle = {
     whiteSpace: 'nowrap'
   };
 
@@ -46,8 +46,8 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       );
     }
 
-    let created = row['Number Of MincCreated'];
-    let inserted = row['Number Of MincInserted'];
+    const created = row['Number Of MincCreated'];
+    const inserted = row['Number Of MincInserted'];
     return (
       <td style={cellStyle}>
         {cell} ({inserted} out of {created})
@@ -56,7 +56,11 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'Tarchive Info') {
-    let url = loris.BaseURL + '/dicom_archive/viewDetails/?tarchiveID=' + cell;
+    if (!cell || cell === "0") {
+      return (<td></td>);
+    }
+
+    const url = loris.BaseURL + '/dicom_archive/viewDetails/?tarchiveID=' + cell;
     return (
       <td style={cellStyle}>
         <a href={url}>View Details</a>
@@ -74,12 +78,52 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     }
   }
 
-  /* Handles clicks on 'Number Of MincInserted' cells */
+  if (column === 'Number Of MincCreated') {
+    let violatedScans;
+    if (row['Number Of MincCreated'] - row['Number Of MincInserted'] > 0) {
+      let numViolatedScans =
+           row['Number Of MincCreated'] - row['Number Of MincInserted'];
+
+      let patientName = row.PatientName;
+      violatedScans = <a onClick={openViolatedScans.bind(null, patientName)}>
+         ({numViolatedScans} violated scans)
+       </a>;
+    }
+
+    return (
+         <td style={cellStyle}>
+             {cell}
+             &nbsp;
+             {violatedScans}
+         </td>
+    );
+  }
+
+  /**
+   * Handles clicks on 'Number Of MincInserted' cells
+   *
+   * @param {string} dccid - dccid
+   * @param {object} e - event info
+   */
   function handleClick(dccid, e) {
-    loris.loadFilteredMenuClickHandler('imaging_browser', {
+    loris.loadFilteredMenuClickHandler('imaging_browser/', {
       DCCID: dccid
+    })(e);
+  }
+
+    /**
+     * Opens MRI Violations for when there are violated scans
+     *
+     * @param {string} patientName - Patient name of the form PSCID_DCCID_VisitLabel
+     * @param {object} e - event info
+     */
+  function openViolatedScans(patientName, e) {
+    loris.loadFilteredMenuClickHandler('mri_violations/', {
+      PatientName: patientName
     })(e);
   }
 
   return (<td style={cellStyle}>{cell}</td>);
 }
+
+export default formatColumn;

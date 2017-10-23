@@ -2,70 +2,129 @@
 /**
  * The welcome menu
  *
- * @package main
+ * PHP Version 5
+ *
+ * @category Loris
+ * @package  Main
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
  */
-class NDB_Form_statistics extends NDB_Form
+/**
+ * The welcome menu
+ *
+ * PHP Version 5
+ *
+ * @category Loris
+ * @package  Main
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
+class NDB_Form_Statistics extends NDB_Form
 {
     var $params = array();
-
+    /**
+     * Checking user's permission
+     *
+     * @return bool
+     */
     function _hasAccess()
     {
         $user =& User::singleton();
         return $user->hasPermission('data_entry');
     }
-
+    /**
+     * InCenter function
+     *
+     * @param string $centerID the value of centreID
+     * @param string $Centres  the value of Centres
+     *
+     * @return bool
+     */
     function _inCenter($centerID, $Centres)
     {
         foreach ($Centres as $Centre) {
-            if($Centre['NumericID'] == $centerID) {
+            if ($Centre['NumericID'] == $centerID) {
                 return true;
             }
         }
         return false;
     }
+    /**
+     * RenderStatsTable function
+     *
+     * @param string $sectionHeader     the value of sectionHeader
+     * @param string $tableHeader       the value of tableHeader
+     * @param string $subcats           the value of subcats
+     * @param string $visits            the value of visits
+     * @param string $dropdown_name     the value of dropdown_name
+     * @param string $dropdown_opt      the value of dropdown_opt
+     * @param string $dropdown_selected the value of dropdown_selected
+     * @param string $centres           the value of centres
+     * @param string $data              the value of data
+     * @param string $Subsection        the value of Subsection=''
+     * @param string $disclamer         the value of disclamer=''
+     * @param string $projectID         the value of projectID is null
+     *
+     * @return string
+     */
+    function renderStatsTable($sectionHeader,
+        $tableHeader,
+        $subcats,
+        $visits,
+        $dropdown_name,
+        $dropdown_opt,
+        $dropdown_selected,
+        $centres,
+        $data,
+        $Subsection="",
+        $disclamer='',
+        $projectID=null
+    ) {
 
-    function render_stats_table($sectionHeader, $tableHeader, $disclamer='', $subcats, $visits, $dropdown_name, $dropdown_opt, $dropdown_selected, $centres, $data, $Subsection="",$projectID=null)
-    {
         $tpl_data = array();
-        $tpl_data['test_name']  = $_REQUEST['test_name'];
+        $tpl_data['test_name']  = htmlspecialchars($_REQUEST['test_name']);
         $tpl_data['Subsection'] = $Subsection;
         $tpl_data['Visits']     = $visits;
         $smarty = new Smarty_neurodb("statistics");
-        $tpl_data['SectionHeader']    = $sectionHeader;
-        $tpl_data['TableHeader']      = $tableHeader;
-        $tpl_data['Disclamer']        = $disclamer;
-        $tpl_data['Subcategories']    = $subcats;
-        $tpl_data['Subprojects']      = Utility::getSubprojectsForProject($projectID);
+        $tpl_data['SectionHeader'] = $sectionHeader;
+        $tpl_data['TableHeader']   = $tableHeader;
+        $tpl_data['Disclamer']     = $disclamer;
+        $tpl_data['Subcategories'] = $subcats;
+        $tpl_var = Utility::getSubprojectsForProject($projectID);
+        $tpl_data['Subprojects']      = $tpl_var;
         $tpl_data['DropdownName']     = $dropdown_name;
         $tpl_data['DropdownOptions']  = $dropdown_opt;
         $tpl_data['DropdownSelected'] = $dropdown_selected;
         $tpl_data['Centers']          = $centres;
-        foreach($data as $row) {
+        foreach ($data as $row) {
             $subproj = $row['SubprojectID'];
             $vl      = $row['VLabel'];
             $subcat  = $row['Subcat'];
             $center  = $row['CenterID'];
 
-            if(in_array($vl, $visits)
+            if (in_array($vl, $visits)
                 && in_array($subcat, $subcats)
                 && $this->_inCenter($center, $centres)
             ) {
+                $C = 'C' . $center;
                 $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
                 $tpl_data['data'][$subproj][$subcat]      += $row['val'];
                 $tpl_data['data'][$subproj]['total']      += $row['val'];
                 $tpl_data['data'][$vl][$subcat]           += $row['val'];
                 $tpl_data['data'][$vl]['total']           += $row['val'];
-                $tpl_data['data'][$subproj]['C' . $center][$vl][$subcat]  = $row['val'];
-                $tpl_data['data'][$subproj]['C' . $center][$vl]['total'] += $row['val'];
-                $tpl_data['data'][$subproj]['C' . $center][$subcat]      += $row['val'];
-                $tpl_data['data'][$subproj]['C' . $center]['total']      += $row['val'];
-                $tpl_data['data']['C' . $center][$vl][$subcat]           += $row['val'];
-                $tpl_data['data']['C' . $center][$vl]['total']           += $row['val'];
-                $tpl_data['data']['C' . $center][$subcat] += $row['val'];
-                $tpl_data['data']['C' . $center]['total'] += $row['val'];
-                $tpl_data['data'][$subcat] += $row['val'];
-                $tpl_data['data']['total'] += $row['val'];
+                $tpl_data['data'][$subproj][$C][$vl][$subcat]  = $row['val'];
+                $tpl_data['data'][$subproj][$C][$vl]['total'] += $row['val'];
+                $tpl_data['data'][$subproj][$C][$subcat]      += $row['val'];
+                $tpl_data['data'][$subproj][$C]['total']      += $row['val'];
+                $tpl_data['data'][$C][$vl][$subcat]           += $row['val'];
+                $tpl_data['data'][$C][$vl]['total']           += $row['val'];
+                $tpl_data['data'][$C][$subcat] += $row['val'];
+                $tpl_data['data'][$C]['total'] += $row['val'];
+                $tpl_data['data'][$subcat]     += $row['val'];
+                $tpl_data['data']['total']     += $row['val'];
             }
 
         }
@@ -74,8 +133,12 @@ class NDB_Form_statistics extends NDB_Form
         return $html;
 
     }
-
-    function statistics()
+    /**
+     * Statistics function
+     *
+     * @return void
+     */
+    function statistics()// @codingStandardsIgnoreLine
     {
         $DB =& Database::singleton();
         $this->tpl_data['StatsTabs'] = $DB->pselect(
@@ -86,13 +149,21 @@ class NDB_Form_statistics extends NDB_Form
         );
 
     }
-
-    function stats_general()
+    /**
+     * Stats_general function
+     *
+     * @return void
+     */
+    function stats_general()// @codingStandardsIgnoreLine
     {
         //$DB =& Database::singleton();
     }
-
-    function stats_demographic()
+    /**
+     * Stats_demographic function
+     *
+     * @return void
+     */
+    function stats_demographic()// @codingStandardsIgnoreLine
     {
         $DB          =& Database::singleton();
         $config      = NDB_Config::singleton();
@@ -110,18 +181,20 @@ class NDB_Form_statistics extends NDB_Form
 
         //PROJECTS
         $projects[null] = 'All Projects';
-        foreach(Utility::getProjectList() as $key => $value) {
+        foreach (Utility::getProjectList() as $key => $value) {
             $projects[$key] = $value;
         }
         $currentProject = null;
-        if(isset($_REQUEST['DemographicProject']) && $_REQUEST['DemographicProject'] != '') {
-            $currentProject = $_REQUEST['DemographicProject'];
-            $this->tpl_data['CurrentProject'] = array(
-                'ID'   => $currentProject,
-                'Name' => $projects[$currentProject],
-            );
+        if ($_REQUEST['DemographicProject'] ?? ''
+        ) {
+            $currentProject = htmlspecialchars($_REQUEST['DemographicProject']);
+            $this->tpl_data['CurrentProject']
+                = array(
+                   'ID'   => $currentProject,
+                   'Name' => $projects[$currentProject],
+                  );
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
-            $this->params['pid'] =$_REQUEST['DemographicProject'];
+            $this->params['pid'] = htmlspecialchars($_REQUEST['DemographicProject']);
         } else {
             $Param_Project ='';
         }
@@ -129,20 +202,21 @@ class NDB_Form_statistics extends NDB_Form
         //SUBPROJECTS
         $subprojList ="";
         $subprojects = Utility::getSubprojectsForProject($currentProject);
-        foreach($subprojects as $key=>$val) {
+        foreach ($subprojects as $key=>$val) {
             $subprojList .= $key.",";
         }
         $subprojList = substr($subprojList, 0, -1);
-        if(!empty($subprojList)) {
+        if (!empty($subprojList)) {
             $suproject_query ="AND s.SubprojectID IN ($subprojList)";
         } else {
             $suproject_query ='';
         }
 
         //SITES
-        if(isset($_REQUEST['DemographicSite']) && $_REQUEST['DemographicSite'] != '') {
+        if ($_REQUEST['DemographicSite'] ?? ''
+        ) {
             $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
-            $this->params['sid'] =$_REQUEST['DemographicSite'];
+            $this->params['sid'] = htmlspecialchars($_REQUEST['DemographicSite']);
         } else {
             $Param_Site = '';
         }
@@ -159,11 +233,11 @@ class NDB_Form_statistics extends NDB_Form
         $sites[null] ="All sites";
         foreach ($centers as $row) {
             $sites[$row['NumericID']] = $row['ShortName'];
-            if($_REQUEST['DemographicSite'] == $row['NumericID']) {
+            if ($_REQUEST['DemographicSite'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array(
-                    'ID'   => $row['NumericID'],
-                    'Name' => $row['LongName'],
-                );
+                                                  'ID'   => $row['NumericID'],
+                                                  'Name' => $row['LongName'],
+                                                 );
             }
         }
 
@@ -189,7 +263,7 @@ class NDB_Form_statistics extends NDB_Form
             $this->params
         );
 
-        foreach($result as $row) {
+        foreach ($result as $row) {
             $this->tpl_data['registered'][$row['rowid']] = $row['val'];
             $this->tpl_data['registered']['total']      += $row['val'];
         }
@@ -204,14 +278,15 @@ class NDB_Form_statistics extends NDB_Form
                       WHERE c.CenterID <> '1'
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
-                          AND (ps.participant_status=1 OR ps.participant_status IS NULL)
+                          AND (ps.participant_status=1
+                               OR ps.participant_status IS NULL)
                           $Param_Project
                           $Param_Site
                       GROUP BY s.subprojectid",
             $this->params
         );
 
-        foreach($result as $row) {
+        foreach ($result as $row) {
             $this->tpl_data['ps_active'][$row['rowid']] = $row['val'];
             $this->tpl_data['ps_active']['total']      += $row['val'];
         }
@@ -233,7 +308,7 @@ class NDB_Form_statistics extends NDB_Form
             $this->params
         );
 
-        foreach($result as $row) {
+        foreach ($result as $row) {
             $this->tpl_data['ps_inactive'][$row['rowid']] = $row['val'];
             $this->tpl_data['ps_inactive']['total']      += $row['val'];
         }
@@ -249,7 +324,8 @@ class NDB_Form_statistics extends NDB_Form
                           AND c.CenterID <> '1'
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
-                          AND (ps.participant_status=1 OR ps.participant_status IS NULL)
+                          AND (ps.participant_status=1 OR
+                               ps.participant_status IS NULL)
                           AND c.Gender='Male'
                           $Param_Project
                           $Param_Site
@@ -257,7 +333,7 @@ class NDB_Form_statistics extends NDB_Form
             $this->params
         );
 
-        foreach($result as $row) {
+        foreach ($result as $row) {
             $this->tpl_data['gender_male'][$row['rowid']] = $row['val'];
             $this->tpl_data['gender_male']['total']      += $row['val'];
         }
@@ -272,7 +348,8 @@ class NDB_Form_statistics extends NDB_Form
                           AND c.CenterID <> '1'
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
-                          AND (ps.participant_status=1 OR ps.participant_status IS NULL)
+                          AND (ps.participant_status=1
+                               OR ps.participant_status IS NULL)
                           AND c.Gender='Female'
                           $Param_Project
                           $Param_Site
@@ -280,7 +357,7 @@ class NDB_Form_statistics extends NDB_Form
             $this->params
         );
 
-        foreach($result as $row) {
+        foreach ($result as $row) {
             $this->tpl_data['gender_female'][$row['rowid']] = $row['val'];
             $this->tpl_data['gender_female']['total']      += $row['val'];
         }
@@ -289,14 +366,16 @@ class NDB_Form_statistics extends NDB_Form
         $result = $DB->pselect(
             "SELECT rowid, AVG(DATEDIFF(dr,dob)) as age
               FROM
-              (SELECT DISTINCT c.CandID, s.subprojectid as rowid, c.Date_registered as dr,c.DoB as dob
+              (SELECT DISTINCT c.CandID, s.subprojectid as rowid,
+                          c.Date_registered as dr,c.DoB as dob
                       FROM candidate as c
                       	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE coalesce(s.active, 'Y')='Y'
                           AND c.CenterID <> '1'
                           AND c.Entity_type != 'Scanner'
-                          AND (ps.participant_status=1 OR ps.participant_status IS NULL)
+                          AND (ps.participant_status=1
+                          OR ps.participant_status IS NULL)
                           AND c.Active='Y'
                           $Param_Project
                           $Param_Site) 
@@ -305,7 +384,7 @@ class NDB_Form_statistics extends NDB_Form
             $this->params
         );
 
-        foreach($result as $row) {
+        foreach ($result as $row) {
             $this->tpl_data['age_avg'][$row['rowid']] = round($row['age']*12/365, 2);
         }
 
@@ -316,11 +395,12 @@ class NDB_Form_statistics extends NDB_Form
         );
         $instrument_list = Utility::getAllInstruments();
         $this->tpl_data['all_instruments'] = $instrument_list;
-        if(isset($_REQUEST['DemographicInstrument']) && $_REQUEST['DemographicInstrument'] != '') {
+        if ($_REQUEST['DemographicInstrument'] ?? ''
+        ) {
             $Subcategories = array(
-                'Complete',
-                'Incomplete',
-            );
+                              'Complete',
+                              'Incomplete',
+                             );
             $result        = $DB->pselect(
                 "SELECT count(*) as val,
                     f.Data_entry as Subcat,
@@ -329,7 +409,8 @@ class NDB_Form_statistics extends NDB_Form
                     s.visit_label as VLabel
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID)
                     JOIN flag f ON (f.SessionID=s.ID)
-                    JOIN ".$DB->escape($_REQUEST[DemographicInstrument])." i USING(CommentID)
+                    JOIN ".$DB->escape($_REQUEST[DemographicInstrument]).
+                    " i USING(CommentID)
                 WHERE s.Active='Y'
                     AND c.CenterID <> '1'
                     AND f.Data_entry='Complete'
@@ -344,7 +425,8 @@ class NDB_Form_statistics extends NDB_Form
                     s.visit_label as VLabel
                 FROM session s JOIN candidate c USING(CandID)
                     JOIN flag f ON (f.SessionID=s.ID)
-                    JOIN ".$DB->escape($_REQUEST[DemographicInstrument])." i USING(CommentID)
+                    JOIN ".$DB->escape($_REQUEST[DemographicInstrument]).
+                    " i USING(CommentID)
                 WHERE s.Active='Y' AND s.CenterID <> 1
                     $Param_Project
                     AND f.CommentID NOT LIKE 'DDE%'
@@ -353,10 +435,10 @@ class NDB_Form_statistics extends NDB_Form
                 ",
                 $this->params
             );
-            $this->tpl_data['RecruitsTable'] = $this->render_stats_table(
+            $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
                 "Breakdown of Registered Candidates",
-                "Data Entry Completion Status for ". $instrument_list[$_REQUEST['DemographicInstrument']],
-                '',
+                "Data Entry Completion Status for ".
+                      $instrument_list[$_REQUEST['DemographicInstrument']],
                 $Subcategories,
                 $Visits,
                 "DemographicInstrument",
@@ -365,13 +447,14 @@ class NDB_Form_statistics extends NDB_Form
                 $centers,
                 $result,
                 "demographics",
+                '',
                 $currentProject
             );
         } else {
             $Subcategories = array(
-                'Male',
-                'Female',
-            );
+                              'Male',
+                              'Female',
+                             );
             $result        = $DB->pselect(
                 "SELECT c.CenterID as CenterID,
                     s.SubprojectID as SubprojectID,
@@ -387,10 +470,9 @@ class NDB_Form_statistics extends NDB_Form
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat",
                 array()
             );
-            $this->tpl_data['RecruitsTable'] = $this->render_stats_table(
+            $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
                 "Breakdown of Registered Candidates",
                 "Breakdown by Sex",
-                '',
                 $Subcategories,
                 $Visits,
                 "DemographicInstrument",
@@ -399,12 +481,17 @@ class NDB_Form_statistics extends NDB_Form
                 $centers,
                 $result,
                 "demographics",
+                '',
                 $currentProject
             );
         }
     }
-
-    function stats_behavioural()
+    /**
+     * Stats_behavioural function
+     *
+     * @return void
+     */
+    function stats_behavioural()// @codingStandardsIgnoreLine
     {
         $DB          =& Database::singleton();
         $config      = NDB_Config::singleton();
@@ -426,13 +513,13 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['Centers'] = $centers;
 
         $projects[null] = 'All Projects';
-        foreach(Utility::getProjectList() as $key=>$value) {
+        foreach (Utility::getProjectList() as $key=>$value) {
             $projects[$key] = $value;
         }
         $this->tpl_data['Projects'] = $projects;
         foreach ($centers as $row) {
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
-            if($_REQUEST['site'] == $row['NumericID']) {
+            if ($_REQUEST['site'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array(
                                                   'ID'   => $row['NumericID'],
                                                   'Name' => $row['LongName'],
@@ -441,27 +528,27 @@ class NDB_Form_statistics extends NDB_Form
 
         }
 
-        if(isset($_REQUEST['BehaviouralProject'])
-            && $_REQUEST['BehaviouralProject'] != ''
+        if ($_REQUEST['BehaviouralProject'] ?? ''
         ) {
-            $currentProject = $_REQUEST['BehaviouralProject'];
-            $this->tpl_data['CurrentProject'] = array(
-                                                 'ID'   => $currentProject,
-                                                 'Name' => $projects[$currentProject],
-                                                );
+            $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
+            $this->tpl_data['CurrentProject']
+                = array(
+                   'ID'   => $currentProject,
+                   'Name' => $projects[$currentProject],
+                  );
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
-            $this->params['pid'] =$_REQUEST['BehaviouralProject'];
+            $this->params['pid'] = htmlspecialchars($_REQUEST['BehaviouralProject']);
         } else {
             $Param_Project = '';
         }
         $subprojects = Utility::getSubprojectsForProject($currentProject);
 
         $this->tpl_data['Subprojects'] = $subprojects;
-        foreach($subprojects as $key=>$val) {
+        foreach ($subprojects as $key=>$val) {
             $subprojList .= $key.",";
         }
         $subprojList = substr($subprojList, 0, -1);
-        if(!empty($subprojList)) {
+        if (!empty($subprojList)) {
             $suproject_query ="AND s.SubprojectID IN ($subprojList)";
         } else {
             $suproject_query ='';
@@ -489,7 +576,7 @@ class NDB_Form_statistics extends NDB_Form
             $this->params
         );
 
-        foreach($result as $row) {
+        foreach ($result as $row) {
             // Put some things into variables to make the lines shorter
             // so that they don't wrap. Note that "c"(enter array) needs to
             // be a reference since we'll be modifying it.
@@ -499,17 +586,17 @@ class NDB_Form_statistics extends NDB_Form
 
             $c[$vl]['total']   += $row['val'];
             $c['all']['total'] += $row['val'];
-            if($row['Data_Entry'] == 'Complete') {
+            if ($row['Data_Entry'] == 'Complete') {
                 $c[$vl]['complete']   += $row['val'];
                 $c['all']['complete'] += $row['val'];
             }
-            if($c[$vl]['total'] != 0) {
-                $c[$vl]['percent'] =
-                    floor($c[$vl]['complete'] / $c[$vl]['total']*100);
+            if ($c[$vl]['total'] != 0) {
+                $c[$vl]['percent']
+                    = floor($c[$vl]['complete'] / $c[$vl]['total']*100);
             }
-            if($c['all']['total'] != 0) {
-                $c['all']['percent'] =
-                    floor($c['all']['complete'] / $c['all']['total']*100);
+            if ($c['all']['total'] != 0) {
+                $c['all']['percent']
+                    = floor($c['all']['complete'] / $c['all']['total']*100);
             }
         }
         // DDE STATS
@@ -531,29 +618,33 @@ class NDB_Form_statistics extends NDB_Form
                 GROUP BY s.CenterID, VLabel, f.Data_Entry",
             $this->params
         );
-        foreach($result as $row) {
+        foreach ($result as $row) {
             $center = $row['CenterID'];
             $vl     = $row['VLabel'];
             $c      =& $this->tpl_data['dde']['C' . $center];
 
             $c[$vl]['total']   += $row['val'];
             $c['all']['total'] += $row['val'];
-            if($row['Data_Entry'] == 'Complete') {
+            if ($row['Data_Entry'] == 'Complete') {
                 $c[$vl]['complete']   += $row['val'];
                 $c['all']['complete'] += $row['val'];
             }
-            if($c[$vl]['total'] != 0) {
-                $c[$vl]['percent'] =
-                    floor($c[$vl]['complete'] / $c[$vl]['total']*100);
+            if ($c[$vl]['total'] != 0) {
+                $c[$vl]['percent']
+                    = floor($c[$vl]['complete'] / $c[$vl]['total']*100);
             }
-            if($c['all']['total'] != 0) {
-                $c['all']['percent'] =
-                    floor($c['all']['complete'] / $c['all']['total']*100);
+            if ($c['all']['total'] != 0) {
+                $c['all']['percent']
+                    = floor($c['all']['complete'] / $c['all']['total']*100);
             }
         }
     }
-
-    function stats_MRI()
+    /**
+     * Stats_MRI function
+     *
+     * @return bool
+     */
+    function stats_MRI()// @codingStandardsIgnoreLine
     {
         $DB          =& Database::singleton();
         $config      = NDB_Config::singleton();
@@ -561,24 +652,25 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['useProjects'] = $useProjects;
         $bigTable_params =array();
 
-
         $this->tpl_data['showTable'] = true;
 
         //PROJECTS
         $projects[null] = 'All Projects';
-        foreach(Utility::getProjectList() as $key => $value) {
+        foreach (Utility::getProjectList() as $key => $value) {
             $projects[$key] = $value;
         }
         $currentProject = null;
-        if(isset($_REQUEST['MRIProject']) && $_REQUEST['MRIProject'] != '') {
-            $currentProject = $_REQUEST['MRIProject'];
-            $this->tpl_data['CurrentProject'] = array(
-                                                 'ID'   => $currentProject,
-                                                 'Name' => $projects[$currentProject],
-                                                );
-            $Param_Project          ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
-            $this->params['pid']    =$_REQUEST['MRIProject'];
-            $bigTable_params['pid'] =$_REQUEST['MRIProject'];
+        if ($_REQUEST['MRIProject'] ?? '') {
+            $currentProject = htmlspecialchars($_REQUEST['MRIProject']);
+            $this->tpl_data['CurrentProject']
+                = array(
+                   'ID'   => $currentProject,
+                   'Name' => $projects[$currentProject],
+                  );
+            $sqlVar        = 'AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+            $Param_Project =$sqlVar;
+            $this->params['pid']    = htmlspecialchars($_REQUEST['MRIProject']);
+            $bigTable_params['pid'] = htmlspecialchars($_REQUEST['MRIProject']);
         } else {
             $Param_Project = '';
         }
@@ -586,19 +678,19 @@ class NDB_Form_statistics extends NDB_Form
         //SUBPROJECTS
         $subprojList ="";
         $subprojects = Utility::getSubprojectsForProject($currentProject);
-        foreach($subprojects as $key=>$val) {
+        foreach ($subprojects as $key=>$val) {
             $subprojList .= $key.",";
         }
         $subprojList = substr($subprojList, 0, -1);
-        if(!empty($subprojList)) {
+        if (!empty($subprojList)) {
             $suproject_query ="AND s.SubprojectID IN ($subprojList)";
         } else {
             $suproject_query ='';
         }
         //SITES
-        if(isset($_REQUEST['MRIsite']) && $_REQUEST['MRIsite'] != '') {
+        if ($_REQUEST['MRIsite'] ?? '') {
             $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
-            $this->params['sid'] =$_REQUEST['MRIsite'];
+            $this->params['sid'] = htmlspecialchars($_REQUEST['MRIsite']);
         } else {
             $Param_Site = '';
         }
@@ -615,7 +707,7 @@ class NDB_Form_statistics extends NDB_Form
         $sites[null] ="All sites";
         foreach ($centers as $row) {
             $sites[$row['NumericID']] = $row['ShortName'];
-            if($_REQUEST['MRIsite'] == $row['NumericID']) {
+            if ($_REQUEST['MRIsite'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array(
                                                   'ID'   => $row['NumericID'],
                                                   'Name' => $row['LongName'],
@@ -636,14 +728,13 @@ class NDB_Form_statistics extends NDB_Form
         }
 
         $scans_selected =array();
-        if(isset($_REQUEST['Scans']) && $_REQUEST['Scans'] != '') {
+        if ($_REQUEST['Scans'] ?? '') {
             $scans_selected_input = explode(",", $_REQUEST['Scans']);
         }
         if (empty($scans_selected_input)) {
             $scans_selected =$scan_types;
         } else {
-            foreach($scans_selected_input as $key => $scid)
-            {
+            foreach ($scans_selected_input as $key => $scid) {
                 $scans_selected[$scid] =$scan_types[$scid];
             }
         }
@@ -672,7 +763,7 @@ class NDB_Form_statistics extends NDB_Form
 
         //Check if a specific scan is requested otherwise display first
         //available scan
-        if(!$_REQUEST['mri_type']) {
+        if (!$_REQUEST['mri_type']) {
             $MRI_Type = current($scan_types);
         } else {
             $MRI_Type = $scan_types[$_REQUEST['mri_type']];
@@ -725,10 +816,9 @@ class NDB_Form_statistics extends NDB_Form
         );
 
         $M_Visits = Utility::getExistingVisitLabels($currentProject);
-        $this->tpl_data['MRI_Done_Table'] = $this->render_stats_table(
+        $this->tpl_data['MRI_Done_Table'] = $this->renderStatsTable(
             "Breakdown By Scan Type",
             $MRIHeader,
-            "",
             $MRISubcategories,
             $M_Visits,
             "mri_type",
@@ -737,11 +827,13 @@ class NDB_Form_statistics extends NDB_Form
             $centers,
             $result,
             "mri",
+            "",
             $currentProject
         );
         //END BIGTABLE
 
-        //considers the naming convention of mri_parameter_form is "scanType_scan_done"
+        //considers the naming convention of
+        // mri_parameter_form is "scanType_scan_done"
         $Scan_data_results =array();
         foreach ($scans_selected as $key => $scan) {
             $scan_params = array_merge(array('scan' => $scan), $this->params);
@@ -782,11 +874,13 @@ class NDB_Form_statistics extends NDB_Form
                 GROUP BY s.SubprojectID",
                 $scan_params
             );
-            foreach ($count_data as $row){
-                $Scan_data_results[$key]['insert_count'][$row['subID']] = $row['cnt'];
+            foreach ($count_data as $row) {
+                $Scan_data_results[$key]['insert_count'][$row['subID']]
+                    = $row['cnt'];
                 //no_qc_count is computed by the difference between insertions
                 // and the sum of passed qc and failed qc
-                $Scan_data_results[$key]['no_qc_count'][$row['subID']] = $row['cnt'];
+                $Scan_data_results[$key]['no_qc_count'][$row['subID']]
+                    = $row['cnt'];
             }
 
             //QC STATUS: PASSED TOTAL
@@ -829,12 +923,14 @@ class NDB_Form_statistics extends NDB_Form
                 GROUP BY s.SubprojectID",
                 $scan_params
             );
-            foreach ($count_data as $row){
-                $Scan_data_results[$key]['qc_pass_count'][$row['subID']] = $row['cnt'];
+            foreach ($count_data as $row) {
+                $Scan_data_results[$key]['qc_pass_count'][$row['subID']]
+                    = $row['cnt'];
                 //no_qc_count is computed by the difference between insertions
                 // and the sum of passed qc and failed qc
-                $Scan_data_results[$key]['no_qc_count'][$row['subID']] =
-                    $Scan_data_results[$key]['no_qc_count'][$row['subID']]-$row['cnt'];
+                $Scan_data_results[$key]['no_qc_count'][$row['subID']]
+                    = $Scan_data_results[$key]['no_qc_count'][$row['subID']]-
+                      $row['cnt'];
             }
 
             //QC STATUS: FAILED TOTAL
@@ -877,27 +973,32 @@ class NDB_Form_statistics extends NDB_Form
                 GROUP BY s.SubprojectID",
                 $scan_params
             );
-            foreach ($count_data as $row){
-                $Scan_data_results[$key]['qc_fail_count'][$row['subID']] = $row['cnt'];
+            foreach ($count_data as $row) {
+                $Scan_data_results[$key]['qc_fail_count'][$row['subID']]
+                    = $row['cnt'];
                 //no_qc_count is computed by the difference between insertions
                 // and the sum of passed qc and failed qc
-                $Scan_data_results[$key]['no_qc_count'][$row['subID']] =
-                    $Scan_data_results[$key]['no_qc_count'][$row['subID']]-$row['cnt'];
+                $Scan_data_results[$key]['no_qc_count'][$row['subID']]
+                    = $Scan_data_results[$key]['no_qc_count'][$row['subID']]-
+                       $row['cnt'];
             }
 
-            $Scan_data_results[$key]['no_qc_count']['total'] =
-                $Scan_data_results[$key]['insert_count']['total'] -
-                $Scan_data_results[$key]['qc_pass_count']['total'] -
-                $Scan_data_results[$key]['qc_fail_count']['total'];
+            $Scan_data_results[$key]['no_qc_count']['total']
+                = $Scan_data_results[$key]['insert_count']['total'] -
+                  $Scan_data_results[$key]['qc_pass_count']['total'] -
+                  $Scan_data_results[$key]['qc_fail_count']['total'];
         }
         $this->tpl_data['scan_data_results'] = $Scan_data_results;
 
     } // End function
 
 
-
-    //RELIABILITY
-    function stats_reliability()
+    /**
+     * ELIABILITY function
+     *
+     * @return void
+     */
+    function stats_reliability()// @codingStandardsIgnoreLine
     {
         $DB          =& Database::singleton();
         $config      = NDB_Config::singleton();
@@ -905,26 +1006,29 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['useProjects'] = $useProjects;
         //PROJECTS
         $projects[null] = 'All Projects';
-        foreach(Utility::getProjectList() as $key => $value) {
+        foreach (Utility::getProjectList() as $key => $value) {
             $projects[$key] = $value;
         }
 
-        if(isset($_REQUEST['ReliabilityProject']) && $_REQUEST['ReliabilityProject'] != '') {
-            $currentProject = $_REQUEST['ReliabilityProject'];
-            $this->tpl_data['CurrentProject'] = array(
-                                                 'ID'   => $currentProject,
-                                                 'Name' => $projects[$currentProject],
-                                                );
+        if ($_REQUEST['ReliabilityProject'] ?? ''
+        ) {
+            $currentProject = htmlspecialchars($_REQUEST['ReliabilityProject']);
+            $this->tpl_data['CurrentProject']
+                = array(
+                   'ID'   => $currentProject,
+                   'Name' => $projects[$currentProject],
+                  );
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
-            $this->params['pid'] =$_REQUEST['ReliabilityProject'];
+            $this->params['pid'] = htmlspecialchars($_REQUEST['ReliabilityProject']);
         } else {
             $Param_Project ='';
         }
 
         //SITES
-        if(isset($_REQUEST['ReliabilitySite']) && $_REQUEST['ReliabilitySite'] != '') {
+        if ($_REQUEST['ReliabilitySite'] ?? ''
+        ) {
             $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
-            $this->params['sid'] =$_REQUEST['ReliabilitySite'];
+            $this->params['sid'] = htmlspecialchars($_REQUEST['ReliabilitySite']);
         } else {
             $Param_Site = '';
         }
@@ -941,7 +1045,7 @@ class NDB_Form_statistics extends NDB_Form
         $sites[null] ="All sites";
         foreach ($centers as $row) {
             $sites[$row['NumericID']] = $row['ShortName'];
-            if($_REQUEST['ReliabilitySite'] == $row['NumericID']) {
+            if ($_REQUEST['ReliabilitySite'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array(
                                                   'ID'   => $row['NumericID'],
                                                   'Name' => $row['LongName'],
@@ -953,9 +1057,17 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['Projects'] = $projects;
         $this->tpl_data['Sites']    = $sites;
 
-        $this->tpl_data['reliability_completion'] = $this->getReliabilityData($Param_Project, $Param_Site);
+        $this->tpl_data['reliability_completion']
+            = $this->getReliabilityData($Param_Project, $Param_Site);
     }
-
+    /**
+     * GetReliabilityData function
+     *
+     * @param string $Param_Project the value of Param_Project
+     * @param string $Param_Site    the value of Param_Site
+     *
+     * @return void
+     */
     function getReliabilityData($Param_Project, $Param_Site)
     {
         // Whether something is reliable or not isn't stored in the database,
@@ -964,22 +1076,23 @@ class NDB_Form_statistics extends NDB_Form
         // type of thing Tanya wants stats for here separately
 
         // Thresholds was copy/pasted from
-        include_once __DIR__ . "/../../reliability/php/NDB_Menu_Filter_reliability.class.inc";
+        include_once __DIR__ .
+            "/../../reliability/php/NDB_Menu_Filter_reliability.class.inc";
         $thresholds = NDB_Menu_Filter_Reliability::getThreshholds();
 
         $config            = NDB_Config::singleton();
         $reliabilityConfig = $config->getSetting("ReliabilityInstruments");
         $tests = array();
 
-        foreach(Utility::toArray($reliabilityConfig) AS $reliabilityInstrument){
+        foreach (Utility::toArray($reliabilityConfig) AS $reliabilityInstrument) {
             $instrument_list = $reliabilityInstrument['Instrument'];
-            foreach($instrument_list AS $instrument){
+            foreach ($instrument_list AS $instrument) {
                 $tests[$instrument['Testname']] = $instrument['Displayname'];
             }
         }
 
         $reliable = array();
-        foreach($tests as $inst => $name) {
+        foreach ($tests as $inst => $name) {
             $reliable[] = $this->_getSingleReliabilityData(
                 $Param_Project,
                 $Param_Site,
@@ -991,56 +1104,73 @@ class NDB_Form_statistics extends NDB_Form
 
         return array_merge($reliable);
     }
-    function _getSingleReliabilityData($Param_Project, $Param_Site, $name, $inst_name, $cutoff)
-    {
+    /**
+     * GetSingleReliabilityData function
+     *
+     * @param string $Param_Project the value of Param_Project
+     * @param string $Param_Site    the value of Param_Site
+     * @param string $name          the value of name
+     * @param string $inst_name     the value of inst_name
+     * @param string $cutoff        the value of cutoff
+     *
+     * @return void
+     */
+    function _getSingleReliabilityData($Param_Project,
+        $Param_Site,
+        $name,
+        $inst_name,
+        $cutoff
+    ) {
+
         $db          = Database::singleton();
         $ret         = array();
         $ret['name'] = $name;
         $ret['complete'] = $db->pselectOne(
             "SELECT count(*)
-                                          FROM reliability r
-                                              JOIN flag f USING(CommentID)
-                                              JOIN session s ON (s.ID=f.SessionID)
-                                              JOIN candidate c ON (c.CandID=s.CandID)
-                                          WHERE Instrument='$inst_name'
-                                              AND Invalid <> 'yes'
-                                              AND Reliability_score IS NOT NULL
-                                              AND c.CenterID <> 1
-                                              $Param_Project
-                                              $Param_Site",
+                      FROM reliability r
+                           JOIN flag f USING(CommentID)
+                           JOIN session s ON (s.ID=f.SessionID)
+                           JOIN candidate c ON (c.CandID=s.CandID)
+                      WHERE Instrument='$inst_name'
+                           AND Invalid <> 'yes'
+                           AND Reliability_score IS NOT NULL
+                           AND c.CenterID <> 1
+                                $Param_Project
+                                   $Param_Site",
             $this->params
         );
 
         $ret['reliable'] = $db->pselectOne(
             "SELECT count(*)
-                                          FROM reliability r
-                                              JOIN flag f USING(CommentID) JOIN session s ON (s.ID=f.SessionID)
-                                              JOIN candidate c ON (c.CandID=s.CandID)
-                                          WHERE Instrument='$inst_name'
-                                              AND Invalid <> 'yes'
-                                              AND Reliability_score IS NOT NULL
-                                              AND Reliability_score > $cutoff
-                                              AND c.CenterID <> 1
-                                              $Param_Project
-                                              $Param_Site",
+                      FROM reliability r
+                           JOIN flag f USING(CommentID)
+                           JOIN session s ON (s.ID=f.SessionID)
+                           JOIN candidate c ON (c.CandID=s.CandID)
+                      WHERE Instrument='$inst_name'
+                           AND Invalid <> 'yes'
+                           AND Reliability_score IS NOT NULL
+                           AND Reliability_score > $cutoff
+                           AND c.CenterID <> 1
+                                $Param_Project
+                                   $Param_Site",
             $this->params
         );
 
         $ret['total'] = $db->pselectOne(
             "SELECT count(*)
-                                          FROM reliability r
-                                              JOIN flag f USING(CommentID)
-                                              JOIN session s ON (s.ID=f.SessionID)
-                                              JOIN candidate c ON (c.CandID=s.CandID)
-                                          WHERE Instrument='$inst_name'
-                                              AND Invalid <> 'yes'
-                                              AND c.CenterID <> 1
-                                              $Param_Project
-                                              $Param_Site",
+                     FROM reliability r
+                          JOIN flag f USING(CommentID)
+                          JOIN session s ON (s.ID=f.SessionID)
+                          JOIN candidate c ON (c.CandID=s.CandID)
+                     WHERE Instrument='$inst_name'
+                          AND Invalid <> 'yes'
+                          AND c.CenterID <> 1
+                               $Param_Project
+                                 $Param_Site",
             $this->params
         );
 
-        if($ret['total'] == 0) {
+        if ($ret['total'] == 0) {
             // These should probably be indeterminate instead of 0, but 0
             // looks cleaner.
             $ret['percent_complete'] = '0';
@@ -1087,9 +1217,7 @@ class NDB_Form_statistics extends NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array(
-                $baseURL . "/statistics/css/statistics.css"
-            )
+            array($baseURL . "/statistics/css/statistics.css")
         );
     }
 

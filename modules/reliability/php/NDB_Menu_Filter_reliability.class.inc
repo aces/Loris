@@ -104,7 +104,7 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
 
         // only view their own profiles, unless they have permission to see all
         if (!($user->hasPermission('reliability_edit_all') || $user->hasPermission('access_all_profiles'))) {
-            $site_arr     = implode(",", $user->getCenterID());
+            $site_arr     = implode(",", $user->getCenterIDs());
             $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
         }
 
@@ -197,7 +197,8 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
     function _setFilterForm()
     {
         // create user object
-        $user =& User::singleton();
+        $user          =& User::singleton();
+        $list_of_sites = array();
 
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')
@@ -344,7 +345,9 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
         // things stand you either need to work with the $_POST
         // array/DB directly in a Menu_Filter,
         // or rewrite/imitate the Menu_Filter in an NDB_Form. -- Dave
-        if ($_POST['swap'] == 'Swap Candidates' || $_POST['swap'] == 'swap') {
+        if (isset($_POST['swap'])
+            && ($_POST['swap'] == 'Swap Candidates' || $_POST['swap'] == 'swap')
+        ) {
             $message = $this->_swap_candidates();
             if (isset($message['error'])) {
                 $this->form->addElement('static', 'error', $message['error']);
@@ -352,7 +355,9 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
             if (isset($message['message'])) {
                 $this->form->addElement('static', 'message', $message['message']);
             }
-        } else if ($_POST['swap'] == "Add Candidate" || $_POST['swap'] == 'addnew') {
+        } else if (isset($_POST['swap'])
+            && ($_POST['swap'] == "Add Candidate" || $_POST['swap'] == 'addnew')
+        ) {
             $message = $this->_addCandidate();
             if (isset($message['error'])) {
                 $this->form->addElement('static', 'error', $message['error']);
@@ -600,13 +605,13 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
                     'error' => "Candidates are not from the same site.".
                           " Cannot swap candidates across sites.",
                    );
-        } elseif (!in_array($newCommentID['NewCenterID'], $user->getCenterID())) {
+        } elseif (!in_array($newCommentID['NewCenterID'], $user->getCenterIDs())) {
             $error_msg = $params_new['id_Replace']."/".
                          $params_new['id_replaceV'].
                          " is from a different site than you.".
                          " Can only swap candidates from the same site.";
             return array('error' => $error_msg);
-        } elseif (!in_array($CommentID['OldCenterID'], $user->getCenterID())) {
+        } elseif (!in_array($CommentID['OldCenterID'], $user->getCenterIDs())) {
             $error_msg = $params_new['id_Replace']."/".
                   $params_new['id_replaceV'].
                   " is from a different site than you.".
@@ -730,7 +735,9 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
         foreach ($tableData['Data'] as $key => $record) {
 
             // Calculate and set `Reliable` column
-            $instrumentThreshold = $threshold[$record[9]];
+            $instrumentThreshold = isset($record[9], $threshold[$record[9]]) ?
+                $threshold[$record[9]] :
+                null;
             $instrumentScore     = $record[10];
 
             // Map cohort id to a string value

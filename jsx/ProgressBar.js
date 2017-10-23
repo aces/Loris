@@ -1,5 +1,3 @@
-/* exported ProgressBar */
-
 /**
  * React ProgressBar.
  *
@@ -53,3 +51,5 @@ ProgressBar.propTypes = {
 ProgressBar.defaultProps = {
   value: 0
 };
+
+export default ProgressBar;

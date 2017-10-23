@@ -36,15 +36,12 @@ if ($quizCorrect == false) {
     $user = User::singleton();
 
     $userFullName = $user->getFullname();
-    $userCenter   = $user->getCenterID();
+    $userCenter   = implode(',', $user->getCenterIDs());
     $examinerID   = $DB->pselectOne(
         "SELECT examinerID 
          FROM examiners
-         WHERE full_name=:FN AND centerID=:CID",
-        array(
-         'FN'  => $userFullName,
-         'CID' => $userCenter,
-        )
+         WHERE full_name=:FN",
+        array('FN' => $userFullName)
     );
 
     $dateArray = array(

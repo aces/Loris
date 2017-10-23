@@ -7,7 +7,7 @@
         - if move toward the nose, should also see the nose in the other views
         - same for top of the head
         - same for left-right orientation
-3. Check that the filename is displayed on top of the control box (below `Sync Volumes` and `Choose Panel Size`)
+3. Check that the filename is displayed on top of the control box (below `Sync Volumes`). If the filename is too long, hovering over it displays the full name.
 4. Check that clicking the filename or the arrow in the header causes the panel to expand and collapse.
 5. Check coordinates
     - Enter world coordinates and check that the cursor moves across the volume.
@@ -17,8 +17,8 @@
     - Gray (should be that color by default)
     - Spectral
     - Thermal
-    - Green
     - Blue
+    - Green
 7. Check threshold options
     - Enter different values in the threshold text boxes
         - Check that it changes the intensity of the images.
@@ -28,10 +28,11 @@
         - Check that the values are updated in the text box.
 8. Click on the “Sync Volumes” button (top of the page)
     Should update coordinates for all volumes, but not reset the view.
-9. Select a different panel size from the `Choose Panel Size` drop-down.
+9. Select a different panel size from the Panel Size drop-down. Default should be set to 300 Pixels.
     Should change the size of the three displayed volumes.
 10. Check that scrolling on top of the brain canvas zooms in and out.    
-    Check that the "Reset view" reset the view of the canvas. 
+    Check that the "Reset view" resets the view of the canvas. 
+    Check that the keyborad key 'r' also resets the view of the canvas. 
 11. Test `View slices` buttons (Sagittal, Coronal and Axial).
     Should give a screenshot of all slices within the selected orientation.    
 12. Load BrainBrowser using the `Add panel` checkbox (on the left of the pic) and the “3D only” button (left panel).

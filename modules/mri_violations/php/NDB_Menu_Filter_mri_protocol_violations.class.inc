@@ -11,9 +11,8 @@
  * @category MRI
  * @package  Main
  * @author   Zia Mohadesz <zia.mohades@gmail.com>
- * @license  GPLv3
+ * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
- *
  */
 
 /**
@@ -22,9 +21,8 @@
  * @category MRI
  * @package  Main
  * @author   Zia Mohadesz <zia.mohades@gmail.com>
- * @license  GPLv3
+ * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
- * 
  */
 class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
 {
@@ -35,7 +33,6 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
      *
      * @return bool true if they have access to this page
      */
-
     function _hasAccess()
     {
         // create user object
@@ -55,55 +52,72 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
     {
         // set the class variables
         // create user object
-        $user =& User::singleton();
+        $user          =& User::singleton();
         $this->columns = array(
-            'mpv.CandID',
-            'mpv.PSCID',
-            'mpv.time_run',
-            'mpv.series_description',
-            'mpv.minc_location',
-            'mpv.PatientName',
-            'mpv.TR_range',
-            'mpv.TE_range',
-            'mpv.TI_range',
-            'mpv.slice_thickness_range',
-            'mpv.xspace_range',
-            'mpv.yspace_range',
-            'mpv.zspace_range',
-            'mpv.xstep_range',
-            'mpv.ystep_range',
-            'mpv.zstep_range',
-            'mpv.time_range',
-            'mpv.SeriesUID',
-            'tarchive.TarchiveID'
-        );
-        $config=&NDB_Config::singleton();
+                          'mpv.CandID',
+                          'mpv.PSCID',
+                          'mpv.time_run',
+                          'mpv.series_description',
+                          'mpv.minc_location',
+                          'mpv.PatientName',
+                          'mpv.TR_range',
+                          'mpv.TE_range',
+                          'mpv.TI_range',
+                          'mpv.slice_thickness_range',
+                          'mpv.xspace_range',
+                          'mpv.yspace_range',
+                          'mpv.zspace_range',
+                          'mpv.xstep_range',
+                          'mpv.ystep_range',
+                          'mpv.zstep_range',
+                          'mpv.time_range',
+                          'mpv.SeriesUID',
+                          'tarchive.TarchiveID',
+                         );
+        $config        =&NDB_Config::singleton();
         $this->validFilters = array(
-            'mpv.CandID',
-            'mpv.PSCID',
-            'mpv.PatientName',
-            'mpv.SeriesUID',
-            'mpv.series_description',
-            'mpv.time_run'
-        );
-        $this->headers  = array('CandID','PSCID','Time_Run','Series_Description',
-              'Minc_Location','PatientName','TR_Range','TE_Range','TI_Range',
-              'Slice_Thickness_Range','Xspace_Range','Yspace_Range','Zspace_Range',
-              'Xstep_Range','Ystep_Range','Zstep_Range','Time_Range','SeriesUID',
-              'TarchiveID');
+                               'mpv.CandID',
+                               'mpv.PSCID',
+                               'mpv.PatientName',
+                               'mpv.SeriesUID',
+                               'mpv.series_description',
+                               'mpv.time_run',
+                              );
+        $this->headers      = array(
+                               'CandID',
+                               'PSCID',
+                               'Time_Run',
+                               'Series_Description',
+                               'Minc_Location',
+                               'PatientName',
+                               'TR_Range',
+                               'TE_Range',
+                               'TI_Range',
+                               'Slice_Thickness_Range',
+                               'Xspace_Range',
+                               'Yspace_Range',
+                               'Zspace_Range',
+                               'Xstep_Range',
+                               'Ystep_Range',
+                               'Zstep_Range',
+                               'Time_Range',
+                               'SeriesUID',
+                               'TarchiveID',
+                              );
         $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
-        $this->query = " FROM mri_protocol_violated_scans mpv LEFT JOIN tarchive ON
+        $this->query        = " FROM mri_protocol_violated_scans mpv
+                 LEFT JOIN tarchive ON
                 (mpv.PatientName = tarchive.PatientName) WHERE 1=1";
         $this->formToFilter = array(
-                'CandID' => 'mpv.CandID',
-                'PSCID' => 'mpv.PSCID',
-                'PatientName' => 'mpv.PatientName',
-                'SeriesUID' => 'mpv.SeriesUID',
-                'SeriesDescription' => 'mpv.series_description',
-                'TimeRun' => 'mpv.time_run'
-                );
-        $this->tpl_data['mri_protocol_data']  = $this->getMRIProtocolData();
-        $this->tpl_data['mri_protocol_header'] 
+                               'CandID'            => 'mpv.CandID',
+                               'PSCID'             => 'mpv.PSCID',
+                               'PatientName'       => 'mpv.PatientName',
+                               'SeriesUID'         => 'mpv.SeriesUID',
+                               'SeriesDescription' => 'mpv.series_description',
+                               'TimeRun'           => 'mpv.time_run',
+                              );
+        $this->tpl_data['mri_protocol_data']   = $this->getMRIProtocolData();
+        $this->tpl_data['mri_protocol_header']
             = array_keys($this->tpl_data['mri_protocol_data'][0]);
         return true;
     }
@@ -116,15 +130,17 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
      */
     function _setFilterForm()
     {
-        $config =& NDB_Config::singleton();
-        $study = $config->getSetting('study');
+        $config      =& NDB_Config::singleton();
+        $minYear     = $config->getSetting('startYear')
+            - $config->getSetting('ageMax');
+        $maxYear     = $config->getSetting('endYear');
         $dateOptions = array(
-            'language'        => 'en',
-            'format'          => 'YMd',
-            'addEmptyOption'  => true,
-            'minYear'         => $study['startYear'] - $study['ageMax'],
-            'maxYear'         => $study['endYear'] - $study['ageMin']
-        );
+                        'language'       => 'en',
+                        'format'         => 'YMd',
+                        'addEmptyOption' => true,
+                        'minYear'        => $minYear,
+                        'maxYear'        => $maxYear,
+                       );
 
         $this->addBasicText('CandID', 'DCC-ID:');
         $this->addBasicText('PSCID', 'PSC-ID:');
@@ -143,8 +159,8 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
     function getMRIProtocolData()
     {
         $db =& Database::singleton();
-        // select all except Objective from mri_protocol 
-        // and add Scan_type from mri_scan_type 
+        // select all except Objective from mri_protocol
+        // and add Scan_type from mri_scan_type
         // to mri_protocol's Scan_type
         $mri_protocols = $db->pselect(
             "SELECT p.ID, Center_name, ScannerID, CONCAT(
@@ -157,7 +173,8 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
             time_range, series_description_regex 
             FROM mri_protocol as p 
             LEFT JOIN mri_scan_type as s 
-            ON p.Scan_type=s.ID", array()
+            ON p.Scan_type=s.ID",
+            array()
         );
         return $mri_protocols;
     }
@@ -174,7 +191,8 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-                $baseURL . "/mri_violations/js/mri_protocol_violations_columnFormatter.js",
+             $baseURL .
+               "/mri_violations/js/mri_protocol_violations_columnFormatter.js",
             )
         );
     }
