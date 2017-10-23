@@ -24,29 +24,25 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   );
 
   if (column === 'Title') {
-    let cellLinks = [];
-    cellLinks.push(
-      <a href={loris.BaseURL + "/issue_tracker/issue/?issueID=" +
-      row['Issue ID'] + "&backURL"}>
-        {row.Title}
-      </a>
-    );
     return (
       <td>
-        {cellLinks}
+        <a href={loris.BaseURL + "/issue_tracker/issue/?issueID=" +
+        row['Issue ID'] + "&backURL"}>
+          {row.Title}
+        </a>
       </td>
     );
   }
 
   if (column === 'Issue ID') {
-    let cellLinks = [];
-    cellLinks.push(
-      <a href={loris.BaseURL + "/issue_tracker/issue/?issueID=" +
-      row['Issue ID'] + "&backURL"}>
-        {cell}
-      </a>
+    return (
+      <td>
+        <a href={loris.BaseURL + "/issue_tracker/issue/?issueID=" +
+        row['Issue ID'] + "&backURL"}>
+          {cell}
+        </a>
+      </td>
     );
-    return (<td>{cellLinks}</td>);
   }
 
   if (column === 'Priority') {
@@ -67,31 +63,23 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'PSCID' && row.PSCID !== null) {
-    let cellLinks = [];
-    cellLinks.push(
-      <a href={loris.BaseURL + "/" +
-      row.CandID + "/"}>
-        {cell}
-      </a>
-    );
     return (
       <td>
-        {cellLinks}
+        <a href={loris.BaseURL + "/" +
+        row.CandID + "/"}>
+          {cell}
+        </a>
       </td>
     );
   }
 
   if (column === 'Visit Label' && row['Visit Label'] !== null) {
-    let cellLinks = [];
-    cellLinks.push(
-      <a href={loris.BaseURL + "/instrument_list/?candID=" +
-              row.CandID + "&sessionID=" + row.SessionID }>
-        {cell}
-      </a>
-    );
     return (
       <td>
-        {cellLinks}
+        <a href={loris.BaseURL + "/instrument_list/?candID=" +
+        row.CandID + "&sessionID=" + row.SessionID }>
+          {cell}
+        </a>
       </td>
     );
   }

@@ -14,8 +14,8 @@
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once "NDB_Form.class.inc";
-require_once __DIR__ . '/issue_tracker_ControlPanel.class.inc';
+//require_once __DIR__ . '/issue_tracker_ControlPanel.class.inc';
+namespace LORIS\issue_tracker;
 
 /**
  * Creates the form for NDB_Form_issue_tracker
@@ -27,7 +27,7 @@ require_once __DIR__ . '/issue_tracker_ControlPanel.class.inc';
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-class NDB_Form_Issue_Tracker extends NDB_Form
+class Issue extends \NDB_Form
 {
 
     /**
@@ -42,31 +42,13 @@ class NDB_Form_Issue_Tracker extends NDB_Form
     }
 
     /**
-     * Entry point for issue_tracker/issue/[issueID]
-     *
-     * @return void
-     */
-    function issue()
-    {
-        $user    =& User::singleton();
-        $issueID = $_GET['issueID'];
-
-        if ((empty($issueID)
-            || !isset($issueID))
-            && !$user->hasPermission('issue_tracker_reporter')
-        ) {
-            header("HTTP/1.1 403 Forbidden");
-        }
-    }
-
-    /**
      * Include issue_tracker.css
      *
      * @return array of javascript to be inserted
      */
     function getCSSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getCSSDependencies();
         return array_merge(
@@ -83,7 +65,7 @@ class NDB_Form_Issue_Tracker extends NDB_Form
     */
     function getControlPanel()
     {
-        $controlPanel = new issue_tracker_ControlPanel($_GET['issueID']);
+        $controlPanel = new ControlPanel($_GET['issueID']);
         return $controlPanel->display();
     }
 
@@ -95,7 +77,7 @@ class NDB_Form_Issue_Tracker extends NDB_Form
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
@@ -113,11 +95,11 @@ class NDB_Form_Issue_Tracker extends NDB_Form
      */
     function _hasAccess()
     {
-        $user    =& User::singleton();
-        $db      = Database::singleton();
+        $user    =& \User::singleton();
+        $db      = \Database::singleton();
         $issueID = $_GET['issueID'];
 
-        if (!$issueID) {
+        if (!$issueID && $user->hasPermission('issue_tracker_reporter')) {
             return true;
         }
 

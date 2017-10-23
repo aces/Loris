@@ -6,25 +6,26 @@
  *
  * PHP Version 5
  *
- * @category   Loris
+ * @category   Behavioural
  * @package    Main
  * @subpackage Tools
  * @author     Caitrin Armstrong <caitrin.armstrong@mail.mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
+namespace LORIS\issue_tracker;
 
 /**
  * Provides the PHP code for the menu filter for the issue tracker
  *
- * @category   Loris
+ * @category   Behavioural
  * @package    Main
  * @subpackage Tools
  * @author     Caitrin Armstrong <caitrin.armstrong@mail.mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
+class Issue_Tracker extends \NDB_Menu_Filter_Form
 {
     //aka building-table-using-react
     var $AjaxModule = true;
@@ -38,8 +39,8 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
     function _setupVariables()
     {
 
-        $user =& User::singleton();
-        $db   = Database::singleton();
+        $user =& \User::singleton();
+        $db   = \Database::singleton();
 
         $this->query = " FROM issues as i " .
             "LEFT JOIN candidate c ON (i.candID=c.CandID) " .
@@ -47,8 +48,8 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
             "LEFT JOIN LorisMenu l on (i.module=l.ID) " .
             "LEFT JOIN session s ON (i.sessionID = s.ID) " .
             "LEFT JOIN issues_watching w ON (i.issueID = w.issueID) " .
-            "LEFT JOIN issues_comments ic ON(i.issueID = ic.issueID) ".
-            "WHERE i.status = 'closed'";
+            "LEFT JOIN issues_comments ic ON(i.issueID = ic.issueID)" .
+            "WHERE i.status != 'closed'";
 
         if (!$user->hasPermission('access_all_profiles')) {
             $site_arr     = implode(",", $user->getCenterIDs());
@@ -111,6 +112,7 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
                                'i.centerID',
                                'w.userID',
                                'i.projectID',
+                               'i.status',
                                'i.priority',
                                'keyword',
                                'minDate',
@@ -126,8 +128,8 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
                                'reporter'               => 'i.reporter',
                                'assignee'               => 'i.assignee',
                                'site'                   => 'i.centerID',
-                               'watching'               => 'w.userID',
                                'projectID'              => 'i.projectID',
+                               'status'                 => 'i.status',
                                'priority'               => 'i.priority',
                                'keyword'                => 'ic.issueComment',
                                'minDate'                => 'minDate',
@@ -138,6 +140,7 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
         $this->EqualityFilters = array(
                                   'i.issueID',
                                   'i.centerID',
+                                  'i.status',
                                  );
         $this->searchKeyword   = array(
                                   'ic.issueComment',
@@ -152,25 +155,25 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
      */
     function _setFilterForm()
     {
-        $user  =& User::singleton();
-        $db    = Database::singleton();
-        $sites = array();
+        $user          =& \User::singleton();
+        $db            = \Database::singleton();
+        $list_of_sites = array();
 
         //sites
         if ($user->hasPermission('access_all_profiles')) {
-            $list_of_sites = Utility::getSiteList();
+            $list_of_sites = \Utility::getSiteList();
             if (is_array($list_of_sites)) {
                 $list_of_sites = array('' => 'All') + $list_of_sites;
             }
         } else {// allow only to view own site data
             $site_arr = $user->getData('CenterIDs');
             foreach ($site_arr as $key => $val) {
-                $site[$key] = &Site::singleton($val);
+                $site[$key] =& \Site::singleton($val);
                 if ($site[$key]->isStudySite()) {
-                    $sites[$val] = $site[$key]->getCenterName();
+                    $list_of_sites[$val] = $site[$key]->getCenterName();
                 }
             }
-            $list_of_sites = array('' => 'All User Sites') + $sites;
+            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
         }
 
         //reporters
@@ -198,7 +201,7 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
         //modules
         $modules_expanded = $db->pselect(
             "SELECT DISTINCT Label, ID FROM LorisMenu 
-WHERE Parent IS NOT NULL ORDER BY Label ",
+WHERE Parent IS NOT NULL ORDER BY Label",
             []
         );
         $modules          = $this->reorganizeQueryResults(
@@ -214,6 +217,16 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
                        'urgent'    => 'Urgent',
                        'immediate' => 'Immediate',
                       );
+
+        $statuses = array(
+                     ''             => 'All',
+                     'new'          => 'New',
+                     'acknowledged' => 'Acknowledged',
+                     'feedback'     => 'Feedback',
+                     'assigned'     => 'Assigned',
+                     'resolved'     => 'Resolved',
+                     'closed'       => 'Closed',
+                    );
 
         $unorgCategories = $db -> pselect(
             "SELECT categoryName
@@ -272,6 +285,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
         $this->addSelect('reporter', 'Reporter', $reporters);
         $this->addSelect('assignee', 'Assignee', $assignees);
         $this->addSelect('priority', 'Priority', $priorities);
+        $this->addSelect('status', 'Status', $statuses);
         $this->addBasicDate('minDate', 'Created After', $dateOptions);
         $this->addBasicDate('maxDate', 'Created Before', $dateOptions);
         $this->addCheckbox('watching', 'Watching', array('value' => '1'));
@@ -292,7 +306,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
      */
     function _addValidFilters($prepared_key, $field, $val)
     {
-        $user  =& User::singleton();
+        $user  =& \User::singleton();
         $query = '';
         if ((!empty($val) || $val === '0') && $field != 'order') {
             if (($field != 'w.userID')
@@ -308,7 +322,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
                 } else {
                     $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%')";
                 }
-            } else if ($field = "w.userID" && ($val == 1)) {
+            } else if ($field == "w.userID" && ($val == 1)) {
                 $query .= " AND w.userID = :v_$prepared_key";
             } else if ($field == "w.userID" && ($val == 0)) {
                     $query .= " AND w.userID <> :v_$prepared_key";
@@ -320,7 +334,6 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
         }
         return $query;
     }
-
 
     /**
      * Converts this menu filter to an array of the form
@@ -348,7 +361,6 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
         return $data;
     }
 
-
     /**
      * Utility function to re-organize query results for selects.
      * Key and value are equal.
@@ -370,7 +382,6 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
         return $result;
     }
 
-
     /**
      * Include the column formatter
      *
@@ -378,11 +389,11 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseurl = $factory->settings()->getBaseURL();
         return array_merge(
             parent::getJSDependencies(),
-            array($baseurl . "/issue_tracker/js/columnFormatter.js")
+            array($baseurl . "/issue_tracker/js/issue_tracker_app.js")
         );
     }
 }

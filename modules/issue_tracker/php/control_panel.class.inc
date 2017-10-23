@@ -12,6 +12,7 @@
  * @link     https://github.com/aces/Loris-Trunk
 */
 
+namespace LORIS\issue_tracker;
 /**
  * Imaging browser control panel class
  *
@@ -25,7 +26,7 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-class Issue_Tracker_ControlPanel
+class ControlPanel
 {
     /**
      * Var to store the sessionID.
@@ -67,7 +68,7 @@ class Issue_Tracker_ControlPanel
     */
     function getData()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $issueData['backURL'] = isset($_REQUEST['backURL']) ?
             $factory->settings()->getBaseURL()
                 . "/issue_tracker/" :
@@ -90,7 +91,7 @@ class Issue_Tracker_ControlPanel
     function display()
     {
         $this->tpl_data['issue'] = $this->getData();
-        $smarty = new Smarty_neurodb("issue_tracker");
+        $smarty = new \Smarty_neurodb("issue_tracker");
 
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("issue_tracker_controlpanel.tpl");
