@@ -73,7 +73,7 @@ class Dicoms extends \Loris\API\Candidates\Candidate\Visit
     /**
      * Gets a list of Tars for this visit. Tarname only.
      *
-     * @return an array of strings of Tarnames
+     * @return array of strings of Tarnames
      */
     function getVisitDicoms()
     {
@@ -101,22 +101,40 @@ class Dicoms extends \Loris\API\Candidates\Candidate\Visit
             $params['PVL']     = $this->VisitLabel;
         }
 
-            $rows = $DB->pselect(
-                "SELECT SUBSTRING_INDEX(ArchiveLocation, '/', -1) as Tarname,
-                    GROUP_CONCAT(ts.SeriesDescription SEPARATOR ', ') 
-                        as SeriesDescription,
-                    GROUP_CONCAT(ts.SeriesNumber SEPARATOR ', ') as SeriesNumber,
-                    GROUP_CONCAT(ts.EchoTime SEPARATOR ', ') as EchoTime,
-                    GROUP_CONCAT(ts.SeriesUID SEPARATOR ', ') as SeriesUID 
-                FROM tarchive t 
-                    JOIN tarchive_series ts ON (ts.TarchiveID=t.TarchiveID)
-                WHERE t.PatientName LIKE $ID
-            GROUP BY t.TarchiveID",
-                $params
-            );
-            return $rows;
-    }
+        $query = "SELECT SUBSTRING_INDEX(ArchiveLocation, '/', -1) as Tarname,
+           ts.SeriesDescription as SeriesDescription,
+           ts.SeriesNumber as SeriesNumber,                    
+           ts.EchoTime as EchoTime,                    
+           ts.SeriesUID as SeriesUID      
+           FROM tarchive t                      
+           JOIN tarchive_series ts ON (ts.TarchiveID=t.TarchiveID)                
+           WHERE t.PatientName LIKE $ID            
+           GROUP BY t.TarchiveID, ts.SeriesDescription, ts.SeriesNUmber, 
+           ts.EchoTime, ts.SeriesUID
+           ORDER BY Tarname";
 
+        $rows = $DB->pselect($query, $params);
+
+        $result = array();
+        $entry  = array();
+
+        foreach ($rows as $row) {
+            if (empty($entry)) {
+                $entry['Tarname']    = $row['Tarname'];
+                $entry['SeriesInfo'] = array();
+            } else if ($entry['Tarname'] !== $row['Tarname']) {
+                $result[] = $entry;
+                unset($entry);
+                $entry['Tarname']    = $row['Tarname'];
+                $entry['SeriesInfo'] = array();
+            }
+            unset($row['Tarname']);
+            $entry['SeriesInfo'][] = $row;
+        }
+
+        $result[] = $entry;
+        return $result;
+    }
 }
 
 if (isset($_REQUEST['PrintDicoms'])) {
