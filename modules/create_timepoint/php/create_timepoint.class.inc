@@ -22,6 +22,7 @@ namespace LORIS\create_timepoint;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
+
 class Create_Timepoint extends \NDB_Form
 {
     /**
@@ -218,51 +219,25 @@ class Create_Timepoint extends \NDB_Form
     /**
      * Validates user form selection
      *
-     * @param array $values array of form values
+     * @param array $val array of form values
      *
      * @return array
      */
-    function _validate($values)
+    function _validate(array $val)
     {
-        $config =& \NDB_Config::singleton();
-        $visitLabelSettings = $config->getSetting('visitLabel');
-        foreach (\Utility::toArray($visitLabelSettings) as $visitLabel) {
-            if ($visitLabel['@']['subprojectID'] == $values['subprojectID']) {
-                $visitLabelSettings =$visitLabel;
-                break;
-            }
-        }
-
         $errors = array();
 
-        // This can happen if the user quickly clicks "Create Time Point" before the
-        // page has loaded and the Visit Label dropdown hasn't been selected yet.
-        // The page will create "V1" when this is the case without this check.
-        if (empty($values['visitLabel'])) {
-            $errors['visitLabel']
-                = 'A visit label is required for creating a timepoint.';
-        }
-        // make sure the user entered a valid visit label
-        if ($visitLabelSettings['generation'] == 'user') {
-            if (!preg_match($visitLabelSettings['regex'], $values['visitLabel'])) {
-                $errors['visitLabel'] = 'This visit label does not match the ' .
-                    'required structure. See your project manual for more details.';
-            }
-        }
+        $candid       = $this->identifier;
+        $subprojectID = $val['subprojectID'];
+        $visitLabel   = $val['visitLabel'];
 
-        $candidate =& \Candidate::singleton($this->identifier);
-
-        $timePointArray = $candidate->getListOfVisitLabels();
-
-        //If the visitLabel is already in use then let the user pick another
-        foreach ($timePointArray AS $used_label) {
-            if (strcasecmp($values['visitLabel'], $used_label) == 0) {
-                $errors['visitLabel'] = 'This visit label is not unique.';
-            }
+        try {
+            \TimePoint::isValidVisitLabel($candid, $subprojectID, $visitLabel);
+        } catch ( \LorisException $e) {
+            $errors['visitLabel'] = $e->getMessage();
         }
 
         return $errors;
     }
-
 }
 ?>

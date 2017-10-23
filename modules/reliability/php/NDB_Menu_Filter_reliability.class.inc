@@ -197,7 +197,8 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
     function _setFilterForm()
     {
         // create user object
-        $user =& User::singleton();
+        $user          =& User::singleton();
+        $list_of_sites = array();
 
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')

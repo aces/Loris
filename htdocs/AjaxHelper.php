@@ -59,7 +59,7 @@ if (empty($Module) || empty($File)) {
 // using a relative filename.
 // No need to check for '/' since all scripts are relative to $basePath
 // and there's no way to go up a level.
-if (strpos("..", $File) !== false) {
+if (strpos($File, "..") !== false) {
     error_log("ERROR: Invalid filename");
     header("HTTP/1.1 400 Bad Request");
     exit(4);

@@ -70,6 +70,7 @@ DROP TABLE IF EXISTS `certification_training_quiz_questions`;
 DROP TABLE IF EXISTS `certification_training`;
 DROP TABLE IF EXISTS `certification_history`;
 DROP TABLE IF EXISTS `certification`;
+DROP TABLE IF EXISTS `examiners_psc_rel`;
 DROP TABLE IF EXISTS `examiners`;
 
 DROP TABLE IF EXISTS `participant_status_history`;
@@ -163,8 +164,8 @@ INSERT INTO subproject (title, useEDC, WindowDifference) VALUES
   ('Experimental', false, 'optimal');
 
 CREATE TABLE `project_rel` (
-  `ProjectID` int(2) DEFAULT NULL,
-  `SubprojectID` int(2) DEFAULT NULL,
+  `ProjectID` int(2) NOT NULL,
+  `SubprojectID` int(2) NOT NULL,
   PRIMARY KEY (ProjectID, SubprojectID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1039,7 +1040,6 @@ CREATE TABLE `participant_status` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6) NOT NULL DEFAULT '0',
   `UserID` varchar(255) DEFAULT NULL,
-  `Examiner` varchar(255) DEFAULT NULL,
   `entry_staff` varchar(255) DEFAULT NULL,
   `data_entry_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `participant_status` int(10) unsigned DEFAULT NULL,
@@ -1065,7 +1065,7 @@ CREATE TABLE `participant_accounts` (
   `Test_name` varchar(255) DEFAULT NULL,
   `Email` varchar(255) DEFAULT NULL,
   `Status` enum('Created','Sent','In Progress','Complete') DEFAULT NULL,
-  `OneTimePassword` varchar(8) DEFAULT NULL,
+  `OneTimePassword` varchar(16) DEFAULT NULL,
   `CommentID` varchar(255) DEFAULT NULL,
   `UserEaseRating` varchar(1) DEFAULT NULL,
   `UserComments` text,
@@ -1120,14 +1120,23 @@ CREATE TABLE `family` (
 CREATE TABLE `examiners` (
   `examinerID` int(10) unsigned NOT NULL auto_increment,
   `full_name` varchar(255) default NULL,
-  `centerID` tinyint(2) unsigned default NULL,
-  `radiologist` tinyint(1) default NULL,
+  `radiologist` tinyint(1) default 0 NOT NULL,
+  `userID` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY  (`examinerID`),
+  UNIQUE KEY `full_name` (`full_name`),
+  KEY `FK_examiners_2` (`userID`),
+  CONSTRAINT `FK_examiners_2` FOREIGN KEY (`userID`) REFERENCES `users` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `examiners_psc_rel` (
+  `examinerID` int(10) unsigned NOT NULL,
+  `centerID` tinyint(2) unsigned NOT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `pending_approval` enum('Y','N') NOT NULL DEFAULT 'N',
-  PRIMARY KEY  (`examinerID`),
-  UNIQUE KEY `full_name` (`full_name`,`centerID`),
-  KEY `FK_examiners_1` (`centerID`),
-  CONSTRAINT `FK_examiners_1` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`)
+  PRIMARY KEY  (`examinerID`,`centerID`),
+  KEY `FK_examiners_psc_rel_2` (`centerID`),
+  CONSTRAINT `FK_examiners_psc_rel_1` FOREIGN KEY (`examinerID`) REFERENCES `examiners` (`examinerID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_examiners_psc_rel_2` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `certification` (
@@ -1139,7 +1148,8 @@ CREATE TABLE `certification` (
   `pass` enum('not_certified','in_training','certified') DEFAULT NULL,
   `comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`certID`,`testID`),
-  CONSTRAINT `FK_certifcation` FOREIGN KEY (`testID`) REFERENCES `test_names` (`ID`)
+  CONSTRAINT `FK_certifcation_1` FOREIGN KEY (`testID`) REFERENCES `test_names` (`ID`),
+  CONSTRAINT `FK_certifcation_2` FOREIGN KEY (`examinerID`) REFERENCES `examiners` (`examinerID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `certification_history` (
@@ -1296,8 +1306,7 @@ INSERT INTO StatisticsTabs (ModuleName, SubModuleName, Description, OrderNo) VAL
   ('statistics', 'stats_general', 'General Description', 1),
   ('statistics', 'stats_demographic', 'Demographic Statistics', 2),
   ('statistics', 'stats_behavioural', 'Behavioural Statistics', 3),
-  ('statistics', 'stats_reliability', 'Reliability Statistics', 4),
-  ('statistics', 'stats_MRI', 'Imaging Statistics', 5);
+  ('statistics', 'stats_MRI', 'Imaging Statistics', 4);
 
 -- ********************************
 -- server_processes tables
@@ -1519,7 +1528,7 @@ CREATE TABLE `parameter_file` (
   `ParameterFileID` int(10) unsigned NOT NULL auto_increment,
   `FileID` int(10) unsigned NOT NULL default '0',
   `ParameterTypeID` int(10) unsigned NOT NULL default '0',
-  `Value` text,
+  `Value` longtext,
   `InsertTime` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`ParameterFileID`),
   UNIQUE KEY `file_type_uniq` (`FileID`,`ParameterTypeID`),

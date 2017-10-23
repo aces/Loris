@@ -677,6 +677,7 @@ class NDB_Page
                   $baseurl . '/js/helpHandler.js',
                   $baseurl . '/js/modernizr/modernizr.min.js',
                   // Only load minified file on production, not sandboxes
+                  $baseurl . '/js/polyfills.js',
                   $baseurl . '/js/react/react-with-addons' . $min . '.js',
                   $baseurl . '/js/react/react-dom' . $min . '.js',
                   $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',

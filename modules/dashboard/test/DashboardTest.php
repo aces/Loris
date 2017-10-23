@@ -90,7 +90,7 @@ class DashboardTest extends LorisIntegrationTest
              'CandID'       => '999888',
              'CenterID'     => '55',
              'UserID'       => '1',
-             'MRIQCStatus'  => 'Pass',
+             'MRIQCStatus'  => '',
              'SubprojectID' => '6666',
              'Active'       => 'Y',
             )

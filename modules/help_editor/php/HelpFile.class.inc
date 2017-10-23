@@ -1,25 +1,23 @@
 <?php
 /**
- * Code for the form for the final radiological review module.
- * See NDB_Menu_Filter_final_radiological_review for description
- * of how module works.
+ * Base class for files containing help text information
+ * as well as DB wrappers for CRUD operations
  *
- * PHP Version 5
+ * PHP Version 7
  *
- * @category Final_Radiological_Review
+ * @category Help_Editor
  * @package  Main
  * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 /**
- * Code for the form for the final radiological review module.
- * See NDB_Menu_Filter_final_radiological_review for description
- * of how module works.
+ * Base class for files containing help text information
+ * as well as DB wrappers for CRUD operations
  *
- * PHP Version 5
+ * PHP Version 7
  *
- * @category Final_Radiological_Review
+ * @category Help_Editor
  * @package  Main
  * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  * @license  Loris license

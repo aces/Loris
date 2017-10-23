@@ -286,16 +286,19 @@ function getParticipantStatusFields()
     $statusOptions = NDB_Form_candidate_parameters::getParticipantStatusOptions();
     $reasonOptions = array();
 
-    $required    = $db->pselect(
+    $req      = $db->pselect(
         'SELECT ID from participant_status_options where Required=1',
         array()
     );
+    $required = array();
+    foreach ($req as $k=>$row) {
+        $required[$k] =$row['ID'];
+    }
     $parentIDs   = $db->pselect(
         'SELECT distinct(parentID) from participant_status_options',
         array()
     );
     $parentIDMap = array();
-
     foreach ($parentIDs as $ID) {
         $reasonOptions = array();
         foreach ($ID as $parentID) {
