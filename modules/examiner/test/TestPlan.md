@@ -9,3 +9,6 @@
    [Automation Testing]
 5. Test Add a new examiner.
    [Automation Testing]
+6. Check edit Examiner link, input Certification Status,Certification Date and Date Comments
+   then click save button.
+   [Manual Testing]
