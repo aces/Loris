@@ -22,8 +22,8 @@ class CommentList extends React.Component {
       "Show Comment History" :
       "Hide Comment History");
 
-    const changes = this.props.commentHistory.reduce(function (carry, item) {
-      let label = item.dateAdded.concat(" ", item.addedBy, " :" );
+    const changes = this.props.commentHistory.reduce(function(carry, item) {
+      let label = item.dateAdded.concat(" - ", item.addedBy);
       if (!carry[label]) {
         carry[label] = {};
       }
@@ -31,23 +31,24 @@ class CommentList extends React.Component {
       return carry;
     }, {});
 
-    const history = Object.keys(changes).sort().reverse().map(function (key, i) {
-      const textItems = Object.keys(changes[key]).map(function (index, j) {
+    const history = Object.keys(changes).sort().reverse().map(function(key, i) {
+      const textItems = Object.keys(changes[key]).map(function(index, j) {
         return (
-          <div key={j}>
-            <span>
-              {'Set '.concat(index, ' to ', changes[key][index])}
-            </span>
-            <br/>
+          <div key={j} className="row">
+            <div className="col-md-2">
+              <div className="col-md-8"><b>{index}</b></div>
+              <div className="col-md-4"> to </div>
+            </div>
+            <div className="col-md-10"><i>{changes[key][index]}</i></div>
           </div>
-        )
+        );
       }, this);
-        
+
       return (
         <div key={i}>
           <hr/>
           <div className="history-item-label">
-            {key}
+            <span>{key}</span> updated :
           </div>
           <div className="history-item-changes">
             {textItems}

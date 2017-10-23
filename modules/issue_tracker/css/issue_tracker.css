@@ -73,7 +73,7 @@ h3 {
   margin: 25px 0;
 }
 
-.history-item-label {
+.history-item-label > span {
   font-weight: bold;
 }
 
