@@ -219,7 +219,7 @@ class ExaminerTest extends LorisIntegrationTest
             $this->assertContains($key, $text);
         }
     }
-   
+
 
 }
 ?>
