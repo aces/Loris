@@ -8,6 +8,10 @@
  * @return {*} a formated table cell for a given column
  */
 function formatColumn(column, cell, rowData) {
+  if (column === 'Visits') {
+    return null;
+  }
+
   if (column === 'PSCID') {
     var url = loris.BaseURL + "/" + rowData[1] + "/";
     return <td><a href ={url}>{cell}</a></td>;
@@ -21,7 +25,7 @@ function formatColumn(column, cell, rowData) {
       default: return <td>None</td>;
     }
   }
-  if (column === 'Scan Done' && cell === 'Y') {
+  if (column === 'Scan Done' && cell === 'Yes') {
     return (
         <td className="scanDoneLink">
             <a href="#"
