@@ -2,7 +2,7 @@
 /**
  * This file contains code for editing context help section
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -14,7 +14,7 @@
 /**
  * This file contains code for editing context help section
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -108,9 +108,11 @@ class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
     {
         $DB = Database::singleton();
         //Get the default values
-        $help = $DB->pselect("SELECT helpID, topic from help", array());
-        foreach ($help as $row) {
-            $help_section[$row['helpID']] = $row['topic'];
+        // $result will contain an array of size n by 2.
+        // this must be transposed to create a dictionary of IDs to Topics
+        $result = $DB->pselect("SELECT helpID, topic from help", array());
+        foreach ($result as $row) {
+            $helpTopics[$row['helpID']] = $row['topic'];
         }
         $x = 0;
 
@@ -118,38 +120,41 @@ class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
             $i = 1;
             foreach ($item as $key => $val) {
-                // Check if key starts with $needle ("Topic")
-                $needle = "Topic";
-                if (substr($key, 0, strlen($needle)) === $needle) {
-                    $this->tpl_data['items'][$x][$i]['helpID']   = array_search(
-                        $val,
-                        $help_section
-                    );
-                    $this->tpl_data['items'][$x][$i]['parentID'] = $item['Parent_Topic']; // @codingStandardsIgnoreLine
-                    $item['Parent_Topic'] = $help_section[$item['Parent_Topic']];
+                // Set front-end values for child topics
+                $helpID = array_search($val, $helpTopics);
+                if ($key === 'Topic') {
+                    // $helpID will be a string representing a number or false
+                    // so this logic statement should not provide unexpected results
+                    // should $helpID = "0", for example
+                    if (!$helpID) {
+                        error_log("Could not find helpID for value $val");
+                    } else {
+                        $this->tpl_data['items'][$x][$i]['helpID'] = $helpID;
+                    }
+                    // set frontend parentID to item's parent topic, if it exists
+                    $this->tpl_data['items'][$x][$i]['parentID']
+                        = $item['Parent_Topic'];
+                    // set item's parent topic to backend parent, if it exists
+                    if (array_key_exists($item['Parent_Topic'], $helpTopics)) {
+                        $item['Parent_Topic'] = $helpTopics[$item['Parent_Topic']];
+                    }
                     // this is to make sure sorting is done
                     // on the topic and not the ID
                 }
-                if ($key == "Parent_Topic") {
-                    $this->tpl_data['items'][$x][$i]['parentID'] = "-1";
-                    $this->tpl_data['items'][$x][$i]['helpID']   = $val;
-                    if ($val == "-1") {
-                        $val = "-";
-                    } else {
-                        $val = $help_section[$val];
-                    }
+                // Set front-end values for parent topics
+                if ($key === 'Parent_Topic') {
+                    $this->tpl_data['items'][$x][$i]['parentID'] = '-1';
+                    $this->tpl_data['items'][$x][$i]['helpID']   = $helpID;
                 }
                 $this->tpl_data['items'][$x][$i]['name']  = $key;
                 $this->tpl_data['items'][$x][$i]['value'] = utf8_encode($val);
 
                 $i++;
             }
-
             $x++;
         }
         setCookie("LastUrl", "?test_name=help_editor");
         return true;
-
     }
 
     /**
