@@ -31,7 +31,7 @@ class CommentList extends React.Component {
       return carry;
     }, {});
 
-    const history = Object.keys(changes).sort().map(function (key, i) {
+    const history = Object.keys(changes).sort().reverse().map(function (key, i) {
       const textItems = Object.keys(changes[key]).map(function (index, j) {
         return (
           <div key={j}>
