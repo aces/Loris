@@ -269,10 +269,6 @@ function getFamilyInfoFields()
  */
 function getParticipantStatusFields()
 {
-    include_once __DIR__
-        . "/../../candidate_parameters/php/"
-        . "NDB_Form_candidate_parameters.class.inc";
-
     $candID = $_GET['candID'];
 
     $db =& Database::singleton();
@@ -283,7 +279,7 @@ function getParticipantStatusFields()
         array('candid' => $candID)
     );
 
-    $statusOptions = NDB_Form_candidate_parameters::getParticipantStatusOptions();
+    $statusOptions = Candidate::getParticipantStatusOptions();
     $reasonOptions = array();
 
     $req      = $db->pselect(
@@ -292,7 +288,7 @@ function getParticipantStatusFields()
     );
     $required = array();
     foreach ($req as $k=>$row) {
-        $required[$k] =$row['ID'];
+        $required[$k] = $row['ID'];
     }
     $parentIDs   = $db->pselect(
         'SELECT distinct(parentID) from participant_status_options',
