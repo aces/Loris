@@ -1,11 +1,3 @@
-{literal}
-<script type="text/javascript">
-    $(document).ready(function(){
-        $("#cand").DynamicTable({ "freezeColumn" : "pscid" });
-    });
-</script>
-{/literal}
-
 <div class="row">
 <div class="col-sm-9">
 <div class="panel panel-primary">
@@ -183,46 +175,6 @@
     </div>
 </div>
 </div>
-{if not $access_all_profiles}
-<div class="col-sm-3">
-    <div class="panel panel-primary">
-    <div class="panel-heading" onclick="hideFilter(this)">
-        Open Profile
-        <span class="glyphicon arrow glyphicon-chevron-up pull-right"></span>
-    </div>
-    <div class="panel-body" id="panel-body">
-    <form class="form-horizontal" id="accessProfileForm" name="accessProfileForm" method="get" action="#">
-        <input type="hidden" name="test_name" value="timepoint_list">
-        <div class="form-group col-sm-12">
-            <label class="col-sm-12 col-md-4">
-                {$form.candID.label}
-            </label>
-            <div class="col-sm-12 col-md-8">
-                {$form.candID.html}
-            </div>
-        </div>
-        <div class="form-group col-sm-12">
-            <label class="col-sm-12 col-md-4">
-                 {$form.PSCID.label}
-            </label>
-            <div class="col-sm-12 col-md-8">
-                 {$form.PSCID.html}
-            </div>
-        </div>
-        <input type="submit" value="Open Profile" class="btn btn-sm btn-primary col-md-5 col-sm-12 col-md-offset-5">
-    </form>
-   </div>
-</div> <!--closing col-sm-3 tag -->
+<div id="openprofile"></div>
 </div>
-{/if}
-</div>
-<div id="datatable" />
-<script>
-var table = RDynamicDataTable({
-    "DataURL" : "{$baseurl}/candidate_list/?format=json",
-    "getFormattedCell" : formatColumn,
-    "freezeColumn" : "PSCID"
-});
-
-ReactDOM.render(table, document.getElementById("datatable"));
-</script>
+<div id="datatable"></div>
