@@ -46,7 +46,7 @@ function save() {
             $('.description').attr('contenteditable', false);
             swal({
               title: "Are you sure?",
-              text: "Are you sure want to edit this field?",
+              text: "Are you sure you want to edit this field?",
               type: "warning",
               showCancelButton: true,
               confirmButtonText: 'Yes, I am sure!',
