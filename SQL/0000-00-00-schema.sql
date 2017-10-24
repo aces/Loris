@@ -192,6 +192,16 @@ CREATE TABLE `psc` (
 
 INSERT INTO `psc` (Name, Alias, Study_site) VALUES ('Data Coordinating Center','DCC', 'Y');
 
+CREATE TABLE `language` (
+  `language_id` integer unsigned NOT NULL AUTO_INCREMENT,
+  `language_code` varchar(255) NOT NULL,
+  `language_label` varchar(255) NOT NULL,
+  PRIMARY KEY (`language_id`),
+  UNIQUE KEY (`language_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO language (language_code, language_label) VALUES ('en-CA', 'English');
+
 CREATE TABLE `users` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `UserID` varchar(255) NOT NULL default '',
@@ -219,9 +229,11 @@ CREATE TABLE `users` (
   `Password_expiry` date NOT NULL default '1990-04-01',
   `Pending_approval` enum('Y','N') default 'Y',
   `Doc_Repo_Notifications` enum('Y','N') default 'N',
+  `language_preference` integer unsigned default NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Email` (`Email`),
-  UNIQUE KEY `UserID` (`UserID`)
+  UNIQUE KEY `UserID` (`UserID`),
+  CONSTRAINT `FK_users_2` FOREIGN KEY (`language_preference`) REFERENCES `language` (`language_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
