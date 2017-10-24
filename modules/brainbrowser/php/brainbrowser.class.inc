@@ -12,7 +12,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-
+namespace LORIS\brainbrowser;
 /**
  * Stub class for BrainBrowser module to load
  *
@@ -22,7 +22,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Form_Brainbrowser extends NDB_Form
+class Brainbrowser extends \NDB_Form
 {
     /**
      * Stub method so that LORIS doesn't throw an exception
@@ -52,7 +52,7 @@ class NDB_Form_Brainbrowser extends NDB_Form
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory =& \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
 
         $deps = parent::getJSDependencies();
@@ -79,7 +79,7 @@ class NDB_Form_Brainbrowser extends NDB_Form
      */
     function getCSSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory =& \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getCSSDependencies();
         return array_merge(
