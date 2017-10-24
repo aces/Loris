@@ -11,7 +11,7 @@
 <config>
     <!-- set to 1 if development environment -->
     <dev>
-        <sandbox>1</sandbox>
+        <sandbox>0</sandbox>
         <selenium_url>http://selenium:4444/wd/hub</selenium_url>
     </dev>
 

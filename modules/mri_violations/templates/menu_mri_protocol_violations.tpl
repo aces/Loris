@@ -85,7 +85,7 @@
                 <span class="glyphicon glyphicon-plus"></span> Show mri-protocol Table
             </div>
 
-            <table class="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
+            <table id="mri-protocol" class="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
                 <thead>
                 <tr class="info">
                     {assign var=count value=0}

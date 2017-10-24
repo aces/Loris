@@ -280,7 +280,7 @@ The candidate will be created at the site of the user using the API's site.
 A response code of 201 Created will be returned on success, 409 Conflict if
 the PSCID already exists, and a 400 Bad Request if any data provided is invalid
 (PSCID format, date format, gender something other than Male|Female, invalid project
-name, etc). A successful POST request will return a CandidateObject for the newly
+name, etc). A successful POST request will return the CandID for the newly
 created candidate.
 
 PUT / PATCH methods are not supported on /candidate in this

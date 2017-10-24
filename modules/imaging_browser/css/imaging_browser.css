@@ -33,8 +33,8 @@ dl {
     margin-top: 0px;
     margin-bottom: 8px;
     padding-top: 5px;
-    
 }
+
 .img-navigation-array {
     border: 0;
     width: 12px;
@@ -70,11 +70,15 @@ h3 {
     display: none;
 }
 .panel-title {
-    display: inline;
     margin-top: 0;
     margin-bottom: 0;
     font-size: 16px;
-    color: inherit
+    color: inherit;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    max-width: 100%;
 }
 .views {
     margin-right: 10px;

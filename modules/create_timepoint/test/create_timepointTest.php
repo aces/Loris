@@ -95,7 +95,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             'Skipping tests until create timepoint works well'
         );
         $this->_createTimepoint('900000', 'Experimental', 'V9');
-
         $this->safeClick(WebDriverBy::LinkText("Click here to continue."));
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -162,16 +161,13 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepointErrorEmptySubproject()
     {
-        $this->markTestSkipped(
-            'Skipping tests until create timepoint works well'
-        );
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=900000&identifier=900000"
         );
         $this->webDriver->findElement(WebDriverBy::Name("fire_away"))->click();
         $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains(
-            "A visit label is required for creating a timepoint.",
+        $this->assertNotContains(
+            "New time point successfully registered.",
             $bodyText
         );
 

@@ -3,7 +3,7 @@
         <form method="post" name="edit_examiner" id="edit_examiner">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    Edit Certification for {$examiner_name} at site {$site_name}
+                    Edit Certification for {$examiner_name}
                 </div>
                 <div class="panel-body" id="panel-body">
                     {foreach from=$form.errors item=error}

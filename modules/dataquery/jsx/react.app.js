@@ -162,7 +162,7 @@ var DataQueryApp = React.createClass({
         }
         return savedFilter;
     },
-    saveCurrentQuery: function(name, shared) {
+    saveCurrentQuery: function(name, shared, override) {
         // Used to save the current query
 
         var that = this,
@@ -174,14 +174,17 @@ var DataQueryApp = React.createClass({
                 Filters: filter,
                 QueryName: name,
                 SharedQuery: shared,
+                OverwriteQuery: override
             }, function(data) {
                 // Once saved, add the query to the list of saved queries
                 var id = JSON.parse(data).id,
                     queryIDs = that.state.queryIDs;
-                if (shared === true) {
-                    queryIDs.Shared.push(id);
-                } else {
-                    queryIDs.User.push(id);
+                if (!override) {
+                    if (shared === true) {
+                        queryIDs.Shared.push(id);
+                    } else {
+                        queryIDs.User.push(id);
+                    }
                 }
                 $.get(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=" + id, function(value) {
                         var queries = that.state.savedQueries;
@@ -191,11 +194,31 @@ var DataQueryApp = React.createClass({
                             'savedQueries' : queries,
                             'queryIDs' : queryIDs,
                             alertLoaded: false,
-                            alertSaved: true
+                            alertSaved: true,
+                            alertConflict: {
+                                show: false
+                            }
                         });
                     });
+            }).fail(function(data) {
+                if (data.status === 409) {
+                    that.setState({
+                        alertConflict: {
+                            show: true,
+                            QueryName: name,
+                            SharedQuery: shared
+                        }
+                    })
+                }
             });
 
+    },
+    overrideQuery: function () {
+        this.saveCurrentQuery(
+            this.state.alertConflict.QueryName,
+            this.state.alertConflict.SharedQuery,
+            true
+        )
     },
     getInitialState: function() {
         // Initialize the base state of the dataquery app
@@ -211,6 +234,9 @@ var DataQueryApp = React.createClass({
             queriesLoaded: false,
             alertLoaded: false,
             alertSaved: false,
+            alertConflict: {
+                show: false
+            },
             ActiveTab :  'Info',
             rowData: {},
             filter: {
@@ -260,9 +286,11 @@ var DataQueryApp = React.createClass({
 // TODO:    Build the sessions in the new format
         switch(rule.operator) {
             case "equal":
+            case "isNull":
                 script = "queryEqual.php";
                 break;
             case "notEqual":
+            case "isNotNull":
                 script = "queryNotEqual.php";
                 break;
             case "lessThanEqual":
@@ -440,6 +468,26 @@ var DataQueryApp = React.createClass({
                 loading: false
             }
         });
+        for (var i = 0; i < fieldsList.length; i++) {
+            var that = this;
+            $.ajax({
+                url: loris.BaseURL + "/dataquery/ajax/datadictionary.php",
+                success: function(data) {
+                    if(data[0].value.IsFile) {
+                        that.setState(function(state){
+                            var key = data[0].key[0] + "," + data[0].key[1]
+                            var downloadable = state.downloadableFields;
+                            downloadable[key] = true;
+                            return {
+                                downloadableFields: downloadable
+                            };
+                        })
+                    }
+                },
+                data: { key: fieldsList[i] },
+                dataType: 'json'
+            });
+        }
     },
     fieldVisitSelect: function(action, visit, field) {
         // Used to select visits for a given field
@@ -776,7 +824,10 @@ var DataQueryApp = React.createClass({
         // Used to dismiss alerts
         this.setState({
             alertLoaded: false,
-            alertSaved: false
+            alertSaved: false,
+            alertConflict: {
+                show: false
+            }
         });
     },
     resetQuery: function(){
@@ -897,6 +948,23 @@ var DataQueryApp = React.createClass({
                 </div>
             )
         }
+
+        // Display Conflict Query alert
+        if(this.state.alertConflict.show) {
+            alert = (
+                <div className="alert alert-warning" role="alert">
+                    <button type="button" className="close" aria-label="Close" onClick={this.dismissAlert}>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <button type="button" className="close" aria-label="Close" onClick={this.dismissAlert}>
+                        <span aria-hidden="true">Override</span>
+                    </button>
+                    <strong>Error</strong> Query with the same name already exists. 
+                    <a href="#" class="alert-link" onClick={this.overrideQuery}>Click here to override</a>
+                </div>
+            )
+        }
+
         var widthClass = "col-md-12";
         var sideBar = <div />
 

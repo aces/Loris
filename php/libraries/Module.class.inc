@@ -120,7 +120,6 @@ class Module
     public function loadPage($page)
     {
         $className = "\LORIS\\" . $this->name . "\\$page";
-        error_log("Class name: $className");
 
         $cls = new $className();
         // Smarty needs the Module name as a parameter to autoload the right

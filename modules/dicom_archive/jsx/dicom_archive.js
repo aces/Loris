@@ -27,6 +27,7 @@ class DicomArchive extends React.Component {
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
+    this.resetFilters = this.resetFilters.bind(this);
   }
 
   componentDidMount() {
@@ -59,6 +60,10 @@ class DicomArchive extends React.Component {
     this.setState({filter});
   }
 
+  resetFilters() {
+    this.refs.dicomFilter.clearFilter();
+  }
+
   render() {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
@@ -72,78 +77,22 @@ class DicomArchive extends React.Component {
       );
     }
 
-    // Defining element names here ensures that `name` and `ref`
-    // properties of the element are always kept in sync
-    const patientID = "patientID";
-    const patientName = "patientName";
-    const site = "site";
-    const gender = "gender";
-    const dateOfBirth = "dateOfBirth";
-    const acquisition = "acquisition";
-    const archiveLocation = "archiveLocation";
-    const seriesUID = "seriesuid";
-
-    const genderList = {
-      M: 'Male',
-      F: 'Female',
-      O: 'N/A'
-    };
-
     return (
       <div>
         <FilterForm
           Module="dicom_archive"
           name="dicom_filter"
           id="dicom_filter"
+          ref="dicomFilter"
           columns={2}
+          formElements={this.state.Data.form}
           onUpdate={this.updateFilter}
           filter={this.state.filter}
         >
-          <TextboxElement
-            name={patientID}
-            label="Patient ID"
-            ref={patientID}
-          />
-          <TextboxElement
-            name={patientName}
-            label="Patient Name"
-            ref={patientName}
-          />
-          <SelectElement
-            name={site}
-            label="Sites"
-            options={this.state.Data.Sites}
-            ref={site}
-          />
-          <SelectElement
-            name={gender}
-            label="Gender"
-            options={genderList}
-            ref={gender}
-          />
-          <DateElement
-            name={dateOfBirth}
-            label="Date of Birth"
-            ref={dateOfBirth}
-          />
-          <DateElement
-            name={acquisition}
-            label="Acquisition Date"
-            ref={acquisition}
-          />
-          <TextboxElement
-            name={archiveLocation}
-            label="Archive Location"
-            ref={archiveLocation}
-          />
-          <TextboxElement
-            name={seriesUID}
-            label="Series UID"
-            ref={seriesUID}
-          />
           <ButtonElement
             label="Clear Filters"
             type="reset"
+            onUserInput={this.resetFilters}
           />
         </FilterForm>
         <StaticDataTable

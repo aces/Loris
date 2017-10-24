@@ -28,6 +28,19 @@ class NDB_Menu_Statistics_Site extends NDB_Menu
     var $issues         = array();
     var $query_criteria = '';
     var $query_vars     = array();
+
+    /**
+     * Checking user's permission
+     *
+     * @return bool
+     */
+    function _hasAccess()
+    {
+        $user     =& User::singleton();
+        $centerID = htmlspecialchars($_REQUEST['CenterID']);
+        return $user->hasCenterPermission('data_entry', $centerID);
+    }
+
     /**
      * CheckCriteria function
      *

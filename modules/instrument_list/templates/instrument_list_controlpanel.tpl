@@ -5,7 +5,7 @@
                         <img src="{$baseurl}/images/open.gif" alt="" border="0" width="12" height="12" />&nbsp;<a
 				href="{$baseurl}/next_stage/?candID={$candID}&sessionID={$sessionID}&identifier={$sessionID}">Start {$next_stage} Stage</a>
 {else}
-                        <img src="{$baseurl}/images/locked.gif" alt="" border="0" width="12" height="12" />&nbsp;Start Next Stage
+                        <small>(No actions)</small>
 {/if}
 	    	</li>
 
