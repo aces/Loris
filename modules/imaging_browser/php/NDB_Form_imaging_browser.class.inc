@@ -399,12 +399,13 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                     $updateSet['QCFirstChangeTime'] = time();
                 }
 
-                $QCExists = $this->DB->pselectOne(
+                $QCExists  = $this->DB->pselectOne(
                     "SELECT 'x' 
                     FROM files_qcstatus 
                     WHERE FileID=:FID",
                     $params
                 );
+                $updateSet = Utility::nullifyEmpty($updateSet, 'QCStatus');
                 if (!empty($QCExists)) {
                     $updateWhere['FileID'] = $curFileID;
                     $success = $this->DB->update(
@@ -494,6 +495,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                                       'Selected'         => $curSelected,
                                       'QCLastChangeTime' => time(),
                                      );
+                        $updateSet = Utility::nullifyEmpty($updateSet, 'Selected');
                         $success   = $this->DB->update(
                             'files_qcstatus',
                             $updateSet,
@@ -505,6 +507,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                                       'Selected'          => $curSelected,
                                       'QCFirstChangeTime' => time(),
                                      );
+                        $insertSet = Utility::nullifyEmpty($insertSet, 'Selected');
                         $success   = $this->DB->insert('files_qcstatus', $insertSet);
                     }
                 }
@@ -519,10 +522,8 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     function _updateVisitStatus()
     {
         if (!empty($_POST['visit_status'])) {
-            $save_visit_status
-                = $_POST['visit_status'] == 'Unrated' ? '' : $_POST['visit_status'];
-            $params            = array('SID' => $this->sessionID);
-            $old_visit_status  = $this->DB->pselectOne(
+            $params           = array('SID' => $this->sessionID);
+            $old_visit_status = $this->DB->pselectOne(
                 "SELECT MRIQCStatus 
                 FROM session 
                 WHERE ID=:SID",
@@ -557,13 +558,14 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 $updateSet['MRIQCFirstChangeTime']
                     = $updateSet['MRIQCLastChangeTime'];
             }
-            $success = $this->DB->update(
+            $updateSet = Utility::nullifyEmpty($updateSet, 'MRIQCStatus');
+            $success   = $this->DB->update(
                 'session',
                 $updateSet,
                 array('ID' => $this->sessionID)
             );
             // spool a message to the mri qc status rss channel
-            if (($save_visit_status != $old_visit_status)
+            if (($_POST['visit_status'] != $old_visit_status)
                 || ($old_pending_status != $_POST['visit_pending'])
                 || ($old_caveat_status != $_POST['visit_caveat'])
             ) {

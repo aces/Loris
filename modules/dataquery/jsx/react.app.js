@@ -468,6 +468,26 @@ var DataQueryApp = React.createClass({
                 loading: false
             }
         });
+        for (var i = 0; i < fieldsList.length; i++) {
+            var that = this;
+            $.ajax({
+                url: loris.BaseURL + "/dataquery/ajax/datadictionary.php",
+                success: function(data) {
+                    if(data[0].value.IsFile) {
+                        that.setState(function(state){
+                            var key = data[0].key[0] + "," + data[0].key[1]
+                            var downloadable = state.downloadableFields;
+                            downloadable[key] = true;
+                            return {
+                                downloadableFields: downloadable
+                            };
+                        })
+                    }
+                },
+                data: { key: fieldsList[i] },
+                dataType: 'json'
+            });
+        }
     },
     fieldVisitSelect: function(action, visit, field) {
         // Used to select visits for a given field

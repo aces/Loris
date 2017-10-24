@@ -37,7 +37,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
         reactElement = (
           <td>
             <a href="#" onClick={loris.loadFilteredMenuClickHandler(
-              'genomic_browser&submenu=viewGenomicFile',
+              'genomic_browser/?submenu=viewGenomicFile',
               {candID: rowData[1]}
             )}>{cell}</a>
           </td>
@@ -57,7 +57,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
             <span
               style={{cursor: 'pointer'}}
               onClick={loris.loadFilteredMenuClickHandler(
-                'genomic_browser&submenu=' + column.toLowerCase() + '_browser', {DCCID: rowData[1]}
+                'genomic_browser/?submenu=' + column.toLowerCase() + '_browser', {DCCID: rowData[1]}
               )}
             >
               {cell}

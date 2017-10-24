@@ -271,7 +271,8 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $site_arr = $user->getData('CenterIDs');
+            $list_of_sites = array();
+            $site_arr      = $user->getData('CenterIDs');
             foreach ($site_arr as $key => $val) {
                 $site[$key] = &Site::singleton($val);
                 if ($site[$key]->isStudySite()) {

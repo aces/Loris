@@ -144,7 +144,8 @@ class LorisForm
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
-        if (isset($attribs['multiple']) || in_array('multiple', $attribs)) {
+
+        if (isset($attribs['multiple']) || in_array('multiple', $attribs, true)) {
             $el['multiple'] = 'multiple';
         }
         return $el;
@@ -406,7 +407,7 @@ class LorisForm
     public function addElement(
         $type,
         $name,
-        $label,
+        $label='',
         $options=array(),
         $attribs=array()
     ) {
@@ -689,7 +690,9 @@ class LorisForm
             }
         }
         // Always sanitize user-controlled input
-        $newValue = htmlspecialchars($newValue);
+        if (!is_array($newValue)) {
+            $newValue = htmlspecialchars($newValue);
+        }
 
         return $newValue;
     }
@@ -1919,8 +1922,13 @@ class LorisForm
      *
      * @return array of the form supported by $this->form
      */
-    function createElement($type, $elname, $label, $options, $attribs=array())
-    {
+    function createElement(
+        $type,
+        $elname,
+        $label='',
+        $options=array(),
+        $attribs=array()
+    ) {
         switch($type) {
         case 'text':
             return $this->createText($elname, $label, $options, $attribs);

@@ -84,7 +84,7 @@ class NDB_Form_Statistics extends NDB_Form
     ) {
 
         $tpl_data = array();
-        $tpl_data['test_name']  = $_REQUEST['test_name'];
+        $tpl_data['test_name']  = htmlspecialchars($_REQUEST['test_name']);
         $tpl_data['Subsection'] = $Subsection;
         $tpl_data['Visits']     = $visits;
         $smarty = new Smarty_neurodb("statistics");
@@ -185,17 +185,16 @@ class NDB_Form_Statistics extends NDB_Form
             $projects[$key] = $value;
         }
         $currentProject = null;
-        if (isset($_REQUEST['DemographicProject'])
-            && $_REQUEST['DemographicProject'] != ''
+        if ($_REQUEST['DemographicProject'] ?? ''
         ) {
-            $currentProject = $_REQUEST['DemographicProject'];
+            $currentProject = htmlspecialchars($_REQUEST['DemographicProject']);
             $this->tpl_data['CurrentProject']
                 = array(
                    'ID'   => $currentProject,
                    'Name' => $projects[$currentProject],
                   );
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
-            $this->params['pid'] =$_REQUEST['DemographicProject'];
+            $this->params['pid'] = htmlspecialchars($_REQUEST['DemographicProject']);
         } else {
             $Param_Project ='';
         }
@@ -214,11 +213,10 @@ class NDB_Form_Statistics extends NDB_Form
         }
 
         //SITES
-        if (isset($_REQUEST['DemographicSite'])
-            && $_REQUEST['DemographicSite'] != ''
+        if ($_REQUEST['DemographicSite'] ?? ''
         ) {
             $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
-            $this->params['sid'] =$_REQUEST['DemographicSite'];
+            $this->params['sid'] = htmlspecialchars($_REQUEST['DemographicSite']);
         } else {
             $Param_Site = '';
         }
@@ -397,8 +395,7 @@ class NDB_Form_Statistics extends NDB_Form
         );
         $instrument_list = Utility::getAllInstruments();
         $this->tpl_data['all_instruments'] = $instrument_list;
-        if (isset($_REQUEST['DemographicInstrument'])
-            && $_REQUEST['DemographicInstrument'] != ''
+        if ($_REQUEST['DemographicInstrument'] ?? ''
         ) {
             $Subcategories = array(
                               'Complete',
@@ -442,7 +439,6 @@ class NDB_Form_Statistics extends NDB_Form
                 "Breakdown of Registered Candidates",
                 "Data Entry Completion Status for ".
                       $instrument_list[$_REQUEST['DemographicInstrument']],
-                '',
                 $Subcategories,
                 $Visits,
                 "DemographicInstrument",
@@ -451,6 +447,7 @@ class NDB_Form_Statistics extends NDB_Form
                 $centers,
                 $result,
                 "demographics",
+                '',
                 $currentProject
             );
         } else {
@@ -476,7 +473,6 @@ class NDB_Form_Statistics extends NDB_Form
             $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
                 "Breakdown of Registered Candidates",
                 "Breakdown by Sex",
-                '',
                 $Subcategories,
                 $Visits,
                 "DemographicInstrument",
@@ -485,6 +481,7 @@ class NDB_Form_Statistics extends NDB_Form
                 $centers,
                 $result,
                 "demographics",
+                '',
                 $currentProject
             );
         }
@@ -531,17 +528,16 @@ class NDB_Form_Statistics extends NDB_Form
 
         }
 
-        if (isset($_REQUEST['BehaviouralProject'])
-            && $_REQUEST['BehaviouralProject'] != ''
+        if ($_REQUEST['BehaviouralProject'] ?? ''
         ) {
-            $currentProject = $_REQUEST['BehaviouralProject'];
+            $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
             $this->tpl_data['CurrentProject']
                 = array(
                    'ID'   => $currentProject,
                    'Name' => $projects[$currentProject],
                   );
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
-            $this->params['pid'] =$_REQUEST['BehaviouralProject'];
+            $this->params['pid'] = htmlspecialchars($_REQUEST['BehaviouralProject']);
         } else {
             $Param_Project = '';
         }
@@ -664,8 +660,8 @@ class NDB_Form_Statistics extends NDB_Form
             $projects[$key] = $value;
         }
         $currentProject = null;
-        if (isset($_REQUEST['MRIProject']) && $_REQUEST['MRIProject'] != '') {
-            $currentProject = $_REQUEST['MRIProject'];
+        if ($_REQUEST['MRIProject'] ?? '') {
+            $currentProject = htmlspecialchars($_REQUEST['MRIProject']);
             $this->tpl_data['CurrentProject']
                 = array(
                    'ID'   => $currentProject,
@@ -673,8 +669,8 @@ class NDB_Form_Statistics extends NDB_Form
                   );
             $sqlVar        = 'AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
             $Param_Project =$sqlVar;
-            $this->params['pid']    =$_REQUEST['MRIProject'];
-            $bigTable_params['pid'] =$_REQUEST['MRIProject'];
+            $this->params['pid']    = htmlspecialchars($_REQUEST['MRIProject']);
+            $bigTable_params['pid'] = htmlspecialchars($_REQUEST['MRIProject']);
         } else {
             $Param_Project = '';
         }
@@ -692,9 +688,9 @@ class NDB_Form_Statistics extends NDB_Form
             $suproject_query ='';
         }
         //SITES
-        if (isset($_REQUEST['MRIsite']) && $_REQUEST['MRIsite'] != '') {
+        if ($_REQUEST['MRIsite'] ?? '') {
             $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
-            $this->params['sid'] =$_REQUEST['MRIsite'];
+            $this->params['sid'] = htmlspecialchars($_REQUEST['MRIsite']);
         } else {
             $Param_Site = '';
         }
@@ -732,7 +728,7 @@ class NDB_Form_Statistics extends NDB_Form
         }
 
         $scans_selected =array();
-        if (isset($_REQUEST['Scans']) && $_REQUEST['Scans'] != '') {
+        if ($_REQUEST['Scans'] ?? '') {
             $scans_selected_input = explode(",", $_REQUEST['Scans']);
         }
         if (empty($scans_selected_input)) {
@@ -823,7 +819,6 @@ class NDB_Form_Statistics extends NDB_Form
         $this->tpl_data['MRI_Done_Table'] = $this->renderStatsTable(
             "Breakdown By Scan Type",
             $MRIHeader,
-            "",
             $MRISubcategories,
             $M_Visits,
             "mri_type",
@@ -832,6 +827,7 @@ class NDB_Form_Statistics extends NDB_Form
             $centers,
             $result,
             "mri",
+            "",
             $currentProject
         );
         //END BIGTABLE
@@ -1014,27 +1010,25 @@ class NDB_Form_Statistics extends NDB_Form
             $projects[$key] = $value;
         }
 
-        if (isset($_REQUEST['ReliabilityProject'])
-            && $_REQUEST['ReliabilityProject'] != ''
+        if ($_REQUEST['ReliabilityProject'] ?? ''
         ) {
-            $currentProject = $_REQUEST['ReliabilityProject'];
+            $currentProject = htmlspecialchars($_REQUEST['ReliabilityProject']);
             $this->tpl_data['CurrentProject']
                 = array(
                    'ID'   => $currentProject,
                    'Name' => $projects[$currentProject],
                   );
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
-            $this->params['pid'] =$_REQUEST['ReliabilityProject'];
+            $this->params['pid'] = htmlspecialchars($_REQUEST['ReliabilityProject']);
         } else {
             $Param_Project ='';
         }
 
         //SITES
-        if (isset($_REQUEST['ReliabilitySite'])
-            && $_REQUEST['ReliabilitySite'] != ''
+        if ($_REQUEST['ReliabilitySite'] ?? ''
         ) {
             $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
-            $this->params['sid'] =$_REQUEST['ReliabilitySite'];
+            $this->params['sid'] = htmlspecialchars($_REQUEST['ReliabilitySite']);
         } else {
             $Param_Site = '';
         }

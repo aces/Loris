@@ -79,7 +79,7 @@ if (is_dir($basePath . "project/modules/$Module")
 // Make sure that the user isn't trying to break out of the $path by
 // using a relative filename.
 // No need to check for '/' since all downloads are relative to $basePath
-if (strpos("..", $File) !== false) {
+if (strpos($File, "..") !== false) {
     error_log("ERROR: Invalid filename");
     header("HTTP/1.1 400 Bad Request");
     exit(4);

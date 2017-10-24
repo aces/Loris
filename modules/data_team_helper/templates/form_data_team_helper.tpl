@@ -165,12 +165,16 @@ var percentCompleted = {$percent_completed|@json_encode};
 var pscid = {$candidate|@json_encode};
 var visit = {$visit_label|@json_encode};
 var instrument = {$test_name|@json_encode};
+var site = $("#site option:selected").text();
+var project =$("#project option:selected").text();
 
 var DataTeamGraphics = GraphicsPanel({
 	percentCompleted: percentCompleted,
     pscid: pscid,
     visit: visit,
-    instrument: instrument
+    instrument: instrument,
+	site: site,
+	project: project
 });
 
 ReactDOM.render(CandiPanel, document.getElementById("incomplete"));

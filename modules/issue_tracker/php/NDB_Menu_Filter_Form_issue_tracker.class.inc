@@ -154,8 +154,9 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
      */
     function _setFilterForm()
     {
-        $user =& User::singleton();
-        $db   = Database::singleton();
+        $user          =& User::singleton();
+        $db            = Database::singleton();
+        $list_of_sites = array();
 
         //sites
         if ($user->hasPermission('access_all_profiles')) {
