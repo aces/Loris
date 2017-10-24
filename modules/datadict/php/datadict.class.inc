@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
-
+namespace LORIS\datadict;
 /**
  * Datadict module
  *
@@ -23,7 +23,7 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-class NDB_Menu_Filter_Datadict extends NDB_Menu_Filter
+class Datadict extends \NDB_Menu_Filter
 {
     var $AjaxModule = true;
     /**
@@ -37,7 +37,7 @@ class NDB_Menu_Filter_Datadict extends NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
         return ($user->hasPermission('data_dict_view') ||
                                    $user->hasPermission('data_dict_edit'));
@@ -51,9 +51,7 @@ class NDB_Menu_Filter_Datadict extends NDB_Menu_Filter
     */
     function _setupVariables()
     {
-
         // set the class variables
-
         $this->columns = array(
                           'pt.sourceFrom',
                           'pt.Name',
@@ -61,7 +59,7 @@ class NDB_Menu_Filter_Datadict extends NDB_Menu_Filter
                           'coalesce(pto.description,pt.description)'.
                                                    ' as description',
                          );
-        $config        =&NDB_Config::singleton();
+        $config        =& \NDB_Config::singleton();
         $this->validFilters = array(
                                'pt.sourceFrom',
                                'pt.Description',
@@ -82,18 +80,24 @@ class NDB_Menu_Filter_Datadict extends NDB_Menu_Filter
                                );
         return true;
     }
+
     /**
     * Set Filter Form
     *
-    * @note   Set Filter Form
-    * @return bool
-    * @access private
+    * @param string $name       The test name being accessed
+    * @param string $page       The subtest being accessed (may be null)
+    * @param string $identifier The identifier for the data to load on this page
+    * @param string $commentID  The CommentID to load the data for
+    * @param string $formname   The name to give this form
+    *
+    * @return none
     */
-    function _setFilterForm()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
 
         // list of feedback statuses
-        $instruments = Utility::getAllInstruments();
+        $instruments = \Utility::getAllInstruments();
         $instruments = array_merge(
             array('' => 'All Instruments'),
             $instruments
@@ -109,8 +113,7 @@ class NDB_Menu_Filter_Datadict extends NDB_Menu_Filter
              'unmodified' => 'Unmodified',
             )
         );
-                 $this->addBasicText('keyword', 'Search keyword');
-                 return true;
+        $this->addBasicText('keyword', 'Search keyword');
     }
     /**
     * Set Data Table Rows
@@ -223,7 +226,7 @@ class NDB_Menu_Filter_Datadict extends NDB_Menu_Filter
      **/
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
