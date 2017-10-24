@@ -29,11 +29,11 @@ class NDB_Form_Statistics extends NDB_Form
      *
      * @return bool
      */
-    function _hasAccess()
-    {
-        $user =& User::singleton();
-        return $user->hasPermission('data_entry');
-    }
+function _hasAccess()
+{
+    $user =& User::singleton();
+    return $user->hasPermission('data_entry');
+}
     /**
      * InCenter function
      *
@@ -42,15 +42,15 @@ class NDB_Form_Statistics extends NDB_Form
      *
      * @return bool
      */
-    function _inCenter($centerID, $Centres)
-    {
-        foreach ($Centres as $Centre) {
-            if ($Centre['NumericID'] == $centerID) {
-                return true;
-            }
+function _inCenter($centerID, $Centres)
+{
+    foreach ($Centres as $Centre) {
+        if ($Centre['NumericID'] == $centerID) {
+            return true;
         }
-        return false;
     }
+    return false;
+}
     /**
      * RenderStatsTable function
      *
@@ -69,70 +69,70 @@ class NDB_Form_Statistics extends NDB_Form
      *
      * @return string
      */
-    function renderStatsTable($sectionHeader,
-        $tableHeader,
-        $subcats,
-        $visits,
-        $dropdown_name,
-        $dropdown_opt,
-        $dropdown_selected,
-        $centres,
-        $data,
-        $Subsection="",
-        $disclamer='',
-        $projectID=null
-    ) {
+function renderStatsTable($sectionHeader,
+    $tableHeader,
+    $subcats,
+    $visits,
+    $dropdown_name,
+    $dropdown_opt,
+    $dropdown_selected,
+    $centres,
+    $data,
+    $Subsection="",
+    $disclamer='',
+    $projectID=null
+) {
 
-        $tpl_data = array();
-        $tpl_data['test_name']  = htmlspecialchars($_REQUEST['test_name']);
-        $tpl_data['Subsection'] = $Subsection;
-        $tpl_data['Visits']     = $visits;
-        $smarty = new Smarty_neurodb("statistics");
-        $tpl_data['SectionHeader'] = $sectionHeader;
-        $tpl_data['TableHeader']   = $tableHeader;
-        $tpl_data['Disclamer']     = $disclamer;
-        $tpl_data['Subcategories'] = $subcats;
-        $tpl_var = Utility::getSubprojectsForProject($projectID);
-        $tpl_data['Subprojects']      = $tpl_var;
-        $tpl_data['DropdownName']     = $dropdown_name;
-        $tpl_data['DropdownOptions']  = $dropdown_opt;
-        $tpl_data['DropdownSelected'] = $dropdown_selected;
-        $tpl_data['Centers']          = $centres;
-        foreach ($data as $row) {
-            $subproj = $row['SubprojectID'];
-            $vl      = $row['VLabel'];
-            $subcat  = $row['Subcat'];
-            $center  = $row['CenterID'];
+    $tpl_data = array();
+    $tpl_data['test_name']  = htmlspecialchars($_REQUEST['test_name']);
+    $tpl_data['Subsection'] = $Subsection;
+    $tpl_data['Visits']     = $visits;
+    $smarty = new Smarty_neurodb("statistics");
+    $tpl_data['SectionHeader'] = $sectionHeader;
+    $tpl_data['TableHeader']   = $tableHeader;
+    $tpl_data['Disclamer']     = $disclamer;
+    $tpl_data['Subcategories'] = $subcats;
+    $tpl_var = Utility::getSubprojectsForProject($projectID);
+    $tpl_data['Subprojects']      = $tpl_var;
+    $tpl_data['DropdownName']     = $dropdown_name;
+    $tpl_data['DropdownOptions']  = $dropdown_opt;
+    $tpl_data['DropdownSelected'] = $dropdown_selected;
+    $tpl_data['Centers']          = $centres;
+    foreach ($data as $row) {
+        $subproj = $row['SubprojectID'];
+        $vl      = $row['VLabel'];
+        $subcat  = $row['Subcat'];
+        $center  = $row['CenterID'];
 
-            if (in_array($vl, $visits)
-                && in_array($subcat, $subcats)
-                && $this->_inCenter($center, $centres)
-            ) {
-                $C = 'C' . $center;
-                $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
-                $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
-                $tpl_data['data'][$subproj][$subcat]      += $row['val'];
-                $tpl_data['data'][$subproj]['total']      += $row['val'];
-                $tpl_data['data'][$vl][$subcat]           += $row['val'];
-                $tpl_data['data'][$vl]['total']           += $row['val'];
-                $tpl_data['data'][$subproj][$C][$vl][$subcat]  = $row['val'];
-                $tpl_data['data'][$subproj][$C][$vl]['total'] += $row['val'];
-                $tpl_data['data'][$subproj][$C][$subcat]      += $row['val'];
-                $tpl_data['data'][$subproj][$C]['total']      += $row['val'];
-                $tpl_data['data'][$C][$vl][$subcat]           += $row['val'];
-                $tpl_data['data'][$C][$vl]['total']           += $row['val'];
-                $tpl_data['data'][$C][$subcat] += $row['val'];
-                $tpl_data['data'][$C]['total'] += $row['val'];
-                $tpl_data['data'][$subcat]     += $row['val'];
-                $tpl_data['data']['total']     += $row['val'];
-            }
-
+        if (in_array($vl, $visits)
+            && in_array($subcat, $subcats)
+            && $this->_inCenter($center, $centres)
+        ) {
+            $C = 'C' . $center;
+            $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
+            $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
+            $tpl_data['data'][$subproj][$subcat]      += $row['val'];
+            $tpl_data['data'][$subproj]['total']      += $row['val'];
+            $tpl_data['data'][$vl][$subcat]           += $row['val'];
+            $tpl_data['data'][$vl]['total']           += $row['val'];
+            $tpl_data['data'][$subproj][$C][$vl][$subcat]  = $row['val'];
+            $tpl_data['data'][$subproj][$C][$vl]['total'] += $row['val'];
+            $tpl_data['data'][$subproj][$C][$subcat]      += $row['val'];
+            $tpl_data['data'][$subproj][$C]['total']      += $row['val'];
+            $tpl_data['data'][$C][$vl][$subcat]           += $row['val'];
+            $tpl_data['data'][$C][$vl]['total']           += $row['val'];
+            $tpl_data['data'][$C][$subcat] += $row['val'];
+            $tpl_data['data'][$C]['total'] += $row['val'];
+            $tpl_data['data'][$subcat]     += $row['val'];
+            $tpl_data['data']['total']     += $row['val'];
         }
-        $smarty->assign($tpl_data);
-        $html = $smarty->fetch("table_statistics.tpl");
-        return $html;
 
     }
+    $smarty->assign($tpl_data);
+    $html = $smarty->fetch("table_statistics.tpl");
+    return $html;
+
+}
     /**
      * Statistics function
      *
@@ -581,7 +581,7 @@ class NDB_Form_Statistics extends NDB_Form
                 $_REQUEST['BehaviouralSubproject'],
                 array_keys($subprojects),
                 true
-        )) {
+            )) {
             $BS          = 'BehaviouralSubproject';
             $cleanString = htmlspecialchars($_REQUEST[$BS]);
             $this->tpl_data['PreviousSubproject']
@@ -1041,11 +1041,11 @@ class NDB_Form_Statistics extends NDB_Form
         $this->tpl_data['useProjects'] = $useProjects;
         //PROJECTS
         $projects[null] = 'All Projects';
-        foreach (Utility::getProjectList() as $key => $value) {
-            $projects[$key] = $value;
-        }
+    foreach (Utility::getProjectList() as $key => $value) {
+        $projects[$key] = $value;
+    }
 
-<<<<<<< HEAD
+    <<<<<<< HEAD
         if ($_REQUEST['ReliabilityProject'] ?? '') {
 =======
         if ($_REQUEST['ReliabilityProject'] ?? ''
