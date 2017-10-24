@@ -10,6 +10,7 @@
 * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
 * @link     https://www.github.com/aces/Loris/
 */
+namespace LORIS\candidate_list;
 
 /**
  * Implements the candidate_list menu
@@ -20,7 +21,7 @@
 * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
 * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
+class Candidate_List extends \NDB_Menu_Filter
 {
     var $AjaxModule = true;
     /**
@@ -32,10 +33,10 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user     =& User::singleton();
+        $user     =& \User::singleton();
         $site_arr = $user->getData('CenterIDs');
         foreach ($site_arr as $key=>$val) {
-            $site[$key]        = & Site::singleton($val);
+            $site[$key]        =& \Site::singleton($val);
             $isStudySite[$key] = $site[$key]->isStudySite();
         }
         $oneIsStudySite = in_array("1", $isStudySite);
@@ -56,8 +57,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $user   =& User::singleton();
-        $config =& NDB_Config::singleton();
+        $user   =& \User::singleton();
+        $config =& \NDB_Config::singleton();
 
         $this->tpl_data['toggled_visible'] =false;
 
@@ -204,22 +205,29 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
     /**
      * Create the form for the candidate_list menu page
      *
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
      * @return none
      */
-    function _setFilterForm()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
         include_once __DIR__
             . "/../../candidate_parameters/php/"
             . "NDB_Form_candidate_parameters.class.inc";
             //+  NDB_Form_candidate_parameters::getParticipantStatusOptions();
         // create user object
-        $user   =& User::singleton();
-        $config =& NDB_Config::singleton();
+        $user   =& \User::singleton();
+        $config =& \NDB_Config::singleton();
 
         // PSC
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
-            $list_of_sites = Utility::getSiteList();
+            $list_of_sites = \Utility::getSiteList();
             if (is_array($list_of_sites)) {
                 $list_of_sites = array('' => 'All') + $list_of_sites;
             }
@@ -230,7 +238,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         }
 
         // SubprojectID
-        $list_of_subprojects = Utility::getSubprojectList();
+        $list_of_subprojects = \Utility::getSubprojectList();
 
         // list of feedback statuses
         $feedback_status_options = array(
@@ -252,14 +260,14 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                                        );
 
         $participant_status_options = array(null => 'All')
-            +  NDB_Form_candidate_parameters::getParticipantStatusOptions();
+            +  \NDB_Form_candidate_parameters::getParticipantStatusOptions();
         $scan_options = array(
                          null => 'All',
                          'Y'  => 'Yes',
                          'N'  => 'No',
                         );
         // Get visits
-        $visits = Utility::getVisitList();
+        $visits = \Utility::getVisitList();
         $visits = array_merge(array('' => 'All'), $visits);
 
         // add form elements
@@ -314,7 +322,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         // Project list, if applicable
         if ($config->getSetting("useProjects")==="true") {
             $list_of_projects = array(null => 'All');
-            $projectList      = Utility::getProjectList();
+            $projectList      = \Utility::getProjectList();
             foreach ($projectList as $key => $value) {
                 $list_of_projects[$key] =$value;
             }
@@ -354,7 +362,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         $subprojectlist = Utility::getSubprojectList();
         $projectlist    = Utility::getProjectList();
 
-        $pOptions = NDB_Form_candidate_parameters::getParticipantStatusOptions();
+        $pOptions = \NDB_Form_candidate_parameters::getParticipantStatusOptions();
         // print out
         $x = 0;
         foreach ($this->list as $item) {
@@ -376,10 +384,10 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                 // get feedback information for each displayed candidate record
                 if ($key == 'Feedback' && !empty($val)) {
                     // overwrite value
-                    $verbose = NDB_BVL_Feedback::getFeedbackStatusVerbose($val);
+                    $verbose = \NDB_BVL_Feedback::getFeedbackStatusVerbose($val);
 
                     $itemi['value']   = $verbose;
-                    $itemi['bgcolor'] = NDB_BVL_Feedback::getThreadColor(
+                    $itemi['bgcolor'] = \NDB_BVL_Feedback::getThreadColor(
                         $itemi['value']
                     );
                 } else if ($key=='Feedback' && empty($val)) {
@@ -419,7 +427,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
