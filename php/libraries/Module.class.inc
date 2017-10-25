@@ -134,8 +134,9 @@ class Module
         $identifier = isset($_REQUEST['identifier']) ? $_REQUEST['identifier'] : '';
         $commentID  = isset($_REQUEST['commentID']) ? $_REQUEST['commentID'] : '';
         $formname   = $page;
-        $cls->setup();
+
         $cls->_setupPage($this->name, $page, $identifier, $commentID, $formname);
+        $cls->setup();
 
         if (!$cls->_hasAccess()) {
             throw new \LorisException("You do not have access to this page.", 403);
