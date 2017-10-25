@@ -10,7 +10,10 @@
 * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
 * @link     https://www.github.com/aces/Loris/
 */
-
+include __DIR__
+        . "/../../candidate_parameters/php/"
+        . "candidate_parameters.class.inc";
+use Loris\candidate_parameters as CP;
 /**
  * Implements the candidate_list menu
  *
@@ -210,8 +213,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
     {
         include_once __DIR__
             . "/../../candidate_parameters/php/"
-            . "NDB_Form_candidate_parameters.class.inc";
-            //+  NDB_Form_candidate_parameters::getParticipantStatusOptions();
+            . "candidate_parameters.class.inc";
+            //+  candidate_parameters::getParticipantStatusOptions();
         // create user object
         $user   =& User::singleton();
         $config =& NDB_Config::singleton();
@@ -259,7 +262,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                                        );
 
         $participant_status_options = array(null => 'All')
-            +  NDB_Form_candidate_parameters::getParticipantStatusOptions();
+            +  CP\candidate_parameters::getParticipantStatusOptions();
         $scan_options = array(
                          null => 'All',
                          'Y'  => 'Yes',
@@ -361,7 +364,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         $subprojectlist = Utility::getSubprojectList();
         $projectlist    = Utility::getProjectList();
 
-        $pOptions = NDB_Form_candidate_parameters::getParticipantStatusOptions();
+        $pOptions = CP\candidate_parameters::getParticipantStatusOptions();
         // print out
         $x = 0;
         foreach ($this->list as $item) {
