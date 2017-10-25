@@ -20,79 +20,57 @@ require_once "Utility.class.inc";
 require_once "NDB_Config.class.inc";
 require_once "MincEnv.php.inc";
 
-$headers = array();
+if (strpos($_REQUEST['minc_id'], 'l') !== false) {
+    list($l, $id) = explode('l', $_REQUEST['minc_id']);
 
-$query     = "select File from files where FileID = :MincID";
-$minc_file = $DB->pselectOne($query, array('MincID' => $_REQUEST['minc_id']));
-$minc_file = getMincLocation() . $minc_file;
-
-
-$header      = $_REQUEST['minc_headers'];
-$header_data = $_REQUEST['raw_data'];
-if ($header_data) {
-    passthru("minctoraw -double -normalize $minc_file");
-}
-if ($header=='true' && $minc_file !=null) {
-    print initialize($minc_file);
-}
-
-/**
- * Extracts the values required for a specific dimension from a minc file
- *
- * @param string $dimension A string representing the dimension to extract
- * @param string $minc_file The filename to run mincinfo on to extract
- *                          information
- *
- * @return array with elements start, space_length, and step populated
- */
-function extractDimension($dimension, $minc_file)
-{
-    return array(
-            'start'        => exec("mincinfo -attval $dimension:start $minc_file"),
-            'space_length' => exec("mincinfo -dimlength $dimension $minc_file"),
-            'step'         => exec("mincinfo -attval $dimension:step $minc_file"),
-            'dir_cosines'  => explode(
-                " ",
-                exec(
-                    "mincinfo -attval $dimension:direction_cosines $minc_file"
-                )
-            ),
-           );
-}
-
-/**
- * Creates a json array of mincinfo
- *
- * @param string $minc_file the filename that mincinfo will run on
- *
- * @return string JSON encoded string of minc dimensions
- */
-function initialize($minc_file)
-{
-    $headers = array(
-                'xspace'   => extractDimension("xspace", $minc_file),
-                'yspace'   => extractDimension("yspace", $minc_file),
-                'zspace'   => extractDimension("zspace", $minc_file),
-                'datatype' => 'float64',
-               );
-
-    //minc2.0, if there's a time component
-    $order = explode(",", exec("mincinfo -attval image:dimorder  $minc_file"));
-
-    //minc 1.0
-    if (!((count($order) == 4) || (count($order) == 3))) {
-        $order = explode(" ", exec("mincinfo -dimnames $minc_file"));
+    switch ($l) {
+    case 1:
+        $query = "SELECT minc_location FROM mri_protocol_violated_scans " .
+        "WHERE ID = :LogID";
+        break;
+    case 2:
+        $query = "SELECT MincFile FROM mri_violations_log WHERE LogID = :LogID";
+        break;
+    case 3:
+        $query = "SELECT MincFile FROM MRICandidateErrors WHERE ID = :LogID";
+        break;
+    default:
+        header("HTTP/1.1 400 Bad Request");
+        exit();
     }
 
-    //for 4D (BOLD or DTI)
-    if (count($order) == 4) {
-        $headers['time'] = extractDimension("time", $minc_file);
+    if (!empty($query)) {
+        $minc_file = $DB->pselectOne($query, array('LogID' => $id));
+        $file      = implode('/', array_slice(explode('/', $minc_file), -2));
+
+        if (strpos($minc_file, 'assembly') !== false) {
+            if (strpos($minc_file, 'assembly') === 0) {
+                $minc_path = getMincLocation() . $minc_file;
+            } else {
+                $minc_path = $minc_file;
+            }
+        } else {
+            $minc_path = getMincLocation() . "trashbin/" . $file;
+        }
     }
-
-    $headers['order'] = $order;
-
-    return json_encode($headers);
+} else {
+    $query     = "select File from files where FileID = :MincID";
+    $minc_file = $DB->pselectOne(
+        $query,
+        array(
+         'MincID' => $_REQUEST['minc_id'],
+        )
+    );
+    $minc_path = getMincLocation() . $minc_file;
 }
+
+if (!empty($minc_file)) {
+    readfile($minc_path);
+} else {
+    header("HTTP/1.1 404 Not Found");
+    exit();
+}
+
 
 /**
  * Returns the path under which minc files are located in this Loris

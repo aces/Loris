@@ -97,6 +97,56 @@ var ProbandInfo = React.createClass(
         dob2Required = true;
       }
 
+      var extraParameters = this.state.Data.extra_parameters;
+      var extraParameterFields = extraParameters.map(extraParam => {
+        var paramTypeID = extraParam.ParameterTypeID;
+        var name = 'PTID' + paramTypeID;
+        var value = this.state.Data.parameter_values[paramTypeID];
+
+        switch (extraParam.Type.substring(0, 3)) {
+          case "enu":
+            var types = extraParam.Type.substring(5);
+            types = types.slice(0, -1);
+            types = types.replace(/'/g, '');
+            types = types.split(',');
+            var selectOptions = {};
+            types.forEach(function(type) {
+              selectOptions[type] = type;
+            });
+
+            return (<SelectElement
+                  label={extraParam.Description}
+                  name={name}
+                  options={selectOptions}
+                  value={value}
+                  onUserInput={this.setFormData}
+                  ref={name}
+                  disabled={disabled}
+                  />
+            );
+          case "dat":
+            return (<DateElement
+              label={extraParam.Description}
+              name={name}
+              value={value}
+              onUserInput={this.setFormData}
+              ref={name}
+              disabled={disabled}
+                  />
+            );
+          default:
+            return (<TextareaElement
+              label={extraParam.Description}
+              name={name}
+              value={value}
+              onUserInput={this.setFormData}
+              ref={name}
+              disabled={disabled}
+              />
+            );
+        }
+      });
+
       var alertMessage = "";
       var alertClass = "alert text-center hide";
       if (this.state.updateResult) {
@@ -161,6 +211,7 @@ var ProbandInfo = React.createClass(
               label="Age Difference (months)"
               text={this.state.Data.ageDifference.toString()}
             />
+            {extraParameterFields}
             {updateButton}
           </FormElement>
         </div>

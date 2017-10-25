@@ -84,12 +84,11 @@ In order to use the media module the user might need one or both of the followin
     - _Note: only a person with direct database access could revert the hide file action._
 
 **Test filters**
-  1. Under **Browse** tab, a selection filter should be present on top of the page containing the following fields: PSCID, Visit Label, Instrument, For Site.
-    - PSCID is a text field, whereas other fields are dropdowns with options pre-filled based on the current project.
-    - Default option is "Any"
-  2. Enter an invalid PSCID and click 👉 **Show Data**
-    - The page should display a message "No results found"
-  3. Enter a valid PSCID and click 👉 **Show Data**
-    - The page should display a data table with records corresponding to this PSCID only
-  4. Select Instrument, Visit Label and For Site (independently and combined) to filter table further
-    - Clicking 👉 **Show Data** should update the table and display filtered records accordingly
+  1. Under **Browse** tab, a selection filter should be present on top of the page containing the following fields: PSCID, Visit Label, Instrument, File name, For Site, File type and Uploaded by.
+    - PSCID, File name and Uploaded by are text fields, whereas other fields are dropdowns with options pre-filled based on the current project.
+    - Default option of dropdown should be blank.
+  2. Type text in the PSCID input and verify that the table gets filtered as you type.
+  3. Type text in the File name input and verify that the table gets filtered as you type.
+  4. Type text in the Uploaded by input and verify that the table gets filtered as you type.
+  5. Select Instrument, Visit Label and For Site (independently and combined) to filter table further
+    - The table should update and display filtered records accordingly

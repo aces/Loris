@@ -858,7 +858,7 @@ var ManageSavedQueriesTabPane = React.createClass({
     },
     savedQuery: function(name, shared) {
         if(this.props.onSaveQuery) {
-            this.props.onSaveQuery(name, shared);
+            this.props.onSaveQuery(name, shared, "false");
         }
         this.setState({ 'savePrompt' : false });
     },

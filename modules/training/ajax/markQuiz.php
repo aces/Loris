@@ -40,11 +40,8 @@ if ($quizCorrect == false) {
     $examinerID   = $DB->pselectOne(
         "SELECT examinerID 
          FROM examiners
-         WHERE full_name=:FN AND FIND_IN_SET(centerID,:CID)",
-        array(
-         'FN'  => $userFullName,
-         'CID' => $userCenter,
-        )
+         WHERE full_name=:FN",
+        array('FN' => $userFullName)
     );
 
     $dateArray = array(

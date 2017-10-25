@@ -225,7 +225,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $site_arr = $user->getData('CenterIDs');
+            $list_of_sites = array();
+            $site_arr      = $user->getData('CenterIDs');
             foreach ($site_arr as $key => $val) {
                 $site[$key] = &Site::singleton($val);
                 if ($site[$key]->isStudySite()) {
@@ -434,6 +435,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
              $baseURL . "/js/advancedMenu.js",
              $baseURL . "/candidate_list/js/columnFormatter.js",
              $baseURL . "/candidate_list/js/candidate_list_helper.js",
+             $baseURL . "/js/components/Form.js",
+             $baseURL . "/candidate_list/js/onLoad.js",
             )
         );
     }

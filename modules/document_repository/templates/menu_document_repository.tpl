@@ -224,7 +224,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h3 class="modal-title" id="myModalLabel">Upload File</h3>
+                <h3 class="modal-title" id="myModalLabel">Add Category</h3>
             </div>
             <form id="addCategoryForm" action="{$baseurl}/document_repository/ajax/addCategory.php" method="POST">
                 <div class="modal-body">
@@ -249,7 +249,7 @@
                             </label>
                             <div class="col-xs-8">
                                 <select name="parent_id" id="parent_id" class="form-control input-sm">
-                                    <option value=" "> </option>
+                                    <option value=""> </option>
                                     {foreach from = $File_categories item=val key=k}
                                         {if $val != "Any"}
                                                 <option value={$k}>{$val.CategoryName}</option>
