@@ -9,6 +9,8 @@ Modules should be entirely self-contained into a subdirectory with the following
 
         css/          - Any necessary new CSS classes/files should go here
 
+        help/         - Should contain a markdown file if this module is using a module class
+
         js/           - This contains any javascript for the module. They are accessed with GetJS.php in
                         Loris, which does necessary permission checking and returns the file.
 
