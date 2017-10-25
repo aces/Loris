@@ -10,7 +10,7 @@
 * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
 * @link     https://www.github.com/aces/Loris/
 */
-include __DIR__
+require __DIR__
         . "/../../candidate_parameters/php/"
         . "candidate_parameters.class.inc";
 use Loris\candidate_parameters as CP;

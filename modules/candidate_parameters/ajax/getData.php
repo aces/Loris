@@ -12,7 +12,7 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
-include __DIR__
+require __DIR__
         . "/../../candidate_parameters/php/"
         . "candidate_parameters.class.inc";
 use LORIS\candidate_parameters as CP;
@@ -279,7 +279,7 @@ function getParticipantStatusFields()
     $db =& \Database::singleton();
 
     // get pscid
-    $pscid = $db->pselectOne(
+    $pscid         = $db->pselectOne(
         'SELECT PSCID FROM candidate where CandID = :candid',
         array('candid' => $candID)
     );
