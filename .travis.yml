@@ -62,6 +62,8 @@ before_script:
     - mysql LorisTest < SQL/0000-00-03-ConfigTables.sql
     - mysql LorisTest < SQL/0000-00-04-Help.sql
     - mysql LorisTest < docs/instruments/radiology_review.sql
+    - mysql LorisTest < test/RBdata.sql
+    - mysql LorisTest < test/test_instrument/medical_history.sql
     - mysql LorisTest -u root -e "GRANT UPDATE,INSERT,SELECT,DELETE,DROP,CREATE TEMPORARY TABLES ON LorisTest.* TO 'SQLTestUser'@'localhost' IDENTIFIED BY 'TestPassword' WITH GRANT OPTION"
     - cp docs/config/config.xml project/config.xml
     - cp docs/config/config.xml test/config.xml
@@ -91,6 +93,7 @@ before_script:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
+
     - npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise
