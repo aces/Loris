@@ -851,6 +851,11 @@ class NDB_Form_Statistics extends NDB_Form
                 	        c.CenterID,
                 	        s.Visit_label)";
             } else {
+
+                /* Temporary tables are used here because mySQL doesn't allow
+                 * a temporary table to be referenced more than once in the
+                 * same query.
+                 */
                 $Pre_Result_One
                     = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_totals AS (
             	        SELECT 
@@ -886,41 +891,48 @@ class NDB_Form_Statistics extends NDB_Form
             $PRO_params['Param_Project']   = $Param_Project;
             $PRO_params['unspec_scans']    = $unspec_scans;
 
-            $Pre_Result_Two   = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_comp AS (
+            $Pre_Result_Two   = 'CREATE TEMPORARY TABLE IF NOT EXISTS temp_comp AS (
                     SELECT
                         t.SubprojectID,
                         t.CenterID,
                         t.VLabel,
-                        \"Complete\" AS Subcat,
+                        "Complete" AS Subcat,
                         t.total_comp AS val
-                    FROM temp_totals t)";
-            $Pre_Result_Three = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_part AS (
+                    FROM temp_totals t)';
+            $Pre_Result_Three = 'CREATE TEMPORARY TABLE IF NOT EXISTS temp_part AS (
                     SELECT
                         t.SubprojectID,
                         t.CenterID,
                         t.VLabel,
-                        \"Partial Run\" AS Subcat,
+                        "Partial Run" AS Subcat,
                         t.total_part AS val
-                    FROM temp_totals t)";
-            $Pre_Result_Four  = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_no AS (
+                    FROM temp_totals t)';
+            $Pre_Result_Four  = 'CREATE TEMPORARY TABLE IF NOT EXISTS temp_no AS (
                     SELECT
                         t.SubprojectID,
                         t.CenterID,
                         t.VLabel,
-                        \"No Scan\" AS Subcat,
+                        "No Scan" AS Subcat,
                         t.total_no AS val
-                    FROM temp_totals t)";
-            $Pre_Result_Five  = "CREATE TEMPORARY TABLE IF NOT EXISTS temp_unsp AS (
+                    FROM temp_totals t)';
+            $Pre_Result_Five  = 'CREATE TEMPORARY TABLE IF NOT EXISTS temp_unsp AS (
                     SELECT
                         t.SubprojectID,
                         t.CenterID,
                         t.VLabel,
-                        \"Unspecified\" AS Subcat,
+                        "Unspecified" AS Subcat,
                         t.total_unsp AS val
-                    FROM temp_totals t)";
+                    FROM temp_totals t)';
             $Result_query     = "SELECT * FROM temp_comp UNION SELECT * FROM";
             $Result_query    .= " temp_part UNION SELECT * FROM temp_no";
             $Result_query    .= " UNION SELECT * FROM temp_unsp";
+
+            /* The nofetch attribute in the following execute statements prevents
+             * an array from being created to store the results of the query.
+             * As we are just creating temporary tables, it prevents it from
+             * returning an empty array.
+             */
+
             $DB->execute(
                 $DB->prepare($Pre_Result_One),
                 $PRO_params,
@@ -944,7 +956,7 @@ class NDB_Form_Statistics extends NDB_Form
             $DB->execute(
                 $DB->prepare($Pre_Result_Five),
                 array(),
-                array('nofetch; => true')
+                array('nofetch' => true)
             );
             $result = $DB->pselect(
                 $Result_query,
