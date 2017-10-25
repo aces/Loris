@@ -248,6 +248,7 @@ class NDB_Form_New_Profile extends NDB_Form
         $errors = array();
 
         $config =& NDB_Config::singleton();
+        $user   = \User::singleton();
 
         if ($values['dob1'] != $values['dob2']) {
             $errors['dob1'] = 'Date of Birth fields must match.';
@@ -297,6 +298,14 @@ class NDB_Form_New_Profile extends NDB_Form
                     $errors['PSCID'] = 'PSCID has already been registered';
             }
         }
+
+        // validate site entered
+        $site = $values['psc'];
+
+        if (empty($site) || !$user->hasCenter($site)) {
+            $errors['psc'] = "Site must be selected from the available dropdown.";
+        }
+
         $useProjects = $config->getSetting('useProjects');
         if ($useProjects === "true" && empty($values['ProjectID'])) {
             $errors['ProjectID'] = "Project is required";
