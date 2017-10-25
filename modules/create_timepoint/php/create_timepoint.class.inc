@@ -230,8 +230,9 @@ class Create_Timepoint extends \NDB_Form
 
         // validate site entered
         $site = $val['psc'];
-
-        if (empty($site) || !$user->hasCenter($site)) {
+        $user_list_of_sites = $user->getData('CenterIDs');
+        $num_sites          = count($user_list_of_sites);
+        if ($num_sites > 1 && (empty($site) || !$user->hasCenter($site))) {
             $errors['psc'] = "Site must be selected from the available dropdown.";
         }
 
