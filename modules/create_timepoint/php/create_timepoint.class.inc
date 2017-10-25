@@ -51,19 +51,6 @@ class Create_Timepoint extends \NDB_Form
     }
 
     /**
-     * Returns the form-specific defaults
-     *
-     * @return array
-     */
-    function _getDefaults()
-    {
-        $candidate =& \Candidate::singleton($this->identifier);
-
-        $defaults['visitLabel'] = $candidate->getNextVisitLabel();
-        return $defaults;
-    }
-
-    /**
      * Processes the values and saves to database. Usually overridden
      * by form instance.
      *
@@ -131,9 +118,9 @@ class Create_Timepoint extends \NDB_Form
 
         $attributes = array(
                        "onchange" => "location.href='?test_name=create_timepoint" .
-                        "&candID=" . $this->identifier .
-                        "&identifier=" . $this->identifier .
-                        "&subprojectID='+this[this.selectedIndex].value;",
+                "&candID=" . $this->identifier .
+                "&identifier=" . $this->identifier .
+                "&subprojectID='+this[this.selectedIndex].value;",
                       );
         $this->addSelect(
             'subprojectID',
@@ -149,34 +136,24 @@ class Create_Timepoint extends \NDB_Form
         $visitLabelAdded    = false;
 
         foreach (\Utility::toArray($visitLabelSettings) as $visitLabel) {
-            if ($visitLabel['@']['subprojectID']==$this->subprojectID) {
-                if ($visitLabel['generation'] == 'user') {
-                    error_log(
-                        "DEPRECATION WARNING: User generated visit labels will ".
-                        "no longer be supported in the next release of Loris. ".
-                        "Please add the necessary entries to the config.xml file ".
-                        "and set the generation to 'sequence'"
+            if ($visitLabel['@']['subprojectID'] == $this->subprojectID) {
+                if (isset($visitLabel['generation'])
+                    && $visitLabel['generation'] !== 'sequence'
+                ) {
+                    throw new \DeprecatedException(
+                        "User generated Visit Labels are no ".
+                        "longer supported in Loris."
                     );
-                    $this->addBasicText(
-                        'visitLabel',
-                        'Visit label',
-                        array(
-                         'size'      => $visitLabel['length'] + 1,
-                         'maxlength' => $visitLabel['length'],
-                        )
-                    );
-                    $visitLabelAdded = true;
-                } elseif ($visitLabel['generation'] == 'sequence') {
-                    $labelOptions[''] = null;
-                    $items            = \Utility::toArray(
-                        $visitLabel['labelSet']['item']
-                    );
-                    foreach ($items as $item) {
-                        $labelOptions[$item['@']['value']] = $item['#'];
-                    }
-                    $this->addSelect('visitLabel', 'Visit label', $labelOptions);
-                    $visitLabelAdded = true;
                 }
+                $labelOptions[''] = null;
+                $items            = \Utility::toArray(
+                    $visitLabel['labelSet']['item']
+                );
+                foreach ($items as $item) {
+                    $labelOptions[$item['@']['value']] = $item['#'];
+                }
+                $this->addSelect('visitLabel', 'Visit label', $labelOptions);
+                $visitLabelAdded = true;
             }
         }
 
@@ -188,8 +165,8 @@ class Create_Timepoint extends \NDB_Form
             $DB   = \Database::singleton();
             $user_list_of_sites = $user->getData('CenterIDs');
             $num_sites          = count($user_list_of_sites);
+            $psc_labelOptions   = array();
             if ($num_sites >1) {
-                $pscLabelAdded =true;
                 $this->tpl_data['pscLabelAdded'] = true;
                 $psc_labelOptions = array(null => '');
                 foreach ($user_list_of_sites as $key => $siteID) {

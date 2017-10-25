@@ -263,15 +263,6 @@ class TimePoint
      */
     static function isValidVisitLabel($candid, $subprojectID, $visitLabel)
     {
-        $config =& \NDB_Config::singleton();
-        $visitLabelSettings = $config->getSetting('visitLabel');
-        foreach (\Utility::toArray($visitLabelSettings) as $setting) {
-            if ($setting['@']['subprojectID'] == $subprojectID) {
-                $visitLabelSettings =$setting;
-                break;
-            }
-        }
-
         // This can happen if the user quickly clicks "Create Time Point" before the
         // page has loaded and the Visit Label dropdown hasn't been selected yet.
         // The page will create "V1" when this is the case without this check.
@@ -279,15 +270,6 @@ class TimePoint
             throw new \LorisException(
                 'A visit label is required.'
             );
-        }
-
-        // make sure the user entered a valid visit label
-        if ($visitLabelSettings['generation'] == 'user') {
-            if (!preg_match($visitLabelSettings['regex'], $visitLabel)) {
-                throw new \LorisException(
-                    'This visit label does not match the required structure.'
-                );
-            }
         }
 
         $candidate =& \Candidate::singleton($candid);
