@@ -120,6 +120,9 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                    (SELECT name FROM psc WHERE CenterID=s.CenterID) as site,
                    s.Visit_label as visit_label,
                    '".$scan_type."' as scan_type,
+                   (SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project,
+                   (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID) as subproject,
+                   (SELECT SeriesUID FROM tarchive_series WHERE (SeriesUID=fi.SeriesUID AND TarchiveID=t.TarchiveID)) as SeriesUID,
                    CASE
                       WHEN m.".$scan_done." IS NULL THEN 'Incomplete'
                       ELSE 'Complete'
@@ -131,7 +134,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                    END as scan_done,
                    CASE 
                       WHEN t.tarchiveID IS NULL THEN 'Missing'
-                      ELSE 'In DICOM'
+                      WHEN ($acqID = '44' AND (SELECT COUNT(*) FROM tarchive_files tf WHERE tf.TarchiveID=t.TarchiveID AND tf.SeriesDescription='t1_mpr_1mm_p2_pos50' > 0)) THEN 'In DICOM' 
+                      WHEN ($acqID = '45' AND (SELECT COUNT(*) FROM tarchive_files tf WHERE tf.TarchiveID=t.TarchiveID AND tf.SeriesDescription='t2_spc_1mm_p2' > 0)) THEN 'In DICOM'
                    END as tarchive_loc,
                    CASE 
                       WHEN (fi.fileID IS NULL AND mvl.PatientName IS NULL) THEN 'Missing'
@@ -151,6 +155,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             LEFT JOIN session s ON (f.SessionID=s.ID)
             LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
             LEFT JOIN tarchive t ON (t.SessionID=s.ID)
+            LEFT JOIN tarchive_files tf ON (tf.
             LEFT JOIN files fi ON (fi.SessionID = s.ID AND fi.AcquisitionProtocolID=".$acqID.")
             LEFT JOIN mri_violations_log mvl ON (mvl.CandID = s.CandID AND mvl.Scan_type=".$acqID." AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))
             LEFT JOIN candidate c ON (s.CandID=c.CandID)
@@ -202,6 +207,10 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 
         $scan_types = $this->_getScanTypes();
 
+        $projectList = Utility::getProjectList();
+        $subprojectList = Utility::getSubprojectList();
+
+
         $uploaderList =[];
         $uploaders    = $db -> pselect(
             "SELECT UploadedBy FROM mri_upload GROUP BY UploadedBy",
@@ -220,6 +229,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $this->addSelect('site', 'Site', $siteList);
         $this->addBasicText('candId', 'DCCID', ["size" => 9, "maxlength" => 7]);
         $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
+        $this->addSelect('project', 'Project', $projectList);
+        $this->addSelect('subproject', 'Subproject', $subprojectList);
         $this->addSelect('scanType', 'Scan Type', $scan_types);
         $this->addSelect('mRIParameterForm', "MRI Parameter Form", array("Complete" => "Complete", "Incomplete" => "Incomplete"));
         $this->addSelect('scanDoneInMRIPF', 'Scan Done in MRI PF', array("Yes" => "Yes", "No" => "No"));
@@ -272,6 +283,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                           'SessionID',
                           'cand_id',
                           'site',
+                          'project',
+                          'subproject',
                           'visit_label',
                           'scan_type',
                           'mri_parameter_form',
@@ -283,12 +296,15 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                           'selected',
                           'CommentID',
                           'TarchiveID',
+                          'SeriesUID'
                          ];
 
         $this->group_by = 'PSCID,
             SessionID,
             cand_id,
             site,
+            project,
+            subproject,
             visit_label,
             scan_type,
             mri_parameter_form,
@@ -299,7 +315,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             selected,
             uploaded_by,
             CommentID,
-            TarchiveID ';
+            TarchiveID, 
+            SeriesUID ';
 
         $this->order_by = 'PSCID';
 
@@ -308,6 +325,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                           'Session ID',
                           'DCCID',
                           'Site',
+                          'Project',
+                          'Subproject',
                           'Visit Label',
                           'Scan Type',
                           'MRI Parameter Form',
@@ -319,6 +338,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                           'Selected',
                           'CommentID',
                           'TarchiveID',
+                          'SeriesUID'
                          ];
 
         return true;
