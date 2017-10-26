@@ -3,7 +3,7 @@
 <div class="row">
     <div class="col-sm-12">
         <div class="col-md-8 col-sm-8">
-            <form method="post" action="{$baseurl}/mri_violations/?submenu=mri_protocol_check_violations">
+            <form method="post" action="{$baseurl}/mri_violations/mri_protocol_check_violations">
                 <div class="panel panel-primary">
                     <div class="panel-heading" onclick="hideFilter();">
                         Selection Filter
@@ -37,7 +37,7 @@
                                 <div class="visible-xs col-xs-12"> </div>
                                 <div class="visible-xs col-xs-12"> </div>
                                 <div class="col-sm-6 col-xs-12">
-                                    <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/mri_violations/?submenu=mri_protocol_check_violations&reset=true'">
+                                    <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/mri_violations/mri_protocol_check_violations?reset=true'">
                                 </div>
                             </div>
                         </div>
@@ -46,7 +46,7 @@
                                 <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                             </div>
                             <div class="col-sm-6 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/mri_violations/?submenu=mri_protocol_check_violations&reset=true'">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/mri_violations/mri_protocol_check_violations?reset=true'">
                             </div>
                         </div>
                         <input type="hidden" name="test_name" value="mri_violations" />
@@ -62,7 +62,7 @@
 loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
 var hasWritePermission = {json_encode($hasWritePermission)};
 var table = RDynamicDataTable({
-     "DataURL" : "{$baseurl}/mri_violations/?submenu=mri_protocol_check_violations&format=json",
+     "DataURL" : "{$baseurl}/mri_violations/mri_protocol_check_violations?format=json",
      "getFormattedCell" : formatColumn,
      "freezeColumn" : "PSCID"
 

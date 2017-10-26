@@ -88,7 +88,7 @@
     <div id="tabs" style="background: white">
         <ul class="nav nav-tabs">
             <li class="statsTab active"><a class="statsTabLink" id="onLoad" href="{$baseurl}/mri_violations/">Not Resolved</a></li>
-            <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/mri_violations/?submenu=resolved_violations">Resolved</a></li>
+            <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/mri_violations/resolved_violations">Resolved</a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane active">
