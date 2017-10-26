@@ -187,19 +187,6 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         parent::tearDown();
     }
     /**
-     * Tests that, when loading the Mri_violations module, some
-     * text appears in the body.
-     *
-     * @return void
-     */
-    function testMriViolationsDoesPageLoad()
-    {
-        $this->safeGet($this->url . "/mri_violations/");
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
-            ->getText();
-        $this->assertContains("Mri Violations", $bodyText);
-    }
-    /**
      * Tests that, when loading the Mri_violations module >
      * mri_protocol_violations submodule, some
      * text appears in the body.
@@ -212,6 +199,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/mri_violations/mri_protocol_violations"
         );
+        sleep(1);
         $value = "#bc2 > a:nth-child(3)";
         $text  = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
@@ -232,6 +220,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/mri_violations/mri_protocol_check_violations"
         );
+        sleep(1);
         $value = "#bc2 > a:nth-child(3) > div";
         $text  = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
