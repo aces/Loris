@@ -212,10 +212,11 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/mri_violations/mri_protocol_violations"
         );
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains("Mri Violations", $bodyText);
+        $value = "#bc2 > a:nth-child(3)";
+        $text = $this->webDriver->executescript(
+                "return document.querySelector('$value').textContent"
+            );
+            $this->assertEquals(" Mri  Protocol  Violations", $text);
     }
 
     /**
@@ -231,10 +232,11 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/mri_violations/mri_protocol_check_violations"
         );
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains("Mri Violations", $bodyText);
+        $value = "#bc2 > a:nth-child(3) > div";
+        $text = $this->webDriver->executescript(
+                "return document.querySelector('$value').textContent"
+            );
+            $this->assertEquals(" Mri  Protocol  Check  Violations", $text);
     }
 
     /**
