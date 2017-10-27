@@ -124,7 +124,7 @@ class New_Profile extends \NDB_Form
      *
      * @return none
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)//@codingStandardsIgnoreLine
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
         parent::_setupPage($name, $page, $identifier, $commentID, $formname);
 
@@ -282,7 +282,7 @@ class New_Profile extends \NDB_Form
 
         $PSCIDsettings = $config->getSetting('PSCID');
         if ($PSCIDsettings['generation'] == 'user') {
-            $db =& Database::singleton();
+            $db =& \Database::singleton();
             if (empty($values['psc'])) { // user is in only one site
                 $user      =& \User::singleton();
                 $centerIDs = $user->getData('CenterIDs');
