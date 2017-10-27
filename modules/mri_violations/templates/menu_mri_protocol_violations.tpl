@@ -5,7 +5,7 @@
 
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
-        <form method="post" action="{$baseurl}/mri_violations/mri_protocol_violations">
+        <form method="post" action="{$baseurl}/mri_violations/mri_protocol_violations/">
             <div class="panel panel-primary">
                 <div class="panel-heading" onclick="hideFilter();">
                     Selection Filter
@@ -47,7 +47,7 @@
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-6 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/mri_violations/mri_protocol_violations?reset=true'">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/mri_violations/mri_protocol_violations/?reset=true'">
                             </div>
                         </div>
                     </div>
@@ -56,7 +56,7 @@
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                         </div>
                         <div class="col-sm-6 col-xs-12">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/mri_violations/mri_protocol_violations?reset=true'">
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/mri_violations/mri_protocol_violations/?reset=true'">
                         </div>
                     </div>
                     <input type="hidden" name="test_name" value="mri_violations" />
@@ -70,7 +70,7 @@
 
 <div id="tabs" style="background: white">
     <ul class="nav nav-tabs">
-        <li class="statsTab"><a class="statsTabLink" id="onLoad" href="{$baseurl}/mri_violations/mri_protocol_check_violations">Protocol violations</a></li>
+        <li class="statsTab"><a class="statsTabLink" id="onLoad" href="{$baseurl}/mri_violations/mri_protocol_check_violations/">Protocol violations</a></li>
         <li class="statsTab active"><a class="statsTabLink">Resolved violations</a></li>
     </ul>
     <div class="tab-content">
@@ -133,7 +133,7 @@
 
 loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
 var table = RDynamicDataTable({
-     "DataURL" : "{$baseurl}/mri_violations/mri_protocol_violations?format=json",
+     "DataURL" : "{$baseurl}/mri_violations/mri_protocol_violations/?format=json",
      "getFormattedCell" : formatColumn,
      "freezeColumn" : "PatientName"
      

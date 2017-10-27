@@ -197,7 +197,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet(
             $this->url .
-            "/mri_violations/mri_protocol_violations"
+            "/mri_violations/mri_protocol_violations/"
         );
         sleep(1);
         $value = "#bc2 > a:nth-child(3)";
@@ -218,7 +218,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet(
             $this->url .
-            "/mri_violations/mri_protocol_check_violations"
+            "/mri_violations/mri_protocol_check_violations/"
         );
         sleep(1);
         $value = "#bc2 > a:nth-child(3) > div";
@@ -276,7 +276,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet(
             $this->url .
-            "/mri_violations/resolved_violations"
+            "/mri_violations/resolved_violations/"
         );
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("#tabs > ul > li.statsTab.active > a")
@@ -295,7 +295,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         //testing the Patient Name
         $this->safeGet(
             $this->url .
-            "/mri_violations/resolved_violations"
+            "/mri_violations/resolved_violations/"
         );
         $this->webDriver->findElement(
             WebDriverBy::Name("PatientName")
@@ -408,7 +408,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$savebtn').click()"
         );
-        $this->safeGet($this->url . "/mri_violations/resolved_violations");
+        $this->safeGet($this->url . "/mri_violations/resolved_violations/");
         sleep(1);
         $body = $this->webDriver->getPageSource();
         $this->assertContains("[name]test", $body);
@@ -421,7 +421,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     function testResolvedSearchButton()
     {
         //testing search by PatientName
-        $this->safeGet($this->url . "/mri_violations/resolved_violations");
+        $this->safeGet($this->url . "/mri_violations/resolved_violations/");
 
         //testing search by PatientName
         $this->_searchTest(
