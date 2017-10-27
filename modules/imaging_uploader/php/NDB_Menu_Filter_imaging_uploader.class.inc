@@ -596,14 +596,12 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function _getFileList($data)
     {
-
         $files = array();
-
         foreach ($data as $row) {
-            $filePath     = $row[5];
-            $fileName     = basename($filePath);
             $uploadStatus = $row[1];
-
+            $filePath     = $row[5];
+            $mincInserted = $row[10];
+            $fileName     = basename($filePath);
             // Checks if a file is already in files array
             $isDuplicate = (
                 array_search(
@@ -612,7 +610,12 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                 ) > -1
             );
 
-            if (file_exists($filePath) && !$isDuplicate) {
+            // If file successfully completed pipeline, then filePath is no longer
+            // valid as the file would have been deleted.
+            // Check that mincInserted > 0 in mri_upload to handle Successful uploads
+            if ((file_exists($filePath) || $mincInserted)
+                && !$isDuplicate
+            ) {
                 array_push(
                     $files,
                     [

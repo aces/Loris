@@ -26,7 +26,7 @@ if (!($user->hasPermission('access_all_profiles')
     exit;
 }
 
-$found = Candidate::candidateExists($_GET['candID'], $_GET['PSCID']);
+$found = Candidate::candidateExists($_GET['CandID'], $_GET['PSCID']);
 
 if ($found) {
     echo 1;
