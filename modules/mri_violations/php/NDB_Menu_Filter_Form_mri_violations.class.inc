@@ -409,7 +409,6 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
             }
         } else {
             // allow only to view own site data
-            $sites = array();
             $sites = $user->getStudySites();
             $sites = array('' => 'All User Sites') + $sites;
         }
