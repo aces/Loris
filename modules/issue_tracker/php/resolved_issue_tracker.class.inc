@@ -13,6 +13,7 @@
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
+namespace LORIS\issue_tracker;
 
 /**
  * Provides the PHP code for the menu filter for the issue tracker
@@ -24,7 +25,7 @@
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
+class Resolved_Issue_Tracker extends \NDB_Menu_Filter_Form
 {
     //aka building-table-using-react
     var $AjaxModule = true;
@@ -38,8 +39,8 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
     function _setupVariables()
     {
 
-        $user =& User::singleton();
-        $db   = Database::singleton();
+        $user =& \User::singleton();
+        $db   = \Database::singleton();
 
         $this->query = " FROM issues as i " .
             "LEFT JOIN candidate c ON (i.candID=c.CandID) " .
@@ -146,19 +147,27 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
     }
 
     /**
-     * Setup $this->tpl_data for use by Smarty
+     * Sets up the smarty menu filter items for the conflict resolver
      *
-     * @return null
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
      */
-    function _setFilterForm()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
-        $user  =& User::singleton();
-        $db    = Database::singleton();
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+
+        $user  =& \User::singleton();
+        $db    = \Database::singleton();
         $sites = array();
 
         //sites
         if ($user->hasPermission('access_all_profiles')) {
-            $list_of_sites = Utility::getSiteList();
+            $list_of_sites = \Utility::getSiteList();
             if (is_array($list_of_sites)) {
                 $list_of_sites = array('' => 'All') + $list_of_sites;
             }
@@ -286,7 +295,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
      */
     function _addValidFilters($prepared_key, $field, $val)
     {
-        $user  =& User::singleton();
+        $user  =& \User::singleton();
         $query = '';
         if ((!empty($val) || $val === '0') && $field != 'order') {
             if (($field != 'w.userID')
@@ -372,7 +381,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseurl = $factory->settings()->getBaseURL();
         return array_merge(
             parent::getJSDependencies(),
