@@ -11,6 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+namespace LORIS\acknowledgements;
 
 /**
  * This class provides the code to create the menu filter form that allows
@@ -25,7 +26,7 @@
  * @link     https://github.com/aces/Loris
  */
 
-class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
+class Acknowledgements extends \NDB_Menu_Filter_Form
 {
 
     /**
@@ -37,7 +38,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
     function _hasAccess()
     {
         // create user object and check appropriate permission
-        $user =& User::singleton();
+        $user =& \User::singleton();
         return ($user->hasPermission('acknowledgements_view'));
     }
 
@@ -51,7 +52,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
     function _process($values)
     {
         // create user object and check appropriate permission
-        $user =& User::singleton();
+        $user =& \User::singleton();
         if (!$user->hasPermission('acknowledgements_edit')) {
             return;
         }
@@ -70,7 +71,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
         $values['degrees']      = implode(",", $values['degrees']);
         $values['roles']        = implode(",", $values['roles']);
 
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
         if (isset($_POST['fire_away'])) {
 
             if (empty($values['present'])) {
@@ -104,7 +105,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        $config = NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
 
         $this->columns      = array(
                                'ordering',
@@ -169,7 +170,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
         $this->addBasicText('ordering', 'Ordering:');
         $this->addBasicText('full_name', 'Full Name:');
         $this->addBasicText('citation_name', 'Citation Name:');
-        $config      =& NDB_Config::singleton();
+        $config      =& \NDB_Config::singleton();
         $startYear   = $config->getSetting('startYear');
         $endYear     = $config->getSetting('endYear');
         $dateOptions = array(
@@ -187,7 +188,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
         $this->addBasicText('addordering', 'Ordering:');
         $this->addBasicText('addfull_name', 'Full Name:');
         $this->addBasicText('addcitation_name', 'Citation Name:');
-        $config      =& NDB_Config::singleton();
+        $config      =& \NDB_Config::singleton();
         $startYear   = $config->getSetting('startYear');
         $endYear     = $config->getSetting('endYear');
         $dateOptions = array(
@@ -211,7 +212,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseurl = $factory->settings()->getBaseURL();
 
         $baseDeps = parent::getJSDependencies();
