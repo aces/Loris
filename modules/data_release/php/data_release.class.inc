@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
  */
+namespace LORIS\data_release;
 
 /**
  * Data Release Class
@@ -23,18 +24,19 @@
  * @link     https://www.github.com/aces/Loris
 */
 
-class NDB_Menu_Filter_Data_Release extends NDB_Menu_Filter
+class Data_Release extends \NDB_Menu_Filter
 {
     /**
-     * Setup variables
+     * Sets up all the class variables needed for the candidate_list menu
+     * filter
      *
-     * @return None
+     * @return true on success
      */
     function _setupVariables()
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
-        $Factory = NDB_Factory::singleton();
+        $Factory = \NDB_Factory::singleton();
         $DB      = $Factory->Database();
 
         // set the class variables
@@ -103,6 +105,21 @@ class NDB_Menu_Filter_Data_Release extends NDB_Menu_Filter
         return true;
     }
 
+        /**
+     * Create the form for the candidate_list menu page
+     *
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
+     */
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    {
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+    }
 }
 
 ?>
