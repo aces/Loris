@@ -12,6 +12,10 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
+require __DIR__
+        . "/../../candidate_parameters/php/"
+        . "candidate_parameters.class.inc";
+use LORIS\candidate_parameters as CP;
 if (isset($_GET['data'])) {
     $data = $_GET['data'];
     if ($data == "candidateInfo") {
@@ -41,7 +45,7 @@ function getCandInfoFields()
 {
     $candID = $_GET['candID'];
 
-    $db =& Database::singleton();
+    $db =& \Database::singleton();
 
     // get caveat options
     $caveat_options = [];
@@ -121,7 +125,7 @@ function getProbandInfoFields()
 {
     $candID = $_GET['candID'];
 
-    $db =& Database::singleton();
+    $db =& \Database::singleton();
 
     // get pscid
     $pscid = $db->pselectOne(
@@ -167,7 +171,7 @@ function getProbandInfoFields()
         array('CandidateID' => $candID)
     );
     if (!empty($candidateDOB) && !empty($dob)) {
-        $age = Utility::calculateAge($dob, $candidateDOB);
+        $age = \Utility::calculateAge($dob, $candidateDOB);
 
         if ($age !== null) {
             $ageDifference = $age['year'] * 12
@@ -200,7 +204,7 @@ function getFamilyInfoFields()
 {
     $candID = $_GET['candID'];
 
-    $db =& Database::singleton();
+    $db =& \Database::singleton();
 
     // get pscid
     $pscid = $db->pselectOne(
@@ -269,21 +273,17 @@ function getFamilyInfoFields()
  */
 function getParticipantStatusFields()
 {
-    include_once __DIR__
-        . "/../../candidate_parameters/php/"
-        . "NDB_Form_candidate_parameters.class.inc";
 
     $candID = $_GET['candID'];
 
-    $db =& Database::singleton();
+    $db =& \Database::singleton();
 
     // get pscid
-    $pscid = $db->pselectOne(
+    $pscid         = $db->pselectOne(
         'SELECT PSCID FROM candidate where CandID = :candid',
         array('candid' => $candID)
     );
-
-    $statusOptions = NDB_Form_candidate_parameters::getParticipantStatusOptions();
+    $statusOptions = CP\Candidate_Parameters::getParticipantStatusOptions();
     $reasonOptions = array();
 
     $req      = $db->pselect(
@@ -356,7 +356,7 @@ function getParticipantStatusFields()
      */
 function getParticipantStatusHistory($candID)
 {
-    $db =& Database::singleton();
+    $db =& \Database::singleton();
     $unformattedComments = $db->pselect(
         "SELECT entry_staff, data_entry_date,
             (SELECT Description 
@@ -384,7 +384,7 @@ function getConsentStatusFields()
 {
     $candID = $_GET['candID'];
 
-    $db =& Database::singleton();
+    $db =& \Database::singleton();
 
     // get pscid
     $pscid = $db->pselectOne(
@@ -392,14 +392,14 @@ function getConsentStatusFields()
         array('candid' => $candID)
     );
 
-    $config        =& NDB_Config::singleton();
+    $config        =& \NDB_Config::singleton();
     $consent       = $config->getSetting('ConsentModule');
     $consents      = [];
     $consentStatus = [];
     $date          = [];
     $withdrawal    = [];
 
-    $consent_details =Utility::asArray($consent['Consent']);
+    $consent_details =\Utility::asArray($consent['Consent']);
     if (!$consent_details[0]) {
         // If only one consent, need to put in an array
         $temp            = array();
@@ -455,7 +455,7 @@ function getConsentStatusFields()
  */
 function getConsentStatusHistory($candID, $consents)
 {
-    $db =& Database::singleton();
+    $db =& \Database::singleton();
 
     $commentHistory = array();
 
