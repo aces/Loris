@@ -11,6 +11,8 @@
  * @link     https://github.com/aces/Loris-Trunk
 */
 
+namespace LORIS\configuration;
+
 /**
  * Admin_Config Class
  *
@@ -22,7 +24,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
 */
-class NDB_Form_Configuration extends NDB_Form
+class Configuration extends \NDB_Form
 {
     /**
      * _has_access returns true
@@ -33,19 +35,26 @@ class NDB_Form_Configuration extends NDB_Form
     function _hasAccess()
     {
         // create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
         return $user->hasPermission('config');
     }
 
-    /**
-     * Constructor
+     /**
+     * Loads the main configuration module page.
      *
-     * @return null
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
      */
-    function configuration()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
-        $config =& NDB_Config::singleton();
-        $DB     =& Database::singleton();
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        $config =& \NDB_Config::singleton();
+        $DB     =& \Database::singleton();
 
         $scans = $DB->pselect(
             "SELECT Scan_type
@@ -58,7 +67,7 @@ class NDB_Form_Configuration extends NDB_Form
         }
         $scan_types = array_merge(array('' => ''), $scan_types);
 
-        $instruments = Utility::getAllInstruments();
+        $instruments = \Utility::getAllInstruments();
         $instruments = array_merge(array('' => ''), $instruments);
 
         $this->tpl_data['useProjects']     = $config->getSetting("useProjects");
@@ -78,7 +87,7 @@ class NDB_Form_Configuration extends NDB_Form
      */
     function _getParentConfigLabels()
     {
-        $this->DB = Database::singleton();
+        $this->DB = \Database::singleton();
 
         $parentConfigItems = $this->DB->pselect(
             "SELECT Label, Name 
@@ -100,7 +109,7 @@ class NDB_Form_Configuration extends NDB_Form
      */
     function _getConfigSettingTree()
     {
-        $config =& NDB_Config::singleton();
+        $config =& \NDB_Config::singleton();
 
         // Get the names and meta-information for the config settings in the database
         $configs = $this->DB->pselect(
@@ -122,7 +131,7 @@ class NDB_Form_Configuration extends NDB_Form
                         $setting['Value'] = $valueFromXML;
                     }
                 }
-            } catch (ConfigurationException $e) {
+            } catch (\ConfigurationException $e) {
                 $setting['Disabled'] = 'No';
             }
         }
@@ -157,62 +166,6 @@ class NDB_Form_Configuration extends NDB_Form
     }
 
     /**
-     * Loads the subproject management submodule
-     *
-     * @return none
-     */
-    function subproject()
-    {
-        $factory = NDB_Factory::singleton();
-        $config  = $factory->config();
-
-        $subprojectList = Utility::getSubprojectList();
-        $subprojects    = array();
-        foreach ($subprojectList as $subprojectID => $title) {
-            $subprojects[$subprojectID]
-                = $config->getSubprojectSettings($subprojectID);
-        }
-        $this->tpl_data['subprojects'] = $subprojects;
-
-        $this->tpl_data['useEDCOptions']
-            = array(
-               '1' => 'Yes',
-               '0' => 'No',
-              );
-
-        $this->tpl_data['WindowDifferenceOptions']
-            = array(
-               'battery' => 'Closest Test Battery',
-               'optimal' => 'Optimal Visit Window for Visit Label',
-              );
-    }
-
-    /**
-    * Loads the project management module
-    *
-    * @return none
-    */
-    function project()
-    {
-        $factory     = NDB_Factory::singleton();
-        $config      = $factory->config();
-        $configs     = NDB_Config::singleton();
-        $useProjects = $config->getSetting("useProjects");
-        if ($useProjects === "true") {
-            $projectList = Utility::getProjectList();
-            $projects    = array();
-            foreach ($projectList as $ProjectID => $Name) {
-                $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
-                $projects[$ProjectID]['subprojects']
-                    = Utility::getSubprojectsForProject($ProjectID);
-            }
-            $this->tpl_data['projects'] = $projects;
-        } else {
-            throw new ConfigurationException("Projects are not used in this study.");
-        }
-    }
-
-    /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu
      *
@@ -220,7 +173,7 @@ class NDB_Form_Configuration extends NDB_Form
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
@@ -239,7 +192,7 @@ class NDB_Form_Configuration extends NDB_Form
         */
     function getCSSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getCSSDependencies();
         return array_merge(
@@ -249,5 +202,3 @@ class NDB_Form_Configuration extends NDB_Form
     }
 
 }
-
-?>
