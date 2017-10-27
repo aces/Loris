@@ -92,6 +92,12 @@ if (strpos($File, "..") !== false) {
     exit(4);
 }
 
+// If $File contains "DCM_", prefix automatically inserted by the
+// LORIS-MRI pipeline, identify it as $FileExt: "DICOMTAR"
+if (strpos($File, "DCM_") ) {
+    $FileExt = "DICOMTAR";
+}
+
 switch($FileExt) {
 case 'mnc':
     $FullPath         = $mincPath . '/' . $File;
@@ -131,6 +137,12 @@ case 'xml':
 case 'nrrd':
     $FullPath         = $imagePath . '/' . $File;
     $MimeType         = 'image/vnd.nrrd';
+    $DownloadFilename = basename($File);
+    break;
+case 'DICOMTAR':
+    // ADD case for DICOMTAR
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'application/x-tar';
     $DownloadFilename = basename($File);
     break;
 default:
