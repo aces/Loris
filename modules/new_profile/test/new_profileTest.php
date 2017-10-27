@@ -163,37 +163,6 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests that page returns error if PSCID is not filled out
-     *
-     * @return none
-     */
-    function testNewProfilePSCIDError()
-    {
-
-        $this->markTestSkipped(
-            "Config not properly set up to test that PSCID is required"
-        );
-
-        // $this->webDriver->get($this->url . "/new_profile/");
-
-        // $dates = $this->webDriver->findElements(
-        // WebDriverBy::cssSelector(".input-date"));
-        // $dates[0]->sendKeys("01/01/2015");
-        // $dates[1]->sendKeys("01/01/2015");
-
-        // $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
-        // $gender->sendKeys("Male");
-
-        // $startVisit = $this->webDriver->findElement(
-        // WebDriverBy::Name("fire_away"));
-        // $startVisit->click();
-
-        // $bodyText = $this->webDriver->findElement(
-        // WebDriverBy::cssSelector("body"))->getText();
-        // $this->assertContains("PSCID must be specified", $bodyText);
-    }
-
-    /**
      * Tests that page returns error if DoB dates dont match
      *
      * @return none
