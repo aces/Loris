@@ -1198,8 +1198,9 @@ class LorisForm
             if ($el['type'] === 'group') {
                 if (isset($el['required'])) {
                     foreach ($el['required'] as $elementIndex) {
-                        $childEl = $el['elements'][$elementIndex];
-                        if (empty(($this->getValue($childEl['name'])))) {
+                        $childEl  = $el['elements'][$elementIndex];
+                        $childVal = $this->getValue($childEl['name']);
+                        if ($childVal === null || $childVal === '') {
                             $this->setElementError(
                                 $el['name'],
                                 "$childEl[requireMsg]"
@@ -2134,7 +2135,7 @@ class LorisForm
     function getSubmitValues()
     {
         $retVal     = array();
-        $submitKeys = array_merge($_POST, $_FILES);
+        $submitKeys = $_POST + $_FILES;
 
         $this->getGroupValues(array_keys($submitKeys), $retVal);
         return $retVal;

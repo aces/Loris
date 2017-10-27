@@ -241,7 +241,7 @@
                                     </a>.
                                 </p>
                                 <p>
-                                    <a href="javascript:history.back(-1)">
+                                    <a href="javascript:history.back()">
                                         Please click here to go back
                                     </a>.
                                 </p>
