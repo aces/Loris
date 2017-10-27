@@ -1,6 +1,6 @@
 <script type="text/javascript" src="{$baseurl}/statistics/js/form_stats_reliability.js"></script>
 <div id="reliability">
-    <h2 class="statsH2">Reliability Statistics{if $CurrentProject} for {$CurrentProject.Name}{/if}{if $CurrentSite} for {$CurrentSite.Name} {else} for All Sites{/if}</h2>
+    <h2 class="statsH2">Reliability Statistics{if $CurrentProject} for {$CurrentProject.Name}{/if}{if $CurrentSubproject && $CurrentSubproject.Name != '' && $CurrentSubproject.Name}: {$CurrentSubproject.Name}{/if}{if $CurrentSite} for {$CurrentSite.Name} {else} for All Sites{/if}</h2>
     <div class="col-sm-2 col-xs-12 form-group">
         {html_options id="ReliabilitySite" options=$Sites name="ReliabilitySite" selected=$CurrentSite.ID class="form-control"}
     </div>
@@ -8,10 +8,14 @@
         <div class="col-sm-2 col-xs-12 form-group">
             {html_options id="ReliabilityProject" options=$Projects name="ReliabilityProject" selected=$CurrentProject.ID class="form-control"}
         </div>
+        <div class="col-sm-2 col-xs-12 form-group">
+            {html_options id="ReliabilitySubproject" options=$Subprojects name="ReliabilitySubproject" selected=$CurrentSubproject.ID class="form-control"}
+       </div>
     {/if}
     <div class="col-sm-3 col-xs-12 form-group">
         <button onClick="updateReliabilityTab()" class="btn btn-primary btn-small col-xs-12">Submit Query</button>
     </div>
+    <label>{if $Warning}The sub-project {$PreviousSubproject} is not valid for project {$CurrentProject.Name}. Showing data for all valid sub-projects.{/if}</label>
     <br><br>
     <div class="row">
         <div class="table-reponsive">

@@ -205,11 +205,10 @@ class NDB_Form_Statistics extends NDB_Form
         foreach ($subprojects as $key=>$val) {
             $subprojList .= $key.",";
         }
-        $subprojList = substr($subprojList, 0, -1);
+        $subprojList      = substr($subprojList, 0, -1);
+        $subproject_query = '';
         if (!empty($subprojList)) {
-            $suproject_query ="AND s.SubprojectID IN ($subprojList)";
-        } else {
-            $suproject_query ='';
+            $subproject_query .= "AND s.SubprojectID IN ($subprojList)";
         }
 
         //SITES
@@ -464,7 +463,7 @@ class NDB_Form_Statistics extends NDB_Form
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID)
                 WHERE s.active='Y' AND s.CenterID <> '1'
                     AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')
-                    $suproject_query)
+                    $subproject_query)
                     AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
                     AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat",
@@ -497,6 +496,7 @@ class NDB_Form_Statistics extends NDB_Form
         $config      = NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         $this->tpl_data['useProjects'] = $useProjects;
+
         $subprojList ="";
 
         $centers = $DB->pselect(
@@ -528,8 +528,9 @@ class NDB_Form_Statistics extends NDB_Form
 
         }
 
-        if ($_REQUEST['BehaviouralProject'] ?? ''
-        ) {
+        $currentProject = null;
+
+        if ($_REQUEST['BehaviouralProject'] ?? '') {
             $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
             $this->tpl_data['CurrentProject']
                 = array(
@@ -541,19 +542,54 @@ class NDB_Form_Statistics extends NDB_Form
         } else {
             $Param_Project = '';
         }
-        $subprojects = Utility::getSubprojectsForProject($currentProject);
+        $subprojects[null] = 'All Valid Sub-Projects';
 
-        $this->tpl_data['Subprojects'] = $subprojects;
+        foreach (Utility::getSubprojectsForProject($currentProject)
+            as $key=>$value) {
+            $subprojects[$key] = $value;
+        }
+
         foreach ($subprojects as $key=>$val) {
             $subprojList .= $key.",";
         }
-        $subprojList = substr($subprojList, 0, -1);
-        if (!empty($subprojList)) {
-            $suproject_query ="AND s.SubprojectID IN ($subprojList)";
-        } else {
-            $suproject_query ='';
-        }
 
+        $this->tpl_data['Subprojects'] = $subprojects;
+        $currentSubproject = null;
+        $subprojList       = substr($subprojList, 1, -1);
+        if ($_REQUEST['BehaviouralSubproject'] ?? ''
+            && in_array(
+                $_REQUEST['BehaviouralSubproject'],
+                array_keys($subprojects),
+                true
+            )
+        ) {
+            $BS = 'BehaviouralSubproject';
+            $currentSubproject = htmlspecialchars($_REQUEST[$BS]);
+            $this->tpl_data['CurrentSubproject']
+                = array(
+                   'ID'   => $currentSubproject,
+                   'Name' => $subprojects[$currentSubproject],
+                  );
+            $subproject_query     = "AND (s.SubprojectID IS NULL";
+            $subproject_query    .= " OR s.SubprojectID=:spid)";
+            $this->params['spid'] =$currentSubproject;
+        } else {
+            $subproject_query ="";
+        }
+        if ($_REQUEST['BehaviouralSubproject'] ?? ''
+            && !in_array(
+                $_REQUEST['BehaviouralSubproject'],
+                array_keys($subprojects),
+                true
+            )) {
+            $BS          = 'BehaviouralSubproject';
+            $cleanString = htmlspecialchars($_REQUEST[$BS]);
+            $this->tpl_data['PreviousSubproject']
+                = Utility::getSubprojectList()[$cleanString];
+            $this->tpl_data['Warning']            = true;
+        } else {
+            $this->tpl_data['Warning'] = null;
+        }
         $Visits = Utility::getExistingVisitLabels($currentProject);
         $this->tpl_data['Visits'] = $Visits;
 
@@ -570,7 +606,7 @@ class NDB_Form_Statistics extends NDB_Form
                     AND s.Current_stage <> 'Recycling Bin'
                     AND f.CommentID NOT LIKE 'DDE%'
                     AND s.CenterID <> '1'
-                    $suproject_query
+                    $subproject_query
                     $Param_Project
                 GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
             $this->params
@@ -613,7 +649,7 @@ class NDB_Form_Statistics extends NDB_Form
                 AND f.CommentID LIKE 'DDE%' 
                 AND c.Active='Y'
                 AND s.CenterID <> '1'
-                $suproject_query
+                $subproject_query
                 $Param_Project
                 GROUP BY s.CenterID, VLabel, f.Data_Entry",
             $this->params
@@ -681,11 +717,10 @@ class NDB_Form_Statistics extends NDB_Form
         foreach ($subprojects as $key=>$val) {
             $subprojList .= $key.",";
         }
-        $subprojList = substr($subprojList, 0, -1);
+        $subprojList      = substr($subprojList, 0, -1);
+        $subproject_query = '';
         if (!empty($subprojList)) {
-            $suproject_query ="AND s.SubprojectID IN ($subprojList)";
-        } else {
-            $suproject_query ='';
+            $subproject_query .= "AND s.SubprojectID IN ($subprojList)";
         }
         //SITES
         if ($_REQUEST['MRIsite'] ?? '') {
@@ -806,7 +841,7 @@ class NDB_Form_Statistics extends NDB_Form
                     AND c.Active='Y'
                     AND f.CommentID NOT LIKE 'DDE%'
                     AND s.CenterID <> '1'
-                    $suproject_query
+                    $subproject_query
                     $Param_Project
               GROUP BY Subcat,
                     s.SubprojectID,
@@ -850,7 +885,7 @@ class NDB_Form_Statistics extends NDB_Form
                     AND s.CenterID <> '1'
                     AND fi.FileType='mnc'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
-                    $suproject_query
+                    $subproject_query
                     $Param_Project
                     $Param_Site
                 ",
@@ -868,7 +903,7 @@ class NDB_Form_Statistics extends NDB_Form
                     AND s.CenterID <> '1'
                     AND fi.FileType='mnc'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
-                    $suproject_query
+                    $subproject_query
                     $Param_Project
                     $Param_Site
                 GROUP BY s.SubprojectID",
@@ -897,7 +932,7 @@ class NDB_Form_Statistics extends NDB_Form
                     AND s.CenterID <> '1'
                     AND fqc.QCStatus='Pass'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
-                    $suproject_query
+                    $subproject_query
                     $Param_Project
                     $Param_Site
                 ",
@@ -917,7 +952,7 @@ class NDB_Form_Statistics extends NDB_Form
                     AND s.CenterID <> '1'
                     AND fqc.QCStatus='Pass'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
-                    $suproject_query
+                    $subproject_query
                     $Param_Project
                     $Param_Site
                 GROUP BY s.SubprojectID",
@@ -947,7 +982,7 @@ class NDB_Form_Statistics extends NDB_Form
                     AND s.CenterID <> '1'
                     AND fqc.QCStatus='Fail'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
-                    $suproject_query
+                    $subproject_query
                     $Param_Project
                     $Param_Site
                 ",
@@ -967,7 +1002,7 @@ class NDB_Form_Statistics extends NDB_Form
                     AND s.CenterID <> '1'
                     AND fqc.QCStatus='Fail'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
-                    $suproject_query
+                    $subproject_query
                     $Param_Project
                     $Param_Site
                 GROUP BY s.SubprojectID",
@@ -994,7 +1029,7 @@ class NDB_Form_Statistics extends NDB_Form
 
 
     /**
-     * ELIABILITY function
+     * RELIABILITY function
      *
      * @return void
      */
@@ -1010,8 +1045,7 @@ class NDB_Form_Statistics extends NDB_Form
             $projects[$key] = $value;
         }
 
-        if ($_REQUEST['ReliabilityProject'] ?? ''
-        ) {
+        if ($_REQUEST['ReliabilityProject'] ?? '') {
             $currentProject = htmlspecialchars($_REQUEST['ReliabilityProject']);
             $this->tpl_data['CurrentProject']
                 = array(
@@ -1024,9 +1058,53 @@ class NDB_Form_Statistics extends NDB_Form
             $Param_Project ='';
         }
 
-        //SITES
-        if ($_REQUEST['ReliabilitySite'] ?? ''
+        //SUBPROJECTS
+        $subprojects[null] = 'All Valid Sub-Projects';
+
+        foreach (Utility::getSubprojectsForProject($currentProject)
+            as $key=>$value) {
+            $subprojects[$key] = $value;
+        }
+
+        $this->tpl_data['Subprojects'] = $subprojects;
+        $currentSubproject = null;
+        if ($_REQUEST['ReliabilitySubproject'] ?? ''
+            && in_array(
+                $_REQUEST['ReliabilitySubproject'],
+                array_keys($subprojects),
+                true
+            )
         ) {
+            $RS = 'ReliabilitySubproject';
+            $currentSubproject = htmlspecialchars($_REQUEST[$RS]);
+            $this->tpl_data['CurrentSubproject']
+                = array(
+                   'ID'   => $currentSubproject,
+                   'Name' => $subprojects[$currentSubproject],
+                  );
+            $subproject_query     = "AND (s.SubprojectID IS NULL ";
+            $subproject_query    .= "OR s.SubprojectID=:spid)";
+            $this->params['spid'] =$currentSubproject;
+        } else {
+            $subproject_query ="";
+        }
+        if ($_REQUEST['ReliabilitySubproject'] ?? ''
+            && !in_array(
+                $_REQUEST['ReliabilitySubproject'],
+                array_keys($subprojects),
+                true
+            )) {
+            $RS          = 'ReliabilitySubproject';
+            $cleanString = htmlspecialchars($_REQUEST[$RS]);
+            $this->tpl_data['PreviousSubproject']
+                = Utility::getSubprojectList()[$cleanString];
+            $this->tpl_data['Warning']            = true;
+        } else {
+            $this->tpl_data['Warning'] = null;
+        }
+
+        //SITES
+        if ($_REQUEST['ReliabilitySite'] ?? '') {
             $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
             $this->params['sid'] = htmlspecialchars($_REQUEST['ReliabilitySite']);
         } else {
@@ -1058,17 +1136,22 @@ class NDB_Form_Statistics extends NDB_Form
         $this->tpl_data['Sites']    = $sites;
 
         $this->tpl_data['reliability_completion']
-            = $this->getReliabilityData($Param_Project, $Param_Site);
+            = $this->getReliabilityData(
+                $Param_Project,
+                $subproject_query,
+                $Param_Site
+            );
     }
     /**
      * GetReliabilityData function
      *
-     * @param string $Param_Project the value of Param_Project
-     * @param string $Param_Site    the value of Param_Site
+     * @param string $Param_Project    the value of Param_Project
+     * @param string $subproject_query WHERE clause for specific subproject
+     * @param string $Param_Site       the value of Param_Site
      *
      * @return void
      */
-    function getReliabilityData($Param_Project, $Param_Site)
+    function getReliabilityData($Param_Project, $subproject_query, $Param_Site)
     {
         // Whether something is reliable or not isn't stored in the database,
         // but calculated on the fly.
@@ -1095,6 +1178,7 @@ class NDB_Form_Statistics extends NDB_Form
         foreach ($tests as $inst => $name) {
             $reliable[] = $this->_getSingleReliabilityData(
                 $Param_Project,
+                $subproject_query,
                 $Param_Site,
                 $name,
                 $inst,
@@ -1107,15 +1191,17 @@ class NDB_Form_Statistics extends NDB_Form
     /**
      * GetSingleReliabilityData function
      *
-     * @param string $Param_Project the value of Param_Project
-     * @param string $Param_Site    the value of Param_Site
-     * @param string $name          the value of name
-     * @param string $inst_name     the value of inst_name
-     * @param string $cutoff        the value of cutoff
+     * @param string $Param_Project    the value of Param_Project
+     * @param string $subproject_query WHERE clause for specific subproject
+     * @param string $Param_Site       the value of Param_Site
+     * @param string $name             the value of name
+     * @param string $inst_name        the value of inst_name
+     * @param string $cutoff           the value of cutoff
      *
      * @return void
      */
     function _getSingleReliabilityData($Param_Project,
+        $subproject_query,
         $Param_Site,
         $name,
         $inst_name,
@@ -1136,6 +1222,7 @@ class NDB_Form_Statistics extends NDB_Form
                            AND Reliability_score IS NOT NULL
                            AND c.CenterID <> 1
                                 $Param_Project
+                                $subproject_query
                                    $Param_Site",
             $this->params
         );
@@ -1152,6 +1239,7 @@ class NDB_Form_Statistics extends NDB_Form
                            AND Reliability_score > $cutoff
                            AND c.CenterID <> 1
                                 $Param_Project
+                                $subproject_query
                                    $Param_Site",
             $this->params
         );
@@ -1166,6 +1254,7 @@ class NDB_Form_Statistics extends NDB_Form
                           AND Invalid <> 'yes'
                           AND c.CenterID <> 1
                                $Param_Project
+                               $subproject_query
                                  $Param_Site",
             $this->params
         );

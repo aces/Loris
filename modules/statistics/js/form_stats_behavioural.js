@@ -1,9 +1,10 @@
 /*global document, $, window, scrollContent*/
 function updateBehaviouralTab() {
     var BehaviouralProject = document.getElementById("BehaviouralProject");
+    var BehaviouralSubproject = document.getElementById("BehaviouralSubproject");;
     var request            = $.ajax(
         {
-            url: loris.BaseURL + '/statistics/stats_behavioural/?dynamictabs=dynamictabs&BehaviouralProject=' + (BehaviouralProject==null ? "" : BehaviouralProject.value),
+            url: loris.BaseURL + '/statistics/stats_behavioural/?dynamictabs=dynamictabs&BehaviouralProject=' + (BehaviouralProject==null ? "" : BehaviouralProject.value) + '&BehaviouralSubproject=' + (BehaviouralSubproject==null ? "" : BehaviouralSubproject.value),
             type: 'GET',
             data: 'html',
             success: function (response) {

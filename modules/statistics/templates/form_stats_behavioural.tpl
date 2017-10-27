@@ -1,12 +1,20 @@
 <div id="data_entry">
-    <h2 class="statsH2">Data Entry Statistics  {if $CurrentProject} for {$CurrentProject.Name} {/if}</h2>
+    <h2 class="statsH2">Data Entry Statistics  {if $CurrentProject} for {$CurrentProject.Name} {/if}{if $CurrentSubproject}: {$CurrentSubproject.Name} {/if}</h2>
     <script type="text/javascript" src="{$baseurl}/statistics/js/form_stats_behavioural.js"></script>
     {if $useProjects == "true"}
-        <div class="col-sm-2">
-            {html_options id="BehaviouralProject" options=$Projects name="BehaviouralProject" selected=$CurrentProject.ID class="form-control"}
+        <div class="row form-group">
+            <div class="col-sm-2">
+                {html_options id="BehaviouralProject" options=$Projects name="BehaviouralProject" selected=$CurrentProject.ID class="form-control"}
+            </div>
+            <div class="col-sm-2">
+                {html_options id="BehaviouralSubproject" options=$Subprojects name="BehaviouralSubproject" selected=$CurrentSubproject.ID class="form-control"}
+            </div>
+            <button class="btn btn-primary btn-sm" onClick="updateBehaviouralTab()">Submit Query</button>
         </div>
-        <button class="btn btn-primary btn-sm" onClick="updateBehaviouralTab()">Submit Query</button>
-        <br><br>
+        
+        <label>{if $Warning}The sub-project {$PreviousSubproject} is not valid for project {$CurrentProject.Name}. Showing data for all valid sub-projects.{/if}</label>
+        
+        
     {/if}
 
     <table class="data table table-primary table-bordered dynamictable">

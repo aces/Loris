@@ -4,7 +4,7 @@ function updateReliabilityTab() {
     var ReliabilityProject = document.getElementById("ReliabilityProject");
     var request            = $.ajax(
         {
-            url: loris.BaseURL + '/statistics/stats_reliability/?dynamictabs=dynamictabs&ReliabilitySite=' + ReliabilitySite.value + '&ReliabilityProject=' + (ReliabilityProject==null ? "" : ReliabilityProject.value),
+            url: loris.BaseURL + '/statistics/stats_reliability/?dynamictabs=dynamictabs&ReliabilitySite=' + ReliabilitySite.value + '&ReliabilityProject=' + (ReliabilityProject==null ? "" : ReliabilityProject.value) + '&ReliabilitySubproject=' + (ReliabilitySubproject==null ? "" : ReliabilitySubproject.value),
             type: 'GET',
             data: 'html',
             success: function(response) {
