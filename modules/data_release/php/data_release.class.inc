@@ -27,12 +27,19 @@ namespace LORIS\data_release;
 class Data_Release extends \NDB_Menu_Filter
 {
     /**
-     * Setup variables
+     * Create the form for the candidate_list menu page
      *
-     * @return None
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
      */
-    function _setupVariables()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
         $user =& \User::singleton();
 
         $Factory = \NDB_Factory::singleton();
