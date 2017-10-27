@@ -231,7 +231,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                 md5(concat_WS(':',minc_location,PatientName,SeriesUID,time_run))
                   as hash,
                 mri_protocol_violated_scans.ID as join_id,
-                p.CenterID as CenterID,
+                p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
             FROM mri_protocol_violated_scans
             LEFT JOIN violations_resolved
@@ -261,7 +261,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                    )
                 ) as hash,
                 mri_violations_log.LogID as join_id,
-                p.CenterID as CenterID,
+                p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
             FROM mri_violations_log
             LEFT JOIN mri_scan_type
@@ -293,7 +293,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                    )
                 ) as hash,
                 MRICandidateErrors.ID as join_id,
-                p.CenterID as CenterID,
+                p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
             FROM MRICandidateErrors
             LEFT JOIN violations_resolved
@@ -306,7 +306,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
             LEFT JOIN psc p
             ON (p.CenterID = c.CenterID)
             WHERE Resolved is NULL)
-            as v LEFT JOIN psc site ON (site.CenterID = v.CenterID) 
+            as v LEFT JOIN psc site ON (site.CenterID = v.Site) 
             LEFT JOIN Project as pjct ON (v.Project = pjct.ProjectID)
             LEFT JOIN subproject as subpjct
                 ON (v.Subproject = subpjct.SubprojectID)
@@ -322,7 +322,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                                'Filename'    => 'v.MincFile',
                                'Description' => 'v.Series_Description',
                                'SeriesUID'   => 'v.SeriesUID',
-                               'Site'        => 'v.CenterID',
+                               'Site'        => 'v.Site',
                               );
 
         $this->validFilters = array(
@@ -334,8 +334,10 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                                'v.Problem',
                                'v.Series_Description',
                                'v.SeriesUID',
-                               'v.CenterID',
+                               'v.Site',
                               );
+
+        $this->EqualityFilters[] = 'v.Site';
         return true;
     }
     /**
