@@ -11,7 +11,7 @@
 * @link     https://www.github.com/aces/Loris/
 */
 namespace LORIS\candidate_list;
-
+use Loris\candidate_parameters as CP;
 /**
  * Implements the candidate_list menu
  *
@@ -218,7 +218,7 @@ class Candidate_List extends \NDB_Menu_Filter
         parent::_setupPage($name, $page, $identifier, $commentID, $formname);
         include_once __DIR__
             . "/../../candidate_parameters/php/"
-            . "NDB_Form_candidate_parameters.class.inc";
+            . "candidate_parameters.class.inc";
             //+  NDB_Form_candidate_parameters::getParticipantStatusOptions();
         // create user object
         $user   =& \User::singleton();
@@ -260,7 +260,7 @@ class Candidate_List extends \NDB_Menu_Filter
                                        );
 
         $participant_status_options = array(null => 'All')
-            +  \NDB_Form_candidate_parameters::getParticipantStatusOptions();
+            +  CP\candidate_parameters::getParticipantStatusOptions();
         $scan_options = array(
                          null => 'All',
                          'Y'  => 'Yes',
@@ -357,12 +357,12 @@ class Candidate_List extends \NDB_Menu_Filter
     function _setDataTableRows($count)
     {
         // create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
-        $subprojectlist = Utility::getSubprojectList();
-        $projectlist    = Utility::getProjectList();
+        $subprojectlist = \Utility::getSubprojectList();
+        $projectlist    = \Utility::getProjectList();
 
-        $pOptions = \NDB_Form_candidate_parameters::getParticipantStatusOptions();
+        $pOptions = CP\candidate_parameters::getParticipantStatusOptions();
         // print out
         $x = 0;
         foreach ($this->list as $item) {

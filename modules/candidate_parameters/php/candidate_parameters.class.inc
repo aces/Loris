@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-
+namespace LORIS\candidate_parameters;
 /**
  * Main class for candidate_parameters module
  * corresponding to /candidate_parameters/ URL
@@ -27,7 +27,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Form_Candidate_Parameters extends NDB_Form
+class Candidate_Parameters extends \NDB_Form
 {
     public $hasWritePermission = false;
 
@@ -40,7 +40,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
     function _hasAccess()
     {
         //create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
         // Set global permission to control access
         // to different modules of candidate_parameters page
@@ -69,8 +69,8 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
      */
     function candidate_parameters()//@codingStandardsIgnoreLine
     {
-        $config    =& NDB_Config::singleton();
-        $candidate =& Candidate::singleton($this->identifier);
+        $config    =& \NDB_Config::singleton();
+        $candidate =& \Candidate::singleton($this->identifier);
 
         // candID
         $this->tpl_data['candID'] = $candidate->getData('CandID');
@@ -90,7 +90,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
      */
     static function getParticipantStatusOptions()
     {
-        $DB           =& Database::singleton();
+        $DB           =& \Database::singleton();
         $options      = $DB->pselect(
             "SELECT ID,Description
             FROM participant_status_options
@@ -115,7 +115,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
      */
     function getParticipantStatusSubOptions($parentID)
     {
-        $DB           =& Database::singleton();
+        $DB           =& \Database::singleton();
         $options      = $DB->pselect(
             "SELECT ID,Description 
             FROM participant_status_options 
@@ -136,7 +136,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
