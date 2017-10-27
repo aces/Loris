@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
  */
+namespace LORIS\data_release;
 
 /**
  * Data Release Class
@@ -23,7 +24,7 @@
  * @link     https://www.github.com/aces/Loris
 */
 
-class NDB_Menu_Filter_Data_Release extends NDB_Menu_Filter
+class Data_Release extends \NDB_Menu_Filter
 {
     /**
      * Setup variables
@@ -32,9 +33,9 @@ class NDB_Menu_Filter_Data_Release extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
-        $Factory = NDB_Factory::singleton();
+        $Factory = \NDB_Factory::singleton();
         $DB      = $Factory->Database();
 
         // set the class variables
