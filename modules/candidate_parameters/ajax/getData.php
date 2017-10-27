@@ -12,9 +12,6 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
-require __DIR__
-        . "/../../candidate_parameters/php/"
-        . "candidate_parameters.class.inc";
 use LORIS\candidate_parameters as CP;
 if (isset($_GET['data'])) {
     $data = $_GET['data'];
@@ -273,6 +270,10 @@ function getFamilyInfoFields()
  */
 function getParticipantStatusFields()
 {
+    include_once __DIR__
+        . "/../../candidate_parameters/php/"
+        . "candidate_parameters.class.inc";
+
     $candID = $_GET['candID'];
 
     $db =& \Database::singleton();
