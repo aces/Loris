@@ -7,7 +7,7 @@
  *
  * @category Behavioural
  * @package  Main
- * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
+ * @author   Wang Shen <shen.wang2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
@@ -18,7 +18,7 @@ namespace LORIS\training;
  *
  * @category Behavioural
  * @package  Main
- * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
+ * @author   Wang Shen <shen.wang2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
