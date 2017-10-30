@@ -136,7 +136,7 @@ class NDB_Caller
             // The proper solution is probably to re-write anything that uses them
             // in React.
             if (method_exists($this->page, 'getControlPanel')) {
-            $this->controlPanel = $this->page->getControlPanel();
+                $this->controlPanel = $this->page->getControlPanel();
             }
             if (method_exists($this->page, 'getFeedbackPanel')) {
                 $this->feedbackPanel = $this->page->getFeedbackPanel(
