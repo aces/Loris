@@ -362,11 +362,7 @@ class Candidate_List extends \NDB_Menu_Filter
         $subprojectlist = Utility::getSubprojectList();
         $projectlist    = Utility::getProjectList();
 
-<<<<<<< HEAD:modules/candidate_list/php/NDB_Menu_Filter_candidate_list.class.inc
         $pOptions = Candidate::getParticipantStatusOptions();
-=======
-        $pOptions = \NDB_Form_candidate_parameters::getParticipantStatusOptions();
->>>>>>> aces/minor:modules/candidate_list/php/candidate_list.class.inc
         // print out
         $x = 0;
         foreach ($this->list as $item) {
