@@ -11,7 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
+namespace LORIS\conflict_resolver;
 /**
  * Menu_Filter_Form_Conflicts_Resolver Class
  *
@@ -24,7 +24,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
+class Conflict_Resolver extends \NDB_Menu_Filter_Form
 {
 
     /**
@@ -36,7 +36,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
     function _hasAccess()
     {
         // create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
         return ($user->hasPermission('conflict_resolver'));
     }
 
@@ -54,9 +54,9 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
             return true;
         }
 
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
 
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
         foreach ($values AS $key => $val) {
             // The only valid values are 1, 2 or none.  Therefore we are only
@@ -130,7 +130,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
 
                     $TableName = $row['TableName'];
 
-                    $Instrument = NDB_BVL_Instrument::factory(
+                    $Instrument = \NDB_BVL_Instrument::factory(
                         $TableName,
                         $row['CommentId1'],
                         '',
@@ -152,7 +152,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                         // not the instrument
                     }
 
-                    $Instrument = NDB_BVL_Instrument::factory(
+                    $Instrument = \NDB_BVL_Instrument::factory(
                         $TableName,
                         $row['CommentId2'],
                         '',
@@ -183,8 +183,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-
-        $config =& NDB_Config::singleton();
+        $config =& \NDB_Config::singleton();
 
         // set the class variables
         $useProjects = $config->getSetting("useProjects");
@@ -239,7 +238,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
             LEFT JOIN Project ON (candidate.ProjectID=Project.ProjectID )
             WHERE 1=1";
 
-        $user = User::singleton();
+        $user = \User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {
             // restrict data to own site
             $site_arr     = implode(",", $user->getCenterIDs());
@@ -319,27 +318,34 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
     /**
      * Sets up the smarty menu filter items for the conflict resolver
      *
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
      * @return none
      */
-    function _setFilterForm()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
         // Create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
-        $config =& NDB_Config::singleton();
+        $config =& \NDB_Config::singleton();
 
         // Get instruments
-        $instruments = Utility::getAllInstruments();
+        $instruments = \Utility::getAllInstruments();
         $instruments = array_merge(array('' => 'All Instruments'), $instruments);
 
         // Get visits
-        $visits = Utility::getVisitList();
+        $visits = \Utility::getVisitList();
         $visits = array_merge(array('' => 'All'), $visits);
 
         // Get sites
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
-            $sites = Utility::getSiteList();
+            $sites = \Utility::getSiteList();
             if (is_array($sites)) {
                 $sites = array('' => 'All') + $sites;
             }
@@ -374,7 +380,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
         // Project list, if applicable
         if ($config->getSetting("useProjects")==="true") {
             $list_of_projects = array(null => 'All');
-            $projectList      = Utility::getProjectList();
+            $projectList      = \Utility::getProjectList();
             foreach ($projectList as $key => $value) {
                 $list_of_projects[$key] = $value;
             }
@@ -394,7 +400,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
     function _getFullList()
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
 
         $qparams = array();
         // add the base query
@@ -447,7 +453,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
@@ -456,5 +462,3 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
         );
     }
 }
-
-?>
