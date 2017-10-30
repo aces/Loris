@@ -341,6 +341,15 @@ class NDB_BVL_Instrument extends NDB_Page
         }
     }
 
+    protected function getSavedValues() {
+
+        $db = Database::singleton();
+        $jsonstring = $db->pselectOne(
+                "SELECT Data FROM flag WHERE CommentID=:CID",
+                array('CID' => $this->getCommentID())
+        );
+        return json_decode($jsonstring, true);
+    }
 
 
     /**
@@ -388,16 +397,9 @@ class NDB_BVL_Instrument extends NDB_Page
             $this->addGroup($buttons, null, null, "&nbsp;");
         }
 
-        // get saved data to pre-populate form
-        $db = Database::singleton();
-
-        $defaults = $db->pselect(
-            "SELECT * FROM $this->table WHERE CommentID=:CID",
-            array('CID' => $this->getCommentID())
-        );
         // set the defaults (call private method _setDefaultsArray
         // which could be overridden if necessary)
-        $defaults = $this->_setDefaultsArray($defaults[0]);
+        $defaults = $this->_setDefaultsArray($this->getSavedValues());
 
         // merge in the localDefaults property so that simple
         // additions to the defaults array no longer requires
@@ -728,12 +730,6 @@ class NDB_BVL_Instrument extends NDB_Page
             $values = Utility::nullifyEmpty($values, $key);
         }
         $db     =& Database::singleton();
-        $result = $db->update(
-            $this->table,
-            $values,
-            array('CommentID' => $this->getCommentID())
-        );
-
         // Extract the old data and merge it with what was submitted so that we
         // don't overwrite data from other pages.
         $oldData = $db->pselectOne(
@@ -1351,10 +1347,14 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getFieldValue($field)
     {
+
         $DB =& Database::singleton();
 
-        $query      = "SELECT $field FROM $this->table WHERE CommentID = :CID";
-        $fieldValue = $DB->pselectOne($query, array('CID' => $this->getCommentID()));
+        $query      = "SELECT Data FROM flag WHERE CommentID = :CID";
+        $json = $DB->pselectOne($query, array('CID' => $this->getCommentID()));
+        $allfields = json_decode($json, true);
+        $fieldValue = $allfields[$field];
+
 
         if (!empty($fieldValue)) {
             return $fieldValue;
@@ -1396,14 +1396,8 @@ class NDB_BVL_Instrument extends NDB_Page
 
         $db =& Database::singleton();
 
-        $query = "SELECT " . join(',', $this->_requiredElements)
-            . " FROM $this->table WHERE CommentID=:CID";
-
-        $dataFields = $db->pselectRow(
-            $query,
-            array('CID' => $this->getCommentID())
-        );
-        foreach ($dataFields as $field) {
+        $dataFields = $this->getSavedValues();
+        foreach ($this->_requiredElements as $field) {
             // this shouldn't be just empty() b/c 0 is a valid
             // value for some required fields
             if (is_null($field) || $field === "") {
@@ -1421,11 +1415,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getDataEntryCompletionStatus()
     {
-        $db =& Database::singleton();
-
-        $query = "SELECT Data_entry_completion_status
-            FROM $this->table WHERE CommentID=:CID";
-        return $db->pselectOne($query, array('CID' => $this->getCommentID()));
+        return $this->getFieldValue("Data_entry_completion_status");
     }
 
 
@@ -1447,13 +1437,10 @@ class NDB_BVL_Instrument extends NDB_Page
             );
         }
 
-        $db =& Database::singleton();
-
-        $success = $db->update(
-            $this->table,
-            array('Data_entry_completion_status' => $status),
-            array('CommentID' => $this->getCommentID())
-        );
+        $fields = $this->getSavedValues();
+        // FIXME: This should probably be moved to the flag table.
+        $fields['Data_entry_completion_status'] = $status;
+        $this->_saveValues($fields);
     }
 
     /**
@@ -1914,13 +1901,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
         }
 
-        // update the scores
-        $success = $db->update(
-            $this->table,
-            $scores,
-            array('CommentID' => $this->getCommentID())
-        );
-
+        $this->_saveValues($scores);
         return;
     }
 
