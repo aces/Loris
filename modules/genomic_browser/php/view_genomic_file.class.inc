@@ -4,11 +4,11 @@
  *
  * PHP version 7
  *
- * @category   LORIS_Module
- * @package    Genomics
- * @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://github.com/aces/Loris
+ * @category LORIS_Module
+ * @package  Genomics
+ * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
 */
 namespace LORIS\genomic_browser;
 
@@ -17,11 +17,11 @@ namespace LORIS\genomic_browser;
  *
  * This class is a Form to present Genomic_file data
  *
- * @category   LORIS_Module
- * @package    Genomics
- * @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://github.com/aces/Loris
+ * @category LORIS_Module
+ * @package  Genomics
+ * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
 */
 
 class View_Genomic_File extends \NDB_Form
