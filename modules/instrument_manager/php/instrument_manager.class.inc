@@ -10,6 +10,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+
+namespace LORIS\instrument_manager;
 /**
  * Instrument_manager
  *
@@ -21,7 +23,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
+class Instrument_Manager extends \NDB_Menu_Filter
 {
     /**
     * Checking permissions
@@ -30,7 +32,7 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
     */
     function _hasAccess()
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
         return $user->hasPermission('superuser');
     }
     /**
@@ -40,7 +42,7 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
     */
     function _setupVariables()
     {
-        $config        = NDB_Config::singleton();
+        $config        = \NDB_Config::singleton();
         $this->path    = $config->getSetting("base");
         $this->headers = array(
                           'Instrument',
@@ -68,11 +70,9 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
         } else {
             $writable = true;
         }
-
         $this->tpl_data['writable'] = $writable;
-
         if ($writable && $_POST['install'] == 'Install Instrument') {
-            $db       = Database::singleton();
+            $db       = \Database::singleton();
             $instname = basename($_FILES['install_file']['name'], '.linst');
 
             $new_file = $this->path . "project/instruments/" .
@@ -90,13 +90,13 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
                 $db_config = $config->getSetting('database');
                 exec("php generate_tables_sql_and_testNames.php < $new_file");
 
-                $instrument =& NDB_BVL_Instrument::factory(
+                $instrument =& \NDB_BVL_Instrument::factory(
                     $instname,
                     null,
                     null
                 );
                 if (!isset($db_config['quatUser'], $db_config['quatPassword'])) {
-                    throw new LorisException(
+                    throw new \LorisException(
                         "SQL needs to be sourced manually at /project/tables_sql/".
                         $instrument->table.".sql"
                     );
@@ -130,8 +130,8 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
     */
     function _setDataTableRows($count)
     {
-        $factory = NDB_Factory::singleton();
-        $db      = Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $db      = \Database::singleton();
         $x       = 0;
         foreach ($this->list as $item) {
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
@@ -234,8 +234,8 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
     */
     function checkType($tablename, $columnname, $type)
     {
-        $factory      = NDB_Factory::singleton();
-        $db           = Database::singleton();
+        $factory      = \NDB_Factory::singleton();
+        $db           = \Database::singleton();
         $sqlSelectOne = "SELECT count(*)".
                         " FROM information_schema.columns".
                         " WHERE TABLE_SCHEMA=:dbname".
@@ -265,10 +265,10 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
     */
     function checkTable($instname)
     {
-        $factory  = NDB_Factory::singleton();
+        $factory  = \NDB_Factory::singleton();
         $filename = $this->path . "project/instruments/$instname.linst";
         $fp       = fopen($filename, "r");
-        $db       = Database::singleton();
+        $db       = \Database::singleton();
 
         while (($line = fgets($fp, 4096)) !== false) {
             $pieces = explode("{@}", $line);
@@ -353,7 +353,7 @@ class NDB_Menu_Filter_Instrument_Manager extends NDB_Menu_Filter
     {
         $filename = $this->path . "project/instruments/$instname.linst";
         $fp       = fopen($filename, "r");
-        $db       = Database::singleton();
+        $db       = \Database::singleton();
 
         while (($line = fgets($fp, 4096)) !== false) {
             $pieces       = explode("{@}", $line);
