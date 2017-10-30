@@ -43,10 +43,10 @@ class User extends UserPermissions
      */
     static function &factory($username)
     {
-        if (is_null($username)) {
+        if (empty($username)) {
             throw new LorisException('User factory called with null username');
-            return null;
         }
+
         $obj = new User;
 
         // right off, set the username
@@ -72,20 +72,17 @@ class User extends UserPermissions
         // get user sites
         $user_cid = array();
         if (!isset($row['ID'])) {
-            error_log(
-                "Could not get user center ID(s) because'
-                . ' user DB query value 'ID' is not set."
-            );
-        } else {
-            $user_centerID_query =  $DB->pselect(
-                "SELECT CenterID FROM user_psc_rel upr
-                WHERE upr.UserID= :UID",
-                array('UID' => $row['ID'])
-            );
+            throw new LorisException('This User does not exists');
+        }
 
-            foreach ($user_centerID_query as $key=>$val) {
-                $user_cid[$key] =$val['CenterID'];
-            }
+        $user_centerID_query =  $DB->pselect(
+            "SELECT CenterID FROM user_psc_rel upr
+            WHERE upr.UserID= :UID",
+            array('UID' => $row['ID'])
+        );
+
+        foreach ($user_centerID_query as $key=>$val) {
+            $user_cid[$key] =$val['CenterID'];
         }
 
         // Get examiner information
