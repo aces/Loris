@@ -1,8 +1,10 @@
 <?php
 /**
- * PHP version 5
+ * This class handle file uploading for the genomic module
  *
- * @category    LORIS Module
+ * PHP version 7
+ *
+ * @category    LORIS_Module
  * @package     Genomics
  * @author      Loris team <info-loris.mni@mcgill.ca>
  * @contributor Xavier <xavier.lecoursboucher@mcgill.ca>
@@ -12,12 +14,10 @@
 namespace LORIS\genomic_browser;
 
 /**
- * genomic_file_uploader Class
- *
  * This class is to provide a uploader tool to keep genomic
  * files into LORIS.
  *
- * @category    LORIS Module
+ * @category    LORIS_Module
  * @package     Genomics
  * @author      Loris team <info-loris.mni@mcgill.ca>
  * @contributor Xavier <xavier.lecoursboucher@mcgill.ca>

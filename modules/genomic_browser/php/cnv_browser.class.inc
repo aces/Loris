@@ -4,13 +4,13 @@
  * Displays CNV (Copy Number Variant) genomic data
  * Filterable by candidate, gene or variant fields.
  *
- * PHP version 5
+ * PHP version 7
  *
- *  @category   LORIS Module
- *  @package    Genomics
- *  @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
- *  @license    http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- *  @link       https://www.github.com/aces/Loris/
+ *  @category LORIS_Module
+ *  @package  Genomics
+ *  @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ *  @link     https://www.github.com/aces/Loris/
  *  Subtab: CNV
  */
 namespace LORIS\genomic_browser;
@@ -20,7 +20,7 @@ namespace LORIS\genomic_browser;
  *
  * This class is cnv_browser Form
  *
- * @category LORIS Module
+ * @category LORIS_Module
  * @package  Genomics
  * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3

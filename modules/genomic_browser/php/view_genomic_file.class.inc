@@ -1,13 +1,11 @@
 <?php
-
 /**
  * Form_genomic_browser class file
  *
- * PHP version 5
+ * PHP version 7
  *
- * @category   Genomic
- * @package    Main
- * @subpackage Genomic
+ * @category   LORIS_Module
+ * @package    Genomics
  * @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://github.com/aces/Loris
@@ -15,13 +13,12 @@
 namespace LORIS\genomic_browser;
 
 /**
- * NDB_Form_Genomic_Browser Class
+ * Vie_Genomic_File Class
  *
- * This class is genomic_browser Form
+ * This class is a Form to present Genomic_file data
  *
- * @category   Genomic
- * @package    Main
- * @subpackage Genomic
+ * @category   LORIS_Module
+ * @package    Genomics
  * @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://github.com/aces/Loris

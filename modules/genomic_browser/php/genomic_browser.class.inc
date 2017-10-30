@@ -5,14 +5,13 @@
  * Displays genomic profiles - genomic data available per candidate
  * Filterable by candidate or genomic criteria.
  *
- * PHP version 5
+ * PHP version 7
  *
- *  @category   LORIS Module
- *  @package    Genomics
- *  @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
- *  @license    http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- *  @link       https://www.github.com/aces/Loris/
- *  Main tab: Genomic Profiles. Submenus: CNV,SNP,GWAS
+ *  @category LORIS_Module
+ *  @package  Genomics
+ *  @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ *  @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\genomic_browser;
 
@@ -21,11 +20,11 @@ namespace LORIS\genomic_browser;
  *
  * This class is genomic_browser Form
  *
- * @category   LORIS Module
- * @package    Genomics
- * @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- * @link       https://github.com/aces/Loris
+ * @category LORIS_Module
+ * @package  Genomics
+ * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ * @link     https://github.com/aces/Loris
 */
 class Genomic_Browser extends \NDB_Menu_Filter
 {

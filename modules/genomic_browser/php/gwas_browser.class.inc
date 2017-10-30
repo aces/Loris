@@ -4,14 +4,13 @@
  * Displays GWAS analysis results
  * Filterable by SNP and p-value, and other fields.
  *
- * PHP version 5
+ * PHP version 7
  *
- *  @category   LORIS Module
- *  @package    Genomics
- *  @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
- *  @license    http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- *  @link       https://www.github.com/aces/Loris/
- *  Submenu:    GWAS
+ *  @category LORIS_Module
+ *  @package  Genomics
+ *  @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ *  @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\genomic_browser;
 
@@ -21,12 +20,11 @@ namespace LORIS\genomic_browser;
  * This class is gwas_browser Form
  * GWAS submenu tab for Genomic Browser
  *
- * @category   Genomic
- * @package    Main
- * @subpackage Genomic
- * @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- * @link       https://github.com/aces/Loris
+ * @category LORIS_Module
+ * @package  Genomics
+ * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ * @link     https://github.com/aces/Loris
 */
 class GWAS_Browser extends \NDB_Menu_Filter
 {

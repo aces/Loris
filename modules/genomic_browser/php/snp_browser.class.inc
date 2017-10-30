@@ -4,27 +4,27 @@
  * Displays SNP genomic variant data.
  * Filterable by candidate, gene or variant fields.
  *
- * PHP version 5
+ * PHP version 7
  *
- *  @category   LORIS Module
- *  @package    Genomics
- *  @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
- *  @license    http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- *  @link       https://www.github.com/aces/Loris/
+ *  @category LORIS_Module
+ *  @package  Genomics
+ *  @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ *  @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\genomic_browser;
 
 /**
- * NDB_Menu_Filter_SNP_Browser Class
+ * SNP_Browser Class
  *
  * This class is snp_browser Form
  * SNP submenu tab for Genomic Browser
  *
- * @category   LORIS Module
- * @package    Genomics
- * @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- * @link       https://github.com/aces/Loris
+ * @category LORIS_Module
+ * @package  Genomics
+ * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ * @link     https://github.com/aces/Loris
 */
 class SNP_Browser extends \NDB_Menu_Filter
 {

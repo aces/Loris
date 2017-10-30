@@ -4,9 +4,9 @@
  * Displays targeted CpG islands data.
  * Filterable by candidate, gene or variant fields.
  *
- * PHP version 5
+ * PHP version 7
  *
- *  @category LORIS Module
+ *  @category LORIS_Module
  *  @package  Genomics
  *  @author   Xavier <xavierlb.mavan@gmail.com>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
@@ -20,7 +20,7 @@ namespace LORIS\genomic_browser;
  * This class is cpg_browser Form
  * CpG submenu tab for Genomic Browser
  *
- * @category LORIS Module
+ * @category LORIS_Module
  * @package  Genomics
  * @author   Loris team <info-loris.mni@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3

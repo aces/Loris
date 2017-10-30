@@ -1,24 +1,24 @@
 <?php
 /**
-* Contains the GenomicFile class used for LORIS Genomic data
+* Contains the Genomic_File class used for LORIS Genomic data
 *
-* PHP Version 5
+* PHP Version &
 *
-* @category   LORIS Module
-* @package    Genomics
-* @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
-* @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
-* @link       https://www.github.com/aces/Loris/
+* @category LORIS_Module
+* @package  Genomics
+* @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+* @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+* @link     https://www.github.com/aces/Loris/
 */
-namespace LORIS/genomic_browser;
+namespace LORIS\genomic_browser;
 /**
     * This object represents a genomic file in the genomic_files table.
     *
-    * @category   LORIS Module
-    * @package    Genomics
-    * @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
-    * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
-    * @link       https://www.github.com/aces/Loris/
+    * @category LORIS_Module
+    * @package  Genomics
+    * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+    * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+    * @link     https://www.github.com/aces/Loris/
 */
 class Genomic_File
 {
