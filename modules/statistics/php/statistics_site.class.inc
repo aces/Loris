@@ -10,6 +10,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+namespace LORIS\statistics;
+
 /**
  * The welcome menu
  *
@@ -21,7 +23,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class NDB_Menu_Statistics_Site extends NDB_Menu
+class Statistics_Site extends \NDB_Menu
 {
 
     var $instruments    = array();
@@ -36,7 +38,7 @@ class NDB_Menu_Statistics_Site extends NDB_Menu
      */
     function _hasAccess()
     {
-        $user     =& User::singleton();
+        $user     =& \User::singleton();
         $centerID = htmlspecialchars($_REQUEST['CenterID']);
         return $user->hasCenterPermission('data_entry', $centerID);
     }
@@ -67,23 +69,9 @@ class NDB_Menu_Statistics_Site extends NDB_Menu
      */
     function _setInstrumentName()
     {
-        $this->instruments = Utility::getAllInstruments();
+        $this->instruments = \Utility::getAllInstruments();
     }
 
-    /**
-     * Helper function to get a friendlier version of the instrument name.
-     * This is mostly used for the MRI site statistics, which uses
-     * names like "Tarchive_Missing" for "MRI Parameter Form Completed
-     * but Missing Tarchive Entry"
-     *
-     * @param string $issue the value of issue
-     *
-     * @return void
-     */
-    function _getIssueName($issue)
-    {
-        return $issue;
-    }
     /**
      * GetInstrumentName function
      *
@@ -108,7 +96,7 @@ class NDB_Menu_Statistics_Site extends NDB_Menu
     {
 
         $this->_checkCriteria($centerID, $projectID);
-        $DB    =& Database::singleton();
+        $DB    =& \Database::singleton();
         $count = $DB->pselectOne(
             "SELECT count(s.CandID)  FROM session s, 
                 candidate c, flag f, {$instrument} i 
@@ -125,6 +113,7 @@ class NDB_Menu_Statistics_Site extends NDB_Menu
         );
         return $count;
     }
+
     /**
      * GetResults function
      *
@@ -137,7 +126,7 @@ class NDB_Menu_Statistics_Site extends NDB_Menu
     function _getResults($centerID, $projectID, $instrument)
     {
         $this->_checkCriteria($centerID, $projectID);
-        $DB     =& Database::singleton();
+        $DB     =& \Database::singleton();
         $result = $DB->pselect(
             "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID, 
                s.Visit_label 
@@ -162,13 +151,7 @@ class NDB_Menu_Statistics_Site extends NDB_Menu
      */
     function setup()
     {
-        // If following a breadcrumb, redirect to the original statistics page
-        // since the test_name/subtest don't work the same for the site specific
-        // pages as for non-site specific
-        if (isset($_GET['subtest'])) {
-            header("Location: ?test_name=statistics#data_entry");
-        }
-        $DB     =& Database::singleton();
+        $DB     =& \Database::singleton();
         $sqlRow = "SELECT CenterID as ID, PSCArea as Name".
                   " FROM psc WHERE CenterID =:cid";
         if (!empty($_REQUEST['CenterID'])) {
@@ -180,6 +163,7 @@ class NDB_Menu_Statistics_Site extends NDB_Menu
             $name     = $center['Name'];
         } else {
             $name = 'All';
+            $centerID = '';
         }
         if (!empty($_REQUEST['ProjectID'])) {
             $projectID = $_REQUEST['ProjectID'];
@@ -238,7 +222,8 @@ class NDB_Menu_Statistics_Site extends NDB_Menu
         $this->tpl_data['AllVisits']      = $visits;
         $this->tpl_data['NumVisitLabels'] = count($visits);
 
-    } // End function
+    }
+
     /**
      * Include additional CSS files:
      *
@@ -246,7 +231,7 @@ class NDB_Menu_Statistics_Site extends NDB_Menu
      */
     function getCSSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getCSSDependencies();
         return array_merge(
@@ -254,6 +239,5 @@ class NDB_Menu_Statistics_Site extends NDB_Menu
             array($baseURL . "/statistics/css/statistics.css")
         );
     }
+}
 
-} // End class
-?>

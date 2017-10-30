@@ -10,7 +10,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-require_once 'NDB_Menu_statistics_site.class.inc';
+namespace LORIS\statistics;
+
 /**
  * The welcome menu
  *
@@ -22,11 +23,12 @@ require_once 'NDB_Menu_statistics_site.class.inc';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class NDB_Menu_Statistics_DD_Site extends NDB_Menu_statistics_site
+class Statistics_DD_Site extends statistics_site
 {
 
     var $query_criteria = '';
     var $query_vars     = array();
+
     /**
      * CheckCriteria function
      *
@@ -46,6 +48,7 @@ class NDB_Menu_Statistics_DD_Site extends NDB_Menu_statistics_site
             $this->query_vars['pid'] = $projectID;
         }
     }
+
     /**
      * Notexcluded function
      *
@@ -55,7 +58,7 @@ class NDB_Menu_Statistics_DD_Site extends NDB_Menu_statistics_site
      */
     function notexcluded($var)
     {
-        $config            =& NDB_Config::singleton();
+        $config            =& \NDB_Config::singleton();
         $statisticsConfig  = $config->getSetting('statistics');
         $excluded_measures = array($statisticsConfig['excludedMeasures']);
 
@@ -67,6 +70,7 @@ class NDB_Menu_Statistics_DD_Site extends NDB_Menu_statistics_site
         }
         return true;
     }
+
     /**
      * Construct function
      *
@@ -74,7 +78,7 @@ class NDB_Menu_Statistics_DD_Site extends NDB_Menu_statistics_site
      */
     function __construct()
     {
-        $this->instruments = Utility::getAllInstruments();
+        $this->instruments = \Utility::getAllInstruments();
         foreach ($this->instruments as $k=>$v) {
             $this->instruments[$k] = $k;
         }
@@ -87,6 +91,7 @@ class NDB_Menu_Statistics_DD_Site extends NDB_Menu_statistics_site
             )
         );
     }
+
     /**
      * CompleteCount function
      *
@@ -99,7 +104,7 @@ class NDB_Menu_Statistics_DD_Site extends NDB_Menu_statistics_site
     function _completeCount($centerID, $projectID, $instrument)
     {
         $this->_checkCriteria($centerID, $projectID);
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
 
         $safe_instrument = $DB->escape($instrument);
 
@@ -130,7 +135,7 @@ class NDB_Menu_Statistics_DD_Site extends NDB_Menu_statistics_site
     function _getResults($centerID, $projectID, $instrument)
     {
         $this->_checkCriteria($centerID, $projectID);
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
         $safe_instrument = $DB->escape($instrument);
         $result          = $DB->pselect(
             "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID,
@@ -155,7 +160,7 @@ class NDB_Menu_Statistics_DD_Site extends NDB_Menu_statistics_site
      */
     function getCSSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getCSSDependencies();
         return array_merge(
@@ -163,5 +168,5 @@ class NDB_Menu_Statistics_DD_Site extends NDB_Menu_statistics_site
             array($baseURL . "/statistics/css/statistics.css")
         );
     }
-} // End class
-?>
+}
+
