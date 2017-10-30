@@ -36,7 +36,7 @@ class Training extends \NDB_Form
         $user = \User::singleton();
         return $user->hasPermission('training');
     }
-   /**
+    /**
     * Loads the project page.
     *
     * @param string $name       The test name being accessed
