@@ -6,18 +6,17 @@
  *
  * PHP version 5
  *
- *  @category   Genomic
- *  @package    Main
- *  @subpackage Genomic
+ *  @category   LORIS Module
+ *  @package    Genomics
  *  @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
  *  @license    http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  *  @link       https://www.github.com/aces/Loris/
  *  Submenu:    GWAS
  */
+namespace LORIS\genomic_browser;
 
-require_once 'NDB_Menu_Filter.class.inc';
 /**
- * NDB_Menu_Filter_GWAS_Browser Class
+ * GWAS_Browser Class
  *
  * This class is gwas_browser Form
  * GWAS submenu tab for Genomic Browser
@@ -29,7 +28,7 @@ require_once 'NDB_Menu_Filter.class.inc';
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  * @link       https://github.com/aces/Loris
 */
-class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
+class GWAS_Browser extends \NDB_Menu_Filter
 {
     /**
      * Variables to enable special filter behaviour -
@@ -47,7 +46,7 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user = User::singleton();
+        $user = \User::singleton();
         return ($user->hasPermission('genomic_browser_view_allsites')
                 || $user->hasPermission('genomic_browser_view_site'));
     }
@@ -118,15 +117,24 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
     }
 
     /**
-     * Sets the template data for the filter form
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
      *
-     * @note   overloaded function
-     * @return bool
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
      */
-    function _setFilterForm()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+
         // create user object
-        $user = User::singleton();
+        $user = \User::singleton();
 
         // add form elements
         $show_results_options = array(
@@ -206,7 +214,7 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
