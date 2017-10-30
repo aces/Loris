@@ -12,7 +12,7 @@
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://github.com/aces/Loris
 */
-namespace LORIS/genomic_browser;
+namespace LORIS\genomic_browser;
 
 /**
  * NDB_Form_Genomic_Browser Class
@@ -42,7 +42,7 @@ class View_Genomic_File extends \NDB_Form
     */
     function _hasAccess()
     {
-        $user =& >\User::singleton();
+        $user =& \User::singleton();
 
         // Add site control? See Imaging Browser example
         return ($user->hasPermission('genomic_browser_view_allsites') ||

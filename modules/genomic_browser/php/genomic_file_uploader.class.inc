@@ -9,7 +9,7 @@
  * @license     http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  * @link        https://www.github.com/aces/Loris/
  */
-namespace LORIS/genomic_browser;
+namespace LORIS\genomic_browser;
 
 /**
  * genomic_file_uploader Class
@@ -143,7 +143,7 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
         );
         $this->addCheckbox('caveat', 'Caveat:', $Base_options);
 
-        $user = User::singleton();
+        $user = \User::singleton();
         $this->tpl_data['user']           = $user->getUsername();
         $this->tpl_data['upload_allowed'] = $user->hasPermission(
             'genomic_data_manager'
