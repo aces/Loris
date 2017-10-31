@@ -122,7 +122,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                    '".$scan_type."' as scan_type,
                    (SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project,
                    (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID) as subproject,
-                   (SELECT SeriesUID FROM tarchive_series WHERE (SeriesUID=fi.SeriesUID AND TarchiveID=t.TarchiveID)) as SeriesUID,
                    CASE
                       WHEN m.".$scan_done." IS NULL THEN 'Incomplete'
                       ELSE 'Complete'
@@ -133,9 +132,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                       ELSE 'No'
                    END as scan_done,
                    CASE 
-                      WHEN t.tarchiveID IS NULL THEN 'Missing'
-                      WHEN ($acqID = '44' AND (SELECT COUNT(*) FROM tarchive_files tf WHERE tf.TarchiveID=t.TarchiveID AND tf.SeriesDescription='t1_mpr_1mm_p2_pos50' > 0)) THEN 'In DICOM' 
-                      WHEN ($acqID = '45' AND (SELECT COUNT(*) FROM tarchive_files tf WHERE tf.TarchiveID=t.TarchiveID AND tf.SeriesDescription='t2_spc_1mm_p2' > 0)) THEN 'In DICOM'
+                     WHEN t.tarchiveID IS NULL THEN 'Missing'
+                     ELSE 'In DICOM'
                    END as tarchive_loc,
                    CASE 
                       WHEN (fi.fileID IS NULL AND mvl.PatientName IS NULL) THEN 'Missing'
@@ -155,7 +153,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             LEFT JOIN session s ON (f.SessionID=s.ID)
             LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
             LEFT JOIN tarchive t ON (t.SessionID=s.ID)
-            LEFT JOIN tarchive_files tf ON (tf.
             LEFT JOIN files fi ON (fi.SessionID = s.ID AND fi.AcquisitionProtocolID=".$acqID.")
             LEFT JOIN mri_violations_log mvl ON (mvl.CandID = s.CandID AND mvl.Scan_type=".$acqID." AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))
             LEFT JOIN candidate c ON (s.CandID=c.CandID)
@@ -295,8 +292,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                           'uploaded_by',
                           'selected',
                           'CommentID',
-                          'TarchiveID',
-                          'SeriesUID'
+                          'TarchiveID'
                          ];
 
         $this->group_by = 'PSCID,
@@ -315,8 +311,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             selected,
             uploaded_by,
             CommentID,
-            TarchiveID, 
-            SeriesUID ';
+            TarchiveID ';
 
         $this->order_by = 'PSCID';
 
@@ -337,8 +332,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                           'Uploaded By',
                           'Selected',
                           'CommentID',
-                          'TarchiveID',
-                          'SeriesUID'
+                          'TarchiveID'
                          ];
 
         return true;
