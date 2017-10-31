@@ -226,13 +226,6 @@ class DashboardTest extends LorisIntegrationTest
              )
          );
           $this->DB->insert(
-              "final_radiological_review",
-              array(
-               'CommentID'            => 'CommentID111',
-               'Final_Review_Results' => 'not_answered',
-              )
-          );
-          $this->DB->insert(
               "issues",
               array(
                'issueID'  => '999999',
@@ -278,10 +271,6 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->delete(
             "issues",
             array('issueID' => '999999')
-        );
-        $this->DB->delete(
-            "final_radiological_review",
-            array('CommentID' => 'CommentID111')
         );
         $this->DB->delete(
             "conflicts_resolved",
