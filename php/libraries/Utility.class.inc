@@ -1319,12 +1319,12 @@ class Utility
     {
         $umf = ini_get('upload_max_filesize');
         $pms = ini_get('post_max_size');
-
-        return self::return_bytes($umf) < self::return_bytes($pms) ? $umf : $pms;
+        return self::returnBytes($umf) < self::returnBytes($pms) ? $umf : $pms;
     }
 
     /**
-     * Takes in a storage string (e.g., 64K, 1024M, 2G, etc.) and returns value in bytes
+     * Takes in a storage string (e.g., 64K, 1024M, 2G, etc.)
+     * and returns value in bytes
      *
      * @param string $val The formatted string
      *
@@ -1332,16 +1332,17 @@ class Utility
      *
      * @note taken from http://php.net/manual/en/function.ini-get.php
      */
-
-    static function return_bytes($val) {
-        $val = trim($val);
+    static function returnBytes($val)
+    {
+        $val  = trim($val);
         $last = strtolower($val[strlen($val)-1]);
+
         switch($last) {
-            case 'g':
+        case 'g':
                 $val *= 1024;
-            case 'm':
+        case 'm':
                 $val *= 1024;
-            case 'k':
+        case 'k':
                 $val *= 1024;
         }
 
