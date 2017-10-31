@@ -165,4 +165,4 @@ Further configuration can be done using the LORIS configuration module.
 
 If there are any errors or you get a blank page, you'll have to troubleshoot
 based on the errors in your apache error log (by default
- `/var/log/httpd/lorris-error.log`) 
+ `/var/log/httpd/loris-error.log`) 
