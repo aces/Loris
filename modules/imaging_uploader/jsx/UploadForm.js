@@ -229,8 +229,8 @@ class UploadForm extends React.Component {
       (this.state.uploadProgress > -1) ? "btn btn-primary hide" : undefined
     );
 
-    const notes = "File name should be of type .tgz or tar.gz or .zip. " +
-      "Uploads should not exceed " + this.props.maxUploadSize;
+    const notes = "File name must be of type .tgz or tar.gz or .zip. " +
+      "Uploads cannot exceed " + this.props.maxUploadSize;
     return (
       <div className="row">
         <div className="col-md-7">
