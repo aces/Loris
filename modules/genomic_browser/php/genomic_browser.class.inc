@@ -5,31 +5,28 @@
  * Displays genomic profiles - genomic data available per candidate
  * Filterable by candidate or genomic criteria.
  *
- * PHP version 5
+ * PHP version 7
  *
- *  @category   Genomic
- *  @package    Main
- *  @subpackage Genomic
- *  @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
- *  @license    http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- *  @link       https://www.github.com/aces/Loris/
- *  Main tab: Genomic Profiles. Submenus: CNV,SNP,GWAS
+ *  @category LORIS_Module
+ *  @package  Genomics
+ *  @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ *  @link     https://www.github.com/aces/Loris/
  */
+namespace LORIS\genomic_browser;
 
-require_once 'NDB_Menu_Filter.class.inc';
 /**
- * NDB_Menu_Filter_Genomic_Browser Class
+ * Genomic_Browser Class
  *
  * This class is genomic_browser Form
  *
- * @category   Genomic
- * @package    Main
- * @subpackage Genomic
- * @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
- * @license    http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- * @link       https://github.com/aces/Loris
+ * @category LORIS_Module
+ * @package  Genomics
+ * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ * @link     https://github.com/aces/Loris
 */
-class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
+class Genomic_Browser extends \NDB_Menu_Filter
 {
     /**
      * Variables to enable special filter behaviour -
@@ -54,7 +51,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user = User::singleton();
+        $user = \User::singleton();
         return ($user->hasPermission('genomic_browser_view_allsites')
                 || $user->hasPermission('genomic_browser_view_site'));
     }
@@ -135,8 +132,8 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
             WHERE
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
-        $DB   = Database::singleton();
-        $user = User::singleton();
+        $DB   = \Database::singleton();
+        $user = \User::singleton();
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
             // allow only to view own site data
             $site_arr     = implode(",", $user->getCenterIDs());
@@ -189,21 +186,30 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
     }
 
     /**
-     * Sets the template data for the filter form
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
      *
-     * @note   overloaded function
-     * @return bool
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
      */
-    function _setFilterForm()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+
         // create user object
-        $user = User::singleton();
+        $user = \User::singleton();
 
         // PSC
         if ($user->hasPermission('genomic_browser_view_allsites')) {
             // has access to all sites genomic data
             // get the list of study sites - to be replaced by the Site object
-            $list_of_sites = Utility::getSiteList();
+            $list_of_sites = \Utility::getSiteList();
             if (is_array($list_of_sites)) {
                 $list_of_sites = array('' => 'Any') + $list_of_sites;
             }
@@ -212,7 +218,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
             $list_of_sites = array();
             $site_arr      = $user->getData('CenterIDs');
             foreach ($site_arr as $key => $val) {
-                $site[$key] = &Site::singleton($val);
+                $site[$key] =& \Site::singleton($val);
                 if ($site[$key]->isStudySite()) {
                     $list_of_sites[$val] = $site[$key]->getCenterName();
                 }
@@ -221,7 +227,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
         }
 
         // SubprojectID
-        $list_of_subprojects = Utility::getSubprojectList();
+        $list_of_subprojects = \Utility::getSubprojectList();
 
         // add form elements
         $this->addSelect('centerID', 'Site:', $list_of_sites);
@@ -311,7 +317,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
