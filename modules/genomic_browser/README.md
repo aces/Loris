@@ -2,9 +2,9 @@
 
 ## Methylation tab
 
-To use the methylation tab, the genomic_cpg_annotaion table should be filled with data from the Illumina HumanMethylation450k probe annotations file. This file can be found at ftp://webdata2:webdata2@ussd-ftp.illumina.com/downloads/ProductFiles/HumanMethylation450/HumanMethylation450_15017482_v1-2.csv. We provide a script,  `modules/genomic_browser/tools/HumanMethylation450k_annotations_to_sql` to transforme the csv file from Illumina's FTP to into a mysql transaction file. The output of the tool can be piped to mysql. The process should take between 5 to 10 minutes. 
+To use the methylation tab, the `genomic_cpg_annotation` table should be loaded with data from the Illumina HumanMethylation450k probe annotations file. This file can be found at ftp://webdata2:webdata2@ussd-ftp.illumina.com/downloads/ProductFiles/HumanMethylation450/HumanMethylation450_15017482_v1-2.csv. We provide a script,  `modules/genomic_browser/tools/HumanMethylation450k_annotations_to_sql` to transform the csv file from Illumina's FTP to into a MySQL transaction file. The output of the tool can be piped to MySQL to load the `genomic_cpg_annotation` table. This process should take between 5 and 10 minutes. 
 
-This exemple script is a python3 script. 
+This example script is a python3 script. 
 
 usage :
 ```
@@ -13,9 +13,9 @@ python3 HumanMethylation450k_annotations_to_sql.py <annotation_file> | mysql -u 
 
 ## Files
 
-In order to enable file uploading functionality, you must create a `genomic_uploader` directory in the `GenomicDataPath` directory (specified in the ConfigSettings). This directory needs to have read and write permissions for the apache user. It's recommended that this directory is soft-linked to a directory under `/data`.
+In order to enable file uploading functionality, you must create a `genomic_uploader` directory in the `GenomicDataPath` directory (specified in the front-end Configuration module). This directory needs to have read and write permissions for the apache user. It is recommended that this directory is soft-linked to a directory under `/data`.
 
-The Methylation file parser is expecting a csv file where the first column value is the cpg_name (probe_id) and each next column header is the PSCID of that sample.
+The Methylation file parser is expecting a csv file where the first column value is the cpg_name (probe_id) and each subsequent column header is the PSCID of a given sample.
 
 Ex: 
 Cpg Name,MTL001,MTL002,MTL003,OTT001,OTT002,OTT003
