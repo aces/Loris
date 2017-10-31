@@ -1,4 +1,4 @@
-#LORIS CentOS 6.x Notes
+# LORIS CentOS 6.x Notes
 
 This document contains supplemental details on how to perform a basic CentOS 6.x install of LORIS.
 Note that the main README in LORIS assumes that LORIS is being run on Ubuntu.
@@ -119,9 +119,8 @@ Ensure the following:
  * Paths and settings in `/etc/heepd/conf.d/apache-site.conf` are populated appropriately for your server, (replacing placeholders such as `%LORISROOT% --> /var/www/loris`, `%PROJECTNAME% --> loris`, `%LOGDIRECTORY% --> /var/log/httpd/loris-error.log`. 
  * DocumentRoot is pointing to `/var/www/loris/htdocs`.
  * The `smarty/templates_c/` directory under the LORIS root is writable by Apache.
- (This can be done by running: `chmod 775 /var/www/loris/smarty/templates_c)
+ (This can be done by running: `chmod 775 /var/www/loris/smarty/templates_c`)
 
-`
 Finally, restart apache:
 ```
 sudo service httpd restart
@@ -140,10 +139,11 @@ For the purpose of following LORIS conventions and easy understanding of all LOR
 cd /var/www/loris/tools
 ./install.sh
 ```
-**Configure your databse:*
-point your URL to: `http://%IPADDRESS%/installdb.php`
 
-(%IPADDRESS% will likely be the IP address of the VM you are ssh'ed into)
+**Configure your database:**
+Run the web installer by pointing your URL to: `http://%IPADDRESS%/installdb.php`
+
+(`%IPADDRESS%` will likely be the IP address of the VM you are ssh'ed into)
 
 The web page will prompt you for the following information: 
 
