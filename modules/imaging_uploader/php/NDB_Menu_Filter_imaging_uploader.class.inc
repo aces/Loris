@@ -677,7 +677,8 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $result            = $this->toArray();
         $result['form']    = $this->form->form;
         $result['mriList'] = $this->_getFileList($result['Data']);
-        $result['maxUploadSize'] = ini_get("post_max_size");
+
+        $result['maxUploadSize'] = Utility::getMaxUploadSize();
 
         return json_encode($result);
     }
