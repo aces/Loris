@@ -43,6 +43,10 @@ class User extends UserPermissions
      */
     static function &factory($username)
     {
+        if (empty($username)) {
+            throw new LorisException('User factory called with null username');
+        }
+
         $obj = new User;
 
         // right off, set the username
@@ -66,9 +70,14 @@ class User extends UserPermissions
         $row = $DB->pselectRow($query, array('UID' => $username));
 
         // get user sites
+        $user_cid = array();
+        if (!isset($row['ID'])) {
+            throw new LorisException('This User does not exists');
+        }
+
         $user_centerID_query =  $DB->pselect(
             "SELECT CenterID FROM user_psc_rel upr
-                        WHERE upr.UserID= :UID",
+            WHERE upr.UserID= :UID",
             array('UID' => $row['ID'])
         );
 
@@ -77,8 +86,14 @@ class User extends UserPermissions
         }
 
         // Get examiner information
-        $examiner_check = $DB->pselect(
-            "SELECT e.full_name,
+        if (!isset($row['Real_name'])) {
+            error_log(
+                "Could not get user examiner info because'
+                . ' user DB query value 'Real_name' is not set."
+            );
+        } else {
+            $examiner_check = $DB->pselect(
+                "SELECT e.full_name,
                     epr.centerID,
                     e.radiologist,
                     epr.active,
@@ -88,11 +103,13 @@ class User extends UserPermissions
                   WHERE e.full_name=:fn
                     AND (epr.active='Y'
                           OR (epr.active='N' AND epr.pending_approval='Y')
-                        )",
-            array(
-             "fn" => $row['Real_name'],
-            )
-        );
+                        )
+                ",
+                array(
+                 "fn" => $row['Real_name'],
+                )
+            );
+        }
 
         $examiner_info =array();
         if (!empty($examiner_check) && !is_null($examiner_check)) {
@@ -106,7 +123,9 @@ class User extends UserPermissions
                                                   );
             }
         }
-        // store user data in object property
+        // store user data in object property.
+        // if Examiner or CenterID info isn't possible to retrieve,
+        // the two values below will be set to empty arrays
         $row['examiner']  =$examiner_info;
         $row['CenterIDs'] =$user_cid;
         $obj->userInfo    =$row;
