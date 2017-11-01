@@ -212,7 +212,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
 
         //get the stored-file path
 
-        $file   = new File_Upload;
+        $file   = new \File_Upload;
         $config = \NDB_Config::singleton();
         $paths  = $config->getSetting('paths');
         $file->setOverwriteMode("overwrite");
