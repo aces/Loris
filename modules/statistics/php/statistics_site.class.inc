@@ -162,7 +162,7 @@ class Statistics_Site extends \NDB_Menu
             $centerID = $center['ID'];
             $name     = $center['Name'];
         } else {
-            $name = 'All';
+            $name     = 'All';
             $centerID = '';
         }
         if (!empty($_REQUEST['ProjectID'])) {
