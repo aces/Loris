@@ -1339,14 +1339,14 @@ class Utility
 
         switch($last) {
         case 'g':
-                $val *= 1024;
+            return $val * 1024 * 1024 * 1024;
         case 'm':
-                $val *= 1024;
+            return $val * 1024 * 1024;
         case 'k':
-                $val *= 1024;
+            return $val * 1024;
+        default:
+            return $val;
         }
-
-        return $val;
     }
 }
 ?>
