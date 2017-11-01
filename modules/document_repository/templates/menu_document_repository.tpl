@@ -100,6 +100,8 @@
                             <div class="col-sm-12 col-md-3">{$form.File_type.html}</div>
                             <label class="col-sm-12 col-md-1">{$form.For_site.label}</label>
                             <div class="col-sm-12 col-md-3">{$form.For_site.html}</div>
+                            <label class="col-sm-12 col-md-1">{$form.File_category.label}</label>
+                            <div class="col-sm-12 col-md-3">{$form.File_category.html}</div>
                         </div>
                     </div>
                     <div class="row">
