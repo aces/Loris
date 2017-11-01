@@ -148,7 +148,7 @@ class My_Issue_Tracker extends \NDB_Menu_Filter_Form
     }
 
     /**
-     * Sets up the smarty menu filter items for the conflict resolver
+     * Sets up the smarty menu filter items
      *
      * @param string $name       The test name being accessed
      * @param string $page       The subtest being accessed (may be null)
