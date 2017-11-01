@@ -214,16 +214,8 @@ class Genomic_Browser extends \NDB_Menu_Filter
                 $list_of_sites = array('' => 'Any') + $list_of_sites;
             }
         } else {
-            // allow only to view own site data
-            $list_of_sites = array();
-            $site_arr      = $user->getData('CenterIDs');
-            foreach ($site_arr as $key => $val) {
-                $site[$key] =& \Site::singleton($val);
-                if ($site[$key]->isStudySite()) {
-                    $list_of_sites[$val] = $site[$key]->getCenterName();
-                }
-                $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
-            }
+            $list_of_sites = $user->getStudySites();
+            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
         }
 
         // SubprojectID
