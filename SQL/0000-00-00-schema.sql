@@ -60,9 +60,6 @@ DROP TABLE IF EXISTS `user_login_history`;
 DROP TABLE IF EXISTS `user_account_history`;
 -- TODO :: Add permissions here... because useR_perm_rel needs to be DROPed before users
 
-DROP TABLE IF EXISTS `final_radiological_review_history`;
-DROP TABLE IF EXISTS `final_radiological_review`;
-
 DROP TABLE IF EXISTS `data_integrity_flag`;
 
 DROP TABLE IF EXISTS `certification_training_quiz_answers`;
@@ -1218,42 +1215,6 @@ CREATE TABLE `data_integrity_flag` (
   `dataflag_fbdeleted` int(11) NOT NULL DEFAULT '0',
   `dataflag_userid` varchar(255) NOT NULL,
   PRIMARY KEY (`dataflag_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ********************************
--- final_radiological_review tables
--- ********************************
-
-
-CREATE TABLE `final_radiological_review` (
-  `CommentID` varchar(255) NOT NULL,
-  `Review_Done` enum('yes','no','not_answered') DEFAULT NULL,
-  `Final_Review_Results` enum('normal','abnormal','atypical','not_answered') DEFAULT NULL,
-  `Final_Exclusionary` enum('exclusionary','non_exclusionary','not_answered') DEFAULT NULL,
-  `SAS` int(11) DEFAULT NULL,
-  `PVS` int(11) DEFAULT NULL,
-  `Final_Incidental_Findings` text,
-  `Final_Examiner` int(11) DEFAULT NULL,
-  `Final_Review_Results2` enum('normal','abnormal','atypical','not_answered') DEFAULT NULL,
-  `Final_Examiner2` int(11) DEFAULT NULL,
-  `Final_Exclusionary2` enum('exclusionary','non_exclusionary','not_answered') DEFAULT NULL,
-  `Review_Done2` enum('yes','no','not_answered') DEFAULT NULL,
-  `SAS2` int(11) DEFAULT NULL,
-  `PVS2` int(11) DEFAULT NULL,
-  `Final_Incidental_Findings2` text,
-  `Finalized` enum('yes','no','not_answered') DEFAULT NULL,
-  PRIMARY KEY (`CommentID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `final_radiological_review_history` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `col` varchar(255) NOT NULL DEFAULT '',
-  `old` text,
-  `new` text,
-  `CommentID` varchar(255),
-  `changeDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `userID` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
