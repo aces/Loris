@@ -388,7 +388,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                 }
 
                 // Pretend data entry is not complete if there are conflicts
-                if (ConflictDetector::isInstrumentInstanceInConflictState(
+                if (\ConflictDetector::isInstrumentInstanceInConflictState(
                     $instrument['CommentID']
                 )
                 ) {
