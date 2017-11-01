@@ -221,8 +221,6 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function _setFilters($values)
     {
-        $filters = $this->formToFilter;
-
         $newFormFilters = array();
 
         // Go through the form's fields and set the valid ones.
@@ -817,9 +815,7 @@ class NDB_Menu_Filter extends NDB_Menu
         // get the list
         $this->_getNumberPages($query);
 
-        $config         =& NDB_Config::singleton();
-        $resultsPerPage = $config->getSetting('rowsPerPage');
-        $result         = $DB->pselect($query, $qparams);
+        $result = $DB->pselect($query, $qparams);
 
         return $result;
     }
@@ -833,7 +829,7 @@ class NDB_Menu_Filter extends NDB_Menu
     function _getFilterValues()
     {
         $FilterValues = array();
-        foreach ($this->formToFilter as $formName => $field) {
+        foreach (array_keys($this->formToFilter) as $formName) {
             if (isset($_REQUEST[$formName])) {
                 $FilterValues[$formName] = $_REQUEST[$formName];
             } else {

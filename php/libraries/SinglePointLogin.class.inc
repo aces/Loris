@@ -453,7 +453,7 @@ class SinglePointLogin
                 // user is valid
                 $this->_username = $row['UserID'];
 
-                $result =  $DB->insert('user_login_history', $setArray);
+                $DB->insert('user_login_history', $setArray);
                 return true;
             }
         }
@@ -518,7 +518,7 @@ class SinglePointLogin
         $setArray['Fail_detail'] = $description;
 
         // in future, add mapping of error message to Failcode field enum
-        $result =  $DB->insert('user_login_history', $setArray);
+        $DB->insert('user_login_history', $setArray);
     }
 
     /**

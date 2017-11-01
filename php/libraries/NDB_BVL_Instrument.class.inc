@@ -206,7 +206,7 @@ class NDB_BVL_Instrument extends NDB_Page
         }
 
         // Sets up page variables such as $this->commentID and $this->form
-        $success = $obj->setup($commentID, $page);
+        $obj->setup($commentID, $page);
 
         // Adds all of the form element and form rules to the page after
         // having instantiated the form above
@@ -330,6 +330,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $scorer = $base . "project/instruments/" . $this->testName . ".score";
 
         if (file_exists($scorer)) {
+            $output = array();
             exec(
                 $scorer . " " . escapeshellarg($this->getCommentID()),
                 $output,
@@ -490,7 +491,7 @@ class NDB_BVL_Instrument extends NDB_Page
             // the database
             $dataEntryCompletionStatus
                 = $this->_determineDataEntryCompletionStatus();
-            $success = $this->_setDataEntryCompletionStatus(
+            $this->_setDataEntryCompletionStatus(
                 $dataEntryCompletionStatus
             );
         } else {
@@ -834,18 +835,18 @@ class NDB_BVL_Instrument extends NDB_Page
         if ($CertificationEnabled) {
             foreach (
                 Utility::toArray($CertificationConfig['CertificationProjects'])
-                AS $key => $value
+                as $value
             ) {
                 if (is_array($value['CertificationProject'])) {
                     $value = $value['CertificationProject'];
                 }
-                foreach ($value as $k=>$projID) {
+                foreach ($value as $projID) {
                     $CertificationProjects[$projID] = $projID;
                 }
             }
             foreach (
                 Utility::toArray($CertificationConfig['CertificationInstruments'])
-                AS $instrument
+                as $instrument
             ) {
                 foreach (Utility::toArray($instrument['test']) as $test) {
                     $CertificationInstruments[] = $test['@']['value'];
@@ -1449,7 +1450,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
         $db =& Database::singleton();
 
-        $success = $db->update(
+        $db->update(
             $this->table,
             array('Data_entry_completion_status' => $status),
             array('CommentID' => $this->getCommentID())
@@ -1915,7 +1916,7 @@ class NDB_BVL_Instrument extends NDB_Page
         }
 
         // update the scores
-        $success = $db->update(
+        $db->update(
             $this->table,
             $scores,
             array('CommentID' => $this->getCommentID())
@@ -2139,25 +2140,23 @@ class NDB_BVL_Instrument extends NDB_Page
 
             $config = NDB_Config::singleton();
             $paths  = $config->getSetting('paths');
-            if (empty($subtest)) {
-                // check if the file/class exists
-                $BasePath = $paths['base'] . 'project/instruments/';
-                $TestName = $this->testName;
-                if (file_exists(
-                    $BasePath
-                    . "NDB_BVL_Instrument_$TestName.class.inc"
-                )
-                    || file_exists($BasePath . "$TestName.linst")
-                ) {
-                    // save possible changes from the control panel...
-                    $success = $controlPanel->save();
-                }
 
-                // display the control panel
-                $html = $controlPanel->display();
-                return $html;
-
+            // check if the file/class exists
+            $BasePath = $paths['base'] . 'project/instruments/';
+            $TestName = $this->testName;
+            if (file_exists(
+                $BasePath
+                . "NDB_BVL_Instrument_$TestName.class.inc"
+            )
+                || file_exists($BasePath . "$TestName.linst")
+            ) {
+                // save possible changes from the control panel...
+                $success = $controlPanel->save();
             }
+
+            // display the control panel
+            $html = $controlPanel->display();
+            return $html;
         }
     }
 

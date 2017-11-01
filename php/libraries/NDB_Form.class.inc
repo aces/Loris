@@ -119,7 +119,7 @@ class NDB_Form extends NDB_Page
     function save()
     {
         if ($this->form->validate()) {
-            $success = $this->form->process(array(&$this, "_save"), false);
+            $this->form->process(array(&$this, "_save"), false);
         }
     }
 
@@ -148,7 +148,7 @@ class NDB_Form extends NDB_Page
             }
         }
 
-        $success = $this->_process($values);
+        $this->_process($values);
     }
 
 
@@ -176,7 +176,7 @@ class NDB_Form extends NDB_Page
      */
     function _resetForm()
     {
-        $this->_setupPage($name, $page, $identifier, null, 'test_form');
+        $this->_setupPage(null, null, null, null, 'test_form');
         // $this->form = new HTML_QuickForm('test_form');
     }
 }
