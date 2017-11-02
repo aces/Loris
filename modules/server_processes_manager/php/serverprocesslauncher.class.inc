@@ -11,11 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
-require_once "IDatabaseProvider.class.inc";
-require_once "DefaultDatabaseProvider.class.inc";
-require_once "DefaultProcessMonitor.class.inc";
-require_once "MriUploadServerProcess.class.inc";
+namespace LORIS\server_processes_manager;
 
 /**
  * Allows processes to be executed on the server, as background Unix processes.
@@ -91,17 +87,17 @@ class ServerProcessLauncher
     private function _saveProcess(AbstractServerProcess $process)
     {
         if (is_null($process)) {
-            throw new InvalidArgumentException("Invalid null process argument");
+            throw new \InvalidArgumentException("Invalid null process argument");
         }
 
         if (is_null($process->getPid())) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 "Cannot save a process with a null PID"
             );
         }
 
         if (is_null($process->getStartTime())) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 "Cannot record a process with a null start time"
             );
         }

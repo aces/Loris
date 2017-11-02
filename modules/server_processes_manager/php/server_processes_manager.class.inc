@@ -10,8 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
-require_once "ServerProcessesMonitor.class.inc";
+namespace LORIS\server_processes_manager;
 
 /**
  * Builds a new filter to view/manage processes launched asynchronously by LORIS
@@ -25,7 +24,7 @@ require_once "ServerProcessesMonitor.class.inc";
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class NDB_Menu_Filter_Server_Processes_Manager extends NDB_Menu_Filter
+class Server_Processes_Manager extends \NDB_Menu_Filter
 {
     /**
      * Determines whether the current user has access to the page.
@@ -36,7 +35,7 @@ class NDB_Menu_Filter_Server_Processes_Manager extends NDB_Menu_Filter
      */
     function _hasAccess()
     {
-        $user = User::singleton();
+        $user = \User::singleton();
         return $user->hasPermission('server_processes_manager');
     }
 
@@ -87,12 +86,22 @@ class NDB_Menu_Filter_Server_Processes_Manager extends NDB_Menu_Filter
 
 
     /**
-     * Sets ups the layout of the filter.
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
      *
-     * @return bool true if the setup is successful, false otherwise.
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
      */
-    function _setFilterForm()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+
         $this->addBasicText('pid', 'PID:');
         $this->addBasicText('type', 'Type:');
         $this->addBasicText('userid', 'UserId:');
@@ -106,7 +115,7 @@ class NDB_Menu_Filter_Server_Processes_Manager extends NDB_Menu_Filter
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(

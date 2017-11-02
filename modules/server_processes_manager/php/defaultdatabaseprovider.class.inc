@@ -11,7 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
+namespace LORIS\server_processes_manager;
 
 /**
  * A class for providing a default way to access the database.
@@ -33,7 +33,7 @@ class DefaultDatabaseProvider implements IDatabaseProvider
      */
     public function getDatabase()
     {
-        return Database::singleton();
+        return \Database::singleton();
     }
 }
 

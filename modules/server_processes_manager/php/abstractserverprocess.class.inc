@@ -10,8 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
-require_once "Process.class.inc";
+namespace LORIS\server_processes_manager;
 
 /**
  * Abstract class that all tasks used by the task manager should extend.
@@ -146,7 +145,7 @@ abstract class AbstractServerProcess
         $exitCodeFile, $exitCode, $userid,
         $startTime, $endTime, $exitText
     ) {
-        $userid = is_null($userid) ? User::singleton()->getUsername() : $userid;
+        $userid = is_null($userid) ? \User::singleton()->getUsername() : $userid;
 
         $this->_id           = $id;
         $this->_pid          = $pid;
@@ -411,7 +410,7 @@ abstract class AbstractServerProcess
                       . $this->getPid() . " in "
                       . $this->_exitCodeFile . ": $tailOutput";
                 error_log($errorMessage);
-                throw new UnexpectedValueException($errorMessage);
+                throw new \UnexpectedValueException($errorMessage);
             }
 
             if (count($tailOutput) != 1) {
@@ -420,7 +419,7 @@ abstract class AbstractServerProcess
                       . $this->getPid() . "): found "
                       . count($tailOutput) . " lines";
                 error_log($errorMessage);
-                throw new UnexpectedValueException($errorMessage);
+                throw new \UnexpectedValueException($errorMessage);
             }
 
             if (!is_numeric($tailOutput[0])) {
@@ -428,7 +427,7 @@ abstract class AbstractServerProcess
                     = "Invalid exit code file content (pid = "
                       . $this->getPid() . "): $tailOutput[0]";
                 error_log($errorMessage);
-                throw new UnexpectedValueException($errorMessage);
+                throw new \UnexpectedValueException($errorMessage);
             }
 
             $exitCode = $tailOutput[0];
@@ -474,7 +473,7 @@ abstract class AbstractServerProcess
                 $whereValues
             );
         }
-        catch(DatabaseException $exception) {
+        catch(\DatabaseException $exception) {
             error_log(
                 "Failed to update task (pid=" . $this->getPid() . ") status: "
                 . $exception->getMessage()
