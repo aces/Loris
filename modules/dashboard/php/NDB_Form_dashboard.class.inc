@@ -12,7 +12,6 @@
  * @link     https://www.github.com/aces/Loris
  */
 
-namespace LORIS\dashboard;
 /**
  * Dashboard: displays recruitment and study progression charts,
  * user tasks and document repository notifications
@@ -24,7 +23,7 @@ namespace LORIS\dashboard;
  * @link     https://www.github.com/aces/Loris
  */
 
-class Dashboard extends \NDB_Form
+class NDB_Form_Dashboard extends NDB_Form
 {
 
     /**
@@ -32,11 +31,11 @@ class Dashboard extends \NDB_Form
      *
      * @return void
      */
-    function setup()
+    function dashboard()
     {
-        $DB     = \Database::singleton();
-        $user   = \User::singleton();
-        $config = \NDB_Config::singleton();
+        $DB     = Database::singleton();
+        $user   = User::singleton();
+        $config = NDB_Config::singleton();
         $site   = explode(';', $user->getSiteNames());
 
         $userID     = $user->getUsername();
@@ -85,7 +84,7 @@ class Dashboard extends \NDB_Form
         $useProjects = $config->getSetting('useProjects');
         $this->tpl_data['useProjects'] = $useProjects;
         if ($useProjects == "true") {
-            $projects = \Utility::getProjectList();
+            $projects = Utility::getProjectList();
             foreach ($projects as $projectID => $project) {
                 $projectInfo = $config->getProjectSettings($projectID);
                 $this->createProjectProgressBar(
@@ -299,7 +298,7 @@ class Dashboard extends \NDB_Form
      */
     function getTotalRecruitment()
     {
-        $DB = \Database::singleton();
+        $DB = Database::singleton();
         $totalRecruitment = $DB->pselectOne(
             "SELECT COUNT(*) FROM candidate c
              WHERE c.Active='Y' AND c.Entity_type='Human' AND c.CenterID <> 1",
@@ -317,7 +316,7 @@ class Dashboard extends \NDB_Form
      */
     function getTotalRecruitmentByProject($projectID)
     {
-        $DB = \Database::singleton();
+        $DB = Database::singleton();
         $totalRecruitment = $DB->pselectOne(
             "SELECT COUNT(*)
              FROM candidate c
@@ -337,7 +336,7 @@ class Dashboard extends \NDB_Form
      */
     function getTotalGender($gender)
     {
-        $DB    = \Database::singleton();
+        $DB    = Database::singleton();
         $total = $DB->pselectOne(
             "SELECT COUNT(c.CandID)
              FROM candidate c
@@ -359,7 +358,7 @@ class Dashboard extends \NDB_Form
      */
     function getTotalGenderByProject($gender, $projectID)
     {
-        $DB    = \Database::singleton();
+        $DB    = Database::singleton();
         $total = $DB->pselectOne(
             "SELECT COUNT(c.CandID)
              FROM candidate c
@@ -433,7 +432,7 @@ class Dashboard extends \NDB_Form
      */
     function getCSSDependencies()
     {
-        $factory = \NDB_Factory::singleton();
+        $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getCSSDependencies();
         return array_merge(
@@ -450,7 +449,7 @@ class Dashboard extends \NDB_Form
      */
     function getJSDependencies()
     {
-        $factory = \NDB_Factory::singleton();
+        $factory = NDB_Factory::singleton();
         $config  = $factory->config();
 
         $www     = $config->getSetting('www');
