@@ -169,11 +169,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 $spm_module = \Module::factory('server_processes_manager');
 
                 // Perform the real upload on the server
-<<<<<<< HEAD
                 $serverProcessLauncher = new SP\ServerProcessLauncher();
-=======
-                $serverProcessLauncher = new SPM\ServerProcessLauncher();
->>>>>>> Dave and Xavier feedback and phpcs
                 $serverProcessLauncher->mriUpload(
                     $this->mri_upload_id,
                     $this->uploaded_file_path
