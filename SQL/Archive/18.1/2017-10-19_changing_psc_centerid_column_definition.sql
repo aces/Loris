@@ -74,7 +74,7 @@ BEGIN
   END LOOP alter_tables;
   CLOSE c_constraints;
 
-  ALTER TABLE psc CHANGE `CenterID` `CenterID` integer unsigned NOT NULL;
+  ALTER TABLE psc CHANGE `CenterID` `CenterID` integer unsigned NOT NULL AUTO_INCREMENT;
 
   SET v_finish = false;
   OPEN c_constraints;
