@@ -5,7 +5,7 @@ Use the Selection Filter to enter search criteria, and click “Show Data” to 
 To the right of the Selection Filter is a data completion meter panel expressed as a percentage for a selected instrument and/or visit label. By default, the meter displays the completion level of all instruments for V1 (or the customized first visit label of a study), but once the user selects criteria in the Selection Filter and clicks “Show Data”, the meter will be updated to reflect their specifications.
 
 
-## The results table:
+## The results table
 Three tabs present different data views: Incomplete Forms, Data Conflicts, and Behavioural Feedback.
 
 ### Incomplete Forms
