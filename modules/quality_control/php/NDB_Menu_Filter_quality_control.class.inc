@@ -132,10 +132,11 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                       ELSE 'No'
                    END as scan_done,
                    CASE 
-                     WHEN EXISTS (SELECT t.Tarchive
+                     WHEN EXISTS (SELECT t.TarchiveID
+                                  FROM tarchive t
                                   LEFT JOIN tarchive_files tf ON (tf.TarchiveID=t.TarchiveID) 
                                   WHERE (tf.SeriesDescription = 't1_mpr_1mm_p2_pos50' OR tf.SeriesDescription = 't2_spc_1mm_p2')
-                     ) THEN 'IN DICOM' ELSE 'Missing'
+                     ) THEN 'In DICOM' ELSE 'Missing'
                    END as tarchive_loc,
                    CASE 
                       WHEN (fi.fileID IS NULL AND mvl.PatientName IS NULL) THEN 'Missing'
