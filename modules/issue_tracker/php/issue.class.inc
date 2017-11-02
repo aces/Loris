@@ -13,9 +13,7 @@
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
-
-require_once "NDB_Form.class.inc";
-require_once __DIR__ . '/issue_tracker_ControlPanel.class.inc';
+namespace LORIS\issue_tracker;
 
 /**
  * Creates the form for NDB_Form_issue_tracker
@@ -27,7 +25,7 @@ require_once __DIR__ . '/issue_tracker_ControlPanel.class.inc';
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-class NDB_Form_Issue_Tracker extends NDB_Form
+class Issue extends \NDB_Form
 {
 
     /**
@@ -42,13 +40,20 @@ class NDB_Form_Issue_Tracker extends NDB_Form
     }
 
     /**
-     * Entry point for issue_tracker/issue/[issueID]
+     * Sets up the smarty menu filter items
      *
-     * @return void
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
      */
-    function issue()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
-        $user    =& User::singleton();
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        $user    =& \User::singleton();
         $issueID = $_GET['issueID'];
 
         if ((empty($issueID)
@@ -66,7 +71,7 @@ class NDB_Form_Issue_Tracker extends NDB_Form
      */
     function getCSSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getCSSDependencies();
         return array_merge(
@@ -95,7 +100,7 @@ class NDB_Form_Issue_Tracker extends NDB_Form
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
@@ -113,8 +118,8 @@ class NDB_Form_Issue_Tracker extends NDB_Form
      */
     function _hasAccess()
     {
-        $user    =& User::singleton();
-        $db      = Database::singleton();
+        $user    =& \User::singleton();
+        $db      = \Database::singleton();
         $issueID = $_GET['issueID'];
 
         if (!$issueID) {
