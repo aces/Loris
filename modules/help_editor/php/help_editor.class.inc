@@ -10,6 +10,7 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
+namespace LORIS\help_editor;
 
 /**
  * This file contains code for editing context help section
@@ -22,7 +23,7 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
+class Help_Editor extends \NDB_Menu_Filter
 {
      /**
        *  Checking user permissions
@@ -32,7 +33,7 @@ class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user = User::singleton();
+        $user = \User::singleton();
 
         return $user->hasPermission('context_help');
     }
@@ -43,7 +44,7 @@ class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
        */
     function _setupVariables()
     {
-        $user = User::singleton();
+        $user = \User::singleton();
 
         // the base query
         $query = " FROM help helpChild LEFT JOIN help helpParent".
@@ -106,7 +107,7 @@ class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
        */
     function _setDataTableRows($count)
     {
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
         //Get the default values
         // $result will contain an array of size n by 2.
         // this must be transposed to create a dictionary of IDs to Topics
@@ -165,7 +166,7 @@ class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
