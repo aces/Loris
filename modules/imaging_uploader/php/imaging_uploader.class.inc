@@ -26,9 +26,10 @@ use LORIS\server_processes_manager as SP;
 class Imaging_Uploader extends \NDB_Menu_Filter_Form
 {
 
-    var $show_queries = true;
-    var $temp_path    = null;
-    var $AjaxModule   = true;
+    var $show_queries    = true;
+    var $temp_path       = null;
+    var $AjaxModule      = true;
+    public $skipTemplate = true;
 
     /**
      * ID of the uploaded file in mri_upload table (if upload successful).
@@ -39,18 +40,6 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      * Path to the uploaded file (value of SourceLocation in mri_upload table).
      */
     var $uploaded_file_path;
-
-    /**
-     * Override default behaviour, since the page is loaded from index.js
-     *
-     * @return void
-     * @access public
-     */
-    function display()
-    {
-        return null;
-    }
-
 
     /**
      * The _has_access returns true
@@ -180,7 +169,11 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 $spm_module = \Module::factory('server_processes_manager');
 
                 // Perform the real upload on the server
+<<<<<<< HEAD
                 $serverProcessLauncher = new SP\ServerProcessLauncher();
+=======
+                $serverProcessLauncher = new SPM\ServerProcessLauncher();
+>>>>>>> Dave and Xavier feedback and phpcs
                 $serverProcessLauncher->mriUpload(
                     $this->mri_upload_id,
                     $this->uploaded_file_path
@@ -207,8 +200,6 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
        */
     function _saveFile($values)
     {
-
-//        include_once "File_Upload.class.inc";
 
         //get the stored-file path
 
