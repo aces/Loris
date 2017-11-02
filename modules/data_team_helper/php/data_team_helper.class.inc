@@ -12,6 +12,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+namespace LORIS\data_team_helper;
 
 /**
  * Dashboard: displays recruitment and study progression charts,
@@ -23,7 +24,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
  */
-class NDB_Form_Data_Team_Helper extends NDB_Form
+class Data_Team_Helper extends \NDB_Form
 {
     /**
      * Class that returns the data team helper.
@@ -34,7 +35,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
     function _hasAccess()
     {
         // create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
         return ($user->hasPermission('data_team_helper'));
     }
     /**
@@ -46,7 +47,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
     function _getDefaults()
     {
         $defaults     = array();
-        $DB           =& Database::singleton();
+        $DB           =& \Database::singleton();
         $extra_where  = $this->addWhere("p.sourceFrom", 'instrument');
         $extra_where .= $this->addWhere("p.Name", 'FieldName');
         $orderby      = " ORDER BY p.sourceFrom,p.sourceField";
@@ -79,21 +80,30 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         $this->tpl_data['instrumentvalue'] = $sanitize['instrument'] ?? null;
         return $defaults;
     }
-    /**
-     * Returns data team helper.
-     *
-     * @return null
-     * @throws DatabaseException
-     */
-    function data_team_helper()// @codingStandardsIgnoreLine
-    {
-        //initializations
-        $DB        =& Database::singleton();
-        $user      =& User::singleton();
-        $conflicts = array();
-        $smarty    = new Smarty_neurodb();
 
-        $config   =& NDB_Config::singleton();
+    /**
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
+     *
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
+     */
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    {
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        //initializations
+        $DB        =& \Database::singleton();
+        $user      =& \User::singleton();
+        $conflicts = array();
+        $smarty    = new \Smarty_neurodb();
+
+        $config   =& \NDB_Config::singleton();
         $sanitize = array_map('htmlspecialchars', $_REQUEST);
 
         $instrument   = $this->getTestNameusingMappedName(
@@ -139,13 +149,13 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
 
             /* Visit_labels
              */
-            $visit_array   =Utility::getExistingVisitLabels();
+            $visit_array   = \Utility::getExistingVisitLabels();
             $visit_array   = array_combine($visit_array, $visit_array);
             $list_of_sites = array();
             $this->tpl_data['visitLabels'] = $visit_array;
             if ($user->hasPermission('access_all_profiles')) {
                 // get the list of study sites - to be replaced by the Site object
-                $list_of_sites      = Utility::getSiteList();
+                $list_of_sites      = \Utility::getSiteList();
                 $default_site_array =array('All Sites' => 'All Sites');
                 if (is_array($list_of_sites)) {
                     $list_of_sites = $default_site_array + $list_of_sites;
@@ -159,7 +169,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
             $this->tpl_data['siteList'] = $list_of_sites;
             // Project list, if applicable
             if ($config->getSetting("useProjects")==="true") {
-                $projectList = Utility::getProjectList();
+                $projectList = \Utility::getProjectList();
                 $this->tpl_data['projectList'] = $projectList;
             }
 
@@ -221,7 +231,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      */
     function getDefaultSite()
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
         if ($user->hasPermission('access_all_profiles')) {
             $site_default ='All Sites';
         } else {
@@ -257,7 +267,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         $project=null
     ) {
 
-        $DB      =& Database::singleton();
+        $DB      =& \Database::singleton();
         $qparams = array();
 
         $select = "SELECT fb.FeedbackID, fb.CandID, fb.SessionID,
@@ -286,7 +296,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         }
         if ($site!='All Sites') {
             if ($site == 'All User Sites') {
-                $user           = User::singleton();
+                $user           = \User::singleton();
                 $siteID         = $user->getCenterIDs();
                 $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
                 $qparams['CID'] = implode(',', $siteID);
@@ -306,7 +316,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         ) {
 
             $where      .= " AND FieldName = :FN";
-            $field_names = Utility::getSourcefields($test_name);
+            $field_names = \Utility::getSourcefields($test_name);
 
             $query = $select . $where;
 
@@ -443,7 +453,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         //filter for sites
         if ($site!='All Sites') {
             if ($site == 'All User Sites') {
-                $user           = User::singleton();
+                $user           = \User::singleton();
                 $siteID         = $user->getCenterIDs();
                 $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
                 $qparams['CID'] = implode(',', $siteID);
@@ -536,10 +546,10 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         $site=null,
         $project=null
     ) {
-        $config         =& NDB_Config::singleton();
+        $config         =& \NDB_Config::singleton();
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
         for ($i=0; $i<count($ddeInstruments); ++$i) {
-            $ddeInstruments[$i] = Database::singleton()->quote($ddeInstruments[$i]);
+            $ddeInstruments[$i] = \Database::singleton()->quote($ddeInstruments[$i]);
         }
 
         global $DB;
@@ -586,7 +596,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         }
         if ($site!='All Sites') {
             if ($site == 'All User Sites') {
-                $user           = User::singleton();
+                $user           = \User::singleton();
                 $siteID         = $user->getCenterIDs();
                 $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
                 $qparams['CID'] = implode(',', $siteID);
@@ -660,7 +670,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         }
         if ($site!='All Sites') {
             if ($site == 'All User Sites') {
-                $user           = User::singleton();
+                $user           = \User::singleton();
                 $siteID         = $user->getCenterIDs();
                 $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
                 $qparams['CID'] = implode(',', $siteID);
@@ -732,7 +742,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         }
         if ($site!='All Sites') {
             if ($site == 'All User Sites') {
-                $user           = User::singleton();
+                $user           = \User::singleton();
                 $siteID         = $user->getCenterIDs();
                 $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
                 $qparams['CID'] = implode(',', $siteID);
@@ -809,7 +819,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      */
     function getTestNameusingMappedName($full_name, $subprojectID = null)
     {
-        $DB     =& Database::singleton();
+        $DB     =& \Database::singleton();
         $values = array();
 
         $test_name = null;
@@ -823,7 +833,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
                     array('display' => $full_name)
                 );
             } else {
-                $test_name = Utility::getTestNameUsingFullName($full_name);
+                $test_name = \Utility::getTestNameUsingFullName($full_name);
             }
         }
         return $test_name;
@@ -840,7 +850,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      */
     static function getVisitInstruments($visit_label)
     {
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
 
         if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
             $sqlSelect  = "SELECT distinct Test_name_display".
@@ -874,7 +884,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
@@ -893,7 +903,7 @@ class NDB_Form_Data_Team_Helper extends NDB_Form
         */
     function getCSSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getCSSDependencies();
         return array_merge(
