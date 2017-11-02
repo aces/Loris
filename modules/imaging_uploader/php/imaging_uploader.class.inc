@@ -208,7 +208,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     function _saveFile($values)
     {
 
-        include_once "File_Upload.class.inc";
+//        include_once "File_Upload.class.inc";
 
         //get the stored-file path
 
@@ -248,7 +248,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         if (!empty($file->errorLog)) {
             while (list($fileType,$fileErrors)=each($file->errorLog)) {
                 foreach ($fileErrors AS $error) {
-                    throw new LorisException(" $fileType: $error ");
+                    throw new \LorisException(" $fileType: $error ");
                 }
             }
             return false;
@@ -368,7 +368,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
 
         if (!copy($temp_file, $new_temp_file)) {
-            throw new LorisException(
+            throw new \LorisException(
                 "failed to copy $temp_file to $new_temp_file \n"
             );
         }
