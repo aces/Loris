@@ -32,7 +32,7 @@ class Stats_MRI extends \NDB_Form
      */
     function _hasAccess()
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
         return $user->hasPermission('data_entry');
     }
     /**
@@ -155,7 +155,9 @@ class Stats_MRI extends \NDB_Form
         $config      = \NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         $this->tpl_data['useProjects'] = $useProjects;
-        $bigTable_params =array();
+
+        $bigTable_params = array();
+        $this->params    = array();
 
         $this->tpl_data['showTable'] = true;
 
