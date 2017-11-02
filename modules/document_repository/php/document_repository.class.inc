@@ -46,7 +46,13 @@ class Document_Repository extends \NDB_Menu_Filter
     /**
      * Setup variables function
      *
-     * @return unknown
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
      */
     function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
