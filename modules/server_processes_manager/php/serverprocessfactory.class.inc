@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-namespace LORIS\server_processes_manager; 
+namespace LORIS\server_processes_manager;
 
 /**
  * A class that provides a way to create server processes objects of the appropriate
