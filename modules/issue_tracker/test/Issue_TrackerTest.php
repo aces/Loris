@@ -169,14 +169,16 @@ class Issue_TrackerTest extends LorisIntegrationTest
 
     /**
      * Test that Edit Issue form load
+     *
+     * @return void
      */
     function testEditIssueFormLoad()
     {
         $this->safeGet($this->url . "/issue_tracker/issue/?issueID=999999&backURL");
         $side_bar = $this->webDriver->findElement(
-             WebDriverBy::Id('sidebar-wrapper')
+            WebDriverBy::Id('sidebar-wrapper')
         );
-        $text = $side_bar->getText();
+        $text     = $side_bar->getText();
         $this->assertContains("Back to list ", $text);
     }
 }
