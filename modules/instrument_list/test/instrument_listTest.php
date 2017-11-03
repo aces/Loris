@@ -37,7 +37,7 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
         =  array(
             'Access Profile'      => '#bc2 > a:nth-child(2) > div',
             '300001 / MTL001'     => '#bc2 > a:nth-child(3) > div',
-            'PSCID'               => '#bc2 > a:nth-child(4) > div',
+            'TimePoint V1'        => '#bc2 > a:nth-child(4) > div',
            );
     /**
      * Tests that, when loading the Instrument list module, some
@@ -70,7 +70,24 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("instrument_list", $bodyText);
+        $this->assertContains("Behavioral Battery of Instruments", $bodyText);
+        $this->resetPermissions();
+    }
+    /**
+     * Tests that Instrument list loads with without permission
+     *
+     * @return void
+     */
+    function testInstrumentListDoespageLoadWithoutPermission()
+    {
+        $this->setupPermissions(array(""));
+        $this->webDriver->get($this->url .
+                "/instrument_list/?candID=300001&sessionID=1"
+        );
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertNotContains("Behavioral Battery of Instruments", $bodyText);
         $this->resetPermissions();
     }
     /**
