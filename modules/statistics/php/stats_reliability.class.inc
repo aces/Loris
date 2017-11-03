@@ -125,12 +125,9 @@ class Stats_Reliability extends \NDB_Form
         // Whether something is reliable or not isn't stored in the database,
         // but calculated on the fly.
         // As a result, we need to manually calculate it and maintain for each
-        // type of thing Tanya wants stats for here separately
+        // type of thing.
 
-        // Thresholds was copy/pasted from
-        include_once __DIR__ .
-            "/../../reliability/php/NDB_Menu_Filter_reliability.class.inc";
-        $thresholds = \NDB_Menu_Filter_Reliability::getThreshholds();
+        $thresholds = \LORIS\reliability\Reliability::getThreshholds();
 
         $config            = \NDB_Config::singleton();
         $reliabilityConfig = $config->getSetting("ReliabilityInstruments");
