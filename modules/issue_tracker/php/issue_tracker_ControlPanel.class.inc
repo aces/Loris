@@ -11,6 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
 */
+namespace LORIS\issue_tracker;
 
 /**
  * Imaging browser control panel class
@@ -51,7 +52,7 @@ class Issue_Tracker_ControlPanel
      */
     function _hasAccess()
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
         if ($user->hasPermission('issue_tracker_reporter')
             || $user->hasPermission('issue_tracker_developer')
         ) {
@@ -67,7 +68,7 @@ class Issue_Tracker_ControlPanel
     */
     function getData()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $issueData['backURL'] = isset($_REQUEST['backURL']) ?
             $factory->settings()->getBaseURL()
                 . "/issue_tracker/" :
@@ -90,7 +91,7 @@ class Issue_Tracker_ControlPanel
     function display()
     {
         $this->tpl_data['issue'] = $this->getData();
-        $smarty = new Smarty_neurodb("issue_tracker");
+        $smarty = new \Smarty_neurodb("issue_tracker");
 
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("issue_tracker_controlpanel.tpl");

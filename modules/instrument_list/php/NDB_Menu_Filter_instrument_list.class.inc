@@ -52,7 +52,7 @@ class NDB_Menu_Filter_Instrument_List extends NDB_Menu_Filter
                 )
                    )
                 || (in_array(
-                    $timepoint->getData('CenterID'),
+                    $timePoint->getData('CenterID'),
                     $user->getData('CenterIDs')
                 )
                    )

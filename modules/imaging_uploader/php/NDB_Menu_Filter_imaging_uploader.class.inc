@@ -166,7 +166,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         ) { //catch file overload error...
             $upload_max_size = ini_get('upload_max_filesize');
             $error_message   = "Please make sure files are not larger than " .
-                 $upload_max_size . "<br>Please refresh this page to return ".
+                 $upload_max_size . "Please refresh this page to return ".
                 "to the Imaging Uploader module";
             $tpl_data['error_message'][] =  $error_message;
         }
@@ -300,7 +300,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $isPhantom = $args['values']['IsPhantom'];
         if (empty($isPhantom)) {
             $errors[] ="Make sure 'Are these Phantom Scans' is filled out.
-            <br>Please refresh this page to return to the Imaging Uploader module";
+            Please refresh this page to return to the Imaging Uploader module";
         }
         ///////////////////////////////////////////////////////////////////////
         /////////Validate the advanced Options only if it's not a Phantom//////
@@ -314,7 +314,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             $visit_label = trim($args['values']['visitLabel']);
             if ((empty($candid)) || (empty($pscid)) || (empty($visit_label))) {
                 $errors[] ="Make sure the Cand ID, PSCID and Visit Label are ".
-                "filled out. <br>Please refresh this page to return to the Imaging
+                "filled out. Please refresh this page to return to the Imaging
                 Uploader module.";
             }
 
@@ -355,7 +355,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                                 " PSCID: $pscid and the corresponding".
                                 " Visit-label: $visit_label. Candidate and".
                                 " corresponding visit label must already be" .
-                                " created in the database. <br>Please refresh this".
+                                " created in the database. Please refresh this".
                                 " page to return to the Imaging Uploader module";
                 }
             }
@@ -366,7 +366,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         if (!$this->isCompressed($temp_file)) {
             $errors[] = "The file $temp_file is not of type".
-                        " .tgz, .tar.gz or .zip. <br>Please refresh this
+                        " .tgz, .tar.gz or .zip. Please refresh this
                         page to return to the Imaging Uploader module";
         }
 
@@ -616,14 +616,12 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function _getFileList($data)
     {
-
         $files = array();
-
         foreach ($data as $row) {
-            $filePath     = $row[5];
-            $fileName     = basename($filePath);
             $uploadStatus = $row[1];
-
+            $filePath     = $row[5];
+            $mincInserted = $row[10];
+            $fileName     = basename($filePath);
             // Checks if a file is already in files array
             $isDuplicate = (
                 array_search(
@@ -632,7 +630,12 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                 ) > -1
             );
 
-            if (file_exists($filePath) && !$isDuplicate) {
+            // If file successfully completed pipeline, then filePath is no longer
+            // valid as the file would have been deleted.
+            // Check that mincInserted > 0 in mri_upload to handle Successful uploads
+            if ((file_exists($filePath) || $mincInserted)
+                && !$isDuplicate
+            ) {
                 array_push(
                     $files,
                     [
@@ -718,6 +721,8 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $result['mriList'] = $this->_getFileList($result['Data']);
         $result['candToPSCID'] = $candToPSCID;
         $result['pscToCandID'] = $pscToCandID;
+
+        $result['maxUploadSize'] = Utility::getMaxUploadSize();
 
         return json_encode($result);
     }

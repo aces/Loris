@@ -252,7 +252,7 @@ class NDB_Form_New_Profile extends NDB_Form
         if ($values['dob1'] != $values['dob2']) {
             $errors['dob1'] = 'Date of Birth fields must match.';
         }
-        if ($config->getSetting('useEDC') == "true") {
+        if ($config->getSetting('useEDC') == "true" && is_array($values['edc1'])) {
             if (strlen(implode($values['edc1'])) > 2
                 && !Utility::_checkDate($values['edc1'])
             ) {

@@ -103,6 +103,7 @@ class ImagingUploader extends React.Component {
             mriList={this.state.Data.mriList}
             candToPSCID={this.state.Data.candToPSCID}
             pscToCandID={this.state.Data.pscToCandID}
+            maxUploadSize={this.state.Data.maxUploadSize}
           />
         </TabPane>
       </Tabs>
