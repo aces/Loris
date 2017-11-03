@@ -10,7 +10,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-require_once 'NDB_Menu_statistics_site.class.inc';
+namespace LORIS\statistics;
+
 /**
  * The welcome menu
  *
@@ -22,10 +23,11 @@ require_once 'NDB_Menu_statistics_site.class.inc';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class NDB_Menu_Statistics_Mri_Site extends NDB_Menu_statistics_site
+class Statistics_Mri_Site extends Statistics_Site
 {
     var $query_criteria = '';
     var $query_vars     = array();
+
     /**
      * CheckCriteria function
      *
@@ -62,7 +64,7 @@ class NDB_Menu_Statistics_Mri_Site extends NDB_Menu_statistics_site
         case "Files_Missing":
             return "MRI Parameter Form Completed but nothing in MRI Browser";
         }
-        return parent::_getIssueName($issue);
+        return $issue;
     }
     /**
      * CompleteCount function
@@ -77,6 +79,7 @@ class NDB_Menu_Statistics_Mri_Site extends NDB_Menu_statistics_site
     {
         return null;
     }
+
     /**
      * GetResults function
      *
@@ -89,7 +92,7 @@ class NDB_Menu_Statistics_Mri_Site extends NDB_Menu_statistics_site
     function _getResults($centerID, $projectID, $issue)
     {
         $this->_checkCriteria($centerID, $projectID);
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
 
         $scan_types = $DB->pselect("SELECT Scan_type from mri_scan_type");
         $where      = "WHERE (";
@@ -191,10 +194,8 @@ class NDB_Menu_Statistics_Mri_Site extends NDB_Menu_statistics_site
                          "Files_Missing",
                          "PF_Missing",
                         );
-        if (isset($_GET['subtest'])) {
-            header("Location: ?test_name=statistics#data_entry");
-        }
-        $DB     =& Database::singleton();
+
+        $DB     =& \Database::singleton();
         $sqlRow = "SELECT CenterID as ID,".
                   " PSCArea as Name FROM psc WHERE CenterID=:cid";
         $center = $DB->pselectRow($sqlRow, array('cid' => $_REQUEST['CenterID']));
@@ -206,7 +207,6 @@ class NDB_Menu_Statistics_Mri_Site extends NDB_Menu_statistics_site
         // template
         $visits = array();
 
-        //$this->_setIssueName();
         $data = array();
         foreach ($this->issues as $issue) {
             $complete_count = $this->_completeCount($centerID, $projectID, $issue);
@@ -238,9 +238,6 @@ class NDB_Menu_Statistics_Mri_Site extends NDB_Menu_statistics_site
         sort($visits);
         $this->tpl_data['AllVisits']      = $visits;
         $this->tpl_data['NumVisitLabels'] = count($visits);
-
-        //        return parent::setup();
-
     }
 
     /**
@@ -250,7 +247,7 @@ class NDB_Menu_Statistics_Mri_Site extends NDB_Menu_statistics_site
      */
     function getCSSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getCSSDependencies();
         return array_merge(
@@ -258,5 +255,5 @@ class NDB_Menu_Statistics_Mri_Site extends NDB_Menu_statistics_site
             array($baseURL . "/statistics/css/statistics.css")
         );
     }
-} // End class
-?>
+}
+
