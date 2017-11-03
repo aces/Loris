@@ -11,6 +11,10 @@
  * @link     https://github.com/aces/Loris
  */
 namespace LORIS\statistics;
+
+require_once __DIR__ . "/../../reliability/php/reliability.class.inc";
+use LORIS\reliability\Reliability as Reliability;
+
 /**
  * The welcome menu
  *
@@ -126,8 +130,7 @@ class Stats_Reliability extends \NDB_Form
         // but calculated on the fly.
         // As a result, we need to manually calculate it and maintain for each
         // type of thing.
-
-        $thresholds = \LORIS\reliability\Reliability::getThreshholds();
+        $thresholds = Reliability::getThreshholds();
 
         $config            = \NDB_Config::singleton();
         $reliabilityConfig = $config->getSetting("ReliabilityInstruments");
