@@ -179,7 +179,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
             WebDriverBy::Id('sidebar-wrapper')
         );
         $text     = $side_bar->getText();
-        $this->assertContains("Back to list ", $text);
+        $this->assertContains("Back to list", $text);
     }
 }
 ?>
