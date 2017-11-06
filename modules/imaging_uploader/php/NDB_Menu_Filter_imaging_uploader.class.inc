@@ -125,31 +125,16 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function _setFilterForm()
     {
-        $db   = Database::singleton();
-        $user = User::singleton();
         $phantomOptions = [
                            'N' => 'No',
                            'Y' => 'Yes',
                           ];
         $visitlabels    = Utility::getExistingVisitLabels();
-        $ids            = $db->pselect(
-            "SELECT PSCID, CandID ".
-            "FROM candidate ".
-            "WHERE FIND_IN_SET(CenterID, :cids) ".
-            "AND Entity_type='Human' " .
-            "ORDER BY PSCID",
-            array('cids' => implode(',', $user->getCenterIDs()))
-        );
 
-        $pscids  = array();
-        $candids = array();
+        $ids = $this->getCandidateIDMapping(false);
 
-        foreach ($ids as $id) {
-            $p           = $id['PSCID'];
-            $c           = $id['CandID'];
-            $pscids[$p]  = $p;
-            $candids[$c] = $c;
-        }
+        $pscids  = $ids['pscids'];
+        $candids = $ids['candids'];
 
         // Fields used for selection filter and upload form
         $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOptions);
@@ -694,6 +679,32 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function toJSON()
     {
+        $maps = $this->getCandidateIDMapping();
+
+        $pscToCandID = $maps['pscids'];
+        $candToPSCID = $maps['candids'];
+
+        $result            = $this->toArray();
+        $result['form']    = $this->form->form;
+        $result['mriList'] = $this->_getFileList($result['Data']);
+        $result['candToPSCID'] = $candToPSCID;
+        $result['pscToCandID'] = $pscToCandID;
+
+        $result['maxUploadSize'] = Utility::getMaxUploadSize();
+
+        return json_encode($result);
+    }
+
+    /**
+     * Returns candidate PSCID / CandID arrays, or maps PSCID to CandID
+     * & vice versa if $reverse is true
+     *
+     * @param bool $reverse if true, return mappings
+     *
+     * @return array $result arrays or maps of candidate IDs
+     */
+    function getCandidateIDMapping($reverse = true)
+    {
         $db   = Database::singleton();
         $user = User::singleton();
         $ids  = $db->pselect(
@@ -705,26 +716,22 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             array('cids' => implode(',', $user->getCenterIDs()))
         );
 
-        $candToPSCID = array();
-        $pscToCandID = array();
+        $result = array(
+                   'pscids'  => array(),
+                   'candids' => array(),
+                  );
 
         foreach ($ids as $id) {
-            $c = $id['CandID'];
-            $p = $id['PSCID'];
-
-            $candToPSCID[$c] = $p;
-            $pscToCandID[$p] = $c;
+            $p           = $id['PSCID'];
+            $c           = $id['CandID'];
+            $pscids[$p]  = $reverse ? $c : $p;
+            $candids[$c] = $reverse ? $p : $c;
         }
 
-        $result            = $this->toArray();
-        $result['form']    = $this->form->form;
-        $result['mriList'] = $this->_getFileList($result['Data']);
-        $result['candToPSCID'] = $candToPSCID;
-        $result['pscToCandID'] = $pscToCandID;
+        $result['pscids']  = $pscids;
+        $result['candids'] = $candids;
 
-        $result['maxUploadSize'] = Utility::getMaxUploadSize();
-
-        return json_encode($result);
+        return $result;
     }
 }
 ?>
