@@ -39,6 +39,8 @@ class Edit extends \NDB_Form
      */
     function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+
         $db      =& \Database::singleton();
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
