@@ -10,6 +10,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+namespace LORIS\reliability;
+
 //@codingStandardsIgnoreStart
 function map_cIDs($array){
     $new_array;
@@ -43,14 +45,14 @@ function array_remove($item, $array)
     }
 }
 
-class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
+class Reliability extends \NDB_Menu_Filter
 {
 
     var $centerIDMap;
     var $reliability_table;
     function _hasAccess()
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
         if ($user->hasPermission('access_all_profiles') || $user->hasPermission('reliability_edit_all')) {
             return true;
         }
@@ -66,7 +68,7 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
      */
     static function getSiteID($site)
     {
-        $siteList = Utility::getSiteList();
+        $siteList = \Utility::getSiteList();
         foreach ($siteList as $id=>$name) {
             $site_id[$name] = $id;
         }
@@ -81,10 +83,10 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
 //@codingStandardsIgnoreStart
     function _setupVariables()
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
         // create the centerID map
-        $db =& Database::singleton();
+        $db =& \Database::singleton();
 
         $pscRows = $db->pselect("SELECT CenterID, Name FROM psc", array());
         foreach ($pscRows as $row) {
@@ -108,7 +110,7 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
             $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
         }
 
-        $config      =&NDB_Config::singleton();
+        $config      =& \NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         // set the class variables
         $this->columns = array(
@@ -188,16 +190,26 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
                               );
         return true;
     }
-//@codingStandardsIgnoreEnd
+
     /**
-     * _SetFilterForm function
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
      *
-     * @return string
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
      */
-    function _setFilterForm()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+
         // create user object
-        $user          =& User::singleton();
+        $user          =& \User::singleton();
         $list_of_sites = array();
 
         // allow to view all sites data through filter
@@ -205,7 +217,7 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
             || $user->hasPermission('reliability_edit_all')
         ) {
             // get the list of study sites - to be replaced by the Site object
-            $list_of_sites = Utility::getSiteList(false);
+            $list_of_sites = \Utility::getSiteList(false);
             if (is_array($list_of_sites)) {
                 $new_list = array('' => 'All');
                 foreach ($list_of_sites as $key => $val) {
@@ -219,7 +231,7 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
             // allow only to view own site data
             $site_arr = $user->getData('CenterIDs');
             foreach ($site_arr as $key=>$val) {
-                $site[$key] = Site::singleton($val);
+                $site[$key] = \Site::singleton($val);
                 //    if ($site[$key]->isStudySite()) {
                     $list_of_sites[$key] = $site[$key]->getCenterName();
                 //    }
@@ -229,17 +241,17 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
 
         // hack for Visit Labels... maybe get all the real visit labels from DB?
         $list_of_visit_labels = array(null => 'All');
-        $visitLabel           = Utility::getVisitList();
+        $visitLabel           = \Utility::getVisitList();
         foreach ($visitLabel as $key => $value) {
             $list_of_visit_labels[$key] = $value;
         }
         $list_of_visit_labels_only = $visitLabel;
-        $projects         = Utility::getProjectList();
+        $projects         = \Utility::getProjectList();
         $list_of_projects = array(null => 'All');
         foreach ($projects as $key=>$value) {
              $list_of_projects[$key] = $value;
         }
-        $subproject_options = Utility::getSubprojectList();
+        $subproject_options = \Utility::getSubprojectList();
 
         $subproject_options  = array('' => 'All') + $subproject_options;
         $gender_options      = array(
@@ -248,10 +260,10 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
                                 'Female' => 'Female',
                                );
         $list_of_instruments = array(null => 'All');
-        $config            =& NDB_Config::singleton();
+        $config            =& \NDB_Config::singleton();
         $reliabilityConfig = $config->getSetting("ReliabilityInstruments");
         $reliabilityInstruments = $reliabilityConfig['Instrument'];
-        foreach (Utility::toArray($reliabilityInstruments)
+        foreach (\Utility::toArray($reliabilityInstruments)
                    AS $reliabilityInstrument) {
             $list_of_instruments[$reliabilityInstrument['Testname']]      = $reliabilityInstrument['Displayname'];// @codingStandardsIgnoreLine
             $list_of_instruments_only[$reliabilityInstrument['Testname']] = $reliabilityInstrument['Displayname'];// @codingStandardsIgnoreLine
@@ -376,10 +388,10 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
     function getThreshholds()
     {
         // This is used both by setDataTableRows, and reliability statistics
-        $config            =& NDB_Config::singleton();
+        $config            =& \NDB_Config::singleton();
         $reliabilityConfig = $config->getSetting("ReliabilityInstruments");
         $reliabilityInstruments = $reliabilityConfig['Instrument'];
-        foreach (Utility::toArray($reliabilityInstruments)
+        foreach (\Utility::toArray($reliabilityInstruments)
                      AS $reliabilityInstrument) {
             $list_of_thresholds[$reliabilityInstrument['Testname']] = $reliabilityInstrument['Threshold'];// @codingStandardsIgnoreLine
         }
@@ -394,28 +406,28 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
 
     function _populate_reliability_table()
     {
-        $db =& Database::singleton();
+        $db =& \Database::singleton();
         $this->reliability_table = $db->pselect("SELECT CommentID, reliability_center_id FROM reliability", array());
 
         $this->reliability_table = map_cIDs($this->reliability_table);
 
         // WITHIN SITE
-        $siteList = Utility::getSiteList();
+        $siteList = \Utility::getSiteList();
         foreach($siteList as $name=>$id){
             $site_list[$name] = $id;
         }
-        $config            =& NDB_Config::singleton();
+        $config            =& \NDB_Config::singleton();
         $reliabilityConfig = $config->getSetting("ReliabilityInstruments");
         $reliabilityInstruments = $reliabilityConfig['Instrument'];
 
         foreach($site_list as $site) {
-            foreach(Utility::toArray($reliabilityInstruments) AS $reliabilityInstrument) {
+            foreach(\Utility::toArray($reliabilityInstruments) AS $reliabilityInstrument) {
                 $this->within_site_flagging($reliabilityInstrument['Testname'], $reliabilityInstrument['Threshold'], $site, $db);
             }
         }
 
         foreach($site_list as $site) {
-            foreach(Utility::toArray($reliabilityInstruments) AS $reliabilityInstrument) {
+            foreach(\Utility::toArray($reliabilityInstruments) AS $reliabilityInstrument) {
                 $this->cross_site_flagging($reliabilityInstrument['Testname'], $site, array_remove($site, $site_list), $db);
             }
         }
@@ -436,7 +448,7 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
         $params['instrument']     = $instrument;
         $instrument_records       = $db->pselect("SELECT f.CommentID FROM flag as f JOIN session as s ON (f.SessionID=s.ID) WHERE f.Test_name=:instrument AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND f.CommentID LIKE CONCAT('%',:currentSite,'%')  AND f.CommentID NOT LIKE 'DDE%' AND f.Administration <> 'None' ORDER BY RIGHT(f.CommentID, 6)", $params);
         $total_records_count      = count($instrument_records);
-        $params['currentSite_id'] = NDB_Menu_Filter_reliability::getSiteID($current_site);
+        $params['currentSite_id'] = Reliability::getSiteID($current_site);
         $current_count            = $db->pselectOne("SELECT count(*) FROM (SELECT DISTINCT r.CommentID FROM reliability as r JOIN flag as f ON (r.CommentID=f.CommentID) JOIN session as s ON (s.ID=f.SessionID) WHERE r.CommentID LIKE CONCAT('%', :currentSite ,'%') AND r.Instrument=:instrument AND r.reliability_center_id=:currentSite_id AND r.invalid = 'no' AND s.Current_stage<>'Recycling Bin') as t", $params);
         $total_count = count($instrument_records);
         if ($ratio*$total_records_count >= $total_count) {
@@ -481,7 +493,7 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
 
         $instrument_records       = $db->pselect("SELECT f.CommentID FROM flag as f JOIN session as s ON (f.sessionID=s.ID) WHERE s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND f.CommentID NOT LIKE CONCAT('%', :currentSite,'%') AND f.Test_name=:instrument AND f.CommentID NOT LIKE 'DDE%'  AND f.Administration <> 'None' ORDER BY RIGHT(f.CommentID, 6)", $params);
         $total_records_count      = count($instrument_records);
-        $params['currentSite_id'] = NDB_Menu_Filter_reliability::getSiteID($current_site);
+        $params['currentSite_id'] = Reliability::getSiteID($current_site);
          $current_count           = $db->pselectOne("SELECT count(*) FROM (SELECT DISTINCT r.CommentID FROM reliability as r JOIN flag as f ON (r.CommentID=f.CommentID) JOIN session as s ON (s.ID=f.SessionID) WHERE r.CommentID LIKE CONCAT('%',:currentSite,'%') AND r.Instrument=:instrument AND r.reliability_center_id<>:currentSite_id AND r.invalid = 'no' AND s.Current_stage<>'Recycling Bin') as t", $params);
         $total_count = count($instrument_records);
         if ($ratio*$total_records_count >= $total_count) {
@@ -520,7 +532,7 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
         $params    = array();
         $params['currentSite']    = $current_site;
         $params['instrument']     = $instrument;
-        $params['currentSite_id'] = NDB_Menu_Filter_reliability::getSiteID($current_site);
+        $params['currentSite_id'] = Reliability::getSiteID($current_site);
         $last_site = $db->pselectOne(
             "SELECT reliability_center_id".
             " FROM reliability where ID=(select max(ID)".
@@ -546,14 +558,14 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
 //@codingStandardsIgnoreStart
     function _swap_candidates()
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
         if (!($user->hasPermission('reliability_swap_candidates'))) {
             return array(
                     "error" => "You do not have permission".
                                 " to swap candidates",
                    );
         }
-        $DB            =& Database::singleton();
+        $DB            =& \Database::singleton();
         $params        = array();
         $params['pid'] = $_POST['Cand1PSCID'];
         $params['measure'] = $_POST['SwapInstrument'];
@@ -672,8 +684,8 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
      */
     function _addCandidate()
     {
-        $user   =& User::singleton();
-        $DB     =& Database::singleton();
+        $user   =& \User::singleton();
+        $DB     =& \Database::singleton();
         $params = array();
         $params['Instrument']  = $_POST['AddInstrument'];
         $params['Visit_label'] = $_POST['AddVisit_label'];
@@ -730,7 +742,7 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
     {
         $tableData = $this->toArray();
         $threshold = $this->getThreshholds();
-        $cohort    = Utility::getSubprojectList();
+        $cohort    = \Utility::getSubprojectList();
 
         foreach ($tableData['Data'] as $key => $record) {
 
@@ -767,7 +779,7 @@ class NDB_Menu_Filter_Reliability extends NDB_Menu_Filter
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
