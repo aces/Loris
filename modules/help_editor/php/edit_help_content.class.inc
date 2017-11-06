@@ -8,7 +8,7 @@
  * @package  Loris
  * @author   Rathi Sekaran <sekaranrathi@gmail.com>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://github.com/aces/Loris
  */
 namespace LORIS\help_editor;
 
@@ -20,7 +20,7 @@ namespace LORIS\help_editor;
  * @package  Loris
  * @author   Rathi Sekaran <sekaranrathi@gmail.com>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://github.com/aces/Loris
  */
 
 class Edit_Help_Content extends \NDB_Form

@@ -9,7 +9,7 @@
  * @package  Main
  * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://github.com/aces/Loris
  */
 namespace LORIS\help_editor;
 
@@ -23,7 +23,7 @@ namespace LORIS\help_editor;
  * @package  Main
  * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://github.com/aces/Loris
  */
 class HelpFile
 {

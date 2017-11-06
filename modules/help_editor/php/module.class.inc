@@ -9,7 +9,7 @@
  * @package  Main
  * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://github.com/aces/Loris
  */
 namespace LORIS\help_editor;
 
@@ -20,7 +20,7 @@ namespace LORIS\help_editor;
  * @package  Main
  * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://github.com/aces/Loris
  */
 class Module extends \Module
 {
