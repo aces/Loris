@@ -29,11 +29,15 @@ class Edit extends \NDB_Form
      * Entry point for /media/edit/
      * Checks if file id is provided and otherwise redirects to /media/ page
      *
-     * @throws DatabaseException
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
      *
-     * @return void
+     * @return none
      */
-    function _setupPage()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
         $db      =& \Database::singleton();
         $factory = \NDB_Factory::singleton();
