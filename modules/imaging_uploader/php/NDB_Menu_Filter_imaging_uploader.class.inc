@@ -41,6 +41,9 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     var $uploaded_file_path;
 
+    var $IDs = array();
+
+
     /**
      * Override default behaviour, since the page is loaded from index.js
      *
@@ -131,11 +134,16 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                           ];
         $visitlabels    = Utility::getExistingVisitLabels();
 
-        $ids = $this->getCandidateIDMapping(false);
+        $this->IDs = $this->getCandidateIDs();
+        $pscids    = array();
+        $candids   = array();
+        foreach ($this->IDs as $ID) {
+            $p = $ID['PSCID'];
+            $c = $ID['CandID'];
 
-        $pscids  = $ids['pscids'];
-        $candids = $ids['candids'];
-
+            $pscids[$p]  = $p;
+            $candids[$c] = $c;
+        }
         // Fields used for selection filter and upload form
         $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOptions);
         $this->addSelect('pSCID', 'PSCID', $pscids);
@@ -679,10 +687,16 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function toJSON()
     {
-        $maps = $this->getCandidateIDMapping();
+        $pscToCandID = array();
+        $candToPSCID = array();
 
-        $pscToCandID = $maps['pscids'];
-        $candToPSCID = $maps['candids'];
+        foreach ($this->IDs as $ID) {
+            $p = $ID['PSCID'];
+            $c = $ID['CandID'];
+
+            $pscToCandID[$p] = $c;
+            $candToPSCID[$c] = $p;
+        }
 
         $result            = $this->toArray();
         $result['form']    = $this->form->form;
@@ -696,18 +710,15 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
     }
 
     /**
-     * Returns candidate PSCID / CandID arrays, or maps PSCID to CandID
-     * & vice versa if $reverse is true
+     * Returns candidate PSCID / CandID array
      *
-     * @param bool $reverse if true, return mappings
-     *
-     * @return array $result arrays or maps of candidate IDs
+     * @return array $IDs database return of candidate IDs
      */
-    function getCandidateIDMapping($reverse = true)
+    function getCandidateIDs()
     {
         $db   = Database::singleton();
         $user = User::singleton();
-        $ids  = $db->pselect(
+        $IDs  = $db->pselect(
             "SELECT PSCID, CandID ".
             "FROM candidate ".
             "WHERE FIND_IN_SET(CenterID, :cids) ".
@@ -716,22 +727,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             array('cids' => implode(',', $user->getCenterIDs()))
         );
 
-        $result = array(
-                   'pscids'  => array(),
-                   'candids' => array(),
-                  );
-
-        foreach ($ids as $id) {
-            $p           = $id['PSCID'];
-            $c           = $id['CandID'];
-            $pscids[$p]  = $reverse ? $c : $p;
-            $candids[$c] = $reverse ? $p : $c;
-        }
-
-        $result['pscids']  = $pscids;
-        $result['candids'] = $candids;
-
-        return $result;
+        return $IDs;
     }
 }
 ?>
