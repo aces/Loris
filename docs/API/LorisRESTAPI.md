@@ -709,8 +709,8 @@ GET /candidates/$CandID/$Visit/dicoms
 ```
 
 A GET request to `/candidates/$CandID/$Visit/dicoms` will return a JSON object of
-all the images which have been acquired for that visit. It will return an object of
-the form:
+all the raw DICOM data which have been acquired for that visit. It will return an 
+object of the form:
 
 ```js
 {
@@ -718,13 +718,31 @@ the form:
         "CandID" : $CandID,
         "Visit" : $VisitLabel,
     },
-    "DicomTars" : [{
+    "DicomTars" : 
+        [{
         "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-abc123.tar",
-        "SeriesDescription" : "MPRAGE_ipat2, BOLD Resting State",
-        "SeriesNumber" : "2, 5",
-        "EchoTime" : "2.98, 30",
-        "SeriesUID" : "1.2.3.4.1107, 3.4.5.6.1507",
-    }]
+        "SeriesInfo" :
+            [{
+            "SeriesDescription" : "MPRAGE_ipat2",
+            "SeriesNumber" : "2",
+            "EchoTime" : "2.98",
+            "SeriesUID" : "1.2.3.4.1107",
+            },
+            {
+            "SeriesDescription" : "BOLD Resting State",
+            "SeriesNumber" : "5",
+            "EchoTime" : "30",
+            "SeriesUID" : "3.4.5.6.1507",
+            }],
+        "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-def456.tar",
+        "SeriesInfo" :
+            [{
+            "SeriesDescription" : "MPRAGE_ipat2",
+            "SeriesNumber" : "2",
+            "EchoTime" : "2.98",
+            "SeriesUID" : "1.7.8.9.1296",
+            }],
+    }],    
 }
 ```
 
