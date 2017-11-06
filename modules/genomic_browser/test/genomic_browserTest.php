@@ -271,7 +271,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                   $text = $this->webDriver->executescript(
                       "return document.querySelector('#datatable').textContent"
                   );
-                  $this->assertContains("$expectDateRows", $text);
+                  $this->assertContains($expectDataRows, $text);
     }
     /**
       * Tests that, when clicking the upload button,the upload window should show up
