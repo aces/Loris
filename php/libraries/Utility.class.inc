@@ -198,7 +198,7 @@ class Utility
         if ($study_site) {
             $query .= "WHERE Study_site='Y'";
         }
-
+        $query .= "ORDER BY Name";
         $result = $DB->pselect($query, array());
 
         // fix the array
