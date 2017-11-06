@@ -13,6 +13,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+namespace LORIS\instrument_list;
+
 /**
  * Time Point status control panel class
  *
@@ -27,7 +29,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-Class Instrument_List_ControlPanel extends TimePoint
+class Instrument_List_ControlPanel extends \TimePoint
 {
     /**
      * Construct funcion
@@ -50,7 +52,7 @@ Class Instrument_List_ControlPanel extends TimePoint
      */
     function display()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $this->tpl_data['baseurl'] = $factory->settings()->getBaseURL();
 
         $this->tpl_data['candID']    = $this->getData('CandID');
@@ -69,7 +71,7 @@ Class Instrument_List_ControlPanel extends TimePoint
         }
 
         // BVLQC - get permission and set the tpl element
-        $user =& User::singleton();
+        $user =& \User::singleton();
         $this->tpl_data['access']['bvl_qc']
             = $user->hasPermission('bvl_feedback');
 
@@ -78,7 +80,7 @@ Class Instrument_List_ControlPanel extends TimePoint
         // BVLQCStatus
         $success = $this->_displayBVLQCStatus();
 
-        $smarty = new Smarty_neurodb("instrument_list");
+        $smarty = new \Smarty_neurodb("instrument_list");
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("instrument_list_controlpanel.tpl");
         return $html;
@@ -97,7 +99,7 @@ Class Instrument_List_ControlPanel extends TimePoint
 
         // update the status of the current stage
         if (!empty($_REQUEST['setStageUpdate'])
-            && $this->_hasAccess_Status()
+            && $this->_hasAccessStatus()
             && in_array($_REQUEST['setStageUpdate'], $this->_statusOptions)
             && in_array($currentStage, $this->_dynamicStageOptions)
         ) {
@@ -107,13 +109,13 @@ Class Instrument_List_ControlPanel extends TimePoint
 
         // submit to dcc (a.k.a., finalize)
         if (isset($_REQUEST['setSubmitted']) && $_REQUEST['setSubmitted'] == 'Y'
-            && $this->_hasAccess_SendToDCC()
+            && $this->_hasAccessSendToDCC()
             && in_array($currentStage, array('Visit', 'Screening'))
             && $currentStatus != 'In Progress'
         ) {
 
             // trigger timepoint flags
-            $config    =& NDB_Config::singleton();
+            $config    =& \NDB_Config::singleton();
             $study     = $config->getSetting('study');
             $sessionID = $this->getData('SessionID');
             $condition = $study['timepointFlagCheck_send2dcc'];
@@ -121,7 +123,7 @@ Class Instrument_List_ControlPanel extends TimePoint
                 include_once __DIR__ .
                     "../../modules/timepoint_flag/php/TimePoint_Flag.class.inc";
                 // object instance
-                $timepointFlagObject =& TimePoint_Flag::singleton($sessionID);
+                $timepointFlagObject =& \TimePoint_Flag::singleton($sessionID);
                 // flag types
                 $flagTypeIDs = $timepointFlagObject->getFlagTypeIDs();
                 // evaluate the flags for the timepoint
@@ -176,7 +178,7 @@ Class Instrument_List_ControlPanel extends TimePoint
 
             if ($nextStage = 'Recycling Bin') {
 
-                $battery = new NDB_BVL_Battery();
+                $battery = new \NDB_BVL_Battery();
 
                 // set the SessionID for the battery
                 $success = $battery->selectBattery(
@@ -187,7 +189,7 @@ Class Instrument_List_ControlPanel extends TimePoint
                 $batteryList = $battery->getBatteryVerbose();
 
                 // Get the list of DDE instruments
-                $config         =& NDB_Config::singleton();
+                $config         =& \NDB_Config::singleton();
                 $ddeInstruments = $config->getSetting(
                     'DoubleDataEntryInstruments'
                 );
@@ -198,7 +200,7 @@ Class Instrument_List_ControlPanel extends TimePoint
                     // If the instrument requires double data entry, check that
                     // DDE is also done
                     if (in_array($instrument['Test_name'], $ddeInstruments)) {
-                        ConflictDetector::clearConflictsForInstance(
+                        \ConflictDetector::clearConflictsForInstance(
                             $instrument['CommentID']
                         );
                     }
@@ -212,7 +214,7 @@ Class Instrument_List_ControlPanel extends TimePoint
         $condition2 = $condition1 ?
             $_REQUEST['setSubmitted'] == 'N' :
             false;
-        $condition3 = $this->_hasAccess_SendToDCC();
+        $condition3 = $this->_hasAccessSendToDCC();
         $condition4 = !in_array(
             $currentStage,
             array(
@@ -239,7 +241,7 @@ Class Instrument_List_ControlPanel extends TimePoint
                 $previousStage = $this->_determinePreviousStage();
                 $this->startStage($previousStage);
 
-                $battery = new NDB_BVL_Battery();
+                $battery = new \NDB_BVL_Battery();
                 // set the SessionID for the battery
                 $success = $battery->selectBattery(
                     $this->getData('SessionID')
@@ -247,7 +249,7 @@ Class Instrument_List_ControlPanel extends TimePoint
                 // get the list of instruments
                 $batteryList = $battery->getBatteryVerbose();
                 // Get the list of DDE instruments
-                $config         =& NDB_Config::singleton();
+                $config         =& \NDB_Config::singleton();
                 $ddeInstruments = $config->getSetting(
                     'DoubleDataEntryInstruments'
                 );
@@ -260,15 +262,15 @@ Class Instrument_List_ControlPanel extends TimePoint
                     if (in_array($instrument['Test_name'], $ddeInstruments)) {
                         // ConflictDetector::
                         //clearConflictsForInstance($instrument['CommentID']);
-                        ConflictDetector::clearConflictsForInstance(
+                        \ConflictDetector::clearConflictsForInstance(
                             $instrument['CommentID']
                         );
-                        $diff =ConflictDetector::detectConflictsForCommentIds(
+                        $diff =\ConflictDetector::detectConflictsForCommentIds(
                             $instrument['Test_name'],
                             $instrument['CommentID'],
                             $instrument['DDECommentID']
                         );
-                        ConflictDetector::recordUnresolvedConflicts($diff);
+                        \ConflictDetector::recordUnresolvedConflicts($diff);
 
                     }
                 }
@@ -277,11 +279,11 @@ Class Instrument_List_ControlPanel extends TimePoint
         }
 
         // set the BVLQC flag
-        $user =& User::singleton();
+        $user =& \User::singleton();
         if (isset($_REQUEST['setBVLQCStatus'])
             && $user->hasPermission('bvl_feedback')
         ) {
-            $status = Utility::nullifyEmpty(
+            $status = \Utility::nullifyEmpty(
                 $_REQUEST['setBVLQCStatus'],
                 'BVLQCStatus'
             );
@@ -291,7 +293,7 @@ Class Instrument_List_ControlPanel extends TimePoint
         if (isset($_REQUEST['setBVLQCType']) && !empty($_REQUEST['setBVLQCType'])
             && $user->hasPermission('bvl_feedback')
         ) {
-            $QCtype = Utility::nullifyEmpty(
+            $QCtype = \Utility::nullifyEmpty(
                 $_REQUEST['setBVLQCType'],
                 'BVLQCType'
             );
@@ -345,15 +347,15 @@ Class Instrument_List_ControlPanel extends TimePoint
         }
 
         // new DB Object
-        $db =& Database::singleton();
+        $db =& \Database::singleton();
 
         // create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
-        $hasAccess = $this->_hasAccess_Status();
+        $hasAccess = $this->_hasAccessStatus();
 
         // check that all the instruments' Data Entry is market Complete
-        $battery = new NDB_BVL_Battery;
+        $battery = new \NDB_BVL_Battery;
 
         // set the SessionID for the battery
         $success = $battery->selectBattery($_REQUEST['sessionID']);
@@ -362,13 +364,13 @@ Class Instrument_List_ControlPanel extends TimePoint
         $batteryList = $battery->getBatteryVerbose();
 
         // Get the list of DDE instruments
-        $config         =& NDB_Config::singleton();
+        $config         =& \NDB_Config::singleton();
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 
         // loop the list and check the Data Entry status
         $ddeConflictDetected =false;
         foreach ($batteryList as $instrument) {
-            $status = new NDB_BVL_InstrumentStatus();
+            $status = new \NDB_BVL_InstrumentStatus();
             $status->select($instrument['CommentID']);
             $dataEntry = $status->getDataEntryStatus();
             if ($dataEntry != 'Complete') {
@@ -378,7 +380,7 @@ Class Instrument_List_ControlPanel extends TimePoint
             // If the instrument requires double data entry,
             //check that DDE is also done
             if (in_array($instrument['Test_name'], $ddeInstruments)) {
-                $status = new NDB_BVL_InstrumentStatus();
+                $status = new \NDB_BVL_InstrumentStatus();
                 $status->select($instrument['DDECommentID']);
                 $dataEntry = $status->getDataEntryStatus();
                 if ($dataEntry != 'Complete') {
@@ -386,7 +388,7 @@ Class Instrument_List_ControlPanel extends TimePoint
                 }
 
                 // Pretend data entry is not complete if there are conflicts
-                if (ConflictDetector::isInstrumentInstanceInConflictState(
+                if (\ConflictDetector::isInstrumentInstanceInConflictState(
                     $instrument['CommentID']
                 )
                 ) {
@@ -450,10 +452,10 @@ Class Instrument_List_ControlPanel extends TimePoint
      *
      * @return bool
      */
-    function _hasAccess_Status()// @codingStandardsIgnoreLine
+    function _hasAccessStatus()
     {
         // get user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
         // disable the button for all these users
         $currentStage = $this->getCurrentStage();
@@ -536,10 +538,10 @@ Class Instrument_List_ControlPanel extends TimePoint
      */
     function _displaySendToDCC()
     {
-        $config =& NDB_Config::singleton();
+        $config =& \NDB_Config::singleton();
         $study  = $config->getSetting('study');
 
-        $hasAccess = $this->_hasAccess_SendToDCC();
+        $hasAccess = $this->_hasAccessSendToDCC();
 
         // This is a toggle button.
         if ($this->getData('Submitted')=='Y') {
@@ -558,7 +560,7 @@ Class Instrument_List_ControlPanel extends TimePoint
             $this->tpl_data['send_to_dcc']['reverse'] = 'Reverse Send To DCC';
         }
 
-        $battery = new NDB_BVL_Battery();
+        $battery = new \NDB_BVL_Battery();
 
         // set the SessionID for the battery
         $success = $battery->selectBattery($this->getData('SessionID'));
@@ -567,14 +569,14 @@ Class Instrument_List_ControlPanel extends TimePoint
         $batteryList = $battery->getBatteryVerbose();
 
         // Get the list of DDE instruments
-        $config         =& NDB_Config::singleton();
+        $config         =& \NDB_Config::singleton();
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 
         // clear the unresolved conflicts for all the instruments
         $allDataEntryComplete =true;
         foreach ($batteryList as $instrument) {
 
-            $status = new NDB_BVL_InstrumentStatus();
+            $status = new \NDB_BVL_InstrumentStatus();
             $status->select($instrument['CommentID']);
             $dataEntry = $status->getDataEntryStatus();
             if ($dataEntry != 'Complete') {
@@ -585,7 +587,7 @@ Class Instrument_List_ControlPanel extends TimePoint
             // If the instrument requires double data entry,
             // check that DDE is also done
             if (in_array($instrument['Test_name'], $ddeInstruments)) {
-                $status = new NDB_BVL_InstrumentStatus();
+                $status = new \NDB_BVL_InstrumentStatus();
                 $status->select($instrument['DDECommentID']);
                 $dataEntry = $status->getDataEntryStatus();
                 if ($dataEntry != 'Complete') {
@@ -609,8 +611,8 @@ Class Instrument_List_ControlPanel extends TimePoint
     function _getSendToDCCStatusMessage()
     {
         // create user object
-        $user   =& User::singleton();
-        $config =& NDB_Config::singleton();
+        $user   =& \User::singleton();
+        $config =& \NDB_Config::singleton();
 
         // get the value of the session.Scan_done field
         $scanDone = $this->getData('Scan_done');
@@ -663,7 +665,7 @@ Class Instrument_List_ControlPanel extends TimePoint
             return "The Scan done field must be entered for the Visit stage";
         }
 
-        $battery = new NDB_BVL_Battery();
+        $battery = new \NDB_BVL_Battery();
 
         // set the SessionID for the battery
         $success = $battery->selectBattery($this->getData('SessionID'));
@@ -672,14 +674,14 @@ Class Instrument_List_ControlPanel extends TimePoint
         $batteryList = $battery->getBatteryVerbose();
 
         // Get the list of DDE instruments
-        $config         =& NDB_Config::singleton();
+        $config         =& \NDB_Config::singleton();
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 
         // clear the unresolved conflicts for all the instruments
         $allDataEntryComplete =true;
         foreach ($batteryList as $instrument) {
 
-            $status = new NDB_BVL_InstrumentStatus();
+            $status = new \NDB_BVL_InstrumentStatus();
             $status->select($instrument['CommentID']);
             $dataEntry = $status->getDataEntryStatus();
             if ($dataEntry != 'Complete') {
@@ -690,7 +692,7 @@ Class Instrument_List_ControlPanel extends TimePoint
             // If the instrument requires double data entry,
             // check that DDE is also done
             if (in_array($instrument['Test_name'], $ddeInstruments)) {
-                $status = new NDB_BVL_InstrumentStatus();
+                $status = new \NDB_BVL_InstrumentStatus();
                 $status->select($instrument['DDECommentID']);
                 $dataEntry = $status->getDataEntryStatus();
                 if ($dataEntry != 'Complete') {
@@ -704,15 +706,15 @@ Class Instrument_List_ControlPanel extends TimePoint
         }
     }
     /**
-     * HasAccess_SendToDCC function
+     * HasAccessSendToDCC function
      *
      * @return bool
      */
-    function _hasAccess_SendToDCC()// @codingStandardsIgnoreLine
+    function _hasAccessSendToDCC()
     {
         // create user object
-        $user   =& User::singleton();
-        $config =& NDB_Config::singleton();
+        $user   =& \User::singleton();
+        $config =& \NDB_Config::singleton();
 
         // get the value of the session.Scan_done field
         $scanDone = $this->getData('Scan_done');
@@ -762,10 +764,14 @@ Class Instrument_List_ControlPanel extends TimePoint
         $this->tpl_data['next_stage'] = $this->getNextStage();
 
         // create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
         // check user permissions
-        if (!$user->hasPermission('data_entry') || !in_array($this->getData('CenterID'), $user->getData('CenterIDs'))) {// @codingStandardsIgnoreLine
+        if (!$user->hasPermission('data_entry') || !in_array(
+            $this->getData('CenterID'),
+            $user->getData('CenterIDs')
+        )
+        ) {
             return false;
         }
         return $this->isStartable();
