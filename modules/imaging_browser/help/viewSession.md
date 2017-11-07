@@ -28,9 +28,8 @@ with appropriate permissions may select QC issues and enter comments
 regarding intensity, movement artifacts, coverage and overall
 feedback on the selected scan.
 
-In the left sidebar
 
-## Navigation
+## Navigation In the Left Sidebar
 
 Return to the main Imaging Browser page, or navigate to the previous
 or next scan session based on the filtered list of search results.

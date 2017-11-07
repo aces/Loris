@@ -18,13 +18,13 @@ selection filters.
 
 Sort the data table results by clicking on any column header.  The
 date of first acquisition of all scans for the timepoint is indicated
-under the "First Acq Date" column.  The "Last QC" column shows the
+under the "First Acquisition " column.  The "Last QC" column shows the
 date of the most recent Quality Control (QC) on any scan in the
 session. New scans awaiting Quality Control (QC) will be marked
 "NEW" (in red) under the "New Data" column.
 
 To download, visualize, add QC annotation or view details of imaging
-files for a candidate-timepoint, select a dataset type the "Links"
+files for a candidate-timepoint, select a dataset type under the "Links"
 columns: "native", "selected" (one selected scan per modality will
 be displayed in the data query tool) or "all types".
 
