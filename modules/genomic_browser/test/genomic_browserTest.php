@@ -112,8 +112,6 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
       * breadcrumb is 'Genomic browser' or an error is given according
       * to the user's permissions.
       *
-      * @depends testGenomicBrowserWithoutPermission
-      *
       * @return void
       */
     function testGenomicBrowserWithoutPermission()
@@ -130,8 +128,6 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
       * Tests that, when loading the genomic_browser module, the
       * breadcrumb is 'Genomic browser' or an error is given according
       * to the user's permissions.
-      *
-      * @depends testGenomicBrowserWithPermission
       *
       * @return void
       */
