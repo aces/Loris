@@ -181,6 +181,29 @@ class Utility
     }
 
     /**
+     * Returns a list of consents in the database
+     *
+     * @return array an associative array("consent_id" => consent info)
+     */
+    static function getConsentList()
+    {
+        $DB =& Database::singleton();
+
+        $query = "SELECT * FROM consent";
+
+        $result = $DB->pselect($query, array());
+
+        // fix the array
+        $list = array();
+        foreach ($result as $row) {
+            $list[$row["id"]] = $row;
+            unset($list[$row["id"]]["id"]);
+        }
+        $config =& NDB_Config::singleton();
+        return $list;
+    }
+
+    /**
      * Returns a list of sites in the database
      *
      * @param bool $study_site If true only return sites that are

@@ -1,6 +1,10 @@
 -- ********************************
 -- DROP TABLE (ORDER MATTERS)
 -- ********************************
+
+DROP TABLE IF EXISTS `candidate_consent`;
+DROP TABLE IF EXISTS `consent`;
+
 DROP TABLE IF EXISTS `acknowledgements`;
 
 DROP TABLE IF EXISTS `data_release_permissions`;
@@ -2011,4 +2015,24 @@ CREATE TABLE `feedback_mri_comments` (
   CONSTRAINT `FK_feedback_mri_comments_1` FOREIGN KEY (`CommentTypeID`) REFERENCES `feedback_mri_comment_types` (`CommentTypeID`),
   CONSTRAINT `FK_feedback_mri_comments_2` FOREIGN KEY (`PredefinedCommentID`) REFERENCES `feedback_mri_predefined_comments` (`PredefinedCommentID`),
   CONSTRAINT `FK_feedback_mri_comments_3` FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `consent` (
+  `id` int(2) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT "study_consent",
+  `label` varchar(255) NOT NULL DEFAULT "Consent to Study",
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  UNIQUE KEY `label` (`label`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `candidate_consent` (
+  `candidate_id` int(6) NOT NULL,
+  `consent_id` int(2) NOT NULL,
+  `value` enum('yes','no','not_answered') DEFAULT NULL,
+  `consent_date` date DEFAULT NULL,
+  `consent_withdrawal_date` date DEFAULT NULL,
+  PRIMARY KEY (`cand_id`,`consent_id`),
+  CONSTRAINT `FK_candidate_consent_1` FOREIGN KEY (`cand_id`) REFERENCES `candidate` (`CandID`),
+  CONSTRAINT `FK_candidate_consent_2` FOREIGN KEY (`consent_id`) REFERENCES `consent` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
