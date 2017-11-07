@@ -363,32 +363,21 @@ function editConsentStatusFields($db, $user)
         exit;
     }
 
+    $currentUser = User::singleton();
+    $uid         = $currentUser->getData("UserID");
+
     $candIDParam = $_POST['candID'];
     $candID      = (isset($candIDParam) && $candIDParam !== "null") ?
         $candIDParam : null;
 
-    $id = null;
-    if (!(is_null($_SESSION['State']))) {
-        $currentUser =& User::singleton($_SESSION['State']->getUsername());
-        $id          = $currentUser->getData("UserID");
-    }
+    $consentDetails   = Utility::getConsentList();
+    $candidateConsent = Candidate::getConsent($candID);
 
-    $config  =& NDB_Config::singleton();
-    $consent = $config->getSetting('ConsentModule');
-
-    $consent_details =Utility::asArray($consent['Consent']);
-    if (!$consent_details[0]) {
-        // If only one consent, need to put in an array
-        $temp            = array();
-        $temp[]          = $consent_details;
-        $consent_details = $temp;
-    }
-
-    foreach ($consent_details as $consentType) {
+    foreach ($consentDetails as $consentID=>$consentType) {
 
         $consentName       = $_POST[$consentType['name']];
-        $consentDate       = $_POST[$consentType['name'] . '_date'];
-        $consentWithdrawal = $_POST[$consentType['name'] . '_withdrawal'];
+        $consentDate       = $_POST[$consentType['name'] . 'consent_date'];
+        $consentWithdrawal = $_POST[$consentType['name'] . 'consent_withdrawal_date'];
 
         // Process posted data
         $consent    = (isset($consentName) && $consentName !== "null") ?
@@ -398,36 +387,31 @@ function editConsentStatusFields($db, $user)
         $withdrawal = (isset($consentWithdrawal) && $consentWithdrawal !== "null") ?
             $consentWithdrawal : null;
 
-        $updateValues = [
-                         'CandID'                               => $candID,
-                         'entry_staff'                          => $id,
-                         $consentType['name']                   => $consent,
-                         ($consentType['name'] . '_date')       => $date,
-                         ($consentType['name'] . '_withdrawal') => $withdrawal,
-                        ];
+        $Values = [
+                   'candidate_id'            => $candID,
+                   'consent_id'              => $consentID,
+                   'value'                   => $consent,
+                   'consent_date'            => $date,
+                   'consent_withdrawal_date' => $withdrawal,
+                  ];
 
-        $newRecord = true;
+        $historyValues = $Values + array('entry_staff' => $uid);
 
-        if ($candID) {
-            $exists = $db->pselectOne(
-                "SELECT * from participant_status WHERE CandID=:candid",
-                ['candid' => $candID]
+        $recordExists = array_key_exists($consentID, $candidateConsent);
+
+        if ($recordExists) {
+            $db->update(
+                'candidate_consent',
+                $Values,
+                array(
+                 'candidate_id' => $candID,
+                 'consent_id'   => $consentID,
+                )
             );
-            if ($exists && count($exists) > 0) {
-                $newRecord = false;
-            }
-
-            if ($newRecord) {
-                $db->insert('participant_status', $updateValues);
-            } else {
-                $db->update(
-                    'participant_status',
-                    $updateValues,
-                    ['CandID' => $candID]
-                );
-            }
-
-            $db->insert('consent_info_history', $updateValues);
+        } else {
+            $db->insert('candidate_consent', $Values);
         }
+
+        $db->insert('consent_info_history', $historyValues);
     }
 }
