@@ -11,7 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
+namespace LORIS\server_processes_manager;
 
 /**
  * An interface for entities that provide a way determine if a process is running.

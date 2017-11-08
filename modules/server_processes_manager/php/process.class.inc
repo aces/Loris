@@ -10,9 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
-require_once "IProcessMonitor.class.inc";
-require_once "DefaultProcessMonitor.class.inc";
+namespace LORIS\server_processes_manager;
 
 /**
  * A Unix process started via a php exec command.
@@ -84,7 +82,7 @@ class Process
     function __construct($shellCommand, $stdoutFile, $stderrFile, $exitCodeFile)
     {
         if (is_null($shellCommand)) {
-            throw new InvalidArgumentException(
+            throw new \InvalidArgumentException(
                 "Shell command parameter cannot be null"
             );
         }
@@ -134,7 +132,7 @@ class Process
     {
         // If process was already started, throw an exception
         if ($this->isStarted()) {
-            throw new RuntimeException(
+            throw new \RuntimeException(
                 "Process " . $this->getShellCommand() . " is already started"
             );
         }
@@ -160,7 +158,7 @@ class Process
         );
 
         if ($returnStatus != 0) {
-            throw new RuntimeException(
+            throw new \RuntimeException(
                 "Command ($mainCmd ; $getExitCodeCmd) > /dev/null 2> /dev/null"
                 . " & echo $! could not be started: error code = $returnStatus"
             );

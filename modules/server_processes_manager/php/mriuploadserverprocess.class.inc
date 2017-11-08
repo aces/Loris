@@ -10,8 +10,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+namespace LORIS\server_processes_manager;
 
-require_once __DIR__ . "/AbstractServerProcess.class.inc";
 /**
  * A class for holding a set of functions to perform a complete MRI
  * upload on the server.
@@ -87,7 +87,7 @@ class MriUploadServerProcess extends AbstractServerProcess
         $exitCodeFile = null, $exitCode = null, $userid = null,
         $startTime = null, $endTime = null, $exitText = null
     ) {
-        $config =& NDB_Config::singleton();
+        $config =& \NDB_Config::singleton();
         if (is_null($config)) {
             throw new RuntimeException(
                 "Cannot construct MriUploadTask: unable to instantiate 
@@ -97,7 +97,7 @@ class MriUploadServerProcess extends AbstractServerProcess
 
         try {
             $this->_mriCodePath = $config->getSetting('MRICodePath');
-        } catch(ConfigurationException $exception) {
+        } catch(\ConfigurationException $exception) {
             error_log(
                 "Unable to construct MriUploadTask: 
                  config setting MRICodePath undefined"

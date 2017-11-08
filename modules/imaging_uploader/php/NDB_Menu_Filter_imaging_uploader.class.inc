@@ -11,8 +11,7 @@
  * @link     https://github.com/mohadesz/Loris-Trunk
 */
 
-require_once __DIR__
-             . "/../../server_processes_manager/php/ServerProcessLauncher.class.inc";
+use LORIS\server_processes_manager as SP;
 
 /**
  * This module allows a zipped/tgz/gz file to be uploaded into the incoming folder
@@ -172,8 +171,12 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             );
 
             if ($ImagingUploaderAutoLaunch) {
+                // Instanciate the server process module to autoload
+                // its namespace classes
+                $spm_module = \Module::factory('server_processes_manager');
+
                 // Perform the real upload on the server
-                $serverProcessLauncher = new ServerProcessLauncher();
+                $serverProcessLauncher = new SP\ServerProcessLauncher();
                 $serverProcessLauncher->mriUpload(
                     $this->mri_upload_id,
                     $this->uploaded_file_path

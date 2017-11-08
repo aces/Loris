@@ -14,11 +14,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
-require_once "AbstractServerProcess.class.inc";
-require_once "ServerProcessFactory.class.inc";
-require_once "IDatabaseProvider.class.inc";
-require_once "DefaultDatabaseProvider.class.inc";
+namespace LORIS\server_processes_manager;
 
 /**
  * The ServerProcessesMonitor class.
@@ -122,14 +118,10 @@ class ServerProcessesMonitor
 
         // Try to fetch the requested processes
         try {
-            if (count($params) > 0) {
-                $rows = $db->pselect($query, $params);
-            } else {
-                $db->select($query, $rows);
-            }
+            $rows = $db->pselect($query, $params);
         }
         // If this fails, log the error and return the exception to the caller
-        catch(DatabaseException $exception) {
+        catch(\DatabaseException $exception) {
             error_log(
                 "Failed to retrieve processes to monitor: "
                 . (is_null($idsToMonitor) ? "All ids "      : "IDs in ($idInClause)")

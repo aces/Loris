@@ -10,8 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
-require_once "MriUploadServerProcess.class.inc";
+namespace LORIS\server_processes_manager;
 
 /**
  * A class that provides a way to create server processes objects of the appropriate
@@ -69,7 +68,7 @@ class ServerProcessFactory
             );
         }
 
-        throw new InvalidArgumentException("Unknown server process type $type");
+        throw new \InvalidArgumentException("Unknown server process type $type");
     }
 }
 

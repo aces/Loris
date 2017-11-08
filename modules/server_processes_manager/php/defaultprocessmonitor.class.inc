@@ -11,8 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
-require_once "IProcessMonitor.class.inc";
+namespace LORIS\server_processes_manager;
 
 /**
  * Class that encapsulates a strategy for determining whether a process is running
@@ -46,7 +45,7 @@ class DefaultProcessMonitor implements IProcessMonitor
         if ($psReturnCode != 0) {
                $errorMsg = "Command ps " . implode(' ', $pids) . " failed";
                error_log($errorMsg);
-            throw new RuntimeException($errorMsg);
+            throw new \RuntimeException($errorMsg);
         }
 
         // Get the list of running processes
