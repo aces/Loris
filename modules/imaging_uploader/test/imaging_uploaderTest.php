@@ -27,14 +27,14 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
 {
     // expect UIs for Browse Tab
     private $_loadingBrowseUI = array(
-                                 'CandID'                
-                    => '#imaging_filter > div > div:nth-child(1) > div > label',
-                                 'PSCID'
-                    => '#imaging_filter > div > div:nth-child(2) > div > label',
-                                 'Visit Label'
-                    => '#imaging_filter > div > div:nth-child(3) > div > label',
-                                 'Logs to display'
-                    => '#log_panel>div>form>div>div:nth-child(1) > div > label',
+                                 'CandID'                 => '#imaging_filter>div>'.
+                           'div:nth-child(1) > div > label',
+                                 'PSCID'                  => '#imaging_filter>div>'.
+                           ' div:nth-child(2) > div > label',
+                                 'Visit Label'            => '#imaging_filter>div'.
+                           ' > div:nth-child(3) > div > label',
+                                 'Logs to display'        => '#log_panel>div>form>'.
+                           'div> div:nth-child(1) > div > label',
           // expected_headers
                                  'No.'                    => '#dynamictable > thead',
                                  'UploadID'               => '#dynamictable > thead',
@@ -52,16 +52,16 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
     // expect UIs for Upload Tab
     private $_loadingUploadUI = array(
                                  'Upload an imaging scan' => '#upload>div>div>h3',
-                               'Phantom Scans'
-             => '#upload > div > div > form > div > div:nth-child(1) > div > label',
-                                'CandID'
-             => '#upload > div > div > form > div > div:nth-child(2) > div > label',
-                                 'PSCID'
-              => '#upload > div > div > form > div > div:nth-child(3) > div > label',
-                                 'Visit Label'
-            => '#upload > div > div > form > div > div:nth-child(4) > div > label',
-                                 'File to Upload'
-            => '#upload > div > div > form > div > div:nth-child(5) > div > label',
+                                 'Phantom Scans'          => '#upload > div > div >'.
+                                 ' form > div > div:nth-child(1) > div > label',
+                                 'CandID'                 => '#upload > div > div >'.
+                                 ' form > div > div:nth-child(2) > div > label',
+                                 'PSCID'                  => '#upload > div > div >'.
+                                 'form > div > div:nth-child(3) > div > label',
+                                 'Visit Label'            => '#upload > div > div >'.
+                                 ' form > div > div:nth-child(4) > div > label',
+                                 'File to Upload'         => '#upload > div > div >'.
+                                 ' form > div > div:nth-child(5) > div > label',
                                 );
     /**
      * Tests that, when loading the Imaging_uploader module, some
