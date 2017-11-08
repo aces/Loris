@@ -51,14 +51,18 @@ if ($user->hasPermission('data_dict_edit')) { //if user has edit permission
     );
 
     if ($description != $native_description) {
-        $DB->replace('parameter_type_override', array(
-           'Description' => $description,
-           'Name' => $name
-        ));
+        $DB->replace(
+            'parameter_type_override',
+            array(
+             'Description' => $description,
+             'Name'        => $name,
+            )
+        );
     } else {
-        $DB->delete('parameter_type_override', array(
-            'Name' => $name
-        ));
+        $DB->delete(
+            'parameter_type_override',
+            array('Name' => $name)
+        );
     }
 }
 
