@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
+namespace LORIS\media;
 
 /**
  * Main class for media module corresponding to /media/ URL
@@ -26,11 +27,12 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
-class NDB_Menu_Filter_Media extends NDB_Menu_Filter
+class Media extends \NDB_Menu_Filter
 {
     public $hasWritePermission = false;
     public $hasHidePermission  = false;
     public $AjaxModule         = true;
+    public $skipTemplate       = true;
 
     /**
      * Check user permissions
@@ -41,7 +43,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
     function _hasAccess()
     {
         //create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
         // Set global permission to control access to different modules of media page
         $this->hasWritePermission = $user->hasPermission('media_write');
@@ -53,35 +55,29 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
     }
 
     /**
-     * Override default behaviour, since the page is loaded from mediaIndex.js
-     *
-     * @return void
-     * @access public
-     */
-    function display()
-    {
-        return null;
-    }
-
-    /**
      * Create a form to filter media by various criteria
      *
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this     page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
      * @return bool
-     * @throws ConfigurationException
-     * @throws DatabaseException
-     * @throws Exception
      */
-    function _setFilterForm()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
-        $user =& User::singleton();
-        $db   = Database::singleton();
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+
+        $user =& \User::singleton();
+        $db   = \Database::singleton();
 
         $siteList  = array();
-        $visitList = Utility::getVisitList();
+        $visitList = \Utility::getVisitList();
 
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
-            $siteList = Utility::getSiteList(false);
+            $siteList = \Utility::getSiteList(false);
             // Index sites using their names (used to filter react tables)
             foreach ($siteList as $key => $site) {
                 unset($siteList[$key]);
@@ -91,7 +87,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
             // allow only to view own site data
             $siteIDs = $user->getData('CenterIDs');
             foreach ($siteIDs as $val) {
-                $site = &Site::singleton($val);
+                $site =& \Site::singleton($val);
                 if ($site->isStudySite()) {
                     $siteList[$site->getCenterName()] = $site->getCenterName();
                 }
@@ -149,7 +145,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
         // the base query
         $query  = " FROM media m LEFT JOIN session s ON m.session_id = s.ID".
         " LEFT JOIN candidate c ON c.CandID=s.CandID";
@@ -247,7 +243,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
      */
     function getCSSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getCSSDependencies();
         return array_merge(
@@ -263,7 +259,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
