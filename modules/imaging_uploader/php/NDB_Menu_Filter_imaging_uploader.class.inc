@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/mohadesz/Loris-Trunk
 */
+
 use LORIS\server_processes_manager as SP;
 
 /**
@@ -170,6 +171,10 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             );
 
             if ($ImagingUploaderAutoLaunch) {
+                // Instanciate the server process module to autoload
+                // its namespace classes
+                $spm_module = \Module::factory('server_processes_manager');
+
                 // Perform the real upload on the server
                 $serverProcessLauncher = new SP\ServerProcessLauncher();
                 $serverProcessLauncher->mriUpload(
