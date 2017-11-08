@@ -115,69 +115,7 @@ class Datadict extends \NDB_Menu_Filter
         );
         $this->addBasicText('keyword', 'Search keyword');
     }
-    /**
-    * Set Data Table Rows
-    *
-    * @param string $count the count of table rows
-    *
-    * @note   Set Data Table Rows
-    * @return bool
-    * @access private
-    */
-    function _setDataTableRows($count)
-    {
 
-        $x = 0;
-
-        foreach ($this->list as $item) {
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-            $i = 1;
-
-            foreach ($item as $key => $val) {
-                if ($key =='description') {
-                    $key = $item['Name'] . "___" . "description";
-                }
-                if ($key == "sourceFrom" && $val== "parameter_session") {
-                    $val = $item['Name'];
-                }
-                $this->tpl_data['items'][$x][$i]['name']  = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
-
-                $i++;
-            }
-
-            $x++;
-        }
-        return true;
-    }
-    /**
-    * Get base query
-    *
-    * @note   Get base query
-    * @return string
-    * @access private
-    */
-    function _getBaseQuery()
-    {
-        // make the SELECT statement
-        $query = "SELECT ";
-        if (is_array($this->columns) && count($this->columns) > 0) {
-            $query .= implode(', ', $this->columns);
-        } else {
-            $query .= "*";
-        }
-        // add the base query
-        if (isset($_REQUEST['Description'])
-            && $_REQUEST['Description'] =='modified'
-        ) {
-            $query .= " FROM parameter_type pt JOIN parameter_type_override pto
-                        USING (Name) WHERE pt.Queryable=1";
-        } else {
-            $query .= $this->query;
-        }
-
-        return $query;
-    }
     /**
     * Get base query
     *
