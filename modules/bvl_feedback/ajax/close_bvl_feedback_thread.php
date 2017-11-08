@@ -14,12 +14,21 @@
 ini_set('default_charset', 'utf-8');
 require "bvl_panel_ajax.php";
 
+$closeNotifier = new NDB_Notifier(
+    "bvl_feedback",
+    "close"
+);
+
 $user     =& User::singleton();
 $username = $user->getUsername();
 
 if (isset($_POST['feedbackID']) && isset($_POST['candID'])) {
     $feedbackThread =& NDB_BVL_Feedback::Singleton($username, $_POST['candID']);
     $feedbackThread->closeThread($_POST['feedbackID']);
+    //build url for email
+    $link = $feedbackThread->getFeedbackURL();
+    $closeNotifier->notify(array("feedback" => $link));
+
 }
 
 exit();

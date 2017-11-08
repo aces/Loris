@@ -13,8 +13,17 @@
 ini_set('default_charset', 'utf-8');
 require_once "bvl_panel_ajax.php";
 
+$openNotifier = new NDB_Notifier(
+    "bvl_feedback",
+    "open"
+);
+
 if (isset($_POST['feedbackID']) && isset($_POST['candID'])) {
     $feedbackThread->openThread($_POST['feedbackID']);
+
+    //build url for email
+    $link = $feedbackThread->getFeedbackURL();
+    $openNotifier->notify(array("feedback" => $link));
 }
 
 exit();

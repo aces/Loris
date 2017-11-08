@@ -16,6 +16,11 @@ ini_set('default_charset', 'utf-8');
 
 require "bvl_panel_ajax.php";
 
+$commentNotifier = new NDB_Notifier(
+    "bvl_feedback",
+    "comment"
+);
+
 $user     =& User::singleton();
 $username = $user->getUsername();
 
@@ -27,6 +32,10 @@ if (isset($_POST['comment']) && isset($_POST['feedbackID'])) {
         $_POST['comment'],
         $username
     );
+    //build url for email
+    $link = $feedbackThread->getFeedbackURL();
+
+    $commentNotifier->notify(array("feedback" => $link));
 } else {
     print json_encode('error');
     exit();

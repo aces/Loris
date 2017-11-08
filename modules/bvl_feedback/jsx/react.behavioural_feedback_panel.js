@@ -155,7 +155,9 @@ var FeedbackPanelRow = React.createClass({
       data: {
         comment: comment,
         feedbackID: feedbackID,
-        candID: candID
+        candID: candID,
+        sessionID: this.props.sessionID,
+        commentID: this.props.commentID
       },
       success: function(response) {
         this.loadServerState();
@@ -579,7 +581,9 @@ var FeedbackPanel = React.createClass({
       url: loris.BaseURL + "/bvl_feedback/ajax/close_bvl_feedback_thread.php",
       data: {
         candID: this.props.candID,
-        feedbackID: feedbackID
+        feedbackID: feedbackID,
+        sessionID: this.props.sessionID,
+        commentID: this.props.commentID
       },
       success: function(data) {
         this.setState({threads: threads});
@@ -605,7 +609,9 @@ var FeedbackPanel = React.createClass({
       url: loris.BaseURL + "/bvl_feedback/ajax/open_bvl_feedback_thread.php",
       data: {
         candID: this.props.candID,
-        feedbackID: feedbackID
+        feedbackID: feedbackID,
+        sessionID: this.props.sessionID,
+        commentID: this.props.commentID
       },
       success: function(data) {
         this.setState({threads: threads});

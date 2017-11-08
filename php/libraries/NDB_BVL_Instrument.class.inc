@@ -145,6 +145,7 @@ class NDB_BVL_Instrument extends NDB_Page
     var $WrapperTextElements           = array();
     var $WrapperNumericElements        = array();
     var $WrapperDateWithStatusElements = array();
+
     /**
      * Factory generates a new instrument instance of type
      * $instrument, and runs the setup() method on that new
@@ -161,9 +162,15 @@ class NDB_BVL_Instrument extends NDB_Page
      *
      * @return object the new object of $instrument type
      * @access public
+     *
+     * @throws Exception
      */
     static function factory($instrument, $commentID, $page, $guarantee_exists = true)
     {
+        if (empty($instrument) && isset($commentID)) {
+            // get test name from existing comment ID
+            $instrument = NDB_BVL_Instrument::_getTestNameFromCommentID($commentID);
+        }
         $class = "NDB_BVL_Instrument_$instrument";
 
         // Make sure the instrument class has been included/required!
@@ -935,6 +942,31 @@ class NDB_BVL_Instrument extends NDB_Page
         return $examiners;
     }
 
+    /**
+     * Looks up the instrument name given a valid CommentID
+     *
+     * @param string $commentID to search for
+     *
+     * @return string the full name of the instrument
+     *
+     * @throws Exception if CommenID is invalid
+     */
+    static function _getTestNameFromCommentID($commentID)
+    {
+        $db =& Database::singleton();
+
+        $testName = $db->pselectOne(
+            "SELECT Test_name FROM flag WHERE CommentID=:cid",
+            array("cid" => $commentID)
+        );
+        if (empty($testName)) {
+            throw new LorisException(
+                "The given CommentID is not valid or does not exist in the database."
+            );
+        }
+
+        return $testName;
+    }
 
     /**
      * Looks up the full name for the current instrument
@@ -2049,6 +2081,16 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
+     * Get the Test Name in this object.
+     *
+     * @return test_name
+     */
+    function getTestName()
+    {
+        return $this->testName;
+    }
+
+    /**
      * Clears all the data saved into this instrument instance
      *
      * @return none
@@ -2168,6 +2210,8 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param timepointID $sessionID The session ID for the panel.
      *
      * @return string
+     *
+     * @cleanup this functions does not seem to be used anywhere
      */
     function getFeedbackPanel($candID, $sessionID)
     {
