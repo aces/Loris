@@ -56,7 +56,7 @@ class User extends UserPermissions
 
         // get user data from database
         $query = "SELECT users.*,
-            GROUP_CONCAT(psc.Name SEPARATOR ';') AS Sites
+            GROUP_CONCAT(psc.Name ORDER BY psc.Name SEPARATOR ';') AS Sites
             FROM users
             LEFT JOIN user_psc_rel ON (user_psc_rel.UserID=users.ID)
             LEFT JOIN psc ON (user_psc_rel.CenterID=psc.CenterID)
