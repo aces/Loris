@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/mohadesz/Loris-Trunk
 */
-
+namespace LORIS\imaging_uploader;
 use LORIS\server_processes_manager as SP;
 
 /**
@@ -23,12 +23,13 @@ use LORIS\server_processes_manager as SP;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
 */
-class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
+class Imaging_Uploader extends \NDB_Menu_Filter_Form
 {
 
-    var $show_queries = true;
-    var $temp_path    = null;
-    var $AjaxModule   = true;
+    var $show_queries    = true;
+    var $temp_path       = null;
+    var $AjaxModule      = true;
+    public $skipTemplate = true;
 
     /**
      * ID of the uploaded file in mri_upload table (if upload successful).
@@ -41,18 +42,6 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
     var $uploaded_file_path;
 
     /**
-     * Override default behaviour, since the page is loaded from index.js
-     *
-     * @return void
-     * @access public
-     */
-    function display()
-    {
-        return null;
-    }
-
-
-    /**
      * The _has_access returns true
      * if the user has the specific permission
      *
@@ -61,7 +50,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
     function _hasAccess()
     {
         // create user object
-        $user = User::singleton();
+        $user = \User::singleton();
         return $user->hasPermission('imaging_uploader');
     }
 
@@ -114,21 +103,25 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         return true;
     }
 
-    /**
-     * Creates the following fields:
-     *   - MRI-upload browse-button and static fields
-     *   - Three text elements: CandID, PSCID and VisitLabel
-     * It wil also throw an error message if the file cannot be uploaded
+     /**
+     * Sets up the smarty menu filter items for the imaging uploader
      *
-     * @return boolean
-     */
-    function _setFilterForm()
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
+       */
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
         $phantomOtions = [
                           'N' => 'No',
                           'Y' => 'Yes',
                          ];
-        $visitlabels   = Utility::getExistingVisitLabels();
+        $visitlabels   = \Utility::getExistingVisitLabels();
 
         // Fields used for selection filter and upload form
         $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOtions);
@@ -165,7 +158,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         if ($this->_saveFile($values)) {
             // Save file succeeded. All that's left to do is launch the MRI
             // pipeline if the auto-launch switch is on
-            $config = NDB_Config::singleton();
+            $config = \NDB_Config::singleton();
             $ImagingUploaderAutoLaunch = $config->getSetting(
                 'ImagingUploaderAutoLaunch'
             );
@@ -204,12 +197,10 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
     function _saveFile($values)
     {
 
-        include_once "File_Upload.class.inc";
-
         //get the stored-file path
 
-        $file   = new File_Upload;
-        $config = NDB_Config::singleton();
+        $file   = new \File_Upload;
+        $config = \NDB_Config::singleton();
         $paths  = $config->getSetting('paths');
         $file->setOverwriteMode("overwrite");
         $file->fileMove = false;
@@ -233,7 +224,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             $this
         );
 
-        $user = User::singleton();
+        $user = \User::singleton();
         //set the the IDs to the handler functions.
         $file->setHandlerArgs(array("values" => $values));
 
@@ -244,7 +235,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         if (!empty($file->errorLog)) {
             while (list($fileType,$fileErrors)=each($file->errorLog)) {
                 foreach ($fileErrors AS $error) {
-                    throw new LorisException(" $fileType: $error ");
+                    throw new \LorisException(" $fileType: $error ");
                 }
             }
             return false;
@@ -270,9 +261,9 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         //make sure the file-name is  valid
         $temp_file = $file->fileInfo['tmp_name'];
         $temp_dir  = $this->tempdir();
-        $db        = Database::singleton();
+        $db        = \Database::singleton();
         $errors    = array();
-        $config    = NDB_Config::singleton();
+        $config    = \NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
             'imaging_modules'
         );
@@ -364,7 +355,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
 
         if (!copy($temp_file, $new_temp_file)) {
-            throw new LorisException(
+            throw new \LorisException(
                 "failed to copy $temp_file to $new_temp_file \n"
             );
         }
@@ -385,7 +376,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
     function importFile($file, $args)
     {
         $feedbacks  = array();
-        $db         = Database::singleton();
+        $db         = \Database::singleton();
         $pname      = '';
         $IsPhantom  = $args['values']['IsPhantom'];
         $updateFile = $args['values']['overwrite'] ? true : false;
@@ -394,7 +385,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         $user_name = $args['user_id'];
         if (($user_name==null) || (!(isset($user_name)))) {
-            $user      = User::singleton();
+            $user      = \User::singleton();
             $user_name = $user->getUsername();
         }
         ///////////////////////////////////////////////////////////////////////
@@ -640,7 +631,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
@@ -660,7 +651,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function getCSSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getCSSDependencies();
         return array_merge(
@@ -681,7 +672,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $result['form']    = $this->form->form;
         $result['mriList'] = $this->_getFileList($result['Data']);
 
-        $result['maxUploadSize'] = Utility::getMaxUploadSize();
+        $result['maxUploadSize'] = \Utility::getMaxUploadSize();
 
         return json_encode($result);
     }
