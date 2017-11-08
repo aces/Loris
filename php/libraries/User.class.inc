@@ -295,6 +295,7 @@ class User extends UserPermissions
     {
         $site_list = $this->userInfo['examiner'];
         unset($site_list['pending']);
+        natcasesort($site_list);
         return $site_list;
     }
 
@@ -313,6 +314,7 @@ class User extends UserPermissions
                 $user_study_sites[$val] = $site[$key]->getCenterName();
             }
         }
+        natcasesort($user_study_sites);
         return $user_study_sites;
     }
 
