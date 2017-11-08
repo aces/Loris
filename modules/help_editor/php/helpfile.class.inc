@@ -9,8 +9,10 @@
  * @package  Main
  * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://github.com/aces/Loris
  */
+namespace LORIS\help_editor;
+
 /**
  * Base class for files containing help text information
  * as well as DB wrappers for CRUD operations
@@ -21,7 +23,7 @@
  * @package  Main
  * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://github.com/aces/Loris
  */
 class HelpFile
 {
@@ -53,7 +55,7 @@ class HelpFile
     static function &factory($helpID)
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
 
         $obj = new HelpFile;
 
@@ -82,7 +84,7 @@ class HelpFile
     function insert($set)
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
 
         // insert a help file
         $success = $DB->insert('help', $set);
@@ -101,7 +103,7 @@ class HelpFile
     function update($set)
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
 
         // update the help file
         $success = $DB->update('help', $set, array('helpID' => $this->helpID));
@@ -117,7 +119,7 @@ class HelpFile
     function hasChild()
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
 
         $result = $DB->pselectOne(
             "SELECT COUNT(*) FROM help WHERE parentID = :HID",
@@ -138,7 +140,7 @@ class HelpFile
     function childIDs($stopat = 1, $level = 1)
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
 
         // see if it has a child
         $hasChild = $this->hasChild();
@@ -184,7 +186,7 @@ class HelpFile
     function childData($stopat = 1, $level = 1)
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
 
         // see if it has a child
         $hasChild = $this->hasChild();
@@ -265,7 +267,7 @@ class HelpFile
     function parentData($stopat = 1, $level = 1)
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
 
         $parentData = array();
 
@@ -321,7 +323,7 @@ class HelpFile
     static function hashToID($hash)
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
 
         $helpID = $DB->pselectOne(
             "SELECT helpID FROM help WHERE hash = :HID",

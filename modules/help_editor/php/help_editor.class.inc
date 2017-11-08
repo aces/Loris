@@ -8,8 +8,9 @@
  * @package  Loris
  * @author   Rathi Sekaran <sekaranrathi@gmail.com>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://github.com/aces/Loris
  */
+namespace LORIS\help_editor;
 
 /**
  * This file contains code for editing context help section
@@ -20,9 +21,9 @@
  * @package  Loris
  * @author   Rathi Sekaran <sekaranrathi@gmail.com>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://github.com/aces/Loris
  */
-class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
+class Help_Editor extends \NDB_Menu_Filter
 {
      /**
        *  Checking user permissions
@@ -32,7 +33,7 @@ class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user = User::singleton();
+        $user = \User::singleton();
 
         return $user->hasPermission('context_help');
     }
@@ -43,7 +44,7 @@ class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
        */
     function _setupVariables()
     {
-        $user = User::singleton();
+        $user = \User::singleton();
 
         // the base query
         $query = " FROM help helpChild LEFT JOIN help helpParent".
@@ -83,13 +84,23 @@ class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
                                );
         return true;
     }
-     /**
-       * Setup Filter Form function
-       *
-       * @return bool
-       */
-    function _setFilterForm()
+
+    /**
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
+     *
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
+     */
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
 
         // add form elements
         $this->addBasicText('topic', 'Help topic:');
@@ -106,7 +117,7 @@ class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
        */
     function _setDataTableRows($count)
     {
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
         //Get the default values
         // $result will contain an array of size n by 2.
         // this must be transposed to create a dictionary of IDs to Topics
@@ -165,7 +176,7 @@ class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(

@@ -8,10 +8,10 @@
  * @package  Loris
  * @author   Rathi Sekaran <sekaranrathi@gmail.com>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://github.com/aces/Loris
  */
+namespace LORIS\help_editor;
 
-require_once __DIR__ . "/HelpFile.class.inc";
 /**
  * A class for holding a set of functions to add/update content
  * for all modules
@@ -20,10 +20,10 @@ require_once __DIR__ . "/HelpFile.class.inc";
  * @package  Loris
  * @author   Rathi Sekaran <sekaranrathi@gmail.com>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://github.com/aces/Loris
  */
 
-class NDB_Form_Help_Editor extends NDB_Form
+class Edit_Help_Content extends \NDB_Form
 {
     var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
      /**
@@ -34,7 +34,7 @@ class NDB_Form_Help_Editor extends NDB_Form
     function _hasAccess()
     {
         // create user object
-        $user = User::singleton();
+        $user = \User::singleton();
 
             // check user permissions
         return $user->hasPermission('context_help');
@@ -46,7 +46,7 @@ class NDB_Form_Help_Editor extends NDB_Form
       */
     function _getDefaults()
     {
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
         //Get the default values
 
         // Sanitize user input
@@ -107,7 +107,7 @@ class NDB_Form_Help_Editor extends NDB_Form
       */
     function _process($values)
     {
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
         //Get the default values
 
         // Sanitize user input
@@ -206,13 +206,24 @@ class NDB_Form_Help_Editor extends NDB_Form
         $this->tpl_data['success'] =  true;
 
     }
-     /**
-      * Edit help content function
-      *
-      * @return void
-      */
-    function edit_help_content()// @codingStandardsIgnoreLine
+
+    /**
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
+     *
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
+     */
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+
         $this->addBasicText('title', 'Title');
         $this->addBasicTextArea(
             'content',
@@ -233,7 +244,7 @@ class NDB_Form_Help_Editor extends NDB_Form
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
