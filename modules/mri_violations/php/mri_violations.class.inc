@@ -14,6 +14,7 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
+namespace LORIS\mri_violations;
 /**
  * Implement the menu filter for searching through all violated scans
  *
@@ -23,7 +24,7 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
+class Mri_Violations extends \NDB_Menu_Filter_Form
 {
     var $AjaxModule = true;
     /**
@@ -34,7 +35,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
     function _hasAccess()
     {
         // create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
         $this->tpl_data['violated_scans_modifications']
             = $user->hasPermission('violated_scans_edit');
         return ($user->hasPermission('violated_scans_view_allsites'));
@@ -51,8 +52,8 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
         if (!is_array($values) || count($values) ==0) {
             return true;
         }
-        $DB   =& Database::singleton();
-        $user =& User::singleton();
+        $DB   =& \Database::singleton();
+        $user =& \User::singleton();
         foreach ($values['resolvable'] AS $key=>$val) {
             $hash = $key;
             $row  = $DB->pselectRow(
@@ -159,9 +160,9 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
     {
         // set the class variables
         // create user object
-        $user        =& User::singleton();
-        $DB          =& Database::singleton();
-        $config      =& NDB_Config::singleton();
+        $user        =& \User::singleton();
+        $DB          =& \Database::singleton();
+        $config      =& \NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         if ($useProjects === "false") {
             $useProjects = false;
@@ -338,17 +339,27 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                               );
         return true;
     }
+
     /**
-     * Generate the quickform elements necessary for filter form
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
      *
-     * @return none, but as a side-effect sets up QuickForm variables
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
      */
-    function _setFilterForm()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
         // create user object
-        $user    =& User::singleton();
-        $config  =& NDB_Config::singleton();
-        $db      =& Database::singleton();
+        $user    =& \User::singleton();
+        $config  =& \NDB_Config::singleton();
+        $db      =& \Database::singleton();
         $minYear = $config->getSetting('startYear') - $config->getSetting('ageMax');
         $maxYear = $config->getSetting('endYear');
 
@@ -384,7 +395,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
         $this->addSelect("ProblemType", "Type of problem", $problemOptions);
 
         // project
-        $list_of_projects = array('' => 'Any') + Utility::getProjectList();
+        $list_of_projects = array('' => 'Any') + \Utility::getProjectList();
         $this->addSelect(
             'Project',
             'Project',
@@ -393,7 +404,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
 
         // Subproject
         $list_of_subprojects = array('' => 'Any') +
-            Utility::getSubprojectList();
+            \Utility::getSubprojectList();
         $this->addSelect(
             'Subproject',
             'Subproject',
@@ -403,7 +414,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
         // Get sites
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
-            $sites = Utility::getSiteList();
+            $sites = \Utility::getSiteList();
             if (is_array($sites)) {
                 $sites = array('' => 'All') + $sites;
             }
@@ -412,7 +423,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
             $sites    = array();
             $site_arr = $user->getData('CenterIDs');
             foreach ($site_arr as $key => $val) {
-                $site[$key] = &Site::singleton($val);
+                $site[$key] = &\Site::singleton($val);
                 if ($site[$key]->isStudySite()) {
                     $sites[$val] = $site[$key]->getCenterName();
                 }
@@ -432,7 +443,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseurl = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
