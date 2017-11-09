@@ -82,7 +82,7 @@ $tpl_data['baseurl'] = $baseURL;
 $tpl_data['study_title'] = $config->getSetting('title');
 // draw the user information table
 try {
-    $user     =& User::singleton();
+    $user =& User::singleton();
     $tpl_data['user'] = $user->getData();
     $tpl_data['user']['permissions']          = $user->getPermissions();
     $tpl_data['hasHelpEditPermission']        = $user->hasPermission('context_help');
