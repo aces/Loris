@@ -5,7 +5,7 @@ Use the Selection Filters to specify or search by Patient Name, MincFile, Scan T
 to apply the selection filters in the data table below. 
 
 The data results table contains two tabs: "Not Resolved" (displayed by default) and "Resolved". The "Resolution Status"
-colun indicates and allows updates to the scan status: Reran, Emailed Site/Pending, Inserted, etc. When a scan is updated
+column is used to display and update the scan status: Reran, Emailed Site/Pending, Inserted, etc. When a scan is updated
 to any status other than "Unresolved", it will move to the "Resolved" tab data table. Users with appropriate privileges
 must manually update the status of each "Unresolved" scan, when relevant. 
 
