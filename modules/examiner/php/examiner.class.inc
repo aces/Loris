@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
  */
+namespace LORIS\examiner;
 
 /**
  * Examiner module menu filter form
@@ -23,7 +24,7 @@
  * @link     https://www.github.com/aces/Loris
  */
 
-class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
+class Examiner extends \NDB_Menu_Filter_Form
 {
     var $useCertification;
 
@@ -34,7 +35,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      */
     function _hasAccess()
     {
-        $user = User::singleton();
+        $user = \User::singleton();
         return $user->hasPermission('examiner_view');
     }
 
@@ -45,7 +46,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        $config        = NDB_Config::singleton();
+        $config        = \NDB_Config::singleton();
         $certification = $config->getSetting('Certification');
 
         if (isset($certification['EnableCertification'])) {
@@ -54,7 +55,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             $this->useCertification = false;
         }
 
-        $user      = User::singleton();
+        $user      = \User::singleton();
         $centerIDs = implode(',', $user->getCenterIDs());
 
         if ($user->hasPermission('examiner_multisite')) {
@@ -125,18 +126,27 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
     }
 
     /**
-     * Sets the menu filter class variables.
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
      *
-     * @return void
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return null
      */
-    function _setFilterForm()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
-        $user = User::singleton();
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        $user = \User::singleton();
 
         // Get site options
         if ($user->hasPermission('examiner_multisite')) {
             // get the list of study sites - to be replaced by the Site object
-            $sites = Utility::getSiteList();
+            $sites = \Utility::getSiteList();
             if (is_array($sites)) {
                 $sites = array('' => '') + $sites;
             }
@@ -207,8 +217,8 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
     function _process($values)
     {
 
-        $DB     = Database::singleton();
-        $config = NDB_Config::singleton();
+        $DB     = \Database::singleton();
+        $config = \NDB_Config::singleton();
 
         $fullName    = $values['addName'];
         $siteID      = $values['addSite'];
@@ -275,7 +285,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      */
     function examinerExists($fullName, $siteID)
     {
-        $DB         = Database::singleton();
+        $DB         = \Database::singleton();
         $examinerID = $DB->pselectOne(
             "SELECT e.examinerID
              FROM examiners e
@@ -303,7 +313,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      */
     function getExaminerID($fullName)
     {
-        $DB         = Database::singleton();
+        $DB         = \Database::singleton();
         $examinerID = $DB->pselectOne(
             "SELECT examinerID
              FROM examiners
@@ -323,7 +333,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(

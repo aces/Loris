@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+namespace LORIS\examiner;
 
 /**
  * Examiner module: Form used to update examiner certification status
@@ -22,7 +23,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class NDB_Form_Examiner extends NDB_Form
+class EditExaminer extends \NDB_Form
 {
     /**
      * Checks if the user has access to the edit examiner form
@@ -39,10 +40,10 @@ class NDB_Form_Examiner extends NDB_Form
                 "Incorrect URL: No examiner ID provided."
             );
         }
-        $DB     = Database::singleton();
-        $config = NDB_Config::singleton();
+        $DB     = \Database::singleton();
+        $config = \NDB_Config::singleton();
 
-        $user         = User::singleton();
+        $user         = \User::singleton();
         $userFullName = $user->getFullname();
         $userCenter   = $user->getCenterIDs();
 
@@ -83,7 +84,7 @@ class NDB_Form_Examiner extends NDB_Form
      */
     function _getDefaults()
     {
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
 
         // get the certification results for the given examiner
         $result = $DB->pselect(
@@ -112,7 +113,7 @@ class NDB_Form_Examiner extends NDB_Form
      */
     function _process($values)
     {
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
 
         foreach ($values['certStatus'] as $testID => $certStatus) {
 
@@ -250,13 +251,22 @@ class NDB_Form_Examiner extends NDB_Form
     }
 
     /**
-     * EditExaminer subtest.
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
      *
-     * @return nothing
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
      */
-    function editExaminer()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
-        $DB = Database::singleton();
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        $DB = \Database::singleton();
 
         // Get the certification history from the database
         $certification_history = $DB->pselect(
@@ -272,7 +282,7 @@ class NDB_Form_Examiner extends NDB_Form
 
         $this->tpl_data['certification_history'] = $certification_history;
 
-        $config = NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
 
         $dateOptions   = array(
                           'language'       => 'en',
@@ -321,7 +331,7 @@ class NDB_Form_Examiner extends NDB_Form
             unset($group);
         }
 
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $DB      = $factory->Database();
 
         // Get the examiner name and site name, to be added the form panel header
@@ -376,15 +386,15 @@ class NDB_Form_Examiner extends NDB_Form
      */
     function getCertificationInstruments()
     {
-        $config = NDB_Config::singleton();
-        $DB     = Database::singleton();
+        $config = \NDB_Config::singleton();
+        $DB     = \Database::singleton();
 
         // Get the instruments requiring certification from the config
         $certificationConfig      = $config->getSetting("Certification");
         $certificationInstruments = $certificationConfig['CertificationInstruments'];
 
         $certificationInstruments['test']
-            = Utility::toArray($certificationInstruments['test']);
+            = \Utility::toArray($certificationInstruments['test']);
         $instruments = array();
 
         foreach ($certificationInstruments['test'] as $certificationInstrument) {
