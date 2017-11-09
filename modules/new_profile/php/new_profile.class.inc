@@ -35,9 +35,9 @@ class New_Profile extends \NDB_Form
         // create user object
         $user =& \User::singleton();
 
-        $site_arr = $user->getData('CenterIDs');
-        $userInDCCSite   = in_array("1", $site_arr);
-        if ($user->hasStudySite() or $userInDCCSite) {
+        $site_arr      = $user->getData('CenterIDs');
+        $userInDCCSite = in_array("1", $site_arr);
+        if ($user->isInOneStudySite() or $userInDCCSite) {
             return $user->hasPermission('data_entry');
         }
 

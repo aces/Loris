@@ -1078,8 +1078,7 @@ class NDB_BVL_Feedback
 
         $user =& User::singleton();
 
-        $userInStudySite = $user->isInOneStudySite();
-        if ($userInStudySite) {
+        if ($user->hasStudySite()) {
             if ($user->hasPermission('bvl_feedback')) {
                 if (($test_name === "timepoint_list")
                     || ($test_name === "instrument_list")

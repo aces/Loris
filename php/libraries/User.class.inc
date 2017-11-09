@@ -321,14 +321,17 @@ class User extends UserPermissions
      *
      * @return boolean
      */
-    function isInOneStudySite()
+    function hasStudySite()
     {
-        $site_arr         = $this->userInfo['CenterIDs'];
+        $site_arr = $this->getCenterIDs();
         foreach ($site_arr as $key=>$val) {
             $site[$key]        = & Site::singleton($val);
             $isStudySite[$key] = $site[$key]->isStudySite();
+            if (in_array("1", $isStudySite)) {
+                return true;
+            }
         }
-        return in_array("1", $isStudySite);
+        return false;
     }
 
     /**

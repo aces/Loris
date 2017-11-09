@@ -12,10 +12,9 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-$user     =& User::singleton();
-$userInStudySite = $user->isInOneStudySite();
+$user =& User::singleton();
 if (!($user->hasPermission('access_all_profiles')
-    || ($userInStudySite && $user->hasPermission('data_entry')))
+    || ($user->hasStudySite() && $user->hasPermission('data_entry')))
 ) {
     header("HTTP/1.1 403 Forbidden");
     exit;
