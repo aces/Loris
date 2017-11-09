@@ -12,8 +12,7 @@
  * @license    Loris License
  * @link       https://github.com/aces/Loris-Trunk
  */
-
-require_once __DIR__ . '/Imaging_Session_ControlPanel.class.inc';
+namespace LORIS\imaging_browser;
 /**
  * NDB_Form_Imaging_Browser Class
  *
@@ -27,7 +26,7 @@ require_once __DIR__ . '/Imaging_Session_ControlPanel.class.inc';
  * @link       https://github.com/aces/Loris-Trunk
  */
 
-class NDB_Form_Imaging_Browser extends NDB_Form
+class ViewSession extends \NDB_Form
 {
     /**
      * Var to store the scanner information.
@@ -47,10 +46,10 @@ class NDB_Form_Imaging_Browser extends NDB_Form
      */
     function _hasAccess()
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
         // allow only to view own site data
-        $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
+        $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
 
         return ($user->hasPermission('imaging_browser_view_allsites')
                 || ((in_array(
@@ -71,7 +70,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
      */
     function _hasQCPerm()
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
         return $user->hasPermission('imaging_browser_qc');
     }
@@ -79,11 +78,18 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     /**
      * Sets up main parameters
      *
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
      * @return NULL
      */
-    function viewSession()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
-        $this->DB = Database::singleton();
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        $this->DB = \Database::singleton();
 
         $this->sessionID = $_REQUEST['sessionID'];
 
@@ -175,7 +181,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         );
         $this->tpl_data['files'] = array();
         foreach ($files as $fileRow) {
-            $FileObj = new MRIFile($fileRow['FileID']);
+            $FileObj = new \MRIFile($fileRow['FileID']);
             if (empty($scannerID)) {
                 $scannerID = $fileRow['ScannerID'];
                 if (!empty($scannerID)) {
@@ -405,7 +411,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                     WHERE FileID=:FID",
                     $params
                 );
-                $updateSet = Utility::nullifyEmpty($updateSet, 'QCStatus');
+                $updateSet = \Utility::nullifyEmpty($updateSet, 'QCStatus');
                 if (!empty($QCExists)) {
                     $updateWhere['FileID'] = $curFileID;
                     $success = $this->DB->update(
@@ -414,7 +420,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                         $updateWhere
                     );
                 } else {
-                    $file = new MRIFile($curFileID);
+                    $file = new \MRIFile($curFileID);
                     $updateSet['SeriesUID'] = $file->getParameter(
                         'series_instance_uid'
                     );
@@ -425,8 +431,8 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             }
         }
         if (is_array($values['caveat'])) {
-            $user        = User::singleton();
-            $timePoint   =& TimePoint::singleton($this->sessionID);
+            $user        = \User::singleton();
+            $timePoint   =& \TimePoint::singleton($this->sessionID);
             $candid      = $timePoint->getCandID();
             $visit_label = $timePoint->getData('Visit_label');
 
@@ -441,7 +447,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 );
 
                 if ($curCaveat == true) {
-                    $file = new MRIFile($curFileID);
+                    $file = new \MRIFile($curFileID);
                     $insertSet['SeriesUID']   = $file->getParameter(
                         'series_instance_uid'
                     );
@@ -495,7 +501,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                                       'Selected'         => $curSelected,
                                       'QCLastChangeTime' => time(),
                                      );
-                        $updateSet = Utility::nullifyEmpty($updateSet, 'Selected');
+                        $updateSet = \Utility::nullifyEmpty($updateSet, 'Selected');
                         $success   = $this->DB->update(
                             'files_qcstatus',
                             $updateSet,
@@ -507,7 +513,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                                       'Selected'          => $curSelected,
                                       'QCFirstChangeTime' => time(),
                                      );
-                        $insertSet = Utility::nullifyEmpty($insertSet, 'Selected');
+                        $insertSet = \Utility::nullifyEmpty($insertSet, 'Selected');
                         $success   = $this->DB->insert('files_qcstatus', $insertSet);
                     }
                 }
@@ -558,7 +564,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 $updateSet['MRIQCFirstChangeTime']
                     = $updateSet['MRIQCLastChangeTime'];
             }
-            $updateSet = Utility::nullifyEmpty($updateSet, 'MRIQCStatus');
+            $updateSet = \Utility::nullifyEmpty($updateSet, 'MRIQCStatus');
             $success   = $this->DB->update(
                 'session',
                 $updateSet,
@@ -569,9 +575,9 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 || ($old_pending_status != $_POST['visit_pending'])
                 || ($old_caveat_status != $_POST['visit_caveat'])
             ) {
-                $timePoint   =& TimePoint::singleton($this->sessionID);
+                $timePoint   =& \TimePoint::singleton($this->sessionID);
                 $candid      = $timePoint->getCandID();
-                $candidate   =& Candidate::singleton($timePoint->getCandID());
+                $candidate   =& \Candidate::singleton($timePoint->getCandID());
                 $pscid       = $candidate->getPSCID();
                 $visit_label = $timePoint->getVisitLabel();
                 $not_status  = ($_POST['visit_pending'] == 'Y' ? 'Pending ' : '')
@@ -581,7 +587,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                     - MRI QC status changed to $not_status";
                 $centerID    = $timePoint->getCenterID();
 
-                $notifier = new Notify;
+                $notifier = new \Notify;
                 $notifier->spool('mri qc status', $message, $centerID);
                 unset(
                     $timePoint,
@@ -659,12 +665,12 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         if (!empty($_REQUEST['outputType'])) {
             $tpl_data['outputType'] = urldecode($_REQUEST['outputType']);
         }
-        $config = NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
         if ($config->getSetting('useEDC') === 'true') {
             $tpl_data['useEDC'] = true;
         }
 
-        $smarty = new Smarty_neurodb('imaging_browser');
+        $smarty = new \Smarty_neurodb('imaging_browser');
 
         $smarty->assign($tpl_data);
         $html = $smarty->fetch("table_session_header.tpl");
@@ -677,7 +683,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
      */
     function getSubjectData()
     {
-        $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
+        $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
 
         $subjectData['sessionID']       = $_REQUEST['sessionID'];
         $subjectData['SubprojectID']    = $timePoint->getSubprojectID();
@@ -696,7 +702,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         $subjectData['candid']       = $timePoint->getCandID();
         $subjectData['scanner']      = $this->scanner;
 
-        $candidate            =& Candidate::singleton($timePoint->getCandID());
+        $candidate            =& \Candidate::singleton($timePoint->getCandID());
         $subjectData['pscid'] = $candidate->getPSCID();
         $subjectData['dob']   = $candidate->getCandidateDoB();
         $subjectData['edc']   = $candidate->getCandidateEDC();
@@ -745,7 +751,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     {
         $depends = parent::getJSDependencies();
         if ($this->page === 'viewSession') {
-            $factory = NDB_Factory::singleton();
+            $factory = \NDB_Factory::singleton();
             $baseurl = $factory->settings()->getBaseURL();
             $depends = array_merge(
                 $depends,
@@ -767,7 +773,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
      */
     function getCSSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getCSSDependencies();
         return array_merge(
@@ -778,4 +784,3 @@ class NDB_Form_Imaging_Browser extends NDB_Form
 
 }
 
-?>
