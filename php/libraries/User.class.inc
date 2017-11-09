@@ -305,7 +305,7 @@ class User extends UserPermissions
      */
     function getStudySites()
     {
-        $site_arr         = $this->userInfo['CenterIDs'];
+        $site_arr = $this->getCenterIDs();
         $user_study_sites = array();
         foreach ($site_arr as $key => $val) {
             $site[$key] = &Site::singleton($val);
