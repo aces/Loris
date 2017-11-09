@@ -37,7 +37,7 @@ class New_Profile extends \NDB_Form
 
         $site_arr      = $user->getData('CenterIDs');
         $userInDCCSite = in_array("1", $site_arr);
-        if ($user->isInOneStudySite() or $userInDCCSite) {
+        if ($user->hasStudySite() or $userInDCCSite) {
             return $user->hasPermission('data_entry');
         }
 

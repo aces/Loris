@@ -38,7 +38,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
         $user =& \User::singleton();
 
         return ($user->hasPermission('imaging_browser_view_allsites')
-               || ($user->hasStudySite();
+               || ($user->hasStudySite()
                    && $user->hasPermission('imaging_browser_view_site')
                   )
                || $user->hasPermission('imaging_browser_phantom_allsites')
