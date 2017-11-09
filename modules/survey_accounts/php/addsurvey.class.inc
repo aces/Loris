@@ -12,6 +12,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+namespace LORIS\survey_accounts;
 /**
  * The form which creates the add_survey page for the
  * Loris survey module
@@ -22,7 +23,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Form_Survey_Accounts extends NDB_Form
+class AddSurvey extends \NDB_Form
 {
     /**
      * Determine whether the logged in user has access to this page.
@@ -33,7 +34,7 @@ class NDB_Form_Survey_Accounts extends NDB_Form
     function _hasAccess()
     {
         // create user object
-        $editor =& User::singleton();
+        $editor =& \User::singleton();
 
         return $editor->hasPermission('user_accounts');
     }
@@ -59,7 +60,7 @@ class NDB_Form_Survey_Accounts extends NDB_Form
      */
     function _validateAddSurvey($values)
     {
-        $db = Database::singleton();
+        $db = \Database::singleton();
 
         $numCandidates = $db->pselectOne(
             "SELECT COUNT(*) FROM candidate 
@@ -160,7 +161,7 @@ class NDB_Form_Survey_Accounts extends NDB_Form
      */
     function _process($values)
     {
-        $db        = Database::singleton();
+        $db        = \Database::singleton();
         $SessionID = $db->pselectOne(
             "SELECT ID FROM session".
             " WHERE CandID=:v_CandID AND Visit_label=:v_VL",
@@ -170,7 +171,7 @@ class NDB_Form_Survey_Accounts extends NDB_Form
             )
         );
 
-        $timepoint =& TimePoint::singleton($SessionID);
+        $timepoint =& \TimePoint::singleton($SessionID);
 
         $InstrumentExists = $db->pselectOne(
             "SELECT 'x' FROM participant_accounts
@@ -183,7 +184,7 @@ class NDB_Form_Survey_Accounts extends NDB_Form
         if ($InstrumentExists == 'x') {
             return;
         }
-        $battery = new NDB_BVL_Battery();
+        $battery = new \NDB_BVL_Battery();
         $battery->selectBattery($SessionID);
 
         $commentID = $battery->addInstrument($values['Test_name']);
@@ -214,7 +215,7 @@ class NDB_Form_Survey_Accounts extends NDB_Form
         $this->tpl_data['success'] = $success;
 
         if ($email) {
-            $config = NDB_Config::singleton();
+            $config = \NDB_Config::singleton();
             $www    = $config->getSetting("www");
 
             $msg_data = array(
@@ -223,7 +224,7 @@ class NDB_Form_Survey_Accounts extends NDB_Form
                                          urlencode($key),
                          'EmailForm' => $values['email_dialog'],
                         );
-            Email::send($values['Email'], 'new_survey.tpl', $msg_data);
+            \Email::send($values['Email'], 'new_survey.tpl', $msg_data);
         }
     }
 
@@ -239,23 +240,32 @@ class NDB_Form_Survey_Accounts extends NDB_Form
     }
 
     /**
-     * Implements the quickform portion of the page which is used for
-     * adding user surveys
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
+     *
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
      *
      * @return none
      */
-    function addSurvey()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+
         $this->redirect = "test_name=$this->name";
         $this->addBasicText("CandID", "DCCID");
         $this->addBasicText("PSCID", "PSCID");
-        $this->addSelect("VL", "Visit Label", Utility::getVisitList());
+        $this->addSelect("VL", "Visit Label", \Utility::getVisitList());
         $this->addSelect(
             "Test_name",
             "Instrument",
             array_merge(
                 array('' => ''),
-                Utility::getDirectInstruments()
+                \Utility::getDirectInstruments()
             )
         );
         $this->addBasicText("Email", "Email address");
@@ -271,7 +281,7 @@ class NDB_Form_Survey_Accounts extends NDB_Form
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(

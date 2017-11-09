@@ -11,6 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+namespace LORIS\survey_accounts;
 
 /**
  * Implements menu filter class for survey module.
@@ -21,7 +22,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Menu_Filter_Survey_Accounts extends NDB_Menu_Filter
+class Survey_Accounts extends \NDB_Menu_Filter
 {
     /**
      * Determine if user has permission to access this page
@@ -31,7 +32,7 @@ class NDB_Menu_Filter_Survey_Accounts extends NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
         return $user->hasPermission('user_accounts');
     }
@@ -44,7 +45,7 @@ class NDB_Menu_Filter_Survey_Accounts extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
         // the base query
         $query = " FROM participant_accounts p 
@@ -83,25 +84,35 @@ class NDB_Menu_Filter_Survey_Accounts extends NDB_Menu_Filter
 
 
     /**
-     * Setup the QuickForm elements for the filter form on this page
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
+     *
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
      *
      * @return none
      */
-    function _setFilterForm()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+
         // create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
         $this->addBasicText('PSCID', 'PSCID');
         // add form elements
         $this->addSelect(
             'VisitLabel',
             'Visit:',
-            array_merge(array('' => 'All'), Utility::getVisitList())
+            array_merge(array('' => 'All'), \Utility::getVisitList())
         );
         $this->addSelect(
             'Instrument',
             'Instrument:',
-            array_merge(array('' => 'All'), Utility::getDirectInstruments())
+            array_merge(array('' => 'All'), \Utility::getDirectInstruments())
         );
         $this->addBasicText('Email', 'Email:');
         $this->addBasicText('key', 'Key:');
@@ -116,7 +127,7 @@ class NDB_Menu_Filter_Survey_Accounts extends NDB_Menu_Filter
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
