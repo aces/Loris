@@ -198,7 +198,6 @@ class Utility
         if ($study_site) {
             $query .= "WHERE Study_site='Y'";
         }
-
         $result = $DB->pselect($query, array());
 
         // fix the array
@@ -206,6 +205,7 @@ class Utility
         foreach ($result as $row) {
             $list[$row["CenterID"]] = $row["Name"];
         }
+        natcasesort($list);
         return $list;
     }
 
