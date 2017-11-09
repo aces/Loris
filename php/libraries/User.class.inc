@@ -317,6 +317,21 @@ class User extends UserPermissions
     }
 
     /**
+     * Checks if the user is in at least one study site
+     *
+     * @return boolean
+     */
+    function isInOneStudySite()
+    {
+        $site_arr         = $this->userInfo['CenterIDs'];
+        foreach ($site_arr as $key=>$val) {
+            $site[$key]        = & Site::singleton($val);
+            $isStudySite[$key] = $site[$key]->isStudySite();
+        }
+        return in_array("1", $isStudySite);
+    }
+
+    /**
      * Checks that the user's email is valid
      *
      * @return boolean

@@ -13,14 +13,9 @@
  */
 
 $user     =& User::singleton();
-$site_arr = $user->getData('CenterIDs');
-foreach ($site_arr as $key=>$val) {
-    $site[$key]        = & Site::singleton($val);
-    $isStudySite[$key] = $site[$key]->isStudySite();
-}
-$oneIsStudySite = in_array("1", $isStudySite);
+$userInStudySite = $user->isInOneStudySite();
 if (!($user->hasPermission('access_all_profiles')
-    || ($oneIsStudySite && $user->hasPermission('data_entry')))
+    || ($userInStudySite && $user->hasPermission('data_entry')))
 ) {
     header("HTTP/1.1 403 Forbidden");
     exit;

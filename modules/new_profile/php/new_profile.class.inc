@@ -36,14 +36,8 @@ class New_Profile extends \NDB_Form
         $user =& \User::singleton();
 
         $site_arr = $user->getData('CenterIDs');
-        foreach ($site_arr as $key=>$val) {
-            $site[$key]        =& \Site::singleton($val);
-            $isStudySite[$key] = $site[$key]->isStudySite();
-            $isDCCSite[$key]   = $site[$key]->getCenterName();
-        }
-        $oneIsStudySite = in_array("1", $isStudySite);
-        $oneIsDCCSite   = in_array("DCC", $isDCCSite);
-        if ($oneIsStudySite or $oneIsDCCSite) {
+        $userInDCCSite   = in_array("1", $site_arr);
+        if ($user->hasStudySite() or $userInDCCSite) {
             return $user->hasPermission('data_entry');
         }
 
