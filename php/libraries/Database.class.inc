@@ -781,6 +781,16 @@ class Database
 
         $result = array();
         foreach ($unprocessed as $k=>$row) {
+            $colNumber = count($row);
+            if ($colNumber !== 1) {
+                throw new DatabaseException(
+                    "The pselectCol() function expects only one column in the 
+                    SELECT clause of the query, $colNumber were passed.",
+                    $query
+                );
+            }
+            // Note: reset() rewinds array's internal pointer to the first element
+            // and returns the value of the first array element.
             $result[$k] =reset($row);
         }
         return $result;
