@@ -537,6 +537,12 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                      " div > select:nth-child(5)";
         $visit_caveat = "#sidebar-content > div.div-controlpanel-bottom >".
                      " div > select:nth-child(8)";
+        $QC_Status_panel = "#image-2 > div > div > div.panel-body > div:nth-child(1)".
+                     ">div.col-xs-3.mri-right-panel>div > div:nth-child(1) > select";
+        $Selected ="#image-2 > div > div > div.panel-body > div:nth-child(1) >".
+                   "div.col-xs-3.mri-right-panel > div > div:nth-child(2) > select";
+        $SNR = "#image-2 > div > div > div.panel-body > div:nth-child(1) >".
+                 " div.col-xs-3.mri-right-panel > div > div:nth-child(3) > select";
 
         $this->safeGet(
             $this->url . "/imaging_browser/"
@@ -550,10 +556,20 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->_testQCpanelWithValues($QC_Status,"Pass");
         $this->_testQCpanelWithValues($QC_Status,"Fail");
         $this->_testQCpanelWithValues($QC_Status,"Unrated");
-        $this->_testQCpanelWithValues($QC_Pending,"Yes");
-        $this->_testQCpanelWithValues($QC_Pending,"No");
-        $this->_testQCpanelWithValues($visit_caveat,"False");
-        $this->_testQCpanelWithValues($visit_caveat,"True");
+        $this->_testQCpanelWithValues($QC_Pending,"Y");
+        $this->_testQCpanelWithValues($QC_Pending,"N");
+        $this->_testQCpanelWithValues($visit_caveat,"false");
+        $this->_testQCpanelWithValues($visit_caveat,"true");
+        $this->_testQCpanelWithValues($QC_Status_panel,"");
+        $this->_testQCpanelWithValues($QC_Status_panel,"Pass");
+        $this->_testQCpanelWithValues($QC_Status_panel,"Fail");
+        $this->_testQCpanelWithValues($Selected,"true");
+        $this->_testQCpanelWithValues($Selected,"false");
+        $this->_testQCpanelWithValues($Selected,"");
+        $this->_testQCpanelWithValues($SNR,"0");
+        $this->_testQCpanelWithValues($SNR,"1");
+        $this->_testQCpanelWithValues($SNR,"");
+
     }
 
     function _testQCpanelWithValues($ui,$data)
@@ -572,201 +588,72 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->assertEquals("$data", $text);         
     }
     /**
-     * Step 2
-     * Selected set to NULL
-     *
-     * @return void
-    **/
-
-    /**
-     * Step 3
-     * Future Release
-     *
-     * @return void
-    **/
-
-    /**
-     * Step 4
-     * This is tested in B-Step2 (awaiting redmine 9385)
-     *
-     * @return void
-    **/
-
-    /**
      * Step 5
-     * Link to comments launches window
+     * Link to comments launches window 
+     * Input test data into launches window
      *
      * @return void
     */
-    function testCommentsWindowLaunch()
+    function testCommentsWindowLaunchAndEditable()
     {
-        $this->markTestSkipped(
-            'Popup windows can not be tested'
-        );
-        // Setting permissions to view all sites to view all datasets
-        $this->setupPermissions(array('imaging_browser_view_allsites'));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
-        $SelectedLink = $this->webDriver->findElement(
-            WebDriverBy::xPath(
-                '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
-            )
+        // click native link
+        $value = "#dynamictable > tbody > tr:nth-child(1) >".
+                 " td:nth-child(11) > a:nth-child(1)";
+        $this->webDriver->executescript(
+                "document.querySelector('$value').click()"
+            );
+        // click QC Comments button
+        $value = "#image-2 > div > div > div.panel-body > div.row.mri-second".
+              "-row-panel.col-xs-12 > a:nth-child(1) > span > span.hidden-xs";
+        $this->webDriver->executescript(
+                "document.querySelector('$value').click()"
+            ); 
+        $oldWindows = $this->webDriver->getWindowHandle();
+        $newWindow = $this->webDriver->switchTo()->window(
+               end($this->webDriver->getWindowHandles())
         );
-        $this->clickToLoadNewPage($SelectedLink);
-
-        $CommentsButton = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(
-                ".mri-second-row-panel > a:nth-child(1) > " .
-                "span:nth-child(1) > span:nth-child(2)"
-            )
+        //Inputing test data into QC comment panel "Geometric distortion" with 'Good'
+        $value1 = "body > div > form > h3:nth-child(1) > select";
+        $newWindow->executescript(
+                "document.querySelector('$value1').value='Good'"
+            );
+        $value2 = "body>div:nth-child(2)>form:nth-child(2)>textarea:nth-child(2)";
+        $newWindow->executescript(
+                "document.querySelector('$value2').value='Good'"
+            );
+        sleep(30);
+        
+        //click save button
+        $save = "body > div:nth-child(2) > form:nth-child(2) > input:nth-child(25)";
+        $newWindow->executescript(
+                "document.querySelector('$save').click()"
+            );   
+        // click close this window button
+        $value = "body > p > a";
+        $newWindow->executescript(
+                "document.querySelector('$value').click()"
+            );
+sleep(30);
+        // click QC comment button again
+        $value = ".mri-second-row-panel > a:nth-child(1)";
+        $this->webDriver->executescript(
+                "document.querySelector('$value').click()"
+            );     
+sleep(30);
+        // check the result
+        $text = $newWindow->executescript(
+             "return document.querySelector('$value1').value"
         );
-        $handleList     = $this->webDriver->getWindowHandles();
-        $CommentsButton->click();
-
-        $newHandleList = $this->webDriver->getWindowHandles();
-        $diff          = array_diff($newHandleList, $handleList);
-        $this->assertCount(1, $diff);
-        $this->webDriver->switchTo()->window($diff[1]);
-        $newWindowText = $this->webDriver->findElement(
-            WebDriverBy::xPath('//body')
-        )->getText();
-        $this->assertContains("Click here to close this window", $newWindowText);
-        $this->webDriver->switchTo()->window($diff[1])->close();
+        $this->assertEquals("Good", $text);        
+        $text = $newWindow->executescript(
+             "return document.querySelector('$value2').value"
+        );
+        $this->assertEquals("Good", $text);  
+         
     }
 
-    /******** D ********/
-    /**
-     * Link to scan level comments editable with correct permission
-     *
-     * @return void
-    */
-    function testVisitCommentsWindowEditable()
-    {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better'
-        );
-        // Setting permissions to view all sites to view all datasets
-        $this->setupPermissions(
-            array(
-             'imaging_browser_view_allsites',
-             'imaging_browser_qc',
-            )
-        );
-        $this->safeGet(
-            $this->url . "/imaging_browser/"
-        );
-        $NativeLink = $this->webDriver->findElement(
-            WebDriverBy::xPath(
-                '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a'
-            )
-        );
-        $this->clickToLoadNewPage($NativeLink);
-
-        $VisitLevelFeedback = $this->webDriver->findElement(
-            WebDriverBy::xPath('//*[@id="sidebar-content"]/div[1]/a/span/span[2]')
-        );
-        $handleList         = $this->webDriver->getWindowHandles();
-        $VisitLevelFeedback->click();
-
-        $this->markTestSkipped(
-            'Popup windows can not be tested'
-        );
-
-        $newHandleList = $this->webDriver->getWindowHandles();
-        $diff          = array_diff($newHandleList, $handleList);
-        $this->assertCount(1, $diff);
-        $this->webDriver->switchTo()->window($diff[1]);
-
-        // First clear the field then send the comments/text
-        $this->webDriver->findElement(
-            WebDriverBy::Name("savecomments[text][7]")
-        )->clear();
-        $this->webDriver->findElement(
-            WebDriverBy::Name("savecomments[text][7]")
-        )->sendKeys("Testing comment field within Subject header");
-
-        $SaveButton = $this->webDriver->findElement(
-            WebDriverBy::Name("fire_away")
-        );
-        $SaveButton->click();
-
-        $SubjectText = $this->webDriver->findElement(
-            WebDriverBy::Name("savecomments[text][7]")
-        )->getText();
-        $this->assertEquals(
-            "Testing comment field within Subject header",
-            $SubjectText
-        );
-
-        $this->webDriver->switchTo()->window($diff[1])->close();
-    }
-
-    /******** E ********/
-    /**
-     * Link to visit level comments editable with proper permissions
-     *
-     * @return void
-    */
-    function testImageCommentsWindowEditable()
-    {
-        $this->markTestSkipped(
-            'React components can not be tested'
-        );
-        // Setting permissions to view all sites to view all datasets
-        $this->setupPermissions(
-            array(
-             'imaging_browser_view_allsites',
-             'imaging_browser_qc',
-            )
-        );
-        $this->safeGet(
-            $this->url . "/imaging_browser/"
-        );
-
-        $NativeLink = $this->webDriver->findElement(
-            WebDriverBy::xPath(
-                '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a'
-            )
-        );
-        $this->clickToLoadNewPage($NativeLink);
-
-        $ImageQCFeedback = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(
-                ".mri-second-row-panel > a:nth-child(1) > " .
-                "span:nth-child(1) > span:nth-child(2)"
-            )
-        );
-        $handleList      = $this->webDriver->getWindowHandles();
-        $ImageQCFeedback->click();
-        $newHandleList = $this->webDriver->getWindowHandles();
-        $diff          = array_diff($newHandleList, $handleList);
-        $this->assertCount(1, $diff);
-        $this->webDriver->switchTo()->window($diff[1]);
-
-        // First clear the field then send the comments/text
-        $this->webDriver->findElement(
-            WebDriverBy::Name("savecomments[text][1]")
-        )->clear();
-        $this->webDriver->findElement(
-            WebDriverBy::Name("savecomments[text][1]")
-        )->sendKeys("Testing comment field within Geometric Intensity");
-
-        $SaveButton = $this->webDriver->findElement(
-            WebDriverBy::Name("fire_away")
-        );
-        $SaveButton->click();
-
-        $GeometricDistortionText = $this->webDriver->findElement(
-            WebDriverBy::Name("savecomments[text][1]")
-        )->getText();
-        $this->assertEquals(
-            "Testing comment field within Geometric Intensity",
-            $GeometricDistortionText
-        );
-
-        $this->webDriver->switchTo()->window($diff[1])->close();
-    }
 }
 ?>
