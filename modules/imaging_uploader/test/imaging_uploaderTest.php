@@ -166,6 +166,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
     {
         if ($url == "/imaging_uploader/") {
             $this->safeGet($this->url . $url);
+            sleep(2);
         } else {
             $this->safeGet($this->url . '/imaging_uploader/');
             $this->webDriver->findElement(
