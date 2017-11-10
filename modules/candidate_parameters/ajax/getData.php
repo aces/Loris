@@ -270,10 +270,7 @@ function getFamilyInfoFields()
  */
 function getParticipantStatusFields()
 {
-    include_once __DIR__
-        . "/../../candidate_parameters/php/"
-        . "candidate_parameters.class.inc";
-
+    \Module::factory('candidate_parameters');
     $candID = $_GET['candID'];
 
     $db =& \Database::singleton();
