@@ -7,6 +7,8 @@ Options -Indexes
 RewriteCond %{ENV:REDIRECT_STATUS} 200
 RewriteRule ^ - [L]
 
+RewriteRule ^images Images.php [QSA,L]
+
 RewriteRule ^login Login.php?PrintLogin=true [L]
 # Projects API rewrite rules
 RewriteRule ^projects/([a-zA-Z0-9_\w\s.]+)/instruments/([a-zA-Z0-9_.]+)$ projects/InstrumentForm.php?Instrument=$2&PrintInstrumentForm=true [L]
@@ -39,3 +41,4 @@ RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.]+)/header
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.]+)/headers/full$ candidates/visits/images/headers/Full.php?CandID=$1&VisitLabel=$2&Filename=$3&PrintHeadersFull=true [L]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.]+)/headers/(.*)$ candidates/visits/images/headers/Specific.php?CandID=$1&VisitLabel=$2&Filename=$3&Header=$4&PrintSpecificHeader=true [L]
 RewriteRule ^candidates/([0-9]+)/([a-zA-Z0-9_.]+)/images/([a-zA-Z0-9_.]+)$ candidates/visits/images/Image.php?CandID=$1&VisitLabel=$2&Filename=$3&PrintImageData=true [L]
+
