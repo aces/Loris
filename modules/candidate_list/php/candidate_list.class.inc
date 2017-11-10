@@ -216,7 +216,6 @@ class Candidate_List extends \NDB_Menu_Filter
     function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
         parent::_setupPage($name, $page, $identifier, $commentID, $formname);
-        
         // Relying on a side-effect of the the server process module to autoload
         // its namespace.
         \Module::factory('candidate_parameters');
