@@ -611,7 +611,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
                 "document.querySelector('$value').click()"
             ); 
-        $oldWindows = $this->webDriver->getWindowHandle();
+        $oldWindow = $this->webDriver->getWindowHandle();
         $newWindow = $this->webDriver->switchTo()->window(
                end($this->webDriver->getWindowHandles())
         );
@@ -624,7 +624,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $newWindow->executescript(
                 "document.querySelector('$value2').value='Good'"
             );
-        sleep(30);
         
         //click save button
         $save = "body > div:nth-child(2) > form:nth-child(2) > input:nth-child(25)";
@@ -636,18 +635,20 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $newWindow->executescript(
                 "document.querySelector('$value').click()"
             );
-sleep(30);
         // click QC comment button again
-        $value = ".mri-second-row-panel > a:nth-child(1)";
-        $this->webDriver->executescript(
+        $value = ".mri-second-row-panel > a:nth-child(1) > span:nth-child(1)".
+                 " > span:nth-child(2)";
+        $this->webDriver->switchTo()->window($oldWindow)->executescript(
                 "document.querySelector('$value').click()"
             );     
-sleep(30);
         // check the result
+        sleep(20);
+// todo give a new value1
         $text = $newWindow->executescript(
              "return document.querySelector('$value1').value"
         );
         $this->assertEquals("Good", $text);        
+//todo give a new value2
         $text = $newWindow->executescript(
              "return document.querySelector('$value2').value"
         );
