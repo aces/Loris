@@ -219,9 +219,9 @@ class Candidate_List extends \NDB_Menu_Filter
         // Relying on a side-effect of the the server process module to autoload
         // its namespace.
         \Module::factory('candidate_parameters');
- 
+
         // create user object
-         $user   =& \User::singleton();
+         $user    =& \User::singleton();
           $config =& \NDB_Config::singleton();
         // PSC
         if ($user->hasPermission('access_all_profiles')) {
