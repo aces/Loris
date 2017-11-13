@@ -96,6 +96,7 @@ class Candidate_Parameters extends \NDB_Form
             "Function getParticipantStatusOptions() was moved out of ".
             "the NDB_Form_Candidate_Parameters class and will be removed in ".
             "the next Major release. Refer to the Candidate class for new location."
+        );
         $DB           =& \Database::singleton();
         $options      = $DB->pselect(
             "SELECT ID,Description
@@ -120,19 +121,17 @@ class Candidate_Parameters extends \NDB_Form
      */
     function getParticipantStatusSubOptions($parentID)
     {
-<<<<<<< HEAD:modules/candidate_parameters/php/NDB_Form_candidate_parameters.class.inc
         error_log(
             "Function getParticipantStatusSubOptions() was moved out of ".
             "the NDB_Form_Candidate_Parameters class and will be removed in ".
             "the next Major release. Refer to the Candidate class for new location."
-=======
+        );
         $DB           =& \Database::singleton();
         $options      = $DB->pselect(
             "SELECT ID,Description 
             FROM participant_status_options 
             WHERE parentID=:pid",
             array('pid' => $parentID)
->>>>>>> aces/minor:modules/candidate_parameters/php/candidate_parameters.class.inc
         );
         return Candidate::getParticipantStatusSubOptions($parentID);
     }
