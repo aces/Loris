@@ -259,7 +259,7 @@ class Candidate_List extends \NDB_Menu_Filter
                                        );
 
         $participant_status_options = array(null => 'All')
-             \Candidate::getParticipantStatusOptions();
+             + \Candidate::getParticipantStatusOptions();
         $scan_options = array(
                          null => 'All',
                          'Y'  => 'Yes',
