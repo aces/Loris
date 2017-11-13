@@ -303,7 +303,7 @@ function getChangedValues($issueValues, $issueID)
     $changedValues = [];
     foreach ($issueValues as $key => $value) {
         // Only include fields that have changed
-        if ($issueValues[$key] != $issueData[$key] && !empty($value)) {
+        if ($issueValues[$key] != ($issueData[$key] ?? '') && !empty($value)) {
             $changedValues[$key] = $value;
         }
     }

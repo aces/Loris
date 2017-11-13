@@ -1271,7 +1271,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         //======================================
         $matched =false;
         foreach ($values as $k=>$v) {
-            if (preg_match("/^ex_[1-9]+$/", $k)) {
+            if (preg_match("/^ex_[0-9]+$/", $k)) {
                 $matched =true;
                 if ($values['examiner_radiologist'] == '') {
                     $errors['examiner_group'] = "Please specify if examiner is a " .
