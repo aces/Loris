@@ -61,13 +61,19 @@ class NDB_Menu extends NDB_Page
         }
 
         // create a new menu object
-        $obj = new $class;
 
-        if (isset($_REQUEST['test_name'])) {
-            $obj->Module = $_REQUEST['test_name'];
-        } else {
-            $obj->Module = $menu;
+        try {
+            if (isset($_REQUEST['test_name'])) {
+                $module = \Module::factory($_REQUEST['test_name']);
+            } else {
+                $module = \Module::factory($menu);
+            }
+        } catch(\Exception $e) {
+            $module = new Module($menu);
         }
+
+        $obj = new $class($module, $menu, '', '', 'menu');
+
         // set the local variables
         $obj->menu = $menu;
         $obj->mode = $mode;
