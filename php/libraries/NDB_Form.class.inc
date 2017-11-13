@@ -64,10 +64,8 @@ class NDB_Form extends NDB_Page
         }
 
         // create a form instance
-        $obj = new $class;
+        $obj = new $class($name, $page, $identifier, null, 'test_form');
 
-        // set the local variables
-        $obj->_setupPage($name, $page, $identifier, null, 'test_form');
         $obj->registerDefaultFilter();
 
         $access = $obj->_hasAccess();

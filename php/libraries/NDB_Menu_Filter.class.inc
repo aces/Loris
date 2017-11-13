@@ -133,6 +133,7 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function setup()
     {
+        parent::setup();
         // setup the menu's variables
         $success = $this->_setupVariables();
 
@@ -145,7 +146,6 @@ class NDB_Menu_Filter extends NDB_Menu
         }
 
         // start the filter form
-        $this->_setupPage($this->menu, null, null, null, 'filter');
         $this->registerDefaultFilter();
 
         // $this->form = new HTML_QuickForm('filter');
