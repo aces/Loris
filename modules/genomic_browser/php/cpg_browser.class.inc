@@ -263,9 +263,9 @@ class CpG_Browser extends \NDB_Menu_Filter
      *
      * @return none
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
 
         // create user object
         $user = \User::singleton();

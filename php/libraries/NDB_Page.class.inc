@@ -71,6 +71,31 @@ class NDB_Page
     protected $tpl_data = array();
 
     /**
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
+     *
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
+     */
+
+    function __construct(\Module $module, string $page, $identifier, $commentID, $formname)
+    {
+        $this->Module = $module;
+        $this->name = $module->getName(); // for legacy purposes. FIXME: remove this.
+
+        $this->form       = new LorisForm($formname);
+        $this->page       = $page;
+        $this->identifier = $identifier;
+        $this->commentID  = $commentID;
+        $this->defaults   = array();
+    }
+    /**
      * Safely sets a smarty template variable.
      *
      * @param string $name  The name of the template variable to set
@@ -92,29 +117,6 @@ class NDB_Page
     function getTemplateData()
     {
         return $this->tpl_data;
-    }
-
-    /**
-     * Does the setup required for this page. By default, sets up elements
-     * that are common to every type of page. May be overridden by a specific
-     * page or specific page type.
-     *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
-     * @return none
-     */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
-    {
-        $this->form       = new LorisForm($formname);
-        $this->name       = $name;
-        $this->page       = $page;
-        $this->identifier = $identifier;
-        $this->commentID  = $commentID;
-        $this->defaults   = array();
     }
 
 

@@ -92,9 +92,9 @@ class Datadict extends \NDB_Menu_Filter
     *
     * @return none
     */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
 
         // list of feedback statuses
         $instruments = \Utility::getAllInstruments();

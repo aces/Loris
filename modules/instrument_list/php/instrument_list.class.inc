@@ -90,11 +90,11 @@ class Instrument_List extends \NDB_Menu_Filter
     */
     function setup()
     {
+        parent::setup()
         // set template data
         $this->tpl_data['candID']    = $_REQUEST['candID'];
         $this->tpl_data['sessionID'] = $_REQUEST['sessionID'];
 
-        $this->_setupPage(null, null, null, null, 'filter');
         // get behavioral battery for this visit (time point)
         $battery = new \NDB_BVL_Battery;
         $success = $battery->selectBattery($_REQUEST['sessionID']);

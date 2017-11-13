@@ -51,9 +51,9 @@ class Project extends \NDB_Form
     *
     * @return none
     */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
         $factory     = \NDB_Factory::singleton();
         $config      = $factory->config();
         $configs     = \NDB_Config::singleton();
