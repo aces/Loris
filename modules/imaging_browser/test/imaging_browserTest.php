@@ -434,9 +434,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     */
     function testImagingBrowserFiltersAndShowClearButtons()
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and React get along better'
-        );
         // Testing for PSCID
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
