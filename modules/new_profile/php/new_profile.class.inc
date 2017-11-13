@@ -260,7 +260,7 @@ class New_Profile extends \NDB_Form
     {
         $errors = array();
 
-        $config =& \NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
 
         if ($values['dob1'] != $values['dob2']) {
             $errors['dob1'] = 'Date of Birth fields must match.';
