@@ -133,11 +133,11 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function setup()
     {
+        parent::setup();
 
         // setup the menu's variables
         $success = $this->_setupVariables();
 
-        parent::setup();
         // set the headers if necessary
         if (!is_array($this->headers) || count($this->headers) == 0) {
             foreach ($this->columns as $value) {
