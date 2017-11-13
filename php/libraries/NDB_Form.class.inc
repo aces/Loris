@@ -164,20 +164,5 @@ class NDB_Form extends NDB_Page
     {
         return true;
     }
-
-    /**
-     * Resets the form
-     *
-     * Usage: Call this function if you do not want to display the frozen form
-     * after saving but just want to dump a message and maybe some links
-     *
-     * @return void
-     * @access private
-     */
-    function _resetForm()
-    {
-        $this->_setupPage(null, null, null, null, 'test_form');
-        // $this->form = new HTML_QuickForm('test_form');
-    }
 }
 ?>

@@ -141,7 +141,6 @@ class Module
             throw new \LorisException("You do not have access to this page.", 403);
         }
         $cls->setup();
-        //$cls->_setupPage($this->name, $page, $identifier, $commentID, $formname);
 
 
         // Handles form submission

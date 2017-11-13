@@ -311,7 +311,8 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function setup($commentID = null, $page = null)
     {
-        $this->_setupPage(null, $page, null, $commentID, 'test_form');
+        // Is this even valid?
+        parent::__construct(null, $page, null, $commentID, 'test_form');
     }
 
     /**
