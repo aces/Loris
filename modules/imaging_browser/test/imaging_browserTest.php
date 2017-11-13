@@ -314,6 +314,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$value').click()"
         );
         sleep(1);
+        $bodyText = $this->webDriver->getPageSource();
         $value = "#bc2 > a:nth-child(3) > div";
         $text  = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
@@ -380,7 +381,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
         sleep(1);
         $bodyText = $this->webDriver->getPageSource();
-        var_dump($bodyText);
         $value = "#bc2 > a:nth-child(2) > div";
         $text  = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
@@ -444,6 +444,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
          $this->safeFindElement(
              WebDriverBy::ID("bbonly")
          )->click();
+         sleep(1);
          $newWindow = $this->webDriver->switchTo()->window(
              end($this->webDriver->getWindowHandles())
          );
@@ -474,10 +475,11 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
         //click Vist Level Feedback
         $value = "#sidebar-content > div.visit-level-feedback > a";
+        $oldWindows = $this->webDriver->getWindowHandle();
         $this->webDriver->executescript(
             "document.querySelector('$value').click()"
         );
-        $oldWindows = $this->webDriver->getWindowHandle();
+        sleep(1);
         $newWindow  = $this->webDriver->switchTo()->window(
             end($this->webDriver->getWindowHandles())
         );
@@ -531,6 +533,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$value').click()"
         );
+        sleep(1);
         $value = "#bc2 > a:nth-child(2) > div";
         $this->webDriver->executescript(
             "document.querySelector('$value').click()"
@@ -577,6 +580,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$value').click()"
         );
+        sleep(1);
         $this->_testQCpanelWithValues($QC_Status, "Pass");
         $this->_testQCpanelWithValues($QC_Status, "Fail");
         $this->_testQCpanelWithValues($QC_Status, "Unrated");
@@ -617,6 +621,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$link').click()"
         );
+        sleep(1);
         //$newWindow = $this->webDriver->switchTo()->window(
         //       end($this->webDriver->getWindowHandles())
         //);
@@ -668,13 +673,14 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$value').click()"
         );
+        $oldWindow = $this->webDriver->getWindowHandle();
         // click QC Comments button
         $value = "#image-2 > div > div > div.panel-body > div.row.mri-second".
               "-row-panel.col-xs-12 > a:nth-child(1) > span > span.hidden-xs";
         $this->webDriver->executescript(
             "document.querySelector('$value').click()"
         );
-        $oldWindow = $this->webDriver->getWindowHandle();
+        sleep(1);
         $newWindow = $this->webDriver->switchTo()->window(
             end($this->webDriver->getWindowHandles())
         );
