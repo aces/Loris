@@ -11,7 +11,7 @@
 * @link     https://www.github.com/aces/Loris/
 */
 namespace LORIS\candidate_list;
-
+use LORIS\candidate_parameters as CP;
 /**
  * Implements the candidate_list menu
  *
@@ -216,14 +216,13 @@ class Candidate_List extends \NDB_Menu_Filter
     function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
         parent::_setupPage($name, $page, $identifier, $commentID, $formname);
-        include_once __DIR__
-            . "/../../candidate_parameters/php/"
-            . "NDB_Form_candidate_parameters.class.inc";
-            //+  NDB_Form_candidate_parameters::getParticipantStatusOptions();
-        // create user object
-        $user   =& \User::singleton();
-        $config =& \NDB_Config::singleton();
+        // Relying on a side-effect of the the server process module to autoload
+        // its namespace.
+        \Module::factory('candidate_parameters');
 
+        // create user object
+         $user    =& \User::singleton();
+          $config =& \NDB_Config::singleton();
         // PSC
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
@@ -260,7 +259,7 @@ class Candidate_List extends \NDB_Menu_Filter
                                        );
 
         $participant_status_options = array(null => 'All')
-            +  \Candidate::getParticipantStatusOptions();
+             \Candidate::getParticipantStatusOptions();
         $scan_options = array(
                          null => 'All',
                          'Y'  => 'Yes',
@@ -342,80 +341,6 @@ class Candidate_List extends \NDB_Menu_Filter
             array_merge(array('' => 'All'), $feedback_status_options)
         );
 
-        return true;
-    }
-
-
-    /**
-     * Overrides the default setDataTableRows to assign the background colour
-     * to the feedback thread column
-     *
-     * @param integer $count The number of rows in the table
-     *
-     * @return true on success
-     */
-    function _setDataTableRows($count)
-    {
-        // create user object
-        $user =& User::singleton();
-
-        $subprojectlist = Utility::getSubprojectList();
-        $projectlist    = Utility::getProjectList();
-
-        $pOptions = Candidate::getParticipantStatusOptions();
-        // print out
-        $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
-            $i = 1;
-            foreach ($item as $key => $val) {
-                $itemi =& $this->tpl_data['items'][$x][$i];
-                // if it's a non-PSC user show the URL to the timepoint list on
-                // PSCID field
-                if ($key == 'PSCID' && $user->hasPermission('access_all_profiles')) {
-                    $itemi['DCCID'] = $item['DCCID'];
-                }
-                $itemi['PSCID'] = $item['PSCID'];
-                $itemi['name']  = $key;
-                $itemi['value'] = $val;
-                // get feedback information for each displayed candidate record
-                if ($key == 'Feedback' && !empty($val)) {
-                    // overwrite value
-                    $verbose = \NDB_BVL_Feedback::getFeedbackStatusVerbose($val);
-
-                    $itemi['value']   = $verbose;
-                    $itemi['bgcolor'] = \NDB_BVL_Feedback::getThreadColor(
-                        $itemi['value']
-                    );
-                } else if ($key=='Feedback' && empty($val)) {
-                    $itemi['value'] = "None";
-                } else if ($key=='Project') {
-                    if (isset($projectlist[$val])) {
-                        $itemi['value'] = $projectlist[$val];
-                    } else {
-                        $itemi['value'] = '';
-                    }
-                } else if ($key=='Subproject') {
-                    if (isset($subprojectlist[$val])) {
-                        $itemi['value'] = $subprojectlist[$val];
-                    } else {
-                        $itemi['value'] = '';
-                    }
-                } else if ($key == 'Participant_Status' && !empty($val)) {
-                    $itemi['value'] = $pOptions[$val];
-                } else if ($key=='scan_done') {
-                    $itemi['value'] = $val;
-                }
-
-                $i++;
-            }
-
-            $x++;
-        }
-        $this->tpl_data['numCandidates'] = $this->TotalItems;
         return true;
     }
 
