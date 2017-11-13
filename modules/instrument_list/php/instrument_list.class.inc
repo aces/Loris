@@ -89,7 +89,7 @@ class Instrument_List extends \NDB_Menu_Filter
     */
     function setup()
     {
-        parent::setup();
+        // Don't call parent setup, we don't want it to try to run any SQL
 
         // set template data
         $this->tpl_data['candID']    = $_REQUEST['candID'];
