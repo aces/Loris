@@ -87,7 +87,7 @@ class NDB_Page
     function __construct(\Module $module, string $page, $identifier, $commentID, $formname)
     {
         $this->Module = $module;
-        $this->name = $module->getName(); // for legacy purposes. FIXME: remove this.
+        $this->name   = $module->getName(); // for legacy purposes. FIXME: remove this.
 
         $this->form       = new LorisForm($formname);
         $this->page       = $page;

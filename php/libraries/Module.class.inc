@@ -98,7 +98,8 @@ class Module
         $this->name = $name;
     }
 
-    public function getName() : string {
+    public function getName() : string
+    {
         return $this->name;
     }
 
@@ -125,22 +126,20 @@ class Module
     {
         $className = "\LORIS\\" . $this->name . "\\$page";
 
-
         $identifier = isset($_REQUEST['identifier']) ? $_REQUEST['identifier'] : '';
         $commentID  = isset($_REQUEST['commentID']) ? $_REQUEST['commentID'] : '';
         $formname   = $page;
-        $cls = new $className($this, $page, $identifier, $commentID, $page);
+        $cls        = new $className($this, $page, $identifier, $commentID, $page);
         // Smarty needs the Module name as a parameter to autoload the right
         // templates. Every type of page uses this.
 
         // Hacks so that existing display() functions load the right template
         // for different page types.
-        $cls->menu     = $page;
+        $cls->menu = $page;
         if (!$cls->_hasAccess()) {
             throw new \LorisException("You do not have access to this page.", 403);
         }
         $cls->setup();
-
 
         // Handles form submission
         if (method_exists($cls, 'save')) {

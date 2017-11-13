@@ -39,7 +39,8 @@ class NDB_Menu extends NDB_Page
      */
     var $mode;
 
-    public function __construct(\Module $module, string $page, $identifier, $commentID, $formname) {
+    public function __construct(\Module $module, string $page, $identifier, $commentID, $formname)
+    {
         parent::__construct($module, $page, $identifier, $commentID, $formname);
         $this->menu = $module->getName();
     }
@@ -65,15 +66,15 @@ class NDB_Menu extends NDB_Page
         }
 
         // create a new menu object
-       try {
+        try {
             if (isset($_REQUEST['test_name'])) {
                 $module = \Module::factory($_REQUEST['test_name']);
             } else {
                 $module = \Module::factory($menu);
             }
-       } catch(\ModuleMissingException $e) {
+        } catch(\ModuleMissingException $e) {
             $module = new Module($menu);
-       }
+        }
 
         $obj = new $class($module, $menu, '', '', 'menu');
 
