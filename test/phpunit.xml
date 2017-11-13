@@ -11,7 +11,7 @@
         </testsuite>
 
         <testsuite name='LorisModuleIntegrationTests'>
-            <directory>../modules/new_profile/test/</directory>
+            <directory>../modules/imaging_browser/test/</directory>
         </testsuite>
 
     </testsuites>
