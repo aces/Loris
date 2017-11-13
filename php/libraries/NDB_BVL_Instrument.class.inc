@@ -205,7 +205,7 @@ class NDB_BVL_Instrument extends NDB_Page
         }
 
         // Sets up page variables such as $this->commentID and $this->form
-        //$obj->setup($commentID, $page);
+        $obj->setup($commentID, $page);
 
         // Adds all of the form element and form rules to the page after
         // having instantiated the form above
