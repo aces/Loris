@@ -394,8 +394,6 @@ class Database
                 "Replace statement did not execute successfully.",
                 $query
             );
-        } elseif ($result === 0) {
-            $this->insert('empty_queries', array('query' => $query));
         }
 
         $this->affected = $result;
@@ -545,8 +543,6 @@ class Database
                 $query,
                 $where
             );
-        } elseif ($result === 0) {
-            $this->insert('empty_queries', array('query' => $query));
         }
 
         $this->affected = $result;
@@ -671,8 +667,6 @@ class Database
                 "Could not run query $query"
                 . print_r($this->_PDO->errorInfo(), true)
             );
-        } elseif ($result === 0) {
-            $this->insert('empty_queries', array('query' => $query));
         }
 
         $this->affected = $result;

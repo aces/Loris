@@ -6,8 +6,6 @@ DROP TABLE IF EXISTS `acknowledgements`;
 DROP TABLE IF EXISTS `data_release_permissions`;
 DROP TABLE IF EXISTS `data_release`;
 
-DROP TABLE IF EXISTS `empty_queries`;
-
 DROP TABLE IF EXISTS `ExternalLinks`;
 DROP TABLE IF EXISTS `ExternalLinkTypes`;
 
@@ -1820,18 +1818,6 @@ INSERT INTO `ExternalLinks` (LinkTypeID, LinkText, LinkURL) VALUES
   ((SELECT LinkTypeID from ExternalLinkTypes WHERE LinkType='StudyLinks'), 'Loris Website', 'http://www.loris.ca'),
   ((SELECT LinkTypeID from ExternalLinkTypes WHERE LinkType='StudyLinks'), 'GitHub', 'https://github.com/aces/Loris'),
   ((SELECT LinkTypeID from ExternalLinkTypes WHERE LinkType='dashboard'), 'Loris Website', 'http://www.loris.ca');
-
--- ********************************
--- empty_queries
--- ********************************
-
-
-CREATE TABLE `empty_queries` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `query` text NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
 -- data_release
