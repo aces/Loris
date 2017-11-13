@@ -184,7 +184,7 @@ class NDB_BVL_Instrument extends NDB_Page
         if (file_exists($base."project/instruments/$instrument.linst")
         ) {
             include_once 'NDB_BVL_Instrument_LINST.class.inc';
-            $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST();
+            $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST(new Module($instrument), $page, $commentID, $commentID, 'test_form');
         } else {
             if (!class_exists($class)
                 && ($guarantee_exists === true
@@ -196,8 +196,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 include_once $base."project/instruments/$class.class.inc";
             }
             // Now go ahead and instantiate it
-            $obj = new $class;
-            // Now go ahead and instantiate it
+            $obj = new $class(new Module($instrument), $page, $commentID, $commentID, 'test_form');
         }
 
         // if a script is loading this form without a commentID, display all fields
@@ -206,7 +205,7 @@ class NDB_BVL_Instrument extends NDB_Page
         }
 
         // Sets up page variables such as $this->commentID and $this->form
-        $obj->setup($commentID, $page);
+        //$obj->setup($commentID, $page);
 
         // Adds all of the form element and form rules to the page after
         // having instantiated the form above
@@ -309,11 +308,15 @@ class NDB_BVL_Instrument extends NDB_Page
      * @access   public
      * @abstract
      */
+    /*
     function setup($commentID = null, $page = null)
     {
-        // Is this even valid?
-        parent::__construct(null, $page, null, $commentID, 'test_form');
+
+        $this->commentID = $commentID;
+        $this->page = $page;
+        $this->form = new \LorisForm('test_form');
     }
+     */
 
     /**
      * Method to compute scores - by default will run a script named

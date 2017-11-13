@@ -134,6 +134,7 @@ class NDB_Menu_Filter extends NDB_Menu
     function setup()
     {
         parent::setup();
+
         // setup the menu's variables
         $success = $this->_setupVariables();
 

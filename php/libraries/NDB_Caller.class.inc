@@ -114,7 +114,6 @@ class NDB_Caller
              $mname = $test_name;
         }
         try {
-
             // This will throw an exception if the module name doesn't exist, so
             // below this we can assume a valid module.
             $m = Module::factory($mname);

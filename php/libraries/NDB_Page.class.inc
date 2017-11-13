@@ -94,6 +94,8 @@ class NDB_Page
         $this->identifier = $identifier;
         $this->commentID  = $commentID;
         $this->defaults   = array();
+
+        $this->template = $page;
     }
     /**
      * Safely sets a smarty template variable.

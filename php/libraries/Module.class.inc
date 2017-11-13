@@ -136,7 +136,6 @@ class Module
         // Hacks so that existing display() functions load the right template
         // for different page types.
         $cls->menu     = $page;
-        $cls->template = $page;
         if (!$cls->_hasAccess()) {
             throw new \LorisException("You do not have access to this page.", 403);
         }

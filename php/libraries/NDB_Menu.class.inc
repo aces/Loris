@@ -39,6 +39,10 @@ class NDB_Menu extends NDB_Page
      */
     var $mode;
 
+    public function __construct(\Module $module, string $page, $identifier, $commentID, $formname) {
+        parent::__construct($module, $page, $identifier, $commentID, $formname);
+        $this->menu = $module->getName();
+    }
     /**
      * Generates a new menu instance
      *
@@ -61,21 +65,19 @@ class NDB_Menu extends NDB_Page
         }
 
         // create a new menu object
-
-        try {
+       try {
             if (isset($_REQUEST['test_name'])) {
                 $module = \Module::factory($_REQUEST['test_name']);
             } else {
                 $module = \Module::factory($menu);
             }
-        } catch(\Exception $e) {
+       } catch(\ModuleMissingException $e) {
             $module = new Module($menu);
-        }
+       }
 
         $obj = new $class($module, $menu, '', '', 'menu');
 
         // set the local variables
-        $obj->menu = $menu;
         $obj->mode = $mode;
         $access    = $obj->_hasAccess();
 
@@ -89,18 +91,6 @@ class NDB_Menu extends NDB_Page
         $obj->setTemplateVar('baseurl', $settings->getBaseURL());
 
         return $obj;
-    }
-
-    /**
-     * Calls other member functions to do all the work necessary to create the menu
-     *
-     * @note   overloaded function
-     * @return void
-     * @access public
-     */
-    function setup()
-    {
-        return true;
     }
 
     /**
