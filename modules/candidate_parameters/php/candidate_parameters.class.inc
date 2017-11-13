@@ -97,8 +97,8 @@ class Candidate_Parameters extends \NDB_Form
             "the NDB_Form_Candidate_Parameters class and will be removed in ".
             "the next Major release. Refer to the Candidate class for new location."
         );
-        $DB           =& \Database::singleton();
-        $options      = $DB->pselect(
+        $DB      =& \Database::singleton();
+        $options = $DB->pselect(
             "SELECT ID,Description
             FROM participant_status_options
             WHERE parentID IS NULL",
@@ -126,8 +126,8 @@ class Candidate_Parameters extends \NDB_Form
             "the NDB_Form_Candidate_Parameters class and will be removed in ".
             "the next Major release. Refer to the Candidate class for new location."
         );
-        $DB           =& \Database::singleton();
-        $options      = $DB->pselect(
+        $DB      =& \Database::singleton();
+        $options = $DB->pselect(
             "SELECT ID,Description 
             FROM participant_status_options 
             WHERE parentID=:pid",
