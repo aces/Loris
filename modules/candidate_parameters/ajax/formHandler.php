@@ -15,8 +15,8 @@
 if (isset($_POST['tab'])) {
     $tab = $_POST['tab'];
 
-    $db   =& Database::singleton();
-    $user =& User::singleton();
+    $db   =& \Database::singleton();
+    $user =& \User::singleton();
 
     if ($tab == "candidateInfo") {
         editCandInfoFields($db, $user);
@@ -369,14 +369,14 @@ function editConsentStatusFields($db, $user)
 
     $id = null;
     if (!(is_null($_SESSION['State']))) {
-        $currentUser =& User::singleton($_SESSION['State']->getUsername());
+        $currentUser =& \User::singleton($_SESSION['State']->getUsername());
         $id          = $currentUser->getData("UserID");
     }
 
-    $config  =& NDB_Config::singleton();
+    $config  =& \NDB_Config::singleton();
     $consent = $config->getSetting('ConsentModule');
 
-    $consent_details =Utility::asArray($consent['Consent']);
+    $consent_details =\Utility::asArray($consent['Consent']);
     if (!$consent_details[0]) {
         // If only one consent, need to put in an array
         $temp            = array();
