@@ -184,7 +184,13 @@ class NDB_BVL_Instrument extends NDB_Page
         if (file_exists($base."project/instruments/$instrument.linst")
         ) {
             include_once 'NDB_BVL_Instrument_LINST.class.inc';
-            $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST(new Module($instrument), $page, $commentID, $commentID, 'test_form');
+            $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST(
+                new Module($instrument),
+                $page,
+                $commentID,
+                $commentID,
+                'test_form'
+            );
         } else {
             if (!class_exists($class)
                 && ($guarantee_exists === true
@@ -196,7 +202,13 @@ class NDB_BVL_Instrument extends NDB_Page
                 include_once $base."project/instruments/$class.class.inc";
             }
             // Now go ahead and instantiate it
-            $obj = new $class(new Module($instrument), $page, $commentID, $commentID, 'test_form');
+            $obj = new $class(
+                new Module($instrument),
+                $page,
+                $commentID,
+                $commentID,
+                'test_form'
+            );
         }
 
         // if a script is loading this form without a commentID, display all fields

@@ -75,7 +75,7 @@ class NDB_Page
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @param string $name       The test name being accessed
+     * @param Module $module     The test name being accessed
      * @param string $page       The subtest being accessed (may be null)
      * @param string $identifier The identifier for the data to load on this page
      * @param string $commentID  The CommentID to load the data for
@@ -83,11 +83,15 @@ class NDB_Page
      *
      * @return none
      */
-
-    function __construct(\Module $module, string $page, $identifier, $commentID, $formname)
-    {
+    function __construct(
+        \Module $module,
+        string $page,
+        string $identifier,
+        string $commentID,
+        string $formname
+    ) {
         $this->Module = $module;
-        $this->name   = $module->getName(); // for legacy purposes. FIXME: remove this.
+        $this->name   = $module->getName(); // for legacy purposes.
 
         $this->form       = new LorisForm($formname);
         $this->page       = $page;

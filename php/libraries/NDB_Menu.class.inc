@@ -39,8 +39,22 @@ class NDB_Menu extends NDB_Page
      */
     var $mode;
 
-    public function __construct(\Module $module, string $page, $identifier, $commentID, $formname)
-    {
+    /**
+     * Create a new NDB_Menu page
+     *
+     * @param Module $module     The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     */
+    public function __construct(
+        \Module $module,
+        string $page,
+        string $identifier,
+        string $commentID,
+        string $formname
+    ) {
         parent::__construct($module, $page, $identifier, $commentID, $formname);
         $this->menu = $module->getName();
     }
@@ -113,4 +127,4 @@ class NDB_Menu extends NDB_Page
         return $html;
     }
 }
-?>
+

@@ -98,6 +98,11 @@ class Module
         $this->name = $name;
     }
 
+    /**
+     * Return the name of this module.
+     *
+     * @return string The module name
+     */
     public function getName() : string
     {
         return $this->name;
