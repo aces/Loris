@@ -313,7 +313,9 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$value').click()"
         );
-
+        sleep(1);
+        $bodyText = $this->webDriver->getPageSource();
+        printf($bodyText);
         $value = "#bc2 > a:nth-child(3) > div";
         $text  = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
