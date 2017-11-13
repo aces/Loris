@@ -72,7 +72,7 @@ class NDB_Caller
     *
     * @return string rendered object, as html
     */
-    function load($test_name, $subtest, $anonymous=true)
+    function load($test_name, $subtest, $CommentID='', $nextpage=null, $anonymous=true)
     {
         $factory  = NDB_Factory::singleton();
         $config   = $factory->config();

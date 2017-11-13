@@ -167,7 +167,7 @@ if (!empty($TestName)) {
 // load the menu or instrument
 try {
     $caller    =& NDB_Caller::singleton();
-    $workspace = $caller->load($TestName, $subtest, $anonymous);
+    $workspace = $caller->load($TestName, $subtest, '', null, $anonymous);
 
     if (isset($caller->page->FormAction)) {
         $tpl_data['FormAction'] = $caller->page->FormAction;
