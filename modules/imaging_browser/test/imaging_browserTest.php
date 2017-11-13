@@ -7,6 +7,7 @@
  * @category Test
  * @package  Loris
  * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Wang Shen <shen.wang2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -73,7 +74,12 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
     }
-
+    /**
+     * Tests that the imaging_browser module loads with
+     * "imaging_browser_phantom_ownsite" permissions
+     *
+     * @return void
+     */
     function testImagingBrowserDoespageLoadWithPermissionsSite()
     {
         // With permission imaging_browser_phantom_ownsite
@@ -87,7 +93,12 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertContains("Imaging Browser", $breadcrumbText);
     }
-
+    /**
+     * Tests that the imaging_browser module loads with
+     * "imaging_browser_view_allsites" permissions
+     *
+     * @return void
+     */
     function testImagingBrowserDoespageLoadWithPermissionsAllSites()
     {
         // With permission imaging_browser_view_allsites
@@ -101,6 +112,12 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertContains("Imaging Browser", $breadcrumbText);
     }
+    /**
+     * Tests that the imaging_browser module loads with
+     * "maging_browser_phantom_allsites" permissions
+     *
+     * @return void
+     */
     function testImagingBrowserDoespageLoadWithPermissionsPhontomAllSites()
     {
         // With permission imaging_browser_phantom_allsites
@@ -130,9 +147,9 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             $this->url . "/imaging_browser/"
         );
         $value = "#datatable > div > div.table-header.panel-heading > div > div";
-        $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
+        $text  = $this->webDriver->executescript(
+            "return document.querySelector('$value').textContent"
+        );
         $this->assertContains("3 rows displayed", $text);
 
         // With permission imaging_browser_view_allsites:
@@ -143,9 +160,9 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             $this->url . "/imaging_browser/"
         );
         $value = "#datatable > div > div.table-header.panel-heading > div > div";
-        $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
+        $text  = $this->webDriver->executescript(
+            "return document.querySelector('$value').textContent"
+        );
         $this->assertContains("20 rows displayed of 22", $text);
     }
 
@@ -178,9 +195,9 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $ShowData->click();
 
         $value = "#datatable > div > div.table-header.panel-heading > div > div";
-        $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
+        $text  = $this->webDriver->executescript(
+            "return document.querySelector('$value').textContent"
+        );
         $this->assertContains("1 rows displayed of 1", $text);
 
         // Now reset using clear button and confirm site
@@ -207,9 +224,9 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
         $ShowData->click();
         $value = "#datatable > div > div.table-header.panel-heading > div > div";
-        $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
+        $text  = $this->webDriver->executescript(
+            "return document.querySelector('$value').textContent"
+        );
         $this->assertContains("20 rows displayed of 22", $text);
 
     }
@@ -229,25 +246,25 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
-                $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $SiteFilterText = $this->webDriver->findElement(
-            WebDriverBy::Name("SiteID")
-        )->getText();
-        $this->assertContains("All User Sites", $SiteFilterText);
+                $bodyText       = $this->webDriver->findElement(
+                    WebDriverBy::cssSelector("body")
+                )->getText();
+                $SiteFilterText = $this->webDriver->findElement(
+                    WebDriverBy::Name("SiteID")
+                )->getText();
+                $this->assertContains("All User Sites", $SiteFilterText);
 
-        // With permission imaging_browser_view_allsites
-        $this->setupPermissions(array('imaging_browser_view_allsites'));
-        $this->webDriver->navigate()->refresh();
-        $this->safeGet(
-            $this->url . "/imaging_browser/"
-        );
+                // With permission imaging_browser_view_allsites
+                $this->setupPermissions(array('imaging_browser_view_allsites'));
+                $this->webDriver->navigate()->refresh();
+                $this->safeGet(
+                    $this->url . "/imaging_browser/"
+                );
 
-        $SiteFilterText     = $this->webDriver->findElement(
-            WebDriverBy::Name("SiteID")
-        )->getText();
-        $this->assertContains("All", $SiteFilterText);
+                $SiteFilterText = $this->webDriver->findElement(
+                    WebDriverBy::Name("SiteID")
+                )->getText();
+                $this->assertContains("All", $SiteFilterText);
     }
 
     /**
@@ -263,17 +280,17 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
-        // Location of No. element in react table 
-        $noLocation = "#dynamictable > thead > tr > th:nth-child(1)"; 
+        // Location of No. element in react table
+        $noLocation = "#dynamictable > thead > tr > th:nth-child(1)";
         $this->webDriver->executescript(
-                "document.querySelector('$noLocation').click()"
-            );
+            "document.querySelector('$noLocation').click()"
+        );
         $value = "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(1)";
-        $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
+        $text  = $this->webDriver->executescript(
+            "return document.querySelector('$value').textContent"
+        );
         $this->assertContains("22", $text);
-        
+
     }
 
     /**
@@ -294,13 +311,13 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $value = "#dynamictable > tbody > tr:nth-child(1) >".
                  " td:nth-child(11) > a:nth-child(1)";
         $this->webDriver->executescript(
-                "document.querySelector('$value').click()"
-            );
-        
+            "document.querySelector('$value').click()"
+        );
+
         $value = "#bc2 > a:nth-child(3) > div";
-        $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
+        $text  = $this->webDriver->executescript(
+            "return document.querySelector('$value').textContent"
+        );
         $this->assertContains("View Session", $text);
         // Selected link tested in the next test
     }
@@ -319,16 +336,16 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
         $this->safeGet(
             $this->url . "/imaging_browser/"
-        ); 
+        );
         // Go to first item in the imaging browser list of candidates
         // to view buttons: Back to List and Next, then we can check Prev
 
         // click native link
         $value = "#dynamictable > tbody > tr:nth-child(1) >".
-                 " td:nth-child(11) > a:nth-child(1)"; 
+                 " td:nth-child(11) > a:nth-child(1)";
         $this->webDriver->executescript(
-                "document.querySelector('$value').click()"
-            );
+            "document.querySelector('$value').click()"
+        );
         //click Next Button
         $this->safeClick(
             WebDriverBy::cssSelector(
@@ -339,32 +356,33 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         // checking Previous Button exists
         $value = "#sidebar-content > ul:nth-child(2) > li:nth-child(2) >".
                  " a:nth-child(1) > span";
-        $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
+        $text  = $this->webDriver->executescript(
+            "return document.querySelector('$value').textContent"
+        );
         $this->assertContains("Previous", $text);
 
         //click Previous Button
         $value = "#sidebar-content > ul:nth-child(2) > li:nth-child(2) >".
                  " a:nth-child(1) > span > span";
         $this->webDriver->executescript(
-                "document.querySelector('$value').click()"
-            );
+            "document.querySelector('$value').click()"
+        );
         // checking Next Button exists
         $value = "#sidebar-content > ul:nth-child(2) > a > span";
-        $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
+        $text  = $this->webDriver->executescript(
+            "return document.querySelector('$value').textContent"
+        );
         $this->assertContains("Next", $text);
         //click Back to list Button
         $value = "#sidebar-content > ul:nth-child(2) > li > a > span";
         $this->webDriver->executescript(
-                "document.querySelector('$value').click()"
-            );
+            "document.querySelector('$value').click()"
+        );
+        sleep(1);
         $value = "#bc2 > a:nth-child(2) > div";
-        $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
+        $text  = $this->webDriver->executescript(
+            "return document.querySelector('$value').textContent"
+        );
         $this->assertContains(" Imaging  Browser", $text);
     }
 
@@ -382,20 +400,20 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $value = "#dynamictable > tbody > tr:nth-child(1) >".
                  " td:nth-child(11) > a:nth-child(1)";
         $this->webDriver->executescript(
-                "document.querySelector('$value').click()"
-            );
+            "document.querySelector('$value').click()"
+        );
         $value = "#sidebar-content > ul:nth-child(7) > li > a";
-        $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
+        $text  = $this->webDriver->executescript(
+            "return document.querySelector('$value').textContent"
+        );
         $this->assertContains("Radiology Review", $text);
         $this->webDriver->executescript(
-                "document.querySelector('$value').click()"
-            );
+            "document.querySelector('$value').click()"
+        );
         $bodyText = $this->webDriver->findElement(
-                      WebDriverBy::cssSelector("body")
-                    )->getText();
-        $this->assertContains("radiology_review", $bodyText); 
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains("radiology_review", $bodyText);
     }
 
     /**
@@ -412,25 +430,27 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $value = "#dynamictable > tbody > tr:nth-child(1) >".
                  " td:nth-child(11) > a:nth-child(1)";
         $this->webDriver->executescript(
-                "document.querySelector('$value').click()"
-            );
+            "document.querySelector('$value').click()"
+        );
          $this->safeFindElement(
-               WebDriverBy::cssSelector("#image-2 > div > div >".
-                 " div.panel-heading.clearfix > input")
-         )->click();        
+             WebDriverBy::cssSelector(
+                 "#image-2 > div > div >".
+                 " div.panel-heading.clearfix > input"
+             )
+         )->click();
 
          $this->safeFindElement(
-               WebDriverBy::ID("bbonly")
+             WebDriverBy::ID("bbonly")
          )->click();
-        $newWindow = $this->webDriver->switchTo()->window(
-               end($this->webDriver->getWindowHandles())
-        );
-        //breadcrumbs contains "Brainbrowser"
-        $value = "#bc2 > a:nth-child(2) > div";
-        $text = $newWindow->executescript(
-                "return document.querySelector('$value').textContent"
-            );
-        $this->assertContains(" Brainbrowser", $text);
+         $newWindow = $this->webDriver->switchTo()->window(
+             end($this->webDriver->getWindowHandles())
+         );
+         //breadcrumbs contains "Brainbrowser"
+         $value = "#bc2 > a:nth-child(2) > div";
+         $text  = $newWindow->executescript(
+             "return document.querySelector('$value').textContent"
+         );
+         $this->assertContains(" Brainbrowser", $text);
     }
 
     /**
@@ -448,48 +468,48 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $value = "#dynamictable > tbody > tr:nth-child(1) >".
                  " td:nth-child(11) > a:nth-child(1)";
         $this->webDriver->executescript(
-                "document.querySelector('$value').click()"
-            );
+            "document.querySelector('$value').click()"
+        );
         //click Vist Level Feedback
         $value = "#sidebar-content > div.visit-level-feedback > a";
         $this->webDriver->executescript(
-                "document.querySelector('$value').click()"
-            );
-        $oldWindows = $this->webDriver->getWindowHandle();
-        $newWindow = $this->webDriver->switchTo()->window(
-               end($this->webDriver->getWindowHandles())
+            "document.querySelector('$value').click()"
         );
-        $value = "body > div > form > textarea";
+        $oldWindows = $this->webDriver->getWindowHandle();
+        $newWindow  = $this->webDriver->switchTo()->window(
+            end($this->webDriver->getWindowHandles())
+        );
+        $value      = "body > div > form > textarea";
         $newWindow->executescript(
-                "document.querySelector('$value').value='test feedback'"
-            );
+            "document.querySelector('$value').value='test feedback'"
+        );
 
         $newWindow->findElement(
-                      WebDriverBy::name("fire_away")
-                    )->click();
+            WebDriverBy::name("fire_away")
+        )->click();
         //click close window button
         $newWindow->findElement(
-                      WebDriverBy::cssSelector("body > p > a")
-                    )->click();        
+            WebDriverBy::cssSelector("body > p > a")
+        )->click();
         $value = "#sidebar-content > div.visit-level-feedback > a";
         $this->webDriver->switchTo()->window($oldWindows)->executescript(
-                "document.querySelector('$value').click()"
-            );
+            "document.querySelector('$value').click()"
+        );
         //click Vist Level Feedback
         $value = "#sidebar-content > div.visit-level-feedback > a";
         $this->webDriver->executescript(
-                "document.querySelector('$value').click()"
-            );
-        $oldWindows = $this->webDriver->getWindowHandle();
-        $newWindow = $this->webDriver->switchTo()->window(
-               end($this->webDriver->getWindowHandles())
+            "document.querySelector('$value').click()"
         );
-        $value = "body > div > form > textarea";
-        $text = $newWindow->executescript(
-                "return document.querySelector('$value').value"
-            );        
-        $this->assertContains("test feedback", $text);                
-        
+        $oldWindows = $this->webDriver->getWindowHandle();
+        $newWindow  = $this->webDriver->switchTo()->window(
+            end($this->webDriver->getWindowHandles())
+        );
+        $value      = "body > div > form > textarea";
+        $text       = $newWindow->executescript(
+            "return document.querySelector('$value').value"
+        );
+        $this->assertContains("test feedback", $text);
+
     }
 
     /**
@@ -507,16 +527,17 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $value = "#dynamictable > tbody > tr:nth-child(1) >".
                  " td:nth-child(11) > a:nth-child(1)";
         $this->webDriver->executescript(
-                "document.querySelector('$value').click()"
-            );
+            "document.querySelector('$value').click()"
+        );
         $value = "#bc2 > a:nth-child(2) > div";
         $this->webDriver->executescript(
-                "document.querySelector('$value').click()"
-            );
-        $value = "#lorisworkspace > div.row > div > div > div.panel-heading";
+            "document.querySelector('$value').click()"
+        );
+        $value           = "#lorisworkspace > div.row > div >".
+                           " div > div.panel-heading";
         $SelectionFilter = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
-            );
+            "return document.querySelector('$value').textContent"
+        );
         $this->assertContains("Selection Filter", $SelectionFilter);
     }
 
@@ -529,18 +550,19 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
      * @return void
     */
     function testScanLevelQCFlags()
-    {   
+    {
         // select elements location by selector
-        $QC_Status = "#sidebar-content > div.div-controlpanel-bottom >".
+        $QC_Status       = "#sidebar-content > div.div-controlpanel-bottom >".
                      " div > select:nth-child(2)";
-        $QC_Pending = "#sidebar-content > div.div-controlpanel-bottom >".
+        $QC_Pending      = "#sidebar-content > div.div-controlpanel-bottom >".
                      " div > select:nth-child(5)";
-        $visit_caveat = "#sidebar-content > div.div-controlpanel-bottom >".
+        $visit_caveat    = "#sidebar-content > div.div-controlpanel-bottom >".
                      " div > select:nth-child(8)";
-        $QC_Status_panel = "#image-2 > div > div > div.panel-body > div:nth-child(1)".
+        $QC_Status_panel = "#image-2 > div > div > div.panel-body >".
+                     " div:nth-child(1)".
                      ">div.col-xs-3.mri-right-panel>div > div:nth-child(1) > select";
-        $Selected ="#image-2 > div > div > div.panel-body > div:nth-child(1) >".
-                   "div.col-xs-3.mri-right-panel > div > div:nth-child(2) > select";
+        $Selected        ="#image-2 > div > div > div.panel-body > div:nth-child(1)".
+                     " >div.col-xs-3.mri-right-panel >div>div:nth-child(2)>select";
         $SNR = "#image-2 > div > div > div.panel-body > div:nth-child(1) >".
                  " div.col-xs-3.mri-right-panel > div > div:nth-child(3) > select";
 
@@ -551,45 +573,84 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $value = "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(11)".
                  " > a:nth-child(2)";
         $this->webDriver->executescript(
-                "document.querySelector('$value').click()"
+            "document.querySelector('$value').click()"
         );
-        $this->_testQCpanelWithValues($QC_Status,"Pass");
-        $this->_testQCpanelWithValues($QC_Status,"Fail");
-        $this->_testQCpanelWithValues($QC_Status,"Unrated");
-        $this->_testQCpanelWithValues($QC_Pending,"Y");
-        $this->_testQCpanelWithValues($QC_Pending,"N");
-        $this->_testQCpanelWithValues($visit_caveat,"false");
-        $this->_testQCpanelWithValues($visit_caveat,"true");
-        $this->_testQCpanelWithValues($QC_Status_panel,"");
-        $this->_testQCpanelWithValues($QC_Status_panel,"Pass");
-        $this->_testQCpanelWithValues($QC_Status_panel,"Fail");
-        $this->_testQCpanelWithValues($Selected,"true");
-        $this->_testQCpanelWithValues($Selected,"false");
-        $this->_testQCpanelWithValues($Selected,"");
-        $this->_testQCpanelWithValues($SNR,"0");
-        $this->_testQCpanelWithValues($SNR,"1");
-        $this->_testQCpanelWithValues($SNR,"");
+        $this->_testQCpanelWithValues($QC_Status, "Pass");
+        $this->_testQCpanelWithValues($QC_Status, "Fail");
+        $this->_testQCpanelWithValues($QC_Status, "Unrated");
+        $this->_testQCpanelWithValues($QC_Pending, "Y");
+        $this->_testQCpanelWithValues($QC_Pending, "N");
+        $this->_testQCpanelWithValues($visit_caveat, "false");
+        $this->_testQCpanelWithValues($visit_caveat, "true");
+        $this->_testQCpanelWithValues($SNR, "0");
+        $this->_testQCpanelWithValues($SNR, "");
+        $this->_testQCpanelWithValues($SNR, "1");
+        $this->_testQCpanelWithValues($QC_Status_panel, "");
+        $this->_testQCpanelWithValues($QC_Status_panel, "Pass");
+        $this->_testQCpanelWithValues($QC_Status_panel, "Fail");
+        $this->_testQCpanelWithValues($Selected, "true");
+        $this->_testQCpanelWithValues($Selected, "false");
+        $this->_testQCpanelWithValues($Selected, "");
 
     }
+    /**
+     * Check the link of Caveat
+     *
+     * @return void
+    */
+    function testCaveatLink()
+    {
+        $this->safeGet(
+            $this->url . "/imaging_browser/"
+        );
+        // click native link
+        $value = "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(11)".
+                 " > a:nth-child(1)";
+        $this->webDriver->executescript(
+            "document.querySelector('$value').click()"
+        );
+        // test Caveat link
+        $link = "#image-2 > div > div > div.panel-body > div:nth-child(1)>".
+                " div.col-xs-3.mri-right-panel > div > div:nth-child(3) > label > a";
+        $this->webDriver->executescript(
+            "document.querySelector('$link').click()"
+        );
+        //$newWindow = $this->webDriver->switchTo()->window(
+        //       end($this->webDriver->getWindowHandles())
+        //);
+        $ui   = "#bc2 > a:nth-child(2) > div";
+        $text = $this->webDriver->executescript(
+            "return document.querySelector('$ui').textContent"
+        );
+        $this->assertEquals(" Mri  Violations", $text);
 
+    }
+    /**
+     * This function could help testing data and ui
+     *
+     * @param string $ui   the ui selector location
+     * @param string $data the testing data
+     *
+     * @return void
+    */
     function _testQCpanelWithValues($ui,$data)
     {
         $this->webDriver->executescript(
-             "document.querySelector('$ui').value='$data'"
+            "document.querySelector('$ui').value='$data'"
         );
         //click save button
         $this->webDriver->executescript(
-             "document.querySelector('#sidebar-content >".
+            "document.querySelector('#sidebar-content >".
              " div.div-controlpanel-bottom > div > input').click()"
-        ); 
+        );
         $text = $this->webDriver->executescript(
-             "return document.querySelector('$ui').value"
-        );      
-        $this->assertEquals("$data", $text);         
+            "return document.querySelector('$ui').value"
+        );
+        $this->assertEquals("$data", $text);
     }
     /**
      * Step 5
-     * Link to comments launches window 
+     * Link to comments launches window
      * Input test data into launches window
      *
      * @return void
@@ -603,57 +664,62 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $value = "#dynamictable > tbody > tr:nth-child(1) >".
                  " td:nth-child(11) > a:nth-child(1)";
         $this->webDriver->executescript(
-                "document.querySelector('$value').click()"
-            );
+            "document.querySelector('$value').click()"
+        );
         // click QC Comments button
         $value = "#image-2 > div > div > div.panel-body > div.row.mri-second".
               "-row-panel.col-xs-12 > a:nth-child(1) > span > span.hidden-xs";
         $this->webDriver->executescript(
-                "document.querySelector('$value').click()"
-            ); 
+            "document.querySelector('$value').click()"
+        );
         $oldWindow = $this->webDriver->getWindowHandle();
         $newWindow = $this->webDriver->switchTo()->window(
-               end($this->webDriver->getWindowHandles())
+            end($this->webDriver->getWindowHandles())
         );
         //Inputing test data into QC comment panel "Geometric distortion" with 'Good'
         $value1 = "body > div > form > h3:nth-child(1) > select";
         $newWindow->executescript(
-                "document.querySelector('$value1').value='Good'"
-            );
+            "document.querySelector('$value1').value='Good'"
+        );
         $value2 = "body>div:nth-child(2)>form:nth-child(2)>textarea:nth-child(2)";
         $newWindow->executescript(
-                "document.querySelector('$value2').value='Good'"
-            );
-        
+            "document.querySelector('$value2').value='Good'"
+        );
+
         //click save button
         $save = "body > div:nth-child(2) > form:nth-child(2) > input:nth-child(25)";
         $newWindow->executescript(
-                "document.querySelector('$save').click()"
-            );   
+            "document.querySelector('$save').click()"
+        );
         // click close this window button
         $value = "body > p > a";
         $newWindow->executescript(
-                "document.querySelector('$value').click()"
-            );
+            "document.querySelector('$value').click()"
+        );
         // click QC comment button again
         $value = ".mri-second-row-panel > a:nth-child(1) > span:nth-child(1)".
                  " > span:nth-child(2)";
         $this->webDriver->switchTo()->window($oldWindow)->executescript(
-                "document.querySelector('$value').click()"
-            );     
+            "document.querySelector('$value').click()"
+        );
+
         // check the result
-        sleep(20);
-// todo give a new value1
-        $text = $newWindow->executescript(
-             "return document.querySelector('$value1').value"
+        $newWindow = $this->webDriver->switchTo()->window(
+            end($this->webDriver->getWindowHandles())
         );
-        $this->assertEquals("Good", $text);        
-//todo give a new value2
-        $text = $newWindow->executescript(
-             "return document.querySelector('$value2').value"
+        $value1    = "body > div:nth-child(2) > form:nth-child(2) > h3:nth-child(1)".
+                  " > select:nth-child(1)";
+        $text      = $newWindow->executescript(
+            "return document.querySelector('$value1').value"
         );
-        $this->assertEquals("Good", $text);  
-         
+        $this->assertEquals("Good", $text);
+        $value2 = "body > div:nth-child(2) > form:nth-child(2)".
+                  " > textarea:nth-child(2)";
+        $text   = $newWindow->executescript(
+            "return document.querySelector('$value2').value"
+        );
+        $this->assertContains("Good", $text);
+
     }
 
 }
