@@ -314,8 +314,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$value').click()"
         );
         sleep(1);
-        $bodyText = $this->webDriver->getPageSource();
-        var_dump($bodyText);
         $value = "#bc2 > a:nth-child(3) > div";
         $text  = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
@@ -381,6 +379,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$value').click()"
         );
         sleep(1);
+        $bodyText = $this->webDriver->getPageSource();
+        var_dump($bodyText);
         $value = "#bc2 > a:nth-child(2) > div";
         $text  = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
