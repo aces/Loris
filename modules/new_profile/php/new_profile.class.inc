@@ -258,7 +258,7 @@ class New_Profile extends \NDB_Form
      */
     function _validate($values)
     {
-        $errors = array();     
+        $errors = array();
         $config =& \NDB_Config::singleton();
         $user   = \User::singleton();
         if ($values['dob1'] != $values['dob2']) {
