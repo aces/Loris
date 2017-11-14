@@ -259,10 +259,8 @@ class New_Profile extends \NDB_Form
     function _validate($values)
     {
         $errors = array();
-
         $config =& \NDB_Config::singleton();
         $user   = \User::singleton();
-
         if ($values['dob1'] != $values['dob2']) {
             $errors['dob1'] = 'Date of Birth fields must match.';
         }
