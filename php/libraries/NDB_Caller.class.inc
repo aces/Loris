@@ -67,13 +67,21 @@ class NDB_Caller
     *
     * @param string $test_name The object type to load.  The test_name of the
     *                          menu, form or instrument
-    * @param string $subtest   The subtest.  The page of the form or instrument.
+    * @param string $subtest   The subpage of the module to load.
+    * @param string $CommentID The CommentID identifier to load the page with
+    * @param string $nextpage  The page to go to after submitting this page (surveys
+    *                          only)
     * @param string $anonymous True if the user has not logged in.
     *
     * @return string rendered object, as html
     */
-    function load($test_name, $subtest, $CommentID='', $nextpage=null, $anonymous=true)
-    {
+    function load(
+        $test_name,
+        $subtest,
+        $CommentID='',
+        $nextpage=null,
+        $anonymous=true
+    ) {
         $factory  = NDB_Factory::singleton();
         $config   = $factory->config();
         $settings = $factory->settings();
