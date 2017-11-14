@@ -96,6 +96,8 @@ function _canRejectAccount($identifier)
         $config  = NDB_Config::singleton();
         $baseURL = $config->getSetting('url');
 
+        $redirect = $baseURL . "/user_accounts/";
+
     if (!_hasPerm()) {
         throw new LorisException(
             "You do not have the correct permissions for this 
