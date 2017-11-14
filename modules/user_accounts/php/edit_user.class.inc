@@ -46,32 +46,27 @@ class Edit_User extends \NDB_Form
         // create user object
         $editor = \User::singleton();
 
-        if ($this->page == 'edit_user') {
-            if (!$this->isCreatingNewUser()) {
-                $user = \User::factory($this->identifier);
-            }
-
-            if ($editor->hasPermission('user_accounts')) {
-                if ($editor->hasPermission('user_accounts_multisite')) {
-                    return true;
-                }
-
-                if ($this->isCreatingNewUser()) {
-                    return true;
-                }
-                return array_intersect(
-                    $user->getData('CenterIDs'),
-                    $editor->getData('CenterIDs')
-                ) == $user->getData(
-                    'CenterIDs'
-                );
-            }
-
-            return false;
+        if (!$this->isCreatingNewUser()) {
+            $user = \User::factory($this->identifier);
         }
 
-        // User can always access My Preferences page
-        return true;
+        if ($editor->hasPermission('user_accounts')) {
+            if ($editor->hasPermission('user_accounts_multisite')) {
+                return true;
+            }
+
+            if ($this->isCreatingNewUser()) {
+                return true;
+            }
+            return array_intersect(
+                $user->getData('CenterIDs'),
+                $editor->getData('CenterIDs')
+            ) == $user->getData(
+                'CenterIDs'
+            );
+        }
+
+        return false;
     }
 
     /**
@@ -252,224 +247,168 @@ class Edit_User extends \NDB_Form
             unset($values['Password_hash']);
         }
 
-        if ($this->page === 'edit_user') {
-            // multi-site UPDATE
-            $uid           = $user->getData('ID');
-            $us_curr_sites = $values['CenterIDs'];
-            if (!$this->isCreatingNewUser()) {
-                $DB->delete('user_psc_rel', array("UserID" => $uid));
-                foreach ($us_curr_sites as $site) {
-                    $DB->insert(
-                        'user_psc_rel',
-                        array(
-                         "UserID"   => $uid,
-                         "CenterID" => $site,
-                        )
-                    );
-                }
-            }
-            unset($values['CenterIDs']);
-            // END multi-site UPDATE
-
-            // EXAMINER UPDATE
-            // get all fields that are related to examiners
-            $ex_curr_sites  = array();
-            $ex_prev_sites  = array();
-            $ex_radiologist = 'N';
-            $ex_pending     = 'Y';
-
-            foreach ($values as $k => $v) {
-                //examiner fields
-                if (preg_match("/^ex_[0-9]+$/", $k)) {
-                    //get centerID
-                    $parse_key = explode('_', $k);
-                    $cid       = $parse_key[1];
-                    $ex_curr_sites[$k] = $cid;
-                }
-                if ($k === 'examiner_radiologist') {
-                    $ex_radiologist = $v;
-                }
-                if ($k === 'examiner_pending') {
-                    $ex_pending = $v;
-                }
-            }
-
-            // first check if an update is needed then actually do it
-            if (!empty($ex_radiologist)
-                && !empty($ex_pending)
-                && !empty($ex_curr_sites)
-            ) {
-                //modify examiner radiologist to be in the binary format 0-1
-                $ex_radiologist = $ex_radiologist === 'Y' ? 1:0;
-
-                $examinerID = $DB->pselect(
-                    "SELECT e.examinerID
-                     FROM examiners e
-                     WHERE e.full_name=:fn",
+        // multi-site UPDATE
+        $uid           = $user->getData('ID');
+        $us_curr_sites = $values['CenterIDs'];
+        if (!$this->isCreatingNewUser()) {
+            $DB->delete('user_psc_rel', array("UserID" => $uid));
+            foreach ($us_curr_sites as $site) {
+                $DB->insert(
+                    'user_psc_rel',
                     array(
-                     "fn" => $values['Real_name'],
+                     "UserID"   => $uid,
+                     "CenterID" => $site,
+                    )
+                );
+            }
+        }
+        unset($values['CenterIDs']);
+        // END multi-site UPDATE
+
+        // EXAMINER UPDATE
+        // get all fields that are related to examiners
+        $ex_curr_sites  = array();
+        $ex_prev_sites  = array();
+        $ex_radiologist = 'N';
+        $ex_pending     = 'Y';
+
+        foreach ($values as $k => $v) {
+            //examiner fields
+            if (preg_match("/^ex_[0-9]+$/", $k)) {
+                //get centerID
+                $parse_key = explode('_', $k);
+                $cid       = $parse_key[1];
+                $ex_curr_sites[$k] = $cid;
+            }
+            if ($k === 'examiner_radiologist') {
+                $ex_radiologist = $v;
+            }
+            if ($k === 'examiner_pending') {
+                $ex_pending = $v;
+            }
+        }
+
+        // first check if an update is needed then actually do it
+        if (!empty($ex_radiologist)
+            && !empty($ex_pending)
+            && !empty($ex_curr_sites)
+        ) {
+            //modify examiner radiologist to be in the binary format 0-1
+            $ex_radiologist = $ex_radiologist === 'Y' ? 1:0;
+
+            $examinerID = $DB->pselect(
+                "SELECT e.examinerID
+                 FROM examiners e
+                 WHERE e.full_name=:fn",
+                array(
+                 "fn" => $values['Real_name'],
+                )
+            );
+
+            // If examiner not in table add him,
+            // otherwise update the radiologist field and get the current sites
+            $values = \Utility::nullifyEmpty($values, 'examiner_radiologist');
+            if (empty($examinerID)) {
+
+                $DB->insert(
+                    'examiners',
+                    array(
+                     'full_name'   => $values['Real_name'],
+                     'radiologist' => $ex_radiologist,
+                     'userID'      => $uid,
+                    )
+                );
+                $examinerID = $examinerID = $DB->pselectOne(
+                    "SELECT examinerID
+                     FROM examiners
+                     WHERE full_name=:fullName",
+                    array('fullName' => $values['Real_name'])
+                );
+            } else {
+
+                $DB->update(
+                    'examiners',
+                    array(
+                     'radiologist' => $ex_radiologist,
+                     'userID'      => $uid,
+                    ),
+                    array(
+                     "full_name" => $values['Real_name'],
+                    )
+                );
+                $examinerID = $examinerID[0]['examinerID'];
+
+                //get existing sites for examiner
+                $prev_sites = $DB->pselect(
+                    "SELECT centerID
+                 FROM examiners_psc_rel epr
+                 WHERE examinerID=:eid",
+                    array("eid" => $examinerID)
+                );
+
+                //get sites where user is already an examiner at for compare
+                foreach ($prev_sites as $row => $center) {
+                    array_push($ex_prev_sites, $center['centerID']);
+                }
+            }
+
+            foreach ($ex_curr_sites as $k => $v) {
+
+                //Check if examiner already in db for site
+                $result = $DB->pselectRow(
+                    "SELECT epr.centerID
+                         FROM examiners_psc_rel epr 
+                         WHERE epr.examinerID=:eid AND epr.centerID=:cid",
+                    array(
+                     "eid" => $examinerID,
+                     "cid" => $v,
                     )
                 );
 
-                // If examiner not in table add him,
-                // otherwise update the radiologist field and get the current sites
-                $values = \Utility::nullifyEmpty($values, 'examiner_radiologist');
-                if (empty($examinerID)) {
-
+                // examiner was not previously added, add and set to active
+                if (empty($result)) {
                     $DB->insert(
-                        'examiners',
+                        'examiners_psc_rel',
                         array(
-                         'full_name'   => $values['Real_name'],
-                         'radiologist' => $ex_radiologist,
-                         'userID'      => $uid,
+                         'examinerID'       => $examinerID,
+                         'centerID'         => $v,
+                         'active'           => 'Y',
+                         'pending_approval' => $ex_pending,
                         )
-                    );
-                    $examinerID = $examinerID = $DB->pselectOne(
-                        "SELECT examinerID
-                         FROM examiners
-                         WHERE full_name=:fullName",
-                        array('fullName' => $values['Real_name'])
                     );
                 } else {
-
-                    $DB->update(
-                        'examiners',
-                        array(
-                         'radiologist' => $ex_radiologist,
-                         'userID'      => $uid,
-                        ),
-                        array(
-                         "full_name" => $values['Real_name'],
-                        )
-                    );
-                    $examinerID = $examinerID[0]['examinerID'];
-
-                    //get existing sites for examiner
-                    $prev_sites = $DB->pselect(
-                        "SELECT centerID
-                     FROM examiners_psc_rel epr
-                     WHERE examinerID=:eid",
-                        array("eid" => $examinerID)
-                    );
-
-                    //get sites where user is already an examiner at for compare
-                    foreach ($prev_sites as $row => $center) {
-                        array_push($ex_prev_sites, $center['centerID']);
-                    }
-                }
-
-                foreach ($ex_curr_sites as $k => $v) {
-
-                    //Check if examiner already in db for site
-                    $result = $DB->pselectRow(
-                        "SELECT epr.centerID
-                             FROM examiners_psc_rel epr 
-                             WHERE epr.examinerID=:eid AND epr.centerID=:cid",
-                        array(
-                         "eid" => $examinerID,
-                         "cid" => $v,
-                        )
-                    );
-
-                    // examiner was not previously added, add and set to active
-                    if (empty($result)) {
-                        $DB->insert(
-                            'examiners_psc_rel',
-                            array(
-                             'examinerID'       => $examinerID,
-                             'centerID'         => $v,
-                             'active'           => 'Y',
-                             'pending_approval' => $ex_pending,
-                            )
-                        );
-                    } else {
-                        $DB->update(
-                            'examiners_psc_rel',
-                            array(
-                             'active'           => 'Y',
-                             'pending_approval' => $ex_pending,
-                            ),
-                            array(
-                             'examinerID' => $examinerID,
-                             'centerID'   => $v,
-                            )
-                        );
-                    }
-                    unset($values[$k]);
-                }
-
-                //de-activate examiner if sites where no longer checked
-                $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
-
-                foreach ($ex_inactive as $cid) {
                     $DB->update(
                         'examiners_psc_rel',
-                        array("active" => 'N'),
+                        array(
+                         'active'           => 'Y',
+                         'pending_approval' => $ex_pending,
+                        ),
                         array(
                          'examinerID' => $examinerID,
-                         'centerID'   => $cid,
+                         'centerID'   => $v,
                         )
                     );
                 }
+                unset($values[$k]);
             }
-            unset($values['examiner_radiologist']);
-            unset($values['examiner_pending']);
-            //END EXAMINER UPDATE
-        }
 
-        // START NOTIFICATIONS UPDATE
-        if ($this->page==='my_preferences') {
-            // get current notifications for user
-            $curr_sub = \NDB_Notifier::getUserNotificationModuleServices(
-                $user->getData("ID")
-            );
+            //de-activate examiner if sites where no longer checked
+            $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
 
-            if (!$this->isCreatingNewUser()) {
-                // get notification details
-                foreach ($curr_sub as $module => $operations) {
-                    foreach ($operations as $operation => $services) {
-                        $module_id = \NDB_Notifier::getNotificationModuleID(
-                            $module,
-                            $operation
-                        );
-                        unset($services['desc']);
-                        foreach ($services as $service => $subscribed) {
-                            $service_id = \NDB_Notifier::getNotificationServiceID(
-                                $service
-                            );
-                            $var_name   = "notif_" . $module . "_"
-                                . $operation . "_" . $service;
-
-                            if ($values[$var_name] === 'on') {
-                                if ($subscribed === 'N') {
-                                    $DB->insert(
-                                        'users_notifications_rel',
-                                        array(
-                                         "module_id"  => $module_id,
-                                         "service_id" => $service_id,
-                                         "user_id"    => $user->getData("ID"),
-                                        )
-                                    );
-                                }
-                            } else {
-                                if ($subscribed === 'Y') {
-                                    $DB->delete(
-                                        'users_notifications_rel',
-                                        array(
-                                         "module_id"  => $module_id,
-                                         "service_id" => $service_id,
-                                         "user_id"    => $user->getData("ID"),
-                                        )
-                                    );
-                                }
-                            }
-                            unset($values[$var_name]);
-                        }
-                    }
-                }
+            foreach ($ex_inactive as $cid) {
+                $DB->update(
+                    'examiners_psc_rel',
+                    array("active" => 'N'),
+                    array(
+                     'examinerID' => $examinerID,
+                     'centerID'   => $cid,
+                    )
+                );
             }
         }
-        // END NOTIFICATIONS UPDATE
+        unset($values['examiner_radiologist']);
+        unset($values['examiner_pending']);
+        //END EXAMINER UPDATE
 
         // make the set
         foreach ($values as $key => $value) {
@@ -1154,73 +1093,12 @@ class Edit_User extends \NDB_Form
             array('UID' => $this->identifier)
         );
 
-        // If we are using PHP5.5+ and entry Password_has in the DB is not null
-        // use method password_verify to check if the password changed
-        if (function_exists('password_verify')
-            && !is_null($passwords['Password_hash'])
-        ) {
+        if (!is_null($passwords['Password_hash'])) {
             return !password_verify($newPassword, $passwords['Password_hash']);
-        } elseif (!function_exists('password_verify')
-            && !is_null($passwords['Password_hash'])
-        ) {
-            // If PHP version < 5.5, use old MD5Unsalt method to check for
-            // password change
-            return !\User::MD5Unsalt($newPassword, $passwords['Password_hash']);
         }
 
         return true;
     }
-
-    /**
-     * Validates the data entered in the form when editing one's preferences.
-     *
-     * @param array $values values the user entered in the form.
-     *
-     * @return array $errors all the errors found.
-     */
-    function _validateMyPreferences($values)
-    {
-        // create DB object
-        $DB     = \Database::singleton();
-        $errors = array();
-
-        // if password is user-defined, and user wants to change password
-        if (!empty($values['Password_hash'])) {
-            // check password strength
-            $isPasswordStrong = \User::isPasswordStrong(
-                $values['Password_hash'],
-                array(
-                 $values['__Confirm'],
-                 $this->identifier,
-                 $values['Email'],
-                ),
-                array(
-                 '==',
-                 '!=',
-                 '!=',
-                )
-            );
-            if (!$isPasswordStrong) {
-                $errors['Password_hash']
-                    = 'The password is weak, or the passwords do not match';
-            } else {
-                // New password must be different than current one
-                if (!$this->_passwordChanged($DB, $values['Password_hash'])) {
-                    $errors['Password_hash'] = 'New and old passwords '
-                        . 'are identical: please choose another one';
-                }
-            }
-        }
-
-        // Validate email
-        $emailError = $this->_getEmailError($DB, $values['Email']);
-        if (!is_null($emailError)) {
-            $errors['Email'] = $emailError;
-        }
-
-        return $errors;
-    }
-
 
     /**
      * Validates that en email address entered for a given user
