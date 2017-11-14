@@ -87,6 +87,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             )
         );
         $scan_types    =[];
+
         foreach ($scan_id_types as $scan) {
             $scan_types[$scan] = $scan;
         }
@@ -261,7 +262,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     */
     function _buildQuery($scan_type, $scan_done, $acqID)
     {
-
+        $db =& Database::singleton();
         // joins tarchive, files and mri_violated_scans to
         // Session table and then filters out
         // the "normal" cases:
@@ -271,6 +272,25 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         //    2) No Data - MRI PF Incomplete, No scan in browser,
         //       No DICOM.
 
+        $all_tarchive_values = $db->pselect(
+            "SELECT t.TarchiveID FROM tarchive t",
+            array()
+        );
+
+        foreach ($all_tarchive_values as $row) {
+            $type = $row['TarchiveID'];
+            $tarchive_list[$row['TarchiveID']] = $type;
+        }
+
+        // returns an associative array where the tarchiveID is the key
+        // and the value is an array of all the protocols corresponding to
+        // each tarchive file related to the specific tarchiveID
+        foreach($tarchive_list as $ID => $tarchiveID) {
+            $protocols_per_tarchive[$ID] = $this->_getAllProtocolNamesArray($ID);
+        }
+
+
+
         $select =  "  SELECT DISTINCT
                    c.PSCID,
                    s.ID as SessionID,
@@ -278,7 +298,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                    (SELECT name FROM psc WHERE CenterID=s.CenterID) as site,
                    s.Visit_label as visit_label,
                    '".$scan_type."' as scan_type,
-                   '".$this->_getAllProtocolNamesArray('t.tarchiveID')."' as all_protocols,
                    (SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project,
                    (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID) as subproject,
                    CASE
@@ -291,8 +310,11 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                       ELSE 'No'
                    END as scan_done,
                    CASE 
-                     WHEN t.TarchiveID IS NOT NULL THEN 'In DICOM' 
-                     ELSE 'Missing'
+                      WHEN EXISTS (SELECT ts.TarchiveSeriesID
+                                  FROM tarchive_series ts
+                                  LEFT JOIN tarchive t ON (t.SessionID=sess AND t.TarchiveID=tf.TarchiveID)
+                                  WHERE ((tf.SeriesDescription LIKE 't1_%' OR tf.SeriesDescription LIKE 't2_%'))
+                     ) THEN 'In DICOM' ELSE 'Missing'
                    END as tarchive_loc,
                    CASE 
                       WHEN (fi.fileID IS NULL AND mvl.PatientName IS NULL) THEN 'Missing'
@@ -305,9 +327,11 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                    END as selected,
                    qc.QCStatus as qc_status,
                    mu.uploadedBy as uploaded_by,
-                   f.CommentID as CommentID,
-                   t.tarchiveID as tarchiveID ";
-            
+                   t.TarchiveID as tarchiveID, 
+                   f.CommentID as CommentID ";
+        
+            print_r($select);
+
             $joins = " FROM flag f
             LEFT JOIN session s ON (f.SessionID=s.ID)
             LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
@@ -339,7 +363,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     function _setFilterForm()
     {
         $user      =& User::singleton();
-        $db        = Database::singleton();
+        $db        =& Database::singleton();
         $siteList  = array();
         $visitList = Utility::getVisitList();
         // allow to view all sites data through filter
@@ -408,7 +432,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 
         $db =& Database::singleton();
 
-       //print_r($this->_getAllProtocolNamesArray('483'));
+       //print_r($this->_getAllProtocolNamesArray('4000013'));
 
         $scan_types = $this->_getScanTypes();
         foreach ($scan_types as $scan_type) {
@@ -436,6 +460,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 
         $this->query = " FROM ( " . $query . " ) as tmp";
 
+
         $this->columns = [
                           'PSCID',
                           'SessionID',
@@ -445,7 +470,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                           'subproject',
                           'visit_label',
                           'scan_type',
-                          'all_protocols',
                           'mri_parameter_form',
                           'scan_done',
                           'tarchive_loc',
@@ -465,7 +489,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             subproject,
             visit_label,
             scan_type,
-            all_protocols,
             mri_parameter_form,
             scan_done,
             tarchive_loc,
@@ -487,7 +510,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                           'Subproject',
                           'Visit Label',
                           'Scan Type',
-                          'All Protocols',
                           'MRI Parameter Form',
                           'Scan Done in MRI PF',
                           'Tarchive',
