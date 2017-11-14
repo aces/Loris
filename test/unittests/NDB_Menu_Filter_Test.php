@@ -36,7 +36,8 @@ class NDB_Menu_Filter_Test extends PHPUnit_Framework_TestCase
     function testResetFilters() {
         $method = array('_resetFilters');
         $allOtherMethods = $this->_getAllMethodsExcept($method);
-        $stub = $this->getMock('NDB_Menu_Filter', $this->_getAllMethodsExcept($method));
+        $stub = $this->getMockBuilder('NDB_Menu_Filter', $this->_getAllMethodsExcept($method))->disableOriginalConstructor()->getMock();
+        $stub->form = new LorisForm();
 
         // Reset calls
         $this->Session->expects($this->exactly(2))
@@ -58,7 +59,7 @@ class NDB_Menu_Filter_Test extends PHPUnit_Framework_TestCase
     function testSetSearchKeyword() {
         $method = array('_setSearchKeyword');
         $allOtherMethods = $this->_getAllMethodsExcept($method);
-        $stub = $this->getMock('NDB_Menu_Filter', $this->_getAllMethodsExcept($method));
+        $stub = $this->getMockBuilder('NDB_Menu_Filter', $this->_getAllMethodsExcept($method))->disableOriginalConstructor()->getMock();
 
         $stub->_setSearchKeyword('abc');
 
@@ -80,7 +81,7 @@ class NDB_Menu_Filter_Test extends PHPUnit_Framework_TestCase
     function testSetFilters() {
         $method = array('_setFilters');
         $allOtherMethods = $this->_getAllMethodsExcept($method);
-        $stub = $this->getMock('NDB_Menu_Filter', $this->_getAllMethodsExcept($method));
+        $stub = $this->getMockBuilder('NDB_Menu_Filter', $this->_getAllMethodsExcept($method))->disableOriginalConstructor()->getMock();
 
         $stub->form = new LorisForm('filter');
         $stub->form->applyFilter('__ALL__', 'trim');
@@ -132,7 +133,7 @@ class NDB_Menu_Filter_Test extends PHPUnit_Framework_TestCase
     function testSetFilterSortOrder() {
         $method = array('_setFilterSortOrder');
         $allOtherMethods = $this->_getAllMethodsExcept($method);
-        $stub = $this->getMock('NDB_Menu_Filter', $this->_getAllMethodsExcept($method));
+        $stub = $this->getMockBuilder('NDB_Menu_Filter', $this->_getAllMethodsExcept($method))->disableOriginalConstructor()->getMock();
 
         $stub->headers = array('FakeField', "FakeField2");
         $stub->formToFilter = array(
