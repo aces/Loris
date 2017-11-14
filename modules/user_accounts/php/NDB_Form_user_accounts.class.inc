@@ -216,6 +216,13 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
         unset($values['permID']);
 
+        // store the role IDs
+        $roleIDs = array();
+        if (!empty($values['roleID'])) {
+            $roleIDs = $values['roleID'];
+        }
+        unset($values['roleID']);
+
         // store whether to send an email or not
         if (!empty($values['SendEmail'])) {
             $send = $values['SendEmail'];
@@ -569,6 +576,24 @@ class NDB_Form_User_Accounts extends NDB_Form
             if (!empty($permIDs)) {
                 $user->addPermissions($permIDs);
             }
+
+            // Update roles
+            $userID = $user->getData('ID');
+
+            $DB->delete(
+                'users_permission_categories_rel',
+                array('user_id' => $userID)
+            );
+
+            foreach ($roleIDs as $roleID) {
+                $DB->insert(
+                    'users_permission_categories_rel',
+                    array(
+                     'user_id'                => $userID,
+                     'permission_category_id' => $roleID,
+                    )
+                );
+            }
         }
 
         // send the user an email
@@ -817,44 +842,10 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         // checking if the account can be rejected (no password hash
         // pending approval)
-        $this->tpl_data['can_reject'] =$this->_canRejectAccount($this->identifier);
-
-        // get the editor's permissions
-
-        $perms    = $editor->getPermissionsVerbose();
-        $lastRole = '';
-        foreach ($perms as $row) {
-            if ($row['type'] != $lastRole) {
-                $lastRole = $row['type'];
-                $group[]  = $this->form->createElement(
-                    'static',
-                    null,
-                    null,
-                    '</div>'
-                    . "<h3 id=\"header_$lastRole\" "
-                    . "class=\"perm_header button\" "
-                    . "style=\"text-align: center; margin-top: 5px;\">"
-                    .ucwords($row['type'])
-                    . '</h3>'
-                    . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">"
-                );
-            }
-
-            // If the user is editing his/her own account, disable all permission
-            // checkboxes. Note that they will not be submitted when the form is
-            // saved
-            $attribs = array("class" => "perm_$lastRole");
-            if ($this->_isEditingOwnAccount()) {
-                $attribs['disabled'] = true;
-            }
-            $group[] = $this->createCheckbox(
-                'permID['.$row['permID'].']',
-                htmlspecialchars($row['description']) . "<br>",
-                $attribs
-            );
+        if (!$this->isCreatingNewUser()) {
+            $this->tpl_data['can_reject']
+                = $this->_canRejectAccount($this->identifier);
         }
-        $this->addGroup($group, 'PermID_Group', 'Permissions', "", false);
-        unset($group);
 
         //getting users name and emails to create checkboxes
         // to email supervisors on permissions changes
@@ -890,20 +881,6 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         $this->addGroup($group, 'Supervisors_Group', 'Supervisors', "", false);
         unset($group);
-
-        if (!$this->isCreatingNewUser()) {
-            $user = User::factory($this->identifier);
-
-            // add hidden permissions if editor has less permissions than user
-            // being edited
-            $permDiff = array_diff(
-                $user->getPermissionIDs(),
-                $editor->getPermissionIDs()
-            );
-            foreach ($permDiff as $permID) {
-                $this->addHidden("permID[$permID]", 1);
-            }
-        }
 
         //------------------------------------------------------------
 
@@ -1219,15 +1196,17 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
 
         // if password is generated then the email user button should be clicked
-        if ($values['NA_Password'] == "on" && $values['SendEmail'] != "on") {
-            $errors['Email_Group']
-                = 'When generating a new password, '
-                . 'please notify the user by checking Send email to user box';
-        }
+        if (isset($values['NA_Password'])) {
+            if ($values['NA_Password'] == "on" && $values['SendEmail'] != "on") {
+                $errors['Email_Group']
+                    = 'When generating a new password, '
+                    . 'please notify the user by checking Send email to user box';
+            }
 
-        if ($values['NA_Password'] == 'on' && $values['Password_hash'] != '') {
-            $errors['Password_Group'] = 'You must leave the password field empty '
-                . 'if you want the system to generate one for you';
+            if ($values['NA_Password'] == 'on' && $values['Password_hash'] != '') {
+                $errors['Password_Group'] = 'You must leave the password field empty'
+                    . ' if you want the system to generate one for you';
+            }
         }
 
         if (is_null($this->identifier)
@@ -1439,6 +1418,22 @@ class NDB_Form_User_Accounts extends NDB_Form
             list(,$description) = each($permission[0]);
         }
         return $permission;
+    }
+
+    /**
+     * Get javascript dependencies
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . "/user_accounts/js/permissions.js"]
+        );
     }
 }
 ?>

@@ -105,11 +105,14 @@ class UserPermissions
     /**
      * Determines if the user has a permission
      *
-     * @param string $code The permission code
+     * @param string $code            The permission code
+     * @param bool   $superuserIgnore Flag to check if the user actually has a
+     *                                certain permission, ignoring the superuser
+     *                                override
      *
      * @return bool
      */
-    function hasPermission($code)
+    function hasPermission($code, $superuserIgnore = false)
     {
         if (!isset($this->permissions[$code])) {
             throw new ConfigurationException("Invalid permission code $code");
@@ -118,10 +121,12 @@ class UserPermissions
             return true;
         }
 
-        if (isset($this->permissions['superuser'])
-            && $this->permissions['superuser'] == true
-        ) {
-            return true;
+        if (!$superuserIgnore) {
+            if (isset($this->permissions['superuser'])
+                && $this->permissions['superuser'] == true
+            ) {
+                return true;
+            }
         }
         return false;
     }
