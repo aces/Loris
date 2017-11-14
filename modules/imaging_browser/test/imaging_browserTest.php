@@ -440,11 +440,11 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                  " div.panel-heading.clearfix > input"
              )
          )->click();
-
+         sleep(1);
          $this->safeFindElement(
              WebDriverBy::ID("bbonly")
          )->click();
-         sleep(2);
+         sleep(1);
          $newWindow = $this->webDriver->switchTo()->window(
              end($this->webDriver->getWindowHandles())
          );
@@ -479,7 +479,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$value').click()"
         );
-        sleep(2);
+        sleep(1);
         $newWindow = $this->webDriver->switchTo()->window(
             end($this->webDriver->getWindowHandles())
         );
@@ -621,7 +621,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$link').click()"
         );
-        sleep(1);
+        sleep(2);
         //$newWindow = $this->webDriver->switchTo()->window(
         //       end($this->webDriver->getWindowHandles())
         //);
