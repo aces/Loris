@@ -315,8 +315,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
         sleep(1);
         $bodyText = $this->webDriver->getPageSource();
-        $value = "#bc2 > a:nth-child(3) > div";
-        $text  = $this->webDriver->executescript(
+        $value    = "#bc2 > a:nth-child(3) > div";
+        $text     = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
         );
         $this->assertContains("View Session", $text);
@@ -381,8 +381,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
         sleep(1);
         $bodyText = $this->webDriver->getPageSource();
-        $value = "#bc2 > a:nth-child(2) > div";
-        $text  = $this->webDriver->executescript(
+        $value    = "#bc2 > a:nth-child(2) > div";
+        $text     = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
         );
         $this->assertContains(" Imaging  Browser", $text);
@@ -474,16 +474,16 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$value').click()"
         );
         //click Vist Level Feedback
-        $value = "#sidebar-content > div.visit-level-feedback > a";
+        $value      = "#sidebar-content > div.visit-level-feedback > a";
         $oldWindows = $this->webDriver->getWindowHandle();
         $this->webDriver->executescript(
             "document.querySelector('$value').click()"
         );
         sleep(1);
-        $newWindow  = $this->webDriver->switchTo()->window(
+        $newWindow = $this->webDriver->switchTo()->window(
             end($this->webDriver->getWindowHandles())
         );
-        $value      = "body > div > form > textarea";
+        $value     = "body > div > form > textarea";
         $newWindow->executescript(
             "document.querySelector('$value').value='test feedback'"
         );
