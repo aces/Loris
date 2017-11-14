@@ -444,7 +444,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
          $this->safeFindElement(
              WebDriverBy::ID("bbonly")
          )->click();
-         sleep(1);
+         sleep(2);
          $newWindow = $this->webDriver->switchTo()->window(
              end($this->webDriver->getWindowHandles())
          );
@@ -479,7 +479,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$value').click()"
         );
-        sleep(1);
+        sleep(2);
         $newWindow = $this->webDriver->switchTo()->window(
             end($this->webDriver->getWindowHandles())
         );
@@ -533,7 +533,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$value').click()"
         );
-        sleep(1);
+        sleep(2);
         $value = "#bc2 > a:nth-child(2) > div";
         $this->webDriver->executescript(
             "document.querySelector('$value').click()"
@@ -650,6 +650,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('#sidebar-content >".
              " div.div-controlpanel-bottom > div > input').click()"
         );
+        sleep(1);
         $text = $this->webDriver->executescript(
             "return document.querySelector('$ui').value"
         );
