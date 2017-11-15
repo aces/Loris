@@ -11,7 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
+namespace LORIS\training;
 /**
  * Training module: Allows examiners to undergo training in order
  * to receive certification to administer an instrument.
@@ -24,7 +24,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class NDB_Form_Training extends NDB_Form
+class Training extends \NDB_Form
 {
     /**
      * Checks if the user has access to examiner forms (edit_examiner and training)
@@ -33,22 +33,28 @@ class NDB_Form_Training extends NDB_Form
      */
     function _hasAccess()
     {
-        $user = User::singleton();
+        $user = \User::singleton();
         return $user->hasPermission('training');
     }
-
     /**
-     * Construct the template variables for the training page.
-     *
-     * @return void
-     */
-    function training()
+    * Loads the project page.
+    *
+    * @param string $name       The test name being accessed
+    * @param string $page       The subtest being accessed (may be null)
+    * @param string $identifier The identifier for the data to load on this page
+    * @param string $commentID  The CommentID to load the data for
+    * @param string $formname   The name to give this form
+    *
+    * @return none
+    */
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
         $instruments = $this->getCertificationInstruments();
 
         $certifications = array();
 
-        $user         = User::singleton();
+        $user         = \User::singleton();
         $userFullName = $user->getFullname();
         $userSite     = $user->getCenterIDs();
 
@@ -87,7 +93,7 @@ class NDB_Form_Training extends NDB_Form
      */
     function isExaminer($fullName, $site)
     {
-        $DB         = Database::singleton();
+        $DB         = \Database::singleton();
         $examinerID = $DB->pselectOne(
             "SELECT examinerID 
              FROM examiners
@@ -110,14 +116,14 @@ class NDB_Form_Training extends NDB_Form
      */
     function getCertificationInstruments()
     {
-        $config = NDB_Config::singleton();
-        $DB     = Database::singleton();
+        $config = \NDB_Config::singleton();
+        $DB     = \Database::singleton();
 
         // Get the instruments requiring certification from the config
         $certificationConfig      = $config->getSetting("Certification");
         $certificationInstruments = $certificationConfig['CertificationInstruments'];
         $certificationInstruments['test']
-            = Utility::toArray($certificationInstruments['test']);
+            = \Utility::toArray($certificationInstruments['test']);
         $instruments = array();
 
         foreach ($certificationInstruments['test'] as $certificationInstrument) {
@@ -143,11 +149,11 @@ class NDB_Form_Training extends NDB_Form
      */
     function getCertificationStatus($instrumentID)
     {
-        $user         = User::singleton();
+        $user         = \User::singleton();
         $userFullName = $user->getFullname();
         $userCenter   = $user->getCenterIDs();
 
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
         $certificationStatus = $DB->pselectOne(
             "SELECT c.pass
              FROM certification c
@@ -174,7 +180,7 @@ class NDB_Form_Training extends NDB_Form
      */
     function getTrainingContentStatus($instrumentID)
     {
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
 
         $trainingContent = $DB->pselectOne(
             "SELECT certification_training.TestID
@@ -197,7 +203,7 @@ class NDB_Form_Training extends NDB_Form
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
@@ -215,7 +221,7 @@ class NDB_Form_Training extends NDB_Form
      */
     function getCSSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getCSSDependencies();
         return array_merge(
