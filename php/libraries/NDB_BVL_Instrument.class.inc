@@ -311,6 +311,26 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
+     * Sets up basic data, such as the HTML_Quickform object, and so on.
+     *
+     * @param string $commentID The CommentID identifying the data to load
+     * @param string $page      If a multipage form, the page to show
+     *
+     * @return   void
+     * @access   public
+     * @abstract
+     */
+    /*
+    function setup($commentID = null, $page = null)
+    {
+
+        $this->commentID = $commentID;
+        $this->page = $page;
+        $this->form = new \LorisForm('test_form');
+    }
+     */
+
+    /**
      * Method to compute scores - by default will run a script named
      * after the testName in the instrument directory if it exists,
      * but any instrument with a scoring algorithm to implement can override
@@ -2366,6 +2386,12 @@ class NDB_BVL_Instrument extends NDB_Page
                         if (isset($el['elements'][0]['label'])) {
                             $el['label'] = $el['elements'][0]['label'];
                         }
+                        //unset($el['elements']);
+                        //unset($el['delimiter']);
+                        //$label = $el['label'];
+                        //$el = $this->_toJSONParseSmarty($el['elements'][0]);
+                        //$el['label'] = $label;
+                        //$el = $this->_toJSONParseSmarty($el);
                     }
                 };
                 array_map($mapFunc, $formArray['elements']);
