@@ -145,6 +145,7 @@ class NDB_BVL_Instrument extends NDB_Page
     var $WrapperTextElements           = array();
     var $WrapperNumericElements        = array();
     var $WrapperDateWithStatusElements = array();
+
     /**
      * Factory generates a new instrument instance of type
      * $instrument, and runs the setup() method on that new
@@ -320,15 +321,11 @@ class NDB_BVL_Instrument extends NDB_Page
      * @access   public
      * @abstract
      */
-    /*
     function setup($commentID = null, $page = null)
     {
-
         $this->commentID = $commentID;
-        $this->page = $page;
-        $this->form = new \LorisForm('test_form');
+        $this->page      = $page;
     }
-     */
 
     /**
      * Method to compute scores - by default will run a script named

@@ -131,8 +131,8 @@ class Module
     {
         $className = "\LORIS\\" . $this->name . "\\$page";
 
-        $identifier = isset($_REQUEST['identifier']) ? $_REQUEST['identifier'] : '';
-        $commentID  = isset($_REQUEST['commentID']) ? $_REQUEST['commentID'] : '';
+        $identifier = $_REQUEST['identifier'] ?? '';
+        $commentID  = $_REQUEST['commentID'] ?? '';
         $cls        = new $className($this, $page, $identifier, $commentID, $page);
         // Smarty needs the Module name as a parameter to autoload the right
         // templates. Every type of page uses this.
