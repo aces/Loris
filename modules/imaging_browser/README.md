@@ -5,6 +5,9 @@
 The imaging browser is intended to allow users to view candidate
 scan sessions collected for a study.
 
+It is used primarily by imaging specialists to do online QC of
+imaging data that has been inserted into LORIS.
+
 ## Scope
 
 The imaging browser displays images processed images which meet the
