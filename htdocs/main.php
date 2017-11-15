@@ -212,7 +212,7 @@ try {
 } finally {
     // Set dependencies if they are not set
     if (!isset($tpl_data['jsfiles']) || !isset($tpl_data['cssfiles'])) {
-        $page = new NDB_Page();
+        $page = (new NDB_Page(new Module(""), '', '', '', ''));
         $tpl_data['jsfiles']  = $page->getJSDependencies();
         $tpl_data['cssfiles'] = $page->getCSSDependencies();
     }

@@ -133,6 +133,8 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function setup()
     {
+        parent::setup();
+
         // setup the menu's variables
         $success = $this->_setupVariables();
 
@@ -145,7 +147,6 @@ class NDB_Menu_Filter extends NDB_Menu
         }
 
         // start the filter form
-        $this->_setupPage($this->menu, null, null, null, 'filter');
         $this->registerDefaultFilter();
 
         // $this->form = new HTML_QuickForm('filter');
@@ -715,7 +716,7 @@ class NDB_Menu_Filter extends NDB_Menu
         );
 
         // dump the html for the menu
-        $smarty = new Smarty_neurodb($this->Module);
+        $smarty = new Smarty_neurodb($this->Module->getName());
         $smarty->assign('mode', $this->mode);
         $smarty->assign('form', $this->form->toArray());
         $smarty->assign($this->getTemplateData());

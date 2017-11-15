@@ -145,6 +145,7 @@ class NDB_BVL_Instrument extends NDB_Page
     var $WrapperTextElements           = array();
     var $WrapperNumericElements        = array();
     var $WrapperDateWithStatusElements = array();
+
     /**
      * Factory generates a new instrument instance of type
      * $instrument, and runs the setup() method on that new
@@ -184,7 +185,13 @@ class NDB_BVL_Instrument extends NDB_Page
         if (file_exists($base."project/instruments/$instrument.linst")
         ) {
             include_once 'NDB_BVL_Instrument_LINST.class.inc';
-            $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST();
+            $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST(
+                new Module($instrument),
+                $page,
+                $commentID,
+                $commentID,
+                'test_form'
+            );
         } else {
             if (!class_exists($class)
                 && ($guarantee_exists === true
@@ -196,8 +203,13 @@ class NDB_BVL_Instrument extends NDB_Page
                 include_once $base."project/instruments/$class.class.inc";
             }
             // Now go ahead and instantiate it
-            $obj = new $class;
-            // Now go ahead and instantiate it
+            $obj = new $class(
+                new Module($instrument),
+                $page,
+                $commentID,
+                $commentID,
+                'test_form'
+            );
         }
 
         // if a script is loading this form without a commentID, display all fields
@@ -311,7 +323,8 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function setup($commentID = null, $page = null)
     {
-        $this->_setupPage(null, $page, null, $commentID, 'test_form');
+        $this->commentID = $commentID;
+        $this->page      = $page;
     }
 
     /**
