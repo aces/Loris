@@ -614,6 +614,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$value').click()"
         );
         sleep(1);
+        $bodyText = $this->webDriver->getPageSource();
+        var_dump($bodyText);
         // test Caveat link
         $link = "#image-2 > div > div > div.panel-body > div:nth-child(1)>".
                 " div.col-xs-3.mri-right-panel > div > div:nth-child(3) > label > a";
