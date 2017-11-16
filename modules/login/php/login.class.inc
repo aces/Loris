@@ -40,6 +40,8 @@ class Login extends \NDB_Page
     /**
      * The constructor for login creates some basic tpl variables that are
      * used in the login template.
+     *
+     * @return none
      */
     function setup()
     {
