@@ -329,8 +329,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                    mu.uploadedBy as uploaded_by,
                    t.TarchiveID as tarchiveID, 
                    f.CommentID as CommentID ";
-        
-            print_r($select);
+
 
             $joins = " FROM flag f
             LEFT JOIN session s ON (f.SessionID=s.ID)
