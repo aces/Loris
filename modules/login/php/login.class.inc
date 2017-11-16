@@ -41,7 +41,7 @@ class Login extends \NDB_Page
      * The constructor for login creates some basic tpl variables that are
      * used in the login template.
      */
-    function __construct()
+    function setup()
     {
         $login = $_SESSION['State']->getProperty('login');
         if (!empty($login->_lastError)) {

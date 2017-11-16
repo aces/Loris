@@ -41,7 +41,7 @@ class PasswordReset extends \NDB_Form
      *
      * @return none
      */
-    function commonPageSetup()
+    function setup()
     {
         $this->addBasicText("username", "");
     }

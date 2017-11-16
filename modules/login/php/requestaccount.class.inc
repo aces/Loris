@@ -36,12 +36,11 @@ class RequestAccount extends \NDB_Form
     }
 
     /**
-     * CommonPageSetup sets up the common form elements which
-     * are on the page, regardless of HTTP request method.
+     * Sets up the form elements on the page.
      *
      * @return none
      */
-    function commonPageSetup()
+    function setup()
     {
         $this->addBasicText(
             "firstname",
