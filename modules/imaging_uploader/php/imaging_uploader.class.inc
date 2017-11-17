@@ -124,7 +124,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                            'N' => 'No',
                            'Y' => 'Yes',
                           ];
-        $visitlabels    = Utility::getExistingVisitLabels();
+        $visitlabels    = \Utility::getExistingVisitLabels();
 
         $this->IDs = $this->getCandidateIDs();
         $pscids    = array();
@@ -711,8 +711,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      */
     function getCandidateIDs()
     {
-        $db   = Database::singleton();
-        $user = User::singleton();
+        $db   = \Database::singleton();
+        $user = \User::singleton();
         $IDs  = $db->pselect(
             "SELECT PSCID, CandID ".
             "FROM candidate ".
