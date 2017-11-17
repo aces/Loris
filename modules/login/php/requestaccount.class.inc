@@ -84,7 +84,7 @@ class RequestAccount extends \NDB_Form
         // "name must be at least 3 characters" check removed, because some
         // people don't have three character long names..) The "required" checks
         // should probably be replaced with a required rule.
-        if (empty($values['firstname']) || $values['firstname'] == 'Bob') {
+        if (empty($values['firstname'])) {
             $errors['firstname'] = "First name is required!";
         }
         if (empty($values['lastname'])) {
