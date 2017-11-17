@@ -26,14 +26,9 @@ before_install:
     - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
 
 install:
-    # Install composer modules
-    - composer install
-    - composer require --dev
-    - phpenv rehash
-
-
-    # Install node modules specified in package.json
     - npm install
+    - make dev
+    - phpenv rehash
 
     # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
