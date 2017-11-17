@@ -101,8 +101,4 @@ if (!file_exists($FullPath)) {
     exit(5);
 }
 
-if ($anonymous === false) {
-    $user =& User::singleton($_SESSION['State']->getUsername());
-}
 require $FullPath;
-?>
