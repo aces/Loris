@@ -48,11 +48,11 @@ class NDB_Menu_Filter_Mri_Protocol_Check_Violations extends NDB_Menu_Filter
     function _setupVariables()
     {
         $UID = $_GET["SeriesUID"];
-        //preventing SQL injection -- UID only takes number and dot 
+        //preventing SQL injection -- UID only takes number and dot
         $pattern = "/^\d[0-9\.]+/";
-        $uid = array();
-        $match = preg_match($pattern, $UID,$uid);      
-         
+        $uid     = array();
+        $match   = preg_match($pattern, $UID, $uid);
+
         if ($match == 1) {
 
             $this->query = " FROM mri_violations_log l LEFT JOIN mri_scan_type m
