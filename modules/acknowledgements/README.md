@@ -1,6 +1,6 @@
 The purpose of the Acknowledgement Generator is to aid in dynamically generating an appropriate list of people to acknowledge for any given publication.
 
-The code for the public side of things can be found under `htdocs/acknowledgements/`.
+The code for the public side of things can be found within `htdocs/acknowledgements/acknowledgements.php`.
 
 Example public facing link: `https://<YOUR-BASE-STUDY-URL>/acknowledgements/acknowledgements.php?date=2017-11-17`
 
