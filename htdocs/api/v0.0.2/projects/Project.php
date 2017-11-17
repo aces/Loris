@@ -71,7 +71,7 @@ class Project extends \Loris\API\APIBase
         $this->bVisits            = $bVisits;
 
         try {
-            $this->project = $this->Factory->project($projectName);
+            $this->_project = $this->Factory->project($projectName);
         } catch (\LorisException $e) {
             // This projectName does not exists
             $this->header("HTTP/1.1 404 Not Found");
@@ -94,12 +94,12 @@ class Project extends \Loris\API\APIBase
         }
         $JSONArray = [
                       "Meta" => [
-                                 "Project" => $this->project->getName(),
+                                 "Project" => $this->_project->getName(),
                                 ],
                      ];
 
         if ($this->bCandidates) {
-            $JSONArray['Candidates'] = $this->project->getCandidateIds();
+            $JSONArray['Candidates'] = $this->_project->getCandidateIds();
         }
 
         if ($this->bInstruments) {
@@ -136,7 +136,7 @@ class Project extends \Loris\API\APIBase
         }
 
         if ($this->bVisits) {
-            $Visits     = \Utility::getExistingVisitLabels($this->project->getId());
+            $Visits     = \Utility::getExistingVisitLabels($this->_project->getId());
             $VisitNames = array_keys($Visits);
 
             $JSONArray['Visits'] = $VisitNames;

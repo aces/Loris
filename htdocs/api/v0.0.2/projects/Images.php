@@ -10,10 +10,10 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-namespace Loris\API;
-set_include_path(get_include_path() . ":" . __DIR__);
+namespace Loris\API\Projects;
+//Load config file and ensure paths are correct
+set_include_path(get_include_path() . ":" . __DIR__ . "/../");
 require_once 'APIBase.php';
-
 /**
  * Class to handle a request to the candidates portion of the Loris API
  *
@@ -23,9 +23,10 @@ require_once 'APIBase.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Images extends APIBase
+class Images extends \Loris\API\APIBase
 {
     var $RequestData;
+    private $_project;
 
     /**
      * Create a Candidates request handler
@@ -39,7 +40,16 @@ class Images extends APIBase
             'GET',
         );
 
-        $this->RequestData['since'] = $data['since'] ?? '1970-01-01 00:00:01';
+        $projectName = $data['project_name'];
+        try {
+            $this->_project = parent->Factory->project($projectName);
+        } catch (\LorisException $e) {
+            $this->header("HTTP/1.1 404 Not Found");
+            $this->error(['error' => 'Invalid project']);
+            $this->safeExit(0);
+        }
+
+        $this->RequestData['since']        = $data['since'] ?? '1970-01-01 00:00:01';
 
         if (strtotime($this->RequestData['since']) === false) {
             $this->header("HTTP/1.1 400 Bad Request");
@@ -59,12 +69,19 @@ class Images extends APIBase
     function calculateETag()
     {
         $ETagCriteria = $this->DB->pselectRow(
-            "SELECT MAX(InsertTime) as Time,
+            "SELECT MAX(f.InsertTime) as Time,
                     COUNT(1) as NumImages
-             FROM files
+             FROM files f
+             JOIN session s ON (f.SessionID = s.ID)
+             JOIN candidate c USING (CandID)
+             JOIN Project p USING (ProjectID)
              WHERE
-                  InsertTime > :v_time",
-            array('v_time' => strtotime($this->RequestData['since']) ?? 0)
+                  f.InsertTime > :v_time AND
+                  p.Name = :v_project_name",
+            array(
+                'v_time' => strtotime($this->RequestData['since']) ?? 0,
+                'v_project_name' => $this->_project->getName()
+            )
         );
         return md5(
             'Images:'
