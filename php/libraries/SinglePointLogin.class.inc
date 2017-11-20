@@ -192,7 +192,7 @@ class SinglePointLogin
     function save()
     {
         // get saved data to pre-populate form
-        $user =& User::factory($_POST['username']);
+        $user = User::factory($_POST['username']);
 
         // get user's data
         $data = $user->getData();
@@ -415,7 +415,7 @@ class SinglePointLogin
             $oldhash = $row['Password_hash'];
             if (password_verify($password, $oldhash)) {
                 if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
-                    $user =& User::factory($username);
+                    $user = User::factory($username);
                     $user->updatePassword($password);
                 }
 
