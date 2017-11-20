@@ -133,6 +133,8 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function setup()
     {
+        parent::setup();
+
         // setup the menu's variables
         $success = $this->_setupVariables();
 
@@ -145,7 +147,6 @@ class NDB_Menu_Filter extends NDB_Menu
         }
 
         // start the filter form
-        $this->_setupPage($this->menu, null, null, null, 'filter');
         $this->registerDefaultFilter();
 
         // $this->form = new HTML_QuickForm('filter');
@@ -221,8 +222,6 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function _setFilters($values)
     {
-        $filters = $this->formToFilter;
-
         $newFormFilters = array();
 
         // Go through the form's fields and set the valid ones.
@@ -717,7 +716,7 @@ class NDB_Menu_Filter extends NDB_Menu
         );
 
         // dump the html for the menu
-        $smarty = new Smarty_neurodb($this->Module);
+        $smarty = new Smarty_neurodb($this->Module->getName());
         $smarty->assign('mode', $this->mode);
         $smarty->assign('form', $this->form->toArray());
         $smarty->assign($this->getTemplateData());
@@ -817,9 +816,7 @@ class NDB_Menu_Filter extends NDB_Menu
         // get the list
         $this->_getNumberPages($query);
 
-        $config         =& NDB_Config::singleton();
-        $resultsPerPage = $config->getSetting('rowsPerPage');
-        $result         = $DB->pselect($query, $qparams);
+        $result = $DB->pselect($query, $qparams);
 
         return $result;
     }
@@ -833,7 +830,7 @@ class NDB_Menu_Filter extends NDB_Menu
     function _getFilterValues()
     {
         $FilterValues = array();
-        foreach ($this->formToFilter as $formName => $field) {
+        foreach (array_keys($this->formToFilter) as $formName) {
             if (isset($_REQUEST[$formName])) {
                 $FilterValues[$formName] = $_REQUEST[$formName];
             } else {

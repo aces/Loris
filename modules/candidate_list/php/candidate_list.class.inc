@@ -205,17 +205,11 @@ class Candidate_List extends \NDB_Menu_Filter
     /**
      * Create the form for the candidate_list menu page
      *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
      * @return none
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
         // Relying on a side-effect of the the server process module to autoload
         // its namespace.
         \Module::factory('candidate_parameters');
@@ -259,7 +253,7 @@ class Candidate_List extends \NDB_Menu_Filter
                                        );
 
         $participant_status_options = array(null => 'All')
-            +  CP\candidate_parameters::getParticipantStatusOptions();
+             + \Candidate::getParticipantStatusOptions();
         $scan_options = array(
                          null => 'All',
                          'Y'  => 'Yes',

@@ -84,7 +84,7 @@ class TimePoint
             try {
                 $timePointList[$sessionID] = new TimePoint();
 
-                $success = $timePointList[$sessionID]->select($sessionID);
+                $timePointList[$sessionID]->select($sessionID);
             } catch (Exception $e) {
                 // Since there was a problem with this $sessionID, don't store
                 // it in the static list but then keep propagating the error..
@@ -246,7 +246,7 @@ class TimePoint
                       );
 
         // insert the data
-        $success = $db->insert('session', $insertData);
+        $db->insert('session', $insertData);
     }
 
     /**
@@ -712,14 +712,14 @@ class TimePoint
                            'Current_stage'     => $newCurrentStage,
                           );
 
-        $dbErrors = $db->update(
+        $db->update(
             'session',
             $update_columns,
             array('ID' => $this->getSessionID())
         );
 
         // reload TimePoint object
-        $success = $this->select($this->getSessionID());
+        $this->select($this->getSessionID());
     }
 
     /**
@@ -788,14 +788,14 @@ class TimePoint
         $setArray = array('BVLQCType' => $type);
 
         // update session table
-        $dbErrors = $db->update(
+        $db->update(
             'session',
             $setArray,
             array('ID' => $this->getSessionID())
         );
 
         // reload TimePoint object
-        $success = $this->select($this->getSessionID());
+        $this->select($this->getSessionID());
     }
 
     /**
@@ -825,14 +825,14 @@ class TimePoint
         $setArray = array('BVLQCStatus' => $status);
 
         // update session table
-        $dbErrors = $db->update(
+        $db->update(
             'session',
             $setArray,
             array('ID' => $this->getSessionID())
         );
 
         // reload TimePoint object
-        $success = $this->select($this->getSessionID());
+        $this->select($this->getSessionID());
     }
 
     /**
@@ -848,8 +848,6 @@ class TimePoint
         $db =& Database::singleton();
 
         // check the status
-        $errorMsg  = "TimePoint::setBVLQCExclusion: You need to specify";
-        $errorMSg .= " a valid BVL QC Exclusion Status\n";
         if (!in_array($status, $this->bvlQcExclusionStatuses)) {
             throw new Exception(
                 "TimePoint::setBVLQCExclusion: "
@@ -861,14 +859,14 @@ class TimePoint
         $setArray = array('BVLQCExclusion' => $status);
 
         // update session table
-        $dbErrors = $db->update(
+        $db->update(
             'session',
             $setArray,
             array('ID' => $this->getSessionID())
         );
 
         // reload TimePoint object
-        $success = $this->select($this->getSessionID());
+        $this->select($this->getSessionID());
 
         return true;
     }

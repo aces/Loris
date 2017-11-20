@@ -187,19 +187,6 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         parent::tearDown();
     }
     /**
-     * Tests that, when loading the Mri_violations module, some
-     * text appears in the body.
-     *
-     * @return void
-     */
-    function testMriViolationsDoesPageLoad()
-    {
-        $this->safeGet($this->url . "/mri_violations/");
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
-            ->getText();
-        $this->assertContains("Mri Violations", $bodyText);
-    }
-    /**
      * Tests that, when loading the Mri_violations module >
      * mri_protocol_violations submodule, some
      * text appears in the body.
@@ -210,12 +197,14 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet(
             $this->url .
-            "/mri_violations/?submenu=mri_protocol_violations"
+            "/mri_violations/mri_protocol_violations/"
         );
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains("Mri Violations", $bodyText);
+        sleep(1);
+        $value = "#bc2 > a:nth-child(3)";
+        $text  = $this->webDriver->executescript(
+            "return document.querySelector('$value').textContent"
+        );
+            $this->assertEquals(" Mri  Protocol  Violations", $text);
     }
 
     /**
@@ -229,12 +218,14 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet(
             $this->url .
-            "/mri_violations/?submenu=mri_protocol_check_violations"
+            "/mri_violations/mri_protocol_check_violations/"
         );
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains("Mri Violations", $bodyText);
+        sleep(1);
+        $value = "#bc2 > a:nth-child(3) > div";
+        $text  = $this->webDriver->executescript(
+            "return document.querySelector('$value').textContent"
+        );
+            $this->assertEquals(" Mri  Protocol  Check  Violations", $text);
     }
 
     /**
@@ -285,7 +276,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet(
             $this->url .
-            "/mri_violations/?submenu=resolved_violations"
+            "/mri_violations/resolved_violations/"
         );
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("#tabs > ul > li.statsTab.active > a")
@@ -304,7 +295,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         //testing the Patient Name
         $this->safeGet(
             $this->url .
-            "/mri_violations/?submenu=resolved_violations"
+            "/mri_violations/resolved_violations/"
         );
         $this->webDriver->findElement(
             WebDriverBy::Name("PatientName")
@@ -409,17 +400,15 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("filter")
         )->click();
         sleep(1);
-        $resolutionStatus = "#dynamictable > tbody:nth-child(2) >".
-                " tr:nth-child(1) > td:nth-child(8) > select:nth-child(1)";
-        $savebtn          = ".tab-pane>div:nth-child(1)>form:nth-child(1)".
-                   ">div:nth-child(2)>input:nth-child(1)";
+        $resolutionStatus = "#dynamictable > tbody > tr > td:nth-child(8) > select";
+        $savebtn          = "#mri_violations > div.pull-right > input:nth-child(1)";
         $this->webDriver->executescript(
             "document.querySelector('$resolutionStatus').value='other'"
         );
         $this->webDriver->executescript(
             "document.querySelector('$savebtn').click()"
         );
-        $this->safeGet($this->url . "/mri_violations/?submenu=resolved_violations");
+        $this->safeGet($this->url . "/mri_violations/resolved_violations/");
         sleep(1);
         $body = $this->webDriver->getPageSource();
         $this->assertContains("[name]test", $body);
@@ -432,7 +421,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     function testResolvedSearchButton()
     {
         //testing search by PatientName
-        $this->safeGet($this->url . "/mri_violations/?submenu=resolved_violations");
+        $this->safeGet($this->url . "/mri_violations/resolved_violations/");
 
         //testing search by PatientName
         $this->_searchTest(

@@ -560,7 +560,7 @@ class LorisForm
             // of filtered values
             if (is_array($_REQUEST[$name])) {
                 $filteredValues = array();
-                foreach ($_REQUEST[$name] as $k => $v) {
+                foreach (array_keys($_REQUEST[$name]) as $k) {
                     // Checkbox values get converted from (on,off) to (1,0)
                     if ($this->_isAdvCheckbox("{$name}[$k]")) {
                         $rawValue = $_REQUEST[$name][$k] == 'on' ? 1 : 0;
@@ -672,7 +672,7 @@ class LorisForm
 
         // Apply filters that should be applied on all fields
         if (isset($this->filters['__ALL__'])) {
-            foreach ($this->filters['__ALL__'] as $filterType) {
+            for ($i = 0; $i < count($this->filters['__ALL__']); $i++) {
                 if (in_array('trim', $this->filters['__ALL__'])) {
                     // Value for the element is in array so filter all
                     // elements in the array of values
@@ -1812,8 +1812,7 @@ class LorisForm
     {
         if (is_array($arg1)) {
             foreach ($arg1 as $elementIndex => $rules) {
-                $element     =& $this->form[$group]['elements'][$elementIndex];
-                $elementName = $element['name'];
+                $element =& $this->form[$group]['elements'][$elementIndex];
                 foreach ($rules as $rule) {
                     $message  = $rule[0];
                     $ruleType = $rule[1];

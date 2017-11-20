@@ -58,7 +58,6 @@ class Instrument_List extends \NDB_Menu_Filter
                 )
                    )
         );
-
     }
 
     /**
@@ -90,11 +89,12 @@ class Instrument_List extends \NDB_Menu_Filter
     */
     function setup()
     {
+        // Don't call parent setup, we don't want it to try to run any SQL
+
         // set template data
         $this->tpl_data['candID']    = $_REQUEST['candID'];
         $this->tpl_data['sessionID'] = $_REQUEST['sessionID'];
 
-        $this->_setupPage(null, null, null, null, 'filter');
         // get behavioral battery for this visit (time point)
         $battery = new \NDB_BVL_Battery;
         $success = $battery->selectBattery($_REQUEST['sessionID']);
@@ -124,6 +124,7 @@ class Instrument_List extends \NDB_Menu_Filter
 
             $x            = -1;
             $prevSubgroup = null;
+
             foreach ($listOfInstruments as $instrument) {
                 // print the sub group header row
                 if ($instrument['Sub_group'] != $prevSubgroup) {
@@ -193,6 +194,7 @@ class Instrument_List extends \NDB_Menu_Filter
                 $this->tpl_data[$Ins][$x][$i]['feedbackCount']
                     =       (empty($feedback_count))
                              ? $feedback_status : $feedback_count;
+
                 if (!empty($feedback_status)) {
                     $this->tpl_data[$Ins][$x][$i]['feedbackStatus']
                         = $feedback_status;
@@ -216,6 +218,7 @@ class Instrument_List extends \NDB_Menu_Filter
         $this->tpl_data['display']
             = array_merge($candidate->getData(), $timePoint->getData());
     }
+
     /**
      * Used by the NDB_caller class when loading a page.
      * Call the display function of the appropriate modules feedback panel.
@@ -291,13 +294,13 @@ class Instrument_List extends \NDB_Menu_Filter
         } else {
             $query .= ", Full_name";
         }
-        //print_r($query);
+
         // get the list of instruments
         $rows = $DB->pselect($query, $qparams);
 
         // return all the data selected
         return $rows;
-    } // end getBatteryInstrumentList()
+    }
 
     /**
      * Include the column formatter required to display the feedback link colours
