@@ -15,9 +15,7 @@ vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php htdocs || exit
 # Run PHPCS on some scripts  -- fixing the files format later
 # vendor/bin/phpcs --standard=docs/LorisCS.xml tools/CouchDB_Confirm_Integrity.php
 
-# Run PHPCS on specific modules
-
+# Run PHPCS on all modules
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/ || exit $?;
 
-# Run PHPMD
 vendor/bin/phpmd php/libraries text docs/LorisPHPMD.xml || exit $?;

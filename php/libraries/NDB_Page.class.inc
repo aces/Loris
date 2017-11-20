@@ -125,7 +125,6 @@ class NDB_Page
         return $this->tpl_data;
     }
 
-
     /**
      * Wrapper to create a file element and add it to the current page
      *
@@ -632,7 +631,6 @@ class NDB_Page
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("form_$this->template.tpl");
         return $html;
-        //return $this->form->toHTML();
     }
 
 
@@ -728,7 +726,7 @@ class NDB_Page
 
     /**
      * Does any setup required for this page. This is generally overridden
-     * by NDB_Page subtypes.
+     * by NDB_Page subtypes to add form elements.
      *
      * @return none, but may have side-effects
      */

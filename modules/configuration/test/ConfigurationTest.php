@@ -164,7 +164,7 @@ class ConfigurationTest extends LorisIntegrationTest
       */
     private function _linkTest($text)
     {
-        $webElement = $this->safeFindElement(WebDriverBy::linkText($text))->click();
+        $webElement = $this->safeClick(WebDriverBy::linkText($text));
         $webActives = $this->webDriver->findElements(
             WebDriverBy::cssSelector(".active")
         );

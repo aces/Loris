@@ -341,7 +341,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    function newPassword($length = 8)
+    static function newPassword($length = 8)
     {
         // start with a blank password
         $password = '';

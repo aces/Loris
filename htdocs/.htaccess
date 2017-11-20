@@ -8,9 +8,6 @@
  # Excel Dumps aren't a Loris module, don't rewrite it.
  RewriteRule ^dataDumps/(.*) dataDumps/$1 [L]
 
- RewriteRule ^password-reset/$ lost_password.php [L]
- RewriteRule ^request-account/$ request_account/process_new_account.php [L]
-
  # Redirect /CandID/ to visit label list
  RewriteRule ^([0-9]{6,6})/$ main.php?test_name=timepoint_list&candID=$1
  # Want to redirect /CandID/Visit_label/ to instrument list, but

@@ -67,15 +67,21 @@ class NDB_Caller
     *
     * @param string $test_name The object type to load.  The test_name of the
     *                          menu, form or instrument
-    * @param string $subtest   The subtest.  The page of the form or instrument.
-    * @param string $CommentID The commentid being loaded.
-    * @param string $nextpage  A page to forward to on completion of save.
-    *                          Used in direct data entry.
+    * @param string $subtest   The subpage of the module to load.
+    * @param string $CommentID The CommentID identifier to load the page with
+    * @param string $nextpage  The page to go to after submitting this page (surveys
+    *                          only)
+    * @param string $anonymous True if the user has not logged in.
     *
     * @return string rendered object, as html
     */
-    function load($test_name, $subtest, $CommentID = '', $nextpage=null)
-    {
+    function load(
+        $test_name,
+        $subtest,
+        $CommentID='',
+        $nextpage=null,
+        $anonymous=true
+    ) {
         $factory  = NDB_Factory::singleton();
         $config   = $factory->config();
         $settings = $factory->settings();
@@ -84,7 +90,7 @@ class NDB_Caller
             return;
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST'
-            && isset($_POST['login'])
+            && isset($_POST['login']) && $test_name != 'login'
         ) {
             header("HTTP/1.1 303 See Other");
             $url  = $settings->getBaseURL();
@@ -117,6 +123,9 @@ class NDB_Caller
             // This will throw an exception if the module name doesn't exist, so
             // below this we can assume a valid module.
             $m = Module::factory($mname);
+            if (!$m->isPublicModule() && $anonymous) {
+                throw new Exception(403);
+            }
             if (!empty($subtest)) {
                 // We shouldn't care what type of page something is, we should
                 // just load it and let the module do whatever it wants.
