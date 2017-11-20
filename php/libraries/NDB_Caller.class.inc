@@ -470,7 +470,7 @@ class NDB_Caller
         $user = User::singleton();
 
         if ($_REQUEST['sessionID']) {
-            $timepoint = TimePoint::singleton($_REQUEST['sessionID']);
+            $timepoint =& TimePoint::singleton($_REQUEST['sessionID']);
         }
 
         // make an instance of the instrument's object
