@@ -513,9 +513,7 @@ var ImagePanelBody = React.createClass({
                             XMLReport={this.props.XMLReport}
                             NrrdFile={this.props.NrrdFile}
                             OtherTimepoints={this.props.OtherTimepoints}
-                        />
-                    {this.props.HeadersExpanded ? <ImagePanelHeadersTable
-                                    HeaderInfo={this.props.HeaderInfo} /> : ''}
+                    />
                 </div>
         );
   }
@@ -540,6 +538,7 @@ var ImagePanel = React.createClass({
   },
   render: function() {
     return (
+      <div className="col-xs-12">
             <div className="col-xs-12 col-md-6">
                 <div className="panel panel-default">
                 <ImagePanelHeader
@@ -578,6 +577,15 @@ var ImagePanel = React.createClass({
                     /> }
                 </div>
             </div>
+
+            <div className="col-xs-12 col-md-6">
+            {this.state.HeadersCollapsed ? '' :
+              <ImagePanelHeadersTable
+                HeaderInfo={this.props.HeaderInfo}
+              />
+            }
+            </div>
+      </div>
         );
   }
 });
