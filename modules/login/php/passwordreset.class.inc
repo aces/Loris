@@ -110,7 +110,7 @@ class PasswordReset extends \NDB_Form
                   $msg_data['url']      = $config->getSetting('url');
                   $msg_data['realname'] = $user->getData('Real_name');
                   $msg_data['password'] = $password;
-                  Email::send($email, 'lost_password.tpl', $msg_data);
+                  \Email::send($email, 'lost_password.tpl', $msg_data);
 
             } else {
                 error_log(
