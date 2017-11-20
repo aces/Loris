@@ -726,7 +726,7 @@ class NDB_Page
 
     /**
      * Does any setup required for this page. This is generally overridden
-     * by NDB_Page subtypes.
+     * by NDB_Page subtypes to add form elements.
      *
      * @return none, but may have side-effects
      */
@@ -734,15 +734,6 @@ class NDB_Page
     {
     }
 
-    /**
-     * Provides setup for a page that is done after _setup, when $this->form
-     * et al has been initialized.
-     *
-     * @return none
-     */
-    function commonPageSetup()
-    {
-    }
     /**
      * Returns false if user does not have access to page.
      *
