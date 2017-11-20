@@ -308,7 +308,7 @@ class User extends UserPermissions
         $site_arr         = $this->getCenterIDs();
         $user_study_sites = array();
         foreach ($site_arr as $key => $val) {
-            $site[$key] = Site::singleton($val);
+            $site[$key] = &Site::singleton($val);
             if ($site[$key]->isStudySite()) {
                 $user_study_sites[$val] = $site[$key]->getCenterName();
             }
@@ -325,7 +325,7 @@ class User extends UserPermissions
     {
         $site_arr = $this->getCenterIDs();
         foreach ($site_arr as $key => $sitename) {
-            $site = &Site::singleton($sitename);
+            $site = Site::singleton($sitename);
             if ($site->isStudySite()) {
                 return true;
             }
