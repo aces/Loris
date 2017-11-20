@@ -41,7 +41,7 @@ class User extends UserPermissions
      * @return User
      * @access public
      */
-    static function &factory($username)
+    static function factory($username)
     {
         $obj = new User;
 

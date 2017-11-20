@@ -1876,10 +1876,11 @@ class LorisForm
     {
         $name = $this->_generateName($name);
         foreach ($array as $key => $value) {
-            $this->groupMapping[$value['name']] = array(
-                                                   'groupName' => $name,
-                                                   'index'     => $key,
-                                                  );
+             $group_key = $value['name'] ?? $this->_generateName('');
+             $this->groupMapping[$group_key] = array(
+                                                'groupName' => $name,
+                                                'index'     => $key,
+                                               );
         }
         $this->form[$name] = array(
                               'type'      => 'group',

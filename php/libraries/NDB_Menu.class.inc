@@ -66,7 +66,7 @@ class NDB_Menu extends NDB_Page
      *
      * @return object The new object of $menu type
      */
-    static function &factory($menu, $mode)
+    static function factory($menu, $mode)
     {
         // get the name of the class
         if (class_exists("NDB_Menu_$menu")) {

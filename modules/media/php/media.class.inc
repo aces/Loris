@@ -225,7 +225,7 @@ class Media extends \NDB_Menu_Filter
     {
         $result         = $this->toArray();
         $result['form'] = $this->form->form;
-        $result['maxUploadSize'] = Utility::getMaxUploadSize();
+        $result['maxUploadSize'] = \Utility::getMaxUploadSize();
         return json_encode($result);
     }
 
