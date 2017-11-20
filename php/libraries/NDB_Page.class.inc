@@ -590,6 +590,257 @@ class NDB_Page
         return $this->form->createElement('password', $field, $label, $attr);
     }
 
+     /**
+     * Display the page to a logged in user.
+     *
+     * @param \User $user The user having the page displayed to them
+     * @param array $get  The GET parameters from the request.
+     * @param array $post The POST parameters from the request.
+     *
+     * @return string The final page content.
+     */
+    public function displayUserPage(\User $user, array $get, array $post)
+    {
+        // Create an output buffer which is flushed at the end of this function
+        // (from every code path).
+        ob_start();
+        if ($this->_hasAccess() !== true) {
+            throw new Exception("You do not have access to this page.", 403);
+        }
+
+        $request = $get + $post;
+
+        $this->setup();
+
+        if (method_exists($this, 'save')) {
+            $this->save();
+        }
+
+        if ($get['format'] ?? '' === 'json') {
+            $this->format = 'json';
+            // Flush anything that was printed so we don't get invalid JSON,
+            // but print it to the error log first so it's not lost forever.
+            error_log(ob_get_contents());
+            ob_end_clean();
+            return $this->display();
+        }
+
+        $factory  = NDB_Factory::singleton();
+        $settings = $factory->settings();
+
+        $baseURL = $settings->getBaseURL();
+        $config  = NDB_Config::singleton();
+
+        // Set the page template variables
+        $tpl_data = array(
+                     'test_name' => $this->name,
+                     'subtest'   => $this->page,
+                    );
+
+        // Basic page outline variables
+        $tpl_data += array(
+                      'study_title' => $config->getSetting('title'),
+                      'baseurl'     => $baseURL,
+                      'tabs'        => NDB_Config::getMenuTabs(),
+                      'crumbs'      => (new NDB_Breadcrumb())->getBreadcrumb(),
+                      'currentyear' => date('Y'),
+                      'sandbox'     => ($config->getSetting("sandbox") === '1'),
+                     );
+
+        $tpl_data['candID']      = $request['candID'] ?? '';
+        $tpl_data['sessionID']   = $request['sessionID'] ?? '';
+        $tpl_data['commentID']   = $request['commentID'] ?? '';
+        $tpl_data['dynamictabs'] = $request['dynamictabs'] ?? '';
+
+        if (!empty($request['candID'])) {
+            $candidate = Candidate::singleton($request['candID']);
+
+            $tpl_data['candidate'] = $candidate->getData();
+        }
+
+        // Stuff that probably shouldn't be here, but exists because it was in
+        // main.php
+
+        // This seems to only be used in imaging_browser, it can probably be
+        // moved to properly use OOP.
+        $tpl_data['formaction'] = $this->FormAction ?? '';
+        // Doesn't appear to be used
+        $tpl_data['lastURL'] = $_SESSION['State']->getLastURL();
+        // I don't think anyone uses this. It's not really supported
+        $tpl_data['css'] = $config->getSetting('css');
+
+        // This just feels wrong
+        if (method_exists($this, 'getControlPanel')) {
+            $tpl_data['control_panel'] = $this->getControlPanel();
+        }
+        if (method_exists($this, 'getFeedbackPanel')
+            && $user->hasPermission('bvl_feedback')
+        ) {
+            $tpl_data['feedback_panel'] = $this->getFeedbackPanel(
+                $get['candID'],
+                $get['sessionID'] ?? null
+            );
+
+            $tpl_data['bvl_feedback'] = NDB_BVL_Feedback::bvlFeedbackPossible(
+                $this->page
+            );
+        }
+
+        // This shouldn't exist. (And if it does, it shouldn't reference
+        // mantis..)
+        $tpl_data['mantis_url'] = $config->getSetting('mantis_url');
+
+        // We're back in the territory of stuff that belongs here..
+
+        // Variables that get passed along to the LorisHelper javascript object.
+        $tpl_data['studyParams'] = array(
+                                    'useEDC'      => $config->getSetting('useEDC'),
+                                    'useProband'  => $config->getSetting(
+                                        'useProband'
+                                    ),
+                                    'useFamilyID' => $config->getSetting(
+                                        'useFamilyID'
+                                    ),
+                                    'useConsent'  => $config->getSetting(
+                                        'ConsentModule'
+                                    )['useConsent'],
+                                   );
+        $tpl_data['jsonParams']  = json_encode(
+            array(
+             'BaseURL'   => $tpl_data['baseurl'],
+             'TestName'  => $tpl_data['test_name'],
+             'Subtest'   => $tpl_data['subtest'],
+             'CandID'    => $tpl_data['candID'],
+             'SessionID' => $tpl_data['sessionID'],
+             'CommentID' => $tpl_data['commentID'],
+            )
+        );
+
+        // User related template variables that used to be in main.php.
+        $site_arr = $user->getData('CenterIDs');
+        foreach ($site_arr as $key=>$val) {
+            $site[$key]        = & Site::singleton($val);
+            $isStudySite[$key] = $site[$key]->isStudySite();
+        }
+
+        $oneIsStudySite   = in_array("1", $isStudySite);
+        $tpl_data['user'] = $user->getData();
+        $tpl_data['user']['permissions']          = $user->getPermissions();
+        $tpl_data['user']['user_from_study_site'] = $oneIsStudySite;
+        $tpl_data['userNumSites']         = count($site_arr);
+        $tpl_data['user']['SitesTooltip'] = str_replace(
+            ";",
+            "<br/>",
+            $user->getData('Sites')
+        );
+
+        $tpl_data['hasHelpEditPermission'] = $user->hasPermission(
+            'context_help'
+        );
+
+        // FIXME: This should be array_filter
+        $realPerms = array();
+        foreach ($user->getPermissions() as $permName => $hasPerm) {
+            if ($hasPerm === true) {
+                $realPerms[] = $permName;
+            }
+        }
+        $tpl_data['userPerms'] = $realPerms;
+
+        //Display the footer links, as specified in the config file
+        $links = $config->getExternalLinks('FooterLink');
+
+        $tpl_data['links'] = array();
+        foreach ($links as $label => $url) {
+            $WindowName = md5($url);
+
+            $tpl_data['links'][] = array(
+                                    'url'        => $url,
+                                    'label'      => $label,
+                                    'windowName' => $WindowName,
+                                   );
+        }
+
+        // Finally, the actual content and render it..
+        $tpl_data += array(
+                      'jsfiles'   => $this->getJSDependencies(),
+                      'cssfiles'  => $this->getCSSDependencies(),
+                      'workspace' => $this->display(),
+                     );
+
+        // Assign the console template variable as the very, very last thing.
+        $tpl_data['console'] = htmlspecialchars(ob_get_contents());
+        ob_end_clean();
+
+        $smarty = new Smarty_neurodb;
+        $smarty->assign($tpl_data);
+
+        // Finish the buffer created at the start of this function. Discard the
+        // contents (it was put in the 'console' template variable.)
+        return $smarty->fetch('main.tpl');
+    }
+
+    /**
+     * Displays a page to an anonymous (not logged in) user.
+     *
+     * @param array $get  The GET parameters from the request.
+     * @param array $post The POST parameters from the request.
+     *
+     * @return string the page content
+     */
+    public function displayAnonymousPage(array $get, array $post)
+    {
+        $this->setup();
+
+        $factory  = NDB_Factory::singleton();
+        $settings = $factory->settings();
+
+        $baseURL = $settings->getBaseURL();
+        $config  = NDB_Config::singleton();
+
+        // Set the page template variables
+        $tpl_data = array(
+                     'test_name' => $this->name,
+                     'subtest'   => $this->page,
+                    );
+
+        // Basic page outline variables
+        $tpl_data += array(
+                      'study_title' => $config->getSetting('title'),
+                      'baseurl'     => $baseURL,
+                      'currentyear' => date('Y'),
+                      'sandbox'     => ($config->getSetting("sandbox") === '1'),
+                     );
+
+        // I don't think anyone uses this. It's not really supported
+        $tpl_data['css'] = $config->getSetting('css');
+
+        //Display the footer links, as specified in the config file
+        $links =$config->getExternalLinks('FooterLink');
+
+        $tpl_data['links'] = array();
+        foreach ($links as $label => $url) {
+            $WindowName = md5($url);
+
+            $tpl_data['links'][] = array(
+                                    'url'        => $url,
+                                    'label'      => $label,
+                                    'windowName' => $WindowName,
+                                   );
+        }
+
+        // Finally, the actual content and render it..
+        $tpl_data += array(
+                      'jsfiles'   => $this->getJSDependencies(),
+                      'cssfiles'  => $this->getCSSDependencies(),
+                      'workspace' => $this->display(),
+                     );
+
+        $smarty = new Smarty_neurodb;
+        $smarty->assign($tpl_data);
+        return $smarty->fetch('public_layout.tpl');
+    }
+
     /**
      * Displays the form
      *

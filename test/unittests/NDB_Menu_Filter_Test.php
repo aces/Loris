@@ -193,9 +193,4 @@ class NDB_Menu_Filter_Test extends PHPUnit_Framework_TestCase
 
 
     }
-    /**
-     * TODO:
-     * setupFilters
-     */
 }
-?>

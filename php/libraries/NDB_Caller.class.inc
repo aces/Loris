@@ -152,7 +152,12 @@ class NDB_Caller
                     $_REQUEST['sessionID'] ?? null
                 );
             }
-            return $this->page->display();
+            if ($anonymous === false) {
+                $user = \User::singleton();
+                return $this->page->displayUserPage($user, $_GET, $_POST);
+            } else {
+                return $this->page->displayAnonymousPage($_GET, $_POST);
+            }
         } catch (LorisModuleMissingException $e) {
             //print_r($e);
             // There was no module, so fall back on the old way of doing things.
