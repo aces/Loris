@@ -102,31 +102,12 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     * @param string $scan_type One of 't1w', 't2w', 'dti'
     * @param string $scan_done Name of column to check in mri_parameter_form
     * @param string $acqID     Aquisition protocol ID for given modality
+    * @param string $series_description Part of value for that modality's series description
     *
     * @return string $query for the given modality
     */
     function _buildQuery($scan_type, $scan_done, $acqID, $series_description)
     {
-        $db =& Database::singleton();
-        // joins tarchive, files and mri_violated_scans to
-        // Session table and then filters out
-        // the "normal" cases:
-        //    1) Data correct - MRI PF = Complete, Scan Done = Yes,
-        //       scan in MRI Violations or in Imaging Browser,
-        //       DICOM exists
-        //    2) No Data - MRI PF Incomplete, No scan in browser,
-        //       No DICOM.
-
-        $all_tarchive_values = $db->pselect(
-            "SELECT t.TarchiveID FROM tarchive t",
-            array()
-        );
-
-        foreach ($all_tarchive_values as $row) {
-            $type = $row['TarchiveID'];
-            $tarchive_list[$row['TarchiveID']] = $type;
-        }
-
 
         $select =  "  SELECT DISTINCT
                    c.PSCID,
