@@ -94,162 +94,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         return $scan_types;
     }
 
-
-    /**
-     * Gets data from tarchive_series table and returns
-     * an array of the protocol names corresponding to each series
-     * pertaining to the tarchive ID.
-     *
-     * @return array
-     */
-
-    function _getAllProtocolNamesArray($tarchiveID) {
-        $db    = Database::singleton();
-        $query = "SELECT * FROM tarchive_series WHERE TarchiveID =:ID 
-                ORDER BY 'TarchiveSeriesID'";
-        $array = $db->pselect(
-            $query,
-            array(
-                'ID'     => $tarchiveID,
-            )
-        );
-
-        if ($this->_setProtocols()) {
-            $previousSeriesDescription = '';
-            $previousProtocolName      = '';
-            $protocolNameArray = array();
-            foreach ($array as &$series) {
-                $seriesDescription = $series['SeriesDescription'];
-                // if the same series, do not compute the protocol name again,
-                // use the previous one
-                if ($previousSeriesDescription === $seriesDescription) {
-                    $series['ProtocolName'] = $previousProtocolName;
-                } else {
-                    $protocolName           = $this->_getProtocolName($series);
-                    $series['ProtocolName'] = $protocolName;
-                    $previousSeriesDescription = $seriesDescription;
-                    $previousProtocolName      = $protocolName;
-                }
-                array_push($protocolNameArray, $protocolName);
-            }
-            return($protocolNameArray);
-        }
-    }
-
-    /**
-     * Gets protocol data from mri_protocol table and
-     * registers it into class variable $protocols.
-     *
-     * @return bool false if couldn't retrieve data from the table, else true
-     */
-    function _setProtocols()
-    {
-        $db                  = Database::singleton();
-        try {
-            $query           = "SELECT Scan_type, TR_range, TE_range, TI_range, 
-                slice_thickness_range FROM mri_protocol";
-            $this->protocols = $db->pselect($query, array());
-            return true;
-        } catch(LorisException $e) {
-            return false;
-        }
-    }
-
-
-
-    /**
-     * Finds the protocol name by comparing parameters of a series.
-     *
-     * @param array $series series for which the protocol is to be found
-     *
-     * @return string name of the protocol, "Unknown" if protocol for
-     *         series parameters doesn't exist
-     */
-    function _getProtocolName($series)
-    {
-        $tr = $series['RepetitionTime'];
-        $te = $series['EchoTime'];
-        $ti = $series['InversionTime'];
-        $sliceThickness = $series['SliceThickness'];
-
-        foreach ($this->protocols as $protocol) {
-            if ((! $protocol['TR_range']
-                    || $this->_inRange($tr, $protocol['TR_range']))
-                && (! $protocol['TE_range']
-                    || $this->_inRange($te, $protocol['TE_range']))
-                && (! $protocol['TI_range']
-                    || $this->_inRange($ti, $protocol['TI_range']))
-                && (! $protocol['slice_thickness_range']
-                    || $this->_inRange(
-                        $sliceThickness,
-                        $protocol['slice_thickness_range']
-                    ))) {
-                return $this->_getProtocolNameFromID($protocol['Scan_type']);
-            }
-        }
-        return "Unknown";
-    }
-
-    /**
-     * Compares parameters of a series and of the protocols
-     *
-     * @param string $seriesRange   series parameter to be compared
-     * @param string $protocolRange protocol's parameter
-     *        to be compared with
-     *
-     * @return bool true if series parameter is in range with
-     *         the protocol's one, false otherwise
-     */
-    function _inRange($seriesRange, $protocolRange)
-    {
-        if (! isset($seriesRange)) {
-            return false;
-        } else if (! isset($protocolRange)) {
-            return false;
-        } else {
-            $seriesRangeTrimmed = (float)trim($seriesRange);
-            $protocolRanges     = explode(",", $protocolRange);
-
-            foreach ($protocolRanges as $range) {
-                $rangeTrimmed = trim($range);
-                if (strpos($rangeTrimmed, "-")) { // range X-Y
-                    $array = explode("-", $rangeTrimmed);
-                    $left  = (float)trim($array[0]);
-                    $right = (float)trim($array[1]);
-                    if ($left <= $seriesRangeTrimmed
-                        && $seriesRangeTrimmed <= $right
-                    ) {
-                        return true;
-                    }
-                } else { // single value element
-                    if ($seriesRangeTrimmed === (float)$rangeTrimmed) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-    }
-    /**
-     * Retrieves the protocol name given the protocol ID
-     * from mri_scan_table table
-     *
-     * @param string $id id of the protocol
-     *
-     * @return string name of the protocol, "Unknown" if
-     *         protocol with the given id doesn't exist.
-     */
-    function _getProtocolNameFromID($id)
-    {
-        $db        = Database::singleton();
-        try {
-            $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
-            $array = $db->pselectRow($query, array('ID' => $id));
-            return $array['Scan_type'];
-        } catch (LorisException $e) {
-            return "Unknown";
-        }
-    }
+/*
 
     /**
     * Builds query for given modality. Works with t1w, t2w, dti.
@@ -260,7 +105,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     *
     * @return string $query for the given modality
     */
-    function _buildQuery($scan_type, $scan_done, $acqID)
+    function _buildQuery($scan_type, $scan_done, $acqID, $series_description)
     {
         $db =& Database::singleton();
         // joins tarchive, files and mri_violated_scans to
@@ -282,14 +127,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             $tarchive_list[$row['TarchiveID']] = $type;
         }
 
-        // returns an associative array where the tarchiveID is the key
-        // and the value is an array of all the protocols corresponding to
-        // each tarchive file related to the specific tarchiveID
-        foreach($tarchive_list as $ID => $tarchiveID) {
-            $protocols_per_tarchive[$ID] = $this->_getAllProtocolNamesArray($ID);
-        }
-
-
 
         $select =  "  SELECT DISTINCT
                    c.PSCID,
@@ -298,6 +135,12 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                    (SELECT name FROM psc WHERE CenterID=s.CenterID) as site,
                    s.Visit_label as visit_label,
                    '".$scan_type."' as scan_type,
+                   t.TarchiveID as tarchiveID, 
+                   CASE 
+                      WHEN EXISTS(SELECT * FROM tarchive_series ts WHERE (ts.TarchiveID = t.TarchiveID AND ts.SeriesDescription LIKE '".$series_description."')) 
+                      THEN 'In DICOM'
+                      ELSE 'Missing' 
+                   END as tarchive_loc,
                    (SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project,
                    (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID) as subproject,
                    CASE
@@ -310,13 +153,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                       ELSE 'No'
                    END as scan_done,
                    CASE 
-                      WHEN EXISTS (SELECT ts.TarchiveSeriesID
-                                  FROM tarchive_series ts
-                                  LEFT JOIN tarchive t ON (t.SessionID=sess AND t.TarchiveID=tf.TarchiveID)
-                                  WHERE ((tf.SeriesDescription LIKE 't1_%' OR tf.SeriesDescription LIKE 't2_%'))
-                     ) THEN 'In DICOM' ELSE 'Missing'
-                   END as tarchive_loc,
-                   CASE 
                       WHEN (fi.fileID IS NULL AND mvl.PatientName IS NULL) THEN 'Missing'
                       WHEN fi.fileID IS NOT NULL THEN 'In Imaging Browser'
                       WHEN mvl.PatientName IS NOT NULL THEN 'In MRI Violated Scans'
@@ -327,9 +163,9 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                    END as selected,
                    qc.QCStatus as qc_status,
                    mu.uploadedBy as uploaded_by,
-                   t.TarchiveID as tarchiveID, 
                    f.CommentID as CommentID ";
 
+        #print_r($select);
 
             $joins = " FROM flag f
             LEFT JOIN session s ON (f.SessionID=s.ID)
@@ -439,15 +275,19 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             $acq_IDs[$scan_type] = $db->pselectOne("SELECT ID FROM mri_scan_type WHERE Scan_type=:scan_type", $query_params);
             if (substr("$scan_type", 0, 2) == "t1") {
                 $scans_done[$scan_type] = "T1_Scan_done";
+                $series_description[$scan_type] = "t1_%";
             } elseif (substr("$scan_type", 0, 2) == "t2") {
                 $scans_done[$scan_type] = "T2_Scan_done";
+                $series_description[$scan_type] = "t2_%";
             } elseif (substr("$scan_type", 0, 3) == "dti") {
                 $scans_done[$scan_type] = "dti_Scan_done";
+                $series_description[$scan_type] = "T2 and PD";
             }
         }
 
+
         foreach ($scan_types as $scan_type) {
-            $scan_types[$scan_type] = $this->_buildQuery($scan_type, $scans_done[$scan_type], $acq_IDs[$scan_type]);
+            $scan_types[$scan_type] = $this->_buildQuery($scan_type, $scans_done[$scan_type], $acq_IDs[$scan_type], $series_description[$scan_type]);
         }
 
         $query = implode(
