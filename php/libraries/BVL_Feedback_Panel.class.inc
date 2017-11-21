@@ -79,7 +79,6 @@ class BVL_Feedback_Panel
         $this->tpl_data['feedback_level'] = $this->_feedbackThread->_feedbackLevel;
         $this->tpl_data['feedback_types']
             = $this->_feedbackThread->getFeedbackTypes();
-        $this->tpl_data['feedbacktypes']  = NDB_BVL_Feedback::getFeedbackTypes();
 
         $summary = $this->_feedbackThread->getSummaryOfThreads();
         $this->tpl_data['thread_summary_headers'] = json_encode($summary);
