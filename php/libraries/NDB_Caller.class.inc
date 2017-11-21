@@ -137,21 +137,6 @@ class NDB_Caller
             }
             $this->page = $m->LoadPage($p);
 
-            // FIXME: These two method_exists calls were hacks that were previously
-            // in the load* classes, which for now need to be preserved for
-            // compatibility with existing modules.
-            //
-            // The proper solution is probably to re-write anything that uses them
-            // in React.
-            if (method_exists($this->page, 'getControlPanel')) {
-                $this->controlPanel = $this->page->getControlPanel();
-            }
-            if (method_exists($this->page, 'getFeedbackPanel')) {
-                $this->feedbackPanel = $this->page->getFeedbackPanel(
-                    $_REQUEST['candID'],
-                    $_REQUEST['sessionID'] ?? null
-                );
-            }
             if ($anonymous === false) {
                 $user = \User::singleton();
                 return $this->page->displayUserPage($user, $_GET, $_POST);
