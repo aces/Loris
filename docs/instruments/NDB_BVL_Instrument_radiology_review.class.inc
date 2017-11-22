@@ -7,25 +7,17 @@ class NDB_BVL_Instrument_radiology_review extends NDB_BVL_Instrument
     /**
     * sets up basic data, such as the HTML_Quickform object, and so on.
     *
-    * @param string $commentID  the CommentID identifying the data to load
-    * @param string $page       if a multipage form, the page to show
     * @return void
     * @access public
     */
-    function setup($commentID = NULL, $page = NULL){
+    function setup() {
+        parent::setup();
         $this->formType="XIN";
-        $this->form = new LorisForm('test_form');
-        $this->page = $page;            // page label (number or
-                                        // string - used by
-                                        // user-defined child classes)
 
         // set the object properties
         $this->testName = "radiology_review";           // test_names.Test_name
         $this->table = 'radiology_review';             // name of table containing
 
-
-        // data keyed by commentID
-        $this->commentID = $commentID;
 
         //$this->_requiredElements = array('Date_taken', 'Examiner');
         
