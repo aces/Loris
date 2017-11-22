@@ -37,16 +37,8 @@ class Imaging_Browser extends \NDB_Menu_Filter
     {
         $user =& \User::singleton();
 
-        // allow only to view own site data
-        $site_arr = $user->getData('CenterIDs');
-        foreach ($site_arr as $key=>$val) {
-            $site[$key]        =& \Site::singleton($val);
-            $isStudySite[$key] = $site[$key]->isStudySite();
-        }
-        $oneIsStudySite = in_array("1", $isStudySite);
-
         return ($user->hasPermission('imaging_browser_view_allsites')
-               || ($oneIsStudySite
+               || ($user->hasStudySite()
                    && $user->hasPermission('imaging_browser_view_site')
                   )
                || $user->hasPermission('imaging_browser_phantom_allsites')
