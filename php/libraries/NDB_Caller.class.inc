@@ -465,8 +465,7 @@ class NDB_Caller
         }
 
         $this->page = $instrument;
-        $html       = $instrument->display();
-
+        $html       = $instrument->displayUserPage($user, $_GET, $_POST);
         return $html;
     }
 
