@@ -204,7 +204,7 @@ class NDB_BVL_Instrument extends NDB_Page
         }
 
         // Sets up page variables such as $this->commentID and $this->form
-        $obj->setup($commentID, $page);
+        $obj->setup();
 
         // Adds all of the form element and form rules to the page after
         // having instantiated the form above
@@ -295,22 +295,6 @@ class NDB_BVL_Instrument extends NDB_Page
             //no user permissions match required instrument permissions
             throw new Exception("You do not have access to this page.", 403);
         }
-    }
-
-    /**
-     * Sets up basic data, such as the HTML_Quickform object, and so on.
-     *
-     * @param string $commentID The CommentID identifying the data to load
-     * @param string $page      If a multipage form, the page to show
-     *
-     * @return   void
-     * @access   public
-     * @abstract
-     */
-    function setup($commentID = null, $page = null)
-    {
-        $this->commentID = $commentID;
-        $this->page      = $page;
     }
 
     /**
