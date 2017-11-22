@@ -306,7 +306,7 @@ class User extends UserPermissions
      */
     function getStudySites()
     {
-        $site_arr         = $this->userInfo['CenterIDs'];
+        $site_arr         = $this->getCenterIDs();
         $user_study_sites = array();
         foreach ($site_arr as $key => $val) {
             $site[$key] = &Site::singleton($val);
@@ -316,6 +316,23 @@ class User extends UserPermissions
         }
         natcasesort($user_study_sites);
         return $user_study_sites;
+    }
+
+    /**
+     * Checks if the user is in at least one study site
+     *
+     * @return boolean
+     */
+    function hasStudySite()
+    {
+        $site_arr = $this->getCenterIDs();
+        foreach ($site_arr as $key => $sitename) {
+            $site = Site::singleton($sitename);
+            if ($site->isStudySite()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

@@ -12,15 +12,9 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-$user     =& User::singleton();
-$site_arr = $user->getData('CenterIDs');
-foreach ($site_arr as $key=>$val) {
-    $site[$key]        = & Site::singleton($val);
-    $isStudySite[$key] = $site[$key]->isStudySite();
-}
-$oneIsStudySite = in_array("1", $isStudySite);
+$user =& User::singleton();
 if (!($user->hasPermission('access_all_profiles')
-    || ($oneIsStudySite && $user->hasPermission('data_entry')))
+    || ($user->hasStudySite() && $user->hasPermission('data_entry')))
 ) {
     header("HTTP/1.1 403 Forbidden");
     exit;
