@@ -287,7 +287,7 @@ class NDB_Caller
     function loadMenu($menu, $mode)
     {
         // make an instance of the menu's object
-        $menu =& NDB_Menu::factory($menu, $mode);
+        $menu = NDB_Menu::factory($menu, $mode);
 
         $success = $menu->setup();
 
@@ -415,7 +415,7 @@ class NDB_Caller
         $redirectToOnSuccess=null
     ) {
         if ($page === 'finalpage') {
-            $instrument =& NDB_BVL_Instrument::factory(
+            $instrument = NDB_BVL_Instrument::factory(
                 $instrumentName,
                 $commentID,
                 $page
@@ -425,14 +425,14 @@ class NDB_Caller
             header("Location: $redirectToOnSuccess");
             return "";
         }
-        $user =& User::singleton();
+        $user = User::singleton();
 
         if ($_REQUEST['sessionID']) {
             $timepoint =& TimePoint::singleton($_REQUEST['sessionID']);
         }
 
         // make an instance of the instrument's object
-        $instrument =& NDB_BVL_Instrument::factory(
+        $instrument = NDB_BVL_Instrument::factory(
             $instrumentName,
             $commentID,
             $page
