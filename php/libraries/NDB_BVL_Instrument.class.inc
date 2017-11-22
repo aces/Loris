@@ -26,25 +26,11 @@ class NDB_BVL_Instrument extends NDB_Page
 {
 
     /**
-     * HTML_Quickform object
-     *
-     * @access private
-     */
-    var $form;
-
-    /**
      * Test name (short name), equivalent to test_names.Test_name
      *
      * @access private
      */
     var $testName;
-
-    /**
-     * Instrument instance CommentID
-     *
-     * @access private
-     */
-    var $commentID;
 
     /**
      * Database table containing data referenced by $this->commentID
