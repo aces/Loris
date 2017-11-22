@@ -430,16 +430,6 @@ class NDB_Caller
 
         $this->instrument = $instrument;
 
-        if (method_exists($instrument, 'getControlPanel')) {
-            $this->controlPanel = $instrument->getControlPanel();
-        }
-        if (method_exists($instrument, 'getFeedbackPanel')) {
-            $this->feedbackPanel = $instrument->getFeedbackPanel(
-                $_REQUEST['candID'],
-                $_REQUEST['sessionID']
-            );
-        }
-
         // save instrument form data
         $success = $instrument->save();
 
