@@ -5,6 +5,8 @@
 The imaging browser is intended to allow users to view candidate
 scan sessions collected for a study.
 
+## Intended Users
+
 The three primary types of users are:
 1. Imaging specialists using the modules to do online QC
 2. Project radiologists viewing images to report incidental findings
