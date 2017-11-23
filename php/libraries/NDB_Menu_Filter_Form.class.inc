@@ -45,7 +45,7 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
             || !empty($_REQUEST['fire_away'])
         ) {
             if ($this->form->validate()) {
-                $success = $this->form->process(array(&$this, "_save"), false);
+                $this->form->process(array(&$this, "_save"), false);
             }
         }
     }
@@ -77,7 +77,7 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
             }
         }
 
-        $success = $this->_process($values);
+        $this->_process($values);
     }
 
 
@@ -92,20 +92,6 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
     function _process($values)
     {
         return true;
-    }
-
-    /**
-     * Resets the form
-     *
-     * Usage: Call this function if you do not want to display the frozen form
-     * after saving but just want to dump a message and maybe some links
-     *
-     * @return void
-     * @access private
-     */
-    function _resetForm()
-    {
-        $this->form = new LorisForm('test_form');
     }
 }
 ?>

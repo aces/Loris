@@ -80,6 +80,7 @@ class MediaIndex extends React.Component {
           <MediaUploadForm
             DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData`}
             action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=upload`}
+            maxUploadSize={this.state.Data.maxUploadSize}
           />
         </TabPane>
       );

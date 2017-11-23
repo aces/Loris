@@ -15,7 +15,7 @@
 // Get LORIS user issuing the request
 $user =& User::singleton();
 if (!($user->hasPermission('imaging_browser_view_allsites')
-    || ($oneIsStudySite
+    || ($user->hasStudySite()
     && $user->hasPermission('imaging_browser_view_site'))
     || $user->hasPermission('imaging_browser_phantom_allsites')
     || $user->hasPermission('imaging_browser_phantom_ownsite'))
