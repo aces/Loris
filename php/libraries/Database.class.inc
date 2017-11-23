@@ -765,6 +765,38 @@ class Database
     }
 
     /**
+     * Runs a query as a prepared statement and returns the values of the first
+     * column in the select statement. If multiple columns are given, only the first
+     * will be returned.
+     *
+     * @param string $query  The SQL SELECT query to be run
+     * @param array  $params Values to use for binding to prepared statement
+     *
+     * @return array Associative array of form rowID=>value containing all values
+     *               for the first element of the select statement
+     */
+    function pselectCol($query, $params)
+    {
+        $unprocessed = $this->pselect($query, $params);
+
+        $result = array();
+        foreach ($unprocessed as $k=>$row) {
+            $colNumber = count($row);
+            if ($colNumber !== 1) {
+                throw new DatabaseException(
+                    "The pselectCol() function expects only one column in the 
+                    SELECT clause of the query, $colNumber were passed.",
+                    $query
+                );
+            }
+            // Note: reset() rewinds array's internal pointer to the first element
+            // and returns the value of the first array element.
+            $result[$k] =reset($row);
+        }
+        return $result;
+    }
+
+    /**
      * Runs a query as a prepared statement and returns the value of the first
      * column of the first row
      *
