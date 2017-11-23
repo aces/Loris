@@ -5,8 +5,11 @@
 The imaging browser is intended to allow users to view candidate
 scan sessions collected for a study.
 
-It is used primarily by imaging specialists to do online QC of
-imaging data that has been inserted into LORIS.
+The three primary types of users are:
+1. Imaging specialists using the modules to do online QC
+2. Project radiologists viewing images to report incidental findings
+3. Site coordinators or researchers ensuring their uploaded scans have
+   been processed and inserted into LORIS.
 
 ## Scope
 
@@ -60,3 +63,17 @@ useEDC - This setting determines whether "EDC" filtering dropdowns exist
 
 mantis_url - This setting defines a URL for LORIS to include a link to for bug reporting
         on the viewsession page.
+
+## Interactions with LORIS
+
+- The "Selected" set by the imaging QC specialist is used by the dataquery
+  module in order to determine which scan to insert when multiple scans of
+  a modality type exist for a given session. (The importer exists in
+  `$LORIS/tools/CouchDB_Import_MRI.php` alongside all other CouchDB
+  import scripts, but should logically be considered part of this module.)
+- The imaging browser module includes links to BrainBrowser to visualize data.
+- The control panel on the viewsession page includes links to instruments
+  named "mri_parameter_form" and "radiologyreview" if they exist for the
+  currently viewed session.
+- The control panel on the viewsession page includes links to the DICOM Archive
+  for any DICOM tars associated with the given session.
