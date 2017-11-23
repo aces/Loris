@@ -5,6 +5,14 @@
 The new_profile module is intended to allow users to create new
 candidates in a LORIS database.
 
+## Intended Users
+
+It is primarily used by data entry staff to create candidates for
+data entry.
+
+It may also be used by users uploading imaging data to ensure that
+a candidate exists before uploading the image.
+
 ## Scope
 
 The new_profile module only creates candidates.
@@ -13,14 +21,6 @@ NOT in scope:
 
 The new_profile module does not create timepoints, batteries, or
 anything else related to candidates, only the candidate itself.
-
-## Intended Users
-
-It is primarily used by data entry staff to create candidates for
-data entry.
-
-It may also be used by users uploading imaging data to ensure that
-a candidate exists before uploading the image.
 
 ## Configurations
 
