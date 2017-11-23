@@ -227,6 +227,9 @@ class NDB_BVL_Instrument extends NDB_Page
                 403
             );
         }
+        // FIXME: This should be handled by the constructor, but for
+        // some reason without this here headers get duplicated.
+        $obj->form = new LorisForm();
 
         return $obj;
     }
