@@ -326,7 +326,7 @@ class User extends UserPermissions
     function hasStudySite()
     {
         $site_arr = $this->getCenterIDs();
-        foreach ($site_arr as $key => $sitename) {
+        foreach ($site_arr as $sitename) {
             $site = Site::singleton($sitename);
             if ($site->isStudySite()) {
                 return true;
