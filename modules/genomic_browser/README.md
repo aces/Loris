@@ -31,6 +31,8 @@ Config name 	| Description
 ---------------	| ------------------------------------------------------------------
 GenomicDataPath | The to a directory readable and writable by www-data. This directory should contain a `genomic_uploader` directory that is also readable and writable by www-data.
 
+The file upload feature require special configurations (see [File Upload](#file_upload_link))
+
 ## Interactions with LORIS There are foreign keys on the candidate table.
 
 
@@ -46,15 +48,20 @@ Tab | Description
 [File Upload](#file_upload_link) |  
 
 
-<a name="profile_link"></a> ## Profile
+<a name="profile_link"></a>
+## Profile
 
-<a name="gwas_link"></a> ## GWAS
+<a name="gwas_link"></a>
+## GWAS
 
-<a name="snp_link"></a> ## SNP
+<a name="snp_link"></a>
+## SNP
 
-<a name="cnv_link"></a> ## CNV
+<a name="cnv_link"></a>
+## CNV
 
-<a name="cpg_link"></a> ## CPG tab
+<a name="cpg_link"></a>
+## CPG tab
 
 To use the methylation tab, the genomic_cpg_annotaion
 table should be filled with data from the Illumina
@@ -72,7 +79,8 @@ usage : ``` python3 HumanMethylation450k_annotations_to_sql.py
 <annotation_file> | mysql -u <user> -p <database> ```
 
 
-<a name="file_upload_link"></a> ## Files
+<a name="file_upload_link"></a>i
+## Files
 
 The uploading functionnality require a genomic_uploader directory under
 the GenomicDataPath directory specified in the ConfigSettings. This
