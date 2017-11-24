@@ -18,7 +18,7 @@ class DirectEntry extends React.Component {
 	constructor(props) {
 	    super(props);
 
-	    const height = window.innerHeight / 3;
+	    const height = 100;
 	    const style = {
 	    	"margin-top": height
 	    }
@@ -272,6 +272,7 @@ class DirectEntry extends React.Component {
 		}
 		return (
 			<div>
+				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<nav className="navbar navbar-default navbar-fixed-top">
   					<span className="h1" className="navbar-brand">LORIS</span>
 				</nav>
