@@ -333,7 +333,6 @@ class My_Preferences extends \NDB_Form
         }
         $this->addSelect('language_preference', 'Language preference', $languages);
 
-
         // Notification headers
         $nGroup[] = $this->createLabel("Module");
         $nGroup[] = $this->createLabel("Operation");
