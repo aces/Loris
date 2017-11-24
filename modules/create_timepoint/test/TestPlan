@@ -13,8 +13,8 @@ Create Timepoint Test Plan:
    candidate.[Manual Testing]
 5. Click create time point without choosing visit. Ensure there's an error.
    [Automation Testing]
-6. Make sure the user belong to more than one site and click create time point 
-	without choosing a site. Ensure there's an error
+6. Click create time point without choosing a site for users belonging to
+   more than one site. Ensure there's an error
 7. Choose visit label to be created and click "Create Time Point".
    Ensure that you get a page saying creation was successful.
    Click on "Click here to continue" link and ensure that it brings you back
