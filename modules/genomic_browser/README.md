@@ -20,21 +20,16 @@ been added to variable ID and some annotation columns. An uploader
 ## Permissions
 
 Permission Code               	| Description
--------------------------------	| -----------------------------------------------------------------------
-genomic_browser_view_site     	| Allow to view genomic data of Candidates from that
-                                  user own site(s)
-genomic_browser_view_allsites 	| Allow to view genomic data of Candidates from all
-                                  sites
-genomic_data_manager 		| Allow for genomic file uploading 
-                                  (see [File Upload](#file_upload_link))
+-------------------------------	| --------------------------------------------------
+genomic_browser_view_site     	| Allow to view genomic data of Candidates from that user own site(s)
+genomic_browser_view_allsites 	| Allow to view genomic data of Candidates from all sites 
+genomic_data_manager 		| Allow for genomic file uploading (see [File Upload](#file_upload_link))
 
 ## Configurations
 
 Config name 	| Description
 ---------------	| ------------------------------------------------------------------
-GenomicDataPath | The to a directory readable and writable by www-data. This 
-                  directory should contain a `genomic_uploader` directory that is 
-                  also readable and writable by www-data.
+GenomicDataPath | The to a directory readable and writable by www-data. This directory should contain a `genomic_uploader` directory that is also readable and writable by www-data.
 
 ## Interactions with LORIS There are foreign keys on the candidate table.
 
@@ -43,8 +38,12 @@ GenomicDataPath | The to a directory readable and writable by www-data. This
 
 Tab | Description
 --- | -----------
-[Profile](#profile_link) | [GWAS](#gwas_link) | [SNP](#snp_link) | [CNV](#cnv_link) |
-[CPG](#cpg_link) | [File Upload](#file_upload_link) |
+[Profile](#profile_link) |  
+[GWAS](#gwas_link) |  
+[SNP](#snp_link) |  
+[CNV](#cnv_link) |  
+[CPG](#cpg_link) |  
+[File Upload](#file_upload_link) |  
 
 
 <a name="profile_link"></a> ## Profile
