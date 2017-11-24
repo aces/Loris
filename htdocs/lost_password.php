@@ -44,38 +44,33 @@ try {
 if (isset($_POST['username'])) {
 
     // create the user object
-    $user =& User::singleton($_POST['username']);
-
+    $user  =& User::singleton($_POST['username']);
     $email = $user->getData('Email');
 
-    // check that it is a valid user
-    if (!empty($email)) {
-
-        // check that the email is valid
-        if ($user->isEmailValid()) {
-
-            // generate a new password
-            $password = User::newPassword();
-
-            // reset the password in the database
-            // expire password so user must change it upon login
-            $success = $user->updatePassword($password, '1990-04-01');
-
-            // send the user an email
-            $msg_data['study']    = $config->getSetting('title');
-            $msg_data['url']      = $config->getSetting('url');
-            $msg_data['realname'] = $user->getData('Real_name');
-            $msg_data['password'] = $password;
-            Email::send($email, 'lost_password.tpl', $msg_data);
-
-            $tpl_data['success'] = 'You should receive an email with instructions 
-                                    within a few minutes!';
-        } else {
-            $tpl_data['error_message'] = 'Please provide a valid username!';
-        }
+    // check that the email is valid
+    if (!$user->isEmailValid()) {
+        error_log(
+            'Could not send password reset email to user' . $user->getUsername()
+            . " with email $email. Email is invalid"
+        );
     } else {
-        $tpl_data['error_message'] = "Couldn't find a user with this username!";
+        // generate a new password
+        $password = User::newPassword();
+
+        // reset the password in the database
+        // expire password so user must change it upon login
+        $success = $user->updatePassword($password, '1990-04-01');
+
+        // send the user an email
+        $msg_data['study']    = $config->getSetting('title');
+        $msg_data['url']      = $config->getSetting('url');
+        $msg_data['realname'] = $user->getData('Real_name');
+        $msg_data['password'] = $password;
+        Email::send($email, 'lost_password.tpl', $msg_data);
+
     }
+    $tpl_data['success'] = 'You should receive an email with instructions
+        within a few minutes!';
 }
 
 //Output template using Smarty
