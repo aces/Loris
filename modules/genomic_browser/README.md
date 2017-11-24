@@ -21,17 +21,20 @@ been added to variable ID and some annotation columns. An uploader
 
 Permission Code               	| Description
 -------------------------------	| -----------------------------------------------------------------------
-genomic_browser_view_site     	| Allow to view genomic data of Candidates from that user own site(s)
-genomic_browser_view_allsites 	| Allow to view genomic data of Candidates from all sites
-genomic_data_manager 		| Allow for genomic file uploading (see [File Upload](#file_upload_link))
+genomic_browser_view_site     	| Allow to view genomic data of Candidates from that
+                                  user own site(s)
+genomic_browser_view_allsites 	| Allow to view genomic data of Candidates from all
+                                  sites
+genomic_data_manager 		| Allow for genomic file uploading 
+                                  (see [File Upload](#file_upload_link))
 
 ## Configurations
 
 Config name 	| Description
 ---------------	| ------------------------------------------------------------------
 GenomicDataPath | The to a directory readable and writable by www-data. This 
-                | directory should contain a `genomic_uploader` directory that is 
-                | also readable and writable by www-data.
+                  directory should contain a `genomic_uploader` directory that is 
+                  also readable and writable by www-data.
 
 ## Interactions with LORIS There are foreign keys on the candidate table.
 
