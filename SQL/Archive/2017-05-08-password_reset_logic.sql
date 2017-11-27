@@ -9,3 +9,5 @@ CREATE TABLE `password_recovery` (
   PRIMARY KEY (`ID`),
   CONSTRAINT `fk_password_recovery_users_1` FOREIGN KEY (`email`) REFERENCES `users` (`Email`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE users DROP COLUMN `password_expiry`;

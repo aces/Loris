@@ -43,11 +43,6 @@ class SinglePointLogin
     var $_lastError = null;
 
     /**
-     * Defines whether a user's password has expired
-     */
-    var $_passwordExpired = false;
-
-    /**
      * Checks whether anyone is currently logged in
      *
      * @return bool
@@ -59,75 +54,12 @@ class SinglePointLogin
     }
 
     /**
-     * Checks whether users password is expired
-     *
-     * @return bool
-     * @access public
-     */
-    function passwordExpired()
-    {
-        return $this->_passwordExpired;
-    }
-
-
-    /**
-     * Saves the new password if last was expired
-     *
-     * @return void
-     * @access public
-     */
-    function save()
-    {
-        // get saved data to pre-populate form
-        $user =& User::factory($_POST['username']);
-
-        // get user's data
-        $data = $user->getData();
-
-        // check password strength
-        if (!User::isPasswordStrong(
-            $_POST['password'],
-            array(
-             $_POST['confirm'],
-             $data['UserID'],
-             $data['Email'],
-            ),
-            array(
-             '==',
-             '!=',
-             '!=',
-            )
-        )
-        ) {
-            $this->_lastError = 'The password is weak, or'
-               . ' the passwords do not match';
-        }
-
-        if (password_verify($_POST['password'], $data['Password_hash'])) {
-            $this->_lastError = 'You cannot keep the same password';
-        }
-
-        // if errors
-        if (!empty($this->_lastError)) {
-            return false;
-        }
-
-        // Reset passwordExpired flag
-        $this->_passwordExpired = false;
-        $user->updatePassword($_POST['password']);
-        return true;
-    }
-
-    /**
      * Attempt to authenticate a user's credentials by any supported means.
      *
      * @return none, but may modified session state
      */
     function authenticate()
     {
-        // Reset passwordExpired flag
-        $this->_passwordExpired = false;
-
         if (!function_exists('getallheaders')) {
             /**
              * In case unable to detect getallheaders function
@@ -218,17 +150,11 @@ class SinglePointLogin
      *
      * @param string $username The username to validate
      * @param string $password The username to validate
-     * @param bool   $redirect If this flag is true, this
-     *                         function may instead print
-     *                         out a login or password expiry
-     *                         page. when trying to authenticate.
-     *                         If false, it won't provide any output
-     *                         in those situation.
      *
      * @return bool true if the username and password are valid
      * @access public
      */
-    function passwordAuthenticate($username, $password, $redirect = true)
+    function passwordAuthenticate($username, $password)
     {
         $this->_lastError = '';
 
@@ -249,20 +175,8 @@ class SinglePointLogin
                                               ? $_SERVER['REQUEST_URI']
                                               : 'Unknown',
                     );
-        // save the new password if the last password expired
-        if (isset($_POST['expiry'])) {
-            $success = $this->save();
-
-            if ($success == false) {
-                if ($redirect) {
-                    $this->showPasswordExpiryScreen();
-                }
-                return false;
-            }
-        }
 
         // don't waste execution time if no form was submitted
-
         if (empty($username)) {
             $this->_lastError = 'Please enter a username';
             $this->insertFailedDetail(
@@ -288,7 +202,6 @@ class SinglePointLogin
         // check users table to see if we have a valid user
         $query = "SELECT COUNT(*) AS User_count,
                         UserID,
-                        Password_expiry,
                         Active,
                         Pending_approval,
                         Password_hash

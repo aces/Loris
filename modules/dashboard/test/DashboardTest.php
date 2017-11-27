@@ -41,10 +41,9 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "users",
             array(
-             'UserID'          => 'testUser1',
-             'Email'           => 'test@test.com',
-             'Password'        => 'AA1234567!',
-             'Password_expiry' => '2020-01-06',
+             'UserID'   => 'testUser1',
+             'Email'    => 'test@test.com',
+             'Password' => 'AA1234567!',
             )
         );
         $user_id = $this->DB->pselectOne(

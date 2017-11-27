@@ -488,21 +488,12 @@ class User extends UserPermissions
      * database.
      *
      * @param string $password The plain text password to be hashed and saved.
-     * @param string $expiry   The password expiry date. If not supplied, the
-     *                         password expiry date will be set to now+6months.
      *
      * @return void
      */
-    function updatePassword($password, $expiry = null)
+    function updatePassword($password)
     {
-        if (is_null($expiry)) {
-            $expiry = date(
-                'Y-m-d',
-                mktime(0, 0, 0, date('n') + 6, date('j'), date('Y'))
-            );
-        }
-
-        $updateArray = array('Password_expiry' => $expiry);
+        $updateArray = array();
 
         $updateArray['Password_hash'] = password_hash(
             $password,
