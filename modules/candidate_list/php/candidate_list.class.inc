@@ -59,7 +59,7 @@ class Candidate_List extends \NDB_Menu_Filter
     {
         $user   =& \User::singleton();
         $config =& \NDB_Config::singleton();
-        $db =& \Database::singleton();
+        $db     =& \Database::singleton();
 
         $this->tpl_data['toggled_visible'] =false;
 
