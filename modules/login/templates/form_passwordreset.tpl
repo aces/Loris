@@ -15,7 +15,7 @@
             {else}
                 <form method="POST">
                     <p class="text-center">
-                        Please enter your username below, and a new password will be sent to you.
+                        Please enter your username below. Reset instructions will be emailed to your registered Email address.
                     </p>
                     <div class="form-group">
                         {$form.username.html}
