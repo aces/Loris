@@ -98,7 +98,6 @@ class Candidate_List extends \NDB_Menu_Filter
 
             $consentType = $consent_details[0];
             $name        = $db->escape($consentType["name"]);
-            $label       = $db->escape($consentType["label"]);
             //This is not foolproof.
             //This is only done because the following does not work,
             //"ps.{$name} AS `{$label}`" (notice the backticks `)
