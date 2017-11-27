@@ -117,22 +117,24 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
            (SELECT name FROM psc WHERE CenterID=s.CenterID) as site,
            s.Visit_label as visit_label,
            '".$scan_type."' as scan_type,
-           t.TarchiveID as tarchiveID, 
-           CASE 
-              WHEN EXISTS(SELECT * FROM tarchive_series ts WHERE (ts.TarchiveID = t.TarchiveID AND ts.SeriesDescription LIKE '".$series_description."')) 
-              THEN 'In DICOM'
-              ELSE 'Missing' 
-           END as tarchive_loc,
-           (SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project,
-           (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID) as subproject,
-           CASE
+           t.TarchiveID as tarchiveID,".
+           " CASE WHEN EXISTS ".
+           " (SELECT * FROM tarchive_series ts WHERE (ts.TarchiveID = t.TarchiveID".
+           " AND ts.SeriesDescription LIKE '".$series_description."'))".
+           " THEN 'In DICOM' ELSE 'Missing'".
+           " END as tarchive_loc,
+           (SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project,".
+           " (SELECT title FROM subproject".
+           " WHERE SubprojectID=s.SubprojectID) as subproject,".
+           " CASE
               WHEN m.".$scan_done." IS NULL THEN 'Incomplete'
               ELSE 'Complete'
            END AS mri_parameter_form,
            CASE 
-              WHEN m.".$scan_done." IS NULL THEN ''
-              WHEN (m.".$scan_done." = 'Complete' OR m.".$scan_done." = 'Partial') THEN 'Yes'
-              ELSE 'No'
+              WHEN m.".$scan_done." IS NULL THEN ''".
+              " WHEN (m.".$scan_done." = 'Complete'".
+              " OR m.".$scan_done." = 'Partial') THEN 'Yes'".
+              " ELSE 'No'
            END as scan_done,
            CASE 
               WHEN (fi.fileID IS NULL AND mvl.PatientName IS NULL) THEN 'Missing'
@@ -146,17 +148,22 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
            qc.QCStatus as qc_status,
            mu.uploadedBy as uploaded_by,
            f.CommentID as CommentID ";
-        $joins  = " FROM flag f
+
+        //print_r($select);
+        $joins = " FROM flag f
         LEFT JOIN session s ON (f.SessionID=s.ID)
         LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
         LEFT JOIN tarchive t ON (t.SessionID=s.ID)
         LEFT JOIN files fi ON (fi.SessionID = s.ID
-        AND fi.AcquisitionProtocolID=".$acqID.")
-        LEFT JOIN mri_violations_log mvl ON (mvl.CandID = s.CandID AND mvl.Scan_type=".$acqID." AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))
-        LEFT JOIN candidate c ON (s.CandID=c.CandID)
+        AND fi.AcquisitionProtocolID=".$acqID.")".
+        " LEFT JOIN mri_violations_log mvl ON".
+        " (mvl.CandID = s.CandID AND mvl.Scan_type=".$acqID."".
+        " AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))".
+        " LEFT JOIN candidate c ON (s.CandID=c.CandID)
         LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
         LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID) ";
-        $where  = " WHERE 1=1
+
+        $where = " WHERE 1=1
           AND NOT f.CommentID LIKE 'DDE%'
           AND f.Test_name='mri_parameter_form'
           AND s.Active='Y'
@@ -225,13 +232,56 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $this->addSelect('project', 'Project', $projectList);
         $this->addSelect('subproject', 'Subproject', $subprojectList);
         $this->addSelect('scanType', 'Scan Type', $scan_types);
-        $this->addSelect('mRIParameterForm', "MRI Parameter Form", array("Complete" => "Complete", "Incomplete" => "Incomplete"));
-        $this->addSelect('scanDoneInMRIPF', 'Scan Done in MRI PF', array("Yes" => "Yes", "No" => "No"));
-        $this->addSelect('tarchive', 'Tarchive Status', array("In DICOM" => "In DICOM Archives", "Missing" => "Missing"));
-        $this->addSelect('scanLocation', 'Scan Location', $scan_location);
-        $this->addSelect('qCStatus', 'QC Status', array("Pass" => "Pass", "Fail" => "Fail"));
-        $this->addSelect('uploadedBy', 'Uploaded By', $uploaderList);
-        $this->addSelect('selected', 'Selected', array("True" => "True", "False" => "False"));
+        $this->addSelect(
+            'mRIParameterForm',
+            "MRI Parameter Form",
+            array(
+             "Complete"   => "Complete",
+             "Incomplete" => "Incomplete",
+            )
+        );
+        $this->addSelect(
+            'scanDoneInMRIPF',
+            'Scan Done in MRI PF',
+            array(
+             "Yes" => "Yes",
+             "No"  => "No",
+            )
+        );
+        $this->addSelect(
+            'tarchive',
+            'Tarchive Status',
+            array(
+             "In DICOM" => "In DICOM Archives",
+             "Missing"  => "Missing",
+            )
+        );
+        $this->addSelect(
+            'scanLocation',
+            'Scan Location',
+            $scan_location
+        );
+        $this->addSelect(
+            'qCStatus',
+            'QC Status',
+            array(
+             "Pass" => "Pass",
+             "Fail" => "Fail",
+            )
+        );
+        $this->addSelect(
+            'uploadedBy',
+            'Uploaded By',
+            $uploaderList
+        );
+        $this->addSelect(
+            'selected',
+            'Selected',
+            array(
+             "True"  => "True",
+             "False" => "False",
+            )
+        );
         return true;
     }
     /**
@@ -248,7 +298,10 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $scan_types = $this->_getScanTypes();
         foreach ($scan_types as $scan_type) {
             $query_params        = array('scan_type' => $scan_type);
-            $acq_IDs[$scan_type] = $db->pselectOne("SELECT ID FROM mri_scan_type WHERE Scan_type=:scan_type", $query_params);
+            $acq_IDs[$scan_type] = $db->pselectOne(
+                "SELECT ID FROM mri_scan_type WHERE Scan_type=:scan_type",
+                $query_params
+            );
             if (substr("$scan_type", 0, 2) == "t1") {
                 $scans_done[$scan_type]         = "T1_Scan_done";
                 $series_description[$scan_type] = "t1_%";
@@ -262,7 +315,13 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         }
 
         foreach ($scan_types as $scan_type) {
-            $scan_types[$scan_type] = $this->_buildQuery($scan_type, $scans_done[$scan_type], $acq_IDs[$scan_type], $series_description[$scan_type]);
+            $scan_types[$scan_type]
+                = $this->_buildQuery(
+                    $scan_type,
+                    $scans_done[$scan_type],
+                    $acq_IDs[$scan_type],
+                    $series_description[$scan_type]
+                );
         }
 
         $query = implode(
