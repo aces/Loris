@@ -94,15 +94,16 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         return $scan_types;
     }
 
-/*
+
 
     /**
     * Builds query for given modality. Works with t1w, t2w, dti.
     *
-    * @param string $scan_type One of 't1w', 't2w', 'dti'
-    * @param string $scan_done Name of column to check in mri_parameter_form
-    * @param string $acqID     Aquisition protocol ID for given modality
-    * @param string $series_description Part of value for that modality's series description
+    * @param string $scan_type          One of 't1w', 't2w', 'dti'
+    * @param string $scan_done          Name of column to check in mri_parameter_form
+    * @param string $acqID              Aquisition protocol ID for given modality
+    * @param string $series_description Part of value for that modality's
+    *                                   series description
     *
     * @return string $query for the given modality
     */
@@ -110,63 +111,60 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     {
 
         $select =  "  SELECT DISTINCT
-                   c.PSCID,
-                   s.ID as SessionID,
-                   s.CandID as cand_id,
-                   (SELECT name FROM psc WHERE CenterID=s.CenterID) as site,
-                   s.Visit_label as visit_label,
-                   '".$scan_type."' as scan_type,
-                   t.TarchiveID as tarchiveID, 
-                   CASE 
-                      WHEN EXISTS(SELECT * FROM tarchive_series ts WHERE (ts.TarchiveID = t.TarchiveID AND ts.SeriesDescription LIKE '".$series_description."')) 
-                      THEN 'In DICOM'
-                      ELSE 'Missing' 
-                   END as tarchive_loc,
-                   (SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project,
-                   (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID) as subproject,
-                   CASE
-                      WHEN m.".$scan_done." IS NULL THEN 'Incomplete'
-                      ELSE 'Complete'
-                   END AS mri_parameter_form,
-                   CASE 
-                      WHEN m.".$scan_done." IS NULL THEN ''
-                      WHEN (m.".$scan_done." = 'Complete' OR m.".$scan_done." = 'Partial') THEN 'Yes'
-                      ELSE 'No'
-                   END as scan_done,
-                   CASE 
-                      WHEN (fi.fileID IS NULL AND mvl.PatientName IS NULL) THEN 'Missing'
-                      WHEN fi.fileID IS NOT NULL THEN 'In Imaging Browser'
-                      WHEN mvl.PatientName IS NOT NULL THEN 'In MRI Violated Scans'
-                   END as scan_location,
-                   CASE 
-                      WHEN qc.Selected = '' THEN 'False' 
-                      WHEN qc.Selected = 'true' THEN 'True'
-                   END as selected,
-                   qc.QCStatus as qc_status,
-                   mu.uploadedBy as uploaded_by,
-                   f.CommentID as CommentID ";
+           c.PSCID,
+           s.ID as SessionID,
+           s.CandID as cand_id,
+           (SELECT name FROM psc WHERE CenterID=s.CenterID) as site,
+           s.Visit_label as visit_label,
+           '".$scan_type."' as scan_type,
+           t.TarchiveID as tarchiveID, 
+           CASE 
+              WHEN EXISTS(SELECT * FROM tarchive_series ts WHERE (ts.TarchiveID = t.TarchiveID AND ts.SeriesDescription LIKE '".$series_description."')) 
+              THEN 'In DICOM'
+              ELSE 'Missing' 
+           END as tarchive_loc,
+           (SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project,
+           (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID) as subproject,
+           CASE
+              WHEN m.".$scan_done." IS NULL THEN 'Incomplete'
+              ELSE 'Complete'
+           END AS mri_parameter_form,
+           CASE 
+              WHEN m.".$scan_done." IS NULL THEN ''
+              WHEN (m.".$scan_done." = 'Complete' OR m.".$scan_done." = 'Partial') THEN 'Yes'
+              ELSE 'No'
+           END as scan_done,
+           CASE 
+              WHEN (fi.fileID IS NULL AND mvl.PatientName IS NULL) THEN 'Missing'
+              WHEN fi.fileID IS NOT NULL THEN 'In Imaging Browser'
+              WHEN mvl.PatientName IS NOT NULL THEN 'In MRI Violated Scans'
+           END as scan_location,
+           CASE 
+              WHEN qc.Selected = '' THEN 'False' 
+              WHEN qc.Selected = 'true' THEN 'True'
+           END as selected,
+           qc.QCStatus as qc_status,
+           mu.uploadedBy as uploaded_by,
+           f.CommentID as CommentID ";
+        $joins  = " FROM flag f
+        LEFT JOIN session s ON (f.SessionID=s.ID)
+        LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
+        LEFT JOIN tarchive t ON (t.SessionID=s.ID)
+        LEFT JOIN files fi ON (fi.SessionID = s.ID
+        AND fi.AcquisitionProtocolID=".$acqID.")
+        LEFT JOIN mri_violations_log mvl ON (mvl.CandID = s.CandID AND mvl.Scan_type=".$acqID." AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))
+        LEFT JOIN candidate c ON (s.CandID=c.CandID)
+        LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
+        LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID) ";
+        $where  = " WHERE 1=1
+          AND NOT f.CommentID LIKE 'DDE%'
+          AND f.Test_name='mri_parameter_form'
+          AND s.Active='Y'
+          AND s.CenterID <> '1' ";
 
-        #print_r($select);
+        $query = $select.$joins.$where;
 
-            $joins = " FROM flag f
-            LEFT JOIN session s ON (f.SessionID=s.ID)
-            LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
-            LEFT JOIN tarchive t ON (t.SessionID=s.ID)
-            LEFT JOIN files fi ON (fi.SessionID = s.ID AND fi.AcquisitionProtocolID=".$acqID.")
-            LEFT JOIN mri_violations_log mvl ON (mvl.CandID = s.CandID AND mvl.Scan_type=".$acqID." AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))
-            LEFT JOIN candidate c ON (s.CandID=c.CandID)
-            LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
-            LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID) ";
-           
-            $where = " WHERE 1=1
-              AND NOT f.CommentID LIKE 'DDE%'
-              AND f.Test_name='mri_parameter_form'
-              AND s.Active='Y'
-              AND s.CenterID <> '1' ";
-
-              $query = $select.$joins.$where;
-
-              return $query;
+        return $query;
     }
     /**
      * Create a form to filter behavioral QC by various criteria
@@ -203,9 +201,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 
         $scan_types = $this->_getScanTypes();
 
-        $projectList = Utility::getProjectList();
+        $projectList    = Utility::getProjectList();
         $subprojectList = Utility::getSubprojectList();
-
 
         $uploaderList =[];
         $uploaders    = $db -> pselect(
@@ -217,10 +214,10 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         }
 
         $scan_location = array(
-                        "In Imaging Browser"    => "Found in Imaging Browser",
-                        "In MRI Violated Scans" => "Found in MRI Violated Scans",
-                        "Missing"               => "Missing",
-                       );
+                          "In Imaging Browser"    => "Found in Imaging Browser",
+                          "In MRI Violated Scans" => "Found in MRI Violated Scans",
+                          "Missing"               => "Missing",
+                         );
         // Form Elements
         $this->addSelect('site', 'Site', $siteList);
         $this->addBasicText('candId', 'DCCID', ["size" => 9, "maxlength" => 7]);
@@ -248,24 +245,21 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 
         $db =& Database::singleton();
 
-       //print_r($this->_getAllProtocolNamesArray('4000013'));
-
         $scan_types = $this->_getScanTypes();
         foreach ($scan_types as $scan_type) {
-            $query_params = array('scan_type' => $scan_type);
+            $query_params        = array('scan_type' => $scan_type);
             $acq_IDs[$scan_type] = $db->pselectOne("SELECT ID FROM mri_scan_type WHERE Scan_type=:scan_type", $query_params);
             if (substr("$scan_type", 0, 2) == "t1") {
-                $scans_done[$scan_type] = "T1_Scan_done";
+                $scans_done[$scan_type]         = "T1_Scan_done";
                 $series_description[$scan_type] = "t1_%";
             } elseif (substr("$scan_type", 0, 2) == "t2") {
-                $scans_done[$scan_type] = "T2_Scan_done";
+                $scans_done[$scan_type]         = "T2_Scan_done";
                 $series_description[$scan_type] = "t2_%";
             } elseif (substr("$scan_type", 0, 3) == "dti") {
-                $scans_done[$scan_type] = "dti_Scan_done";
+                $scans_done[$scan_type]         = "dti_Scan_done";
                 $series_description[$scan_type] = "T2 and PD";
             }
         }
-
 
         foreach ($scan_types as $scan_type) {
             $scan_types[$scan_type] = $this->_buildQuery($scan_type, $scans_done[$scan_type], $acq_IDs[$scan_type], $series_description[$scan_type]);
@@ -279,7 +273,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         );
 
         $this->query = " FROM ( " . $query . " ) as tmp";
-
 
         $this->columns = [
                           'PSCID',
@@ -298,7 +291,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                           'uploaded_by',
                           'selected',
                           'CommentID',
-                          'TarchiveID'
+                          'TarchiveID',
                          ];
 
         $this->group_by = 'PSCID,
@@ -338,7 +331,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                           'Uploaded By',
                           'Selected',
                           'CommentID',
-                          'TarchiveID'
+                          'TarchiveID',
                          ];
 
         return true;

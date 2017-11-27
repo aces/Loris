@@ -5,7 +5,7 @@
  * PHP Version 5
  *
  * @category Module
- * @package  Quality Control
+ * @package  Quality_Control
  * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
@@ -16,7 +16,7 @@
  * PHP Version 5
  *
  * @category Module
- * @package  Quality Control
+ * @package  Quality_Control
  * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
@@ -38,7 +38,8 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
         return $user->hasPermission('data_team_helper');
     }
     /**
-     * Override default behaviour, since the page is loaded from qualityControlIndex.js
+     * Override default behaviour, since the page is
+     * loaded from qualityControlIndex.js
      *
      * @return void
      * @access public
@@ -57,8 +58,8 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
      */
     function _setFilterForm()
     {
-        $user =& User::singleton();
-        $db   = Database::singleton();
+        $user      =& User::singleton();
+        $db        = Database::singleton();
         $siteList  = array();
         $visitList = Utility::getVisitList();
         // allow to view all sites data through filter
@@ -94,7 +95,7 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
         $this->addBasicText('candId', 'DCCID', ["size" => 9, "maxlength" => 7]);
         $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
         $this->addSelect('site', 'Site', $siteList);
-        $this->addSelect('project', 'Project',$projectList);
+        $this->addSelect('project', 'Project', $projectList);
         return true;
     }
     /**
@@ -105,7 +106,7 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $user =& User::singleton();
+        $user           =& User::singleton();
         $config         =& NDB_Config::singleton();
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
         for ($i=0; $i<count($ddeInstruments); ++$i) {
@@ -129,30 +130,26 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
                 AND (f.commentid NOT LIKE 'DDE_%')
             ";
         }
-        $this->columns = [
-            's.Visit_label as visit_label',
-            's.CandID as cand_id',
-            'c.PSCID as pscid',
-            't.Full_name as instrument',
-            's.ID',
-            'f.SessionID',
-            'f.data_entry',
-            'f.commentid',
-            'f.test_name'
-        ];
-        $query = $query . $where;
-        $this->query = $query;
-        /*if (!$user->hasPermission('access_all_profiles')) {
-            $site_arr     = implode(",", $user->getCenterIDs());
-            $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
-        }*/
+        $this->columns  = [
+                           's.Visit_label as visit_label',
+                           's.CandID as cand_id',
+                           'c.PSCID as pscid',
+                           't.Full_name as instrument',
+                           's.ID',
+                           'f.SessionID',
+                           'f.data_entry',
+                           'f.commentid',
+                           'f.test_name',
+                          ];
+        $query          = $query . $where;
+        $this->query    = $query;
         $this->order_by = 'f.commentid';
         $this->headers  = [
-            'Visit Label',
-            'DCCID',
-            'PSCID',
-            'Instrument',
-        ];
+                           'Visit Label',
+                           'DCCID',
+                           'PSCID',
+                           'Instrument',
+                          ];
         return true;
     }
     /**
@@ -180,7 +177,7 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-                $baseURL . "/quality_control/js/qualityControlIndex.js",
+             $baseURL . "/quality_control/js/qualityControlIndex.js",
             )
         );
     }
