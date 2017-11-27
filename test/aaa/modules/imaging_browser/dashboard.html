@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Dashboard for /var/www/loris/modules/imaging_browser</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../../css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../css/nv.d3.min.css" rel="stylesheet">
+  <link href="../../css/style.css" rel="stylesheet">
+  <!--[if lt IE 9]>
+  <script src="../../js/html5shiv.min.js"></script>
+  <script src="../../js/respond.min.js"></script>
+  <![endif]-->
+ </head>
+ <body>
+  <header>
+   <div class="container">
+    <div class="row">
+     <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="../../index.html">/var/www/loris</a></li>
+        <li><a href="../index.html">modules</a></li>
+        <li><a href="index.html">imaging_browser</a></li>
+        <li class="active">(Dashboard)</li>
+
+      </ol>
+     </div>
+    </div>
+   </div>
+  </header>
+  <div class="container">
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Classes</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="classCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="classComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="php/NDB_Menu_Filter_imaging_browser.class.inc.html#28">NDB_Menu_Filter_Imaging_Browser</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#30">NDB_Form_Imaging_Browser</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/Imaging_Session_ControlPanel.class.inc.html#184">MRINavigation</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/Imaging_Session_ControlPanel.class.inc.html#28">Imaging_Session_ControlPanel</a></td><td class="text-right">0%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#30">NDB_Form_Imaging_Browser</a></td><td class="text-right">4160</td></tr>
+       <tr><td><a href="php/NDB_Menu_Filter_imaging_browser.class.inc.html#28">NDB_Menu_Filter_Imaging_Browser</a></td><td class="text-right">1806</td></tr>
+       <tr><td><a href="php/Imaging_Session_ControlPanel.class.inc.html#184">MRINavigation</a></td><td class="text-right">56</td></tr>
+       <tr><td><a href="php/Imaging_Session_ControlPanel.class.inc.html#28">Imaging_Session_ControlPanel</a></td><td class="text-right">56</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Methods</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="methodCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="methodComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#733"><abbr title="NDB_Form_Imaging_Browser::getControlPanel">getControlPanel</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#743"><abbr title="NDB_Form_Imaging_Browser::getJSDependencies">getJSDependencies</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#767"><abbr title="NDB_Form_Imaging_Browser::getCSSDependencies">getCSSDependencies</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#677"><abbr title="NDB_Form_Imaging_Browser::getSubjectData">getSubjectData</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#653"><abbr title="NDB_Form_Imaging_Browser::getHeaderTable">getHeaderTable</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#608"><abbr title="NDB_Form_Imaging_Browser::_getFilesAcrossTimepoints">_getFilesAcrossTimepoints</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#637"><abbr title="NDB_Form_Imaging_Browser::_getSelected">_getSelected</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Menu_Filter_imaging_browser.class.inc.html#36"><abbr title="NDB_Menu_Filter_Imaging_Browser::_hasAccess">_hasAccess</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Menu_Filter_imaging_browser.class.inc.html#61"><abbr title="NDB_Menu_Filter_Imaging_Browser::_setupVariables">_setupVariables</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Menu_Filter_imaging_browser.class.inc.html#474"><abbr title="NDB_Menu_Filter_Imaging_Browser::getCSSDependencies">getCSSDependencies</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Menu_Filter_imaging_browser.class.inc.html#491"><abbr title="NDB_Menu_Filter_Imaging_Browser::getJSDependencies">getJSDependencies</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Menu_Filter_imaging_browser.class.inc.html#455"><abbr title="NDB_Menu_Filter_Imaging_Browser::toArray">toArray</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Menu_Filter_imaging_browser.class.inc.html#404"><abbr title="NDB_Menu_Filter_Imaging_Browser::_addValidFilters">_addValidFilters</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Menu_Filter_imaging_browser.class.inc.html#257"><abbr title="NDB_Menu_Filter_Imaging_Browser::anonymous function">anonymous function</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Menu_Filter_imaging_browser.class.inc.html#270"><abbr title="NDB_Menu_Filter_Imaging_Browser::_setFilterForm">_setFilterForm</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#520"><abbr title="NDB_Form_Imaging_Browser::_updateVisitStatus">_updateVisitStatus</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#470"><abbr title="NDB_Form_Imaging_Browser::_updateSelected">_updateSelected</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/Imaging_Session_ControlPanel.class.inc.html#214"><abbr title="MRINavigation::_splitURL">_splitURL</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/Imaging_Session_ControlPanel.class.inc.html#229"><abbr title="MRINavigation::_otherLink">_otherLink</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/Imaging_Session_ControlPanel.class.inc.html#247"><abbr title="MRINavigation::nextLink">nextLink</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/Imaging_Session_ControlPanel.class.inc.html#193"><abbr title="MRINavigation::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/Imaging_Session_ControlPanel.class.inc.html#159"><abbr title="Imaging_Session_ControlPanel::display">display</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/Imaging_Session_ControlPanel.class.inc.html#52"><abbr title="Imaging_Session_ControlPanel::_hasAccess">_hasAccess</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/Imaging_Session_ControlPanel.class.inc.html#63"><abbr title="Imaging_Session_ControlPanel::getData">getData</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/Imaging_Session_ControlPanel.class.inc.html#256"><abbr title="MRINavigation::prevLink">prevLink</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#48"><abbr title="NDB_Form_Imaging_Browser::_hasAccess">_hasAccess</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#360"><abbr title="NDB_Form_Imaging_Browser::_getDate">_getDate</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#379"><abbr title="NDB_Form_Imaging_Browser::_updateStatus">_updateStatus</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#334"><abbr title="NDB_Form_Imaging_Browser::_getRejected">_getRejected</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#138"><abbr title="NDB_Form_Imaging_Browser::_setFilesData">_setFilesData</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#71"><abbr title="NDB_Form_Imaging_Browser::_hasQCPerm">_hasQCPerm</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#83"><abbr title="NDB_Form_Imaging_Browser::viewSession">viewSession</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="php/Imaging_Session_ControlPanel.class.inc.html#42"><abbr title="Imaging_Session_ControlPanel::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="php/NDB_Menu_Filter_imaging_browser.class.inc.html#404"><abbr title="NDB_Menu_Filter_Imaging_Browser::_addValidFilters">_addValidFilters</abbr></a></td><td class="text-right">342</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#379"><abbr title="NDB_Form_Imaging_Browser::_updateStatus">_updateStatus</abbr></a></td><td class="text-right">110</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#138"><abbr title="NDB_Form_Imaging_Browser::_setFilesData">_setFilesData</abbr></a></td><td class="text-right">110</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#83"><abbr title="NDB_Form_Imaging_Browser::viewSession">viewSession</abbr></a></td><td class="text-right">90</td></tr>
+       <tr><td><a href="php/NDB_Menu_Filter_imaging_browser.class.inc.html#270"><abbr title="NDB_Menu_Filter_Imaging_Browser::_setFilterForm">_setFilterForm</abbr></a></td><td class="text-right">72</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#520"><abbr title="NDB_Form_Imaging_Browser::_updateVisitStatus">_updateVisitStatus</abbr></a></td><td class="text-right">72</td></tr>
+       <tr><td><a href="php/NDB_Menu_Filter_imaging_browser.class.inc.html#61"><abbr title="NDB_Menu_Filter_Imaging_Browser::_setupVariables">_setupVariables</abbr></a></td><td class="text-right">56</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#470"><abbr title="NDB_Form_Imaging_Browser::_updateSelected">_updateSelected</abbr></a></td><td class="text-right">42</td></tr>
+       <tr><td><a href="php/NDB_Menu_Filter_imaging_browser.class.inc.html#36"><abbr title="NDB_Menu_Filter_Imaging_Browser::_hasAccess">_hasAccess</abbr></a></td><td class="text-right">20</td></tr>
+       <tr><td><a href="php/Imaging_Session_ControlPanel.class.inc.html#63"><abbr title="Imaging_Session_ControlPanel::getData">getData</abbr></a></td><td class="text-right">20</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#653"><abbr title="NDB_Form_Imaging_Browser::getHeaderTable">getHeaderTable</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#334"><abbr title="NDB_Form_Imaging_Browser::_getRejected">_getRejected</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#48"><abbr title="NDB_Form_Imaging_Browser::_hasAccess">_hasAccess</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="php/Imaging_Session_ControlPanel.class.inc.html#229"><abbr title="MRINavigation::_otherLink">_otherLink</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="php/NDB_Menu_Filter_imaging_browser.class.inc.html#455"><abbr title="NDB_Menu_Filter_Imaging_Browser::toArray">toArray</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="php/Imaging_Session_ControlPanel.class.inc.html#193"><abbr title="MRINavigation::__construct">__construct</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#677"><abbr title="NDB_Form_Imaging_Browser::getSubjectData">getSubjectData</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#608"><abbr title="NDB_Form_Imaging_Browser::_getFilesAcrossTimepoints">_getFilesAcrossTimepoints</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#360"><abbr title="NDB_Form_Imaging_Browser::_getDate">_getDate</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="php/NDB_Form_imaging_browser.class.inc.html#743"><abbr title="NDB_Form_Imaging_Browser::getJSDependencies">getJSDependencies</abbr></a></td><td class="text-right">6</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <hr/>
+    <p>
+     <small>Generated by <a href="http://github.com/sebastianbergmann/php-code-coverage" target="_top">PHP_CodeCoverage 2.2.4</a> using <a href="https://secure.php.net/" target="_top">PHP 5.5.9-1ubuntu4.21</a> and <a href="http://phpunit.de/">PHPUnit 4.3.5</a> at Wed May 31 15:34:12 UTC 2017.</small>
+    </p>
+   </footer>
+  </div>
+  <script src="../../js/jquery.min.js" type="text/javascript"></script>
+  <script src="../../js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="../../js/holder.min.js" type="text/javascript"></script>
+  <script src="../../js/d3.min.js" type="text/javascript"></script>
+  <script src="../../js/nv.d3.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+$(document).ready(function() {
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#classCoverageDistribution svg')
+      .datum(getCoverageDistributionData([4,0,0,0,0,0,0,0,0,0,0,0], "Class Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#methodCoverageDistribution svg')
+      .datum(getCoverageDistributionData([33,0,0,0,0,0,0,0,0,0,0,0], "Method Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getCoverageDistributionData(data, label) {
+    var labels = [
+      '0%',
+      '0-10%',
+      '10-20%',
+      '20-30%',
+      '30-40%',
+      '40-50%',
+      '50-60%',
+      '60-70%',
+      '70-80%',
+      '80-90%',
+      '90-100%',
+      '100%'
+    ];
+    var values = [];
+    $.each(labels, function(key) {
+      values.push({x: labels[key], y: data[key]});
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.tooltipContent(function(key, y, e, graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Cyclomatic Complexity');
+
+    d3.select('#classComplexity svg')
+      .datum(getComplexityData([[0,7,"<a href=\"php\/Imaging_Session_ControlPanel.class.inc.html#28\">Imaging_Session_ControlPanel<\/a>"],[0,7,"<a href=\"php\/Imaging_Session_ControlPanel.class.inc.html#184\">MRINavigation<\/a>"],[0,64,"<a href=\"php\/NDB_Form_imaging_browser.class.inc.html#30\">NDB_Form_Imaging_Browser<\/a>"],[0,42,"<a href=\"php\/NDB_Menu_Filter_imaging_browser.class.inc.html#28\">NDB_Menu_Filter_Imaging_Browser<\/a>"]], 'Class Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.tooltipContent(function(key, y, e, graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Method Complexity');
+
+    d3.select('#methodComplexity svg')
+      .datum(getComplexityData([[0,1,"<a href=\"php\/Imaging_Session_ControlPanel.class.inc.html#42\">Imaging_Session_ControlPanel::__construct<\/a>"],[0,1,"<a href=\"php\/Imaging_Session_ControlPanel.class.inc.html#52\">Imaging_Session_ControlPanel::_hasAccess<\/a>"],[0,4,"<a href=\"php\/Imaging_Session_ControlPanel.class.inc.html#63\">Imaging_Session_ControlPanel::getData<\/a>"],[0,1,"<a href=\"php\/Imaging_Session_ControlPanel.class.inc.html#159\">Imaging_Session_ControlPanel::display<\/a>"],[0,2,"<a href=\"php\/Imaging_Session_ControlPanel.class.inc.html#193\">MRINavigation::__construct<\/a>"],[0,1,"<a href=\"php\/Imaging_Session_ControlPanel.class.inc.html#214\">MRINavigation::_splitURL<\/a>"],[0,2,"<a href=\"php\/Imaging_Session_ControlPanel.class.inc.html#229\">MRINavigation::_otherLink<\/a>"],[0,1,"<a href=\"php\/Imaging_Session_ControlPanel.class.inc.html#247\">MRINavigation::nextLink<\/a>"],[0,1,"<a href=\"php\/Imaging_Session_ControlPanel.class.inc.html#256\">MRINavigation::prevLink<\/a>"],[0,3,"<a href=\"php\/NDB_Form_imaging_browser.class.inc.html#48\">NDB_Form_Imaging_Browser::_hasAccess<\/a>"],[0,1,"<a href=\"php\/NDB_Form_imaging_browser.class.inc.html#71\">NDB_Form_Imaging_Browser::_hasQCPerm<\/a>"],[0,9,"<a href=\"php\/NDB_Form_imaging_browser.class.inc.html#83\">NDB_Form_Imaging_Browser::viewSession<\/a>"],[0,10,"<a href=\"php\/NDB_Form_imaging_browser.class.inc.html#138\">NDB_Form_Imaging_Browser::_setFilesData<\/a>"],[0,3,"<a href=\"php\/NDB_Form_imaging_browser.class.inc.html#334\">NDB_Form_Imaging_Browser::_getRejected<\/a>"],[0,2,"<a href=\"php\/NDB_Form_imaging_browser.class.inc.html#360\">NDB_Form_Imaging_Browser::_getDate<\/a>"],[0,10,"<a href=\"php\/NDB_Form_imaging_browser.class.inc.html#379\">NDB_Form_Imaging_Browser::_updateStatus<\/a>"],[0,6,"<a href=\"php\/NDB_Form_imaging_browser.class.inc.html#470\">NDB_Form_Imaging_Browser::_updateSelected<\/a>"],[0,8,"<a href=\"php\/NDB_Form_imaging_browser.class.inc.html#520\">NDB_Form_Imaging_Browser::_updateVisitStatus<\/a>"],[0,2,"<a href=\"php\/NDB_Form_imaging_browser.class.inc.html#608\">NDB_Form_Imaging_Browser::_getFilesAcrossTimepoints<\/a>"],[0,1,"<a href=\"php\/NDB_Form_imaging_browser.class.inc.html#637\">NDB_Form_Imaging_Browser::_getSelected<\/a>"],[0,3,"<a href=\"php\/NDB_Form_imaging_browser.class.inc.html#653\">NDB_Form_Imaging_Browser::getHeaderTable<\/a>"],[0,2,"<a href=\"php\/NDB_Form_imaging_browser.class.inc.html#677\">NDB_Form_Imaging_Browser::getSubjectData<\/a>"],[0,1,"<a href=\"php\/NDB_Form_imaging_browser.class.inc.html#733\">NDB_Form_Imaging_Browser::getControlPanel<\/a>"],[0,2,"<a href=\"php\/NDB_Form_imaging_browser.class.inc.html#743\">NDB_Form_Imaging_Browser::getJSDependencies<\/a>"],[0,1,"<a href=\"php\/NDB_Form_imaging_browser.class.inc.html#767\">NDB_Form_Imaging_Browser::getCSSDependencies<\/a>"],[0,4,"<a href=\"php\/NDB_Menu_Filter_imaging_browser.class.inc.html#36\">NDB_Menu_Filter_Imaging_Browser::_hasAccess<\/a>"],[0,7,"<a href=\"php\/NDB_Menu_Filter_imaging_browser.class.inc.html#61\">NDB_Menu_Filter_Imaging_Browser::_setupVariables<\/a>"],[0,1,"<a href=\"php\/NDB_Menu_Filter_imaging_browser.class.inc.html#257\">NDB_Menu_Filter_Imaging_Browser::anonymous function<\/a>"],[0,8,"<a href=\"php\/NDB_Menu_Filter_imaging_browser.class.inc.html#270\">NDB_Menu_Filter_Imaging_Browser::_setFilterForm<\/a>"],[0,18,"<a href=\"php\/NDB_Menu_Filter_imaging_browser.class.inc.html#404\">NDB_Menu_Filter_Imaging_Browser::_addValidFilters<\/a>"],[0,2,"<a href=\"php\/NDB_Menu_Filter_imaging_browser.class.inc.html#455\">NDB_Menu_Filter_Imaging_Browser::toArray<\/a>"],[0,1,"<a href=\"php\/NDB_Menu_Filter_imaging_browser.class.inc.html#474\">NDB_Menu_Filter_Imaging_Browser::getCSSDependencies<\/a>"],[0,1,"<a href=\"php\/NDB_Menu_Filter_imaging_browser.class.inc.html#491\">NDB_Menu_Filter_Imaging_Browser::getJSDependencies<\/a>"]], 'Method Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getComplexityData(data, label) {
+    var values = [];
+    $.each(data, function(key) {
+      var value = Math.round(data[key][0]*100) / 100;
+      values.push({
+        x: value,
+        y: data[key][1],
+        class: data[key][2],
+        size: 0.05,
+        shape: 'diamond'
+      });
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+});
+  </script>
+ </body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Dashboard for /var/www/loris/modules/server_processes_manager/php</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../../../css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../../css/nv.d3.min.css" rel="stylesheet">
+  <link href="../../../css/style.css" rel="stylesheet">
+  <!--[if lt IE 9]>
+  <script src="../../../js/html5shiv.min.js"></script>
+  <script src="../../../js/respond.min.js"></script>
+  <![endif]-->
+ </head>
+ <body>
+  <header>
+   <div class="container">
+    <div class="row">
+     <div class="col-md-12">
+      <ol class="breadcrumb">
+        <li><a href="../../../index.html">/var/www/loris</a></li>
+        <li><a href="../../index.html">modules</a></li>
+        <li><a href="../index.html">server_processes_manager</a></li>
+        <li><a href="index.html">php</a></li>
+        <li class="active">(Dashboard)</li>
+
+      </ol>
+     </div>
+    </div>
+   </div>
+  </header>
+  <div class="container">
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Classes</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="classCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="classComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="ServerProcessFactory.class.inc.html#27">ServerProcessFactory</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ServerProcessLauncher.class.inc.html#33">ServerProcessLauncher</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ServerProcessesMonitor.class.inc.html#33">ServerProcessesMonitor</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Process.class.inc.html#27">Process</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NDB_Menu_Filter_server_processes_manager.class.inc.html#28">NDB_Menu_Filter_Server_Processes_Manager</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="DefaultDatabaseProvider.class.inc.html#26">DefaultDatabaseProvider</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="DefaultProcessMonitor.class.inc.html#28">DefaultProcessMonitor</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MriUploadServerProcess.class.inc.html#26">MriUploadServerProcess</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#28">AbstractServerProcess</a></td><td class="text-right">0%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#28">AbstractServerProcess</a></td><td class="text-right">2352</td></tr>
+       <tr><td><a href="ServerProcessesMonitor.class.inc.html#33">ServerProcessesMonitor</a></td><td class="text-right">506</td></tr>
+       <tr><td><a href="Process.class.inc.html#27">Process</a></td><td class="text-right">240</td></tr>
+       <tr><td><a href="MriUploadServerProcess.class.inc.html#26">MriUploadServerProcess</a></td><td class="text-right">182</td></tr>
+       <tr><td><a href="ServerProcessLauncher.class.inc.html#33">ServerProcessLauncher</a></td><td class="text-right">156</td></tr>
+       <tr><td><a href="DefaultProcessMonitor.class.inc.html#28">DefaultProcessMonitor</a></td><td class="text-right">20</td></tr>
+       <tr><td><a href="ServerProcessFactory.class.inc.html#27">ServerProcessFactory</a></td><td class="text-right">6</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Methods</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="methodCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="methodComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Process.class.inc.html#175"><abbr title="Process::isStarted">isStarted</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Process.class.inc.html#133"><abbr title="Process::start">start</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Process.class.inc.html#193"><abbr title="Process::getShellCommand">getShellCommand</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Process.class.inc.html#203"><abbr title="Process::getPid">getPid</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Process.class.inc.html#213"><abbr title="Process::getOutFile">getOutFile</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Process.class.inc.html#117"><abbr title="Process::getProcessMonitor">getProcessMonitor</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Process.class.inc.html#107"><abbr title="Process::setProcessMonitor">setProcessMonitor</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NDB_Menu_Filter_server_processes_manager.class.inc.html#48"><abbr title="NDB_Menu_Filter_Server_Processes_Manager::_setupVariables">_setupVariables</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NDB_Menu_Filter_server_processes_manager.class.inc.html#94"><abbr title="NDB_Menu_Filter_Server_Processes_Manager::_setFilterForm">_setFilterForm</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NDB_Menu_Filter_server_processes_manager.class.inc.html#107"><abbr title="NDB_Menu_Filter_Server_Processes_Manager::getJSDependencies">getJSDependencies</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Process.class.inc.html#84"><abbr title="Process::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Process.class.inc.html#223"><abbr title="Process::getErrFile">getErrFile</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Process.class.inc.html#233"><abbr title="Process::getExitCodeFile">getExitCodeFile</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ServerProcessLauncher.class.inc.html#166"><abbr title="ServerProcessLauncher::mriUpload">mriUpload</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ServerProcessLauncher.class.inc.html#147"><abbr title="ServerProcessLauncher::_launch">_launch</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ServerProcessesMonitor.class.inc.html#50"><abbr title="ServerProcessesMonitor::setDatabaseProvider">setDatabaseProvider</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ServerProcessesMonitor.class.inc.html#60"><abbr title="ServerProcessesMonitor::getDatabaseProvider">getDatabaseProvider</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ServerProcessesMonitor.class.inc.html#90"><abbr title="ServerProcessesMonitor::getProcessesState">getProcessesState</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ServerProcessLauncher.class.inc.html#134"><abbr title="ServerProcessLauncher::_okToExecute">_okToExecute</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ServerProcessLauncher.class.inc.html#91"><abbr title="ServerProcessLauncher::_saveProcess">_saveProcess</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ServerProcessFactory.class.inc.html#50"><abbr title="ServerProcessFactory::getServerProcess">getServerProcess</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ServerProcessLauncher.class.inc.html#48"><abbr title="ServerProcessLauncher::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ServerProcessLauncher.class.inc.html#59"><abbr title="ServerProcessLauncher::getDatabaseProvider">getDatabaseProvider</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ServerProcessLauncher.class.inc.html#76"><abbr title="ServerProcessLauncher::setDatabaseProvider">setDatabaseProvider</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NDB_Menu_Filter_server_processes_manager.class.inc.html#37"><abbr title="NDB_Menu_Filter_Server_Processes_Manager::_hasAccess">_hasAccess</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MriUploadServerProcess.class.inc.html#188"><abbr title="MriUploadServerProcess::deleteProcessFiles">deleteProcessFiles</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#241"><abbr title="AbstractServerProcess::execute">execute</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#229"><abbr title="AbstractServerProcess::getStartTime">getStartTime</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#278"><abbr title="AbstractServerProcess::getTmpDir">getTmpDir</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#289"><abbr title="AbstractServerProcess::isRunning">isRunning</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#307"><abbr title="AbstractServerProcess::getExitCode">getExitCode</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#219"><abbr title="AbstractServerProcess::getUserId">getUserId</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#209"><abbr title="AbstractServerProcess::getExitCodeFile">getExitCodeFile</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#169"><abbr title="AbstractServerProcess::getId">getId</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#179"><abbr title="AbstractServerProcess::getPid">getPid</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#189"><abbr title="AbstractServerProcess::getStdoutFile">getStdoutFile</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#199"><abbr title="AbstractServerProcess::getStderrFile">getStderrFile</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#331"><abbr title="AbstractServerProcess::getExitText">getExitText</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#356"><abbr title="AbstractServerProcess::getEndTime">getEndTime</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MriUploadServerProcess.class.inc.html#131"><abbr title="MriUploadServerProcess::getShellCommand">getShellCommand</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MriUploadServerProcess.class.inc.html#85"><abbr title="MriUploadServerProcess::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MriUploadServerProcess.class.inc.html#144"><abbr title="MriUploadServerProcess::getProgress">getProgress</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MriUploadServerProcess.class.inc.html#158"><abbr title="MriUploadServerProcess::computeExitText">computeExitText</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MriUploadServerProcess.class.inc.html#176"><abbr title="MriUploadServerProcess::getType">getType</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="DefaultProcessMonitor.class.inc.html#40"><abbr title="DefaultProcessMonitor::getRunningProcesses">getRunningProcesses</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="DefaultDatabaseProvider.class.inc.html#34"><abbr title="DefaultDatabaseProvider::getDatabase">getDatabase</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#385"><abbr title="AbstractServerProcess::_syncTaskProperties">_syncTaskProperties</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#519"><abbr title="AbstractServerProcess::deleteProcessFiles">deleteProcessFiles</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#531"><abbr title="AbstractServerProcess::setDatabaseProvider">setDatabaseProvider</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#541"><abbr title="AbstractServerProcess::getDatabaseProvider">getDatabaseProvider</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#145"><abbr title="AbstractServerProcess::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="ServerProcessesMonitor.class.inc.html#90"><abbr title="ServerProcessesMonitor::getProcessesState">getProcessesState</abbr></a></td><td class="text-right">380</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#385"><abbr title="AbstractServerProcess::_syncTaskProperties">_syncTaskProperties</abbr></a></td><td class="text-right">306</td></tr>
+       <tr><td><a href="DefaultProcessMonitor.class.inc.html#40"><abbr title="DefaultProcessMonitor::getRunningProcesses">getRunningProcesses</abbr></a></td><td class="text-right">20</td></tr>
+       <tr><td><a href="ServerProcessLauncher.class.inc.html#91"><abbr title="ServerProcessLauncher::_saveProcess">_saveProcess</abbr></a></td><td class="text-right">20</td></tr>
+       <tr><td><a href="MriUploadServerProcess.class.inc.html#158"><abbr title="MriUploadServerProcess::computeExitText">computeExitText</abbr></a></td><td class="text-right">20</td></tr>
+       <tr><td><a href="Process.class.inc.html#133"><abbr title="Process::start">start</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="MriUploadServerProcess.class.inc.html#188"><abbr title="MriUploadServerProcess::deleteProcessFiles">deleteProcessFiles</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="MriUploadServerProcess.class.inc.html#85"><abbr title="MriUploadServerProcess::__construct">__construct</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#307"><abbr title="AbstractServerProcess::getExitCode">getExitCode</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#356"><abbr title="AbstractServerProcess::getEndTime">getEndTime</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#331"><abbr title="AbstractServerProcess::getExitText">getExitText</abbr></a></td><td class="text-right">12</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#289"><abbr title="AbstractServerProcess::isRunning">isRunning</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="ServerProcessesMonitor.class.inc.html#60"><abbr title="ServerProcessesMonitor::getDatabaseProvider">getDatabaseProvider</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#241"><abbr title="AbstractServerProcess::execute">execute</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="ServerProcessLauncher.class.inc.html#59"><abbr title="ServerProcessLauncher::getDatabaseProvider">getDatabaseProvider</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="ServerProcessLauncher.class.inc.html#147"><abbr title="ServerProcessLauncher::_launch">_launch</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Process.class.inc.html#117"><abbr title="Process::getProcessMonitor">getProcessMonitor</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#541"><abbr title="AbstractServerProcess::getDatabaseProvider">getDatabaseProvider</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="AbstractServerProcess.class.inc.html#145"><abbr title="AbstractServerProcess::__construct">__construct</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Process.class.inc.html#84"><abbr title="Process::__construct">__construct</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="Process.class.inc.html#175"><abbr title="Process::isStarted">isStarted</abbr></a></td><td class="text-right">6</td></tr>
+       <tr><td><a href="ServerProcessFactory.class.inc.html#50"><abbr title="ServerProcessFactory::getServerProcess">getServerProcess</abbr></a></td><td class="text-right">6</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <hr/>
+    <p>
+     <small>Generated by <a href="http://github.com/sebastianbergmann/php-code-coverage" target="_top">PHP_CodeCoverage 2.2.4</a> using <a href="https://secure.php.net/" target="_top">PHP 5.5.9-1ubuntu4.21</a> and <a href="http://phpunit.de/">PHPUnit 4.3.5</a> at Wed May 31 15:34:12 UTC 2017.</small>
+    </p>
+   </footer>
+  </div>
+  <script src="../../../js/jquery.min.js" type="text/javascript"></script>
+  <script src="../../../js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="../../../js/holder.min.js" type="text/javascript"></script>
+  <script src="../../../js/d3.min.js" type="text/javascript"></script>
+  <script src="../../../js/nv.d3.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+$(document).ready(function() {
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#classCoverageDistribution svg')
+      .datum(getCoverageDistributionData([9,0,0,0,0,0,0,0,0,0,0,0], "Class Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.multiBarChart();
+    chart.tooltips(false)
+      .showControls(false)
+      .showLegend(false)
+      .reduceXTicks(false)
+      .staggerLabels(true)
+      .yAxis.tickFormat(d3.format('d'));
+
+    d3.select('#methodCoverageDistribution svg')
+      .datum(getCoverageDistributionData([51,0,0,0,0,0,0,0,0,0,0,4], "Method Coverage"))
+      .transition().duration(500).call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getCoverageDistributionData(data, label) {
+    var labels = [
+      '0%',
+      '0-10%',
+      '10-20%',
+      '20-30%',
+      '30-40%',
+      '40-50%',
+      '50-60%',
+      '60-70%',
+      '70-80%',
+      '80-90%',
+      '90-100%',
+      '100%'
+    ];
+    var values = [];
+    $.each(labels, function(key) {
+      values.push({x: labels[key], y: data[key]});
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.tooltipContent(function(key, y, e, graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Cyclomatic Complexity');
+
+    d3.select('#classComplexity svg')
+      .datum(getComplexityData([[0,48,"<a href=\"AbstractServerProcess.class.inc.html#28\">AbstractServerProcess<\/a>"],[0,1,"<a href=\"DefaultDatabaseProvider.class.inc.html#26\">DefaultDatabaseProvider<\/a>"],[0,4,"<a href=\"DefaultProcessMonitor.class.inc.html#28\">DefaultProcessMonitor<\/a>"],[0,13,"<a href=\"MriUploadServerProcess.class.inc.html#26\">MriUploadServerProcess<\/a>"],[0,4,"<a href=\"NDB_Menu_Filter_server_processes_manager.class.inc.html#28\">NDB_Menu_Filter_Server_Processes_Manager<\/a>"],[0,15,"<a href=\"Process.class.inc.html#27\">Process<\/a>"],[0,2,"<a href=\"ServerProcessFactory.class.inc.html#27\">ServerProcessFactory<\/a>"],[0,12,"<a href=\"ServerProcessLauncher.class.inc.html#33\">ServerProcessLauncher<\/a>"],[0,22,"<a href=\"ServerProcessesMonitor.class.inc.html#33\">ServerProcessesMonitor<\/a>"]], 'Class Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  nv.addGraph(function() {
+    var chart = nv.models.scatterChart()
+      .showDistX(true)
+      .showDistY(true)
+      .showLegend(false)
+      .forceX([0, 100]);
+    chart.tooltipContent(function(key, y, e, graph) {
+      return '<p>' + graph.point.class + '</p>';
+    });
+
+    chart.xAxis.axisLabel('Code Coverage (in percent)');
+    chart.yAxis.axisLabel('Method Complexity');
+
+    d3.select('#methodComplexity svg')
+      .datum(getComplexityData([[0,2,"<a href=\"AbstractServerProcess.class.inc.html#145\">AbstractServerProcess::__construct<\/a>"],[0,1,"<a href=\"AbstractServerProcess.class.inc.html#169\">AbstractServerProcess::getId<\/a>"],[0,1,"<a href=\"AbstractServerProcess.class.inc.html#179\">AbstractServerProcess::getPid<\/a>"],[0,1,"<a href=\"AbstractServerProcess.class.inc.html#189\">AbstractServerProcess::getStdoutFile<\/a>"],[0,1,"<a href=\"AbstractServerProcess.class.inc.html#199\">AbstractServerProcess::getStderrFile<\/a>"],[0,1,"<a href=\"AbstractServerProcess.class.inc.html#209\">AbstractServerProcess::getExitCodeFile<\/a>"],[0,1,"<a href=\"AbstractServerProcess.class.inc.html#219\">AbstractServerProcess::getUserId<\/a>"],[0,1,"<a href=\"AbstractServerProcess.class.inc.html#229\">AbstractServerProcess::getStartTime<\/a>"],[0,2,"<a href=\"AbstractServerProcess.class.inc.html#241\">AbstractServerProcess::execute<\/a>"],[0,1,"<a href=\"AbstractServerProcess.class.inc.html#278\">AbstractServerProcess::getTmpDir<\/a>"],[0,2,"<a href=\"AbstractServerProcess.class.inc.html#289\">AbstractServerProcess::isRunning<\/a>"],[0,3,"<a href=\"AbstractServerProcess.class.inc.html#307\">AbstractServerProcess::getExitCode<\/a>"],[0,3,"<a href=\"AbstractServerProcess.class.inc.html#331\">AbstractServerProcess::getExitText<\/a>"],[0,3,"<a href=\"AbstractServerProcess.class.inc.html#356\">AbstractServerProcess::getEndTime<\/a>"],[0,17,"<a href=\"AbstractServerProcess.class.inc.html#385\">AbstractServerProcess::_syncTaskProperties<\/a>"],[0,1,"<a href=\"AbstractServerProcess.class.inc.html#519\">AbstractServerProcess::deleteProcessFiles<\/a>"],[0,1,"<a href=\"AbstractServerProcess.class.inc.html#531\">AbstractServerProcess::setDatabaseProvider<\/a>"],[0,2,"<a href=\"AbstractServerProcess.class.inc.html#541\">AbstractServerProcess::getDatabaseProvider<\/a>"],[100,1,"<a href=\"AbstractServerProcess.class.inc.html#557\">AbstractServerProcess::getShellCommand<\/a>"],[100,1,"<a href=\"AbstractServerProcess.class.inc.html#565\">AbstractServerProcess::getProgress<\/a>"],[100,1,"<a href=\"AbstractServerProcess.class.inc.html#576\">AbstractServerProcess::computeExitText<\/a>"],[100,1,"<a href=\"AbstractServerProcess.class.inc.html#584\">AbstractServerProcess::getType<\/a>"],[0,1,"<a href=\"DefaultDatabaseProvider.class.inc.html#34\">DefaultDatabaseProvider::getDatabase<\/a>"],[0,4,"<a href=\"DefaultProcessMonitor.class.inc.html#40\">DefaultProcessMonitor::getRunningProcesses<\/a>"],[0,3,"<a href=\"MriUploadServerProcess.class.inc.html#85\">MriUploadServerProcess::__construct<\/a>"],[0,1,"<a href=\"MriUploadServerProcess.class.inc.html#131\">MriUploadServerProcess::getShellCommand<\/a>"],[0,1,"<a href=\"MriUploadServerProcess.class.inc.html#144\">MriUploadServerProcess::getProgress<\/a>"],[0,4,"<a href=\"MriUploadServerProcess.class.inc.html#158\">MriUploadServerProcess::computeExitText<\/a>"],[0,1,"<a href=\"MriUploadServerProcess.class.inc.html#176\">MriUploadServerProcess::getType<\/a>"],[0,3,"<a href=\"MriUploadServerProcess.class.inc.html#188\">MriUploadServerProcess::deleteProcessFiles<\/a>"],[0,1,"<a href=\"NDB_Menu_Filter_server_processes_manager.class.inc.html#37\">NDB_Menu_Filter_Server_Processes_Manager::_hasAccess<\/a>"],[0,1,"<a href=\"NDB_Menu_Filter_server_processes_manager.class.inc.html#48\">NDB_Menu_Filter_Server_Processes_Manager::_setupVariables<\/a>"],[0,1,"<a href=\"NDB_Menu_Filter_server_processes_manager.class.inc.html#94\">NDB_Menu_Filter_Server_Processes_Manager::_setFilterForm<\/a>"],[0,1,"<a href=\"NDB_Menu_Filter_server_processes_manager.class.inc.html#107\">NDB_Menu_Filter_Server_Processes_Manager::getJSDependencies<\/a>"],[0,2,"<a href=\"Process.class.inc.html#84\">Process::__construct<\/a>"],[0,1,"<a href=\"Process.class.inc.html#107\">Process::setProcessMonitor<\/a>"],[0,2,"<a href=\"Process.class.inc.html#117\">Process::getProcessMonitor<\/a>"],[0,3,"<a href=\"Process.class.inc.html#133\">Process::start<\/a>"],[0,2,"<a href=\"Process.class.inc.html#175\">Process::isStarted<\/a>"],[0,1,"<a href=\"Process.class.inc.html#193\">Process::getShellCommand<\/a>"],[0,1,"<a href=\"Process.class.inc.html#203\">Process::getPid<\/a>"],[0,1,"<a href=\"Process.class.inc.html#213\">Process::getOutFile<\/a>"],[0,1,"<a href=\"Process.class.inc.html#223\">Process::getErrFile<\/a>"],[0,1,"<a href=\"Process.class.inc.html#233\">Process::getExitCodeFile<\/a>"],[0,2,"<a href=\"ServerProcessFactory.class.inc.html#50\">ServerProcessFactory::getServerProcess<\/a>"],[0,1,"<a href=\"ServerProcessLauncher.class.inc.html#48\">ServerProcessLauncher::__construct<\/a>"],[0,2,"<a href=\"ServerProcessLauncher.class.inc.html#59\">ServerProcessLauncher::getDatabaseProvider<\/a>"],[0,1,"<a href=\"ServerProcessLauncher.class.inc.html#76\">ServerProcessLauncher::setDatabaseProvider<\/a>"],[0,4,"<a href=\"ServerProcessLauncher.class.inc.html#91\">ServerProcessLauncher::_saveProcess<\/a>"],[0,1,"<a href=\"ServerProcessLauncher.class.inc.html#134\">ServerProcessLauncher::_okToExecute<\/a>"],[0,2,"<a href=\"ServerProcessLauncher.class.inc.html#147\">ServerProcessLauncher::_launch<\/a>"],[0,1,"<a href=\"ServerProcessLauncher.class.inc.html#166\">ServerProcessLauncher::mriUpload<\/a>"],[0,1,"<a href=\"ServerProcessesMonitor.class.inc.html#50\">ServerProcessesMonitor::setDatabaseProvider<\/a>"],[0,2,"<a href=\"ServerProcessesMonitor.class.inc.html#60\">ServerProcessesMonitor::getDatabaseProvider<\/a>"],[0,19,"<a href=\"ServerProcessesMonitor.class.inc.html#90\">ServerProcessesMonitor::getProcessesState<\/a>"]], 'Method Complexity'))
+      .transition()
+      .duration(500)
+      .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+  });
+
+  function getComplexityData(data, label) {
+    var values = [];
+    $.each(data, function(key) {
+      var value = Math.round(data[key][0]*100) / 100;
+      values.push({
+        x: value,
+        y: data[key][1],
+        class: data[key][2],
+        size: 0.05,
+        shape: 'diamond'
+      });
+    });
+
+    return [
+      {
+        key: label,
+        values: values,
+        color: "#4572A7"
+      }
+    ];
+  }
+});
+  </script>
+ </body>
+</html>

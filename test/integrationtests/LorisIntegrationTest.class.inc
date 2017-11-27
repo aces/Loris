@@ -108,9 +108,10 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             $selenium_url,
             $capabilities
         );
-
+var_dump($this-webDriver->getPageSource());
         $this->login("UnitTester", "4test4");
-
+var_dump("===============================");
+var_dump($this-webDriver->getPageSource());
         if (extension_loaded('xdebug')) {
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
         }
