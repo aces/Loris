@@ -18,7 +18,7 @@
             row[header] = rowData[index]
         }, this);
         if ("PSCID" === column) {
-            var url = loris.BaseURL + "/" + rowData[1] + "/";
+            var url = loris.BaseURL + "/" + row['DCCID'] + "/";
             return React.createElement("td", null, React.createElement("a", {href: url}, cell))
         }
         if ("Feedback" === column) switch (cell) {
