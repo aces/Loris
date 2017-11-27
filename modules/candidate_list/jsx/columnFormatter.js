@@ -14,7 +14,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     return null;
   }
 
-  //Create the mapping between rowheaders and rowData in a row object
+  // Create the mapping between rowheaders and rowData in a row object
   var row = {};
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
@@ -56,7 +56,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   if (row['Consent To Study'] === 'no') {
     classes.push("bg-danger");
   }
-  //convert array to string, with blank space separator
+  // convert array to string, with blank space separator
   classes = classes.join(" ");
   return <td className={classes}>{cell}</td>;
 }
