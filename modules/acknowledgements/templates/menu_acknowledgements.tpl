@@ -193,7 +193,7 @@
             </div>
         </div>
          <br>
-         <div class="row" id="datatable" />
+         <div id="datatable" />
     </div>
 </div>
 <script>
