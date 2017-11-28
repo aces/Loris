@@ -24,6 +24,9 @@ before_install:
     - nvm install node
     - mkdir -p project project/libraries
     - phpenv config-rm xdebug.ini
+    - curl -L https://github.com/docker/compose/releases/download/1.8.1/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+    - chmod +x ~/docker-compose
+    - sudo mv ~/docker-compose /usr/local/bin/docker-compose
 
 install:
     # Install composer modules
@@ -94,6 +97,7 @@ before_script:
 
 script:
 
-    - npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
+    - docker-compose build 
+    - npm run tests:integration
 
 dist: precise
