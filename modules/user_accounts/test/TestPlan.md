@@ -1,32 +1,37 @@
-                             User Account module - Test plan
-                             ===============================
+`User Account` module - Test plan
+===============================
 
-1. Make sure you do not have access to the User Account page if you do not have at least one of these permissions:
-      - There can be only one Highlander.
-      - User management / Survey module.
-2. If you have access to the User Module, you should see all the users if you have permission 'Across all sites edit 
-   create users'. Otherwise, only the users that belong to your site are shown.
-3. Check that the Clear Form button works.
-4. Search according to all criteria: site, user name, active, full name, pending approval, email and examiner. 
-5. Check that if Site is set to 'All' in the filter, users that have a different site than the user logged in are 
-   returned by the search (if any).
-6. Try to add a user with a user name already taken: check that you can't.
+1. Make sure you do not have access to the `User Accounts` page if you do not have at least one of these permissions:
+      - `There can be only one Highlander`.
+      - `User management`
+2. The User Module should display only users belonging to the same site as the active user, unless they have the permission `Across all sites create and edit users`.
+3. Click the `Clear Form` button and verify it resets all filters.
+4. Verify that searching functions with all criteria: 
+    * site, 
+    * user name, 
+    * active, 
+    * full name, 
+    * pending approval, 
+    * email,
+    * examiner. 
+5. The `All` option in the site filter should displays users from all sites, even if they are different from the active user.
+6. Ensure adding a new user with the same name as an existing user fails.
 
-When creating or editing a user: (subtest: edit_user)
+When creating or editing a user: (subtest: `edit_user`)
 ========================================================
 
-7. Check that password rules are enforced.
-8. Check that saving fails if you do not enter at least these informations:
-      - User name.
-      - Password (and confirm password).
-      - First name.
-      - Last name.
+7. Ensure password strength rules are enforced.
+8. Form submission (the `Save` Button) should fail if any of the following fields are blank:
+      - User name,
+      - Password (and confirm password),
+      - First name,
+      - Last name,
       - Email.
-9. Check that if password and confirmed password do not match you get an error.
-10. Check that if you do not enter an email address that is syntactically valid you get an error.
-10a. Check that when creating a new user, there is an additional "Confirm email" text field on the page and that you 
-     get an error message if email and confirmed email don't match when submitting the form. 
-10b. Make sure that the confirm email text field is not on the edit user page (only on the create new user page).
+9. If password and confirmed password do not match, an error should be displayed.
+10. Email fields containing submitted with invalid formats should generate an error. 
+     
+* Ensure the confirm email text field is not displayed on the edit user page (and only on the create new user page).
+
 11. For an existing active user, edit the user's account and click 'Generate new password' and check 'Send email'.
     Save. Check that an email is sent to the user with the new password. Check that the password rules are enforced 
     for this new password. Check that after logging in, the user is immediately asked to update his/her password.
@@ -35,7 +40,7 @@ When creating or editing a user: (subtest: edit_user)
 12a. Check that when creating a new user, leading and trailing spaces in the username are stripped.
 12b. Check that you can create a new user with name 00 (double zero).
 12c. Check that you can delete one of the additional fields (organization, fax, etc...) that was previously set and that the save is performed.
-13. Check that if modifying a password for a user an email is sent to that user containing the new password (requires
+13. Check that if generating a new password for a user an email is sent to that user containing the new password (requires
     email server).
 14. Check that when editing a user account it is not possible to set the password to its actual value (i.e. it needs to change).
 15. Check that if the 'Display additional information' entry is set to false in the Configuration module, fields Degree,
