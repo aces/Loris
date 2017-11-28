@@ -24,7 +24,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   var classes = [];
 
   if (column === 'PSCID') {
-    var url = loris.BaseURL + "/" + row['DCCID'] + "/";
+    var url = loris.BaseURL + "/" + row.DCCID + "/";
     return (
         <td className = {classes}>
           <a href ={url}>
