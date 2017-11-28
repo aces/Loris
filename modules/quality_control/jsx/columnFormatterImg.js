@@ -16,38 +16,28 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   var row = {};
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
-  }, this)
+  }, this);
 
-  if (column === "MRI Parameter Form"){
-      var mpfURL = loris.BaseURL + '/mri_parameter_form/?commentID=' + row['CommentID'] +
-        '&sessionID=' + row['Session ID'] + '&candID=' + row['DCCID'];
-      return <td> <a href={mpfURL}>{cell}</a> </td>;
-
-  }
-  else if (column === "Scan Location" && cell==="In Imaging Browser"){
-    var imgURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID='+row['Session ID'];
+  if (column === "MRI Parameter Form") {
+    var mpfURL = loris.BaseURL + '/mri_parameter_form/?commentID=' +
+      row.CommentID + '&sessionID=' + row['Session ID'] +
+      '&candID=' + row.DCCID;
+    return <td> <a href={mpfURL}>{cell}</a> </td>;
+  } else if (column === "Scan Location" && cell === "In Imaging Browser") {
+    var imgURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' +
+      row['Session ID'];
     return <td><a href={imgURL}>{cell}</a></td>;
-  }
-
-  else if (column === "Tarchive"){
-    if (cell ==="In DICOM" ){
-      var tarchiveURL = loris.BaseURL + '/dicom_archive/viewDetails/?tarchiveID='+row['TarchiveID'];
+  } else if (column === "Tarchive") {
+    if (cell === "In DICOM") {
+      var tarchiveURL = loris.BaseURL +
+        '/dicom_archive/viewDetails/?tarchiveID=' + row.TarchiveID;
       return <td><a href = {tarchiveURL}>{cell}</a></td>;
-  } else{
-      return <td>Missing</td>;
-    } 
+    }
+    return <td>Missing</td>;
   }
 
   return <td>{cell}</td>;
 }
 
-function inObject(key, object){
-  for (var i = 0; i<Object.keys(object).length; i++){
-    if (key === object[i]){
-      return true;
-    }
-  }
-  return false;
-}
 export default formatColumn;
 
