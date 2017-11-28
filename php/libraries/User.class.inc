@@ -65,7 +65,7 @@ class User extends UserPermissions
         if (empty($row)) {
             // If row is empty, there is no user with this username
             // return silently (no errors) to avoid phishers knowing
-            // that the user does exist when trying to brute force
+            // that the user does not exist when trying to brute force
             // password reset page
 
             // set object to null then return $obj
