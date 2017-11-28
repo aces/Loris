@@ -37,8 +37,8 @@ var ImagePanelHeader = React.createClass({
                         onClick={this.props.onToggleHeaders}
                         aria-expanded={this.props.HeadersExpanded}>
                         Header Info
-                      <span className="glyphicon glyphicon-chevron-right"/>
-                    </button>
+                        <span className="glyphicon glyphicon-chevron-right"/>
+                        </button>
                 </div>
             </div>
             );
@@ -58,7 +58,7 @@ var ImagePanelHeader = React.createClass({
 });
 
 var ImagePanelHeadersTable = React.createClass({
-/*  componentDidMount: function() {
+  componentDidMount: function() {
     $(ReactDOM.findDOMNode(this)).DynamicTable();
   },
   componentWillUnmount: function() {
@@ -66,21 +66,31 @@ var ImagePanelHeadersTable = React.createClass({
     $(ReactDOM.findDOMNode(this)).DynamicTable({
       removeDynamicTable: true
     });
-  },*/
+  },
   render: function() {
     return (
             <table className=
-         "table table-hover table-bordered header-info col-xs-12">
+         "table table-hover table-bordered header-info col-xs-12 dynamictable">
                 <tbody>
-                <tr>
-                  <th className="col-xs-4 info">
-                    Series Instance UID</th>
-                  <td className="col-xs-8">
-                    {this.props.HeaderInfo.SeriesUID}
-                  </td>
-                </tr>
+                {/* SERIES UID */}
                     <tr>
-                        <th className="info col-xs-4">Voxel Size</th>
+                      <th className="col-xs-4 info">
+                        Series Instance UID</th>
+                      <td className="col-xs-8" colSpan="3">
+                        {this.props.HeaderInfo.SeriesUID}
+                      </td>
+                    </tr>
+
+                {/* SERIES NUMBER */}
+                    <tr>
+                      <th className="col-xs-4 info">Series Number</th>
+                      <td className="col-xs-8" colSpan="3">
+                        {this.props.HeaderInfo.SeriesNumber}
+                      </td>
+                    </tr>
+                {/* VOXEL SIZE */}
+                    <tr>
+                        <th className="col-xs-4 info">Voxel Size</th>
                         <td className="col-xs-8" colSpan="3">
                             {this.props.HeaderInfo.XStep === '' ? ' ' : 'X: ' +
                                     this.props.HeaderInfo.XStep + " mm "}
@@ -90,115 +100,117 @@ var ImagePanelHeadersTable = React.createClass({
                                     this.props.HeaderInfo.ZStep + " mm "}
                         </td>
                     </tr>
+
+                {/* SERIES DESCRIPTION x SERIES PROTOCOL */}
                     <tr>
-                        <th className="col-xs-4 info">Output Type</th>
-                        <td className="col-xs-8">
-                            {this.props.HeaderInfo.OutputType}
-                        </td>
+                      <th className="col-xs-4 info">Series Description</th>
+                      <td className="col-xs-2">
+                        {this.props.HeaderInfo.SeriesDescription}
+                      </td>
+
+                      <th className="col-xs-4 info">Protocol</th>
+                      <td className="col-xs-2">
+                        {this.props.HeaderInfo.AcquisitionProtocol}
+                      </td>
                     </tr>
+
+                {/* ACQUISITION DATE x INSERTED DATE */}
                     <tr>
                         <th className="col-xs-4 info">Acquisition Date</th>
-                        <td className="col-xs-8">
+                        <td className="col-xs-2">
                                   {this.props.HeaderInfo.AcquisitionDate}
                         </td>
+
+                      <th className="col-xs-4 info">Inserted Date</th>
+                      <td className="col-xs-2">
+                        {this.props.HeaderInfo.InsertedDate}
+                      </td>
                     </tr>
+
+                {/* OUTPUT TYPE x SPACE */}
                     <tr>
-                        <th className="col-xs-4 info">Space</th>
-                        <td className="col-xs-8">
+                      <th className="col-xs-4 info">Output Type</th>
+                      <td className="col-xs-2">
+                        {this.props.HeaderInfo.OutputType}
+                      </td>
+
+                      <th className="col-xs-4 info">Space</th>
+                        <td className="col-xs-2">
                                   {this.props.HeaderInfo.CoordinateSpace}
                         </td>
                     </tr>
+
+                {/* ECHO TIME x REPETITION */}
+                <tr>
+                  <th className="col-xs-4 info">Echo Time</th>
+                  <td className="col-xs-2">
+                    {this.props.HeaderInfo.EchoTime} ms
+                  </td>
+
+                  <th className="col-xs-4 info">Rep Time</th>
+                  <td className="col-xs-2">
+                    {this.props.HeaderInfo.RepetitionTime} ms
+                  </td>
+                </tr>
+
+                {/* NUMBER OF VOLUMES x SLICE THICKNESS */}
                     <tr>
-                        <th className="col-xs-4 info">Inserted Date</th>
-                        <td className="col-xs-8">
-                                  {this.props.HeaderInfo.InsertedDate}
-                        </td>
+                      <th className="col-xs-4 info">Number of volumes</th>
+                      <td className="col-xs-2">
+                        {this.props.HeaderInfo.NumVolumes} volumes
+                      </td>
+
+                      <th className="col-xs-4 info">Slice Thick</th>
+                      <td className="col-xs-2">
+                        {this.props.HeaderInfo.SliceThickness} mm
+                      </td>
                     </tr>
+
+                { /* ALGORITHM x PIPELINE */}
                     <tr>
-                        <th className="col-xs-4 info">Protocol</th>
-                        <td className="col-xs-8">
-                                  {this.props.HeaderInfo.AcquisitionProtocol}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th className="col-xs-4 info">Series Description</th>
-                        <td className="col-xs-8">
-                                  {this.props.HeaderInfo.SeriesDescription}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th className="col-xs-4 info">Series Number</th>
-                        <td className="col-xs-8">
-                                  {this.props.HeaderInfo.SeriesNumber}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th className="col-xs-4 info">Echo Time</th>
-                        <td className="col-xs-8">
-                               {this.props.HeaderInfo.EchoTime} ms
-                        </td>
-                    </tr>
-                    <tr>
-                        <th className="col-xs-4 info">Rep Time</th>
-                        <td className="col-xs-8">
-                               {this.props.HeaderInfo.RepetitionTime} ms
-                        </td>
-                    </tr>
-                    <tr>
-                        <th className="col-xs-4 info">Slice Thick</th>
-                        <td className="col-xs-8">
-                               {this.props.HeaderInfo.SliceThickness} mm
-                        </td>
-                    </tr>
-                    <tr>
-                        <th className="col-xs-4 info">Number of volumes</th>
-                        <td className="col-xs-8">
-                             {this.props.HeaderInfo.NumVolumes} volumes
-                        </td>
-                    </tr>
-                    <tr>
+                      <th className="col-xs-4 info">Algorithm</th>
+                      <td className="col-xs-2">
+                        {this.props.HeaderInfo.Algorithm}
+                      </td>
+
                         <th className="col-xs-4 info">Pipeline</th>
-                        <td className="col-xs-8">
+                        <td className="col-xs-2">
                              {this.props.HeaderInfo.Pipeline}
                         </td>
                     </tr>
+
+                {/* SLICEWISE CORRELATIONS x GRAIDENT-WISE CORRELATIONS */}
                     <tr>
-                        <th className="col-xs-4 info">Algorithm</th>
-                        <td className="col-xs-8">
-                             {this.props.HeaderInfo.Algorithm}
-                        </td>
+                      <th className="col-xs-4 info">
+                        Number of Slicewise correlations
+                      </th>
+                      <td className="col-xs-2">
+                        {this.props.HeaderInfo.SlicewiseRejected}
+                      </td>
+
+                      <th className="col-xs-4 info">
+                        Number of Gradient-wise correlations
+                      </th>
+                      <td className="col-xs-2">
+                        {this.props.HeaderInfo.IntergradientRejected}
+                      </td>
                     </tr>
-                    <tr>
-                        <th className="col-xs-4 info">
-                             Number of rejected directions
-                        </th>
-                        <td className="col-xs-8">
-                             {this.props.HeaderInfo.TotalRejected}
-                        </td>
-                    </tr>
+
+                {/* INTERLACE CORRELATIONS x REJECTED DIRECTIONS */}
                     <tr>
                         <th className="col-xs-4 info">
                               Number of Interlace correlations
                         </th>
-                        <td className="col-xs-8">
+                        <td className="col-xs-2">
                              {this.props.HeaderInfo.InterlaceRejected}
                         </td>
-                    </tr>
-                    <tr>
-                        <th className="col-xs-4 info">
-                              Number of Gradient-wise correlations
-                        </th>
-                        <td className="col-xs-8">
-                              {this.props.HeaderInfo.IntergradientRejected}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th className="col-xs-4 info">
-                              Number of Slicewise correlations
-                        </th>
-                        <td className="col-xs-8">
-                            {this.props.HeaderInfo.SlicewiseRejected}
-                        </td>
+
+                      <th className="col-xs-4 info">
+                        Number of rejected directions
+                      </th>
+                      <td className="col-xs-2">
+                        {this.props.HeaderInfo.TotalRejected}
+                      </td>
                     </tr>
                 </tbody>
             </table>
