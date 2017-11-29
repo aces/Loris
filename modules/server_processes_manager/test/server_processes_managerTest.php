@@ -1,6 +1,6 @@
 <?php
 /**
- * server_processes_manager module automated integration tests
+ * Server_processes_manager module automated integration tests
  *
  * PHP Version 7
  *
@@ -15,7 +15,7 @@ require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 
 /**
- * server_processes_manager module automated integration tests
+ * Server_processes_manager module automated integration tests
  *
  * PHP Version 7
  *
@@ -25,7 +25,7 @@ require_once __DIR__ .
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class server_processes_managerTest extends LorisIntegrationTest
+class Server_Processes_ManagerTest extends LorisIntegrationTest
 {
     /**
      * UI elements and locations
@@ -34,22 +34,18 @@ class server_processes_managerTest extends LorisIntegrationTest
      */
     private $_loadingUI
         =  array(
-            'Server  Processes  Manager'      => '#bc2 > a:nth-child(2) > div',
-            //filter
-            'PID:' => '#server_processes > div:nth-child(1)>div:nth-child(1)>label',
-            'UserId:' => '#server_processes > div:nth-child(2) > div > label',
-            'Type:' => '#server_processes > div:nth-child(1)>div:nth-child(2)>label',
+            'Server  Processes  Manager' => '#bc2 > a:nth-child(2) > div',
             //table headers
-            'No.'         => '#dynamictable > thead > tr',
-            'Pid'   => '#dynamictable > thead > tr',
-            'Type'       => '#dynamictable > thead > tr',
-            'Stdout File' => '#dynamictable > thead > tr',
-            'Stderr File'  => '#dynamictable > thead > tr',
-            'Exit Code File'        => '#dynamictable > thead > tr',
-            'Exit Code' => '#dynamictable > thead > tr',
-            'Userid'  => '#dynamictable > thead > tr',
-            'Start Time'    => '#dynamictable > thead > tr',
-            'End Time' => '#dynamictable > thead > tr'
+            'No.'                        => '#dynamictable > thead > tr',
+            'Pid'                        => '#dynamictable > thead > tr',
+            'Type'                       => '#dynamictable > thead > tr',
+            'Stdout File'                => '#dynamictable > thead > tr',
+            'Stderr File'                => '#dynamictable > thead > tr',
+            'Exit Code File'             => '#dynamictable > thead > tr',
+            'Exit Code'                  => '#dynamictable > thead > tr',
+            'Userid'                     => '#dynamictable > thead > tr',
+            'Start Time'                 => '#dynamictable > thead > tr',
+            'End Time'                   => '#dynamictable > thead > tr',
            );
     /**
      * Tests that the page does not load if the user does not have correct
@@ -144,7 +140,7 @@ class server_processes_managerTest extends LorisIntegrationTest
         //click clear form
         $this->webDriver->executescript(
             "document.querySelector('#server_processes > div:nth-child(3)".
-           " > div > div:nth-child(2) > input').click()"
+            " > div > div:nth-child(2) > input').click()"
         );
 
         $this->assertContains($expectDataRows, $text);
