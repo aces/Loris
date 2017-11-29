@@ -124,7 +124,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
     function _testFilter($url,$filter,$testData,$expectDataRows)
     {
         $this->safeGet($this->url . $url);
-        sleep(1);
+        sleep(2);
         $this->safeFindElement(
             WebDriverBy::Name($filter)
         )->sendKeys($testData);
@@ -132,7 +132,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('#filter').click()"
         );
-        sleep(2);
+        sleep(3);
         $text = $this->webDriver->executescript(
             "return document.querySelector('#datatable > div >".
             " div.table-header.panel-heading').textContent"
