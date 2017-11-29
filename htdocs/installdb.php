@@ -145,8 +145,8 @@ case 'createmysqlaccount':
         }
     } else {
         if ($installer->CreateMySQLAccount($_POST) === false) {
-            $tpl_data["error"] = $installer->GetLastError();
-            $tpl_data["Page"]  = "MySQLUserPrompt";
+            $tpl_data['error'] = $installer->GetLastError();
+            $tpl_data['Page']  = "MySQLUserPrompt";
             break;
         }
     }
