@@ -137,7 +137,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
             "return document.querySelector('#datatable > div >".
             " div.table-header.panel-heading').textContent"
         );
-var_dump($this->webDriver->getPageSource());
+        var_dump($this->webDriver->getPageSource());
         //click clear form
         $this->webDriver->executescript(
             "document.querySelector('#server_processes > div:nth-child(3)".
