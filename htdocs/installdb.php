@@ -74,7 +74,7 @@ if ($installer->CheckSystemDependenciesValid() == false) {
     exit(3);
 }
 
-require_once __DIR__ . "/../vendor/autoload.php";
+require_once __DIR__ . '/../vendor/autoload.php';
 
 ini_set('default_charset', 'utf-8');
 // Create an output buffer to capture console output, separately from the
@@ -95,24 +95,24 @@ case 'validaterootaccount':
     // This will connect to MySQL, check the permissions of the
     // account provided, check that the database doesn't already
     // exist, and create the database.
-    if (!isset($_POST["do_not_install"])) {
-        if (!isset($_POST["use_existing_database"])) {
+    if (!isset($_POST['do_not_install'])) {
+        if (!isset($_POST['use_existing_database'])) {
             if ($installer->CreateMySQLDB($_POST) === false) {
-                $tpl_data["error"] = $installer->GetLastError();
-                $tpl_data["Page"]  = "";
+                $tpl_data['error'] = $installer->GetLastError();
+                $tpl_data['Page']  = "";
                 break;
             }
         }
         if ($installer->SourceSchema($_POST) === false) {
-            $tpl_data["error"] = $installer->GetLastError();
-            $tpl_data["Page"]  = "";
+            $tpl_data['error'] = $installer->GetLastError();
+            $tpl_data['Page']  = "";
             break;
         }
     }
-    if (!isset($_POST["do_not_update_config"])) {
+    if (!isset($_POST['do_not_update_config'])) {
         if ($installer->UpdateBaseConfig($_POST) === false) {
-            $tpl_data["error"] = $installer->GetLastError();
-            $tpl_data["Page"]  = "";
+            $tpl_data['error'] = $installer->GetLastError();
+            $tpl_data['Page']  = "";
             break;
         }
     }
@@ -122,12 +122,12 @@ case 'validaterootaccount':
         $_POST['dbadminuser'],
         $_POST['dbadminpassword']
     )) {
-        $tpl_data["error"] = "The specified user does not exist or ".
-            "is using an incorrect password or the database does not exist";
-        $tpl_data["Page"]  = "";
+        $tpl_data['error'] = 'The specified user does not exist or '.
+            'is using an incorrect password or the database does not exist';
+        $tpl_data['Page']  = '';
         break;
     }
-    $tpl_data['Page'] = "MySQLUserPrompt";
+    $tpl_data['Page'] = 'MySQLUserPrompt';
     break;
 case 'createmysqlaccount':
     if (isset($_POST["lorismysql_already_created"])) {
@@ -177,12 +177,12 @@ $tpl_data['console'] = htmlspecialchars(ob_get_contents());
 
 // Set up some special smarty variables that are required on different
 // pages
-if (isset($tpl_data["Page"])) {
-    if ($tpl_data["Page"] == "MySQLUserPrompt") {
-        $tpl_data["SamplePassword"]  = User::newPassword(16);
-        $tpl_data["SamplePassword2"] = User::newPassword(16);
-    } else if ($tpl_data["Page"] == "Done") {
-        $tpl_data["lorisurl"] = $installer->getBaseURL();
+if (isset($tpl_data['Page'])) {
+    if ($tpl_data['Page'] == 'MySQLUserPrompt') {
+        $tpl_data['SamplePassword']  = User::newPassword(16);
+        $tpl_data['SamplePassword2'] = User::newPassword(16);
+    } else if ($tpl_data['Page'] == 'Done') {
+        $tpl_data['lorisurl'] = $installer->getBaseURL();
     }
 }
 // end ob_start that captures console output. The Smarty hook
@@ -206,18 +206,18 @@ function tplvar($name)
         $tpl_data[$name] = '';
     }
 }
-tplvar("dbhost");
-tplvar("dbadminuser");
-tplvar("dbadminpassword");
-tplvar("dbname");
-tplvar("lorismysqluser");
-tplvar("lorismysqlpassword");
-tplvar("frontenduser");
-tplvar("frontendpassword");
-tplvar("use_existing_database");
-tplvar("do_not_install");
-tplvar("do_not_update_config");
-tplvar("lorismysql_already_created");
+tplvar('dbhost');
+tplvar('dbadminuser');
+tplvar('dbadminpassword');
+tplvar('dbname');
+tplvar('lorismysqluser');
+tplvar('lorismysqlpassword');
+tplvar('frontenduser');
+tplvar('frontendpassword');
+tplvar('use_existing_database');
+tplvar('do_not_install');
+tplvar('do_not_update_config');
+tplvar('lorismysql_already_created');
 $smarty = new Smarty_NeuroDB;
 $smarty->assign($tpl_data);
 $smarty->display('install.tpl');

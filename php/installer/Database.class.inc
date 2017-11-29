@@ -31,11 +31,6 @@ class Database
     public $PDO;
 
     /**
-     * Not meant to be used outside of getOrFetchAllPrivileges()
-     */
-    private $_privileges = null;
-
-    /**
      * Returns one and only one Database object.
      *
      * @return Database
@@ -47,63 +42,6 @@ class Database
             $DB = new Database;
         }
         return $DB;
-    }
-
-    /**
-     * On executing `SHOW GRANT;`, rows with a single column are returned.
-     * Each row's value is a string that lists the MySQL user's privileges for
-     * a given table.
-     *
-     * @param string $raw The string of each row returned by `SHOW GRANT;`
-     *
-     * @see https://dev.mysql.com/doc/refman/5.7/en/show-grants.html
-     *
-     * @return object The parsed privilege for a string returned by `SHOW GRANT;`
-     */
-    private function _parsePrivilege($raw)
-    {
-        $token_arr = explode(" ON ", $raw);
-        if (count($token_arr) != 2) {
-            //Avoid letting the user see the "privileges", output to error_log()
-            error_log(
-                "Database::_parsePrivilege():Received {$raw}, could not split in two"
-            );
-            throw new Exception("Could not parse privilege");
-        }
-        $database_table_end = strpos($token_arr[1], " ");
-        $database_table     = substr($token_arr[1], 0, $database_table_end);
-
-        $privilege_arr_raw = substr($token_arr[0], strlen("GRANT "));
-        $privilege_arr     = explode(", ", $privilege_arr_raw);
-
-        return (object)array(
-                        "database_table" => $database_table,
-                        "privilege_arr"  => $privilege_arr,
-                       );
-    }
-
-    /**
-     * Fetches and caches all the current MySQL user's privileges.
-     * Subsequent calls return a cached copy.
-     *
-     * @see    https://dev.mysql.com/doc/refman/5.7/en/show-grants.html
-     * @return array An associative array mapping "`<database>`.`<table>`" strings
-     *               to an array of privileges
-     */
-    public function getOrFetchAllPrivileges()
-    {
-        if (is_null($this->_privileges)) {
-            $stmt = $this->PDO->query("SHOW GRANTS");
-            $arr  = $stmt->fetchAll(PDO::FETCH_COLUMN);
-            $stmt->closeCursor();
-
-            $this->_privileges = array();
-            foreach ($arr as $raw) {
-                $obj = $this->_parsePrivilege($raw);
-                $this->_privileges[$obj->database_table] = $obj->privilege_arr;
-            }
-        }
-        return $this->_privileges;
     }
 
     /**
@@ -120,47 +58,22 @@ class Database
      */
     public function hasPrivilege($database, $table, $privilege)
     {
-        $arr = $this->getOrFetchAllPrivileges();
-        if (!isset($arr[$database_table])) {
-            return false;
-        }
+        $stmt    = $this->PDO->query("SHOW GRANTS");
+        $results = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $stmt->closeCursor();
 
-        $database_escaped = ($database == "*") ?
-            "*" : "`{$database}`";
-        $table_escaped    = ($table == "*") ?
-            "*" : "`{$table}`";
-        $database_table   = "{$database_escaped}.{$table_escaped}";
-        if (isset($arr[$database_table])) {
-            $privilege_arr = $arr[$database_table];
-            /*
-            https://dev.mysql.com/doc/refman/5.5/en/privileges-provided.html#priv_all
-            */
-            if (in_array("ALL", $privilege_arr)
-                || in_array("ALL PRIVILEGES", $privilege_arr)
-                || in_array($privilege, $privilege_arr)
-            ) {
-                return true;
-            }
-        }
+        $pattern = "/GRANT .*(ALL|${priviledge}).* ON" .
+            " `?([*]|${database})`?[.]`?([*]|${table})`?/";
 
-        //Privilege was not found at this level, try to look higher
-        //@see https://dev.mysql.com/doc/refman/5.7/en/grant.html
-        if ($table == "*") {
-            if ($database == "*") {
-                //*.*
-                //Already checked the highest level and privilege was not found
-                return false;
-            } else {
-                //`<database>`.*
-                return $this->hasPrivilege("*", "*", $privilege);
-            }
-        } else if ($database == "*") {
-            //*.`<table>` makes no sense.
-            throw new Exception("Invalid database-table combination");
-        } else {
-            //`<database>`.`<table>`
-            return $this->hasPrivilege($database, "*", $privilege);
-        }
+        return array_reduce(
+            $results,
+            function ($carry, $item) use ($pattern) {
+                $matches = array();
+                preg_match($pattern, $item, $matches);
+                return $carry || !empty($matches);
+            },
+            false
+        );
     }
 
     /**
