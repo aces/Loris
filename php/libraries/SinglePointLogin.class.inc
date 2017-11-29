@@ -48,6 +48,26 @@ class SinglePointLogin
     var $_passwordExpired = false;
 
     /**
+     * Dumps the password expiry form
+     *
+     * @return void
+     * @access public
+     */
+    function showPasswordExpiryScreen()
+    {
+        // FIXME: This is a temporary hack until the password reset logic is refactored
+        // to be sane and keep a token that can be authenticated.
+        //
+        // We store the username requesting the the password reset on the PHP session
+        // superglobal so that the password expiry page can trust it.
+        $_SESSION['PasswordExpiredForUser'] = $_POST['username'];
+        header("HTTP/1.1 303 See Other");
+        header("Location: /login/password-expiry/");
+		exit(0);
+    }
+
+
+    /**
      * Checks whether anyone is currently logged in
      *
      * @return bool
@@ -69,6 +89,17 @@ class SinglePointLogin
         return $this->_passwordExpired;
     }
 
+    function setPasswordExpiry(string $username) {
+        $DB = Database::singleton();
+        $row = $DB->pselectRow(
+            "SELECT UserID, Password_expiry < NOW() as Expired FROM users WHERE UserID=:uname",
+            array('uname' => $username)
+        );
+        $this->_passwordExpired = false;
+        if (!empty($row)) {
+            $this->_passwordExpired = ($row['Expired'] ? "true" : "false");
+        }
+    }
 
     /**
      * Saves the new password if last was expired
@@ -88,7 +119,7 @@ class SinglePointLogin
         if (!User::isPasswordStrong(
             $_POST['password'],
             array(
-             $_POST['confirm'],
+             $_POST['confirm'] ?? '',
              $data['UserID'],
              $data['Email'],
             ),
@@ -249,18 +280,6 @@ class SinglePointLogin
                                               ? $_SERVER['REQUEST_URI']
                                               : 'Unknown',
                     );
-        // save the new password if the last password expired
-        if (isset($_POST['expiry'])) {
-            $success = $this->save();
-
-            if ($success == false) {
-                if ($redirect) {
-                    $this->showPasswordExpiryScreen();
-                }
-                return false;
-            }
-        }
-
         // don't waste execution time if no form was submitted
 
         if (empty($username)) {
@@ -288,7 +307,7 @@ class SinglePointLogin
         // check users table to see if we have a valid user
         $query = "SELECT COUNT(*) AS User_count,
                         UserID,
-                        Password_expiry,
+                        Password_expiry < NOW() as Expired,
                         Active,
                         Pending_approval,
                         Password_hash
@@ -326,6 +345,18 @@ class SinglePointLogin
                         . " this account.";
                     $this->insertFailedDetail("user account pending", $setArray);
                     return false;
+                }
+
+                // save the new password if the last password expired
+                if ($row['Expired']) {
+                    $success = $this->save();
+
+                    if ($success == false) {
+                        if ($redirect) {
+                            $this->showPasswordExpiryScreen();
+                        }
+                        return false;
+                    }
                 }
 
                 // user is valid
