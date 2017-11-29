@@ -14,4 +14,3 @@ function formatAcknowledgementsColumn(column, cell, rowData, rowHeaders) {
 
 window.formatAcknowledgementsColumn = formatAcknowledgementsColumn;
 
-export default formatAcknowledgementsColumn;
