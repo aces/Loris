@@ -96,7 +96,6 @@ DROP TABLE IF EXISTS `notification_modules`;
 DROP TABLE IF EXISTS `document_repository`;
 DROP TABLE IF EXISTS `document_repository_categories`;
 
-DROP TABLE IF EXISTS `tarchive_find_new_uploads`;
 DROP TABLE IF EXISTS `tarchive_files`;
 DROP TABLE IF EXISTS `tarchive_series`;
 DROP TABLE IF EXISTS `tarchive`;
@@ -652,69 +651,6 @@ CREATE TABLE `mri_protocol_checks` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `MRICandidateErrors` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `TimeRun` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `SeriesUID` varchar(64) DEFAULT NULL,
-  `TarchiveID` int(11) DEFAULT NULL,
-  `MincFile` varchar(255) DEFAULT NULL,
-  `PatientName` varchar(255) DEFAULT NULL,
-  `Reason` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `mri_violations_log` (
-  `LogID` int(11) NOT NULL AUTO_INCREMENT,
-  `TimeRun` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `SeriesUID` varchar(64) DEFAULT NULL,
-  `TarchiveID` int(11) DEFAULT NULL,
-  `MincFile` varchar(255) DEFAULT NULL,
-  `PatientName` varchar(255) DEFAULT NULL,
-  `CandID` int(6) DEFAULT NULL,
-  `Visit_label` varchar(255) DEFAULT NULL,
-  `CheckID` int(11) DEFAULT NULL,
-  `Scan_type` int(11) unsigned DEFAULT NULL,
-  `Severity` enum('warning','exclude') DEFAULT NULL,
-  `Header` varchar(255) DEFAULT NULL,
-  `Value` varchar(255) DEFAULT NULL,
-  `ValidRange` varchar(255) DEFAULT NULL,
-  `ValidRegex` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`LogID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `violations_resolved` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `hash` varchar(255) NOT NULL,
-  `ExtID` bigint(20) NOT NULL,
-  `TypeTable` varchar(255) DEFAULT NULL,
-  `User` varchar(255) DEFAULT NULL,
-  `ChangeDate` datetime DEFAULT NULL,
-  `Resolved` enum('unresolved', 'reran', 'emailed', 'inserted', 'rejected', 'inserted_flag', 'other') DEFAULT 'unresolved',
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `mri_protocol_violated_scans` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `CandID` int(6),
-  `PSCID` varchar(255),
-  `time_run` datetime,
-  `series_description` varchar(255) DEFAULT NULL,
-  `minc_location` varchar(255),
-  `PatientName` varchar(255) DEFAULT NULL,
-  `TR_range` varchar(255) DEFAULT NULL,
-  `TE_range` varchar(255) DEFAULT NULL,
-  `TI_range` varchar(255) DEFAULT NULL,
-  `slice_thickness_range` varchar(255) DEFAULT NULL,
-  `xspace_range` varchar(255) DEFAULT NULL,
-  `yspace_range` varchar(255) DEFAULT NULL,
-  `zspace_range` varchar(255) DEFAULT NULL,
-  `xstep_range` varchar(255) DEFAULT NULL,
-  `ystep_range` varchar(255) DEFAULT NULL,
-  `zstep_range` varchar(255) DEFAULT NULL,
-  `time_range` varchar(255)  DEFAULT NULL,
-  `SeriesUID` varchar(64) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
 -- tarchive tables
@@ -793,11 +729,78 @@ CREATE TABLE `tarchive_files` (
   CONSTRAINT `tarchive_files_TarchiveSeriesID_fk` FOREIGN KEY (`TarchiveSeriesID`) REFERENCES `tarchive_series` (`TarchiveSeriesID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `tarchive_find_new_uploads` (
-  `CenterName` varchar(255) NOT NULL,
-  `LastRan` datetime DEFAULT NULL,
-  PRIMARY KEY (`CenterName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This table is used by Loris-MRI/find_uploads_tarchive to store the last time the script was ran for that location';
+
+-- ********************************
+-- MRI violations tables
+-- ********************************
+
+
+CREATE TABLE `MRICandidateErrors` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `TimeRun` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `SeriesUID` varchar(64) DEFAULT NULL,
+  `TarchiveID` int(11) DEFAULT NULL,
+  `MincFile` varchar(255) DEFAULT NULL,
+  `PatientName` varchar(255) DEFAULT NULL,
+  `Reason` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  CONSTRAINT `FK_tarchive_MRICandidateError_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `mri_violations_log` (
+  `LogID` int(11) NOT NULL AUTO_INCREMENT,
+  `TimeRun` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `SeriesUID` varchar(64) DEFAULT NULL,
+  `TarchiveID` int(11) DEFAULT NULL,
+  `MincFile` varchar(255) DEFAULT NULL,
+  `PatientName` varchar(255) DEFAULT NULL,
+  `CandID` int(6) DEFAULT NULL,
+  `Visit_label` varchar(255) DEFAULT NULL,
+  `CheckID` int(11) DEFAULT NULL,
+  `Scan_type` int(11) unsigned DEFAULT NULL,
+  `Severity` enum('warning','exclude') DEFAULT NULL,
+  `Header` varchar(255) DEFAULT NULL,
+  `Value` varchar(255) DEFAULT NULL,
+  `ValidRange` varchar(255) DEFAULT NULL,
+  `ValidRegex` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`LogID`),
+  CONSTRAINT `FK_tarchive_mriViolationsLog_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `violations_resolved` (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `hash` varchar(255) NOT NULL,
+  `ExtID` bigint(20) NOT NULL,
+  `TypeTable` varchar(255) DEFAULT NULL,
+  `User` varchar(255) DEFAULT NULL,
+  `ChangeDate` datetime DEFAULT NULL,
+  `Resolved` enum('unresolved', 'reran', 'emailed', 'inserted', 'rejected', 'inserted_flag', 'other') DEFAULT 'unresolved',
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `mri_protocol_violated_scans` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `CandID` int(6),
+  `PSCID` varchar(255),
+  `time_run` datetime,
+  `series_description` varchar(255) DEFAULT NULL,
+  `minc_location` varchar(255),
+  `PatientName` varchar(255) DEFAULT NULL,
+  `TR_range` varchar(255) DEFAULT NULL,
+  `TE_range` varchar(255) DEFAULT NULL,
+  `TI_range` varchar(255) DEFAULT NULL,
+  `slice_thickness_range` varchar(255) DEFAULT NULL,
+  `xspace_range` varchar(255) DEFAULT NULL,
+  `yspace_range` varchar(255) DEFAULT NULL,
+  `zspace_range` varchar(255) DEFAULT NULL,
+  `xstep_range` varchar(255) DEFAULT NULL,
+  `ystep_range` varchar(255) DEFAULT NULL,
+  `zstep_range` varchar(255) DEFAULT NULL,
+  `time_range` varchar(255)  DEFAULT NULL,
+  `SeriesUID` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- ********************************
 -- document_repository tables
