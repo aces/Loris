@@ -133,6 +133,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
             "document.querySelector('#filter').click()"
         );
         sleep(3);
+        var_dump($this->webDriver->getPageSource());
         $text = $this->webDriver->executescript(
             "return document.querySelector('#datatable > div >".
             " div.table-header.panel-heading').textContent"
