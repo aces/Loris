@@ -20,7 +20,8 @@ var StaticDataTable = React.createClass({
     RowNumLabel: React.PropTypes.string,
     // Function of which returns a JSX element for a table cell, takes
     // parameters of the form: func(ColumnName, CellData, EntireRowData)
-    getFormattedCell: React.PropTypes.func
+    getFormattedCell: React.PropTypes.func,
+    onSort: React.PropTypes.func
   },
   componentDidMount: function() {
     if (jQuery.fn.DynamicTable) {
@@ -56,7 +57,7 @@ var StaticDataTable = React.createClass({
         // Make prefs accesible within component
     this.modulePrefs = modulePrefs;
   },
-  componentDidUpdate: function() {
+  componentDidUpdate: function(prevProps, prevState) {
     if (jQuery.fn.DynamicTable) {
       if (this.props.freezeColumn) {
         $("#dynamictable").DynamicTable({
@@ -65,6 +66,13 @@ var StaticDataTable = React.createClass({
       } else {
         $("#dynamictable").DynamicTable();
       }
+    }
+    if (this.props.onSort &&
+      (this.state.SortColumn !== prevState.SortColumn ||
+      this.state.SortOrder !== prevState.SortOrder)
+    ) {
+      var index = this.getSortedRows();
+      this.props.onSort(index, this.props.Data, this.props.Headers);
     }
   },
   getInitialState: function() {
@@ -180,6 +188,72 @@ var StaticDataTable = React.createClass({
       return index === 0 ? match.toLowerCase() : match.toUpperCase();
     });
   },
+  getSortedRows() {
+    const index = [];
+
+    for (let i = 0; i < this.props.Data.length; i += 1) {
+      let val = this.props.Data[i][this.state.SortColumn] || undefined;
+      // If SortColumn is equal to default No. column, set value to be
+      // index + 1
+      if (this.state.SortColumn === -1) {
+        val = i + 1;
+      }
+      const isString = (typeof val === 'string' || val instanceof String);
+      const isNumber = !isNaN(val) && typeof val !== 'object';
+
+      if (val === ".") {
+        // hack to handle non-existent items in DQT
+        val = null;
+      } else if (isNumber) {
+        // perform type conversion (from string to int/float)
+        val = Number(val);
+      } else if (isString) {
+        // if string with text convert to lowercase
+        val = val.toLowerCase();
+      } else {
+        val = undefined;
+      }
+
+      if (this.props.RowNameMap) {
+        index.push({RowIdx: i, Value: val, Content: this.props.RowNameMap[i]});
+      } else {
+        index.push({RowIdx: i, Value: val, Content: i + 1});
+      }
+    }
+
+    index.sort(function(a, b) {
+      if (this.state.SortOrder === 'ASC') {
+        if (a.Value === b.Value) {
+          // If all values are equal, sort by rownum
+          if (a.RowIdx < b.RowIdx) return -1;
+          if (a.RowIdx > b.RowIdx) return 1;
+        }
+        // Check if null values
+        if (a.Value === null || typeof a.Value === 'undefined') return -1;
+        if (b.Value === null || typeof b.Value === 'undefined') return 1;
+
+        // Sort by value
+        if (a.Value < b.Value) return -1;
+        if (a.Value > b.Value) return 1;
+      } else {
+        if (a.Value === b.Value) {
+          // If all values are equal, sort by rownum
+          if (a.RowIdx < b.RowIdx) return 1;
+          if (a.RowIdx > b.RowIdx) return -1;
+        }
+        // Check if null values
+        if (a.Value === null || typeof a.Value === 'undefined') return 1;
+        if (b.Value === null || typeof b.Value === 'undefined') return -1;
+
+        // Sort by value
+        if (a.Value < b.Value) return 1;
+        if (a.Value > b.Value) return -1;
+      }
+      // They're equal..
+      return 0;
+    }.bind(this));
+    return index;
+  },
   /**
    * Searches for the filter keyword in the column cell
    *
@@ -261,65 +335,7 @@ var StaticDataTable = React.createClass({
     }
     var rows = [];
     var curRow = [];
-    var index = [];
-    var that = this;
-
-    for (var i = 0; i < this.props.Data.length; i += 1) {
-      var val = this.props.Data[i][this.state.SortColumn];
-
-      if (parseInt(val, 10) === val) {
-        val = parseInt(val, 10);
-      } else if (parseFloat(val) === val) {
-        val = parseFloat(val);
-      } else if (val === '.') {
-        val = null;
-      }
-
-      // if string - convert to lowercase to make sort algorithm work
-      var isString = (typeof val === 'string' || val instanceof String);
-      if (val !== undefined && isString) {
-        val = val.toLowerCase();
-      }
-
-      if (this.props.RowNameMap) {
-        index.push({RowIdx: i, Value: val, Content: this.props.RowNameMap[i]});
-      } else {
-        index.push({RowIdx: i, Value: val, Content: i + 1});
-      }
-    }
-
-    index.sort(function(a, b) {
-      if (that.state.SortOrder === 'ASC') {
-        // Check if null values
-        if (a.Value === null) return -1;
-        if (b.Value === null) return 1;
-
-        // Sort by value
-        if (a.Value < b.Value) return -1;
-        if (a.Value > b.Value) return 1;
-
-        // If all values are equal, sort by rownum
-        if (a.RowIdx < b.RowIdx) {
-          return -1;
-        }
-        if (a.RowIdx > b.RowIdx) return 1;
-      } else {
-        // Check if null values
-        if (a.Value === null) return 1;
-        if (b.Value === null) return -1;
-
-        // Sort by value
-        if (a.Value < b.Value) return 1;
-        if (a.Value > b.Value) return -1;
-
-        // If all values are equal, sort by rownum
-        if (a.RowIdx < b.RowIdx) return 1;
-        if (a.RowIdx > b.RowIdx) return -1;
-      }
-      // They're equal..
-      return 0;
-    });
-
+    var index = this.getSortedRows();
     var matchesFound = 0; // Keeps track of how many rows where displayed so far across all pages
     var filteredRows = this.countFilteredRows();
     var currentPageRow = (rowsPerPage * (this.state.PageNumber - 1));

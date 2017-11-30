@@ -174,7 +174,6 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                           'site.Name as Site',
                           'v.TimeRun',
                           'v.MincFile',
-                          'v.MincFileViolated',
                           'v.Series_Description as Series_Description_Or_Scan_Type',
                           'v.Problem',
                           'v.SeriesUID',
@@ -188,7 +187,6 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                           'Site',
                           'TimeRun',
                           'MincFile',
-                          'MincFileViolated',
                           'Series_Description_Or_Scan_Type',
                           'Problem',
                           'SeriesUID',
@@ -210,6 +208,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
              'JoinID',
             ]
         );
+
         // Recreating the path (MincFileViolated field) to the minc file
         // for the table mri_violations_log is more complicated
         // because of the 3 cases that can occur as we pull the data
@@ -226,9 +225,6 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 minc_location as MincFile,
-                CONCAT_WS(''," . $DB->quote($dir_path) . ",
-                'trashbin/',SUBSTRING_INDEX(minc_location, '/', -2))
-                  as MincFileViolated,
                 series_description as Series_Description,
                 'Could not identify scan type' as Problem,
                 SeriesUID,
@@ -254,19 +250,6 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 MincFile,
-                IF(INSTR('MincFile', 'assembly'),
-                IF(LEFT('MincFile', 8) = 'assembly',
-                 CONCAT_WS('',
-                          " . $DB->quote($dir_path) . ",
-                         'MincFile'
-                 ),'MincFile'),
-                 CONCAT_WS('',
-                            " . $DB->quote($dir_path) . ",
-                           'trashbin/',
-                           SUBSTRING_INDEX(MincFile, '/', -2)
-                 )
-                )
-                 as MincFileViolated,
                 mri_scan_type.Scan_type,
                 'Protocol Violation',
                 SeriesUID,
@@ -299,11 +282,6 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 MincFile,
-                CONCAT_WS('',
-                          " . $DB->quote($dir_path) . ",
-                          'trashbin/',
-                          SUBSTRING_INDEX(MincFile, '/', -2)
-                ) as MincFileViolated,
                 null,
                 Reason,
                 SeriesUID,
@@ -358,6 +336,8 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                                'v.SeriesUID',
                                'v.Site',
                               );
+
+        $this->EqualityFilters[] = 'v.Site';
         return true;
     }
     /**
@@ -368,12 +348,12 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
     function _setFilterForm()
     {
         // create user object
-        $user        =& User::singleton();
-        $config      =& NDB_Config::singleton();
-        $db          =& Database::singleton();
-        $study       = $config->getSetting('study');
-        $minYear     = $study['startYear'] - $study['ageMax'];
-        $maxYear     = $study['endYear'] - $study['ageMin'];
+        $user    =& User::singleton();
+        $config  =& NDB_Config::singleton();
+        $db      =& Database::singleton();
+        $minYear = $config->getSetting('startYear') - $config->getSetting('ageMax');
+        $maxYear = $config->getSetting('endYear');
+
         $dateOptions = array(
                         'language'       => 'en',
                         'format'         => 'YMd',
@@ -391,7 +371,8 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
             SELECT DISTINCT 'Could not identify scan type' 
             FROM mri_protocol_violated_scans
             UNION
-            SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log"
+            SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log",
+            array()
         );
         foreach ($problemTypes as $problem) {
             $problemOptions[$problem['Reason']] = $problem['Reason'];
@@ -430,13 +411,7 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
             }
         } else {
             // allow only to view own site data
-            $site_arr = $user->getData('CenterIDs');
-            foreach ($site_arr as $key => $val) {
-                $site[$key] = &Site::singleton($val);
-                if ($site[$key]->isStudySite()) {
-                    $sites[$val] = $site[$key]->getCenterName();
-                }
-            }
+            $sites = $user->getStudySites();
             $sites = array('' => 'All User Sites') + $sites;
         }
         $this->addSelect('Site', 'Site', $sites);
@@ -459,7 +434,6 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
             $deps,
             array(
              $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
-
             )
         );
     }

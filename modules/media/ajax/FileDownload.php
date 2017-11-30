@@ -20,18 +20,18 @@ if (!$user->hasPermission('media_write')) {
     exit;
 }
 
-// Make sure that the user isn't trying to break out of the $path by using a relative
-// filename. No need to check for '/' since all downloads are relative to $basePath.
-$file = $_GET['File'];
-if (strpos("..", $file) !== false) {
-    error_log("ERROR: Invalid filename");
-    header("HTTP/1.1 400 Bad Request");
-    exit(4);
-}
-
+// Make sure that the user isn't trying to break out of the $path
+// by using a relative filename.
+$file     = basename($_GET['File']);
 $config   =& NDB_Config::singleton();
 $path     = $config->getSetting('mediaPath');
 $filePath = $path . $file;
+
+$downloadNotifier = new NDB_Notifier(
+    "media",
+    "download",
+    array("file" => $file)
+);
 
 if (!file_exists($filePath)) {
     error_log("ERROR: File $filePath does not exist");
@@ -45,3 +45,4 @@ header('Content-Type: application/force-download');
 header("Content-Transfer-Encoding: Binary");
 header("Content-disposition: attachment; filename=\"" . basename($filePath) . "\"");
 readfile($filePath);
+$downloadNotifier->notify();

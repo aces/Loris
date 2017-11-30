@@ -85,10 +85,16 @@
   var checkOverflow = function(wrapper, rightLink, leftLink, headCol) {
     var staticCol = (headCol !== undefined);
     var element = wrapper;
+    var headers = wrapper.children[3];
 
     if ((element.offsetHeight < element.scrollHeight) ||
         (element.offsetWidth < element.scrollWidth)) {
       // Your element has overflow
+
+      $(wrapper).on("scroll", function() {
+        var leftScroll = $(wrapper).scrollLeft();
+        $(headers).scrollLeft(leftScroll);
+      });
       if (staticCol) {
         if (headCol) {
           $("." + headCol).addClass("colm-static");
@@ -101,6 +107,7 @@
       $(rightLink).show();
     } else {
       // Your element has no overflow
+      $(wrapper).off("scroll");
       if (staticCol) {
         if (headCol) {
           $("." + headCol).removeClass("colm-static");
@@ -113,6 +120,21 @@
       $(rightLink).hide();
     }
   };
+  var headerAlign = function(table, headers) {
+    var tableHeaders = $(table).find("thead").children().children();
+    var fixedHeaders = $(headers).find("thead").children().children();
+
+    for (var i = 0; i < tableHeaders.length; i++) {
+      if (!$(fixedHeaders[i]).hasClass("static-col")) {
+        var temp = $(tableHeaders[i]).width();
+        $(fixedHeaders[i]).width(temp);
+        temp = $(tableHeaders[i]).css("width");
+        $(fixedHeaders[i]).css({'min-width': temp});
+      }
+    }
+
+    $(headers).width($(table).parent().width());
+  };
   var wrapTable = function(table) {
     $(table).wrap("<div class=\"row\"></div>");
     // Add wrapper code necessary for bootstrap carousel
@@ -121,6 +143,18 @@
     // Add wrapper necessary for dynamictable code
     $(table).wrap("<div class=\"dynamicContentWrapper table-scroll\" " +
       "style=\"overflow-x: auto\"></div>");
+
+    var headers = document.createElement("div");
+    $(headers).addClass("frozenHeader");
+    $(headers).html("<table style=\"margin-bottom: 0px\"><thead>" +
+        $(table).find("thead").html() +
+        "</thead><table>"
+    );
+    $($(headers).children()[0]).addClass($(table).attr("class"));
+    $($(headers).children()[0]).removeClass("dynamictable");
+    $(table).after($(headers));
+    $(headers).hide();
+    headerAlign(table, headers);
 
     // Add links for carousel
     $(table).after(
@@ -140,6 +174,20 @@
     // Remove row wrapper
     $(table).unwrap();
   };
+  var addFrozenHeaderColm = function(frozenHeader) {
+    var frozenCell = document.createElement("div");
+    var headerCell = $(frozenHeader).find(".static-col");
+    $(frozenCell).addClass("static-col colm-static headerColm");
+    $(frozenCell).html($(headerCell).html());
+    // add 18px since height is beting set with padding included
+    $(frozenCell).height($($(frozenHeader).find("th")[0]).height() + 18);
+    var temp = $(frozenCell).css("height");
+    $(headerCell).css({padding: '0px'});
+    var top = $(frozenHeader).css("top");
+    $(frozenCell).css({'min-height': temp, "top": top});
+    $(frozenCell).html($($(".dynamictableFrozenColumn")[0]).html());
+    $(frozenHeader).after(frozenCell);
+  };
   var freezeColm = function(tableID, colmStatic) {
     var statColPos = $("." + tableID + "FrozenColumn").offset().left;
     var statColWid = $("." + tableID + "FrozenColumn").outerWidth();
@@ -147,6 +195,7 @@
     var leftScrollWid = $(".leftScrollBar").outerWidth();
     var nextColPos = $("." + tableID + "Next").offset().left;
     var tablePos = $("#" + tableID).offset().left;
+    var header = $("#" + tableID).siblings(".frozenHeader")[0];
 
     if (colmStatic === true) {
       if (nextColPos >= statColPos + statColWid || statColPos <= tablePos) {
@@ -156,6 +205,8 @@
           }
         });
         $("." + tableID + "FrozenColumn").removeClass("static-col colm-static");
+        $(header).find(".dynamictableFrozenColumn").css({padding: "8px"});
+        $(".headerColm").remove();
         return false;
       }
     } else if (statColPos <= leftScrollWid + leftScrollPos) {
@@ -166,12 +217,21 @@
         }
       });
       $("." + tableID + "FrozenColumn").addClass("static-col colm-static");
+      if ($(header).parent().find(".headerColm").length === 0 &&
+        $(header).parent().find(".frozenHeader").is(":visible")
+      ) {
+        addFrozenHeaderColm(header);
+      }
       return true;
     }
     return colmStatic;
   };
 
   $.fn.DynamicTable = function(options) {
+    if (options && options.removeDynamicTable) {
+      unwrapTable(this);
+      return this;
+    }
     this.filter("table").each(function() {
       var leftLink;
       var rightLink;
@@ -196,7 +256,38 @@
       checkOverflow(this.parentElement, rightLink, leftLink);
 
       window.addEventListener("resize", function() {
+        var headers = $($(table).parent().find("table")[1]).parent();
         checkOverflow(table.parentElement, rightLink, leftLink);
+        headerAlign(table, headers);
+      });
+
+      window.addEventListener("scroll", function() {
+        var thead = $(table).find("thead");
+        var eTop = $(thead).offset().top - $(window).scrollTop();  // gets the position from the top
+        var headers = $($(table).parent().find("table")[1]).parent();
+        var height = $(table).height() - $(headers).height();
+        if (eTop <= 50 && height + eTop >= 50) {
+          // near LORIS header
+          var top = 0;
+          if (eTop < 0) {
+            top = Math.abs(eTop) + 50;
+          } else {
+            top = 50 - eTop;
+          }
+          $(headers).css({top: top});
+          $(".headerColm").css({top: top});
+          $(headers).show();
+          headerAlign(table, headers);
+          if ($(table).find(".static-col").length !== 0 &&
+            $(table).parent().find(".headerColm").length === 0
+          ) {
+            addFrozenHeaderColm(headers);
+          }
+        } else {
+          $(headers).hide();
+          $(headers).find(".dynamictableFrozenColumn").css({padding: '8px'});
+          $(".headerColm").remove();
+        }
       });
 
       if (options && options.freezeColumn) {

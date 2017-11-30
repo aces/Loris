@@ -1,4 +1,5 @@
-/* global ReactDOM */
+import FilterForm from 'FilterForm';
+import {Tabs, TabPane} from 'Tabs';
 
 import MediaUploadForm from './uploadForm';
 import formatColumn from './columnFormatter';
@@ -8,7 +9,7 @@ class MediaIndex extends React.Component {
   constructor(props) {
     super(props);
 
-    loris.hiddenHeaders = ['Cand ID', 'Session ID', 'File Type'];
+    loris.hiddenHeaders = ['Cand ID', 'Session ID', 'Hide File', 'File Type'];
 
     this.state = {
       isLoaded: false,
@@ -18,6 +19,7 @@ class MediaIndex extends React.Component {
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
+    this.resetFilters = this.resetFilters.bind(this);
   }
 
   componentDidMount() {
@@ -49,6 +51,10 @@ class MediaIndex extends React.Component {
     this.setState({filter});
   }
 
+  resetFilters() {
+    this.refs.mediaFilter.clearFilter();
+  }
+
   render() {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
@@ -74,25 +80,26 @@ class MediaIndex extends React.Component {
           <MediaUploadForm
             DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData`}
             action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=upload`}
+            maxUploadSize={this.state.Data.maxUploadSize}
           />
         </TabPane>
       );
     }
-
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
           <FilterForm
             Module="media"
             name="media_filter"
-            id="media_filter"
+            id="media_filter_form"
+            ref="mediaFilter"
             columns={3}
             formElements={this.state.Data.form}
             onUpdate={this.updateFilter}
             filter={this.state.filter}
           >
             <br/>
-            <ButtonElement type="reset" label="Clear Filters" />
+            <ButtonElement label="Clear Filters" type="reset" onUserInput={this.resetFilters}/>
           </FilterForm>
           <StaticDataTable
             Data={this.state.Data.Data}

@@ -194,7 +194,6 @@ class NDB_BVL_Feedback
         $query .= " LIMIT 1";
 
         $result = $db->pselect($query, $qparams);
-
         if (!is_array($result) || count($result) == 0) {
             throw new Exception(
                 "Error, unable to select data for the feedback object"
@@ -202,9 +201,11 @@ class NDB_BVL_Feedback
         }
 
         $this->_feedbackCandidateProfileInfo['CandID'] = $result[0]['CandID'];
-        if (isset($result[0]['SessionID'])) {
+        if (isset($result[0]['SessionID'])
+            || isset($this->_feedbackObjectInfo['SessionID'])
+        ) {
             $this->_feedbackCandidateProfileInfo['SessionID']
-                = $result[0]['SessionID'];
+                = $result[0]['SessionID'] ?? $this->_feedbackObjectInfo['SessionID'];
         }
     }
 
@@ -389,7 +390,7 @@ class NDB_BVL_Feedback
         $query .= " ORDER BY Status ASC";
         $result = $db->pselectOne($query, $qparams);
 
-        if (isset($result)) {
+        if (!empty($result)) {
             return $result;
         }
         return null;
@@ -1077,13 +1078,7 @@ class NDB_BVL_Feedback
 
         $user =& User::singleton();
 
-        $site_arr = $user->getData('CenterIDs');
-        foreach ($site_arr as $key=>$val) {
-                $site[$key]        = & Site::singleton($val);
-                $isStudySite[$key] = $site[$key]->isStudySite();
-        }
-        $oneIsStudySite = in_array("1", $isStudySite);
-        if ($oneIsStudySite) {
+        if ($user->hasStudySite()) {
             if ($user->hasPermission('bvl_feedback')) {
                 if (($test_name === "timepoint_list")
                     || ($test_name === "instrument_list")

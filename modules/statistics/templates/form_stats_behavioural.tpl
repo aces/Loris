@@ -48,7 +48,7 @@
             <td class="   pis">Per Instrument Stats</td>
             {foreach from=$Centers item=center key=centername}
                 <td id='{$center.ID}PIS' class="pis" colspan="2">
-                    <a href='{$baseurl}/statistics/?submenu=statistics_site&CenterID={$center.NumericID}{if $useProjects == "true"}&ProjectID={$CurrentProject.ID}{/if}' target="_blank">Please Click Here</a>
+                    <a href='{$baseurl}/statistics/statistics_site/?CenterID={$center.NumericID}{if $useProjects == "true"}&ProjectID={$CurrentProject.ID}{/if}' target="_blank">Please Click Here</a>
                 </td>
             {/foreach}
         </tr>
@@ -57,7 +57,7 @@
 
 
 
-    <b><a href='{$baseurl}/statistics/?submenu=statistics_site&CenterID={$CurrentSite.ID}{if $useProjects == "true"}&ProjectID={$CurrentProject.ID}{/if}' target="_blank">Click here for breakdown per participant {if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} for {$CurrentProject.Name} {/if}</a></b>
+    <b><a href='{$baseurl}/statistics/statistics_site/?CenterID={$CurrentSite.ID}{if $useProjects == "true"}&ProjectID={$CurrentProject.ID}{/if}' target="_blank">Click here for breakdown per participant {if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} for {$CurrentProject.Name} {/if}</a></b>
     <br><br>
     <h2 class="statsH2">Double Data Entry Statistics:</h2>
 
@@ -102,14 +102,14 @@
             <td class=" pis">Per Instrument Stats</td>
             {foreach from=$Centers item=center key=centername}
                 <td id='{$center.ID}DDPIS' class="pis" colspan="2">
-                    <a href='{$baseurl}/statistics/?submenu=statistics_dd_site&CenterID={$center.NumericID}{if $useProjects == "true"}&ProjectID={$CurrentProject.ID}{/if}' target="_blank">Please Click Here</a>
+                    <a href='{$baseurl}/statistics/statistics_dd_site/?CenterID={$center.NumericID}{if $useProjects == "true"}&ProjectID={$CurrentProject.ID}{/if}' target="_blank">Please Click Here</a>
                 </td>
             {/foreach}
         </tr>
         </tbody>
     </table>
     <div>
-        <b><a href='{$baseurl}/statistics/?submenu=statistics_dd_site&CenterID={$CurrentSite.ID}{if $useProjects == "true"}&ProjectID={$CurrentProject.ID}{/if}' target="_blank">Click here for breakdown per participant{if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} for {$CurrentProject.Name} {/if}</a></b>
+        <b><a href='{$baseurl}/statistics/statistics_dd_site/?CenterID={$CurrentSite.ID}{if $useProjects == "true"}&ProjectID={$CurrentProject.ID}{/if}' target="_blank">Click here for breakdown per participant{if $CurrentSite} for {$CurrentSite.Name} {/if} {if $CurrentProject} for {$CurrentProject.Name} {/if}</a></b>
     </div>
 </div>
 

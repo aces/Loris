@@ -11,8 +11,8 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-if (file_exists('../project')) {
-    die("Directory 'project' already exists in LORIS root. Aborting deploy.");
+if (file_exists('../project/config.xml')) {
+    die("Project config.xml already exists. Aborting deploy.");
 }
 
 $url      = parse_url(getenv("CLEARDB_DATABASE_URL"));
@@ -42,9 +42,11 @@ $path_to_file = '../SQL/0000-00-04-Help.sql';
 $sqls         = file_get_contents($path_to_file);
 $conn->exec($sqls);
 
+$pw = password_hash($password, PASSWORD_DEFAULT);
+
 $conn->query(
-    "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$password')), 
-    Password_expiry='2020-01-01', Pending_approval='N' WHERE ID=1"
+    "UPDATE users SET Password_hash=" . $conn->quote($pw) .
+    ", Password_expiry='2020-01-01', Pending_approval='N' WHERE ID=1"
 );
 $RootDir = dirname(getcwd());
 $conn->query(
@@ -62,7 +64,6 @@ $conn->query(
 
 mkdir('../project');
 mkdir('../project/data');
-mkdir('../project/libraries');
 mkdir('../project/instruments');
 mkdir('../project/templates');
 mkdir('../project/tables_sql');

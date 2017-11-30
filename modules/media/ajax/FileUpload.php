@@ -73,6 +73,11 @@ function editFile()
  */
 function uploadFile()
 {
+    $uploadNotifier = new NDB_Notifier(
+        "media",
+        "upload"
+    );
+
     $db     =& Database::singleton();
     $config = NDB_Config::singleton();
     $user   =& User::singleton();
@@ -162,6 +167,7 @@ function uploadFile()
             } else {
                 $db->insert('media', $query);
             }
+            $uploadNotifier->notify(array("file" => $fileName));
         } catch (DatabaseException $e) {
             showError("Could not upload the file. Please try again!");
         }

@@ -6,11 +6,11 @@
     <div id="tabs">
       <ul class="nav nav-tabs">
         <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>Profiles</strong></a></li>
-        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=gwas_browser">GWAS</a></li>
-        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=snp_browser">SNP</a></li>
-        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cnv_browser">CNV</a></li>
-        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cpg_browser">Methylation</a></li>
-        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=genomic_file_uploader">Files</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/gwas_browser/">GWAS</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/snp_browser/">SNP</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/cnv_browser/">CNV</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/cpg_browser/">Methylation</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/genomic_file_uploader/">Files</a></li>
       </ul>
       <br>
     </div>
@@ -91,28 +91,28 @@
                     <div class="row">
                       <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-3 col-lg-3">
-                          {$form.Files.label}
+                          {$form.File.label}
                         </label>
                         <div class="col-sm-12 col-md-3 col-lg-2">
-                          {$form.Files.html}
+                          {$form.File.html}
                         </div>
                         <label class="col-sm-12 col-md-3">
-                          {$form.CPGs.label}
+                          {$form.CPG.label}
                         </label>
                         <div class="col-sm-12 col-md-3">
-                          {$form.CPGs.html}
+                          {$form.CPG.html}
                         </div>
                         <label class="col-sm-12 col-md-3 col-lg-3">
-                          {$form.SNPs.label}
+                          {$form.SNP.label}
                         </label>
                         <div class="col-sm-12 col-md-3 col-lg-2">
-                          {$form.SNPs.html}
+                          {$form.SNP.html}
                         </div>
                         <label class="col-sm-12 col-md-3">
-                          {$form.CNVs.label}
+                          {$form.CNV.label}
                         </label>
                         <div class="col-sm-12 col-md-3 pull-left">
-                          {$form.CNVs.html}
+                          {$form.CNV.html}
                         </div>
                       </div>
                     </div>

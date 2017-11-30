@@ -27,7 +27,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     let cellLinks = [];
     cellLinks.push(
       <a href={loris.BaseURL + "/issue_tracker/issue/?issueID=" +
-      row['Issue ID'] + "&backURL=/issue_tracker/"}>
+      row['Issue ID'] + "&backURL"}>
         {row.Title}
       </a>
     );
@@ -42,7 +42,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     let cellLinks = [];
     cellLinks.push(
       <a href={loris.BaseURL + "/issue_tracker/issue/?issueID=" +
-      row['Issue ID'] + "&backURL=/issue_tracker/"}>
+      row['Issue ID'] + "&backURL"}>
         {cell}
       </a>
     );

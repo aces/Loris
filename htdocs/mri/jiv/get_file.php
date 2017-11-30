@@ -20,6 +20,7 @@
  */
 
 
+
 // Load config file and ensure paths are correct
 set_include_path(
     get_include_path() . ":../../../project/libraries:../../../php/libraries"
@@ -29,7 +30,6 @@ require_once __DIR__ . "/../../../vendor/autoload.php";
 // inline. They'll still show up in the Apache logs.
 ini_set("display_errors", "Off");
 
-require_once __DIR__ . "/../../../vendor/autoload.php";
 // Ensures the user is logged in, and parses the config file.
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
@@ -57,9 +57,11 @@ if ($imagePath === '/' || $DownloadPath === '/' || $mincPath === '/') {
     exit(2);
 }
 
-// Now get the file and do file validation
-$File = $_GET['file'];
+// Now get the file and do file validation.
+// Resolve the filename before doing anything.
+$File = Utility::resolvePath($_GET['file']);
 
+// Extra sanity checks, just in case something went wrong with path resolution.
 // File validation
 if (strpos($File, ".") === false) {
     error_log("ERROR: Could not determine file type.");
@@ -84,7 +86,7 @@ unset($path_parts);
 // using a relative filename.
 // No need to check for '/' since all downloads are relative to $imagePath,
 // $DownloadPath or $mincPath
-if (strpos("..", $File) !== false) {
+if (strpos($File, "..") !== false) {
     error_log("ERROR: Invalid filename");
     header("HTTP/1.1 400 Bad Request");
     exit(4);

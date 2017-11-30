@@ -26,6 +26,8 @@ $client->initialize();
 $factory = NDB_Factory::singleton();
 $db      = $factory->database();
 $SubprojectList = Utility::getSubprojectList();
+$recTarget      = empty($_POST['RecruitmentTarget'])
+    ? null : $_POST['RecruitmentTarget'];
 
 if ($_POST['subprojectID'] === 'new') {
     if (!in_array($_POST['title'], $SubprojectList) && !empty($_POST['title'])) {
@@ -35,7 +37,7 @@ if ($_POST['subprojectID'] === 'new') {
              "title"             => $_POST['title'],
              "useEDC"            => $_POST['useEDC'],
              "WindowDifference"  => $_POST['WindowDifference'],
-             "RecruitmentTarget" => $_POST['RecruitmentTarget'],
+             "RecruitmentTarget" => $recTarget,
             )
         );
     } else {
@@ -50,7 +52,7 @@ if ($_POST['subprojectID'] === 'new') {
          "title"             => $_POST['title'],
          "useEDC"            => $_POST['useEDC'],
          "WindowDifference"  => $_POST['WindowDifference'],
-         "RecruitmentTarget" => $_POST['RecruitmentTarget'],
+         "RecruitmentTarget" => $recTarget,
         ),
         array("SubprojectID" => $_POST['subprojectID'])
     );

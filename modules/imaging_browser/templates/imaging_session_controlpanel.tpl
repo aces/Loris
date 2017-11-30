@@ -1,6 +1,6 @@
-    {if $subject.backURL!=""}<h3>Navigation</h3>{/if}
+    <h3>Navigation</h3>
     <ul>
-       {if $subject.backURL != ""}
+        {if $subject.backURL}
             <li><a href="{$subject.backURL}">
                     <span class="text-default">
                         <span class="glyphicon glyphicon-backward"></span>&nbsp;Back to list

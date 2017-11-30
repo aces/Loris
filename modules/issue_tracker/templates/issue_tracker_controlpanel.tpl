@@ -1,6 +1,6 @@
-{if $issue.backURL!=""}<h3>Navigation</h3>{/if}
+<h3>Navigation</h3>
 <ul>
-    {if $issue.backURL != ""}
+    {if $issue.backURL}
         <li><a href="{$issue.backURL}">
                     <span class="text-default">
                         <span class="glyphicon glyphicon-backward"></span>&nbsp;Back to list

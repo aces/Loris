@@ -25,7 +25,7 @@ function formatColumn(column, cell, rowData) {
     return (
         <td className="scanDoneLink">
             <a href="#"
-               onClick={loris.loadFilteredMenuClickHandler('imaging_browser',
+               onClick={loris.loadFilteredMenuClickHandler('imaging_browser/',
                  {pscid: rowData[2]})}
             >
                 {cell}

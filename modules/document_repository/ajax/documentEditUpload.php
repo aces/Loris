@@ -35,6 +35,16 @@ $config = NDB_Config::singleton();
 // create Database object
 $DB =& Database::singleton();
 
+$editNotifier = new NDB_Notifier(
+    "document_repository",
+    "edit"
+);
+
+$uploadNotifier = new NDB_Notifier(
+    "document_repository",
+    "upload"
+);
+
 $action = $_POST['action'];
 
 //if user has document repository permission
@@ -44,12 +54,12 @@ if ($userSingleton->hasPermission('document_repository_view')
     if ($action == 'upload') {
         $puser      = $_POST['user'];
         $category   = $_POST['category'];
-        $site       = $_POST['site'];
-        $instrument = $_POST['instrument'];
-        $pscid      = $_POST['pscid'];
-        $visit      = $_POST['visit'];
-        $comments   = $_POST['comments'];
-        $version    = $_POST['version'];
+        $site       = $_POST['site']       !== '' ? $_POST['site'] : null;
+        $instrument = $_POST['instrument'] !== '' ? $_POST['instrument'] : null;
+        $pscid      = $_POST['pscid']      !== '' ? $_POST['pscid'] : null;
+        $visit      = $_POST['visit']      !== '' ? $_POST['visit'] : null;
+        $comments   = $_POST['comments']   !== '' ? $_POST['commnets'] : null;
+        $version    = $_POST['version']    !== '' ? $_POST['version'] : null;
 
         $fileSize = $_FILES["file"]["size"];
         $fileName = $_FILES["file"]["name"];
@@ -90,26 +100,13 @@ if ($userSingleton->hasPermission('document_repository_view')
             $msg_data['newDocument']
                 = $baseURL . "/document_repository/";
             $msg_data['document']    = $fileName;
-            $msg_data['study']       = $config->getSetting('title');
-            $query_Doc_Repo          = "SELECT Email".
-                                       " from users".
-                                       " where Active='Y'".
-                                       " and Doc_Repo_Notifications='Y'".
-                                       " and UserID<>:uid";
-            $Doc_Repo_Notification_Emails = $DB->pselect(
-                $query_Doc_Repo,
-                array("uid" => $userSingleton->getUsername())
-            );
-            foreach ($Doc_Repo_Notification_Emails as $email) {
-                         Email::send(
-                             $email['Email'],
-                             'document_repository.tpl',
-                             $msg_data
-                         );
-            }
+
+            $uploadNotifier->notify($msg_data);
+
             $header = "Location:".
                       " $baseURL/document_repository/?uploadSuccess=true";
             header($header);
+
         } else {
             echo "There was an error uploading the file";
         }
@@ -145,18 +142,8 @@ if ($userSingleton->hasPermission('document_repository_view')
         );
         $msg_data['updatedDocument'] = $baseURL . "/document_repository/";
         $msg_data['document']        = $fileName;
-        $query_Doc_Repo = "SELECT Email".
-                          " from users".
-                          " where Active='Y'".
-                          " and Doc_Repo_Notifications='Y' and UserID<>:uid";
 
-        $Doc_Repo_Notification_Emails = $DB->pselect(
-            $query_Doc_Repo,
-            array("uid" => $userSingleton->getUsername())
-        );
-        foreach ($Doc_Repo_Notification_Emails as $email) {
-            Email::send($email['Email'], 'document_repository.tpl', $msg_data);
-        }
+        $editNotifier->notify($msg_data);
     }
 }
 

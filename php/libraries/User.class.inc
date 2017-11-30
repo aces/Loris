@@ -2,7 +2,7 @@
 /**
  * This file contains the Loris user class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Main
@@ -56,7 +56,7 @@ class User extends UserPermissions
 
         // get user data from database
         $query = "SELECT users.*,
-            GROUP_CONCAT(psc.Name SEPARATOR ';') AS Sites
+            GROUP_CONCAT(psc.Name ORDER BY psc.Name SEPARATOR ';') AS Sites
             FROM users
             LEFT JOIN user_psc_rel ON (user_psc_rel.UserID=users.ID)
             LEFT JOIN psc ON (user_psc_rel.CenterID=psc.CenterID)
@@ -67,7 +67,7 @@ class User extends UserPermissions
 
         // get user sites
         $user_centerID_query =  $DB->pselect(
-            "SELECT CenterID FROM user_psc_rel upr 
+            "SELECT CenterID FROM user_psc_rel upr
                         WHERE upr.UserID= :UID",
             array('UID' => $row['ID'])
         );
@@ -78,10 +78,17 @@ class User extends UserPermissions
 
         // Get examiner information
         $examiner_check = $DB->pselect(
-            "SELECT full_name, centerID, radiologist, active, pending_approval 
-                  FROM examiners 
-                  WHERE full_name=:fn 
-                    AND (active='Y' OR (active='N' AND pending_approval='Y'))",
+            "SELECT e.full_name,
+                    epr.centerID,
+                    e.radiologist,
+                    epr.active,
+                    epr.pending_approval
+                  FROM examiners e
+                  JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
+                  WHERE e.full_name=:fn
+                    AND (epr.active='Y'
+                          OR (epr.active='N' AND epr.pending_approval='Y')
+                        )",
             array(
              "fn" => $row['Real_name'],
             )
@@ -182,6 +189,18 @@ class User extends UserPermissions
     {
         if (is_null($var)) {
             return $this->userInfo;
+        } elseif ($var === 'CenterID') {
+            throw new \LorisException(
+                "The function getData('CenterID')
+                                        is deprecated and is replaced
+                                        with getData('CenterIDs')"
+            );
+        } elseif ($var === 'Site') {
+            throw new \LorisException(
+                "The function getData('Site')
+                                        is deprecated and is replaced
+                                        with getData('Sites')"
+            );
         } else {
             return $this->userInfo[$var];
         }
@@ -218,6 +237,20 @@ class User extends UserPermissions
     }
 
     /**
+     * Get the user's sites' name
+     *
+     * @return string
+     */
+    function getSiteName()
+    {
+        throw new \LorisException(
+            "The function getSiteName
+                                   is deprecated and is replaced
+                                   with getSiteNames"
+        );
+    }
+
+    /**
      * Get the user's sites' names, concatenated with
      * a semi-colon if the User is at more than one site
      *
@@ -226,6 +259,20 @@ class User extends UserPermissions
     function getSiteNames()
     {
         return $this->userInfo['Sites'];
+    }
+
+    /**
+     * Get the user's site's ID number
+     *
+     * @return array
+     */
+    function getCenterID()
+    {
+        throw new \LorisException(
+            "The function getCenterID
+                                   is deprecated and is replaced
+                                   with getCenterIDs"
+        );
     }
 
     /**
@@ -248,7 +295,44 @@ class User extends UserPermissions
     {
         $site_list = $this->userInfo['examiner'];
         unset($site_list['pending']);
+        natcasesort($site_list);
         return $site_list;
+    }
+
+    /**
+     * Returns all user's sites that are StudySites
+     *
+     * @return array
+     */
+    function getStudySites()
+    {
+        $site_arr         = $this->getCenterIDs();
+        $user_study_sites = array();
+        foreach ($site_arr as $key => $val) {
+            $site[$key] = &Site::singleton($val);
+            if ($site[$key]->isStudySite()) {
+                $user_study_sites[$val] = $site[$key]->getCenterName();
+            }
+        }
+        natcasesort($user_study_sites);
+        return $user_study_sites;
+    }
+
+    /**
+     * Checks if the user is in at least one study site
+     *
+     * @return boolean
+     */
+    function hasStudySite()
+    {
+        $site_arr = $this->getCenterIDs();
+        foreach ($site_arr as $key => $sitename) {
+            $site = Site::singleton($sitename);
+            if ($site->isStudySite()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -290,13 +374,13 @@ class User extends UserPermissions
 
         // add random characters to $password until $length is reached
         for ($i = 0; $i < $length-2; $i++) {
-            $password .= substr($possible, mt_rand(0, $possible_cnt), 1);
+            $password .= substr($possible, random_int(0, $possible_cnt), 1);
         }
 
         if (strpbrk($password, $specialChars) === false) {
             $password .= substr(
                 $specialChars,
-                mt_rand(0, strlen($specialChars)-1),
+                random_int(0, strlen($specialChars)-1),
                 1
             );
         }
@@ -332,8 +416,11 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    function isPasswordStrong($password, $values = array(), $operators = array())
-    {
+    static function isPasswordStrong(
+        $password,
+        $values = array(),
+        $operators = array()
+    ) {
         $CharTypes = 0;
         // less than 6 characters
         if (strlen($password) < 8) {
@@ -391,7 +478,7 @@ class User extends UserPermissions
      * @param string $expiry   The password expiry date. If not supplied, the
      *                         password expiry date will be set to now+6months.
      *
-     * @return none
+     * @return void
      */
     function updatePassword($password, $expiry = null)
     {
@@ -410,6 +497,39 @@ class User extends UserPermissions
         );
 
         $this->update($updateArray);
+    }
+
+    /**
+     * Determines if the user has a center
+     *
+     * @param int $center_id The center id
+     *
+     * @return bool
+     */
+    public function hasCenter($center_id)
+    {
+        return in_array(
+            $center_id,
+            $this->getCenterIDs(),
+            true
+        );
+    }
+    /**
+     * Determines if the user has a permission
+     * for a center
+     *
+     * @param string $code      The permission code
+     * @param int    $center_id The center id
+     *
+     * @return bool
+     */
+    public function hasCenterPermission($code, $center_id)
+    {
+        if ($this->hasPermission("superuser")) {
+            return true;
+        }
+        return $this->hasPermission($code)
+            && $this->hasCenter($center_id);
     }
 }
 ?>
