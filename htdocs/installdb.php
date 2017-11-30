@@ -95,7 +95,7 @@ case 'validaterootaccount':
     // This will connect to MySQL, check the permissions of the
     // account provided, check that the database doesn't already
     // exist, and create the database.
-    if (!isset($_POST['do_not_install'])) {
+    if (!isset($_POST['use_existing_tables'])) {
         if (!isset($_POST['use_existing_database'])) {
             if ($installer->createMySQLDB($_POST) === false) {
                 $tpl_data['error'] = $installer->getLastError();
@@ -109,7 +109,7 @@ case 'validaterootaccount':
             break;
         }
     }
-    if (!isset($_POST['do_not_update_config'])) {
+    if (!isset($_POST['use_existing_configs'])) {
         if ($installer->updateBaseConfig($_POST) === false) {
             $tpl_data['error'] = $installer->getLastError();
             $tpl_data['Page']  = "";
@@ -215,8 +215,8 @@ tplvar('lorismysqlpassword');
 tplvar('frontenduser');
 tplvar('frontendpassword');
 tplvar('use_existing_database');
-tplvar('do_not_install');
-tplvar('do_not_update_config');
+tplvar('use_existing_tables');
+tplvar('use_existing_configs');
 tplvar('lorismysql_already_created');
 $smarty = new Smarty_NeuroDB;
 $smarty->assign($tpl_data);
