@@ -48,9 +48,8 @@
 			</fieldset>
             <div>
                 Check "<strong>Already Created</strong>" only if the appropriate mysql user has already been created!<br/>
-                If you or the web admin wish to give the appropriate privileges to an existing MySQL user, <br/>
-                the privileges are <code>SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, CREATE TEMPORARY TABLES, LOCK TABLES</code><br/>
-                for the following: <code>`{$dbname}`.*</code>
+                Here is a list of required privileges for that user:<br/>
+                <code>SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, CREATE TEMPORARY TABLES, LOCK TABLES</code>
             </div>
             <hr/>
 			<p>
