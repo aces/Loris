@@ -55,8 +55,8 @@ require_once __DIR__ . "/../php/installer/NDB_Config.class.inc";
 $installer = new Installer("../project");
 
 // Check the dependencies of this script.
-if ($installer->CheckPreconditionsValid() === false) {
-    $err = $installer->GetLastError();
+if ($installer->checkPreconditionsValid() === false) {
+    $err = $installer->getLastError();
     if ($err == "") {
         $err = "Unknown error checking LORIS install preconditions. Sorry.";
     }
@@ -65,8 +65,8 @@ if ($installer->CheckPreconditionsValid() === false) {
 }
 
 // Check the dependencies of LORIS
-if ($installer->CheckSystemDependenciesValid() == false) {
-    $err = $installer->GetLastError();
+if ($installer->checkSystemDependenciesValid() == false) {
+    $err = $installer->getLastError();
     if ($err == "") {
         $err = "Unknown error checking system dependencies.";
     }
@@ -97,21 +97,21 @@ case 'validaterootaccount':
     // exist, and create the database.
     if (!isset($_POST['do_not_install'])) {
         if (!isset($_POST['use_existing_database'])) {
-            if ($installer->CreateMySQLDB($_POST) === false) {
-                $tpl_data['error'] = $installer->GetLastError();
+            if ($installer->createMySQLDB($_POST) === false) {
+                $tpl_data['error'] = $installer->getLastError();
                 $tpl_data['Page']  = "";
                 break;
             }
         }
-        if ($installer->SourceSchema($_POST) === false) {
-            $tpl_data['error'] = $installer->GetLastError();
+        if ($installer->sourceSchema($_POST) === false) {
+            $tpl_data['error'] = $installer->getLastError();
             $tpl_data['Page']  = "";
             break;
         }
     }
     if (!isset($_POST['do_not_update_config'])) {
-        if ($installer->UpdateBaseConfig($_POST) === false) {
-            $tpl_data['error'] = $installer->GetLastError();
+        if ($installer->updateBaseConfig($_POST) === false) {
+            $tpl_data['error'] = $installer->getLastError();
             $tpl_data['Page']  = "";
             break;
         }
@@ -144,30 +144,30 @@ case 'createmysqlaccount':
             break;
         }
     } else {
-        if ($installer->CreateMySQLAccount($_POST) === false) {
-            $tpl_data['error'] = $installer->GetLastError();
+        if ($installer->createMySQLAccount($_POST) === false) {
+            $tpl_data['error'] = $installer->getLastError();
             $tpl_data['Page']  = "MySQLUserPrompt";
             break;
         }
     }
-    if ($installer->ResetFrontEndAdmin($_POST) === false) {
-        $tpl_data['error'] = $installer->GetLastError();
+    if ($installer->resetFrontEndAdmin($_POST) === false) {
+        $tpl_data['error'] = $installer->getLastError();
         $tpl_data['Page']  = "MySQLUserPrompt";
         break;
     }
 
-    if ($installer->ConfigWritable()) {
-        if ($installer->WriteConfig($_POST) === false) {
-            $tpl_data['error'] = $installer->GetLastError();
+    if ($installer->configWritable()) {
+        if ($installer->writeConfig($_POST) === false) {
+            $tpl_data['error'] = $installer->getLastError();
             $tpl_data['Page']  = "MySQLUserPrompt";
             break;
         }
-        $tpl_data['configfile'] = $installer->GetBaseDir() . "/project/config.xml";
+        $tpl_data['configfile'] = $installer->getBaseDir() . "project/config.xml";
     } else {
-        $tpl_data['configlocation'] = $installer->GetBaseDir()
-                 . "/project/config.xml";
+        $tpl_data['configlocation'] = $installer->getBaseDir()
+                 . "project/config.xml";
         $tpl_data['configcontent']  = htmlspecialchars(
-            $installer->GetConfigContent($_POST)
+            $installer->getConfigContent($_POST)
         );
     }
     $tpl_data['Page'] = "Done";

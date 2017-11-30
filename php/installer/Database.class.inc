@@ -61,17 +61,16 @@ class Database
         $stmt    = $this->PDO->query("SHOW GRANTS");
         $results = $stmt->fetchAll(PDO::FETCH_COLUMN);
         $stmt->closeCursor();
-
-        $pattern = "/GRANT .*(ALL|${priviledge}).* ON" .
+        $pattern = "/GRANT .*(ALL|${privilege}).* ON" .
             " `?([*]|${database})`?[.]`?([*]|${table})`?/";
 
         // Test all privileges return from SHOW GRANTS agains the pattern
         return array_reduce(
             $results,
-            function ($carry, $priviledges) use ($pattern) {
+            function ($carry, $privilege) use ($pattern) {
                 // Return true if a previous iteration returned true or the
                 // current priviledges matches the pattern.
-                return $carry || (preg_match($pattern, $priviledges) === 1);
+                return $carry || (preg_match($pattern, $privilege) === 1);
             },
             false
         );
@@ -218,6 +217,7 @@ class Database
             $this->PDO->exec("USE $database");
             return true;
         } catch(Exception $e) {
+            error_log($e->getMessage());
             $this->lastErr = "Exceptional error connecting to the database "
             . $database . ".";
             return false;

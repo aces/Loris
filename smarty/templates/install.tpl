@@ -3,8 +3,8 @@
 	{* installdb.php is in the root directory, so we know these relative
 	   links should work. Load in the base LORIS bootstrap CSS
 	*}
-		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-		<link rel="stylesheet" href="bootstrap/css/custom-css.css">
+		<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" href="/bootstrap/css/custom-css.css">
 
 		<title>Loris SQL Installer</title>
 	</head>
@@ -32,13 +32,6 @@
 			   If you're feeling uninspired, here's a randomly generated password:
 				<code>{$SamplePassword}</code>.
 			</p>
-			<p>
-			   We also need to set the username and password for the default
-			   <em>LORIS</em> admin account. This is the account that you will
-			   use to login to the LORIS frontend. Here's another password that
-			   you can user for that account if you don't have something else
-			   in mind: <code>{$SamplePassword2}</code>.
-			</p>
 		<form method="post">
 			<fieldset>
 				<legend>LORIS MySQL User</legend>
@@ -53,13 +46,20 @@
                 <input type="checkbox" name="lorismysql_already_created" value="on" {($lorismysql_already_created == 'on') ? 'checked' : ''}/>
 			</div>
 			</fieldset>
-            <hr/>
             <div>
                 Check "<strong>Already Created</strong>" only if the appropriate mysql user has already been created!<br/>
                 If you or the web admin wish to give the appropriate privileges to an existing MySQL user, <br/>
                 the privileges are <code>SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, CREATE TEMPORARY TABLES, LOCK TABLES</code><br/>
                 for the following: <code>`{$dbname}`.*</code>
             </div>
+            <hr/>
+			<p>
+			   We also need to set the username and password for the default
+			   <em>LORIS</em> admin account. This is the account that you will
+			   use to login to the LORIS frontend. Here's another password that
+			   you can user for that account if you don't have something else
+			   in mind: <code>{$SamplePassword2}</code>.
+			</p>
 			<fieldset>
 				<legend>LORIS Front End Admin</legend>
 			<div>

@@ -404,8 +404,9 @@ class Installer
         }
 
         if (!$DB->hasPrivilege("mysql", "user", "SELECT")) {
-            $this->_lastErr = "User does not have privilege to check if "
-                . "a mysql user exists.";
+            $this->_lastErr = $values['dbadminuser'] . " does not have privilege to"
+                . " check if a mysql user exists. Please create that user manually"
+                . " then use the `Already created checkbox below.";
             return false;
         }
         // This script is being run by the web server, so get the host
@@ -563,6 +564,14 @@ class Installer
      */
     function getConfigContent($values)
     {
+        // Value cleanup
+        $escapedValues = array_map(
+            function ($val) {
+                return htmlspecialchars($val, ENT_XML1, 'ISO-8859-1');
+            },
+            $values
+        );
+
         $contents = file_get_contents(__DIR__ . "/../../docs/config/config.xml");
         return str_replace(
             [
@@ -572,10 +581,10 @@ class Installer
              '%DATABASE%',
             ],
             [
-             $values['dbhost'],
-             $values['lorismysqluser'],
-             $values['lorismysqlpassword'],
-             $values['dbname'],
+             $escapedValues['dbhost'],
+             $escapedValues['lorismysqluser'],
+             $escapedValues['lorismysqlpassword'],
+             $escapedValues['dbname'],
             ],
             $contents
         );
@@ -593,13 +602,7 @@ class Installer
      */
     function writeConfig($values)
     {
-        $escapedValues = array_map(
-            function ($val) {
-                return htmlspecialchars($val, ENT_XML1, 'ISO-8859-1');
-            },
-            $values
-        );
-        $contents = $this->getConfigContent($escapedValues);
+        $contents = $this->getConfigContent($values);
         file_put_contents(__DIR__ . "/../../project/config.xml", $contents);
         return true;
     }
