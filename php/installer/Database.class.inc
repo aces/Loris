@@ -89,11 +89,6 @@ class Database
         $stmt->execute(array('v_db' => $database ));
         $exists = !empty($stmt->fetchAll());
 
-        // this needs to be !empty, because otherwise if there's
-        // no results returned count($dbexists) == 1 when no
-        // results are returned, because the result isn't an array
-        // Something to do with how the Countable interface is
-        // implemented in PHP..
         return $exists;
     }
 
