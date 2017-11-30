@@ -1375,7 +1375,7 @@ class LorisForm
         }
 
         $controlElement = $elements[1];
-        $ruleElement = $elements[0];
+        $ruleElement    = $elements[0];
 
         switch ($format['operator']) {
         case '==':
@@ -1425,6 +1425,7 @@ class LorisForm
                 . join(', ', $this->validOperators)
             );
         }
+    }
 
     /**
      * Reimplements the HTML_Quickform API.
