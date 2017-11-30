@@ -85,14 +85,16 @@ class Database
      */
     public function databaseExists($database)
     {
-        $exists = $this->PDO->query("SHOW DATABASES LIKE '$database'")
-            ->fetch(PDO::FETCH_ASSOC);
+        $stmt = $this->PDO->prepare("SHOW DATABASES LIKE :v_db");
+        $stmt->execute(array('v_db' => $database ));
+        $exists = !empty($stmt->fetchAll());
+
         // this needs to be !empty, because otherwise if there's
         // no results returned count($dbexists) == 1 when no
         // results are returned, because the result isn't an array
         // Something to do with how the Countable interface is
         // implemented in PHP..
-        return !empty($exists);
+        return $exists;
     }
 
     /**
