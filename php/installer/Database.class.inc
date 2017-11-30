@@ -45,7 +45,7 @@ class Database
     }
 
     /**
-     * Checks if the current MySQL user has the specified privilege.
+     * Checks if the current MySQL user has a specified privilege.
      *
      * @param string $database  The database to check
      * @param string $table     The table to check
@@ -65,12 +65,13 @@ class Database
         $pattern = "/GRANT .*(ALL|${priviledge}).* ON" .
             " `?([*]|${database})`?[.]`?([*]|${table})`?/";
 
+        // Test all privileges return from SHOW GRANTS agains the pattern
         return array_reduce(
             $results,
-            function ($carry, $item) use ($pattern) {
-                $matches = array();
-                preg_match($pattern, $item, $matches);
-                return $carry || !empty($matches);
+            function ($carry, $priviledges) use ($pattern) {
+                // Return true if a previous iteration returned true or the
+                // current priviledges matches the pattern.
+                return $carry || (preg_match($pattern, $priviledges) === 1);
             },
             false
         );
