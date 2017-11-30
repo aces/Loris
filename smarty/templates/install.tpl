@@ -185,19 +185,19 @@
             </div>
             <div>
                 <div class="col-md-2">
-                    <label for="do_not_install">Use existing tables:</label>
+                    <label for="use_existing_tables">Use existing tables:</label>
                 </div>
                 <div class="col-md-10">
-                    <input type="checkbox" id="do_not_install" name="do_not_install" value="on" {($do_not_install == 'on') ? 'checked' : ''}/>
+                    <input type="checkbox" id="use_existing_tables" name="use_existing_tables" value="on" {($use_existing_tables == 'on') ? 'checked' : ''}/>
                                         Check this if you already installed Loris at the specified database
                 </div>
             </div>
             <div>
                 <div class="col-md-2">
-                    <label for="do_not_update_config">Use existing configs:</label>
+                    <label for="use_existing_configs">Use existing configs:</label>
                 </div>
                 <div class="col-md-10">
-                    <input type="checkbox" id="do_not_update_config" name="do_not_update_config" value="on" {($do_not_update_config == 'on') ? 'checked' : ''}/>
+                    <input type="checkbox" id="use_existing_configs" name="use_existing_configs" value="on" {($do_not_update_config == 'on') ? 'checked' : ''}/>
                                         Check this if you don't want to update the configuration.
                                     <em>(You really should update the configuration if possible, though)</em>
                 </div>
