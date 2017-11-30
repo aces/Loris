@@ -1388,7 +1388,10 @@ class LorisForm
                 return $this->getValue($ruleElement) != '';
             }
             return true;
+<<<<<<< HEAD
         case '<>': // Fallthrough, it's the same operator..
+=======
+>>>>>>> Remove create_function call from LorisForm
         case '!=':
             if ($this->getValue($controlElement) != $format['value']) {
                 return $this->getValue($ruleElement) != '';
@@ -1425,7 +1428,10 @@ class LorisForm
                 . join(', ', $this->validOperators)
             );
         }
+<<<<<<< HEAD
     }
+=======
+>>>>>>> Remove create_function call from LorisForm
 
     /**
      * Reimplements the HTML_Quickform API.
