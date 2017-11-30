@@ -1388,6 +1388,7 @@ class LorisForm
                 return $this->getValue($ruleElement) != '';
             }
             return true;
+        case '<>': // Fallthrough, it's the same operator..
         case '!=':
             if ($this->getValue($controlElement) != $format['value']) {
                 return $this->getValue($ruleElement) != '';
