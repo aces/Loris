@@ -525,10 +525,13 @@ class Installer
         }
 
         $stmt = $DB->prepare(
-            "UPDATE users SET UserID=:q_userID, Password_hash=:q_password, "
-            . "   Password_expiry=DATE_FORMAT(DATE_ADD(CURRENT_TIMESTAMP, "
-            . "                     INTERVAL 30 DAY), '%Y-%m-%d')"
-            . " WHERE ID=1"
+            "UPDATE users
+             SET
+               UserID=:q_userID,
+               Password_hash=:q_password,
+               Active='Y',
+               Password_expiry=DATE_ADD(NOW(),INTERVAL 30 DAY)
+             WHERE ID=1"
         );
         return $stmt->execute(
             [
