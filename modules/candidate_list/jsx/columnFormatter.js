@@ -23,6 +23,9 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   // create array of classes to be added to td tag
   var classes = [];
 
+  if (row['Consent To Study'] === 'no') {
+      classes.push("bg-danger");
+  }
   if (column === 'PSCID') {
     var url = loris.BaseURL + "/" + row.DCCID + "/";
     return (
@@ -52,9 +55,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
             </a>
         </td>
       );
-  }
-  if (row['Consent To Study'] === 'no') {
-    classes.push("bg-danger");
   }
   // convert array to string, with blank space separator
   classes = classes.join(" ");
