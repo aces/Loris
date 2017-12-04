@@ -1,5 +1,6 @@
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
+import PublicationUploadForm from './uploadForm.js';
 
 class PublicationIndex extends React.Component {
   constructor(props) {
@@ -95,6 +96,12 @@ class PublicationIndex extends React.Component {
             Data={this.state.Data.Data}
             Headers={this.state.Data.Headers}
             Filter={this.state.filter}
+          />
+        </TabPane>
+        <TabPane TabId={tabList[1].id}>
+          <PublicationUploadForm
+            DataURL={`${loris.BaseURL}/publications/ajax/FileUpload.php?action=getData`}
+            action={`${loris.BaseURL}/publications/ajax/FileUpload.php?action=upload`}
           />
         </TabPane>
       </Tabs>

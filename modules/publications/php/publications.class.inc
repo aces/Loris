@@ -100,7 +100,7 @@ class Publications extends \NDB_Menu_Filter_Form
      * @param string $commentID  The CommentID to load the data for
      * @param string $formname   The name to give this form
      *
-     * @return void
+     * @return bool
      */
     function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
@@ -120,6 +120,12 @@ class Publications extends \NDB_Menu_Filter_Form
             'Approval Status',
             $statusOptions
         );
+
+        $this->addBasicText(
+            'leadInvestigator',
+            'Lead Investigator'
+        );
+
         $this->addBasicText(
             'keywords',
             'Keywords'
@@ -128,10 +134,7 @@ class Publications extends \NDB_Menu_Filter_Form
             'variablesOfInterest',
             'Variables of Interest'
         );
-        $this->addBasicText(
-            'leadInvestigator',
-            'Lead Investigator'
-        );
+
 
         return true;
     }
