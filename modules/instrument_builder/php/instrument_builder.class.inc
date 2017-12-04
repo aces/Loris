@@ -50,7 +50,7 @@ class Instrument_Builder extends \NDB_Form
      */
     function _hasPerm($perm)
     {
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         return $user->hasPermission($perm);
     }
     /**

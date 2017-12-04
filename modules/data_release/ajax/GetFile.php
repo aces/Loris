@@ -12,7 +12,7 @@
  *  @link     https://github.com/aces/Loris
  */
 
-$user =& User::singleton();
+$user = \User::getLoggedInUser();
 
 $File = $_GET['File'];
 // Make sure that the user isn't trying to break out of the $path by

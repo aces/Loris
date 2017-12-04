@@ -257,7 +257,7 @@ class NDB_Config
         if (empty($username)) {
             $this->_siteSettings =& $this->_settings;
         } else {
-            $user     =& User::getLoggedInUser();
+            $user     = \User::getLoggedInUser();
             $siteName = Utility::getCleanString($user->getSiteNames());
             if (isset($this->_settings['sites'][$siteName])
                 && is_array($this->_settings['sites'][$siteName])

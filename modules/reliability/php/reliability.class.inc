@@ -52,7 +52,7 @@ class Reliability extends \NDB_Menu_Filter
     var $reliability_table;
     function _hasAccess()
     {
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         if ($user->hasPermission('access_all_profiles') || $user->hasPermission('reliability_edit_all')) {
             return true;
         }
@@ -83,7 +83,7 @@ class Reliability extends \NDB_Menu_Filter
 //@codingStandardsIgnoreStart
     function _setupVariables()
     {
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         // create the centerID map
         $db =& \Database::singleton();
@@ -203,7 +203,7 @@ class Reliability extends \NDB_Menu_Filter
         parent::setup();
 
         // create user object
-        $user          =& \User::singleton();
+        $user          = \User::getLoggedInUser();
         $list_of_sites = array();
 
         // allow to view all sites data through filter
@@ -552,7 +552,7 @@ class Reliability extends \NDB_Menu_Filter
 //@codingStandardsIgnoreStart
     function _swap_candidates()
     {
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         if (!($user->hasPermission('reliability_swap_candidates'))) {
             return array(
                     "error" => "You do not have permission".
@@ -678,7 +678,7 @@ class Reliability extends \NDB_Menu_Filter
      */
     function _addCandidate()
     {
-        $user   =& \User::singleton();
+        $user   = \User::getLoggedInUser();
         $DB     =& \Database::singleton();
         $params = array();
         $params['Instrument']  = $_POST['AddInstrument'];

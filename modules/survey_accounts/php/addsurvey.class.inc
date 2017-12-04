@@ -34,7 +34,7 @@ class AddSurvey extends \NDB_Form
     function _hasAccess()
     {
         // create user object
-        $editor =& \User::singleton();
+        $editor = \User::getLoggedInUser();
 
         return $editor->hasPermission('user_accounts');
     }

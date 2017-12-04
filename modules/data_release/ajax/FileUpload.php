@@ -13,7 +13,7 @@
   */
 
 $DB   =& Database::singleton();
-$user =& User::singleton();
+$user = \User::getLoggedInUser();
 
 if ($_POST['action'] == 'upload') {
     $fileName    = $_FILES["file"]["name"];

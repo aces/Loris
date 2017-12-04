@@ -19,7 +19,7 @@ require_once "Database.class.inc";
 require_once 'NDB_Config.class.inc';
 require_once 'NDB_Client.class.inc';
 
-$user =& User::singleton();
+$user = \User::getLoggedInUser();
 if (!$user->hasPermission('data_team_helper')) {
     header("HTTP/1.1 403 Forbidden");
     exit;

@@ -50,7 +50,7 @@ class CNV_Browser extends \NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
         return ($user->hasPermission('genomic_browser_view_allsites')
                 || $user->hasPermission('genomic_browser_view_site'));
     }
@@ -142,7 +142,7 @@ class CNV_Browser extends \NDB_Menu_Filter
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
         $DB   = \Database::singleton();
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
             $site_arr     = implode(",", $user->getCenterIDs());
             $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
@@ -220,7 +220,7 @@ class CNV_Browser extends \NDB_Menu_Filter
         parent::setup();
 
         // create user object
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
 
         // PSC
         if ($user->hasPermission('genomic_browser_view_allsites')) {

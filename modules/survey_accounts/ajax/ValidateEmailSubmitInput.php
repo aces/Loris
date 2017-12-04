@@ -12,7 +12,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-$user =& User::singleton();
+$user = \User::getLoggedInUser();
 if (!$user->hasPermission('user_accounts')) {
     header("HTTP/1.1 403 Forbidden");
     exit;

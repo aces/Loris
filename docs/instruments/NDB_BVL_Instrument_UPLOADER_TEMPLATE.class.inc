@@ -113,7 +113,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
             //$file->setFilenamePrefix($timepoint->getVisitLabel()."-".$this->testName."-");
 
             //set the the IDs to the handler functions.
-            $user =& User::singleton();
+            $user = \User::getLoggedInUser();
             $file->setHandlerArgs(array("CommentID"=>$this->getCommentID(),
                         "candID"=>$candidate->getCandID(),
                         "PSCID"=>$candidate->getPSCID(),

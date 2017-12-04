@@ -21,7 +21,7 @@ set_include_path(
 require_once __DIR__ . "/../../../vendor/autoload.php";
 require_once "NDB_Client.class.inc";
 
-$user     =& User::singleton();
+$user     = \User::getLoggedInUser();
 $username = $user->getUsername();
 
 if (isset($_POST['candID']) && !(isset($_POST['sessionID']))) {

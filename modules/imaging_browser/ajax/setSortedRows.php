@@ -13,7 +13,7 @@
  */
 
 // Get LORIS user issuing the request
-$user =& User::singleton();
+$user = \User::getLoggedInUser();
 if (!($user->hasPermission('imaging_browser_view_allsites')
     || ($user->hasStudySite()
     && $user->hasPermission('imaging_browser_view_site'))

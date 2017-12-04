@@ -118,7 +118,7 @@ class Candidates extends APIBase
 
         // This version of the API does not handle candidate creation
         // when users are at multiple sites
-        $user      = \User::singleton();
+        $user      = \User::getLoggedInUser();
         $centerIDs = $user->getCenterIDs();
         $num_sites = count($centerIDs);
 

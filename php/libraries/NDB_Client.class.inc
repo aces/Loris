@@ -89,7 +89,7 @@ class NDB_Client
         if (!$this->_isWebClient) {
             // Set user as unix username.
             // Requires Loris to have user with this username
-            $user =& User::singleton(getenv('USER'));
+            \User::setLoggedInUser(getenv('USER'));
             return true;
         }
 
@@ -173,9 +173,9 @@ class NDB_Client
             return false;
         }
 
-        //????????????? when do we get here ?
-//        User::singleton($_SESSION['State']->getUsername());
-        User::setLoggedInUser($_SESSION['State']->getUsername());
+        //        User::singleton($_SESSION['State']->getUsername());
+        \User::setLoggedInUser($_SESSION['State']->getUsername());
+
         // finished initializing
         return true;
     }

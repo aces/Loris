@@ -23,12 +23,20 @@
 class UserPermissions
 {
     /**
-     * User's ID
+     * Username is used as a unique key for users
+     * This value is also found in the $userInfo variable of the user class
      *
-     * @var    int
-     * @access private
+     * @var string
      */
-    var $userID;
+    protected $username;
+
+    /**
+     * ID is used as a primary key for users
+     * This value is also found in the $userInfo variable of the user class
+     *
+     * @var int
+     */
+    protected $id;
 
     /**
      * Stores the permissions
@@ -44,21 +52,12 @@ class UserPermissions
      *
      * Fills the permissions property based on username
      *
-     * @param string $username Identifies the user
+     * @param string $id Identifies the user
      *
-     * @return void
+     * @return bool
      */
-    function select($username)
+    function select($id)
     {
-        // create DB object
-        $DB =& Database::singleton();
-
-        // get the proper ID from the database
-        $query  = "SELECT ID FROM users WHERE UserID =:UName";
-        $params = array('UName' => $username);
-
-        $this->userID = $DB->pselectOne($query, $params);
-
         // load the user's permissions
         $this->setPermissions();
 
@@ -82,7 +81,7 @@ class UserPermissions
             LEFT JOIN user_perm_rel pr
             ON (p.permID=pr.permID AND pr.userID=:UID)";
 
-        $results = $DB->pselect($query, array('UID' => $this->userID));
+        $results = $DB->pselect($query, array('UID' => $this->id));
 
         // reset the array
         $this->permissions = array();
@@ -90,7 +89,7 @@ class UserPermissions
         // fill the array
         foreach ($results AS $row) {
             if (!empty($row['userID'])
-                && $row['userID'] === $this->userID
+                && $row['userID'] === $this->id
             ) {
                 $this->permissions[$row['code']] = true;
             } else {
@@ -106,6 +105,8 @@ class UserPermissions
      * Determines if the user has a permission
      *
      * @param string $code The permission code
+     *
+     * @throws ConfigurationException on invalid permission code
      *
      * @return bool
      */
@@ -157,7 +158,7 @@ class UserPermissions
             $success = $DB->insert(
                 'user_perm_rel',
                 array(
-                 'userID' => $this->userID,
+                 'userID' => $this->id,
                  'permID' => $value,
                 )
             );
@@ -186,7 +187,7 @@ class UserPermissions
             // remove all permissions
             $success = $DB->delete(
                 'user_perm_rel',
-                array('userID' => $this->userID)
+                array('userID' => $this->id)
             );
         } else {
             // remove the permissions
@@ -194,7 +195,7 @@ class UserPermissions
                 $success = $DB->delete(
                     'user_perm_rel',
                     array(
-                     'userID' => $this->userID,
+                     'userID' => $this->id,
                      'permID' => $value,
                     )
                 );
@@ -224,7 +225,7 @@ class UserPermissions
             FROM permissions, user_perm_rel
             WHERE permissions.permID = user_perm_rel.permID AND userID = :UID";
 
-        $results = $DB->pselect($query, array('UID' => $this->userID));
+        $results = $DB->pselect($query, array('UID' => $this->id));
 
         // isolate and return numeric permission values
         $permIDs = array();
@@ -254,7 +255,7 @@ class UserPermissions
                 LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
             WHERE up.userID = :UID
                 ORDER BY p.categoryID, p.description";
-        $results = $DB->pselect($query, array('UID' => $this->userID));
+        $results = $DB->pselect($query, array('UID' => $this->id));
 
         return $results;
     }
@@ -278,7 +279,7 @@ class UserPermissions
         $DB->insert(
             'user_account_history',
             array(
-             'userID'     => $this->userID,
+             'userID'     => $this->id,
              'PermID'     => $PermID,
              'PermAction' => $permAction,
             )

@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-$user =& User::singleton();
+$user = \User::getLoggedInUser();
 if (!$user->hasPermission('dataquery_view')) {
     header("HTTP/1.1 403 Forbidden");
     exit;

@@ -38,7 +38,7 @@ class Statistics_Site extends \NDB_Menu
      */
     function _hasAccess()
     {
-        $user     =& \User::singleton();
+        $user     = \User::getLoggedInUser();
         $centerID = htmlspecialchars($_REQUEST['CenterID']);
         return $user->hasCenterPermission('data_entry', $centerID);
     }

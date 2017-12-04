@@ -367,7 +367,7 @@ class NDB_Reliability extends NDB_Form
     function _getExaminerNames()
     {
         $db       =& Database::singleton();
-        $user     =& User::getLoggedInUser();
+        $user     = \User::getLoggedInUser();
         $centerID = $user->getCenterIDs();
 
         // UofA is a special case--they never enter their own data.

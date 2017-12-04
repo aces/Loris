@@ -40,7 +40,7 @@ class Candidate_Parameters extends \NDB_Form
     function _hasAccess()
     {
         //create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         // Set global permission to control access
         // to different modules of candidate_parameters page

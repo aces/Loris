@@ -16,7 +16,7 @@ ini_set('default_charset', 'utf-8');
 
 require "bvl_panel_ajax.php";
 
-$user     =& User::singleton();
+$user     = \User::getLoggedInUser();
 $username = $user->getUsername();
 
 $newEntryValues = array();

@@ -33,7 +33,7 @@ class Dataquery extends \NDB_Form
     function _hasAccess()
     {
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         // check user permissions
         return $user->hasPermission('dataquery_view');
@@ -47,7 +47,7 @@ class Dataquery extends \NDB_Form
     {
         parent::setup();
 
-        $user     = \User::singleton();
+        $user     = \User::getLoggedInUser();
         $username = $user->getUsername();
         $couch    = \CouchDB::singleton();
 

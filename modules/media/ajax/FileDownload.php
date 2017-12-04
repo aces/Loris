@@ -14,7 +14,7 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-$user =& User::singleton();
+$user = \User::getLoggedInUser();
 if (!$user->hasPermission('media_write')) {
     header("HTTP/1.1 403 Forbidden");
     exit;

@@ -33,7 +33,7 @@ class Training extends \NDB_Form
      */
     function _hasAccess()
     {
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
         return $user->hasPermission('training');
     }
     /**
@@ -54,7 +54,7 @@ class Training extends \NDB_Form
 
         $certifications = array();
 
-        $user         = \User::singleton();
+        $user         = \User::getLoggedInUser();
         $userFullName = $user->getFullname();
         $userSite     = $user->getCenterIDs();
 
@@ -149,7 +149,7 @@ class Training extends \NDB_Form
      */
     function getCertificationStatus($instrumentID)
     {
-        $user         = \User::singleton();
+        $user         = \User::getLoggedInUser();
         $userFullName = $user->getFullname();
         $userCenter   = $user->getCenterIDs();
 

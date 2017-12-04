@@ -15,7 +15,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-$user     =& User::singleton();
+$user     = \User::getLoggedInUser();
 $username = $user->getUsername();
 
 if (isset($_POST['candID']) && (empty($_POST['sessionID']))) {

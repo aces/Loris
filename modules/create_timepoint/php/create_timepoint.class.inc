@@ -39,7 +39,7 @@ class Create_Timepoint extends \NDB_Form
     function _hasAccess()
     {
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         $candidate =& \Candidate::singleton($this->identifier);
 
@@ -184,7 +184,7 @@ class Create_Timepoint extends \NDB_Form
         if ($visitLabelAdded) {
             $this->addRule('visitLabel', 'Visit label is required', 'required');
             // List of sites for the user
-            $user = \User::singleton();
+            $user = \User::getLoggedInUser();
             $DB   = \Database::singleton();
             $user_list_of_sites = $user->getData('CenterIDs');
             $num_sites          = count($user_list_of_sites);
@@ -218,7 +218,7 @@ class Create_Timepoint extends \NDB_Form
      */
     function _validate(array $val)
     {
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
 
         $errors = array();
 

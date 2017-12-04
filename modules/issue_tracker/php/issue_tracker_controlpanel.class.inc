@@ -52,7 +52,7 @@ class Issue_Tracker_ControlPanel
      */
     function _hasAccess()
     {
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         if ($user->hasPermission('issue_tracker_reporter')
             || $user->hasPermission('issue_tracker_developer')
         ) {

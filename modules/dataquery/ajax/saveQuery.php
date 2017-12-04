@@ -11,7 +11,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 ini_set("max_input_vars", 4000);
-$user =& User::singleton();
+$user = \User::getLoggedInUser();
 if (!$user->hasPermission('dataquery_view')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
@@ -21,7 +21,7 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
 
-$user = User::singleton();
+$user = User::getLoggedInUser();
 $cdb  = CouchDB::singleton();
 $qid  = $user->getUserName() . "_" . $_REQUEST['QueryName'];
 

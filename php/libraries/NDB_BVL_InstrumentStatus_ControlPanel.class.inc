@@ -360,7 +360,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
     function _hasAccess()
     {
         // get user object
-        $user =& User::getLoggedInUser();
+        $user = \User::getLoggedInUser();
 
         // make a timepoint object
         $timePoint =& TimePoint::singleton($this->getSessionID());

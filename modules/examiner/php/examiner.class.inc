@@ -35,7 +35,7 @@ class Examiner extends \NDB_Menu_Filter_Form
      */
     function _hasAccess()
     {
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
         return $user->hasPermission('examiner_view');
     }
 
@@ -55,7 +55,7 @@ class Examiner extends \NDB_Menu_Filter_Form
             $this->useCertification = false;
         }
 
-        $user      = \User::singleton();
+        $user      = \User::getLoggedInUser();
         $centerIDs = implode(',', $user->getCenterIDs());
 
         if ($user->hasPermission('examiner_multisite')) {
@@ -135,7 +135,7 @@ class Examiner extends \NDB_Menu_Filter_Form
     function setup()
     {
         parent::setup();
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
 
         // Get site options
         if ($user->hasPermission('examiner_multisite')) {

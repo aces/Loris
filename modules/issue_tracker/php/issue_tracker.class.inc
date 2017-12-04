@@ -39,7 +39,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
     function _setupVariables()
     {
 
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         $db   = \Database::singleton();
 
         $this->query = " FROM issues as i " .
@@ -156,7 +156,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
     function setup()
     {
         parent::setup();
-        $user          =& \User::singleton();
+        $user          = \User::getLoggedInUser();
         $db            = \Database::singleton();
         $list_of_sites = array();
 
@@ -301,7 +301,7 @@ WHERE Parent IS NOT NULL ORDER BY Label",
      */
     function _addValidFilters($prepared_key, $field, $val)
     {
-        $user  =& \User::singleton();
+        $user  = \User::getLoggedInUser();
         $query = '';
         if ((!empty($val) || $val === '0') && $field != 'order') {
             if (($field != 'w.userID')

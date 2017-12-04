@@ -51,7 +51,7 @@ class Imaging_Session_ControlPanel
      */
     function _hasAccess()
     {
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         return $user->hasPermission('imaging_browser_qc');
     }
 

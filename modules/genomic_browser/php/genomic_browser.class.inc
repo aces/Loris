@@ -51,7 +51,7 @@ class Genomic_Browser extends \NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
         return ($user->hasPermission('genomic_browser_view_allsites')
                 || $user->hasPermission('genomic_browser_view_site'));
     }
@@ -133,7 +133,7 @@ class Genomic_Browser extends \NDB_Menu_Filter
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
         $DB   = \Database::singleton();
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
             // allow only to view own site data
             $site_arr     = implode(",", $user->getCenterIDs());
@@ -197,7 +197,7 @@ class Genomic_Browser extends \NDB_Menu_Filter
         parent::setup();
 
         // create user object
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
 
         // PSC
         if ($user->hasPermission('genomic_browser_view_allsites')) {

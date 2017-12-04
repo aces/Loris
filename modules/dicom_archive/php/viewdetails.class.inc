@@ -37,7 +37,7 @@ class ViewDetails extends \NDB_Form
      */
     function _hasAccess()
     {
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
         return $user->hasPermission('dicom_archive_view_allsites');
     }
 

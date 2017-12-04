@@ -83,7 +83,7 @@ class PasswordReset extends \NDB_Form
 
         // create the user object
         $username = $values['username'];
-        $user     =& \User::singleton($username);
+        $user     = \User::singleton($username);
 
         $email = $user->getData('Email');
 

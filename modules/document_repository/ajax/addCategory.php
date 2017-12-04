@@ -11,7 +11,7 @@
  * @link     https://www.github.com/Jkat/Loris-Trunk/
  */
 
-$user =& User::singleton();
+$user = \User::getLoggedInUser();
 if (!$user->hasPermission('document_repository_view')
     && !$user->hasPermission('document_repository_delete')
 ) {
@@ -57,7 +57,7 @@ if ($_POST['comments'] !== '') {
     $comments = $_POST['comments'];
 }
 
-$user =& User::singleton();
+$user = \User::getLoggedInUser();
 //if user has document repository permission
 if ($user->hasPermission('document_repository_view')
     || $user->hasPermission('document_repository_delete')

@@ -32,7 +32,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     */
     function _hasAccess()
     {
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         return $user->hasPermission('superuser');
     }
     /**

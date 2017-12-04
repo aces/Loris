@@ -12,7 +12,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-$user =& User::singleton();
+$user = \User::getLoggedInUser();
 if (!($user->hasPermission('access_all_profiles')
     || ($user->hasStudySite() && $user->hasPermission('data_entry')))
 ) {

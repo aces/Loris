@@ -32,7 +32,7 @@ class Stats_Demographic extends \NDB_Form
      */
     function _hasAccess()
     {
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         return $user->hasPermission('data_entry');
     }
     /**

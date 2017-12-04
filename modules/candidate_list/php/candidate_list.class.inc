@@ -33,7 +33,7 @@ class Candidate_List extends \NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         $aap  = $user->hasPermission('access_all_profiles');
         $this->tpl_data['access_all_profiles'] = $aap;
         return (
@@ -51,7 +51,7 @@ class Candidate_List extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $user   =& \User::singleton();
+        $user   = \User::getLoggedInUser();
         $config =& \NDB_Config::singleton();
 
         $this->tpl_data['toggled_visible'] =false;
@@ -209,7 +209,7 @@ class Candidate_List extends \NDB_Menu_Filter
         \Module::factory('candidate_parameters');
 
         // create user object
-         $user    =& \User::singleton();
+         $user    = \User::getLoggedInUser();
           $config =& \NDB_Config::singleton();
         // PSC
         if ($user->hasPermission('access_all_profiles')) {

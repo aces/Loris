@@ -36,7 +36,7 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
      */
     function _hasAccess()
     {
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         return $user->hasPermission('violated_scans_view_allsites');
     }
 

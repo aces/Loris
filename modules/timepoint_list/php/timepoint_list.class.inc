@@ -33,7 +33,7 @@ class Timepoint_List extends \NDB_Menu
     function _hasAccess()
     {
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         $candidate =& \Candidate::singleton($_REQUEST['candID']);
 
@@ -83,7 +83,7 @@ class Timepoint_List extends \NDB_Menu
         $listOfTimePoints         = $candidate->getListOfTimePoints();
 
         if (!empty($listOfTimePoints)) {
-            $user     =& \User::singleton();
+            $user     = \User::getLoggedInUser();
             $username = $user->getData('UserID');
 
             $feedback_select_inactive = null;

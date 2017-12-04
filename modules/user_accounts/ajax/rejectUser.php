@@ -34,7 +34,7 @@ if (!isset($_POST['identifier'])) {
 */
 function _hasPerm()
 {
-    $user =& User::singleton();
+    $user = \User::getLoggedInUser();
     if (isset($user)) {
         if (!$user->hasPermission('user_accounts')) {
             return false;

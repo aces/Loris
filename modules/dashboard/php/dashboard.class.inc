@@ -35,7 +35,7 @@ class Dashboard extends \NDB_Form
     function setup()
     {
         $DB     = \Database::singleton();
-        $user   = \User::singleton();
+        $user   = \User::getLoggedInUser();
         $config = \NDB_Config::singleton();
         $site   = explode(';', $user->getSiteNames());
 

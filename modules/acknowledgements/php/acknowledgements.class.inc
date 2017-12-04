@@ -38,7 +38,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
     function _hasAccess()
     {
         // create user object and check appropriate permission
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         return ($user->hasPermission('acknowledgements_view'));
     }
 
@@ -52,7 +52,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
     function _process($values)
     {
         // create user object and check appropriate permission
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         if (!$user->hasPermission('acknowledgements_edit')) {
             return;
         }

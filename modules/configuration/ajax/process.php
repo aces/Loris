@@ -18,7 +18,7 @@ require_once "Database.class.inc";
 require_once 'NDB_Client.class.inc';
 require_once "Utility.class.inc";
 
-$user =& User::singleton();
+$user = \User::getLoggedInUser();
 if (!$user->hasPermission('config')) {
     header("HTTP/1.1 403 Forbidden");
     exit;

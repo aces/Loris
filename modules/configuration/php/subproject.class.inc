@@ -34,7 +34,7 @@ class Subproject extends \NDB_Form
     function _hasAccess()
     {
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         return $user->hasPermission('config');
     }
 

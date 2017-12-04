@@ -16,7 +16,7 @@
  * @link     https://github.com/aces/Loris
  */
 
-$user =& User::singleton();
+$user = \User::getLoggedInUser();
 if (!$user->hasPermission('server_processes_manager')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
@@ -26,7 +26,7 @@ require_once "ServerProcessesMonitor.class.inc";
 
 $pids   = explode('_', $_REQUEST['ids']);
 $type   = $_REQUEST['type'];
-$userid = User::singleton()->getUsername();
+$userid = User::getLoggedInUser()->getUsername();
 
 $serverProcessesMonitor = new ServerProcessesMonitor();
 $processesState         = $serverProcessesMonitor->getProcessesState(

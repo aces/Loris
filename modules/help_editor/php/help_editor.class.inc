@@ -33,7 +33,7 @@ class Help_Editor extends \NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
 
         return $user->hasPermission('context_help');
     }
@@ -44,7 +44,7 @@ class Help_Editor extends \NDB_Menu_Filter
        */
     function _setupVariables()
     {
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
 
         // the base query
         $query = " FROM help helpChild LEFT JOIN help helpParent".
