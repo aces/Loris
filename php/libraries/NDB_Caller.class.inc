@@ -425,7 +425,7 @@ class NDB_Caller
             header("Location: $redirectToOnSuccess");
             return "";
         }
-        $user = User::singleton();
+        $user = User::getLoggedInUser();
 
         if ($_REQUEST['sessionID']) {
             $timepoint =& TimePoint::singleton($_REQUEST['sessionID']);

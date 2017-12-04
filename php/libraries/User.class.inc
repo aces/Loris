@@ -31,6 +31,16 @@ class User extends UserPermissions
      */
     var $userInfo = array();
 
+    private static $loggedInUser;
+
+    /**
+     * Constructor creates and empty User object.
+     */
+    function __construct()
+    {
+
+    }
+
     /**
      * Constructor
      *
@@ -113,12 +123,16 @@ class User extends UserPermissions
         return $obj;
     }
 
-
     /**
      * Singleton method. Retrieve the user passed as parameter, but only
      * 1 instance.
      *
      * @param string $username Identifies the user
+     *
+     * @note this was only being used to get the logged in user and has now been
+     * replaced by the getLoggedInUser() function and setLoggedInUser() function.
+     * This has only been left her for backwards compatibility and will be
+     * removed in a future iteration of loris. -Rida
      *
      * @return User
      * @access public
@@ -126,13 +140,44 @@ class User extends UserPermissions
      */
     static function &singleton($username = null)
     {
-        static $instance;
-        if (is_null($instance)) {
-            $instance = User::factory($username);
+        error_log(
+            "The User::getLoggedInUser() function has been deprecated and will be ".
+            "removed in a future iteration of loris. Make sure to use the ".
+            "getLoggedInUser(), setLoggedInUser() or User::factory() to ".
+            "achieve your needs."
+        );
+
+        if (!is_null($username)) {
+            return User::factory($username);
         }
-        return $instance;
+
+        return User::getLoggedInUser();
     }
 
+    /**
+     * Static function getting the logged in user only when user.
+     *
+     * @return $loggedInUser the logged in user object.
+     */
+    static function &getLoggedInUser()
+    {
+        return self::$loggedInUser;
+    }
+
+    /**
+     * Static function setting the logged in user only when user
+     * is not previously set.
+     *
+     * @param $username string name of user currently logged in
+     *
+     * @return void
+     */
+    static function setLoggedInUser($username)
+    {
+        if (is_null(self::$loggedInUser)) {
+            self::$loggedInUser = self::factory($username);
+        }
+    }
 
     /**
      * Inserts a user

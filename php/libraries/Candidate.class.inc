@@ -197,7 +197,7 @@ class Candidate
 
         $site =& Site::singleton($centerID);
 
-        $user =& User::singleton($_SESSION['State']->getUsername());
+        $user =& User::getLoggedInUser();
 
         // generate candid
         $candID = Candidate::_generateCandID();

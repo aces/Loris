@@ -41,7 +41,7 @@ class BVL_Feedback_Panel
      */
     function __construct($candID, $sessionID=null, $commentID=null)
     {
-        $user     =& User::singleton();
+        $user     =& User::getLoggedInUser();
         $username = $user->getUsername();
         $this->_feedbackThread
             =& NDB_BVL_Feedback::Singleton(

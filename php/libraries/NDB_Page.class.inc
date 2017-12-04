@@ -741,7 +741,7 @@ class NDB_Page
      * something like:
      *
      *     // create user object
-     *     $user =& User::singleton();
+     *     $user =& User::getLoggedInUser();
      *
      *     return $user->hasPermission('superuser');
      *
