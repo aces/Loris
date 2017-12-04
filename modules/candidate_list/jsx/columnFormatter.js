@@ -24,7 +24,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   var classes = [];
 
   if (row['Consent To Study'] === 'no') {
-      classes.push("bg-danger");
+    classes.push("bg-danger");
   }
   if (column === 'PSCID') {
     var url = loris.BaseURL + "/" + row.DCCID + "/";
