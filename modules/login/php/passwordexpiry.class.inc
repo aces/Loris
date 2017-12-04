@@ -110,8 +110,8 @@ class PasswordExpiry extends \NDB_Form
             return array('password' => 'Can not use an empty password');
         }
 
-        $this->user = \User::factory($this->_username);
-        $data       = $this->user->getData();
+        $this->_user = \User::factory($this->_username);
+        $data        = $this->_user->getData();
 
         if (password_verify($_POST['password'], $data['Password_hash'])) {
             $this->tpl_data['error_message'] = 'You cannot keep the same password';
