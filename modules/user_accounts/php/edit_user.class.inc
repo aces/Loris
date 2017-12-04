@@ -692,7 +692,10 @@ class Edit_User extends \NDB_Form
         if ($editor->hasPermission('examiner_multisite')) {
             //get site aliases
             $DB      =& \Database::singleton();
-            $aliases = $DB->pselect("SELECT CenterID, Alias FROM psc ", array());
+            $aliases = $DB->pselect(
+                "SELECT CenterID, Alias FROM psc WHERE Study_site='Y'",
+                array()
+            );
 
             foreach ($aliases as $row) {
                 $groupA[] = $this->createCheckbox(
