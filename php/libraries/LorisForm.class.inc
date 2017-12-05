@@ -1374,38 +1374,57 @@ class LorisForm
             $format['value'] = '';
         }
 
-        // confirm that the operator is in the set of valid operators
-        $validOperators = array(
-                           '==',
-                           '===',
-                           '!=',
-                           '<>',
-                           '!==',
-                           '<',
-                           '>',
-                           '<=',
-                           '>=',
-                          );
-        if (!in_array($format['operator'], $validOperators)) {
+        $controlElement = $elements[1];
+        $ruleElement    = $elements[0];
+
+        switch ($format['operator']) {
+        case '==':
+            if ($this->getValue($controlElement) == $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '===':
+            if ($this->getValue($controlElement) === $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '<>': // Fallthrough, it's the same operator..
+        case '!=':
+            if ($this->getValue($controlElement) != $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '!==':
+            if ($this->getValue($controlElement) !== $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '<':
+            if ($this->getValue($controlElement) < $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '>':
+            if ($this->getValue($controlElement) > $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '<=':
+            if ($this->getValue($controlElement) <= $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '>=':
+            if ($this->getValue($controlElement) <= $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        default:
             throw new LorisException(
                 "operator is not a valid operator from the set "
                 . join(', ', $this->validOperators)
             );
         }
-
-        // create the comparison function, based on the defined operator
-        $compareFunction = create_function(
-            '$a,$b',
-            "return (\$a $format[operator] \$b);"
-        );
-
-        // check the case where the controller operator value is true
-        if ($compareFunction($this->getValue($elements[1]), $format['value'])) {
-            return $this->getValue($elements[0]) != '';
-        }
-
-        // if controller operator value is false, validate true
-        return true;
     }
 
     /**
