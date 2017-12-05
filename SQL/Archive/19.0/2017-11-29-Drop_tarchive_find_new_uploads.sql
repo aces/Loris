@@ -1,4 +1,1 @@
--- UNCOMMENT THE FOLLOWING STATEMENT IF tarchive_find_new_uploads IS EMPTY
--- THIS TABLE IS NOT USED ANYMORE AND WILL NEVER BE FILLED
-
--- DROP TABLE IF EXISTS tarchive_find_new_uploads;
+DROP TABLE IF EXISTS tarchive_find_new_uploads;
