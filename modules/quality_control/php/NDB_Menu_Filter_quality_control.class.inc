@@ -208,12 +208,12 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 
         $scan_types = $this->_getScanTypes();
 
-        $projectList    = Utility::getProjectList();
+        $projectList     = Utility::getProjectList();
         $subprojectList2 = array();
         foreach ($projectList as $key => $value) {
             $projectList2[$value] = $value;
         }
-        $subprojectList = Utility::getSubprojectList();
+        $subprojectList  = Utility::getSubprojectList();
         $subprojectList2 = array();
         foreach ($subprojectList as $key => $value) {
             $subprojectList2[$value] = $value;
