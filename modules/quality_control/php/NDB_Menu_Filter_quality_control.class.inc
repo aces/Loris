@@ -209,8 +209,16 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $scan_types = $this->_getScanTypes();
 
         $projectList    = Utility::getProjectList();
+        $subprojectList2 = array();
+        foreach ($projectList as $key => $value) {
+            $projectList2[$value] = $value;
+        }
         $subprojectList = Utility::getSubprojectList();
-
+        $subprojectList2 = array();
+        foreach ($subprojectList as $key => $value) {
+            $subprojectList2[$value] = $value;
+        }
+        //print_r($subprojectList2);
         $uploaderList =[];
         $uploaders    = $db -> pselect(
             "SELECT UploadedBy FROM mri_upload GROUP BY UploadedBy",
@@ -229,8 +237,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $this->addSelect('site', 'Site', $siteList);
         $this->addBasicText('candId', 'DCCID', ["size" => 9, "maxlength" => 7]);
         $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
-        $this->addSelect('project', 'Project', $projectList);
-        $this->addSelect('subproject', 'Subproject', $subprojectList);
+        $this->addSelect('project', 'Project', $projectList2);
+        $this->addSelect('subproject', 'Subproject', $subprojectList2);
         $this->addSelect('scanType', 'Scan Type', $scan_types);
         $this->addSelect(
             'mRIParameterForm',
