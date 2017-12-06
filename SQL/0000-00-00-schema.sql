@@ -170,7 +170,7 @@ CREATE TABLE `project_rel` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `psc` (
-  `CenterID` tinyint(2) unsigned NOT NULL AUTO_INCREMENT,
+  `CenterID` integer unsigned NOT NULL AUTO_INCREMENT,
   `Name` varchar(150) NOT NULL DEFAULT '',
   `PSCArea` varchar(150) DEFAULT NULL,
   `Address` varchar(150) DEFAULT NULL,
@@ -231,7 +231,7 @@ VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N',''
 
 CREATE TABLE `user_psc_rel` (
   `UserID` int(10) unsigned NOT NULL,
-  `CenterID` tinyint(2) unsigned NOT NULL,
+  `CenterID` integer unsigned NOT NULL,
   PRIMARY KEY  (`UserID`,`CenterID`),
   KEY `FK_user_psc_rel_2` (`CenterID`),
   CONSTRAINT `FK_user_psc_rel_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -255,7 +255,7 @@ CREATE TABLE `candidate` (
   `DoB` date DEFAULT NULL,
   `EDC` date DEFAULT NULL,
   `Gender` enum('Male','Female') DEFAULT NULL,
-  `CenterID` tinyint(2) unsigned NOT NULL DEFAULT '0',
+  `CenterID` integer unsigned NOT NULL DEFAULT '0',
   `ProjectID` int(11) DEFAULT NULL,
   `Ethnicity` varchar(255) DEFAULT NULL,
   `Active` enum('Y','N') NOT NULL DEFAULT 'Y',
@@ -285,7 +285,7 @@ CREATE TABLE `candidate` (
 CREATE TABLE `session` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6) NOT NULL DEFAULT '0',
-  `CenterID` tinyint(2) unsigned DEFAULT NULL,
+  `CenterID` integer unsigned DEFAULT NULL,
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
   `Visit_label` varchar(255) DEFAULT NULL,
   `SubprojectID` int(11) DEFAULT NULL,
@@ -874,7 +874,7 @@ CREATE TABLE `notification_spool` (
   `Error` enum('Y','N') default NULL,
   `Verbose` enum('Y','N') NOT NULL DEFAULT 'N',
   `Sent` enum('N','Y') NOT NULL default 'N',
-  `CenterID` tinyint(2) unsigned default NULL,
+  `CenterID` integer unsigned default NULL,
   `Origin` varchar(255) DEFAULT NULL,
   PRIMARY KEY  (`NotificationID`),
   KEY `FK_notification_spool_1` (`NotificationTypeID`),
@@ -1130,7 +1130,7 @@ CREATE TABLE `examiners` (
 
 CREATE TABLE `examiners_psc_rel` (
   `examinerID` int(10) unsigned NOT NULL,
-  `centerID` tinyint(2) unsigned NOT NULL,
+  `centerID` integer unsigned NOT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `pending_approval` enum('Y','N') NOT NULL DEFAULT 'N',
   PRIMARY KEY  (`examinerID`,`centerID`),
@@ -1383,7 +1383,7 @@ CREATE TABLE `issues` (
   `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `lastUpdatedBy` varchar(255) DEFAULT NULL,
   `sessionID` int(10) unsigned DEFAULT NULL,
-  `centerID` tinyint(2) unsigned DEFAULT NULL,
+  `centerID` integer unsigned DEFAULT NULL,
   `candID` int(6) DEFAULT NULL,
   `category` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`issueID`),
