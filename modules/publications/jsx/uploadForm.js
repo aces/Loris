@@ -11,6 +11,9 @@ class PublicationUploadForm extends React.Component {
       loadedData: 0,
       uploadProgress: -1
     };
+
+    this.setFormData = this.setFormData.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -30,6 +33,50 @@ class PublicationUploadForm extends React.Component {
         });
       }
     });
+  }
+
+  /**
+   * Set the form data based on state values of child elements/componenets
+   *
+   * @param {string} formElement - name of the selected element
+   * @param {string} value - selected value for corresponding form element
+   */
+  setFormData(formElement, value) {
+    let formData = this.state.formData;
+    formData[formElement] = value;
+    this.setState({
+      formData: formData
+    });
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    // TODO make sure title is unique
+
+    let formData = this.state.formData;
+    let formObj = new FormData();
+    for (let key in formData) {
+      if (formData[key] !== "") {
+        formObj.append(key, formData[key]);
+      }
+    }
+
+    console.log(this.props.action);
+    $.ajax({
+      type: 'POST',
+      url: this.props.action,
+      data: formObj,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function(data) {
+        console.log(data);
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(textStatus);
+      }
+    });
+    console.log('after ajax');
   }
 
   render() {
@@ -72,39 +119,7 @@ class PublicationUploadForm extends React.Component {
               onUserInput={this.setFormData}
               ref="title"
               required={true}
-              //value={this.state.formData.title}
-            />
-            <TextboxElement
-              name="leadInvestigator"
-              label="Lead Investigator"
-              onUserInput={this.setFormData}
-              ref="leadInvestigator"
-              required={true}
-              //value={this.state.formData.leadInvestigator}
-            />
-            <TextboxElement
-              name="leadInvestigatorEmail"
-              label="Lead Investigator Email"
-              onUserInput={this.setFormData}
-              ref="leadInvestigatorEmail"
-              required={true}
-              //value={this.state.formData.leadInvestigatorEmail}
-            />
-            <TextboxElement
-              name="keywords"
-              label="Keywords"
-              onUserInput={this.setFormData}
-              ref="keywords"
-              required={false}
-              //value={this.state.formData.keywords}
-            />
-            <TextboxElement
-              name="voi"
-              label="Variables of Interest"
-              onUserInput={this.setFormData}
-              ref="voi"
-              required={true}
-              //value={this.state.formData.voi}
+              value={this.state.formData.title}
             />
             <TextareaElement
               name="description"
@@ -112,7 +127,39 @@ class PublicationUploadForm extends React.Component {
               onUserInput={this.setFormData}
               ref="description"
               required={true}
-              //value={this.state.formData.description}
+              value={this.state.formData.description}
+            />
+            <TextboxElement
+              name="leadInvestigator"
+              label="Lead Investigator"
+              onUserInput={this.setFormData}
+              ref="leadInvestigator"
+              required={true}
+              value={this.state.formData.leadInvestigator}
+            />
+            <TextboxElement
+              name="leadInvestigatorEmail"
+              label="Lead Investigator Email"
+              onUserInput={this.setFormData}
+              ref="leadInvestigatorEmail"
+              required={true}
+              value={this.state.formData.leadInvestigatorEmail}
+            />
+            <TextboxElement
+              name="voi"
+              label="Variables of Interest"
+              onUserInput={this.setFormData}
+              ref="voi"
+              required={true}
+              value={this.state.formData.voi}
+            />
+            <TextboxElement
+              name="keywords"
+              label="Keywords"
+              onUserInput={this.setFormData}
+              ref="keywords"
+              required={false}
+              value={this.state.formData.keywords}
             />
             <FileElement
               name="file"
@@ -120,10 +167,10 @@ class PublicationUploadForm extends React.Component {
               onUserInput={this.setFormData}
               ref="file"
               label="Publication"
-              required={true}
-              //value={this.state.formData.file}
+              required={false}
+              value={this.state.formData.file}
             />
-            <ButtonElement label="Upload File"/>
+            <ButtonElement label="Propose Project"/>
             <div className="row">
               <div className="col-sm-9 col-sm-offset-3">
 
@@ -133,16 +180,6 @@ class PublicationUploadForm extends React.Component {
         </div>
       </div>
     );
-  }
-
-  /**
-   * Set the form data based on state values of child elements/componenets
-   *
-   * @param {string} formElement - name of the selected element
-   * @param {string} value - selected value for corresponding form element
-   */
-  setFormData(formElement, value) {
-
   }
 }
 
