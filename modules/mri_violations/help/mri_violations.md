@@ -1,4 +1,4 @@
-# MRI Protocol Violations
+# MRI Violated Scans
 
 The MRI Violations module displays scans that have been flagged for significant variance from the study protocol.
 Use the Selection Filters to specify or search by Patient Name, MincFile, Scan Type, Project, Site, then click Show Data
