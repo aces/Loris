@@ -1332,18 +1332,26 @@ class NDB_BVL_Instrument extends NDB_Page
         //to pop a required rule)
         $valFlag = array();
         foreach ($values AS $value) {
-            $compareFunction = create_function(
-                '$a, $b',
-                "return (\$a $operator \$b);"
-            );
+            switch ($operator) {
+            case '==':
+                if ($controller != $value) {
+                    $valFlag[] = false;
+                }
+                break;
+            case '!=':
+                if ($controller == $value) {
+                    $valFlag[] = false;
+                }
+                break;
+            default:
+                throw new \LorisException(
+                    "Unsupported operator ($operator) for XIN Rule."
+                    . " If this used to work, please file a bug report."
+                );
+            }
             if ($this->XINDebug) {
                 //debugging code
                 echo "'$controller' $operator '$value'<br>";
-            }
-            if (!$compareFunction($controller, $value)) {
-                // IF one of the conditions is not  met then this rule
-                // does not need to be run.
-                $valFlag[] = false;
             }
         }
         //For conditions
@@ -1352,7 +1360,6 @@ class NDB_BVL_Instrument extends NDB_Page
         }
         return $is_required;
     }
-
 
     /**
      * Get a the value of $field from the instrument table.
