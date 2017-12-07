@@ -16,11 +16,11 @@ selectmultiple{@}multiselect_1{@}This is a multiselect{@}NULL=>''{-}'option_1'=>
 date{@}date_1_date{@}This is a standard date without start or end year{@}{@}{@}undefined
 date{@}date_2_date{@}This is a standard date with a start year but no end year{@}2001{@}{@}undefined
 date{@}date_3_date{@}This is a standard date with a start and end year{@}2001{@}2017{@}undefined
-date{@}date_4{@}This is a basic date without start or end year{@}1901{@}2001{@}undefined
-date{@}date_5{@}This is a basic date with a start year but no end year{@}1901{@}2001{@}undefined
+date{@}date_4{@}This is a basic date without start or end year{@}{@}{@}undefined
+date{@}date_5{@}This is a basic date with a start year but no end year{@}1901{@}{@}undefined
 date{@}date_6{@}This is a basic date with a start and end year{@}1901{@}2001{@}undefined
-date{@}date_7{@}This is a Month Year date without start and end year{@}1901{@}2001{@}undefined
-date{@}date_8{@}This is a Month Year date with a start year but no end year{@}1901{@}2001{@}undefined
+date{@}date_7{@}This is a Month Year date without start and end year{@}{@}{@}undefined
+date{@}date_8{@}This is a Month Year date with a start year but no end year{@}1901{@}{@}undefined
 date{@}date_9{@}This is a Month Year date with a start and end year{@}1901{@}2001{@}undefined
 numeric{@}numeric_1{@}This is a numeric{@}-1{@}1
 select{@}numeric_1_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
