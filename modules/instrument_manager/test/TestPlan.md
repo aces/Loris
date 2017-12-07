@@ -6,7 +6,7 @@
    [Automation Testing]
 3. Check that the warning text is accurate if the `project/instruments` or `project/sql_tables` directories are not writable by Apache. The select file/upload panel should only be there if it's writable.
    [Manual Testing]
-5. Take a sample .linst instrument file with a variety of field types (dropdown, number, textbox).  Upload in Instrument Manager.
+5. Take the sample .linst instrument file `test_all_fields.linst` in `docs/instruments` and upload it in Instrument Manager.
 Check that instrument gets installed properly - instruments/ tables_sql/ . 
 Also check the paths in the code - eg uploaded instruments in the instruments directory with right permissions.
    [Manual Testing]
