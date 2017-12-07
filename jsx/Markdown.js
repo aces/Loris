@@ -18,11 +18,16 @@
  * @version 0.0.1
  *
  */
-var Markdown = React.createClass({
-  propTypes: {
-    content: React.PropTypes.string.isRequired
-  },
-  render: function() {
+import React from 'react';
+import PropTypes from 'prop-types';
+
+class Markdown extends React.Component {
+
+  static propTypes = {
+    content: PropTypes.string.isRequired
+  }
+
+  render() {
     // Fix stupid-style newlines to be just \n.
     var fixedNewlines = this.props.content.replace("\r\n", "\n");
 
@@ -104,9 +109,13 @@ var Markdown = React.createClass({
         paragraphs[i] = <p dangerouslySetInnerHTML={ {__html: paramd}} />;
       }
     }
-    return <div>{paragraphs}</div>;
+    return (
+      <div>
+        {paragraphs}
+      </div>
+    );
   }
-});
+}
 
 var RMarkdown = React.createFactory(Markdown);
 
