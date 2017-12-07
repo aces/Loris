@@ -1,12 +1,10 @@
-Instrument Manager Test Plan
+# Instrument Manager Test Plan
 
 1. User has access to Instrument Manager if he/she has permission “superuser”.
    [Automation Testing]
-2. Check that tab exists on a default install (for superusers).
+2. Check that `Instrument Manager` menu-item exists on a default install under Admin menu-item (for superusers).
    [Automation Testing]
-3. Check that the warning text above is accurate for both with and without the directory writable by Apache. The select file/upload button should only be there if it's writable.
-   [Manual Testing]
-4. Verify GUI is updated, menu tabs are working.
+3. Check that the warning text is accurate if the `project/instruments` or `project/sql_tables` directories are not writable by Apache. The select file/upload panel should only be there if it's writable.
    [Manual Testing]
 5. Take a sample .linst instrument file with a variety of field types (dropdown, number, textbox).  Upload in Instrument Manager.
 Check that instrument gets installed properly - instruments/ tables_sql/ . 
