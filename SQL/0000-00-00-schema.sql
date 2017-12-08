@@ -697,6 +697,7 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6),
   `PSCID` varchar(255),
+  `TarchiveID` int(11),
   `time_run` datetime,
   `series_description` varchar(255) DEFAULT NULL,
   `minc_location` varchar(255),
@@ -714,6 +715,8 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `time_range` varchar(255)  DEFAULT NULL,
   `SeriesUID` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`ID`)
+  KEY `FK_mri_violated_1` (`TarchiveID`),
+  CONSTRAINT `FK_mri_violated_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
