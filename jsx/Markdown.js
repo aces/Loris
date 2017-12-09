@@ -23,10 +23,6 @@ import PropTypes from 'prop-types';
 
 class Markdown extends React.Component {
 
-  static propTypes = {
-    content: PropTypes.string.isRequired
-  }
-
   render() {
     // Fix stupid-style newlines to be just \n.
     var fixedNewlines = this.props.content.replace("\r\n", "\n");
@@ -116,6 +112,11 @@ class Markdown extends React.Component {
     );
   }
 }
+
+Markdown.propTypes = {
+  content: PropTypes.string.isRequired
+}
+
 
 var RMarkdown = React.createFactory(Markdown);
 
