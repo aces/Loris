@@ -4,11 +4,13 @@
  * Candidate Profile
  * Instrument List
  * Any instrument
+[Automation Test]
 2. Remove 'bvl_feedback' permission. Behavioural feedback button should no longer appear.
 3. Click on the behavioural feedback button. A slide-out panel should appear on the right-hand side with the following:
  * Open Thread Summary
  * New profile level feedback
  * Feedback Threads
+[Automation Test]
 4. Click on the chevron arrow on each section and make sure it toggles open/closed.
 5. Type something in the 'New profile level feedback' text box and choose a 'Feedback Type' from the dropdown. Click 'Save data'.
 6. 'Open Thread Summary' and 'Feedback Threads' should update with the submitted thread. 
