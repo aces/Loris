@@ -80,7 +80,7 @@ class Help_Editor extends \NDB_Menu_Filter
         $this->formToFilter  = array('topic' => 'helpChild.topic');
         $this->searchKeyword = array(
                                 'helpChild.topic',
-                                'helpChild.content',
+                                'helpChild.projectContent',
                                );
         return true;
     }
