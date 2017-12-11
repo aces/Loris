@@ -9,7 +9,7 @@ ALTER TABLE mri_violations_log
     FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`);
 
 -- Add TarchiveID foreign key to files
-ALTER TABLE FILES
+ALTER TABLE files
   ADD CONSTRAINT `FK_files_TarchiveID_1`
     FOREIGN KEY (`TarchiveSource`) REFERENCES `tarchive` (`TarchiveID`);
 
@@ -27,10 +27,10 @@ ALTER TABLE mri_upload
 
 -- Add ScanType foreign key in mri_protocol_checks
 ALTER TABLE mri_protocol_checks
-  ADD CONSTRAINT (`FK_mriProtocolChecks_ScanType`)
-    FOREIGN KEY `Scan_type` REFERENCES `mri_scan_type` (`ID`);
+  ADD CONSTRAINT `FK_mriProtocolChecks_ScanType`
+    FOREIGN KEY (`Scan_type`) REFERENCES `mri_scan_type` (`ID`);
 
 -- Add SessionID foreign key in tarchive
 ALTER TABLE tarchive
-  ADD CONSTRAINT (`FK_tarchive_sessionID`)
-    FOREIGN KEY `SessionID` REFERENCES `session` (`ID`);
+  ADD CONSTRAINT `FK_tarchive_sessionID`
+    FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`);
