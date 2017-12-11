@@ -93,7 +93,7 @@ class BvlFeedbackTest extends LorisIntegrationTest
         $this->assertContains("Feedback Threads", $text);
     }
     /**
-     * after clicking save button: Feedback threads
+     * A`fter clicking save button: Feedback threads
      * The Feedback Type should appear under 'Type'
      * Current user and date should appear under 'Author'
      * 'Status' should be set to 'opened'
