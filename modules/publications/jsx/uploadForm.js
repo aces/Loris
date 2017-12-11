@@ -146,12 +146,12 @@ class PublicationUploadForm extends React.Component {
               value={this.state.formData.leadInvestigatorEmail}
             />
             <TextboxElement
-              name="voi"
+              name="variablesOfInterest"
               label="Variables of Interest"
               onUserInput={this.setFormData}
-              ref="voi"
+              ref="variablesOfInterest"
               required={true}
-              value={this.state.formData.voi}
+              value={this.state.formData.variablesOfInterest}
             />
             <TextboxElement
               name="keywords"

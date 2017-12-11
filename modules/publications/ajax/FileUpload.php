@@ -5,11 +5,25 @@ if (isset($_REQUEST['action'])) {
     if ($action === 'getData') {
         echo json_encode(array());
     } elseif ($action === 'upload') {
-        $title = isset($_POST['title']) ? $_POST['title'] : ":(";
-        error_log($title);
+        uploadPublication();
     } else {
         echo "invalid action";
     }
 } else {
     echo "no action";
+}
+
+function uploadPublication() {
+    $db = Database::singleton();
+
+    $today = date('Y-m-d');
+    $fields = array(
+        'Title'                   => $_REQUEST['title'],
+        'Description'             => $_REQUEST['description'],
+        'Lead_investigator'       => $_REQUEST['leadInvestigator'],
+        'Lead_investigator_email' => $_REQUEST['leadInvestigatorEmail'],
+        'Date_proposed'           => $today
+    );
+
+    $db->insert('publications', $fields);
 }

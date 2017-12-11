@@ -1,12 +1,12 @@
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import PublicationUploadForm from './uploadForm.js';
+import formatColumn from './columnFormatter';
 
 class PublicationIndex extends React.Component {
   constructor(props) {
     super(props);
-
-
+    loris.hiddenHeaders = ['Description', 'Keywords', 'Variables Of Interest'];
     this.state = {
       isLoaded: false,
       filter: {}
@@ -19,7 +19,6 @@ class PublicationIndex extends React.Component {
   }
 
   componentDidMount() {
-    console.log('component mounted');
     this.fetchData();
   }
 
@@ -46,11 +45,10 @@ class PublicationIndex extends React.Component {
   }
 
   resetFilters() {
-
+    this.refs.publicationsFilter.clearFilter();
   }
 
   render() {
-    console.log('in render');
     if (!this.state.isLoaded) {
       return (
         <button className="btn-info has-spinner">
@@ -96,6 +94,7 @@ class PublicationIndex extends React.Component {
             Data={this.state.Data.Data}
             Headers={this.state.Data.Headers}
             Filter={this.state.filter}
+            getFormattedCell={formatColumn}
           />
         </TabPane>
         <TabPane TabId={tabList[1].id}>

@@ -5,13 +5,12 @@ CREATE TABLE `publications` (
     `PublicationID` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `Title` varchar(255) NOT NULL,
     `Description` text NOT NULL,
-    `Keywords` varchar(255),
     `Lead_investigator` varchar(255) NOT NULL,
     `Lead_investigator_email` varchar(255),
     `Date_proposed` date NOT NULL,
     `Approval_status` enum('Approved','Pending','Rejected') NOT NULL default 'Pending',
-    `Rated_by` varchar(255),
-    `Date_rated` date,
+    `Rated_by` varchar(255) default NULL,
+    `Date_rated` date default NULL,
     `Rejected_reason` varchar(255),
     PRIMARY KEY(`PublicationID`),
     CONSTRAINT `FK_publications_1` FOREIGN KEY(`Rated_by`) REFERENCES `users` (`UserID`)
@@ -56,3 +55,6 @@ CREATE TABLE `publications_media` (
     CONSTRAINT `FK_publications_media_1` FOREIGN KEY (`PublicationID`) REFERENCES `publications` (`PublicationID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET FOREIGN_KEY_CHECKS=1;
+
+DELETE FROM LorisMenu WHERE Label='Publications';
+INSERT INTO LorisMenu (Parent, Label, Link) VALUES (4, 'Publications', 'publications/');

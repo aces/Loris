@@ -54,24 +54,26 @@ class Publications extends \NDB_Menu_Filter_Form
         $query .= " WHERE 1=1 ";
 
         $this->columns = array(
-            'p.PublicationID',
             'p.Title',
-            'p.Description',
             'p.Lead_investigator',
             'p.Date_proposed',
             'p.Approval_status',
+            'p.Description',
             'pk.Label', // Keywords
             'pt.Name', // Variables of Interest
         );
 
         $this->query = $query;
         $this->headers = array(
-            'ID',
             'Title',
             'Lead Investigator',
             'Date Proposed',
             'Approval Status',
+            'Description',
+            'Keywords',
+            'Variables of Interest',
         );
+
 
         $this->validFilters = array(
             'p.Title',
@@ -112,8 +114,8 @@ class Publications extends \NDB_Menu_Filter_Form
             'Rejected' => 'Rejected'
         );
         $this->addBasicText(
-            'titleOrDescription',
-            'Title or Description'
+            'title',
+            'Title'
         );
         $this->addSelect(
             'approvalStatus',
