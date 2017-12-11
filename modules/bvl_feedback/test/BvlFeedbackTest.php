@@ -38,26 +38,32 @@ class BvlFeedbackTest extends LorisIntegrationTest
      */
     public function testBVLFeedbackLoads()
     {
-       // Candidate Profile
+        // Candidate Profile
         $this->safeGet($this->url . "/300002/");
         $this->webDriver->executescript(
-	            "document.querySelector('#nav-right > li:nth-child(1) > a > span').click()");
+            "document.querySelector('#nav-right >".
+            " li:nth-child(1) > a > span').click()"
+        );
         $text = $this->webDriver->executescript(
-	            "return document.querySelector".
-	                  "('#bvl_feedback_menu > div.breadcrumb-panel > a').textContent");
+            "return document.querySelector".
+                      "('#bvl_feedback_menu > div.breadcrumb-panel > a').textContent"
+        );
 
         $this->assertContains("Feedback for PSCID: ", $text);
-       // Instrument List
+        // Instrument List
         $this->safeGet($this->url . "/instrument_list/?candID=300001&sessionID=1");
         $this->webDriver->executescript(
-                    "document.querySelector('#nav-right > li:nth-child(1) > a > span').click()");
+            "document.querySelector('#nav-right > li:nth-child(1) > a > span').".
+            "click()"
+        );
         $text = $this->webDriver->executescript(
-                    "return document.querySelector".
-                          "('#bvl_feedback_menu > div.breadcrumb-panel > a').textContent");
+            "return document.querySelector".
+            "('#bvl_feedback_menu > div.breadcrumb-panel > a').textContent"
+        );
 
         $this->assertContains("Feedback for PSCID: ", $text);
-       //Todo: Any instrument
-         
+        //Todo: Any instrument
+
     }
     /**
      * Click on the behavioural feedback button. A slide-out panel
@@ -72,10 +78,13 @@ class BvlFeedbackTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/300001/");
         $this->webDriver->executescript(
-                    "document.querySelector('#nav-right > li:nth-child(1) > a > span').click()");
+            "document.querySelector('#nav-right > li:nth-child(1)".
+            " > a > span').click()"
+        );
         $text = $this->webDriver->executescript(
-                    "return document.querySelector".
-                          "('#panel_content').textContent");
+            "return document.querySelector".
+            "('#panel_content').textContent"
+        );
 
         $this->assertContains("Open Thread Summary", $text);
 
@@ -83,7 +92,8 @@ class BvlFeedbackTest extends LorisIntegrationTest
 
         $this->assertContains("Feedback Threads", $text);
     }
-    /* after clicking save button: Feedback threads
+    /**
+     * after clicking save button: Feedback threads
      * The Feedback Type should appear under 'Type'
      * Current user and date should appear under 'Author'
      * 'Status' should be set to 'opened'
@@ -94,25 +104,31 @@ class BvlFeedbackTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/300001/");
         $this->webDriver->executescript(
-                    "document.querySelector('#nav-right > li:nth-child(1) > a > span').click()");
+            "document.querySelector('#nav-right > li:nth-child(1) > a > span')".
+            ".click()"
+        );
         $this->webDriver->executescript(
-                    "document.querySelector('#comment').value ='test feedback'");
-        #save_data
+            "document.querySelector('#comment').value ='test feedback'"
+        );
+        // save_data
         $this->webDriver->executescript(
-                    "document.querySelector('#save_data').click()");
+            "document.querySelector('#save_data').click()"
+        );
         sleep(200);
         $text = $this->webDriver->executescript(
-                    "return document.querySelector('#comment').textContent");
+            "return document.querySelector('#comment').textContent"
+        );
 
         $this->assertContains("The new thread has been submitted!", $text);
-        
+
         $text = $this->webDriver->executescript(
-                    "return document.querySelector('#bvl_feedback_menu').textContent");
+            "return document.querySelector('#bvl_feedback_menu').textContent"
+        );
 
         $this->assertContains("Type", $text);
         $this->assertContains("Author", $text);
         $this->assertContains("opened", $text);
-       
+
     }
     /**
      * Click on the chevron next to the status. You should be able to
@@ -124,13 +140,18 @@ class BvlFeedbackTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/300001/");
         $this->webDriver->executescript(
-                    "document.querySelector('#nav-right > li:nth-child(1) > a > span').click()");
+            "document.querySelector('#nav-right > li:nth-child(1) > a > span').".
+            "click()"
+        );
         $this->webDriver->executescript(
-                    "document.querySelector('#current_thread_table > tbody > tr >".
-                    "td:nth-child(3)>span.glyphicon.glyphicon-chevron-right.glyphs".
-                    "').click()");
+            "document.querySelector('#current_thread_table > tbody > tr >".
+            "td:nth-child(3)>span.glyphicon.glyphicon-chevron-right.glyphs".
+            "').click()"
+        );
         $text = $this->webDriver->executescript(
-                    "return document.querySelector('#current_thread_table > tbody > tr.thread_entry').textContent");
+            "return document.querySelector('#current_thread_table > tbody >".
+            " tr.thread_entry').textContent"
+        );
 
         $this->assertContains("test feedback", $text);
 
