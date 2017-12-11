@@ -10,7 +10,7 @@ ALTER TABLE mri_violations_log
 
 -- Add TarchiveID foreign key to files
 ALTER TABLE files
-  ADD CONSTRAINT `FK_files_TarchiveID_1`
+  ADD CONSTRAINT `FK_files_TarchiveID`
     FOREIGN KEY (`TarchiveSource`) REFERENCES `tarchive` (`TarchiveID`);
 
 -- Add FileID foreign key to files_qcstatus

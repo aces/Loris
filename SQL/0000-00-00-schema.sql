@@ -552,12 +552,14 @@ CREATE TABLE `files` (
   KEY `staging_filetype_outputtype` (`PendingStaging`,`FileType`,`OutputType`),
   KEY `AcquiIndex` (`AcquisitionProtocolID`,`SessionID`),
   KEY `scannerid` (`ScannerID`),
+  KEY `tarchivesource` (`TarchiveSource`),
   CONSTRAINT `FK_files_2` FOREIGN KEY (`AcquisitionProtocolID`) REFERENCES `mri_scan_type` (`ID`),
   CONSTRAINT `FK_files_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `FK_files_3` FOREIGN KEY (`SourceFileID`) REFERENCES `files` (`FileID`),
   CONSTRAINT `FK_files_4` FOREIGN KEY (`ProcessProtocolID`) REFERENCES `mri_processing_protocol` (`ProcessProtocolID`),
   CONSTRAINT `FK_files_FileTypes` FOREIGN KEY (`FileType`) REFERENCES `ImagingFileTypes`(`type`),
-  CONSTRAINT `FK_files_scannerID` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`)
+  CONSTRAINT `FK_files_scannerID` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`),
+  CONSTRAINT `FK_files_TarchiveID` FOREIGN KEY (`TarchiveSource`) REFERENCES `tarchive` (`TarchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `files_intermediary` (
@@ -580,7 +582,11 @@ CREATE TABLE `files_qcstatus` (
     `QCStatus` enum('Pass', 'Fail'),
     `QCFirstChangeTime` int(10) unsigned,
     `QCLastChangeTime` int(10) unsigned,
-    `Selected` enum('true', 'false') DEFAULT NULL
+    `Selected` enum('true', 'false') DEFAULT NULL,
+    PRIMARY KEY (`FileQCID`),
+    KEY (`FileID`),
+    CONSTRAINT `FK_filesqcstatus_FileID`
+      FOREIGN KEY `FileID` REFERENCES `files` (`FileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `mri_acquisition_dates` (
@@ -638,7 +644,13 @@ CREATE TABLE `mri_upload` (
   `IsCandidateInfoValidated` tinyint(1) DEFAULT NULL,
   `IsTarchiveValidated` tinyint(1) NOT NULL DEFAULT '0',
   `IsPhantom` enum('N','Y') NOT NULL DEFAULT 'N',
-  PRIMARY KEY (`UploadID`)
+  PRIMARY KEY (`UploadID`),
+  KEY (`SessionID`),
+  KEY (`TarchiveID`),
+  CONSTRAINT `FK_mriupload_SessionID`
+    FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
+  CONSTRAINT `FK_mriupload_TarchiveID`
+    FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `mri_protocol_checks` (
@@ -648,7 +660,10 @@ CREATE TABLE `mri_protocol_checks` (
   `Header` varchar(255) DEFAULT NULL,
   `ValidRange` varchar(255) DEFAULT NULL,
   `ValidRegex` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  KEY (`Scan_type`),
+  CONSTRAINT `FK_mriProtocolChecks_ScanType`
+    FOREIGN KEY (`Scan_type`) REFERENCES `mri_scan_type` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -691,6 +706,9 @@ CREATE TABLE `tarchive` (
   `DateSent` datetime DEFAULT NULL,
   `PendingTransfer` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY  (`TarchiveID`)
+  KEY (`SessionID`)
+  CONSTRAINT `FK_tarchive_sessionID`
+    FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `tarchive_series` (
@@ -744,7 +762,8 @@ CREATE TABLE `MRICandidateErrors` (
   `PatientName` varchar(255) DEFAULT NULL,
   `Reason` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`),
-  CONSTRAINT `FK_tarchive_MRICandidateError_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
+  CONSTRAINT `FK_tarchive_MRICandidateError_1`
+    FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `mri_violations_log` (
@@ -764,7 +783,8 @@ CREATE TABLE `mri_violations_log` (
   `ValidRange` varchar(255) DEFAULT NULL,
   `ValidRegex` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`LogID`),
-  CONSTRAINT `FK_tarchive_mriViolationsLog_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
+  CONSTRAINT `FK_tarchive_mriViolationsLog_1`
+    FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `violations_resolved` (
