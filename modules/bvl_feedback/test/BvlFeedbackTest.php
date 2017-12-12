@@ -60,7 +60,7 @@ class BvlFeedbackTest extends LorisIntegrationTest
             "return document.querySelector".
             "('#bvl_feedback_menu').textContent"
         );
-print($text);
+        print($text);
         $this->assertContains("Feedback for PSCID: ", $text);
         //Todo: Any instrument
 
