@@ -36,9 +36,7 @@ class Images extends \Loris\API\APIBase
      */
     public function __construct($method, $data=null)
     {
-        $this->AllowedMethods = array(
-            'GET',
-        );
+        $this->AllowedMethods = array('GET');
 
         $projectName = $data['project_name'];
         try {
@@ -49,7 +47,7 @@ class Images extends \Loris\API\APIBase
             $this->safeExit(0);
         }
 
-        $this->RequestData['since']        = $data['since'] ?? '1970-01-01 00:00:01';
+        $this->RequestData['since'] = $data['since'] ?? '1970-01-01 00:00:01';
 
         if (strtotime($this->RequestData['since']) === false) {
             $this->header("HTTP/1.1 400 Bad Request");
@@ -79,8 +77,8 @@ class Images extends \Loris\API\APIBase
                   f.InsertTime > :v_time AND
                   p.Name = :v_project_name",
             array(
-                'v_time' => strtotime($this->RequestData['since']) ?? 0,
-                'v_project_name' => $this->_project->getName()
+             'v_time'         => strtotime($this->RequestData['since']) ?? 0,
+             'v_project_name' => $this->_project->getName(),
             )
         );
         return md5(
@@ -109,15 +107,16 @@ class Images extends \Loris\API\APIBase
             array('v_time' => strtotime($this->RequestData['since']) ?? 0)
         );
 
-        $images = array_map(function($item) {
-            $candid    = $item['CandID'];
-            $session   = $item['Visit_label'];
-            $file_name = basename($item['File']);
-            $link = "/candidates/$candid/$session/images/$file_name";
-            return array(
-                'link' => $link,
-            );
-        }, $result);
+        $images = array_map(
+            function ($item) {
+                $candid    = $item['CandID'];
+                $session   = $item['Visit_label'];
+                $file_name = basename($item['File']);
+                $link      = "/candidates/$candid/$session/images/$file_name";
+                return array('link' => $link);
+            },
+            $result
+        );
 
         $this->JSON = ["Images" => $images];
     }
