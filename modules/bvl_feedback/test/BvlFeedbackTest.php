@@ -58,9 +58,9 @@ class BvlFeedbackTest extends LorisIntegrationTest
         );
         $text = $this->webDriver->executescript(
             "return document.querySelector".
-            "('#bvl_feedback_menu > div.breadcrumb-panel > a').textContent"
+            "('#bvl_feedback_menu').textContent"
         );
-        print($text);
+print($text);
         $this->assertContains("Feedback for PSCID: ", $text);
         //Todo: Any instrument
 
