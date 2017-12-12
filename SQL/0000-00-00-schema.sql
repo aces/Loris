@@ -656,7 +656,7 @@ CREATE TABLE `files_intermediary` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `files_qcstatus` (
-    `FileQCID` int(11) PRIMARY KEY auto_increment,
+    `FileQCID` int(11) auto_increment,
     `FileID` int(11) UNIQUE NULL,
     `SeriesUID` varchar(64) DEFAULT NULL,
     `EchoTime` double DEFAULT NULL,
