@@ -711,14 +711,14 @@ var LinkElement = React.createClass({
       React.PropTypes.string,
       React.PropTypes.element
     ]),
-    href: React.PropTypes.string
+	href: React.PropTypes.string
   },
 
   getDefaultProps: function() {
     return {
       label: '',
       text: null,
-      href: null
+	  href: null
     };
   },
 
