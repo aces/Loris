@@ -657,7 +657,7 @@ CREATE TABLE `files_intermediary` (
 
 CREATE TABLE `files_qcstatus` (
     `FileQCID` int(11) auto_increment,
-    `FileID` int(11) UNIQUE NULL,
+    `FileID` int(10) UNSIGNED UNIQUE NULL,
     `SeriesUID` varchar(64) DEFAULT NULL,
     `EchoTime` double DEFAULT NULL,
     `QCStatus` enum('Pass', 'Fail'),
