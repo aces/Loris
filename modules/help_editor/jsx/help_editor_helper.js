@@ -15,7 +15,7 @@ class EditContent extends React.Component {
       <div>
 	<pre>
 	  <h3>{this.props.Title}</h3>
-	  <p><Markdown content={this.props.Content} /></p>
+	  <Markdown content={this.props.Content} />
 	  <hr />
 	  <p>Last updated: {this.props.MyDate.getFullYear()}-{this.props.MyDate.getMonth()+1}-{this.props.MyDate.getDate()} {this.props.MyDate.getHours()}:{this.props.MyDate.getMinutes()}:{this.props.MyDate.getSeconds()}</p>
 	</pre>
@@ -40,7 +40,7 @@ $("input[name=preview]").click(function(e) {
 
     document.getElementById('page').appendChild(div);
     div.setAttribute("class", "help-content");
-    div.setAttribute("id", "preview");    
+    div.setAttribute("id", "preview");
     ReactDOM.render(<EditContent Title={title} Content={content} MyDate={myDate} />, document.getElementById("preview"));
     e.preventDefault();
 });

@@ -50,7 +50,8 @@ var config = [{
     './modules/brainbrowser/js/Brainbrowser.js': './modules/brainbrowser/jsx/Brainbrowser.js',
     './modules/data_integrity_flag/js/index.js': './modules/data_integrity_flag/jsx/index.js',
     './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js',
-    './modules/help_editor/js/help_editor_helper.js': './modules/help_editor/jsx/help_editor_helper.js'
+    './modules/help_editor/js/help_editor_helper.js': './modules/help_editor/jsx/help_editor_helper.js',
+    './htdocs/js/helpHandler.js': './jsx/helpHandler.js'
   },
   output: {
     path: './',
@@ -75,6 +76,7 @@ var config = [{
       FilterForm: 'jsx/FilterForm',
       Form: 'jsx/Form',
       Markdown: 'jsx/Markdown',
+      DisplayHelp: 'jsx/DisplayHelp',
       PaginationLinks: 'jsx/PaginationLinks',
       Panel: 'jsx/Panel',
       ProgressBar: 'jsx/ProgressBar',
