@@ -1,0 +1,631 @@
+swagger: '2.0'
+info:
+  title: LORIS API
+  description: >-
+    This document specifies the LORIS REST API.
+    <p>Any request sent to <code>$LorisRoot/api/$APIVERSION/$API_CALL</code> will return either a JSON object or no data. The Loris API uses standard HTTP error codes and the body of any response will either be empty or contain only a JSON object for any request.</p>
+
+    <p>For brevity, the <code>$LorisRoot/api/$APIVERSION</code> is omitted from the definitions in this document. This document specifies $APIVERSION v0.0.2 and it MUST be included before the request in all requests.</p>
+    
+    <p>HTTP GET requests NEVER modify data. PUT, POST or PATCH requests MUST be used to modify data as per their definitions in the HTTP/1.1 specification. Any methods not supported will respond with a 405 Method Not Allowed response and an appropriate Allow header set (as per HTTP documentation.)</p>
+    
+    <p>PUT requests either create or overwrite all data for a given resource (instrument/ candidate/visit/etc.) Any fields not explicitly specified in the PUT request are nulled.</p>
+    
+    <p>PATCH requests are identical to PUT requests, but any fields not explicitly mentioned are unmodified from their current value.</p>
+    
+    <p>All GET requests include an ETag header. If a PUT or PATCH request is sent and it does not include an ETag, or the ETag does not match the currently existing ETag for that resource, it will result in a 403 Forbidden response. PUT or POST requests used for the creation of resources do not require ETags.</p>
+    
+    <p>DELETE is not supported on any resource defined in this API.</p>
+  version: "1.0.0"
+  host: localhost
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+  schemes:
+    - http
+    - https
+  basePath: /api/v0.0.2
+produces:
+  - application/json
+paths:
+
+  /Login:
+    post:
+      description: >-
+        Users can be be authenticated using JSON Web Tokens by sending a POST
+        request with their username and password
+      tags:
+        - Login
+      operationId: Authentication
+      parameters:
+        - name: data
+          required: true
+          description: Request payload
+          in: body
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+                format: password
+      responses:
+        '200':
+          description: An object with an authenticity token
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                description: JWT token
+        '401':
+          description: Unauthorized
+
+  /Projects:
+    get:
+      description: Return a list of the project names in this Loris instance
+      tags:
+        - Project
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: >-
+            An object with N properties where N is the projects count. Each property name will be a project name and it will be an object of type Project<br><br>
+            If the Loris instance does not use projects, the API will return a single project called "loris" with the appropriate settings for the Loris instance.<br><br>
+
+            useEDC represents a boolean determining whether the EDC date should be included in candidates returned by the API.<br><br>
+
+            PSCID represents a JSON object with the configuration settings for PSCIDs in this project.
+          schema:
+            type: object
+          examples: 
+            Projects:
+              ProjectName1:
+                properties:
+                  useEDC: false
+                  PSCID: 
+                    Type: prompt
+                    Regex: '/^SITE{1,1}[0-9]{3,3}$/i'
+              ProjectName2:
+                properties:
+                  useEDC: false
+                  PSCID: 
+                    Type: prompt
+                    Regex: '/^SITE{1,1}[0-9]{3,3}$/i'
+
+  /projects/{name}:
+    get:
+      description: Return the project definition
+      tags:
+        - Project
+      security:
+        - Bearer: []
+      parameters:
+        - name: name
+          in: path
+          description: The name of the project
+          required: true
+          type: string
+      responses:
+        '200':
+          description: An object whit the project informations
+          schema:
+            type: object
+          examples: 
+            Meta:
+              Project: "ProjectName"
+            Visits: 
+              - V1
+              - V2
+              - ...
+            Instruments: 
+              - InstrumentName
+              - InstrumentName2
+              - ...
+            Candidates:
+              - "123543"
+              - "523234"
+              - ...
+        '404':
+          description: Not Found
+
+  /projects/{name}/instruments:
+    get:
+      description: >-
+        Returns all the instruments used/installed in this project's test batteries
+      tags:
+        - Project
+      security:
+        - Bearer: []
+      parameters:
+        - name: name
+          in: path
+          description: The name of the project
+          required: true
+          type: string
+      responses:
+        '200':
+          description: >-
+            An object with that project's instruments informations where the InstrumentNames are the "Short Name" of all the instruments used/installed in this project.
+          schema:
+            type: object
+          examples:
+            Meta:
+              Project: ProjectName
+            Instruments:
+             InstrumentName:
+               FullName: Long Name
+               Subgroup: Subgroup Name
+               DoubleDataEntryEnabled: boolean
+             Instrument2:
+               FullName: Long Name
+               Subgroup: Subgroup Name
+               DoubleDataEntryEnabled: boolean
+             ...: 
+  /projects/{name}/instruments/{instrument}:
+    get:
+      description: >-
+        Returns a JSON representation of the instrument form
+      tags:
+        - Project
+      security:
+        - Bearer: []
+      parameters:
+        - name: name
+          in: path
+          description: The name of the project
+          required: true
+          type: string 
+        - name: instrument
+          in: path
+          description: The instrument short name
+          required: true
+          type: string
+      responses:
+        '200':
+          description: >-
+            The format for the JSON returned is specified in the accompanying InstrumentFormat.md and RulesFormat.md documents. The JSON document can be used to render the form by a client
+          schema:
+            type: object
+        '404':
+          description: Not Found
+
+  /projects/{name}/visits:
+    get:
+      description: >-      
+        Returns a list of visit labels that may exists in that project. 
+      tags:
+        - Project
+      security:
+        - Bearer: []
+      parameters:
+        - name: name
+          in: path
+          description: The name of the project
+          required: true
+          type: string            
+      responses:
+        '200':
+          description: >-
+            An object with that project's visits informations
+          schema:
+            type: object
+          examples:
+            Meta:
+              Project: ProjectName
+            Visits:
+              - V1
+              - V2
+              - ...
+
+  /projects/{name}/candidates:
+    get:
+      description: >-      
+        Returns a list of candidate id that may exists in that project. 
+      tags:
+        - Project
+      security:
+        - Bearer: []
+      parameters:
+        - name: name
+          in: path
+          description: The name of the project
+          required: true
+          type: string            
+      responses:
+        '200':
+          description: >-
+            An object with that project's candidate ids
+          schema:
+            type: object
+          examples:
+            Meta:
+              Project: ProjectName
+            Candidates:
+              - '123456'
+              - '342332'
+              - ...
+  /candidates:
+    get:
+      description: >-
+        Return a list of the project names in this Loris instance
+      tags:
+        - Candidate
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: >-
+            Returns an array containing all candidates present in this Loris instance
+          schema:
+            type: object
+            properties:
+              Candidates:
+                type: array
+                items:
+                  $ref: '#/definitions/Candidate'
+    post:
+      description: >-
+        Candidate creation endpoint. The candidate will be created at the site of the user using the API's site.
+      tags:
+        - Candidate
+      security:
+        - Bearer: []
+      parameters:
+        - name: candidate
+          in: body
+          schema:
+            type: object
+            properties:
+              Project:
+                type: string
+                default: LORIS
+                description: The name of the project to add this candidate to.
+              PSCID:
+                type: string
+                description: Required if the pscid setting of the project is set to `prompt`
+              DoB:
+                type: string
+                format: date
+              EDC:
+                type: string
+                format: date
+                description: 'Expected date of confinement, required only if the project use EDC.'
+              Gender:
+                type: string
+                enum:
+                  - Male
+                  - Female
+            required:
+              - DoB
+              - Gender
+          required: true
+      responses:
+        '201':
+          description: Candidate created
+          schema:
+            type: object
+            description: The newly created candidate's id
+            example: 
+              Meta:
+                CandID: 123456
+        '409':
+          description: Conflict (The PSCID already exists)
+        '400':
+          description: Bad Request (if any data provided is invalid (PSCID format, date format, gender something other than Male|Female, invalid project name, etc))
+          
+  /candidates/{candid}:
+    get:
+      description: >-
+        Get a specific candidate object along with a list of its visit labels
+      tags:
+        - Candidate
+      security:
+        - Bearer: []
+      parameters:
+        - name: candid
+          in: path
+          description: The id of the candidate
+          required: true
+          type: string
+      responses:
+        '200':
+          description: >-
+            An object representation of that candidate and an array of visit labels
+          schema:
+            type: object
+            properties:
+              Meta:
+                $ref: '#/definitions/Candidate'
+              Visits:
+                type: array
+                description: >-
+                  A list of existing visit label for that candidate
+                items:
+                  type: string
+        '404':
+          description: Not Found
+        '400':
+          description: Bad Request (CandID is invalid of the provided inputs can't be parsed)
+
+  /candidates/{candid}/{visit}:
+    get:
+      description: >-
+        Get an object representation of the metadata for that candidate's visit. Any of the Stages may not be present in the returned result if the stage has not started yet or is not enabled for this project (ie. if useScreening is false in Loris, or Approval has not occured)
+      tags:
+        - Visit
+      security:
+        - Bearer: []
+      parameters:
+        - name: candid
+          in: path
+          description: The id of the candidate
+          required: true
+          type: string
+        - name: visit
+          in: path
+          description: The visit_label of that candidate's visit
+          required: true
+          type: string
+      responses:
+        '200':
+          description: An object representation of that candidate's visits
+          schema:
+            $ref: '#/definitions/VisitsData'
+        '404':
+          description: Not Found
+    put:
+      description: >-
+        create the VisitLabel for this candidate, in an unstarted stage if the Visit label provided is valid.
+      tags:
+        - Visit
+      security:
+        - Bearer: []
+      parameters:
+        - name: candid
+          in: path
+          description: The id of the candidate
+          required: true
+          type: string
+        - name: visit
+          in: path
+          description: The visit_label of that candidate's visit
+          required: true
+          type: string
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          schema:
+            type: object
+          examples:
+            error: Candidate from URL does not match metadata
+        '404':
+          description: Not Found
+          schema:
+            type: object
+          examples:
+            error: Unknown CandID
+        '401':
+          description: Unauthorized
+          schema:
+            type: object
+          examples: 
+            error: You are not affiliated with the candidate's site
+
+  /candidates/{candid}/{visit}/instruments:
+    get:
+      description: >-
+        Get a list of the instruments that were administered for that candidate at that visit
+      tags:
+        - Instrument
+      security:
+        - Bearer: []
+      parameters:
+        - name: candid
+          in: path
+          description: The id of the candidate
+          required: true
+          type: string
+        - name: visit
+          in: path
+          description: The visit_label of that candidate's visit
+          required: true
+          type: string
+      responses:
+        '200':
+          description: An array of instruments short_names
+          schema:
+            type: object
+            properties:
+              Meta:
+                type: object
+                properties:
+                  CandID:
+                    type: string
+                  Visit:
+                    type: string
+              Instruments:
+                type: array
+                items:
+                  type: string
+                  description: >-
+                    The instrument short name
+          examples: 
+            Meta:
+              CandID: 123456
+              Visit: V1
+            Instruments:
+              - InstrumentName
+              - AnotherInstrument
+              - ...
+
+  /candidates/{candid}/{visit}/instruments/{instrument}:
+    get:
+      description: >-
+        Get a list of the instruments that were administered for that candidate at that visit
+      tags:
+        - Instrument
+      security:
+        - Bearer: []
+      parameters:
+        - name: candid
+          in: path
+          description: The id of the candidate
+          required: true
+          type: string
+        - name: visit
+          in: path
+          description: The visit_label of that candidate's visit
+          required: true
+          type: string
+        - name: instrument
+          in: path
+          description: The instrument short_name
+          required: true
+          type: string
+      responses:
+        '200':
+          description: And object representation of that candidate instrument's data
+          schema:
+            type: object
+            properties:
+              Meta:
+                $ref: '#/definitions/InstrumentMetadata'
+              $instrument:
+                type: object
+                description: >-
+                  A key-value representation of that instrument data.
+          examples: 
+            Meta:
+              Instrument: $InstrumentName
+              Visit: $VisitLabel
+              Candidate: $CandID
+              DDE: boolean
+            $InstrumentName:
+              FieldName1: Value1
+              FieldName2: Value2
+              ...: ...
+        '404':
+          description: Not Found
+          schema:
+            type: object
+          examples: 
+            error: Invalid instrument for candidate
+            
+    put:
+      description: >-
+        Create of replace an instrument data. Any keys specified in the document that do not match a corresponding field in the form may be ignored. Ommited fields will be nullified. Calculated fields will be overwritten on score calculation.
+      tags:
+        - Instrument
+      security:
+        - Bearer: []
+      parameters:
+        - name: candid
+          in: path
+          description: The id of the candidate
+          required: true
+          type: string
+        - name: visit
+          in: path
+          description: The visit_label of that candidate's visit
+          required: true
+          type: string
+        - name: instrument
+          in: path
+          description: The instrument short_name
+          required: true
+          type: string
+      responses:
+        '201':
+          description: Created
+
+
+definitions:
+  Candidate:
+    type: object
+    properties:
+      CandID:
+        type: string
+      Project:
+        type: string
+        description: The name of the project that this candidate is from
+      PSCID:
+        type: string
+      EDC:
+        type: string
+        format: date
+        description: Estimated date of confinement
+      DoB:
+        type: string
+        format: date
+        description: date of Birth
+      Gender:
+        type: string
+        enum:
+          - Male
+          - Female
+
+  VisitsData:
+    type: object
+    properties:
+      Meta:
+        $ref: '#/definitions/VisitMetadata'
+      Stages:
+        properties:
+          Screening:
+            $ref: '#/definitions/VisitSummary'
+          Visit:
+            $ref: '#/definitions/VisitSummary'
+          Approval:
+            $ref: '#/definitions/VisitSummary'
+            
+  VisitMetadata:
+    type: object
+    properties:
+      CandID:
+        type: string
+      Visits:
+        type: string
+      Battery:
+        type: string
+        description: Name of the cohort
+        
+  VisitSummary:
+    type: object
+    properties:
+      Date:
+        type: string
+        format: date
+      Status:
+        enum:
+          - Pass
+          - Failure
+          - Withdrawal
+          - In Progress
+  
+  InstrumentMetadata:
+    type: object
+    description: That instrument metadata
+    properties:
+      Instrument:
+        type: string
+        description: >-
+          The instrument's short name
+      Visit:
+        type: string
+        description: >-
+          The visit label
+      Candidate:
+        type: string
+        description: >-
+          The candidate's CandId
+      DDE:
+        type: boolean
+        description: >-
+          True if the instrument is the double data entry version

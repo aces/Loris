@@ -1,0 +1,1017 @@
+<!doctype html>
+<html>
+  <head>
+    <title>LORIS API</title>
+    <style type="text/css">
+      body {
+	font-family: Trebuchet MS, sans-serif;
+	font-size: 15px;
+	color: #444;
+	margin-right: 24px;
+}
+
+h1	{
+	font-size: 25px;
+}
+h2	{
+	font-size: 20px;
+}
+h3	{
+	font-size: 16px;
+	font-weight: bold;
+}
+hr	{
+	height: 1px;
+	border: 0;
+	color: #ddd;
+	background-color: #ddd;
+}
+
+.app-desc {
+  clear: both;
+  margin-left: 20px;
+}
+.param-name {
+  width: 100%;
+}
+.license-info {
+  margin-left: 20px;
+}
+
+.license-url {
+  margin-left: 20px;
+}
+
+.model {
+  margin: 0 0 0px 20px;
+}
+
+.method {
+  margin-left: 20px;
+}
+
+.method-notes	{
+	margin: 10px 0 20px 0;
+	font-size: 90%;
+	color: #555;
+}
+
+pre {
+  padding: 10px;
+  margin-bottom: 2px;
+}
+
+.http-method {
+ text-transform: uppercase;
+}
+
+pre.get {
+  background-color: #0f6ab4;
+}
+
+pre.post {
+  background-color: #10a54a;
+}
+
+pre.put {
+  background-color: #c5862b;
+}
+
+pre.delete {
+  background-color: #a41e22;
+}
+
+.huge	{
+	color: #fff;
+}
+
+pre.example {
+  background-color: #f3f3f3;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+code {
+  white-space: pre;
+}
+
+.nickname {
+  font-weight: bold;
+}
+
+.method-path {
+  font-size: 1.5em;
+  background-color: #0f6ab4;
+}
+
+.up {
+  float:right;
+}
+
+.parameter {
+  width: 500px;
+}
+
+.param {
+  width: 500px;
+  padding: 10px 0 0 20px;
+  font-weight: bold;
+}
+
+.param-desc {
+  width: 700px;
+  padding: 0 0 0 20px;
+  color: #777;
+}
+
+.param-type {
+  font-style: italic;
+}
+
+.param-enum-header {
+width: 700px;
+padding: 0 0 0 60px;
+color: #777;
+font-weight: bold;
+}
+
+.param-enum {
+width: 700px;
+padding: 0 0 0 80px;
+color: #777;
+font-style: italic;
+}
+
+.field-label {
+  padding: 0;
+  margin: 0;
+  clear: both;
+}
+
+.field-items	{
+	padding: 0 0 15px 0;
+	margin-bottom: 15px;
+}
+
+.return-type {
+  clear: both;
+  padding-bottom: 10px;
+}
+
+.param-header {
+  font-weight: bold;
+}
+
+.method-tags {
+  text-align: right;
+}
+
+.method-tag {
+  background: none repeat scroll 0% 0% #24A600;
+  border-radius: 3px;
+  padding: 2px 10px;
+  margin: 2px;
+  color: #FFF;
+  display: inline-block;
+  text-decoration: none;
+}
+
+    </style>
+  </head>
+  <body>
+  <h1>LORIS API</h1>
+    <div class="app-desc">This document specifies the LORIS REST API. <p>Any request sent to <code>$LorisRoot/api/$APIVERSION/$API_CALL</code> will return either a JSON object or no data. The Loris API uses standard HTTP error codes and the body of any response will either be empty or contain only a JSON object for any request.</p>
+<p>For brevity, the <code>$LorisRoot/api/$APIVERSION</code> is omitted from the definitions in this document. This document specifies $APIVERSION v0.0.2 and it MUST be included before the request in all requests.</p>
+<p>HTTP GET requests NEVER modify data. PUT, POST or PATCH requests MUST be used to modify data as per their definitions in the HTTP/1.1 specification. Any methods not supported will respond with a 405 Method Not Allowed response and an appropriate Allow header set (as per HTTP documentation.)</p>
+<p>PUT requests either create or overwrite all data for a given resource (instrument/ candidate/visit/etc.) Any fields not explicitly specified in the PUT request are nulled.</p>
+<p>PATCH requests are identical to PUT requests, but any fields not explicitly mentioned are unmodified from their current value.</p>
+<p>All GET requests include an ETag header. If a PUT or PATCH request is sent and it does not include an ETag, or the ETag does not match the currently existing ETag for that resource, it will result in a 403 Forbidden response. PUT or POST requests used for the creation of resources do not require ETags.</p>
+<p>DELETE is not supported on any resource defined in this API.</p></div>
+    <div class="app-desc">More information: <a href="https://helloreverb.com">https://helloreverb.com</a></div>
+    <div class="app-desc">Contact Info: <a href="hello@helloreverb.com">hello@helloreverb.com</a></div>
+    <div class="app-desc">Version: 1.0.0</div>
+    <div class="app-desc">BasePath:/aces/LORIS/1.0.0</div>
+    <div class="license-info">All rights reserved</div>
+    <div class="license-url">http://apache.org/licenses/LICENSE-2.0.html</div>
+  <h2>Access</h2>
+    <ol>
+      <li>APIKey KeyParamName:Authorization KeyInQuery:false KeyInHeader:true</li>
+    </ol>
+
+  <h2><a name="__Methods">Methods</a></h2>
+  [ Jump to <a href="#__Models">Models</a> ]
+
+  <h3>Table of Contents </h3>
+  <div class="method-summary"></div>
+  <h4><a href="#Candidate">Candidate</a></h4>
+  <ul>
+  <li><a href="#candidatesCandidGet"><code><span class="http-method">get</span> /candidates/{candid}</code></a></li>
+  <li><a href="#candidatesCandidVisitGet"><code><span class="http-method">get</span> /candidates/{candid}/{visit}</code></a></li>
+  <li><a href="#candidatesCandidVisitPut"><code><span class="http-method">put</span> /candidates/{candid}/{visit}</code></a></li>
+  <li><a href="#candidatesGet"><code><span class="http-method">get</span> /candidates</code></a></li>
+  <li><a href="#candidatesPost"><code><span class="http-method">post</span> /candidates</code></a></li>
+  </ul>
+  <h4><a href="#Login">Login</a></h4>
+  <ul>
+  <li><a href="#authentication"><code><span class="http-method">post</span> /Login</code></a></li>
+  </ul>
+  <h4><a href="#Project">Project</a></h4>
+  <ul>
+  <li><a href="#projectsGet"><code><span class="http-method">get</span> /Projects</code></a></li>
+  <li><a href="#projectsNameCandidatesGet"><code><span class="http-method">get</span> /projects/{name}/candidates</code></a></li>
+  <li><a href="#projectsNameGet"><code><span class="http-method">get</span> /projects/{name}</code></a></li>
+  <li><a href="#projectsNameInstrumentsGet"><code><span class="http-method">get</span> /projects/{name}/instruments</code></a></li>
+  <li><a href="#projectsNameInstrumentsInstrumentGet"><code><span class="http-method">get</span> /projects/{name}/instruments/{instrument}</code></a></li>
+  <li><a href="#projectsNameVisitsGet"><code><span class="http-method">get</span> /projects/{name}/visits</code></a></li>
+  </ul>
+
+  <h1><a name="Candidate">Candidate</a></h1>
+  <div class="method"><a name="candidatesCandidGet"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /candidates/{candid}</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">candidatesCandidGet</span>)</div>
+    <div class="method-notes">Get a specific candidate object along with a list of its visit labels</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">candid (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The id of the candidate </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#inline_response_200_2">inline_response_200_2</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "Meta" : {
+    "CandID" : "aeiou",
+    "Project" : "aeiou",
+    "PSCID" : "aeiou",
+    "EDC" : "2000-01-23T04:56:07.000+00:00",
+    "DoB" : "2000-01-23T04:56:07.000+00:00",
+    "Gender" : "aeiou"
+  },
+  "Visits" : [ "aeiou" ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    An object representation of that candidate and an array of visit labels
+        <a href="#inline_response_200_2">inline_response_200_2</a>
+    <h4 class="field-label">400</h4>
+    Bad Request (CandID is invalid of the provided inputs can&#39;t be parsed)
+        <a href="#"></a>
+    <h4 class="field-label">404</h4>
+    Not Found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="candidatesCandidVisitGet"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /candidates/{candid}/{visit}</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">candidatesCandidVisitGet</span>)</div>
+    <div class="method-notes">Get an object representation of the metadata for that candidate&#39;s visit. Any of the Stages may not be present in the returned result if the stage has not started yet or is not enabled for this project (ie. if useScreening is false in Loris, or Approval has not occured)</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">candid (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The id of the candidate </div><div class="param">visit (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The visit_label of that candidate&#39;s visit </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#VisitsData">VisitsData</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "Meta" : {
+    "CandID" : "aeiou",
+    "Visits" : "aeiou",
+    "Battery" : "aeiou"
+  },
+  "Stages" : {
+    "Screening" : {
+      "Status" : "aeiou",
+      "Date" : "2000-01-23T04:56:07.000+00:00"
+    },
+    "Visit" : "",
+    "Approval" : ""
+  }
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    An object representation of that candidate&#39;s visits
+        <a href="#VisitsData">VisitsData</a>
+    <h4 class="field-label">404</h4>
+    Not Found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="candidatesCandidVisitPut"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /candidates/{candid}/{visit}</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">candidatesCandidVisitPut</span>)</div>
+    <div class="method-notes">create the VisitLabel for this candidate, in an unstarted stage if the Visit label provided is valid.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">candid (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The id of the candidate </div><div class="param">visit (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The visit_label of that candidate&#39;s visit </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">201</h4>
+    Created
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Bad Request
+        <a href="#Object">Object</a>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: error</div>
+    <pre class="example"><code>Candidate from URL does not match metadata</code></pre>
+    <h4 class="field-label">401</h4>
+    Unauthorized
+        <a href="#Object">Object</a>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: error</div>
+    <pre class="example"><code>You are not affiliated with the candidate&#39;s site</code></pre>
+    <h4 class="field-label">404</h4>
+    Not Found
+        <a href="#Object">Object</a>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: error</div>
+    <pre class="example"><code>Unknown CandID</code></pre>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="candidatesGet"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /candidates</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">candidatesGet</span>)</div>
+    <div class="method-notes">Return a list of the project names in this Loris instance</div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#inline_response_200_1">inline_response_200_1</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "Candidates" : [ {
+    "CandID" : "aeiou",
+    "Project" : "aeiou",
+    "PSCID" : "aeiou",
+    "EDC" : "2000-01-23T04:56:07.000+00:00",
+    "DoB" : "2000-01-23T04:56:07.000+00:00",
+    "Gender" : "aeiou"
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Returns an array containing all candidates present in this Loris instance
+        <a href="#inline_response_200_1">inline_response_200_1</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="candidatesPost"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /candidates</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">candidatesPost</span>)</div>
+    <div class="method-notes">Candidate creation endpoint. The candidate will be created at the site of the user using the API&#39;s site.</div>
+
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">candidate (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "Meta" : {
+    "CandID" : 123456
+  }
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">201</h4>
+    Candidate created
+        <a href="#Object">Object</a>
+    <h4 class="field-label">400</h4>
+    Bad Request (if any data provided is invalid (PSCID format, date format, gender something other than Male|Female, invalid project name, etc))
+        <a href="#"></a>
+    <h4 class="field-label">409</h4>
+    Conflict (The PSCID already exists)
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="Login">Login</a></h1>
+  <div class="method"><a name="authentication"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /Login</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">authentication</span>)</div>
+    <div class="method-notes">Users can be be authenticated using JSON Web Tokens by sending a POST request with their username and password</div>
+
+
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">data (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash; Request payload </div>
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#inline_response_200">inline_response_200</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "token" : "aeiou"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    An object with an authenticity token
+        <a href="#inline_response_200">inline_response_200</a>
+    <h4 class="field-label">401</h4>
+    Unauthorized
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="Project">Project</a></h1>
+  <div class="method"><a name="projectsGet"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /Projects</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">projectsGet</span>)</div>
+    <div class="method-notes">Return a list of the project names in this Loris instance</div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Projects</div>
+    <pre class="example"><code>{
+  "ProjectName1" : {
+    "properties" : {
+      "useEDC" : false,
+      "PSCID" : {
+        "Type" : "prompt",
+        "Regex" : "/^SITE{1,1}[0-9]{3,3}$/i"
+      }
+    }
+  },
+  "ProjectName2" : {
+    "properties" : {
+      "useEDC" : false,
+      "PSCID" : {
+        "Type" : "prompt",
+        "Regex" : "/^SITE{1,1}[0-9]{3,3}$/i"
+      }
+    }
+  }
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    An object with N properties where N is the projects count. Each property name will be a project name and it will be an object of type Project&lt;br&gt;&lt;br&gt; If the Loris instance does not use projects, the API will return a single project called &quot;loris&quot; with the appropriate settings for the Loris instance.&lt;br&gt;&lt;br&gt;
+useEDC represents a boolean determining whether the EDC date should be included in candidates returned by the API.&lt;br&gt;&lt;br&gt;
+PSCID represents a JSON object with the configuration settings for PSCIDs in this project.
+        <a href="#Object">Object</a>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Projects</div>
+    <pre class="example"><code>{ProjectName1&#x3D;{properties&#x3D;{useEDC&#x3D;false, PSCID&#x3D;{Type&#x3D;prompt, Regex&#x3D;/^SITE{1,1}[0-9]{3,3}$/i}}}, ProjectName2&#x3D;{properties&#x3D;{useEDC&#x3D;false, PSCID&#x3D;{Type&#x3D;prompt, Regex&#x3D;/^SITE{1,1}[0-9]{3,3}$/i}}}}</code></pre>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="projectsNameCandidatesGet"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /projects/{name}/candidates</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">projectsNameCandidatesGet</span>)</div>
+    <div class="method-notes">Returns a list of candidate id that may exists in that project. </div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">name (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The name of the project </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Meta</div>
+    <pre class="example"><code>{
+  "Project" : "ProjectName"
+}</code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Candidates</div>
+    <pre class="example"><code>[ "123456", "342332", "..." ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    An object with that project&#39;s candidate ids
+        <a href="#Object">Object</a>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Meta</div>
+    <pre class="example"><code>{Project&#x3D;ProjectName}</code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Candidates</div>
+    <pre class="example"><code>[123456, 342332, ...]</code></pre>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="projectsNameGet"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /projects/{name}</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">projectsNameGet</span>)</div>
+    <div class="method-notes">Return the project definition</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">name (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The name of the project </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Meta</div>
+    <pre class="example"><code>{
+  "Project" : "ProjectName"
+}</code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Visits</div>
+    <pre class="example"><code>[ "V1", "V2", "..." ]</code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Instruments</div>
+    <pre class="example"><code>[ "InstrumentName", "InstrumentName2", "..." ]</code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Candidates</div>
+    <pre class="example"><code>[ "123543", "523234", "..." ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    An object whit the project informations
+        <a href="#Object">Object</a>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Meta</div>
+    <pre class="example"><code>{Project&#x3D;ProjectName}</code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Visits</div>
+    <pre class="example"><code>[V1, V2, ...]</code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Instruments</div>
+    <pre class="example"><code>[InstrumentName, InstrumentName2, ...]</code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Candidates</div>
+    <pre class="example"><code>[123543, 523234, ...]</code></pre>
+    <h4 class="field-label">404</h4>
+    Not Found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="projectsNameInstrumentsGet"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /projects/{name}/instruments</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">projectsNameInstrumentsGet</span>)</div>
+    <div class="method-notes">Returns all the instruments used/installed in this project&#39;s test batteries</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">name (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The name of the project </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Meta</div>
+    <pre class="example"><code>{
+  "Project" : "ProjectName"
+}</code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Instruments</div>
+    <pre class="example"><code>{
+  "InstrumentName" : {
+    "FullName" : "Long Name",
+    "Subgroup" : "Subgroup Name",
+    "DoubleDataEntryEnabled" : "boolean"
+  },
+  "Instrument2" : {
+    "FullName" : "Long Name",
+    "Subgroup" : "Subgroup Name",
+    "DoubleDataEntryEnabled" : "boolean"
+  },
+  "..." : null
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    An object with that project&#39;s instruments informations where the InstrumentNames are the &quot;Short Name&quot; of all the instruments used/installed in this project.
+        <a href="#Object">Object</a>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Meta</div>
+    <pre class="example"><code>{Project&#x3D;ProjectName}</code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Instruments</div>
+    <pre class="example"><code>{InstrumentName&#x3D;{FullName&#x3D;Long Name, Subgroup&#x3D;Subgroup Name, DoubleDataEntryEnabled&#x3D;boolean}, Instrument2&#x3D;{FullName&#x3D;Long Name, Subgroup&#x3D;Subgroup Name, DoubleDataEntryEnabled&#x3D;boolean}, ...&#x3D;null}</code></pre>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="projectsNameInstrumentsInstrumentGet"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /projects/{name}/instruments/{instrument}</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">projectsNameInstrumentsInstrumentGet</span>)</div>
+    <div class="method-notes">Returns a JSON representation of the instrument form</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">name (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The name of the project </div><div class="param">instrument (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The instrument short name </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>"{}"</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    The format for the JSON returned is specified in the accompanying InstrumentFormat.md and RulesFormat.md documents. The JSON document can be used to render the form by a client
+        <a href="#Object">Object</a>
+    <h4 class="field-label">404</h4>
+    Not Found
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="projectsNameVisitsGet"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /projects/{name}/visits</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">projectsNameVisitsGet</span>)</div>
+    <div class="method-notes">Returns a list of visit labels that may exists in that project. </div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">name (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash; The name of the project </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      Object
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Meta</div>
+    <pre class="example"><code>{
+  "Project" : "ProjectName"
+}</code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Visits</div>
+    <pre class="example"><code>[ "V1", "V2", "..." ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="heaader">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    An object with that project&#39;s visits informations
+        <a href="#Object">Object</a>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Meta</div>
+    <pre class="example"><code>{Project&#x3D;ProjectName}</code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: Visits</div>
+    <pre class="example"><code>[V1, V2, ...]</code></pre>
+  </div> <!-- method -->
+  <hr/>
+
+  <div class="up"><a href="#__Models">Up</a></div>
+  <h2><a name="__Models">Models</a></h2>
+  [ Jump to <a href="#__Methods">Methods</a> ]
+
+  <h3>Table of Contents</h3>
+  <ol>
+    <li><a href="#candidate"><code>candidate</code></a></li>
+    <li><a href="#data"><code>data</code></a></li>
+    <li><a href="#inline_response_200"><code>inline_response_200</code></a></li>
+    <li><a href="#inline_response_200_1"><code>inline_response_200_1</code></a></li>
+    <li><a href="#inline_response_200_2"><code>inline_response_200_2</code></a></li>
+    <li><a href="#VisitMetadata"><code>VisitMetadata</code></a></li>
+    <li><a href="#VisitSummary"><code>VisitSummary</code></a></li>
+    <li><a href="#VisitsData"><code>VisitsData</code></a></li>
+    <li><a href="#VisitsData_Stages"><code>VisitsData_Stages</code></a></li>
+  </ol>
+
+  <div class="model">
+    <h3 class="field-label"><a name="candidate">candidate - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">Project (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The name of the project to add this candidate to. </div>
+<div class="param">PSCID (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Required if the pscid setting of the project is set to &#x60;prompt&#x60; </div>
+<div class="param">DoB </div><div class="param-desc"><span class="param-type"><a href="#date">date</a></span>  format: date</div>
+<div class="param">EDC (optional)</div><div class="param-desc"><span class="param-type"><a href="#date">date</a></span> Expected date of confinement, required only if the project use EDC. format: date</div>
+<div class="param">Gender </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">Male</div><div class="param-enum">Female</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3 class="field-label"><a name="data">data - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">username (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">password (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  format: password</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3 class="field-label"><a name="inline_response_200">inline_response_200 - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">token (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> JWT token </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3 class="field-label"><a name="inline_response_200_1">inline_response_200_1 - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">Candidates (optional)</div><div class="param-desc"><span class="param-type"><a href="#Candidate">array[Candidate]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3 class="field-label"><a name="inline_response_200_2">inline_response_200_2 - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">Meta (optional)</div><div class="param-desc"><span class="param-type"><a href="#Candidate">Candidate</a></span>  </div>
+<div class="param">Visits (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> A list of existing visit label for that candidate </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3 class="field-label"><a name="VisitMetadata">VisitMetadata - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">CandID (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">Visits (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">Battery (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Name of the cohort </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3 class="field-label"><a name="VisitSummary">VisitSummary - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">Date (optional)</div><div class="param-desc"><span class="param-type"><a href="#date">date</a></span>  format: date</div>
+<div class="param">Status (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">Pass</div><div class="param-enum">Failure</div><div class="param-enum">Withdrawal</div><div class="param-enum">In Progress</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3 class="field-label"><a name="VisitsData">VisitsData - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">Meta (optional)</div><div class="param-desc"><span class="param-type"><a href="#VisitMetadata">VisitMetadata</a></span>  </div>
+<div class="param">Stages (optional)</div><div class="param-desc"><span class="param-type"><a href="#VisitsData_Stages">VisitsData_Stages</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3 class="field-label"><a name="VisitsData_Stages">VisitsData_Stages - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">Screening (optional)</div><div class="param-desc"><span class="param-type"><a href="#VisitSummary">VisitSummary</a></span>  </div>
+<div class="param">Visit (optional)</div><div class="param-desc"><span class="param-type"><a href="#VisitSummary">VisitSummary</a></span>  </div>
+<div class="param">Approval (optional)</div><div class="param-desc"><span class="param-type"><a href="#VisitSummary">VisitSummary</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  </body>
+</html>
+
