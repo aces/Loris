@@ -15,6 +15,7 @@ ALTER TABLE files
 
 -- Add FileID foreign key to files_qcstatus
 ALTER TABLE files_qcstatus
+  MODIFY COLUMN `FileID` INT(10) UNSIGNED UNIQUE NULL,
   ADD CONSTRAINT `FK_filesqcstatus_FileID`
     FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`);
 
