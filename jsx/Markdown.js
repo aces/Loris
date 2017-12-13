@@ -17,6 +17,8 @@
  * @author Dave MacFarlane
  * @version 0.0.1
  *
+ * @editor Zaliqa Rosli
+ * @version 0.0.2 
  */
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -25,7 +27,7 @@ class Markdown extends React.Component {
 
   render() {
     // Fix stupid-style newlines to be just \n.
-    var fixedNewlines = this.props.content.replace("\r\n", "\n");
+    var fixedNewlines = this.props.content.replace(/\r\n/g, "\n");
 
     // 2 newlines in a row mean it's a paragraph breaker.
     var paragraphs = fixedNewlines.split("\n\n");
