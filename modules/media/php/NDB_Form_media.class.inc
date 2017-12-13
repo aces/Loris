@@ -52,8 +52,8 @@ class NDB_Form_Media extends NDB_Form
         // Check if media file exists, if not redirect to /media/ page
         if (isset($idMediaFile)) {
             $result = $db->pselectRow(
-                "SELECT id FROM media WHERE id = $idMediaFile",
-                []
+                "SELECT id FROM media WHERE id = :mid",
+                ['mid' => $idMediaFile]
             );
             if (count($result) < 1) {
                 header('Location: ' . $baseURL . '/media/');
