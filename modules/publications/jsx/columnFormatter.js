@@ -20,6 +20,16 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   var classes  = [];
 
+  if (column === 'Title') {
+    var viewURL = loris.BaseURL + '/publications/viewProject/'
+    return (
+      <td>
+        <a href="">
+        {cell}
+        </a>
+      </td>
+    );
+  }
 
   return <td className={classes}>{cell}</td>;
 }
