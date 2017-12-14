@@ -243,12 +243,12 @@ save it. The format is as follows:
 
 `Description`: Required. Follows PageElement.Description rules.
 
-`Options.Type`: Either "large" or "small". If "large", the user is meant to enter
+`Options.Type`: If "large", the user is meant to enter
               a lot of text (ie. a comment box) and is likely to be represented
               by a textarea in an HTML implementation.
-              If "small" the user is meant to enter a little text and is likely
+              Else the user is meant to enter a little text and is likely
               to be implemented by a <input type="text"> in an HTML implementation.
-              Default: small
+              Default: ""
 ```
 Currently if its 'large' we render a textarea, and if it's anything else we render a normal text.
 ZV
@@ -278,8 +278,6 @@ as follows:
     "Name": REQUIRED,
     "Description": REQUIRED,
     "Options" : {
-        "MinDate" : "YYYY-MM-DD",
-        "MaxDate" : "YYYY-MM-DD",
         "RequireResponse" : boolean
     }
 }
@@ -291,9 +289,6 @@ as follows:
 
 `Description`: Required. Follows `PageElement.Description` rules.
 
-`Options.MinDate`: The minimum date that can be chosen by the user. Format is YYYY-MM-DD
-
-`Options.MaxDate`: The maximum date that can be chosen by the user. Format is YYYY-MM-DD
 ```
 Currently no min/max date is implemented. Date elements are unrestricted.
 ZV
@@ -539,6 +534,7 @@ is NOT REQUIRED and unused.
 ### 2.2.1: HeaderElement
 ```
 Not implemented
+Title is rendered from the meta LongName
 ZV
 ```
 A HeaderElement represents a header which should be displayed with some level of prominence
