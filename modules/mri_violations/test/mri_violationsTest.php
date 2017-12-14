@@ -70,7 +70,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "session",
             array(
-             'ID'           => '888',
+             'ID'           => '9888',
              'CandID'       => '999888',
              'CenterID'     => '55',
              'UserID'       => '1',
@@ -81,7 +81,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "session",
             array(
-             'ID'           => '777',
+             'ID'           => '9777',
              'CandID'       => '999777',
              'CenterID'     => '55',
              'UserID'       => '2',
@@ -112,7 +112,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
              'ScannerSoftwareVersion' => 'syngo MR B17',
              'uploadAttempt'          => '1',
              'AcquisitionMetadata'    => 'metadata',
-             'SessionID'              => '888',
+             'SessionID'              => '9888',
              'PendingTransfer'        => '1',
             )
         );
@@ -137,7 +137,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
              'ScannerSoftwareVersion' => 'syngo MR B17',
              'uploadAttempt'          => '1',
              'AcquisitionMetadata'    => 'metadata',
-             'SessionID'              => '777',
+             'SessionID'              => '9777',
              'PendingTransfer'        => '1',
             )
         );
