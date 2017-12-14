@@ -53,7 +53,7 @@ foreach ($files AS $file) {
     echo "Requiring file...\n";
     include_once $file;
     echo "Instantiating new object...\n";
-    $obj =new $className;
+    $obj =new $className(new Module(""), "", "", "", "");
     echo "Initializing instrument object...\n";
     $obj->setup(null, null);
 

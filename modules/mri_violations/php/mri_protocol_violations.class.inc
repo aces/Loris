@@ -14,7 +14,7 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-
+namespace LORIS\mri_violations;
 /**
  * Implements the menu filter for the mri protocol violation log table
  *
@@ -24,7 +24,7 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
+class Mri_Protocol_Violations extends \NDB_Menu_Filter
 {
     /**
      * Tie the access to a new violated_scans permission, with a separate
@@ -36,7 +36,7 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
         $this->tpl_data['violated_scans_modifications']
             = $user->hasPermission('violated_scans_edit');
@@ -52,7 +52,7 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
     {
         // set the class variables
         // create user object
-        $user          =& User::singleton();
+        $user          =& \User::singleton();
         $this->columns = array(
                           'mpv.CandID',
                           'mpv.PSCID',
@@ -74,7 +74,7 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
                           'mpv.SeriesUID',
                           'tarchive.TarchiveID',
                          );
-        $config        =&NDB_Config::singleton();
+        $config        =&\NDB_Config::singleton();
         $this->validFilters = array(
                                'mpv.CandID',
                                'mpv.PSCID',
@@ -122,15 +122,17 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
         return true;
     }
 
-
     /**
-     * Set the menu filter form QuickForm elements
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
      *
-     * @return none but as a side-effect adds to QuickForm template
+     * @return none
      */
-    function _setFilterForm()
+    function setup()
     {
-        $config      =& NDB_Config::singleton();
+        parent::setup();
+        $config      =& \NDB_Config::singleton();
         $minYear     = $config->getSetting('startYear')
             - $config->getSetting('ageMax');
         $maxYear     = $config->getSetting('endYear');
@@ -158,7 +160,7 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
      */
     function getMRIProtocolData()
     {
-        $db =& Database::singleton();
+        $db =& \Database::singleton();
         // select all except Objective from mri_protocol
         // and add Scan_type from mri_scan_type
         // to mri_protocol's Scan_type
@@ -185,7 +187,7 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(

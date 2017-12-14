@@ -12,7 +12,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-session_start();
 header('Content-type: image/jpeg');
 
 $width  = 50;

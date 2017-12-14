@@ -85,23 +85,26 @@ class Candidate_Parameters extends \NDB_Form
      * Gets the participant_status options from participant_status_options
      * getParticipantStatusOptions()
      *
+     * @note   This function was moved to the Candidate class and should be removed
+     *       in the next major release
      * @return array Options array suitable for use in QuickForm select
      *               element
      */
     static function getParticipantStatusOptions()
     {
-        $DB           =& \Database::singleton();
-        $options      = $DB->pselect(
+        error_log(
+            "Function getParticipantStatusOptions() was moved out of ".
+            "the NDB_Form_Candidate_Parameters class and will be removed in ".
+            "the next Major release. Refer to the Candidate class for new location."
+        );
+        $DB      =& \Database::singleton();
+        $options = $DB->pselect(
             "SELECT ID,Description
             FROM participant_status_options
             WHERE parentID IS NULL",
             array()
         );
-        $option_array = array();
-        foreach ($options as $option) {
-            $option_array[$option['ID']] = $option['Description'];
-        }
-        return $option_array;
+        return \Candidate::getParticipantStatusOptions();
     }
 
     /**
@@ -110,23 +113,27 @@ class Candidate_Parameters extends \NDB_Form
      *
      * @param int $parentID parent ID of the participant status option
      *
+     * @note This function was moved to the Candidate class and should be removed
+     *       in the next major release
+     *
      * @return array Options array suitable for use in QuickForm select
      *               element
      */
     function getParticipantStatusSubOptions($parentID)
     {
-        $DB           =& \Database::singleton();
-        $options      = $DB->pselect(
+        error_log(
+            "Function getParticipantStatusSubOptions() was moved out of ".
+            "the NDB_Form_Candidate_Parameters class and will be removed in ".
+            "the next Major release. Refer to the Candidate class for new location."
+        );
+        $DB      =& \Database::singleton();
+        $options = $DB->pselect(
             "SELECT ID,Description 
             FROM participant_status_options 
             WHERE parentID=:pid",
             array('pid' => $parentID)
         );
-        $option_array = array();
-        foreach ($options as $option) {
-            $option_array[$option['ID']] = $option['Description'];
-        }
-        return $option_array;
+        return Candidate::getParticipantStatusSubOptions($parentID);
     }
 
     /**

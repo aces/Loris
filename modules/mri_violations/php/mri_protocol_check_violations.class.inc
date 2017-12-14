@@ -16,7 +16,7 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-
+namespace LORIS\mri_violations;
 /**
  * Implements the menu filter for mri_violations_log table
  *
@@ -26,7 +26,7 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_Menu_Filter_Mri_Protocol_Check_Violations extends NDB_Menu_Filter
+class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
 {
     /**
      * Determine who has access to this page. At the moment, tied to
@@ -36,7 +36,7 @@ class NDB_Menu_Filter_Mri_Protocol_Check_Violations extends NDB_Menu_Filter
      */
     function _hasAccess()
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
         return $user->hasPermission('violated_scans_view_allsites');
     }
 
@@ -93,12 +93,15 @@ class NDB_Menu_Filter_Mri_Protocol_Check_Violations extends NDB_Menu_Filter
     }
 
     /**
-     * Create the QuickForm elements for the menu filter
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
      *
      * @return none
      */
-    function _setFilterForm()
+    function setup()
     {
+        parent::setup();
 
         $this->addBasicText(
             'TarchiveID',
@@ -187,7 +190,7 @@ class NDB_Menu_Filter_Mri_Protocol_Check_Violations extends NDB_Menu_Filter
      */
     function getJSDependencies()
     {
-        $factory         = NDB_Factory::singleton();
+        $factory         = \NDB_Factory::singleton();
         $baseurl         = $factory->settings()->getBaseURL();
         $depends         = parent::getJSDependencies();
         $columnFormatter = "/mri_violations/js/".
