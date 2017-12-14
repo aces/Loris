@@ -27,42 +27,98 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
 {
     // expect UIs for Browse Tab
     private $_loadingBrowseUI = array(
-
-                                 'CandID'                 => '#imaging_filter>div>'.
-                           'div:nth-child(1) > div > label',
-                                 'PSCID'                  => '#imaging_filter>div>'.
-                           ' div:nth-child(2) > div > label',
-                                 'Visit Label'            => '#imaging_filter>div'.
-                           ' > div:nth-child(3) > div > label',
-                                 'Logs to display'        => '#log_panel>div>form>'.
-                           'div> div:nth-child(1) > div > label',
-          // expected_headers
-                                 'No.'                    => '#dynamictable > thead',
-                                 'UploadID'               => '#dynamictable > thead',
-                                 'Progress'               => '#dynamictable > thead',
-                                 'CandID'                 => '#dynamictable > thead',
-                                 'PSCID'                  => '#dynamictable > thead',
-                                 'Visit Label'            => '#dynamictable > thead',
-                                 'UploadLocation'         => '#dynamictable > thead',
-                                 'UploadDate'             => '#dynamictable > thead',
-                                 'UploadedBy'             => '#dynamictable > thead',
-                                 'Tarchive Info'          => '#dynamictable > thead',
-                                 'Number Of MincCreated'  => '#dynamictable > thead',
-                                 'Number Of MincInserted' => '#dynamictable > thead',
+                                 array(
+                                  "label"    => "CandID",
+                                  "selector" => "#imaging_filter>div",
+                                 ),
+                                 array(
+                                  "label"    => "PSCID",
+                                  "selector" => "#imaging_filter>div",
+                                 ),
+                                 array(
+                                  "label"    => "Visit Label",
+                                  "selector" => "#imaging_filter>div",
+                                 ),
+                                 array(
+                                  "label"    => "Logs to display",
+                                  "selector" => "#log_panel>div>form>div",
+                                 ),
+                                 // expected_headers
+                                 array(
+                                  "label"    => "No.",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "UploadID",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "Progress",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "CandID",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "PSCID",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "Visit Label",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "UploadLocation",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "UploadDate",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "UploadedBy",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "Tarchive Info",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "Number Of MincCreated",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "Number Of MincInserted",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
                                 );
     // expect UIs for Upload Tab
     private $_loadingUploadUI = array(
-                                 'Upload an imaging scan' => '#upload>div>div>h3',
-                                 'Phantom Scans'          => '#upload > div > div >'.
-                                 ' form > div > div:nth-child(1) > div > label',
-                                 'CandID'                 => '#upload > div > div >'.
-                                 ' form > div > div:nth-child(2) > div > label',
-                                 'PSCID'                  => '#upload > div > div >'.
-                                 'form > div > div:nth-child(3) > div > label',
-                                 'Visit Label'            => '#upload > div > div >'.
-                                 ' form > div > div:nth-child(4) > div > label',
-                                 'File to Upload'         => '#upload > div > div >'.
-                                 ' form > div > div:nth-child(5) > div > label',
+                                 array(
+                                  "Upload an imaging scan" => "CandID",
+                                  "selector"               => "#upload",
+                                 ),
+                                 array(
+                                  "Phantom Scans" => "PSCID",
+                                  "selector"      => "#upload",
+                                 ),
+                                 array(
+                                  "CandID"   => "Visit Label",
+                                  "selector" => "#upload",
+                                 ),
+                                 array(
+                                  "PSCID"    => "UploadLocation",
+                                  "selector" => "#upload",
+                                 ),
+                                 array(
+                                  "Visit Label" => "UploadDate",
+                                  "selector"    => "#upload",
+                                 ),
+                                 array(
+                                  "File to Upload" => "UploadedBy",
+                                  "selector"       => "#upload",
+                                 ),
                                 );
     /**
      * Tests that, when loading the Imaging_uploader module, some
@@ -173,7 +229,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             )->click();
         }
 
-        foreach ($ui as $label => $selector) {
+        foreach ($ui as $label['lable'] => $selector['selector']) {
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$selector').textContent"
             );
