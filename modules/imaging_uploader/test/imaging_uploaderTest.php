@@ -96,28 +96,28 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
     // expect UIs for Upload Tab
     private $_loadingUploadUI = array(
                                  array(
-                                  "Upload an imaging scan" => "CandID",
-                                  "selector"               => "#upload",
-                                 ),
-                                 array(
-                                  "Phantom Scans" => "PSCID",
-                                  "selector"      => "#upload",
-                                 ),
-                                 array(
-                                  "CandID"   => "Visit Label",
+                                  "label"    => "Upload an imaging scan",
                                   "selector" => "#upload",
                                  ),
                                  array(
-                                  "PSCID"    => "UploadLocation",
+                                  "label"    => "Phantom Scans",
                                   "selector" => "#upload",
                                  ),
                                  array(
-                                  "Visit Label" => "UploadDate",
-                                  "selector"    => "#upload",
+                                  "label"    => "CandID",
+                                  "selector" => "#upload",
                                  ),
                                  array(
-                                  "File to Upload" => "UploadedBy",
-                                  "selector"       => "#upload",
+                                  "label"    => "PSCID",
+                                  "selector" => "#upload",
+                                 ),
+                                 array(
+                                  "label"    => "Visit Label",
+                                  "selector" => "#upload",
+                                 ),
+                                 array(
+                                  "label"    => "File to Upload",
+                                  "selector" => "#upload",
                                  ),
                                 );
     /**
