@@ -86,7 +86,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
                'ScannerSoftwareVersion' => 'syngo MR B17',
                'uploadAttempt'          => 1,
                'AcquisitionMetadata'    => 'metadata',
-               'SessionID'              => 999999,
+               'SessionID'              => 111112,
                'PendingTransfer'        => 1,
               )
           );
