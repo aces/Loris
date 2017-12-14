@@ -6,6 +6,11 @@ API and/or mobile specific versions of Loris.
 
 This format will supercede the .linst files created by the current instrument builder.
 
+```
+For the purposes of reviewing the JSON Spec, I am adding my comments wherever
+discussion is required. They will be removed before merge
+ZV 17/12/14
+```
 
 # 1.0: Instrument format overview
 
@@ -17,6 +22,37 @@ An implementation should ignore any keys it doesn't expect so as to make it easi
 this standard without breaking backwards compatibility. Instruments MAY implement both
 the instrument format described below and the accompagnying rules format in the same
 JSON object, or they MAY be used independently.
+
+Language specifications can be added for fields that display text (LongName, Description, Values, Labels) in the following format:
+
+```js
+...
+    "RegularText" : {
+        "lang-1" : "text in lang 1",
+        "lang-2" : "text in lang 2",
+        ...
+    },
+    "Values" : {
+        "lang-1" : {
+            "val1" : "0"
+            "val2" : "1"
+        },
+        "lang-2" : {
+            "val1" : "10"
+            "val2" : "9"
+        },
+        ...
+    },
+...
+```
+
+The text displayed will depend on the candidate's preferred language parameter. The default is `"en-ca"`.
+
+Additionaly, we support HTML tags in labels and descriptions that will be rendered with the element.
+```
+This was a requirement for CAP, I don't see why it'd be necessary for LORIS though. If it's useful (and safe) we can keep it.
+ZV
+```
 
 ## 1.1: The Top Level JSON object
 
@@ -72,16 +108,10 @@ Where each key should be interpreted as so:
 `Elements`: An array of elements which this instrument consits of. Elements are described by
        JSON objects defined below and can be either an individual element, or an ElementGroup.
 
-
-
-
-
-
-
 # 2.0: Page Elements
 
 PageElements represent an individual element in an instrument such as a select box or textbox.
-Each type of element may contain type specific options. In general, a PageElement object has
+Each type of element may contain type specific options and formulas. Formulas are written in the [LORIS Logic Parser](LogicParser.md) language syntax. In general, a PageElement object has
 the following format:
 
 
@@ -90,9 +120,13 @@ the following format:
     "Type" : string,
     "Name" : UniqueQuestionIdentifier,
     "Description" : "Human readable question text",
+    "DisplayIf" : string, /* LORIS Logic Parser formula */
+    "HiddenSurvey" : string, /* LORIS Logic Parser formula */
+    "Hidden" : string, /* LORIS Logic Parser formula */
     "Options" : {
         /* TypeDependent JSON Options */
-    }
+    },
+    /* Other TypeDependent Fields */
 }
 ```
 
@@ -109,6 +143,15 @@ the following format:
 `Description`: The human readable description of this element, such
                as question or label text. This may or may not be required
                depending on element type.
+               
+`DisplayIf`: A formula that returns true when the element should be
+             displayed. Primarily used to display fields based on
+             candidate context or previous-answers. Defaults to `true`.
+             
+`HiddenSurvey`: A formula that returns true if the element should be hidden
+                from respondants of a survey. Defaults to `false`.
+                
+`Hidden`: A formula that returns true if the element should ALWAYS be hidden. Defaults to `false`.
 
 `Options`: An object containing the type dependent options for this element. If omitted
            defaults are used.
@@ -138,7 +181,7 @@ as follows. It denotes a group of values of which the user must select one optio
             ...
         },
         "AllowMultiple"   : boolean,
-        "RequireResponse" : boolean
+        "RequireResponse" : string, /* LORIS Logic Parser formula */
     }
 }
 ```
@@ -147,11 +190,11 @@ as follows. It denotes a group of values of which the user must select one optio
 
 `Name`: Required. Follows PageElement.Name rules.
 
-`Description`: Required. Follows PageElement.Name rules.
+`Description`: Required. Follows PageElement.Description rules.
 
 `Options.Values`: REQUIRED. Contains a JSON object specifying the
                 options to be selected. Each key/value corresponds
-                to <option value="JSONKey">JSONValue</option> in an
+                to `<option value="JSONKey">JSONValue</option>` in an
                 HTML implementation. The JSONKey contains the value
                 to be saved if selected, and the JSONValue contains
                 the human friendly text to display to the user.
@@ -161,7 +204,7 @@ as follows. It denotes a group of values of which the user must select one optio
                          one option can be selected.
                          Default: false
 
-`Options.RequireResponse`: Boolean. If true, an implementation should
+`Options.RequireResponse`: String. If evaluated to true, an implementation should
                        automatically add a not_answered option to the
                        select box in addition to the values specified
                        to allow the user to explicitly not answer a question
@@ -171,8 +214,10 @@ as follows. It denotes a group of values of which the user must select one optio
                        Values to ensure consistency with other PageElement types
                        such as date or text.
                        Default: true.
-
-
+```
+I agree that this is how RequireResponse should be done, but ATM there is no not_answered option. A form cannot be completed without a required question being filled. This applies to all RequireResponse fields for all elements.
+ZV
+```
 
 ### 2.1.2: TextElement
 
@@ -196,7 +241,7 @@ save it. The format is as follows:
 
 `Name`: Required. Follows PageElement.Name rules.
 
-`Description`: Required. Follows PageElement.Name rules.
+`Description`: Required. Follows PageElement.Description rules.
 
 `Options.Type`: Either "large" or "small". If "large", the user is meant to enter
               a lot of text (ie. a comment box) and is likely to be represented
@@ -204,9 +249,16 @@ save it. The format is as follows:
               If "small" the user is meant to enter a little text and is likely
               to be implemented by a <input type="text"> in an HTML implementation.
               Default: small
-
+```
+Currently if its 'large' we render a textarea, and if it's anything else we render a normal text.
+ZV
+```
 `Options.Regex`: Optional, a regex that the data entered must conform to. If not
                entered, no rules are enforced.
+```
+This (Regex) was never implemented.
+ZV
+```
 
 `Options.RequireResponse`: If true, there MUST be some way for the user to specify
               that the question is not answered, regardless of other rules. If false,
@@ -237,11 +289,15 @@ as follows:
 
 `Name`: Required. Follows `PageElement.Name` rules.
 
-`Description`: Required. Follows `PageElement.Name` rules.
+`Description`: Required. Follows `PageElement.Description` rules.
 
 `Options.MinDate`: The minimum date that can be chosen by the user. Format is YYYY-MM-DD
 
 `Options.MaxDate`: The maximum date that can be chosen by the user. Format is YYYY-MM-DD
+```
+Currently no min/max date is implemented. Date elements are unrestricted.
+ZV
+```
 
 `Options.RequireResponse`: Follows the same rules as TextElement:Options.RequireResponse
 
@@ -250,6 +306,10 @@ as follows:
 
 ### 2.1.4: NumericElement
 
+```
+No numeric element support as of now, can be added easily
+ZV
+```
 A NumericElement represents a numeric data input and has the general form of:
 
 ```js
@@ -269,7 +329,7 @@ A NumericElement represents a numeric data input and has the general form of:
 
 `Name`: Required. Follows PageElement.Name rules.
 
-`Description`: Required. Follows PageElement.Name rules.
+`Description`: Required. Follows PageElement.Description rules.
 
 `Options.NumberType`: "integer" or "decimal". If "integer", the input must be
                     an integer. If "decimal", it can contain a decimal point.
@@ -287,32 +347,188 @@ A NumericElement represents a numeric data input and has the general form of:
 
 
 
-### 2.1.5: ScoreFieldElement
+### 2.1.5: CalcFieldElement
 
-A score field represents a placeholder to display/save values based on other
+A calc field represents a placeholder to display/save values based on other
 data entered by the user in the instrument but does not directly get input from
-the user. It has the following form.
+the user. It is displayed as a disabled text box. It has the following form.
 
 ```js
 {
-    "Type": "score",
+    "Type": "calc",
     "Name": REQUIRED,
     "Description": OPTIONAL,
+    "Formula" : string, /* LORIS Logic Parser formula */
     "Options": {
         /* None currently */
     }
 }
 ```
 
-`Type`: MUST be "score".
+`Type`: MUST be "calc".
 
-`Name`: Required. Follows `PageElement.Name` rules. The Name MAY be used by an
+`Name`: Required. Follows `PageElement.Name` rules. The Name will be used by an
         implementation as a field name to save calculated data into.
 
-`Description`: Optional. Follows `PageElement.Name` rules. If not specified, the
-               score will be displayed with no accompagning text.
+`Description`: Optional. If not specified, the
+               score will be displayed with no accompanying text.
+               
+`Formula`: String. Evaluated using the LORIS Logic Parser syntax.
+           The result is stored as the element's value.
+           
+### 2.1.6 Radio
+
+A radio element represents a set of radio buttons all attributed to the same question.
+A general example is provided below:
+
+```js
+{
+    "Type": "radio",
+    "Name": REQUIRED,
+    "Description": OPTIONAL,
+    "Options": {
+        "Values" : {
+            "v0" : "label0",
+            "v1" : "label1",
+            "v2" : "label2",
+            "v9" : "label9"
+        },
+        "Order" : {
+            "0" : "v9",
+            "1" : "v2",
+            "2" : "v1",
+            "3" : "v0"
+        },
+        "Orientation" : "horizontal|vertical",
+        "RequireResponse" : boolean
+    }
+}
+```
+
+`Type`: MUST be "radio".
+
+`Name`: Required. Follows `PageElement.Name` rules.
+
+`Description`: Optional. If not specified, the
+               radio buttons will be displayed with no accompanying text.
+               If specified, they will be displayed to the left of the buttons.
+               
+`Options.Values`: KEY REQUIRED, VALUE OPTIONAL. Contains a JSON object specifying options,
+                one of which may be selected. Each key/value corresponds
+                to `<radio value="JSONKey">JSONValue</radio>` in an
+                HTML implementation. The JSONKey contains the value
+                to be saved if selected, and the JSONValue contains
+                the human friendly text to display to the user.
+                NOTE: a JSONValue is OPTIONAL because, for a large set
+                of radio button questions, the values may be defined 
+                horizontally above the set. See `Options.Orientation`.
+                
+`Options.Order`: Optional. This specified the order values are assigned to
+                 rendered radio buttons. The `Options.Values` are going to be
+                 naturally ordered when encoded to JSON, so to preserve unnatural
+                 order, we must specify the real value order in this element.
+                 See example.
+
+`Options.Orientation`: REQUIRED. Rendering them vertically will display labels.
+                       Rendering them horizontally will require the use of a
+                       `radio-labels` element for context. See Section 2.1.7.
+
+`Options.RequireReseponse`: String. If evaluated to true, an implementation should
+                       automatically add a not_answered option to the
+                       radio buttons in addition to the values specified
+                       to allow the user to explicitly not answer a question
+                       but require that some answer is entered.
+                       If false, it should not.
+                       This is done instead of simply adding the option to
+                       Values to ensure consistency with other PageElement types
+                       such as date or text.
+                       Default: true.
 
 
+### 2.1.7 Radio-Labels
+
+A rado-label element represents radio labels to display horizontally to the user above its relevant set of radio buttons. It has the following form:
+
+```js
+{
+    "Type": "radio-labels",
+    "Options": {
+        /* None currently */
+    }
+    "Labels" : {
+        "Option 1",
+        ...
+        "Option n"
+    }
+}
+```
+
+`Type`: MUST be "radio-labels"
+
+`Options`: None
+
+`Labels`: REQUIRED. Each string is a label that will be displayed
+          horizontally, evenly distributed across the section.
+          Provided there are the same number of labels as radio buttons,
+          there should be no alignment issues.
+
+### 2.1.8 Checkbox
+
+A checkbox element denotes a group of values of which the user must select one or more options from:
+
+```js
+{
+    "Type" : "checkbox",
+    "Name" : REQUIRED,
+    "Description" : REQUIRED,
+    "Options": {
+        "Values" : {
+            "v0" : "label0",
+            "v1" : "label1",
+            "v2" : "label2",
+            "v9" : "label9"
+        },
+        "Order" : {
+            "0" : "v9",
+            "1" : "v2",
+            "2" : "v1",
+            "3" : "v0"
+        },
+        "RequireResponse" : string, /* LORIS Logic Parser formula */
+    }
+}
+```
+
+`Type`: MUST be checkbox.
+
+`Name`: Required. Follows PageElement.Name rules.
+
+`Description`: Required. Follows PageElement.Description rules.
+
+`Options.Values`: REQUIRED. Contains a JSON object specifying options,
+                one of which may be selected. Each key/value corresponds
+                to `<checkbox value="JSONKey">JSONValue</checkbox>` in an
+                HTML implementation. The JSONKey contains the value
+                to be saved if selected, and the JSONValue contains
+                the human friendly text to display to the user.
+                
+`Options.Order`: Optional. This specified the order values are assigned to
+                 rendered radio buttons. The `Options.Values` are going to be
+                 naturally ordered when encoded to JSON, so to preserve unnatural
+                 order, we must specify the real value order in this element.
+                 See example.
+                 
+`Options.RequireResponse`: String. If evaluated to true, an implementation should
+                       automatically add a not_answered option to the
+                       checkboxes in addition to the values specified
+                       to allow the user to explicitly not answer a question
+                       but require that some answer is entered.
+                       If false, it should not.
+                       This is done instead of simply adding the option to
+                       Values to ensure consistency with other PageElement types
+                       such as date or text.
+                       Default: true.
+                       
 ## 2.2: Layout related types
 
 The following types are related to page layout and not directly related to user input,
@@ -321,7 +537,10 @@ is NOT REQUIRED and unused.
 
 
 ### 2.2.1: HeaderElement
-
+```
+Not implemented
+ZV
+```
 A HeaderElement represents a header which should be displayed with some level of prominence
 (ie bolded or centered.) 1 is the most prominent header, and lower numbers should be used
 for subsection/subheaders. There is no need to add a header with the instrument name as an
@@ -359,7 +578,6 @@ input. It has the following form:
     "Description" : REQUIRED,
     "Options": {
         /* None currently */
-
     }
 }
 ```
@@ -371,7 +589,10 @@ input. It has the following form:
 `Options`: None
 
 # 3.0.0: ElementGroups
-
+```
+Not implemented
+ZV
+```
 ElementGroups represent some kind of grouping of elements and may represent,
 for instance, a table, rows in that table, pages, or groups of elements that aren't
 tabular but should be logically grouped together into a row. 
@@ -395,7 +616,10 @@ Groups have the general form of:
 
 
 ## 3.1: Page
-
+```
+Not implemented, but in the works
+ZV
+```
 A page group represents a group of questions to be displayed on a single page together. It
 has the following form:
 
@@ -421,8 +645,11 @@ Any element that it not part of a Page group will be placed on a default top lev
                If missing, an implementation may use any method it chooses to differentiate
                pages.
 
-## 3.2 Element
-
+## 3.2 ElementGroup
+```
+Not implemented
+ZV
+```
 An Element group denotes a collection of elements which should be displayed together and
 separated by a delimiter.
 
@@ -446,7 +673,10 @@ Element groups have the form:
             subgroups.
 
 ## 3.3 Table
-
+```
+Not implemented
+ZV
+```
 A table group denotes a group of rows that should be grouped together into a tabular form.
 
 It contains only row groups which should all be of the same size. If the row groups are not
@@ -471,7 +701,10 @@ to grow smaller rows to the size of the biggest row.
 `Description`: OPTIONAL. A table footer to label the table figure.
 
 ## 3.4 Row
-
+```
+Not implemented
+ZV
+```
 Row groups denote rows in a table. If rows are not in a table, they should be rendered
 such that they are an element group which spans the entire width of the page independently
 of other rows on the page.
