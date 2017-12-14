@@ -197,15 +197,11 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         );
         $this->DB->delete(
             "tarchive",
-            array(
-             'TarchiveID' => '263',
-            )
+            array('TarchiveID' => '263')
         );
         $this->DB->delete(
             "tarchive",
-            array(
-                'TarchiveID' => '264',
-            )
+            array('TarchiveID' => '264')
         );
         $this->DB->delete(
             "session",
