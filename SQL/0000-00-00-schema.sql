@@ -477,6 +477,7 @@ CREATE TABLE `tarchive` (
   `DateSent` datetime DEFAULT NULL,
   `PendingTransfer` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY  (`TarchiveID`),
+  KEY `SessionID` (`SessionID`),
   CONSTRAINT `FK_tarchive_sessionID`
     FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
