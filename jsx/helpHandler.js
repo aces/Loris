@@ -19,18 +19,6 @@ $(document).ready(function() {
       getParams.subtest = loris.Subtest;
     }
 
-    function decodeSpecialChars(text) {
-      var replacements = ["&", "<", ">", '"', "'"];
-      var chars = [/.?amp;/g, "&lt;", "&gt;", "&quot;", "'"];
-      for (var i = 0; i < chars.length; i++) {
-        var re = new RegExp(chars[i], "gi");
-        if (re.test(text)) {
-          text = text.replace(re, replacements[i]);
-        }
-      }
-      return text;
-    }
-
     document.cookie = 'LastUrl=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
     $.get(loris.BaseURL + "/help_editor/ajax/help.php", getParams, function(content) {
       var div = document.createElement("div");
@@ -47,7 +35,6 @@ $(document).ready(function() {
       } else {
         wrap = document.createElement("pre");
         wrap.setAttribute("id", "help-wrapper");
-        content.content = decodeSpecialChars(content.content);
         ReactDOM.render(RDisplayHelp({Topic: content.topic, Content: content.content, Updated: content.updated}), wrap);
       }
       btn.appendChild(button);
