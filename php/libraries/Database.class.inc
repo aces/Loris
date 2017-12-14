@@ -648,9 +648,8 @@ class Database
         $result = null;
         $this->selectRow($query, $result);
         if (is_array($result) && count($result)) {
-            foreach ($result as $key => $value) {
-                $result = $value;
-            }
+            $valueArray = array_values($result);
+            $result     = $valueArray[0];
         }
         return $result;
     }
@@ -811,9 +810,8 @@ class Database
     {
         $result = $this->pselectRow($query, $params);
         if (is_array($result) && count($result)) {
-            foreach ($result as $key => $value) {
-                $result = $value;
-            }
+            $valueArray = array_values($result);
+            $result     = $valueArray[0];
         }
         return $result;
     }
