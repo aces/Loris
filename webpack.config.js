@@ -10,6 +10,8 @@ var config = [{
     './htdocs/js/components/Breadcrumbs.js': './jsx/Breadcrumbs.js',
     './htdocs/js/components/Form.js': './jsx/Form.js',
     './htdocs/js/components/Markdown.js': './jsx/Markdown.js',
+    './htdocs/js/components/DisplayHelp.js': './jsx/DisplayHelp.js',
+    './htdocs/js/components/helpHandler.js': './jsx/helpHandler.js',
     './modules/media/js/mediaIndex.js': './modules/media/jsx/mediaIndex.js',
     './modules/media/js/editFormIndex.js': './modules/media/jsx/editFormIndex.js',
     './modules/issue_tracker/js/columnFormatter.js': './modules/issue_tracker/jsx/columnFormatter.js',
@@ -50,8 +52,7 @@ var config = [{
     './modules/brainbrowser/js/Brainbrowser.js': './modules/brainbrowser/jsx/Brainbrowser.js',
     './modules/data_integrity_flag/js/index.js': './modules/data_integrity_flag/jsx/index.js',
     './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js',
-    './modules/help_editor/js/help_editor_helper.js': './modules/help_editor/jsx/help_editor_helper.js',
-    './htdocs/js/helpHandler.js': './jsx/helpHandler.js'
+    './modules/help_editor/js/help_editor_helper.js': './modules/help_editor/jsx/help_editor_helper.js'
   },
   output: {
     path: './',

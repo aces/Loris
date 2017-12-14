@@ -18,11 +18,8 @@
  * @version 0.0.1
  *
  * @editor Zaliqa Rosli
- * @version 0.0.2 
+ * @version 0.0.2
  */
-import React from 'react';
-import PropTypes from 'prop-types';
-
 class Markdown extends React.Component {
 
   render() {
@@ -116,9 +113,8 @@ class Markdown extends React.Component {
 }
 
 Markdown.propTypes = {
-  content: PropTypes.string.isRequired
-}
-
+  content: React.PropTypes.string.isRequired
+};
 
 var RMarkdown = React.createFactory(Markdown);
 

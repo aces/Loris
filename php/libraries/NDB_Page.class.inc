@@ -688,7 +688,8 @@ class NDB_Page
                   $baseurl . "/js/util/queryString.js",
                   $baseurl . '/js/components/Form.js',
                   $baseurl . '/js/components/Markdown.js',
-                  $baseurl . '/js/helpHandler.js',
+                  $baseurl . '/js/components/DisplayHelp.js',
+                  $baseurl . '/js/components/helpHandler.js',
                  );
         return $files;
     }

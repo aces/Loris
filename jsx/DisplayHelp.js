@@ -8,40 +8,32 @@ onto the dropdown Help section on all Loris pages.
 @version 0.0.1
 
 */
-
-import PropTypes from 'prop-types';
-
 class DisplayHelp extends React.Component {
-  
-  constructor(props) {
-    super(props);
-  }
- 
+
   render() {
-  
-  function HasDate(date) {
-    return (
-      <div>
-        <hr />
-        <p>Last updated: {date}</p>
-      </div>
-    );
-  }
+    function hasDate(date) {
+      return (
+        <div>
+          <hr />
+          <p>Last updated: {date}</p>
+        </div>
+      );
+    }
     return (
       <div>
 	<h3>{this.props.Topic ? this.props.Topic : ''}</h3>
 	<Markdown content={this.props.Content} />
-	{this.props.Updated && HasDate(this.props.Updated)}
+	{this.props.Updated && hasDate(this.props.Updated)}
       </div>
     );
   }
 }
 
 DisplayHelp.propTypes = {
-  Topic: PropTypes.string,
-  Content: PropTypes.string.isRequired,
-  Updated: PropTypes.string
-}
+  Topic: React.PropTypes.string,
+  Content: React.PropTypes.string.isRequired,
+  Updated: React.PropTypes.string
+};
 
 var RDisplayHelp = React.createFactory(DisplayHelp);
 
