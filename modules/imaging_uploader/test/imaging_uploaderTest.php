@@ -27,6 +27,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
 {
     // expect UIs for Browse Tab
     private $_loadingBrowseUI = array(
+
                                  'CandID'                 => '#imaging_filter>div>'.
                            'div:nth-child(1) > div > label',
                                  'PSCID'                  => '#imaging_filter>div>'.
@@ -144,7 +145,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
          $this->assertEquals('', $bodyText2);
     }
     /**
-      * This function could test UI elemnts in each Tabs.
+      * This function could test UI elements in each Tabs.
       *
       * @return void
       */
@@ -164,15 +165,14 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
       */
     function _testPageUIs($url,$ui)
     {
-        if ($url == "/imaging_uploader/") {
-            $this->safeGet($this->url . $url);
-            sleep(2);
-        } else {
+            
             $this->safeGet($this->url . '/imaging_uploader/');
-            $this->webDriver->findElement(
-                WebDriverBy::ID("tab-upload")
-            )->click();
-        }
+            if ($url == "/imaging_uploader/#upload") {
+               $this->webDriver->findElement(
+                   WebDriverBy::ID("tab-upload")
+               )->click();
+            } 
+           
         foreach ($ui as $key => $value) {
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
