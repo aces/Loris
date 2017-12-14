@@ -438,6 +438,88 @@ CREATE TABLE `Visit_Windows` (
    PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- ********************************
+-- tarchive tables
+-- ********************************
+
+
+CREATE TABLE `tarchive` (
+  `DicomArchiveID` varchar(255) NOT NULL default '',
+  `PatientID` varchar(255) NOT NULL default '',
+  `PatientName` varchar(255) NOT NULL default '',
+  `PatientDoB` date default NULL,
+  `PatientGender` varchar(255) default NULL,
+  `neurodbCenterName` varchar(255) default NULL,
+  `CenterName` varchar(255) NOT NULL default '',
+  `LastUpdate` datetime default NULL,
+  `DateAcquired` date default NULL,
+  `DateFirstArchived` datetime default NULL,
+  `DateLastArchived` datetime default NULL,
+  `AcquisitionCount` int(11) NOT NULL default '0',
+  `NonDicomFileCount` int(11) NOT NULL default '0',
+  `DicomFileCount` int(11) NOT NULL default '0',
+  `md5sumDicomOnly` varchar(255) default NULL,
+  `md5sumArchive` varchar(255) default NULL,
+  `CreatingUser` varchar(255) NOT NULL default '',
+  `sumTypeVersion` tinyint(4) NOT NULL default '0',
+  `tarTypeVersion` tinyint(4) default NULL,
+  `SourceLocation` varchar(255) NOT NULL default '',
+  `ArchiveLocation` varchar(255) default NULL,
+  `ScannerManufacturer` varchar(255) NOT NULL default '',
+  `ScannerModel` varchar(255) NOT NULL default '',
+  `ScannerSerialNumber` varchar(255) NOT NULL default '',
+  `ScannerSoftwareVersion` varchar(255) NOT NULL default '',
+  `SessionID` int(10) unsigned default NULL,
+  `uploadAttempt` tinyint(4) NOT NULL default '0',
+  `CreateInfo` text,
+  `AcquisitionMetadata` longtext NOT NULL,
+  `TarchiveID` int(11) NOT NULL auto_increment,
+  `DateSent` datetime DEFAULT NULL,
+  `PendingTransfer` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY  (`TarchiveID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `tarchive_series` (
+  `TarchiveSeriesID` int(11) NOT NULL auto_increment,
+  `TarchiveID` int(11) NOT NULL default '0',
+  `SeriesNumber` int(11) NOT NULL default '0',
+  `SeriesDescription` varchar(255) default NULL,
+  `SequenceName` varchar(255) default NULL,
+  `EchoTime` double default NULL,
+  `RepetitionTime` double default NULL,
+  `InversionTime` double default NULL,
+  `SliceThickness` double default NULL,
+  `PhaseEncoding` varchar(255) default NULL,
+  `NumberOfFiles` int(11) NOT NULL default '0',
+  `SeriesUID` varchar(255) default NULL,
+  `Modality` ENUM ('MR', 'PT') default NULL,
+  PRIMARY KEY  (`TarchiveSeriesID`),
+  KEY `TarchiveID` (`TarchiveID`),
+  CONSTRAINT `tarchive_series_ibfk_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `tarchive_files` (
+  `TarchiveFileID` int(11) NOT NULL auto_increment,
+  `TarchiveID` int(11) NOT NULL default '0',
+  `TarchiveSeriesID` INT(11) DEFAULT NULL,
+  `SeriesNumber` int(11) default NULL,
+  `FileNumber` int(11) default NULL,
+  `EchoNumber` int(11) default NULL,
+  `SeriesDescription` varchar(255) default NULL,
+  `Md5Sum` varchar(255) NOT NULL,
+  `FileName` varchar(255) NOT NULL,
+  PRIMARY KEY  (`TarchiveFileID`),
+  KEY `TarchiveID` (`TarchiveID`),
+  KEY `TarchiveSeriesID` (`TarchiveSeriesID`),
+  CONSTRAINT `tarchive_files_ibfk_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`) ON DELETE CASCADE,
+  CONSTRAINT `tarchive_files_TarchiveSeriesID_fk` FOREIGN KEY (`TarchiveSeriesID`) REFERENCES `tarchive_series` (`TarchiveSeriesID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `tarchive_find_new_uploads` (
+  `CenterName` varchar(255) NOT NULL,
+  `LastRan` datetime DEFAULT NULL,
+  PRIMARY KEY (`CenterName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This table is used by Loris-MRI/find_uploads_tarchive to store the last time the script was ran for that location';
 
 -- ********************************
 -- Imaging tables
@@ -715,92 +797,10 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `time_range` varchar(255)  DEFAULT NULL,
   `SeriesUID` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`ID`),
-  KEY `FK_mri_violated_1` (`TarchiveID`),
+  KEY `TarchiveID` (`TarchiveID`),
   CONSTRAINT `FK_mri_violated_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- ********************************
--- tarchive tables
--- ********************************
-
-
-CREATE TABLE `tarchive` (
-  `DicomArchiveID` varchar(255) NOT NULL default '',
-  `PatientID` varchar(255) NOT NULL default '',
-  `PatientName` varchar(255) NOT NULL default '',
-  `PatientDoB` date default NULL,
-  `PatientGender` varchar(255) default NULL,
-  `neurodbCenterName` varchar(255) default NULL,
-  `CenterName` varchar(255) NOT NULL default '',
-  `LastUpdate` datetime default NULL,
-  `DateAcquired` date default NULL,
-  `DateFirstArchived` datetime default NULL,
-  `DateLastArchived` datetime default NULL,
-  `AcquisitionCount` int(11) NOT NULL default '0',
-  `NonDicomFileCount` int(11) NOT NULL default '0',
-  `DicomFileCount` int(11) NOT NULL default '0',
-  `md5sumDicomOnly` varchar(255) default NULL,
-  `md5sumArchive` varchar(255) default NULL,
-  `CreatingUser` varchar(255) NOT NULL default '',
-  `sumTypeVersion` tinyint(4) NOT NULL default '0',
-  `tarTypeVersion` tinyint(4) default NULL,
-  `SourceLocation` varchar(255) NOT NULL default '',
-  `ArchiveLocation` varchar(255) default NULL,
-  `ScannerManufacturer` varchar(255) NOT NULL default '',
-  `ScannerModel` varchar(255) NOT NULL default '',
-  `ScannerSerialNumber` varchar(255) NOT NULL default '',
-  `ScannerSoftwareVersion` varchar(255) NOT NULL default '',
-  `SessionID` int(10) unsigned default NULL,
-  `uploadAttempt` tinyint(4) NOT NULL default '0',
-  `CreateInfo` text,
-  `AcquisitionMetadata` longtext NOT NULL,
-  `TarchiveID` int(11) NOT NULL auto_increment,
-  `DateSent` datetime DEFAULT NULL,
-  `PendingTransfer` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY  (`TarchiveID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `tarchive_series` (
-  `TarchiveSeriesID` int(11) NOT NULL auto_increment,
-  `TarchiveID` int(11) NOT NULL default '0',
-  `SeriesNumber` int(11) NOT NULL default '0',
-  `SeriesDescription` varchar(255) default NULL,
-  `SequenceName` varchar(255) default NULL,
-  `EchoTime` double default NULL,
-  `RepetitionTime` double default NULL,
-  `InversionTime` double default NULL,
-  `SliceThickness` double default NULL,
-  `PhaseEncoding` varchar(255) default NULL,
-  `NumberOfFiles` int(11) NOT NULL default '0',
-  `SeriesUID` varchar(255) default NULL,
-  `Modality` ENUM ('MR', 'PT') default NULL,
-  PRIMARY KEY  (`TarchiveSeriesID`),
-  KEY `TarchiveID` (`TarchiveID`),
-  CONSTRAINT `tarchive_series_ibfk_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `tarchive_files` (
-  `TarchiveFileID` int(11) NOT NULL auto_increment,
-  `TarchiveID` int(11) NOT NULL default '0',
-  `TarchiveSeriesID` INT(11) DEFAULT NULL,
-  `SeriesNumber` int(11) default NULL,
-  `FileNumber` int(11) default NULL,
-  `EchoNumber` int(11) default NULL,
-  `SeriesDescription` varchar(255) default NULL,
-  `Md5Sum` varchar(255) NOT NULL,
-  `FileName` varchar(255) NOT NULL,
-  PRIMARY KEY  (`TarchiveFileID`),
-  KEY `TarchiveID` (`TarchiveID`),
-  KEY `TarchiveSeriesID` (`TarchiveSeriesID`),
-  CONSTRAINT `tarchive_files_ibfk_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`) ON DELETE CASCADE,
-  CONSTRAINT `tarchive_files_TarchiveSeriesID_fk` FOREIGN KEY (`TarchiveSeriesID`) REFERENCES `tarchive_series` (`TarchiveSeriesID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `tarchive_find_new_uploads` (
-  `CenterName` varchar(255) NOT NULL,
-  `LastRan` datetime DEFAULT NULL,
-  PRIMARY KEY (`CenterName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This table is used by Loris-MRI/find_uploads_tarchive to store the last time the script was ran for that location';
 
 -- ********************************
 -- document_repository tables
