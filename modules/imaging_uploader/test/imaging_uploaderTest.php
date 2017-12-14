@@ -173,11 +173,11 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             )->click();
         }
 
-        foreach ($ui as $key => $value) {
+        foreach ($ui as $label => $selector) {
             $text = $this->webDriver->executescript(
-                "return document.querySelector('$value').textContent"
+                "return document.querySelector('$selector').textContent"
             );
-            $this->assertContains($key, $text);
+            $this->assertContains($label, $text);
         }
     }
 }
