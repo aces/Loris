@@ -156,7 +156,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
         $this->_testPageUIs("/imaging_uploader/#upload", $this->_loadingUploadUI);
     }
     /**
-      * This function could test UI elemnts in each Tabs.
+      * This function could test UI elements in each Tabs.
       *
       * @param string $url this is for the url which needs to be tested.
       * @param string $ui  UI elements in each Tabs.
@@ -165,14 +165,14 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
       */
     function _testPageUIs($url,$ui)
     {
-            
+
             $this->safeGet($this->url . '/imaging_uploader/');
-            if ($url == "/imaging_uploader/#upload") {
-               $this->webDriver->findElement(
-                   WebDriverBy::ID("tab-upload")
-               )->click();
-            } 
-           
+        if ($url == "/imaging_uploader/#upload") {
+            $this->webDriver->findElement(
+                WebDriverBy::ID("tab-upload")
+            )->click();
+        }
+
         foreach ($ui as $key => $value) {
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
