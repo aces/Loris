@@ -124,6 +124,10 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             array('PatientName' => 'TestTestTest')
         );
         $this->DB->delete(
+            "tarchive",
+            array('TarchiveID' => '264')
+        );
+        $this->DB->delete(
             "session",
             array('CandID' => '999999')
         );
@@ -135,11 +139,6 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             "psc",
             array('CenterID' => '55')
         );
-        $this->DB->delete(
-            "tarchive",
-            array('TarchiveID' => '264')
-        );
-
     }
     /**
      * Tests that, when loading the Imaging_uploader module, some
