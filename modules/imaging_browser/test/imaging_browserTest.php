@@ -341,6 +341,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete("mri_acquisition_dates", array('SessionID' => '999999'));
         $this->DB->delete("files_qcstatus", array('FileID' => '1111'));
         $this->DB->delete("files_qcstatus", array('FileID' => '2222'));
+        $this->DB->delete("tarchive", array('TarchiveID' => '263'));
+        $this->DB->delete("tarchive", array('TarchiveID' => '264'));
         $this->DB->delete("session", array('ID' => '999997'));
         $this->DB->delete("session", array('ID' => '999998'));
         $this->DB->delete("session", array('ID' => '999999'));
@@ -349,8 +351,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete("candidate", array('CandID' => '000003'));
         $this->DB->delete("psc", array('CenterID' => '253'));
         $this->DB->delete("psc", array('CenterID' => '254'));
-        $this->DB->delete("tarchive", array('TarchiveID' => '263'));
-        $this->DB->delete("tarchive", array('TarchiveID' => '264'));
         $this->DB->run('SET foreign_key_checks =1');
 
     }
