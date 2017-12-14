@@ -437,6 +437,7 @@ CREATE TABLE `Visit_Windows` (
    PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
 -- ********************************
 -- tarchive tables
 -- ********************************
@@ -475,7 +476,9 @@ CREATE TABLE `tarchive` (
   `TarchiveID` int(11) NOT NULL auto_increment,
   `DateSent` datetime DEFAULT NULL,
   `PendingTransfer` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY  (`TarchiveID`)
+  PRIMARY KEY  (`TarchiveID`),
+  CONSTRAINT `FK_tarchive_sessionID`
+    FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `tarchive_series` (
@@ -513,6 +516,7 @@ CREATE TABLE `tarchive_files` (
   CONSTRAINT `tarchive_files_ibfk_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`) ON DELETE CASCADE,
   CONSTRAINT `tarchive_files_TarchiveSeriesID_fk` FOREIGN KEY (`TarchiveSeriesID`) REFERENCES `tarchive_series` (`TarchiveSeriesID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- ********************************
 -- Imaging tables
