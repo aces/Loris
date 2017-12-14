@@ -96,10 +96,6 @@ DROP TABLE IF EXISTS `notification_modules`;
 DROP TABLE IF EXISTS `document_repository`;
 DROP TABLE IF EXISTS `document_repository_categories`;
 
-DROP TABLE IF EXISTS `tarchive_files`;
-DROP TABLE IF EXISTS `tarchive_series`;
-DROP TABLE IF EXISTS `tarchive`;
-
 DROP TABLE IF EXISTS `violations_resolved`;
 DROP TABLE IF EXISTS `mri_violations_log`;
 DROP TABLE IF EXISTS `mri_protocol_checks`;
@@ -115,6 +111,10 @@ DROP TABLE IF EXISTS `mri_scan_type`;
 DROP TABLE IF EXISTS `mri_scanner`;
 DROP TABLE IF EXISTS `mri_processing_protocol`;
 DROP TABLE IF EXISTS `ImagingFileTypes`;
+
+DROP TABLE IF EXISTS `tarchive_files`;
+DROP TABLE IF EXISTS `tarchive_series`;
+DROP TABLE IF EXISTS `tarchive`;
 
 DROP TABLE IF EXISTS `history`;
 DROP TABLE IF EXISTS `Visit_Windows`;
