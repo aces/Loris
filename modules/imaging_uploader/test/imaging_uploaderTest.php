@@ -230,8 +230,9 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
         }
 
         foreach ($ui as $label['lable'] => $selector['selector']) {
+            $location = $selector['selector']; 
             $text = $this->webDriver->executescript(
-                "return document.querySelector('$selector['selector']').textContent"
+                "return document.querySelector('$location').textContent"
             );
             $this->assertContains($label['lable'], $text);
         }
