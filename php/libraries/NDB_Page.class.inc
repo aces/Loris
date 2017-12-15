@@ -81,7 +81,7 @@ class NDB_Page
      */
     function setTemplateVar($name, $value)
     {
-        $this->tpl_data[$name] = htmlspecialchars($value);
+        $this->tpl_data[$name] = htmlspecialchars($value, ENT_NOQUOTES);
     }
 
     /**
