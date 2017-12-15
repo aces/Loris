@@ -219,7 +219,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
       *
       * @return void
       */
-    function _testPageUIs($url,$ui)
+    function _testPageUIs($url,$uis)
     {
 
             $this->safeGet($this->url . '/imaging_uploader/');
@@ -229,12 +229,12 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             )->click();
         }
 
-        foreach ($ui as $key => $value ) {
-            $location = $key['selector'];
+        foreach ($uis as $ui ) {
+            $location = $ui['selector'];
             $text     = $this->webDriver->executescript(
                 "return document.querySelector('$location').textContent"
             );
-            $this->assertContains($key['label'], $text);
+            $this->assertContains($ui['label'], $text);
         }
     }
 }
