@@ -230,7 +230,6 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
         }
 
         foreach ($ui as $key => $value ) {
-            print($key);print($value);
             print($key['label']);
             print("========");
             print($key['selector']);
