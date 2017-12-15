@@ -1348,5 +1348,27 @@ class Utility
             return $val;
         }
     }
+
+    /**
+     * Get the list of language available in the database
+     *
+     * @return array Array of language which exist in the database table 'language'
+     *               array is of the form
+     *               array($language_id => $language_label)
+     */
+    static function getLanguageList()
+    {
+        $DB = \Database::singleton();
+
+        $languagesDB = $DB->pselect(
+            "SELECT language_id, language_label
+             FROM language",
+            array()
+        );
+        foreach ($languagesDB as $language) {
+            $languages[$language['language_id']] = $language['language_label'];
+        }
+        return $languages;
+    }
 }
 ?>

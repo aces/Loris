@@ -151,6 +151,15 @@ class MediaUploadForm extends React.Component {
               ref="comments"
               value={this.state.formData.comments}
             />
+            <SelectElement
+              name="language"
+              label="Document's Language"
+              options={this.state.Data.language}
+              onUserInput={this.setFormData}
+              ref="language"
+              required={false}
+              value={this.state.formData.language}
+            />
             <FileElement
               name="file"
               id="mediaUploadEl"
