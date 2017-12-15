@@ -53,7 +53,7 @@ class NDB_Form_Media extends NDB_Form
         if (isset($idMediaFile)) {
             $result = $db->pselectRow(
                 "SELECT id FROM media WHERE id = :mid",
-                ['mid' => $idMediaFile]
+                array('mid' => $idMediaFile)
             );
             if (count($result) < 1) {
                 header('Location: ' . $baseURL . '/media/');
