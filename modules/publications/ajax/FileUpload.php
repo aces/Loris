@@ -1,16 +1,41 @@
 <?php
 if (isset($_REQUEST['action'])) {
     $action = $_REQUEST['action'];
-    error_log($action);
     if ($action === 'getData') {
         echo json_encode(array());
     } elseif ($action === 'upload') {
         uploadPublication();
+    } elseif($action === 'getProjectData') {
+        echo json_encode(getProjectData());
     } else {
-        echo "invalid action";
+        header("HTTP/1.1 400 Bad Request");
     }
-} else {
-    echo "no action";
+}
+
+function getProjectData() {
+    $id = $_GET['id'];
+
+    $db = Database::singleton();
+
+    $result = $db->pselectRow(
+        'SELECT Title, Description, Date_proposed, '.
+        'Lead_investigator, Lead_investigator_email, Approval_status '.
+        'FROM publications WHERE PublicationID=:pid',
+        array('pid' => $id)
+    );
+
+    if (!$result) {
+        showError('Invalid publication ID!');
+        return;
+    } else {
+        return array(
+            'title' => $result['Title'],
+            'description' => $result['Description'],
+            'leadInvestigator' => $result['Lead_investigator'],
+            'leadInvestigatorEmail' => $result['Lead_investigator_email'],
+            'status' => $result['Approval_status']
+        );
+    }
 }
 
 function uploadPublication() {

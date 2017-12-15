@@ -1,4 +1,5 @@
-// import MediaEditForm from './editForm';
+import ViewProject from './viewProject';
+
 const args = QueryString.get(document.currentScript.src);
 
 $(function() {
@@ -7,8 +8,7 @@ $(function() {
       <div className="row">
         <div className="col-md-9 col-lg-7">
           <ViewProject
-            DataURL={`${loris.BaseURL}/publications/ajax/FileUpload.php?action=getData&projectID=${args.id}`}
-            {/*action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=edit`}*/}
+            DataURL={`${loris.BaseURL}/publications/ajax/FileUpload.php?action=getProjectData&id=${args.id}`}
           />
         </div>
       </div>

@@ -76,7 +76,6 @@ class PublicationUploadForm extends React.Component {
         console.log(textStatus);
       }
     });
-    console.log('after ajax');
   }
 
   render() {

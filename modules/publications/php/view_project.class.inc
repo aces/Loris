@@ -5,8 +5,8 @@ namespace LORIS\publications;
  * Creates the form for NDB_Form_media
  *
  * @category Loris
- * @package  Media
- * @author   Alex Ilea <ailea.mcin@gmail.com>
+ * @package  Publications
+ * @author   David Blader <dblader.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
@@ -15,8 +15,8 @@ class View_Project extends \NDB_Form
     public $skipTemplate = true;
 
     /**
-     * Entry point for /media/edit/
-     * Checks if file id is provided and otherwise redirects to /media/ page
+     * Entry point for /publications/view_project
+     * Checks if project id is provided and otherwise redirects to /publications/ page
      *
      * @param string $name       The test name being accessed
      * @param string $page       The subtest being accessed (may be null)
@@ -34,19 +34,19 @@ class View_Project extends \NDB_Form
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
 
-        $idMediaFile = $_GET['id'];
+        $pubID = $_GET['id'];
 
         // Check if media file exists, if not redirect to /media/ page
-        if (isset($idMediaFile)) {
+        if (isset($pubID)) {
             $result = $db->pselectRow(
-                "SELECT id FROM media WHERE id = $idMediaFile",
-                []
+                "SELECT PublicationID FROM publications WHERE PublicationID = :pid",
+                array('pid' => $pubID)
             );
             if (count($result) < 1) {
-                header('Location: ' . $baseURL . '/media/');
+                header('Location: ' . $baseURL . '/publications/');
             }
         } else {
-            header('Location: ' . $baseURL . '/media/');
+            header('Location: ' . $baseURL . '/publications/');
         }
     }
 
@@ -80,7 +80,7 @@ class View_Project extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/publications/js/viewProjectIndex.js"]
+            array($baseURL . "/publications/js/viewProjectIndex.js")
         );
     }
 

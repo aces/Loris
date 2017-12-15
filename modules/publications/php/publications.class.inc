@@ -61,6 +61,7 @@ class Publications extends \NDB_Menu_Filter_Form
             'p.Description',
             'pk.Label', // Keywords
             'pt.Name', // Variables of Interest
+            'p.PublicationID',
         );
 
         $this->query = $query;
@@ -71,7 +72,8 @@ class Publications extends \NDB_Menu_Filter_Form
             'Approval Status',
             'Description',
             'Keywords',
-            'Variables of Interest',
+            'Variables Of Interest',
+            'Publication ID'
         );
 
 

@@ -6,7 +6,7 @@ import formatColumn from './columnFormatter';
 class PublicationIndex extends React.Component {
   constructor(props) {
     super(props);
-    loris.hiddenHeaders = ['Description', 'Keywords', 'Variables Of Interest'];
+    loris.hiddenHeaders = ['Description', 'Keywords', 'Variables Of Interest', 'Publication ID'];
     this.state = {
       isLoaded: false,
       filter: {}

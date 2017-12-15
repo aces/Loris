@@ -21,10 +21,11 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   var classes  = [];
 
   if (column === 'Title') {
-    var viewURL = loris.BaseURL + '/publications/viewProject/'
+    var pubID = row['Publication ID'];
+    var viewURL = loris.BaseURL + '/publications/view_project?id='+pubID;
     return (
       <td>
-        <a href="">
+        <a href={viewURL}>
         {cell}
         </a>
       </td>
