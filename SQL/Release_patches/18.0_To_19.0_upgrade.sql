@@ -1,1 +1,1 @@
-alter table help modify column content text default NULL;
+alter table help drop column content;
