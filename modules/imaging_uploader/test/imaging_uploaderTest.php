@@ -215,7 +215,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
       * This function could test UI elements in each Tabs.
       *
       * @param string $url this is for the url which needs to be tested.
-      * @param string $uis  UI elements in each Tabs.
+      * @param string $uis UI elements in each Tabs.
       *
       * @return void
       */
