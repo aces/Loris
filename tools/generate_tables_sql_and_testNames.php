@@ -80,7 +80,7 @@ foreach($instruments AS $instrument){
                     $bits[0]="varchar(255)";
                 }
 
-                $bits[2]=htmlspecialcharsi($bits[2]);
+                $bits[2]=htmlspecialchars($bits[2]);
                 $output.="`$bits[1]` $bits[0] default NULL,\n";
         }
 
