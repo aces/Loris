@@ -231,6 +231,13 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
 
         foreach ($ui as $key => $value ) {
             print($key);print($value);
+            print($key['label']);
+            print("========");
+            print($key['selector']);
+            print("========");
+            print($value['label']);
+            print("========");
+            print($value['selector']);
             $location = $value['selector'];
             $text     = $this->webDriver->executescript(
                 "return document.querySelector('$location').textContent"
