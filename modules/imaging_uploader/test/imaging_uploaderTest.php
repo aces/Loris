@@ -230,11 +230,12 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
         }
 
         foreach ($ui as $key => $value ) {
+          var_dump($key);var_dump($key);
             $location = $value['selector'];
             $text     = $this->webDriver->executescript(
                 "return document.querySelector('$location').textContent"
             );
-            $this->assertContains($value['lable'], $text);
+            $this->assertContains($key['lable'], $text);
         }
     }
 }
