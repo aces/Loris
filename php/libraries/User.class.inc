@@ -285,6 +285,16 @@ class User extends UserPermissions
         return $this->userInfo['CenterIDs'];
     }
 
+    /**
+     * Get the user's language preference
+     *
+     * @return int
+     */
+    function getLanguagePreference()
+    {
+        return $this->userInfo['language_preference'];
+    }
+
 
     /**
      * Returns all sites where Examiner is active

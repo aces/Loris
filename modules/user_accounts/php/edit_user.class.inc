@@ -166,7 +166,7 @@ class Edit_User extends \NDB_Form
     {
         $editor = \User::singleton();
         return !$this->isCreatingNewUser()
-        && ($editor->getUsername() == $this->identifier);
+            && ($editor->getUsername() == $this->identifier);
     }
 
     /**
