@@ -26,9 +26,11 @@ class Markdown extends React.Component {
     // Fix stupid-style newlines to be just \n.
     var fixedNewlines = this.props.content.replace(/\r\n/g, "\n");
 
-    // Fix escaped ampersand
+    // Fix escaped ampersand 
     fixedNewlines = fixedNewlines.replace(/&amp;/g, "&");
-
+    fixedNewlines = fixedNewlines.replace(/&quot;/g, "\"");
+    
+    
     // 2 newlines in a row mean it's a paragraph breaker.
     var paragraphs = fixedNewlines.split("\n\n");
     var headersRe = /^(#+)\s+(.+)$/;

@@ -291,7 +291,7 @@ class Database
             if ($val === 'Unrated') {
                 $retVal[$key] = '';
             } else {
-                $retVal[$key] = is_null($val) ? null : htmlspecialchars($val, ENT_NOQUOTES);
+                $retVal[$key] = is_null($val) ? null : htmlspecialchars($val);
             }
         }
         return $retVal;
