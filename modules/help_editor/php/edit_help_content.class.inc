@@ -76,7 +76,6 @@ class Edit_Help_Content extends \NDB_Form
             } else {
                 $this->tpl_data['module_name'] = $defaults['title'];
             }
-        
         }
         $defaults['content'] = htmlspecialchars_decode($defaults['content']);
         // case where no help content exists
