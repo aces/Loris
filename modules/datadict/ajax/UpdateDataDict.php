@@ -37,32 +37,28 @@ if (get_magic_quotes_gpc()) {
 } else {
     // Magic quotes is off, so we can just directly use the description
     // since insert() will use a prepared statement.
-    $description = $_REQUEST['description'];
+    $description = trim($_REQUEST['description']);
 }
 
 // create user object
 $user =& User::singleton();
 
 if ($user->hasPermission('data_dict_edit')) { //if user has edit permission
-    if ($DB->pselectOne(
-        "SELECT COUNT(*) FROM parameter_type_override " .
-        "WHERE Name =:id",
-        array('id' => $name)
-    )==0) {  //if it doesn't exist
-        // unsafeinsert is needed to allow '<TEST_NAME>_Date_taken' to be inserted
-        $DB->unsafeinsert(
-            'parameter_type_override',
-            array(
-             'Name'        => $name,
-             'Description' => $description,
-            )
-        ); //insert it
+
+    $native_description = $DB->pselectOne(
+        "SELECT Description FROM parameter_type WHERE Name = :v_name",
+        array("v_name" => $name)
+    );
+
+    if ($description != $native_description) {
+        $DB->replace('parameter_type_override', array(
+           'Description' => $description,
+           'Name' => $name
+        ));
     } else {
-        $DB->update(
-            'parameter_type_override',
-            array('Description' => $description),
-            array('Name' => $name)
-        ); //else update it
+        $DB->delete('parameter_type_override', array(
+            'Name' => $name
+        ));
     }
 }
 
