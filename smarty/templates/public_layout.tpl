@@ -12,6 +12,13 @@
   <link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="{$baseurl}/css/public_layout.css">
   <link type="image/x-icon" rel="icon" href="{$baseurl}/images/favicon.ico">
+  {section name=jsfile loop=$jsfiles}
+    <script src="{$jsfiles[jsfile]}" type="text/javascript"></script>
+  {/section}
+
+  {section name=cssfile loop=$cssfiles}
+    <link rel="stylesheet" href="{$cssfiles[cssfile]}">
+  {/section}
 </head>
 <body>
   <header class="header">
