@@ -2,7 +2,7 @@
 /**
  * This file contains code for editing context help section
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -51,8 +51,11 @@ class Edit_Help_Content extends \NDB_Form
 
         // Sanitize user input
         $safeHelpID     = htmlspecialchars($_REQUEST['helpID']);
-        $safeSection    = htmlspecialchars($_REQUEST['section']);
-        $safeSubsection = htmlspecialchars($_REQUEST['subsection']);
+        $safeSection    = $_REQUEST['section'] ?
+            htmlspecialchars($_REQUEST['section']) : '';
+        $safeSubsection = $_REQUEST['subsection'] ?
+            htmlspecialchars($_REQUEST['subsection']) : '';
+
         if (isset($_REQUEST['helpID'])) {
             $helpID = $safeHelpID;
         }
@@ -66,6 +69,7 @@ class Edit_Help_Content extends \NDB_Form
         }
         $this->tpl_data['section']    = $safeSection;
         $this->tpl_data['subsection'] = $safeSubsection;
+
         if (!empty($helpID)) {
             $help_file = HelpFile::factory($helpID);
             $data      = $help_file->toArray();
@@ -131,7 +135,10 @@ class Edit_Help_Content extends \NDB_Form
             $helpID   = HelpFile::hashToID(md5($_REQUEST['subsection']));
             $parentID = HelpFile::hashToID(md5($_REQUEST['section']));
         }
-        if (!empty($helpID)) {
+        if (!empty($helpID)
+            && isset($values['title'])
+            && isset($values['content'])
+        ) {
             $help_file = HelpFile::factory($helpID);
             // update the help file
             $success = $help_file->update(
