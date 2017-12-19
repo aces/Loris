@@ -1,9 +1,10 @@
 <?php
 /**
+ * File_Upload File Doc Comment
  * This file contains a wrapper for managing and verifying files that are
- * uploaded through PHP QuickForm and handles putting them in the correct place,
+ * uploaded through LorisForm and handles putting them in the correct place,
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Behavioural
@@ -24,25 +25,31 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+
 class File_Upload
 {
+    private $_baseUploadDirectory;
+    private $_destinationDirectory;
+    private $_destinationFilename;
+    private $_errorLog;
+
     /**
      * Construct the File_Upload class. This sets the default parameters
      * for a file which can be overwritten by calling the set* methods
      */
-    function __construct()
+    public function __construct()
     {
-        //Set Defaults
-        $this->renameMode        = "incremental";
-        $this->overwriteMode     = "rename";
-        $this->fileMove          = true;
-        $this->fileVerify        = true;
-        $this->fileImport        = true;
-        $this->filenamePrefix    = "";
-        $this->createDirectories = true;
-        $this->errorLog          = array();
-        $this->moveOrCopy        = "move";
-        $this->isCLImport        = false;
+        // TODO: _fileMove should be removed after imaging uploader is refactored
+        // It is not a private variable because imaging_uploader currently
+        // changes its value manually.
+        // @see imaging_uploader/php/NDB_Menu_Filter_imaging_uploader.class.inc#L212
+        $this->_baseUploadDirectory  = '';
+        $this->_destinationDirectory = '';
+        $this->_destinationFilename  = '';
+        $this->_errorLog  = array();
+        $this->fileMove   = true;
+        $this->fieldName  = '';
+        $this->fieldNames = '';
     }
 
 
@@ -52,21 +59,21 @@ class File_Upload
      *
      * @return boolean True on success False on failure
      */
-    function processFiles()
+    public function processFiles()
     {
         //Loop through fields.
         if (empty($this->fieldNames) || !is_array($this->fieldNames)) {
-            $this->setError(
+            $this->_setError(
                 "",
-                "No files to process!  Register handlers first."
+                "No files to process! Register handlers first."
             );
             return false;
         }
 
-        foreach ($this->fieldNames AS $field) {
+        foreach ($this->fieldNames as $field) {
             $this->fieldName =$field;
-            if (!$this->preProcessFile()) {
-                $this->setError(
+            if (!$this->_preprocessFile()) {
+                $this->_setError(
                     $field,
                     "Could not upload file. Max file size is "
                     . ini_get("upload_max_filesize") . "."
@@ -77,7 +84,7 @@ class File_Upload
             //Determine appropriate file handler class
             if (empty($this->fileHandlers[$field])) {
                 //If a field type is set use that.
-                $this->setError(
+                $this->_setError(
                     $field,
                     "No file handler registered for field '$field'"
                 );
@@ -85,49 +92,39 @@ class File_Upload
             }
 
             //Test the handler to ensure it exists and all methods are intact
-            if ($this->isValidFileHandler($field)) {
-                //Verify the file
-                if ($this->fileVerify) {
-                    //Validate the file using the isValid method of the handler
-                    //class.
-                    $fileVerified =$this->callFileHandler($field, 'verify');
-                    if (is_array($fileVerified)) {
-                        $this->setError($field, $fileVerified);
-                        continue;
-                    }
+            if ($this->_isValidFileHandler($field)) {
+                //Validate using the isValid method of the handler class
+                $errors = $this->callFileHandler($field, 'verify');
+                // The above function call returns an array if something goes wrong,
+                // and returns true otherwise.
+                // @see imaging_uploader/php/
+                //     NDB_Menu_Filter_imaging_uploader.class.inc#L265
+                if (is_array($errors)) {
+                    $this->_setError($field, $errors);
+                    continue;
                 }
 
                 //If we are going to move the file, figure out what its new name
                 //will be before the import step, so we can save the new filename
                 //to the database.
-                if ($this->fileMove) {
+                // @TODO: Remove this check after imaging uploader is refactored
+                if ($this->_fileMove) {
+                    // Note: The only implementation of the below gets the username
+                    // @see imaging_uploader/php/
+                    //     NDB_Menu_Filter_imaging_uploader.class.inc#L529
                     $newTargetDirectory =$this->callFileHandler($field, 'move');
                     if (!$this->getNewDirectory($newTargetDirectory)) {
                         continue;
                     }
-                    if (!$this->getNewFilename()) {
-                        continue;
-                    }
+                    $this->_moveFile();
                 }
 
-                //Import the file
-                if ($this->fileImport) {
-                    //Import the file using the importFile method of the handler
-                    //class.
-                    $fileImported =$this->callFileHandler($field, 'import');
-                    if (is_array($fileImported)) {
-                        $this->setError($field, $fileImported);
-                        continue;
-                    }
-                }
-
-                //Move the file (comes before import so that import knows the
-                //name of the filename for storing int he database)
-                if ($this->fileMove) {
-                    $fileMoved =$this->moveFile();  //Move the file
-                    if (is_array($fileMoved)) {
-                        continue;
-                    }
+                //Import the file using the importFile method of the handler
+                //class.
+                $fileImported =$this->callFileHandler($field, 'import');
+                if (is_array($fileImported)) {
+                    $this->_setError($field, $fileImported);
+                    continue;
                 }
             }
         }
@@ -145,24 +142,17 @@ class File_Upload
      *
      * @return bool    $success        if operation succeeded
      */
-    function preProcessFile()
+    private function _preprocessFile()
     {
-        if (!$this->isCLImport) {
-            $this->file =& $this->form->getElement($this->fieldName);
-            if (!method_exists($this->file, "isUploadedFile")) {
-                return false;
-            }
-            if ($this->file->isUploadedFile()) {
-                $this->fileInfo = $this->file->getValue();
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            $this->file     =$this->CLFiles[$this->fieldName];
-            $this->fileInfo =$this->file['info'];
+        $this->file =& $this->form->getElement($this->fieldName);
+        if (!method_exists($this->file, "isUploadedFile")) {
+            return false;
+        }
+        if ($this->file->isUploadedFile()) {
+            $this->fileInfo = $this->file->getValue();
             return true;
         }
+        return false;
     }
 
 
@@ -174,9 +164,8 @@ class File_Upload
      * @param string $action The name of the method to call.
      *
      * @return boolean true if operation succeeded
-     * @access public
      */
-    function callFileHandler($field, $action)
+    public function callFileHandler($field, $action)
     {
         $class  =$this->fileHandlers[$field]['class'];
         $method =$this->fileHandlers[$field]['methods'][$action];
@@ -197,8 +186,7 @@ class File_Upload
                  $args,
                 );
 
-        $output =call_user_func_array($func, $args);
-
+        $output = call_user_func_array($func, $args);
         return $output;
     }
 
@@ -206,30 +194,26 @@ class File_Upload
     /**
      * Moves the file from the tmp directory to its final destination.
      *
-     * @return bool    $success        if operation succeeded
-     * @access public
+     * @return bool    status of operation
      */
-    function moveFile()
+    public function moveFile()
     {
-        if ($this->moveOrCopy=="move") {
-            if (!$this->file->moveUploadedFile(
-                $this->destinationDirectory,
-                $this->destinationFilename
-            )) {
-                $this->setError(
-                    $this->fieldName,
-                    "Could not move file to "
-                    . $this->destinationDirectory
-                    . $this->destinationFilename
-                );
-            }
-        } else if ($this->moveOrCopy=="copy") {
-            copy(
-                $this->fileInfo['tmp_name'],
-                $this->destinationDirectory.$this->destinationFilename
+        // Prepare the name before moving
+        $this->_normalizeDestinationFilename();
+        // Move the file
+        if (!$this->file->moveUploadedFile(
+            $this->_destinationDirectory,
+            $this->_destinationFilename
+        )) {
+            $this->_setError(
+                $this->fieldName,
+                "Could not move file to "
+                . $this->_destinationDirectory
+                . $this->_destinationFilename
             );
+            return false;
         }
-        chmod("$this->destinationDirectory$this->destinationFilename", 0666);
+        chmod("$this->_destinationDirectory$this->_destinationFilename", 0666);
         return true;
     }
 
@@ -240,11 +224,10 @@ class File_Upload
      * @param string $destination_dir The name of the destination directory.
      *
      * @return bool    if operation succeeded
-     * @access public
      */
-    function getNewDirectory($destination_dir="")
+    public function getNewDirectory($destination_dir="")
     {
-        $dest_dir =$this->baseUploadDirectory.$destination_dir;
+        $dest_dir =$this->_baseUploadDirectory.$destination_dir;
 
         //Make sure the dir ends with a trailing slash
         if (substr($dest_dir, -1, 1) != "/") {
@@ -253,76 +236,57 @@ class File_Upload
         //Make sure the dir exists, if necessary (and
         //$this->createDirectories==true) then create it.
         if (file_exists($dest_dir) && !is_dir($dest_dir)) {
-            $this->setError(
+            $this->_setError(
                 $this->fieldName,
                 "A file named '$dest_dir' exists in your chosen upload root. "
                 . "Could not create directory with same name."
             );
             return false;
-        } else if (!file_exists($dest_dir) && $this->createDirectories) {
+        } else if (!file_exists($dest_dir)) {
             $config = NDB_Config::singleton();
             mkdir($dest_dir, 0775);
             $grp = $config->getSetting('FileGroup');
             if (!empty($grp)) {
                 chgrp($dest_dir, $grp);
             }
-        } else if (!file_exists($dest_dir) && $this->createDirectories) {
-            $this->setError(
+        } else if (!file_exists($dest_dir)) {
+            $this->_setError(
                 $this->fieldName,
                 "Destination directory '$dest_dir' does not exist"
             );
             return false;
         }
         if (!is_writable($dest_dir)) {
-            $this->setError(
+            $this->_setError(
                 $this->fieldName,
                 "Destination directory '$dest_dir' is not writeable"
             );
             return false;
         }
 
-        $this->destinationDirectory =$dest_dir;
+        $this->_destinationDirectory =$dest_dir;
         return true;
     }
 
 
     /**
-     * Builds the final filename for the file.
+     * Remove unwanted characters from filename and add
+     * numeric suffix to prevent duplication.
      *
-     * @return bool    if operation succeeded
-     * @access public
+     * @return void
      */
-    function getNewFilename()
+    private function _normalizeDestinationFilename()
     {
-        $dest_dir =$this->destinationDirectory;
-
         //Strip out any unwanted characters from the filename
-        $safe_name =$this->filenamePrefix.$this->nameToSafe($this->fileInfo['name']);
+        $safe_name = $this->_nameToSafe($this->fileInfo['name']);
 
-        //If there is already a file with this name in the target directory either
-        //overwrite, rename, or reject.
-        if (file_exists($dest_dir.$safe_name)) {
-            switch($this->overwriteMode){
-            case "rename":
-                if ($this->renameMode=="incremental") {
-                    $safe_name =$this->nameToIncremental($dest_dir, $safe_name);
-                } elseif ($this->renameMode=="unique"
-                    || $this->renameMode=="unique-random"
-                ) {
-                    $safe_name =$this->nameToUniqueRandom($safe_name);
-                } elseif ($this->renameMode=="unique-timestamp") {
-                    $safe_name =$this->nameToUniqueTimestamp($safe_name);
-                }
-                break;
-            case "reject":
-                $this->setError($this->fieldName, "File Exists, rejecting");
-                return false;
-                break;
-            }
+        // If there is already a file with this name in the target directory
+        // add a numeric suffix to avoid overwriting
+        if (file_exists($this->_destinationDirectory . $safe_name)) {
+            $safe_name = $this->_nameToIncremental($dest_dir, $safe_name);
         }
 
-        $this->destinationFilename =$safe_name;
-        return true;
+        $this->_destinationFilename = $safe_name;
     }
 
 
@@ -336,7 +300,7 @@ class File_Upload
      * @return boolean True if the class is valid.
      * @see    File_Upload::processFiles()
      */
-    function isValidFileHandler($field)
+    private function _isValidFileHandler($field)
     {
         $class =&$this->fileHandlers[$field]['class'];
         if (is_object($class)) {
@@ -344,13 +308,13 @@ class File_Upload
         } else if (class_exists($class)) {
             $test =new $class;
         } else {
-            $this->setError($field, "$class does not exist.");
+            $this->_setError($field, "$class does not exist.");
             return false;
         }
         //Test each method
-        foreach ($this->fileHandlers[$field]['methods'] AS $method) {
+        foreach ($this->fileHandlers[$field]['methods'] as $method) {
             if (!method_exists($test, $method)) {
-                $this->setError(
+                $this->_setError(
                     $field,
                     "Method '$method' of object does not exist."
                 );
@@ -370,11 +334,11 @@ class File_Upload
      *
      * @return true
      */
-    function registerForm(&$quickform)
+    public function registerForm(&$quickform)
     {
         $this->form =&$quickform;
         return true;
-        //@todo Should test to see if form is valid and if not return an error.
+        //@TODO Should test to see if form is valid and if not return an error.
     }
 
     /**
@@ -393,21 +357,20 @@ class File_Upload
     *                          import, or move.  If any (or all) of these
     *                          are empty the defaults will be used.
     *
-    * @return boolean true
-    * @see    File_Upload::processFiles()
+    * @return  boolean true
+    * @see     File_Upload::processFiles()
+    * @cleanup
     */
-    function setFileHandler($fieldName, $className, $methods="")
+    public function setFileHandler($fieldName, $className, $methods="")
     {
+        // TODO: There is no implementation of this function that uses
+        // custom methods. The function signature should be changed
         $default_methods =array(
                            "verify" => "isValid",
                            "import" => "importFile",
                            "move"   => "getTargetDirectory",
                           );
-        if (!empty($methods) && is_array($methods)) {
-            $methods =array_merge($default_methods, $methods);
-        } else {
-            $methods =$default_methods;
-        }
+        $methods         =$default_methods;
         $this->fileHandlers[$fieldName]['class']   =$className;
         $this->fileHandlers[$fieldName]['methods'] =$methods;
         $this->fieldNames[] =$fieldName;
@@ -426,7 +389,7 @@ class File_Upload
      * @return boolean true
      * @see    File_Upload::processFiles()
      */
-    function setHandlerArgs($args)
+    public function setHandlerArgs($args)
     {
         if (!is_array($args)) {
             return false;
@@ -444,16 +407,12 @@ class File_Upload
      * @param string $name   The string file name
      * @param int    $maxlen Maximun permited string lenght
      *
-     * @return string Formatted file name
+     * @return string Valid file name
      * @see    File_Upload::moveFile()
      */
-    function nameToSafe($name, $maxlen=250)
+    private function _nameToSafe($name, $maxlen=250)
     {
-        $noalpha = '???????????????????????????????????????????@';
-        $alpha   = 'aeiouaeiouaeiouAEIOUAEIOUAEIOUaeiouAEIOUncCa';
-        $name    = substr($name, 0, $maxlen);
-        $name    = strtr($name, $noalpha, $alpha);
-        // not permitted chars are replaced with "_"
+        // Non-permitted chars are replaced with "_"
         return preg_replace('/[^a-zA-Z0-9,._\+\()\-]/', '_', $name);
     }
 
@@ -464,10 +423,8 @@ class File_Upload
       *
       * @return string split file name
       * @see    File_Upload::nameToIncremental()
-      * @see    File_Upload::nameToUniqueRandom()
-      * @see    File_Upload::nameToUniqueTimestamp()
       */
-    function getSplitFilename($name)
+    private function _getSplitFilename($name)
     {
         if (strstr($name, ".")) {
             $extpos       =strrpos($name, ".");
@@ -492,7 +449,7 @@ class File_Upload
      * @return string New filename
      * @see    File_Upload::moveFile()
      */
-    function nameToIncremental($dir, $name)
+    private function _nameToIncremental($dir, $name)
     {
         $done =false;
         $i    =0;
@@ -508,144 +465,6 @@ class File_Upload
         return $new_name;
     }
 
-     /**
-      * Gets unique file names in the form:
-      *     9022210413b75410c28bef.html
-      *
-      * @param string $name The target directory for the file.
-      *
-      * @return string New filename
-      * @see    File_Upload::moveFile()
-      */
-    function nameToUniqueRandom($name)
-    {
-        $filename =$this->getSplitFilename($name);
-        if (! $this->_seeded) {
-            srand((double) microtime() * 1000000);
-            $this->_seeded = 1;
-        }
-        $name =$filename['name']."-".uniqid(rand()).$filename['ext'];
-        return $name;
-    }
-
-    /**
-    * Adds the timestamp to the filename in order to make it unique
-    *
-    * @param int $name The proposed name for the file.
-    *
-    * @return string $new_name   New filename
-    * @see    File_Upload::moveFile()
-    */
-    function nameToUniqueTimestamp($name)
-    {
-        $filename =$this->getSplitFilename($name);
-        $new_name =$filename['name']."-".time().$filename['ext'];
-        return $new_name;
-    }
-
-    /**
-     * Sets the action to take if moveFile finds discovers an
-     * existing file with the same name as the one it is trying to move.
-     *
-     * The options are:
-     * - overwrite:  This overwrites any existing file
-     * - rename   :  This renames the file.  Use File_Upload::setRenameMode() to
-     *               choose the renaming scheme.
-     * - reject   :  This raises an error and does not move the file in any form
-     *               to the new directory.
-     * Default: rename
-     *
-     * @param string $mode The desired mode.
-     *
-     * @return boolean true if overwriting, false on invalid argument
-     * @see    File_Upload::moveFile()
-     */
-    function setOverwriteMode($mode)
-    {
-        if ($mode=="overwrite"
-            || $mode=="reject"
-            || $mode=="rename"
-        ) {
-            $this->overwriteMode =$mode;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
-    /**
-     * Determines how to rename a file if an existing file of the original
-     * filename is discovered in the target directory.
-     *
-     * Used in conjuction with File::setOverwriteMode('rename').  The options are:
-     * - incremental        :  This adds a numeric extension to the file which is
-     *                         incremented until it does not match an existing file.
-     * - unique             :  This adds a unique random string to the end of the
-     *                         filename.
-     * - unique-random      :  Same as above.
-     * - unique-timestamp   :  This adds the current UNIX timestamp to the end of the
-     *                         filename.
-     * Default: incremental
-     *
-     * @param string $mode The desired mode.
-     *
-     * @return boolean true if renaming, false if invalid argument
-     * @see    File_Upload::moveFile()
-     */
-    function setRenameMode($mode)
-    {
-        if ($mode=="incremental"
-            || $mode=="unique"
-            || $mode=="unique-timestamp"
-            || $mode=="unique-random"
-        ) {
-            $this->renameMode =$mode;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-    * Turns on/off verifying of files.
-    *
-    * @param boolean $mode The desired mode.
-    *
-    * @return boolean true
-    * @see    File_Upload::moveFile()
-    */
-    function setFileVerify($mode)
-    {
-        $this->fileVerify =$mode;
-    }
-
-    /**
-    * Turns on/off importing of files.
-    *
-    * @param boolean $mode The desired mode.
-    *
-    * @return void
-    * @see    File_Upload::moveFile()
-    */
-    function setFileImport($mode)
-    {
-        $this->fileImport =$mode;
-    }
-
-    /**
-     * Turns on/off moving of files.
-     *
-     * @param boolean $mode The desired mode.
-     *
-     * @return void
-     * @see    File_Upload::moveFile()
-     */
-    function setFileMove($mode)
-    {
-        $this->fileMove =$mode;
-    }
-
     /**
      * Sets the base directory to move validated files into.
      * This directory may be added to by individual class handlers.
@@ -655,64 +474,34 @@ class File_Upload
      * @return void
      * @see    File_Upload::moveFile()
      */
-    function setBaseUploadDirectory($dir)
+    public function setBaseUploadDirectory($dir)
     {
         if (substr($dir, -1, 1) != "/") {
             $dir .="/";
         }
-        $this->baseUploadDirectory =$dir;
+        $this->_baseUploadDirectory = $dir;
     }
-
-    /**
-    * Sets prefix to be prepended to new filenames
-    *
-    * @param string $prefix The desired prefix.
-    *
-    * @return void
-    * @see    File_Upload::moveFile()
-    */
-    function setFilenamePrefix($prefix)
-    {
-        $this->filenamePrefix =$prefix;
-    }
-
 
     /**
     * Gets the final destination directory for the uploaded file
     *
     * @return string directory
-    * @see    File_Upload::getNewFilename()
     */
-    function getDestinationDirectory()
+    public function getDestinationDirectory()
     {
-        return $this->destinationDirectory;
+        return $this->_destinationDirectory;
     }
 
 
     /**
     * Gets the final filename for the uploaded file
     *
-    * @see    File_Upload::getNewFilename()
     * @return string filename
     */
-    function getDestinationFilename()
+    public function getDestinationFilename()
     {
-        return $this->destinationFilename;
+        return $this->_destinationFilename;
     }
-
-    /**
-    * Turns on/off creation of upload directories.
-    *
-    * @param boolean $mode The desired mode.
-    *
-    * @see    File_Upload::moveFile()
-    * @return null
-    */
-    function setCreateDirectories($mode)
-    {
-        $this->createDirectories =$mode;
-    }
-
 
     /**
     * Adds an error to the error log
@@ -722,15 +511,15 @@ class File_Upload
     *
     * @return void
     */
-    function setError($field, $msg)
+    private function _setError($field, $msg)
     {
-        if (!is_array($this->errorLog[$field])) {
-            $this->errorLog[$field] = array();
+        if (!is_array($this->_errorLog[$field])) {
+            $this->_errorLog[$field] = array();
         }
         if (is_array($msg)) {
-            $this->errorLog[$field] =array_merge($this->errorLog[$field], $msg);
+            $this->_errorLog[$field] =array_merge($this->_errorLog[$field], $msg);
         } else {
-            $this->errorLog[$field][] =$msg;
+            $this->_errorLog[$field][] =$msg;
         }
     }
 
@@ -738,31 +527,12 @@ class File_Upload
     /**
     * Gets the array of errors
     *
-    * @see    File_Upload::setError()
+    * @see    File_Upload::_setError()
     * @return array   errors
     */
     function getErrors()
     {
-        return $this->errorLog;
-    }
-
-
-    /**
-    * This function registers a file to be used instead of a quickform file.
-    *
-    * @param string $fileName the full filename including path of the file
-    * @param string $fileType the type of the file.  Used to determine which
-    *                         importers, etc to run on it.  Same as quickform
-    *                         fieldname.
-    *
-    * @see File_Upload::preProcessFile()
-    *
-    * @return null
-    */
-    function addCLFile($fileName, $fileType)
-    {
-        $this->CLFiles[$fileType]['info']['tmp_name'] =$fileName;
-        $this->CLFiles[$fileType]['info']['name']     =basename($fileName);
+        return $this->_errorLog;
     }
 }
 
