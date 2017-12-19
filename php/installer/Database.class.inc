@@ -31,6 +31,11 @@ class Database
     public $PDO;
 
     /**
+     * Not meant to be used outside of getOrFetchAllPrivileges()
+     */
+    private $_privileges = null;
+
+    /**
      * Returns one and only one Database object.
      *
      * @return Database
@@ -45,6 +50,163 @@ class Database
     }
 
     /**
+     * On executing `SHOW GRANT;`, rows with a single column are returned.
+     * Each row's value is a string that lists the MySQL user's privileges for
+     * a given table.
+     *
+     * @param string $raw The string of each row returned by `SHOW GRANT;`
+     *
+     * @see https://dev.mysql.com/doc/refman/5.7/en/show-grants.html
+     *
+     * @return object The parsed privilege for a string returned by `SHOW GRANT;`
+     */
+    private function _parsePrivilege($raw)
+    {
+        $token_arr = explode(" ON ", $raw);
+        if (count($token_arr) != 2) {
+            //Avoid letting the user see the "privileges", output to error_log()
+            error_log(
+                "Database::_parsePrivilege():Received {$raw}, could not split in two"
+            );
+            throw new Exception("Could not parse privilege");
+        }
+        $database_table_end = strpos($token_arr[1], " ");
+        $database_table     = substr($token_arr[1], 0, $database_table_end);
+
+        $privilege_arr_raw = substr($token_arr[0], strlen("GRANT "));
+        $privilege_arr     = explode(", ", $privilege_arr_raw);
+
+        return (object)array(
+                        "database_table" => $database_table,
+                        "privilege_arr"  => $privilege_arr,
+                       );
+    }
+
+    /**
+     * Fetches and caches all the current MySQL user's privileges.
+     * Subsequent calls return a cached copy.
+     *
+     * @see    https://dev.mysql.com/doc/refman/5.7/en/show-grants.html
+     * @return array An associative array mapping "`<database>`.`<table>`" strings
+     *               to an array of privileges
+     */
+    public function getOrFetchAllPrivileges()
+    {
+        if (is_null($this->_privileges)) {
+            $stmt = $this->PDO->query("SHOW GRANTS");
+            $arr  = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            $stmt->closeCursor();
+
+            $this->_privileges = array();
+            foreach ($arr as $raw) {
+                $obj = $this->_parsePrivilege($raw);
+                $this->_privileges[$obj->database_table] = $obj->privilege_arr;
+            }
+        }
+        return $this->_privileges;
+    }
+
+    /**
+     * Checks if the current MySQL user has the specified privilege.
+     *
+     * @param string $database  The database to check
+     * @param string $table     The table to check
+     * @param string $privilege A string representing the privilege
+     *
+     * @see https://dev.mysql.com/doc/refman/5.5/en/privileges-provided.html
+     *      Table 6.2 Permissible Privileges for GRANT and REVOKE; "Privilege" column
+     *
+     * @return bool Returns true if current MySQL user has the specified privilege
+     */
+    public function hasPrivilege($database, $table, $privilege)
+    {
+        $arr = $this->getOrFetchAllPrivileges();
+        if (!isset($arr[$database_table])) {
+            return false;
+        }
+
+        $database_escaped = ($database == "*") ?
+            "*" : "`{$database}`";
+        $table_escaped    = ($table == "*") ?
+            "*" : "`{$table}`";
+        $database_table   = "{$database_escaped}.{$table_escaped}";
+        if (isset($arr[$database_table])) {
+            $privilege_arr = $arr[$database_table];
+            /*
+            https://dev.mysql.com/doc/refman/5.5/en/privileges-provided.html#priv_all
+            */
+            if (in_array("ALL", $privilege_arr)
+                || in_array("ALL PRIVILEGES", $privilege_arr)
+                || in_array($privilege, $privilege_arr)
+            ) {
+                return true;
+            }
+        }
+
+        //Privilege was not found at this level, try to look higher
+        //@see https://dev.mysql.com/doc/refman/5.7/en/grant.html
+        if ($table == "*") {
+            if ($database == "*") {
+                //*.*
+                //Already checked the highest level and privilege was not found
+                return false;
+            } else {
+                //`<database>`.*
+                return $this->hasPrivilege("*", "*", $privilege);
+            }
+        } else if ($database == "*") {
+            //*.`<table>` makes no sense.
+            throw new Exception("Invalid database-table combination");
+        } else {
+            //`<database>`.`<table>`
+            return $this->hasPrivilege($database, "*", $privilege);
+        }
+    }
+
+    /**
+     * Checks if the database exists
+     *
+     * @param bool $database The database name
+     *
+     * @return bool Returns true if the database exists
+     */
+    public function databaseExists($database)
+    {
+        $exists = $this->PDO->query("SHOW DATABASES LIKE '$database'")
+            ->fetch(PDO::FETCH_ASSOC);
+        // this needs to be !empty, because otherwise if there's
+        // no results returned count($dbexists) == 1 when no
+        // results are returned, because the result isn't an array
+        // Something to do with how the Countable interface is
+        // implemented in PHP..
+        return !empty($exists);
+    }
+
+    /**
+     * Checks if we can access the database with the given info
+     *
+     * @param string $host     The host
+     * @param string $database The database
+     * @param string $username The username
+     * @param string $password The password
+     *
+     * @return bool Returns true of the user can log in with the given info
+     */
+    public static function canLogIn($host, $database, $username, $password)
+    {
+        try {
+            $test = new PDO(
+                "mysql:host={$host};dbname={$database};charset=UTF8",
+                $username,
+                $password
+            );
+            return true;
+        } catch (Exception $ex) {
+            return false;
+        }
+    }
+
+    /**
      * This wrapper connects differently than the normal database wrapper.
      * Instead of connecting to a database, it will connect to the server,
      * check that the user has create user and create privileges, make sure
@@ -55,13 +217,11 @@ class Database
      * script are satisfied while we're connecting. This will only happen
      * once.
      *
-     * @param string $database     The database to be created
-     * @param string $username     The username to connect as
-     * @param string $password     The password to connect with
-     * @param string $host         The hostname that the SQL server is running
-     *                             on.
-     * @param bool   $trackChanges Unused. For signature compatibility with the
-     *                             "real" Database class.
+     * @param string $database The database to be created
+     * @param string $username The username to connect as
+     * @param string $password The password to connect with
+     * @param string $host     The hostname that the SQL server is running
+     *                         on.
      *
      * @return bool true on success, false on failure.
      */
@@ -69,8 +229,7 @@ class Database
         $database,
         $username,
         $password,
-        $host,
-        $trackChanges = true
+        $host
     ) {
         try {
             $this->PDO = new PDO(
@@ -80,42 +239,15 @@ class Database
             );
             $this->PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 
-            $userperms = $this->PDO->query(
-                "SELECT
-                   Create_user_priv, Create_priv
-                 FROM `mysql`.`user`
-                 WHERE CONCAT(user, '@', host)=CURRENT_USER"
-            );
-
-            $userperms = $userperms->fetchall(PDO::FETCH_ASSOC);
-
-            if (count($userperms) != 1) {
-                $this->lastErr = "Error retrieving user permissions for $username.";
-                return false;
-            }
-
-            $userperms = $userperms[0];
-            if ($userperms['Create_priv'] != 'Y') {
-                $this->lastErr = "User does not have create "
-                . "privileges.";
-                return false;
-            }
-            if ($userperms['Create_user_priv'] != 'Y') {
-                $this->lastErr = "Specified user can not create new "
-                ." user for LORIS to connect as.";
-                return false;
-            }
-
-            $dbexists = $this->PDO->query("SHOW DATABASES LIKE '$database'")
-                ->fetch(PDO::FETCH_ASSOC);
-            // this needs to be !empty, because otherwise if there's
-            // no results returned count($dbexists) == 1 when no
-            // results are returned, because the result isn't an array
-            // Something to do with how the Countable interface is
-            // implemented in PHP..
-            if (!empty($dbexists)) {
-                $this->lastErr = "Database $database already exists."
-                . " Can only install new databases.";
+            if (!$this->hasPrivilege("*", "*", "CREATE")) {
+                if ($this->databaseExists($database)) {
+                     $this->lastErr = "User does not have create database ".
+                        "privileges but the database `{$database}` already exists.".
+                        "Consider checking the 'use existing database checkbox'.";
+                } else {
+                     $this->lastErr = "User does not have create database "
+                    . "privileges; cannot create `{$database}`";
+                }
                 return false;
             }
 
@@ -125,9 +257,6 @@ class Database
         } catch(Exception $e) {
             return false;
         }
-        // should be inaccessible, but include it just in case we
-        // somehow get here.
-        return false;
     }
 
     /**
@@ -152,16 +281,28 @@ class Database
         $trackChanges = true
     ) {
         if ($this->isConnected() === true) {
+            if (!$this->databaseExists($database)) {
+                $this->lastErr = "Database `{$database}` does not ".
+                    "exist; consider creating it first";
+                return false;
+            }
+            $this->PDO->exec("USE $database");
             return true;
         }
         try {
-             $this->PDO = new PDO(
-                 "mysql:host=$host;dbname=$database;charset=UTF8",
-                 $username,
-                 $password
-             );
-             $this->PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
-             return true;
+            $this->PDO = new PDO(
+                "mysql:host=$host;charset=UTF8",
+                $username,
+                $password
+            );
+            $this->PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+            if (!$this->databaseExists($database)) {
+                $this->lastErr = "Database `{$database}` does not exist; ".
+                    "consider creating it first";
+                return false;
+            }
+            $this->PDO->exec("USE $database");
+            return true;
         } catch(Exception $e) {
             $this->lastErr = "Exceptional error connecting to the database "
             . $database . ".";
