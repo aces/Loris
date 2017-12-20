@@ -125,6 +125,11 @@ var IncompleteCandidatesRow = React.createClass({
             {row.candid}
           </a>
         </td>
+          <td>
+              <a href={this.props.BaseURL + "/" + row.CandID + "/"}>
+                  {row.PSCID}
+              </a>
+          </td>
         <td>
           <a href={this.props.BaseURL + "/" + row.candid + "/" + row.SessionID +
           "/" + row.test_name + "/?commentID=" + row.commentid} ref="incomplete"
@@ -155,15 +160,16 @@ var InstrumentConflictsRow = React.createClass({
         <td>
           <a href={baseURL + "/" + row.CandID + "/"}>{row.CandID}</a>
         </td>
+          <td>
+              <a href={baseURL + "/" + row.CandID + "/"}>{row.PSCID}</a>
+          </td>
         <td>
-          <a
-            href={baseURL + "/conflict_resolver/?CandID=" + row.CandID}
-            className="conflict_resolver_link" data-pscid={row.PSCID}
-            data-question={row.FieldName} data-instrument={row.TableName}
-            data-visits={row.visit_label}
-          >
-            {row.test_name_display}
-          </a>
+          <a href="#" onClick={loris.loadFilteredMenuClickHandler(
+                 "conflict_resolver/",
+                  {CandID: row.CandID,
+                  Instrument: row.TableName,
+                  Question: row.FieldName}
+          )}>{row.test_name_display}</a>
         </td>
         <td>{row.FieldName}</td>
       </tr>
@@ -210,6 +216,11 @@ var BehaviouralFeedbackRow = React.createClass({
             {row.CandID}
           </a>
         </td>
+          <td>
+              <a href={this.props.BaseURL + "/" + row.CandID + "/"}>
+                  {row.PSCID}
+              </a>
+          </td>
         <td>
           <a href={bvlLink} onClick={this.handleClick} ref="feedback">
             {bvlLevel}
@@ -394,12 +405,20 @@ var dataTeamGraphics = React.createClass({
       this.props.instrument ? ("On Instrument " + this.props.instrument) :
         "Across All Instruments"
     );
+    var siteStatus = (
+      this.props.site ? (this.props.site) :
+        "Across All Sites"
+      );
+    var projectStatus = (
+      this.props.project ? (this.props.project) :
+        "Across All Projects"
+      );
 
     return (
       <div className="col-sm-12 col-md-5">
         <div className="panel panel-primary">
           <div className="panel-heading">
-            At A Glance: {pscidStatus} - {visitStatus} - {instrumentStatus}
+            At A Glance: {pscidStatus} - {visitStatus} - {instrumentStatus} - {siteStatus} -{projectStatus}
           </div>
           <div className="panel-body">
             <div id="completedChart"></div>

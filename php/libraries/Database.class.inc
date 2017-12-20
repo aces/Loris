@@ -110,7 +110,7 @@ class Database
             // create the connection if none exists
             if (empty($connections[$connection])) {
                 $connections[$connection] = new Database;
-                $ok = $connections[$connection]->connect(
+                $connections[$connection]->connect(
                     $database,
                     $username,
                     $password,
@@ -261,6 +261,23 @@ class Database
     }
 
     /**
+     * Insert a row into the database
+     *
+     * This will insert a row. HTML from any field in the row will be automatically
+     * escaped to avoid injection.
+     *
+     * @param string $table the table into which to insert the row
+     * @param array  $set   the values with which to fill the new row
+     *
+     * @return none
+     */
+    public function insertIgnore($table, $set)
+    {
+        $ignore = true;
+        return $this->_realinsert($table, $set, true, $ignore);
+    }
+
+    /**
      * Escapes the HTML from an array that is about to be inserted into the database
      *
      * @param array $set The array to be inserted as a new row
@@ -271,7 +288,11 @@ class Database
     {
         $retVal = array();
         foreach ($set as $key => $val) {
-            $retVal[$key] = is_null($val) ? null : htmlspecialchars($val);
+            if ($val === 'Unrated') {
+                $retVal[$key] = '';
+            } else {
+                $retVal[$key] = is_null($val) ? null : htmlspecialchars($val);
+            }
         }
         return $retVal;
     }
@@ -285,18 +306,24 @@ class Database
      * @param array  $set        the values with which to fill the new row
      * @param bool   $autoescape determines whether the values to be set should
      *                           automatically have the html escaped
+     * @param bool   $ignore     determines whether the insert throws and error or
+     *                           is discarded when value exists in DB
      *
      * @return none
      */
-    private function _realinsert($table, $set, $autoescape = true)
+    private function _realinsert($table, $set, $autoescape = true, $ignore = false)
     {
         if ($autoescape === true) {
             $set = $this->_HTMLEscapeArray($set);
         }
-        $query  = "INSERT INTO $table SET ";
+        if ($ignore) {
+            $query = "INSERT IGNORE INTO $table SET ";
+        } else {
+            $query = "INSERT INTO $table SET ";
+        }
+        $prepQ  = $query;
         $query .= $this->_implodeWithKeys(', ', $set);
 
-        $prepQ       = "INSERT INTO $table SET ";
         $exec_params = array();
         $prepQ      .= $this->_implodeAsPrepared(",", $set, $exec_params);
 
@@ -323,7 +350,7 @@ class Database
         $this->lastInsertID = $this->_PDO->lastInsertId();
 
         // Track changes must be called after last insertId is set
-        $err = $this->trackChanges($table, $set, '2=1', 'I');
+        $this->trackChanges($table, $set, '2=1', 'I');
         return true;
     }
 
@@ -460,7 +487,7 @@ class Database
             );
         }
 
-        $err = $this->trackChanges($table, $set, $where);
+        $this->trackChanges($table, $set, $where);
         $this->_printQuery($query.$where);
 
         $prep   = $this->_PDO->prepare($prepQ);
@@ -507,7 +534,7 @@ class Database
 
         // There is no set clause for a delete, so add a fake
         // one.
-        $err = $this->trackChanges($table, array(), $where, 'D');
+        $this->trackChanges($table, array(), $where, 'D');
 
         $this->_printQuery($query);
         $result = $this->_PDO->exec($query);
@@ -911,7 +938,7 @@ class Database
                 $prim_vals = join(",", $primaryValues);
                 $this->_preparedStoreHistory->bindParam(":newval", $set[$column]);
                 $this->_preparedStoreHistory->bindParam(":primaryVals", $prim_vals);
-                $history = $this->_preparedStoreHistory->execute();
+                $this->_preparedStoreHistory->execute();
             }
         } else if ($type == 'U' || $type == 'D') {
             // construct the select query
@@ -1041,21 +1068,6 @@ class Database
     }
 
     /**
-     * Database class no longer extends PEAR
-     *
-     * @param mixed $data    The variable to check
-     * @param mixed $msgcode Additional error message / error code to check
-     *
-     * @return     none
-     * @deprecated Database class no longer extends PEAR
-     */
-    function isError($data, $msgcode)
-    {
-        throw new DatabaseException(
-            "Database class no longer extends PEAR"
-        );
-    }
-    /**
      * Checks to see if a table exists in the Database
      *
      * @param string $test_name The table to check for.
@@ -1159,5 +1171,83 @@ class Database
         }
     }
 
+    /**
+     * Checks if we're in a transaction
+     *
+     * @return bool `true`, if in transaction
+     * @throws DatabaseException
+     */
+    public function inTransaction()
+    {
+        return $this->_PDO->inTransaction();
+    }
+
+    /**
+     * Attempts to begin a transaction
+     *
+     * @return bool `true`, on success
+     * @throws DatabaseException
+     */
+    public function beginTransaction()
+    {
+        if ($this->inTransaction()) {
+            throw new DatabaseException(
+                "There is already a database transaction in progress; "
+                . "rollBack() or commit() the current transaction first"
+            );
+        }
+        try {
+            return $this->_PDO->beginTransaction();
+        } catch (PDOException $ex) {
+            //Probably because the driver doesn't support transactions
+            throw new DatabaseException(
+                $ex->getMessage()
+            );
+        }
+    }
+
+    /**
+     * Attempts to roll back a transaction
+     *
+     * @return bool `true`, on success
+     * @throws DatabaseException
+     */
+    public function rollBack()
+    {
+        if (!$this->inTransaction()) {
+            throw new DatabaseException(
+                "Cannot rollBack() when not in a transaction"
+            );
+        }
+        try {
+            return $this->_PDO->rollBack();
+        } catch (PDOException $ex) {
+            throw new DatabaseException(
+                $ex->getMessage()
+            );
+        }
+    }
+
+    /**
+     * Attempts to commit a transaction
+     *
+     * @return bool `true`, on success
+     * @throws DatabaseException
+     */
+    public function commit()
+    {
+        if (!$this->inTransaction()) {
+            throw new DatabaseException(
+                "Cannot commit() when not in a transaction"
+            );
+        }
+        try {
+            return $this->_PDO->commit();
+        } catch (PDOException $ex) {
+            throw new DatabaseException(
+                $ex->getMessage()
+            );
+        }
+    }
 }
 ?>

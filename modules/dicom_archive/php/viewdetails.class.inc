@@ -46,7 +46,7 @@ class ViewDetails extends \NDB_Form
     *
     * @return NULL
     */
-    function __construct()
+    function setup()
     {
         $this->DB = \Database::singleton();
 
@@ -140,7 +140,7 @@ class ViewDetails extends \NDB_Form
     function _validateNamesIds()
     {
         $config =& \NDB_Config::singleton();
-        $dicomArchiveSettings = $config->getSetting('dicom_archive');
+        $dicomArchiveSettings = $config->getSetting('imaging_modules');
 
         if ((preg_match(
             $dicomArchiveSettings['patientNameRegex'],

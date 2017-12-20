@@ -84,7 +84,7 @@ class TimePoint
             try {
                 $timePointList[$sessionID] = new TimePoint();
 
-                $success = $timePointList[$sessionID]->select($sessionID);
+                $timePointList[$sessionID]->select($sessionID);
             } catch (Exception $e) {
                 // Since there was a problem with this $sessionID, don't store
                 // it in the static list but then keep propagating the error..
@@ -139,8 +139,9 @@ class TimePoint
             $this->_timePointInfo['SubprojectTitle'] = $subprojectSettings['title'];
         } else {
             // return error when 0 rows to prevent creation of an empty object
-            throw new Exception(
-                "Failed to retrieve data for timepoint ($sessionID)"
+            throw new LorisException(
+                'Failed to retrieve data for timepoint '
+                . htmlspecialchars($sessionID)
             );
         }
         // New feature, older databases might not have the table created,
@@ -245,7 +246,62 @@ class TimePoint
                       );
 
         // insert the data
-        $success = $db->insert('session', $insertData);
+        $db->insert('session', $insertData);
+    }
+
+    /**
+     * Validates if a given visit_label follows the study's config settings
+     * and if that same visit label can be created for the given candidate.
+     *
+     * @param integer $candid       The candidate identifier
+     * @param integer $subprojectID The subprojectID
+     * @param string  $visitLabel   The visit label
+     *
+     * @throws LorisException
+     *
+     * @return void
+     */
+    static function isValidVisitLabel($candid, $subprojectID, $visitLabel)
+    {
+        $config =& \NDB_Config::singleton();
+        $visitLabelSettings = $config->getSetting('visitLabel');
+        foreach (\Utility::toArray($visitLabelSettings) as $setting) {
+            if ($setting['@']['subprojectID'] == $subprojectID) {
+                $visitLabelSettings =$setting;
+                break;
+            }
+        }
+
+        // This can happen if the user quickly clicks "Create Time Point" before the
+        // page has loaded and the Visit Label dropdown hasn't been selected yet.
+        // The page will create "V1" when this is the case without this check.
+        if (empty($visitLabel)) {
+            throw new \LorisException(
+                'A visit label is required.'
+            );
+        }
+
+        // make sure the user entered a valid visit label
+        if ($visitLabelSettings['generation'] == 'user') {
+            if (!preg_match($visitLabelSettings['regex'], $visitLabel)) {
+                throw new \LorisException(
+                    'This visit label does not match the required structure.'
+                );
+            }
+        }
+
+        $candidate =& \Candidate::singleton($candid);
+
+        $timePointArray = $candidate->getListOfVisitLabels();
+
+        //If the visitLabel is already in use then let the user pick another
+        foreach ($timePointArray AS $used_label) {
+            if (strcasecmp($visitLabel, $used_label) == 0) {
+                throw new \LorisException(
+                    'This visit label is not unique.'
+                );
+            }
+        }
     }
 
     /**
@@ -656,14 +712,14 @@ class TimePoint
                            'Current_stage'     => $newCurrentStage,
                           );
 
-        $dbErrors = $db->update(
+        $db->update(
             'session',
             $update_columns,
             array('ID' => $this->getSessionID())
         );
 
         // reload TimePoint object
-        $success = $this->select($this->getSessionID());
+        $this->select($this->getSessionID());
     }
 
     /**
@@ -732,14 +788,14 @@ class TimePoint
         $setArray = array('BVLQCType' => $type);
 
         // update session table
-        $dbErrors = $db->update(
+        $db->update(
             'session',
             $setArray,
             array('ID' => $this->getSessionID())
         );
 
         // reload TimePoint object
-        $success = $this->select($this->getSessionID());
+        $this->select($this->getSessionID());
     }
 
     /**
@@ -769,14 +825,14 @@ class TimePoint
         $setArray = array('BVLQCStatus' => $status);
 
         // update session table
-        $dbErrors = $db->update(
+        $db->update(
             'session',
             $setArray,
             array('ID' => $this->getSessionID())
         );
 
         // reload TimePoint object
-        $success = $this->select($this->getSessionID());
+        $this->select($this->getSessionID());
     }
 
     /**
@@ -792,8 +848,6 @@ class TimePoint
         $db =& Database::singleton();
 
         // check the status
-        $errorMsg  = "TimePoint::setBVLQCExclusion: You need to specify";
-        $errorMSg .= " a valid BVL QC Exclusion Status\n";
         if (!in_array($status, $this->bvlQcExclusionStatuses)) {
             throw new Exception(
                 "TimePoint::setBVLQCExclusion: "
@@ -805,14 +859,14 @@ class TimePoint
         $setArray = array('BVLQCExclusion' => $status);
 
         // update session table
-        $dbErrors = $db->update(
+        $db->update(
             'session',
             $setArray,
             array('ID' => $this->getSessionID())
         );
 
         // reload TimePoint object
-        $success = $this->select($this->getSessionID());
+        $this->select($this->getSessionID());
 
         return true;
     }

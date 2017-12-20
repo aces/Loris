@@ -89,7 +89,7 @@ class FeedbackMRI
         // create DB object
         $DB =& Database::singleton();
 
-        $success = $DB->delete('feedback_mri_comments', $this->_buildWhereAssoc());
+        $DB->delete('feedback_mri_comments', $this->_buildWhereAssoc());
         return true;
     }
 
@@ -456,7 +456,7 @@ class FeedbackMRI
             $set['PredefinedCommentID'] = $predefinedCommentID;
         }
 
-        $success = $DB->insert('feedback_mri_comments', $set);
+        $DB->insert('feedback_mri_comments', $set);
 
         return true;
     }

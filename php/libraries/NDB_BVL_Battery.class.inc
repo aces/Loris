@@ -118,7 +118,7 @@ class NDB_BVL_Battery
         $firstVisit=null
     ) {
         // assert that a battery has already been selected
-        $error = $this->_assertBatterySelected();
+        $this->_assertBatterySelected();
 
         // get the current battery (center id is irrelevant here,
         // as is stage probably)
@@ -153,8 +153,7 @@ class NDB_BVL_Battery
         // loop over the list of instruments
         foreach ($neededTests AS $testName) {
             // add the instrument
-            $success = $this->addInstrument($testName);
-
+            $this->addInstrument($testName);
         } // end looping over the list of instruments
     } // end createBattery()
 
@@ -171,10 +170,13 @@ class NDB_BVL_Battery
     {
         $DB = Database::singleton();
         // assert that a battery has already been selected
-        $error = $this->_assertBatterySelected();
+        $this->_assertBatterySelected();
 
         // assert that the instrument is valid
         $error = $this->_assertValidInstrument($testName);
+        if ($error !== true) {
+            throw new \LorisException("Invalid instrument");
+        }
 
         // get SessionID, UserID
         $query = "SELECT ID as SessionID, UserID FROM session WHERE ID=:SID";
@@ -260,7 +262,7 @@ class NDB_BVL_Battery
     {
         $DB = Database::singleton();
         // assert that a battery has already been selected
-        $error = $this->_assertBatterySelected();
+        $this->_assertBatterySelected();
 
         // craft the select query
         $query   = "SELECT f.Test_name FROM flag f JOIN session s
@@ -297,7 +299,7 @@ class NDB_BVL_Battery
     {
         $DB = Database::singleton();
         // assert that a battery has already been selected
-        $error = $this->_assertBatterySelected();
+        $this->_assertBatterySelected();
 
         // craft the select query
         $query = "SELECT f.Test_name,
@@ -536,19 +538,11 @@ class NDB_BVL_Battery
      */
     function _createCommentID($testName)
     {
-        $DB = Database::singleton();
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
 
         // assert that the instrument is valid
         $error = $this->_assertValidInstrument($testName);
-
-        // create timepoint object
-        $timepoint =& TimePoint::singleton($this->sessionID);
-
-        // create candidate object
-        $candidate =& Candidate::singleton($timepoint->getCandID());
-
         return NDB_BVL_Battery::generateCommentID($this->sessionID, $testName);
     }
 

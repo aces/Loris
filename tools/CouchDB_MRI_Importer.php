@@ -323,9 +323,6 @@ class CouchDBMRIImporter
             );
             print $docid . ": " . $success . "\n";
 
-            $config = NDB_Config::singleton();
-            $paths  = $config->getSetting('paths');
-
         }
         return;
     }
@@ -339,12 +336,13 @@ class CouchDBMRIImporter
     {
 
         $ScanTypes = $this->SQLDB->pselect(
-            "SELECT DISTINCT msc.Scan_type as ScanType from mri_scan_type msc
-JOIN files f ON msc.ID= f.AcquisitionProtocolID 
-JOIN files_qcstatus fqc ON f.FileID=fqc.FileID",
+            "SELECT DISTINCT msc.Scan_type as ScanType, f.AcquisitionProtocolID from mri_scan_type msc
+            JOIN files f ON msc.ID= f.AcquisitionProtocolID
+            JOIN files_qcstatus fqc ON f.FileID=fqc.FileID
+            ORDER BY f.AcquisitionProtocolID",
             array()
         );
-        
+
         return $ScanTypes;
     }
 

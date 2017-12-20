@@ -55,11 +55,27 @@ class NDB_Page
     var $defaults = array();
 
     /**
+     * If true, the default display function will not try to load any template.
+     * This is intended to be used with, for instance, pages that completely
+     * construct the DOM from javascript.
+     */
+    var $skipTemplate = false;
+
+    /**
+     * Template data to be passed to Smarty.
+     *
+     * FIXME: This should be private to ensure users go through the getter and setter
+     * methods to safely update the template data, but all references that directly
+     * use tpl_data must be updated first.
+     */
+    protected $tpl_data = array();
+
+    /**
      * Does the setup required for this page. By default, sets up elements
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @param string $name       The test name being accessed
+     * @param Module $module     The test name being accessed
      * @param string $page       The subtest being accessed (may be null)
      * @param string $identifier The identifier for the data to load on this page
      * @param string $commentID  The CommentID to load the data for
@@ -67,16 +83,47 @@ class NDB_Page
      *
      * @return none
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
-    {
+    function __construct(
+        \Module $module,
+        string $page,
+        string $identifier,
+        string $commentID,
+        string $formname
+    ) {
+        $this->Module = $module;
+        $this->name   = $module->getName(); // for legacy purposes.
+
         $this->form       = new LorisForm($formname);
-        $this->name       = $name;
         $this->page       = $page;
         $this->identifier = $identifier;
         $this->commentID  = $commentID;
         $this->defaults   = array();
+
+        $this->template = $page;
+    }
+    /**
+     * Safely sets a smarty template variable.
+     *
+     * @param string $name  The name of the template variable to set
+     * @param string $value The (unescaped, unsafe) value to set the template
+     *                      variable to
+     *
+     * @return void
+     */
+    function setTemplateVar($name, $value)
+    {
+        $this->tpl_data[$name] = htmlspecialchars($value);
     }
 
+    /**
+     * Return the template data for this page.
+     *
+     * @return array Mapping of variable names to template value.
+     */
+    function getTemplateData()
+    {
+        return $this->tpl_data;
+    }
 
     /**
      * Wrapper to create a file element and add it to the current page
@@ -240,6 +287,39 @@ class NDB_Page
     }
 
     /**
+     * Wrapper to create a radio button
+     *
+     * @param string $name       The field name of this radio button
+     * @param string $groupLabel The label to attach to this group of
+     *                           radio buttons
+     * @param array  $radios     The array of arrays describing radio
+     *                           elements to be added as a group. Ex:
+     *                           array('label'=>'Yes','value'=>'Y')
+     * @param array  $options    Options to pass to LorisForm for this
+     *                           radio button. Do not pass value here.
+     *
+     * @return none
+     */
+    function addRadio($name, $groupLabel, $radios, $options=array())
+    {
+        foreach ($radios as $radElement) {
+            $tempOptions = array_merge(
+                array(
+                 'class' => 'form-control input-sm',
+                 'value' => $radElement['value'],
+                ),
+                $options
+            );
+            $radGroup[]  = $this->createRadio(
+                $name,
+                $radElement['label'],
+                $tempOptions
+            );
+        }
+        $this->addGroup($radGroup, $name . '_group', $groupLabel, null, false);
+    }
+
+    /**
      * Adds a hidden element to the current page. Note if the hidden element
      * needs a value it should be added to the defaults.
      *
@@ -390,17 +470,18 @@ class NDB_Page
     /**
      * Creates a QuickForm text element but does not add it to the form
      *
-     * @param string $field The field name for this text element
-     * @param string $label The label to attach to the element
-     * @param array  $attr  Extra HTML attributes to add to the element
+     * @param string $field   The field name for this text element
+     * @param string $label   The label to attach to the element
+     * @param array  $attribs Extra HTML attributes to add to the element
      *
      * @return HTML_QuickForm Text element
      */
     function createText(
         $field,
         $label=null,
-        $attr=array('class' => 'form-control input-sm')
+        $attribs=array()
     ) {
+        $attr =array_merge($attribs, array('class' => 'form-control input-sm'));
         return $this->form->createElement("text", $field, $label, $attr);
     }
 
@@ -473,6 +554,26 @@ class NDB_Page
     }
 
     /**
+     * Creates an HTML radio button but does not add it to the form.
+     *
+     * @param string $field   The fieldname for this radio button
+     * @param string $label   The label to attach to this radio button
+     * @param string $options Options to pass to LorisForm
+     *
+     * @return QuickForm_Element representing radio button
+     */
+    function createRadio($field, $label, $options=null)
+    {
+        return $this->form->createElement(
+            "radio",
+            $field,
+            $label,
+            $options,
+            array()
+        );
+    }
+
+    /**
      * Creates a password form element but does not add it to the page
      *
      * @param string $field The fieldname for the password box
@@ -492,11 +593,13 @@ class NDB_Page
     /**
      * Displays the form
      *
-     * @return void
-     * @access public
+     * @return a string of the content to be inserted into the template
      */
     function display()
     {
+        if ($this->skipTemplate) {
+            return "";
+        }
         if (!$this->form->isFrozen()) {
             // hidden values
               $this->addHidden('test_name', $this->name);
@@ -528,7 +631,6 @@ class NDB_Page
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("form_$this->template.tpl");
         return $html;
-        //return $this->form->toHTML();
     }
 
 
@@ -581,6 +683,7 @@ class NDB_Page
                   $baseurl . '/js/helpHandler.js',
                   $baseurl . '/js/modernizr/modernizr.min.js',
                   // Only load minified file on production, not sandboxes
+                  $baseurl . '/js/polyfills.js',
                   $baseurl . '/js/react/react-with-addons' . $min . '.js',
                   $baseurl . '/js/react/react-dom' . $min . '.js',
                   $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
@@ -623,7 +726,7 @@ class NDB_Page
 
     /**
      * Does any setup required for this page. This is generally overridden
-     * by NDB_Page subtypes.
+     * by NDB_Page subtypes to add form elements.
      *
      * @return none, but may have side-effects
      */

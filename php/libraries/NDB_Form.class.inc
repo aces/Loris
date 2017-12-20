@@ -46,12 +46,6 @@ class NDB_Form extends NDB_Page
     var $_GUIDelimiter = "&nbsp;\n";
 
     /**
-    * Additional template data
-    */
-    var $tpl_data = array();
-
-
-    /**
      * Generates a new form instance and runs the appropriate method
      *
      * @param string $name       Identifies the form
@@ -69,11 +63,20 @@ class NDB_Form extends NDB_Page
             throw new Exception("The form class ($name) is not defined.");
         }
 
-        // create a form instance
-        $obj = new $class;
+        // create a new menu object
+        try {
+            if (isset($_REQUEST['test_name'])) {
+                $module = \Module::factory($_REQUEST['test_name']);
+            } else {
+                $module = \Module::factory($name);
+            }
+        } catch(\LorisModuleMissingException $e) {
+            $module = new Module($name);
+        }
 
-        // set the local variables
-        $obj->_setupPage($name, $page, $identifier, null, 'test_form');
+        // create a form instance
+        $obj = new $class($module, $name, $page, $identifier, '', 'test_form');
+
         $obj->registerDefaultFilter();
 
         $access = $obj->_hasAccess();
@@ -93,11 +96,9 @@ class NDB_Form extends NDB_Page
             throw new Exception("Form does not exist: $name $page", 404);
         }
 
-        //set the baseurl of the tpl_data
         $factory  = NDB_Factory::singleton();
         $settings = $factory->settings();
-
-        $obj->tpl_data['baseurl'] = $settings->getBaseURL();
+        $obj->setTemplateVar('baseurl', $settings->getBaseURL());
 
         return $obj;
     }
@@ -127,7 +128,7 @@ class NDB_Form extends NDB_Page
     function save()
     {
         if ($this->form->validate()) {
-            $success = $this->form->process(array(&$this, "_save"), false);
+            $this->form->process(array(&$this, "_save"), false);
         }
     }
 
@@ -156,7 +157,7 @@ class NDB_Form extends NDB_Page
             }
         }
 
-        $success = $this->_process($values);
+        $this->_process($values);
     }
 
 
@@ -171,21 +172,6 @@ class NDB_Form extends NDB_Page
     function _process($values)
     {
         return true;
-    }
-
-    /**
-     * Resets the form
-     *
-     * Usage: Call this function if you do not want to display the frozen form
-     * after saving but just want to dump a message and maybe some links
-     *
-     * @return void
-     * @access private
-     */
-    function _resetForm()
-    {
-        $this->_setupPage($name, $page, $identifier, null, 'test_form');
-        // $this->form = new HTML_QuickForm('test_form');
     }
 }
 ?>

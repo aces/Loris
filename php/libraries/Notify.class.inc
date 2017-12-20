@@ -46,7 +46,7 @@ class Notify
 
         $setArray = array(
                      'NotificationTypeID' => $typeID,
-                     'TimeSpooled'        => time(),
+                     'TimeSpooled'        => date("Y-m-d H:i:s"),
                      'Message'            => $message,
                      'CenterID'           => $centerID,
                     );

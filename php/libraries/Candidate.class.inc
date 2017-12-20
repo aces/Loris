@@ -18,6 +18,7 @@ define('CANDIDATE_INVALID', 1);
 define('PSCID_NOT_SPECIFIED', 2);
 define('PSCID_NOT_UNIQUE', 3);
 define('PSCID_INVALID_STRUCTURE', 4);
+define('EDC_NOT_SPECIFIED', 5);
 
 // id ranges...
 define('CANDIDATE_MIN_CANDID', 100000);
@@ -86,7 +87,8 @@ class Candidate
         $db = $factory->database();
 
         // get candidate data from database
-        $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, c.EDC, c.Gender,
+        $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, 
+            c.EDC, c.Gender, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
             c.Active, u1.Real_name as RegisteredBy, c.UserID, c.ProjectID
             FROM candidate as c
@@ -203,6 +205,14 @@ class Candidate
         // figure out how to generate PSCID
         $config        = $factory->config();
         $PSCIDSettings = $config->getSetting('PSCID');
+        $useEDC        = $config->getSetting('useEDC');
+
+        if (($useEDC === '1' || $useEDC === 'true') && empty($edc)) {
+            throw new \LorisException(
+                "EDC must be specified",
+                EDC_NOT_SPECIFIED
+            );
+        }
 
         if ($PSCIDSettings['generation'] == 'user') {
             // check pscid is specified
@@ -925,6 +935,52 @@ class Candidate
         }
 
         return $arrays;
+    }
+
+    /**
+     * Gets the participant_status options from participant_status_options table
+     *
+     * @return array Options array suitable for use in QuickForm select
+     *               element
+     */
+    static function getParticipantStatusOptions()
+    {
+        $DB           =& Database::singleton();
+        $options      = $DB->pselect(
+            "SELECT ID,Description
+            FROM participant_status_options
+            WHERE parentID IS NULL",
+            array()
+        );
+        $option_array = array();
+        foreach ($options as $option) {
+            $option_array[$option['ID']] = $option['Description'];
+        }
+        return $option_array;
+    }
+
+    /**
+     * Gets the participant_status options suboptions from participant_status_options
+     *
+     * @param int $parentID parent ID of the participant status option
+     *
+     * @return array Options array suitable for use in QuickForm select
+     *               element
+     */
+    static function getParticipantStatusSubOptions($parentID)
+    {
+        $DB           =& Database::singleton();
+        $options      = $DB->pselect(
+            "SELECT ID,Description 
+            FROM participant_status_options 
+            WHERE parentID=:pid",
+            array('pid' => $parentID)
+        );
+        $option_array = array();
+        foreach ($options as $option) {
+            $option_array[$option['ID']] = $option['Description'];
+        }
+        return $option_array;
     }
 
 }

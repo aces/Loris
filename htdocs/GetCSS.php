@@ -28,7 +28,8 @@ require_once __DIR__ . "/../vendor/autoload.php";
 // Ensures the user is logged in, and parses the config file.
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
-if ($client->initialize("../project/config.xml") == false) {
+
+if ($client->initialize(null) == false) {
     return false;
 }
 
@@ -68,7 +69,7 @@ if (strpos($File, ".css") === false) {
 // Make sure that the user isn't trying to break out of the $path by
 // using a relative filename.
 // No need to check for '/' since all downloads are relative to $basePath
-if (strpos("..", $File) !== false) {
+if (strpos($File, "..") !== false) {
     error_log("ERROR: Invalid filename");
     header("HTTP/1.1 400 Bad Request");
     exit(4);

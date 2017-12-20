@@ -42,6 +42,9 @@ foreach ($results as $row) {
     if ($row['key'][2] == $value) {
         continue;
     }
+    if ($value === "null" && is_null($row['key'][2])) {
+        continue;
+    }
     $sessionResults[] = $row['value'];
 }
 print json_encode($sessionResults);

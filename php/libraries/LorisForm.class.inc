@@ -93,11 +93,17 @@ class LorisForm
         if (isset($attribs['disabled'])) {
             $el['disabled'] = true;
         }
+        if (isset($attribs['readonly'])) {
+            $el['readonly'] = true;
+        }
         if (isset($attribs['required']) && $attribs['required'] === true) {
             $el['required'] = true;
         }
         if (isset($attribs['align'])) {
             $el['align'] = $attribs['align'];
+        }
+        if (isset($attribs['placeholder'])) {
+            $el['placeholder'] = $attribs['placeholder'];
         }
 
         return $el;
@@ -141,7 +147,8 @@ class LorisForm
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
-        if (isset($attribs['multiple']) || in_array('multiple', $attribs)) {
+
+        if (isset($attribs['multiple']) || in_array('multiple', $attribs, true)) {
             $el['multiple'] = 'multiple';
         }
         return $el;
@@ -289,7 +296,7 @@ class LorisForm
     }
 
     /**
-     * Adds a checkobox to the current form.
+     * Adds a checkbox to the current form.
      *
      * @param string $name    The element name.
      * @param string $label   The label to attach to this element.
@@ -303,6 +310,29 @@ class LorisForm
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'advcheckbox';
+        return $el;
+    }
+
+    /**
+     * Adds a radio button to the current form.
+     *
+     * @param string $name    The element name.
+     * @param string $label   The label to attach to this element.
+     * @param array  $options An array of options that should
+     *                        get added.
+     * @param array  $attribs An array of attributes that should
+     *                        get added. "value" should be set to compare
+     *                        the value stored in the database to
+     *                        the individual radio button representing
+     *                        that value.
+     *
+     * @return &array
+     */
+    function &addRadio($name, $label, $options, $attribs)
+    {
+        $el            =& $this->addBase($name, $label, $attribs);
+        $el['type']    = 'radio';
+        $el['options'] = $options;
         return $el;
     }
 
@@ -380,7 +410,7 @@ class LorisForm
     public function addElement(
         $type,
         $name,
-        $label,
+        $label='',
         $options=array(),
         $attribs=array()
     ) {
@@ -432,6 +462,9 @@ class LorisForm
             } else {
                 $el = $this->addCheckbox($name, $label, $options);
             }
+            break;
+        case 'radio':
+            $el = $this->addRadio($name, $label, $options, $attribs);
             break;
         case 'hidden':
             $el = $this->addHidden($name, $label, $options);
@@ -530,7 +563,7 @@ class LorisForm
             // of filtered values
             if (is_array($_REQUEST[$name])) {
                 $filteredValues = array();
-                foreach ($_REQUEST[$name] as $k => $v) {
+                foreach (array_keys($_REQUEST[$name]) as $k) {
                     // Checkbox values get converted from (on,off) to (1,0)
                     if ($this->_isAdvCheckbox("{$name}[$k]")) {
                         $rawValue = $_REQUEST[$name][$k] == 'on' ? 1 : 0;
@@ -642,7 +675,7 @@ class LorisForm
 
         // Apply filters that should be applied on all fields
         if (isset($this->filters['__ALL__'])) {
-            foreach ($this->filters['__ALL__'] as $filterType) {
+            for ($i = 0; $i < count($this->filters['__ALL__']); $i++) {
                 if (in_array('trim', $this->filters['__ALL__'])) {
                     // Value for the element is in array so filter all
                     // elements in the array of values
@@ -659,6 +692,10 @@ class LorisForm
                 }
             }
         }
+        // Always sanitize user-controlled input
+        if (!is_array($newValue)) {
+            $newValue = htmlspecialchars($newValue);
+        }
 
         return $newValue;
     }
@@ -674,14 +711,26 @@ class LorisForm
     protected function selectHTML($el)
     {
         $strOptions    = '';
-        $options       = $el['options'];
+        $options       = $el['options'] ?? array();
         $cls           = '';
         $changehandler = '';
         $multiple      = '';
         $id            = '';
         $disabled      = '';
-        $name          = $el['name'];
+        $name          = $el['name'] ?? '';
 
+        if (!(is_array($options) || $options instanceof Traversable)) {
+            // $options is not Traversable and will throw an error
+            // if used in a foreach loop.
+            error_log(
+                "Options for element '$name' are not an array or are not"
+                . ' traversable. Please validate the LorisForm syntax in '
+                .' the calling code.'
+            );
+            throw new InvalidArgumentException(
+                "Options for LorisForm HTML element $name not an array"
+            );
+        }
         foreach ($options as $optionKey => $optionVal) {
             $selected = '';
 
@@ -877,11 +926,15 @@ class LorisForm
     {
         $cls      = '';
         $disabled = '';
+        $readonly = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
         if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
+        }
+        if (isset($el['readonly'])) {
+            $readonly = 'readonly';
         }
         $value = $this->getValue($el['name']);
         return "<input name=\"$el[name]\" type=\"$type\" $cls"
@@ -902,11 +955,18 @@ class LorisForm
                 ? ' required' : ''
               )
             . (
+                isset($el['placeholder']) && $el['placeholder']
+                ? " placeholder=\"{$el['placeholder']}\"" : ''
+              )
+
+            . (
                 (!empty($value) || $value === '0')
                 ? ' value="' . $this->getValue($el['name']) . '"'
                 : ''
               )
             . $disabled
+            . ' '
+            . $readonly
             .">";
     }
 
@@ -1146,8 +1206,9 @@ class LorisForm
             if ($el['type'] === 'group') {
                 if (isset($el['required'])) {
                     foreach ($el['required'] as $elementIndex) {
-                        $childEl = $el['elements'][$elementIndex];
-                        if (empty(($this->getValue($childEl['name'])))) {
+                        $childEl  = $el['elements'][$elementIndex];
+                        $childVal = $this->getValue($childEl['name']);
+                        if ($childVal === null || $childVal === '') {
                             $this->setElementError(
                                 $el['name'],
                                 "$childEl[requireMsg]"
@@ -1180,7 +1241,7 @@ class LorisForm
 
                 if (isset($el['required'])
                     && $el['required'] === true
-                    && empty($value)
+                    && $value === ""
                 ) {
                     $errors[$el['name']] = "required fail";
                 }
@@ -1435,6 +1496,8 @@ class LorisForm
             return $this->textHTML($el);
         case 'advcheckbox':
             return $this->checkboxHTML($el);
+        case 'radio':
+            return $this->radioHTML($el);
         case 'group':
             return $this->groupHTML($el);
         case 'header':
@@ -1535,6 +1598,35 @@ class LorisForm
             . "<input name=\"$el[name]\" type=\"checkbox\" $checked "
             . "value=\"$value[1]\" $disabled/>"
             . " $el[_text]";
+    }
+
+    /**
+     * Generates the HTML for a radio type element
+     *
+     * @param array $el An array of the form used by $this->form
+     *                  for a radio button
+     *
+     * @return string the HTML for the given radio button element.
+     */
+    function radioHTML($el)
+    {
+        $val      = $this->getValue($el['name']);
+        $checked  = '';
+        $value    = '';
+        $disabled = '';
+        if (isset($el['value'])) {
+            $value = "value=\"$el[value]\"";
+        }
+        if ($val===$el['value']) {
+            $checked = 'checked="checked"';
+        }
+
+        if (isset($el['disabled']) || $this->frozen) {
+            $disabled = 'disabled';
+        }
+        return "<input name=\"$el[name]\" type=\"radio\" $checked $value "
+        . "$disabled/>"
+        . " $el[label]";
     }
 
     /**
@@ -1728,8 +1820,7 @@ class LorisForm
     {
         if (is_array($arg1)) {
             foreach ($arg1 as $elementIndex => $rules) {
-                $element     =& $this->form[$group]['elements'][$elementIndex];
-                $elementName = $element['name'];
+                $element =& $this->form[$group]['elements'][$elementIndex];
                 foreach ($rules as $rule) {
                     $message  = $rule[0];
                     $ruleType = $rule[1];
@@ -1793,10 +1884,11 @@ class LorisForm
     {
         $name = $this->_generateName($name);
         foreach ($array as $key => $value) {
-            $this->groupMapping[$value['name']] = array(
-                                                   'groupName' => $name,
-                                                   'index'     => $key,
-                                                  );
+             $group_key = $value['name'] ?? $this->_generateName('');
+             $this->groupMapping[$group_key] = array(
+                                                'groupName' => $name,
+                                                'index'     => $key,
+                                               );
         }
         $this->form[$name] = array(
                               'type'      => 'group',
@@ -1839,8 +1931,13 @@ class LorisForm
      *
      * @return array of the form supported by $this->form
      */
-    function createElement($type, $elname, $label, $options, $attribs=array())
-    {
+    function createElement(
+        $type,
+        $elname,
+        $label='',
+        $options=array(),
+        $attribs=array()
+    ) {
         switch($type) {
         case 'text':
             return $this->createText($elname, $label, $options, $attribs);
@@ -1875,17 +1972,26 @@ class LorisForm
                  */
                 $el = $this->createBase($args[1], $args[2], $args[4]);
 
-                $el['type']        = $type;
+                $el['type']        = 'advcheckbox';
                 $el['checkStates'] = $args[5];
                 $el['_text']       = $args[3];
             } else {
                 $el         = $this->createBase($elname, $label, $options);
-                $el['type'] = $type;
+                $el['type'] = 'advcheckbox';
             }
+            break;
+
+        case 'date':
+            $el            = $this->createBase($elname, $label, $attribs);
+            $el['type']    = 'date';
+            $el['options'] = $options;
+            break;
+        case 'radio':
+            $el         = $this->createBase($elname, $label, $options, $attribs);
+            $el['type'] = 'radio';
             break;
         case 'time':
         case 'textarea':
-        case 'date':
         case 'password':
             $el         = $this->createBase($elname, $label, $options);
             $el['type'] = $type;
@@ -1940,8 +2046,10 @@ class LorisForm
     {
         foreach ($submitKeys as $key) {
             if (!isset($this->form[$key])) {
-                $tp = $this->groupMapping[$key];
-                $el = $this->form[$tp['groupName']]['elements'][$tp['index']];
+                $tp = $this->groupMapping[$key] ?? null;
+                $el = is_null($tp) ?
+                    null :
+                    $this->form[$tp['groupName']]['elements'][$tp['index']];
                 if (!$el) {
                     $arr[$key] = $_REQUEST[$key];
                     continue;
@@ -2035,7 +2143,7 @@ class LorisForm
     function getSubmitValues()
     {
         $retVal     = array();
-        $submitKeys = array_merge($_POST, $_FILES);
+        $submitKeys = $_POST + $_FILES;
 
         $this->getGroupValues(array_keys($submitKeys), $retVal);
         return $retVal;

@@ -62,16 +62,19 @@ class BVL_Feedback_Panel
      */
     function display()
     {
-        $this->tpl_data['candID']
-            = $this->_feedbackThread->_feedbackCandidateProfileInfo["CandID"];
-        $candidateID     = $this->_feedbackThread
-            ->_feedbackCandidateProfileInfo["CandID"];
-        $candidateObject = Candidate::singleton($candidateID);
-        $this->tpl_data['pscid']          = $candidateObject->getPSCID();
-        $this->tpl_data['sessionID']      = $this->_feedbackThread
-            ->_feedbackCandidateProfileInfo["SessionID"];
-        $this->tpl_data['commentID']      = $this->_feedbackThread
-            ->_feedbackObjectInfo["CommentID"];
+        $feedbackProfile = $this->_feedbackThread->_feedbackCandidateProfileInfo;
+        $candidateID     = $feedbackProfile["CandID"];
+
+        $this->tpl_data['candID'] = $candidateID;
+
+        $candidateObject         = Candidate::singleton($candidateID);
+        $this->tpl_data['pscid'] = $candidateObject->getPSCID();
+
+        $this->tpl_data['sessionID'] = $feedbackProfile["SessionID"] ?? null;
+
+        $feedbackObject = $this->_feedbackThread->_feedbackObjectInfo;
+        $this->tpl_data['commentID'] = $feedbackObject["CommentID"] ?? null;
+
         $this->tpl_data['thread_list']    = $this->_feedbackThread->getThreadList();
         $this->tpl_data['feedback_level'] = $this->_feedbackThread->_feedbackLevel;
         $this->tpl_data['feedback_types']

@@ -22,6 +22,7 @@ namespace LORIS\create_timepoint;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
+
 class Create_Timepoint extends \NDB_Form
 {
     /**
@@ -89,17 +90,11 @@ class Create_Timepoint extends \NDB_Form
      * Does the setup required for this page.
      * Particularly creates all the form elements.
      *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
      * @return none
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
 
         $config =& \NDB_Config::singleton();
         if (!empty($_GET['subprojectID']) && is_numeric($_GET['subprojectID'])) {
@@ -188,23 +183,22 @@ class Create_Timepoint extends \NDB_Form
         // label rules
         if ($visitLabelAdded) {
             $this->addRule('visitLabel', 'Visit label is required', 'required');
-             // List of sites for the user
-             $user = \User::singleton();
-             $DB   = \Database::singleton();
-             $user_list_of_sites = $user->getData('CenterIDs');
-             $num_sites          = count($user_list_of_sites);
-
+            // List of sites for the user
+            $user = \User::singleton();
+            $DB   = \Database::singleton();
+            $user_list_of_sites = $user->getData('CenterIDs');
+            $num_sites          = count($user_list_of_sites);
             if ($num_sites >1) {
                 $pscLabelAdded =true;
                 $this->tpl_data['pscLabelAdded'] = true;
                 $psc_labelOptions = array(null => '');
                 foreach ($user_list_of_sites as $key => $siteID) {
-                        $center = $DB->pselectRow(
-                            "SELECT CenterID as ID, Name FROM psc 
+                    $center = $DB->pselectRow(
+                        "SELECT CenterID as ID, Name FROM psc 
                         WHERE CenterID =:cid",
-                            array('cid' => $siteID)
-                        );
-                        $psc_labelOptions[$siteID] = $center['Name'];
+                        array('cid' => $siteID)
+                    );
+                    $psc_labelOptions[$siteID] = $center['Name'];
                 }
             }
             $this->addSelect('psc', 'Site', $psc_labelOptions);
@@ -218,51 +212,35 @@ class Create_Timepoint extends \NDB_Form
     /**
      * Validates user form selection
      *
-     * @param array $values array of form values
+     * @param array $val array of form values
      *
      * @return array
      */
-    function _validate($values)
+    function _validate(array $val)
     {
-        $config =& \NDB_Config::singleton();
-        $visitLabelSettings = $config->getSetting('visitLabel');
-        foreach (\Utility::toArray($visitLabelSettings) as $visitLabel) {
-            if ($visitLabel['@']['subprojectID'] == $values['subprojectID']) {
-                $visitLabelSettings =$visitLabel;
-                break;
-            }
-        }
+        $user = \User::singleton();
 
         $errors = array();
 
-        // This can happen if the user quickly clicks "Create Time Point" before the
-        // page has loaded and the Visit Label dropdown hasn't been selected yet.
-        // The page will create "V1" when this is the case without this check.
-        if (empty($values['visitLabel'])) {
-            $errors['visitLabel']
-                = 'A visit label is required for creating a timepoint.';
-        }
-        // make sure the user entered a valid visit label
-        if ($visitLabelSettings['generation'] == 'user') {
-            if (!preg_match($visitLabelSettings['regex'], $values['visitLabel'])) {
-                $errors['visitLabel'] = 'This visit label does not match the ' .
-                    'required structure. See your project manual for more details.';
-            }
+        // validate site entered
+        $site = $val['psc'];
+        $user_list_of_sites = $user->getData('CenterIDs');
+        $num_sites          = count($user_list_of_sites);
+        if ($num_sites > 1 && (empty($site) || !$user->hasCenter($site))) {
+            $errors['psc'] = "Site must be selected from the available dropdown.";
         }
 
-        $candidate =& \Candidate::singleton($this->identifier);
+        $candid       = $this->identifier;
+        $subprojectID = $val['subprojectID'];
+        $visitLabel   = $val['visitLabel'];
 
-        $timePointArray = $candidate->getListOfVisitLabels();
-
-        //If the visitLabel is already in use then let the user pick another
-        foreach ($timePointArray AS $used_label) {
-            if (strcasecmp($values['visitLabel'], $used_label) == 0) {
-                $errors['visitLabel'] = 'This visit label is not unique.';
-            }
+        try {
+            \TimePoint::isValidVisitLabel($candid, $subprojectID, $visitLabel);
+        } catch ( \LorisException $e) {
+            $errors['visitLabel'] = $e->getMessage();
         }
 
         return $errors;
     }
-
 }
 ?>

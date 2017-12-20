@@ -88,26 +88,20 @@
     <div id="tabs" style="background: white">
         <ul class="nav nav-tabs">
             <li class="statsTab active"><a class="statsTabLink" id="onLoad" href="{$baseurl}/mri_violations/">Not Resolved</a></li>
-            <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/mri_violations/?submenu=resolved_violations">Resolved</a></li>
+            <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/mri_violations/resolved_violations/">Resolved</a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane active">
                 <div>
                     <!--  title table with pagination -->
-                    <table id="LogEntries" border="0" valign="bottom" width="100%">
-                        <tr>
-                            <!-- display pagination links -->
-                            <td align="right" id="pageLinks"></td>
-                        </tr>
-                    </table>
                     <form method="post" action="{$baseurl}/mri_violations/"  name="mri_violations" id="mri_violations">
                         <!--  title table with pagination -->
                         <div class="dynamictable" id="datatable"></div>                        
-
                         <div class="pull-right">
                             <input class="btn btn-sm btn-primary" name="fire_away" value="Save" type="submit" />
                             <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
                         </div>
+
                     </form>
                 </div>
             </div>

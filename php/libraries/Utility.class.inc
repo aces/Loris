@@ -26,60 +26,11 @@
 class Utility
 {
     /**
-     * This is identical to PEAR::isError from PEAR only the function
-     * has the static keyword. This is required because PEAR::isError
-     * being called staticly throws a warning in newer versions of PHP
-     * It should be used everywhere in the code instead of PEAR::isError
-     *
-     * @param object         $data The data to check if it is an error
-     * @param string|integer $code If a string, check that data also has
-     *                             the message of $code before returning true.
-     *                             If an integer, the error must also have
-     *                             the same error code for isErrorX to be
-     *                             true
-     *
-     * @return boolean true if data is a PEAR error object
+     * Stops anyone from instantiating an instance of Utility
      */
-    static function isErrorX($data, $code=null)
+    private function __construct()
     {
-        throw new LorisException(
-            "Utility::isErrorX has been deprecated. Use PHP5 exceptions instead."
-        );
     }
-
-    /**
-     * Converts a multi-dimensional array to a one-dimensional array
-     *
-     * @param array $array The multi-dimensional array
-     *
-     * @return  string
-     * @cleanup Determine if this is still used.
-     */
-    function reduce($array)
-    {
-        $string = array_reduce($array, array('Utility', 'crunch'));
-        return (!empty($string)) ? explode('`', $string) : array();
-    }
-
-
-    /**
-     * Implodes a multi-dimensional array using array_reduce()
-     *
-     * @param mixed $x Unknown
-     * @param mixed $y Unknown
-     *
-     * @note If any element of the array contains a backtick, you'll run into trouble
-     *
-     * @return  string
-     * @cleanup Determine if this is still used.
-     */
-    function crunch($x, $y)
-    {
-        $a = (is_array($x)) ? array_reduce($x, array('Utility', 'crunch')) : $x;
-        $b = (is_array($y)) ? array_reduce($y, array('Utility', 'crunch')) : $y;
-        return (!empty($a)) ? "$a`$b" : $b;
-    }
-
 
     /**
      * Computes an age in years:months:days (assumes 30 days per months)
@@ -149,12 +100,12 @@ class Utility
      * @note    This is no longer used and should be removed
      * @cleanup
      */
-    function getListOfSubjectEthnicities()
+    static function getListOfSubjectEthnicities()
     {
         $DB =& Database::singleton();
 
         // get the list of ethnicities
-        $query = "SELECT DISTINCT Ethnicity 
+        $query = "SELECT DISTINCT Ethnicity
             FROM candidate
             WHERE Ethnicity NOT IN (NULL, '')
             ORDER BY Ethnicity";
@@ -188,7 +139,6 @@ class Utility
         if ($study_site) {
             $query .= "WHERE Study_site='Y'";
         }
-
         $result = $DB->pselect($query, array());
 
         // fix the array
@@ -196,6 +146,7 @@ class Utility
         foreach ($result as $row) {
             $list[$row["CenterID"]] = $row["Name"];
         }
+        natcasesort($list);
         return $list;
     }
 
@@ -287,7 +238,6 @@ class Utility
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
-        $config  = $factory->config();
 
         if (!is_null($projectID)) {
             $subprojects = $DB->pselect(
@@ -497,9 +447,9 @@ class Utility
         $DB =& Database::singleton();
 
         // craft the select query
-        $query  = "SELECT t.Test_name FROM test_battery AS b, test_names AS t 
-            WHERE t.Test_name=b.Test_name 
-            AND b.AgeMinDays<=:CandAge AND b.AgeMaxDays>=:CandAge 
+        $query  = "SELECT t.Test_name FROM test_battery AS b, test_names AS t
+            WHERE t.Test_name=b.Test_name
+            AND b.AgeMinDays<=:CandAge AND b.AgeMaxDays>=:CandAge
             AND b.Active='Y'";
         $params = array('CandAge' => $age);
 
@@ -579,7 +529,7 @@ class Utility
      *       by NDB_Form_candidate_parameters and if so, should be moved there.
      * @cleanup
      */
-    function explodeEncapsulated($seperator, $delimiter, $string)
+    static function explodeEncapsulated($seperator, $delimiter, $string)
     {
         $state        =0;
         $output       =$string;
@@ -620,7 +570,7 @@ class Utility
      * @note    This function does not appear to be used anymore.
      * @cleanup
      */
-    function arrayMergeKeepKeys()
+    static function arrayMergeKeepKeys()
     {
         $arg_list = func_get_args();
         foreach ((array)$arg_list as $arg) {
@@ -682,7 +632,7 @@ class Utility
      * @note    Function should be removed and code using it cleaned up.
      * @cleanup
      */
-    function flatten($Arr)
+    static function flatten($Arr)
     {
         return $Arr['Test_name'];
     }
@@ -710,7 +660,7 @@ class Utility
      * @note    Function should be removed and code using it cleaned up.
      * @cleanup
      */
-    function flattenFull($Arr)
+    static function flattenFull($Arr)
     {
         return $Arr['Full_name'];
     }
@@ -802,7 +752,7 @@ class Utility
         $All     = Utility::getAllInstruments();
         $Scored  = array();
         $Nothing = array();
-        foreach ($All as $Instrument=>$Full_name) {
+        foreach (array_keys($All) as $Instrument) {
             if (Utility::getScoreColsForInstrument($Instrument) != $Nothing) {
                 $Scored[] = $Instrument;
             }
@@ -906,7 +856,7 @@ class Utility
             JOIN flag f ON (s.ID = f.SessionID)
             JOIN candidate c ON (c.Candid = s.Candid)
             JOIN psc ON (s.CenterID = psc.CenterID)
-            WHERE s.Active = 'Y' AND c.Active= 'Y' 
+            WHERE s.Active = 'Y' AND c.Active= 'Y'
             AND f.Test_name = :tn AND psc.Centerid!= '1'";
 
         $visitlabels = $db->pselect($query, array('tn' => $test_name));
@@ -1043,7 +993,7 @@ class Utility
                 array('cid' => $commentID)
             );
             $sourcefields = $DB->pselect(
-                "SELECT SourceField, Name FROM parameter_type 
+                "SELECT SourceField, Name FROM parameter_type
                 WHERE queryable = '1' AND sourcefrom = :instrument
                 ORDER BY Name",
                 array('instrument' => $instrument)
@@ -1077,10 +1027,12 @@ class Utility
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
+        $qparams = array();
 
         if ($projectID != null) {
             $ExtraProject_Criteria
-                = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $projectID . ')';
+                = ' AND (c.ProjectID IS NULL OR c.ProjectID=:ProjectID)';
+            $qparams["ProjectID"]  = $projectID;
         } else {
             $ExtraProject_Criteria ='';
         }
@@ -1092,7 +1044,7 @@ class Utility
             AND c.Entity_type != 'Scanner'
             AND psc.CenterID!= '1'
             $ExtraProject_Criteria ORDER BY Visit_label";
-        $visitlabels = $db->pselect($query, array());
+        $visitlabels = $db->pselect($query, $qparams);
         $visits      = array();
         for ($i = 0; $i < count($visitlabels); $i++) {
             $visits[$visitlabels[$i]['Visit_label']]
@@ -1122,7 +1074,7 @@ class Utility
 
         if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
             $test_names = $DB->pselect(
-                "SELECT DISTINCT Test_name_display FROM test_battery 
+                "SELECT DISTINCT Test_name_display FROM test_battery
                 WHERE Visit_label=:vl",
                 array('vl' => $visit_label)
             );
@@ -1133,7 +1085,7 @@ class Utility
                 JOIN psc ON (s.CenterID = psc.CenterID)
                 JOIN flag f ON (f.sessionid=s.id)
                 JOIN test_names t ON (f.test_name=t.Test_name)
-                WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl 
+                WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl
                 AND psc.CenterID != '1' AND c.Entity_type != 'Scanner'
                 ORDER BY t.Full_name",
                 array('vl' => $visit_label)
@@ -1246,7 +1198,7 @@ class Utility
      *
      * @return True if the date is invalid, false if it's valid.
      */
-    function _checkDate($dateElement)
+    static function _checkDate($dateElement)
     {
         if (empty($dateElement['M'])
             && empty($dateElement['d'])
@@ -1264,6 +1216,77 @@ class Utility
             return false;
         }
         return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
+    }
+
+    /**
+     * Effectively resolve '..' characters in a file path
+     *
+     * @param string $path A potentially-relative filepath to be resolved
+     *
+     * @return string $resolvedPath a path containing no .. sequences
+     */
+    static function resolvePath($path)
+    {
+        $resolvedPath = array();
+        // do some normalization
+        $path        = str_replace('//', '/', $path);
+        $path_pieces = explode('/', $path);
+        foreach ($path_pieces as $piece) {
+            if ($piece == '.') {
+                continue;
+            }
+            if ($piece == '..') {
+                if (!is_array($resolvedPath)) {
+                    error_log("ERROR: Resolved path not an array");
+                    return "";
+                }
+                array_pop($resolvedPath);
+                continue;
+            }
+            array_push($resolvedPath, $piece);
+        }
+        $resolvedPath = implode('/', $resolvedPath);
+        return $resolvedPath;
+    }
+
+    /**
+     * Get maximum upload size. Will be the smaller value of
+     * upload_max_filesize and post_max_size
+     *
+     * @return string smaller value of upload_max_filesize or post_max_size
+     */
+    static function getMaxUploadSize()
+    {
+        $umf = ini_get('upload_max_filesize');
+        $pms = ini_get('post_max_size');
+        return self::returnBytes($umf) < self::returnBytes($pms) ? $umf : $pms;
+    }
+
+    /**
+     * Takes in a storage string (e.g., 64K, 1024M, 2G, etc.)
+     * and returns value in bytes
+     *
+     * @param string $val The formatted string
+     *
+     * @return int|string The formatted string represented as bytes
+     *
+     * @note taken from http://php.net/manual/en/function.ini-get.php
+     */
+    static function returnBytes($val)
+    {
+        $val  = trim($val);
+        $last = strtolower($val[strlen($val)-1]);
+
+        switch($last) {
+        case 'g':
+            return $val * 1024 * 1024 * 1024;
+        case 'm':
+            return $val * 1024 * 1024;
+        case 'k':
+            return $val * 1024;
+        default:
+            return $val;
+        }
     }
 }
 ?>

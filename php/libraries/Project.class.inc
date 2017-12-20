@@ -52,29 +52,38 @@ class Project
     static function &singleton($projectName)
     {
         if (!isset(self::$_instances[$projectName])) {
-            $factory     = \NDB_Factory::singleton();
-            $projectData = $factory->database()->pSelectRow(
-                "
-                SELECT
-                  projectId,
-                  name,
-                  recruitmentTarget as recTarget
-                FROM
-                  Project
-                WHERE name = :v_project_name
-                ",
-                array('v_project_name' => $projectName)
-            );
+            $factory = \NDB_Factory::singleton();
+            $config  = $factory->config();
 
-            if (empty($projectData)) {
-                throw new \LorisException("There is no project named: $projectName");
+            if ($config->getSetting("useProjects") == 'true') {
+                $projectData = $factory->database()->pSelectRow(
+                    "
+                    SELECT
+                      projectId,
+                      name,
+                      recruitmentTarget as recTarget
+                    FROM
+                      Project
+                    WHERE name = :v_project_name
+                    ",
+                    array('v_project_name' => $projectName)
+                );
+
+                if (empty($projectData)) {
+                    throw new \LorisException("No project named: $projectName");
+                }
+
+                $project = new Project();
+
+                $project->_projectId         = $projectData['projectId'];
+                $project->_projectName       = $projectData['name'];
+                $project->_recruitmentTarget = (integer) $projectData['recTarget'];
+            } else {
+                if ($projectName != 'loris') {
+                    throw new \LorisException("This study is not using projects");
+                }
+                $project =& ProjectDefault::singleton('loris');
             }
-
-            $project = new Project();
-
-            $project->projectId         = $projectData['projectId'];
-            $project->projectName       = $projectData['name'];
-            $project->recruitmentTarget = (integer) $projectData['recTarget'];
 
             self::$_instances[$projectName] = $project;
         }
@@ -142,7 +151,19 @@ class Project
      */
     public function getId()
     {
-        return $this->projectId;
+        return $this->_projectId;
+    }
+
+    /**
+     * Set this project's id
+     *
+     * @param integer $projectId This project's id
+     *
+     * @return void
+     */
+    public function setId($projectId)
+    {
+        $this->_projectId = $projectId;
     }
 
     /**
@@ -152,7 +173,19 @@ class Project
      */
     public function getName()
     {
-        return $this->projectName;
+        return $this->_projectName;
+    }
+
+    /**
+     * Set this project's name
+     *
+     * @param string $projectName This project's name
+     *
+     * @return void
+     */
+    public function setName($projectName)
+    {
+        $this->_projectName = $projectName;
     }
 
     /**
@@ -165,19 +198,19 @@ class Project
      */
     public function getRecruitmentTarget()
     {
-        if (empty($this->recruitmentTarget)) {
+        if (empty($this->_recruitmentTarget)) {
             $total = array_reduce(
                 $this->getSubprojects(),
                 function ($carry, $item) {
-                    return $carry + $item->recruitmentTarget;
+                    return $carry + $item->_recruitmentTarget;
                 },
                 0
             );
             // The following assignment is temporary and is not transmitted to the
             // database.
-            $this->recruitmentTarget = $total;
+            $this->_recruitmentTarget = $total;
         }
-        return $this->recruitmentTarget;
+        return $this->_recruitmentTarget;
     }
 
     /**
@@ -203,7 +236,7 @@ class Project
             WHERE
               pr.projectId = :v_project_id
             ",
-            array('v_project_id' => $this->projectId)
+            array('v_project_id' => $this->_projectId)
         );
 
         return array_map(
@@ -229,7 +262,7 @@ class Project
     {
         $factory = \NDB_Factory::singleton();
 
-        $p = array($this->projectId);
+        $p = array($this->_projectId);
         if ($factory->config()->getSetting('useProjects') !== 'true') {
             array_push($p, '-1');
         }

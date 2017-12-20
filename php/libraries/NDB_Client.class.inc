@@ -87,6 +87,9 @@ class NDB_Client
 
         // stop here if this is a command line client
         if (!$this->_isWebClient) {
+            // Set user as unix username.
+            // Requires Loris to have user with this username
+            $user =& User::singleton(getenv('USER'));
             return true;
         }
 
@@ -125,6 +128,8 @@ class NDB_Client
         if (isset($_REQUEST['logout']) && $_REQUEST['logout']) {
             session_destroy();
             setcookie("FeedbackButtonBoolean", "");
+            header("HTTP/1.1 303 See Other");
+            header("Location: /");
             session_start();
         }
 
@@ -141,7 +146,13 @@ class NDB_Client
         if (!$login->isLoggedIn()) {
             $auth = $login->authenticate();
             if ($auth === true) {
-                $error = $login->setState();
+                if ($login->passwordExpired()) {
+                    header("HTTP/1.1 302 Found");
+                    header("Location: /login/password-expiry");
+
+                }
+
+                $login->setState();
             } elseif ($auth === false) {
                 // only send a 403 error if they were attempting to log in,
                 // otherwise the login page returns a 403 when first accessing
@@ -159,14 +170,6 @@ class NDB_Client
             }
         }
         if (!$login->isLoggedIn()) {
-            // display login window
-            //ob_end_clean();
-            // Check to see if passwordExpired flag is set
-            if (!$login->passwordExpired()) {
-                // If not show login page
-                header("HTTP/1.1 401 Unauthorized");
-            }
-            //terminate script
             return false;
         }
 
