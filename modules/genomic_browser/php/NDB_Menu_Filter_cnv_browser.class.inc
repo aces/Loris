@@ -77,7 +77,6 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
                           'CNV.Strand as Strand',
                           'CNV.StartLoc as StartLoc',
                           'CNV.EndLoc as EndLoc',
-                          'CNV.Size as Size',
                           'CONCAT(
                               CNV.Chromosome, 
                               ":",
@@ -117,7 +116,6 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
                  'Strand',
                  'StartLoc',
                  'EndLoc',
-                 'Size',
                  'Event_Name',
                  'Gene_Symbol',
                  'Gene_Name',
