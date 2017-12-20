@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="{$baseurl}/css/public_layout.css">
   <link type="image/x-icon" rel="icon" href="{$baseurl}/images/favicon.ico">
-  <script src="https://xavier-dev.loris.ca/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
+  <script src="{$baseurl}/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
   <script>
   $(document).ready(function() {
     const dcIdentifier = $("meta[name='DC.identifier']").attr("content");
