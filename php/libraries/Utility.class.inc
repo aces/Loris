@@ -33,65 +33,6 @@ class Utility
     }
 
     /**
-     * This is identical to PEAR::isError from PEAR only the function
-     * has the static keyword. This is required because PEAR::isError
-     * being called staticly throws a warning in newer versions of PHP
-     * It should be used everywhere in the code instead of PEAR::isError
-     *
-     * @param object         $data The data to check if it is an error
-     * @param string|integer $code If a string, check that data also has
-     *                             the message of $code before returning true.
-     *                             If an integer, the error must also have
-     *                             the same error code for isErrorX to be
-     *                             true
-     *
-     * @return boolean true if data is a PEAR error object
-     */
-    static function isErrorX($data, $code=null)
-    {
-        throw new LorisException(
-            "Utility::isErrorX has been deprecated. Use PHP5 exceptions instead."
-        );
-    }
-
-    /**
-     * Converts a multi-dimensional array to a one-dimensional array
-     *
-     * @param array $array The multi-dimensional array
-     *
-     * @return string
-     *
-     * @deprecated
-     */
-    static function reduce($array)
-    {
-        throw new DeprecatedException(
-            "Utility::reduce has been deprecated."
-        );
-    }
-
-
-    /**
-     * Implodes a multi-dimensional array using array_reduce()
-     *
-     * @param mixed $x Unknown
-     * @param mixed $y Unknown
-     *
-     * @note If any element of the array contains a backtick, you'll run into trouble
-     *
-     * @return string
-     *
-     * @deprecated
-     */
-    static function crunch($x, $y)
-    {
-        throw new DeprecatedException(
-            "Utility::crunch has been deprecated."
-        );
-    }
-
-
-    /**
      * Computes an age in years:months:days (assumes 30 days per months)
      *
      * @param string $dob      date of birth (or first date), formatted YYYY-MM-DD
@@ -198,7 +139,6 @@ class Utility
         if ($study_site) {
             $query .= "WHERE Study_site='Y'";
         }
-
         $result = $DB->pselect($query, array());
 
         // fix the array
@@ -206,6 +146,7 @@ class Utility
         foreach ($result as $row) {
             $list[$row["CenterID"]] = $row["Name"];
         }
+        natcasesort($list);
         return $list;
     }
 
@@ -297,7 +238,6 @@ class Utility
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
-        $config  = $factory->config();
 
         if (!is_null($projectID)) {
             $subprojects = $DB->pselect(
@@ -812,7 +752,7 @@ class Utility
         $All     = Utility::getAllInstruments();
         $Scored  = array();
         $Nothing = array();
-        foreach ($All as $Instrument=>$Full_name) {
+        foreach (array_keys($All) as $Instrument) {
             if (Utility::getScoreColsForInstrument($Instrument) != $Nothing) {
                 $Scored[] = $Instrument;
             }
@@ -1307,6 +1247,46 @@ class Utility
         }
         $resolvedPath = implode('/', $resolvedPath);
         return $resolvedPath;
+    }
+
+    /**
+     * Get maximum upload size. Will be the smaller value of
+     * upload_max_filesize and post_max_size
+     *
+     * @return string smaller value of upload_max_filesize or post_max_size
+     */
+    static function getMaxUploadSize()
+    {
+        $umf = ini_get('upload_max_filesize');
+        $pms = ini_get('post_max_size');
+        return self::returnBytes($umf) < self::returnBytes($pms) ? $umf : $pms;
+    }
+
+    /**
+     * Takes in a storage string (e.g., 64K, 1024M, 2G, etc.)
+     * and returns value in bytes
+     *
+     * @param string $val The formatted string
+     *
+     * @return int|string The formatted string represented as bytes
+     *
+     * @note taken from http://php.net/manual/en/function.ini-get.php
+     */
+    static function returnBytes($val)
+    {
+        $val  = trim($val);
+        $last = strtolower($val[strlen($val)-1]);
+
+        switch($last) {
+        case 'g':
+            return $val * 1024 * 1024 * 1024;
+        case 'm':
+            return $val * 1024 * 1024;
+        case 'k':
+            return $val * 1024;
+        default:
+            return $val;
+        }
     }
 }
 ?>

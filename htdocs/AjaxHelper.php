@@ -28,10 +28,8 @@ set_include_path(
 require_once __DIR__ . "/../vendor/autoload.php";
 // Ensures the user is logged in, and parses the config file.
 require_once "NDB_Client.class.inc";
-$client = new NDB_Client();
-if ($client->initialize("../project/config.xml") == false) {
-    return false;
-}
+$client    = new NDB_Client();
+$anonymous = ($client->initialize("../project/config.xml") === false);
 
 // Checks that config settings are set
 $config =& NDB_Config::singleton();
@@ -80,6 +78,20 @@ if (is_dir($basePath . "project/modules/$Module")
     header("HTTP/1.1 400 Bad Request");
     exit(5);
 }
+
+$public = false;
+try {
+    $m = Module::factory($Module);
+
+    $public = $m->isPublicModule();
+} catch(LorisModuleMissingException $e) {
+    $public = false;
+}
+if ($anonymous === true && $m->isPublicModule() === false) {
+    header("HTTP/1.1 403 Forbidden");
+    exit(6);
+}
+
 // Also check the module directory for PHP files
 $FullPath = "$ModuleDir/ajax/$File";
 
@@ -89,6 +101,4 @@ if (!file_exists($FullPath)) {
     exit(5);
 }
 
-$user =& User::singleton($_SESSION['State']->getUsername());
 require $FullPath;
-?>

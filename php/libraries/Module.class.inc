@@ -93,9 +93,19 @@ class Module
      *
      * @param string $name The name of the module
      */
-    protected function __construct($name)
+    public function __construct($name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * Return the name of this module.
+     *
+     * @return string The module name
+     */
+    public function getName() : string
+    {
+        return $this->name;
     }
 
     /**
@@ -119,27 +129,25 @@ class Module
      */
     public function loadPage($page)
     {
+        // Some URLs are things like "/login/request-account", but `-` isn't valid
+        // in a class name, so remove it while loading the module.
+        $page = str_replace("-", "", $page);
+
         $className = "\LORIS\\" . $this->name . "\\$page";
 
-        $cls = new $className();
+        $identifier = $_REQUEST['identifier'] ?? '';
+        $commentID  = $_REQUEST['commentID'] ?? '';
+        $cls        = new $className($this, $page, $identifier, $commentID, $page);
         // Smarty needs the Module name as a parameter to autoload the right
         // templates. Every type of page uses this.
-        $cls->Module = $this->name;
 
         // Hacks so that existing display() functions load the right template
         // for different page types.
-        $cls->menu     = $page;
-        $cls->template = $page;
-
-        $identifier = isset($_REQUEST['identifier']) ? $_REQUEST['identifier'] : '';
-        $commentID  = isset($_REQUEST['commentID']) ? $_REQUEST['commentID'] : '';
-        $formname   = $page;
-        $cls->setup();
-        $cls->_setupPage($this->name, $page, $identifier, $commentID, $formname);
-
+        $cls->menu = $page;
         if (!$cls->_hasAccess()) {
             throw new \LorisException("You do not have access to this page.", 403);
         }
+        $cls->setup();
 
         // Handles form submission
         if (method_exists($cls, 'save')) {

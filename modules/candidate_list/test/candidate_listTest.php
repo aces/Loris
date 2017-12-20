@@ -110,7 +110,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      *
      * @return void
      */
-    function testPageLoadsWithoutPermissionsDataEntry()
+    function testPageLoadsWithPermissionsDataEntry()
     {
         $this->setupPermissions(array("data_entry"));
         $this->safeGet($this->url . "/candidate_list/");
@@ -120,41 +120,6 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             "You do not have access to this page.",
             $bodyText
         );
-        $this->resetPermissions();
-    }
-    /**
-     * Tests that, Verify that if data_entry and not access_all_profiles
-     * permissions, can only see subjects from own site.
-     *
-     * @return void
-     */
-    function testPageLoadsWithDataEntry()
-    {
-        $this->setupPermissions(array("data_entry"));
-        $this->safeGet($this->url . "/candidate_list/?format=json");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains(
-            "Subproject",
-            $bodyText
-        );
-        $this->resetPermissions();
-    }
-    /**
-     * Verify that if data_entry and not access_all_profiles permissions,
-     * check that initial filter state is Subproject = All.
-     *
-     * @return void
-     */
-    function testPageLoadsWithDataEntrySubprojectAll()
-    {
-        $this->setupPermissions(array("data_entry"));
-        $this->safeGet($this->url . "/candidate_list/");
-        $siteElement =  $this->safeFindElement(WebDriverBy::Name("SubprojectID"));
-        $subproject  = new WebDriverSelect($siteElement);
-        $value       = $subproject->getFirstSelectedOption()->getText('value');
-        $this->assertEquals("All", $value);
-
         $this->resetPermissions();
     }
     /**
@@ -292,8 +257,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         // Search for candidate with a DCCID substring that exists
         // Verify that candidate TST0001 is returned
         $this->_assertSearchBy(
-            array('DCCID' => '0'),
-            'TST0001'
+            array('DCCID' => '300001'),
+            '300001'
         );
     }
     /**
@@ -389,7 +354,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $text = $this->webDriver->executescript(
             "return document.querySelector('#bc2 > a:nth-child(3)>div').textContent"
         );
-        $this->assertContains('900000', $text);
+        $this->assertContains('Candidate Profile ', $text);
     }
 }
 ?>

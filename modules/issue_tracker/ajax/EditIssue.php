@@ -303,7 +303,7 @@ function getChangedValues($issueValues, $issueID)
     $changedValues = [];
     foreach ($issueValues as $key => $value) {
         // Only include fields that have changed
-        if ($issueValues[$key] != $issueData[$key] && !empty($value)) {
+        if ($issueValues[$key] != ($issueData[$key] ?? '') && !empty($value)) {
             $changedValues[$key] = $value;
         }
     }
@@ -563,13 +563,7 @@ function getIssueFields()
         $sites = Utility::getAssociativeSiteList();
     } else {
         // allow only to view own site data
-        $site_arr = $user->getData('CenterIDs');
-        foreach ($site_arr as $key=>$val) {
-            $site_arr[$key] = Site::singleton($val);
-            if ($site_arr[$key]->isStudySite()) {
-                $sites[$val] = $site_arr[$key]->getCenterName();
-            }
-        }
+        $sites = $user->getStudySites();
     }
 
     //not yet ideal permissions

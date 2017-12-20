@@ -11,7 +11,7 @@ $(document).ready(function(){
         e.preventDefault();
         var submenu = $(this).attr('id');
         var form    = $('<form />', {
-            "action" : loris.BaseURL + "/mri_violations/?submenu="+submenu,
+            "action" : loris.BaseURL + "/mri_violations/"+submenu,
             "method" : "post"
         });
         var values = {
