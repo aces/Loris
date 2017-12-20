@@ -250,6 +250,8 @@ class My_Preferences extends \NDB_Form
     {
         parent::_setupPage($name, $page, $identifier, $commentID, $formname);
 
+        $DB =& \Database::singleton();
+
         $this->identifier = $_SESSION['State']->getUsername();
 
         $user =& \User::singleton($this->identifier);
@@ -319,6 +321,17 @@ class My_Preferences extends \NDB_Form
         // password
         $this->form->addElement('password', 'Password_hash', 'New Password');
         $this->form->addElement('password', '__Confirm', 'Confirm Password');
+
+        // language preference
+        $languagesDB = $DB->pselect(
+            "SELECT language_id, language_label
+             FROM language",
+            array()
+        );
+        foreach ($languagesDB as $language) {
+            $languages[$language['language_id']] = $language['language_label'];
+        }
+        $this->addSelect('language_preference', 'Language preference', $languages);
 
         // Notification headers
         $nGroup[] = $this->createLabel("Module");
