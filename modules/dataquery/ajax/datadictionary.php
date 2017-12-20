@@ -47,7 +47,5 @@ if ($_REQUEST['category']) {
     );
 }
 
-
->>>>>>> 19.0-dev
 print json_encode($results);
 ?>
