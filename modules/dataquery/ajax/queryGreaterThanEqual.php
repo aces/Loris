@@ -20,7 +20,7 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
 
-$cdb       = CouchDB::singleton();
+$cdb       = \NDB_Factory::singleton()->couchDB();
 $category  = $_REQUEST['category'];
 $fieldName = $_REQUEST['field'];
 $value     = $_REQUEST['value'];

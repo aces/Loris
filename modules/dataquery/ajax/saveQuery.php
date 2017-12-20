@@ -22,7 +22,7 @@ $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
 
 $user = User::singleton();
-$cdb  = CouchDB::singleton();
+$cdb  = \NDB_Factory::singleton()->couchDB();
 $qid  = $user->getUserName() . "_" . $_REQUEST['QueryName'];
 
 if ($_REQUEST['SharedQuery'] === "true") {
@@ -72,5 +72,4 @@ if ($_REQUEST['OverwriteQuery'] === "true") {
 } else {
     print $cdb->postDoc($baseDocument);
 }
-
 ?>
