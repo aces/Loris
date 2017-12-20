@@ -202,7 +202,7 @@ class CouchDB
 
             if (empty($database)) {
                 // Default to DQT
-                $config   = NDB_Config::singleton();
+                $config   = \NDB_Config::singleton();
                 $database = $config->getSetting("CouchDB")['database'];
             }
 

@@ -12,7 +12,7 @@ class CouchDBInstrumentImporter
 
     function __construct()
     {
-        $this->SQLDB   = Database::singleton();
+        $this->SQLDB   = \Database::singleton();
         $this->CouchDB = \NDB_Factory::singleton()->couchDB();
     }
 
@@ -133,7 +133,7 @@ class CouchDBInstrumentImporter
 
     function GetInstruments()
     {
-        return Utility::getAllInstruments();
+        return \Utility::getAllInstruments();
     }
 
     function createRunLog($results)

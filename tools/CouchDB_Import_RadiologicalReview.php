@@ -80,7 +80,7 @@ class CouchDBRadiologicalReviewImporter {
     );
 
     function __construct() {
-        $this->SQLDB = Database::singleton();
+        $this->SQLDB   = \Database::singleton();
         $this->CouchDB = \NDB_Factory::singleton()->couchDB();
     }
 
