@@ -420,8 +420,8 @@ class SNP_Browser extends \NDB_Menu_Filter
             } elseif ($field == "genomic_range") {
                 $temp_array = explode(':', $val);
 
-                $chr        = $GLOBALS['DB']->quote($temp_array[0]);
-                $chrchr     = $GLOBALS['DB']->quote('chr'.$temp_array[0]);
+                $chr    = $GLOBALS['DB']->quote($temp_array[0]);
+                $chrchr = $GLOBALS['DB']->quote('chr'.$temp_array[0]);
 
                 $query .= " AND (SNP.Chromosome = $chr";
                 $query .= " OR SNP.Chromosome = $chrchr) ";
