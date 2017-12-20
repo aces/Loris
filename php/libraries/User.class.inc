@@ -71,7 +71,7 @@ class User extends UserPermissions
                         WHERE upr.UserID= :UID",
             array('UID' => $row['ID'])
         );
-
+        $user_cid            = array();
         foreach ($user_centerID_query as $key=>$val) {
             $user_cid[$key] =$val['CenterID'];
         }
@@ -107,9 +107,9 @@ class User extends UserPermissions
             }
         }
         // store user data in object property
-        $row['examiner']  =$examiner_info;
-        $row['CenterIDs'] =$user_cid;
-        $obj->userInfo    =$row;
+        $row['examiner']  = $examiner_info;
+        $row['CenterIDs'] = $user_cid;
+        $obj->userInfo    = $row;
         return $obj;
     }
 
@@ -283,6 +283,16 @@ class User extends UserPermissions
     function getCenterIDs()
     {
         return $this->userInfo['CenterIDs'];
+    }
+
+    /**
+     * Get the user's language preference
+     *
+     * @return int
+     */
+    function getLanguagePreference()
+    {
+        return $this->userInfo['language_preference'];
     }
 
 

@@ -61,27 +61,6 @@ class Candidate_Parameters extends \NDB_Form
     }
 
     /**
-     * Gets CandID and whether the consent tab should be displayed
-     *
-     * @throws DatabaseException
-     *
-     * @return void
-     */
-    function candidate_parameters()//@codingStandardsIgnoreLine
-    {
-        $config    =& \NDB_Config::singleton();
-        $candidate =& \Candidate::singleton($this->identifier);
-
-        // candID
-        $this->tpl_data['candID'] = $candidate->getData('CandID');
-
-        // consent
-        $consent = $config->getSetting('ConsentModule');
-
-        $this->tpl_data['useConsent'] = $consent['useConsent'];
-    }
-
-    /**
      * Gets the participant_status options from participant_status_options
      * getParticipantStatusOptions()
      *
