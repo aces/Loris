@@ -101,7 +101,7 @@ class Login extends APIBase
      */
     function getLoginAuthenticator()
     {
-        return new \SinglePointLogin();
+        return new \SinglePointLogin::getInstance();
     }
 
     /**
