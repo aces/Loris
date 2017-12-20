@@ -46,8 +46,6 @@ $(document).ready(function() {
       div.appendChild(wrap);
       div.appendChild(btn);
 
-      // Markdown format content came from the filesystem and can
-      // be edited online.
       if (loris.userHasPermission("context_help") && content.format !== 'markdown') {
         div.appendChild(edit);
         edit.addEventListener("click", function(e) {
