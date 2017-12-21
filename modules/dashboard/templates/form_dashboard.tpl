@@ -206,21 +206,6 @@
                                         </div>
                                     </a>
                                 {/if}
-                                {if $radiology_review neq "" and $radiology_review neq 0}
-                                    <a href="{$baseURL}/final_radiological_review/"
-                                       class="list-group-item radiological-review">
-                                        <div class="row">
-                                            <div class="col-xs-8 text-left">
-                                                <div class="huge">{$radiology_review}</div>
-                                                Final radiological review{if $radiology_review neq 1}s{/if}
-                                            </div>
-                                            <div class="col-xs-4 text-right alert-chevron">
-                                                <span class="glyphicon glyphicon-chevron-right medium"></span>
-                                                <p class="small task-site">{$radiology_review_site}</p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                {/if}
                                 {if $pending_users neq "" and $pending_users neq 0}
                                     <a href="{$baseURL}/user_accounts/" class="list-group-item pending-accounts">
                                         <div class="row">
