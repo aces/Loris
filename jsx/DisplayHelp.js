@@ -2,7 +2,7 @@
 
 /*
 This file contains a React component which displays Markdown content from the Help Editor module
-onto the dropdown Help section on all Loris pages.
+onto the dropdown Help section for instruments.
 
 @author: Zaliqa Rosli
 @version 0.0.1
@@ -21,8 +21,8 @@ class DisplayHelp extends React.Component {
     }
     return (
       <div>
-	<h3>{this.props.Topic ? this.props.Topic : ''}</h3>
-	<Markdown content={this.props.Content} />
+	<h3>{this.props.Topic}</h3>
+	<Markdown content = {this.props.Content} />
 	{this.props.Updated && hasDate(this.props.Updated)}
       </div>
     );
@@ -30,7 +30,7 @@ class DisplayHelp extends React.Component {
 }
 
 DisplayHelp.propTypes = {
-  Topic: React.PropTypes.string,
+  Topic: React.PropTypes.string.isRequired,
   Content: React.PropTypes.string.isRequired,
   Updated: React.PropTypes.string
 };

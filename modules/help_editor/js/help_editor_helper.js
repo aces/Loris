@@ -1,2 +1,19 @@
-!function(modules){function __webpack_require__(moduleId){if(installedModules[moduleId])return installedModules[moduleId].exports;var module=installedModules[moduleId]={exports:{},id:moduleId,loaded:!1};return modules[moduleId].call(module.exports,module,module.exports,__webpack_require__),module.loaded=!0,module.exports}var installedModules={};return __webpack_require__.m=modules,__webpack_require__.c=installedModules,__webpack_require__.p="",__webpack_require__(0)}([function(module,exports){"use strict";function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor))throw new TypeError("Cannot call a class as a function")}function _possibleConstructorReturn(self,call){if(!self)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!call||"object"!=typeof call&&"function"!=typeof call?self:call}function _inherits(subClass,superClass){if("function"!=typeof superClass&&null!==superClass)throw new TypeError("Super expression must either be null or a function, not "+typeof superClass);subClass.prototype=Object.create(superClass&&superClass.prototype,{constructor:{value:subClass,enumerable:!1,writable:!0,configurable:!0}}),superClass&&(Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__=superClass)}var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||!1,descriptor.configurable=!0,"value"in descriptor&&(descriptor.writable=!0),Object.defineProperty(target,descriptor.key,descriptor)}}return function(Constructor,protoProps,staticProps){return protoProps&&defineProperties(Constructor.prototype,protoProps),staticProps&&defineProperties(Constructor,staticProps),Constructor}}(),EditContent=function(_React$Component){function EditContent(){return _classCallCheck(this,EditContent),_possibleConstructorReturn(this,(EditContent.__proto__||Object.getPrototypeOf(EditContent)).apply(this,arguments))}return _inherits(EditContent,_React$Component),_createClass(EditContent,[{key:"render",value:function(){function removeDiv(event){document.getElementById("preview").remove(),event.preventDefault()}var date=this.props.MyDate;return React.createElement("div",null,React.createElement("pre",null,React.createElement("h3",null,this.props.Title),React.createElement(Markdown,{content:this.props.Content}),React.createElement("hr",null),React.createElement("p",null,"Last updated: ",date.getFullYear(),"-",date.getMonth()+1,"-",date.getDate()," ",date.getHours(),":",date.getMinutes(),":",date.getSeconds())),React.createElement("button",{className:"btn btn-default",id:"helpclose",onClick:removeDiv},"Close"))}}]),EditContent}(React.Component);$(document).ready(function(){$("input[name=preview]").click(function(e){$("div.help-content").length&&($("div.help-content").remove(),e.preventDefault());var title=$('input[name="title"]').val(),content=$('textarea[name="content"]').val(),myDate=new Date,div=document.createElement("div");document.getElementById("page").appendChild(div),div.setAttribute("class","help-content"),div.setAttribute("id","preview"),ReactDOM.render(React.createElement(EditContent,{Title:title,Content:content,MyDate:myDate}),document.getElementById("preview")),e.preventDefault()})})}]);
-//# sourceMappingURL=help_editor_helper.js.map
+$(document).ready(function() {
+
+  $("input[name=preview]").click(function(e) {
+    if ($('div.help-content').length) {
+      $('div.help-content').remove();
+      e.preventDefault();
+    }
+    var title = $('input[name="title"]').val();
+    var content = $('textarea[name="content"]').val();
+    var myDate = new Date();
+    var div = document.createElement("div");
+
+    document.getElementById('page').appendChild(div);
+    div.setAttribute("class", "help-content");
+    div.setAttribute("id", "preview");
+    ReactDOM.render(RPreviewHelp({Title: title, Content: content, MyDate: myDate}), document.getElementById("preview"));
+    e.preventDefault();
+  });
+});
