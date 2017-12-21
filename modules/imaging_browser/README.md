@@ -15,10 +15,10 @@ The three primary types of users are:
 
 ## Scope
 
-The imaging browser displays images processed images which meet the
-study's inclusion criteria. The inclusion criteria (for most images)
-is defined and enforced in the LORIS imaging pipeline scripts.  Derived
-or processed scan types are also included and have their own insertion
+The imaging browser displays processed images which meet the study's
+inclusion criteria. The inclusion criteria (for most images) is defined
+and enforced in the LORIS imaging pipeline scripts.  Derived or
+processed scan types are also included and have their own insertion
 criteria.
 
 NOT in scope:
