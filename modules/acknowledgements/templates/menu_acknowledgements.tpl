@@ -187,39 +187,20 @@
                                     <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
                                 </td>
                             </tr>
-                            {section name=item loop=$items}
-                            <tr>
-                                {section name=piece loop=$items[item]}
-                                    {if $items[item][piece].name != ""}
-                                        <td>
-                                            {if $items[item][piece].value == "bachelors"}
-                                                Bachelors
-                                            {elseif $items[item][piece].value == "masters"}
-                                                Masters
-                                            {elseif $items[item][piece].value == "phd"}
-                                                PhD
-                                            {elseif $items[item][piece].value == "postdoc"}
-                                                Postdoctoral
-                                            {elseif $items[item][piece].value == "md"}
-                                                MD
-                                            {elseif $items[item][piece].value == "registered_nurse"}
-                                                Registered Nurse
-                                            {else}
-                                                {$items[item][piece].value}
-                                            {/if}
-                                        </td>
-                                    {/if}
-                                {/section}
-                            </tr>
-                            {sectionelse}
-                                <tr>
-                                    <tr><td colspan="10">You're not alone.</td></tr>
-                                </tr>
-                            {/section}
                         </tbody>
                     </table>
                 </form>
             </div>
         </div>
+         <br>
+         <div id="datatable" />
     </div>
 </div>
+<script>
+var table = RDynamicDataTable({
+    "DataURL" : "{$baseurl}/acknowledgements/?format=json",
+    "getFormattedCell" : formatAcknowledgementsColumn
+
+});
+ReactDOM.render(table, document.getElementById("datatable"));
+</script>
