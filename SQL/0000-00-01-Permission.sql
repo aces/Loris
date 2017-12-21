@@ -80,10 +80,10 @@ INSERT INTO `permissions` VALUES
     (16,'timepoint_flag_evaluate','Evaluate overall exclusionary criteria for the timepoint','2'),
     (17,'conflict_resolver','Resolving conflicts','2'),
     (18,'data_dict_view','View Data Dictionary (Parameter type descriptions)','2'),
-    (19,'data_integrity_flag','Data Integrity Flag','2'),
-    (20,'config','Edit configuration settings','2'),
-    (21,'edit_final_radiological_review','Can edit final radiological reviews','2'),
-    (22,'view_final_radiological_review','Can see final radiological reviews','2'),
+    (19,'violated_scans_view_allsites','Violated Scans: View all-sites Violated Scans','2'),
+    (20,'violated_scans_edit','Violated Scans: Edit MRI protocol table','2'),
+    (21,'data_integrity_flag','Data Integrity Flag','2'),
+    (22,'config','Edit configuration settings','2'),
     (23,'imaging_browser_view_site','View own-site Imaging Browser pages','2'),
     (24,'imaging_browser_view_allsites', 'View all-sites Imaging Browser pages', '2'),
     (25,'dicom_archive_view_allsites', 'Across all sites view Dicom Archive module and pages', '2'),
@@ -110,6 +110,7 @@ INSERT INTO `permissions` VALUES
     (46,'issue_tracker_developer', 'Can re-assign issues, mark issues as closed, comment on all, edit issues.', 2),
     (47,'imaging_browser_phantom_allsites', 'Can access only phantom data from all sites in Imaging Browser', 2),
     (48,'imaging_browser_phantom_ownsite', 'Can access only phantom data from own site in Imaging Browser', 2);
+
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID 
