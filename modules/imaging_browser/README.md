@@ -36,7 +36,7 @@ imaging_browser_view_allsites
     - This permission gives the user access to all scans in the database
 
 imaging_browser_view_site
-    - This permission gives the user access to scans from their own site only
+    - This permission gives the user access to scans from their own site(s) only
 
 imaging_browser_phantom_allsites
     - This permission gives the user access to phantom, but not candidate, scans
@@ -44,7 +44,7 @@ imaging_browser_phantom_allsites
 
 imaging_browser_phantom_ownsite
     - This permission gives the user access to phantom, but not candidate, data
-      only at the user's site.
+      at the user's site(s).
 
 imaging_browser_qc
     - This permission gives the user access to modify the quality control data
@@ -55,7 +55,8 @@ imaging_browser_qc
 The imaging browser has the following configurations that affect its usage
 
 tblScanTypes - This setting determines which scan types are considered "NEW" for
-        QC purposes.
+        QC purposes. It also determines which modalities are displayed on the
+        main imaging browser menu page.
 
 useProjects - This setting determines whether "project" filtering dropdowns exist
         on the menu page.
