@@ -65,11 +65,6 @@ $(document).ready(function () {
         applyFilter('imaging_browser', {"Pending" : "PN"});
     });
 
-    $(".radiological-review").click(function(e) {
-        e.preventDefault();
-        applyFilter('final_radiological_review', {"Review_done" : "no"});
-    });
-
     $(".pending-accounts").click(function(e) {
         e.preventDefault();
         applyFilter('user_accounts', {"pending" : "Y"});
