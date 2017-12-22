@@ -140,6 +140,29 @@ The body of the request to /projects/$ProjectName will be an entity of the form:
 ```
 
 ```
+GET /projects/$ProjectName/images/
+```
+
+Will return a JSON object of the form
+
+```js
+{
+  "Images" : [
+    {
+      "candidate": "123456",
+      "visit": "V1",
+      "scan_type": Acquisition protocol ex :"t2",
+      "link": URL relative to this API \/candidates\/300022\/V1\/images\/loris-MRI_300022_V1_t2_001.mnc",
+      "insert_time": The inserted date ISO 8601  ex: "2016-08-09T14:15:30-04:00"
+    },
+    ...
+  ]
+}
+```
+It is possible to provide a parameter named `since` where the value need to be a date or datetime ex: 2016-08-09 or 2016-08-09 10:00:00 or 2016-08-09T10:00:00
+If the timezone is provided, iot will be ignored.
+
+```
 GET /projects/$ProjectName/instruments/
 ```
 
