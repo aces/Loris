@@ -36,11 +36,16 @@ class Images extends \Loris\API\APIBase
      */
     public function __construct($method, $data=null)
     {
+
         $this->AllowedMethods = array('GET');
+        $this->AutoHandleRequestDelegation = false;
+
+        parent::__construct($method);
 
         $projectName = $data['project_name'];
+
         try {
-            $this->_project = parent->Factory->project($projectName);
+            $this->_project = $this->Factory->project($projectName);
         } catch (\LorisException $e) {
             $this->header("HTTP/1.1 404 Not Found");
             $this->error(['error' => 'Invalid project']);
@@ -55,7 +60,8 @@ class Images extends \Loris\API\APIBase
             $this->safeExit(0);
         }
 
-        parent::__construct($method);
+        $this->handleRequest();
+
     }
 
     /**
@@ -98,22 +104,35 @@ class Images extends \Loris\API\APIBase
             "SELECT
                s.CandID,
                s.Visit_label,
-               i.File
-             FROM files i 
+               f.File,
+               mst.Scan_type,
+               f.InsertTime
+             FROM files f 
+             LEFT JOIN mri_scan_type mst
+               ON (mst.ID = f.AcquisitionProtocolID)
              LEFT JOIN session s
-               ON (i.SessionID = s.ID)
+               ON (f.SessionID = s.ID)
              WHERE
-                  InsertTime > :v_time",
+                  f.InsertTime > :v_time
+             ORDER BY f.InsertTime ASC",
             array('v_time' => strtotime($this->RequestData['since']) ?? 0)
         );
 
         $images = array_map(
             function ($item) {
-                $candid    = $item['CandID'];
-                $session   = $item['Visit_label'];
-                $file_name = basename($item['File']);
-                $link      = "/candidates/$candid/$session/images/$file_name";
-                return array('link' => $link);
+                $candid      = $item['CandID'];
+                $session     = $item['Visit_label'];
+                $file_name   = basename($item['File']);
+                $scan_type   = $item['Scan_type'];
+                $link        = "/candidates/$candid/$session/images/$file_name";
+                $insert_time = date('c', $item['InsertTime']);
+                return array(
+                        'candidate'   => $candid,
+                        'visit'       => $session,
+                        'scan_type'   => $scan_type,
+                        'link'        => $link,
+                        'insert_time' => $insert_time,
+                       );
             },
             $result
         );
