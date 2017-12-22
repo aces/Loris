@@ -152,7 +152,7 @@ Will return a JSON object of the form
       "candidate": "123456",
       "visit": "V1",
       "scan_type": Acquisition protocol ex :"t2",
-      "link": URL relative to this API \/candidates\/300022\/V1\/images\/loris-MRI_300022_V1_t2_001.mnc",
+      "link": URL relative to this API \/candidates\/300022\/V1\/images\/loris-MRI_300022_V1_t2_001.mnc
       "insert_time": The inserted date ISO 8601  ex: "2016-08-09T14:15:30-04:00"
     },
     ...
