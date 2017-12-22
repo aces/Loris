@@ -141,4 +141,10 @@ class Images extends \Loris\API\APIBase
     }
 }
 
-print (new Images($_SERVER['REQUEST_METHOD'], $_GET))->toJSONString();
+$input = null;
+switch ($_SERVER['REQUEST_METHOD']) {
+case 'GET':
+    $input = $_GET;
+    break;
+}
+print (new Images($_SERVER['REQUEST_METHOD'], $input))->toJSONString();
