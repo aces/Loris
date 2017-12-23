@@ -430,7 +430,7 @@ class User extends UserPermissions
         // email, and the first is the "Confirm" password which has
         // nothing to do with whether the password is strong or not..)
         $CharTypes = 0;
-        // less than 6 characters
+        // less than 8 characters
         if (strlen($password) < 8) {
             return false;
         }
