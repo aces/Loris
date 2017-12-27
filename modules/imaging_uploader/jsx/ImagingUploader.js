@@ -101,6 +101,7 @@ class ImagingUploader extends React.Component {
           <UploadForm
             form={this.state.Data.form}
             mriList={this.state.Data.mriList}
+            maxUploadSize={this.state.Data.maxUploadSize}
           />
         </TabPane>
       </Tabs>

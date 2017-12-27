@@ -144,7 +144,8 @@ class LorisForm
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
-        if (isset($attribs['multiple']) || in_array('multiple', $attribs)) {
+
+        if (isset($attribs['multiple']) || in_array('multiple', $attribs, true)) {
             $el['multiple'] = 'multiple';
         }
         return $el;
@@ -406,7 +407,7 @@ class LorisForm
     public function addElement(
         $type,
         $name,
-        $label,
+        $label='',
         $options=array(),
         $attribs=array()
     ) {
@@ -1197,8 +1198,9 @@ class LorisForm
             if ($el['type'] === 'group') {
                 if (isset($el['required'])) {
                     foreach ($el['required'] as $elementIndex) {
-                        $childEl = $el['elements'][$elementIndex];
-                        if (empty(($this->getValue($childEl['name'])))) {
+                        $childEl  = $el['elements'][$elementIndex];
+                        $childVal = $this->getValue($childEl['name']);
+                        if ($childVal === null || $childVal === '') {
                             $this->setElementError(
                                 $el['name'],
                                 "$childEl[requireMsg]"
@@ -1290,11 +1292,7 @@ class LorisForm
 
                 // Check if date fields have errors and add them to error list
                 if ($el['type'] === 'date') {
-                    $date = (
-                        $values[$elName] ?
-                            $values[$elName] :
-                        $this->getValue($el['name'])
-                    );
+                    $date = $values[$elName] ?? $this->getValue($el['name']);
                     if (empty($date)) {
                         continue;
                     }
@@ -1875,10 +1873,11 @@ class LorisForm
     {
         $name = $this->_generateName($name);
         foreach ($array as $key => $value) {
-            $this->groupMapping[$value['name']] = array(
-                                                   'groupName' => $name,
-                                                   'index'     => $key,
-                                                  );
+             $group_key = $value['name'] ?? $this->_generateName('');
+             $this->groupMapping[$group_key] = array(
+                                                'groupName' => $name,
+                                                'index'     => $key,
+                                               );
         }
         $this->form[$name] = array(
                               'type'      => 'group',
@@ -1921,8 +1920,13 @@ class LorisForm
      *
      * @return array of the form supported by $this->form
      */
-    function createElement($type, $elname, $label, $options, $attribs=array())
-    {
+    function createElement(
+        $type,
+        $elname,
+        $label='',
+        $options=array(),
+        $attribs=array()
+    ) {
         switch($type) {
         case 'text':
             return $this->createText($elname, $label, $options, $attribs);
@@ -2128,7 +2132,7 @@ class LorisForm
     function getSubmitValues()
     {
         $retVal     = array();
-        $submitKeys = array_merge($_POST, $_FILES);
+        $submitKeys = $_POST + $_FILES;
 
         $this->getGroupValues(array_keys($submitKeys), $retVal);
         return $retVal;

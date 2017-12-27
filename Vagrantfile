@@ -72,7 +72,7 @@ Vagrant.configure("2") do |config|
     sudo add-apt-repository ppa:ondrej/php
     sudo apt-get -q update
 
-    apt-get install -yq libapache2-mod-php libmysqlclient-dev mysql-client mysql-server php php-mysql php-gd php-json php-xml
+    apt-get install -yq libapache2-mod-php libmysqlclient-dev mysql-client mysql-server php php-mysql php-gd php-json php-xml zip unzip
 
     php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');
     \\\$hash = trim(file_get_contents('https://composer.github.io/installer.sig'));
