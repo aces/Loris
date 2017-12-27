@@ -336,8 +336,6 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                                'v.SeriesUID',
                                'v.Site',
                               );
-
-        $this->EqualityFilters[] = 'v.Site';
         return true;
     }
     /**
@@ -348,12 +346,13 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
     function _setFilterForm()
     {
         // create user object
-        $user    =& User::singleton();
-        $config  =& NDB_Config::singleton();
-        $db      =& Database::singleton();
-        $minYear = $config->getSetting('startYear') - $config->getSetting('ageMax');
-        $maxYear = $config->getSetting('endYear');
-
+        $user        =& User::singleton();
+        $config      =& NDB_Config::singleton();
+        $db          =& Database::singleton();
+        $minYear     = $config->getSetting('startYear')
+            - $config->getSetting('ageMax');
+        $maxYear     = $config->getSetting('endYear')
+            - $config->getSetting('ageMin');
         $dateOptions = array(
                         'language'       => 'en',
                         'format'         => 'YMd',
@@ -411,7 +410,13 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
             }
         } else {
             // allow only to view own site data
-            $sites = $user->getStudySites();
+            $site_arr = $user->getData('CenterIDs');
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $sites[$val] = $site[$key]->getCenterName();
+                }
+            }
             $sites = array('' => 'All User Sites') + $sites;
         }
         $this->addSelect('Site', 'Site', $sites);

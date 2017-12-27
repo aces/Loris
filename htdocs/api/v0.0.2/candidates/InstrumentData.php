@@ -174,12 +174,10 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
         }
         fclose($fp);
 
-        $data            = json_decode($data);
-        $instrument_name = $this->Instrument->testName;
-
+        parse_str(urldecode($data), $data);
         if ($this->Instrument->validate($data)) {
             $this->Instrument->clearInstrument();
-            $this->Instrument->_save($data->${instrument_name});
+            $this->Instrument->_save($data[$this->Instrument->testName]);
             $this->JSON = array("success" => "Updated");
         } else {
             $this->Header("HTTP/1.1 403 Forbidden");
@@ -208,11 +206,9 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
         }
         fclose($fp);
 
-        $data            = json_decode($data);
-        $instrument_name = $this->Instrument->testName;
-
+        parse_str(urldecode($data), $data);
         if ($this->Instrument->validate($data)) {
-            $this->Instrument->_save($data->${instrument_name});
+            $this->Instrument->_save($data[$this->Instrument->testName]);
             $this->JSON = array("success" => "Updated");
         } else {
             $this->Header("HTTP/1.1 403 Forbidden");

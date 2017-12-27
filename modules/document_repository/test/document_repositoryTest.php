@@ -143,14 +143,14 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("addCategory"),
             3000
         )->click();
-        sleep(3);
+        sleep(10);
         $this->safeFindElement(
             WebDriverBy::Name(
                 "category_name"
             )
         )->sendKeys("TestTestTest");
         $this->safeFindElement(WebDriverBy::Id("postCategory"))->click();
-        sleep(3);
+        sleep(10);
         $selectAll = $this->webDriver->findElement(
             WebDriverBy::Id("dir-tree")
         )->getText();
@@ -167,7 +167,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $element = new WebDriverSelect($select);
         $element->selectByVisibleText("TestTestTest");
         $this->safeFindElement(WebDriverBy::Id("postCategory"))->click();
-        sleep(3);
+        sleep(10);
         $this->safeFindElement(
             WebDriverBy::Xpath("//*[@id='TestTestTesta']/td/span"),
             3000
@@ -223,7 +223,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
          $this->safeFindElement(WebDriverBy::Id("commentsEdit"))
              ->sendKeys("This is a test comment!");
          $this->safeFindElement(WebDriverBy::Id("postEdit"))->click();
-         sleep(3);
+         sleep(5);
 
          $this->safeFindElement(
              WebDriverBy::Name("File_name")
@@ -252,7 +252,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
          $this->safeFindElement(
              WebDriverBy::Name("filter")
          )->click();
-         sleep(3);
+         sleep(5);
          $text = $this->safeFindElement(WebDriverBy::cssSelector("tbody"), 3000)
              ->getText();
          $this->assertEquals('', $text);

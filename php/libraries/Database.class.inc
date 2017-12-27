@@ -261,23 +261,6 @@ class Database
     }
 
     /**
-     * Insert a row into the database
-     *
-     * This will insert a row. HTML from any field in the row will be automatically
-     * escaped to avoid injection.
-     *
-     * @param string $table the table into which to insert the row
-     * @param array  $set   the values with which to fill the new row
-     *
-     * @return none
-     */
-    public function insertIgnore($table, $set)
-    {
-        $ignore = true;
-        return $this->_realinsert($table, $set, true, $ignore);
-    }
-
-    /**
      * Escapes the HTML from an array that is about to be inserted into the database
      *
      * @param array $set The array to be inserted as a new row
@@ -288,11 +271,7 @@ class Database
     {
         $retVal = array();
         foreach ($set as $key => $val) {
-            if ($val === 'Unrated') {
-                $retVal[$key] = '';
-            } else {
-                $retVal[$key] = is_null($val) ? null : htmlspecialchars($val);
-            }
+            $retVal[$key] = is_null($val) ? null : htmlspecialchars($val);
         }
         return $retVal;
     }
@@ -306,24 +285,18 @@ class Database
      * @param array  $set        the values with which to fill the new row
      * @param bool   $autoescape determines whether the values to be set should
      *                           automatically have the html escaped
-     * @param bool   $ignore     determines whether the insert throws and error or
-     *                           is discarded when value exists in DB
      *
      * @return none
      */
-    private function _realinsert($table, $set, $autoescape = true, $ignore = false)
+    private function _realinsert($table, $set, $autoescape = true)
     {
         if ($autoescape === true) {
             $set = $this->_HTMLEscapeArray($set);
         }
-        if ($ignore) {
-            $query = "INSERT IGNORE INTO $table SET ";
-        } else {
-            $query = "INSERT INTO $table SET ";
-        }
-        $prepQ  = $query;
+        $query  = "INSERT INTO $table SET ";
         $query .= $this->_implodeWithKeys(', ', $set);
 
+        $prepQ       = "INSERT INTO $table SET ";
         $exec_params = array();
         $prepQ      .= $this->_implodeAsPrepared(",", $set, $exec_params);
 
@@ -765,38 +738,6 @@ class Database
     }
 
     /**
-     * Runs a query as a prepared statement and returns the values of the first
-     * column in the select statement. If multiple columns are given, only the first
-     * will be returned.
-     *
-     * @param string $query  The SQL SELECT query to be run
-     * @param array  $params Values to use for binding to prepared statement
-     *
-     * @return array Associative array of form rowID=>value containing all values
-     *               for the first element of the select statement
-     */
-    function pselectCol($query, $params)
-    {
-        $unprocessed = $this->pselect($query, $params);
-
-        $result = array();
-        foreach ($unprocessed as $k=>$row) {
-            $colNumber = count($row);
-            if ($colNumber !== 1) {
-                throw new DatabaseException(
-                    "The pselectCol() function expects only one column in the 
-                    SELECT clause of the query, $colNumber were passed.",
-                    $query
-                );
-            }
-            // Note: reset() rewinds array's internal pointer to the first element
-            // and returns the value of the first array element.
-            $result[$k] =reset($row);
-        }
-        return $result;
-    }
-
-    /**
      * Runs a query as a prepared statement and returns the value of the first
      * column of the first row
      *
@@ -1218,83 +1159,5 @@ class Database
         }
     }
 
-    /**
-     * Checks if we're in a transaction
-     *
-     * @return bool `true`, if in transaction
-     * @throws DatabaseException
-     */
-    public function inTransaction()
-    {
-        return $this->_PDO->inTransaction();
-    }
-
-    /**
-     * Attempts to begin a transaction
-     *
-     * @return bool `true`, on success
-     * @throws DatabaseException
-     */
-    public function beginTransaction()
-    {
-        if ($this->inTransaction()) {
-            throw new DatabaseException(
-                "There is already a database transaction in progress; "
-                . "rollBack() or commit() the current transaction first"
-            );
-        }
-        try {
-            return $this->_PDO->beginTransaction();
-        } catch (PDOException $ex) {
-            //Probably because the driver doesn't support transactions
-            throw new DatabaseException(
-                $ex->getMessage()
-            );
-        }
-    }
-
-    /**
-     * Attempts to roll back a transaction
-     *
-     * @return bool `true`, on success
-     * @throws DatabaseException
-     */
-    public function rollBack()
-    {
-        if (!$this->inTransaction()) {
-            throw new DatabaseException(
-                "Cannot rollBack() when not in a transaction"
-            );
-        }
-        try {
-            return $this->_PDO->rollBack();
-        } catch (PDOException $ex) {
-            throw new DatabaseException(
-                $ex->getMessage()
-            );
-        }
-    }
-
-    /**
-     * Attempts to commit a transaction
-     *
-     * @return bool `true`, on success
-     * @throws DatabaseException
-     */
-    public function commit()
-    {
-        if (!$this->inTransaction()) {
-            throw new DatabaseException(
-                "Cannot commit() when not in a transaction"
-            );
-        }
-        try {
-            return $this->_PDO->commit();
-        } catch (PDOException $ex) {
-            throw new DatabaseException(
-                $ex->getMessage()
-            );
-        }
-    }
 }
 ?>

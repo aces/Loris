@@ -303,7 +303,7 @@ function getChangedValues($issueValues, $issueID)
     $changedValues = [];
     foreach ($issueValues as $key => $value) {
         // Only include fields that have changed
-        if ($issueValues[$key] != ($issueData[$key] ?? '') && !empty($value)) {
+        if ($issueValues[$key] != $issueData[$key] && !empty($value)) {
             $changedValues[$key] = $value;
         }
     }
@@ -429,7 +429,8 @@ function getComments($issueID)
         "FROM issues_history where issueID=:issueID " .
         "UNION " .
         "SELECT issueComment, 'comment', dateAdded, addedBy " .
-        "FROM issues_comments where issueID=:issueID ",
+        "FROM issues_comments where issueID=:issueID " .
+        "ORDER BY dateAdded DESC",
         array('issueID' => $issueID)
     );
 
@@ -552,9 +553,8 @@ function emailUser($issueID, $changed_assignee)
 function getIssueFields()
 {
 
-    $db    =& Database::singleton();
-    $user  =& User::singleton();
-    $sites = array();
+    $db   =& Database::singleton();
+    $user =& User::singleton();
 
     //get field options
     if ($user->hasPermission('access_all_profiles')) {
@@ -562,7 +562,13 @@ function getIssueFields()
         $sites = Utility::getAssociativeSiteList();
     } else {
         // allow only to view own site data
-        $sites = $user->getStudySites();
+        $site_arr = $user->getData('CenterIDs');
+        foreach ($site_arr as $key=>$val) {
+            $site_arr[$key] = Site::singleton($val);
+            if ($site_arr[$key]->isStudySite()) {
+                $sites[$val] = $site_arr[$key]->getCenterName();
+            }
+        }
     }
 
     //not yet ideal permissions
@@ -579,9 +585,8 @@ function getIssueFields()
             array()
         );
         $assignee_expanded = $db->pselect(
-            "SELECT DISTINCT u.Real_name, u.UserID FROM users u
-             LEFT JOIN user_psc_rel upr ON (upr.UserID=u.ID)
-WHERE FIND_IN_SET(upr.CenterID,:CenterID) OR (upr.CenterID=:DCC)",
+            "SELECT u.Real_name, u.UserID FROM users u
+WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
             array(
              'CenterID' => $CenterID,
              'DCC'      => $DCCID,
@@ -711,13 +716,13 @@ ORDER BY dateAdded",
  *
  * @return array
  */
-function getIssueData($issueID=null)
+function getIssueData($issueID)
 {
 
     $user =& User::singleton();
     $db   =& Database::singleton();
 
-    if (!empty($issueID)) {
+    if ($issueID) {
         return $db->pselectRow(
             "SELECT i.*, c.PSCID, s.Visit_label as visitLabel FROM issues as i " .
             "LEFT JOIN candidate c ON (i.candID=c.CandID)" .
@@ -730,7 +735,7 @@ function getIssueData($issueID=null)
     return [
             'reporter'      => $user->getData('UserID'),
             'dateCreated'   => date('Y-m-d H:i:s'),
-            'centerID'      => $user->getData('CenterIDs'),
+            'centerID'      => $user->getData('CenterID'),
             'status'        => "new",
             'priority'      => "normal",
             'issueID'       => 0, //TODO: this is dumb

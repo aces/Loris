@@ -1,0 +1,1307 @@
+<?php
+/**
+ * The module to display study statistics
+ *
+ * PHP Version 7
+ *
+ * @category Loris
+ * @package  Main
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
+/**
+ * The module to display study statistics
+ *
+ * PHP Version 7
+ *
+ * @category Loris
+ * @package  Main
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
+class NDB_Form_Statistics extends NDB_Form
+{
+    var $params = array();
+    /**
+     * Checking user's permission
+     *
+     * @return bool
+     */
+    function _hasAccess()
+    {
+        $user =& User::singleton();
+        //TODO: Create a permission specifics to statistics
+        return $user->hasPermission('data_entry');
+    }
+    /**
+     * InCenter function
+     *
+     * @param string $centerID the value of centreID
+     * @param string $Centres  the value of Centres
+     *
+     * @return bool
+     */
+    function _inCenter($centerID, $Centres)
+    {
+        foreach ($Centres as $Centre) {
+            if ($Centre['NumericID'] == $centerID) {
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+     * RenderStatsTable function
+     *
+     * @param string $sectionHeader     the value of sectionHeader
+     * @param string $tableHeader       the value of tableHeader
+     * @param string $subcats           the value of subcats
+     * @param string $visits            the value of visits
+     * @param string $dropdown_name     the value of dropdown_name
+     * @param string $dropdown_opt      the value of dropdown_opt
+     * @param string $dropdown_selected the value of dropdown_selected
+     * @param string $centers           the value of centers
+     * @param string $data              the value of data
+     * @param string $Subsection        the value of Subsection=''
+     * @param string $disclamer         the value of disclamer=''
+     * @param string $projectID         the value of projectID is null
+     *
+     * @return string
+     */
+    function renderStatsTable($sectionHeader,
+        $tableHeader,
+        $subcats,
+        $visits,
+        $dropdown_name,
+        $dropdown_opt,
+        $dropdown_selected,
+        $centers,
+        $data,
+        $Subsection='',
+        $disclamer='',
+        $projectID=null
+    ) {
+
+        $tpl_data = array();
+        $tpl_data['test_name']  = htmlspecialchars($_REQUEST['test_name']);
+        $tpl_data['Subsection'] = $Subsection;
+        $tpl_data['Visits']     = $visits;
+        $smarty = new Smarty_neurodb("statistics");
+        $tpl_data['SectionHeader'] = $sectionHeader;
+        $tpl_data['TableHeader']   = $tableHeader;
+        $tpl_data['Disclamer']     = $disclamer;
+        $tpl_data['Subcategories'] = $subcats;
+        $tpl_var = Utility::getSubprojectsForProject($projectID);
+        $tpl_data['Subprojects']      = $tpl_var;
+        $tpl_data['DropdownName']     = $dropdown_name;
+        $tpl_data['DropdownOptions']  = $dropdown_opt;
+        $tpl_data['DropdownSelected'] = $dropdown_selected;
+        $tpl_data['Centers']          = $centers ?? array();
+        foreach ($data as $row) {
+            // TODO: The below fields are not always present
+            // in $data, e.g., in the $result for imaging statistics
+            // This should probably be refactored in the future,
+            // But for now these checks exist to eliminate
+            // PHP Notice noise when the keys are not present
+                $subproj = $row['SubprojectID'] ?? '';
+                $vl      = $row['VLabel'] ?? '';
+                $subcat  = $row['Subcat'] ?? '';
+                $center  = $row['CenterID'] ?? '';
+
+            if (isset($vl) && in_array($vl, $visits)
+                && in_array($subcat, $subcats)
+                && $this->_inCenter($center, $centers)
+            ) {
+                $C = 'C' . $center;
+                $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
+                $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
+                $tpl_data['data'][$subproj][$subcat]      += $row['val'];
+                $tpl_data['data'][$subproj]['total']      += $row['val'];
+                $tpl_data['data'][$vl][$subcat]           += $row['val'];
+                $tpl_data['data'][$vl]['total']           += $row['val'];
+                $tpl_data['data'][$subproj][$C][$vl][$subcat]  = $row['val'];
+                $tpl_data['data'][$subproj][$C][$vl]['total'] += $row['val'];
+                $tpl_data['data'][$subproj][$C][$subcat]      += $row['val'];
+                $tpl_data['data'][$subproj][$C]['total']      += $row['val'];
+                $tpl_data['data'][$C][$vl][$subcat]           += $row['val'];
+                $tpl_data['data'][$C][$vl]['total']           += $row['val'];
+                $tpl_data['data'][$C][$subcat] += $row['val'];
+                $tpl_data['data'][$C]['total'] += $row['val'];
+                $tpl_data['data'][$subcat]     += $row['val'];
+                $tpl_data['data']['total']     += $row['val'];
+            }
+
+        }
+        $smarty->assign($tpl_data);
+        $html = $smarty->fetch("table_statistics.tpl");
+        return $html;
+
+    }
+    /**
+     * Statistics function
+     *
+     * @return void
+     */
+    function statistics()
+    {
+        $DB =& Database::singleton();
+        $this->tpl_data['StatsTabs'] = $DB->pselect(
+            "SELECT ModuleName, SubModuleName, Description
+                 FROM StatisticsTabs
+                 ORDER BY OrderNo",
+            array()
+        );
+
+    }
+    /**
+     * Stats_general function
+     *
+     * @return void
+     */
+    function stats_general()// @codingStandardsIgnoreLine
+    {
+        //$DB =& Database::singleton();
+    }
+    /**
+     * Stats_demographic function
+     *
+     * @return void
+     */
+    function stats_demographic()// @codingStandardsIgnoreLine
+    {
+        $DB          =& Database::singleton();
+        $config      = NDB_Config::singleton();
+        $useProjects = $config->getSetting("useProjects");
+        $this->tpl_data['useProjects'] = $useProjects;
+        //This boolean is for optional use by project if the demographics table
+        // queries any information from the mri_parameter_form table
+        $this->tpl_data['mri_table_exists'] = true;
+        if (!$DB->tableExists('mri_parameter_form')) {
+            $this->tpl_data['mri_table_exists'] = false;
+        }
+
+        $this->tpl_data['showTable'] = true;
+
+        //PROJECTS
+        $projects[null] = 'All Projects';
+        foreach (Utility::getProjectList() as $key => $value) {
+            $projects[$key] = $value;
+        }
+        $demographicProject = $_REQUEST['DemographicProject'] ?? '';
+        $Param_Project      = '';
+        $subprojList        = '';
+        $subproject_query   = '';
+        $subprojects        = array();
+        $Visits = array();
+        if (empty($demographicProject)) {
+            error_log('No demographic project specified in request');
+        } else {
+            $demographicProject = htmlspecialchars($demographicProject);
+            $this->tpl_data['CurrentProject']
+                = array(
+                   'ID'   => $demographicProject,
+                   'Name' => $projects[$demographicProject] ?? '',
+                  );
+            $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+            $this->params['pid'] = $demographicProject;
+            $Visits = Utility::getExistingVisitLabels($demographicProject);
+
+            //SUBPROJECTS
+            $subprojects = Utility::getSubprojectsForProject($demographicProject);
+            if (empty($subprojects)) {
+                error_log('Could not load subproject data for demographic stats');
+            } else {
+                foreach ($subprojects as $key=>$val) {
+                    $subprojList .= $key.",";
+                }
+                $subprojList = substr($subprojList, 0, -1);
+                if (!empty($subprojList)) {
+                    $subproject_query ="AND s.SubprojectID IN ($subprojList)";
+                }
+            }
+        }
+
+        //SITES
+        $demographicSite = $_REQUEST['DemographicSite'] ?? '';
+        $Param_Site      = '';
+        if (empty($demographicSite)) {
+            error_log('No demographic site specified in request');
+        } else {
+            $demographicSite     = htmlspecialchars($demographicSite);
+            $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
+            $this->params['sid'] = $demographicSite;
+        }
+        $centers     = $DB->pselect(
+            "SELECT CONCAT('C', CenterID) as ID,
+            CenterID as NumericID,
+            IFNULL(PSCArea,Name) as LongName,
+            Name as ShortName
+            FROM psc
+            WHERE CenterID <> '1'
+            AND Study_site = 'Y'",
+            array()
+        );
+        $sites[null] ="All sites";
+        if (empty($centers)) {
+            error_log('No center data could be retrieved from the database!');
+        } else {
+            foreach ($centers as $row) {
+                $id         = $row['NumericID'] ?? '';
+                $shortName  = $row['ShortName'] ?? '';
+                $longName   = $row['LongName'] ?? '';
+                $sites[$id] = $shortName;
+                if ($demographicSite == $id) {
+                    $this->tpl_data['CurrentSite'] = array(
+                                                      'ID'   => $id,
+                                                      'Name' => $longName,
+                                                     );
+                }
+            }
+        }
+
+        $this->tpl_data['Sites']       = $sites;
+        $this->tpl_data['Projects']    = $projects;
+        $this->tpl_data['Subprojects'] = $subprojects;
+        $this->tpl_data['Visits']      = $Visits;
+
+        //REGISTERED CANDIDATES ROW
+        $result = $DB->pselect(
+            "SELECT s.subprojectid as rowid,
+            count(DISTINCT(c.PSCID)) as val
+            FROM candidate as c
+            LEFT JOIN session s ON (s.CandID=c.CandID)
+            WHERE c.CenterID <> '1'
+            AND c.Entity_type != 'Scanner'
+            AND c.Active = 'Y'
+            $Param_Project
+            $Param_Site
+            GROUP BY s.subprojectid",
+            $this->params
+        );
+
+        $this->tpl_data['registered']['total'] = 0;
+        foreach ($result as $row) {
+            $this->tpl_data['registered'][$row['rowid']] = $row['val'];
+            $this->tpl_data['registered']['total']      += $row['val'];
+        }
+
+        //PARTICIPANT STATUS ACTIVE
+        $result = $DB->pselect(
+            "SELECT s.subprojectid as rowid,
+            count(DISTINCT(c.PSCID)) as val
+            FROM candidate as c
+            LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+            LEFT JOIN session s ON (s.CandID=c.CandID)
+            WHERE c.CenterID <> '1'
+            AND c.Entity_type != 'Scanner'
+            AND c.Active='Y'
+            AND (ps.participant_status=1
+            OR ps.participant_status IS NULL)
+            $Param_Project
+            $Param_Site
+            GROUP BY s.subprojectid",
+            $this->params
+        );
+
+        $this->tpl_data['ps_active']['total'] = 0;
+        foreach ($result as $row) {
+            $this->tpl_data['ps_active'][$row['rowid']] = $row['val'];
+            $this->tpl_data['ps_active']['total']      += $row['val'];
+        }
+
+        //PARTICIPANT STATUS INACTIVE
+        $result = $DB->pselect(
+            "SELECT s.subprojectid as rowid,
+            count(DISTINCT(c.PSCID)) as val
+            FROM candidate as c
+            LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+            LEFT JOIN session s ON (s.CandID=c.CandID)
+            WHERE c.CenterID <> '1'
+            AND c.Entity_type != 'Scanner'
+            AND c.Active='Y'
+            AND ps.participant_status=5
+            $Param_Project
+            $Param_Site
+            GROUP BY s.subprojectid",
+            $this->params
+        );
+
+        $this->tpl_data['ps_inactive']['total'] = 0;
+        foreach ($result as $row) {
+            $this->tpl_data['ps_inactive'][$row['rowid']] = $row['val'];
+            $this->tpl_data['ps_inactive']['total']      += $row['val'];
+        }
+
+        //MALE
+        $result = $DB->pselect(
+            "SELECT s.subprojectid as rowid,
+            count(DISTINCT(c.PSCID)) as val
+            FROM candidate as c
+            LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+            LEFT JOIN session s ON (s.CandID=c.CandID)
+            WHERE coalesce(s.active, 'Y')='Y'
+            AND c.CenterID <> '1'
+            AND c.Entity_type != 'Scanner'
+            AND c.Active='Y'
+            AND (ps.participant_status=1 OR
+            ps.participant_status IS NULL)
+            AND c.Gender='Male'
+            $Param_Project
+            $Param_Site
+            GROUP BY s.subprojectid",
+            $this->params
+        );
+
+        $this->tpl_data['gender_male']['total'] = 0;
+        foreach ($result as $row) {
+            $this->tpl_data['gender_male'][$row['rowid']] = $row['val'];
+            $this->tpl_data['gender_male']['total']      += $row['val'];
+        }
+        //FEMALE
+        $result = $DB->pselect(
+            "SELECT s.subprojectid as rowid,
+            count(DISTINCT(c.PSCID)) as val
+            FROM candidate as c
+            LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+            LEFT JOIN session s ON (s.CandID=c.CandID)
+            WHERE coalesce(s.active, 'Y')='Y'
+            AND c.CenterID <> '1'
+            AND c.Entity_type != 'Scanner'
+            AND c.Active='Y'
+            AND (ps.participant_status=1
+            OR ps.participant_status IS NULL)
+            AND c.Gender='Female'
+            $Param_Project
+            $Param_Site
+            GROUP BY s.subprojectid",
+            $this->params
+        );
+
+        $this->tpl_data['gender_female']['total'] = 0;
+        foreach ($result as $row) {
+            $this->tpl_data['gender_female'][$row['rowid']] = $row['val'];
+            $this->tpl_data['gender_female']['total']      += $row['val'];
+        }
+
+        //AGE AVERAGE
+        $result = $DB->pselect(
+            "SELECT rowid, AVG(DATEDIFF(dr,dob)) as age
+            FROM
+            (SELECT DISTINCT c.CandID, s.subprojectid as rowid,
+            c.Date_registered as dr,c.DoB as dob
+            FROM candidate as c
+            LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+            LEFT JOIN session s ON (s.CandID=c.CandID)
+            WHERE coalesce(s.active, 'Y')='Y'
+            AND c.CenterID <> '1'
+            AND c.Entity_type != 'Scanner'
+            AND (ps.participant_status=1
+            OR ps.participant_status IS NULL)
+            AND c.Active='Y'
+            $Param_Project
+            $Param_Site)
+            as res
+            GROUP BY rowid",
+            $this->params
+        );
+
+        foreach ($result as $row) {
+            $this->tpl_data['age_avg'][$row['rowid']] = round($row['age']*12/365, 2);
+        }
+
+        //START BIG TABLE
+        $inst_dropdown   = array_merge(
+            array( '' => 'Recruit Breakdown by Sex'),
+            Utility::getAllInstruments()
+        );
+        $instrument_list = Utility::getAllInstruments();
+        $this->tpl_data['all_instruments'] = $instrument_list;
+        $demographicInstrument = $_REQUEST['DemographicInstrument'] ?? '';
+        if (!empty($demographicInstrument)) {
+            $demographicInstrument = htmlspecialchars($demographicInstrument);
+            $Subcategories         = array(
+                                      'Complete',
+                                      'Incomplete',
+                                     );
+            $result = $DB->pselect(
+                "SELECT count(*) as val,
+                f.Data_entry as Subcat,
+                c.CenterID as CenterID,
+                s.SubprojectID as SubprojectID,
+                s.visit_label as VLabel
+                FROM session s JOIN candidate c ON (s.CandID=c.CandID)
+                JOIN flag f ON (f.SessionID=s.ID)
+                JOIN ".$DB->escape($demographicInstrument).
+                " i USING(CommentID)
+                WHERE s.Active='Y'
+                AND c.CenterID <> '1'
+                AND f.Data_entry='Complete'
+                AND f.Administration='All'
+                AND f.CommentID NOT LIKE 'DDE%'
+                $Param_Project
+                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat
+                UNION
+                SELECT count(*) as val, 'Incomplete' as Subcat,
+                    c.CenterID as CenterID,
+                    s.SubprojectID as SubprojectID,
+                    s.visit_label as VLabel
+                    FROM session s JOIN candidate c USING(CandID)
+                    JOIN flag f ON (f.SessionID=s.ID)
+                    JOIN ".$DB->escape($demographicInstrument).
+                    " i USING(CommentID)
+                    WHERE s.Active='Y' AND s.CenterID <> 1
+                    $Param_Project
+                    AND f.CommentID NOT LIKE 'DDE%'
+                    AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
+                    GROUP BY c.CenterID, SubprojectID, VLabel, Subcat
+                    ",
+                $this->params
+            );
+            $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
+                "Breakdown of Registered Candidates",
+                "Data Entry Completion Status for ".
+                $instrument_list[$demographicInstrument],
+                '',
+                $Subcategories,
+                $Visits,
+                "DemographicInstrument",
+                $inst_dropdown,
+                $demographicInstrument,
+                $centers,
+                $result,
+                "demographics",
+                $demographicProject
+            );
+        } else {
+            $Subcategories = array(
+                              'Male',
+                              'Female',
+                             );
+            $result        = $DB->pselect(
+                "SELECT c.CenterID as CenterID,
+                s.SubprojectID as SubprojectID,
+                s.visit_label as VLabel,
+                c.gender as Subcat,
+                count(s.CandID) as val
+                FROM session s JOIN candidate c ON (s.CandID=c.CandID)
+                WHERE s.active='Y' AND s.CenterID <> '1'
+                AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')
+                $subproject_query)
+                AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
+                AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
+                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat",
+                array()
+            );
+            $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
+                "Breakdown of Registered Candidates",
+                "Breakdown by Sex",
+                '',
+                $Subcategories,
+                $Visits,
+                "DemographicInstrument",
+                $inst_dropdown,
+                '',
+                $centers,
+                $result,
+                "demographics",
+                $demographicProject
+            );
+        }
+    }
+    /**
+     * Stats_behavioural function
+     *
+     * @return void
+     */
+    function stats_behavioural()// @codingStandardsIgnoreLine
+    {
+        $DB          =& Database::singleton();
+        $config      = NDB_Config::singleton();
+        $useProjects = $config->getSetting("useProjects");
+        $this->tpl_data['useProjects'] = $useProjects;
+        $subprojList ='';
+
+        // Get project data
+        $projects[null] = 'All Projects';
+        foreach (Utility::getProjectList() as $key=>$value) {
+            $projects[$key] = $value;
+        }
+        $this->tpl_data['Projects'] = $projects;
+
+        // SITES
+        $site = $_REQUEST['site'] ?? '';
+        if (empty($site)) {
+            error_log('No site data specified in request');
+        }
+        $site = htmlspecialchars($site);
+        // Get center data
+        $centers = $DB->pselect(
+            "SELECT CONCAT('C', CenterID) as ID,
+            CenterID as NumericID,
+            IFNULL(PSCArea,Name) as LongName,
+            Name as ShortName
+            FROM psc
+            WHERE CenterID <> '1'
+            AND Study_site = 'Y'",
+            array()
+        );
+        if (empty($centers)) {
+            error_log('No center data could be retrieved from the database!');
+        } else {
+            foreach ($centers as $row) {
+                $id        = $row['NumericID'] ?? '';
+                $shortName = $row['ShortName'] ?? '';
+                $longName  = $row['LongName'] ?? '';
+                $this->tpl_data['Sites'][$id]
+                    = $longName;
+                if ($site == $id) {
+                    $this->tpl_data['CurrentSite'] = array(
+                                                      'ID'   => $id,
+                                                      'Name' => $longName,
+                                                     );
+                }
+            }
+            $this->tpl_data['Centers'] = $centers;
+        }
+
+        $Param_Project      = '';
+        $subproject_query   ='';
+        $behaviouralProject = $_REQUEST['BehaviouralProject'] ?? '';
+        if (empty($behaviouralProject)) {
+            error_log('No behavioural project specified in request');
+        } else {
+            $behaviouralProject = htmlspecialchars($behaviouralProject);
+            $this->tpl_data['CurrentProject']
+                = array(
+                   'ID'   => $behaviouralProject,
+                   'Name' => $projects[$behaviouralProject],
+                  );
+            $Param_Project ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+            $subprojects   = Utility::getSubprojectsForProject($behaviouralProject);
+
+            $this->params['pid'] = $behaviouralProject;
+
+            $this->tpl_data['Subprojects'] = $subprojects;
+            foreach ($subprojects as $key=>$val) {
+                $subprojList .= $key.",";
+            }
+            $subprojList = substr($subprojList, 0, -1);
+            if (!empty($subprojList)) {
+                $subproject_query ="AND s.SubprojectID IN ($subprojList)";
+            }
+
+            $Visits = Utility::getExistingVisitLabels($behaviouralProject);
+            $this->tpl_data['Visits'] = $Visits;
+        }
+
+        //---- BEHAVIORAL STATS -----
+        $result = $DB->pselect(
+            "SELECT s.CenterID,
+            f.Data_Entry as Data_Entry,
+            s.visit_label as VLabel,
+            COUNT(s.CandID) as val
+            FROM session s JOIN candidate c ON (s.CandID=c.CandID)
+            JOIN flag f ON (f.SessionID=s.ID)
+            WHERE
+            s.Active='Y' AND c.Active='Y'
+            AND s.Current_stage <> 'Recycling Bin'
+            AND f.CommentID NOT LIKE 'DDE%'
+            AND s.CenterID <> '1'
+            $subproject_query
+            $Param_Project
+            GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
+            $this->params
+        );
+
+        foreach ($result as $row) {
+            // Put some things into variables to make the lines shorter
+            // so that they don't wrap. Note that "c"(enter array) needs to
+            // be a reference since we'll be modifying it.
+            $center = $row['CenterID'];
+            $vl     = $row['VLabel'];
+            $c      =& $this->tpl_data['behaviour']['C' . $center];
+
+            if (is_null($c)) {
+                error_log(
+                    "Error: no tpl_data for C$center "
+                    . ' in behavioural statistics'
+                );
+                return;
+            }
+
+            $c[$vl]['total']   += $row['val'];
+            $c['all']['total'] += $row['val'];
+            if ($row['Data_Entry'] == 'Complete') {
+                $c[$vl]['complete']   += $row['val'];
+                $c['all']['complete'] += $row['val'];
+            }
+            if ($c[$vl]['total'] != 0) {
+                $c[$vl]['percent']
+                    = floor($c[$vl]['complete'] / $c[$vl]['total']*100);
+            }
+            if ($c['all']['total'] != 0) {
+                $c['all']['percent']
+                    = floor($c['all']['complete'] / $c['all']['total']*100);
+            }
+        }
+        // DDE STATS
+        $result = $DB->pselect(
+            "SELECT s.CenterID,
+            f.Data_Entry as Data_Entry,
+            s.visit_label as VLabel,
+            COUNT(s.CandID) as val
+            FROM session as s
+            JOIN candidate as c ON (s.CandID=c.CandID)
+            JOIN flag as f ON (f.SessionID=s.ID)
+            WHERE s.Active='Y'
+            AND s.Current_stage <> 'Recycling Bin'
+            AND f.CommentID LIKE 'DDE%'
+            AND c.Active='Y'
+            AND s.CenterID <> '1'
+            $subproject_query
+            $Param_Project
+            GROUP BY s.CenterID, VLabel, f.Data_Entry",
+            $this->params
+        );
+        foreach ($result as $row) {
+            $center = $row['CenterID'];
+            $vl     = $row['VLabel'];
+            $c      =& $this->tpl_data['dde']['C' . $center];
+
+            if (is_null($c)) {
+                error_log(
+                    "Error: no tpl_data for C$center in behavioural"
+                    . " dde statistics"
+                );
+                return;
+            }
+
+            $c[$vl]['total']   += $row['val'];
+            $c['all']['total'] += $row['val'];
+            if ($row['Data_Entry'] == 'Complete') {
+                $c[$vl]['complete']   += $row['val'];
+                $c['all']['complete'] += $row['val'];
+            }
+            if ($c[$vl]['total'] != 0) {
+                $c[$vl]['percent']
+                    = floor($c[$vl]['complete'] / $c[$vl]['total']*100);
+            }
+            if ($c['all']['total'] != 0) {
+                $c['all']['percent']
+                    = floor($c['all']['complete'] / $c['all']['total']*100);
+            }
+        }
+    }
+    /**
+     * Stats_MRI function
+     *
+     * @return bool
+     */
+    function stats_MRI()//@codingStandardsIgnoreLine
+    {
+        $DB          =& Database::singleton();
+        $config      = NDB_Config::singleton();
+        $useProjects = $config->getSetting("useProjects");
+        $this->tpl_data['useProjects'] = $useProjects;
+        $bigTable_params =array();
+
+        $this->tpl_data['showTable'] = true;
+
+        //PROJECTS
+        $projects[null] = 'All Projects';
+        foreach (Utility::getProjectList() as $key => $value) {
+            $projects[$key] = $value;
+        }
+        $mriProject       = $_REQUEST['MRIProject'] ?? '';
+        $Param_Project    = '';
+        $subproject_query ='';
+        $subprojects      = array();
+        if (empty($mriProject)) {
+            error_log('No MRI project specified in request');
+        } else {
+            $mriProject = htmlspecialchars($mriProject);
+            $this->tpl_data['CurrentProject']
+                = array(
+                   'ID'   => $mriProject,
+                   'Name' => $projects[$mriProject] ?? '',
+                  );
+            $sqlVar        = 'AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+            $Param_Project =$sqlVar;
+            $this->params['pid']    = $mriProject;
+            $bigTable_params['pid'] = $mriProject;
+
+            //SUBPROJECTS
+            $subprojList = '';
+            $subprojects = Utility::getSubprojectsForProject($mriProject);
+            if (empty($subprojects)) {
+                error_log('Could not load subproject data for mri stats');
+            } else {
+                foreach ($subprojects as $key=>$val) {
+                    $subprojList .= $key.",";
+                }
+                $subprojList = substr($subprojList, 0, -1);
+                if (!empty($subprojList)) {
+                    $subproject_query ="AND s.SubprojectID IN ($subprojList)";
+                }
+            }
+        }
+        //SITES
+        $mriSite    = $_REQUEST['MRIsite'] ?? '';
+        $Param_Site = '';
+        if (empty($mriSite)) {
+            error_log('No MRI site specified in request');
+        }
+        $mriSite    = htmlspecialchars($mriSite);
+        $Param_Site ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
+        $this->params['sid'] = $mriSite;
+        $centers = $DB->pselect(
+            "SELECT CONCAT('C', CenterID) as ID,
+            CenterID as NumericID,
+            IFNULL(PSCArea,Name) as LongName,
+            Name as ShortName
+            FROM psc
+            WHERE CenterID <> '1'
+            AND Study_site = 'Y'",
+            array()
+        );
+        if (empty($centers)) {
+            error_log('No center data could be retrieved from the database!');
+        } else {
+            $sites[null] ="All sites";
+            foreach ($centers as $row) {
+                $id         = $row['NumericID'] ?? '';
+                $shortName  = $row['ShortName'] ?? '';
+                $longName   = $row['LongName'] ?? '';
+                $sites[$id] = $shortName;
+                if ($mriSite == $shortName) {
+                    $this->tpl_data['CurrentSite'] = array(
+                                                      'ID'   => $id,
+                                                      'Name' => $longName,
+                                                     );
+                }
+            }
+        }
+
+        //GET SCAN TYPES
+        $Scan_type_results = $DB->pselect(
+            "SELECT mst.ID, mst.Scan_type
+            FROM mri_scan_type mst
+            JOIN mri_protocol mp ON (mst.ID=mp.Scan_type)",
+            array()
+        );
+
+        foreach ($Scan_type_results as $row) {
+            $scan_types[$row['ID']] = $row['Scan_type'];
+        }
+
+        $scans_selected = array();
+        $scans          = $_REQUEST['Scans'] ?? '';
+        if (empty($scans)) {
+            error_log('No scans specified in request');
+        } else {
+            $scans = htmlspecialchars($scans);
+            $scans_selected_input = explode(",", $scans);
+            if (empty($scans_selected_input)) {
+                $scans_selected =$scan_types;
+            } else {
+                foreach ($scans_selected_input as $key => $scid) {
+                    $scans_selected[$scid] =$scan_types[$scid];
+                }
+            }
+        }
+
+        $Visits = Utility::getExistingVisitLabels($mriProject);
+        $this->tpl_data['scan_types']     = $scan_types;
+        $this->tpl_data['Scans_sel_box']  = array_keys($scans_selected);
+        $this->tpl_data['Scans_selected'] = $scans_selected;
+        $this->tpl_data['Sites']          = $sites;
+        $this->tpl_data['Projects']       = $projects;
+        $this->tpl_data['Subprojects']    = $subprojects;
+        $this->tpl_data['Visits']         = $Visits;
+
+        //START BIG TABLE
+        //if table is not in database handle by displaying error message
+        $this->tpl_data['mri_table_exists'] = true;
+        if (!$DB->tableExists('mri_parameter_form')) {
+            $this->tpl_data['mri_table_exists'] = false;
+            return;
+        }
+        $MRISubcategories = array(
+                             'Complete',
+                             'Partial Run',
+                             'No Scan',
+                            );
+
+        //Check if a specific scan is requested otherwise display first
+        //available scan
+        $mriRequest = $_REQUEST['mri_type'] ?? '';
+        if (empty($mriRequest)) {
+            $MRI_Type = current($scan_types);
+        } else {
+            $MRI_Type = $scan_types[$mriRequest];
+        }
+        //TODO IBIS
+        if ($MRI_Type==='t1w') {
+            $MRI_Type ='T1';
+        } elseif ($MRI_Type=='t2w') {
+            $MRI_Type ='T2';
+        } elseif ($MRI_Type=='dti') {
+            $MRI_Type ='DTI';
+        } elseif ($MRI_Type=='ep2d_bold') {
+            $MRI_Type ='BOLD';
+        } elseif ($MRI_Type=='DTI65' || $MRI_Type=='DTI65_B1000' ) {
+            $MRI_Type ='Spectroscopy';
+        }
+
+        $MRI_Type_Field = $MRI_Type . "_Scan_Done";
+        $MRIHeader      = "$MRI_Type Breakdown";
+        $CaseStatement  = "
+            CASE($MRI_Type_Field)
+            WHEN 'Partial' THEN 'Partial Run'
+            WHEN 'No' THEN 'No Scan'
+            ELSE 'Complete'
+            END";
+
+        $result = $DB->pselect(
+            "SELECT s.SubprojectID,
+            c.CenterID,
+            s.Visit_label as VLabel,
+            $CaseStatement as Subcat,
+            COUNT(*) as val
+            FROM mri_parameter_form m
+            JOIN flag f USING (CommentID)
+            JOIN session s ON (f.SessionID=s.ID)
+            JOIN candidate c ON (c.CandID=s.CandID)
+            WHERE s.Current_stage <> 'Recycling Bin'
+            AND f.Administration <> 'None'
+            AND s.Active='Y'
+            AND c.Active='Y'
+            AND f.CommentID NOT LIKE 'DDE%'
+            AND s.CenterID <> '1'
+            $subproject_query
+            $Param_Project
+            GROUP BY Subcat,
+            s.SubprojectID,
+            c.CenterID,
+            s.Visit_label",
+            $bigTable_params
+        );
+
+        $M_Visits = Utility::getExistingVisitLabels($mriProject);
+        $this->tpl_data['MRI_Done_Table'] = $this->renderStatsTable(
+            "Breakdown By Scan Type",
+            $MRIHeader,
+            "",
+            $MRISubcategories,
+            $M_Visits,
+            "mri_type",
+            $scan_types,
+            $mriRequest,
+            $centers,
+            $result,
+            "mri",
+            $mriProject
+        );
+        //END BIGTABLE
+
+        //considers the naming convention of
+        // mri_parameter_form is "scanType_scan_done"
+        $Scan_data_results =array();
+        foreach ($scans_selected as $key => $scan) {
+            $scan_params = array_merge(array('scan' => $scan), $this->params);
+
+            //INSERT COUNT TOTAL
+            $Scan_data_results[$key]['insert_count']['total'] = $DB->pselectOne(
+                "SELECT COUNT(*)
+                FROM files fi
+                JOIN session s ON (fi.SessionID=s.ID)
+                JOIN candidate c ON (c.CandID=s.CandID)
+                WHERE s.Current_stage <> 'Recycling Bin'
+                AND s.Active='Y'
+                AND c.Active='Y'
+                AND s.CenterID <> '1'
+                AND fi.FileType='mnc'
+                AND fi.File LIKE CONCAT('%_', :scan, '_%')
+                $subproject_query
+                $Param_Project
+                $Param_Site
+                ",
+                $scan_params
+            );
+            //INSERT COUNT Values
+            $count_data = $DB->pselect(
+                "SELECT s.SubprojectID as subID, COUNT(*) as cnt
+                FROM files fi
+                JOIN session s ON (fi.SessionID=s.ID)
+                JOIN candidate c ON (c.CandID=s.CandID)
+                WHERE s.Current_stage <> 'Recycling Bin'
+                AND s.Active='Y'
+                AND c.Active='Y'
+                AND s.CenterID <> '1'
+                AND fi.FileType='mnc'
+                AND fi.File LIKE CONCAT('%_', :scan, '_%')
+                $subproject_query
+                $Param_Project
+                $Param_Site
+                GROUP BY s.SubprojectID",
+                $scan_params
+            );
+            foreach ($count_data as $row) {
+                $Scan_data_results[$key]['insert_count'][$row['subID']]
+                    = $row['cnt'];
+                //no_qc_count is computed by the difference between insertions
+                // and the sum of passed qc and failed qc
+                $Scan_data_results[$key]['no_qc_count'][$row['subID']]
+                    = $row['cnt'];
+            }
+
+            //QC STATUS: PASSED TOTAL
+            $Scan_data_results[$key]['qc_pass_count']['total'] = $DB->pselectOne(
+                "SELECT COUNT(*)
+                FROM files_qcstatus fqc
+                JOIN files fi on (fi.FileID=fqc.FileID)
+                JOIN session s ON (fi.SessionID=s.ID)
+                JOIN candidate c ON (c.CandID=s.CandID)
+                WHERE s.Current_stage <> 'Recycling Bin'
+                AND fqc.FileId IS NOT NULL
+                AND s.Active='Y'
+                AND c.Active='Y'
+                AND s.CenterID <> '1'
+                AND fqc.QCStatus='Pass'
+                AND fi.File LIKE CONCAT('%_', :scan, '_%')
+                $subproject_query
+                $Param_Project
+                $Param_Site
+                ",
+                $scan_params
+            );
+            //QC STATUS: PASSED values
+            $count_data = $DB->pselect(
+                "SELECT s.SubprojectID as subID, COUNT(*) as cnt
+                FROM files_qcstatus fqc
+                JOIN files fi on (fi.FileID=fqc.FileID)
+                JOIN session s ON (fi.SessionID=s.ID)
+                JOIN candidate c ON (c.CandID=s.CandID)
+                WHERE s.Current_stage <> 'Recycling Bin'
+                AND fqc.FileId IS NOT NULL
+                AND s.Active='Y'
+                AND c.Active='Y'
+                AND s.CenterID <> '1'
+                AND fqc.QCStatus='Pass'
+                AND fi.File LIKE CONCAT('%_', :scan, '_%')
+                $subproject_query
+                $Param_Project
+                $Param_Site
+                GROUP BY s.SubprojectID",
+                $scan_params
+            );
+            foreach ($count_data as $row) {
+                $Scan_data_results[$key]['qc_pass_count'][$row['subID']]
+                    = $row['cnt'];
+                //no_qc_count is computed by the difference between insertions
+                // and the sum of passed qc and failed qc
+                $Scan_data_results[$key]['no_qc_count'][$row['subID']]
+                    = $Scan_data_results[$key]['no_qc_count'][$row['subID']]-
+                    $row['cnt'];
+            }
+
+            //QC STATUS: FAILED TOTAL
+            $Scan_data_results[$key]['qc_fail_count']['total'] = $DB->pselectOne(
+                "SELECT COUNT(*)
+                FROM files_qcstatus fqc
+                JOIN files fi on (fi.FileID=fqc.FileID)
+                JOIN session s ON (fi.SessionID=s.ID)
+                JOIN candidate c ON (c.CandID=s.CandID)
+                WHERE s.Current_stage <> 'Recycling Bin'
+                AND fqc.FileId IS NOT NULL
+                AND s.Active='Y'
+                AND c.Active='Y'
+                AND s.CenterID <> '1'
+                AND fqc.QCStatus='Fail'
+                AND fi.File LIKE CONCAT('%_', :scan, '_%')
+                $subproject_query
+                $Param_Project
+                $Param_Site
+                ",
+                $scan_params
+            );
+            //QC STATUS: FAILED values
+            $count_data = $DB->pselect(
+                "SELECT s.SubprojectID as subID, COUNT(*) as cnt
+                FROM files_qcstatus fqc
+                JOIN files fi on (fi.FileID=fqc.FileID)
+                JOIN session s ON (fi.SessionID=s.ID)
+                JOIN candidate c ON (c.CandID=s.CandID)
+                WHERE s.Current_stage <> 'Recycling Bin'
+                AND fqc.FileId IS NOT NULL
+                AND s.Active='Y'
+                AND c.Active='Y'
+                AND s.CenterID <> '1'
+                AND fqc.QCStatus='Fail'
+                AND fi.File LIKE CONCAT('%_', :scan, '_%')
+                $subproject_query
+                $Param_Project
+                $Param_Site
+                GROUP BY s.SubprojectID",
+                $scan_params
+            );
+            foreach ($count_data as $row) {
+                $Scan_data_results[$key]['qc_fail_count'][$row['subID']]
+                    = $row['cnt'];
+                //no_qc_count is computed by the difference between insertions
+                // and the sum of passed qc and failed qc
+                $Scan_data_results[$key]['no_qc_count'][$row['subID']]
+                    = $Scan_data_results[$key]['no_qc_count'][$row['subID']]-
+                    $row['cnt'];
+            }
+
+            $Scan_data_results[$key]['no_qc_count']['total']
+                = $Scan_data_results[$key]['insert_count']['total'] -
+                $Scan_data_results[$key]['qc_pass_count']['total'] -
+                $Scan_data_results[$key]['qc_fail_count']['total'];
+        }
+        $this->tpl_data['scan_data_results'] = $Scan_data_results;
+
+    } // End function
+
+
+    /**
+     * ELIABILITY function
+     *
+     * @return void
+     */
+    function stats_reliability()//@codingStandardsIgnoreLine
+    {
+        $DB          =& Database::singleton();
+        $config      = NDB_Config::singleton();
+        $useProjects = $config->getSetting("useProjects");
+        $this->tpl_data['useProjects'] = $useProjects;
+        //PROJECTS
+        $projects[null] = 'All Projects';
+        foreach (Utility::getProjectList() as $key => $value) {
+            $projects[$key] = $value;
+        }
+
+        $reliabilityProject = $_REQUEST['ReliabilityProject'] ?? '';
+        $reliabilityProject = htmlspecialchars($reliabilityProject);
+        $Param_Project      ='';
+        if (!empty($reliabilityProject)) {
+            $this->tpl_data['CurrentProject']
+                = array(
+                   'ID'   => $reliabilityProject,
+                   'Name' => $projects[$reliabilityProject] ?? '',
+                  );
+            $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+            $this->params['pid'] = $reliabilityProject;
+        }
+
+        //SITES
+        $reliabilitySite = $_REQUEST['ReliabilitySite'] ?? '';
+        $Param_Site      = '';
+        if (empty($reliabilitySite)) {
+            error_log('No reliability site specified in request');
+        } else {
+            $reliabilitySite     = htmlspecialchars($reliabilitySite);
+            $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
+            $this->params['sid'] = $reliabilitySite;
+        }
+        $centers     = $DB->pselect(
+            "SELECT CONCAT('C', CenterID) as ID,
+            CenterID as NumericID,
+            IFNULL(PSCArea,Name) as LongName,
+            Name as ShortName
+            FROM psc
+            WHERE CenterID <> '1'
+            AND Study_site = 'Y'",
+            array()
+        );
+        $sites[null] ="All sites";
+        if (empty($centers)) {
+            error_log('No center data could be retrieved from the database!');
+        } else {
+            foreach ($centers as $row) {
+                $id         = $row['NumericID'] ?? '';
+                $shortName  = $row['ShortName'] ?? '';
+                $longName   = $row['LongName'] ?? '';
+                $sites[$id] = $shortName;
+                if ($reliabilitySite == $shortName) {
+                    $this->tpl_data['CurrentSite'] = array(
+                                                      'ID'   => $id,
+                                                      'Name' => $longName,
+                                                     );
+                }
+            }
+            $this->tpl_data['Centers'] = $centers;
+        }
+
+        $this->tpl_data['Projects'] = $projects;
+        $this->tpl_data['Sites']    = $sites;
+
+        $this->tpl_data['reliability_completion']
+            = $this->getReliabilityData($Param_Project, $Param_Site);
+    }
+    /**
+     * GetReliabilityData function
+     *
+     * @param string $Param_Project the value of Param_Project
+     * @param string $Param_Site    the value of Param_Site
+     *
+     * @return void
+     */
+    function getReliabilityData($Param_Project, $Param_Site)
+    {
+        // Whether something is reliable or not isn't stored in the database,
+        // but calculated on the fly.
+        // As a result, we need to manually calculate it and maintain for each
+        // type of thing Tanya wants stats for here separately
+
+        // Thresholds was copy/pasted from
+        include_once __DIR__ .
+            "/../../reliability/php/NDB_Menu_Filter_reliability.class.inc";
+        $thresholds = NDB_Menu_Filter_Reliability::getThreshholds();
+
+        $config            = NDB_Config::singleton();
+        $reliabilityConfig = $config->getSetting("ReliabilityInstruments");
+        $tests = array();
+
+        foreach (Utility::toArray($reliabilityConfig) AS $reliabilityInstrument) {
+            $instrument_list = $reliabilityInstrument['Instrument'];
+            foreach ($instrument_list AS $instrument) {
+                $tests[$instrument['Testname']] = $instrument['Displayname'];
+            }
+        }
+
+        $reliable = array();
+        foreach ($tests as $inst => $name) {
+            $reliable[] = $this->_getSingleReliabilityData(
+                $Param_Project,
+                $Param_Site,
+                $name,
+                $inst,
+                $thresholds[$inst]
+            );
+        }
+
+        return array_merge($reliable);
+    }
+    /**
+     * GetSingleReliabilityData function
+     *
+     * @param string $Param_Project the value of Param_Project
+     * @param string $Param_Site    the value of Param_Site
+     * @param string $name          the value of name
+     * @param string $inst_name     the value of inst_name
+     * @param string $cutoff        the value of cutoff
+     *
+     * @return void
+     */
+    function _getSingleReliabilityData($Param_Project,
+        $Param_Site,
+        $name,
+        $inst_name,
+        $cutoff
+    ) {
+
+        $db          = Database::singleton();
+        $ret         = array();
+        $ret['name'] = $name;
+        $ret['complete'] = $db->pselectOne(
+            "SELECT count(*)
+            FROM reliability r
+            JOIN flag f USING(CommentID)
+            JOIN session s ON (s.ID=f.SessionID)
+            JOIN candidate c ON (c.CandID=s.CandID)
+            WHERE Instrument='$inst_name'
+            AND Invalid <> 'yes'
+            AND Reliability_score IS NOT NULL
+            AND c.CenterID <> 1
+            $Param_Project
+            $Param_Site",
+            $this->params
+        );
+
+        $ret['reliable'] = $db->pselectOne(
+            "SELECT count(*)
+            FROM reliability r
+            JOIN flag f USING(CommentID)
+            JOIN session s ON (s.ID=f.SessionID)
+            JOIN candidate c ON (c.CandID=s.CandID)
+            WHERE Instrument='$inst_name'
+            AND Invalid <> 'yes'
+            AND Reliability_score IS NOT NULL
+            AND Reliability_score > $cutoff
+            AND c.CenterID <> 1
+            $Param_Project
+            $Param_Site",
+            $this->params
+        );
+
+        $ret['total'] = $db->pselectOne(
+            "SELECT count(*)
+            FROM reliability r
+            JOIN flag f USING(CommentID)
+            JOIN session s ON (s.ID=f.SessionID)
+            JOIN candidate c ON (c.CandID=s.CandID)
+            WHERE Instrument='$inst_name'
+            AND Invalid <> 'yes'
+            AND c.CenterID <> 1
+            $Param_Project
+            $Param_Site",
+            $this->params
+        );
+
+        if ($ret['total'] == 0) {
+            // These should probably be indeterminate instead of 0, but 0
+            // looks cleaner.
+            $ret['percent_complete'] = '0';
+            $ret['percent_reliable'] = '0';
+        } else {
+            $ret['percent_complete'] = round($ret['complete'] / $ret['total'] * 100);
+            $ret['percent_reliable'] = round($ret['reliable'] / $ret['total'] * 100);
+        }
+        return $ret;
+    }
+
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the statistics menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/statistics/js/table_statistics.js",
+             $baseURL . "/statistics/js/statistics.js",
+             $baseURL . "/statistics/js/form_stats_behavioural.js",
+             $baseURL . "/statistics/js/form_stats_reliability.js",
+             $baseURL . "/statistics/js/form_stats_MRI.js",
+             $baseURL . "/statistics/js/form_stats_demographic.js",
+            )
+        );
+    }
+    /**
+     * Include additional CSS files:
+     *
+     * @return array of javascript to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            array($baseURL . "/statistics/css/statistics.css")
+        );
+    }
+
+} // End class
+?>

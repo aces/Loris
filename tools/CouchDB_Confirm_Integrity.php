@@ -48,7 +48,7 @@ class CouchDBIntegrityChecker
      */
     function __construct()
     {
-        $this->SQLDB = Database::singleton();
+        $this->SQLDB   = Database::singleton();
         $this->CouchDB = CouchDB::singleton();
     }
 
@@ -65,62 +65,55 @@ class CouchDBIntegrityChecker
             "sessions",
             array("reduce" => "false")
         );
-        print "Sessions:\n";
+        print "Sessions:";
         $activeExists = $this->SQLDB->prepare(
-            "SELECT count(*) AS count FROM 
-        candidate c LEFT JOIN session s USING (CandID) WHERE s.Active='Y' 
-        AND c.Active='Y' AND c.PSCID=:PID and s.Visit_label=:VL"
+            "SELECT count(*) FROM candidate".
+            " c LEFT JOIN session s USING (CandID) WHERE s.Active='Y' AND".
+            " c.Active='Y' AND c.PSCID=:PID and s.Visit_label=:VL"
         );
         foreach ($sessions as $row) {
             $pscid = $row['key'][0];
             $vl    = $row['key'][1];
             $sqlDB = $this->SQLDB->pselectRow(
-                "SELECT c.*, s.Visit_label, s.Active, c.Active as cActive
+                "SELECT c.*, s.Visit_label, s.Active
                 FROM candidate c
                 LEFT JOIN session s USING (CandID)
                 WHERE c.PSCID=:PID AND s.Visit_label=:VL",
                 array(
-                    "PID" => $pscid,
-                    "VL" => $vl
+                 "PID" => $pscid,
+                 "VL"  => $vl,
                 )
             );
 
-            if (!empty($sqlDB) && $sqlDB['cActive'] == 'N') {
-                print "PSCID $pscid is inactive but $row[id] still exists. 
-                Deleting Doc.\n";
-
-                $this->CouchDB->deleteDoc($row['id']);
-            } else if (!empty($sqlDB) && $sqlDB['Active'] != 'Y') {
+            if ($sqlDB['Active'] != 'Y') {
                 $numActive = $this->SQLDB->execute(
-                    $activeExists, array(
-                    'PID' => $pscid, 
-                    'VL' => $vl)
+                    $activeExists,
+                    array(
+                     'PID' => $pscid,
+                     'VL'  => $vl,
+                    )
                 );
-
-                if (!array_key_exists('count', $numActive[0]) 
-                    || $numActive[0]['count'] == '0'
-                ) {
-                    print "PSCID $pscid VL $vl is cancelled and has no active "
+                if ($numActive[0]['count'] == '0') {
+                    print "PSCID $pscid VL $vl is cancelled and has no active"
                            . "equivalent session but $row[id] still exists.\n";
 
                     $this->CouchDB->deleteDoc($row['id']);
                 } else {
-                    print "There is an active session for $pscid $vl overriding 
-                    the cancelled one. Keeping $row[id]\n";
+                    print "There is an active session for $pscid $vl".
+                          " overriding the cancelled one. Keeping $row[id]";
                 }
-            } else if (!empty($sqlDB) && $sqlDB['PSCID'] !== $pscid) {
+
+            } else if ($sqlDB['PSCID'] !== $pscid) {
                 print "PSCID $pscid case sensitivity mismatch for $row[id].\n";
-
                 $this->CouchDB->deleteDoc($row['id']);
-            } else if (!empty($sqlDB) && $sqlDB['Visit_label'] !== $vl) {
+            } else if ($sqlDB['Visit_label'] !== $vl) {
                 print "Visit Label case sensitivity mismatch for $row[id].\n";
-
                 $this->CouchDB->deleteDoc($row['id']);
             } else {
                 print "Nothing wrong with $row[id]!\n";
             }
-
         }
+
     }
 }
 
