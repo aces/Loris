@@ -328,9 +328,9 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
         // create user object
         $user        =&        User::singleton();
         $config      =&        NDB_Config::singleton();
-        $minYear     = $config->getSetting('startYear')
-            - $config->getSetting('ageMax');
-        $maxYear     = $config->getSetting('endYear');
+        $study       = $config->getSetting('study');
+        $minYear     = $study['startYear'] - $study['ageMax'];
+        $maxYear     = $study['endYear'] - $study['ageMin'];
         $dateOptions = array(
                         'language'       => 'en',
                         'format'         => 'YMd',
@@ -393,7 +393,13 @@ class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
             }
         } else {
             // allow only to view own site data
-            $sites = $user->getStudySites();
+            $site_arr = $user->getData('CenterIDs');
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $sites[$val] = $site[$key]->getCenterName();
+                }
+            }
             $sites = array('' => 'All User Sites') + $sites;
         }
         $this->addSelect('Site', 'Site', $sites);

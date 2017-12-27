@@ -25,26 +25,32 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   var log;
 
   if (column === "Problem" && row.Problem === "Protocol Violation") {
+    url = loris.BaseURL +
+        "/mri_violations/?submenu=mri_protocol_check_violations&PatientName=" +
+             patientname + "&SeriesUID=" + uid;
     return (
            <td>
-               <a href= "#"
-                  onClick={loris.loadFilteredMenuClickHandler(
-                      "mri_violations/?submenu=mri_protocol_check_violations",
-                      {PatientName: patientname,
-                       SeriesUID: uid}
-                  )}>Protocol Violation</a>
+            <a href= {url}
+            className="mri_violations"
+            id="mri_protocol_check_violations"
+            data-patientname= {patientname}
+            data-seriesuid={uid}
+            >Protocol Violation</a>
            </td>
            );
   }
   if (column === "Problem" && row.Problem === "Could not identify scan type") {
+    url = loris.BaseURL +
+            "/mri_violations/?submenu=mri_protocol_violations&PatientName=" +
+            patientname + "&SeriesUID=" + uid;
     return (
            <td>
-            <a href= "#"
-               onClick={loris.loadFilteredMenuClickHandler(
-                   "mri_violations/?submenu=mri_protocol_violations",
-                      {PatientName: patientname,
-                       SeriesUID: uid}
-               )}>Could not identify scan type</a>
+            <a href= {url}
+            className="mri_violations"
+            id="mri_protocol_violations"
+            data-patientname= {patientname}
+            data-seriesuid={uid}
+            >Could not identify scan type</a>
            </td>
            );
   }

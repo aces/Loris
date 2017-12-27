@@ -9,7 +9,7 @@
  * @package  Loris
  * @author   Rathi Sekaran <sekaranrathi@gmail.com>
  * @license  Loris license
- * @link     https://github.com/aces/Loris
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
 try {
@@ -35,17 +35,17 @@ if (!empty($m)) {
 }
 
 // Wasn't a module, so fall back on the old style of DB lookup.
-require_once "helpfile.class.inc";
+require_once "HelpFile.class.inc";
 
 if (!empty($_REQUEST['testName'])) {
     if (empty($_REQUEST['subtest'])) {
-        $helpID = \LORIS\help_editor\HelpFile::hashToID(md5($_REQUEST['testName']));
+        $helpID = HelpFile::hashToID(md5($_REQUEST['testName']));
     } else {
-        $helpID = \LORIS\help_editor\HelpFile::hashToID(md5($_REQUEST['subtest']));
+        $helpID = HelpFile::hashToID(md5($_REQUEST['subtest']));
     }
 }
 
-$help_file       = \LORIS\help_editor\HelpFile::factory($helpID);
+$help_file       = HelpFile::factory($helpID);
 $data            = $help_file->toArray();
 $data['content'] = trim($data['content']);
 

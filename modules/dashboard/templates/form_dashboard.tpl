@@ -120,7 +120,7 @@
 
     <div class="col-lg-4">
         <!-- My Tasks -->
-        {if $new_scans neq "" or $conflicts neq "" or $incomplete_forms neq "" or $radiology_review neq "" or $violated_scans neq "" or $pending_users neq "" or $issues_assigned neq ""}
+        {if $new_scans neq "" or $conflicts neq "" or $incomplete_forms neq "" or $radiology_review neq "" or $violated_scans neq "" or $pending_users neq ""}
             <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -183,7 +183,7 @@
                                         <div class="row">
                                             <div class="col-xs-8 text-left">
                                                 <div class="huge">{$new_scans}</div>
-                                                New and pending imaging session{if $new_scans neq 1}s{/if}
+                                                New and pending scan{if $new_scans neq 1}s{/if}
                                             </div>
                                             <div class="col-xs-4 text-right alert-chevron">
                                                 <span class="glyphicon glyphicon-chevron-right medium"></span>

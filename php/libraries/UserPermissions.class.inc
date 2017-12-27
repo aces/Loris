@@ -2,7 +2,7 @@
 /**
  * The UserPermissions class manages checking of user permissions
  *
- * PHP Version 5,7
+ * PHP Version 5
  *
  * @category Main
  * @package  Main
@@ -226,14 +226,7 @@ class UserPermissions
 
         $results = $DB->pselect($query, array('UID' => $this->userID));
 
-        // isolate and return numeric permission values
-        $permIDs = array();
-        foreach ($results as $row) {
-            foreach ($row as $k=>$v) {
-                $permIDs[] = $v;
-            }
-        }
-        return $permIDs;
+        return $results;
     }
 
 

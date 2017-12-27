@@ -400,7 +400,6 @@ class SinglePointLogin
 
         // check users table to see if we have a valid user
         $query = "SELECT COUNT(*) AS User_count,
-                        UserID,
                         Password_expiry,
                         Active,
                         Pending_approval,
@@ -451,7 +450,7 @@ class SinglePointLogin
                 }
 
                 // user is valid
-                $this->_username = $row['UserID'];
+                $this->_username = $username;
 
                 $result =  $DB->insert('user_login_history', $setArray);
                 return true;

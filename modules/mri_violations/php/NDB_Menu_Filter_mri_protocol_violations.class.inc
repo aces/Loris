@@ -131,15 +131,13 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
     function _setFilterForm()
     {
         $config      =& NDB_Config::singleton();
-        $minYear     = $config->getSetting('startYear')
-            - $config->getSetting('ageMax');
-        $maxYear     = $config->getSetting('endYear');
+        $study       = $config->getSetting('study');
         $dateOptions = array(
                         'language'       => 'en',
                         'format'         => 'YMd',
                         'addEmptyOption' => true,
-                        'minYear'        => $minYear,
-                        'maxYear'        => $maxYear,
+                        'minYear'        => $study['startYear'] - $study['ageMax'],
+                        'maxYear'        => $study['endYear'] - $study['ageMin'],
                        );
 
         $this->addBasicText('CandID', 'DCC-ID:');

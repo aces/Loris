@@ -4,7 +4,7 @@
  * This ensures that the file exists and the user is logged in to
  * Loris before trying to return the file to the user.
  *
- * PHP Version 7
+ * PHP Version 5
  *
  *  @category Loris
  *  @package  Document_Repository
@@ -27,6 +27,14 @@ set_include_path(
     __DIR__ . "/../project/libraries:" .
     __DIR__ . "/../php/libraries"
 );
+
+// Ensures the user is logged in, and parses the config file.
+require_once "NDB_Client.class.inc";
+$client = new NDB_Client();
+$client->initialize("../project/config.xml");
+
+// Checks that config settings are set
+$config =& NDB_Config::singleton();
 
 $file = $_GET['File'];
 

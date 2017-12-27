@@ -59,8 +59,8 @@ if ((isset($argv[$optionpos]) && $argv[$optionpos] === "-s")
         ) {
             $ins['useEDC'] = 1;
         }
-        $ins = Utility::nullifyEmpty($ins, 'WindowDifference');
-        $ins = Utility::nullifyEmpty($ins, 'useEDC');
+        Utility::nullifyEmpty($ins, 'WindowDifference');
+        Utility::nullifyEmpty($ins, 'useEDC');
         $db->insert('subproject', $ins);
     }
 }
@@ -76,7 +76,7 @@ if ((isset($argv[$optionpos]) && $argv[$optionpos] === "-p")
                    'Name'              => $row['title'],
                    'recruitmentTarget' => $row['recruitmentTarget'],
                   );
-        $insert = Utility::nullifyEmpty($insert, 'recruitmentTarget');
+        Utility::nullifyEmpty($insert, 'recruitmentTarget');
         $db->insert('Project', $insert);
     }
 }

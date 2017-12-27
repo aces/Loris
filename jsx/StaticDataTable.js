@@ -20,8 +20,7 @@ var StaticDataTable = React.createClass({
     RowNumLabel: React.PropTypes.string,
     // Function of which returns a JSX element for a table cell, takes
     // parameters of the form: func(ColumnName, CellData, EntireRowData)
-    getFormattedCell: React.PropTypes.func,
-    onSort: React.PropTypes.func
+    getFormattedCell: React.PropTypes.func
   },
   componentDidMount: function() {
     if (jQuery.fn.DynamicTable) {
@@ -57,7 +56,7 @@ var StaticDataTable = React.createClass({
         // Make prefs accesible within component
     this.modulePrefs = modulePrefs;
   },
-  componentDidUpdate: function(prevProps, prevState) {
+  componentDidUpdate: function() {
     if (jQuery.fn.DynamicTable) {
       if (this.props.freezeColumn) {
         $("#dynamictable").DynamicTable({
@@ -66,13 +65,6 @@ var StaticDataTable = React.createClass({
       } else {
         $("#dynamictable").DynamicTable();
       }
-    }
-    if (this.props.onSort &&
-      (this.state.SortColumn !== prevState.SortColumn ||
-      this.state.SortOrder !== prevState.SortOrder)
-    ) {
-      var index = this.getSortedRows();
-      this.props.onSort(index, this.props.Data, this.props.Headers);
     }
   },
   getInitialState: function() {
@@ -193,11 +185,6 @@ var StaticDataTable = React.createClass({
 
     for (let i = 0; i < this.props.Data.length; i += 1) {
       let val = this.props.Data[i][this.state.SortColumn] || undefined;
-      // If SortColumn is equal to default No. column, set value to be
-      // index + 1
-      if (this.state.SortColumn === -1) {
-        val = i + 1;
-      }
       const isString = (typeof val === 'string' || val instanceof String);
       const isNumber = !isNaN(val) && typeof val !== 'object';
 
@@ -223,35 +210,36 @@ var StaticDataTable = React.createClass({
 
     index.sort(function(a, b) {
       if (this.state.SortOrder === 'ASC') {
-        if (a.Value === b.Value) {
-          // If all values are equal, sort by rownum
-          if (a.RowIdx < b.RowIdx) return -1;
-          if (a.RowIdx > b.RowIdx) return 1;
-        }
         // Check if null values
-        if (a.Value === null || typeof a.Value === 'undefined') return -1;
-        if (b.Value === null || typeof b.Value === 'undefined') return 1;
+        if (a.Value === null) return -1;
+        if (b.Value === null) return 1;
 
         // Sort by value
         if (a.Value < b.Value) return -1;
         if (a.Value > b.Value) return 1;
-      } else {
-        if (a.Value === b.Value) {
-          // If all values are equal, sort by rownum
-          if (a.RowIdx < b.RowIdx) return 1;
-          if (a.RowIdx > b.RowIdx) return -1;
+
+        // If all values are equal, sort by rownum
+        if (a.RowIdx < b.RowIdx) {
+          return -1;
         }
+        if (a.RowIdx > b.RowIdx) return 1;
+      } else {
         // Check if null values
-        if (a.Value === null || typeof a.Value === 'undefined') return 1;
-        if (b.Value === null || typeof b.Value === 'undefined') return -1;
+        if (a.Value === null) return 1;
+        if (b.Value === null) return -1;
 
         // Sort by value
         if (a.Value < b.Value) return 1;
         if (a.Value > b.Value) return -1;
+
+        // If all values are equal, sort by rownum
+        if (a.RowIdx < b.RowIdx) return 1;
+        if (a.RowIdx > b.RowIdx) return -1;
       }
       // They're equal..
       return 0;
     }.bind(this));
+
     return index;
   },
   /**

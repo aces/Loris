@@ -198,6 +198,7 @@ class Utility
         if ($study_site) {
             $query .= "WHERE Study_site='Y'";
         }
+
         $result = $DB->pselect($query, array());
 
         // fix the array
@@ -205,7 +206,6 @@ class Utility
         foreach ($result as $row) {
             $list[$row["CenterID"]] = $row["Name"];
         }
-        natcasesort($list);
         return $list;
     }
 
@@ -1276,77 +1276,6 @@ class Utility
             return false;
         }
         return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
-    }
-
-    /**
-     * Effectively resolve '..' characters in a file path
-     *
-     * @param string $path A potentially-relative filepath to be resolved
-     *
-     * @return string $resolvedPath a path containing no .. sequences
-     */
-    static function resolvePath($path)
-    {
-        $resolvedPath = array();
-        // do some normalization
-        $path        = str_replace('//', '/', $path);
-        $path_pieces = explode('/', $path);
-        foreach ($path_pieces as $piece) {
-            if ($piece == '.') {
-                continue;
-            }
-            if ($piece == '..') {
-                if (!is_array($resolvedPath)) {
-                    error_log("ERROR: Resolved path not an array");
-                    return "";
-                }
-                array_pop($resolvedPath);
-                continue;
-            }
-            array_push($resolvedPath, $piece);
-        }
-        $resolvedPath = implode('/', $resolvedPath);
-        return $resolvedPath;
-    }
-
-    /**
-     * Get maximum upload size. Will be the smaller value of
-     * upload_max_filesize and post_max_size
-     *
-     * @return string smaller value of upload_max_filesize or post_max_size
-     */
-    static function getMaxUploadSize()
-    {
-        $umf = ini_get('upload_max_filesize');
-        $pms = ini_get('post_max_size');
-        return self::returnBytes($umf) < self::returnBytes($pms) ? $umf : $pms;
-    }
-
-    /**
-     * Takes in a storage string (e.g., 64K, 1024M, 2G, etc.)
-     * and returns value in bytes
-     *
-     * @param string $val The formatted string
-     *
-     * @return int|string The formatted string represented as bytes
-     *
-     * @note taken from http://php.net/manual/en/function.ini-get.php
-     */
-    static function returnBytes($val)
-    {
-        $val  = trim($val);
-        $last = strtolower($val[strlen($val)-1]);
-
-        switch($last) {
-        case 'g':
-            return $val * 1024 * 1024 * 1024;
-        case 'm':
-            return $val * 1024 * 1024;
-        case 'k':
-            return $val * 1024;
-        default:
-            return $val;
-        }
     }
 }
 ?>

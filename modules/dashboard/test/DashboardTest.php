@@ -37,6 +37,9 @@ class DashboardTest extends LorisIntegrationTest
     function setUp()
     {
         parent::setUp();
+        $window = new WebDriverWindow($this->webDriver);
+        $size   = new WebDriverDimension(1280, 1024);
+        $window->setSize($size);
         //Insert a pending user
         $this->DB->insert(
             "users",
@@ -87,7 +90,7 @@ class DashboardTest extends LorisIntegrationTest
              'CandID'       => '999888',
              'CenterID'     => '55',
              'UserID'       => '1',
-             'MRIQCStatus'  => '',
+             'MRIQCStatus'  => 'Pass',
              'SubprojectID' => '6666',
              'Active'       => 'Y',
             )
@@ -238,7 +241,6 @@ class DashboardTest extends LorisIntegrationTest
                'issueID'  => '999999',
                'assignee' => 'UnitTester',
                'status'   => 'new',
-               'priority' => 'low',
                'reporter' => 'UnitTester',
               )
           );
@@ -451,7 +453,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".new-scans",
-            "9",
+            "1",
             "Imaging  Browser"
         );
         $this->resetPermissions();
@@ -479,22 +481,51 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".conflict_resolver",
-            "585",
+            "1",
             "-  Conflict  Resolver"
         );
         $this->resetPermissions();
     }
     /**
-     *  Check user has 'issue_tracker_developer' permission,
-     *  user can see the issue panel.
+     *  Verify that for a user with 'Can edit final radiological reviews' and
+     * 'Can view final radiological reviews' permission, the number of
+     * radiological reviews to do is displayed in the My Task panel.
+     * Site displayed is always 'All'. The number of radiological reviews is
+     * the number of entries on the Radiological Review page for which Review
+     * Done is not set (i.e. 'No' is chosen in the Selection Filter for the
+     * Review Done entry). Clicking on the task should take you to that page,
+     * with the Selection Filter set correctly.
+     *
+     * @return void
+     */
+    public function testFinalRadioReview()
+    {
+
+        $this->setupPermissions(
+            array(
+             "edit_final_radiological_review",
+             "view_final_radiological_review",
+            )
+        );
+        $this->safeGet($this->url . '/dashboard/');
+        $this->_testMytaskPanelAndLink(
+            ".radiological-review",
+            "1",
+            "-  Final  Radiological  Review"
+        );
+        $this->resetPermissions();
+    }
+    /**
+     *  Check user has 'superuser' permission, user can see the issue panel.
      *  Click the issue link can access issue module.
      *
      *  @return void
      */
     public function testIssues()
     {
+
         $this->setupPermissions(
-            array("issue_tracker_developer")
+            array("superuser")
         );
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
@@ -521,6 +552,9 @@ class DashboardTest extends LorisIntegrationTest
      */
     public function testIncompleteForm()
     {
+        $this->markTestSkipped(
+            'Skipping tests until removing test_instrument'
+        );
         $this->setupPermissions(
             array(
              "data_entry",
@@ -528,8 +562,11 @@ class DashboardTest extends LorisIntegrationTest
             )
         );
         $this->safeGet($this->url . '/dashboard/');
-        $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("Incomplete forms", $bodyText);
+        $this->_testMytaskPanelAndLink(
+            ".statistics",
+            "1",
+            "All Completion Statistics"
+        );
         $this->resetPermissions();
     }
     /**
@@ -599,11 +636,12 @@ class DashboardTest extends LorisIntegrationTest
     private function _testMytaskPanelAndLink($className,$value,$dataSeed)
     {
         $this->safeGet($this->url . '/dashboard/');
+        sleep(5);
         $link     =$this->safeFindElement(WebDriverBy::cssSelector($className));
         $bodyText = $link->findElement(WebDriverBy::cssSelector(".huge"))->getText();
         $this->assertContains($value, $bodyText);
         $link->click();
-        sleep(1);
+        sleep(5);
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains($dataSeed, $bodyText);
 
@@ -638,6 +676,7 @@ class DashboardTest extends LorisIntegrationTest
     private function _testPlan1()
     {
         $this->safeGet($this->url . '/main.php?logout=true');
+        sleep(120);
          $this->login("UnitTester", "4test4");
         $welcomeText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
