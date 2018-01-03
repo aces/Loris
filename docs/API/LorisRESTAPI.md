@@ -1,4 +1,4 @@
-# Loris API - v0.0.3-dev
+# Loris API - v0.0.2
 
 ## 1.0 Overview
 
@@ -9,7 +9,7 @@ or no data. The Loris API uses standard HTTP error codes and the body of any res
 either be empty or contain only a JSON object for any request.
 
 For brevity, the `$LorisRoot/api/$APIVERSION` is omitted from the definitions in this
-document. This document specifies $APIVERSION v0.0.3-dev and it
+document. This document specifies $APIVERSION v0.0.2 and it
 MUST be included before the request in all requests.
 
 HTTP GET requests NEVER modify data. PUT, POST or PATCH requests MUST be used to modify
@@ -138,29 +138,6 @@ The body of the request to /projects/$ProjectName will be an entity of the form:
     "Candidates" : ["123543", "523234", ...]
 }
 ```
-
-```
-GET /projects/$ProjectName/images/
-```
-
-Will return a JSON object of the form
-
-```js
-{
-  "Images" : [
-    {
-      "candidate": "123456",
-      "visit": "V1",
-      "scan_type": Acquisition protocol ex :"t2",
-      "link": URL relative to this API ex: "\/candidates\/300022\/V1\/images\/loris-MRI_123456_V1_t2_001.mnc",
-      "insert_time": The inserted date ISO 8601  ex: "2016-08-09T14:15:30-04:00"
-    },
-    ...
-  ]
-}
-```
-It is possible to provide a parameter named `since` where the value need to be a date or datetime ex: 2016-08-09 or 2016-08-09 10:00:00 or 2016-08-09T10:00:00
-If the timezone is provided, it will be ignored.
 
 ```
 GET /projects/$ProjectName/instruments/
