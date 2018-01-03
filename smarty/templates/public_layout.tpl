@@ -15,27 +15,48 @@
   <link type="image/x-icon" rel="icon" href="{$baseurl}/images/favicon.ico">
   <script src="{$baseurl}/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
   <script>
-  $(document).ready(function() {
+  document.addEventListener('DOMContentLoaded', function(event) {
+
     const dcIdentifier = $("meta[name='DC.identifier']").attr("content");
     if (dcIdentifier === undefined) {
       return;
     }
-    const doi = dcIdentifier.substr(16);
-    let url = 'https://data.datacite.org/application/vnd.schemaorg.ld+json/' + doi;
 
-    $.ajax({
-      url: url,
-      dataType: 'text', // don't convert JSON to Javascript object
-      success: function(data) {
-        $('<script>')
-          .attr('type', 'application/ld+json')
-          .text(data)
-          .appendTo('head');
-      },
-      error: function (error) {
-        console.error(error.responseText);
+    const doi = dcIdentifier.substr(16);
+    let url = "https://data.datacite.org/application/vnd.schemaorg.ld+json/" + doi;
+
+    const xhr = new XMLHttpRequest();
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4) {
+        if (xhr.status != 200) { 
+          console.error("Request failed");
+        }
+        
+        let script = document.createElement("script");
+        script.type = "application/ld+json";
+        script.text = JSON.stringify({
+          "@context": "http://schema.org",
+          "@type": "SoftwareApplication",
+          "name": "LORIS",
+          "applicationCategory": "Science",
+          "applicationSubCategory": [
+            "neuroimaging",
+            "data management",
+            "data querying",
+            "imaging data",
+            "behavioral data"
+          ],
+          "isBasedOn": "https://github.com/aces/Loris",
+          "citation": JSON.parse(xhr.responseText), 
+          "operatingSystem": "GNU/Linux"
+        });
+        document.head.appendChild(script);
       }
-   }); 
+    };
+    
+    xhr.open('GET', url);
+    xhr.send();
   });
   </script>
 </head>
