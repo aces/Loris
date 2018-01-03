@@ -102,39 +102,77 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     * @param string $scan_type          One of 't1w', 't2w', 'dti'
     * @param string $scan_done          Name of column to check in mri_parameter_form
     * @param string $acqID              Aquisition protocol ID for given modality
-    * @param string $series_description Part of value for that modality's
-    *                                   series description
     *
     * @return string $query for the given modality
     */
-    function _buildQuery($scan_type, $scan_done, $acqID, $series_description)
+    function _buildQuery($scan_type, $scan_done, $acqID)
     {
 
-        $select =  "  SELECT DISTINCT
+        $select =  " SELECT DISTINCT
            c.PSCID,
            s.ID as SessionID,
            s.CandID as cand_id,
            (SELECT name FROM psc WHERE CenterID=s.CenterID) as site,
            s.Visit_label as visit_label,
            '".$scan_type."' as scan_type,
-           t.TarchiveID as tarchiveID,".
-           " CASE WHEN EXISTS ".
-           " (SELECT * FROM tarchive_series ts WHERE (ts.TarchiveID = t.TarchiveID".
-           " AND ts.SeriesDescription LIKE '".$series_description."'))".
-           " THEN 'In DICOM' ELSE 'Missing'".
-           " END as tarchive_loc,
+           t.TarchiveID as tarchiveID,
+           CASE
+              WHEN EXISTS(
+                  SELECT
+                      *
+                  FROM
+                      tarchive_series ts
+                  WHERE
+                      ts.TarchiveID = t.TarchiveID
+                      AND(
+                          ts.EchoTime BETWEEN(
+                              SELECT
+                                  SUBSTRING_INDEX(mp.TE_range, '-', 1)
+                              FROM
+                                  mri_protocol mp
+                              WHERE
+                                  mp.Scan_type = ".$acqID."
+                          ) AND(
+                              SELECT
+                                  SUBSTRING_INDEX(mp.TE_range, '-', -1)
+                              FROM
+                                  mri_protocol mp
+                              WHERE
+                                   mp.Scan_type = ".$acqID."
+                           )
+                      )
+                      AND(
+                          ts.RepetitionTime BETWEEN(
+                              SELECT
+                                  SUBSTRING_INDEX(mp.TR_range, ',', 1)
+                              FROM
+                                  mri_protocol mp
+                              WHERE
+                                  mp.Scan_type = ".$acqID."
+                          ) AND(
+                              SELECT
+                                  SUBSTRING_INDEX(mp.TR_range, ',', -1)
+                              FROM
+                                  mri_protocol mp
+                              WHERE
+                                  mp.Scan_type = ".$acqID."
+                           )
+                      )
+               ) THEN 'In DICOM'
+              ELSE 'Missing'
+           END as tarchive_loc,
            (SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project,".
-           " (SELECT title FROM subproject".
-           " WHERE SubprojectID=s.SubprojectID) as subproject,".
+           " (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID)
+           as subproject,".
            " CASE
               WHEN m.".$scan_done." IS NULL THEN 'Incomplete'
               ELSE 'Complete'
            END AS mri_parameter_form,
            CASE 
-              WHEN m.".$scan_done." IS NULL THEN ''".
-              " WHEN (m.".$scan_done." = 'Complete'".
-              " OR m.".$scan_done." = 'Partial') THEN 'Yes'".
-              " ELSE 'No'
+              WHEN m.".$scan_done." IS NULL THEN ''
+              WHEN (m.".$scan_done." = 'Complete'
+              OR m.".$scan_done." = 'Partial') THEN 'Yes'
+              ELSE 'No'
            END as scan_done,
            CASE 
               WHEN (fi.fileID IS NULL AND mvl.PatientName IS NULL) THEN 'Missing'
@@ -154,8 +192,10 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         LEFT JOIN session s ON (f.SessionID=s.ID)
         LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
         LEFT JOIN tarchive t ON (t.SessionID=s.ID)
-        LEFT JOIN files fi ON (fi.SessionID = s.ID
-        AND fi.AcquisitionProtocolID=".$acqID.")".
+        LEFT JOIN tarchive_series ts ON (ts.TarchiveID=t.TarchiveID)".
+        " LEFT JOIN files fi ON (fi.SessionID = s.ID AND
+        fi.AcquisitionProtocolID=".$acqID." AND fi.SeriesUID=ts.SeriesUID
+        AND fi.EchoTime=(ts.EchoTime/1000))".
         " LEFT JOIN mri_violations_log mvl ON".
         " (mvl.CandID = s.CandID AND mvl.Scan_type=".$acqID."".
         " AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))".
@@ -311,14 +351,11 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                 $query_params
             );
             if (substr("$scan_type", 0, 2) == "t1") {
-                $scans_done[$scan_type]         = "T1_Scan_done";
-                $series_description[$scan_type] = "t1_%";
+                $scans_done[$scan_type] = "T1_Scan_done";
             } elseif (substr("$scan_type", 0, 2) == "t2") {
-                $scans_done[$scan_type]         = "T2_Scan_done";
-                $series_description[$scan_type] = "t2_%";
+                $scans_done[$scan_type] = "T2_Scan_done";
             } elseif (substr("$scan_type", 0, 3) == "dti") {
-                $scans_done[$scan_type]         = "dti_Scan_done";
-                $series_description[$scan_type] = "T2 and PD";
+                $scans_done[$scan_type] = "dti_Scan_done";
             }
         }
 
@@ -327,8 +364,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                 = $this->_buildQuery(
                     $scan_type,
                     $scans_done[$scan_type],
-                    $acq_IDs[$scan_type],
-                    $series_description[$scan_type]
+                    $acq_IDs[$scan_type]
                 );
         }
 
