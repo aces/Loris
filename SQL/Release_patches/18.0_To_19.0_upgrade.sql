@@ -1,1 +1,1 @@
-alter table help drop column content;
+alter table help drop column projectContent;

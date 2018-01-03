@@ -137,7 +137,7 @@ class Edit_Help_Content extends \NDB_Form
             $success = $help_file->update(
                 array(
                  'topic'          => $values['title'],
-                 'projectContent' => $values['content'],
+                 'content'        => $values['content'],
                  'updated'        => date(
                      'Y-m-d h:i:s',
                      time()
@@ -155,7 +155,7 @@ class Edit_Help_Content extends \NDB_Form
                     array(
                      'hash'           => md5($_REQUEST['section']),
                      'topic'          => "",
-                     'projectContent' => "Under construction",
+                     'content' => "Under construction",
                      'created'        => date(
                          'Y-m-d h:i:s',
                          time()
@@ -176,7 +176,7 @@ class Edit_Help_Content extends \NDB_Form
                      'parentID'       => $parentID,
                      'hash'           => md5($_REQUEST['subsection']),
                      'topic'          => $values['title'],
-                     'projectContent' => $values['content'],
+                     'content' => $values['content'],
                      'created'        => date(
                          'Y-m-d h:i:s',
                          time()
@@ -192,7 +192,7 @@ class Edit_Help_Content extends \NDB_Form
                     array(
                      'hash'           => md5($_REQUEST['section']),
                      'topic'          => $values['title'],
-                     'projectContent' => $values['content'],
+                     'content'        => $values['content'],
                      'created'        => date(
                          'Y-m-d h:i:s',
                          time()

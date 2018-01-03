@@ -53,7 +53,7 @@ class Help_Editor extends \NDB_Menu_Filter
                  " AND helpChild.topic IS NOT NULL";
 
         // set the class variables
-        $contentColumn  = "helpChild.projectContent as Content";
+        $contentColumn  = "helpChild.content as Content";
         $this->columns  = array(
                            'helpChild.helpID as helpID',
                            'helpChild.topic as Topic',
@@ -79,7 +79,7 @@ class Help_Editor extends \NDB_Menu_Filter
         $this->formToFilter  = array('topic' => 'helpChild.topic');
         $this->searchKeyword = array(
                                 'helpChild.topic',
-                                'helpChild.projectContent',
+                                'helpChild.content',
                                );
         return true;
     }
