@@ -156,7 +156,7 @@ Will return a JSON object of the form
       "Visit": "V1",
       "ScanType": "t2", /* Acquisition protocol */
       "Link": "\/candidates\/300022\/V1\/images\/loris-MRI_123456_V1_t2_001.mnc", /* URL relative to this API */
-      "InsertTime": "2016-08-09T14:15:30-04:00" /* The inserted date ISO 8601 */
+      "InsertTime": "2016-08-09T14:15:30-05:00" /* The inserted date ISO 8601 */
     },
     ...
   ]
@@ -164,7 +164,7 @@ Will return a JSON object of the form
 ```
 It is possible to provide a GET parameter named `since` where the value need to be a date or datetime.
 ```
-ex: 2016-08-09 or 2016-08-09 10:00:00 or 2016-08-09T10:00:00
+ex: 2016-08-09 or 2016-08-09 10:00:00 or 2016-08-09T10:00:00-05:00
 ```
 The format must follow php Supported Date and Time Formats for Datetime objects. See http://php.net/manual/en/datetime.formats.php  
 
