@@ -102,7 +102,7 @@ class Datadict extends \NDB_Menu_Filter
             array('' => 'All Instruments'),
             $instruments
         );
-        $this->addSelect('sourceFrom', 'Instruments', $instruments);
+        $this->addSelect('sourceFrom', 'Instruments', $instruments, array('multiple' => 'multiple'));
         $this->addSelect(
             'Description',
             'Description',
@@ -234,6 +234,7 @@ class Datadict extends \NDB_Menu_Filter
             array(
              $baseURL . "/datadict/js/columnFormatter.js",
              $baseURL . "/datadict/js/datadict_helper.js",
+             $baseURL . "/js/components/MultiSelectDropdown.js",
             )
         );
     }
