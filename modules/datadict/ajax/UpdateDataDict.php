@@ -31,14 +31,7 @@ $client->initialize();
 
 list($name,$extra) = explode("___", $_REQUEST['fieldname']);
 
-if (get_magic_quotes_gpc()) {
-    // Magic quotes adds \ to description, get rid of it.
-    $description = stripslashes($_REQUEST['description']);
-} else {
-    // Magic quotes is off, so we can just directly use the description
-    // since insert() will use a prepared statement.
-    $description = trim($_REQUEST['description']);
-}
+$description = trim($_REQUEST['description']);
 
 // create user object
 $user =& User::singleton();
