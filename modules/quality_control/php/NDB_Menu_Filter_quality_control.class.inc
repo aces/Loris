@@ -165,7 +165,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
            " (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID)
            as subproject,".
            " CASE
-              WHEN m.".$scan_done." IS NULL THEN 'Incomplete'
+              WHEN m.Data_entry_completion_status='Incomplete' THEN 'Incomplete'
               ELSE 'Complete'
            END AS mri_parameter_form,
            CASE 
@@ -191,11 +191,9 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $joins = " FROM flag f
         LEFT JOIN session s ON (f.SessionID=s.ID)
         LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
-        LEFT JOIN tarchive t ON (t.SessionID=s.ID)
-        LEFT JOIN tarchive_series ts ON (ts.TarchiveID=t.TarchiveID)".
-        " LEFT JOIN files fi ON (fi.SessionID = s.ID AND
-        fi.AcquisitionProtocolID=".$acqID." AND fi.SeriesUID=ts.SeriesUID
-        AND fi.EchoTime=(ts.EchoTime/1000))".
+        LEFT JOIN tarchive t ON (t.SessionID=s.ID)".
+        " LEFT JOIN files fi ON (fi.SessionID=s.ID AND
+        fi.AcquisitionProtocolID=".$acqID.")".
         " LEFT JOIN mri_violations_log mvl ON".
         " (mvl.CandID = s.CandID AND mvl.Scan_type=".$acqID."".
         " AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))".
@@ -284,8 +282,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             'mRIParameterForm',
             "MRI Parameter Form",
             array(
-             "Complete"   => "Complete",
-             "Incomplete" => "Incomplete",
+             "Incomplete"   => "Incomplete",
+             "Complete" => "Complete",
             )
         );
         $this->addSelect(
@@ -356,6 +354,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                 $scans_done[$scan_type] = "T2_Scan_done";
             } elseif (substr("$scan_type", 0, 3) == "dti") {
                 $scans_done[$scan_type] = "dti_Scan_done";
+            } else {
+                $scans_done[$scan_type] = $scan_type . "_Scan_done";
             }
         }
 
