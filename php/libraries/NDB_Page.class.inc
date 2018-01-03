@@ -688,7 +688,7 @@ class NDB_Page
 
         // This shouldn't exist. (And if it does, it shouldn't reference
         // mantis..)
-        $tpl_data['mantis_url'] = $config->getSetting('mantis_url');
+        $tpl_data['issue_tracker_url'] = $config->getSetting('issue_tracker_url');
 
         // We're back in the territory of stuff that belongs here..
 
