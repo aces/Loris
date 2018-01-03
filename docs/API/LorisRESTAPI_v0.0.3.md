@@ -39,7 +39,7 @@ so that standard Loris modules can simply use the API.
 If a user is not logged in to Loris (for instance, in a third party app or a CORS application),
 they can be be authenticated using [JSON Web Tokens](https://jwt.io).
 
-The client should POST a request to /login with a payload of the form
+The client should POST a request to /login with a payload of the form:
 
 ```js
 {
@@ -49,7 +49,7 @@ The client should POST a request to /login with a payload of the form
 ```
 
 If the username and password are valid, the API will respond with a 200 OK and payload
-of the form
+of the form:
 
 ```js
 {
@@ -146,7 +146,7 @@ The body of the request to /projects/$ProjectName will be an entity of the form:
 GET /projects/$ProjectName/images/
 ```
 
-Will return a JSON object of the form
+Will return a JSON object of the form:
 
 ```js
 {
@@ -173,7 +173,7 @@ The format must follow php Supported Date and Time Formats for Datetime objects.
 GET /projects/$ProjectName/instruments/
 ```
 
-Will return a JSON object of the form
+Will return a JSON object of the form:
 
 ```js
 {
@@ -203,7 +203,7 @@ Where the InstrumentNames are the "Short Name" of all the instruments used/insta
 GET /projects/$ProjectName/visits/
 ```
 
-Will return a JSON object of the form
+Will return a JSON object of the form:
 
 ```js
 {
@@ -221,7 +221,7 @@ Where V1, V2, ... are the visits that may exist for this project
 GET /projects/$ProjectName/candidates/
 ```
 
-will return a JSON object of the form
+will return a JSON object of the form:
 
 ```js
 {
@@ -256,7 +256,7 @@ Methods for getting/putting data into specific candidates are specified in secti
 
 The /candidate portion of the API is used for retrieving and modifying candidate data and
 data attached to a specific candidate or visit such as visits or instrument data. Portions
-of this reference a CandidateObject. A CandidateObject is a JSON object of the form
+of this reference a CandidateObject. A CandidateObject is a JSON object of the form:
 
 ```js
 {
@@ -276,7 +276,7 @@ representing a candidate in Loris.
 GET /candidates/
 ```
 
-will return a JSON object of the form
+will return a JSON object of the form:
 
 ```js
 {
@@ -328,7 +328,7 @@ GET /candidates/$CandID
 
 A JSON object representing that candidate will be returned.
 
-The JSON object is of the form
+The JSON object is of the form:
 
 ```js
 {
@@ -349,7 +349,7 @@ true of all of the API hierarchy under /candidates/$CandID.
 
 ### 3.2 Getting Candidate visit data
 
-A GET request of the form
+A GET request of the form:
 
 ```
 GET /candidates/$CandID/$VisitLabel
@@ -400,7 +400,7 @@ Loris, or Approval has not occured)
 GET /candidates/$CandID/$VisitLabel/instruments
 ```
 
-Will return a JSON object of the form.
+Will return a JSON object of the form:
 
 ```js
 {
@@ -532,7 +532,7 @@ PUT /candidates/$CandID/$Visit/qc/imaging
 
 To retrieve the session level imaging QC data for a visit, a request can
 be made `/candidates/$CandID/$Visit/qc/imaging`. It will return a JSON object
-of the form
+of the form:
 
 ```js
 {
@@ -564,7 +564,7 @@ GET /candidates/$CandID/$VisitLabel/images/$Filename/qc
 PUT /candidates/$CandID/$VisitLabel/images/$Filename/qc
 ```
 
-Returns file level QC information. It will return a JSON object of the form
+Returns file level QC information. It will return a JSON object of the form:
 
 ```js
 {
