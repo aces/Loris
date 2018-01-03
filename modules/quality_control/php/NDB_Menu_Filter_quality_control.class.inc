@@ -99,9 +99,9 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     /**
     * Builds query for given modality. Works with t1w, t2w, dti.
     *
-    * @param string $scan_type          One of 't1w', 't2w', 'dti'
-    * @param string $scan_done          Name of column to check in mri_parameter_form
-    * @param string $acqID              Aquisition protocol ID for given modality
+    * @param string $scan_type One of 't1w', 't2w', 'dti'
+    * @param string $scan_done Name of column to check in mri_parameter_form
+    * @param string $acqID     Aquisition protocol ID for given modality
     *
     * @return string $query for the given modality
     */
@@ -282,8 +282,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             'mRIParameterForm',
             "MRI Parameter Form",
             array(
-             "Incomplete"   => "Incomplete",
-             "Complete" => "Complete",
+             "Incomplete" => "Incomplete",
+             "Complete"   => "Complete",
             )
         );
         $this->addSelect(
