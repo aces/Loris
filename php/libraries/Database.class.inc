@@ -646,9 +646,10 @@ class Database
     function selectOne($query)
     {
         $result = null;
-        $this->select($query, $result);
+        $this->selectRow($query, $result);
         if (is_array($result) && count($result)) {
-            list(,$result) = each($result[0]);
+            $valueArray = array_values($result);
+            $result     = $valueArray[0];
         }
         return $result;
     }
@@ -809,8 +810,8 @@ class Database
     {
         $result = $this->pselectRow($query, $params);
         if (is_array($result) && count($result)) {
-
-            list(,$result) = each($result);
+            $valueArray = array_values($result);
+            $result     = $valueArray[0];
         }
         return $result;
     }
