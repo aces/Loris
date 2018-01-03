@@ -152,11 +152,11 @@ Will return a JSON object of the form
 {
   "Images" : [
     {
-      "candidate": "123456",
-      "visit": "V1",
-      "scan_type": "t2", /* Acquisition protocol */
-      "link": "\/candidates\/300022\/V1\/images\/loris-MRI_123456_V1_t2_001.mnc", /* URL relative to this API */
-      "insert_time": "2016-08-09T14:15:30-04:00" /* The inserted date ISO 8601 */
+      "Candidate": "123456",
+      "Visit": "V1",
+      "ScanType": "t2", /* Acquisition protocol */
+      "Link": "\/candidates\/300022\/V1\/images\/loris-MRI_123456_V1_t2_001.mnc", /* URL relative to this API */
+      "InsertTime": "2016-08-09T14:15:30-04:00" /* The inserted date ISO 8601 */
     },
     ...
   ]

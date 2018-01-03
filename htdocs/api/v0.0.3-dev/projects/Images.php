@@ -130,11 +130,11 @@ class Images extends \Loris\API\APIBase
                 $link        = "/candidates/$candid/$session/images/$file_name";
                 $insert_time = date('c', $item['InsertTime']);
                 return array(
-                        'candidate'   => $candid,
-                        'visit'       => $session,
-                        'scan_type'   => $scan_type,
-                        'link'        => $link,
-                        'insert_time' => $insert_time,
+                        'Candidate'  => $candid,
+                        'Visit'      => $session,
+                        'ScanType'   => $scan_type,
+                        'Link'       => $link,
+                        'InsertTime' => $insert_time,
                        );
             },
             $result
