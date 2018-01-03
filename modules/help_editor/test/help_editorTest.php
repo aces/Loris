@@ -44,7 +44,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
              'parentID'       => '-1',
              'hash'           => $md5String,
              'topic'          => 'Test Topic',
-             'content' => 'This is a test content.',
+             'content'        => 'This is a test content.',
              'created'        => '2013-04-05 00:00:00',
             )
         );
