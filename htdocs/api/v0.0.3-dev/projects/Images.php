@@ -55,11 +55,12 @@ class Images extends \Loris\API\APIBase
             $this->safeExit(0);
         }
 
-        $this->RequestData['since'] = $data['since'] ?? '1970-01-01 00:00:01';
-
-        if (strtotime($this->RequestData['since']) === false) {
+        try {
+            $dateString = $data['since'] ?? '1970-01-01';
+            $this->RequestData['since'] = new \DateTime($dateString);
+        } catch(\Exception $e) {
             $this->header("HTTP/1.1 400 Bad Request");
-            $this->error("Invalide date");
+            $this->error(['error' => 'Invalid date']);
             $this->safeExit(0);
         }
 
@@ -86,7 +87,7 @@ class Images extends \Loris\API\APIBase
                   f.InsertTime > :v_time AND
                   p.Name = :v_project_name",
             array(
-             'v_time'         => strtotime($this->RequestData['since']) ?? 0,
+             'v_time'         => $this->RequestData['since']->getTimestamp(),
              'v_project_name' => $this->_project->getName(),
             )
         );
@@ -118,7 +119,7 @@ class Images extends \Loris\API\APIBase
              WHERE
                   f.InsertTime > :v_time
              ORDER BY f.InsertTime ASC",
-            array('v_time' => strtotime($this->RequestData['since']) ?? 0)
+            array('v_time' => $this->RequestData['since']->getTimestamp())
         );
 
         $images = array_map(
