@@ -119,6 +119,8 @@ by the 3 letter site alias before attempting to pass this regex to a regular exp
 or it will result in false negatives.
 
 
+# 2.1 Single project 
+
 ```
 GET /projects/$ProjectName
 ```
@@ -139,6 +141,7 @@ The body of the request to /projects/$ProjectName will be an entity of the form:
 }
 ```
 
+# 2.1.1 Single project images  
 ```
 GET /projects/$ProjectName/images/
 ```
@@ -162,6 +165,7 @@ Will return a JSON object of the form
 It is possible to provide a parameter named `since` where the value need to be a date or datetime ex: 2016-08-09 or 2016-08-09 10:00:00 or 2016-08-09T10:00:00
 If the timezone is provided, it will be ignored.
 
+# 2.1.2 Single project instruments  
 ```
 GET /projects/$ProjectName/instruments/
 ```
@@ -191,6 +195,7 @@ Will return a JSON object of the form
 
 Where the InstrumentNames are the "Short Name" of all the instruments used/installed in this project.
 
+# 2.1.3 Single project visits  
 ```
 GET /projects/$ProjectName/visits/
 ```
@@ -208,6 +213,7 @@ Will return a JSON object of the form
 
 Where V1, V2, ... are the visits that may exist for this project
 
+# 2.1.3 Single project candidates  
 ```
 GET /projects/$ProjectName/candidates/
 ```
