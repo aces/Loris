@@ -350,7 +350,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             );
             if (substr("$scan_type", 0, 2) == "t1") {
                 $scans_done[$scan_type] = "T1_Scan_done";
-            } elseif (substr("$scan_type", 0, 2) == "t2") {
+            } elseif (substr("$scan_type", 0, 3) == "t2w") {
                 $scans_done[$scan_type] = "T2_Scan_done";
             } elseif (substr("$scan_type", 0, 3) == "dti") {
                 $scans_done[$scan_type] = "dti_Scan_done";
