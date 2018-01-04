@@ -42,7 +42,7 @@ class Statistics_Site extends \NDB_Menu
         $centerID = htmlspecialchars($_REQUEST['CenterID']);
         if (is_null($centerID)) {
             error_log("CenterID is null.");
-            return false
+            return false;
         }
         //TODO: Create a permission specific to statistics
         return $user->hasCenterPermission('data_entry', $centerID);
