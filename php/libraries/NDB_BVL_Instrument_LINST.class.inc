@@ -37,20 +37,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     var $preview = false;
 
     /**
-     * Sets up the variables required for a LINST instrument to load
-     *
-     * @param string $commentID The CommentID being loaded
-     * @param string $page      The page being loaded
-     *
-     * @return none
-     */
-    function setup($commentID = null, $page = null)
-    {
-        $this->commentID = $commentID;
-        $this->page      = $page;
-    }
-
-    /**
      * Adds metadata fields (such as Examiner and Date_taken) to the
      * current form
      *
