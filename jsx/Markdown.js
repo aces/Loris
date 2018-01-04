@@ -49,6 +49,13 @@ var Markdown = React.createClass({
     var linkCallback = function(match, text, link, offset, val) {
       return '<a href="' + link + '">' + text + '</a>';
     };
+    // This needs to be declared outside of the loop to keep eslint
+    // happy. It's just the callback for the regex.
+    var hlevel = 1;
+    var headerCallback = function(match, headerLevel, headerContent, offset, val) {
+      hlevel = headerLevel.length;
+      return headerContent;
+    };
     for (let i = 0; i < paragraphs.length; i++) {
       // For now, assume that there's an empty line between
       // any headers. It's not true of strict markdown, but
@@ -56,13 +63,8 @@ var Markdown = React.createClass({
       // Technically, a header should also end at the newline,
       // not at the end of its paragraph too.
       if (paragraphs[i][0] === '#') {
-        var hlevel = 1;
-        paragraphs[i] = paragraphs[i].replace(headersRe,
-          function(match, headerLevel, headerContent, offset, val, hlevel) {
-            hlevel = headerLevel.length;
-            return headerContent;
-          }
-        );
+        hlevel = 1;
+        paragraphs[i] = paragraphs[i].replace(headersRe, headerCallback);
 
         switch (hlevel) {
           case 6:

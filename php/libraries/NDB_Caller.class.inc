@@ -128,6 +128,22 @@ class NDB_Caller
                 $p = $mname;
             }
             $this->page = $m->LoadPage($p);
+
+            // FIXME: These two method_exists calls were hacks that were previously
+            // in the load* classes, which for now need to be preserved for
+            // compatibility with existing modules.
+            //
+            // The proper solution is probably to re-write anything that uses them
+            // in React.
+            if (method_exists($this->page, 'getControlPanel')) {
+                $this->controlPanel = $this->page->getControlPanel();
+            }
+            if (method_exists($this->page, 'getFeedbackPanel')) {
+                $this->feedbackPanel = $this->page->getFeedbackPanel(
+                    $_REQUEST['candID'],
+                    $_REQUEST['sessionID'] ?? null
+                );
+            }
             return $this->page->display();
         } catch (LorisModuleMissingException $e) {
             //print_r($e);
@@ -314,7 +330,7 @@ class NDB_Caller
     function loadMenu($menu, $mode)
     {
         // make an instance of the menu's object
-        $menu =& NDB_Menu::factory($menu, $mode);
+        $menu = NDB_Menu::factory($menu, $mode);
 
         $success = $menu->setup();
 
@@ -441,7 +457,7 @@ class NDB_Caller
         $redirectToOnSuccess=null
     ) {
         if ($page === 'finalpage') {
-            $instrument =& NDB_BVL_Instrument::factory(
+            $instrument = NDB_BVL_Instrument::factory(
                 $instrumentName,
                 $commentID,
                 $page
@@ -451,14 +467,14 @@ class NDB_Caller
             header("Location: $redirectToOnSuccess");
             return "";
         }
-        $user =& User::singleton();
+        $user = User::singleton();
 
         if ($_REQUEST['sessionID']) {
             $timepoint =& TimePoint::singleton($_REQUEST['sessionID']);
         }
 
         // make an instance of the instrument's object
-        $instrument =& NDB_BVL_Instrument::factory(
+        $instrument = NDB_BVL_Instrument::factory(
             $instrumentName,
             $commentID,
             $page

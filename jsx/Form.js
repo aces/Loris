@@ -1,5 +1,5 @@
 /* exported FormElement, SelectElement, TextareaElement, TextboxElement, DateElement,
-NumericElement, FileElement, StaticElement, ButtonElement, LorisElement
+NumericElement, FileElement, StaticElement, LinkElement, ButtonElement, LorisElement
 */
 
 /**
@@ -699,6 +699,44 @@ var StaticElement = React.createClass({
 });
 
 /**
+ * Link element component.
+ * Used to link plain/formated text to an href destination as part of a form
+ */
+var LinkElement = React.createClass({
+
+  mixins: [React.addons.PureRenderMixin],
+  propTypes: {
+    label: React.PropTypes.string,
+    text: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.element
+    ]),
+    href: React.PropTypes.string
+  },
+
+  getDefaultProps: function() {
+    return {
+      label: '',
+      text: null,
+      href: null
+    };
+  },
+
+  render: function() {
+    return (
+      <div className="row form-group">
+        <label className="col-sm-3 control-label">
+          {this.props.label}
+        </label>
+        <div className="col-sm-9">
+          <p className="form-control-static"><a href={this.props.href}>{this.props.text}</a></p>
+        </div>
+      </div>
+    );
+  }
+});
+
+/**
  * Button component
  * React wrapper for <button> element, typically used to submit forms
  */
@@ -773,6 +811,9 @@ var LorisElement = React.createClass({
       case 'static':
         elementHtml = (<StaticElement {...elementProps} />);
         break;
+      case 'link':
+        elementHtml = (<LinkElement {...elementProps} />);
+        break;
       default:
         console.warn(
           "Element of type " + elementProps.type + " is not currently implemented!"
@@ -792,6 +833,7 @@ window.DateElement = DateElement;
 window.NumericElement = NumericElement;
 window.FileElement = FileElement;
 window.StaticElement = StaticElement;
+window.LinkElement = LinkElement;
 window.ButtonElement = ButtonElement;
 window.LorisElement = LorisElement;
 
@@ -804,6 +846,7 @@ export default {
   NumericElement,
   FileElement,
   StaticElement,
+  LinkElement,
   ButtonElement,
   LorisElement
 };

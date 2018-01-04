@@ -148,7 +148,7 @@ class File_Upload
     function preProcessFile()
     {
         if (!$this->isCLImport) {
-            $this->file =& $this->form->getElement($this->fieldName);
+            $this->file = $this->form->getElement($this->fieldName);
             if (!method_exists($this->file, "isUploadedFile")) {
                 return false;
             }
