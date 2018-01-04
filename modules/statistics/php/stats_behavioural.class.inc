@@ -84,7 +84,7 @@ class Stats_Behavioural extends \NDB_Form
             $projects[$key] = $value;
         }
         $this->tpl_data['Projects'] = $projects;
-        
+
         // SITES
         $site = $_REQUEST['site'] ?? '';
         if (empty($site)) {
@@ -120,7 +120,7 @@ class Stats_Behavioural extends \NDB_Form
             }
             $this->tpl_data['Centers'] = $centers;
         }
-        
+
         $Param_Project      = '';
         $subproject_query   = '';
         $behaviouralProject = $_REQUEST['BehaviouralProject'] ?? '';
@@ -135,7 +135,9 @@ class Stats_Behavioural extends \NDB_Form
                   );
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
             $this->params['pid'] = $behaviouralProject;
-            $subprojects = \Utility::getSubprojectsForProject($behaviouralProject);
+            $subprojects         = \Utility::getSubprojectsForProject(
+                $behaviouralProject
+            );
 
             $this->tpl_data['Subprojects'] = $subprojects;
             foreach ($subprojects as $key=>$val) {
@@ -144,7 +146,7 @@ class Stats_Behavioural extends \NDB_Form
             $subprojList = substr($subprojList, 0, -1);
             if (!empty($subprojList)) {
                 $suproject_query ="AND s.SubprojectID IN ($subprojList)";
-            } 
+            }
             $Visits = \Utility::getExistingVisitLabels($behaviouralProject);
             $this->tpl_data['Visits'] = $Visits;
         }
@@ -182,7 +184,7 @@ class Stats_Behavioural extends \NDB_Form
                     . ' in behavioural statistics'
                 );
                 return;
-            } 
+            }
 
             $c[$vl]['total']   += $row['val'];
             $c['all']['total'] += $row['val'];

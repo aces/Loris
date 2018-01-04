@@ -209,7 +209,7 @@ class Stats_MRI extends \NDB_Form
         $mriSite    = htmlspecialchars($mriSite);
         $Param_Site = 'AND (c.CenterID IS NULL OR c.CenterID=:sid)';
         $this->params['sid'] = $mriSite;
-        $centers     = $DB->pselect(
+        $centers = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
             CenterID as NumericID,
             IFNULL(PSCArea,Name) as LongName,

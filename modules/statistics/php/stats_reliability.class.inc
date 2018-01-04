@@ -105,7 +105,7 @@ class Stats_Reliability extends \NDB_Form
             error_log('No center data could be retrieved from the database!');
         } else {
             foreach ($centers as $row) {
-               $id         = $row['NumericID'] ?? '';
+                $id         = $row['NumericID'] ?? '';
                 $shortName  = $row['ShortName'] ?? '';
                 $longName   = $row['LongName'] ?? '';
                 $sites[$id] = $shortName;

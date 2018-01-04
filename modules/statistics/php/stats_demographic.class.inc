@@ -234,7 +234,7 @@ class Stats_Demographic extends \NDB_Form
             foreach ($centers as $row) {
                 $id         = $row['NumericID'] ?? '';
                 $shortName  = $row['ShortName'] ?? '';
-                $longName   = $row ['LongName'] ?? '';
+                $longName   = $row['LongName'] ?? '';
                 $sites[$id] = $shortName;
                 if ($demographicSite == $id) {
                     $this->tpl_data['CurrentSite'] = array(
@@ -405,11 +405,11 @@ class Stats_Demographic extends \NDB_Form
         $demographicInstrument = $_REQUEST['DemographicInstrument'] ?? '';
         if (!empty($demographicInstrument)) {
             $demographicInstrument = htmlspecialchars($demographicInstrument);
-            $Subcategories = array(
-                              'Complete',
-                              'Incomplete',
-                             );
-            $result        = $DB->pselect(
+            $Subcategories         = array(
+                                      'Complete',
+                                      'Incomplete',
+                                     );
+            $result = $DB->pselect(
                 "SELECT count(*) as val,
                 f.Data_entry as Subcat,
                 c.CenterID as CenterID,
