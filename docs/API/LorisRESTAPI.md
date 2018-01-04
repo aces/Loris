@@ -467,7 +467,7 @@ The format of the JSON object for these URLS is:
 # 4.0 Imaging Data
 
 The imaging data mostly lives in the `/candidates/$CandID/$Visit` portion of the REST API
-namespaces, but is defined in a separate section of this document for clarity purposes.
+namespace, but is defined in a separate section of this document for clarity purposes.
 
 ## 4.1 Candidate Images
 ```
