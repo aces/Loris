@@ -11,23 +11,15 @@ class NDB_BVL_Instrument_XIN_Rule_Test extends NDB_BVL_Instrument
     /**
      * sets up basic data, such as the HTML_Quickform object, and so on.
      *
-     * @param string $commentID  the CommentID identifying the data to load
-     * @param string $page       if a multipage form, the page to show
      * @return void
      * @access public
      */
-    function setup($commentID, $page){
+    function setup() {
         $this->formType="XIN";
-        $this->form = new LorisForm('test_form');
-        $this->page = $page;            // page label (number or
-        // string - used by
-        // user-defined child classes)
 
         // set the object properties
         $this->testName = "XIN_Rule_Test";           // test_names.Test_name
         $this->table = 'XIN_Rule_Test';              // name of database table corresponding to instrument
-        // data keyed by commentID
-        $this->commentID = $commentID;
 
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any HTML_Quickform date elements must be listed here

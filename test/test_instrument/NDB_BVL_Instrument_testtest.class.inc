@@ -26,18 +26,13 @@ class NDB_BVL_Instrument_testtest extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup()
     {
         $this->formType = 'XIN';
-        $this->form = new LorisForm('test_form');
-        $this->page = $page; // page label (number or string - used by user-defined child classes)
 
         // set the object properties
         $this->testName = 'testtest'; // test_names.Test_name
         $this->table = 'testtest'; // name of database table corresponding to instrument
-        $this->commentID = $commentID; // data keyed by commentID
-
-        $config = NDB_Config::singleton();
 
         // setup the form
         $this->_setupForm();
