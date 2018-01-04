@@ -14,11 +14,11 @@
       <form method="post">
         <div class="form-group">
           <input type="password" name="password" size="40" class="form-control"
-                 placeholder="New Password" value="{$username}" />
+                 placeholder="New Password" value="{$password}" />
         </div>
         <div class="form-group">
           <input type="password" name="confirm" size="40" class="form-control"
-                 placeholder="Confirm Password" value="{$username}" />
+                 placeholder="Confirm Password" value="{$password}" />
           {if $error_message}
             <span id="helpBlock" class="help-block">
                 <b class="text-danger">{$error_message}</b>
@@ -35,4 +35,3 @@
     </div>
   </div>
 </div>
-
