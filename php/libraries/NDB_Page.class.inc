@@ -76,7 +76,7 @@ class NDB_Page
      * page or specific page type.
      *
      * @param Module $module     The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
+     * @param string $page       The subtest being accessed (may be an empty string)
      * @param string $identifier The identifier for the data to load on this page
      * @param string $commentID  The CommentID to load the data for
      * @param string $formname   The name to give this form
