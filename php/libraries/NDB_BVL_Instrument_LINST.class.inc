@@ -400,10 +400,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             $this->InstrumentType = 'LINST';
             $db = \Database::singleton();
 
-            if (!isset($this->form)) {
-                $this->form = new \HTML_Quickform('test_form');
-            }
-
             $this->dateTimeFields = array("Date_taken");
             $this->formType       = 'XIN';
 
