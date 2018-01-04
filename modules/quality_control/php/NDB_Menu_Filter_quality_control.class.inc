@@ -131,14 +131,14 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                               FROM
                                   mri_protocol mp
                               WHERE
-                                  mp.Scan_type = ".$acqID."
+                                  mp.Scan_type = ".$acqID." LIMIT 1
                           ) AND(
                               SELECT
                                   SUBSTRING_INDEX(mp.TE_range, '-', -1)
                               FROM
                                   mri_protocol mp
                               WHERE
-                                   mp.Scan_type = ".$acqID."
+                                   mp.Scan_type = ".$acqID." LIMIT 1
                            )
                       )
                       AND(
@@ -148,14 +148,14 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                               FROM
                                   mri_protocol mp
                               WHERE
-                                  mp.Scan_type = ".$acqID."
+                                  mp.Scan_type = ".$acqID." LIMIT 1
                           ) AND(
                               SELECT
                                   SUBSTRING_INDEX(mp.TR_range, ',', -1)
                               FROM
                                   mri_protocol mp
                               WHERE
-                                  mp.Scan_type = ".$acqID."
+                                  mp.Scan_type = ".$acqID." LIMIT 1
                            )
                       )
                ) THEN 'In DICOM'
