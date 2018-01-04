@@ -1,8 +1,8 @@
 <?php
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -13,9 +13,9 @@
 namespace LORIS\statistics;
 
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -40,6 +40,11 @@ class Statistics_Site extends \NDB_Menu
     {
         $user     =& \User::singleton();
         $centerID = htmlspecialchars($_REQUEST['CenterID']);
+        if (is_null($centerID)) {
+            error_log("CenterID is null.");
+            return false
+        }
+        //TODO: Create a permission specific to statistics
         return $user->hasCenterPermission('data_entry', $centerID);
     }
 

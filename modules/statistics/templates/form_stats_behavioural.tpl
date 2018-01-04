@@ -48,7 +48,7 @@
             <td class="   pis">Per Instrument Stats</td>
             {foreach from=$Centers item=center key=centername}
                 <td id='{$center.ID}PIS' class="pis" colspan="2">
-                    <a href='{$baseurl}/statistics/statistics_site/?CenterID={$center.NumericID}{if $useProjects == "true"}&ProjectID={$CurrentProject.ID}{/if}' target="_blank">Please Click Here</a>
+                    <a href='{$baseurl}/statistics/statistics_site/?CenterID={$center.NumericID}{if $useProjects == "true"}&ProjectID={$CurrentProject.ID}{/if}' target="_blank">View Details</a>
                 </td>
             {/foreach}
         </tr>
@@ -102,7 +102,7 @@
             <td class=" pis">Per Instrument Stats</td>
             {foreach from=$Centers item=center key=centername}
                 <td id='{$center.ID}DDPIS' class="pis" colspan="2">
-                    <a href='{$baseurl}/statistics/statistics_dd_site/?CenterID={$center.NumericID}{if $useProjects == "true"}&ProjectID={$CurrentProject.ID}{/if}' target="_blank">Please Click Here</a>
+                    <a href='{$baseurl}/statistics/statistics_dd_site/?CenterID={$center.NumericID}{if $useProjects == "true"}&ProjectID={$CurrentProject.ID}{/if}' target="_blank">View Details</a>
                 </td>
             {/foreach}
         </tr>
