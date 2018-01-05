@@ -60,7 +60,6 @@ This document details the modeling conventions to use for tables, attributes and
 *Casing:* **snake_case**  
 *Casing:* **lowerCamelCase**
 
-*Conventions*:
 - The constraint name should be **specificaly declared**, do not rely on default naming.
 - The constraint name should be in **singular form**.
 - The constraint name should be of the **proper format**:
