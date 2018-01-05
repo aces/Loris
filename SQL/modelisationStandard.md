@@ -71,11 +71,11 @@ or
 - The constraint name should be **specifically declared**, do not rely on default naming.
 - The constraint name should be in **singular form**.
 - The constraint name should be of the **proper format**:
-  - **Primary key** `<tableName>idPK`
+  - **Primary key** `<tableName>IdPK`
   - **Unique key** `<tableName><ColumnName(s)>UK`
   - **Foreign key** `<tableName><ColemnName><RefTableName><refTableName>FK`  
                    `<tableName><ColemnName>_<RefTableName><refTableName>_FK`
-  - **Check constraint** `<tableName><ColumnName><check>CK`
+  - **Check constraint** `<tableName><ColumnName><Check>CK`
 - A **foreign key** constraint definition should contain `ON DELETE` and `ON UPDATE` clause. Do not rely on default behavior.
 
 ### Other parameters
