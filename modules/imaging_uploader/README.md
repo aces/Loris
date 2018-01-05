@@ -8,30 +8,13 @@ pipeline insertion progress.
 
 ## Requirements
 
-A successful scan upload should obey the following requirements: 
-
-
-### Install Configurations
-
-To enable the Imaging Uploader to handle large files, please update the apache 
-configuration file (located in `/etc/php/7.0/apache2/php.ini` for PHP 7.0) with 
-the following sample values: 
-
-```
-session.gc_maxlifetime = 10800
-max_input_time = 10800
-max_execution_time = 10800
-upload_max_filesize = 1024M
-post_max_size = 1024M
-```
-
-### Uploaded file
-
-The uploaded file is expected to be of one of the following types: 
-`.tgz, .tar.gz or .zip`. The filename should follow the:
-`PSCID_CandID_VisitLabel_*OptionalSuffix*.zip` naming convention for a `.zip` 
-file. It is also expected that the candidate and visit are already created in 
-the database.
+For a successful upload:
+1. The uploaded file is expected to be of one of the following types: 
+`.tgz, .tar.gz or .zip`. 
+2. The filename should follow the:
+`PSCID_CandID_VisitLabel_*OptionalSuffix*` naming convention. 
+3. It is expected that the candidate and visit are already created in the 
+database.
 
 
 ## Intended Users
@@ -64,7 +47,7 @@ The imaging uploader does NOT read the DICOM files within the uploaded scans.
 As such, it does not check if the files within the uploaded scan are of the 
 expected DICOM type, nor whether the  PatientName and/or PatientID DICOM headers 
 are properly de-identified according to the LORIS convention. This check is 
-however done as the first step on the LORIS-MRi side; i.e. as soon as the 
+however done as the first step on the LORIS-MRI side; i.e. as soon as the 
 insertion pipeline is triggered.
 
 ## Permissions
@@ -74,9 +57,23 @@ is necessary to have access to the module and gives the user the ability to
 upload and browse all scans uploaded to the database.
 
 
-## Database Configurations
-
+## Configurations
 The imaging uploader has the following configurations that affect its usage:
+
+#### Install Configurations
+
+To enable the Imaging Uploader to handle large files, please update the 
+`php.ini` apache configuration file with the following sample values: 
+
+```
+session.gc_maxlifetime = 10800
+max_input_time = 10800
+max_execution_time = 10800
+upload_max_filesize = 1024M
+post_max_size = 1024M
+```
+
+#### Database Configurations
 
 ImagingUploaderAutoLaunch - This setting determines whether the insertion 
         pipeline that archives the images and is triggered automatically or 
@@ -86,8 +83,6 @@ MRIUploadIncomingPath - This setting determines where on the filesystem the
         uploader is to place the uploaded file. Default location is 
         `/data/incoming/`. This directory is created during the installation of 
         LORIS-MRI.
-
-patientNameRegex - Unused.
 
 
 ## Interactions with LORIS
