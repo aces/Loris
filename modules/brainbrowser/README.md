@@ -28,7 +28,8 @@ of an incidental finding.
 
 Since Brainbrowser is accessible from Imaging Browser, its permissions are 
 directly linked to those of Imaging Browser. Please consult The imaging browser 
-(Readme.md)[] for access details.
+[Readme.md](https://github.com/aces/Loris/blob/minor/modules/imaging_browser/README.md) 
+for access details.
 
 ## Configurations
 
