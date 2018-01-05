@@ -37,7 +37,7 @@ the database.
 ## Intended Users
 
 The three primary types of users are MRI technicians or site coordinators to
-upload imaging scans for registered LORIS candidates and timepoint.
+upload imaging scans for registered LORIS candidates and timepoints.
 
 ## Scope
 
