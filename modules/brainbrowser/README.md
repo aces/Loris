@@ -8,8 +8,8 @@ volumes collected for a study.
 ## Intended Users
 
 The two primary types of users are:
-1. Imaging specialists doing online QC
-2. Project radiologists reporting incidental findings.
+- Imaging specialists doing online QC
+- Project radiologists reporting incidental findings.
 
 
 ## Scope
@@ -35,6 +35,3 @@ for access details.
 
 For Brainbrowser to load the MINC images successfully, the `config.xml` option 
 `MINCToolsPath` should point to the path where the MINC toolkit is installed.
-
-
-
