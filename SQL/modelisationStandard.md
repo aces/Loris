@@ -40,7 +40,8 @@ This document details the modeling conventions to use for tables, attributes and
   - *i.e. the name of the primary identifier of the `candidate` table should be `candidate_id`.*
 - When adding a field which serves as a **foreign key to another table** in the database, the field should follow the same convention as above `reference_table_name_id`. 
   - *i.e. The session table would have a primary identifier field named `session_id` and a foreign key reference to the `candidate` table with a field named `candidate_id`.*
-  - When two(2) attributes refer to the same foreign key id, a qualifier should be added to the name like in `parentCandidateId` and `childCandidateId`.
+- When two(2) attributes refer to the **same foreign key id**, a qualifier should be added to the name.
+  - *i.e. Two attributes pointing to the candidateId in the same table should be named like in `parentCandidateId` and `childCandidateId`.
 - **Date** attributes should not be named `date` but more consisely like `dateStart`. `date` should be at the beginning of the name followed by the qualifier.
 - **No ENUM attributes** should be used. Instead a lookup table to refer to possible choices should be used.
 
@@ -64,7 +65,7 @@ This document details the modeling conventions to use for tables, attributes and
 - The constraint name should be in **singular form**.
 - The constraint name should be of the **proper format**:
   - **Primary key** `<tableName>idPK`
-  - **Unique key** `<tableName><ColumnNameUK>`
+  - **Unique key** `<tableName><ColumnName(s)>UK`
   - **Foreign key** `<tableName><ColemnName><RefTableName><refTableName>FK`  
                    `<tableName><ColemnName>_<RefTableName><refTableName>_FK`
   - **Check constraint** `<tableName><ColumnName><check>CK`
