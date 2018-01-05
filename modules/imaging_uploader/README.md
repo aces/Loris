@@ -36,7 +36,7 @@ the database.
 
 ## Intended Users
 
-The three primary types of users are MRI technicians or site coordinators to
+The primary users are MRI technicians or site coordinators to
 upload imaging scans for registered LORIS candidates and timepoints.
 
 ## Scope
@@ -92,9 +92,9 @@ patientNameRegex - Unused.
 
 ## Interactions with LORIS
 
-- Links to other LORIS modules archived DICOMs acessible from the hyperlink in 
+1. Links to other LORIS modules archived DICOMs acessible from the hyperlink in 
 the `TarchiveInfo` column
-- MINC images are accessible through the hyperlink in the 
+2. MINC images are accessible through the hyperlink in the 
 `Number of MincInserted` column
-- If present, MRI violated scans (as defined by the study MRI protocol) can be 
+3. If present, MRI violated scans (as defined by the study MRI protocol) can be 
 accessed through the hyperlink in the `Number of MincCreated` column.
