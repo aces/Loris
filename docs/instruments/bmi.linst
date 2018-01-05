@@ -5,7 +5,7 @@ static{@}Candidate_Age{@}Candidate Age (Months)
 static{@}Window_Difference{@}Window Difference (+/- Days)
 select{@}Examiner{@}Examiner{@}NULL=>''
 static{@}{@}Note: Please enter measurements in Standard OR Metric units
-select{@}unit_classification{@}Choose unit of measurement{@}NULL=>''{-}'metric'=>'Metric'{-}'standard'=>'Standard'
+select{@}unit_classification{@}Choose unit of measurement{@}NULL=>''{-}'metric'=>'Metric'{-}'imperial'=>'Imperial'
 static{@}{@}Standard units
 numeric{@}height_feet{@}Your height (feet) :
 select{@}height_feet_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
