@@ -44,7 +44,7 @@ upload imaging scans for registered LORIS candidates and timepoints.
 The imaging uploader has the following built-in capabilities to facilitate 
 timely scan insertion into the LORIS database:
 
-1. Upload imaging scans using the `Upload` that can subsequently be inserted 
+1. Upload imaging scans using the `Upload` tab that can subsequently be inserted 
 into the database automatically using a collection of perl scripts provided in 
 [LORIS-MRI](https://github.com/aces/Loris-MRI). The launching of the insertion
 can also be achieved manually
@@ -54,8 +54,8 @@ about who uploaded the scan, when it was uploaded, and an `UploadID` and
 3. Track scan insertion status through the `Progress` column and a `Log Viewer` 
 which displays in either `Summary` or `Detailed` mode relevant feedback messages
 about insertion success or failure causes
-4. Uploaded scans can be overwritten if insertion is not started or `Failed` 
-(i.e. if the `Progress` is neither `In progres` nor `Success`. 
+4. Uploaded scans can be overwritten if insertion is `Not Started` or `Failed` 
+(i.e. if the `Progress` is neither `In Progres` nor `Success`. 
 
 
 NOT in scope:
@@ -76,7 +76,7 @@ upload and browse all scans uploaded to the database.
 
 ## Database Configurations
 
-The imaging uploader has the following configurations that affect its usage
+The imaging uploader has the following configurations that affect its usage:
 
 ImagingUploaderAutoLaunch - This setting determines whether the insertion 
         pipeline that archives the images and is triggered automatically or 
