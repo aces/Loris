@@ -36,11 +36,8 @@ the database.
 
 ## Intended Users
 
-The three primary types of users are:
-1. Imaging specialists using the modules to do online QC
-2. Project radiologists viewing images to report incidental findings
-3. Site coordinators or researchers ensuring their uploaded scans have
-   been processed and inserted into LORIS.
+The three primary types of users are MRI technicians or site coordinators to
+upload imaging scans for registered LORIS candidates and timepoint.
 
 ## Scope
 
