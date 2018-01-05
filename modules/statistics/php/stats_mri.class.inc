@@ -250,7 +250,7 @@ class Stats_MRI extends \NDB_Form
         }
 
         $scans_selected = array();
-        $scans          = $_REQUEST['Scans'] ?? '');
+        $scans          = $_REQUEST['Scans'] ?? '';
         if (empty($scans)) {
             error_log('No scans specified in request');
         } else {

@@ -66,7 +66,7 @@ class Stats_Reliability extends \NDB_Form
         }
 
         $reliabilityProject = $_REQUEST['ReliabilityProject'] ?? '';
-        reliabilityProject  = htmlspecialchars($reliabilityProject);
+        $reliabilityProject = htmlspecialchars($reliabilityProject);
         $Param_Project      = '';
         if (!empty($reliabilityProject)) {
             $this->tpl_data['CurrentProject']
@@ -116,7 +116,7 @@ class Stats_Reliability extends \NDB_Form
                                                      );
                 }
             }
-            this->tpl_data['Centers'] = $centers;
+            $this->tpl_data['Centers'] = $centers;
         }
 
         $this->tpl_data['Projects'] = $projects;
