@@ -44,6 +44,9 @@ if ($user->hasPermission('data_dict_edit')) { //if user has edit permission
     );
 
     if ($description != $native_description) {
+        if (empty($description)) {
+            $description = ' ';
+        }
         $DB->replace(
             'parameter_type_override',
             array(

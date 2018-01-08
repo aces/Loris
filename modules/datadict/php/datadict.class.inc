@@ -138,9 +138,9 @@ class Datadict extends \NDB_Menu_Filter
                 if ($val == 'empty') {
                     $query .= " AND COALESCE(pto.description,pt.description) = ''";
                 } elseif ($val=='modified') {
-                    $query .= " AND pto.description IS NOT NULL";
+                    $query .= " AND pto.name IS NOT NULL";
                 } elseif ($val=='unmodified') {
-                    $query .= " AND pto.description IS NULL";
+                    $query .= " AND pto.name IS NULL";
                 } else {
                     $query .= " AND $key LIKE '$val%' ";
                 }
