@@ -14,6 +14,8 @@ class PublicationUploadForm extends React.Component {
 
     this.setFormData = this.setFormData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.addListItem = this.addListItem.bind(this);
+    this.removeListItem = this.removeListItem.bind(this);
   }
 
   componentDidMount() {
@@ -49,6 +51,32 @@ class PublicationUploadForm extends React.Component {
     });
   }
 
+  addListItem(formElement, value, pendingVal) {
+    let formData = this.state.formData;
+    let listItems = formData[formElement] || [];
+    listItems.push(value);
+    formData[formElement] = listItems;
+    formData[pendingVal] = null;
+    this.setState({
+      formData: formData
+    });
+  }
+
+  removeListItem(formElement, value) {
+    let formData = this.state.formData;
+    let listItems = formData[formElement];
+    let index = listItems.indexOf(value);
+
+    if (index > -1) {
+      listItems.splice(index, 1);
+
+      formData[formElement] = listItems;
+      this.setState({
+        formData: formData
+      });
+    }
+  }
+
   handleSubmit(e) {
     e.preventDefault();
     // TODO make sure title is unique
@@ -61,7 +89,6 @@ class PublicationUploadForm extends React.Component {
       }
     }
 
-    console.log(this.props.action);
     $.ajax({
       type: 'POST',
       url: this.props.action,
@@ -72,7 +99,7 @@ class PublicationUploadForm extends React.Component {
       success: function(data) {
         console.log(data);
       },
-      error: function(jqXHR, textStatus, errorThrown) {
+      error: function(jqXHR, textStatus) {
         console.log(textStatus);
       }
     });
@@ -159,6 +186,19 @@ class PublicationUploadForm extends React.Component {
               ref="keywords"
               required={false}
               value={this.state.formData.keywords}
+            />
+            <ListElement
+              name="test"
+              label="Test"
+              ref="test"
+              id="test"
+              onUserInput={this.setFormData}
+              onUserAdd={this.addListItem}
+              onUserRemove={this.removeListItem}
+              required={false}
+              value={this.state.formData.pendingTestItem}
+              pendingVal="pendingTestItem"
+              items={this.state.formData.test}
             />
             <FileElement
               name="file"

@@ -255,6 +255,167 @@ var SelectElement = React.createClass({
   }
 });
 
+var ListElement = React.createClass({
+  propTypes: {
+    name: React.PropTypes.string.isRequired,
+    options: React.PropTypes.object,
+    items: React.PropTypes.object,
+    label: React.PropTypes.string,
+    value: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.array
+    ]),
+    id: React.PropTypes.string.isRequired,
+    class: React.PropTypes.string,
+    multiple: React.PropTypes.bool,
+    disabled: React.PropTypes.bool,
+    required: React.PropTypes.bool,
+    emptyOption: React.PropTypes.bool,
+    hasError: React.PropTypes.bool,
+    errorMessage: React.PropTypes.string,
+    pendingVal: React.PropTypes.string,
+    onUserInput: React.PropTypes.func,
+    onUserAdd: React.PropTypes.func,
+    onUserRemove: React.PropTypes.func
+  },
+
+  getDefaultProps: function() {
+    return {
+      name: '',
+      options: {},
+      items: {},
+      label: '',
+      value: undefined,
+      id: '',
+      class: '',
+      multiple: false,
+      disabled: false,
+      required: false,
+      emptyOption: true,
+      hasError: false,
+      errorMessage: 'The field is required!',
+      onUserInput: function() {
+        console.warn('onUserInput() callback is not set');
+      },
+      onUserAdd: function() {
+        console.warn('onUserAdd() callback is not set');
+      },
+      onUserRemove: function() {
+        console.warn('onUserRemove() callback is not set');
+      }
+    };
+  },
+
+  handleChange: function(e) {
+    this.props.onUserInput(this.props.pendingVal, e.target.value);
+  },
+
+  handleAdd: function() {
+    var value = document.getElementById(this.props.id).value;
+    this.props.onUserAdd(this.props.name, value, this.props.pendingVal);
+  },
+
+  handleRemove: function(e) {
+    var value = e.target.getAttribute('value');
+    this.props.onUserRemove(this.props.name, value);
+  },
+
+  render: function() {
+    var disabled = this.props.disabled ? 'disabled' : null;
+    var required = this.props.required ? 'required' : null;
+    var requiredHTML = null;
+    var emptyOptionHTML = null;
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    // Add empty option
+    if (this.props.emptyOption) {
+      emptyOptionHTML = <option></option>;
+    }
+
+    var input;
+    // if options are given, render input as a select
+    // otherwise render input as text
+    if (Object.keys(this.props.options).length === 0) {
+      input = <input
+        type="text"
+        className="form-control"
+        name={this.props.name}
+        id={this.props.id}
+        value={this.props.value || ""}
+        required={required}
+        disabled={disabled}
+        onChange={this.handleChange}
+      />;
+    } else {
+      input = <select
+        name={this.props.name}
+        multiple={multiple}
+        className="form-control"
+        id={this.props.id}
+        value={value}
+        required={required}
+        disabled={disabled}
+        onChange={this.handleChange}
+      >
+        {emptyOptionHTML}
+        {Object.keys(options).map(function(option) {
+          return (
+            <option value={option} key={option}>{options[option]}</option>
+          );
+        })}
+      </select>;
+    }
+    var items;
+    if (Object.keys(this.props.items).length) {
+      var that = this;
+      items = this.props.items.map(function (item) {
+        return (
+            <p>
+              {item}
+              &nbsp;
+              <button
+                className="btn btn-danger btn-remove"
+                type="button"
+                onClick={that.handleRemove}
+                value={item}
+              >
+                <span
+                  className="glyphicon glyphicon-remove"
+                  value={item}
+                />
+              </button>
+            </p>
+        );
+      });
+    }
+    return(
+      <div className="row form-group">
+        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+        <div className="col-sm-9">
+          {items}
+          {input}
+          <button
+            className="btn btn-success add"
+            id={this.props.id}
+            type="button"
+            onClick={this.handleAdd}
+            >
+            <span className="glyphicon glyphicon-plus"/>
+            Add Field
+          </button>
+        </div>
+      </div>
+    );
+  }
+});
+
 /**
  * Textarea Component
  * React wrapper for a <textarea> element.
@@ -755,6 +916,9 @@ var LorisElement = React.createClass({
       case 'text':
         elementHtml = (<TextboxElement {...elementProps} />);
         break;
+      case 'list':
+        elementHtml = (<ListElement {...elementProps} />);
+        break;
       case 'select':
         elementHtml = (<SelectElement {...elementProps} />);
         break;
@@ -786,6 +950,7 @@ var LorisElement = React.createClass({
 
 window.FormElement = FormElement;
 window.SelectElement = SelectElement;
+window.ListElement = ListElement;
 window.TextareaElement = TextareaElement;
 window.TextboxElement = TextboxElement;
 window.DateElement = DateElement;
@@ -798,6 +963,7 @@ window.LorisElement = LorisElement;
 export default {
   FormElement,
   SelectElement,
+  ListElement,
   TextareaElement,
   TextboxElement,
   DateElement,
