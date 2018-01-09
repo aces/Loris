@@ -313,6 +313,13 @@ var ListElement = React.createClass({
     this.props.onUserInput(this.props.pendingValKey, e.target.value);
   },
 
+  handleKeyPress: function(e) {
+    if (e.keyCode === 13 || e.which === 13) {
+      e.preventDefault();
+      this.handleAdd();
+    }
+  },
+
   // send pendingValKey as an argument in order to null out entered item
   handleAdd: function() {
     // reference pending value through input ID attr
@@ -371,6 +378,7 @@ var ListElement = React.createClass({
         required={required}
         disabled={disabled}
         onChange={this.handleChange}
+        onKeyPress={this.handleKeyPress}
       />;
     } else {
       var options = this.props.options;
