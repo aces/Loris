@@ -44,13 +44,6 @@ class Media extends \NDB_Menu_Filter
     {
         //create user object
         $user =& \User::singleton();
-
-        // Set global permission to control access to different modules of media page
-        $this->hasWritePermission = $user->hasPermission('media_write');
-
-        // Set permission to access user-hidden files, currently based on superuser
-        $this->hasHidePermission = $user->hasPermission("superuser");
-
         return $user->hasPermission('media_read');
     }
 
@@ -59,7 +52,7 @@ class Media extends \NDB_Menu_Filter
      *
      * @param string $name       The test name being accessed
      * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this     page
+     * @param string $identifier The identifier for the data to load on this page
      * @param string $commentID  The CommentID to load the data for
      * @param string $formname   The name to give this form
      *
@@ -146,6 +139,12 @@ class Media extends \NDB_Menu_Filter
     function _setupVariables()
     {
         $user =& \User::singleton();
+
+        // Set global permission to control access to different modules of media page
+        $this->hasWritePermission = $user->hasPermission('media_write');
+
+        // Set permission to access user-hidden files, currently based on superuser
+        $this->hasHidePermission = $user->hasPermission("superuser");
         // the base query
         $query  = " FROM media m LEFT JOIN session s ON m.session_id = s.ID".
         " LEFT JOIN candidate c ON c.CandID=s.CandID";
