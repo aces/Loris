@@ -6,14 +6,9 @@ This document details the modeling conventions to use for tables, attributes and
 
 ### Table
 
-*Casing:* **Snake_case** 1 clear vote  
-*Casing:* **UpperCamelCase** 1 clear vote
-
-- The table name should be in **Snake_case**.  
-OR  
-- The table name should be in **UpperCamelCase**.
-  - The table name should **start** with an **upper case letter**.
-  - The table name should **not contain underscore**.
+- The table name should be in **snake_case**.  
+  - The table name should **start** with an **lower case letter**.
+  - The table name made of **multiple word** should use an **underscore** in order to separate each of them.
 - The table name should be in **singular form**.
 - The table name should contain **English words** only in order to be understanded by most.
 - The table name should **not contain abbreviation** unless the length would be more than 30 characters.
@@ -26,30 +21,20 @@ OR
 
 ### Field
 
-*Casing:* **snake_case** 1 clear vote  
-*Casing:* **lowerCamelCase** 1 clear vote  
-
-*Primary key name* **\<tableName\>Id** 1 clear vote  
-*Primary key name* **id** 1 clear vote
- 
-- The attribute name should be in **snake_case**.  
-OR  
-- The Attribute name should be in **lowerCamelCase**.
-  - The Attribute name should **start** with a **lower case letter**.
+- The Attribute name should be in **UpperCamelCase**.
+  - The Attribute name should **start** with an **Upper case letter**.
   - The Attribute name should **not contain underscore**.
 - The Attribute name should be in **singular form**.
 - The attribute name should contain **English word** only in order to be understanded by most.
 - The Attribute name should **not contain abbreviation** unless the length would be more than 30 characters.
 - The **primary key** attribute of a table should of type `int`.
-- The **primary key** attribute of a table should be named `id`.  
-or  
-- The **primary key** attribute of a table should be composed as such `table_name_id`.
-  - *i.e. the name of the primary identifier of the `candidate` table should be `candidate_id`.*
-- When adding a field which serves as a **foreign key to another table** in the database, the field should follow the same convention as above `reference_table_name_id`. 
-  - *i.e. The session table would have a primary identifier field named `session_id` and a foreign key reference to the `candidate` table with a field named `candidate_id`.*
+- The **primary key** attribute of a table should be named `<TableName>ID`.  
+  - *i.e. the name of the primary identifier of the `candidate` table should be `CandidateID`.*
+- When adding a field which serves as a **foreign key to another table** in the database, the field should follow the same convention as above `ReferenceTableNameID`. 
+  - *i.e. The session table would have a primary identifier field named `sessionID` and a foreign key reference to the `candidate` table with a field named `CandidateID`.*
 - When two(2) attributes refer to the **same foreign key id**, a qualifier should be added to the name.
-  - *i.e. Two attributes pointing to the candidateId in the same table should be named like in `parentCandidateId` and `childCandidateId`.
-- **Date** attributes should not be named `date` but more concisely like `dateStart`. `date` should be at the beginning of the name followed by the qualifier.
+  - *i.e. Two attributes pointing to the candidateId in the same table should be named like in `ParentCandidateID` and `ChildCandidateID`.
+- **Date** attributes should not be named `Date` but more concisely like `DateStart`. `Date` should be at the beginning of the name followed by the qualifier.
 - **No ENUM attributes** should be used. Instead a lookup table to refer to possible choices should be used.
 
 #### Field Ordering
@@ -65,17 +50,13 @@ or
 
 ### Constraints
 
-*Casing:* **snake_case**  
-*Casing:* **lowerCamelCase**
-
 - The constraint name should be **specifically declared**, do not rely on default naming.
 - The constraint name should be in **singular form**.
 - The constraint name should be of the **proper format**:
-  - **Primary key** `<tableName>IdPK`
-  - **Unique key** `<tableName><ColumnName(s)>UK`
-  - **Foreign key** `<tableName><ColemnName><RefTableName><refTableName>FK`  
-                   `<tableName><ColemnName>_<RefTableName><refTableName>_FK`
-  - **Check constraint** `<tableName><ColumnName><Check>CK`
+  - **Primary key** `<table_name>_ID_PK`
+  - **Unique key** `<table_name>_<ColumnName(s)>_UK`
+  - **Foreign key** `<table_name>_<ColemnName>_<ref_table_name>_<RefColumnName>_FK`
+  - **Check constraint** `<table_name>_<ColumnName>_<Check>_CK`
 - A **foreign key** constraint definition should contain `ON DELETE` and `ON UPDATE` clause. Do not rely on default behavior.
 
 ### Other parameters
