@@ -102,7 +102,7 @@ class Datadict extends \NDB_Menu_Filter
             array('' => 'All Instruments'),
             $instruments
         );
-        $this->addSelect('sourceFrom', 'Instruments', $instruments, array('multiple' => 'multiple'));
+        $this->addSelect('sourceFrom', 'Instruments', $instruments);
         $this->addSelect(
             'Description',
             'Description',
@@ -115,10 +115,12 @@ class Datadict extends \NDB_Menu_Filter
         );
         $this->addBasicText('keyword', 'Search keyword');
     }
+
     /**
     * Set Data Table Rows
     *
     * @param string $count the count of table rows
+     *
     *
     * @note   Set Data Table Rows
     * @return bool
@@ -128,7 +130,7 @@ class Datadict extends \NDB_Menu_Filter
     {
 
         $x = 0;
-
+        print_r($this->list);
         foreach ($this->list as $item) {
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
             $i = 1;
@@ -161,6 +163,7 @@ class Datadict extends \NDB_Menu_Filter
     {
         // make the SELECT statement
         $query = "SELECT ";
+        print_r($this->columns);
         if (is_array($this->columns) && count($this->columns) > 0) {
             $query .= implode(', ', $this->columns);
         } else {
@@ -175,6 +178,7 @@ class Datadict extends \NDB_Menu_Filter
         } else {
             $query .= $this->query;
         }
+
 
         return $query;
     }
@@ -214,8 +218,22 @@ class Datadict extends \NDB_Menu_Filter
             }
         }
 
+
         return $query;
 
+    }
+
+    /**
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return a json encoded string of the headers and data from this table
+     */
+    function toJSON()
+    {
+        $result         = $this->toArray();
+        $result['form'] = $this->form->form;
+        return json_encode($result);
     }
 
     /**
@@ -232,9 +250,9 @@ class Datadict extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/datadict/js/columnFormatter.js",
              $baseURL . "/datadict/js/datadict_helper.js",
              $baseURL . "/js/components/MultiSelectDropdown.js",
+             $baseURL . "/datadict/js/dataDictIndex.js"
             )
         );
     }
