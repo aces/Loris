@@ -1006,6 +1006,9 @@ var LorisElement = React.createClass({
       case 'static':
         elementHtml = (<StaticElement {...elementProps} />);
         break;
+      case 'link':
+        elementHtml = (<LinkElement {...elementProps} />);
+        break;
       default:
         console.warn(
           "Element of type " + elementProps.type + " is not currently implemented!"
@@ -1026,6 +1029,7 @@ window.DateElement = DateElement;
 window.NumericElement = NumericElement;
 window.FileElement = FileElement;
 window.StaticElement = StaticElement;
+window.LinkElement = LinkElement;
 window.ButtonElement = ButtonElement;
 window.LorisElement = LorisElement;
 
@@ -1039,6 +1043,7 @@ export default {
   NumericElement,
   FileElement,
   StaticElement,
+  LinkElement,
   ButtonElement,
   LorisElement
 };
