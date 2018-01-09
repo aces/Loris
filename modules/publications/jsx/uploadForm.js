@@ -51,12 +51,12 @@ class PublicationUploadForm extends React.Component {
     });
   }
 
-  addListItem(formElement, value, pendingVal) {
+  addListItem(formElement, value, pendingValKey) {
     let formData = this.state.formData;
     let listItems = formData[formElement] || [];
     listItems.push(value);
     formData[formElement] = listItems;
-    formData[pendingVal] = null;
+    formData[pendingValKey] = null;
     this.setState({
       formData: formData
     });
@@ -129,6 +129,14 @@ class PublicationUploadForm extends React.Component {
       );
     }
 
+    let testOptions = {
+      yes: 'yes',
+      no: 'no',
+      maybe: 'maybe',
+      not_sure: 'not sure',
+      fgsdfgsdfg: 'fgsdfgsdfg'
+    };
+
     return (
       <div className="row">
         <div className="col-md-8 col-lg-7">
@@ -179,14 +187,6 @@ class PublicationUploadForm extends React.Component {
               required={true}
               value={this.state.formData.variablesOfInterest}
             />
-            {/*<TextboxElement
-              name="keywords"
-              label="Keywords"
-              onUserInput={this.setFormData}
-              ref="keywords"
-              required={false}
-              value={this.state.formData.keywords}
-            />*/}
             <ListElement
               name="keywords"
               label="Keywords"
@@ -196,6 +196,7 @@ class PublicationUploadForm extends React.Component {
               onUserAdd={this.addListItem}
               onUserRemove={this.removeListItem}
               required={false}
+              allowDupl={false}
               value={this.state.formData.pendingKWItem}
               pendingValKey="pendingKWItem"
               items={this.state.formData.keywords}

@@ -283,16 +283,16 @@ var ListElement = React.createClass({
     return {
       name: '',
       options: {},
-      items: {},
+      items: [],
       label: '',
       value: undefined,
       id: '',
       class: '',
-      multiple: false,
       disabled: false,
       required: false,
       emptyOption: true,
       hasError: false,
+      allowDupl: false,
       errorMessage: 'The field is required!',
       pendingValKey: '',
       onUserInput: function() {
@@ -313,14 +313,33 @@ var ListElement = React.createClass({
     this.props.onUserInput(this.props.pendingValKey, e.target.value);
   },
 
+  // send pendingValKey as an argument in order to null out entered item
   handleAdd: function() {
+    // reference pending value through input ID attr
     var value = document.getElementById(this.props.id).value;
-    this.props.onUserAdd(this.props.name, value, this.props.pendingVal);
+    if (this.canAddItem(value)) {
+      this.props.onUserAdd(this.props.name, value, this.props.pendingValKey);
+    }
   },
 
   handleRemove: function(e) {
-    var value = e.target.getAttribute('value');
+    var value = e.target.getAttribute('data-item');
     this.props.onUserRemove(this.props.name, value);
+  },
+
+  // helper function to detect if item should be added to list
+  canAddItem: function(value) {
+    // reject empty values
+    if (!value) {
+      return false;
+    }
+
+    // reject if allowDupl is false and item is already in array
+    if (!this.props.allowDupl && this.props.items.indexOf(value) > -1){
+      return false;
+    }
+
+    return true;
   },
 
   render: function() {
@@ -354,12 +373,12 @@ var ListElement = React.createClass({
         onChange={this.handleChange}
       />;
     } else {
+      var options = this.props.options;
       input = <select
         name={this.props.name}
-        multiple={multiple}
         className="form-control"
         id={this.props.id}
-        value={value}
+        value={this.props.value}
         required={required}
         disabled={disabled}
         onChange={this.handleChange}
@@ -376,25 +395,23 @@ var ListElement = React.createClass({
     // iterate through added list items and render them
     // with deletion button
     var items;
-    if (Object.keys(this.props.items).length) {
+    if (this.props.items.length) {
       var that = this;
       items = this.props.items.map(function (item) {
         return (
-            <span>
+            <button
+              className="btn btn-info btn-inline"
+              type="button"
+              onClick={that.handleRemove}
+              data-item={item}
+            >
               {item}
               &nbsp;
-              <button
-                className="btn btn-danger btn-remove"
-                type="button"
-                onClick={that.handleRemove}
-                value={item}
-              >
-                <span
-                  className="glyphicon glyphicon-remove"
-                  value={item}
-                />
-              </button>
-            </span>
+              <span
+                className="glyphicon glyphicon-remove"
+                data-item={item}
+              />
+            </button>
         );
       });
     }
