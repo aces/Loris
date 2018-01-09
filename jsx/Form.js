@@ -342,7 +342,7 @@ var ListElement = React.createClass({
     }
 
     // reject if allowDupl is false and item is already in array
-    if (!this.props.allowDupl && this.props.items.indexOf(value) > -1){
+    if (!this.props.allowDupl && this.props.items.indexOf(value) > -1) {
       return false;
     }
 
@@ -390,6 +390,7 @@ var ListElement = React.createClass({
         required={required}
         disabled={disabled}
         onChange={this.handleChange}
+        onKeyPress={this.handleKeyPress}
       >
         {emptyOptionHTML}
         {Object.keys(options).map(function(option) {
@@ -405,7 +406,7 @@ var ListElement = React.createClass({
     var items;
     if (this.props.items.length) {
       var that = this;
-      items = this.props.items.map(function (item) {
+      items = this.props.items.map(function(item) {
         return (
             <button
               className="btn btn-info btn-inline"
@@ -423,7 +424,7 @@ var ListElement = React.createClass({
         );
       });
     }
-    return(
+    return (
       <div className="row form-group">
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
           {this.props.label}
