@@ -273,7 +273,7 @@ var ListElement = React.createClass({
     emptyOption: React.PropTypes.bool,
     hasError: React.PropTypes.bool,
     errorMessage: React.PropTypes.string,
-    pendingVal: React.PropTypes.string,
+    pendingValKey: React.PropTypes.string,
     onUserInput: React.PropTypes.func,
     onUserAdd: React.PropTypes.func,
     onUserRemove: React.PropTypes.func
@@ -294,6 +294,7 @@ var ListElement = React.createClass({
       emptyOption: true,
       hasError: false,
       errorMessage: 'The field is required!',
+      pendingValKey: '',
       onUserInput: function() {
         console.warn('onUserInput() callback is not set');
       },
@@ -306,8 +307,10 @@ var ListElement = React.createClass({
     };
   },
 
+  // pendingValKey is the placeholder variable for temporarily storing
+  // typed or selected items before adding them to the list
   handleChange: function(e) {
-    this.props.onUserInput(this.props.pendingVal, e.target.value);
+    this.props.onUserInput(this.props.pendingValKey, e.target.value);
   },
 
   handleAdd: function() {
@@ -369,12 +372,15 @@ var ListElement = React.createClass({
         })}
       </select>;
     }
+
+    // iterate through added list items and render them
+    // with deletion button
     var items;
     if (Object.keys(this.props.items).length) {
       var that = this;
       items = this.props.items.map(function (item) {
         return (
-            <p>
+            <span>
               {item}
               &nbsp;
               <button
@@ -388,7 +394,7 @@ var ListElement = React.createClass({
                   value={item}
                 />
               </button>
-            </p>
+            </span>
         );
       });
     }

@@ -179,26 +179,26 @@ class PublicationUploadForm extends React.Component {
               required={true}
               value={this.state.formData.variablesOfInterest}
             />
-            <TextboxElement
+            {/*<TextboxElement
               name="keywords"
               label="Keywords"
               onUserInput={this.setFormData}
               ref="keywords"
               required={false}
               value={this.state.formData.keywords}
-            />
+            />*/}
             <ListElement
-              name="test"
-              label="Test"
-              ref="test"
-              id="test"
+              name="keywords"
+              label="Keywords"
+              ref="keywords"
+              id="keywords"
               onUserInput={this.setFormData}
               onUserAdd={this.addListItem}
               onUserRemove={this.removeListItem}
               required={false}
-              value={this.state.formData.pendingTestItem}
-              pendingVal="pendingTestItem"
-              items={this.state.formData.test}
+              value={this.state.formData.pendingKWItem}
+              pendingValKey="pendingKWItem"
+              items={this.state.formData.keywords}
             />
             <FileElement
               name="file"
