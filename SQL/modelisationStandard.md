@@ -47,7 +47,7 @@ This document details the modeling conventions to use for tables, attributes and
   2 Varchar (indexed field first)  
   3 Text, Json  
   4 Blob  
-- Mandatory fields should be place before optional attributes of the same type.
+- Mandatory fields should be place before optional fields of the same type.
 
 
 ### Constraints
