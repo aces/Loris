@@ -85,7 +85,13 @@ class PublicationUploadForm extends React.Component {
     let formObj = new FormData();
     for (let key in formData) {
       if (formData[key] !== "") {
-        formObj.append(key, formData[key]);
+        var formVal;
+        if (Array.isArray(formData[key])) {
+          formVal = JSON.stringify(formData[key]);
+        } else {
+          formVal = formData[key];
+        }
+        formObj.append(key, formVal);
       }
     }
 

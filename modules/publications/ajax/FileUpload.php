@@ -42,6 +42,8 @@ function uploadPublication() {
     $db = Database::singleton();
 
     $today = date('Y-m-d');
+    $keywords = $_REQUEST['keywords'];
+    echo $keywords;
     $fields = array(
         'Title'                   => $_REQUEST['title'],
         'Description'             => $_REQUEST['description'],
