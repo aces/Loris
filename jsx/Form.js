@@ -1,5 +1,5 @@
 /* exported FormElement, SelectElement, TextareaElement, TextboxElement, DateElement,
-NumericElement, FileElement, StaticElement, LinkElement, ButtonElement, LorisElement
+NumericElement, FileElement, StaticElement, ButtonElement, LorisElement
 */
 
 /**
@@ -249,6 +249,190 @@ var SelectElement = React.createClass({
             })}
           </select>
           {errorMessage}
+        </div>
+      </div>
+    );
+  }
+});
+
+var ListElement = React.createClass({
+  propTypes: {
+    name: React.PropTypes.string.isRequired,
+    id: React.PropTypes.string.isRequired,
+    pendingValKey: React.PropTypes.string.isRequired,
+    options: React.PropTypes.object,
+    items: React.PropTypes.object,
+    label: React.PropTypes.string,
+    value: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.array
+    ]),
+    class: React.PropTypes.string,
+    multiple: React.PropTypes.bool,
+    disabled: React.PropTypes.bool,
+    required: React.PropTypes.bool,
+    emptyOption: React.PropTypes.bool,
+    hasError: React.PropTypes.bool,
+    errorMessage: React.PropTypes.string,
+    onUserInput: React.PropTypes.func,
+    onUserAdd: React.PropTypes.func,
+    onUserRemove: React.PropTypes.func
+  },
+
+  getDefaultProps: function() {
+    return {
+      name: '',
+      options: {},
+      items: [],
+      label: '',
+      value: undefined,
+      id: '',
+      class: '',
+      disabled: false,
+      required: false,
+      emptyOption: true,
+      hasError: false,
+      allowDupl: false,
+      errorMessage: 'The field is required!',
+      pendingValKey: '',
+      onUserInput: function() {
+        console.warn('onUserInput() callback is not set');
+      },
+      onUserAdd: function() {
+        console.warn('onUserAdd() callback is not set');
+      },
+      onUserRemove: function() {
+        console.warn('onUserRemove() callback is not set');
+      }
+    };
+  },
+
+  // pendingValKey is the placeholder variable for temporarily storing
+  // typed or selected items before adding them to the list
+  handleChange: function(e) {
+    this.props.onUserInput(this.props.pendingValKey, e.target.value);
+  },
+
+  // send pendingValKey as an argument in order to null out entered item
+  handleAdd: function() {
+    // reference pending value through input ID attr
+    var value = document.getElementById(this.props.id).value;
+    if (this.canAddItem(value)) {
+      this.props.onUserAdd(this.props.name, value, this.props.pendingValKey);
+    }
+  },
+
+  handleRemove: function(e) {
+    var value = e.target.getAttribute('data-item');
+    this.props.onUserRemove(this.props.name, value);
+  },
+
+  // helper function to detect if item should be added to list
+  canAddItem: function(value) {
+    // reject empty values
+    if (!value) {
+      return false;
+    }
+
+    // reject if allowDupl is false and item is already in array
+    if (!this.props.allowDupl && this.props.items.indexOf(value) > -1){
+      return false;
+    }
+
+    return true;
+  },
+
+  render: function() {
+    var disabled = this.props.disabled ? 'disabled' : null;
+    var required = this.props.required ? 'required' : null;
+    var requiredHTML = null;
+    var emptyOptionHTML = null;
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    // Add empty option
+    if (this.props.emptyOption) {
+      emptyOptionHTML = <option></option>;
+    }
+
+    var input;
+    // if options are given, render input as a select
+    // otherwise render input as text
+    if (Object.keys(this.props.options).length === 0) {
+      input = <input
+        type="text"
+        className="form-control"
+        name={this.props.name}
+        id={this.props.id}
+        value={this.props.value || ""}
+        required={required}
+        disabled={disabled}
+        onChange={this.handleChange}
+      />;
+    } else {
+      var options = this.props.options;
+      input = <select
+        name={this.props.name}
+        className="form-control"
+        id={this.props.id}
+        value={this.props.value}
+        required={required}
+        disabled={disabled}
+        onChange={this.handleChange}
+      >
+        {emptyOptionHTML}
+        {Object.keys(options).map(function(option) {
+          return (
+            <option value={option} key={option}>{options[option]}</option>
+          );
+        })}
+      </select>;
+    }
+
+    // iterate through added list items and render them
+    // with deletion button
+    var items;
+    if (this.props.items.length) {
+      var that = this;
+      items = this.props.items.map(function (item) {
+        return (
+            <button
+              className="btn btn-info btn-inline"
+              type="button"
+              onClick={that.handleRemove}
+              data-item={item}
+            >
+              {item}
+              &nbsp;
+              <span
+                className="glyphicon glyphicon-remove"
+                data-item={item}
+              />
+            </button>
+        );
+      });
+    }
+    return(
+      <div className="row form-group">
+        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+        <div className="col-sm-9">
+          {items}
+          {input}
+          <button
+            className="btn btn-success add"
+            id={this.props.id}
+            type="button"
+            onClick={this.handleAdd}
+            >
+            <span className="glyphicon glyphicon-plus"/>
+            Add Field
+          </button>
         </div>
       </div>
     );
@@ -699,44 +883,6 @@ var StaticElement = React.createClass({
 });
 
 /**
- * Link element component.
- * Used to link plain/formated text to an href destination as part of a form
- */
-var LinkElement = React.createClass({
-
-  mixins: [React.addons.PureRenderMixin],
-  propTypes: {
-    label: React.PropTypes.string,
-    text: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.element
-    ]),
-    href: React.PropTypes.string
-  },
-
-  getDefaultProps: function() {
-    return {
-      label: '',
-      text: null,
-      href: null
-    };
-  },
-
-  render: function() {
-    return (
-      <div className="row form-group">
-        <label className="col-sm-3 control-label">
-          {this.props.label}
-        </label>
-        <div className="col-sm-9">
-          <p className="form-control-static"><a href={this.props.href}>{this.props.text}</a></p>
-        </div>
-      </div>
-    );
-  }
-});
-
-/**
  * Button component
  * React wrapper for <button> element, typically used to submit forms
  */
@@ -793,6 +939,9 @@ var LorisElement = React.createClass({
       case 'text':
         elementHtml = (<TextboxElement {...elementProps} />);
         break;
+      case 'list':
+        elementHtml = (<ListElement {...elementProps} />);
+        break;
       case 'select':
         elementHtml = (<SelectElement {...elementProps} />);
         break;
@@ -811,9 +960,6 @@ var LorisElement = React.createClass({
       case 'static':
         elementHtml = (<StaticElement {...elementProps} />);
         break;
-      case 'link':
-        elementHtml = (<LinkElement {...elementProps} />);
-        break;
       default:
         console.warn(
           "Element of type " + elementProps.type + " is not currently implemented!"
@@ -827,26 +973,26 @@ var LorisElement = React.createClass({
 
 window.FormElement = FormElement;
 window.SelectElement = SelectElement;
+window.ListElement = ListElement;
 window.TextareaElement = TextareaElement;
 window.TextboxElement = TextboxElement;
 window.DateElement = DateElement;
 window.NumericElement = NumericElement;
 window.FileElement = FileElement;
 window.StaticElement = StaticElement;
-window.LinkElement = LinkElement;
 window.ButtonElement = ButtonElement;
 window.LorisElement = LorisElement;
 
 export default {
   FormElement,
   SelectElement,
+  ListElement,
   TextareaElement,
   TextboxElement,
   DateElement,
   NumericElement,
   FileElement,
   StaticElement,
-  LinkElement,
   ButtonElement,
   LorisElement
 };

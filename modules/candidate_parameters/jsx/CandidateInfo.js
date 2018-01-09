@@ -64,6 +64,34 @@ var CandidateInfo = React.createClass(
         formData: formData
       });
     },
+
+    addListItem: function(formElement, value, pendingValKey) {
+      var formData = this.state.formData;
+      var listItems = formData[formElement] || [];
+      listItems.push(value);
+      formData[formElement] = listItems;
+      formData[pendingValKey] = null;
+
+      this.setState({
+        formData: formData
+      });
+    },
+
+    removeListItem: function(formElement, value) {
+      var formData = this.state.formData;
+      var listItems = formData[formElement];
+      var index = listItems.indexOf(value);
+
+      if (index > -1) {
+        listItems.splice(index, 1);
+
+        formData[formElement] = listItems;
+        this.setState({
+          formData: formData
+        });
+      }
+    },
+
     onSubmit: function(e) {
       e.preventDefault();
     },
@@ -251,6 +279,18 @@ var CandidateInfo = React.createClass(
               ref="flaggedReason"
               disabled={reasonDisabled}
               required={reasonRequired}
+            />
+            <ListElement
+              label="Test ListElement"
+              name="testList"
+              id="testList"
+              ref="testList"
+              items={this.state.formData.testList}
+              value={this.state.formData.pendingListItem}
+              pendingValKey="pendingListItem"
+              onUserInput={this.setFormData}
+              onUserAdd={this.addListItem}
+              onUserRemove={this.removeListItem}
             />
             {specifyOther}
             {extraParameterFields}
