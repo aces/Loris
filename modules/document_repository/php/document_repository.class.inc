@@ -44,13 +44,12 @@ class Document_Repository extends \NDB_Menu_Filter
     }
 
     /**
-     * Setup variables function
+     * Function _setupVariables
      *
      * @return none
      */
-    function setup()
+    function _setupVariables()
     {
-        parent::setup();
 
         $user =& \User::singleton();
 
