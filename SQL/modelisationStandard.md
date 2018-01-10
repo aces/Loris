@@ -18,7 +18,7 @@ This document details the modeling conventions to use for tables, attributes and
   - *i.e. A table containing the consent information of a candidate would be named `candidate_consent`, candidate being the broader concern and just `consent` is not sufficiently informative to rule out user consents and examiner consents. A table containing the consent types would be called as such `consent_type`.*
 - **Acronym** are permitted only if the name would be to long and the acronym is **commonly used by the community**. The acronym should **only contain upper case letter**.
 - When creating a table representing a **relation between two or more tables**. Regardless of the relation type (one-to-many, many-to-one or one-to-one), the table should have a composite name as such `table1_table2_rel`.
-  - *i.e. the table mapping users to their permissions would be named `user_permission_rel` where `user` is the name of the Users' entity table and `permission` is the name of the Permissions' entity table*
+  - *i.e. the table mapping users to their permissions would be named `user_permission_rel` where `user` is the name of the Users' entity table and `permission` is the name of the Permissions' entity table.*
 
 ### Field
 
@@ -35,7 +35,8 @@ This document details the modeling conventions to use for tables, attributes and
 - When adding a field which serves as a **foreign key to another table** in the database, the field should follow the same convention as above `ReferenceTableNameID`. 
   - *i.e. The session table would have a primary identifier field named `sessionID` and a foreign key reference to the `candidate` table with a field named `CandidateID`.*
 - When two(2) fields refer to the **same foreign key id**, a qualifier should be added to the name.
-  - *i.e. Two fields pointing to the candidateID in the same table should be named like in `ParentCandidateID` and `ChildCandidateID`.
+  - *i.e. Two fields pointing to the candidateID in the same table should be named like in `ParentCandidateID` and `ChildCandidateID`.*
+- Both **primary key and foreign key** fields should end with **`ID`** in upper case.
 - **Date** fields should not be named `Date` but more concisely like `DateStart`. `Date` should be at the beginning of the name followed by the qualifier.
 - **No ENUM attributes** should be used. Instead a lookup table to refer to possible choices should be used.
 
