@@ -55,7 +55,7 @@ This document details the modeling conventions to use for tables, attributes and
 - The constraint name should be **specifically declared**, do not rely on default naming.
 - The constraint name should be in **singular form**.
 - The constraint name should be of the **proper format**:
-  - **Primary key** `<table_name>_ID_PK`
+  - **Primary key** `<table_name>_PK`
   - **Unique key** `<table_name>_<ColumnName(s)>_UK`
   - **Foreign key** `<table_name>_<ColumnName>_<ref_table_name>_<RefColumnName>_FK`
   - **Check constraint** `<table_name>_<ColumnName>_<Check>_CK`
