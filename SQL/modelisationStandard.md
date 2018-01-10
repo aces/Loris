@@ -64,8 +64,9 @@ This document details the modeling conventions to use for tables, attributes and
 - An **Index** should be created on field or group of fields **regularly used in search or joint** when they are not part of primary key or unique key.
 
 ### Other parameters
-- Be explicit instead of implicit. 
-- Engine should be InnoDB for all tables unless specific requirement demand. `ENGINE=InnoDB`.
-- Character set is UTF-8 `CHARSET=utf8`.
+- All tables should be normalised to **3rd normal form**.
+- Engine should be **InnoDB** for all tables unless specific requirement demand. `ENGINE=InnoDB`.
+- Character set is **UTF-8** `CHARSET=utf8`.
+- Be **explicit** instead of implicit. 
 
 
