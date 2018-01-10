@@ -96,4 +96,8 @@ MRIUploadIncomingPath - This setting determines where on the filesystem the
 that candidate's session 
 - The `Number of MincCreated` column links to the MRI Violated scans module if
 violated scans (i.e. scans that violate the MRI protocol as defined by the 
-study) are present.
+study) are present
+- If `ImagingUploaderAutoLaunch` configuration is enabled, the Server Porcess
+Manager under the Admin menu can be consulted for insertion progress (exit 
+codes, error files, etc...). 
+
