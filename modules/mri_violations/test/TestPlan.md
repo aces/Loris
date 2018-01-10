@@ -23,7 +23,7 @@ MRI Violations Module Test Plan:
 8.  Verify one or two of the scans in the second table and ensure it indeed violates mri protocol.
     [Manual Testing]
 9.  Filter for scans that violate MRI check  (Type of Problem : MRI Protocol Check violation). Ensure link
-    under Problem column goes to MRI Protocol Check Violations page with correct scan information
+    under Problem column goes to MRI Protocol Check Violations page with correct scan information.Ensure back button goes to imaging_browser page.
     [Manual Testing]
 10. MRI Protocol Check violation page check Selection Filter results for each of Tarchive ID, PatientName, CandID
     DICOM Series UID

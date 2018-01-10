@@ -11,13 +11,4 @@ $(window).resize(function(){
     Table.checkOverflow("content", "scrollRight", "scrollLeft");
     // checkOverflow();
 });
-$(window).ready(function () {
-       var qsObj = QueryString.get();
-       var filter = qsObj['filter'];
-       if(filter==="true"){
-
-            $( "input[name ='filter']" ).click();
-
-        }
- });
 

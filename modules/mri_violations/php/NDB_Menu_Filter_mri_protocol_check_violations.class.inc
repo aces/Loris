@@ -47,8 +47,20 @@ class NDB_Menu_Filter_Mri_Protocol_Check_Violations extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $this->query    = " FROM mri_violations_log l LEFT JOIN mri_scan_type m
+        $UID = $_GET["SeriesUID"];
+        //preventing SQL injection -- UID only takes number and dot
+        $pattern = "/^\d[0-9\.]+/";
+        $uid     = array();
+        $match   = preg_match($pattern, $UID, $uid);
+
+        if ($match == 1) {
+
+            $this->query = " FROM mri_violations_log l LEFT JOIN mri_scan_type m
+                         ON m.ID=l.Scan_type WHERE l.SeriesUID = '$uid[0]' ";
+        } else {
+            $this->query = " FROM mri_violations_log l LEFT JOIN mri_scan_type m
                          ON m.ID=l.Scan_type WHERE 1=1 ";
+        }
         $this->columns  = array(
                            'l.PatientName',
                            'l.CandID',
