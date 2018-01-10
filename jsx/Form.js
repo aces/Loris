@@ -1,5 +1,5 @@
-/* exported FormElement, SelectElement, TextareaElement, TextboxElement, DateElement,
-NumericElement, FileElement, StaticElement, ButtonElement, LorisElement
+/* exported FormElement, SelectElement, ListElement, TextareaElement, TextboxElement, DateElement,
+NumericElement, FileElement, StaticElement, LinkElement, ButtonElement, LorisElement
 */
 
 /**
@@ -258,14 +258,15 @@ var SelectElement = React.createClass({
 var ListElement = React.createClass({
   propTypes: {
     name: React.PropTypes.string.isRequired,
+    id: React.PropTypes.string.isRequired,
+    pendingValKey: React.PropTypes.string.isRequired,
     options: React.PropTypes.object,
-    items: React.PropTypes.object,
+    items: React.PropTypes.array,
     label: React.PropTypes.string,
     value: React.PropTypes.oneOfType([
       React.PropTypes.string,
       React.PropTypes.array
     ]),
-    id: React.PropTypes.string.isRequired,
     class: React.PropTypes.string,
     multiple: React.PropTypes.bool,
     disabled: React.PropTypes.bool,
@@ -273,7 +274,6 @@ var ListElement = React.createClass({
     emptyOption: React.PropTypes.bool,
     hasError: React.PropTypes.bool,
     errorMessage: React.PropTypes.string,
-    pendingValKey: React.PropTypes.string,
     onUserInput: React.PropTypes.func,
     onUserAdd: React.PropTypes.func,
     onUserRemove: React.PropTypes.func
@@ -313,6 +313,13 @@ var ListElement = React.createClass({
     this.props.onUserInput(this.props.pendingValKey, e.target.value);
   },
 
+  handleKeyPress: function(e) {
+    if (e.keyCode === 13 || e.which === 13) {
+      e.preventDefault();
+      this.handleAdd();
+    }
+  },
+
   // send pendingValKey as an argument in order to null out entered item
   handleAdd: function() {
     // reference pending value through input ID attr
@@ -335,7 +342,7 @@ var ListElement = React.createClass({
     }
 
     // reject if allowDupl is false and item is already in array
-    if (!this.props.allowDupl && this.props.items.indexOf(value) > -1){
+    if (!this.props.allowDupl && this.props.items.indexOf(value) > -1) {
       return false;
     }
 
@@ -358,9 +365,9 @@ var ListElement = React.createClass({
       emptyOptionHTML = <option></option>;
     }
 
-    var input;
     // if options are given, render input as a select
     // otherwise render input as text
+    var input;
     if (Object.keys(this.props.options).length === 0) {
       input = <input
         type="text"
@@ -371,6 +378,7 @@ var ListElement = React.createClass({
         required={required}
         disabled={disabled}
         onChange={this.handleChange}
+        onKeyPress={this.handleKeyPress}
       />;
     } else {
       var options = this.props.options;
@@ -382,6 +390,7 @@ var ListElement = React.createClass({
         required={required}
         disabled={disabled}
         onChange={this.handleChange}
+        onKeyPress={this.handleKeyPress}
       >
         {emptyOptionHTML}
         {Object.keys(options).map(function(option) {
@@ -397,7 +406,7 @@ var ListElement = React.createClass({
     var items;
     if (this.props.items.length) {
       var that = this;
-      items = this.props.items.map(function (item) {
+      items = this.props.items.map(function(item) {
         return (
             <button
               className="btn btn-info btn-inline"
@@ -415,7 +424,7 @@ var ListElement = React.createClass({
         );
       });
     }
-    return(
+    return (
       <div className="row form-group">
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
           {this.props.label}
@@ -883,6 +892,44 @@ var StaticElement = React.createClass({
 });
 
 /**
+ * Link element component.
+ * Used to link plain/formated text to an href destination as part of a form
+ */
+var LinkElement = React.createClass({
+
+  mixins: [React.addons.PureRenderMixin],
+  propTypes: {
+    label: React.PropTypes.string,
+    text: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.element
+    ]),
+    href: React.PropTypes.string
+  },
+
+  getDefaultProps: function() {
+    return {
+      label: '',
+      text: null,
+      href: null
+    };
+  },
+
+  render: function() {
+    return (
+      <div className="row form-group">
+        <label className="col-sm-3 control-label">
+          {this.props.label}
+        </label>
+        <div className="col-sm-9">
+          <p className="form-control-static"><a href={this.props.href}>{this.props.text}</a></p>
+        </div>
+      </div>
+    );
+  }
+});
+
+/**
  * Button component
  * React wrapper for <button> element, typically used to submit forms
  */
@@ -960,6 +1007,9 @@ var LorisElement = React.createClass({
       case 'static':
         elementHtml = (<StaticElement {...elementProps} />);
         break;
+      case 'link':
+        elementHtml = (<LinkElement {...elementProps} />);
+        break;
       default:
         console.warn(
           "Element of type " + elementProps.type + " is not currently implemented!"
@@ -980,6 +1030,7 @@ window.DateElement = DateElement;
 window.NumericElement = NumericElement;
 window.FileElement = FileElement;
 window.StaticElement = StaticElement;
+window.LinkElement = LinkElement;
 window.ButtonElement = ButtonElement;
 window.LorisElement = LorisElement;
 
@@ -993,6 +1044,7 @@ export default {
   NumericElement,
   FileElement,
   StaticElement,
+  LinkElement,
   ButtonElement,
   LorisElement
 };
