@@ -104,7 +104,7 @@ class ConfigurationTest extends LorisIntegrationTest
      */
     public function testSubproject()
     {
-         $this->safeGet($this->url . "/configuration/subproject/");
+         $this->safeGet($this->url . "/configuration/");
          $bodyText = $this->webDriver->findElement(
              WebDriverBy::cssSelector("body")
          )->getText();
