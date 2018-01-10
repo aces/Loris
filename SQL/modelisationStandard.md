@@ -60,6 +60,7 @@ This document details the modeling conventions to use for tables, attributes and
   - **Foreign key** `<table_name>_<ColumnName>_<ref_table_name>_<RefColumnName>_FK`
   - **Check constraint** `<table_name>_<ColumnName>_<Check>_CK`
 - A **foreign key** constraint definition should contain `ON DELETE` and `ON UPDATE` clause. Do not rely on default behavior.
+- An **Index** should be created on field or group of fields **regularly used in search or joint** when they are not part of primary key or unique key.
 
 ### Other parameters
 - Be explicit instead of implicit. 
