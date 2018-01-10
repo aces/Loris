@@ -1,5 +1,5 @@
-/* exported FormElement, SelectElement, TextareaElement, TextboxElement, DateElement,
-NumericElement, FileElement, StaticElement, ButtonElement, LorisElement
+/* exported FormElement, SelectElement, ListElement, TextareaElement, TextboxElement, DateElement,
+NumericElement, FileElement, StaticElement, LinkElement, ButtonElement, LorisElement
 */
 
 /**
@@ -261,7 +261,7 @@ var ListElement = React.createClass({
     id: React.PropTypes.string.isRequired,
     pendingValKey: React.PropTypes.string.isRequired,
     options: React.PropTypes.object,
-    items: React.PropTypes.object,
+    items: React.PropTypes.array,
     label: React.PropTypes.string,
     value: React.PropTypes.oneOfType([
       React.PropTypes.string,
@@ -365,9 +365,9 @@ var ListElement = React.createClass({
       emptyOptionHTML = <option></option>;
     }
 
-    var input;
     // if options are given, render input as a select
     // otherwise render input as text
+    var input;
     if (Object.keys(this.props.options).length === 0) {
       input = <input
         type="text"
