@@ -1,8 +1,8 @@
 <?php
 /**
- * Implements the user password reset page for LORIS.
+ * Implements the password reset page for LORIS.
  *
- * PHP version 5
+ * PHP version 7
  *
  * @category   Behavioural
  * @package    Main
@@ -10,11 +10,11 @@
  * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
-*/
+ */
 namespace LORIS\login;
 
 /**
- * Implements the user password reset page for LORIS.
+ * Implements the password reset page for LORIS.
  *
  * @category   Behavioural
  * @package    Main
@@ -43,6 +43,7 @@ class PasswordReset extends \NDB_Form
      */
     function setup()
     {
+        $this->tpl_data['page_title'] = 'Reset Password';
         $this->addBasicText("username", "");
     }
 
@@ -73,45 +74,75 @@ class PasswordReset extends \NDB_Form
      *
      * @param array $values The values that were submitted to the page.
      *
-     * @return none
+     * @return void
      */
     function _process($values)
     {
+        $DB         =& \Database::singleton();
+        $resetLimit =10;
+
         // Always claim success to phishers.
         $this->tpl_data['success'] = 'Password reset. '
-        . 'You should receive an email within a few minutes.';
+            . 'You should receive an email within a few minutes.';
+
+        // Check how many reset requests this IP has made
+        $userIP       = ip2long($_SERVER['REMOTE_ADDR']);
+        $numberResets = intval(
+            $DB->pselectOne(
+                "SELECT COUNT(*) FROM password_recovery WHERE ip=:ip",
+                array('ip' => $userIP)
+            )
+        );
 
         // create the user object
         $username = $values['username'];
         $user     =& \User::singleton($username);
 
-        $email = $user->getData('Email');
-
-        // check that it is a valid user
-        if (empty($email) || empty($user)) {
+        if (empty($user)) {
+            // the user does not exist in the databse,
+            // pretend like everything is fine
             return;
         }
+        if ($numberResets>$resetLimit) {
+            //Do something or nothing
+            return;
+        }
+
+        $email  = $user->getData('Email');
+        $name   = $user->getFullname();
+        $userId = $user->getId();
+
+        $length = 4;
+        $token  = bin2hex(random_bytes($length));
+
+        // TODO: problem, the insert below generate SQL FK errors because there
+        // in no logged in user to track history. see database.class.inc line 895
+        // user is being set to 'unknown' at this stage
+        $DB->insert(
+            'password_recovery',
+            array(
+             'ip'      => $userIP,
+             'user_id' => $userId,
+             'token'   => $token,
+             'email'   => $email,
+            )
+        );
 
         try {
             // check that the email is valid
             if ($user->isEmailValid()) {
-                  $config = \NDB_Config::singleton();
-                  // generate a new password
-                  $password = \User::newPassword();
-                  // reset the password in the database
-                  // expire password so user must change it upon login
-                  $success = $user->updatePassword($password, '1999-01-01');
-                if ($success === false) {
-                     error_log("Could not update password for $username");
-                    return;
-                }
-                  // send the user an email
-                  $msg_data['study']    = $config->getSetting('title');
-                  $msg_data['url']      = $config->getSetting('url');
-                  $msg_data['realname'] = $user->getData('Real_name');
-                  $msg_data['password'] = $password;
-                  \Email::send($email, 'lost_password.tpl', $msg_data);
+                $config = \NDB_Config::singleton();
+                // generate a new password
+                // Build reset url
+                $baseURL =$config->getSetting('www');
+                $url     = "$baseURL/login/authenticate-token/?token=$token";
+                // send the user an email
+                $msg_data['study']    = $config->getSetting('title');
+                $msg_data['url']      = $url;
+                $msg_data['realname'] = $name;
+                $msg_data['baseurl']  = $baseURL;
 
+                \Email::send($email, 'password_recovery.tpl', $msg_data);
             } else {
                 error_log(
                     $_SERVER['REMOTE_ADDR']

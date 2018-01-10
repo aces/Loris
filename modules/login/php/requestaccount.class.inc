@@ -2,7 +2,7 @@
 /**
  * Implements the LORIS request account page.
  *
- * PHP version 5
+ * PHP version 7
  *
  * @category   Behavioural
  * @package    Main
@@ -67,6 +67,8 @@ class RequestAccount extends \NDB_Form
         );
         $this->addCheckbox("examiner", "Examiner role", array());
         $this->addCheckbox("radiologist", "Radiologist", array());
+        $this->tpl_data['page_title'] = 'Request Account';
+        $this->form->addFormRule(array(&$this, '_validate'));
     }
 
     /**

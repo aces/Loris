@@ -48,9 +48,6 @@ class User extends UserPermissions
         // right off, set the username
         $obj->userInfo['UserID'] = $username;
 
-        // get the user's permissions
-        $obj->select($username);
-
         // create DB object
         $DB =& Database::singleton();
 
@@ -64,6 +61,22 @@ class User extends UserPermissions
             GROUP BY users.ID";
 
         $row = $DB->pselectRow($query, array('UID' => $username));
+
+        if (empty($row)) {
+            // If row is empty, there is no user with this username
+            // return silently (no errors) to avoid phishers knowing
+            // that the user does not exist when trying to brute force
+            // password reset page
+
+            // set object to null then return $obj
+            // if `null` is returned directly, PHP issues a Notice
+            $obj =null;
+            return $obj;
+
+        }
+
+        // get the user's permissions after confirming that the user exists
+        $obj->select($username);
 
         // get user sites
         $user_centerID_query =  $DB->pselect(
@@ -502,21 +515,12 @@ class User extends UserPermissions
      * database.
      *
      * @param string $password The plain text password to be hashed and saved.
-     * @param string $expiry   The password expiry date. If not supplied, the
-     *                         password expiry date will be set to now+6months.
      *
      * @return void
      */
-    function updatePassword($password, $expiry = null)
+    function updatePassword($password)
     {
-        if (is_null($expiry)) {
-            $expiry = date(
-                'Y-m-d',
-                mktime(0, 0, 0, date('n') + 6, date('j'), date('Y'))
-            );
-        }
-
-        $updateArray = array('Password_expiry' => $expiry);
+        $updateArray = array();
 
         $updateArray['Password_hash'] = password_hash(
             $password,
@@ -541,6 +545,7 @@ class User extends UserPermissions
             true
         );
     }
+
     /**
      * Determines if the user has a permission
      * for a center
@@ -557,6 +562,32 @@ class User extends UserPermissions
         }
         return $this->hasPermission($code)
             && $this->hasCenter($center_id);
+    }
+
+    /**
+     * Static function allowing to get the username (UserID in database)
+     * from the actual user ID.
+     *
+     * @param int $id the user ID
+     *
+     * @note This function is useful/required until a time where this class starts
+     * using the ID to instantiate and manipulate user data. This function
+     * simplifies getting the username when the database contains the
+     * ID to allow instantiating the user
+     *
+     * @return string the username
+     */
+    public static function getUsernameFromId($id)
+    {
+        // create DB object
+        $DB =& Database::singleton();
+
+        $username = $DB->pselectOne(
+            "SELECT UserID FROM users WHERE ID=:id",
+            array('id' => $id)
+        );
+
+        return $username;
     }
 }
 ?>

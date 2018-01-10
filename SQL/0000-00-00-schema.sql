@@ -57,6 +57,8 @@ DROP TABLE IF EXISTS `StatisticsTabs`;
 
 DROP TABLE IF EXISTS `user_login_history`;
 
+DROP TABLE IF EXISTS `password_recovery`;
+
 DROP TABLE IF EXISTS `user_account_history`;
 -- TODO :: Add permissions here... because useR_perm_rel needs to be DROPed before users
 
@@ -226,7 +228,6 @@ CREATE TABLE `users` (
   `DBAccess` varchar(10) NOT NULL default '',
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Password_hash` varchar(255) default NULL,
-  `Password_expiry` date NOT NULL default '1990-04-01',
   `Pending_approval` enum('Y','N') default 'Y',
   `Doc_Repo_Notifications` enum('Y','N') default 'N',
   `language_preference` integer unsigned default NULL,
@@ -238,8 +239,8 @@ CREATE TABLE `users` (
 
 
 
-INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval,Password_expiry)
-VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N','2016-03-30');
+INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval)
+VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N');
 
 CREATE TABLE `user_psc_rel` (
   `UserID` int(10) unsigned NOT NULL,
@@ -1297,6 +1298,21 @@ CREATE TABLE `user_login_history` (
   `IP_address` varchar(255) DEFAULT NULL,
   `Page_requested` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`loginhistoryID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ********************************
+-- user password_recovery tables
+-- ********************************
+
+CREATE TABLE `password_recovery` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ip` int(10) NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `token` varchar(65) NOT NULL,
+  `time` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ID`),
+  CONSTRAINT `fk_password_recovery_users_1` FOREIGN KEY (`email`) REFERENCES `users` (`Email`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************

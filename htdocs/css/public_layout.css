@@ -152,6 +152,16 @@ h1, h2, h3, h4 {
   max-width: 450px;
   margin: 0 auto;
 }
+.panel-gif {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.panel-danger {
+  color: #cd0a0a;
+  text-align: center;
+}
+
 
 .panel-center form {
   padding: 20px 25px;
