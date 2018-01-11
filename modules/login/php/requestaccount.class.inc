@@ -241,7 +241,7 @@ class RequestAccount extends \NDB_Form
             }
         }
         // Show success message even if email already exists for security reasons
-        $this->tpl_data['success'] = "some text";
+        $this->tpl_data['success'] = true;
     }
 }
 
