@@ -183,8 +183,8 @@ if (preg_match(
     $_REQUEST["test_name"] = $getParams[0];
     $_REQUEST['subtest']   = $getParams[1];
 
-    $_GET['test_name'] = $getparams[0];
-    $_GET['subtest']   = $getparams[1];
+    $_GET['test_name'] = $getParams[0];
+    $_GET['subtest']   = $getParams[1];
 
     include_once __DIR__ . "/main.php";
 } else if (preg_match(

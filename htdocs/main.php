@@ -16,7 +16,6 @@ if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
     header("Access-Control-Allow-Credentials: true");
 }
-phpinfo();
 require_once __DIR__ . "/../vendor/autoload.php";
 ini_set('default_charset', 'utf-8');
 
