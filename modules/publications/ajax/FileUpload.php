@@ -42,8 +42,7 @@ function uploadPublication() {
     $db = Database::singleton();
 
     $today = date('Y-m-d');
-    $keywords = $_REQUEST['keywords'];
-    echo $keywords;
+
     $fields = array(
         'Title'                   => $_REQUEST['title'],
         'Description'             => $_REQUEST['description'],
@@ -53,4 +52,41 @@ function uploadPublication() {
     );
 
     $db->insert('publications', $fields);
+
+    $keywords = json_decode($_REQUEST['keywords']);
+    foreach ($keywords as $kw) {
+        // check if keyword exists
+        $kwID = $db->pselectOne(
+            'SELECT KeywordID '.
+            'FROM publication_keywords '.
+            'WHERE Label=:kw',
+            array('kw' => $kw)
+        );
+        // if it doesn't, add it to keyword table and retrieve ID
+        if (!$kwID) {
+            $kwInsert = array('Label' => $kw);
+            $db->insert('publication_keywords', $kwInsert);
+            $kwID = $db->pselectOne(
+                'SELECT KeywordID '.
+                'FROM publication_keywords '.
+                'WHERE Label=:kw',
+                array('kw' => $kw)
+            );
+        }
+        // add it pub_kw_rel table
+        // get publication ID
+        $pubID = $db->pselectOne(
+            'SELECT PublicationID '.
+            'FROM publications '.
+            'WHERE Title=:t',
+            array('t' => $_REQUEST['title'])
+        );
+        $pubKWRelInsert = array(
+            'PublicationID' => $pubID,
+            'KeywordID' => $kwID,
+        );
+
+        $db->insert('publications_keywords_rel', $pubKWRelInsert);
+    }
+    echo $keywords;
 }

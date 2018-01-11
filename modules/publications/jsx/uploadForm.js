@@ -135,14 +135,6 @@ class PublicationUploadForm extends React.Component {
       );
     }
 
-    let testOptions = {
-      yes: 'yes',
-      no: 'no',
-      maybe: 'maybe',
-      not_sure: 'not sure',
-      fgsdfgsdfg: 'fgsdfgsdfg'
-    };
-
     return (
       <div className="row">
         <div className="col-md-8 col-lg-7">
