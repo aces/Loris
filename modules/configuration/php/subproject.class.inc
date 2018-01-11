@@ -35,7 +35,7 @@ class Subproject extends \NDB_Form
     {
         // create user object
         $user =& \User::singleton();
-        return $user->hasPermission('config');
+        return true;
     }
 
     /**
@@ -43,30 +43,10 @@ class Subproject extends \NDB_Form
      *
      * @return none
      */
-    function setup()
+    function _setupVariables()
     {
-        parent::setup();
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
 
-        $subprojectList = \Utility::getSubprojectList();
-        $subprojects    = array();
-        foreach ($subprojectList as $subprojectID => $title) {
-            $subprojects[$subprojectID]
-                = $config->getSubprojectSettings($subprojectID);
-        }
-        $this->tpl_data['subprojects'] = $subprojects;
-
-        $this->tpl_data['useEDCOptions']
-            = array(
-               '1' => 'Yes',
-               '0' => 'No',
-              );
-
-        $this->tpl_data['WindowDifferenceOptions']
-            = array(
-               'battery' => 'Closest Test Battery',
-               'optimal' => 'Optimal Visit Window for Visit Label',
-              );
     }
 }

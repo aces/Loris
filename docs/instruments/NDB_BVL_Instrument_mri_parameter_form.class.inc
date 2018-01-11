@@ -7,25 +7,16 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
     /**
     * sets up basic data, such as the HTML_Quickform object, and so on.
     *
-    * @param string $commentID  the CommentID identifying the data to load
-    * @param string $page       if a multipage form, the page to show
     * @return void
     * @access public
     */
-    function setup($commentID = NULL, $page = NULL){
+    function setup() {
 
         $this->formType="XIN";
-        $this->form = new LorisForm('test_form');
-        $this->page = $page;            // page label (number or
-        // string - used by
-        // user-defined child classes)
 
         // set the object properties
         $this->testName = "mri_parameter_form";           // test_names.Test_name
         $this->table = 'mri_parameter_form';             // name of table containing
-
-        // data keyed by commentID
-        $this->commentID = $commentID;
 
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any HTML_Quickform date elements must be listed here

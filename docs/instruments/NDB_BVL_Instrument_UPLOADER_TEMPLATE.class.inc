@@ -4,23 +4,15 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
     /**
     * sets up basic data, such as the HTML_Quickform object, and so on.
     *
-    * @param string $commentID  the CommentID identifying the data to load
-    * @param string $page       if a multipage form, the page to show
     * @return void
     * @access public
     */
-    function setup($commentID = NULL, $page = NULL){
+    function setup() {
         $this->formType="XIN";
-        $this->form = new LorisForm('test_form');
-        $this->page = $page;            // page label (number or
-        // string - used by
-        // user-defined child classes)
 
         // set the object properties
         $this->testName = "<TEST_NAME>";           // test_names.Test_name
         $this->table = '<TEST_NAME>';              // name of database table corresponding to instrument
-        // data keyed by commentID
-        $this->commentID = $commentID;
 
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any HTML_Quickform date elements must be listed here

@@ -37,21 +37,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     var $preview = false;
 
     /**
-     * Sets up the variables required for a LINST instrument to load
-     *
-     * @param string $commentID The CommentID being loaded
-     * @param string $page      The page being loaded
-     *
-     * @return none
-     */
-    function setup($commentID = null, $page = null)
-    {
-        $this->commentID = $commentID;
-        $this->page      = $page;
-
-        $this->form = new \LorisForm('test_form');
-    }
-    /**
      * Adds metadata fields (such as Examiner and Date_taken) to the
      * current form
      *
@@ -414,10 +399,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         if (file_exists($filename) || $base64 === true) {
             $this->InstrumentType = 'LINST';
             $db = \Database::singleton();
-
-            if (!isset($this->form)) {
-                $this->form = new \HTML_Quickform('test_form');
-            }
 
             $this->dateTimeFields = array("Date_taken");
             $this->formType       = 'XIN';

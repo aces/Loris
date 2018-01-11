@@ -129,13 +129,13 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     protected function login($username, $password)
     {
         $this->safeGet($this->url);
-        /*
-        $this->webDriver->wait(120, 1000)->until(
-            WebDriverExpectedCondition::presenceOfElementLocated(
-                WebDriverBy::Name("username")
-            )
-        );
-        */
+        $this->webDriver->wait(10, 500)->until(
+             WebDriverExpectedCondition::presenceOfElementLocated
+              (
+                  WebDriverBy::Name("username")
+              )
+       );
+
         $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
         $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
 
@@ -145,10 +145,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
         $login->click();
 
-        // Explicitly wait until the page is loaded.
-        // Wait up to a minute, because sometimes when multiple tests
-        // are run one will fail due to the login taking too long?
-        $this->webDriver->wait(120, 1000)->until(
+        $this->webDriver->wait(10, 500)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
                 WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
             )

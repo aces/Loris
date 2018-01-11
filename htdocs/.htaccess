@@ -37,5 +37,9 @@
  RewriteCond %{REQUEST_FILENAME} !-f
  RewriteRule ^(.*[^/])$ /$1/ [L,R=307]
 
+ # Serve correct encoding type.
+ Header set Content-Encoding gzip
+ # Force proxies to cache gzipped & non-gzipped css/js files separately.
+ Header append Vary Accept-Encoding
 </IfModule>
 

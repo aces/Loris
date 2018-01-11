@@ -137,22 +137,12 @@ class NDB_Caller
             }
             $this->page = $m->LoadPage($p);
 
-            // FIXME: These two method_exists calls were hacks that were previously
-            // in the load* classes, which for now need to be preserved for
-            // compatibility with existing modules.
-            //
-            // The proper solution is probably to re-write anything that uses them
-            // in React.
-            if (method_exists($this->page, 'getControlPanel')) {
-                $this->controlPanel = $this->page->getControlPanel();
+            if ($anonymous === false) {
+                $user = \User::singleton();
+                return $this->page->displayUserPage($user, $_GET, $_POST);
+            } else {
+                return $this->page->displayAnonymousPage($_GET, $_POST);
             }
-            if (method_exists($this->page, 'getFeedbackPanel')) {
-                $this->feedbackPanel = $this->page->getFeedbackPanel(
-                    $_REQUEST['candID'],
-                    $_REQUEST['sessionID'] ?? null
-                );
-            }
-            return $this->page->display();
         } catch (LorisModuleMissingException $e) {
             //print_r($e);
             // There was no module, so fall back on the old way of doing things.
@@ -440,16 +430,6 @@ class NDB_Caller
 
         $this->instrument = $instrument;
 
-        if (method_exists($instrument, 'getControlPanel')) {
-            $this->controlPanel = $instrument->getControlPanel();
-        }
-        if (method_exists($instrument, 'getFeedbackPanel')) {
-            $this->feedbackPanel = $instrument->getFeedbackPanel(
-                $_REQUEST['candID'],
-                $_REQUEST['sessionID']
-            );
-        }
-
         // save instrument form data
         $success = $instrument->save();
 
@@ -475,8 +455,7 @@ class NDB_Caller
         }
 
         $this->page = $instrument;
-        $html       = $instrument->display();
-
+        $html       = $instrument->displayUserPage($user, $_GET, $_POST);
         return $html;
     }
 

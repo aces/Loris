@@ -36,10 +36,6 @@ class ConfigurationTest extends LorisIntegrationTest
     function setUp()
     {
         parent::setUp();
-        $window = new WebDriverWindow($this->webDriver);
-        $size   = new WebDriverDimension(1280, 1024);
-        $window->setSize($size);
-        $this->setUpConfigSetting("useProjects", "false");
     }
 
     /**
@@ -49,10 +45,6 @@ class ConfigurationTest extends LorisIntegrationTest
      */
     public function tearDown()
     {
-        $this->DB->delete(
-            "subproject",
-            array('title' => 'Test Test Test')
-        );
         parent::tearDown();
     }
 
@@ -108,6 +100,7 @@ class ConfigurationTest extends LorisIntegrationTest
     public function testSubproject()
     {
          $this->safeGet($this->url . "/configuration/subproject/");
+         $this->webDriver->navigate()->refresh();
          $bodyText = $this->webDriver->findElement(
              WebDriverBy::cssSelector("body")
          )->getText();
