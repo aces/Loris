@@ -20,11 +20,11 @@ require_once __DIR__ . "/../vendor/autoload.php";
 ini_set('default_charset', 'utf-8');
 
 ob_start('ob_gzhandler');
-
+ob_start();
 // load the client
 $client    = new NDB_Client;
 $anonymous = $client->initialize() === false;
-
+ob_flush();
 if ($anonymous === false) {
     $TestName = $_REQUEST['test_name'] ?? 'dashboard';
 } else {
