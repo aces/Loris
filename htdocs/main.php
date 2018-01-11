@@ -27,7 +27,7 @@ if ($anonymous === false) {
 } else {
     $TestName = $_REQUEST['test_name'] ?? 'login';
 }
-$subtest = $_REQUEST['subtest'] ?? '';
+$subtest   = $_REQUEST['subtest'] ?? '';
 $caller    =& NDB_Caller::singleton();
 $workspace = $caller->load($TestName, $subtest, '', null, $anonymous);
 print $workspace;
