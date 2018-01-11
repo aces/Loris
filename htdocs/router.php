@@ -37,7 +37,6 @@ if (preg_match(
 
     $_REQUEST["test_name"] = "timepoint_list";
     $_REQUEST['candID']    = $getParams[0];
-    $_GET['candID']        = $getParams[0];
 
     include_once __DIR__ . "/main.php";
 } else if (preg_match(
@@ -73,11 +72,6 @@ if (preg_match(
     $_REQUEST['candID']    = $getParams[0];
     $_REQUEST['sessionID'] = $getParams[1];
 
-    $_GET["test_name"] = $getParams[2];
-    $_GET['candID']    = $getParams[0];
-    $_GET['sessionID'] = $getParams[1];
-
-
     include_once __DIR__ . "/main.php";
 } else if (preg_match(
     '#^([0-9]{6,6})/([0-9]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/$#',
@@ -107,7 +101,6 @@ if (preg_match(
     $getParams = explode("/", $url);
 
     $_REQUEST["test_name"] = $getParams[0];
-    $_GET['test_name']     =     $getParams[0];
 
     include_once __DIR__ . "/main.php";
 } else if (preg_match(
@@ -182,9 +175,6 @@ if (preg_match(
 
     $_REQUEST["test_name"] = $getParams[0];
     $_REQUEST['subtest']   = $getParams[1];
-
-    $_GET['test_name'] = $getparams[0];
-    $_GET['subtest']   = $getparams[1];
 
     include_once __DIR__ . "/main.php";
 } else if (preg_match(
