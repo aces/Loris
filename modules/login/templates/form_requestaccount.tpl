@@ -1,5 +1,6 @@
-
+{if $captcha_key}
 <script src="https://www.google.com/recaptcha/api.js"></script>
+{/if}
 <div class="panel panel-default panel-center">
   <div class="panel-heading">
     <h3 class="panel-title">
