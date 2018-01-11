@@ -39,8 +39,6 @@ install:
     - php -S localhost:8000 -t htdocs router.php 2>1 > /dev/null &
 
     # Extracting firefox and setting PATH variable...
-    - cd /tmp
-    - ls
     - tar -xjf /tmp/firefox-45.0.tar.bz2 --directory /tmp
     - export PATH="/tmp/firefox:$PATH"
     - echo "Using firefox version `firefox --version`"
