@@ -43,9 +43,8 @@ class Subproject extends \NDB_Form
      *
      * @return none
      */
-    function setup()
+    function _setupVariables()
     {
-        parent::setup();
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
 
