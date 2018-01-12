@@ -433,7 +433,7 @@ var ListElement = React.createClass({
           {input}
           <button
             className="btn btn-success add"
-            id={this.props.id}
+            id={this.props.id + 'Add'}
             type="button"
             onClick={this.handleAdd}
             >
