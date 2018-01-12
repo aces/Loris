@@ -27,71 +27,71 @@ class Datadict extends \NDB_Menu_Filter
 {
     var $AjaxModule = true;
     /**
-    * Overloading this method to allow access to site users (their own site
-    * only) and users w/ multisite privs
-    *
-    * @note   overloaded function
-    * @return bool
-    * @access private
-    */
+     * Overloading this method to allow access to site users (their own site
+     * only) and users w/ multisite privs
+     *
+     * @note   overloaded function
+     * @return bool
+     * @access private
+     */
     function _hasAccess()
     {
         // create user object
         $user =& \User::singleton();
 
         return ($user->hasPermission('data_dict_view') ||
-                                   $user->hasPermission('data_dict_edit'));
+            $user->hasPermission('data_dict_edit'));
     }
     /**
-    * Setup variables function
-    *
-    * @note   Setup variables function
-    * @return bool
-    * @access private
-    */
+     * Setup variables function
+     *
+     * @note   Setup variables function
+     * @return bool
+     * @access private
+     */
     function _setupVariables()
     {
         // set the class variables
         $this->columns = array(
-                          'pt.sourceFrom',
-                          'pt.Name',
-                          'pt.sourceField',
-                          'coalesce(pto.description,pt.description)'.
-                                                   ' as description',
-                         );
+            'pt.sourceFrom',
+            'pt.Name',
+            'pt.sourceField',
+            'coalesce(pto.description,pt.description)'.
+            ' as description',
+        );
         $config        =& \NDB_Config::singleton();
         $this->validFilters = array(
-                               'pt.sourceFrom',
-                               'pt.Description',
-                              );
+            'pt.sourceFrom',
+            'pt.Description',
+        );
         $this->query        = " FROM parameter_type pt LEFT JOIN 
                                 parameter_type_override pto USING (Name)
                  		WHERE pt.Queryable=1";
 
         $this->formToFilter = array(
-                               'sourceFrom'  => 'pt.sourceFrom',
-                               'Description' => 'pt.Description',
-                              );
+            'sourceFrom'  => 'pt.sourceFrom',
+            'Description' => 'pt.Description',
+        );
 
         $this->searchKeyword = array(
-                                'pt.Name',
-                                'pt.sourceField',
-                                'pto.description',
-                               );
+            'pt.Name',
+            'pt.sourceField',
+            'pto.description',
+        );
         return true;
     }
 
     /**
-    * Set Filter Form
-    *
-    * @param string $name       The test name being accessed
-    * @param string $page       The subtest being accessed (may be null)
-    * @param string $identifier The identifier for the data to load on this page
-    * @param string $commentID  The CommentID to load the data for
-    * @param string $formname   The name to give this form
-    *
-    * @return none
-    */
+     * Set Filter Form
+     *
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
+     */
     function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
         parent::_setupPage($name, $page, $identifier, $commentID, $formname);
@@ -107,28 +107,30 @@ class Datadict extends \NDB_Menu_Filter
             'Description',
             'Description',
             array(
-             ''           => 'All',
-             'empty'      => 'Empty',
-             'modified'   => 'Modified',
-             'unmodified' => 'Unmodified',
+                ''           => 'All',
+                'empty'      => 'Empty',
+                'modified'   => 'Modified',
+                'unmodified' => 'Unmodified',
             )
         );
         $this->addBasicText('keyword', 'Search keyword');
     }
+
     /**
-    * Set Data Table Rows
-    *
-    * @param string $count the count of table rows
-    *
-    * @note   Set Data Table Rows
-    * @return bool
-    * @access private
-    */
+     * Set Data Table Rows
+     *
+     * @param string $count the count of table rows
+     *
+     *
+     * @note   Set Data Table Rows
+     * @return bool
+     * @access private
+     */
     function _setDataTableRows($count)
     {
 
         $x = 0;
-
+        print_r($this->list);
         foreach ($this->list as $item) {
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
             $i = 1;
@@ -151,16 +153,17 @@ class Datadict extends \NDB_Menu_Filter
         return true;
     }
     /**
-    * Get base query
-    *
-    * @note   Get base query
-    * @return string
-    * @access private
-    */
+     * Get base query
+     *
+     * @note   Get base query
+     * @return string
+     * @access private
+     */
     function _getBaseQuery()
     {
         // make the SELECT statement
         $query = "SELECT ";
+        print_r($this->columns);
         if (is_array($this->columns) && count($this->columns) > 0) {
             $query .= implode(', ', $this->columns);
         } else {
@@ -176,19 +179,20 @@ class Datadict extends \NDB_Menu_Filter
             $query .= $this->query;
         }
 
+
         return $query;
     }
     /**
-    * Get base query
-    *
-    * @param string $prepared_key the query string
-    * @param string $key          the key of filter
-    * @param string $val          the value of filter
-    *
-    * @note   Get base query
-    * @return string
-    * @access private
-    */
+     * Get base query
+     *
+     * @param string $prepared_key the query string
+     * @param string $key          the key of filter
+     * @param string $val          the value of filter
+     *
+     * @note   Get base query
+     * @return string
+     * @access private
+     */
     function _addValidFilters($prepared_key, $key, $val)
     {
         $query = '';
@@ -214,8 +218,22 @@ class Datadict extends \NDB_Menu_Filter
             }
         }
 
+
         return $query;
 
+    }
+
+    /**
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return a json encoded string of the headers and data from this table
+     */
+    function toJSON()
+    {
+        $result         = $this->toArray();
+        $result['form'] = $this->form->form;
+        return json_encode($result);
     }
 
     /**
@@ -232,8 +250,9 @@ class Datadict extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/datadict/js/columnFormatter.js",
-             $baseURL . "/datadict/js/datadict_helper.js",
+                $baseURL . "/datadict/js/datadict_helper.js",
+                $baseURL . "/js/components/MultiSelectDropdown.js",
+                $baseURL . "/datadict/js/dataDictIndex.js"
             )
         );
     }
