@@ -403,27 +403,25 @@ var ListElement = React.createClass({
 
     // iterate through added list items and render them
     // with deletion button
-    var items;
-    if (this.props.items.length) {
-      var that = this;
-      items = this.props.items.map(function(item) {
-        return (
-            <button
-              className="btn btn-info btn-inline"
-              type="button"
-              onClick={that.handleRemove}
+
+    var that = this;
+    var items = this.props.items.map(function(item) {
+      return (
+          <button
+            className="btn btn-info btn-inline"
+            type="button"
+            onClick={that.handleRemove}
+            data-item={item}
+          >
+            {item}
+            &nbsp;
+            <span
+              className="glyphicon glyphicon-remove"
               data-item={item}
-            >
-              {item}
-              &nbsp;
-              <span
-                className="glyphicon glyphicon-remove"
-                data-item={item}
-              />
-            </button>
-        );
-      });
-    }
+            />
+          </button>
+      );
+    });
     return (
       <div className="row form-group">
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
