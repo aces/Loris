@@ -157,8 +157,6 @@ class RequestAccount extends \NDB_Form
         $site     = $_REQUEST["site"];
         $fullname = $name." ".$lastname;
 
-        error_log(print_r($_REQUEST, true));
-        error_log($site);
         $vals = array(
                  'UserID'           => $from,
                  'Real_name'        => $fullname,
