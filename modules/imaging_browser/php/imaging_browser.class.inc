@@ -35,7 +35,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
      */
     function _hasAccess()
     {
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         return ($user->hasPermission('imaging_browser_view_allsites')
                || ($user->hasStudySite()
@@ -159,7 +159,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
         $this->query .= $where;
 
         $config =& \NDB_Config::singleton();
-        $user   =& \User::singleton();
+        $user   = \User::getLoggedInUser();
         $DB     = \Database::singleton();
         if (!$user->hasPermission('imaging_browser_view_allsites')) {
             $site_arr = implode(",", $user->getCenterIDs());
@@ -296,7 +296,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
     {
         parent::setup();
         // create user object
-        $user          =& \User::singleton();
+        $user          = \User::getLoggedInUser();
         $list_of_sites = array();
 
         // PSC

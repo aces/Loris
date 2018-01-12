@@ -10,7 +10,7 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-$user =& \User::singleton();
+$user = \User::getLoggedInUser();
 if (!$user->hasPermission('violated_scans_edit')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
@@ -31,7 +31,7 @@ $table_desc  = $DB->pselect("DESC mri_protocol", array());
 $column_name = $table_desc[$column_id]['Field'];
 
 // create user object
-$user =& \User::singleton();
+$user = \User::getLoggedInUser();
 
 if ($user->hasPermission('violated_scans_edit')) {
      $DB->update(

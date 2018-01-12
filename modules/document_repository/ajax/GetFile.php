@@ -13,7 +13,7 @@
  *  @link     https://github.com/aces/Loris-Trunk
  */
 
-$user =& User::singleton();
+$user = \User::getLoggedInUser();
 if (!$user->hasPermission('document_repository_view')
     && !$user->hasPermission('document_repository_delete')
 ) {

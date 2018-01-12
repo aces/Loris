@@ -147,6 +147,9 @@ if (!empty($sessionID)) {
     }
 }
 
+// check the user $_ENV['USER']
+\User::setLoggedInUser(getenv('USER'));
+
 /*
  * The switch to execute actions
  */
@@ -248,8 +251,7 @@ switch ($action)
  */
 function addInstrument($sessionID, $testName)
 {
-    // check the user $_ENV['USER']
-    $user =& User::singleton(getenv('USER'));
+    $user = \User::getLoggedInUser();
     if($user->getUsername() == null) {
         throw new LorisException("Error: Database user named " . getenv('USER') . " does not exist. Please create and then retry script\n");
     }
@@ -329,7 +331,7 @@ function addInstrument($sessionID, $testName)
 function fixDate($candID, $dateType, $newDate, $sessionID=null)
 {
     // check the user $_ENV['USER']
-    $user =& User::singleton(getenv('USER'));
+    $user = \User::getLoggedInUser();
 
     if($user->getUsername() == null) {
         throw new LorisException("Error: Database user named " . getenv('USER') . " does not exist. Please create and then retry script\n");

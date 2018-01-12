@@ -34,7 +34,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
     function _hasAccess()
     {
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         $this->tpl_data['violated_scans_modifications']
             = $user->hasPermission('violated_scans_edit');
         return ($user->hasPermission('violated_scans_view_allsites'));
@@ -52,7 +52,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
             return true;
         }
         $DB   =& \Database::singleton();
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         foreach ($values AS $key=>$val) {
             $hash = $key;
@@ -329,7 +329,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
     {
         parent::setup();
         // create user object
-        $user        =&        \User::singleton();
+        $user        =&        \User::getLoggedInUser();
         $config      =&        \NDB_Config::singleton();
         $minYear     = $config->getSetting('startYear')
             - $config->getSetting('ageMax');

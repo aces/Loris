@@ -47,7 +47,7 @@ class Issue extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $user    =& \User::singleton();
+        $user    = \User::getLoggedInUser();
         $issueID = $_GET['issueID'];
 
         if ((empty($issueID)
@@ -112,7 +112,7 @@ class Issue extends \NDB_Form
      */
     function _hasAccess()
     {
-        $user    =& \User::singleton();
+        $user    = \User::getLoggedInUser();
         $db      = \Database::singleton();
         $issueID = $_GET['issueID'];
 

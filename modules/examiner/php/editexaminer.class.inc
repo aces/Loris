@@ -43,7 +43,7 @@ class EditExaminer extends \NDB_Form
         $DB     = \Database::singleton();
         $config = \NDB_Config::singleton();
 
-        $user         = \User::singleton();
+        $user         = \User::getLoggedInUser();
         $userFullName = $user->getFullname();
         $userCenter   = $user->getCenterIDs();
 

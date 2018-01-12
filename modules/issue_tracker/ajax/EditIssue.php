@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === "GET") {
 function editIssue()
 {
     $db   =& Database::singleton();
-    $user =& User::singleton();
+    $user = \User::getLoggedInUser();
 
     $issueValues    = array();
     $validateValues = array();
@@ -263,7 +263,7 @@ function validateInput($values)
         $query  = "SELECT CandID FROM candidate WHERE PSCID=:PSCID";
         $params = ['PSCID' => $result['PSCID']];
 
-        $user =& User::singleton();
+        $user = \User::getLoggedInUser();
         if (!$user->hasPermission('access_all_profiles')) {
             $params['CenterID'] = implode(',', $user->getCenterIDs());
             $query .= " AND FIND_IN_SET(CenterID,:CenterID)";
@@ -322,7 +322,7 @@ function getChangedValues($issueValues, $issueID)
  */
 function updateHistory($values, $issueID)
 {
-    $user =& User::singleton();
+    $user = \User::getLoggedInUser();
     $db   =& Database::singleton();
 
     foreach ($values as $key => $value) {
@@ -350,7 +350,7 @@ function updateHistory($values, $issueID)
  */
 function updateComments($comment, $issueID)
 {
-    $user =& User::singleton();
+    $user = \User::getLoggedInUser();
     $db   =& Database::singleton();
 
     if (isset($comment) && $comment != "null") {
@@ -375,7 +375,7 @@ function updateComments($comment, $issueID)
  */
 function updateCommentHistory($issueCommentID, $newCommentValue)
 {
-    $user =& User::singleton();
+    $user = \User::getLoggedInUser();
     $db   =& Database::singleton();
 
     $changedValue = array(
@@ -483,7 +483,7 @@ function getComments($issueID)
  */
 function emailUser($issueID, $changed_assignee)
 {
-    $user =& User::singleton();
+    $user = \User::getLoggedInUser();
     $db   =& Database::singleton();
     //not sure if this is necessary
     $factory = NDB_Factory::singleton();
@@ -554,7 +554,7 @@ function getIssueFields()
 {
 
     $db    =& Database::singleton();
-    $user  =& User::singleton();
+    $user  = \User::getLoggedInUser();
     $sites = array();
 
     //get field options
@@ -715,7 +715,7 @@ ORDER BY dateAdded",
 function getIssueData($issueID=null)
 {
 
-    $user =& User::singleton();
+    $user = \User::getLoggedInUser();
     $db   =& Database::singleton();
 
     if (!empty($issueID)) {

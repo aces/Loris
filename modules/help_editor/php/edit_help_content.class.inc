@@ -34,7 +34,7 @@ class Edit_Help_Content extends \NDB_Form
     function _hasAccess()
     {
         // create user object
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
 
             // check user permissions
         return $user->hasPermission('context_help');

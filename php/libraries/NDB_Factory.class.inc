@@ -152,7 +152,7 @@ class NDB_Factory
             Mock::generate("User");
             $user = new MockUser();
         } else {
-            $user = User::singleton();
+            $user = User::getLoggedInUser();
         }
         self::$_user = $user;
         return $user;

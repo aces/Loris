@@ -24,12 +24,126 @@
 class User extends UserPermissions
 {
     /**
+     * LoggedInUser static reference to the current logged user
+     *
+     * @var USER
+     */
+    private static $_loggedInUser;
+
+    /**
      * Stores user information
      *
      * @var    array
      * @access private
      */
     var $userInfo = array();
+
+    /**
+     * Constructor creates and empty User object.
+     */
+    function __construct()
+    {
+
+    }
+
+    /**
+     * Static factory function returning a USER object from a given username. User is
+     * expected to be in the database already.
+     *
+     * @param string $username username used as unique key to create a user
+     *                         object and load it
+     *
+     * @throws LorisException when user is not found in the database
+     *
+     * @return User with all its loaded data
+     */
+    public static function getUserFromUsername(string $username)
+    {
+        $user = new User();
+        $user->setUsername($username);
+        $user->_load();
+
+        return $user;
+    }
+
+    /**
+     * Static factory function returning a USER object from a given id. User is
+     * expected to be in the database already.
+     *
+     * @param integer $id ID used as unique key to create a user
+     *                object and load it
+     *
+     * @throws LorisException when user is not found in the database
+     *
+     * @return User with all its loaded data
+     */
+    public static function getUserFromId($id)
+    {
+        $user = new User();
+        $user->setId($id);
+        $user->_load();
+
+        return $user;
+    }
+
+
+    /**
+     * Singleton method. Retrieve the user passed as parameter, but only
+     * 1 instance.
+     *
+     * @param string $username Identifies the user
+     *
+     * @note this was only being used to get the logged in user and has now been
+     * replaced by the getLoggedInUser() function and setLoggedInUser() function.
+     * This has only been left her for backwards compatibility and will be
+     * removed in a future iteration of loris. -Rida
+     *
+     * @return User
+     * @access public
+     * @static
+     */
+    static function &singleton($username = null)
+    {
+        error_log(
+            "The User::singleton() function has been deprecated and will be ".
+            "removed in a future iteration of loris. Make sure to use the ".
+            "getLoggedInUser(), setLoggedInUser() or User::factory() to ".
+            "achieve your needs."
+        );
+
+        if (!is_null($username)) {
+            return User::getUserFromUsername($username);
+        }
+
+        $user = User::getLoggedInUser();
+
+        return $user;
+    }
+
+    /**
+     * Static function getting the logged in user only when user.
+     *
+     * @return User the logged in user object.
+     */
+    static function &getLoggedInUser()
+    {
+        return self::$_loggedInUser;
+    }
+
+    /**
+     * Static function setting the logged in user only when user
+     * is not previously set.
+     *
+     * @param string $username name of user currently logged in
+     *
+     * @return void
+     */
+    static function setLoggedInUser(string $username)
+    {
+        if (is_null(self::$_loggedInUser)) {
+            self::$_loggedInUser = self::getUserFromUsername($username);
+        }
+    }
 
     /**
      * Constructor
@@ -43,16 +157,47 @@ class User extends UserPermissions
      */
     static function &factory($username)
     {
-        $obj = new User;
+        error_log(
+            "The User::factory() function has been deprecated and will be ".
+            "removed in a future iteration of loris. Make sure to use the ".
+            "getLoggedInUser(), setLoggedInUser() or User::factory() to ".
+            "achieve your needs."
+        );
+        $obj = User::getUserFromUsername($username);
 
-        // right off, set the username
-        $obj->userInfo['UserID'] = $username;
+        return $obj;
 
-        // get the user's permissions
-        $obj->select($username);
+    }
+
+    /**
+     * Load function fetches user information from database and sets it in the
+     * userInfo array. This function expects user to exist in the database and at
+     * least the id OR the username of the USER object to be set.
+     *
+     * @throws LorisException  If it is called without username nor id or if
+     *                         Or if the user does not exist
+     *
+     * @return void
+     */
+    private function _load()
+    {
+        if (empty($this->id)) {
+            if (!empty($this->username)) {
+                //sets the $id value, if after this step the $id is still empty
+                //then the user does not exist and an exception is thrown
+                $this->id = $this->_getIdFromUsername($this->username);
+            } else {
+                throw  new LorisException(
+                    "User::_load() function expects the username or ID to be set"
+                );
+            }
+        }
 
         // create DB object
         $DB =& Database::singleton();
+
+        // get the user's permissions
+        $this->select($this->id);
 
         // get user data from database
         $query = "SELECT users.*,
@@ -60,21 +205,25 @@ class User extends UserPermissions
             FROM users
             LEFT JOIN user_psc_rel ON (user_psc_rel.UserID=users.ID)
             LEFT JOIN psc ON (user_psc_rel.CenterID=psc.CenterID)
-            WHERE users.UserID = :UID
+            WHERE users.ID = :UID
             GROUP BY users.ID";
 
-        $row = $DB->pselectRow($query, array('UID' => $username));
+        $row = $DB->pselectRow($query, array('UID' => $this->id));
 
+        $user_cid = array();
         // get user sites
         $user_centerID_query =  $DB->pselect(
             "SELECT CenterID FROM user_psc_rel upr
                         WHERE upr.UserID= :UID",
-            array('UID' => $row['ID'])
+            array('UID' => $this->id)
         );
         $user_cid            = array();
         foreach ($user_centerID_query as $key=>$val) {
             $user_cid[$key] =$val['CenterID'];
         }
+
+        // TODO move the examiner query to an examiner class and call it
+        // from the user class
 
         // Get examiner information
         $examiner_check = $DB->pselect(
@@ -106,33 +255,90 @@ class User extends UserPermissions
                                                   );
             }
         }
+
         // store user data in object property
         $row['examiner']  = $examiner_info;
         $row['CenterIDs'] = $user_cid;
-        $obj->userInfo    = $row;
-        return $obj;
+        $this->userInfo   = $row;
     }
-
 
     /**
-     * Singleton method. Retrieve the user passed as parameter, but only
-     * 1 instance.
+     * Setter for user's ID
      *
-     * @param string $username Identifies the user
+     * @param integer $id identifier of user
      *
-     * @return User
-     * @access public
-     * @static
+     * @return void
      */
-    static function &singleton($username = null)
+    public function setId($id)
     {
-        static $instance;
-        if (is_null($instance)) {
-            $instance = User::factory($username);
-        }
-        return $instance;
+        $this->id =$id;
     }
 
+    /**
+     * Setter for user's username
+     *
+     * @param string $username unique username of user
+     *
+     * @return void
+     */
+    public function setUsername(string $username)
+    {
+        $this->username =$username;
+    }
+
+    /**
+     * Getter for user's ID
+     *
+     * @return int the id
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Getter for user's username
+     *
+     * @return string The username
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * Set the ID value in the user object given the username ("UserID")
+     *
+     * @param string $username username for which the identifier is needed
+     *
+     * @note given the current extensive use of the UserID instead of the real ID
+     * this function will be particularly useful until the queries are
+     * progressively updated. -rida
+     *
+     * @throws LorisException if username is not in the database
+     *
+     * @return int
+     */
+    private function _getIdFromUsername(string $username)
+    {
+        // create DB object
+        $DB =& Database::singleton();
+
+        // get the proper ID from the database
+        $query  = "SELECT ID FROM users WHERE UserID =:uName";
+        $params = array('uName' => $username);
+
+        $id = $DB->pselectOne($query, $params);
+
+        if (empty($id)) {
+            throw new \LorisException(
+                "Username supplied is not associated with 
+                an identifier in the database"
+            );
+        }
+
+        return $id;
+    }
 
     /**
      * Inserts a user
@@ -181,7 +387,10 @@ class User extends UserPermissions
      *
      * @param string $var Name of variable to get
      *
-     * @note   Call without any parameters to get the entire user data array
+     * @note Call without any parameters to get the entire user data array
+     *
+     * @throws LorisException
+     *
      * @return mixed
      * @access public
      */
@@ -216,25 +425,25 @@ class User extends UserPermissions
         return $this->userInfo['Real_name'];
     }
 
-    /**
-     * Get the user's id
-     *
-     * @return int
-     */
-    function getId()
-    {
-        return $this->userInfo['ID'];
-    }
-
-    /**
-     * Get the user's username
-     *
-     * @return string
-     */
-    function getUsername()
-    {
-        return $this->userInfo['UserID'];
-    }
+    //    /**
+    //     * Get the user's id
+    //     *
+    //     * @return int
+    //     */
+    //    function getId()
+    //    {
+    //        return $this->userInfo['ID'];
+    //    }
+    //
+    //    /**
+    //     * Get the user's username
+    //     *
+    //     * @return string
+    //     */
+    //    function getUsername()
+    //    {
+    //        return $this->userInfo['UserID'];
+    //    }
 
     /**
      * Get the user's sites' name

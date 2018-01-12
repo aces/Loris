@@ -36,7 +36,7 @@ class Document_Repository extends \NDB_Menu_Filter
     function _hasAccess()
     {
         //create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         return $user->hasPermission('document_repository_view')
                || $user->hasPermission('document_repository_delete');
@@ -52,7 +52,7 @@ class Document_Repository extends \NDB_Menu_Filter
     {
         parent::setup();
 
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         // create the centerID map
         $db      =& \Database::singleton();
@@ -131,7 +131,7 @@ class Document_Repository extends \NDB_Menu_Filter
     function _setFilterForm()
     {
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         $list_of_sites = \Utility::getSiteList(true, false);
            // allow to view all sites data through filter
@@ -176,7 +176,7 @@ class Document_Repository extends \NDB_Menu_Filter
         $this->addSelect('File_category', 'File category:', $fileCategories);
         $this->tpl_data['Sites']       = $list_of_sites;
         $this->tpl_data['Instruments'] = $list_of_instruments;
-        $user   =& \User::singleton();
+        $user   = \User::getLoggedInUser();
         $userID = $user->getData('UserID');
         $this->tpl_data['User'] = $userID;
         $this->addSelect('For_site', 'For Site:', $list_of_sites);

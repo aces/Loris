@@ -71,7 +71,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         }
 
         // BVLQC - get permission and set the tpl element
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         $this->tpl_data['access']['bvl_qc']
             = $user->hasPermission('bvl_feedback');
 
@@ -279,7 +279,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         }
 
         // set the BVLQC flag
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         if (isset($_REQUEST['setBVLQCStatus'])
             && $user->hasPermission('bvl_feedback')
         ) {
@@ -350,7 +350,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $db =& \Database::singleton();
 
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         $hasAccess = $this->_hasAccessStatus();
 
@@ -455,7 +455,7 @@ class Instrument_List_ControlPanel extends \TimePoint
     function _hasAccessStatus()
     {
         // get user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         // disable the button for all these users
         $currentStage = $this->getCurrentStage();
@@ -611,7 +611,7 @@ class Instrument_List_ControlPanel extends \TimePoint
     function _getSendToDCCStatusMessage()
     {
         // create user object
-        $user   =& \User::singleton();
+        $user   = \User::getLoggedInUser();
         $config =& \NDB_Config::singleton();
 
         // get the value of the session.Scan_done field
@@ -713,7 +713,7 @@ class Instrument_List_ControlPanel extends \TimePoint
     function _hasAccessSendToDCC()
     {
         // create user object
-        $user   =& \User::singleton();
+        $user   = \User::getLoggedInUser();
         $config =& \NDB_Config::singleton();
 
         // get the value of the session.Scan_done field
@@ -764,7 +764,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $this->tpl_data['next_stage'] = $this->getNextStage();
 
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         // check user permissions
         if (!$user->hasPermission('data_entry') || !in_array(

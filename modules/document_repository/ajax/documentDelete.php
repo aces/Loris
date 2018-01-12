@@ -10,7 +10,7 @@
   * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
   * @link     https://github.com/aces/Loris
   */
-$user =& User::singleton();
+$user = \User::getLoggedInUser();
 if (!$user->hasPermission('document_repository_delete')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
@@ -50,7 +50,7 @@ $dataDir  = $DB->pselectOne(
     array(':identifier' => $rid)
 );
 
-$user =& User::singleton();
+$user = \User::getLoggedInUser();
 
 //if user has document repository delete permission
 if ($user->hasPermission('document_repository_delete')) {

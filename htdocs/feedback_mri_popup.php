@@ -28,7 +28,7 @@ require_once "FeedbackMRI.class.inc";
 $DB =& Database::singleton();
 
 // user is logged in, let's continue with the show...
-$user =& User::singleton($_SESSION['State']->getUsername());
+$user = \User::getLoggedInUser();
 
 // check permissions
 if ($user->hasPermission('imaging_browser_qc')) {

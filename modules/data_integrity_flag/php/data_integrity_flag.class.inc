@@ -37,7 +37,7 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
     function _hasAccess()
     {
         //create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         return $user->hasPermission('data_integrity_flag');
     }
 
@@ -69,7 +69,7 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
      */
     function _insertDataFlag($req)
     {
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         $db   =& \Database::singleton();
 
         if (!isset($req['instrument'])

@@ -43,7 +43,7 @@ class Media extends \NDB_Menu_Filter
     function _hasAccess()
     {
         //create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         // Set global permission to control access to different modules of media page
         $this->hasWritePermission = $user->hasPermission('media_write');
@@ -63,7 +63,7 @@ class Media extends \NDB_Menu_Filter
     {
         parent::setup();
 
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         $db   = \Database::singleton();
 
         $siteList  = array();
@@ -139,7 +139,7 @@ class Media extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         // the base query
         $query  = " FROM media m LEFT JOIN session s ON m.session_id = s.ID".
         " LEFT JOIN candidate c ON c.CandID=s.CandID";

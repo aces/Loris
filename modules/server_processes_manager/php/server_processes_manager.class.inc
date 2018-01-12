@@ -35,7 +35,7 @@ class Server_Processes_Manager extends \NDB_Menu_Filter
      */
     function _hasAccess()
     {
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
         return $user->hasPermission('server_processes_manager');
     }
 

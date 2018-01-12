@@ -36,7 +36,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
     function _hasAccess()
     {
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         return ($user->hasPermission('conflict_resolver'));
     }
 
@@ -56,7 +56,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
 
         $DB =& \Database::singleton();
 
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         foreach ($values AS $key => $val) {
             // The only valid values are 1, 2 or none.  Therefore we are only
@@ -238,7 +238,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
             LEFT JOIN Project ON (candidate.ProjectID=Project.ProjectID )
             WHERE 1=1";
 
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
         if (!$user->hasPermission('access_all_profiles')) {
             // restrict data to own site
             $site_arr     = implode(",", $user->getCenterIDs());
@@ -324,7 +324,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
     {
         parent::setup();
         // Create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         $config =& \NDB_Config::singleton();
 

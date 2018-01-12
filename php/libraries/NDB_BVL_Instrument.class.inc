@@ -283,7 +283,7 @@ class NDB_BVL_Instrument extends NDB_Page
             //instrument permissions not used...
             return true; //default
         } else { //check if user has instrument's permissions
-            $user =& User::singleton();
+            $user = \User::getLoggedInUser();
 
             //is the instrument listed at all in instrumentPermissions?
             $instrumentListed = false;

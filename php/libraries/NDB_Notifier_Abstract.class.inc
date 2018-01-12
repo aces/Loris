@@ -196,7 +196,7 @@ abstract class NDB_Notifier_Abstract
      */
     private function _getLoggedInUser()
     {
-        $user       =& User::singleton();
+        $user       = \User::getLoggedInUser();
         $info_array =array();
         $info_array['ID']    = $user->getData('ID');
         $info_array['name']  = $user->getFullname();
@@ -233,7 +233,7 @@ abstract class NDB_Notifier_Abstract
     private function _get2DListToNotify()
     {
         $DB   = Database::singleton();
-        $user =& User::singleton();
+        $user = \User::getLoggedInUser();
 
         //array of sites concerned
         $sites_concerned =  $user->getCenterIDs();

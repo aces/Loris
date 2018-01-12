@@ -171,7 +171,7 @@ class Visit extends \Loris\API\Candidates\Candidate
         }
         // This version of the API does not handle timepoint creation
         // when users are at multiple sites
-        $user      = \User::singleton();
+        $user      = \User::getLoggedInUser();
         $centerIDs = $user->getCenterIDs();
         $num_sites = count($centerIDs);
         if ($num_sites == 0) {

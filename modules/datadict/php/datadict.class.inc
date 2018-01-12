@@ -37,7 +37,7 @@ class Datadict extends \NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         return ($user->hasPermission('data_dict_view') ||
                                    $user->hasPermission('data_dict_edit'));

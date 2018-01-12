@@ -38,7 +38,7 @@ class Instrument_List extends \NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
         $candID    = $timePoint->getCandID();
@@ -114,7 +114,7 @@ class Instrument_List extends \NDB_Menu_Filter
 
         // display list of instruments
         if (!empty($listOfInstruments)) {
-            $user     =& \User::singleton();
+            $user     = \User::getLoggedInUser();
             $username = $user->getData('UserID');
 
             $feedback_select_inactive = null;

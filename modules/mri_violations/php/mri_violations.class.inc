@@ -35,7 +35,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
     function _hasAccess()
     {
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         $this->tpl_data['violated_scans_modifications']
             = $user->hasPermission('violated_scans_edit');
         return ($user->hasPermission('violated_scans_view_allsites'));
@@ -53,7 +53,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             return true;
         }
         $DB   =& \Database::singleton();
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         foreach ($values['resolvable'] AS $key=>$val) {
             $hash = $key;
             $row  = $DB->pselectRow(
@@ -160,7 +160,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
     {
         // set the class variables
         // create user object
-        $user        =& \User::singleton();
+        $user        = \User::getLoggedInUser();
         $DB          =& \Database::singleton();
         $config      =& \NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
@@ -353,7 +353,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
     {
         parent::setup();
         // create user object
-        $user    =& \User::singleton();
+        $user    = \User::getLoggedInUser();
         $config  =& \NDB_Config::singleton();
         $db      =& \Database::singleton();
         $minYear = $config->getSetting('startYear') - $config->getSetting('ageMax');

@@ -44,7 +44,7 @@ class Edit_User extends \NDB_Form
     function _hasAccess()
     {
         // create user object
-        $editor = \User::singleton();
+        $editor = \User::getLoggedInUser();
 
         if (!$this->isCreatingNewUser()) {
             $user = \User::factory($this->identifier);
@@ -164,7 +164,7 @@ class Edit_User extends \NDB_Form
      */
     function _isEditingOwnAccount()
     {
-        $editor = \User::singleton();
+        $editor = \User::getLoggedInUser();
         return !$this->isCreatingNewUser()
             && ($editor->getUsername() == $this->identifier);
     }
@@ -183,7 +183,7 @@ class Edit_User extends \NDB_Form
         //The arrays that contain the edited permissions
         $permissionsRemoved = array();
         $permissionsAdded   = array();
-        $editor = \User::singleton();
+        $editor = \User::getLoggedInUser();
         // build the "real name"
         $values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
         //create the user
@@ -624,7 +624,7 @@ class Edit_User extends \NDB_Form
         //------------------------------------------------------------
 
         // get user permissions
-        $editor = \User::singleton();
+        $editor = \User::getLoggedInUser();
 
         // center ID
         if ($editor->hasPermission('user_accounts_multisite')) {

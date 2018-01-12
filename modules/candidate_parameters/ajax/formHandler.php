@@ -16,7 +16,7 @@ if (isset($_POST['tab'])) {
     $tab = $_POST['tab'];
 
     $db   =& \Database::singleton();
-    $user =& \User::singleton();
+    $user = \User::getLoggedInUser();
 
     if ($tab == "candidateInfo") {
         editCandInfoFields($db, $user);
@@ -316,7 +316,7 @@ function editParticipantStatusFields($db, $user)
 
     $id = null;
     if (!(is_null($_SESSION['State']))) {
-        $currentUser =& User::singleton($_SESSION['State']->getUsername());
+        $currentUser = \User::getLoggedInUser();
         $id          = $currentUser->getData("UserID");
     }
 
@@ -369,7 +369,7 @@ function editConsentStatusFields($db, $user)
 
     $id = null;
     if (!(is_null($_SESSION['State']))) {
-        $currentUser =& \User::singleton($_SESSION['State']->getUsername());
+        $currentUser = \User::getLoggedInUser();
         $id          = $currentUser->getData("UserID");
     }
 

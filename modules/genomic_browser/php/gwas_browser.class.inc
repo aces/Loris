@@ -44,7 +44,7 @@ class GWAS_Browser extends \NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
         return ($user->hasPermission('genomic_browser_view_allsites')
                 || $user->hasPermission('genomic_browser_view_site'));
     }
@@ -126,7 +126,7 @@ class GWAS_Browser extends \NDB_Menu_Filter
         parent::setup();
 
         // create user object
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
 
         // add form elements
         $show_results_options = array(

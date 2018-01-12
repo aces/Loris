@@ -34,7 +34,7 @@ class User_Accounts extends \NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         return $user->hasPermission('user_accounts');
     }
@@ -47,7 +47,7 @@ class User_Accounts extends \NDB_Menu_Filter
     */
     function _setupVariables()
     {
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         // the base query
         $query = " FROM users
             LEFT JOIN user_psc_rel ON (user_psc_rel.UserID=users.ID)
@@ -105,7 +105,7 @@ class User_Accounts extends \NDB_Menu_Filter
         parent::setup();
 
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         // PSC
         if ($user->hasPermission('user_accounts_multisite')) {

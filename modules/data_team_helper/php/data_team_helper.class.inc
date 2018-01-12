@@ -35,7 +35,7 @@ class Data_Team_Helper extends \NDB_Form
     function _hasAccess()
     {
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         return ($user->hasPermission('data_team_helper'));
     }
 
@@ -49,7 +49,7 @@ class Data_Team_Helper extends \NDB_Form
         //initializations
         parent::setup();
         $DB       =& \Database::singleton();
-        $user     =& \User::singleton();
+        $user     = \User::getLoggedInUser();
         $config   =& \NDB_Config::singleton();
         $sanitize = array_map('htmlspecialchars', $_REQUEST);
 
@@ -177,7 +177,7 @@ class Data_Team_Helper extends \NDB_Form
      */
     function getDefaultSite()
     {
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         if ($user->hasPermission('access_all_profiles')) {
             $site_default ='All Sites';
         } else {
@@ -242,7 +242,7 @@ class Data_Team_Helper extends \NDB_Form
         }
         if ($site!='All Sites') {
             if ($site == 'All User Sites') {
-                $user           = \User::singleton();
+                $user           = \User::getLoggedInUser();
                 $siteID         = $user->getCenterIDs();
                 $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
                 $qparams['CID'] = implode(',', $siteID);
@@ -399,7 +399,7 @@ class Data_Team_Helper extends \NDB_Form
         //filter for sites
         if ($site!='All Sites') {
             if ($site == 'All User Sites') {
-                $user           = \User::singleton();
+                $user           = \User::getLoggedInUser();
                 $siteID         = $user->getCenterIDs();
                 $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
                 $qparams['CID'] = implode(',', $siteID);
@@ -542,7 +542,7 @@ class Data_Team_Helper extends \NDB_Form
         }
         if ($site!='All Sites') {
             if ($site == 'All User Sites') {
-                $user           = \User::singleton();
+                $user           = \User::getLoggedInUser();
                 $siteID         = $user->getCenterIDs();
                 $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
                 $qparams['CID'] = implode(',', $siteID);
@@ -616,7 +616,7 @@ class Data_Team_Helper extends \NDB_Form
         }
         if ($site!='All Sites') {
             if ($site == 'All User Sites') {
-                $user           = \User::singleton();
+                $user           = \User::getLoggedInUser();
                 $siteID         = $user->getCenterIDs();
                 $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
                 $qparams['CID'] = implode(',', $siteID);
@@ -688,7 +688,7 @@ class Data_Team_Helper extends \NDB_Form
         }
         if ($site!='All Sites') {
             if ($site == 'All User Sites') {
-                $user           = \User::singleton();
+                $user           = \User::getLoggedInUser();
                 $siteID         = $user->getCenterIDs();
                 $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
                 $qparams['CID'] = implode(',', $siteID);

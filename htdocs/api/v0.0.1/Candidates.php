@@ -177,7 +177,7 @@ class Candidates extends APIBase
      */
     public function createNew($DoB, $edc, $gender, $PSCID)
     {
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
         \Candidate::createNew(
             $user->getCenterID(),
             $DoB,

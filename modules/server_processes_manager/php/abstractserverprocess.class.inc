@@ -145,7 +145,9 @@ abstract class AbstractServerProcess
         $exitCodeFile, $exitCode, $userid,
         $startTime, $endTime, $exitText
     ) {
-        $userid = is_null($userid) ? \User::singleton()->getUsername() : $userid;
+        if (is_null($userid)) {
+            $userid = \User::getLoggedInUser()->getUsername();
+        }
 
         $this->_id           = $id;
         $this->_pid          = $pid;

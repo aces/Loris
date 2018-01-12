@@ -257,7 +257,7 @@ class NDB_Config
         if (empty($username)) {
             $this->_siteSettings =& $this->_settings;
         } else {
-            $user     =& User::singleton($username);
+            $user     = \User::getLoggedInUser();
             $siteName = Utility::getCleanString($user->getSiteNames());
             if (isset($this->_settings['sites'][$siteName])
                 && is_array($this->_settings['sites'][$siteName])
@@ -532,7 +532,7 @@ class NDB_Config
     static function checkMenuPermission($menuID)
     {
         $DB   = Database::singleton();
-        $user = User::singleton();
+        $user = User::getLoggedInUser();
 
         $perms = $DB->pselect(
             "SELECT code FROM LorisMenuPermissions

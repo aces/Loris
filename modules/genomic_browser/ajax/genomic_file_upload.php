@@ -15,7 +15,7 @@
  *  @license    Loris license
  *  @link       https://github.com/aces/Loris-Trunk
  */
-$userSingleton =& User::singleton();
+$userSingleton = \User::getLoggedInUser();
 if (!$userSingleton->hasPermission('genomic_browser_view_site')
     && !$userSingleton->hasPermission('genomic_browser_view_allsites')
 ) {

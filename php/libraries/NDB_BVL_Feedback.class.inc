@@ -446,7 +446,7 @@ class NDB_BVL_Feedback
         $db =& Database::singleton();
 
         // get User object
-        $user =& User::singleton($this->_username);
+        $user = \User::getLoggedInUser();
         $hasReadPermission = $user->hasPermission('access_all_profiles');
 
         $query = "SELECT c.CandID as CandID,
@@ -509,7 +509,7 @@ class NDB_BVL_Feedback
         $db =& Database::singleton();
 
         // create user object
-        $user =& User::singleton($this->_username);
+        $user = \User::getLoggedInUser();
         $hasReadPermission = $user->hasPermission('access_all_profiles');
 
         $query   = "SELECT c.CandID as CandID, c.PSCID as PSCID";
@@ -1066,7 +1066,7 @@ class NDB_BVL_Feedback
     static function bvlFeedbackPossible($test_name)
     {
 
-        $user =& User::singleton();
+        $user = \User::getLoggedInUser();
 
         if ($user->hasStudySite()) {
             if ($user->hasPermission('bvl_feedback')) {

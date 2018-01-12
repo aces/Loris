@@ -33,7 +33,7 @@ class New_Profile extends \NDB_Form
     function _hasAccess()
     {
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         $site_arr      = $user->getData('CenterIDs');
         $userInDCCSite = in_array("1", $site_arr);
@@ -53,7 +53,7 @@ class New_Profile extends \NDB_Form
     function _process($values)
     {
         // set up the arguments to Candidate::createNew
-        $user   =& \User::singleton();
+        $user   = \User::getLoggedInUser();
         $config =& \NDB_Config::singleton();
         $dob    = empty($values['dob1']) ? null : $values['dob1'];
 
@@ -210,7 +210,7 @@ class New_Profile extends \NDB_Form
         $this->addRule('gender', 'Gender is required', 'required');
 
         // add sites for users with more than one site affiliation
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         $DB   = \Database::singleton();
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);
@@ -248,7 +248,7 @@ class New_Profile extends \NDB_Form
     {
         $errors = array();
         $config =& \NDB_Config::singleton();
-        $user   = \User::singleton();
+        $user   = \User::getLoggedInUser();
         if ($values['dob1'] != $values['dob2']) {
             $errors['dob1'] = 'Date of Birth fields must match.';
         }
@@ -271,7 +271,7 @@ class New_Profile extends \NDB_Form
         if ($PSCIDsettings['generation'] == 'user') {
             $db =& \Database::singleton();
             if (empty($values['psc'])) { // user is in only one site
-                $user      =& \User::singleton();
+                $user      = \User::getLoggedInUser();
                 $centerIDs = $user->getData('CenterIDs');
                 $centerID  = $centerIDs[0];
                 $site      =& \Site::singleton($centerID);

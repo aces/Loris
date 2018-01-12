@@ -37,7 +37,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         return ($user->hasPermission('conflict_resolver'));
     }
 
@@ -86,7 +86,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
             LEFT JOIN Project ON (candidate.ProjectID=Project.ProjectID )
             WHERE 1=1";
 
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
         if (!$user->hasPermission('access_all_profiles')) {
             // restrict data to own site
             $site_arr     = implode(",", $user->getCenterIDs());
@@ -182,7 +182,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
     {
         parent::setup();
         // Create user object
-        $user   =& \User::singleton();
+        $user   = \User::getLoggedInUser();
         $config =& \NDB_Config::singleton();
 
         // Get instruments

@@ -34,7 +34,7 @@ if (isset($_GET['action'])) {
 function editFile()
 {
     $db   =& Database::singleton();
-    $user =& User::singleton();
+    $user = \User::getLoggedInUser();
     if (!$user->hasPermission('media_write')) {
         header("HTTP/1.1 403 Forbidden");
         exit;
@@ -80,7 +80,7 @@ function uploadFile()
 
     $db     =& Database::singleton();
     $config = NDB_Config::singleton();
-    $user   =& User::singleton();
+    $user   = \User::getLoggedInUser();
     if (!$user->hasPermission('media_write')) {
         header("HTTP/1.1 403 Forbidden");
         exit;

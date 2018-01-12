@@ -33,7 +33,7 @@ class Data_Release extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         $Factory = \NDB_Factory::singleton();
         $DB      = $Factory->Database();

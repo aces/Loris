@@ -87,7 +87,7 @@ if (!$anonymous) {
     tplFromRequest('dynamictabs');
     // draw the user information table
     try {
-        $user =& User::singleton();
+        $user = \User::getLoggedInUser();
 
         $site_arr = $user->getData('CenterIDs');
         foreach ($site_arr as $key=>$val) {

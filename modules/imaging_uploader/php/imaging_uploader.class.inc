@@ -50,7 +50,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     function _hasAccess()
     {
         // create user object
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
         return $user->hasPermission('imaging_uploader');
     }
 
@@ -218,7 +218,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             $this
         );
 
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
         //set the the IDs to the handler functions.
         $file->setHandlerArgs(array("values" => $values));
 
@@ -379,7 +379,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         $user_name = $args['user_id'];
         if (($user_name==null) || (!(isset($user_name)))) {
-            $user      = \User::singleton();
+            $user      = \User::getLoggedInUser();
             $user_name = $user->getUsername();
         }
         ///////////////////////////////////////////////////////////////////////

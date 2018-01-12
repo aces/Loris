@@ -46,7 +46,7 @@ class ViewSession extends \NDB_Form
      */
     function _hasAccess()
     {
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         // allow only to view own site data
         $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
@@ -70,7 +70,7 @@ class ViewSession extends \NDB_Form
      */
     function _hasQCPerm()
     {
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         return $user->hasPermission('imaging_browser_qc');
     }
@@ -425,7 +425,7 @@ class ViewSession extends \NDB_Form
             }
         }
         if (is_array($values['caveat'])) {
-            $user        = \User::singleton();
+            $user        = \User::getLoggedInUser();
             $timePoint   =& \TimePoint::singleton($this->sessionID);
             $candid      = $timePoint->getCandID();
             $visit_label = $timePoint->getData('Visit_label');

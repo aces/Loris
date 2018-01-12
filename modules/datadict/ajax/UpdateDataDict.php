@@ -11,7 +11,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-$user =& User::singleton();
+$user = \User::getLoggedInUser();
 if (!$user->hasPermission('data_dict_edit')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
@@ -41,7 +41,7 @@ if (get_magic_quotes_gpc()) {
 }
 
 // create user object
-$user =& User::singleton();
+$user = \User::getLoggedInUser();
 
 if ($user->hasPermission('data_dict_edit')) { //if user has edit permission
     if ($DB->pselectOne(

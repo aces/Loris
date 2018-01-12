@@ -32,7 +32,7 @@ class Next_Stage extends \NDB_Form
     function _hasAccess()
     {
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         $timePoint =& \TimePoint::singleton($this->identifier);
 

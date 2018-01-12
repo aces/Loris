@@ -32,7 +32,7 @@ class Survey_Accounts extends \NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         return $user->hasPermission('user_accounts');
     }
@@ -45,7 +45,7 @@ class Survey_Accounts extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         // the base query
         $query = " FROM participant_accounts p 
@@ -95,7 +95,7 @@ class Survey_Accounts extends \NDB_Menu_Filter
         parent::setup();
 
         // create user object
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
         $this->addBasicText('PSCID', 'PSCID');
         // add form elements
         $this->addSelect(

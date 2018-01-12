@@ -56,7 +56,7 @@ Class TimePoint_List_ControlPanel extends \Candidate
      */
     function display()
     {
-        $user =& \User::singleton();
+        $user = \User::getLoggedInUser();
 
         $user_CenterID = $user->getData('CenterIDs');
         $cand_CenterID = $this->getData('CenterID');

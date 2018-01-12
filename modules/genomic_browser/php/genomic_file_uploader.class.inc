@@ -39,7 +39,7 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
         return ($user->hasPermission('genomic_browser_view_allsites')
                 || $user->hasPermission('genomic_browser_view_site'));
     }
@@ -137,7 +137,7 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
         );
         $this->addCheckbox('caveat', 'Caveat:', $Base_options);
 
-        $user = \User::singleton();
+        $user = \User::getLoggedInUser();
         $this->tpl_data['user']           = $user->getUsername();
         $this->tpl_data['upload_allowed'] = $user->hasPermission(
             'genomic_data_manager'

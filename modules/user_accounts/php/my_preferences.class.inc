@@ -248,7 +248,7 @@ class My_Preferences extends \NDB_Form
 
         $this->identifier = $_SESSION['State']->getUsername();
 
-        $user =& \User::singleton($this->identifier);
+        $user = \User::getLoggedInUser();
 
         //get notification details
         $notifier_list     = \NDB_Notifier::getNotificationModuleServices();
