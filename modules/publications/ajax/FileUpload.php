@@ -59,8 +59,16 @@ function getPublicationData() {
 function uploadPublication() {
     $db = Database::singleton();
 
-    $today = date('Y-m-d');
+    // back end validation for title uniqueness constraint
+    $exists = $db->pselectOne(
+        "SELECT PublicationID FROM publications WHERE Title=:t",
+        array('t' => $_REQUEST['title'])
+    );
 
+    if ($exists) {
+        throw new LorisException('Submitted title already exists');
+    }
+    $today = date('Y-m-d');
     $fields = array(
         'Title'                   => $_REQUEST['title'],
         'Description'             => $_REQUEST['description'],
