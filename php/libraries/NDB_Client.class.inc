@@ -173,7 +173,6 @@ class NDB_Client
             return false;
         }
 
-        //        User::singleton($_SESSION['State']->getUsername());
         \User::setLoggedInUser($_SESSION['State']->getUsername());
 
         // finished initializing
