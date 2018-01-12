@@ -146,9 +146,9 @@ class FilterForm extends React.Component {
    */
   onElementUpdate(type, fieldName, fieldValue) {
     // Make sure both key/value are string before sending them to querystring
-    if (typeof fieldName !== "string" || typeof fieldValue !== "string") {
+    /*if (typeof fieldName !== "string" || typeof fieldValue !== "string") {
       return;
-    }
+    }*/
 
     // Update query string
     let queryFieldName = (fieldName === 'candID') ? 'candidateID' : fieldName;

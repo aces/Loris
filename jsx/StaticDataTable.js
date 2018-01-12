@@ -297,6 +297,20 @@ var StaticDataTable = React.createClass({
       return (searchString.indexOf(searchKey) > -1);
     }
 
+    // Handle array inputs for multiselects
+    if (typeof filterData === 'object') {
+      var match = false;
+      for (let i = 0; i < filterData.length; i += 1) {
+        var searchKey = filterData[i].toLowerCase();
+        var searchString = data.toLowerCase();
+
+        match = (searchString.indexOf(searchKey) > -1)
+        if (match) {
+            return true;
+        }
+      }
+      return match;
+    }
     return false;
   },
   render: function() {
@@ -364,6 +378,7 @@ var StaticDataTable = React.createClass({
         if (this.hasFilterKeyword(this.props.Headers[j], data)) {
           filterMatchCount++;
           filteredData.push(this.props.Data[index[i].RowIdx]);
+          console.log(this.props.Data[index[i].RowIdx]);
         }
 
         var key = 'td_col_' + j;
