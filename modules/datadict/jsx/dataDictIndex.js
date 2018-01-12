@@ -82,7 +82,7 @@ class DataDictIndex extends React.Component {
             <FilterForm
               Module="datadict"
               name="data_dict_filter"
-              id="data_dict_filter_form"
+              id="data_dict_filter"
               ref="dataDictFilter"
               columns={2}
               formElements={this.state.Data.form}
