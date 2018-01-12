@@ -23,6 +23,7 @@ class PublicationUploadForm extends React.Component {
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
+        console.log(data);
         self.setState({
           Data: data,
           isLoaded: true
@@ -79,9 +80,15 @@ class PublicationUploadForm extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    // TODO make sure title is unique
 
     let formData = this.state.formData;
+    // make sure title is unique
+    let existingTitles = this.state.Data.titles;
+    if (existingTitles.indexOf(formData.title) > -1) {
+      swal("Publication title already exists!", "", "error");
+      return;
+    }
+
     let formObj = new FormData();
     for (let key in formData) {
       if (formData[key] !== "") {
@@ -102,9 +109,13 @@ class PublicationUploadForm extends React.Component {
       cache: false,
       contentType: false,
       processData: false,
-      success: function(data) {
-        console.log(data);
-      },
+      success: function() {
+        // reset form data
+        this.setState({
+          formData: {}
+        });
+        swal("Submission Successful!", "", "success");
+      }.bind(this),
       error: function(jqXHR, textStatus) {
         console.log(textStatus);
       }

@@ -2,17 +2,35 @@
 if (isset($_REQUEST['action'])) {
     $action = $_REQUEST['action'];
     if ($action === 'getData') {
-        echo json_encode(array());
+        echo json_encode(getData());
     } elseif ($action === 'upload') {
         uploadPublication();
     } elseif($action === 'getProjectData') {
-        echo json_encode(getProjectData());
+        echo json_encode(getPublicationData());
     } else {
         header("HTTP/1.1 400 Bad Request");
     }
 }
 
-function getProjectData() {
+
+// Gets publication data from database
+// for now just titles to ensure uniqueness upon submission
+function getData() {
+    $db = Database::singleton();
+
+    $data = array();
+    $titles = $db->pselectCol(
+        'SELECT Title FROM publications',
+        array()
+    );
+
+    $data['titles'] = $titles;
+    return $data;
+}
+
+
+// Gets Data for a specific PublicationID
+function getPublicationData() {
     $id = $_GET['id'];
 
     $db = Database::singleton();

@@ -31,7 +31,6 @@ class PublicationIndex extends React.Component {
           Data: data,
           isLoaded: true
         });
-        console.log(data);
       }.bind(this),
       error: function(error) {
         console.error(error);
