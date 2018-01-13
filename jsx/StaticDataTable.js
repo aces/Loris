@@ -304,9 +304,9 @@ var StaticDataTable = React.createClass({
         var searchKey = filterData[i].toLowerCase();
         var searchString = data.toLowerCase();
 
-        match = (searchString.indexOf(searchKey) > -1)
+        match = (searchString.indexOf(searchKey) > -1);
         if (match) {
-            return true;
+          return true;
         }
       }
       return match;
@@ -378,7 +378,6 @@ var StaticDataTable = React.createClass({
         if (this.hasFilterKeyword(this.props.Headers[j], data)) {
           filterMatchCount++;
           filteredData.push(this.props.Data[index[i].RowIdx]);
-          console.log(this.props.Data[index[i].RowIdx]);
         }
 
         var key = 'td_col_' + j;
