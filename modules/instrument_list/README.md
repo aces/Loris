@@ -30,6 +30,12 @@ One of three conditions must be met to have access to the module:
 The `send_to_dcc` permission is required in order to send the
 timepoint to DCC (finalize the visit).
 
+The separate (and usually more restricted) `unsend_to_dcc` permission
+is required to reverse the `send_to_dcc` in case it was sent in error
+(but should rarely be necessary, as 'Sent to DCC' implies that the data
+is complete and ready to be used for publication, after which it should
+be immutable.)
+
 ## Configurations
 
 The instrument list module gets the list of instruments from the
@@ -48,6 +54,10 @@ list.
 The module primarily links to instruments, which are coded separately.
 It also includes a link to the `next_stage` module in the control
 panel, in order to allow data entry staff to start a visit.
+
+Survey module instruments are inserted into the `flag` table and thus
+show up in the `instrument_list` module, but this is not the case until
+after the survey has been sent.
 
 The `bvl_feedback` thread status for instruments are displayed in
 the list of instruments.
