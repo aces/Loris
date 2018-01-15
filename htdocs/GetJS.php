@@ -33,7 +33,7 @@ require_once __DIR__ . "/../vendor/autoload.php";
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
 if ($client->initialize(null) == false) {
-   return false;
+    return false;
 }
 // Checks that config settings are set
 $config =& NDB_Config::singleton();
