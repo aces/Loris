@@ -2,8 +2,8 @@
 
 ## Purpose
 
-The instrument builder is provides a graphical interface for users
-to design and build instruments to be installed on a LORIS instance.
+The instrument builder provides a graphical interface for users to
+design and build instruments to be installed on a LORIS instance.
 
 ## Intended Users
 
