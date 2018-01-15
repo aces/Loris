@@ -3,8 +3,10 @@
 ## Purpose
 
 The DICOM Archive module provides a front end to view the metadata
-about DICOMs which have been processed by the LORIS database via
-the imaging pipeline. It includes both failed and successful scans.
+about DICOM studies and series that have been registered in the
+LORIS database via the first step of the imaging pipeline (using
+`dicomTar.pl`). Protocol checks and QC are performed later on and not
+represented in this module."
 
 ## Intended Users
 
