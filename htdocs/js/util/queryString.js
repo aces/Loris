@@ -50,15 +50,6 @@ var QueryString = {
     // Deep copy of object representation of query
     var queryStringObj = JSON.parse(JSON.stringify(currentQuery));
 
-    // Make sure that both key and value are of string type
-    /*if (typeof fieldName !== "string" || typeof fieldValue !== "string") {
-      console.error(
-        "Error in QueryString.set(): \n" +
-        "\tfieldName and fieldValue must be of type string!"
-      );
-      return queryStringObj;
-    }*/
-
     // Add/Delete to/from query string object
     if (fieldValue === "") {
       delete queryStringObj[fieldName];

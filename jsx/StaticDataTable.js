@@ -301,10 +301,10 @@ var StaticDataTable = React.createClass({
     if (typeof filterData === 'object') {
       var match = false;
       for (let i = 0; i < filterData.length; i += 1) {
-        var searchKey = filterData[i].toLowerCase();
-        var searchString = data.toLowerCase();
+        var searchKey2 = filterData[i].toLowerCase();
+        var searchString2 = data.toLowerCase();
 
-        match = (searchString.indexOf(searchKey) > -1);
+        match = (searchString2.indexOf(searchKey2) > -1);
         if (match) {
           return true;
         }
