@@ -45,3 +45,7 @@ be done before the stage is started.
 
 The `next_stage` module links back to the `instrument_list` page
 after a stage is started.
+
+The `next_stage` module inserts the on-site test battery into the
+flag table. It does NOT insert survey instruments, which are inserted
+by the `survey_accounts` module.
