@@ -3,7 +3,8 @@
 ## Purpose
 
 The DICOM Archive module provides a front end to view the metadata
-about DICOMs which have been inserted into the LORIS pipeline.
+about DICOMs which have been inserted into the LORIS database via
+the imaging pipeline.
 
 ## Intended Users
 
@@ -39,4 +40,4 @@ appears in the menu table.
 ## Interactions with LORIS
 
 The tarchive tables used by the DICOM archive must be populated by
-the imaging `dicomTar` script before there is any data in the module.
+the imaging `dicomTar.pl` script before there is any data in the module.
