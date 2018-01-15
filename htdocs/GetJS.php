@@ -32,9 +32,11 @@ require_once __DIR__ . "/../vendor/autoload.php";
 // Ensures the user is logged in, and parses the config file.
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
+
 if ($client->initialize(null) == false) {
     return false;
 }
+
 // Checks that config settings are set
 $config =& NDB_Config::singleton();
 $paths  = $config->getSetting('paths');
@@ -83,7 +85,6 @@ if (strpos($File, ".js") === false) {
     header("HTTP/1.1 400 Bad Request");
     exit(3);
 }
-
 $public = false;
 try {
     $m = Module::factory($Module);
@@ -96,7 +97,6 @@ if ($public === false) {
     header("HTTP/1.1 403 Forbidden");
     exit(6);
 }
-
 // Make sure that the user isn't trying to break out of the $path by
 // using a relative filename.
 // No need to check for '/' since all downloads are relative to $basePath

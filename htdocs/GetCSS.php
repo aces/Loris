@@ -28,9 +28,11 @@ require_once __DIR__ . "/../vendor/autoload.php";
 // Ensures the user is logged in, and parses the config file.
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
+
 if ($client->initialize(null) == false) {
     return false;
 }
+
 // Checks that config settings are set
 $config =& NDB_Config::singleton();
 $paths  = $config->getSetting('paths');
@@ -103,7 +105,6 @@ if ($public === false) {
     header("HTTP/1.1 403 Forbidden");
     exit(6);
 }
-
 
 if (!file_exists($FullPath)) {
     error_log("ERROR: File $FullPath does not exist");
