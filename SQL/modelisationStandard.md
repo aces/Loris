@@ -7,40 +7,39 @@ This document details the modeling conventions to use for tables, attributes and
 ### Table
 
 - The table name should be in **snake_case**.  
-  - The table name should **start** with an **lower case letter**.
+  - The table name should **lowercase**.
   - The table name made of **multiple word** should use an **underscore** in order to separate each of them.
 - The table name should be in **singular form**.
-- The table name should contain **English words** only in order to be understanded by most.
-- The table name should **not contain abbreviation**.
-- The table name should be a **noun**, as concise as possible.
-  - *When choosing the name of a table containing data for a **single entity in Loris** such as a Candidate, Session, User, recommended names for these entities are `candidate`, `session` and `user`.*
+- The table name should contain **English words** only.
+- The table name should **not contain abbreviation** with the exception of "\_rel" for entity relationship tables.
+- The table name should be a **noun** or **group of nouns**, as concise as possible.
 - When a **single word is not sufficient** to describe a table, the ordering of the words in the name should reveal the concern of the table in a broad-to-specific manner. 
   - *i.e. A table containing the consent information of a candidate would be named `candidate_consent`, candidate being the broader concern and just `consent` is not sufficiently informative to rule out user consents and examiner consents. A table containing the consent types would be called as such `consent_type`.*
 - A table that is **specific to a module** should be **prefixed** with the module name.
   - *i.e. A table named `xyz` used in module `abc` should be name `abc_xyz`.*
-- **Acronym** are permitted only if the name would be to long and the acronym is **commonly used by the community**. The acronym should **only contain upper case letter**.
+- **Acronym** are permitted only if the name would be to long and the acronym is **commonly used by the neuroimaging community**. The acronym should **only contain upper case letter**. For historic reasons, “PSC” to refer to a Site is an exception to this rule.
 - When creating a table representing a **relation between two or more tables**. Regardless of the relation type (one-to-many, many-to-one or one-to-one), the table should have a composite name as such `table1_table2_rel`.
   - *i.e. the table mapping users to their permissions would be named `user_permission_rel` where `user` is the name of the Users' entity table and `permission` is the name of the Permissions' entity table.*
 
 ### Field
 
-- The field name should be in **UpperCamelCase**.
+- The field name should be in **CapitalizedWords**.
   - The field name should **start** with an **Upper case letter**.
   - The field name should **not contain underscore**.
 - The field name should be in **singular form**.
-- The field name should contain **English word** only in order to be understanded by most.
+- The field name should contain **English word** only.
 - The field name should **not contain abbreviation**.
-- **Acronym** are permitted only if the name would be to long and the acronym is **commonly used by the community**. The acronym should **only contain upper case letter**.
+- **Acronym** should be avoided, however may be used when the acronym would be **commonly used by the community**. The acronym should **only contain upper case letter**.
 - The **primary key** field of a table should of type `int`.
-- The **primary key** field of a table should be named `<TableName>ID`.  
+- The **primary key** field of a table should be named `<TableName>ID`. While the table name is snake_case, the field names referencing it (such as the primary key) should follow field naming conventions. (ie. my_table’s primary key should be MyTableID)
   - *i.e. the name of the primary identifier of the `candidate` table should be `CandidateID`.*
 - When adding a field which serves as a **foreign key to another table** in the database, the field should follow the same convention as above `ReferenceTableNameID`. 
   - *i.e. The session table would have a primary identifier field named `SessionID` and a foreign key reference to the `candidate` table with a field named `CandidateID`.*
 - When two(2) fields refer to the **same foreign key id**, a qualifier should be added to the name.
   - *i.e. Two fields pointing to the candidateID in the same table should be named like in `ParentCandidateID` and `ChildCandidateID`.*
 - Both **primary key and foreign key** fields should end with **`ID`** in upper case.
-- **Date** fields should not be named `Date` but more concisely like `DateStart`. `Date` should be at the beginning of the name followed by the qualifier.
-- **No ENUM attributes** should be used. Instead a lookup table to refer to possible choices should be used.
+- **Date** fields should not be named be named in the present tense.
+- **No ENUM attributes** should be used in the default LORIS schema or modules. Instead a lookup table to refer to possible choices should be used.
 
 #### Field Ordering
 
@@ -66,9 +65,9 @@ This document details the modeling conventions to use for tables, attributes and
 - An **Index** should be created on field or group of fields **regularly used in search or joint** when they are not part of primary key or unique key.
 
 ### Other parameters
-- All tables should be normalised to **3rd normal form** except where rapidity of information retrieval is critical.
+- All tables should be normalised to **3rd normal form**  unless there is a strong justification to do otherwise.
 - Engine should be **InnoDB** for all tables unless specific requirement demand. `ENGINE=InnoDB`.
-- Character set is **UTF-8** `CHARSET=utf8`.
+- The character encoding used by LORIS should be UTF-8. This implies that MySQL tables should use CHARSET=’utf8mb4’ (note the mb4). If the mb4 variant causes MySQL row size violations, CHARSET=’utf8’ may be used. (However, these exceptions should be rare outside of “legacy” tables due to the 3NF requirement.)
 - Be **explicit** instead of implicit. 
 
 
