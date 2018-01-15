@@ -104,6 +104,15 @@ class NDB_Client
         if (empty($config_additions)) {
             $config_additions = "";
         }
+        $CaptchaDomains ="";
+        // Get reCATPCHA keys
+        $reCAPTCHAPrivate = $config->getSetting('reCAPTCHAPrivate');
+        $reCAPTCHAPublic  = $config->getSetting('reCAPTCHAPublic');
+        // Display reCAPTCHA if both private and public keys are set
+        if ($reCAPTCHAPrivate && $reCAPTCHAPublic) {
+            $CaptchaDomains ="www.google.com  www.gstatic.com";
+        }
+
         // Content-Security policy for LORIS
         // 1. By default, only allow things that are self-hosted
         // 2. Allow inline CSS and JS (inline JS is required for
@@ -113,10 +122,12 @@ class NDB_Client
         //    See: https://github.com/jquery/jquery/issues/2012
         // 4. Allow data URLs for fonts, because our bootstrap theme
         //    seems to load a font that way.
+        // 5. Allow reCAPTCHA domains iff the CAPTCHA keys were set
+        //    up by the project
         header(
             "Content-Security-Policy: "
             . "default-src 'self' 'unsafe-inline'; "
-            . "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
+            . "script-src 'self' 'unsafe-inline' 'unsafe-eval' $CaptchaDomains; "
             . "font-src 'self' data:; "
             . "img-src 'self' data:; "
             . $config_additions

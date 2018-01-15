@@ -71,7 +71,7 @@ class User extends UserPermissions
                         WHERE upr.UserID= :UID",
             array('UID' => $row['ID'])
         );
-
+        $user_cid            = array();
         foreach ($user_centerID_query as $key=>$val) {
             $user_cid[$key] =$val['CenterID'];
         }
@@ -107,9 +107,9 @@ class User extends UserPermissions
             }
         }
         // store user data in object property
-        $row['examiner']  =$examiner_info;
-        $row['CenterIDs'] =$user_cid;
-        $obj->userInfo    =$row;
+        $row['examiner']  = $examiner_info;
+        $row['CenterIDs'] = $user_cid;
+        $obj->userInfo    = $row;
         return $obj;
     }
 
@@ -326,7 +326,7 @@ class User extends UserPermissions
     function hasStudySite()
     {
         $site_arr = $this->getCenterIDs();
-        foreach ($site_arr as $key => $sitename) {
+        foreach ($site_arr as $sitename) {
             $site = Site::singleton($sitename);
             if ($site->isStudySite()) {
                 return true;

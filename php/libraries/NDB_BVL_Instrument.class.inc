@@ -167,6 +167,9 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         $class = "NDB_BVL_Instrument_$instrument";
 
+        // Ensure 'page' is a string.
+        $page = $page ?? '';
+
         // Make sure the instrument class has been included/required!
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();

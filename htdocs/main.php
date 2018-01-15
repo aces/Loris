@@ -125,8 +125,7 @@ if (!empty($TestName)) {
 
     if (!empty($_REQUEST['sessionID'])) {
         try {
-            $timePoint  =& TimePoint::singleton($_REQUEST['sessionID']);
-            $argstring .= "filter%5Bm.VisitNo%5D=".$timePoint->getVisitNo()."&";
+            $timePoint = TimePoint::singleton($_REQUEST['sessionID']);
         } catch (Exception $e) {
             $tpl_data['error_message'][]
                 = "TimePoint Error (".$_REQUEST['sessionID']."): ".$e->getMessage();
