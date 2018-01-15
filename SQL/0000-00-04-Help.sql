@@ -10,7 +10,7 @@ CREATE TABLE `help` (
     `parentID` int(11) NOT NULL DEFAULT '-1',
     `hash` varchar(32) DEFAULT NULL,
     `topic` varchar(100) NOT NULL DEFAULT '',
-    `content` text DEFAULT NULL,
+    `content` text NOT NULL,
     `created` datetime DEFAULT NULL,
     `updated` datetime DEFAULT NULL, 
     PRIMARY KEY (`helpID`), 
