@@ -29,5 +29,5 @@ None.
 ## Interactions with LORIS
 
 The ajax script used by all LORIS page's inline help to load content
-is part of the Help Editor module. This likely be revisted in the
-future.
+is part of the Help Editor module. This should likely be revisited in
+the future.
