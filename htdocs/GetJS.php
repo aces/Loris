@@ -32,12 +32,6 @@ require_once __DIR__ . "/../vendor/autoload.php";
 // Ensures the user is logged in, and parses the config file.
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
-try {
-    $anonymous = ($client->initialize("../project/config.xml") === false);
-} catch (Exception $e) {
-    echo "Exception caught: client could not initialize... ", $e->getMessage(), "\n";
-    $anonymous = false;
-}
 
 // Checks that config settings are set
 $config =& NDB_Config::singleton();
@@ -96,7 +90,7 @@ try {
 } catch(LorisModuleMissingException $e) {
     $public = false;
 }
-if ($anonymous === true && $public === false) {
+if ($public === false) {
     header("HTTP/1.1 403 Forbidden");
     exit(6);
 }
