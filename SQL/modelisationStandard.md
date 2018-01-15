@@ -17,7 +17,7 @@ This document details the modeling conventions to use for tables, attributes and
   - *i.e. A table containing the consent information of a candidate would be named `candidate_consent`, candidate being the broader concern and just `consent` is not sufficiently informative to rule out user consents and examiner consents. A table containing the consent types would be called as such `consent_type`.*
 - A table that is **specific to a module** should be **prefixed** with the module name.
   - *i.e. A table named `xyz` used in module `abc` should be name `abc_xyz`.*
-- **Acronym** are permitted only if the name would be to long and the acronym is **commonly used by the neuroimaging community**. The acronym should **only contain upper case letter**. For historic reasons, “PSC” to refer to a Site is an exception to this rule.
+- **Acronym** should be avoided, however may be used when the acronym would be **commonly used by the neuroimaging community**. The acronym should **only contain upper case letter**. For historic reasons, “PSC” to refer to a Site is an exception to this rule.
 - When creating a table representing a **relation between two or more tables**. Regardless of the relation type (one-to-many, many-to-one or one-to-one), the table should have a composite name as such `table1_table2_rel`.
   - *i.e. the table mapping users to their permissions would be named `user_permission_rel` where `user` is the name of the Users' entity table and `permission` is the name of the Permissions' entity table.*
 
