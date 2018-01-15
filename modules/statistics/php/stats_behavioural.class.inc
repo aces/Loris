@@ -39,7 +39,8 @@ class Stats_Behavioural extends \NDB_Form
      * InCenter function
      *
      * @param string $centerID the value of centerID
-     * @param string $Centers  the value of Centers
+     * @param array  $Centers  a complex object storing ID, NumericID,
+     *                         LongName and Shortname for each center
      *
      * @return bool
      */
@@ -145,7 +146,7 @@ class Stats_Behavioural extends \NDB_Form
             }
             $subprojList = substr($subprojList, 0, -1);
             if (!empty($subprojList)) {
-                $suproject_query ="AND s.SubprojectID IN ($subprojList)";
+                $subproject_query ="AND s.SubprojectID IN ($subprojList)";
             }
             $Visits = \Utility::getExistingVisitLabels($behaviouralProject);
             $this->tpl_data['Visits'] = $Visits;
@@ -179,9 +180,9 @@ class Stats_Behavioural extends \NDB_Form
             $c      =& $this->tpl_data['behaviour']['C' . $center];
 
             if (is_null($c)) {
-                error_log(
-                    "Error: no tpl_data for C$center "
-                    . ' in behavioural statistics'
+                throw new \LorisException(
+                    "No tpl_data for center $center".
+                    " in behavioural statistics"
                 );
                 return;
             }
@@ -228,9 +229,9 @@ class Stats_Behavioural extends \NDB_Form
             $c      =& $this->tpl_data['dde']['C' . $center];
 
             if (is_null($c)) {
-                error_log(
-                    "Error: no tpl_data for C$center in behavioural"
-                    . " dde statistics"
+                throw new \LorisException(
+                    "No tpl_data for center $center".
+                    " in behavioural dde statistics"
                 );
                 return;
             }
