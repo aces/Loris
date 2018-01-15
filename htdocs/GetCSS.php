@@ -103,7 +103,7 @@ try {
 } catch(LorisModuleMissingException $e) {
     $public = false;
 }
-if ($anonymous === true && $public->isPublicModule() === false) {
+if ($anonymous === true && $public === false) {
     header("HTTP/1.1 403 Forbidden");
     exit(6);
 }
