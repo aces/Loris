@@ -309,7 +309,6 @@ var StaticDataTable = React.createClass({
           return true;
         }
       }
-      return match;
     }
     return false;
   },
