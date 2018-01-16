@@ -345,6 +345,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testPSCIDLink()
     {
         $this->safeGet($this->url . "/candidate_list/");
+        sleep(1);
         //find PSCID link and click
         $this->webDriver->executescript(
             "document.querySelectorAll('#dynamictable > tbody > tr >".
