@@ -6,7 +6,7 @@ The DICOM Archive module provides a front end to view the metadata
 about DICOM studies and series that have been registered in the
 LORIS database via the first step of the imaging pipeline (using
 `dicomTar.pl`). Protocol checks and QC are performed later on and not
-represented in this module."
+represented in this module.
 
 ## Intended Users
 
@@ -43,3 +43,6 @@ appears in the menu table.
 
 The tarchive tables used by the DICOM archive must be populated by
 the imaging `dicomTar.pl` script before there is any data in the module.
+
+The menu for the DICOM Archive module links to the imaging browser
+module, for scans which have been successfully inserted.
