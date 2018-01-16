@@ -31,7 +31,10 @@ $client = new NDB_Client();
 try {
     $anonymous = ($client->initialize("../project/config.xml") === false);
 } catch (Exception $e) {
-    echo "Exception caught: client could not initialize... ", $e->getMessage(), "\n";
+    error_log(
+        "Exception caught: client could not initialize... "
+        . $e->getMessage() . "\n"
+    );
     $anonymous = false;
 }
 
