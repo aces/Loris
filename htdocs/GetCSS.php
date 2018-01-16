@@ -28,15 +28,7 @@ require_once __DIR__ . "/../vendor/autoload.php";
 // Ensures the user is logged in, and parses the config file.
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
-try {
-    $anonymous = ($client->initialize("../project/config.xml") === false);
-} catch (Exception $e) {
-    error_log(
-        "Exception caught: client could not initialize... "
-        . $e->getMessage() . "\n"
-    );
-    $anonymous = false;
-}
+$anonymous = ($client->initialize() === false);
 
 // Checks that config settings are set
 $config =& NDB_Config::singleton();
