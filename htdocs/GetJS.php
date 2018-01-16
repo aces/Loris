@@ -86,12 +86,6 @@ if (strpos($File, ".js") === false) {
     exit(3);
 }
 $public = true;
-try {
-    $m      = Module::factory($Module);
-    $public = $m->isPublicModule();
-} catch(LorisModuleMissingException $e) {
-    $public = true;
-}
 if ($public === false) {
     header("HTTP/1.1 403 Forbidden");
     exit(6);
