@@ -85,7 +85,7 @@ if (strpos($File, ".js") === false) {
     header("HTTP/1.1 400 Bad Request");
     exit(3);
 }
-$public = false;
+$public = true;
 try {
     $m = Module::factory($Module);
     var_dump($m);
