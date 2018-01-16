@@ -484,6 +484,7 @@ class Document_Repository extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
+             $baseURL . "/document_repository/js/columnFormatter.js",
              $baseURL . "/document_repository/js/document_repository_helper.js",
             )
         );

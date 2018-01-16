@@ -96,4 +96,4 @@ script:
 
     - npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
 
-dist: precise
+dist: trusty
