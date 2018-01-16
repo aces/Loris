@@ -5,6 +5,7 @@ class PublicationUploadForm extends React.Component {
     this.state = {
       Data: {},
       formData: {},
+      voiGroups: [{}],
       uploadResult: null,
       errorMessage: null,
       isLoaded: false,
@@ -16,6 +17,7 @@ class PublicationUploadForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addListItem = this.addListItem.bind(this);
     this.removeListItem = this.removeListItem.bind(this);
+    this.addVOIFields = this.addVOIFields.bind(this);
   }
 
   componentDidMount() {
@@ -47,6 +49,17 @@ class PublicationUploadForm extends React.Component {
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
+
+    // if the formElement is a instrument for
+    // variables of interest, then set to voiGroups
+    // object
+    /*if (formElement.indexOf('voiInst') > -1) {
+      // get index by splitting on _
+      var i = formElement.split('_')[1];
+      var voiGroups = this.state.voiGroups;
+
+    }
+*/
     this.setState({
       formData: formData
     });
@@ -76,6 +89,18 @@ class PublicationUploadForm extends React.Component {
         formData: formData
       });
     }
+  }
+
+  addVOIFields() {
+    var voiGroups = this.state.voiGroups;
+    var newCnt = voiGroups.length + 1;
+    voiGroups.push({
+      name: 'voiGroup_' + newCnt,
+      inst: null
+    });
+    this.setState({
+      voiGroups: voiGroups
+    });
   }
 
   handleSubmit(e) {
@@ -146,6 +171,63 @@ class PublicationUploadForm extends React.Component {
       );
     }
 
+    var testNames = [];
+    this.state.Data.varsOfInterest.forEach(
+      function (v) {
+        if (testNames[v.SourceFrom]) {
+          return;
+        }
+        testNames[v.SourceFrom] = v.SourceFrom;
+      }
+    );
+    testNames.sort();
+
+    var testFields = this.state.Data.varsOfInterest.map(v => v.Name);
+    testFields.sort();
+
+    var voiFields = [];
+
+    // Generate Variables of Interest fields
+    for (var i = 1; i <= this.state.voiGroups.length; i++) {
+      var inst = this.state.formData['voiInst_' + i];
+      if (inst) {
+        console.log(inst);
+        var testFields = {};
+        this.state.Data.varsOfInterest.forEach(function(v){
+          if (v.SourceFrom === inst) {
+            testFields[v.SourceField] = v.SourceField;
+          }
+        });
+      }
+      voiFields.push(
+      <div>
+        <SelectElement
+          name={"voiInst_" + i}
+          label="Instrument"
+          ref={"voiInst_" + i}
+          id={"voiInst_" + i}
+          onUserInput={this.setFormData}
+          required={true}
+          value={this.state.formData['voiInst_' + i]}
+          options={testNames}
+        />
+        <ListElement
+          name={"voiFields_" + i}
+          label="Instrument Fields"
+          ref={"voiFields_" + i}
+          id={"voiFields_" + i}
+          onUserInput={this.setFormData}
+          onUserAdd={this.addListItem}
+          onUserRemove={this.removeListItem}
+          required={true}
+          value={this.state.formData['pendingItemVF_' +i]}
+          options={testFields}
+          pendingValKey="pendingItemVF_"
+          items={this.state.formData['voiFields_' + i]}
+        />
+      </div>
+      );
+    }
     return (
       <div className="row">
         <div className="col-md-8 col-lg-7">
@@ -188,14 +270,26 @@ class PublicationUploadForm extends React.Component {
               required={true}
               value={this.state.formData.leadInvestigatorEmail}
             />
-            <TextboxElement
-              name="variablesOfInterest"
-              label="Variables of Interest"
-              onUserInput={this.setFormData}
-              ref="variablesOfInterest"
-              required={true}
-              value={this.state.formData.variablesOfInterest}
+            {/* START Variables of Interest */}
+            <div className="row form-group">
+              <label className="col-sm-3 control-label"/>
+              <div className="col-sm-9">
+                <p className="form-control-static">
+                  <strong>
+                    Variables of Interest
+                    <span className="text-danger">*</span>
+                  </strong>
+                </p>
+              </div>
+            </div>
+            {/* TODO: take out of return statement */}
+            {voiFields}
+            <ButtonElement
+              label="Add Instrument"
+              type="button"
+              onUserInput={this.addVOIFields}
             />
+            {/* END Variables of Interest */}
             <ListElement
               name="keywords"
               label="Keywords"

@@ -45,6 +45,7 @@ class Publications extends \NDB_Menu_Filter_Form
      * @return boolean
      */
     function _setupVariables()
+
     {
         $query = " FROM publications p ".
             "LEFT JOIN publications_keywords_rel pkr ON p.PublicationID=pkr.PublicationID ".
@@ -52,6 +53,7 @@ class Publications extends \NDB_Menu_Filter_Form
             "LEFT JOIN publications_parameter_type_rel pptr ON p.PublicationID=pptr.PublicationID ".
             "LEFT JOIN parameter_type pt ON pt.ParameterTypeID=pptr.ParameterTypeID ";
         $query .= " WHERE 1=1 ";
+        $query .= " GROUP BY p.PublicationID ";
 
         $this->columns = array(
             'p.Title',
@@ -59,7 +61,7 @@ class Publications extends \NDB_Menu_Filter_Form
             'p.Date_proposed',
             'p.Approval_status',
             'p.Description',
-            'pk.Label', // Keywords
+            'GROUP_CONCAT(pk.Label)', // Keywords
             'pt.Name', // Variables of Interest
             'p.PublicationID',
         );

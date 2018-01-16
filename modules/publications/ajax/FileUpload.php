@@ -12,7 +12,6 @@ if (isset($_REQUEST['action'])) {
     }
 }
 
-
 // Gets publication data from database
 // for now just titles to ensure uniqueness upon submission
 function getData() {
@@ -24,7 +23,15 @@ function getData() {
         array()
     );
 
+    $varsOfInterest = $db->pselect(
+        "SELECT pt.Name, pt.SourceField, pt.SourceFrom FROM parameter_type pt ".
+        "JOIN test_names tn ON tn.Test_name=pt.SourceFrom ORDER BY pt.SourceFrom",
+        array()
+    );
+
+
     $data['titles'] = $titles;
+    $data['varsOfInterest'] = $varsOfInterest;
     return $data;
 }
 
