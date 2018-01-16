@@ -341,7 +341,7 @@ var TextboxElement = React.createClass({
     hasError: React.PropTypes.bool,
     errorMessage: React.PropTypes.string,
     onUserInput: React.PropTypes.func,
-    handleBlur: React.PropTypes.func
+    onUserBlur: React.PropTypes.func
   },
   getDefaultProps: function() {
     return {
