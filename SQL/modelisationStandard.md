@@ -31,12 +31,12 @@ This document details the modeling conventions to use for tables, attributes and
 - The field name should **not contain abbreviation**.
 - **Acronym** should be avoided, however may be used when the acronym would be **commonly used by the neuroimaging community**. The acronym should **only contain upper case letter**.
 - The **primary key** field of a table should be named `<TableName>ID`. While the table name is snake_case, the field names referencing it (such as the primary key) should follow field naming conventions. (ie. `my_table`’s primary key should be `MyTableID`)
-  - *i.e. the name of the primary identifier of the `candidate` table should be `CandidateID`.*
+  - *i.e. the name of the primary identifier of the `country` table should be `CountryID`.*
 - When an explicit auto-incremented primary key field is present, it should be of type unsigned int. Most tables should have an explicit primary key field.
 - When adding a field which serves as a **foreign key to another table** in the database, the field should follow the same convention as above `ReferenceTableNameID`. 
-  - *i.e. The session table would have a primary identifier field named `SessionID` and a foreign key reference to the `candidate` table with a field named `CandidateID`.*
+  - *i.e. The `country` table would have a primary identifier field named `CountryID` and another table a foreign key reference to the `country` table with a field named `CountryID`.*
 - When two(2) fields refer to the **same foreign key id**, a qualifier should be added to the names.
-  - *i.e. Two fields pointing to the candidateID in the same table should be named like in `ParentCandidateID` and `ChildCandidateID`.*
+  - *i.e. Two fields pointing to the `CountryID` in the same table should be named like in `OriginCountryID` and `DestinationCountryID`.*
 - Both **primary key and foreign key** fields should end with **`ID`** in upper case.
 - **Date** fields should be named be named in the present tense.
 - **No ENUM attributes** should be used in the default LORIS schema or modules. Instead a lookup table to refer to possible choices should be used.
