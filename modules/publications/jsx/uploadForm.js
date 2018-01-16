@@ -5,7 +5,7 @@ class PublicationUploadForm extends React.Component {
     this.state = {
       Data: {},
       formData: {},
-      voiGroups: [{}],
+      numVOIGroups: 1,
       uploadResult: null,
       errorMessage: null,
       isLoaded: false,
@@ -17,7 +17,7 @@ class PublicationUploadForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addListItem = this.addListItem.bind(this);
     this.removeListItem = this.removeListItem.bind(this);
-    this.addVOIFields = this.addVOIFields.bind(this);
+    this.addVOIGroups = this.addVOIGroups.bind(this);
   }
 
   componentDidMount() {
@@ -49,17 +49,6 @@ class PublicationUploadForm extends React.Component {
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
-
-    // if the formElement is a instrument for
-    // variables of interest, then set to voiGroups
-    // object
-    /*if (formElement.indexOf('voiInst') > -1) {
-      // get index by splitting on _
-      var i = formElement.split('_')[1];
-      var voiGroups = this.state.voiGroups;
-
-    }
-*/
     this.setState({
       formData: formData
     });
@@ -76,6 +65,14 @@ class PublicationUploadForm extends React.Component {
     });
   }
 
+  addVOIGroups() {
+    var currCount = this.state.numVOIGroups;
+    currCount++;
+    this.setState({
+      numVOIGroups: currCount
+    });
+  }
+
   removeListItem(formElement, value) {
     let formData = this.state.formData;
     let listItems = formData[formElement];
@@ -89,18 +86,6 @@ class PublicationUploadForm extends React.Component {
         formData: formData
       });
     }
-  }
-
-  addVOIFields() {
-    var voiGroups = this.state.voiGroups;
-    var newCnt = voiGroups.length + 1;
-    voiGroups.push({
-      name: 'voiGroup_' + newCnt,
-      inst: null
-    });
-    this.setState({
-      voiGroups: voiGroups
-    });
   }
 
   handleSubmit(e) {
@@ -182,23 +167,26 @@ class PublicationUploadForm extends React.Component {
     );
     testNames.sort();
 
+    // Set test fields to all fields by default
     var testFields = this.state.Data.varsOfInterest.map(v => v.Name);
     testFields.sort();
 
-    var voiFields = [];
-
     // Generate Variables of Interest fields
-    for (var i = 1; i <= this.state.voiGroups.length; i++) {
+    var voiFields = [];
+    for (var i = 1; i <= this.state.numVOIGroups; i++) {
+      // if an instrument has been selected, then populate the fields
+      // selection with fields only relevant to the selected instrument
       var inst = this.state.formData['voiInst_' + i];
       if (inst) {
-        console.log(inst);
-        var testFields = {};
+        testFields = [];
         this.state.Data.varsOfInterest.forEach(function(v){
           if (v.SourceFrom === inst) {
             testFields[v.SourceField] = v.SourceField;
           }
         });
       }
+
+      // TODO - add deletion functionality
       voiFields.push(
       <div>
         <SelectElement
@@ -270,6 +258,7 @@ class PublicationUploadForm extends React.Component {
               required={true}
               value={this.state.formData.leadInvestigatorEmail}
             />
+
             {/* START Variables of Interest */}
             <div className="row form-group">
               <label className="col-sm-3 control-label"/>
@@ -282,7 +271,6 @@ class PublicationUploadForm extends React.Component {
                 </p>
               </div>
             </div>
-            {/* TODO: take out of return statement */}
             {voiFields}
             <ButtonElement
               label="Add Instrument"
@@ -290,6 +278,8 @@ class PublicationUploadForm extends React.Component {
               onUserInput={this.addVOIFields}
             />
             {/* END Variables of Interest */}
+
+
             <ListElement
               name="keywords"
               label="Keywords"
