@@ -92,8 +92,13 @@ if ($Instrument !== null) {
     }
     $FullPath = "$ModuleDir/css/$File";
 }
-
 $public = true;
+try {
+    $m      = \Module::factory($Module);
+} catch(LorisModuleMissingException $e) {
+    error_log($e);
+    $public = false;
+}
 if ($public === false) {
     header("HTTP/1.1 403 Forbidden");
     exit(6);
