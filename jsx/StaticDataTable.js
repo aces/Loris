@@ -164,10 +164,26 @@ var StaticDataTable = React.createClass({
       var headerCount = 0;
 
       for (var j = 0; j < headersData.length; j++) {
-        var data = tableData[i] ? tableData[i][j] : null;
-        if (this.hasFilterKeyword(headersData[j], data)) {
-          headerCount++;
+        if (this.props.Filter['keyword']) {
+          if (this.hasFilterKeyword(headersData[j], tableData[i][j])) {
+            headerCount++;
+          }
         }
+      }
+
+      for (var j = 0; j < headersData.length; j++) {
+        var data = tableData[i] ? tableData[i][j] : null;
+        if (this.props.Filter['keyword']) {
+          if (this.hasFilterKeyword('keyword', data)) {
+            if (this.hasFilterKeyword(headersData[j], data)) {
+              headerCount++;
+            }
+          }
+        } else {
+            if (this.hasFilterKeyword(headersData[j], data)) {
+              headerCount++;
+            }
+          }
       }
 
       if (headerCount === filterValuesCount) {
@@ -274,6 +290,11 @@ var StaticDataTable = React.createClass({
       exactMatch = this.props.Filter[header].exactMatch;
     }
 
+    if (this.props.Filter['keyword']) {
+      filterData = this.props.Filter['keyword'].value;
+      exactMatch = false;
+    }
+
     // Handle null inputs
     if (filterData === null || data === null) {
       return false;
@@ -360,6 +381,7 @@ var StaticDataTable = React.createClass({
         if (this.props.Data[index[i].RowIdx]) {
           data = this.props.Data[index[i].RowIdx][j];
         }
+
 
         if (this.hasFilterKeyword(this.props.Headers[j], data)) {
           filterMatchCount++;
