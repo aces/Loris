@@ -88,8 +88,8 @@ if (strpos($File, ".js") === false) {
 $public = false;
 try {
     $m = Module::factory($Module);
-printf($m);
-printf("===========");
+    printf($m);
+    printf("===========");
     $public = $m->isPublicModule();
 } catch(LorisModuleMissingException $e) {
     $public = false;
