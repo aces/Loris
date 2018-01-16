@@ -31,6 +31,8 @@ The `patientNameRegex`, `LegoPhantomRegex`, and `LivingPhantomRegex`
 configuration variables provide regular expressions to ensure that
 the DICOM has been properly anonymized. If at least one of these
 isn't matched, the Patient Name is displayed as "INVALID - HIDDEN".
+By default, when the regex is blank (such as in a default LORIS
+install), all patient names are shown.
 
 The `patientIDRegex` configuration has a similar purpose for the
 Patient ID column.
