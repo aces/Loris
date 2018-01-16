@@ -7,7 +7,7 @@ This document details the modeling conventions to use for tables, attributes and
 ### Table
 
 - The table name should be in **snake_case**.  
-  - The table name should **lowercase**.
+  - The table name should be in **lowercase**.
   - The table name made of **multiple word** should use an **underscore** in order to separate each of them.
 - The table name should be in **singular form**.
 - The table name should contain **English words** only.
@@ -18,7 +18,7 @@ This document details the modeling conventions to use for tables, attributes and
 - A table that is **specific to a module** should be **prefixed** with the module name.
   - *i.e. A table named `xyz` used in module `abc` should be name `abc_xyz`.*
 - **Acronym** should be avoided, however may be used when the acronym would be **commonly used by the neuroimaging community**. The acronym should **only contain upper case letter**. For historic reasons, “PSC” to refer to a Site is an exception to this rule.
-- When creating a table representing a **relation between two or more tables**. Regardless of the relation type (one-to-many, many-to-one or one-to-one), the table should have a composite name as such `table1_table2_rel`.
+- When creating a table representing a **relation between two or more tables**. Regardless of the relation type (many-to-many, one-to-many, many-to-one or one-to-one), the table should have a composite name as such `table1_table2_rel`.
   - *i.e. the table mapping users to their permissions would be named `user_permission_rel` where `user` is the name of the Users' entity table and `permission` is the name of the Permissions' entity table.*
 
 ### Field
@@ -29,16 +29,16 @@ This document details the modeling conventions to use for tables, attributes and
 - The field name should be in **singular form**.
 - The field name should contain **English word** only.
 - The field name should **not contain abbreviation**.
-- **Acronym** should be avoided, however may be used when the acronym would be **commonly used by the community**. The acronym should **only contain upper case letter**.
-- The **primary key** field of a table should of type `int`.
-- The **primary key** field of a table should be named `<TableName>ID`. While the table name is snake_case, the field names referencing it (such as the primary key) should follow field naming conventions. (ie. my_table’s primary key should be MyTableID)
+- **Acronym** should be avoided, however may be used when the acronym would be **commonly used by the neuroimaging community**. The acronym should **only contain upper case letter**.
+- The **primary key** field of a table should be named `<TableName>ID`. While the table name is snake_case, the field names referencing it (such as the primary key) should follow field naming conventions. (ie. `my_table`’s primary key should be `MyTableID`)
   - *i.e. the name of the primary identifier of the `candidate` table should be `CandidateID`.*
+- When an explicit auto-incremented primary key field is present, it should be of type unsigned int. Most tables should have an explicit primary key field.
 - When adding a field which serves as a **foreign key to another table** in the database, the field should follow the same convention as above `ReferenceTableNameID`. 
   - *i.e. The session table would have a primary identifier field named `SessionID` and a foreign key reference to the `candidate` table with a field named `CandidateID`.*
-- When two(2) fields refer to the **same foreign key id**, a qualifier should be added to the name.
+- When two(2) fields refer to the **same foreign key id**, a qualifier should be added to the names.
   - *i.e. Two fields pointing to the candidateID in the same table should be named like in `ParentCandidateID` and `ChildCandidateID`.*
 - Both **primary key and foreign key** fields should end with **`ID`** in upper case.
-- **Date** fields should not be named be named in the present tense.
+- **Date** fields should be named be named in the present tense.
 - **No ENUM attributes** should be used in the default LORIS schema or modules. Instead a lookup table to refer to possible choices should be used.
 
 #### Field Ordering
@@ -54,18 +54,22 @@ This document details the modeling conventions to use for tables, attributes and
 
 ### Constraints
 
-- The constraint name should be **specifically declared**, do not rely on default naming.
-- The constraint name should be in **singular form**.
-- The constraint name should be of the **proper format**:
-  - **Primary key** `<table_name>_PK`
-  - **Unique key** `<table_name>_<ColumnName(s)>_UK`
-  - **Foreign key** `<table_name>_<ColumnName>_<ref_table_name>_<RefColumnName>_FK`
-  - **Check constraint** `<table_name>_<ColumnName>_<Check>_CK`
 - A **foreign key** constraint definition should contain `ON DELETE` and `ON UPDATE` clause. Do not rely on default behavior.
 - An **Index** should be created on field or group of fields **regularly used in search or joint** when they are not part of primary key or unique key.
 
+#### Naming
+- Altrough not an enforced rules, recommandation for naming constraint are as follow:
+  - The constraint name should be **specifically declared**.
+  - The constraint name should be in **singular form**.
+  - The constraint name should be of the **proper format**:
+    - **Primary key** `<table_name>_PK`
+    - **Unique key** `<table_name>_<ColumnName(s)>_UK`
+    - **Foreign key** `<table_name>_<ColumnName>_<ref_table_name>_<RefColumnName>_FK`
+    - **Check constraint** `<table_name>_<ColumnName>_<Check>_CK`
+
+
 ### Other parameters
-- All tables should be normalised to **3rd normal form**  unless there is a strong justification to do otherwise.
+- Tables should be normalised to **3rd normal form**  unless there is a strong justification to do otherwise.
 - Engine should be **InnoDB** for all tables unless specific requirement demand. `ENGINE=InnoDB`.
 - The character encoding used by LORIS should be UTF-8. This implies that MySQL tables should use CHARSET=’utf8mb4’ (note the mb4). If the mb4 variant causes MySQL row size violations, CHARSET=’utf8’ may be used. (However, these exceptions should be rare outside of “legacy” tables due to the 3NF requirement.)
 - Be **explicit** instead of implicit. 
