@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/mohadesz/Loris-Trunk
  */
-namespace LORIS\publications;
+namespace LORIS\publication;
 
 /**
  * Module for viewing research project proposals and their respective publications
@@ -21,7 +21,7 @@ namespace LORIS\publications;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Publications extends \NDB_Menu_Filter_Form
+class Publication extends \NDB_Menu_Filter_Form
 {
     public $AjaxModule   = true;
     public $skipTemplate = true;
@@ -35,7 +35,7 @@ class Publications extends \NDB_Menu_Filter_Form
     {
         // create user object
         /*$user = \User::singleton();
-        return $user->hasPermission('publications');*/
+        return $user->hasPermission('publication');*/
         return true;
     }
 
@@ -47,19 +47,19 @@ class Publications extends \NDB_Menu_Filter_Form
     function _setupVariables()
 
     {
-        $query = " FROM publications p ".
-            "LEFT JOIN publications_keywords_rel pkr ON p.PublicationID=pkr.PublicationID ".
-            "LEFT JOIN publication_keywords pk ON pkr.KeywordID=pk.KeywordID ".
-            "LEFT JOIN publications_parameter_type_rel pptr ON p.PublicationID=pptr.PublicationID ".
+        $query = " FROM publication p ".
+            "LEFT JOIN publication_keyword_rel pkr ON p.PublicationID=pkr.PublicationID ".
+            "LEFT JOIN publication_keyword pk ON pkr.KeywordID=pk.KeywordID ".
+            "LEFT JOIN publication_parameter_type_rel pptr ON p.PublicationID=pptr.PublicationID ".
             "LEFT JOIN parameter_type pt ON pt.ParameterTypeID=pptr.ParameterTypeID ";
         $query .= " WHERE 1=1 ";
         $query .= " GROUP BY p.PublicationID ";
 
         $this->columns = array(
             'p.Title',
-            'p.Lead_investigator',
-            'p.Date_proposed',
-            'p.Approval_status',
+            'p.LeadInvestigator',
+            'p.DateProposed',
+            'p.Publi',
             'p.Description',
             'GROUP_CONCAT(pk.Label)', // Keywords
             'pt.Name', // Variables of Interest
@@ -81,9 +81,9 @@ class Publications extends \NDB_Menu_Filter_Form
 
         $this->validFilters = array(
             'p.Title',
-            'p.Approval_status',
+            'p.ApprovalStatus',
             'pk.Label',
-            'p.Lead_investigator',
+            'p.LeadInvestigator',
             'pt.Name',
         );
 
@@ -98,7 +98,7 @@ class Publications extends \NDB_Menu_Filter_Form
     }
 
     /**
-     * Sets up the smarty menu filter items for publications
+     * Sets up the smarty menu filter items for publication
      *
      * @param string $name       The test name being accessed
      * @param string $page       The subtest being accessed (may be null)
@@ -160,7 +160,7 @@ class Publications extends \NDB_Menu_Filter_Form
         return array_merge(
             $deps,
             array(
-                $baseURL . '/publications/js/publicationIndex.js'
+                $baseURL . '/publication/js/publicationIndex.js'
             )
         );
     }

@@ -91,17 +91,17 @@ function uploadPublication() {
         // check if keyword exists
         $kwID = $db->pselectOne(
             'SELECT KeywordID '.
-            'FROM publication_keywords '.
+            'FROM publication_keyword '.
             'WHERE Label=:kw',
             array('kw' => $kw)
         );
         // if it doesn't, add it to keyword table and retrieve ID
         if (!$kwID) {
             $kwInsert = array('Label' => $kw);
-            $db->insert('publication_keywords', $kwInsert);
+            $db->insert('publication_keyword', $kwInsert);
             $kwID = $db->pselectOne(
                 'SELECT KeywordID '.
-                'FROM publication_keywords '.
+                'FROM publication_keyword '.
                 'WHERE Label=:kw',
                 array('kw' => $kw)
             );
@@ -110,7 +110,7 @@ function uploadPublication() {
         // get publication ID
         $pubID = $db->pselectOne(
             'SELECT PublicationID '.
-            'FROM publications '.
+            'FROM publication '.
             'WHERE Title=:t',
             array('t' => $_REQUEST['title'])
         );
@@ -119,7 +119,7 @@ function uploadPublication() {
             'KeywordID' => $kwID,
         );
 
-        $db->insert('publications_keywords_rel', $pubKWRelInsert);
+        $db->insert('publication_keyword_rel', $pubKWRelInsert);
     }
     echo $keywords;
 }
