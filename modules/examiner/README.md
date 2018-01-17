@@ -1,4 +1,4 @@
-# Imaging Browser
+# Examiner
 
 ## Purpose
 
@@ -39,7 +39,7 @@ examiner_multisite
 
 ## Configurations
 
-The imaging browser has the following configurations that affect its usage
+The examiner module has the following configurations that affect its usage
 
 EnableCertification (Config.xml)
  - Binary option enables/disables the use of certification for 
