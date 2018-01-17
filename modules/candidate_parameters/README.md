@@ -7,7 +7,7 @@ candidate data that is not timepoint specific.
 
 ## Intended Users
 
-The three primary types of users are:
+The primary types of users are:
 1. Data-entry personnel
 2. Site coordinators and data-monitors validating the data
 
