@@ -74,7 +74,7 @@ an examiner as well as setting their sites and their radiologist status.
 When an examiner is added from the user_accounts module, an additional 
 field in the database is populated to associate the examiner to the user.
 
-- The Training module allows the study to users to undergo proper 
+- The Training module allows the study users to undergo proper 
 training and automatically assigns certifications upon completion. 
 The module starts by verifying that the user is indeed an examiner 
 before beginning the training. The certifications should appear 
