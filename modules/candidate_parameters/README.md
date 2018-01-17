@@ -1,4 +1,4 @@
-# Imaging Browser
+# Candidate Parameters
 
 ## Purpose
 
@@ -8,8 +8,8 @@ candidate data that is not timepoint specific.
 ## Intended Users
 
 The primary types of users are:
-1. Data-entry personnel
-2. Site coordinators and data-monitors validating the data
+1. Data entry personnel
+2. Site coordinators validating the data
 
 ## Scope
 
@@ -31,7 +31,7 @@ candidate_parameter_edit
 
 ## Configurations
 
-The imaging browser has the following configurations that affect its usage
+The candidate parameters module has the following configurations that affect its usage
 
 useProband 
     - This setting displays/hides the Proband tab of the module
