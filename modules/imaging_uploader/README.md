@@ -85,7 +85,10 @@ ImagingUploaderAutoLaunch - This setting determines whether the insertion
 MRIUploadIncomingPath - This setting determines where on the filesystem the 
         uploader is to place the uploaded scan. Default location is 
         `/data/incoming/`. This directory is created during the installation of 
-        LORIS-MRI.
+        LORIS-MRI. 
+        **Note**: Uploaded scans are erased from the 
+        `MRIUploadIncomingPath`following a successful archival and insertion 
+        through the LORIS-MRI pipeline. 
 
 
 ## Interactions with LORIS
