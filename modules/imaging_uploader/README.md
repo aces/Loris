@@ -8,8 +8,8 @@ pipeline insertion progress.
 
 ## Intended Users
 
-The primary users are MRI technicians or site coordinators to
-upload imaging scans for registered LORIS candidates and timepoints.
+The primary users are MRI technicians or site coordinators uploading imaging 
+scans for registered LORIS candidates and timepoints.
 
 ## Scope
 
@@ -40,7 +40,7 @@ For a successful upload:
 `.tgz`, `.tar.gz` or `.zip`.
 - The filename should follow the:
 `PSCID_CandID_VisitLabel_OptionalSuffix` naming convention
-- It is expected that the candidate and visit are already created in the 
+- It is expected that the candidate and timepoint are already created in the 
 database.
 
 
@@ -55,9 +55,9 @@ upload and browse all scans uploaded to the database.
 #### Filesystem Permission
 
 The path on the filesystem where the uploaded file go 
-(see section [Database Configuration](#Database Configurations)) should be 
-readable and writable by the web server. The LORIS-MRI install process makes it 
-automatically group owned by the web server.
+(see section [Database Configuration](#database_config_link)) should be 
+readable and writable by the web server. This is automatically achieved by the 
+LORIS-MRI install process.
 
 
 ## Configurations
@@ -77,14 +77,13 @@ upload_max_filesize = 1024M
 post_max_size = 1024M
 ```
 
-#### Database Configurations
+#### <a name="database_config_link"></a> Database Configurations
 
 ImagingUploaderAutoLaunch - This setting determines whether the insertion 
-        pipeline that archives the images and is triggered automatically or 
-        manually.
+        pipeline that archives the scans is triggered automatically or manually.
 
 MRIUploadIncomingPath - This setting determines where on the filesystem the 
-        uploader is to place the uploaded file. Default location is 
+        uploader is to place the uploaded scan. Default location is 
         `/data/incoming/`. This directory is created during the installation of 
         LORIS-MRI.
 
@@ -97,7 +96,7 @@ that candidate's session
 - The `Number of MincCreated` column links to the MRI Violated scans module if
 violated scans (i.e. scans that violate the MRI protocol as defined by the 
 study) are present
-- If `ImagingUploaderAutoLaunch` configuration is enabled, the Server Porcess
-Manager under the Admin menu can be consulted for insertion progress (exit 
-codes, error files, etc...). 
+- If `ImagingUploaderAutoLaunch` configuration is enabled, the Server Process
+Manager under the Admin menu can be consulted for scans insertion progress 
+(exit codes, error files, etc...). 
 
