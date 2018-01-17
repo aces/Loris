@@ -188,7 +188,7 @@ class PublicationUploadForm extends React.Component {
 
       // TODO - add deletion functionality
       voiFields.push(
-      <div>
+      <div className="voi-borders">
         <SelectElement
           name={"voiInst_" + i}
           label="Instrument"
@@ -260,7 +260,7 @@ class PublicationUploadForm extends React.Component {
             />
 
             {/* START Variables of Interest */}
-            <div className="row form-group">
+            <div className="row form-group voi-borders">
               <label className="col-sm-3 control-label"/>
               <div className="col-sm-9">
                 <p className="form-control-static">
@@ -275,7 +275,7 @@ class PublicationUploadForm extends React.Component {
             <ButtonElement
               label="Add Instrument"
               type="button"
-              onUserInput={this.addVOIFields}
+              onUserInput={this.addVOIGroups}
             />
             {/* END Variables of Interest */}
 

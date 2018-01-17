@@ -179,7 +179,9 @@ class Publication extends \NDB_Menu_Filter_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            []
+            array(
+                $baseURL . '/publication/css/publication.css'
+            )
         );
     }
 
