@@ -19,7 +19,7 @@ function getData() {
 
     $data = array();
     $titles = $db->pselectCol(
-        'SELECT Title FROM publications',
+        'SELECT Title FROM publication',
         array()
     );
 
@@ -44,8 +44,11 @@ function getPublicationData() {
 
     $result = $db->pselectRow(
         'SELECT Title, Description, Date_proposed, '.
-        'Lead_investigator, Lead_investigator_email, Approval_status '.
-        'FROM publications WHERE PublicationID=:pid',
+        'LeadInvestigator, LeadInvestigatorEmail, Label '.
+        'FROM publication p '.
+        'LEFT JOIN publication_status ps '.
+        'ON p.PublicationStatusID=ps.PublicationStatusID '.
+        'WHERE PublicationID=:pid',
         array('pid' => $id)
     );
 
@@ -56,9 +59,9 @@ function getPublicationData() {
         return array(
             'title' => $result['Title'],
             'description' => $result['Description'],
-            'leadInvestigator' => $result['Lead_investigator'],
-            'leadInvestigatorEmail' => $result['Lead_investigator_email'],
-            'status' => $result['Approval_status']
+            'leadInvestigator' => $result['LeadInvestigator'],
+            'leadInvestigatorEmail' => $result['LeadInvestigatorEmail'],
+            'status' => $result['Label']
         );
     }
 }
@@ -68,7 +71,7 @@ function uploadPublication() {
 
     // back end validation for title uniqueness constraint
     $exists = $db->pselectOne(
-        "SELECT PublicationID FROM publications WHERE Title=:t",
+        "SELECT PublicationID FROM publication WHERE Title=:t",
         array('t' => $_REQUEST['title'])
     );
 
@@ -77,20 +80,20 @@ function uploadPublication() {
     }
     $today = date('Y-m-d');
     $fields = array(
-        'Title'                   => $_REQUEST['title'],
-        'Description'             => $_REQUEST['description'],
-        'Lead_investigator'       => $_REQUEST['leadInvestigator'],
-        'Lead_investigator_email' => $_REQUEST['leadInvestigatorEmail'],
-        'Date_proposed'           => $today
+        'Title'                 => $_REQUEST['title'],
+        'Description'           => $_REQUEST['description'],
+        'LeadInvestigator'      => $_REQUEST['leadInvestigator'],
+        'LeadInvestigatorEmail' => $_REQUEST['leadInvestigatorEmail'],
+        'DateProposed'          => $today
     );
 
-    $db->insert('publications', $fields);
+    $db->insert('publication', $fields);
 
     $keywords = json_decode($_REQUEST['keywords']);
     foreach ($keywords as $kw) {
         // check if keyword exists
         $kwID = $db->pselectOne(
-            'SELECT KeywordID '.
+            'SELECT PublicationKeywordID '.
             'FROM publication_keyword '.
             'WHERE Label=:kw',
             array('kw' => $kw)
@@ -100,7 +103,7 @@ function uploadPublication() {
             $kwInsert = array('Label' => $kw);
             $db->insert('publication_keyword', $kwInsert);
             $kwID = $db->pselectOne(
-                'SELECT KeywordID '.
+                'SELECT PublicationKeywordID '.
                 'FROM publication_keyword '.
                 'WHERE Label=:kw',
                 array('kw' => $kw)
@@ -116,7 +119,7 @@ function uploadPublication() {
         );
         $pubKWRelInsert = array(
             'PublicationID' => $pubID,
-            'KeywordID' => $kwID,
+            'PublicationKeywordID' => $kwID,
         );
 
         $db->insert('publication_keyword_rel', $pubKWRelInsert);

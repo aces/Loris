@@ -73,7 +73,7 @@ class PublicationIndex extends React.Component {
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
           <FilterForm
-            Module="publications"
+            Module="publication"
             name="publications_filter"
             id="publications_filter_form"
             ref="publicationsFilter"
@@ -98,8 +98,8 @@ class PublicationIndex extends React.Component {
         </TabPane>
         <TabPane TabId={tabList[1].id}>
           <PublicationUploadForm
-            DataURL={`${loris.BaseURL}/publications/ajax/FileUpload.php?action=getData`}
-            action={`${loris.BaseURL}/publications/ajax/FileUpload.php?action=upload`}
+            DataURL={`${loris.BaseURL}/publication/ajax/FileUpload.php?action=getData`}
+            action={`${loris.BaseURL}/publication/ajax/FileUpload.php?action=upload`}
           />
         </TabPane>
       </Tabs>
@@ -110,7 +110,7 @@ class PublicationIndex extends React.Component {
 $(function() {
   const publicationIndex = (
     <div className="page-publications">
-      <PublicationIndex DataURL={`${loris.BaseURL}/publications/?format=json`}/>
+      <PublicationIndex DataURL={`${loris.BaseURL}/publication/?format=json`}/>
     </div>
   );
 

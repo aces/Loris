@@ -48,8 +48,9 @@ class Publication extends \NDB_Menu_Filter_Form
 
     {
         $query = " FROM publication p ".
+            "LEFT JOIN publication_status ps ON ps.PublicationStatusID=p.PublicationStatusID ".
             "LEFT JOIN publication_keyword_rel pkr ON p.PublicationID=pkr.PublicationID ".
-            "LEFT JOIN publication_keyword pk ON pkr.KeywordID=pk.KeywordID ".
+            "LEFT JOIN publication_keyword pk ON pkr.PublicationKeywordID=pk.PublicationKeywordID ".
             "LEFT JOIN publication_parameter_type_rel pptr ON p.PublicationID=pptr.PublicationID ".
             "LEFT JOIN parameter_type pt ON pt.ParameterTypeID=pptr.ParameterTypeID ";
         $query .= " WHERE 1=1 ";
@@ -59,7 +60,7 @@ class Publication extends \NDB_Menu_Filter_Form
             'p.Title',
             'p.LeadInvestigator',
             'p.DateProposed',
-            'p.Publi',
+            'ps.Label',
             'p.Description',
             'GROUP_CONCAT(pk.Label)', // Keywords
             'pt.Name', // Variables of Interest
@@ -89,10 +90,10 @@ class Publication extends \NDB_Menu_Filter_Form
 
         $this->formToFilter = array(
             'titleOrDescription'  => 'p.Title',
-            'approvalStatus'      => 'p.Approval_status',
+            'approvalStatus'      => 'ps.Label',
             'keywords'            => 'pk.Label',
             'variablesOfInterest' => 'pt.Name',
-            'leadInvestigator'    => 'p.Lead_investigator',
+            'leadInvestigator'    => 'p.LeadInvestigator',
         );
         return true;
     }
