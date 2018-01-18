@@ -33,7 +33,7 @@ are properly de-identified according to the LORIS convention. This check is
 however done as the first step on the LORIS-MRI side; i.e. as soon as the 
 insertion pipeline is triggered.
 
-## Imaging Uploader Requirements
+## Requirements
 
 For a successful upload:
 - The uploaded file is expected to be of one of the following types: 
