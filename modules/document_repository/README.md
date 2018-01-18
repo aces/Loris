@@ -10,13 +10,7 @@ The Document Repository is a useful tool that provides studies with a centralize
 
 ## Scope
 
--Viewing Documents
- 
- Similar to other LORIS modules, use the Selection Filters to search for specific documents and click  "Show Data" to apply filters and retrieve results. Clicking on any column header will sort the data table in ascending/descending order based on that column. Click the filename to download the file.
- 
--Uploading a File
- 
- Users may upload new documents to the Document Repository by clicking "Upload File" in the Selection Filter panel. A new panel will prompt for information about the file; required fields are denoted by red asterisk. Click “Browse” to select the local file to upload.  Click “Upload” to launch the upload to the Document Repository.  The new document, if uploaded successfully, will appear in the document repository list.Click "Add Category" to create a new category or subcategory for an existing parent category.
+ For all of the Loris users.
 
 ## Permissions
 
