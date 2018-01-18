@@ -2,29 +2,27 @@
 
 ## Purpose
 
-The Document Repository is a useful tool that provides studies with a centralized location for important documents. Files may be uploaded and organized under any user-defined category. Subcategories can also be defined by the user to be nested under parent categories.
+ The Document Repository is a tool that provides studies with a centralized location for important documents. Files may be uploaded and organized under any user-defined category.
 
 ## Intended Users
  
- All Loirs user could view, update, edit and delete the upload files with right permissions.
+ All Loris user and data entry staff could view, update, edit and delete the upload files with right permissions.
 
 ## Scope
 
- For all of the Loris users.
+ It's for study documents, not candidate documents.
 
 ## Permissions
 
- A user has "document_repository_view" permission could view and upload files in Document Repository.
- A user has "document_repository_delete" permission could delete files in Document Repository.
+ A user that has "document_repository_view" permission can view and upload files in Document Repository.
+ A user that has "document_repository_delete" permission can delete files in Document Repository.
 
 ## Configurations
 
 
 - The Document Repository enables users to upload and organize project files of any type that can easily be viewable for users with appropriate permissions. Give full permissions to store documents on server:
 
-chmod 777 /var/www/loris/modules/document_repository/user_uploads
-Note that the path is assumed to be var/www/loris however your own path may be var/www/<project-name>, depending on your setup.
+- Chmod 777 $LORIS/modules/document_repository/user_uploads 
 
 - A mail server will be required for sending out email notifications about Document Repository updates. In addition, in the Configuration Module under the "WWW" settings section, "Main LORIS URL" must be set. Also see more information on configuring Apache's file upload size limit.
 
-- The table "document_repository_categories" in the database can be used to initialize the name of the category.
