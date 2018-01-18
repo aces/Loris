@@ -55,17 +55,16 @@ This document details the modeling conventions to use for tables, attributes and
 ### Constraints
 
 - A **foreign key** constraint definition should contain `ON DELETE` and `ON UPDATE` clause. Do not rely on default behavior.
-- An **Index** should be created on field or group of fields **regularly used in search or joint** when they are not part of primary key or unique key.
 
 #### Naming
 - Altrough not an enforced rules, recommandation for naming constraint are as follow:
   - The constraint name should be **specifically declared**.
   - The constraint name should be in **singular form**.
   - The constraint name should be of the **proper format**:
-    - **Primary key** `<table_name>_PK`
-    - **Unique key** `<table_name>_<ColumnName(s)>_UK`
-    - **Foreign key** `<table_name>_<ColumnName>_<ref_table_name>_<RefColumnName>_FK`
-    - **Check constraint** `<table_name>_<ColumnName>_<Check>_CK`
+    - **Primary key** `PK_<table_name>`
+    - **Unique key** `UK_<table_name>_<ColumnName(s)>`
+    - **Foreign key** `FK_<table_name>_<ColumnName>`
+    - **Check constraint** `CK_<table_name>_<ColumnName>_<Check>`
 
 
 ### Other parameters
