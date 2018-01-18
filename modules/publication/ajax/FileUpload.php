@@ -43,12 +43,17 @@ function getPublicationData() {
     $db = Database::singleton();
 
     $result = $db->pselectRow(
-        'SELECT Title, Description, Date_proposed, '.
-        'LeadInvestigator, LeadInvestigatorEmail, Label '.
+        'SELECT Title, Description, DateProposed, '.
+        'LeadInvestigator, LeadInvestigatorEmail, ps.Label, GROUP_CONCAT(pk.Label)'.
         'FROM publication p '.
         'LEFT JOIN publication_status ps '.
         'ON p.PublicationStatusID=ps.PublicationStatusID '.
-        'WHERE PublicationID=:pid',
+        'LEFT JOIN publication_keyword_rel pkr '.
+        'ON pkr.PublicationID=p.PublicationID '.
+        'LEFT JOIN publication_keyword pk '.
+        'ON pkr.PublicationKeywordID=pk.PublicationKeywordID '.
+        'WHERE p.PublicationID=:pid '.
+        'GROUP BY p.PublicationID',
         array('pid' => $id)
     );
 
@@ -61,7 +66,8 @@ function getPublicationData() {
             'description' => $result['Description'],
             'leadInvestigator' => $result['LeadInvestigator'],
             'leadInvestigatorEmail' => $result['LeadInvestigatorEmail'],
-            'status' => $result['Label']
+            'status' => $result['Label'],
+            'keywords' => $result['GROUP_CONCAT(pk.Label)']
         );
     }
 }

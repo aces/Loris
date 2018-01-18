@@ -22,7 +22,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   if (column === 'Title') {
     var pubID = row['Publication ID'];
-    var viewURL = loris.BaseURL + '/publications/view_project?id='+pubID;
+    var viewURL = loris.BaseURL + '/publication/view_project?id='+pubID;
     return (
       <td>
         <a href={viewURL}>

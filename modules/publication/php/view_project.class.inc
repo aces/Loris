@@ -1,5 +1,5 @@
 <?php
-namespace LORIS\publications;
+namespace LORIS\publication;
 
 /**
  * Creates the form for NDB_Form_media
@@ -36,17 +36,17 @@ class View_Project extends \NDB_Form
 
         $pubID = $_GET['id'];
 
-        // Check if media file exists, if not redirect to /media/ page
+        // check that project exists
         if (isset($pubID)) {
             $result = $db->pselectRow(
-                "SELECT PublicationID FROM publications WHERE PublicationID = :pid",
+                "SELECT PublicationID FROM publication WHERE PublicationID = :pid",
                 array('pid' => $pubID)
             );
             if (count($result) < 1) {
-                header('Location: ' . $baseURL . '/publications/');
+                header('Location: ' . $baseURL . '/publication/');
             }
         } else {
-            header('Location: ' . $baseURL . '/publications/');
+            header('Location: ' . $baseURL . '/publication/');
         }
     }
 
@@ -80,7 +80,7 @@ class View_Project extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/publications/js/viewProjectIndex.js")
+            array($baseURL . "/publication/js/viewProjectIndex.js")
         );
     }
 

@@ -24,7 +24,8 @@ class ViewProject extends React.Component {
           description: data.description,
           leadInvestigator: data.leadInvestigator,
           leadInvestigatorEmail: data.leadInvestigatorEmail,
-          status: data.status
+          status: data.status,
+          keywords: data.keywords
         };
         self.setState({
           formData: formData,
@@ -51,7 +52,24 @@ class ViewProject extends React.Component {
         </button>
       );
     }
-
+    if (this.state.formData.keywords) {
+      var keywordArr = this.state.formData.keywords.split(',');
+      var keywordLinks = [];
+      keywordArr.forEach(
+        function (kw) {
+          keywordLinks.push(
+            <span>
+            <a
+              href={loris.BaseURL + "/publication/?keywords="+kw}
+            >
+              {kw}
+            </a>
+            ; &nbsp;
+          </span>
+          );
+        }
+      );
+    }
     return (
       <div className="row">
         <div className="col-md-8 col-lg-7">
@@ -60,8 +78,12 @@ class ViewProject extends React.Component {
             onSubmit={this.handleSubmit}
             ref="form"
           >
-            <h3>{this.state.formData.title}</h3><br/>
-
+            <div className="row">
+              <div className="col-md-3"/>
+              <h3 className="col-md-9">
+                {this.state.formData.title}
+              </h3>
+            </div>
             <StaticElement
               name="status"
               label="Status"
@@ -90,7 +112,7 @@ class ViewProject extends React.Component {
               name="keywords"
               label="Keywords"
               ref="keywords"
-              text='k'
+              text={keywordLinks}
             />
             <StaticElement
               name="description"
