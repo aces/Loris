@@ -3,7 +3,7 @@
 ## Purpose
 
 Brainbrowser allows visualization and navigation of the MINC images of a 
-candidate's session, accessible from the Imaging Browser module.
+candidate's imaging session.
 
 
 ## Intended Users
@@ -17,9 +17,9 @@ The two primary types of users are:
 
 Brainbrowser allows visualization of MINC images directly within its browser.
 The user can navigate those images with sagittal, coronal, and transverse 
-slices displayed.  In addition, a `Play` button is also available to make 
-feasible the navigation through the time dimension of a 4-Dimensional image 
-(such as resting state fMRI scans). 
+slices displayed.  In addition, a `Play` button is available to make feasible 
+the navigation through a 4-Dimensional image (such as time in the case of 
+resting state fMRI scans, and directrions in the case of DWI scans). 
 Multiple volumes can be displayed simultaneously with the possibility to 
 synchronize the coordinates across the different volumes when moving the cursor 
 across any one of them. 
@@ -33,7 +33,7 @@ measurements on an incidental finding.
 Since Brainbrowser is accessible from the Imaging Browser, its permissions are 
 directly linked to those of the Imaging Browser module. Please consult the 
 Imaging Browser 
-[Permissions](https://github.com/aces/Loris/blob/minor/modules/imaging_browser/README.md#imaging_browser_perm_link) 
+[Permissions](../imaging_browser/README.md#imaging_browser_perm_link) 
 for access details.
 
 ## Configurations
