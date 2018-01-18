@@ -19,7 +19,7 @@ Brainbrowser allows visualization of MINC images directly within its browser.
 The user can navigate those images with sagittal, coronal, and transverse 
 slices displayed.  In addition, a `Play` button is available to make feasible 
 the navigation through a 4-Dimensional image (such as time in the case of 
-resting state fMRI scans, and directrions in the case of DWI scans). 
+resting state fMRI scans, and directions in the case of DWI scans). 
 Multiple volumes can be displayed simultaneously with the possibility to 
 synchronize the coordinates across the different volumes when moving the cursor 
 across any one of them. 
