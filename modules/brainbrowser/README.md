@@ -2,32 +2,37 @@
 
 ## Purpose
 
-Brainbrowser is intended to allow users to visualize candidate scan session MINC 
-volumes collected for a study.
+Brainbrowser allows visualization and navigation of the MINC images of a 
+candidate's session, accessible from the Imaging Browser module.
+
 
 ## Intended Users
 
 The two primary types of users are:
-- Imaging specialists doing online QC
+- Imaging specialists doing online quality control (QC)
 - Project radiologists reporting incidental findings.
 
 
 ## Scope
 
-Brainbrowser allows navigating volumes in sagittal, coronal, and transverse 
-slices. Multiple volumes can be displayed simultaneously and coordinates
-synchronized across the multiple volumes, if desired. Image brightness and 
-intensity can be set by the user.
-A `Play` button is also available to make feasible the navigation through the 
-time dimension of a 4-Dimensional image (such as resting state fMRI scan). 
-A measurement tool is also available allowing radiologist to report measurements
-of an incidental finding.
+Brainbrowser allows visualization of MINC images directly within its browser.
+The user can navigate those images with sagittal, coronal, and transverse 
+slices displayed.  In addition, a `Play` button is also available to make 
+feasible the navigation through the time dimension of a 4-Dimensional image 
+(such as resting state fMRI scans). 
+Multiple volumes can be displayed simultaneously with the possibility to 
+synchronize the coordinates across the different volumes when moving the cursor 
+across any one of them. 
+Image brightness and intensity can be adjusted by the user.
+Finally, a measurement tool is also available allowing radiologists to report 
+measurements on an incidental finding.
 
 
 ## Permissions
 
-Since Brainbrowser is accessible from Imaging Browser, its permissions are 
-directly linked to those of Imaging Browser. Please consult the Imaging Browser 
+Since Brainbrowser is accessible from the Imaging Browser, its permissions are 
+directly linked to those of the Imaging Browser module. Please consult the 
+Imaging Browser 
 [Permissions](https://github.com/aces/Loris/blob/minor/modules/imaging_browser/README.md#imaging_browser_perm_link) 
 for access details.
 
