@@ -776,9 +776,7 @@ class Database
             );
         }
 
-        $this->_printQuery($query, $params);
-        $stmt   = $this->prepare($query);
-        $result = $this->execute($stmt, $params);
+        $result = $this->pselect($query, $params);
 
         if (empty($result)) {
             return $result;
