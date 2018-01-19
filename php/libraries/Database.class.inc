@@ -746,7 +746,7 @@ class Database
 
     /**
      * Runs an SQL select statement as a prepared query and re-indexes
-     * the results using the given primary key.
+     * the results using the given unique non-nullable key.
      *
      * @param string $query     The SQL SELECT query to be run
      * @param array  $params    Values to use for binding to the prepared statement
