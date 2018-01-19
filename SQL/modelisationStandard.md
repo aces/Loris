@@ -38,7 +38,7 @@ This document details the modeling conventions to use for tables, attributes and
 - When two(2) fields refer to the **same foreign key id**, a qualifier should be added to the names.
   - *i.e. Two fields pointing to the `CountryID` in the same table should be named like in `OriginCountryID` and `DestinationCountryID`.*
 - Both **primary key and foreign key** fields should end with **`ID`** in upper case.
-- **Date** fields should be named be named in the present tense.
+- **Date** fields should not just be named “Date”. A **qualifier** like “BoughtDate” or “DateAccepted” should be added as required.
 - **No ENUM attributes** should be used in the default LORIS schema or modules. Instead a lookup table to refer to possible choices should be used.
 
 #### Field Ordering
