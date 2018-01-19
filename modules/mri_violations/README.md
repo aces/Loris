@@ -36,6 +36,9 @@ are:
 - Inserted with flag
 - Other
 
+Finally, the `mri_protocol` table can be updated directly from
+the frontend if the user has the permission for it.
+
 ## Permissions
 
 The permission `violated_scans_view_allsites` is required to access
@@ -46,14 +49,16 @@ edit the `mri_protocol` table directly from the browser.
 
 ## Configurations
 
-I don't think there are any. Leigh???
+The `mri_protocol` and `mri_protocol_checks` tables need to be configured
+with the study MRI protocol in order for the imaging scripts to determine
+whether a scan violates the protocol set by the study.
 
 ## Interactions with LORIS
 
 The `mri_protocol_violated_scans`, `mri_violations_log` and
 `MRICandidateErrors` tables used by the MRI violations module must
-be populated by the imaging `tarchiveLoader` script when there are
-violations before there is any data in the module.
+be populated before there is any data in the module. The imaging
+`tarchiveLoader` script populates them as part of the imaging pipeline.
 
 **Notes:**
 - `mri_protocol_violated_scans` logs all the scans referring to
