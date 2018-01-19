@@ -161,7 +161,7 @@ var StaticDataTable = React.createClass({
     var tableData = this.props.Data;
     var headersData = this.props.Headers;
 
-    if (this.props.Filter['keyword']) {
+    if (this.props.Filter.keyword) {
       useKeyword = true;
     }
 
@@ -172,23 +172,23 @@ var StaticDataTable = React.createClass({
     for (var i = 0; i < tableData.length; i++) {
       var headerCount = 0;
       var keywordMatch = 0;
-        for (var j = 0; j < headersData.length; j++) {
-          var data = tableData[i] ? tableData[i][j] : null;
-          if (this.hasFilterKeyword(headersData[j], data)) {
-            headerCount++;
-          }
-          if (useKeyword) {
-            if (this.hasFilterKeyword('keyword', data)) {
-              keywordMatch++;
-            }
+      for (var j = 0; j < headersData.length; j++) {
+        var data = tableData[i] ? tableData[i][j] : null;
+        if (this.hasFilterKeyword(headersData[j], data)) {
+          headerCount++;
+        }
+        if (useKeyword) {
+          if (this.hasFilterKeyword('keyword', data)) {
+            keywordMatch++;
           }
         }
+      }
 
-        if (headerCount === filterValuesCount &&
-            ((useKeyword === true && keywordMatch > 0) ||
-            (useKeyword === false && keywordMatch === 0))) {
-          filterMatchCount++;
-        }
+      if (headerCount === filterValuesCount &&
+        ((useKeyword === true && keywordMatch > 0) ||
+         (useKeyword === false && keywordMatch === 0))) {
+        filterMatchCount++;
+      }
     }
 
     var hasFilters = (filterValuesCount !== 0);
@@ -358,7 +358,7 @@ var StaticDataTable = React.createClass({
     var filteredData = [];
     var useKeyword = false;
 
-    if (this.props.Filter['keyword']) {
+    if (this.props.Filter.keyword) {
       useKeyword = true;
     }
 
@@ -372,10 +372,10 @@ var StaticDataTable = React.createClass({
       // Counts filter matches
       var filterMatchCount = 0;
       var keywordMatch = 0;
+      var filterLength = 0;
 
       // Iterates through headers to populate row columns
       // with corresponding data
-      var dataRow = [];
       for (var j = 0; j < this.props.Headers.length; j += 1) {
         var data = "Unknown";
 
@@ -390,7 +390,7 @@ var StaticDataTable = React.createClass({
         }
 
         if (useKeyword === true) {
-          var filterLength = Object.keys(this.props.Filter).length - 1;
+          filterLength = Object.keys(this.props.Filter).length - 1;
           if (this.hasFilterKeyword('keyword', data)) {
             keywordMatch++;
           }
@@ -420,8 +420,8 @@ var StaticDataTable = React.createClass({
 
             // Only display a row if all filter values have been matched
       if ((filterLength === filterMatchCount) &&
-          ((useKeyword === true && keywordMatch > 0) || (useKeyword === false
-          && keywordMatch === 0))) {
+          ((useKeyword === true && keywordMatch > 0) || (useKeyword === false &&
+            keywordMatch === 0))) {
         matchesFound++;
         if (matchesFound > currentPageRow) {
           const rowIndex = index[i].Content;

@@ -16,97 +16,97 @@ import formatDataDictColumn from './columnFormatter';
  * */
 class DataDictIndex extends React.Component {
 
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            isLoaded: false,
-            filter: {}
-        };
+    this.state = {
+      isLoaded: false,
+      filter: {}
+    };
 
-        // Bind component instance to custom methods
-        this.fetchData = this.fetchData.bind(this);
-        this.updateFilter = this.updateFilter.bind(this);
-        this.resetFilters = this.resetFilters.bind(this);
-    }
+    // Bind component instance to custom methods
+    this.fetchData = this.fetchData.bind(this);
+    this.updateFilter = this.updateFilter.bind(this);
+    this.resetFilters = this.resetFilters.bind(this);
+  }
 
-    componentDidMount() {
-        this.fetchData();
-    }
+  componentDidMount() {
+    this.fetchData();
+  }
 
-    /**
-     * Retrive data from the provided URL and save it in state
-     * Additionaly add hiddenHeaders to global loris vairable
-     * for easy access by columnFormatter.
-     */
-    fetchData() {
-        $.ajax(this.props.DataURL, {
-            method: "GET",
-            dataType: 'json',
-            success: function(data) {
-                loris.hiddenHeaders = data.hiddenHeaders ? data.hiddenHeaders : [];
-                this.setState({
-                    Data: data,
-                    isLoaded: true
-                });
-            }.bind(this),
-            error: function(error) {
-                console.error(error);
-            }
+  /**
+   * Retrive data from the provided URL and save it in state
+   * Additionaly add hiddenHeaders to global loris vairable
+   * for easy access by columnFormatter.
+   */
+  fetchData() {
+    $.ajax(this.props.DataURL, {
+      method: "GET",
+      dataType: 'json',
+      success: function(data) {
+        loris.hiddenHeaders = data.hiddenHeaders ? data.hiddenHeaders : [];
+        this.setState({
+          Data: data,
+          isLoaded: true
         });
+      }.bind(this),
+      error: function(error) {
+        console.error(error);
+      }
+    });
+  }
+
+  updateFilter(filter) {
+    this.setState({filter});
+  }
+
+  resetFilters() {
+    this.refs.dataDictFilter.clearFilter();
+  }
+
+  render() {
+    // Waiting for async data to load
+    if (!this.state.isLoaded) {
+      return (
+        <button className="btn-info has-spinner">
+          Loading
+          <span
+          className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+        </span>
+        </button>
+      );
     }
 
-    updateFilter(filter) {
-        this.setState({filter});
-    }
-
-    resetFilters() {
-        this.refs.dataDictFilter.clearFilter();
-    }
-
-    render() {
-        // Waiting for async data to load
-        if (!this.state.isLoaded) {
-            return (
-                <button className="btn-info has-spinner">
-                    Loading
-                    <span
-                        className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-            </span>
-                </button>
-            );
-        }
-
-        return (
-            <div>
-                <FilterForm
-                    Module="datadict"
-                    name="data_dict_filter"
-                    id="data_dict_filter"
-                    ref="dataDictFilter"
-                    columns={2}
-                    formElements={this.state.Data.form}
-                    onUpdate={this.updateFilter}
-                    filter={this.state.filter}>
-                    <ButtonElement label="Clear Filters" type="reset" onUserInput={this.resetFilters} />
-                </FilterForm>
-                <StaticDataTable
-                    Data={this.state.Data.Data}
-                    Headers={this.state.Data.Headers}
-                    Filter={this.state.filter}
-                    getFormattedCell={formatDataDictColumn}
-                />
-            </div>
-        );
-    }
+    return (
+        <div>
+            <FilterForm
+                Module="datadict"
+                name="data_dict_filter"
+                id="data_dict_filter"
+                ref="dataDictFilter"
+                columns={2}
+                formElements={this.state.Data.form}
+                onUpdate={this.updateFilter}
+                filter={this.state.filter}>
+                <ButtonElement label="Clear Filters" type="reset" onUserInput={this.resetFilters} />
+            </FilterForm>
+            <StaticDataTable
+                Data={this.state.Data.Data}
+                Headers={this.state.Data.Headers}
+                Filter={this.state.filter}
+                getFormattedCell={formatDataDictColumn}
+            />
+        </div>
+    );
+  }
 }
 
 $(function() {
-    const dataDictIndex = (
+  const dataDictIndex = (
         <div className="page-datadict">
             <DataDictIndex DataURL={`${loris.BaseURL}/datadict/?format=json`} />
         </div>
     );
-    ReactDOM.render(dataDictIndex, document.getElementById("lorisworkspace"));
+  ReactDOM.render(dataDictIndex, document.getElementById("lorisworkspace"));
 });
 
