@@ -152,43 +152,43 @@ var StaticDataTable = React.createClass({
     });
   },
   countFilteredRows: function() {
+    var useKeyword = false;
     var filterMatchCount = 0;
     var filterValuesCount = (this.props.Filter ?
-        Object.keys(this.props.Filter).length :
-        0
+            Object.keys(this.props.Filter).length :
+            0
     );
     var tableData = this.props.Data;
     var headersData = this.props.Headers;
 
+    if (this.props.Filter['keyword']) {
+      useKeyword = true;
+    }
+
+    if (useKeyword) {
+      filterValuesCount -= 1;
+    }
+
     for (var i = 0; i < tableData.length; i++) {
       var headerCount = 0;
-
-      for (var j = 0; j < headersData.length; j++) {
-        if (this.props.Filter['keyword']) {
-          if (this.hasFilterKeyword(headersData[j], tableData[i][j])) {
+      var keywordMatch = 0;
+        for (var j = 0; j < headersData.length; j++) {
+          var data = tableData[i] ? tableData[i][j] : null;
+          if (this.hasFilterKeyword(headersData[j], data)) {
             headerCount++;
           }
+          if (useKeyword) {
+            if (this.hasFilterKeyword('keyword', data)) {
+              keywordMatch++;
+            }
+          }
         }
-      }
 
-      for (var j = 0; j < headersData.length; j++) {
-        var data = tableData[i] ? tableData[i][j] : null;
-        if (this.props.Filter['keyword']) {
-          if (this.hasFilterKeyword('keyword', data)) {
-            if (this.hasFilterKeyword(headersData[j], data)) {
-              headerCount++;
-            }
-          }
-        } else {
-            if (this.hasFilterKeyword(headersData[j], data)) {
-              headerCount++;
-            }
-          }
-      }
-
-      if (headerCount === filterValuesCount) {
-        filterMatchCount++;
-      }
+        if (headerCount === filterValuesCount &&
+            ((useKeyword === true && keywordMatch > 0) ||
+            (useKeyword === false && keywordMatch === 0))) {
+          filterMatchCount++;
+        }
     }
 
     var hasFilters = (filterValuesCount !== 0);
@@ -290,11 +290,6 @@ var StaticDataTable = React.createClass({
       exactMatch = this.props.Filter[header].exactMatch;
     }
 
-    if (this.props.Filter['keyword']) {
-      filterData = this.props.Filter['keyword'].value;
-      exactMatch = false;
-    }
-
     // Handle null inputs
     if (filterData === null || data === null) {
       return false;
@@ -361,6 +356,11 @@ var StaticDataTable = React.createClass({
     var filteredRows = this.countFilteredRows();
     var currentPageRow = (rowsPerPage * (this.state.PageNumber - 1));
     var filteredData = [];
+    var useKeyword = false;
+
+    if (this.props.Filter['keyword']) {
+      useKeyword = true;
+    }
 
     // Push rows to data table
     for (let i = 0;
@@ -371,9 +371,11 @@ var StaticDataTable = React.createClass({
 
       // Counts filter matches
       var filterMatchCount = 0;
+      var keywordMatch = 0;
 
-      // Itterates through headers to populate row columns
+      // Iterates through headers to populate row columns
       // with corresponding data
+      var dataRow = [];
       for (var j = 0; j < this.props.Headers.length; j += 1) {
         var data = "Unknown";
 
@@ -382,10 +384,18 @@ var StaticDataTable = React.createClass({
           data = this.props.Data[index[i].RowIdx][j];
         }
 
-
         if (this.hasFilterKeyword(this.props.Headers[j], data)) {
           filterMatchCount++;
           filteredData.push(this.props.Data[index[i].RowIdx]);
+        }
+
+        if (useKeyword === true) {
+          var filterLength = Object.keys(this.props.Filter).length - 1;
+          if (this.hasFilterKeyword('keyword', data)) {
+            keywordMatch++;
+          }
+        } else {
+          filterLength = Object.keys(this.props.Filter).length;
         }
 
         var key = 'td_col_' + j;
@@ -409,7 +419,9 @@ var StaticDataTable = React.createClass({
       }
 
             // Only display a row if all filter values have been matched
-      if (Object.keys(this.props.Filter).length === filterMatchCount) {
+      if ((filterLength === filterMatchCount) &&
+          ((useKeyword === true && keywordMatch > 0) || (useKeyword === false
+          && keywordMatch === 0))) {
         matchesFound++;
         if (matchesFound > currentPageRow) {
           const rowIndex = index[i].Content;
