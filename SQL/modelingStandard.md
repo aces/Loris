@@ -45,7 +45,7 @@ This document details the modeling conventions to use for tables, attributes and
 
 - The primary key is always in the first field.
 - The foreign key field(s) follow the primary key.
-- Other indexed fields (Unique and Index key) are after the primary and foreign key if present. Fields part of a composite key should be position together as much as possible.
+- Other indexed fields (Unique and Index key) are after the primary and foreign key if present. Fields that are part of a composite key should be position together as much as possible.
 - Other fields are after. 
 - Text, Json and Blob are the last fields in that order when present.
 - Mandatory fields should generally be place before optional fields
