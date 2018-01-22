@@ -44,13 +44,12 @@ This document details the modeling conventions to use for tables, attributes and
 #### Field Ordering
 
 - The primary key is always in the first field.
-- Fix size fields are to be positioned before variable size fields.  
-  1 Numeric, Date, Char  
-  2 Varchar (indexed field first)  
-  3 Text, Json  
-  4 Blob  
-- Mandatory fields should generally be place before optional fields of the same type.
-
+- The foreign key field(s) follow the primary key.
+- Other indexed fields (Unique and Index key) are after the primary and foreign key if present. Fields part of a composite key should be position together as much as possible.
+- Other fields are after. 
+- Text, Json and Blob are the last fields in that order when present.
+- Mandatory fields should generally be place before optional fields
+- Within each section, it recommended but not an obligation that fix size fields are to be positioned before variable size fields (Numeric, Date and Char before Varchar).  
 
 ### Constraints
 
