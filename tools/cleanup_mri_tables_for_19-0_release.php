@@ -33,7 +33,7 @@
 require_once 'generic_includes.php';
 require_once 'Database.class.inc';
 
-$table_list = array(
+$table_array = array(
     'MRICandidateErrors' => array(
         'table1'   => 'MRICandidateErrors',
         'table2'   => 'tarchive',
@@ -84,23 +84,25 @@ $table_list = array(
     )
 );
 
-iterate($table_list);
+iterate($table_array);
 
 /**
- * iterate through the list of tables to look for orphan entries
+ * iterate through the array of tables to look for orphan entries
  *
- * @param $table_list  list of tables and fields to use to look for orphans
+ * @param array $table_array tables and fields array to use to look for orphans
+ *
+ * @return nothing
  */
-function iterate($table_list)
+function iterate($table_array)
 {
-    foreach ($table_list as &$table_fields){
+    foreach ($table_array as &$table_fields) {
         $table1 = $table_fields['table1'];
         $table2 = $table_fields['table2'];
         $FK1    = $table_fields['FK_name1'];
         $FK2    = $table_fields['FK_name2'];
 
-        $select_all = create_select($table1, $table2, $FK1, $FK2,'*');
-        $select_IDs = create_select($table1, $table2, $FK1, $FK2, $FK1);
+        $select_all = createSelect($table1, $table2, $FK1, $FK2, '*');
+        $select_IDs = createSelect($table1, $table2, $FK1, $FK2, $FK1);
 
         main($select_all, $table1, $FK1, $select_IDs);
     }
@@ -109,15 +111,15 @@ function iterate($table_list)
 /**
  * creates the select query based on the table and foreign names given as input
  *
- * @param $table1  name of table 1 to use in the select
- * @param $table2  name of table 2 to use in the select (join part)
- * @param $FK1     name of the foreign key in table 1
- * @param $FK2     name of the foreign key in table 2
- * @param $select_fields fields to select (either * or $FK1)
+ * @param string $table1        name of table 1 to use in the select
+ * @param string $table2        name of table 2 to use in the select (join part)
+ * @param string $FK1           name of the foreign key in table 1
+ * @param string $FK2           name of the foreign key in table 2
+ * @param string $select_fields fields to select (either * or $FK1)
  *
  * @return string  query to be used for the select statements
  */
-function create_select($table1, $table2, $FK1, $FK2, $select_fields)
+function createSelect($table1, $table2, $FK1, $FK2, $select_fields)
 {
     // create the select query
     $select_query = "
@@ -133,15 +135,17 @@ function create_select($table1, $table2, $FK1, $FK2, $select_fields)
 /**
  * main function with wrapper of actions to execute for each table
  *
- * @param $select_all_query  select all query
- * @param $table_name        table name
- * @param $FK_field          foreign key name
- * @param $select_ID_query   select (foreign key) ID query
+ * @param string $select_all_query select all query
+ * @param string $table_name       table name
+ * @param string $FK_field         foreign key name
+ * @param string $select_ID_query  select (foreign key) ID query
+ *
+ * @return nothing
  */
 function main($select_all_query, $table_name, $FK_field, $select_ID_query)
 {
     // get the list of orphans to be displayed in the terminal
-    $orphan_list = select_orphan($select_all_query);
+    $orphan_list = selectOrphan($select_all_query);
 
     // if no entries found, return to continue to the next table
     if ( empty($orphan_list) ) {
@@ -150,10 +154,10 @@ function main($select_all_query, $table_name, $FK_field, $select_ID_query)
     }
 
     // print the list of orphans found in $table_name
-    print_orphan($table_name, $orphan_list);
+    printOrphan($table_name, $orphan_list);
 
     // asks the user whether he/she wants to delete or update the orphan entries
-    $delete_answer = ask_to_delete(
+    $delete_answer = askToDelete(
         $table_name,
         $FK_field
     );
@@ -161,20 +165,20 @@ function main($select_all_query, $table_name, $FK_field, $select_ID_query)
     // check that the user did answer one of these possibilities: (y, Y, n, N)
     // if user did not answer probably, ask again the question
     while (! preg_match("/^y|n$/i", $delete_answer)) {
-        $delete_answer = ask_to_delete(
+        $delete_answer = askToDelete(
             $table_name,
             $FK_field
         );
     }
 
     // if user wants to delete orphan entries, back it back in a text file
-    if (preg_match("/^y$/i", $delete_answer)){
-        backup_entries($select_ID_query, $table_name, $FK_field);
+    if (preg_match("/^y$/i", $delete_answer)) {
+        backupEntries($select_ID_query, $table_name, $FK_field);
     }
 
 
     // clean up the table $table_name based on answer provided by the user
-    clean_table(
+    cleanTable(
         $table_name,
         $FK_field,
         $select_ID_query,
@@ -186,12 +190,12 @@ function main($select_all_query, $table_name, $FK_field, $select_ID_query)
 /**
  * selects orphan entries base on select query
  *
- * @param $query   query to use to select orphans
+ * @param string $query query to use to select orphans
  *
- * @return array   result of the select query
+ * @return array result of the select query
  *
  */
-function select_orphan($query)
+function selectOrphan($query)
 {
     $db = Database::singleton();
 
@@ -203,11 +207,12 @@ function select_orphan($query)
 /**
  * prints the list of found orphan entries in the table
  *
- * @param $table_name    name of the table
- * @param $orphan_list   array with the list of orphan entries found]
+ * @param string $table_name  name of the table
+ * @param array  $orphan_list array with the list of orphan entries found]
  *
+ * @return nothing
  */
-function print_orphan($table_name, $orphan_list)
+function printOrphan($table_name, $orphan_list)
 {
     print "\n\n\nList of orphan entries for " . $table_name . "\n";
     print "__________________________________________________\n";
@@ -217,12 +222,13 @@ function print_orphan($table_name, $orphan_list)
 /**
  * ask whether the user wants to delete orphans from the table
  *
- * @param $table_name name of the table in which to delete orphans
- * @param $FK_field   foreign key to set to null if don't want to delete orphans
+ * @param string $table_name name of the table in which to delete orphans
+ * @param string $FK_field   foreign key to set to null if don't want to delete
+ * orphans
  *
  * @return string  answer from the user to the question
  */
-function ask_to_delete($table_name, $FK_field)
+function askToDelete($table_name, $FK_field)
 {
     // create question to be printed in the terminal
     $message = "\nDo you want to delete the orphan entries from $table_name?
@@ -243,16 +249,18 @@ function ask_to_delete($table_name, $FK_field)
 /**
  * backup the orphan entries into a text file
  *
- * @param $selectID    select IDs query
- * @param $table_name  name of the table to backup
- * @param $FK_field    name of the ID field use to create the list to backup
+ * @param string $selectID   select IDs query
+ * @param string $table_name name of the table to backup
+ * @param string $FK_field   name of the ID field to use backup
+ *
+ * @return nothing
  */
-function backup_entries($selectID, $table_name, $FK_field)
+function backupEntries($selectID, $table_name, $FK_field)
 {
     // grep the IDs to backup from the database based on query stored in
     // $selectID. This will be given as an argument to mysqldump using
     // --where option
-    $IDs = generate_ID_list($selectID, $FK_field);
+    $IDs = generateIdList($selectID, $FK_field);
     $where = $FK_field . " IN (" . $IDs . ")";
 
     // grep database connection information from NDB_Config for mysqldump
@@ -278,20 +286,20 @@ function backup_entries($selectID, $table_name, $FK_field)
  * either delete orphans from table or update the foreign key of the orphans
  * to NULL if the user wants to keep the orphan entries in the table
  *
- * @param $table_name      name of the table to update
- * @param $FK_field        name of the foreign key to update
- * @param $selectID        query to select IDs to update
- * @param $delete_answer   'y' if user wants to delete orphans or
- *                         'n' if user does not want to delete orphans
+ * @param string $table_name    name of the table to update
+ * @param string $FK_field      name of the foreign key to update
+ * @param string $selectID      query to select IDs to update
+ * @param string $delete_answer 'y' to delete or 'n' to update orphan entries
  *
+ * @return nothing
  */
-function clean_table($table_name, $FK_field, $selectID, $delete_answer)
+function cleanTable($table_name, $FK_field, $selectID, $delete_answer)
 {
     // grep the IDs to delete from the database based on query stored in
     // $selectID
-    $IDs = generate_ID_list($selectID, $FK_field);
+    $IDs = generateIdList($selectID, $FK_field);
 
-//    $query = "";
+    // depending on user's answer to the delete question, it will
     if (preg_match("/^y$/i", $delete_answer)) {
         // delete from table in $table_name where the foreign key $FK_field is in
         // the list of IDs identified by the select above
@@ -312,12 +320,12 @@ function clean_table($table_name, $FK_field, $selectID, $delete_answer)
 /**
  * generates the list of IDs to be used in a mysql where close (where ID IN ())
  *
- * @param $selectIDs    select the IDs to use in a mysql where close
- * @param $FK_field     foreign key ID field
+ * @param string $selectIDs select the IDs to use in a mysql where close
+ * @param string $FK_field  foreign key ID field
  *
- * @return string       string of concatenated IDs found
+ * @return string $IDs string of concatenated IDs found
  */
-function generate_ID_list($selectIDs, $FK_field)
+function generateIdList($selectIDs, $FK_field)
 {
     //database connection
     $db = Database::singleton();
@@ -330,7 +338,7 @@ function generate_ID_list($selectIDs, $FK_field)
     // delete statement
     $IDs = "";
     foreach ($result as $row) {
-        if ($IDs == ""){
+        if ($IDs == "") {
             $IDs = $row[$FK_field];
         } else {
             $IDs .= ", $row[$FK_field]";
