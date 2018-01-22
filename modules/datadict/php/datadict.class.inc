@@ -53,11 +53,11 @@ class Datadict extends \NDB_Menu_Filter
     {
         // set the class variables
         $this->columns = array(
-            'pt.sourceFrom',
-            'pt.Name',
-            'pt.sourceField',
-            'coalesce(pto.description,pt.description)'.
-            ' as description',
+                         'pt.sourceFrom',
+                         'pt.Name',
+                         'pt.sourceField',
+                         'coalesce(pto.description,pt.description)'.
+                         ' as description',
         );
         $config        =& \NDB_Config::singleton();
         $this->validFilters = array(
