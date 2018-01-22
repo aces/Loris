@@ -1,4 +1,4 @@
-**Training**
+# Training
 
 The Training Module allows users to view training content in three columns: Certifications to Complete, Completed Certifications, and Online Training. 
 Certifications to Complete consists of available existing training modules that the user has not yet completed. 
