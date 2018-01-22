@@ -22,7 +22,7 @@
 
 - The Document Repository enables users to upload and organize project files of any type that can easily be viewable for users with appropriate permissions. Give full permissions to store documents on server.
 
-- Enable uploads folder: chmod 777 $LORIS/modules/document_repository/user_uploads 
+- Enable uploads folder: chmod 777 $%projectName%/modules/document_repository/user_uploads 
 
 - A mail server will be required for sending out email notifications about Document Repository updates. 
 
