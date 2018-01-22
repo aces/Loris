@@ -3,17 +3,17 @@
 ## Purpose
 
 The server processes manager module is used to get information about processes that were 
-launched asynchronously by other LORIS modules
+launched asynchronously by other LORIS modules.
 
 ## Intended Users
 
-The only user that should have access to this module is the person in charge of
-the administration of the LORIS website
+The LORIS system administrator(s) should be the only user(s) that should have access to 
+this module.
 
 ## Scope
 
 This module displays the information relevant to the asynchronous processes
-(active and inactive) launched by other modules. The properties displayed for
+(currently running or not) launched by other modules. The properties displayed for
 each process are as follows:
 
 - The internal LORIS process ID for the process
@@ -38,10 +38,9 @@ By default, all processes (active or not) are displayed on the server processes
 manager page but the page provides a selection filter that can be used to display 
 only specific processes. Filtering can be performed based on the PID, type of 
 process or user ID. Finally, note that upon termination, the temporary files used
-to store the processe's STDOUT, STDERR and exit code are either deleted or left as
-is depending on predefined criteria (e.g. the files associated to processes
-launched by the imaging uploader module are not deleted if the process does not
-terminate successfully).
+to store the processe's STDOUT, STDERR and exit code are deleted by default. For 
+processes that were launched by the imaging uploader though, these files are deleted
+only if the process terminates successfully (i.e with an exit code equal to 0).
 
 NOT in scope:
 
