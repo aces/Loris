@@ -27,7 +27,7 @@ The imaging browser module does not display raw DICOMs or perform automated
 quality control on images. It only displays images that have already been
 inserted into LORIS.
 
-## Permissions
+## <a name="imaging_browser_perm_link"></a> Permissions
 
 The imaging browser module uses the following permissions. Any one of them
 (except imaging_browser_qc) is sufficient to have access to the module.
