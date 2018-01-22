@@ -357,7 +357,7 @@ var TextboxElement = React.createClass({
         console.warn('onUserInput() callback is not set');
       },
       onUserBlur: function() {
-      },
+      }
     };
   },
   handleChange: function(e) {
@@ -382,7 +382,7 @@ var TextboxElement = React.createClass({
     if (this.props.hasError) {
       errorMessage = <span>{this.props.errorMessage}</span>;
       elementClass = 'row form-group has-error';
-    }   
+    }
 
     return (
       <div className={elementClass}>
