@@ -3,18 +3,18 @@
 ## Purpose
 
 The user accounts module is used to manage the user accounts on the LORIS 
-website. It provides functions to add new users, edit a user account and search
+application. It provides functions to add new users, edit a user account and search
 for specific user sets.
 
 ## Intended Users
 
 This module is typically used by site coordinators to manage the access rights to the LORIS
-system at their site. Other users might include the study coordinator and the LORIS system 
+application at their site. Other users might include the study coordinator and the LORIS system 
 administrator.
 
 ## Scope
 
-This module displays information about the user accounts on the LORIS website.
+This module displays information about the user accounts on the LORIS application.
 It allows the modification of a user account (activation/inactivation, change in access 
 permissions, change in email addresses, etc..) and the creation of new user accounts. 
 It also provides a search filter to view specific sets of user accounts.
