@@ -766,11 +766,11 @@ class Database
      *                  nested array is an associative array representing the row in
      *                  the format ColumnName => Value
      */
-    function pselectIndexPrimary($query, $params, $uniqueKey)
+    function pselectWithIndexKey($query, $params, $uniqueKey)
     {
         if (is_null($uniqueKey) || empty($uniqueKey)) {
             throw new LorisException(
-                "The pselectIndexPrimary() function expects the uniqueKey parameter 
+                "The pselectWithIndexKey() function expects the uniqueKey parameter 
                 to not be null or empty. If re-indexing on the primary key is 
                 not necessary please use the pselect() function instead."
             );
@@ -788,7 +788,7 @@ class Database
             // Check first that the row contains the primary key supplied
             if (!array_key_exists($uniqueKey, $row)) {
                 throw new DatabaseException(
-                    "The query supplied to pselectIndexPrimary() does not contain 
+                    "The query supplied to pselectWithIndexKey() does not contain 
                     the unique key to re-index on. Make sure to supply the 
                     appropriate key in the SELECT statement to match the supplied 
                     parameter of this function",
@@ -800,7 +800,7 @@ class Database
             // in the result array
             if (isset($filteredResult[$row[$uniqueKey]])) {
                 throw new DatabaseException(
-                    "The uniqueKey supplied to pselectIndexPrimary() does not appear
+                    "The uniqueKey supplied to pselectWithIndexKey() does not appear
                      to be unique or is nullable. This function expects the key to 
                      be both UNIQUE and NOT NULL.",
                     $query
@@ -888,11 +888,11 @@ class Database
      * @return array Associative array of form uniqueKey=>value containing all
      *               value for the non-uniqueKey element of the select statement
      */
-    function pselectColIndexPrimary($query, $params, $uniqueKey)
+    function pselectColWithIndexKey($query, $params, $uniqueKey)
     {
         if (is_null($uniqueKey) || empty($uniqueKey)) {
             throw new LorisException(
-                "The pselectColIndexPrimary() function expects the uniqueKey
+                "The pselectColWithIndexKey() function expects the uniqueKey
                  parameter to not be null or empty. If re-indexing on the primary 
                  key is not necessary please use the pselectCol() function instead."
             );
@@ -911,7 +911,7 @@ class Database
             // Check first that the row contains the primary key supplied
             if (!array_key_exists($uniqueKey, $row) || $colNumber !== 2) {
                 throw new DatabaseException(
-                    "The query supplied to pselectColIndexPrimary() should only 
+                    "The query supplied to pselectColWithIndexKey() should only 
                     contain the unique key and one other column in the SELECT 
                     clause. Make sure to supply the appropriate key in the SELECT 
                     statement to match the supplied parameter of this function.",
@@ -923,7 +923,7 @@ class Database
             // in the result array
             if (isset($filteredResult[$row[$uniqueKey]])) {
                 throw new DatabaseException(
-                    "The uniqueKey supplied to pselectColIndexPrimary() does not 
+                    "The uniqueKey supplied to pselectColWithIndexKey() does not 
                     appear to be unique or is nullable. This function expects the 
                     key to be both UNIQUE and NOT NULL.",
                     $query
