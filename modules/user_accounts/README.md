@@ -41,7 +41,7 @@ title
 and/or his/her supervisor when modifying or creating a user account. 
 
 url
- - url of the LORIS website that will appear in the text of the email sent to a 
+ - url of the LORIS application that will appear in the text of the email sent to a 
 user and/or his/her supervisor when modifying or creating a user account. 
 
 additional_user_info
