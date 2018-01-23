@@ -11,7 +11,8 @@ Permission' buttons at the top of the module
  > - Select another 'User ID' (that you have access to and is not a 
  'superuser') 
  > - Select a 'Data Release ID' (ideally a file that the 'User ID' has no 
- access to yet)
+ access to yet) (note that at least one file needs to be uploaded in the 
+ module to be able to set permissions to file access)
  > - Make sure that this 'User ID' can now see the file now that the 
  permission was added for him/her
  
