@@ -200,7 +200,7 @@ try {
         . htmlspecialchars($e->getTraceAsString())
         . "</pre>";
 } catch(Exception $e) {
-    switch($e->getCode()) {
+    switch($e->getMessage()) {
     case 404:
         header("HTTP/1.1 404 Not Found");
         $errorPage = new Smarty_neurodb;
