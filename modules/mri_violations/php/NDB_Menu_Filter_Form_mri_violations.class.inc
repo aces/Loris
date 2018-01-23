@@ -336,6 +336,8 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
                                'v.SeriesUID',
                                'v.Site',
                               );
+
+        $this->EqualityFilters[] = 'v.Site';
         return true;
     }
     /**

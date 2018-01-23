@@ -56,7 +56,7 @@ class User extends UserPermissions
 
         // get user data from database
         $query = "SELECT users.*,
-            GROUP_CONCAT(psc.Name SEPARATOR ';') AS Sites
+            GROUP_CONCAT(psc.Name ORDER BY psc.Name SEPARATOR ';') AS Sites
             FROM users
             LEFT JOIN user_psc_rel ON (user_psc_rel.UserID=users.ID)
             LEFT JOIN psc ON (user_psc_rel.CenterID=psc.CenterID)
@@ -71,7 +71,7 @@ class User extends UserPermissions
                         WHERE upr.UserID= :UID",
             array('UID' => $row['ID'])
         );
-
+        $user_cid            = array();
         foreach ($user_centerID_query as $key=>$val) {
             $user_cid[$key] =$val['CenterID'];
         }
@@ -107,9 +107,9 @@ class User extends UserPermissions
             }
         }
         // store user data in object property
-        $row['examiner']  =$examiner_info;
-        $row['CenterIDs'] =$user_cid;
-        $obj->userInfo    =$row;
+        $row['examiner']  = $examiner_info;
+        $row['CenterIDs'] = $user_cid;
+        $obj->userInfo    = $row;
         return $obj;
     }
 
@@ -285,6 +285,16 @@ class User extends UserPermissions
         return $this->userInfo['CenterIDs'];
     }
 
+    /**
+     * Get the user's language preference
+     *
+     * @return int
+     */
+    function getLanguagePreference()
+    {
+        return $this->userInfo['language_preference'];
+    }
+
 
     /**
      * Returns all sites where Examiner is active
@@ -295,6 +305,7 @@ class User extends UserPermissions
     {
         $site_list = $this->userInfo['examiner'];
         unset($site_list['pending']);
+        natcasesort($site_list);
         return $site_list;
     }
 
@@ -305,7 +316,7 @@ class User extends UserPermissions
      */
     function getStudySites()
     {
-        $site_arr         = $this->userInfo['CenterIDs'];
+        $site_arr         = $this->getCenterIDs();
         $user_study_sites = array();
         foreach ($site_arr as $key => $val) {
             $site[$key] = &Site::singleton($val);
@@ -313,7 +324,25 @@ class User extends UserPermissions
                 $user_study_sites[$val] = $site[$key]->getCenterName();
             }
         }
+        natcasesort($user_study_sites);
         return $user_study_sites;
+    }
+
+    /**
+     * Checks if the user is in at least one study site
+     *
+     * @return boolean
+     */
+    function hasStudySite()
+    {
+        $site_arr = $this->getCenterIDs();
+        foreach ($site_arr as $key => $sitename) {
+            $site = Site::singleton($sitename);
+            if ($site->isStudySite()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -491,7 +520,8 @@ class User extends UserPermissions
     {
         return in_array(
             $center_id,
-            $this->getCenterIDs()
+            $this->getCenterIDs(),
+            true
         );
     }
     /**

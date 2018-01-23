@@ -2,10 +2,10 @@
     <div id="tabs">
       <ul class="nav nav-tabs">
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/">Profiles</a></li>
-        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=gwas_browser">GWAS</a></li>
-        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=snp_browser">SNP</a></li>
-        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cnv_browser">CNV</a></li>
-        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cpg_browser">Methylation</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/gwas_browser/">GWAS</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/snp_browser/">SNP</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/cnv_browser/">CNV</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/cpg_browser/">Methylation</a></li>
         <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>Files</strong></a></li>
       </ul>
       <br>
@@ -109,7 +109,7 @@
         <div class="row">
           <div class="form-group col-sm-12">
             <div class="col-sm-6">
-              <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='/genomic_browser/?submenu=genomic_file_uploader&reset=true'" />
+              <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='/genomic_browser/genomic_file_uploader/?reset=true'" />
             </div>
           </div>
         </div>
@@ -130,7 +130,7 @@
 </style>
 <script>
     var table = RDynamicDataTable({
-        "DataURL" : "{$baseurl}/genomic_browser/?submenu=genomic_file_uploader&format=json",
+        "DataURL" : "{$baseurl}/genomic_browser/genomic_file_uploader/?format=json",
         "getFormattedCell" : formatColumn,
         "freezeColumn" : "file_name"
     });

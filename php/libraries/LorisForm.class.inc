@@ -1292,11 +1292,7 @@ class LorisForm
 
                 // Check if date fields have errors and add them to error list
                 if ($el['type'] === 'date') {
-                    $date = (
-                        $values[$elName] ?
-                            $values[$elName] :
-                        $this->getValue($el['name'])
-                    );
+                    $date = $values[$elName] ?? $this->getValue($el['name']);
                     if (empty($date)) {
                         continue;
                     }
@@ -1877,10 +1873,11 @@ class LorisForm
     {
         $name = $this->_generateName($name);
         foreach ($array as $key => $value) {
-            $this->groupMapping[$value['name']] = array(
-                                                   'groupName' => $name,
-                                                   'index'     => $key,
-                                                  );
+             $group_key = $value['name'] ?? $this->_generateName('');
+             $this->groupMapping[$group_key] = array(
+                                                'groupName' => $name,
+                                                'index'     => $key,
+                                               );
         }
         $this->form[$name] = array(
                               'type'      => 'group',

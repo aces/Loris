@@ -15,8 +15,8 @@
 if (isset($_POST['tab'])) {
     $tab = $_POST['tab'];
 
-    $db   =& Database::singleton();
-    $user =& User::singleton();
+    $db   =& \Database::singleton();
+    $user =& \User::singleton();
 
     if ($tab == "candidateInfo") {
         editCandInfoFields($db, $user);
