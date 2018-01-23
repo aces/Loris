@@ -256,14 +256,14 @@ class Dicom_Archive extends \NDB_Menu_Filter
 
         foreach ($unanonymized['Data'] as &$row) {
             $val = $row[2];
-            if (!preg_match($this->dicomArchiveSettings['patientNameRegex'], $val)
-                && !preg_match($this->dicomArchiveSettings['LegoPhantomRegex'], $val)
-                && !preg_match(
+            if (! preg_match($this->dicomArchiveSettings['patientNameRegex'], $val)
+                or !preg_match($this->dicomArchiveSettings['LegoPhantomRegex'], $val)
+                or !preg_match(
                     $this->dicomArchiveSettings['LivingPhantomRegex'],
                     $val
                 )
             ) {
-                $row[2] = "INVALID - HIDDEN";
+                $row[2] = 'INVALID - HIDDEN';
             }
 
             $val = $row[1];
