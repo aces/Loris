@@ -280,8 +280,8 @@ var CandidateInfo = React.createClass(
               disabled={reasonDisabled}
               required={reasonRequired}
             />
-            <ListElement
-              label="Test ListElement"
+            <TagsElement
+              label="Favorite snacks?"
               name="testList"
               id="testList"
               ref="testList"
