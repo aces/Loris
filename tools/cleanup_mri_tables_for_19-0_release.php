@@ -279,7 +279,14 @@ function backupEntries($selectID, $table_name, $FK_field)
         "--compact --no-create-info"  . " " .
         ">> ./backup_release_19-0_upgrade.sql";
 
-    system($sqldump); // execute mysqldump
+    system($sqldump, $retval); // execute mysqldump
+
+    // print the error of the mysqldump command and exits in case of failure
+    if ($retval != 0) {
+        print "\nCommand that failed execution: \n" . $sqldump . "\n";
+        print "\nCommand error message:\n"          . $retval  . "\n";
+        exit;
+    }
 }
 
 /**
