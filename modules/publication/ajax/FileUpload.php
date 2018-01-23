@@ -24,7 +24,7 @@ function getData() {
     );
 
     $varsOfInterest = $db->pselect(
-        "SELECT pt.Name, pt.SourceField, pt.SourceFrom FROM parameter_type pt ".
+        "SELECT pt.Name, pt.SourceFrom FROM parameter_type pt ".
         "JOIN test_names tn ON tn.Test_name=pt.SourceFrom ORDER BY pt.SourceFrom",
         array()
     );
@@ -42,19 +42,28 @@ function getPublicationData() {
 
     $db = Database::singleton();
 
-    $result = $db->pselectRow(
-        'SELECT Title, Description, DateProposed, '.
-        'LeadInvestigator, LeadInvestigatorEmail, ps.Label, GROUP_CONCAT(pk.Label)'.
+    $query = 'SELECT p.Title as Title, p.Description as Description, DateProposed, '.
+        'LeadInvestigator, LeadInvestigatorEmail, ps.Label, '.
+        'GROUP_CONCAT(DISTINCT pt.Name) as VOIs, '.
+        'GROUP_CONCAT(DISTINCT pk.Label) as Keywords '.
         'FROM publication p '.
         'LEFT JOIN publication_status ps '.
         'ON p.PublicationStatusID=ps.PublicationStatusID '.
+        'LEFT JOIN publication_parameter_type_rel pptr '.
+        'ON pptr.PublicationID=p.PublicationID ' .
+        'LEFT JOIN parameter_type pt '.
+        'ON pt.ParameterTypeID=pptr.ParameterTypeID '.
         'LEFT JOIN publication_keyword_rel pkr '.
         'ON pkr.PublicationID=p.PublicationID '.
         'LEFT JOIN publication_keyword pk '.
         'ON pkr.PublicationKeywordID=pk.PublicationKeywordID '.
-        'WHERE p.PublicationID=:pid '.
-        'GROUP BY p.PublicationID',
-        array('pid' => $id)
+        'WHERE p.PublicationID=1 '.
+        'GROUP BY p.PublicationID';
+    error_log($query);
+    $result = $db->pselectRow(
+        $query,
+        //array('pid' => $id)
+        []
     );
 
     if (!$result) {
@@ -67,7 +76,8 @@ function getPublicationData() {
             'leadInvestigator' => $result['LeadInvestigator'],
             'leadInvestigatorEmail' => $result['LeadInvestigatorEmail'],
             'status' => $result['Label'],
-            'keywords' => $result['GROUP_CONCAT(pk.Label)']
+            'voi' => $result['VOIs'],
+            'keywords' => $result['Keywords']
         );
     }
 }
@@ -95,6 +105,13 @@ function uploadPublication() {
 
     $db->insert('publication', $fields);
 
+    $pubID = $db->pselectOne(
+        'SELECT PublicationID '.
+        'FROM publication '.
+        'WHERE Title=:t',
+        array('t' => $_REQUEST['title'])
+    );
+
     $keywords = json_decode($_REQUEST['keywords']);
     foreach ($keywords as $kw) {
         // check if keyword exists
@@ -117,12 +134,6 @@ function uploadPublication() {
         }
         // add it pub_kw_rel table
         // get publication ID
-        $pubID = $db->pselectOne(
-            'SELECT PublicationID '.
-            'FROM publication '.
-            'WHERE Title=:t',
-            array('t' => $_REQUEST['title'])
-        );
         $pubKWRelInsert = array(
             'PublicationID' => $pubID,
             'PublicationKeywordID' => $kwID,
@@ -130,5 +141,37 @@ function uploadPublication() {
 
         $db->insert('publication_keyword_rel', $pubKWRelInsert);
     }
-    echo $keywords;
+
+    $voiFields = json_decode($_REQUEST['voiFields']);
+    foreach ($voiFields as $vf) {
+        // if AllFields option is selected, grab all entries for provided instrument
+        if (substr($vf, -strlen('_AllFields')) === '_AllFields') {
+            $inst = substr($vf, 0, strlen($vf) - strlen('_AllFields'));
+            $varIDs = $db->pselectCol(
+                'SELECT ParameterTypeID FROM parameter_type WHERE SourceFrom=:src',
+                array('src' => $inst)
+            );
+
+            foreach ($varIDs as $v) {
+                $pubParamTypeRelInsert = array(
+                    'PublicationID' => $pubID,
+                    'ParameterTypeID' => $v
+                );
+
+                $db->insertIgnore('publication_parameter_type_rel', $pubParamTypeRelInsert);
+            }
+        } else {
+            $varID = $db->pselectOne(
+                "SELECT ParameterTypeID FROM parameter_type WHERE Name=:n",
+                array('n' => $vf)
+            );
+
+            $pubParamTypeRelInsert = array(
+                'PublicationID' => $pubID,
+                'ParameterTypeID' => $varID
+            );
+
+            $db->insertIgnore('publication_parameter_type_rel', $pubParamTypeRelInsert);
+        }
+    }
 }

@@ -25,6 +25,7 @@ class ViewProject extends React.Component {
           leadInvestigator: data.leadInvestigator,
           leadInvestigatorEmail: data.leadInvestigatorEmail,
           status: data.status,
+          voi: data.voi,
           keywords: data.keywords
         };
         self.setState({
@@ -39,6 +40,10 @@ class ViewProject extends React.Component {
         });
       }
     });
+  }
+  
+  generateLinks() {
+    
   }
 
   render() {
@@ -69,6 +74,24 @@ class ViewProject extends React.Component {
           );
         }
       );
+    }
+    
+    if (this.state.formData.voi) {
+      var voiArr = this.state.formData.voi.split(',');
+      var voiLinks = [];
+      
+      voiArr.forEach(function(v){
+        voiLinks.push(
+            <span>
+              <a
+                href={loris.BaseURL + "/publication/?voi="+ v}
+              >
+                {v}
+              </a>
+              ; &nbsp;
+            </span>
+        );
+      })
     }
     return (
       <div className="row">
@@ -106,7 +129,7 @@ class ViewProject extends React.Component {
               name="variablesOfInterest"
               label="Variables of Interest"
               ref="variablesOfInterest"
-              text='VOI'
+              text={voiLinks}
             />
             <StaticElement
               name="keywords"

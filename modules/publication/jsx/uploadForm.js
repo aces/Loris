@@ -119,7 +119,8 @@ class PublicationUploadForm extends React.Component {
       cache: false,
       contentType: false,
       processData: false,
-      success: function() {
+      success: function(data) {
+        console.log(data);
         // reset form data
         this.setState({
           formData: {}
@@ -170,52 +171,20 @@ class PublicationUploadForm extends React.Component {
     // Set test fields to all fields by default
     var testFields = this.state.Data.varsOfInterest.map(v => v.Name);
     testFields.sort();
-
-    // Generate Variables of Interest fields
-    var voiFields = [];
-    for (var i = 1; i <= this.state.numVOIGroups; i++) {
-      // if an instrument has been selected, then populate the fields
-      // selection with fields only relevant to the selected instrument
-      var inst = this.state.formData['voiInst_' + i];
-      if (inst) {
-        testFields = [];
-        this.state.Data.varsOfInterest.forEach(function(v){
-          if (v.SourceFrom === inst) {
-            testFields[v.SourceField] = v.SourceField;
-          }
-        });
-      }
-
-      // TODO - add deletion functionality
-      voiFields.push(
-      <div className="voi-borders">
-        <SelectElement
-          name={"voiInst_" + i}
-          label="Instrument"
-          ref={"voiInst_" + i}
-          id={"voiInst_" + i}
-          onUserInput={this.setFormData}
-          required={true}
-          value={this.state.formData['voiInst_' + i]}
-          options={testNames}
-        />
-        <ListElement
-          name={"voiFields_" + i}
-          label="Instrument Fields"
-          ref={"voiFields_" + i}
-          id={"voiFields_" + i}
-          onUserInput={this.setFormData}
-          onUserAdd={this.addListItem}
-          onUserRemove={this.removeListItem}
-          required={true}
-          value={this.state.formData['pendingItemVF_' +i]}
-          options={testFields}
-          pendingValKey="pendingItemVF_"
-          items={this.state.formData['voiFields_' + i]}
-        />
-      </div>
-      );
+    
+    // if an instrument has been selected, then populate the fields
+    // selection with fields only relevant to the selected instrument
+    var inst = this.state.formData['voiInst'];
+    if (inst) {
+      testFields = [];
+      testFields[inst+'_AllFields'] = inst + '_AllFields';
+      this.state.Data.varsOfInterest.forEach(function(v){
+        if (v.SourceFrom === inst) {
+          testFields[v.Name] = v.Name;
+        }
+      });
     }
+    
     return (
       <div className="row">
         <div className="col-md-8 col-lg-7">
@@ -260,7 +229,7 @@ class PublicationUploadForm extends React.Component {
             />
 
             {/* START Variables of Interest */}
-            <div className="row form-group voi-borders">
+            <div className="row form-group">
               <label className="col-sm-3 control-label"/>
               <div className="col-sm-9">
                 <p className="form-control-static">
@@ -271,15 +240,31 @@ class PublicationUploadForm extends React.Component {
                 </p>
               </div>
             </div>
-            {voiFields}
-            <ButtonElement
-              label="Add Instrument"
-              type="button"
-              onUserInput={this.addVOIGroups}
+            <SelectElement
+              name={"voiInst"}
+              label="Instrument"
+              ref={"voiInst"}
+              id={"voiInst"}
+              onUserInput={this.setFormData}
+              required={true}
+              value={this.state.formData['voiInst']}
+              options={testNames}
+            />
+            <ListElement
+              name={"voiFields"}
+              label="Instrument Fields"
+              ref={"voiFields"}
+              id={"voiFields"}
+              onUserInput={this.setFormData}
+              onUserAdd={this.addListItem}
+              onUserRemove={this.removeListItem}
+              required={true}
+              value={this.state.formData['pendingItemVF']}
+              options={testFields}
+              pendingValKey="pendingItemVF"
+              items={this.state.formData['voiFields']}
             />
             {/* END Variables of Interest */}
-
-
             <ListElement
               name="keywords"
               label="Keywords"

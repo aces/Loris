@@ -49,10 +49,10 @@ class Publication extends \NDB_Menu_Filter_Form
     {
         $query = " FROM publication p ".
             "LEFT JOIN publication_status ps ON ps.PublicationStatusID=p.PublicationStatusID ".
-            "LEFT JOIN publication_keyword_rel pkr ON p.PublicationID=pkr.PublicationID ".
-            "LEFT JOIN publication_keyword pk ON pkr.PublicationKeywordID=pk.PublicationKeywordID ".
             "LEFT JOIN publication_parameter_type_rel pptr ON p.PublicationID=pptr.PublicationID ".
-            "LEFT JOIN parameter_type pt ON pt.ParameterTypeID=pptr.ParameterTypeID ";
+            "LEFT JOIN parameter_type pt ON pt.ParameterTypeID=pptr.ParameterTypeID " .
+            "LEFT JOIN publication_keyword_rel pkr ON p.PublicationID=pkr.PublicationID ".
+            "LEFT JOIN publication_keyword pk ON pkr.PublicationKeywordID=pk.PublicationKeywordID ";
         $query .= " WHERE 1=1 ";
         $query .= " GROUP BY p.PublicationID ";
 
@@ -62,8 +62,8 @@ class Publication extends \NDB_Menu_Filter_Form
             'p.DateProposed',
             'ps.Label',
             'p.Description',
+            'GROUP_CONCAT(pt.Name)', // Variables of Interest
             'GROUP_CONCAT(pk.Label)', // Keywords
-            'pt.Name', // Variables of Interest
             'p.PublicationID',
         );
 
@@ -74,8 +74,8 @@ class Publication extends \NDB_Menu_Filter_Form
             'Date Proposed',
             'Approval Status',
             'Description',
-            'Keywords',
             'Variables Of Interest',
+            'Keywords',
             'Publication ID'
         );
 
@@ -138,7 +138,7 @@ class Publication extends \NDB_Menu_Filter_Form
             'Keywords'
         );
         $this->addBasicText(
-            'variablesOfInterest',
+            'voi',
             'Variables of Interest'
         );
 
