@@ -213,8 +213,14 @@ try {
         $errorPage->assign($tpl_data);
         $tpl_data['workspace'] = $errorPage->fetch('403.tpl');
         break;
+    default:
+        header("HTTP/1.1 500 ");
+        $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
+        $errorPage = new Smarty_neurodb;
+        $errorPage->assign($tpl_data);
+        $tpl_data['workspace'] = $errorPage->fetch('500.tpl');
+        break;
     }
-    $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
 } finally {
     // Set dependencies if they are not set
     if (!isset($tpl_data['jsfiles']) || !isset($tpl_data['cssfiles'])) {
