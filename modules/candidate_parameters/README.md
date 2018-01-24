@@ -47,4 +47,5 @@ useConsent
 - Information collected in this modules is exported into the DQT using the 
 CouchDB_Import_Demographics.php tool. Any modifications or additions to 
 this module should be manually added to the script in order to view 
-them in the Data Query Tool.
+them in the Data Query Tool Demographics table or alternitavely added to 
+another script to be imported separately into the DQT.
