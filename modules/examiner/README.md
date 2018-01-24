@@ -16,13 +16,15 @@ The primary type of users is:
 This module displays information about examiners as well as certifications and 
 sites to which the examiners are affiliated. It also allows to add examiners 
 to sites, to give or remove certifications for instruments and set them as 
-radiologists. The Examiner architecture is completely separate from the User 
-architecture intentionally; examiners may or may not be users.
+radiologists.
 
 NOT in scope:
 
 Management of the certification instruments and of the sites is external to 
 this module.
+The Examiner architecture is completely separate from the User 
+architecture intentionally; examiners may or may not be users.
+
 
 ## Permissions
 
