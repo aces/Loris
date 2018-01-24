@@ -112,8 +112,8 @@ infrastructure will be re-designed to follow this guideline.*
 
 
 ### Other parameters
-- Tables should be normalised to **3rd normal form**  unless there is a strong 
-  justification to do otherwise.
+- Tables should be normalised to **3rd normal form**  unless specific requirements 
+  demand otherwise.
 - Engine should be **InnoDB** for all tables unless specific requirement demand. 
   `ENGINE=InnoDB`.
 - The character encoding used by LORIS should be UTF-8. This implies that MySQL 
