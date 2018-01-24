@@ -114,8 +114,8 @@ infrastructure will be re-designed to follow this guideline.*
 ### Other parameters
 - Tables should be normalised to **3rd normal form**  unless there is a strong
   justification to do otherwise. 
-- Engine should be **InnoDB** for all tables unless specific requirement demand 
-  otherwise `ENGINE=InnoDB`.
+- Engine should be **InnoDB** (`ENGINE=InnoDB`) for all tables unless specific
+  requirements demand otherwise.
 - The character encoding used by LORIS should be UTF-8. This implies that MySQL 
   tables should use CHARSET=’utf8mb4’ (note the mb4). If the mb4 variant causes 
   MySQL row size violations, CHARSET=’utf8’ may be used. (However, these exceptions 
