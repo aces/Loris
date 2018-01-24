@@ -109,7 +109,7 @@ class DirectDataEntryMainPage
             );
         }
         if ($this->Subtest === array()) {
-            $this->Subtest = "";   
+            $this->Subtest = "";
         }
 
         $totalPages        = $DB->pselectOne(
