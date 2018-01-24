@@ -22,7 +22,14 @@
 
 - The Document Repository enables users to upload and organize project files of any type that can easily be viewable for users with appropriate permissions. Give full permissions to store documents on server.
 
-- Enable uploads folder: chmod 777 $%projectName%/modules/document_repository/user_uploads 
+- Enable uploads files:please update the php.ini apache configuration file. 
+```
+session.gc_maxlifetime = 10800  // After this number of seconds, stored data will be seen as 'garbage' and cleaned up by the garbage collection process.
+max_input_time = 10800          // Maximum amount of time each script may spend parsing request data (in seconds)
+max_execution_time = 10800      // Maximum execution time of each script (in seconds)
+upload_max_filesize = 1024M     // Maximum allowed size for uploaded files.
+post_max_size = 1024M           // Maximum size of POST data that PHP will accept.
+```
 
 - A mail server will be required for sending out email notifications about Document Repository updates. 
 
