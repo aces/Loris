@@ -214,7 +214,7 @@ try {
         $tpl_data['workspace'] = $errorPage->fetch('403.tpl');
         break;
     default:
-        header("HTTP/1.1 500 ");
+        header("HTTP/1.1 500 Internal Server Error");
         $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
         $errorPage = new Smarty_neurodb;
         $errorPage->assign($tpl_data);
