@@ -1,10 +1,55 @@
-## Issue Tracker Readme
+# Issue Tracker 
 
-#### Overview
-The Issues Module allows users to track issues they have with data, or with their LORIS instance itself. A form with pre-defined fields is provided for users to submit issues, and a filter-form gives a sortable and filterable table view of issues viewable by the user.
+## Purpose 
 
-#### Permissions
-Permissions in this module are complex and are not yet in their final iteration. Two new permissions were created, issue_tracker_reporter and issue_tracker_developer. The view_all_sites permission was also integrated to prevent users from viewing issues relevant to data they do not have permission to see. A reporter can add an issue, edit their own issue, and comment on all issues. A developer can do the same, plus they can close an issue and edit all fields of a submitted issue. Most of the permissions are controlled in IssueForm.js, dependant on values returned in editIssue.php.
+The Issue Tracker allows users to log and track data issues, software bugs, or questions encountered in LORIS.  Users with appropriate permissions can (re-)assign and resolve open issues. 
 
-#### Future Development
-Future development includes the ability to edit one’s own comments after submission, a pop-up or sliding view within other modules for easy issue reporting, further integration with the dashboard and with statistics, refinement of the form UI, a tabular sortable view of comments, the ability to click watching within the filter-form table and the inclusion of default users to notify in the config settings.
+## Intended Users
+
+The four primary types of users are:
+1. Any front-end user working with the database who may wish to report software bugs
+2. Imaging specialists logging general concerns with imaging datasets while performing online QC
+3. Study coordinators reviewing and resolving data issues, and communicating software issues or requesting feature changes to the development team 
+4. Administrator / development team users working to resolve issues in the technical back-end of LORIS.
+
+## Scope
+
+The Issue Tracker displays logged issues in a sortable and filterable table view of issues.   
+A form with pre-defined fields is provided for users to submit and edit issues. 
+Issues may be associated to a specific PSCID and visit.
+The history of changes to an issue is accessible for each issue.
+Users with appropriate permissions may assign, re-assign and mark issues as 'resolved'.              
+Individual users can "watch" tickets and receive notifications when these are updated.
+
+NOT in scope:
+
+The Issue Tracker does not link to individual data points, instrument forms or imaging scans (although links can be added in the comment field).
+The Issue Tracker does not allow users to edit comments after submission.  Comments are not searchable / sortable across issues.  The Filter form table does not provide for one-click “watching” opt-in or opt-out.  There is no configuration for this module for specifying default users to be notified for issues on certain categories or sites. 
+It is not available as a pop-up or sliding panel from within other modules which would facilitate easier issue reporting.  Issues are not integrated into the Dashboard or Statistics modules. 
+
+## Permissions
+
+The Issue Tracker uses the following permissions.
+access_all_profiles
+    - This permission allows the user to view issues from sites other than those associated to their user account. 
+issue_tracker_reporter 
+    - This permission allows the user to add an issue, edit their own issue, and comment on all issues
+issue_tracker_developer
+    - This permission allows the user to add issues, edit all fields of all issues, close issues. 
+Any one of these issue_tracker_* permissions is sufficient to have access to the module.
+Most of the permissions are controlled in IssueForm.js, dependant on values returned in editIssue.php.
+
+## Configuration
+
+The Issue Tracker has the following configuration settings that affect its usage: 
+
+useProjects - This setting determines whether "project" filtering dropdowns exist on the menu page. 
+
+mantis_url - This setting defines a URL for LORIS to include a link to for bug reporting on the viewsession page.  Projects using the Issue Tracker should set this to  “issue_tracker/” or “$url/issue_tracker/” 
+
+## Interactions with LORIS
+
+* Depending on how the Issue Tracker is used by a given project, there can be overlap in functionality with other Loris tools used for data review such as the Behavioural Feedback module and external bug trackers used for Imaging data concerns. Projects are advised to define for all members the appropriate use of each tool.  
+
+* Setting the configuration setting mantis_url to “issue_tracker/” or “$url/issue_tracker/” will add a link in the Imaging Browser’s View Session page to this module for imaging data review purposes.
+
