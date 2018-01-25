@@ -101,15 +101,15 @@ class RequestAccount extends \NDB_Form
             $errors['firstname'] = "First name is required!";
         } else {
             if (strlen($values['firstname']) < 2 ) {
-            $errors['firstname'] = "First name is too short!";
+                $errors['firstname'] = "First name is too short!";
             }
         }
         if (empty($values['lastname'])) {
             $errors['lastname'] = "Last name is required!";
         } else {
             if (strlen($values['lastname']) < 2 ) {
-            $errors['lastname'] = "Last name is too short!";
-        }            
+                $errors['lastname'] = "Last name is too short!";
+            }
         }
         if (empty($values['from'])) {
             $errors['from'] = "Please provide a valid email!";
@@ -120,7 +120,7 @@ class RequestAccount extends \NDB_Form
         if (empty($values['site'])) {
             $errors['site'] = "Please choose a site!";
         }
-        
+
         // Is this still required? It seems to be from the old captcha
         // method?
         if (isset($_SESSION['tntcon'])
