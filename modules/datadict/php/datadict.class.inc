@@ -53,31 +53,31 @@ class Datadict extends \NDB_Menu_Filter
     {
         // set the class variables
         $this->columns = array(
-                         'pt.sourceFrom',
-                         'pt.Name',
-                         'pt.sourceField',
-                         'coalesce(pto.description,pt.description)'.
-                         ' as description',
-        );
+                          'pt.sourceFrom',
+                          'pt.Name',
+                          'pt.sourceField',
+                          'coalesce(pto.description,pt.description)'.
+                          ' as description',
+                         );
         $config        =& \NDB_Config::singleton();
         $this->validFilters = array(
-            'pt.sourceFrom',
-            'pt.Description',
-        );
+                               'pt.sourceFrom',
+                               'pt.Description',
+                              );
         $this->query        = " FROM parameter_type pt LEFT JOIN 
                                 parameter_type_override pto USING (Name)
                  		WHERE pt.Queryable=1";
 
         $this->formToFilter = array(
-            'sourceFrom'  => 'pt.sourceFrom',
-            'Description' => 'pt.Description',
-        );
+                               'sourceFrom'  => 'pt.sourceFrom',
+                               'Description' => 'pt.Description',
+                              );
 
         $this->searchKeyword = array(
-            'pt.Name',
-            'pt.sourceField',
-            'pto.description',
-        );
+                                'pt.Name',
+                                'pt.sourceField',
+                                'pto.description',
+                               );
         return true;
     }
 
@@ -107,10 +107,10 @@ class Datadict extends \NDB_Menu_Filter
             'Description',
             'Description',
             array(
-                ''           => 'All',
-                'empty'      => 'Empty',
-                'modified'   => 'Modified',
-                'unmodified' => 'Unmodified',
+             ''           => 'All',
+             'empty'      => 'Empty',
+             'modified'   => 'Modified',
+             'unmodified' => 'Unmodified',
             )
         );
         $this->addBasicText('keyword', 'Search keyword');
@@ -120,7 +120,6 @@ class Datadict extends \NDB_Menu_Filter
      * Set Data Table Rows
      *
      * @param string $count the count of table rows
-     *
      *
      * @note   Set Data Table Rows
      * @return bool
@@ -177,7 +176,6 @@ class Datadict extends \NDB_Menu_Filter
             $query .= $this->query;
         }
 
-
         return $query;
     }
     /**
@@ -215,10 +213,7 @@ class Datadict extends \NDB_Menu_Filter
                 }
             }
         }
-
-
         return $query;
-
     }
 
     /**
@@ -248,9 +243,9 @@ class Datadict extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-                $baseURL . "/datadict/js/datadict_helper.js",
-                $baseURL . "/js/components/MultiSelectDropdown.js",
-                $baseURL . "/datadict/js/dataDictIndex.js"
+             $baseURL . "/datadict/js/datadict_helper.js",
+             $baseURL . "/js/components/MultiSelectDropdown.js",
+             $baseURL . "/datadict/js/dataDictIndex.js",
             )
         );
     }
