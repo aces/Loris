@@ -31,7 +31,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       </td>
     );
   }
-
   return <td className={classes}>{cell}</td>;
 }
 

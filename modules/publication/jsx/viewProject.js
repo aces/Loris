@@ -95,7 +95,7 @@ class ViewProject extends React.Component {
     }
     return (
       <div className="row">
-        <div className="col-md-8 col-lg-7">
+        <div className="col-md-12 col-lg-12">
           <FormElement
             name="viewProject"
             onSubmit={this.handleSubmit}

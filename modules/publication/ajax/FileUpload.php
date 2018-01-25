@@ -42,34 +42,44 @@ function getPublicationData() {
 
     $db = Database::singleton();
 
-    $query = 'SELECT p.Title as Title, p.Description as Description, DateProposed, '.
-        'LeadInvestigator, LeadInvestigatorEmail, ps.Label, '.
-        'GROUP_CONCAT(DISTINCT pt.Name) as VOIs, '.
-        'GROUP_CONCAT(DISTINCT pk.Label) as Keywords '.
+    $query = 'SELECT Title, Description, DateProposed, '.
+        'LeadInvestigator, LeadInvestigatorEmail, Label '.
         'FROM publication p '.
         'LEFT JOIN publication_status ps '.
         'ON p.PublicationStatusID=ps.PublicationStatusID '.
-        'LEFT JOIN publication_parameter_type_rel pptr '.
-        'ON pptr.PublicationID=p.PublicationID ' .
-        'LEFT JOIN parameter_type pt '.
-        'ON pt.ParameterTypeID=pptr.ParameterTypeID '.
-        'LEFT JOIN publication_keyword_rel pkr '.
-        'ON pkr.PublicationID=p.PublicationID '.
-        'LEFT JOIN publication_keyword pk '.
-        'ON pkr.PublicationKeywordID=pk.PublicationKeywordID '.
-        'WHERE p.PublicationID=1 '.
+        'WHERE p.PublicationID=:pid '.
         'GROUP BY p.PublicationID';
-    error_log($query);
     $result = $db->pselectRow(
         $query,
-        //array('pid' => $id)
-        []
+        array('pid' => $id)
     );
 
     if (!$result) {
         showError('Invalid publication ID!');
         return;
     } else {
+        // separate queries for keywords & VOIs
+        // to work around GROUP_CONCAT char limit
+        $vois = $db->pselectCol(
+            'SELECT pt.Name FROM parameter_type pt '.
+            'LEFT JOIN publication_parameter_type_rel pptr '.
+            'ON pptr.ParameterTypeID=pt.ParameterTypeID '.
+            'WHERE pptr.PublicationID=:pid',
+            array('pid' => $id)
+        );
+
+        $result['VOIs'] = implode(',', $vois);
+
+        $kws = $db->pselectCol(
+            'SELECT pk.Label FROM publication_keyword pk '.
+            'LEFT JOIN publication_keyword_rel pkr '.
+            'ON pkr.PublicationKeywordID=pk.PublicationKeywordID '.
+            'WHERE pkr.PublicationID=:pid',
+            array('pid' => $id)
+        );
+
+        $result['Keywords'] = implode(',', $kws);
+
         return array(
             'title' => $result['Title'],
             'description' => $result['Description'],

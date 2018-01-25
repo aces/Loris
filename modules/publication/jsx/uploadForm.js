@@ -184,7 +184,7 @@ class PublicationUploadForm extends React.Component {
         }
       });
     }
-    
+
     return (
       <div className="row">
         <div className="col-md-8 col-lg-7">
@@ -279,21 +279,7 @@ class PublicationUploadForm extends React.Component {
               pendingValKey="pendingKWItem"
               items={this.state.formData.keywords}
             />
-            <FileElement
-              name="file"
-              id="publicationUploadEl"
-              onUserInput={this.setFormData}
-              ref="file"
-              label="Publication"
-              required={false}
-              value={this.state.formData.file}
-            />
             <ButtonElement label="Propose Project"/>
-            <div className="row">
-              <div className="col-sm-9 col-sm-offset-3">
-
-              </div>
-            </div>
           </FormElement>
         </div>
       </div>
