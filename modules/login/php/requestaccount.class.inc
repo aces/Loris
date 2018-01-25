@@ -112,10 +112,10 @@ class RequestAccount extends \NDB_Form
         if (empty($values['site'])) {
             $errors['site'] = "Please choose a site!";
         }
-        if (strlen($values['firstname']) < 3 ) {
+        if (strlen($values['firstname']) < 2 ) {
             $errors['firstname'] = "First name is too short!";
         }
-        if (strlen($values['lastname']) < 3 ) {
+        if (strlen($values['lastname']) < 2 ) {
             $errors['lastname'] = "First name is too short!";
         }
         
