@@ -75,9 +75,11 @@ infrastructure will be re-designed to follow this guideline.*
   - *i.e. Two fields pointing to the `CountryID` in the same table should
   be named like in `OriginCountryID` and `DestinationCountryID`.*
 - Both **primary key and foreign key** fields should end with **`ID`**
-  in upper case.  - **Date** fields should not just be named “Date”. A
+  in upper case.  
+- **Date** fields should not just be named “Date”. A
   **qualifier** like “BoughtDate” or “DateAccepted” should be added as
-  required.  - **No ENUM attributes** should be used in the default LORIS schema
+  required.  
+- **No ENUM attributes** should be used in the default LORIS schema
   or modules. Instead a lookup table to refer to possible choices should be used.
 
 #### Field Ordering
@@ -85,7 +87,7 @@ infrastructure will be re-designed to follow this guideline.*
 - The primary key is always in the first field.
 - The foreign key field(s) follow the primary key.
 - Other indexed fields (Unique and Index key) are after the primary and foreign 
-  key if present. Fields that are part of a composite key should be position 
+  key if present. Fields that are part of a composite key should be positioned 
   together as much as possible.
 - Other fields follow. 
 - Text, Json and Blob are the last fields in that order when present.
@@ -100,7 +102,7 @@ infrastructure will be re-designed to follow this guideline.*
   `ON UPDATE` clause. Do not rely on default behavior.
 
 #### Naming
-- Although not an enforced rules, recommandation for naming constraint are 
+- Although not an enforced rule, recommandation for naming constraint are 
   as follow:
   - The constraint name should be **specifically declared**.
   - The constraint name should be in **singular form**.
