@@ -112,7 +112,13 @@ class RequestAccount extends \NDB_Form
         if (empty($values['site'])) {
             $errors['site'] = "Please choose a site!";
         }
-
+        if (strlen($values['firstname']) < 3 ) {
+            $errors['firstname'] = "First name is too short!";
+        }
+        if (strlen($values['lastname']) < 3 ) {
+            $errors['lastname'] = "First name is too short!";
+        }
+        
         // Is this still required? It seems to be from the old captcha
         // method?
         if (isset($_SESSION['tntcon'])
