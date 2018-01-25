@@ -13,12 +13,12 @@
       </ul>
       <form method="post">
         <div class="form-group">
-          <input type="password" name="password" size="40" class="form-control"
-                 placeholder="New Password" value="{$password}" />
+          <input type="password" name="newPassword" size="40" class="form-control"
+                 placeholder="New Password" />
         </div>
         <div class="form-group">
-          <input type="password" name="confirm" size="40" class="form-control"
-                 placeholder="Confirm Password" value="{$password}" />
+          <input type="password" name="confirmPassword" size="40" class="form-control"
+                 placeholder="Confirm Password" />
           {if $error_message}
             <span id="helpBlock" class="help-block">
                 <b class="text-danger">{$error_message}</b>
@@ -29,7 +29,7 @@
           <input type="submit" name="expiry" class="btn btn-primary btn-block"
                  value="Save"/>
         </div>
-        <input type="hidden" name="login" value="true" />
+        <input type="hidden" name="login" value="false" />
         <input type="hidden" name="username" value="{$username}" />
       </form>
     </div>
