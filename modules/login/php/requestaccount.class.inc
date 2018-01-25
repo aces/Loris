@@ -116,7 +116,7 @@ class RequestAccount extends \NDB_Form
             $errors['firstname'] = "First name is too short!";
         }
         if (strlen($values['lastname']) < 2 ) {
-            $errors['lastname'] = "First name is too short!";
+            $errors['lastname'] = "Last name is too short!";
         }
         
         // Is this still required? It seems to be from the old captcha
