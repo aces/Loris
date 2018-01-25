@@ -47,9 +47,8 @@ class Training extends \NDB_Form
     *
     * @return none
     */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup($name, $page, $identifier, $commentID, $formname)
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
         $instruments = $this->getCertificationInstruments();
 
         $certifications = array();
