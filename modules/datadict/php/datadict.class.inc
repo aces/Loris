@@ -130,7 +130,6 @@ class Datadict extends \NDB_Menu_Filter
     {
 
         $x = 0;
-        print_r($this->list);
         foreach ($this->list as $item) {
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
             $i = 1;
@@ -163,7 +162,6 @@ class Datadict extends \NDB_Menu_Filter
     {
         // make the SELECT statement
         $query = "SELECT ";
-        print_r($this->columns);
         if (is_array($this->columns) && count($this->columns) > 0) {
             $query .= implode(', ', $this->columns);
         } else {
