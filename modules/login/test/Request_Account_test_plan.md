@@ -3,7 +3,7 @@
  
 ### Request Account form: 
 1. Verify that form returns error message for each field left blank
-2. Verify that form returns appropriate error message for each field with invalid value entered (e.g. name < 2 chars, invalid email)
+2. Verify that form returns appropriate error message for each field with invalid value entered (e.g.invalid email)
 3. Verify that verification code is enforced (if and only if re-captcha has been activated by the project)
 4. Verify that new verification code loads on every refresh of the page
 5. Verify that clicking "Submit" button with valid form data will load page acknowledging receipt (Thank you page)
