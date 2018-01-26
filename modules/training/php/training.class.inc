@@ -38,8 +38,7 @@ class Training extends \NDB_Form
     }
     /**
     * Loads the project page.
-    *
-    *
+     *
     * @return none
     */
     function setup()
