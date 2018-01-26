@@ -136,9 +136,9 @@ class Edit_Help_Content extends \NDB_Form
             // update the help file
             $success = $help_file->update(
                 array(
-                 'topic'          => $values['title'],
-                 'projectContent' => $values['content'],
-                 'updated'        => date(
+                 'topic'   => $values['title'],
+                 'content' => $values['content'],
+                 'updated' => date(
                      'Y-m-d h:i:s',
                      time()
                  ),
@@ -153,10 +153,10 @@ class Edit_Help_Content extends \NDB_Form
                 //create parent help section first
                 $parentID = HelpFile::insert(
                     array(
-                     'hash'           => md5($_REQUEST['section']),
-                     'topic'          => "",
-                     'projectContent' => "Under construction",
-                     'created'        => date(
+                     'hash'    => md5($_REQUEST['section']),
+                     'topic'   => "",
+                     'content' => "Under construction",
+                     'created' => date(
                          'Y-m-d h:i:s',
                          time()
                      ),
@@ -173,11 +173,11 @@ class Edit_Help_Content extends \NDB_Form
                 // insert the help file
                 $helpID = HelpFile::insert(
                     array(
-                     'parentID'       => $parentID,
-                     'hash'           => md5($_REQUEST['subsection']),
-                     'topic'          => $values['title'],
-                     'projectContent' => $values['content'],
-                     'created'        => date(
+                     'parentID' => $parentID,
+                     'hash'     => md5($_REQUEST['subsection']),
+                     'topic'    => $values['title'],
+                     'content'  => $values['content'],
+                     'created'  => date(
                          'Y-m-d h:i:s',
                          time()
                      ),
@@ -190,10 +190,10 @@ class Edit_Help_Content extends \NDB_Form
                 //default case
                 $helpID = HelpFile::insert(
                     array(
-                     'hash'           => md5($_REQUEST['section']),
-                     'topic'          => $values['title'],
-                     'projectContent' => $values['content'],
-                     'created'        => date(
+                     'hash'    => md5($_REQUEST['section']),
+                     'topic'   => $values['title'],
+                     'content' => $values['content'],
+                     'created' => date(
                          'Y-m-d h:i:s',
                          time()
                      ),

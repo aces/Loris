@@ -6,8 +6,6 @@ DROP TABLE IF EXISTS `acknowledgements`;
 DROP TABLE IF EXISTS `data_release_permissions`;
 DROP TABLE IF EXISTS `data_release`;
 
-DROP TABLE IF EXISTS `empty_queries`;
-
 DROP TABLE IF EXISTS `ExternalLinks`;
 DROP TABLE IF EXISTS `ExternalLinkTypes`;
 
@@ -60,9 +58,6 @@ DROP TABLE IF EXISTS `user_login_history`;
 DROP TABLE IF EXISTS `user_account_history`;
 -- TODO :: Add permissions here... because useR_perm_rel needs to be DROPed before users
 
-DROP TABLE IF EXISTS `final_radiological_review_history`;
-DROP TABLE IF EXISTS `final_radiological_review`;
-
 DROP TABLE IF EXISTS `data_integrity_flag`;
 
 DROP TABLE IF EXISTS `certification_training_quiz_answers`;
@@ -96,11 +91,6 @@ DROP TABLE IF EXISTS `notification_modules`;
 DROP TABLE IF EXISTS `document_repository`;
 DROP TABLE IF EXISTS `document_repository_categories`;
 
-DROP TABLE IF EXISTS `tarchive_find_new_uploads`;
-DROP TABLE IF EXISTS `tarchive_files`;
-DROP TABLE IF EXISTS `tarchive_series`;
-DROP TABLE IF EXISTS `tarchive`;
-
 DROP TABLE IF EXISTS `violations_resolved`;
 DROP TABLE IF EXISTS `mri_violations_log`;
 DROP TABLE IF EXISTS `mri_protocol_checks`;
@@ -116,6 +106,10 @@ DROP TABLE IF EXISTS `mri_scan_type`;
 DROP TABLE IF EXISTS `mri_scanner`;
 DROP TABLE IF EXISTS `mri_processing_protocol`;
 DROP TABLE IF EXISTS `ImagingFileTypes`;
+
+DROP TABLE IF EXISTS `tarchive_files`;
+DROP TABLE IF EXISTS `tarchive_series`;
+DROP TABLE IF EXISTS `tarchive`;
 
 DROP TABLE IF EXISTS `history`;
 DROP TABLE IF EXISTS `Visit_Windows`;
@@ -170,7 +164,7 @@ CREATE TABLE `project_rel` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `psc` (
-  `CenterID` tinyint(2) unsigned NOT NULL AUTO_INCREMENT,
+  `CenterID` integer unsigned NOT NULL AUTO_INCREMENT,
   `Name` varchar(150) NOT NULL DEFAULT '',
   `PSCArea` varchar(150) DEFAULT NULL,
   `Address` varchar(150) DEFAULT NULL,
@@ -231,7 +225,7 @@ VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N',''
 
 CREATE TABLE `user_psc_rel` (
   `UserID` int(10) unsigned NOT NULL,
-  `CenterID` tinyint(2) unsigned NOT NULL,
+  `CenterID` integer unsigned NOT NULL,
   PRIMARY KEY  (`UserID`,`CenterID`),
   KEY `FK_user_psc_rel_2` (`CenterID`),
   CONSTRAINT `FK_user_psc_rel_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -255,7 +249,7 @@ CREATE TABLE `candidate` (
   `DoB` date DEFAULT NULL,
   `EDC` date DEFAULT NULL,
   `Gender` enum('Male','Female') DEFAULT NULL,
-  `CenterID` tinyint(2) unsigned NOT NULL DEFAULT '0',
+  `CenterID` integer unsigned NOT NULL DEFAULT '0',
   `ProjectID` int(11) DEFAULT NULL,
   `Ethnicity` varchar(255) DEFAULT NULL,
   `Active` enum('Y','N') NOT NULL DEFAULT 'Y',
@@ -285,7 +279,7 @@ CREATE TABLE `candidate` (
 CREATE TABLE `session` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6) NOT NULL DEFAULT '0',
-  `CenterID` tinyint(2) unsigned DEFAULT NULL,
+  `CenterID` integer unsigned DEFAULT NULL,
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
   `Visit_label` varchar(255) DEFAULT NULL,
   `SubprojectID` int(11) DEFAULT NULL,
@@ -440,6 +434,87 @@ CREATE TABLE `Visit_Windows` (
 
 
 -- ********************************
+-- tarchive tables
+-- ********************************
+
+
+CREATE TABLE `tarchive` (
+  `DicomArchiveID` varchar(255) NOT NULL default '',
+  `PatientID` varchar(255) NOT NULL default '',
+  `PatientName` varchar(255) NOT NULL default '',
+  `PatientDoB` date default NULL,
+  `PatientGender` varchar(255) default NULL,
+  `neurodbCenterName` varchar(255) default NULL,
+  `CenterName` varchar(255) NOT NULL default '',
+  `LastUpdate` datetime default NULL,
+  `DateAcquired` date default NULL,
+  `DateFirstArchived` datetime default NULL,
+  `DateLastArchived` datetime default NULL,
+  `AcquisitionCount` int(11) NOT NULL default '0',
+  `NonDicomFileCount` int(11) NOT NULL default '0',
+  `DicomFileCount` int(11) NOT NULL default '0',
+  `md5sumDicomOnly` varchar(255) default NULL,
+  `md5sumArchive` varchar(255) default NULL,
+  `CreatingUser` varchar(255) NOT NULL default '',
+  `sumTypeVersion` tinyint(4) NOT NULL default '0',
+  `tarTypeVersion` tinyint(4) default NULL,
+  `SourceLocation` varchar(255) NOT NULL default '',
+  `ArchiveLocation` varchar(255) default NULL,
+  `ScannerManufacturer` varchar(255) NOT NULL default '',
+  `ScannerModel` varchar(255) NOT NULL default '',
+  `ScannerSerialNumber` varchar(255) NOT NULL default '',
+  `ScannerSoftwareVersion` varchar(255) NOT NULL default '',
+  `SessionID` int(10) unsigned default NULL,
+  `uploadAttempt` tinyint(4) NOT NULL default '0',
+  `CreateInfo` text,
+  `AcquisitionMetadata` longtext NOT NULL,
+  `TarchiveID` int(11) NOT NULL auto_increment,
+  `DateSent` datetime DEFAULT NULL,
+  `PendingTransfer` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY  (`TarchiveID`),
+  KEY `SessionID` (`SessionID`),
+  CONSTRAINT `FK_tarchive_sessionID`
+    FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `tarchive_series` (
+  `TarchiveSeriesID` int(11) NOT NULL auto_increment,
+  `TarchiveID` int(11) NOT NULL default '0',
+  `SeriesNumber` int(11) NOT NULL default '0',
+  `SeriesDescription` varchar(255) default NULL,
+  `SequenceName` varchar(255) default NULL,
+  `EchoTime` double default NULL,
+  `RepetitionTime` double default NULL,
+  `InversionTime` double default NULL,
+  `SliceThickness` double default NULL,
+  `PhaseEncoding` varchar(255) default NULL,
+  `NumberOfFiles` int(11) NOT NULL default '0',
+  `SeriesUID` varchar(255) default NULL,
+  `Modality` ENUM ('MR', 'PT') default NULL,
+  PRIMARY KEY  (`TarchiveSeriesID`),
+  KEY `TarchiveID` (`TarchiveID`),
+  CONSTRAINT `tarchive_series_ibfk_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `tarchive_files` (
+  `TarchiveFileID` int(11) NOT NULL auto_increment,
+  `TarchiveID` int(11) NOT NULL default '0',
+  `TarchiveSeriesID` INT(11) DEFAULT NULL,
+  `SeriesNumber` int(11) default NULL,
+  `FileNumber` int(11) default NULL,
+  `EchoNumber` int(11) default NULL,
+  `SeriesDescription` varchar(255) default NULL,
+  `Md5Sum` varchar(255) NOT NULL,
+  `FileName` varchar(255) NOT NULL,
+  PRIMARY KEY  (`TarchiveFileID`),
+  KEY `TarchiveID` (`TarchiveID`),
+  KEY `TarchiveSeriesID` (`TarchiveSeriesID`),
+  CONSTRAINT `tarchive_files_ibfk_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`) ON DELETE CASCADE,
+  CONSTRAINT `tarchive_files_TarchiveSeriesID_fk` FOREIGN KEY (`TarchiveSeriesID`) REFERENCES `tarchive_series` (`TarchiveSeriesID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- ********************************
 -- Imaging tables
 -- ********************************
 
@@ -553,12 +628,14 @@ CREATE TABLE `files` (
   KEY `staging_filetype_outputtype` (`PendingStaging`,`FileType`,`OutputType`),
   KEY `AcquiIndex` (`AcquisitionProtocolID`,`SessionID`),
   KEY `scannerid` (`ScannerID`),
+  KEY `tarchivesource` (`TarchiveSource`),
   CONSTRAINT `FK_files_2` FOREIGN KEY (`AcquisitionProtocolID`) REFERENCES `mri_scan_type` (`ID`),
   CONSTRAINT `FK_files_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `FK_files_3` FOREIGN KEY (`SourceFileID`) REFERENCES `files` (`FileID`),
   CONSTRAINT `FK_files_4` FOREIGN KEY (`ProcessProtocolID`) REFERENCES `mri_processing_protocol` (`ProcessProtocolID`),
   CONSTRAINT `FK_files_FileTypes` FOREIGN KEY (`FileType`) REFERENCES `ImagingFileTypes`(`type`),
-  CONSTRAINT `FK_files_scannerID` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`)
+  CONSTRAINT `FK_files_scannerID` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`),
+  CONSTRAINT `FK_files_TarchiveID` FOREIGN KEY (`TarchiveSource`) REFERENCES `tarchive` (`TarchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `files_intermediary` (
@@ -574,14 +651,18 @@ CREATE TABLE `files_intermediary` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `files_qcstatus` (
-    `FileQCID` int(11) PRIMARY KEY auto_increment,
-    `FileID` int(11) UNIQUE NULL,
+    `FileQCID` int(11) auto_increment,
+    `FileID` int(10) UNSIGNED UNIQUE NULL,
     `SeriesUID` varchar(64) DEFAULT NULL,
     `EchoTime` double DEFAULT NULL,
     `QCStatus` enum('Pass', 'Fail'),
     `QCFirstChangeTime` int(10) unsigned,
     `QCLastChangeTime` int(10) unsigned,
-    `Selected` enum('true', 'false') DEFAULT NULL
+    `Selected` enum('true', 'false') DEFAULT NULL,
+    PRIMARY KEY (`FileQCID`),
+    KEY (`FileID`),
+    CONSTRAINT `FK_filesqcstatus_FileID`
+      FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `mri_acquisition_dates` (
@@ -639,7 +720,13 @@ CREATE TABLE `mri_upload` (
   `IsCandidateInfoValidated` tinyint(1) DEFAULT NULL,
   `IsTarchiveValidated` tinyint(1) NOT NULL DEFAULT '0',
   `IsPhantom` enum('N','Y') NOT NULL DEFAULT 'N',
-  PRIMARY KEY (`UploadID`)
+  PRIMARY KEY (`UploadID`),
+  KEY (`SessionID`),
+  KEY (`TarchiveID`),
+  CONSTRAINT `FK_mriupload_SessionID`
+    FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
+  CONSTRAINT `FK_mriupload_TarchiveID`
+    FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `mri_protocol_checks` (
@@ -649,8 +736,18 @@ CREATE TABLE `mri_protocol_checks` (
   `Header` varchar(255) DEFAULT NULL,
   `ValidRange` varchar(255) DEFAULT NULL,
   `ValidRegex` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  KEY (`Scan_type`),
+  CONSTRAINT `FK_mriProtocolChecks_ScanType`
+    FOREIGN KEY (`Scan_type`) REFERENCES `mri_scan_type` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+-- ********************************
+-- MRI violations tables
+-- ********************************
+
 
 CREATE TABLE `MRICandidateErrors` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -660,7 +757,9 @@ CREATE TABLE `MRICandidateErrors` (
   `MincFile` varchar(255) DEFAULT NULL,
   `PatientName` varchar(255) DEFAULT NULL,
   `Reason` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  CONSTRAINT `FK_tarchive_MRICandidateError_1`
+    FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `mri_violations_log` (
@@ -679,7 +778,9 @@ CREATE TABLE `mri_violations_log` (
   `Value` varchar(255) DEFAULT NULL,
   `ValidRange` varchar(255) DEFAULT NULL,
   `ValidRegex` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`LogID`)
+  PRIMARY KEY (`LogID`),
+  CONSTRAINT `FK_tarchive_mriViolationsLog_1`
+    FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `violations_resolved` (
@@ -697,6 +798,7 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6),
   `PSCID` varchar(255),
+  `TarchiveID` int(11),
   `time_run` datetime,
   `series_description` varchar(255) DEFAULT NULL,
   `minc_location` varchar(255),
@@ -713,91 +815,11 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `zstep_range` varchar(255) DEFAULT NULL,
   `time_range` varchar(255)  DEFAULT NULL,
   `SeriesUID` varchar(64) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ********************************
--- tarchive tables
--- ********************************
-
-
-CREATE TABLE `tarchive` (
-  `DicomArchiveID` varchar(255) NOT NULL default '',
-  `PatientID` varchar(255) NOT NULL default '',
-  `PatientName` varchar(255) NOT NULL default '',
-  `PatientDoB` date default NULL,
-  `PatientGender` varchar(255) default NULL,
-  `neurodbCenterName` varchar(255) default NULL,
-  `CenterName` varchar(255) NOT NULL default '',
-  `LastUpdate` datetime default NULL,
-  `DateAcquired` date default NULL,
-  `DateFirstArchived` datetime default NULL,
-  `DateLastArchived` datetime default NULL,
-  `AcquisitionCount` int(11) NOT NULL default '0',
-  `NonDicomFileCount` int(11) NOT NULL default '0',
-  `DicomFileCount` int(11) NOT NULL default '0',
-  `md5sumDicomOnly` varchar(255) default NULL,
-  `md5sumArchive` varchar(255) default NULL,
-  `CreatingUser` varchar(255) NOT NULL default '',
-  `sumTypeVersion` tinyint(4) NOT NULL default '0',
-  `tarTypeVersion` tinyint(4) default NULL,
-  `SourceLocation` varchar(255) NOT NULL default '',
-  `ArchiveLocation` varchar(255) default NULL,
-  `ScannerManufacturer` varchar(255) NOT NULL default '',
-  `ScannerModel` varchar(255) NOT NULL default '',
-  `ScannerSerialNumber` varchar(255) NOT NULL default '',
-  `ScannerSoftwareVersion` varchar(255) NOT NULL default '',
-  `SessionID` int(10) unsigned default NULL,
-  `uploadAttempt` tinyint(4) NOT NULL default '0',
-  `CreateInfo` text,
-  `AcquisitionMetadata` longtext NOT NULL,
-  `TarchiveID` int(11) NOT NULL auto_increment,
-  `DateSent` datetime DEFAULT NULL,
-  `PendingTransfer` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY  (`TarchiveID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `tarchive_series` (
-  `TarchiveSeriesID` int(11) NOT NULL auto_increment,
-  `TarchiveID` int(11) NOT NULL default '0',
-  `SeriesNumber` int(11) NOT NULL default '0',
-  `SeriesDescription` varchar(255) default NULL,
-  `SequenceName` varchar(255) default NULL,
-  `EchoTime` double default NULL,
-  `RepetitionTime` double default NULL,
-  `InversionTime` double default NULL,
-  `SliceThickness` double default NULL,
-  `PhaseEncoding` varchar(255) default NULL,
-  `NumberOfFiles` int(11) NOT NULL default '0',
-  `SeriesUID` varchar(255) default NULL,
-  `Modality` ENUM ('MR', 'PT') default NULL,
-  PRIMARY KEY  (`TarchiveSeriesID`),
+  PRIMARY KEY (`ID`),
   KEY `TarchiveID` (`TarchiveID`),
-  CONSTRAINT `tarchive_series_ibfk_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`) ON DELETE CASCADE
+  CONSTRAINT `FK_mri_violated_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `tarchive_files` (
-  `TarchiveFileID` int(11) NOT NULL auto_increment,
-  `TarchiveID` int(11) NOT NULL default '0',
-  `TarchiveSeriesID` INT(11) DEFAULT NULL,
-  `SeriesNumber` int(11) default NULL,
-  `FileNumber` int(11) default NULL,
-  `EchoNumber` int(11) default NULL,
-  `SeriesDescription` varchar(255) default NULL,
-  `Md5Sum` varchar(255) NOT NULL,
-  `FileName` varchar(255) NOT NULL,
-  PRIMARY KEY  (`TarchiveFileID`),
-  KEY `TarchiveID` (`TarchiveID`),
-  KEY `TarchiveSeriesID` (`TarchiveSeriesID`),
-  CONSTRAINT `tarchive_files_ibfk_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`) ON DELETE CASCADE,
-  CONSTRAINT `tarchive_files_TarchiveSeriesID_fk` FOREIGN KEY (`TarchiveSeriesID`) REFERENCES `tarchive_series` (`TarchiveSeriesID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `tarchive_find_new_uploads` (
-  `CenterName` varchar(255) NOT NULL,
-  `LastRan` datetime DEFAULT NULL,
-  PRIMARY KEY (`CenterName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This table is used by Loris-MRI/find_uploads_tarchive to store the last time the script was ran for that location';
 
 -- ********************************
 -- document_repository tables
@@ -874,7 +896,7 @@ CREATE TABLE `notification_spool` (
   `Error` enum('Y','N') default NULL,
   `Verbose` enum('Y','N') NOT NULL DEFAULT 'N',
   `Sent` enum('N','Y') NOT NULL default 'N',
-  `CenterID` tinyint(2) unsigned default NULL,
+  `CenterID` integer unsigned default NULL,
   `Origin` varchar(255) DEFAULT NULL,
   PRIMARY KEY  (`NotificationID`),
   KEY `FK_notification_spool_1` (`NotificationTypeID`),
@@ -1130,7 +1152,7 @@ CREATE TABLE `examiners` (
 
 CREATE TABLE `examiners_psc_rel` (
   `examinerID` int(10) unsigned NOT NULL,
-  `centerID` tinyint(2) unsigned NOT NULL,
+  `centerID` integer unsigned NOT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `pending_approval` enum('Y','N') NOT NULL DEFAULT 'N',
   PRIMARY KEY  (`examinerID`,`centerID`),
@@ -1218,42 +1240,6 @@ CREATE TABLE `data_integrity_flag` (
   `dataflag_fbdeleted` int(11) NOT NULL DEFAULT '0',
   `dataflag_userid` varchar(255) NOT NULL,
   PRIMARY KEY (`dataflag_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ********************************
--- final_radiological_review tables
--- ********************************
-
-
-CREATE TABLE `final_radiological_review` (
-  `CommentID` varchar(255) NOT NULL,
-  `Review_Done` enum('yes','no','not_answered') DEFAULT NULL,
-  `Final_Review_Results` enum('normal','abnormal','atypical','not_answered') DEFAULT NULL,
-  `Final_Exclusionary` enum('exclusionary','non_exclusionary','not_answered') DEFAULT NULL,
-  `SAS` int(11) DEFAULT NULL,
-  `PVS` int(11) DEFAULT NULL,
-  `Final_Incidental_Findings` text,
-  `Final_Examiner` int(11) DEFAULT NULL,
-  `Final_Review_Results2` enum('normal','abnormal','atypical','not_answered') DEFAULT NULL,
-  `Final_Examiner2` int(11) DEFAULT NULL,
-  `Final_Exclusionary2` enum('exclusionary','non_exclusionary','not_answered') DEFAULT NULL,
-  `Review_Done2` enum('yes','no','not_answered') DEFAULT NULL,
-  `SAS2` int(11) DEFAULT NULL,
-  `PVS2` int(11) DEFAULT NULL,
-  `Final_Incidental_Findings2` text,
-  `Finalized` enum('yes','no','not_answered') DEFAULT NULL,
-  PRIMARY KEY (`CommentID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `final_radiological_review_history` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `col` varchar(255) NOT NULL DEFAULT '',
-  `old` text,
-  `new` text,
-  `CommentID` varchar(255),
-  `changeDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `userID` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
@@ -1383,7 +1369,7 @@ CREATE TABLE `issues` (
   `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `lastUpdatedBy` varchar(255) DEFAULT NULL,
   `sessionID` int(10) unsigned DEFAULT NULL,
-  `centerID` tinyint(2) unsigned DEFAULT NULL,
+  `centerID` integer unsigned DEFAULT NULL,
   `candID` int(6) DEFAULT NULL,
   `category` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`issueID`),
@@ -1607,11 +1593,18 @@ CREATE TABLE `SNP` (
   `FunctionPrediction` enum('exonic','ncRNAexonic','splicing','UTR3','UTR5') DEFAULT NULL,
   `Damaging` enum('D','NA') DEFAULT NULL,
   `ExonicFunction` enum('nonsynonymous','unknown') DEFAULT NULL,
-  `GenomeLocID` bigint(20) DEFAULT NULL,
+  `Chromosome` varchar(255) DEFAULT NULL,
+  `Strand` varchar(255) DEFAULT NULL,
+  `EndLoc` int(11) DEFAULT NULL,
+  `StartLoc` int(11) DEFAULT NULL,
+  `Symbol` varchar(255) DEFAULT NULL,
+  `Name` varchar(255) DEFAULT NULL,
+  `NCBIID` varchar(255) DEFAULT NULL,
+  `OfficialSymbol` varchar(255) DEFAULT NULL,
+  `OfficialName` text,
   PRIMARY KEY (`SNPID`),
   UNIQUE KEY `uniq_snp` (`rsID`,`SNPExternalSource`),
-  KEY `SNP_ibfk_2` (`GenomeLocID`),
-  CONSTRAINT `SNP_ibfk_2` FOREIGN KEY (`GenomeLocID`) REFERENCES `genome_loc` (`GenomeLocID`)
+  KEY `index3` (`Chromosome`,`StartLoc`,`EndLoc`,`Strand`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `SNP_candidate_rel` (
@@ -1648,13 +1641,20 @@ CREATE TABLE `CNV` (
   `ArrayReportDetail` varchar(255) DEFAULT NULL,
   `ValidationMethod` varchar(50) DEFAULT NULL,
   `PlatformID` bigint(20) DEFAULT NULL,
-  `GenomeLocID` bigint(20) DEFAULT NULL,
+  `Chromosome` varchar(255) DEFAULT NULL,
+  `Strand` varchar(255) DEFAULT NULL,
+  `EndLoc` int(11) DEFAULT NULL,
+  `StartLoc` int(11) DEFAULT NULL,
+  `Symbol` varchar(255) DEFAULT NULL,
+  `Name` varchar(255) DEFAULT NULL,
+  `NCBIID` varchar(255) DEFAULT NULL,
+  `OfficialSymbol` varchar(255) DEFAULT NULL,
+  `OfficialName` text,
   PRIMARY KEY (`CNVID`),
   KEY `PlatformID` (`PlatformID`),
-  KEY `GenomeLocID` (`GenomeLocID`),
   KEY `CandID` (`CandID`),
+  KEY `index4` (`Chromosome`,`StartLoc`,`EndLoc`,`Strand`),
   CONSTRAINT `CNV_ibfk_1` FOREIGN KEY (`PlatformID`) REFERENCES `genotyping_platform` (`PlatformID`),
-  CONSTRAINT `CNV_ibfk_2` FOREIGN KEY (`GenomeLocID`) REFERENCES `genome_loc` (`GenomeLocID`),
   CONSTRAINT `CNV_ibfk_3` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1680,8 +1680,8 @@ CREATE TABLE `genomic_analysis_modality_enum` (
 
 
 INSERT IGNORE INTO `genomic_analysis_modality_enum` (analysis_modality) VALUES
-('Methylation beta-values'),
-('Other');
+  ('Methylation beta-values'),
+  ('Other');
 
 CREATE TABLE `genomic_files` (
   `GenomicFileID` int unsigned NOT NULL AUTO_INCREMENT,
@@ -1730,7 +1730,6 @@ CREATE TABLE `genomic_sample_candidate_rel` (
 
 CREATE TABLE `genomic_cpg_annotation` (
   `cpg_name` varchar(100) NOT NULL,
-  `location_id` bigint(20) NOT NULL,
   `address_id_a` int(10) unsigned DEFAULT NULL,
   `probe_seq_a` varchar(100) DEFAULT NULL,
   `address_id_b` int(10) unsigned DEFAULT NULL,
@@ -1752,10 +1751,13 @@ CREATE TABLE `genomic_cpg_annotation` (
   `reg_feature_group` varchar(100) DEFAULT NULL,
   `dhs` tinyint(1) DEFAULT NULL,
   `platform_id` bigint(20) DEFAULT NULL,
+  `Chromosome` varchar(255) DEFAULT NULL,
+  `Strand` varchar(255) DEFAULT NULL,
+  `EndLoc` int(11) DEFAULT NULL,
+  `StartLoc` int(11) DEFAULT NULL,
   PRIMARY KEY (`cpg_name`),
-  KEY `location_id` (`location_id`),
   KEY `platform_id` (`platform_id`),
-  CONSTRAINT `genomic_cpg_annotation_ibfk_1` FOREIGN KEY (`location_id`) REFERENCES `genome_loc` (`GenomeLocID`),
+  KEY `index3` (`Chromosome`,`StartLoc`,`EndLoc`,`Strand`),
   CONSTRAINT `genomic_cpg_annotation_ibfk_2` FOREIGN KEY (`platform_id`) REFERENCES `genotyping_platform` (`PlatformID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1820,18 +1822,6 @@ INSERT INTO `ExternalLinks` (LinkTypeID, LinkText, LinkURL) VALUES
   ((SELECT LinkTypeID from ExternalLinkTypes WHERE LinkType='StudyLinks'), 'Loris Website', 'http://www.loris.ca'),
   ((SELECT LinkTypeID from ExternalLinkTypes WHERE LinkType='StudyLinks'), 'GitHub', 'https://github.com/aces/Loris'),
   ((SELECT LinkTypeID from ExternalLinkTypes WHERE LinkType='dashboard'), 'Loris Website', 'http://www.loris.ca');
-
--- ********************************
--- empty_queries
--- ********************************
-
-
-CREATE TABLE `empty_queries` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `query` text NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
 -- data_release

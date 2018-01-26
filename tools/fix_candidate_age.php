@@ -62,7 +62,7 @@ foreach ($instruments as $inst=>$fullName) {
     foreach ($DBInstTable as $k => $row) {
         // Get Instrument Instance
         try {
-            $instrument = NDB_BVL_Instrument::factory($inst, $row['CommentID'], null, false);
+            $instrument = NDB_BVL_Instrument::factory($inst, $row['CommentID'], '', false);
         } catch (LorisException $e) {
             echo "$inst instrument row with CommentID: ".$row['CommentID']." was ".
                 " Ignored for one of the following reasons:\n".

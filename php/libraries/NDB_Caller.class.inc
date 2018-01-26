@@ -451,7 +451,12 @@ class NDB_Caller
         }
 
         // save instrument form data
-        $success = $instrument->save();
+        if (!isset($_REQUEST['ClearInstrument'])) {
+            // If ClearInstrument was set, it's the control
+            // panel, not the instrument that needs to be
+            // saved.
+            $success = $instrument->save();
+        }
 
         if ($redirectToOnSuccess !== null && $success !== false) {
             header("Location: $redirectToOnSuccess");

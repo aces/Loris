@@ -90,10 +90,10 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 $db_config = $config->getSetting('database');
                 exec("php generate_tables_sql_and_testNames.php < $new_file");
 
-                $instrument =& \NDB_BVL_Instrument::factory(
+                $instrument = \NDB_BVL_Instrument::factory(
                     $instname,
-                    null,
-                    null
+                    '',
+                    ''
                 );
                 if (!isset($db_config['quatUser'], $db_config['quatPassword'])) {
                     throw new \LorisException(

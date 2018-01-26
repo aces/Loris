@@ -154,6 +154,16 @@ class CouchDB
 {
 
     /**
+     * This array keep a reference for each instance of this class.
+     */
+    private static $_instances = array();
+
+    /**
+     * Keep the database name
+     */
+    private $_database = '';
+
+    /**
      * Boolean true if we are currently doing a bulk transaction.
      */
     var $bulk = false;
@@ -165,22 +175,43 @@ class CouchDB
     var $bulkDocuments = array();
 
     /**
-     * Returns one and only one CouchDB database wrapper object.
+     * Private Constructor for CouchDB
+     *
+     * @param string $database The couchDB database name
+     */
+    private function __construct($database = '')
+    {
+        $this->_database = $database;
+    }
+
+    /**
+     * Returns one and only one CouchDB database wrapper object for a given
+     * database name.
+     *
      * NOTE: You shouldn't call this directly, instead you should
      *       probably use the NDB_Factory->couchDB() factory method
      *       which calls this.
      *
+     * @param string $database The couchDB database name
+     *
      * @return CouchDB A Loris CouchDB wrapper object
      */
-    static function singleton()
+    static function &getInstance($database = null)
     {
-        static $db = null;
-        if ($db === null) {
-            $db = new CouchDB();
+        if (empty(self::$_instances[$database])) {
+
+            if (empty($database)) {
+                // Default to DQT
+                $config   = \NDB_Config::singleton();
+                $database = $config->getSetting("CouchDB")['database'];
+            }
+
+            $db = new CouchDB($database);
             $db->SocketHandler = new SocketWrapper();
-            return $db;
+
+            self::$_instances[$database] = $db;
         }
-        return $db;
+        return self::$_instances[$database];
     }
 
     /**
@@ -193,10 +224,7 @@ class CouchDB
      */
     function _constructURL($op, $doc)
     {
-        $config = NDB_Config::singleton();
-        $db     = $config->getSetting('CouchDB');
-
-        return "$op /$db[dbName]/$doc";
+        return "$op /$this->_database/$doc";
     }
 
     /**
