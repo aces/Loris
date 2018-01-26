@@ -270,13 +270,13 @@ function backupEntries($selectID, $table_name, $FK_field)
 
     // create the mysqldump query to back the orphan entries to be deleted
     $sqldump = "mysqldump " .
-        "-u " . $database['username'] . " " .
-        "-h " . $database['host']     . " " .
-        "-p"  . $database['password'] . " " .
-        $database['database']         . " " .
-        $table_name                   . " " .
-        "--where='$where'"            . " " .
-        "--compact --no-create-info"  . " " .
+        "-u " . escapeshellarg($database['username']) . " " .
+        "-h " . escapeshellarg($database['host'])     . " " .
+        "-p"  . escapeshellarg($database['password']) . " " .
+        escapeshellarg($database['database'])         . " " .
+        escapeshellarg($table_name)                   . " " .
+        "--where=" . escapeshellarg($where)           . " " .
+        "--compact --no-create-info"                  . " " .
         ">> ./backup_release_19-0_upgrade.sql";
 
     system($sqldump, $retval); // execute mysqldump
