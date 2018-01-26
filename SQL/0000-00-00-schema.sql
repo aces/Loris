@@ -711,7 +711,7 @@ CREATE TABLE `mri_upload` (
   `UploadLocation` varchar(255) NOT NULL DEFAULT '',
   `DecompressedLocation` varchar(255) NOT NULL DEFAULT '',
   `InsertionComplete` tinyint(1) NOT NULL DEFAULT '0',
-  `Inserting` tinyint(1) NOT NULL DEFAULT NULL,
+  `Inserting` tinyint(1) DEFAULT NULL,
   `PatientName` varchar(255) NOT NULL DEFAULT '',
   `number_of_mincInserted` int(11) DEFAULT NULL,
   `number_of_mincCreated` int(11) DEFAULT NULL,
