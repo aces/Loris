@@ -7,10 +7,19 @@ class ViewProject extends React.Component {
       isLoaded: false
     };
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.setFormData = this.setFormData.bind(this);
   }
 
   handleSubmit() {
 
+  }
+
+  setFormData(formElement, value) {
+    let formData = this.state.formData;
+    formData[formElement] = value;
+    this.setState({
+      formData: formData
+    });
   }
 
   componentDidMount() {
@@ -30,6 +39,7 @@ class ViewProject extends React.Component {
         };
         self.setState({
           formData: formData,
+          statusOpts: data.statusOpts,
           isLoaded: true
         });
       },
@@ -40,10 +50,6 @@ class ViewProject extends React.Component {
         });
       }
     });
-  }
-  
-  generateLinks() {
-    
   }
 
   render() {
@@ -93,6 +99,24 @@ class ViewProject extends React.Component {
         );
       })
     }
+
+    // TODO -- add permission for project approval
+    // TODO -- add permission for project editing
+    var statusElement = <SelectElement
+      name="status"
+      label="Status"
+      id="status"
+      value={this.state.formData.status}
+      onUserInput={this.setFormData}
+      required={true}
+      options={this.state.statusOpts}
+      emptyOption={false}
+    />;
+
+    var submitBtn = <ButtonElement
+      name="Submit"
+    />;
+
     return (
       <div className="row">
         <div className="col-md-12 col-lg-12">
@@ -107,12 +131,7 @@ class ViewProject extends React.Component {
                 {this.state.formData.title}
               </h3>
             </div>
-            <StaticElement
-              name="status"
-              label="Status"
-              ref="status"
-              text={this.state.formData.status}
-            />
+            {statusElement}
             <StaticElement
               name="leadInvestigator"
               label="Lead Investigator"
@@ -143,6 +162,7 @@ class ViewProject extends React.Component {
               ref="description"
               text={this.state.formData.description}
             />
+            {submitBtn}
           </FormElement>
         </div>
       </div>

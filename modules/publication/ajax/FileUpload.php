@@ -80,6 +80,15 @@ function getPublicationData() {
 
         $result['Keywords'] = implode(',', $kws);
 
+        $rawStatus = $db->pselectCol(
+            'SELECT Label FROM publication_status',
+            array()
+        );
+
+        $statusOpts = array();
+        foreach ($rawStatus as $rs) {
+            $statusOpts[$rs] = $rs;
+        }
         return array(
             'title' => $result['Title'],
             'description' => $result['Description'],
@@ -87,7 +96,8 @@ function getPublicationData() {
             'leadInvestigatorEmail' => $result['LeadInvestigatorEmail'],
             'status' => $result['Label'],
             'voi' => $result['VOIs'],
-            'keywords' => $result['Keywords']
+            'keywords' => $result['Keywords'],
+            'statusOpts' => $statusOpts
         );
     }
 }

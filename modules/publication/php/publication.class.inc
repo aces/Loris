@@ -113,11 +113,16 @@ class Publication extends \NDB_Menu_Filter_Form
     {
         parent::_setupPage($name, $page, $identifier, $commentID, $formname);
 
-        $statusOptions = array(
-            'Approved' => 'Approved',
-            'Pending' => 'Pending',
-            'Rejected' => 'Rejected'
+        $db = \Database::singleton();
+        $rawStatus = $db->pselectCol(
+            'SELECT Label FROM publication_status',
+            array()
         );
+        $statusOptions = array();
+        foreach($rawStatus as $rs) {
+            $statusOptions[$rs] = $rs;
+        }
+
         $this->addBasicText(
             'title',
             'Title'

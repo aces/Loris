@@ -40,12 +40,6 @@ class PublicationUploadForm extends React.Component {
     });
   }
 
-  /**
-   * Set the form data based on state values of child elements/componenets
-   *
-   * @param {string} formElement - name of the selected element
-   * @param {string} value - selected value for corresponding form element
-   */
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
@@ -227,8 +221,6 @@ class PublicationUploadForm extends React.Component {
               required={true}
               value={this.state.formData.leadInvestigatorEmail}
             />
-
-            {/* START Variables of Interest */}
             <div className="row form-group">
               <label className="col-sm-3 control-label"/>
               <div className="col-sm-9">
@@ -241,30 +233,29 @@ class PublicationUploadForm extends React.Component {
               </div>
             </div>
             <SelectElement
-              name={"voiInst"}
+              name="voiInst"
               label="Instrument"
-              ref={"voiInst"}
-              id={"voiInst"}
+              ref="voiInst"
+              id="voiInst"
               onUserInput={this.setFormData}
               required={true}
-              value={this.state.formData['voiInst']}
+              value={this.state.formData.voiInst}
               options={testNames}
             />
             <TagsElement
-              name={"voiFields"}
+              name="voiFields"
               label="Instrument Fields"
-              ref={"voiFields"}
-              id={"voiFields"}
+              ref="voiFields"
+              id="voiFields"
               onUserInput={this.setFormData}
               onUserAdd={this.addListItem}
               onUserRemove={this.removeListItem}
               required={true}
-              value={this.state.formData['pendingItemVF']}
+              value={this.state.formData.pendingItemVF}
               options={testFields}
               pendingValKey="pendingItemVF"
-              items={this.state.formData['voiFields']}
+              items={this.state.formData.voiFields}
             />
-            {/* END Variables of Interest */}
             <TagsElement
               name="keywords"
               label="Keywords"
