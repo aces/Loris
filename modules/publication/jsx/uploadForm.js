@@ -250,7 +250,7 @@ class PublicationUploadForm extends React.Component {
               value={this.state.formData['voiInst']}
               options={testNames}
             />
-            <ListElement
+            <TagsElement
               name={"voiFields"}
               label="Instrument Fields"
               ref={"voiFields"}
@@ -265,7 +265,7 @@ class PublicationUploadForm extends React.Component {
               items={this.state.formData['voiFields']}
             />
             {/* END Variables of Interest */}
-            <ListElement
+            <TagsElement
               name="keywords"
               label="Keywords"
               ref="keywords"

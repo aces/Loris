@@ -1,4 +1,4 @@
-/* exported FormElement, SelectElement, ListElement, TextareaElement, TextboxElement, DateElement,
+/* exported FormElement, SelectElement, TagsElement, TextareaElement, TextboxElement, DateElement,
 NumericElement, FileElement, StaticElement, LinkElement, ButtonElement, LorisElement
 */
 
@@ -255,7 +255,7 @@ var SelectElement = React.createClass({
   }
 });
 
-var ListElement = React.createClass({
+var TagsElement = React.createClass({
   propTypes: {
     name: React.PropTypes.string.isRequired,
     id: React.PropTypes.string.isRequired,
@@ -274,6 +274,7 @@ var ListElement = React.createClass({
     emptyOption: React.PropTypes.bool,
     hasError: React.PropTypes.bool,
     errorMessage: React.PropTypes.string,
+    btnLabel: React.PropTypes.string,
     onUserInput: React.PropTypes.func,
     onUserAdd: React.PropTypes.func,
     onUserRemove: React.PropTypes.func
@@ -295,6 +296,7 @@ var ListElement = React.createClass({
       allowDupl: false,
       errorMessage: 'The field is required!',
       pendingValKey: '',
+      btnLabel: 'Add Tag',
       onUserInput: function() {
         console.warn('onUserInput() callback is not set');
       },
@@ -308,11 +310,12 @@ var ListElement = React.createClass({
   },
 
   // pendingValKey is the placeholder variable for temporarily storing
-  // typed or selected items before adding them to the list
+  // typed or selected items before adding them to the Tags
   handleChange: function(e) {
     this.props.onUserInput(this.props.pendingValKey, e.target.value);
   },
 
+  // also add tags if enter key is hit within input field
   handleKeyPress: function(e) {
     if (e.keyCode === 13 || e.which === 13) {
       e.preventDefault();
@@ -334,7 +337,7 @@ var ListElement = React.createClass({
     this.props.onUserRemove(this.props.name, value);
   },
 
-  // helper function to detect if item should be added to list
+  // helper function to detect if item should be added to Tags
   canAddItem: function(value) {
     // reject empty values
     if (!value) {
@@ -401,7 +404,7 @@ var ListElement = React.createClass({
       </select>;
     }
 
-    // iterate through added list items and render them
+    // iterate through added Tags items and render them
     // with deletion button
 
     var that = this;
@@ -438,7 +441,7 @@ var ListElement = React.createClass({
             onClick={this.handleAdd}
             >
             <span className="glyphicon glyphicon-plus"/>
-            Add Field
+            {this.props.btnLabel}
           </button>
         </div>
       </div>
@@ -984,8 +987,8 @@ var LorisElement = React.createClass({
       case 'text':
         elementHtml = (<TextboxElement {...elementProps} />);
         break;
-      case 'list':
-        elementHtml = (<ListElement {...elementProps} />);
+      case 'tags':
+        elementHtml = (<TagsElement {...elementProps} />);
         break;
       case 'select':
         elementHtml = (<SelectElement {...elementProps} />);
@@ -1021,7 +1024,7 @@ var LorisElement = React.createClass({
 
 window.FormElement = FormElement;
 window.SelectElement = SelectElement;
-window.ListElement = ListElement;
+window.TagsElement = TagsElement;
 window.TextareaElement = TextareaElement;
 window.TextboxElement = TextboxElement;
 window.DateElement = DateElement;
@@ -1035,7 +1038,7 @@ window.LorisElement = LorisElement;
 export default {
   FormElement,
   SelectElement,
-  ListElement,
+  TagsElement,
   TextareaElement,
   TextboxElement,
   DateElement,
