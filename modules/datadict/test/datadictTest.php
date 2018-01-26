@@ -109,11 +109,11 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         );
 
         $searchKey[0]->sendKeys("NotRealMAGICNUMBER335");
-        $searchButton = $this->webDriver->findElement(
+    /*    $searchButton = $this->webDriver->findElement(
             WebDriverBy::Name("filter")
         );
         //search exist data
-        $searchButton->click();
+        $searchButton->click(); */
 
         $name = $this->webDriver->executescript(
             "return document.querySelector".
@@ -135,11 +135,11 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         );
 
         $searchKey[0]->sendKeys("notrealMAGICNUMBER335");
-        $searchButton = $this->webDriver->findElement(
+     /*   $searchButton = $this->webDriver->findElement(
             WebDriverBy::Name("filter")
         );
         //search exist data
-        $searchButton->click();
+        $searchButton->click(); */
 
         $name = $this->webDriver->executescript(
             "return document.querySelector".
@@ -161,11 +161,11 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         );
 
         $searchKey[0]->sendKeys("noExist");
-        $searchButton = $this->webDriver->findElement(
+     /*   $searchButton = $this->webDriver->findElement(
             WebDriverBy::Name("filter")
         );
         //search exist data
-        $searchButton->click();
+        $searchButton->click(); */
 
         $res = $this->webDriver->executescript(
             "return document.querySelector".
