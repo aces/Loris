@@ -7,6 +7,8 @@ if (isset($_REQUEST['action'])) {
         uploadPublication();
     } elseif($action === 'getProjectData') {
         echo json_encode(getPublicationData());
+    } elseif ($action === 'editProject') {
+        editProject();
     } else {
         header("HTTP/1.1 400 Bad Request");
     }
@@ -33,73 +35,6 @@ function getData() {
     $data['titles'] = $titles;
     $data['varsOfInterest'] = $varsOfInterest;
     return $data;
-}
-
-
-// Gets Data for a specific PublicationID
-function getPublicationData() {
-    $id = $_GET['id'];
-
-    $db = Database::singleton();
-
-    $query = 'SELECT Title, Description, DateProposed, '.
-        'LeadInvestigator, LeadInvestigatorEmail, Label '.
-        'FROM publication p '.
-        'LEFT JOIN publication_status ps '.
-        'ON p.PublicationStatusID=ps.PublicationStatusID '.
-        'WHERE p.PublicationID=:pid '.
-        'GROUP BY p.PublicationID';
-    $result = $db->pselectRow(
-        $query,
-        array('pid' => $id)
-    );
-
-    if (!$result) {
-        showError('Invalid publication ID!');
-        return;
-    } else {
-        // separate queries for keywords & VOIs
-        // to work around GROUP_CONCAT char limit
-        $vois = $db->pselectCol(
-            'SELECT pt.Name FROM parameter_type pt '.
-            'LEFT JOIN publication_parameter_type_rel pptr '.
-            'ON pptr.ParameterTypeID=pt.ParameterTypeID '.
-            'WHERE pptr.PublicationID=:pid',
-            array('pid' => $id)
-        );
-
-        $result['VOIs'] = implode(',', $vois);
-
-        $kws = $db->pselectCol(
-            'SELECT pk.Label FROM publication_keyword pk '.
-            'LEFT JOIN publication_keyword_rel pkr '.
-            'ON pkr.PublicationKeywordID=pk.PublicationKeywordID '.
-            'WHERE pkr.PublicationID=:pid',
-            array('pid' => $id)
-        );
-
-        $result['Keywords'] = implode(',', $kws);
-
-        $rawStatus = $db->pselectCol(
-            'SELECT Label FROM publication_status',
-            array()
-        );
-
-        $statusOpts = array();
-        foreach ($rawStatus as $rs) {
-            $statusOpts[$rs] = $rs;
-        }
-        return array(
-            'title' => $result['Title'],
-            'description' => $result['Description'],
-            'leadInvestigator' => $result['LeadInvestigator'],
-            'leadInvestigatorEmail' => $result['LeadInvestigatorEmail'],
-            'status' => $result['Label'],
-            'voi' => $result['VOIs'],
-            'keywords' => $result['Keywords'],
-            'statusOpts' => $statusOpts
-        );
-    }
 }
 
 function uploadPublication() {
@@ -194,4 +129,89 @@ function uploadPublication() {
             $db->insertIgnore('publication_parameter_type_rel', $pubParamTypeRelInsert);
         }
     }
+}
+
+// Gets Data for a specific PublicationID
+function getPublicationData() {
+    $id = $_GET['id'];
+
+    $db = Database::singleton();
+
+    $query = 'SELECT Title, Description, DateProposed, '.
+        'LeadInvestigator, LeadInvestigatorEmail, Label '.
+        'FROM publication p '.
+        'LEFT JOIN publication_status ps '.
+        'ON p.PublicationStatusID=ps.PublicationStatusID '.
+        'WHERE p.PublicationID=:pid '.
+        'GROUP BY p.PublicationID';
+    $result = $db->pselectRow(
+        $query,
+        array('pid' => $id)
+    );
+
+    if (!$result) {
+        showError('Invalid publication ID!');
+        return;
+    } else {
+        // separate queries for keywords & VOIs
+        // to work around GROUP_CONCAT char limit
+        $vois = $db->pselectCol(
+            'SELECT pt.Name FROM parameter_type pt '.
+            'LEFT JOIN publication_parameter_type_rel pptr '.
+            'ON pptr.ParameterTypeID=pt.ParameterTypeID '.
+            'WHERE pptr.PublicationID=:pid',
+            array('pid' => $id)
+        );
+
+        $result['VOIs'] = $vois;
+
+        $kws = $db->pselectCol(
+            'SELECT pk.Label FROM publication_keyword pk '.
+            'LEFT JOIN publication_keyword_rel pkr '.
+            'ON pkr.PublicationKeywordID=pk.PublicationKeywordID '.
+            'WHERE pkr.PublicationID=:pid',
+            array('pid' => $id)
+        );
+
+        $result['Keywords'] = $kws;
+
+        $rawStatus = $db->pselectCol(
+            'SELECT Label FROM publication_status',
+            array()
+        );
+
+        $statusOpts = array();
+        foreach ($rawStatus as $rs) {
+            $statusOpts[$rs] = $rs;
+        }
+        return array(
+            'title' => $result['Title'],
+            'description' => $result['Description'],
+            'leadInvestigator' => $result['LeadInvestigator'],
+            'leadInvestigatorEmail' => $result['LeadInvestigatorEmail'],
+            'status' => $result['Label'],
+            'voi' => $result['VOIs'],
+            'keywords' => $result['Keywords'],
+            'statusOpts' => $statusOpts
+        );
+    }
+}
+
+function editProject() {
+    $id = $_REQUEST['id'];
+    $status = $_REQUEST['status'];
+
+    $db = \Database::singleton();
+
+    $statusID = $db->pselectOne(
+        'SELECT PublicationStatusID FROM publication_status '.
+        'WHERE Label=:stat',
+        array('stat' => $status)
+    );
+
+    $db->update(
+        'publication',
+        array('PublicationStatusID' => $statusID),
+        array('PublicationID' => $id)
+    );
 }

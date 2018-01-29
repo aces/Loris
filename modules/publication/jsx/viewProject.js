@@ -8,10 +8,47 @@ class ViewProject extends React.Component {
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
+    this.createMenuFilterLinks = this.createMenuFilterLinks.bind(this);
   }
 
-  handleSubmit() {
+  handleSubmit(e) {
+    e.preventDefault();
 
+    let formData = this.state.formData;
+    // make sure title is unique
+    /*let existingTitles = this.state.Data.titles;
+    if (existingTitles.indexOf(formData.title) > -1) {
+      swal("Publication title already exists!", "", "error");
+      return;
+    }*/
+
+    let formObj = new FormData();
+    for (let key in formData) {
+      if (formData[key] !== "") {
+        var formVal;
+        if (Array.isArray(formData[key])) {
+          formVal = JSON.stringify(formData[key]);
+        } else {
+          formVal = formData[key];
+        }
+        formObj.append(key, formVal);
+      }
+    }
+
+    $.ajax({
+      type: 'POST',
+      url: this.props.action,
+      data: formObj,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function() {
+        swal("Edit Successful!", "", "success");
+      }.bind(this),
+      error: function(jqXHR, textStatus) {
+        console.error(textStatus);
+      }
+    });
   }
 
   setFormData(formElement, value) {
@@ -52,6 +89,26 @@ class ViewProject extends React.Component {
     });
   }
 
+  createMenuFilterLinks(stringArr, filterVar) {
+    var links = [];
+    stringArr.forEach(
+      function (value) {
+        links.push(
+          <span>
+            <a
+              href={loris.BaseURL + "/publication/?"+filterVar+"="+value}
+            >
+              {value}
+            </a>
+            ; &nbsp;
+          </span>
+        );
+      }
+    );
+
+    return links;
+  }
+
   render() {
     if (!this.state.isLoaded) {
       return (
@@ -64,40 +121,17 @@ class ViewProject extends React.Component {
       );
     }
     if (this.state.formData.keywords) {
-      var keywordArr = this.state.formData.keywords.split(',');
-      var keywordLinks = [];
-      keywordArr.forEach(
-        function (kw) {
-          keywordLinks.push(
-            <span>
-            <a
-              href={loris.BaseURL + "/publication/?keywords="+kw}
-            >
-              {kw}
-            </a>
-            ; &nbsp;
-          </span>
-          );
-        }
+      var keywordLinks = this.createMenuFilterLinks(
+        this.state.formData.keywords,
+        'keywords'
       );
     }
     
     if (this.state.formData.voi) {
-      var voiArr = this.state.formData.voi.split(',');
-      var voiLinks = [];
-      
-      voiArr.forEach(function(v){
-        voiLinks.push(
-            <span>
-              <a
-                href={loris.BaseURL + "/publication/?voi="+ v}
-              >
-                {v}
-              </a>
-              ; &nbsp;
-            </span>
-        );
-      })
+      var voiLinks = this.createMenuFilterLinks(
+        this.state.formData.voi,
+        'voi'
+      );
     }
 
     // TODO -- add permission for project approval

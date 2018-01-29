@@ -113,8 +113,7 @@ class PublicationUploadForm extends React.Component {
       cache: false,
       contentType: false,
       processData: false,
-      success: function(data) {
-        console.log(data);
+      success: function() {
         // reset form data
         this.setState({
           formData: {}
@@ -122,7 +121,7 @@ class PublicationUploadForm extends React.Component {
         swal("Submission Successful!", "", "success");
       }.bind(this),
       error: function(jqXHR, textStatus) {
-        console.log(textStatus);
+        console.error(textStatus);
       }
     });
   }
@@ -184,7 +183,6 @@ class PublicationUploadForm extends React.Component {
         <div className="col-md-8 col-lg-7">
           <FormElement
             name="publicationUpload"
-            fileUpload={true}
             onSubmit={this.handleSubmit}
             ref="form"
           >
@@ -255,6 +253,7 @@ class PublicationUploadForm extends React.Component {
               options={testFields}
               pendingValKey="pendingItemVF"
               items={this.state.formData.voiFields}
+              btnLabel="Add Variable of Interest"
             />
             <TagsElement
               name="keywords"
@@ -269,6 +268,7 @@ class PublicationUploadForm extends React.Component {
               value={this.state.formData.pendingKWItem}
               pendingValKey="pendingKWItem"
               items={this.state.formData.keywords}
+              btnLabel='Add Keyword'
             />
             <ButtonElement label="Propose Project"/>
           </FormElement>

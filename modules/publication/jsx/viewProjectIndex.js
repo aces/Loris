@@ -9,6 +9,7 @@ $(function() {
         <div className="col-md-9 col-lg-7">
           <ViewProject
             DataURL={`${loris.BaseURL}/publication/ajax/FileUpload.php?action=getProjectData&id=${args.id}`}
+            action={`${loris.BaseURL}/publication/ajax/FileUpload.php?action=editProject&id=${args.id}`}
           />
         </div>
       </div>
