@@ -154,10 +154,10 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
 
         $res = $this->webDriver->executescript(
             "return document.querySelector".
-                  "('#datatable > div > strong').textContent"
+            "('#lorisworkspace > div > div > div.panel.panel-default >".
+            "div.table-header.panel-heading > div > div').textContent"
         );
-        $this->assertContains("No result found.", $res);
-
+        $this->assertContains("0 rows displayed", $res);
     }
 
     /**
