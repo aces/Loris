@@ -2,8 +2,9 @@
 -- DROP TABLE (ORDER MATTERS)
 -- ********************************
 
-DROP TABLE IF EXISTS `candidate_consent`;
-DROP TABLE IF EXISTS `consent`;
+DROP TABLE IF EXISTS `candidate_consent_type_rel`;
+DROP TABLE IF EXISTS `consent_type`;
+DROP TABLE IF EXISTS `candidate_consent_history`;
 
 DROP TABLE IF EXISTS `acknowledgements`;
 
@@ -1062,9 +1063,6 @@ CREATE TABLE `participant_status` (
   `participant_suboptions` int(10) unsigned DEFAULT NULL,
   `reason_specify` text,
   `reason_specify_status` enum('dnk','not_applicable','refusal','not_answered') DEFAULT NULL,
-  `study_consent` enum('yes','no','not_answered') DEFAULT NULL,
-  `study_consent_date` date DEFAULT NULL,
-  `study_consent_withdrawal` date DEFAULT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `CandID` (`CandID`),
   UNIQUE KEY `ID` (`ID`),
@@ -1108,16 +1106,17 @@ CREATE TABLE `participant_status_history` (
   UNIQUE KEY `ID` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `consent_info_history` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `CandID` int(6) NOT NULL DEFAULT '0',
-  `entry_staff` varchar(255) DEFAULT NULL,
-  `data_entry_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `study_consent` enum('yes','no','not_answered') DEFAULT NULL,
-  `study_consent_date` date DEFAULT NULL,
-  `study_consent_withdrawal` date DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  UNIQUE KEY `ID` (`ID`)
+CREATE TABLE `candidate_consent_history` (
+  `CandidateConsentHistoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `CandidateID` int(6) NOT NULL,
+  `ConsentTypeID` int(2) NOT NULL,
+  `Value` enum('yes','no','not_answered') DEFAULT NULL,
+  `DateGiven` date DEFAULT NULL,
+  `DateWithdrawn` date DEFAULT NULL,
+  `EntryStaff` varchar(255) DEFAULT NULL,
+  `EntryDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT `PK_candidate_consent_history` PRIMARY KEY (`CandidateConsentHistoryID`),
+  CONSTAINT `UK_candidate_consent_history_CandidateConsentHistoryID` UNIQUE KEY `CandidateConsentHistoryID` (`CandidateConsentHistoryID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `family` (
@@ -2029,22 +2028,22 @@ CREATE TABLE `feedback_mri_comments` (
   CONSTRAINT `FK_feedback_mri_comments_3` FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `consent` (
-  `id` int(2) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT "study_consent",
-  `label` varchar(255) NOT NULL DEFAULT "Consent to Study",
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`),
-  UNIQUE KEY `label` (`label`)
+CREATE TABLE `consent_type` (
+  `ConsentTypeID` int(2) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) NOT NULL DEFAULT "study_consent",
+  `Label` varchar(255) NOT NULL DEFAULT "Consent to Study",
+  PRIMARY KEY (`ConsentTypeID`),
+  UNIQUE KEY `Name` (`Name`),
+  UNIQUE KEY `Label` (`Label`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `candidate_consent` (
-  `candidate_id` int(6) NOT NULL,
-  `consent_id` int(2) NOT NULL,
-  `value` enum('yes','no','not_answered') DEFAULT NULL,
-  `consent_date` date DEFAULT NULL,
-  `consent_withdrawal_date` date DEFAULT NULL,
-  PRIMARY KEY (`cand_id`,`consent_id`),
-  CONSTRAINT `FK_candidate_consent_1` FOREIGN KEY (`cand_id`) REFERENCES `candidate` (`CandID`),
-  CONSTRAINT `FK_candidate_consent_2` FOREIGN KEY (`consent_id`) REFERENCES `consent` (`id`)
+CREATE TABLE `candidate_consent_type_rel` (
+  `CandidateID` int(6) NOT NULL,
+  `ConsentTypeID` int(2) NOT NULL,
+  `ConsentValue` enum('yes', 'no', 'not_answered') DEFAULT NULL,
+  `DateGiven` date DEFAULT NULL,
+  `DateWithdrawn` date DEFAULT NULL,
+  PRIMARY KEY (`CandidateID`,`ConsentTypeID`),
+  CONSTRAINT `FK_candidate_consent_type_rel_CandidateID` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`CandID`) ON DELETE RESTRICT [ON UPDATE {RESTRICT}],
+  CONSTRAINT `FK_candidate_consent_type_rel_ConsentTypeID` FOREIGN KEY (`ConsentTypeID`) REFERENCES `consent_type` (`ConsentTypeID`) ON DELETE RESTRICT [ON UPDATE {RESTRICT}],
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
