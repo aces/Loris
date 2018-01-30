@@ -48,3 +48,6 @@ UPDATE ImagingFileTypes
 
 INSERT INTO ImagingFileTypes
   VALUES ('grid_0', 'MNI BIC non-linear field for non-linear transformation');
+
+DELETE FROM ImagingFileTypes
+  WHERE type='xfmmnc';

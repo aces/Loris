@@ -466,7 +466,6 @@ INSERT INTO `ImagingFileTypes` VALUES
   ('mnc',      'MINC file'),
   ('obj',      'MNI BIC imaging format for a surface'),
   ('xfm',      'MNI BIC linear transformation matrix file'),
-  ('xfmmnc',   NULL),
   ('imp',      'audition impulse file'),
   ('vertstat', 'MNI BIC imaging format for a field on a surface (e.g. cortical thickness)'),
   ('xml',      'XML file'),
