@@ -464,16 +464,17 @@ CREATE TABLE `ImagingFileTypes` (
 
 INSERT INTO `ImagingFileTypes` VALUES
   ('mnc',      'MINC file'),
-  ('obj',      '3D imaging format'),
-  ('xfm',      'transformation matrix file'),
+  ('obj',      'MNI BIC imaging format for a surface'),
+  ('xfm',      'MNI BIC linear transformation matrix file'),
   ('xfmmnc',   NULL),
   ('imp',      'audition impulse file'),
-  ('vertstat', 'file describing the cortical thickness in a single column'),
+  ('vertstat', 'MNI BIC imaging format for a field on a surface (e.g. cortical thickness)'),
   ('xml',      'XML file'),
   ('txt',      'text file'),
   ('nii',      'NIfTI file'),
   ('nii.gz',   'compressed NIfTI file'),
-  ('nrrd',     'NRRD file format (used by DTIPrep)');
+  ('nrrd',     'NRRD file format (used by DTIPrep)'),
+  ('grid_0',   'MNI BIC non-linear field for non-linear transformation');
 
 CREATE TABLE `mri_processing_protocol` (
   `ProcessProtocolID` int(11) unsigned NOT NULL AUTO_INCREMENT,

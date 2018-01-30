@@ -45,3 +45,6 @@ UPDATE ImagingFileTypes
 UPDATE ImagingFileTypes
   SET description='NRRD file format (used by DTIPrep)'
   WHERE type='nrrd';
+
+INSERT INTO ImagingFileTypes
+  VALUES ('grid_0', 'MNI BIC non-linear field for non-linear transformation');
