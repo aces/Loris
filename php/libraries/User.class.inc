@@ -41,7 +41,7 @@ class User extends UserPermissions
      * @return User
      * @access public
      */
-    static function &factory($username)
+    static function &factory($username) : User
     {
         $obj = new User;
 
@@ -49,7 +49,10 @@ class User extends UserPermissions
         $obj->userInfo['UserID'] = $username;
 
         // get the user's permissions
-        $obj->select($username);
+        if ($obj->select($username) === false) {
+            $obj = new \LORIS\AnonymousUser();
+            return $obj;
+        };
 
         // create DB object
         $DB =& Database::singleton();
