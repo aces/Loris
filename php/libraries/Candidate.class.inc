@@ -689,20 +689,20 @@ class Candidate
      * @return array List of consents and their associated values for this candidate.
      *               The keys of the arrays are the IDs of the consents
      */
-    static function getConsent($candID)
+    function getConsent($candID)
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
         $query       = "SELECT *
-            FROM candidate_consent cc JOIN consent c ON (c.ID = cc.consent_id) 
-            WHERE candidate_id=:cid";
+            FROM candidate_consent_type_rel JOIN consent_type USING (ConsentTypeID) 
+            WHERE CandidateID=:cid";
         $where       = array('cid' => $candID);
         $consentList = $db->pselect($query, $where);
 
         $formatted = array();
         foreach ($consentList as $consent) {
-            $formatted[$consent['consent_id']] = $consent;
+            $formatted[$consent['ConsentTypeID']] = $consent;
         }
 
         return $formatted;

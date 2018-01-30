@@ -183,23 +183,27 @@ class Utility
     /**
      * Returns a list of consents in the database
      *
-     * @return array an associative array("consent_id" => consent info)
+     * @return array an associative array("ConsentTypeID" => consent info)
      */
     static function getConsentList()
     {
         $DB =& Database::singleton();
 
-        $query = "SELECT * FROM consent";
+        $query = "SELECT * FROM consent_type";
 
         $result = $DB->pselect($query, array());
-
+        
         // fix the array
         $list = array();
         foreach ($result as $row) {
-            $list[$row["id"]] = $row;
-            unset($list[$row["id"]]["id"]);
+            $list[$row["ConsentTypeID"]] = $row;
+            unset($list[$row["ConsentTypeID"]]["ConsentTypeID"]);
         }
-        $config =& NDB_Config::singleton();
+
+        //TO-DO (later): pull config from db once Configuration module is set
+	//up to modify consent types
+	//$config =& NDB_Config::singleton();
+
         return $list;
     }
 
