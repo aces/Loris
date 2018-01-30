@@ -140,7 +140,10 @@ ALTER TABLE mri_protocol_checks
 -- Add SessionID foreign key in tarchive
 ALTER TABLE tarchive
   ADD CONSTRAINT `FK_tarchive_sessionID`
-    FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`);DROP TABLE IF EXISTS tarchive_find_new_uploads;
+    FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`);
+
+DROP TABLE IF EXISTS tarchive_find_new_uploads;
+
 -- Alter table mri_protocol_violated_scans to add TarchiveID
 ALTER TABLE mri_protocol_violated_scans 
   ADD TarchiveID INT(11) AFTER PSCID,
