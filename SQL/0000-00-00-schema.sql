@@ -457,22 +457,23 @@ CREATE TABLE `Visit_Windows` (
 
 
 CREATE TABLE `ImagingFileTypes` (
- `type` varchar(255) NOT NULL PRIMARY KEY
+ `type` varchar(255) NOT NULL PRIMARY KEY,
+ `description` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 INSERT INTO `ImagingFileTypes` VALUES
-      ('mnc'),
-      ('obj'),
-      ('xfm'),
-      ('xfmmnc'),
-      ('imp'),
-      ('vertstat'),
-      ('xml'),
-      ('txt'),
-      ('nii'),
-      ('nii.gz'),
-      ('nrrd');
+  ('mnc',      'MINC file'),
+  ('obj',      '3D imaging format'),
+  ('xfm',      'transformation matrix file'),
+  ('xfmmnc',   NULL),
+  ('imp',      'audition impulse file'),
+  ('vertstat', 'file describing the cortical thickness in a single column'),
+  ('xml',      'XML file'),
+  ('txt',      'text file'),
+  ('nii',      'NIfTI file'),
+  ('nii.gz',   'compressed NIfTI file'),
+  ('nrrd',     'NRRD file format (used by DTIPrep)');
 
 CREATE TABLE `mri_processing_protocol` (
   `ProcessProtocolID` int(11) unsigned NOT NULL AUTO_INCREMENT,
