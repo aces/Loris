@@ -17,17 +17,19 @@ DROP TABLE IF EXISTS publication;
 CREATE TABLE `publication` (
     `PublicationID` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `PublicationStatusID` int(2) unsigned NOT NULL default 1,
+    `UserID` int(10) unsigned NOT NULL,
+    `RatedBy` int(10) unsigned,
     `DateProposed` date NOT NULL,
     `DateRated` date default NULL,
     `Title` varchar(255) NOT NULL,
     `LeadInvestigator` varchar(255) NOT NULL,
     `LeadInvestigatorEmail` varchar(255) NOT NULL,
-    `RatedBy` varchar(255),
     `RejectedReason` varchar(255) default NULL,
     `Description` text NOT NULL,
     PRIMARY KEY(`PublicationID`),
-    CONSTRAINT `FK_publication_1` FOREIGN KEY(`RatedBy`) REFERENCES `users` (`UserID`),
-    CONSTRAINT `FK_publication_2` FOREIGN KEY(`PublicationStatusID`) REFERENCES `publication_status` (`PublicationStatusID`)
+    CONSTRAINT `FK_publication_1` FOREIGN KEY(`UserID`) REFERENCES `users` (`ID`),
+    CONSTRAINT `FK_publication_2` FOREIGN KEY(`RatedBy`) REFERENCES `users` (`ID`),
+    CONSTRAINT `FK_publication_3` FOREIGN KEY(`PublicationStatusID`) REFERENCES `publication_status` (`PublicationStatusID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
 -- Separate table for Keywords
@@ -85,3 +87,8 @@ SET FOREIGN_KEY_CHECKS=1;
 
 DELETE FROM LorisMenu WHERE Label='Publication';
 INSERT INTO LorisMenu (Parent, Label, Link) VALUES (4, 'Publication', 'publication/');
+
+DELETE FROM user_perm_rel WHERE permID=(SELECT permID FROM permissions WHERE code='publication_approve');
+DELETE FROM permissions WHERE code='publication_approve';
+INSERT INTO permissions (code, description, categoryID) VALUES ('publication_approve', 'Publication - Approve or reject proposed publicaiton projects', 2);
+INSERT INTO user_perm_rel (userID, permID) VALUES(1, (SELECT permID FROM permissions WHERE code='publication_approve'));

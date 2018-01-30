@@ -49,8 +49,12 @@ function uploadPublication() {
     if ($exists) {
         throw new LorisException('Submitted title already exists');
     }
+
+    $user = \User::singleton();
+    $uid = $user->getId();
     $today = date('Y-m-d');
     $fields = array(
+        'UserID'                => $uid,
         'Title'                 => $_REQUEST['title'],
         'Description'           => $_REQUEST['description'],
         'LeadInvestigator'      => $_REQUEST['leadInvestigator'],
@@ -138,7 +142,7 @@ function getPublicationData() {
     $db = Database::singleton();
 
     $query = 'SELECT Title, Description, DateProposed, '.
-        'LeadInvestigator, LeadInvestigatorEmail, Label '.
+        'LeadInvestigator, LeadInvestigatorEmail, Label, UserID '.
         'FROM publication p '.
         'LEFT JOIN publication_status ps '.
         'ON p.PublicationStatusID=ps.PublicationStatusID '.
@@ -184,6 +188,9 @@ function getPublicationData() {
         foreach ($rawStatus as $rs) {
             $statusOpts[$rs] = $rs;
         }
+        // allow edit access for user if user is original proposer
+        $user = \User::singleton();
+        $userCanEdit = $user->getId() === $result['UserID'];
         return array(
             'title' => $result['Title'],
             'description' => $result['Description'],
@@ -192,7 +199,8 @@ function getPublicationData() {
             'status' => $result['Label'],
             'voi' => $result['VOIs'],
             'keywords' => $result['Keywords'],
-            'statusOpts' => $statusOpts
+            'statusOpts' => $statusOpts,
+            'userCanEdit' => $userCanEdit
         );
     }
 }

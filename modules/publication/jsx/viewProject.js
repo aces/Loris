@@ -136,21 +136,37 @@ class ViewProject extends React.Component {
 
     // TODO -- add permission for project approval
     // TODO -- add permission for project editing
-    var statusElement = <SelectElement
-      name="status"
-      label="Status"
-      id="status"
-      value={this.state.formData.status}
-      onUserInput={this.setFormData}
-      required={true}
-      options={this.state.statusOpts}
-      emptyOption={false}
-    />;
+    var statClassMap = {
+      'Pending': 'text-warning',
+      'Approved': 'text-success',
+      'Rejected': 'text-danger'
+    };
+    var statusElement;
+    if (loris.userHasPermission('publication_approve')) {
+     statusElement = <SelectElement
+        name="status"
+        label="Status"
+        id="status"
+        value={this.state.formData.status}
+        onUserInput={this.setFormData}
+        required={true}
+        options={this.state.statusOpts}
+        emptyOption={false}
+      />;
+    } else {
+      var s = this.state.formData.status;
+      var statusText = <span className={statClassMap[s]}>
+        <strong>{s}</strong>
+      </span>;
+      statusElement = <StaticElement
+        label="Status"
+        text={statusText}
+      />;
+    }
 
     var submitBtn = <ButtonElement
       name="Submit"
     />;
-
     return (
       <div className="row">
         <div className="col-md-12 col-lg-12">
