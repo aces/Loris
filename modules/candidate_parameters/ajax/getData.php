@@ -339,19 +339,18 @@ function getParticipantStatusFields()
                'reasonSpecify'         => $reason,
                'history'               => $history,
               ];
-
     return $result;
 }
 
-    /**
-     * Handles the fetching of Participant Status History
-     *
-     * @param int $candID current candidate's ID
-     *
-     * @throws DatabaseException
-     *
-     * @return array
-     */
+/**
+ * Handles the fetching of Participant Status History
+ *
+ * @param int $candID current candidate's ID
+ *
+ * @throws DatabaseException
+ *
+ * @return array
+ */
 function getParticipantStatusHistory($candID)
 {
     $db =& \Database::singleton();
@@ -390,52 +389,30 @@ function getConsentStatusFields()
         array('candid' => $candID)
     );
 
-    $config        =& \NDB_Config::singleton();
-    $consent       = $config->getSetting('ConsentModule');
-    $consents      = [];
-    $consentStatus = [];
-    $date          = [];
-    $withdrawal    = [];
-
-    $consent_details =\Utility::asArray($consent['Consent']);
-    if (!$consent_details[0]) {
-        // If only one consent, need to put in an array
-        $temp            = array();
-        $temp[]          = $consent_details;
-        $consent_details = $temp;
+    $consentStatus  = [];
+    $date           = [];
+    $withdrawalDate = [];
+    $consentType    = [];
+    $consentDetails = Utility::getConsentList();        //Receive list of consent types from db
+    $candidateConsent = Candidate::getConsent($candID); //Receive list of consents for the specific candidate from db
+    foreach ($consentDetails as $consentID=>$consent) {
+        $consentType[$consent['Name']] = $consent['Label'];
+        if (isset($candidateConsent[$consentID])) {
+            $consentStatus[$consent['Name']] = $candidateConsent[$consentID]['Value'];
+            $date[$consent['Name']]          = $candidateConsent[$consentID]['DateGiven'];
+            $withdrawalDate[$consent['Name']]    = $candidateConsent[$consentID]['DateWithdrawn'];
+        }
     }
-
-    foreach ($consent_details as $consentType) {
-        $name           = $consentType['name'];
-        $consentDate    = $name . '_date';
-        $withdrawalDate = $name . '_withdrawal';
-
-        $query = "SELECT 
-                {$db->escape($name)}, 
-                {$db->escape($consentDate)},
-                {$db->escape($withdrawalDate )}         
-                FROM participant_status WHERE CandID=:candid";
-
-        $row = $db->pselectRow($query, ['candid' => $candID]);
-
-        $consents[$name]      = $consentType['label'];
-        $consentStatus[$name] = !empty($row[$name]) ? $row[$name] : null;
-        $date[$name]          = !empty($row[$consentDate]) ?
-            $row[$consentDate] : null;
-        $withdrawal[$name]    = !empty($row[$withdrawalDate]) ?
-            $row[$withdrawalDate] : null;
-    }
-
-    $history = getConsentStatusHistory($candID, $consents);
+        //$history = getConsentStatusHistory($candID, $consents);
 
     $result = [
                'pscid'           => $pscid,
                'candID'          => $candID,
                'consentStatuses' => $consentStatus,
                'consentDates'    => $date,
-               'withdrawals'     => $withdrawal,
-               'consents'        => $consents,
-               'history'         => $history,
+               'withdrawalDates' => $withdrawalDate,
+               'consentTypes'    => $consentType,
+               //'history'         => $history,
               ];
 
     return $result;
@@ -445,33 +422,23 @@ function getConsentStatusFields()
  * Handles the fetching of Consent Status history
  *
  * @param int   $candID   current candidate's ID
- * @param array $consents consent values
+ * @param array $consentValue consent values
  *
  * @throws DatabaseException
  *
  * @return array
  */
-function getConsentStatusHistory($candID, $consents)
+function getConsentStatusHistory($candID, $consentValue)
 {
     $db =& \Database::singleton();
 
-    $commentHistory = array();
+    $historyData = $db->pselect(
+        " SELECT * 
+          FROM candidate_consent_history 
+          WHERE CandidateID=:cid 
+          ORDER BY DataEntryDate ASC",
+        array('cid' => $candID)
+    );
 
-    foreach ($consents as $consent => $label) {
-        $unformattedComments = $db->pselect(
-            "SELECT entry_staff, data_entry_date, "
-            . $db->escape($consent) . ", "
-            . $db->escape($consent . '_date') . ", "
-            . $db->escape($consent . '_withdrawal')
-            ." FROM consent_info_history WHERE $consent IS NOT NULL and CandID=:cid",
-            array('cid' => $candID)
-        );
-
-        $unformattedComments['label']       = $label;
-        $unformattedComments['consentType'] = $consent;
-
-        array_push($commentHistory, $unformattedComments);
-    }
-
-    return $commentHistory;
+    return $historyData;
 }
