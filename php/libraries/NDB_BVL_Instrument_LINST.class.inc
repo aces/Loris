@@ -358,11 +358,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     . " If this used to work, please file a bug report."
                 );
             }
-
-            if ($this->XINDebug) {
-                //debugging code
-                echo "'$controller' $operator '$value'<br>";
-            }
         }
         // Nothing that was compared failed
         return true;
