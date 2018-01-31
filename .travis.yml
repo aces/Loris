@@ -30,7 +30,6 @@ install:
     - composer self-update
     - composer install
     - phpenv rehash
-    - phpunit --version
     - composer require --dev 
     # Install node modules specified in package.json
     - npm install
@@ -96,6 +95,6 @@ before_script:
 
 script:
 
-    - ./vendor/bin/phpunit --configuration test/phpunit.xml
+    - vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise
