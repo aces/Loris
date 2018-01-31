@@ -380,13 +380,8 @@ class Edit_User extends \NDB_Form
         unset($values['examiner_pending']);
         //END EXAMINER UPDATE
         // make the set
-        foreach ($values as $key => $value) {
-            if (!empty($value)) {
-                $set[$key] = $value;
-            } else {
-                $set[$key] = null;
-            }
-        }
+        $set = Utility::nullifyEmptyArray($values);
+
         // update the user
         if ($this->isCreatingNewUser()) {
             // insert a new user

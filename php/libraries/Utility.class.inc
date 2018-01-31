@@ -660,11 +660,42 @@ class Utility
      *                      to null.
      *
      * @return array The same array passed in, after modifications.
+     *
+     * @clean-up we should get rid of the pass by reference in this function
      */
     public static function nullifyEmpty(&$arr, $field)
     {
         if ($arr[$field] === '') {
             $arr[$field] = null;
+        }
+        return $arr;
+    }
+
+    /**
+     * Replace the empty string with null in all fields
+     * in an array passed in as an argument. This undoes the
+     * damage that Smarty causes by making nulls in a dropdown
+     * the empty string.
+     *
+     * This is needed before calling $db->insert() on any integer
+     * fields. Failing to call this function will result in '' being
+     * saved as 0 for fields where the backend data type is int.
+     *
+     * @param array $arr An array being saved to
+     *                   the database. This array may be modified
+     *                   by calls to this function.
+     *
+     * @return array The same array passed in, after modifications.
+     *
+     * @note A potential improvement to this would be to take as a parameter an
+     *       optional array of fields to exclude from the nulllifying.
+     */
+    public static function nullifyEmptyArray($arr)
+    {
+        foreach ($arr as $field) {
+            if ($arr[$field] === '') {
+                $arr[$field] = null;
+            }
         }
         return $arr;
     }
