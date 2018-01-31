@@ -44,18 +44,19 @@ examiner_multisite
 
 The examiner module has the following configurations that affect its usage
 
-EnableCertification (Config.xml)
+EnableCertification
  - Binary entry for sub-tag `<EnableCertification>` under the tag 
- `<Certification>` in the config.xml file. Options `1` or `0` respectively 
- enables or disables the use of certification for projects defined in the 
- `<CertificationProjects>` section or all projects if none are explicitly stated.
+ `<Certification>` in the config.xml file. Options `1` or `0` enable or 
+ disable, respectively, the use of certification for projects defined 
+ in the `<CertificationProjects>` section or all projects if none are 
+ explicitly stated.
    
 
 CertificationProjects (Config.xml)
  - Projects for which certification is enabled, should match entries in 
  `Project` table in the database. The project identifier should be placed 
  within the `<CertificationProject>` tags as such 
- `<CertificationProject>1<\CertificationProject>`.
+ `<CertificationProject>1</CertificationProject>`.
 
 CertificationInstruments
  - Instruments which require certification to be able to administer. 
