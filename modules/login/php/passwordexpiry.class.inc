@@ -98,7 +98,7 @@ class PasswordExpiry extends \NDB_Form
      */
     function _validate($values)
     {
-        if (empty($values['password'])) {
+        if (empty($values['newPassword'])) {
             // FIXME: The way error_message is displayed in the template is inherited
             // from before this page was a "real" LORIS page, when it was all done
             // from SinglePointLogin. As a result, the usual way of displaying errors
@@ -113,15 +113,15 @@ class PasswordExpiry extends \NDB_Form
         $this->_user = \User::factory($this->_username);
         $data        = $this->_user->getData();
 
-        if (password_verify($_POST['password'], $data['Password_hash'])) {
+        if (password_verify($_POST['newPassword'], $data['Password_hash'])) {
             $this->tpl_data['error_message'] = 'You cannot keep the same password';
-            return array('password' => 'You cannot keep the same password');
+            return array('newPassword' => 'You cannot keep the same password');
         }
 
         if (!\User::isPasswordStrong(
-            $_POST['password'],
+            $_POST['newPassword'],
             array(
-             $_POST['confirm'],
+             $_POST['confirmPassword'],
              $data['UserID'],
              $data['Email'],
             ),
@@ -134,7 +134,7 @@ class PasswordExpiry extends \NDB_Form
         ) {
             $this->tpl_data['error_message'] = 'The password is weak, or'
                 . ' the passwords do not match';
-            return array('password' => 'Weak password.');
+            return array('newPassword' => 'Weak password.');
         }
 
         return true;
