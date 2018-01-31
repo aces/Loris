@@ -5,8 +5,8 @@ cache:
         - vendor
 
 php:
-    - "7"
     - "7.1"
+    - "7.2"
 
 sudo: false
 
@@ -27,9 +27,10 @@ before_install:
 
 install:
     # Install composer modules
+    - composer self-update
     - composer install
     - phpenv rehash
-
+    - composer require --dev 
     # Install node modules specified in package.json
     - npm install
 
@@ -94,6 +95,6 @@ before_script:
 
 script:
 
-    - npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
+    - vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise
