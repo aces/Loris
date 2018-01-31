@@ -73,7 +73,7 @@ function MapSubprojectID(&$results) {
 //Get the names of all instrument tables
 $query = "select * from test_names order by Test_name";
 //$query = "select * from test_names where Test_name like 'a%' order by Test_name";  //for rapid testing
-$DB->select($query, $instruments);
+$instruments = $DB->pselect($query, array());
 
 foreach ($instruments as $instrument) {
 	//Query to pull the data from the DB
@@ -94,7 +94,7 @@ foreach ($instruments as $instrument) {
 	    $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, f.Validity, i.* from candidate c, session s, flag f, $Test_name i left outer join examiners e on i.Examiner = e.examinerID where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.Entity_type != 'Scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND s.Active='Y' order by s.Visit_label, c.PSCID";
         }
     }
-	$DB->select($query, $instrument_table);
+	$instrument_table = $DB->pselect($query, array());
     MapSubprojectID($instrument_table);
 	writeExcel($Test_name, $instrument_table, $dataDir);
 
@@ -106,7 +106,7 @@ foreach ($instruments as $instrument) {
 $Test_name = "candidate_info";
 //this query is a but clunky, but it gets rid of all the crap that would otherwise appear.
 $query = "select distinct c.PSCID, c.CandID, c.Gender, c.DoB, s.SubprojectID from candidate c, session s where c.CandID = s.CandID and c.Active='Y' and s.CenterID <> 1 and s.CenterID in (select CenterID from psc where Study_site='Y') order by c.PSCID";
-$DB->select($query, $results);
+$results = $DB->pselect($query, array());
 
 MapSubprojectID($results);
 writeExcel($Test_name, $results, $dataDir);
@@ -117,7 +117,7 @@ writeExcel($Test_name, $results, $dataDir);
 */
 $Test_name = "DataDictionary";
 $query = "select Name, Type, Description, SourceField, SourceFrom from parameter_type where SourceField is not null order by SourceFrom";
-$DB->select($query, $dictionary);
+$dictionary = $DB->pselect($query, array());
 writeExcel($Test_name, $dictionary, $dataDir);
 
 //MRI data construction
