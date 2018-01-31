@@ -27,7 +27,7 @@ before_install:
 
 install:
     # Install composer modules
-    - composer install
+    - composer self-update
     - phpenv rehash
 
     # Install node modules specified in package.json
