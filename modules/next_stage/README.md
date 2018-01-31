@@ -2,9 +2,9 @@
 
 ## Purpose
 
-The `next_stage` module provides a method of start the "next stage"
-of a candidate session. The "Stage" of an session goes from Screening
-to Visit to Approval, and the Screening and Visit stages may have
+The `next_stage` module provides a method to start the "next stage"
+of a candidate session. The "Stage" of a session goes from Screening
+to Visit to Approval. The Screening and Visit stages may have
 different instruments administered. The `next_stage` module prompts
 for the date of the visit and uses the data it gathers to populate
 the test battery for the Visit stage.
@@ -22,14 +22,15 @@ start the Visit stage of an instrument.
 
 ## Scope
 
-The `next_stage` module only moves from the Screening to Visit stage
-for a session. The final Approval or Recycling Bin stage is reached
-by sending to DCC (or Recycling Bin) on the `instrument_list` page.
+The `next_stage` module only moves the stage of a session from the
+Screening to Visit. The final Approval or Recycling Bin stage is
+reached by sending to DCC (or Recycling Bin) on the `instrument_list`
+page.
 
 ## Permissions
 
-Both the `data_entry` permission is required, and the user must be
-at the same CenterID as the timepoint in order to access the module.
+The `data_entry` permission is required. The user must also be at
+the same CenterID as the timepoint being accessed.
 
 Access is also denied if the timepoint isn't startable (ie. if it's
 already been started.)
