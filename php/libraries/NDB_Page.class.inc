@@ -689,6 +689,7 @@ class NDB_Page
                   $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
                   $baseurl . '/js/jquery.dynamictable.js',
                   $baseurl . '/js/jquery.fileupload.js',
+                  $baseurl . '/js/jquery/timepicker/jquery.timepicker.js',
                   $baseurl . '/bootstrap/js/bootstrap.min.js',
                   $baseurl . '/js/components/Breadcrumbs.js',
                   $baseurl . '/vendor/sweetalert/sweetalert' . $min . '.js',
@@ -719,6 +720,7 @@ class NDB_Page
                   $baseurl . "/bootstrap/css/bootstrap.min.css",
                   $baseurl . "/bootstrap/css/custom-css.css",
                   $baseurl . "/js/jquery/datepicker/datepicker.css",
+                  $baseurl . "/js/jquery/timepicker/jquery.timepicker.css",
                   $baseurl . '/vendor/sweetalert/sweetalert.css',
                  );
         return $files;
