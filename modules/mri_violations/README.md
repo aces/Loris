@@ -52,7 +52,7 @@ available for download from the DQT
 into the Imaging Browser and a caveat flag was attached - this caveat 
 flag should have either a drop down menu or open text for the person 
 approving the insertion to indicate what the flag is for
-- **Other**: open text??
+- **Other**: resolutions that don't fit in any of the above categories 
 
 Finally, the `mri_protocol` table can be updated directly from
 the frontend if the user has the permission for it.
