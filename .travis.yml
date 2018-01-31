@@ -32,6 +32,7 @@ install:
     - phpenv rehash
     - phpunit --version
     - export PATH=~/.composer/vendor/bin:$PATH
+    - vendor/bin/phpunit --version
     # Install node modules specified in package.json
     - npm install
 
@@ -96,6 +97,6 @@ before_script:
 
 script:
 
-    - phpunit --configuration test/phpunit.xml
+    - vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise
