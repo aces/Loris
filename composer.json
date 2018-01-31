@@ -16,7 +16,7 @@
         "php": ">=7.0",
         "phpunit/phpunit": ">=7.0",
         "squizlabs/php_codesniffer" : "2.5.*",
-        "phpunit/dbunit": ">=3.7.*",
+        "phpunit/dbunit": ">=1.2">=1.2",
         "facebook/webdriver" : "dev-master",
         "phpmd/phpmd": "^2.6"
     },
