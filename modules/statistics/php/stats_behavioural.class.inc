@@ -179,6 +179,13 @@ class Stats_Behavioural extends \NDB_Form
             $vl     = $row['VLabel'];
             $c      =& $this->tpl_data['behaviour']['C' . $center];
 
+            if (is_null($c)) {
+                error_log(
+                    "No tpl_data for C$center in behavioural statistics"
+                );
+                return;
+            }
+
             $c[$vl]['total']   += $row['val'];
             $c['all']['total'] += $row['val'];
             if ($row['Data_Entry'] == 'Complete') {
@@ -219,6 +226,13 @@ class Stats_Behavioural extends \NDB_Form
             $center = $row['CenterID'];
             $vl     = $row['VLabel'];
             $c      =& $this->tpl_data['dde']['C' . $center];
+
+            if (is_null($c)) {
+                error_log(
+                    "No tpl_data for C$center in behavioural statistics"
+                );
+                return;
+            }
 
             $c[$vl]['total']   += $row['val'];
             $c['all']['total'] += $row['val'];
