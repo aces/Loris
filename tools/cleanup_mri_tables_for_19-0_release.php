@@ -265,7 +265,7 @@ function backupEntries($selectID, $table_name, $FK_field)
 
     // grep database connection information from NDB_Config for mysqldump
     $config = NDB_Config::singleton();
-    $config->load();
+    $config->load(__DIR__."/../project/config.xml");
     $database = $config->getSettingFromXML("database");
 
     // create the mysqldump query to back the orphan entries to be deleted
