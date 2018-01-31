@@ -20,6 +20,9 @@
         "facebook/webdriver" : "dev-master",
         "phpmd/phpmd": "^2.6"
     },
+    "bin": [
+        "phpunit"
+    ],
     "scripts": {
       "pre-install-cmd": "mkdir -p project/libraries"
     },
