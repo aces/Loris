@@ -22,13 +22,6 @@
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 require_once __DIR__ . "/../vendor/autoload.php";
 
-if (version_compare(phpversion(),'4.3.0','<'))
-{
-    define('STDIN',fopen("php://stdin","r"));
-    register_shutdown_function( create_function( '' , 'fclose(STDIN);
-                fclose(STDOUT); fclose(STDERR); fclose($logfp); return true;' ) );
-}
-
 /**
  * HELP SCREEN
  * display and stop processing if action=help
