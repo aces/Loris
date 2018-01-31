@@ -111,7 +111,8 @@ Panel.propTypes = {
   height: React.PropTypes.string,
   title: React.PropTypes.string,
   edit: React.PropTypes.func,
-  add: React.PropTypes.func
+  add: React.PropTypes.func,
+  remove: React.PropTypes.func
 };
 Panel.defaultProps = {
   initCollapsed: false,
