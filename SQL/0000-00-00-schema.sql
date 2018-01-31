@@ -471,7 +471,6 @@ INSERT INTO `ImagingFileTypes` VALUES
   ('xml',      'XML file'),
   ('txt',      'text file'),
   ('nii',      'NIfTI file'),
-  ('nii.gz',   'compressed NIfTI file'),
   ('nrrd',     'NRRD file format (used by DTIPrep)'),
   ('grid_0',   'MNI BIC non-linear field for non-linear transformation');
 
