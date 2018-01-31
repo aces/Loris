@@ -31,7 +31,7 @@ install:
     - composer install
     - phpenv rehash
     - phpunit --version
-    - vendor/bin/phpunit --version
+    - export PATH=~/.composer/vendor/bin:$PATH
     # Install node modules specified in package.json
     - npm install
 
