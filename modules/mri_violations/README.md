@@ -5,18 +5,19 @@
 The MRI violations module provides a front end to view information
 about scans that were flagged as violations of the imaging protocol
 (which is configurable and set by each study) by the imaging pipeline 
-scripts.
+scripts. 
+
+The violations also serve as prompts to inform 
+scanner technologists that settings need to be adjusted for future 
+scans (i.e. number of slices are being reduced from the protocol), or 
+as a cue that something is wrong (i.e. coil not functioning properly).
 
 ## Intended Users
 
 The MRI violations module is primarily used by DCC staff and the MR 
 Imaging Committee who both decide whether a scan should be included 
 in the batch of study scans or, alternatively, if it should be excluded 
-from further analysis. The violations also serve as prompts to inform 
-scanner technologists that settings need to be adjusted for future 
-scans (i.e. number of slices are being reduced from the protocol), or 
-as a cue that something is wrong (i.e. coil not functioning properly).
-
+from further analysis. 
 
 ## Scope
 
