@@ -1,7 +1,7 @@
 <?php
 namespace Loris\Tests\API;
 require_once __DIR__ . '/../../../../../vendor/autoload.php';
-require_once __DIR__ . '/../../../../../htdocs/api/v0.0.1/projects/Project.php';
+require_once __DIR__ . '/../../../../../htdocs/api/v0.0.2/projects/Project.php';
 require_once __DIR__ . '/../BaseTestCase.php';
 
 class Project_Test extends BaseTestCase
@@ -14,6 +14,7 @@ class Project_Test extends BaseTestCase
         // Create the Mock classes, so that the factory doesn't die.
         $this->getMockBuilder('NDB_Config')->setMockClassName("MockNDB_Config")->getMock();
         $this->getMockBuilder('Database')->setMockClassName("MockDatabase")->getMock();
+        $this->getMockBuilder('Project')->disableOriginalConstructor()->setMockClassName("MockProject")->getMock();
 
         $this->Factory = \NDB_Factory::singleton();
         $this->Factory->setTesting(true);

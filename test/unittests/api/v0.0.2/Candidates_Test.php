@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../../../../vendor/autoload.php';
-require_once __DIR__ . '/../../../../htdocs/api/v0.0.1/Candidates.php';
+require_once __DIR__ . '/../../../../htdocs/api/v0.0.2/Candidates.php';
 
 class Candidates_Test extends PHPUnit_Framework_TestCase
 {
@@ -14,6 +14,7 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
         $this->getMockBuilder('NDB_Config')->setMockClassName("MockNDB_Config")->getMock();
         $this->getMockBuilder('Database')->setMockClassName("MockDatabase")->getMock();
         $this->getMockBuilder('Candidate')->setMockClassName("MockCandidate")->getMock();
+        $this->getMockBuilder('Project')->disableOriginalConstructor()->setMockClassName("MockProject")->getMock();
 
         $this->Factory = NDB_Factory::singleton();
         $this->Factory->setTesting(true);
