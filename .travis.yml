@@ -31,7 +31,7 @@ install:
     - composer install
     - phpenv rehash
     - phpunit --version
-    - composer require --dev "phpunit/phpunit=6.5.5" 
+    - composer require --dev 
     # Install node modules specified in package.json
     - npm install
 
