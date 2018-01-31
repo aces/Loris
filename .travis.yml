@@ -28,6 +28,8 @@ before_install:
 install:
     # Install composer modules
     - composer self-update
+    - composer install
+    - phpunit -version
     - phpenv rehash
 
     # Install node modules specified in package.json
