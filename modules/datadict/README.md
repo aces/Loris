@@ -33,11 +33,11 @@ None
 ## Interactions with LORIS
 
 The content for the data dictionary module comes from the
-`parameter_type` table, which most often populated for instruments
+`parameter_type` table, which most often is populated for instruments
 by the `lorisform_parser.php` script.
 
-Modified entries are saved in the separate the `parameter_type_override`
+Modified entries are saved in the separate `parameter_type_override`
 table, and the "data dictionary" used by LORIS is the coalesce of
-the two, with `parameter_type_override` taking priority. This allows
-the `parameter_type` table itself to be regenerated when instruments
-change without losing the user modified values.
+the two tables, with `parameter_type_override` taking priority.
+This allows the `parameter_type` table itself to be regenerated
+when instruments change without losing the user modified values.
