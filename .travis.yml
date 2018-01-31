@@ -14,7 +14,6 @@ addons:
     firefox: "44.0"
 
 before_install:
-    - ./build/tools/composer clear-cache
     # Start Xvfb in a desktop screen size,
     # otherwise some tests will fail because the links
     # are hidden when Selenium tries to find them.
@@ -31,8 +30,9 @@ install:
     - composer self-update
     - composer install
     - phpenv rehash
-    - travis_retry ./build/tools/composer update
-
+    - wget https://phar.phpunit.de/phpunit.phar
+    - chmod +x phpunit.phar
+    - mv phpunit.phar vendor/phpunit/
     # Install node modules specified in package.json
     - npm install
 
@@ -97,6 +97,6 @@ before_script:
 
 script:
 
-    - npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
+    - vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise
