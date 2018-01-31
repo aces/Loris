@@ -30,9 +30,7 @@ install:
     - composer self-update
     - composer install
     - phpenv rehash
-    - wget https://phar.phpunit.de/phpunit.phar
-    - chmod +x phpunit.phar
-    - mv phpunit.phar vendor/phpunit/
+    - phpunit --version
     # Install node modules specified in package.json
     - npm install
 
