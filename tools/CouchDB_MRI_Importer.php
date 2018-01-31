@@ -88,14 +88,19 @@ class CouchDBMRIImporter
 
         foreach($s as $scan){
             $scantype=$scan['ScanType'];
-            $Query .= ", (SELECT f.File FROM files f LEFT JOIN mri_scan_type msc
-              ON (msc.ID= f.AcquisitionProtocolID)
-              WHERE f.SessionID=s.ID AND msc.Scan_type='$scantype' LIMIT 1)
-                    as Selected_$scantype, (SELECT fqc.QCStatus
-                    FROM files f 
+            $Query  .= ", (SELECT f.File FROM files f
+                    LEFT JOIN files_qcstatus fqc USING(FileID)
+                    LEFT JOIN mri_scan_type msc ON (msc.ID= f.AcquisitionProtocolID)
+              WHERE f.SessionID=s.ID AND msc.Scan_type='$scantype'
+              AND fqc.Selected='true' ORDER BY
+              FIND_IN_SET(fqc.QCStatus, 'Fail,Pass') DESC LIMIT 1)
+                    as Selected_$scantype,
+              (SELECT fqc.QCStatus FROM files f
                     LEFT JOIN files_qcstatus fqc USING(FileID)
                     LEFT JOIN mri_scan_type msc ON(msc.ID= f.AcquisitionProtocolID)
-              WHERE f.SessionID=s.ID AND msc.Scan_type='$scantype' LIMIT 1)
+              WHERE f.SessionID=s.ID AND msc.Scan_type='$scantype'
+              AND fqc.Selected='true' ORDER BY
+              FIND_IN_SET(fqc.QCStatus, 'Fail,Pass') DESC LIMIT 1)
                      as $scantype"."_QCStatus";
         }
         $Query .= " FROM session s JOIN candidate c USING (CandID)
@@ -125,6 +130,10 @@ class CouchDBMRIImporter
         $tot_rej   = 'processing:total_rejected';
         $inter_rej = 'IntergradientRejected_'.$type;
         $pipeline  = 'processing:pipeline';
+        $sliceRej  = '';
+        $laceRej   = '';
+        $interRej  = '';
+        $acqDate   = '';
 
         $header['ScannerID_'.$type]           = $this->_getScannerID((int)$FileObj->getParameter('FileID'));
         $header['Pipeline_'.$type]            = $FileObj->getParameter('Pipeline');
