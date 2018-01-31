@@ -14,7 +14,7 @@ The primary type of users is:
 ## Scope
 
 This module displays information about examiners as well as certifications and 
-sites to which the examiners are affiliated. It also allows to add examiners 
+sites to which the examiners are affiliated. It also allows adding examiners 
 to sites, to give or remove certifications for instruments and set them as 
 radiologists.
 
@@ -22,6 +22,7 @@ NOT in scope:
 
 Management of the certification instruments and of the sites is external to 
 this module.
+
 The Examiner architecture is completely separate from the User 
 architecture intentionally; examiners may or may not be users.
 
@@ -44,41 +45,47 @@ examiner_multisite
 The examiner module has the following configurations that affect its usage
 
 EnableCertification (Config.xml)
- - Binary option enables/disables the use of certification for 
- projects defined in "CertificationProjects" or all projects if none are 
- explicitly stated
+ - Binary entry for sub-tag `<EnableCertification>` under the tag 
+ `<Certification>` in the config.xml file. Options `1` or `0` respectively 
+ enables or disables the use of certification for projects defined in the 
+ `<CertificationProjects>` section or all projects if none are explicitly stated.
+   
 
 CertificationProjects (Config.xml)
  - Projects for which certification is enabled, should match entries in 
- `Project` table in the database
+ `Project` table in the database. The project identifier should be placed 
+ within the `<CertificationProject>` tags as such 
+ `<CertificationProject>1<\CertificationProject>`.
 
 CertificationInstruments
  - Instruments which require certification to be able to administer. 
- This allows for examiners to be populated or not in the dropdown 
- list shown at the front page of instruments.
+ When an instrument is added to this list, the examiner dropdown found 
+ at the top page this instrument is populated only with examiners having 
+ obtained a certification for it.
 
 startYear
- - Min date of certification
+ - Min date of certification. This is entry is also the start year of the study.
 
 endYear
- - Max date of certification
+ - Max date of certification. This is entry is also the end year of the study.
 
 ## Interactions with LORIS
 
 - The list of examiners displayed at the top page of instruments is 
-highly dependent on entries in this module. The list is populated 
-with examiners that exist in the database, are at the correct site 
-and have the appropriate certifications (if need be); failure to 
-match these 3 criteria would result in the examiner not being displayed.
+dependent on entries in this module. The list is populated 
+with examiners that exist in the database, are at the same site 
+and have the appropriate certifications (if configured); failure to 
+match these 3 criteria will result in the examiner not being displayed.
 
 - The user_accounts module allows for quick activation/deactivation of 
 an examiner as well as setting their sites and their radiologist status.
-When an examiner is added from the user_accounts module, an additional 
-field in the database is populated to associate the examiner to the user.
+When an examiner is added from the user_accounts module, the `userID` field of 
+the `examiners` table in the database is populated to associate the examiner 
+to the user.
 
-- The Training module allows the study users to undergo proper 
-training and automatically assigns certifications upon completion. 
-The module starts by verifying that the user is indeed an examiner 
+- The Training module allows the study to automatically assign 
+certification upon successful completion of training. The module 
+starts by verifying that the user is indeed an examiner 
 before beginning the training. The certifications should appear 
 in the examiner module once obtained by an examiner and it should 
 be dated with the date of completion of the training process.
