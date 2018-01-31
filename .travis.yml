@@ -95,6 +95,6 @@ before_script:
 
 script:
 
-    - vendor/bin/phpunit --configuration test/phpunit.xml
+    - phpunit --configuration test/phpunit.xml
 
 dist: precise
