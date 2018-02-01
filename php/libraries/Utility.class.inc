@@ -199,11 +199,6 @@ class Utility
             $list[$row["ConsentTypeID"]] = $row;
             unset($list[$row["ConsentTypeID"]]["ConsentTypeID"]);
         }
-
-        //TO-DO (later): pull config from db once Configuration module is set
-	//up to modify consent types
-	//$config =& NDB_Config::singleton();
-
         return $list;
     }
 
