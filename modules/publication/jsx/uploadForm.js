@@ -7,7 +7,7 @@ class PublicationUploadForm extends React.Component {
       formData: {},
       numVOIGroups: 1,
       uploadResult: null,
-      errorMessage: null,
+      error: undefined,
       isLoaded: false,
       loadedData: 0,
       uploadProgress: -1
@@ -90,6 +90,13 @@ class PublicationUploadForm extends React.Component {
     let existingTitles = this.state.Data.titles;
     if (existingTitles.indexOf(formData.title) > -1) {
       swal("Publication title already exists!", "", "error");
+      return;
+    }
+    // validate email
+    if(!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(formData.leadInvestigatorEmail))) {
+      this.setState({
+        error: 'The email you provided for Lead Investigator is invalid!'
+      });
       return;
     }
 
@@ -225,7 +232,6 @@ class PublicationUploadForm extends React.Component {
                 <p className="form-control-static">
                   <strong>
                     Variables of Interest
-                    <span className="text-danger">*</span>
                   </strong>
                 </p>
               </div>
@@ -236,7 +242,7 @@ class PublicationUploadForm extends React.Component {
               ref="voiInst"
               id="voiInst"
               onUserInput={this.setFormData}
-              required={true}
+              required={false}
               value={this.state.formData.voiInst}
               options={testNames}
             />
@@ -248,7 +254,7 @@ class PublicationUploadForm extends React.Component {
               onUserInput={this.setFormData}
               onUserAdd={this.addListItem}
               onUserRemove={this.removeListItem}
-              required={true}
+              required={false}
               value={this.state.formData.pendingItemVF}
               options={testFields}
               pendingValKey="pendingItemVF"

@@ -87,14 +87,18 @@ SET FOREIGN_KEY_CHECKS=1;
 
 DELETE FROM LorisMenu WHERE Label='Publication';
 INSERT INTO LorisMenu (Parent, Label, Link) VALUES (4, 'Publication', 'publication/');
-
 DELETE FROM user_perm_rel WHERE permID=(SELECT permID FROM permissions WHERE code='publication_approve');
+DELETE FROM user_perm_rel WHERE permID=(SELECT permID FROM permissions WHERE code='publication_propose');
+DELETE FROM user_perm_rel WHERE permID=(SELECT permID FROM permissions WHERE code='publication_view');
 DELETE FROM permissions WHERE code='publication_view';
 DELETE FROM permissions WHERE code='publication_propose';
 DELETE FROM permissions WHERE code='publication_approve';
 INSERT INTO permissions (code, description, categoryID) VALUES ('publication_view', 'Publication - Access to module', 2);
 INSERT INTO permissions (code, description, categoryID) VALUES ('publication_propose', 'Publication - Propose a project', 2);
 INSERT INTO permissions (code, description, categoryID) VALUES ('publication_approve', 'Publication - Approve or reject proposed publicaiton projects', 2);
+INSERT INTO LorisMenuPermissions (MenuID, PermID) VALUES (SELECT ID FROM LorisMenu WHERE Label='Publication', SELECT permID FROM permissions WHERE code='publication_view');
+INSERT INTO LorisMenuPermissions (MenuID, PermID) VALUES (SELECT ID FROM LorisMenu WHERE Label='Publication', SELECT permID FROM permissions WHERE code='publication_propose');
+INSERT INTO LorisMenuPermissions (MenuID, PermID) VALUES (SELECT ID FROM LorisMenu WHERE Label='Publication', SELECT permID FROM permissions WHERE code='publication_approve');
 INSERT INTO user_perm_rel (userID, permID) VALUES(1, (SELECT permID FROM permissions WHERE code='publication_approve'));
 INSERT INTO user_perm_rel (userID, permID) VALUES(1, (SELECT permID FROM permissions WHERE code='publication_view'));
 INSERT INTO user_perm_rel (userID, permID) VALUES(1, (SELECT permID FROM permissions WHERE code='publication_propose'));
