@@ -6,7 +6,7 @@ var ConsentStatus = React.createClass(
           yes: "Yes",
           no: "No"
         },
-        Data: [],
+        Data: {},
         formData: {},
         updateResult: null,
         errorMessage: null,
@@ -17,23 +17,23 @@ var ConsentStatus = React.createClass(
     componentDidMount: function() {
       var that = this;
       $.ajax(
-                this.props.dataURL,
-        {
+        this.props.dataURL, {
           dataType: 'json',
           success: function(data) {
             var formData = {};
-            var consents = data.consents;
-            for (var consentStatus in consents) {
-              if (consents.hasOwnProperty(consentStatus)) {
-                var consentDate = consentStatus + "_date";
-                var consentDate2 = consentStatus + "_date2";
-                var consentWithdrawal = consentStatus + "_withdrawal";
-                var consentWithdrawal2 = consentStatus + "_withdrawal2";
-                formData[consentStatus] = data.consentStatuses[consentStatus];
-                formData[consentDate] = data.consentDates[consentStatus];
-                formData[consentDate2] = data.consentDates[consentStatus];
-                formData[consentWithdrawal] = data.withdrawals[consentStatus];
-                formData[consentWithdrawal2] = data.withdrawals[consentStatus];
+            var consents = data.consentTypes;
+            for (var thisConsent in consents) {
+              if (consents.hasOwnProperty(thisConsent)) {
+                var consentValue = thisConsent + "_value";
+                var consentDate = thisConsent+"_date";
+                var consentDate2 = consentDate+"2";
+                var consentWithdrawal = thisConsent+"_withdrawal_date";
+                var consentWithdrawal2 = consentWithdrawal+"2";
+                formData[consentValue] = data.consentStatuses[thisConsent] ? data.consentStatuses[thisConsent] : null;
+                formData[consentDate] = data.consentDates[thisConsent] ? data.consentDates[thisConsent] : null;
+                formData[consentDate2] = data.consentDates[thisConsent] ? data.consentDates[thisConsent] : null;
+                formData[consentWithdrawal] = data.withdrawalDates[thisConsent] ? data.withdrawalDates[thisConsent] : null;
+                formData[consentWithdrawal2] = data.withdrawalDates[thisConsent] ? data.withdrawalDates[thisConsent] : null;
               }
             }
 
@@ -63,7 +63,7 @@ var ConsentStatus = React.createClass(
         {
           formData: formData
         }
-            );
+      );
     },
     onSubmit: function(e) {
       e.preventDefault();
@@ -98,14 +98,15 @@ var ConsentStatus = React.createClass(
       var dateRequired = [];
       var withdrawalRequired = [];
       var i = 0;
-      for (var consent in this.state.Data.consents) {
-        if (this.state.Data.consents.hasOwnProperty(consent)) {
-          var withdrawal = consent + "_withdrawal";
+      for (var thisConsent in this.state.Data.consentTypes) {
+        if (this.state.Data.consentTypes.hasOwnProperty(thisConsent)) {
+          var value = thisConsent + "_value";
+          var withdrawal = thisConsent + "_withdrawal_date";
 
-          if (this.state.formData[consent] === "yes") {
+          if (this.state.formData[value] === "yes") {
             dateRequired[i] = true;
           }
-          if (this.state.formData[withdrawal]) {
+          if (this.state.formData[withdrawal] || this.state.formData[value] === "no") {
             withdrawalRequired[i] = true;
           } else {
             withdrawalRequired[i] = false;
@@ -116,15 +117,16 @@ var ConsentStatus = React.createClass(
 
       var consents = [];
       i = 0;
-      for (var consentStatus in this.state.Data.consents) {
-        if (this.state.Data.consents.hasOwnProperty(consentStatus)) {
-          var label = this.state.Data.consents[consentStatus];
-          var consentDate = consentStatus + "_date";
-          var consentDate2 = consentStatus + "_date2";
+      for (var thisConsent in this.state.Data.consentTypes) {
+        if (this.state.Data.consentTypes.hasOwnProperty(thisConsent)) {
+          var label = this.state.Data.consentTypes[thisConsent];
+          var consentValue = thisConsent + "_value";
+          var consentDate = thisConsent+"_date";
+          var consentDate2 = consentDate + "2";
           var consentDateLabel = "Date of " + label;
           var consentDateConfirmationLabel = "Confirmation Date of " + label;
-          var consentWithdrawal = consentStatus + "_withdrawal";
-          var consentWithdrawal2 = consentStatus + "_withdrawal2";
+          var consentWithdrawal = thisConsent+"_withdrawal_date";
+          var consentWithdrawal2 = consentWithdrawal + "2";
           var consentWithdrawalLabel = "Date of Withdrawal of " + label;
           var consentWithdrawalConfirmationLabel =
             "Confirmation Date of Withdrawal of " + label;
@@ -133,11 +135,11 @@ var ConsentStatus = React.createClass(
             <div key={i}>
               <SelectElement
                 label={label}
-                name={consentStatus}
+                name={consentValue}
                 options={this.state.consentOptions}
-                value={this.state.formData[consentStatus]}
+                value={this.state.formData[consentValue]}
                 onUserInput={this.setFormData}
-                ref={consentStatus}
+                ref={consentValue}
                 disabled={disabled}
                 required={false}
               />
@@ -166,7 +168,7 @@ var ConsentStatus = React.createClass(
                 onUserInput={this.setFormData}
                 ref={consentWithdrawal}
                 disabled={disabled}
-                required={false}
+                required={withdrawalRequired[i]}
               />
               <DateElement
                 label={consentWithdrawalConfirmationLabel}
@@ -267,7 +269,8 @@ var ConsentStatus = React.createClass(
         </div>
       );
     },
-        /**
+     
+    /**
      * Handles form submission
      *
      * @param {event} e - Form submission event
@@ -286,12 +289,12 @@ var ConsentStatus = React.createClass(
         mm = '0' + mm;
       }
       today = yyyy + '-' + mm + '-' + dd;
-      for (var consentStatus in this.state.Data.consents) {
-        if (this.state.Data.consents.hasOwnProperty(consentStatus)) {
-          var label = this.state.Data.consents[consentStatus];
+      for (var thisConsent in this.state.Data.consentTypes) {
+        if (this.state.Data.consentTypes.hasOwnProperty(thisConsent)) {
+          var label = this.state.Data.consentTypes[thisConsent];
 
-          var consentDate = consentStatus + "_date";
-          var consentDate2 = consentStatus + "_date2";
+          var consentDate = thisConsent + "_date";
+          var consentDate2 = thisConsent + "_date2";
 
           var date1 = myFormData[consentDate] ?
                     myFormData[consentDate] : null;
@@ -307,8 +310,8 @@ var ConsentStatus = React.createClass(
             return;
           }
 
-          var consentWithdrawal = consentStatus + "_withdrawal";
-          var consentWithdrawal2 = consentStatus + "_withdrawal2";
+          var consentWithdrawal = thisConsent + "_withdrawal_date";
+          var consentWithdrawal2 = thisConsent + "_withdrawal_date2";
 
           date1 = myFormData[consentWithdrawal] ?
                     myFormData[consentWithdrawal] : null;
@@ -326,7 +329,8 @@ var ConsentStatus = React.createClass(
         }
       }
 
-            // Set form data
+      // Set form data
+      
       var self = this;
       var formData = new FormData();
       for (var key in myFormData) {
@@ -350,7 +354,7 @@ var ConsentStatus = React.createClass(
               {
                 updateResult: "success"
               }
-                        );
+            );
             self.showAlertMessage();
           },
           error: function(err) {
@@ -361,15 +365,14 @@ var ConsentStatus = React.createClass(
                   updateResult: "error",
                   errorMessage: errorMessage
                 }
-                    );
+              );
               self.showAlertMessage();
             }
           }
-
         }
       );
     },
-        /**
+     /**
      * Display a success/error alert message after form submission
      */
     showAlertMessage: function() {
