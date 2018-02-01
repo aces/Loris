@@ -94,7 +94,7 @@ class View_Project extends \NDB_Form
     {
         //create user object
         $user =& \User::singleton();
-
+        
         return true;
     }
 

@@ -62,12 +62,24 @@ class PublicationIndex extends React.Component {
       {
         id: "browse",
         label: "Browse"
-      },
-      {
-        id: "propose",
-        label: "Propose a Project"
       }
     ];
+    var proposalTab;
+    if (loris.userHasPermission('publication_propose')) {
+      tabList.push({
+          id: "propose",
+          label: "Propose a Project"
+        });
+
+      proposalTab = (
+        <TabPane TabId={tabList[1].id}>
+          <PublicationUploadForm
+            DataURL={`${loris.BaseURL}/publication/ajax/FileUpload.php?action=getData`}
+            action={`${loris.BaseURL}/publication/ajax/FileUpload.php?action=upload`}
+          />
+        </TabPane>
+      );
+    }
 
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
@@ -96,12 +108,7 @@ class PublicationIndex extends React.Component {
             getFormattedCell={formatColumn}
           />
         </TabPane>
-        <TabPane TabId={tabList[1].id}>
-          <PublicationUploadForm
-            DataURL={`${loris.BaseURL}/publication/ajax/FileUpload.php?action=getData`}
-            action={`${loris.BaseURL}/publication/ajax/FileUpload.php?action=upload`}
-          />
-        </TabPane>
+        {proposalTab}
       </Tabs>
     );
   }

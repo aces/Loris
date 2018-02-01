@@ -34,9 +34,11 @@ class Publication extends \NDB_Menu_Filter_Form
     function _hasAccess()
     {
         // create user object
-        /*$user = \User::singleton();
-        return $user->hasPermission('publication');*/
-        return true;
+        $user = \User::singleton();
+        return ($user->hasPermission('publication_view')
+            || $user->hasPermission('publication_propose')
+            || $user->hasPermission('publication_approve')
+        );
     }
 
     /**

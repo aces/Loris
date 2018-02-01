@@ -43,9 +43,9 @@ class PublicationUploadForm extends React.Component {
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
-/*    this.setState({
+    this.setState({
       formData: formData
-    });*/
+    });
   }
 
   addListItem(formElement, value, pendingValKey) {
