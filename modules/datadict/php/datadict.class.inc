@@ -244,7 +244,6 @@ class Datadict extends \NDB_Menu_Filter
             $deps,
             array(
              $baseURL . "/datadict/js/datadict_helper.js",
-             $baseURL . "/js/components/MultiSelectDropdown.js",
              $baseURL . "/datadict/js/dataDictIndex.js",
             )
         );
