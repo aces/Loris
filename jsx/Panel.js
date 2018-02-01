@@ -46,7 +46,7 @@ class Panel extends React.Component {
       pencilGlyph = (
         <span
           className="glyphicon pull-right glyphicon-pencil"
-          style={{marginRight: '10px', cursor: 'pointer' }}
+          style={{marginRight: '10px', cursor: 'pointer'}}
           onClick={this.props.edit}
         />
       );
