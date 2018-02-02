@@ -56,3 +56,7 @@ UPDATE files
   WHERE FileType='nii.gz';
 DELETE FROM ImagingFileTypes
   WHERE type='nii.gz';
+
+-- delete .imp (obscure file type not used currently in any project)
+DELETE FROM ImagingFileTypes
+  WHERE type='imp';
