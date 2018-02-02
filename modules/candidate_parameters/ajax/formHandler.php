@@ -386,7 +386,8 @@ function editConsentStatusFields($db, $user)
 
     foreach ($consentDetails as $consentID=>$consentType) {
 
-        $consentName       = $consentType['Name'];
+        $consentName  = $consentType['Name'];
+        $consentLabel = $consentType['Label']; 
 
         /*In React, $consentName: $status i.e. 'study_consent': 'yes' in this.state.formData
          *Ideally we explicitly want $status = $_POST[$consentName . '_status'] 
@@ -410,7 +411,8 @@ function editConsentStatusFields($db, $user)
 
         $updateHistory = [
                    'PSCID'                   => $pscid,
-                   'ConsentType'             => $consentName,
+                   'ConsentName'             => $consentName,
+                   'ConsentLabel'            => $consentLabel,
                    'Status'                  => $status,
                    'DateGiven'               => $date,
                    'DateWithdrawn'           => $withdrawal,

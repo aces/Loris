@@ -456,15 +456,18 @@ function getConsentStatusHistory($pscid)
 
     foreach ($historyData as $key => $entry) {
       $history = [
-                  'label' => $entry['ConsentLabel'],
-                  'consentType' => $entry['ConsentName'],
                   'data_entry_date' => $entry['EntryDate'],
                   'entry_staff' => $entry['EntryStaff'],
                   $entry['ConsentName'] => $entry['Status'],
                   $entry['ConsentName'] . '_date' => $entry['DateGiven'],
                   $entry['ConsentName'] . '_withdrawal' => $entry['DateWithdrawn'],
                  ];
-      $formattedHistory[$key] = $history;
+      $consentHistory = [
+                         $key => $history,
+                         'label' => $entry['ConsentLabel'],
+                         'consentType' => $entry['ConsentName'],
+                        ];
+      $formattedHistory[$key] = $consentHistory;
     }
     return $formattedHistory;
 }
