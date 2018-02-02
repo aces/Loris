@@ -133,6 +133,8 @@ function uploadPublication() {
             $db->insertIgnore('publication_parameter_type_rel', $pubParamTypeRelInsert);
         }
     }
+
+
 }
 
 // Gets Data for a specific PublicationID

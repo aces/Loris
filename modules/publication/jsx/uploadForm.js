@@ -18,6 +18,7 @@ class PublicationUploadForm extends React.Component {
     this.addListItem = this.addListItem.bind(this);
     this.removeListItem = this.removeListItem.bind(this);
     this.addVOIGroups = this.addVOIGroups.bind(this);
+    this.isValidEmail = this.isValidEmail.bind(this);
   }
 
   componentDidMount() {
@@ -93,10 +94,8 @@ class PublicationUploadForm extends React.Component {
       return;
     }
     // validate email
-    if(!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(formData.leadInvestigatorEmail))) {
-      this.setState({
-        error: 'The email you provided for Lead Investigator is invalid!'
-      });
+    if (!this.isValidEmail(formData.leadInvestigatorEmail)) {
+      swal("Lead Investigator Email is invalid!", "", "error");
       return;
     }
 
@@ -131,6 +130,10 @@ class PublicationUploadForm extends React.Component {
         console.error(textStatus);
       }
     });
+  }
+
+  isValidEmail(email) {
+    return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
   }
 
   render() {
@@ -198,7 +201,6 @@ class PublicationUploadForm extends React.Component {
               name="title"
               label="Title"
               onUserInput={this.setFormData}
-              ref="title"
               required={true}
               value={this.state.formData.title}
             />
@@ -206,7 +208,6 @@ class PublicationUploadForm extends React.Component {
               name="description"
               label="Description"
               onUserInput={this.setFormData}
-              ref="description"
               required={true}
               value={this.state.formData.description}
             />
@@ -214,7 +215,6 @@ class PublicationUploadForm extends React.Component {
               name="leadInvestigator"
               label="Lead Investigator"
               onUserInput={this.setFormData}
-              ref="leadInvestigator"
               required={true}
               value={this.state.formData.leadInvestigator}
             />
@@ -222,9 +222,35 @@ class PublicationUploadForm extends React.Component {
               name="leadInvestigatorEmail"
               label="Lead Investigator Email"
               onUserInput={this.setFormData}
-              ref="leadInvestigatorEmail"
               required={true}
               value={this.state.formData.leadInvestigatorEmail}
+            />
+            <TagsElement
+              name="collaborators"
+              label="Collaborators"
+              id="collaborators"
+              onUserInput={this.setFormData}
+              onUserAdd={this.addListItem}
+              onUserRemove={this.removeListItem}
+              required={false}
+              value={this.state.formData.pendingCollab}
+              pendingValKey="pendingCollab"
+              items={this.state.formData.collaborators}
+              btnLabel="Add Collaborator"
+            />
+            <TagsElement
+              name="keywords"
+              label="Keywords"
+              id="keywords"
+              onUserInput={this.setFormData}
+              onUserAdd={this.addListItem}
+              onUserRemove={this.removeListItem}
+              required={false}
+              allowDupl={false}
+              value={this.state.formData.pendingKWItem}
+              pendingValKey="pendingKWItem"
+              items={this.state.formData.keywords}
+              btnLabel='Add Keyword'
             />
             <div className="row form-group">
               <label className="col-sm-3 control-label"/>
@@ -239,7 +265,6 @@ class PublicationUploadForm extends React.Component {
             <SelectElement
               name="voiInst"
               label="Instrument"
-              ref="voiInst"
               id="voiInst"
               onUserInput={this.setFormData}
               required={false}
@@ -249,7 +274,6 @@ class PublicationUploadForm extends React.Component {
             <TagsElement
               name="voiFields"
               label="Instrument Fields"
-              ref="voiFields"
               id="voiFields"
               onUserInput={this.setFormData}
               onUserAdd={this.addListItem}
@@ -260,21 +284,6 @@ class PublicationUploadForm extends React.Component {
               pendingValKey="pendingItemVF"
               items={this.state.formData.voiFields}
               btnLabel="Add Variable of Interest"
-            />
-            <TagsElement
-              name="keywords"
-              label="Keywords"
-              ref="keywords"
-              id="keywords"
-              onUserInput={this.setFormData}
-              onUserAdd={this.addListItem}
-              onUserRemove={this.removeListItem}
-              required={false}
-              allowDupl={false}
-              value={this.state.formData.pendingKWItem}
-              pendingValKey="pendingKWItem"
-              items={this.state.formData.keywords}
-              btnLabel='Add Keyword'
             />
             <ButtonElement label="Propose Project"/>
           </FormElement>
