@@ -393,26 +393,30 @@ function getConsentStatusFields()
     $date           = [];
     $withdrawalDate = [];
     $consentType    = [];
-    $consentDetails = Utility::getConsentList();        //Receive list of consent types from db
-    $candidateConsent = Candidate::getConsent($candID); //Receive list of consents for the specific candidate from db
+
+    //Get list of all consent types
+    $consentDetails = Utility::getConsentList();
+    
+    //Get list of consents for candidate
+    $candidateConsent = Candidate::getConsent($candID);
     foreach ($consentDetails as $consentID=>$consent) {
         $consentType[$consent['Name']] = $consent['Label'];
         if (isset($candidateConsent[$consentID])) {
-            $consentStatus[$consent['Name']] = $candidateConsent[$consentID]['Value'];
+            $consentStatus[$consent['Name']] = $candidateConsent[$consentID]['Status'];
             $date[$consent['Name']]          = $candidateConsent[$consentID]['DateGiven'];
             $withdrawalDate[$consent['Name']]    = $candidateConsent[$consentID]['DateWithdrawn'];
         }
     }
-        //$history = getConsentStatusHistory($candID, $consents);
+        $history = getConsentStatusHistory($pscid);
 
     $result = [
                'pscid'           => $pscid,
                'candID'          => $candID,
                'consentStatuses' => $consentStatus,
                'consentDates'    => $date,
-               'withdrawalDates' => $withdrawalDate,
-               'consentTypes'    => $consentType,
-               //'history'         => $history,
+               'withdrawals'     => $withdrawalDate,
+               'consents'        => $consentType,
+               'history'         => $history,
               ];
 
     return $result;
@@ -428,16 +432,16 @@ function getConsentStatusFields()
  *
  * @return array
  */
-function getConsentStatusHistory($candID, $consentValue)
+function getConsentStatusHistory($pscid)
 {
     $db =& \Database::singleton();
 
     $historyData = $db->pselect(
         " SELECT * 
-          FROM candidate_consent_history 
-          WHERE CandidateID=:cid 
-          ORDER BY DataEntryDate ASC",
-        array('cid' => $candID)
+          FROM candidate_consent_type_history 
+          WHERE PSCID=:pscid 
+          ORDER BY EntryDate ASC",
+        array('pscid' => $pscid)
     );
 
     return $historyData;

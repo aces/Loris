@@ -317,7 +317,7 @@ function editParticipantStatusFields($db, $user)
     $id = null;
     if (!(is_null($_SESSION['State']))) {
         $currentUser =& User::singleton($_SESSION['State']->getUsername());
-        $id          = $currentUser->getUsername();
+        $id          = $currentUser->getData("UserID");
     }
 
     $updateValues = [
@@ -363,55 +363,78 @@ function editConsentStatusFields($db, $user)
         exit;
     }
 
+    $db =& \Database::singleton();
     $currentUser = User::singleton();
     $uid         = $currentUser->getUsername();
 
+    $timestamp = 
+
+    // get CandID
     $candIDParam = $_POST['candID'];
     $candID      = (isset($candIDParam) && $candIDParam !== "null") ?
         $candIDParam : null;
+    
+    // get pscid
+    $pscid = $db->pselectOne(
+        'SELECT PSCID FROM candidate where CandID = :candid',
+        array('candid' => $candID)
+    );
 
-    $consentDetails   = Utility::getConsentList();      //Receive list of consent types from db
-    $candidateConsent = Candidate::getConsent($candID); //Receive list of consents for the specific candidate from db
+    // Get list of all consent types
+    $consentDetails   = Utility::getConsentList(); 
+    // Get list of consents for candidate
+    $candidateConsent = Candidate::getConsent($candID);
     foreach ($consentDetails as $consentID=>$consent) {
 
-        $consentName       = $consent['Name'];
-        $consentValue      = $_POST[$consentName . '_value'];
-        $consentDate       = $_POST[$consentName . '_date'];
-        $consentWithdrawal = $_POST[$consentName . '_withdrawal_date'];
+        $consentType       = $consent['Name'];
+
+        // in React, $consentType: $consentStatus i.e. 'study_consent': 'yes'
+        $consentStatus     = $_POST[$consentType];
+        $consentDate       = $_POST[$consentType . '_date'];
+        $consentWithdrawal = $_POST[$consentType . '_withdrawal'];
 
         // Process posted data
-        $status     = (isset($consentValue) && $consentValue !== "null") ?
-            $consentValue : null;
+        $status     = (isset($consentStatus) && $consentStatus !== "null") ?
+            $consentStatus : null;
         $date       = (isset($consentDate) && $consentDate !== "null") ?
             $consentDate : null;
         $withdrawal = (isset($consentWithdrawal) && $consentWithdrawal !== "null") ?
             $consentWithdrawal : null;
 
-        $updateValues = [
+        $updateStatus = [
                    'CandidateID'             => $candID,
                    'ConsentTypeID'           => $consentID,
-                   'Value'                   => $status,
+                   'Status'                  => $status,
                    'DateGiven'               => $date,
                    'DateWithdrawn'           => $withdrawal,
                   ];
 
-        //$historyValues = $updateValues + array('EntryStaff' => $uid);
+        print_r($updateStatus);
+        $updateHistory = [
+                   'PSCID'                   => $pscid,
+                   'ConsentType'             => $consentType,
+                   'Status'                  => $status,
+                   'DateGiven'               => $date,
+                   'DateWithdrawn'           => $withdrawal,
+                   'EntryStaff'              => $uid,
+                  ];
+
 
         $recordExists = array_key_exists($consentID, $candidateConsent);
 
         if ($recordExists) {
             $db->update(
                 'candidate_consent_type_rel',
-                $updateValues,
+                $updateStatus,
                 array(
                  'CandidateID' => $candID,
                  'ConsentTypeID'   => $consentID,
                 )
             );
         } else {
-            $db->insert('candidate_consent_type_rel', $updateValues);
+            $db->insert('candidate_consent_type_rel', $updateStatus);
         }
 
-        //$db->insert('candidate_consent_history', $historyValues);
+        $db->insert('candidate_consent_type_history', $updateHistory);
     }
 }
