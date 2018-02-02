@@ -4,7 +4,7 @@
 
 DROP TABLE IF EXISTS `candidate_consent_type_rel`;
 DROP TABLE IF EXISTS `consent_type`;
-DROP TABLE IF EXISTS `candidate_consent_history`;
+DROP TABLE IF EXISTS `candidate_consent_type_history`;
 
 DROP TABLE IF EXISTS `acknowledgements`;
 
@@ -1106,17 +1106,16 @@ CREATE TABLE `participant_status_history` (
   UNIQUE KEY `ID` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `candidate_consent_history` (
+CREATE TABLE `candidate_consent_type_history` (
   `CandidateConsentHistoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `CandidateID` int(6) NOT NULL,
-  `ConsentTypeID` int(2) NOT NULL,
-  `Value` enum('yes','no','not_answered') DEFAULT NULL,
+  `PSCID` varchar(255) NOT NULL,
+  `ConsentType` varchar(255) NOT NULL,
+  `Status` enum('yes','no','not_answered') DEFAULT NULL,
   `DateGiven` date DEFAULT NULL,
   `DateWithdrawn` date DEFAULT NULL,
   `EntryStaff` varchar(255) DEFAULT NULL,
   `EntryDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT `PK_candidate_consent_history` PRIMARY KEY (`CandidateConsentHistoryID`),
-  CONSTAINT `UK_candidate_consent_history_CandidateConsentHistoryID` UNIQUE KEY `CandidateConsentHistoryID` (`CandidateConsentHistoryID`)
+  CONSTRAINT `PK_candidate_consent_type_history` PRIMARY KEY (`CandidateConsentHistoryID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `family` (
@@ -2030,8 +2029,8 @@ CREATE TABLE `feedback_mri_comments` (
 
 CREATE TABLE `consent_type` (
   `ConsentTypeID` int(2) NOT NULL AUTO_INCREMENT,
-  `Name` varchar(255) NOT NULL DEFAULT "study_consent",
-  `Label` varchar(255) NOT NULL DEFAULT "Consent to Study",
+  `Name` varchar(255) NOT NULL DEFAULT,
+  `Label` varchar(255) NOT NULL DEFAULT,
   PRIMARY KEY (`ConsentTypeID`),
   UNIQUE KEY `Name` (`Name`),
   UNIQUE KEY `Label` (`Label`)
