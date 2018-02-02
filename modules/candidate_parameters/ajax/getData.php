@@ -389,22 +389,32 @@ function getConsentStatusFields()
         array('candid' => $candID)
     );
 
+    $consents       = [];
     $consentStatus  = [];
     $date           = [];
     $withdrawalDate = [];
-    $consentType    = [];
 
-    //Get list of all consent types
+    // Get list of all consent types
     $consentDetails = Utility::getConsentList();
     
-    //Get list of consents for candidate
+    // Get list of consents for candidate
     $candidateConsent = Candidate::getConsent($candID);
-    foreach ($consentDetails as $consentID=>$consent) {
-        $consentType[$consent['Name']] = $consent['Label'];
+
+    foreach ($consentDetails as $consentID=>$consentType) {
+
+        $consentName = $consentType['Name'];
+        $consents[$consentName] = $consentType['Label'];
+        
         if (isset($candidateConsent[$consentID])) {
-            $consentStatus[$consent['Name']] = $candidateConsent[$consentID]['Status'];
-            $date[$consent['Name']]          = $candidateConsent[$consentID]['DateGiven'];
-            $withdrawalDate[$consent['Name']]    = $candidateConsent[$consentID]['DateWithdrawn'];
+          $candidateConsentID = $candidateConsent[$consentID];
+          $status[$consentName] = $candidateConsentID['Status'];
+          $date[$consentName]          = $candidateConsentID['DateGiven'];
+          $withdrawalDate[$consentName]    = $candidateConsentID['DateWithdrawn'];
+        }
+	else {
+            $status[$consentName]         = null;
+            $date[$consentName]           = null;
+            $withdrawalDate[$consentName] = null;
         }
     }
         $history = getConsentStatusHistory($pscid);
@@ -412,10 +422,10 @@ function getConsentStatusFields()
     $result = [
                'pscid'           => $pscid,
                'candID'          => $candID,
-               'consentStatuses' => $consentStatus,
+               'consentStatuses' => $status,
                'consentDates'    => $date,
                'withdrawals'     => $withdrawalDate,
-               'consents'        => $consentType,
+               'consents'        => $consents,
                'history'         => $history,
               ];
 
@@ -437,12 +447,24 @@ function getConsentStatusHistory($pscid)
     $db =& \Database::singleton();
 
     $historyData = $db->pselect(
-        " SELECT * 
-          FROM candidate_consent_type_history 
-          WHERE PSCID=:pscid 
-          ORDER BY EntryDate ASC",
+        "SELECT * 
+         FROM candidate_consent_type_history 
+         WHERE PSCID=:pscid 
+         ORDER BY EntryDate ASC",
         array('pscid' => $pscid)
     );
 
-    return $historyData;
+    foreach ($historyData as $key => $entry) {
+      $history = [
+                  'label' => $entry['ConsentLabel'],
+                  'consentType' => $entry['ConsentName'],
+                  'data_entry_date' => $entry['EntryDate'],
+                  'entry_staff' => $entry['EntryStaff'],
+                  $entry['ConsentName'] => $entry['Status'],
+                  $entry['ConsentName'] . '_date' => $entry['DateGiven'],
+                  $entry['ConsentName'] . '_withdrawal' => $entry['DateWithdrawn'],
+                 ];
+      $formattedHistory[$key] = $history;
+    }
+    return $formattedHistory;
 }

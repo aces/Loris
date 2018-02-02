@@ -363,11 +363,9 @@ function editConsentStatusFields($db, $user)
         exit;
     }
 
-    $db =& \Database::singleton();
+    $db          =& \Database::singleton();
     $currentUser = User::singleton();
     $uid         = $currentUser->getUsername();
-
-    $timestamp = 
 
     // get CandID
     $candIDParam = $_POST['candID'];
@@ -382,24 +380,25 @@ function editConsentStatusFields($db, $user)
 
     // Get list of all consent types
     $consentDetails   = Utility::getConsentList(); 
+    
     // Get list of consents for candidate
     $candidateConsent = Candidate::getConsent($candID);
-    foreach ($consentDetails as $consentID=>$consent) {
 
-        $consentType       = $consent['Name'];
+    foreach ($consentDetails as $consentID=>$consentType) {
 
-        // in React, $consentType: $consentStatus i.e. 'study_consent': 'yes'
-        $consentStatus     = $_POST[$consentType];
-        $consentDate       = $_POST[$consentType . '_date'];
-        $consentWithdrawal = $_POST[$consentType . '_withdrawal'];
+        $consentName       = $consentType['Name'];
 
-        // Process posted data
-        $status     = (isset($consentStatus) && $consentStatus !== "null") ?
-            $consentStatus : null;
-        $date       = (isset($consentDate) && $consentDate !== "null") ?
-            $consentDate : null;
-        $withdrawal = (isset($consentWithdrawal) && $consentWithdrawal !== "null") ?
-            $consentWithdrawal : null;
+        /*In React, $consentName: $status i.e. 'study_consent': 'yes' in this.state.formData
+         *Ideally we explicitly want $status = $_POST[$consentName . '_status'] 
+         * 
+         *Process posted data
+         */
+        $status     = isset($_POST[$consentName]) ?
+            $_POST[$consentName] : null;
+        $date       = isset($_POST[$consentName . '_date']) ?
+            $_POST[$consentName . '_date'] : null;
+        $withdrawal = isset($_POST[$consentName . '_withdrawal']) ?
+            $_POST[$consentName . '_withdrawal'] : null;
 
         $updateStatus = [
                    'CandidateID'             => $candID,
@@ -409,10 +408,9 @@ function editConsentStatusFields($db, $user)
                    'DateWithdrawn'           => $withdrawal,
                   ];
 
-        print_r($updateStatus);
         $updateHistory = [
                    'PSCID'                   => $pscid,
-                   'ConsentType'             => $consentType,
+                   'ConsentType'             => $consentName,
                    'Status'                  => $status,
                    'DateGiven'               => $date,
                    'DateWithdrawn'           => $withdrawal,
