@@ -1106,18 +1106,6 @@ CREATE TABLE `participant_status_history` (
   UNIQUE KEY `ID` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `candidate_consent_type_history` (
-  `CandidateConsentHistoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `PSCID` varchar(255) NOT NULL,
-  `ConsentType` varchar(255) NOT NULL,
-  `Status` enum('yes','no','not_answered') DEFAULT NULL,
-  `DateGiven` date DEFAULT NULL,
-  `DateWithdrawn` date DEFAULT NULL,
-  `EntryStaff` varchar(255) DEFAULT NULL,
-  `EntryDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT `PK_candidate_consent_type_history` PRIMARY KEY (`CandidateConsentHistoryID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 CREATE TABLE `family` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `FamilyID` int(6) NOT NULL,
@@ -2046,3 +2034,17 @@ CREATE TABLE `candidate_consent_type_rel` (
   CONSTRAINT `FK_candidate_consent_type_rel_CandidateID` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`CandID`) ON DELETE RESTRICT [ON UPDATE {RESTRICT}],
   CONSTRAINT `FK_candidate_consent_type_rel_ConsentTypeID` FOREIGN KEY (`ConsentTypeID`) REFERENCES `consent_type` (`ConsentTypeID`) ON DELETE RESTRICT [ON UPDATE {RESTRICT}],
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `candidate_consent_type_history` (
+  `CandidateConsentHistoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `PSCID` varchar(255) NOT NULL,
+  `ConsentName` varchar(255) NOT NULL,
+  `ConsentLabel` varchar(255) NOT NULL,
+  `Status` enum('yes','no','not_answered') DEFAULT NULL,
+  `DateGiven` date DEFAULT NULL,
+  `DateWithdrawn` date DEFAULT NULL,
+  `EntryStaff` varchar(255) DEFAULT NULL,
+  `EntryDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT `PK_candidate_consent_type_history` PRIMARY KEY (`CandidateConsentHistoryID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

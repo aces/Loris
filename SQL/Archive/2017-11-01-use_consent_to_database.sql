@@ -24,7 +24,8 @@ CREATE TABLE `candidate_consent_type_rel` (
 CREATE TABLE `candidate_consent_type_history` (
   `CandidateConsentHistoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `PSCID` varchar(255) NOT NULL,
-  `ConsentType` varchar(255) NOT NULL,
+  `ConsentName` varchar(255) NOT NULL,
+  `ConsentLabel` varchar(255) NOT NULL,
   `Status` enum('yes','no','not_answered') DEFAULT NULL,
   `DateGiven` date DEFAULT NULL,
   `DateWithdrawn` date DEFAULT NULL,
