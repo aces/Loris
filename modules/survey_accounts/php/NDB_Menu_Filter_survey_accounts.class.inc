@@ -49,7 +49,9 @@ class NDB_Menu_Filter_Survey_Accounts extends NDB_Menu_Filter
         // the base query
         $query = " FROM participant_accounts p 
             JOIN session s ON (p.SessionID=s.ID)
-            JOIN candidate c ON (c.CandID=s.CandID)";
+            JOIN candidate c ON (c.CandID=s.CandID)
+            WHERE c.Active = 'Y'
+            AND   s.Active = 'Y'";
 
         // set the class variables
         $this->columns      = array(
