@@ -183,7 +183,7 @@ class Stats_Behavioural extends \NDB_Form
                 error_log(
                     "No tpl_data for C$center in behavioural statistics"
                 );
-                return;
+                continue;
             }
 
             $c[$vl]['total']   += $row['val'];
