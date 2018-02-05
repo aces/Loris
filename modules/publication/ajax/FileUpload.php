@@ -133,8 +133,31 @@ function uploadPublication() {
             $db->insertIgnore('publication_parameter_type_rel', $pubParamTypeRelInsert);
         }
     }
+    notifySubmission($pubID);
 
+}
 
+function notifySubmission($pubID) {
+    $db = \Database::singleton();
+    $config = \NDB_Config::singleton();
+    $emailData = array();
+
+    $data = $db->pselectRow(
+        "SELECT Title, DateProposed, LeadInvestigatorEmail ".
+        "FROM publication ".
+        "WHERE PublicationID=:pubID",
+        array('pubID' => $pubID)
+    );
+    $url = $config->getSetting('url');
+
+    $emailData['Title'] = $data['Title'];
+    $emailData['Date'] = $data['DateProposed'];
+    $emailData['URL'] = $url . '/publication/view_project/?id='.$pubID;
+    Email::send(
+        $data['LeadInvestigatorEmail'],
+        'publication_submission_confirmation.tpl',
+        $emailData
+    );
 }
 
 // Gets Data for a specific PublicationID
@@ -205,7 +228,10 @@ function getPublicationData() {
             'userCanEdit' => $userCanEdit
         );
     }
+
 }
+
+
 
 function editProject() {
     $id = $_REQUEST['id'];
