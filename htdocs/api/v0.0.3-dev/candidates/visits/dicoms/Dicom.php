@@ -69,7 +69,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     public function handleGET()
     {
         $fullDir = $this->getFullPath();
-        $fp = fopen($fullDir, "r");
+        $fp      = fopen($fullDir, "r");
         if ($fp !== false) {
             $this->Header("Content-Type: application/x-tar");
             $this->Header('Content-Length: '.filesize($fullDir));

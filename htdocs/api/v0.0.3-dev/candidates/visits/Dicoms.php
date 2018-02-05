@@ -113,7 +113,6 @@ class Dicoms extends \Loris\API\Candidates\Candidate\Visit
            ts.EchoTime, ts.SeriesUID
            ORDER BY Tarname";
 
-
         $rows = $DB->pselect($query, $params);
 
         $result = array();
