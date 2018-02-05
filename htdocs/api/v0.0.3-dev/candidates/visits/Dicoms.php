@@ -92,7 +92,7 @@ class Dicoms extends \Loris\API\Candidates\Candidate\Visit
             ]
         );
         if ($cand_info['Entity_type'] == 'Scanner') {
-            $ID            = "'" . $this->VisitLabel . "'" ;
+            $ID            = ":PVL";
             $params['PVL'] = $this->VisitLabel;
         } else {
             $ID = "LOWER(CONCAT(:PPSCID, '_', :PCandID, '_', :PVL, '%'))";
@@ -112,6 +112,7 @@ class Dicoms extends \Loris\API\Candidates\Candidate\Visit
            GROUP BY t.TarchiveID, ts.SeriesDescription, ts.SeriesNUmber, 
            ts.EchoTime, ts.SeriesUID
            ORDER BY Tarname";
+
 
         $rows = $DB->pselect($query, $params);
 

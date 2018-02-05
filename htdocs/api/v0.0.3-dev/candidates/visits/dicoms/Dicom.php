@@ -35,7 +35,6 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
      */
     public function __construct($method, $CandID, $VisitLabel, $Tarname)
     {
-        ob_start();
         $requestDelegationCascade = $this->AutoHandleRequestDelegation;
 
         $this->AutoHandleRequestDelegation = false;
@@ -70,7 +69,6 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     public function handleGET()
     {
         $fullDir = $this->getFullPath();
-        ob_end_clean();
         $fp = fopen($fullDir, "r");
         if ($fp !== false) {
             $this->Header("Content-Type: application/x-tar");
