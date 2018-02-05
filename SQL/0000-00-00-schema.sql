@@ -1354,11 +1354,13 @@ CREATE TABLE `media` (
   `uploaded_by` varchar(255) DEFAULT NULL,
   `hide_file` tinyint(1) DEFAULT '0',
   `date_uploaded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `language_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `file_name` (`file_name`),
   FOREIGN KEY (`session_id`) REFERENCES `session` (`ID`),
-  FOREIGN KEY (`instrument`) REFERENCES `test_names` (`Test_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  FOREIGN KEY (`instrument`) REFERENCES `test_names` (`Test_name`),
+  CONSTRAINT `FK_media_language` FOREIGN KEY (`language_id`) REFERENCES `language` (`language_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
 -- issues tables
