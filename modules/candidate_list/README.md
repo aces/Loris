@@ -9,7 +9,7 @@ can access specific candidates while browsing LORIS data.
 
 The candidate list is primarily used by data entry staff to use in
 order to access the `timepoint_list` module (and `instrument_list`
-from there) in order to access the candidate and perform data entry
+from there) in order to access the candidate and perform data entry.
 
 ## Scope
 
@@ -28,17 +28,17 @@ can only see candidates at study sites where they are affiliated.
 
 ## Configurations
 
-The "useProjects" configuration affects whether the table has a
+The `useProjects` configuration affects whether the table has a
 "Project" column for the candidate, and whether there is a filter
 dropdown for that column.
 
-The "useEDC" configuration variable has a similar function for the
-EDC column.
+The `useEDC` configuration variable has a similar function for the
+"EDC" column.
 
 ## Interactions with LORIS
 
 The "Scan Done" column indicates whether or not a scan was performed
-for that candidate. When a scan was performed (ie it has the value
+for that candidate. When a scan was performed (i.e. it has the value
 "Y"), clicking the table cell links to the `imaging_browser` module
 prefiltered for that candidate.
 
@@ -49,4 +49,3 @@ who have the `data_entry` permission, a separate form appears for
 the user to type the CandID/PSCID combo in order to access the
 candidate.  This is intended to prevent data entry errors caused
 by accidentally clicking on the wrong row before doing data entry.
-
