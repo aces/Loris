@@ -627,7 +627,7 @@ class DashboardTest extends LorisIntegrationTest
             $this->_testPlan7And8();
 
         } else {
-        $this->assertEquals(TRUE, 1);
+            $this->assertEquals(true, 1);
         }
 
     }
