@@ -392,9 +392,12 @@ function editConsentStatusFields($db, $user)
          * 
          *Process posted data
          */
-        $status     = ($_POST[$consentName] === 'null') ? null : $_POST[$consentName];
-        $date       = ($_POST[$consentName . '_date'] === 'null') ? null : $_POST[$consentName . '_date'];
-        $withdrawal = ($_POST[$consentName . '_withdrawal'] === 'null') ? null : $_POST[$consentName . '_withdrawal'];
+        $status     = ($_POST[$consentName] !== 'null') ?
+                        $_POST[$consentName] : null;
+        $date       = ($_POST[$consentName . '_date'] !== 'null') ?
+                        $_POST[$consentName . '_date'] : null;
+        $withdrawal = ($_POST[$consentName . '_withdrawal'] !== 'null') ?
+                        $_POST[$consentName . '_withdrawal'] : null;
         
         $updateStatus = [
                    'CandidateID'             => $candID,
