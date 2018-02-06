@@ -43,7 +43,7 @@ abstract class APIBase
      * @param string $method The HTTP request method
      */
     function __construct($method)
-    {  
+    {
         if (empty($this->AllowedMethods)) {
             $this->AllowedMethods = ['GET'];
         }
