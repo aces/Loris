@@ -2017,26 +2017,26 @@ CREATE TABLE `feedback_mri_comments` (
 
 CREATE TABLE `consent_type` (
   `ConsentTypeID` int(2) NOT NULL AUTO_INCREMENT,
-  `Name` varchar(255) NOT NULL DEFAULT,
-  `Label` varchar(255) NOT NULL DEFAULT,
-  PRIMARY KEY (`ConsentTypeID`),
-  UNIQUE KEY `Name` (`Name`),
-  UNIQUE KEY `Label` (`Label`)
+  `Name` varchar(255) NOT NULL,
+  `Label` varchar(255) NOT NULL,
+  CONSTRAINT `PK_consent_type` PRIMARY KEY (`ConsentTypeID`),
+  CONSTRAINT `UK_consent_type_Name` UNIQUE KEY `Name` (`Name`),
+  CONSTRAINT `UK_consent_type_Label` UNIQUE KEY `Label` (`Label`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `candidate_consent_type_rel` (
   `CandidateID` int(6) NOT NULL,
   `ConsentTypeID` int(2) NOT NULL,
-  `ConsentValue` enum('yes', 'no', 'not_answered') DEFAULT NULL,
+  `Status` enum('yes', 'no', 'not_answered') DEFAULT NULL,
   `DateGiven` date DEFAULT NULL,
   `DateWithdrawn` date DEFAULT NULL,
-  PRIMARY KEY (`CandidateID`,`ConsentTypeID`),
-  CONSTRAINT `FK_candidate_consent_type_rel_CandidateID` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`CandID`) ON DELETE RESTRICT [ON UPDATE {RESTRICT}],
-  CONSTRAINT `FK_candidate_consent_type_rel_ConsentTypeID` FOREIGN KEY (`ConsentTypeID`) REFERENCES `consent_type` (`ConsentTypeID`) ON DELETE RESTRICT [ON UPDATE {RESTRICT}],
+  CONSTRAINT `PK_candidate_consent_type_rel` PRIMARY KEY (`CandidateID`,`ConsentTypeID`),
+  CONSTRAINT `FK_candidate_consent_type_rel_CandidateID` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`CandID`),
+  CONSTRAINT `FK_candidate_consent_type_rel_ConsentTypeID` FOREIGN KEY (`ConsentTypeID`) REFERENCES `consent_type` (`ConsentTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `candidate_consent_type_history` (
-  `CandidateConsentHistoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  
   `PSCID` varchar(255) NOT NULL,
   `ConsentName` varchar(255) NOT NULL,
   `ConsentLabel` varchar(255) NOT NULL,
@@ -2047,4 +2047,3 @@ CREATE TABLE `candidate_consent_type_history` (
   `EntryDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT `PK_candidate_consent_type_history` PRIMARY KEY (`CandidateConsentHistoryID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
