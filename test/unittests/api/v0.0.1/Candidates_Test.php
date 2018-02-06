@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/../../../../vendor/autoload.php';
 require_once __DIR__ . '/../../../../htdocs/api/v0.0.1/Candidates.php';
-
-class Candidates_Test extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+class Candidates_Test extends TestCase
 {
     /**
      */

@@ -43,12 +43,13 @@ abstract class APIBase
      * @param string $method The HTTP request method
      */
     function __construct($method)
-    {
+    {  
         if (empty($this->AllowedMethods)) {
             $this->AllowedMethods = ['GET'];
         }
         // Verify that method is allowed for this type of request.
         if (!in_array($method, $this->AllowedMethods)) {
+            session_start();
             $this->header("HTTP/1.1 405 Method Not Allowed");
             $this->header("Allow: " . join(", ", $this->AllowedMethods));
             $this->safeExit(0);
@@ -127,7 +128,6 @@ abstract class APIBase
      */
     function handleETag()
     {
-        session_cache_limiter('private');
         $ETag = $this->calculateETag();
 
         $this->header("ETag: $ETag");
