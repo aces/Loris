@@ -453,7 +453,8 @@ function getConsentStatusHistory($pscid)
          ORDER BY EntryDate ASC",
         array('pscid' => $pscid)
     );
-
+    
+    $formattedHistory = [];
     foreach ($historyData as $key => $entry) {
       $history = [
                   'data_entry_date' => $entry['EntryDate'],
