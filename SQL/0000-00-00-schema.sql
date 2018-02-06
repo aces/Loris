@@ -2036,7 +2036,7 @@ CREATE TABLE `candidate_consent_type_rel` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `candidate_consent_type_history` (
-  
+  `CandidateConsentHistoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `PSCID` varchar(255) NOT NULL,
   `ConsentName` varchar(255) NOT NULL,
   `ConsentLabel` varchar(255) NOT NULL,
