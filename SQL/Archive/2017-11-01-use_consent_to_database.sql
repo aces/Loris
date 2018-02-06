@@ -4,7 +4,7 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, 'false' FROM ConfigSettings WHER
 CREATE TABLE `consent_type` (
   `ConsentTypeID` int(2) NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) NOT NULL,
-  `Label` varchar(255) NOT NULL DEFAULT,
+  `Label` varchar(255) NOT NULL,
   CONSTRAINT `PK_consent_type` PRIMARY KEY (`ConsentTypeID`),
   CONSTRAINT `UK_consent_type_Name` UNIQUE KEY `Name` (`Name`),
   CONSTRAINT `UK_consent_type_Label` UNIQUE KEY `Label` (`Label`)
