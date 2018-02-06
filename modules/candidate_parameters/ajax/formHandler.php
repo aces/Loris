@@ -362,8 +362,6 @@ function editConsentStatusFields($db, $user)
         header("HTTP/1.1 403 Forbidden");
         exit;
     }
-
-    $db          =& \Database::singleton();
     $currentUser = User::singleton();
     $uid         = $currentUser->getUsername();
 
@@ -394,21 +392,17 @@ function editConsentStatusFields($db, $user)
          * 
          *Process posted data
          */
-        $status     = isset($_POST[$consentName]) ?
-            $_POST[$consentName] : null;
-        $date       = isset($_POST[$consentName . '_date']) ?
-            $_POST[$consentName . '_date'] : null;
-        $withdrawal = isset($_POST[$consentName . '_withdrawal']) ?
-            $_POST[$consentName . '_withdrawal'] : null;
-
+        $status     = ($_POST[$consentName] === 'null') ? null : $_POST[$consentName];
+        $date       = ($_POST[$consentName . '_date'] === 'null') ? null : $_POST[$consentName . '_date'];
+        $withdrawal = ($_POST[$consentName . '_withdrawal'] === 'null') ? null : $_POST[$consentName . '_withdrawal'];
+        
         $updateStatus = [
                    'CandidateID'             => $candID,
                    'ConsentTypeID'           => $consentID,
                    'Status'                  => $status,
                    'DateGiven'               => $date,
                    'DateWithdrawn'           => $withdrawal,
-                  ];
-
+                    ];
         $updateHistory = [
                    'PSCID'                   => $pscid,
                    'ConsentName'             => $consentName,
@@ -417,7 +411,7 @@ function editConsentStatusFields($db, $user)
                    'DateGiven'               => $date,
                    'DateWithdrawn'           => $withdrawal,
                    'EntryStaff'              => $uid,
-                  ];
+                   ];
 
 
         $recordExists = array_key_exists($consentID, $candidateConsent);
