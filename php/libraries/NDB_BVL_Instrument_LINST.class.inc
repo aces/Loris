@@ -341,21 +341,21 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 return true;
             }
             switch ($operator) {
-             case '==':
-                 if ($comparevalue != $userval) {
-                     return false;
-                 }
-                 break;
-             case '!=':
-                 if ($comparevalue == $userval) {
-                     return false;
-                 }
-                 break;
-             default:
-                 throw new \LorisException(
-                     "Unsupported operator ($operator) for XIN Rule."
+            case '==':
+                if ($comparevalue != $userval) {
+                    return false;
+                }
+                break;
+            case '!=':
+                if ($comparevalue == $userval) {
+                    return false;
+                }
+                break;
+            default:
+                throw new \LorisException(
+                    "Unsupported operator ($operator) for XIN Rule."
                      . " If this used to work, please file a bug report."
-                 );
+                );
             }
         }
         // Nothing that was compared failed
