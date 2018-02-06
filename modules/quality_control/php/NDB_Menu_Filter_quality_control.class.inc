@@ -117,54 +117,21 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
            '".$scan_type."' as scan_type,
            t.TarchiveID as tarchiveID,
            CASE
-              WHEN EXISTS(
-                  SELECT
-                      *
-                  FROM
-                      tarchive_series ts
-                  WHERE
-                      ts.TarchiveID = t.TarchiveID
-                      AND(
-                          ts.EchoTime BETWEEN(
-                              SELECT
-                                  SUBSTRING_INDEX(mp.TE_range, '-', 1)
-                              FROM
-                                  mri_protocol mp
-                              WHERE
-                                  mp.Scan_type = ".$acqID." LIMIT 1
-                          ) AND(
-                              SELECT
-                                  SUBSTRING_INDEX(mp.TE_range, '-', -1)
-                              FROM
-                                  mri_protocol mp
-                              WHERE
-                                   mp.Scan_type = ".$acqID." LIMIT 1
-                           )
-                      )
-                      AND(
-                          ts.RepetitionTime BETWEEN(
-                              SELECT
-                                  SUBSTRING_INDEX(mp.TR_range, ',', 1)
-                              FROM
-                                  mri_protocol mp
-                              WHERE
-                                  mp.Scan_type = ".$acqID." LIMIT 1
-                          ) AND(
-                              SELECT
-                                  SUBSTRING_INDEX(mp.TR_range, ',', -1)
-                              FROM
-                                  mri_protocol mp
-                              WHERE
-                                  mp.Scan_type = ".$acqID." LIMIT 1
-                           )
-                      )
+              WHEN EXISTS (
+                  SELECT *
+                  FROM tarchive_series ts
+                  LEFT JOIN mri_protocol_TE mp_TE ON (mp_TE.Scan_type=".$acqID.")
+                  LEFT JOIN mri_protocol_TR mp_TR ON (mp_TR.Scan_type=".$acqID.")
+                  WHERE ts.TarchiveID = t.TarchiveID
+                      AND (ts.EchoTime BETWEEN mp_TE.TE_min AND mp_TE.TE_max)
+                      AND (ts.RepetitionTime BETWEEN mp_TR.TR_min AND mp_TR.TR_max)
                ) THEN 'In DICOM'
               ELSE 'Missing'
            END as tarchive_loc,
-           (SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project,".
-           " (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID)
-           as subproject,".
-           " CASE
+           (SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project,
+           (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID)
+           as subproject,
+           CASE
               WHEN m.Data_entry_completion_status='Incomplete' THEN 'Incomplete'
               ELSE 'Complete'
            END AS mri_parameter_form,
@@ -187,7 +154,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
            mu.uploadedBy as uploaded_by,
            f.CommentID as CommentID ";
 
-        //print_r($select);
         $joins = " FROM flag f
         LEFT JOIN session s ON (f.SessionID=s.ID)
         LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
