@@ -13,7 +13,7 @@
     "require-dev" : {
         "squizlabs/php_codesniffer" : "2.5.*",
         "phpunit/phpunit" : "6.5.*",
-        "phpunit/dbunit": "4.8.*",
+        "phpunit/dbunit": "3.0.*",
         "facebook/webdriver" : "dev-master",
         "phpmd/phpmd": "^2.6"
     },
