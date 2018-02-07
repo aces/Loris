@@ -126,8 +126,9 @@ class PublicationUploadForm extends React.Component {
         });
         swal("Submission Successful!", "", "success");
       }.bind(this),
-      error: function(jqXHR, textStatus) {
+      error: function(jqXHR, textStatus, errorThrown) {
         console.error(textStatus);
+        swal("Something went wrong!", errorThrown, "error");
       }
     });
   }

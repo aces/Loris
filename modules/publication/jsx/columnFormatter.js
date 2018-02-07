@@ -19,19 +19,28 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }, this);
 
   var classes  = [];
-
   if (column === 'Title') {
     var pubID = row['Publication ID'];
-    var viewURL = loris.BaseURL + '/publication/view_project?id='+pubID;
+    var viewURL = loris.BaseURL + '/publication/view_project?id=' + pubID;
+
+    // need to decode html entities that get stored in database
+    cell = decodeHtml(cell);
+
     return (
       <td>
         <a href={viewURL}>
-        {cell}
+          {cell}
         </a>
       </td>
     );
   }
   return <td className={classes}>{cell}</td>;
+}
+
+function decodeHtml(html) {
+  var txt = document.createElement("textarea");
+  txt.innerHTML = html;
+  return txt.value;
 }
 
 export default formatColumn;

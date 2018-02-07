@@ -31,7 +31,6 @@ function getData() {
         array()
     );
 
-
     $data['titles'] = $titles;
     $data['varsOfInterest'] = $varsOfInterest;
     return $data;
@@ -40,10 +39,20 @@ function getData() {
 function uploadPublication() {
     $db = Database::singleton();
 
+    $titleRaw = isset($_REQUEST['title']) ? $_REQUEST['title'] : null;
+    if (!$titleRaw) {
+        throw new LorisException('Title is empty');
+    }
+    // title that gets inserted is run through htmlspecialchars()
+    // so need to query based on Processed title
+    $titleProc = htmlspecialchars($titleRaw);
+
     // back end validation for title uniqueness constraint
     $exists = $db->pselectOne(
-        "SELECT PublicationID FROM publication WHERE Title=:t",
-        array('t' => $_REQUEST['title'])
+        "SELECT PublicationID ".
+        "FROM publication ".
+        "WHERE Title=:t",
+        array('t' => $titleProc)
     );
 
     if ($exists) {
@@ -55,7 +64,7 @@ function uploadPublication() {
     $today = date('Y-m-d');
     $fields = array(
         'UserID'                => $uid,
-        'Title'                 => $_REQUEST['title'],
+        'Title'                 => $titleRaw, // insert titleRaw to avoid double escaping
         'Description'           => $_REQUEST['description'],
         'LeadInvestigator'      => $_REQUEST['leadInvestigator'],
         'LeadInvestigatorEmail' => $_REQUEST['leadInvestigatorEmail'],
@@ -68,7 +77,7 @@ function uploadPublication() {
         'SELECT PublicationID '.
         'FROM publication '.
         'WHERE Title=:t',
-        array('t' => $_REQUEST['title'])
+        array('t' => $titleProc)
     );
 
     $keywords = json_decode($_REQUEST['keywords']);
@@ -230,8 +239,6 @@ function getPublicationData() {
     }
 
 }
-
-
 
 function editProject() {
     $id = $_REQUEST['id'];
