@@ -2158,6 +2158,39 @@ class LorisForm
     }
 
     /**
+     * Extracts all the elements in this form.
+     *
+     * @return all the elements contained in this form.
+     */
+    function getElements()
+    {
+        return $this->_getElements($this->form);
+    }
+
+    /**
+     * Extracts all the elements from the given element container.
+     *
+     * @param array $elementsContainer a container of elements. Note that
+     *              this container can contain other containers, which will
+     *              be examined recursively to compute the final list of elements.
+     *
+     * @return array list of extracted elements.
+     */
+    private function _getElements(array $elementsContainer)
+    {
+        $elements = array();
+        foreach ($elementsContainer as $element) {
+            if ($element['type'] === 'group') {
+                $elements += $this->_getElements($element['elements']);
+            } else {
+                $elements[] = $this->getElement($element['name']);
+            }
+        }
+
+        return $elements;
+    }
+
+    /**
      * Sets an error for the given element to be displayed to the
      * user
      *
@@ -2224,6 +2257,19 @@ class LorisForm
  */
 class LorisFormElement
 {
+    var $el;
+
+    /**
+     * Constructor.
+     *
+     * @param array $el The element from $this->form which
+     *                  we need an object wrapper around.
+     */
+    function __construct($el)
+    {
+        $this->el = $el;
+    }
+
     /**
      * Stub. Does nothing.
      *
@@ -2241,6 +2287,16 @@ class LorisFormElement
     function getValue()
     {
     }
+
+    /**
+     * Gets the name of this element.
+     *
+     * @return string name of the element.
+     */
+    function getName()
+    {
+        return $this->el['name'];
+    }
 };
 
 /**
@@ -2255,7 +2311,6 @@ class LorisFormElement
  */
 class LorisFormFileElement extends LorisFormElement
 {
-    var $el;
     var $file;
 
     /**
@@ -2266,7 +2321,7 @@ class LorisFormFileElement extends LorisFormElement
      */
     function __construct($el)
     {
-        $this->el   = $el;
+        parent::__construct($el);
         $this->file = $_FILES[$this->el['name']];
     }
 
