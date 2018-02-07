@@ -1,4 +1,8 @@
 <?php
+use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
+
 /**
  * This file contains the NDB_Page base class. This file should
  * contain ALL of the references to HTML_QuickForm (or any library
@@ -23,7 +27,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Page
+class NDB_Page implements RequestHandlerInterface
 {
     /**
      * The name of the test_name being accessed
@@ -60,6 +64,8 @@ class NDB_Page
      * construct the DOM from javascript.
      */
     var $skipTemplate = false;
+
+    protected $format = '';
 
     /**
      * Template data to be passed to Smarty.
@@ -588,6 +594,54 @@ class NDB_Page
         $attr=array('class' => 'form-control input-sm')
     ) {
         return $this->form->createElement('password', $field, $label, $attr);
+    }
+
+    /**
+     * An NDB_Page can act as both a middleware, or a handler, depending on the
+     * context. When treated as a middleware, the page is responsible for setting
+     * up any middleware required to access the page. By default, this will
+     * implement the page decoration middlewares which is responsible for adding
+     * the LORIS menu's/headers/footers/etc.
+     * This can be overridden by modules who don't want this behaviour (such
+     * as API endpoints.)
+     */
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface {
+        $baseURL = $request->getAttribute("baseurl");
+        $config  = NDB_Config::singleton();
+
+        $user = $request->getAttribute("user");
+
+        // Add the page class to the request to that middleware that needs it
+        // has access to it. (This currently required by the page decoration
+        // middleware, because of the control panels.)
+        $request = $request->withAttribute("pageclass", $this);
+
+        // FIXME: For historical compatibility with NDB_Menu_Filter.
+        // Format should be deprecated and getting the page in different formats
+        // should be a different endpoint.
+        $get = $request->getQueryParams();
+        if (isset($get['format'])) {
+            $this->format = $get['format'];
+            // Do not add the decoration middleware for json format requests.
+            return $handler->handle($request);
+        }
+
+        if ($user instanceOf \LORIS\AnonymousUser) {
+            return (new \LORIS\Middleware\AnonymousPageDecorationMiddleware($baseURL, $config, $this->getJSDependencies(), $this->getCSSDependencies()))->process($request, $handler);
+        }
+
+        return (new \LORIS\Middleware\UserPageDecorationMiddleware($user, $baseURL, $this->name, $config, $this->getJSDependencies(), $this->getCSSDependencies()))->process($request, $handler);
+    }
+
+    /**
+     * An NDB_Page can act as both a middleware, or a handler, depending on the
+     * context. When treated as a handler, an NDB_Page calls display() and
+     * converts the output to a PSR7 stream.
+     */
+    public function handle(\Psr\Http\Message\ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface {
+        $this->setup();
+        return (new \Zend\Diactoros\Response())
+            ->withBody(new \LORIS\Http\StringStream($this->display()));
     }
 
     /**
