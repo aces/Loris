@@ -268,15 +268,25 @@ function backupEntries($selectID, $table_name, $FK_field)
     $config->load(__DIR__."/../project/config.xml");
     $database = $config->getSettingFromXML("database");
 
+    // prompt for mysql username
+    $prompt   = "Enter MySQL username with mysqldump permission:";
+    $username = readline($prompt);
+
+    // prompt for mysql password
+    echo "Enter password:";
+    system('/bin/stty -echo');
+    $password = trim(fgets(STDIN));
+    system("/bin/stty echo");
+
     // create the mysqldump query to back the orphan entries to be deleted
     $sqldump = "mysqldump " .
-        "-u " . escapeshellarg($database['username']) . " " .
-        "-h " . escapeshellarg($database['host'])     . " " .
-        "-p"  . escapeshellarg($database['password']) . " " .
-        escapeshellarg($database['database'])         . " " .
-        escapeshellarg($table_name)                   . " " .
-        "--where=" . escapeshellarg($where)           . " " .
-        "--compact --no-create-info"                  . " " .
+        "-u " . escapeshellarg($username)         . " " .
+        "-h " . escapeshellarg($database['host']) . " " .
+        "-p"  . escapeshellarg($password)         . " " .
+        escapeshellarg($database['database'])     . " " .
+        escapeshellarg($table_name)               . " " .
+        "--where=" . escapeshellarg($where)       . " " .
+        "--compact --no-create-info"              . " " .
         ">> ./backup_release_19-0_upgrade.sql";
 
     system($sqldump, $retval); // execute mysqldump
