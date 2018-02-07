@@ -23,7 +23,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class DefaultFilesUpload Handler implements FilesUploadHandler
+class DefaultFilesUploadHandler implements FilesUploadHandler
 {
     /**
      * Default directory to move the uploaded files to if none is explicitely
