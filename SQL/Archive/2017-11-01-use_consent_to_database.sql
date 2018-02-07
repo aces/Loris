@@ -13,7 +13,7 @@ CREATE TABLE `consent_type` (
 CREATE TABLE `candidate_consent_type_rel` (
   `CandidateID` int(6) NOT NULL,
   `ConsentTypeID` int(2) NOT NULL,
-  `Status` enum('yes', 'no', 'not_answered') DEFAULT NULL,
+  `Status` enum('yes', 'no', 'not_answered') NOT NULL,
   `DateGiven` date DEFAULT NULL,
   `DateWithdrawn` date DEFAULT NULL,
   CONSTRAINT `PK_candidate_consent_type_rel` PRIMARY KEY (`CandidateID`,`ConsentTypeID`),
@@ -26,7 +26,7 @@ CREATE TABLE `candidate_consent_type_history` (
   `PSCID` varchar(255) NOT NULL,
   `ConsentName` varchar(255) NOT NULL,
   `ConsentLabel` varchar(255) NOT NULL,
-  `Status` enum('yes','no','not_answered') DEFAULT NULL,
+  `Status` enum('yes','no','not_answered') NOT NULL,
   `DateGiven` date DEFAULT NULL,
   `DateWithdrawn` date DEFAULT NULL,
   `EntryStaff` varchar(255) DEFAULT NULL,
