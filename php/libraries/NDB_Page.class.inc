@@ -1,4 +1,8 @@
 <?php
+use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
+
 /**
  * This file contains the NDB_Page base class. This file should
  * contain ALL of the references to HTML_QuickForm (or any library
@@ -63,6 +67,8 @@ class NDB_Page implements RequestHandlerInterface
      * construct the DOM from javascript.
      */
     var $skipTemplate = false;
+
+    protected $format = '';
 
     /**
      * The format that the page content should be returned in. This is generally

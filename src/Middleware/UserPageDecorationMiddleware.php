@@ -21,13 +21,12 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
     }
 
     /**
-     * Displays a page to an logged in user, adding the necessary
-     * header/footer/etc page decorations.
+     * Displays a page to an anonymous (not logged in) user.
      *
-     * @param ServerRequestInterface  $request The incoming request
-     * @param RequestHandlerInterface $handler The handler to decorate
+     * @param array $get  The GET parameters from the request.
+     * @param array $post The POST parameters from the request.
      *
-     * @return ResponseInterface a PSR15 response of handler, after adding decorations.
+     * @return string the page content
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface { 
         ob_start();
