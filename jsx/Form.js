@@ -269,15 +269,15 @@ var TagsElement = React.createClass({
     ]),
     class: React.PropTypes.string,
     multiple: React.PropTypes.bool,
-    disabled: React.PropTypes.bool,
     required: React.PropTypes.bool,
+    disabled: React.PropTypes.bool,
     emptyOption: React.PropTypes.bool,
     hasError: React.PropTypes.bool,
     errorMessage: React.PropTypes.string,
     btnLabel: React.PropTypes.string,
     onUserInput: React.PropTypes.func,
     onUserAdd: React.PropTypes.func,
-    onUserRemove: React.PropTypes.func
+    onUserRemove: React.PropTypes.func,
   },
 
   getDefaultProps: function() {
@@ -289,8 +289,8 @@ var TagsElement = React.createClass({
       value: undefined,
       id: '',
       class: '',
-      disabled: false,
       required: false,
+      disabled: false,
       emptyOption: true,
       hasError: false,
       allowDupl: false,
@@ -305,7 +305,7 @@ var TagsElement = React.createClass({
       },
       onUserRemove: function() {
         console.warn('onUserRemove() callback is not set');
-      }
+      },
     };
   },
 
@@ -354,12 +354,11 @@ var TagsElement = React.createClass({
 
   render: function() {
     var disabled = this.props.disabled ? 'disabled' : null;
-    var required = this.props.required ? 'required' : null;
     var requiredHTML = null;
     var emptyOptionHTML = null;
 
     // Add required asterix
-    if (required) {
+    if (this.props.required) {
       requiredHTML = <span className="text-danger">*</span>;
     }
 
@@ -374,14 +373,14 @@ var TagsElement = React.createClass({
     if (Object.keys(this.props.options).length === 0) {
       input = <input
         type="text"
-        className="form-control"
         name={this.props.name}
         id={this.props.id}
+        className="form-control"
         value={this.props.value || ""}
-        required={required}
         disabled={disabled}
         onChange={this.handleChange}
         onKeyPress={this.handleKeyPress}
+        onSubmit={this.handleSubmit}
       />;
     } else {
       var options = this.props.options;
@@ -390,10 +389,10 @@ var TagsElement = React.createClass({
         className="form-control"
         id={this.props.id}
         value={this.props.value}
-        required={required}
         disabled={disabled}
         onChange={this.handleChange}
         onKeyPress={this.handleKeyPress}
+        onSubmit={this.handleSubmit}
       >
         {emptyOptionHTML}
         {Object.keys(options).map(function(option) {
