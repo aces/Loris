@@ -33,7 +33,6 @@ $tpl_data['css'] =$config->getSetting('css');
 $tpl_data['study_title'] = $config->getSetting('title');
 $tpl_data['page']        = 'password-reset';
 $tpl_data['currentyear'] = date('Y');
-$tpl_data['version']     = file_get_contents(__DIR__ . "/../VERSION");
 $tpl_data['page_title']  = 'Reset Password';
 try {
     $tpl_data['study_logo'] = $config->getSetting('studylogo');
@@ -68,7 +67,7 @@ if (isset($_POST['username'])) {
             $msg_data['password'] = $password;
             Email::send($email, 'lost_password.tpl', $msg_data);
 
-            $tpl_data['success'] = 'You should receive an email with instructions 
+            $tpl_data['success'] = 'You should receive an email with instructions
                                     within a few minutes!';
         } else {
             $tpl_data['error_message'] = 'Please provide a valid username!';

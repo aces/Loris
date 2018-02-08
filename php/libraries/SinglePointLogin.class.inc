@@ -447,6 +447,7 @@ class SinglePointLogin
                     if ($redirect) {
                         $this->showPasswordExpiryScreen();
                     }
+                    $this->_lastError = "Password expired";
                     return false;
                 }
 

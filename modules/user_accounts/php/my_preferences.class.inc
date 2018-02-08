@@ -320,6 +320,10 @@ class My_Preferences extends \NDB_Form
         $this->form->addElement('password', 'Password_hash', 'New Password');
         $this->form->addElement('password', '__Confirm', 'Confirm Password');
 
+        // language preference
+        $languages = \Utility::getLanguageList();
+        $this->addSelect('language_preference', 'Language preference', $languages);
+
         // Notification headers
         $nGroup[] = $this->createLabel("Module");
         $nGroup[] = $this->createLabel("Operation");

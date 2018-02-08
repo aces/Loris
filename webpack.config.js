@@ -51,7 +51,8 @@ var config = [{
     './modules/data_integrity_flag/js/index.js': './modules/data_integrity_flag/jsx/index.js',
     './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js',
     './modules/publication/js/publicationIndex.js': './modules/publication/jsx/publicationIndex.js',
-    './modules/publication/js/viewProjectIndex.js': './modules/publication/jsx/viewProjectIndex.js'
+    './modules/publication/js/viewProjectIndex.js': './modules/publication/jsx/viewProjectIndex.js',
+    './modules/acknowledgements/js/columnFormatter.js': './modules/acknowledgements/jsx/columnFormatter.js'
   },
   output: {
     path: './',
