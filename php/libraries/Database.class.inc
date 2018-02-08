@@ -809,8 +809,7 @@ class Database
     {
         $result = $this->pselectRow($query, $params);
         if (is_array($result) && count($result)) {
-
-            list(,$result) = each($result);
+            $result = array_values($result)[0];
         }
         return $result;
     }

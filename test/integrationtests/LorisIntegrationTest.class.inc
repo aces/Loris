@@ -14,7 +14,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-
+use PHPUnit\Framework\TestCase;
 /**
  * Implementation of LorisIntegrationTest helper class.
  *
@@ -24,7 +24,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
+abstract class LorisIntegrationTest extends TestCase
 {
     /**
      * A reference to the Selenium WebDriver object for the test

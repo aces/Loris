@@ -5,7 +5,7 @@ cache:
         - vendor
 
 php:
-    - "7"
+    - "7.2"
     - "7.1"
 
 sudo: false
@@ -28,6 +28,7 @@ before_install:
 install:
     # Install composer modules
     - composer install
+    - composer require --dev
     - phpenv rehash
 
     # Install node modules specified in package.json
