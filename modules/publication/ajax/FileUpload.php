@@ -193,13 +193,23 @@ function getPublicationData() {
     } else {
         // separate queries for keywords & VOIs
         // to work around GROUP_CONCAT char limit
-        $vois = $db->pselectCol(
-            'SELECT pt.Name FROM parameter_type pt '.
+        $vois = array();
+        $data = $db->pselect(
+            'SELECT pt.Name AS Name, pt.SourceFrom AS Source '.
+            'FROM parameter_type pt '.
             'LEFT JOIN publication_parameter_type_rel pptr '.
             'ON pptr.ParameterTypeID=pt.ParameterTypeID '.
             'WHERE pptr.PublicationID=:pid',
             array('pid' => $id)
         );
+
+        foreach($data as $d) {
+            if (array_key_exists($d['Source'], $vois)) {
+                $vois[$d['Source']][] = $d['Name'];
+            } else {
+                $vois[$d['Source']] = array($d['Name']);
+            }
+        }
 
         $result['VOIs'] = $vois;
 

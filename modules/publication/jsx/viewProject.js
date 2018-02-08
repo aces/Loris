@@ -9,6 +9,7 @@ class ViewProject extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
     this.createMenuFilterLinks = this.createMenuFilterLinks.bind(this);
+    this.createVOIElements = this.createVOIElements.bind(this);
   }
 
   handleSubmit(e) {
@@ -109,6 +110,28 @@ class ViewProject extends React.Component {
     return links;
   }
 
+  createVOIElements(vois) {
+    var result = [];
+    Object.keys(vois).forEach(
+      function(v) {
+        var links = this.createMenuFilterLinks(vois[v], 'voi');
+        result.push(
+          <div>
+            <h4 data-toggle="collapse" data-target={"#voi" + v}>
+              {v} &nbsp;
+              <span className="glyphicon glyphicon-chevron-down"/>
+            </h4>
+            <div id={"voi" + v} className="collapse">
+            {links}
+            </div>
+          </div>
+        );
+      }.bind(this)
+    );
+
+    return result;
+  }
+
   render() {
     if (!this.state.isLoaded) {
       return (
@@ -128,10 +151,7 @@ class ViewProject extends React.Component {
     }
     
     if (this.state.formData.voi) {
-      var voiLinks = this.createMenuFilterLinks(
-        this.state.formData.voi,
-        'voi'
-      );
+      var voiLinks = this.createVOIElements(this.state.formData.voi);
     }
 
     // TODO -- add permission for project approval
