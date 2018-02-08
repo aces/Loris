@@ -254,6 +254,11 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     function testLinksViewImages()
     {
         $this->safeGet($this->url . "/dicom_archive/");
+        $this->webDriver->wait(10, 500)->until(
+            WebDriverExpectedCondition::presenceOfElementLocated(
+                WebDriverBy::className("table-scroll")
+            )
+        );
         $location = "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(9) > a";
         $text     = $this->webDriver->executescript(
             "return document.querySelector('$location').textContent"

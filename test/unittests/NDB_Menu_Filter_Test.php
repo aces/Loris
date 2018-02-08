@@ -192,9 +192,4 @@ class NDB_Menu_Filter_Test extends TestCase
 
 
     }
-    /**
-     * TODO:
-     * setupFilters
-     */
 }
-?>

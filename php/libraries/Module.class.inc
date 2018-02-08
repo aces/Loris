@@ -144,15 +144,6 @@ class Module
         // Hacks so that existing display() functions load the right template
         // for different page types.
         $cls->menu = $page;
-        if (!$cls->_hasAccess()) {
-            throw new \LorisException("You do not have access to this page.", 403);
-        }
-        $cls->setup();
-
-        // Handles form submission
-        if (method_exists($cls, 'save')) {
-            $cls->save();
-        }
 
         return $cls;
     }
