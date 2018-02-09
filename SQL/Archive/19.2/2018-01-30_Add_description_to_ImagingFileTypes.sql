@@ -1,6 +1,24 @@
--- ALTER ImagingFileTypes table to add a `description` column
+-- Disable Foreign key to be able to change type
+-- of FileType to VARCHAR(12) in files, 
+-- mri_processing_protocol and ImagingFileType
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ALTER files to drop the FK_files_FileTypes
+ALTER TABLE files
+  MODIFY `FileType` VARCHAR(12);
+
+-- ALTER mri_processing_protocol to drop the 
+-- FK_mri_processing_protocol_FileTypes
+ALTER TABLE mri_processing_protocol 
+  MODIFY `FileType` VARCHAR(12);
+
+-- ALTER ImagingFileTypes table to add a `description` column 
 ALTER TABLE ImagingFileTypes
+  MODIFY `type` VARCHAR(12) NOT NULL,
   ADD `description` VARCHAR(255) DEFAULT NULL;
+
+-- Re-enable the forein keys
+SET FOREIGN_KEY_CHECKS=1;
 
 -- ADD description to the different type
 UPDATE ImagingFileTypes
