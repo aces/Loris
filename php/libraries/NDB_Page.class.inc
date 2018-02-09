@@ -625,18 +625,24 @@ class NDB_Page implements RequestHandlerInterface
 
         $user = $request->getAttribute("user");
 
-        // Add the page class to the request to that middleware that needs it
-        // has access to it. (This currently required by the page decoration
-        // middleware, because of the control panels.)
+        // The NDB_Page object itself is sometimes required by middleware,
+        // but since the PSR15 Middleware interface is fixed, it needs to be
+        // curried along with the request object. We use a pageclass attribute
+        // here so that middleware that needs it is able to access it.
+        //
+        // This is currently required by the page decoration middleware, because
+        // of the call to getControlPanel which is used in the main.tpl template,
+        // but may eventually be removed.
         $request = $request->withAttribute("pageclass", $this);
 
         // FIXME: For historical compatibility with NDB_Menu_Filter.
         // Format should be deprecated and getting the page in different formats
-        // should be a different endpoint.
+        // should be a different endpoint or use HTTP content negotiation headers.
         $get = $request->getQueryParams();
         if (isset($get['format'])) {
             $this->format = $get['format'];
-            // Do not add the decoration middleware for json format requests.
+            // Do not add the decoration middleware for json format requests. See
+            // FIXME above.
             return $handler->handle($request);
         }
 
