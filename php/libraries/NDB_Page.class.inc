@@ -627,7 +627,7 @@ class NDB_Page implements RequestHandlerInterface
 
         // The NDB_Page object itself is sometimes required by middleware,
         // but since the PSR15 Middleware interface is fixed, it needs to be
-        // curried along with the request object. We use a pageclass attribute
+        // carried along with the request object. We use a pageclass attribute
         // here so that middleware that needs it is able to access it.
         //
         // This is currently required by the page decoration middleware, because
