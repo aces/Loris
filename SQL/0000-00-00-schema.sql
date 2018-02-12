@@ -462,7 +462,7 @@ CREATE TABLE `ImagingFileTypes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `ImagingFileTypes` VALUES
+INSERT INTO `ImagingFileTypes` (type, description) VALUES
   ('mnc',      'MINC file'),
   ('obj',      'MNI BIC imaging format for a surface'),
   ('xfm',      'MNI BIC linear transformation matrix file'),

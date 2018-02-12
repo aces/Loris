@@ -61,7 +61,7 @@ UPDATE ImagingFileTypes
   SET description='NRRD file format (used by DTIPrep)'
   WHERE type='nrrd';
 
-INSERT INTO ImagingFileTypes
+INSERT INTO ImagingFileTypes (type, description)
   VALUES ('grid_0', 'MNI BIC non-linear field for non-linear transformation');
 
 -- DELETE xfmmnc entry as no one understand what it is referring to
