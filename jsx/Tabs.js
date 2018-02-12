@@ -175,24 +175,24 @@ class Modal extends React.Component {
 
   render() {
     // Render nothing if the "show" prop is false
-    if(!this.props.show) {
+    if (!this.props.show) {
       return null;
-    }   
+    } 
 
-    //White Modal Window
-    const modalStyle = { 
+    // White Modal Window
+    const modalStyle = {
       position: 'relative',
-      maxWidth: 1000,        
+      maxWidth: 1000,
       maxHeight: '100%',
       margin: '0 auto',
       backgroundColor: '#fff',
       padding: 30,
       borderRadius: 10,
       overflowY: 'auto',
-      zIndex: 9999,
-    };  
+      zIndex: 9999
+    };
 
-    //Grey Background
+    // Black Background with Alpha Channel
     const backdropStyle = {
       position: 'fixed',
       zIndex: 9998,
@@ -206,14 +206,20 @@ class Modal extends React.Component {
 
     return (
     <div style={backdropStyle} onClick={this.props.onClose}>
-      <div style={modalStyle} onClick={(e) => {e.stopPropagation()}}>
+      <div 
+        style={modalStyle} 
+        onClick={(e) => {
+          e.stopPropagation()
+        }}
+      >
         {this.props.children}
       </div>
     </div>
-    ); 
+    );
   }
 }
-Modal.propTypes = { 
+
+Modal.propTypes = {
   onClose: React.PropTypes.func.isRequired,
   show: React.PropTypes.bool,
   children: React.PropTypes.node
