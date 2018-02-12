@@ -84,6 +84,8 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     function testPageLoads()
     {
         $this->safeGet($this->url . "/acknowledgements/");
+        $bodyText = $this->webDriver->getPageSource();
+        print_r($bodyText);
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Acknowledgements", $bodyText);
