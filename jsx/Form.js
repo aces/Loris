@@ -338,7 +338,6 @@ var TextboxElement = React.createClass({
     id: React.PropTypes.string,
     disabled: React.PropTypes.bool,
     required: React.PropTypes.bool,
-    hasError: React.PropTypes.bool,
     errorMessage: React.PropTypes.string,
     onUserInput: React.PropTypes.func,
     onUserBlur: React.PropTypes.func
