@@ -28,6 +28,7 @@ before_install:
 
 install:
     # Install composer modules
+    - composer self-update --rollback
     - composer install
     - composer require --dev
     - phpenv rehash
