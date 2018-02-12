@@ -67,7 +67,7 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * The format that the page content should be returned in. This is generally
      * the value of the `?format=` GET parameter from the request, and is usually
-     * either 'json' or empty (for the default return value of HTML format.)
+     * either 'json' or empty (for the default return value of HTML format).
      */
     protected $format = '';
 
@@ -607,7 +607,7 @@ class NDB_Page implements RequestHandlerInterface
      * implement the page decoration middlewares which is responsible for adding
      * the LORIS menu's/headers/footers/etc.
      * This can be overridden by modules who don't want this behaviour (such
-     * as API endpoints.)
+     * as API endpoints).
      *
      * @param ServerRequestInterface  $request The PSR7 request being processed.
      * @param RequestHandlerInterface $handler The handler to handle the request
