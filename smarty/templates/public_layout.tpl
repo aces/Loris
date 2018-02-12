@@ -49,7 +49,7 @@
 
   <footer class="footer">
     Powered by <a href="http://www.loris.ca/" target="_blank">LORIS</a>
-    {$version} | GPL-3.0 &copy; {$currentyear} <br/>
+    | GPL-3.0 &copy; {$currentyear} <br/>
     Developed at
     <a href="http://www.mni.mcgill.ca" target="_blank">
       Montreal Neurological Institute and Hospital

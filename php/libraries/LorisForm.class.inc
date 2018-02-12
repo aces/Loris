@@ -1292,11 +1292,7 @@ class LorisForm
 
                 // Check if date fields have errors and add them to error list
                 if ($el['type'] === 'date') {
-                    $date = (
-                        $values[$elName] ?
-                            $values[$elName] :
-                        $this->getValue($el['name'])
-                    );
+                    $date = $values[$elName] ?? $this->getValue($el['name']);
                     if (empty($date)) {
                         continue;
                     }

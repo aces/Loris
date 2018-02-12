@@ -33,18 +33,12 @@ class Candidate_List extends \NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user     =& \User::singleton();
-        $site_arr = $user->getData('CenterIDs');
-        foreach ($site_arr as $key=>$val) {
-            $site[$key]        =& \Site::singleton($val);
-            $isStudySite[$key] = $site[$key]->isStudySite();
-        }
-        $oneIsStudySite = in_array("1", $isStudySite);
-        $aap            = $user->hasPermission('access_all_profiles');
+        $user =& \User::singleton();
+        $aap  = $user->hasPermission('access_all_profiles');
         $this->tpl_data['access_all_profiles'] = $aap;
         return (
             $user->hasPermission('access_all_profiles')
-            || ($oneIsStudySite && $user->hasPermission('data_entry'))
+            || ($user->hasStudySite() && $user->hasPermission('data_entry'))
 
         );
     }
