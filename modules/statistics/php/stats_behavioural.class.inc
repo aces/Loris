@@ -141,10 +141,7 @@ class Stats_Behavioural extends \NDB_Form
             );
 
             $this->tpl_data['Subprojects'] = $subprojects;
-            foreach ($subprojects as $key=>$val) {
-                $subprojList .= $key.",";
-            }
-            $subprojList = substr($subprojList, 0, -1);
+            $subprojList = implode(",", array_keys($subprojects));
             if (!empty($subprojList)) {
                 $subproject_query ="AND s.SubprojectID IN ($subprojList)";
             }
@@ -231,7 +228,7 @@ class Stats_Behavioural extends \NDB_Form
                 error_log(
                     "No tpl_data for C$center in behavioural statistics"
                 );
-                return;
+                continue;
             }
 
             $c[$vl]['total']   += $row['val'];
