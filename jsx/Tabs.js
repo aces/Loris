@@ -177,7 +177,7 @@ class Modal extends React.Component {
     // Render nothing if the "show" prop is false
     if (!this.props.show) {
       return null;
-    } 
+    }
 
     // White Modal Window
     const modalStyle = {
@@ -206,10 +206,10 @@ class Modal extends React.Component {
 
     return (
     <div style={backdropStyle} onClick={this.props.onClose}>
-      <div 
-        style={modalStyle} 
-        onClick={(e) => {
-          e.stopPropagation()
+      <div
+        style={modalStyle}
+        onClick={e => {
+          e.stopPropagation();
         }}
       >
         {this.props.children}
