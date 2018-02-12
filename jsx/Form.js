@@ -272,7 +272,6 @@ var TagsElement = React.createClass({
     required: React.PropTypes.bool,
     disabled: React.PropTypes.bool,
     emptyOption: React.PropTypes.bool,
-    hasError: React.PropTypes.bool,
     errorMessage: React.PropTypes.string,
     btnLabel: React.PropTypes.string,
     onUserInput: React.PropTypes.func,
@@ -294,7 +293,7 @@ var TagsElement = React.createClass({
       emptyOption: true,
       hasError: false,
       allowDupl: false,
-      errorMessage: 'The field is required!',
+      errorMessage: '',
       pendingValKey: '',
       btnLabel: 'Add Tag',
       onUserInput: function() {
@@ -356,7 +355,8 @@ var TagsElement = React.createClass({
     var disabled = this.props.disabled ? 'disabled' : null;
     var requiredHTML = null;
     var emptyOptionHTML = null;
-
+    var errorMessage = null;
+    var elementClass = "row form-group";
     // Add required asterix
     if (this.props.required) {
       requiredHTML = <span className="text-danger">*</span>;
@@ -365,6 +365,11 @@ var TagsElement = React.createClass({
     // Add empty option
     if (this.props.emptyOption) {
       emptyOptionHTML = <option></option>;
+    }
+
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
     }
 
     // if options are given, render input as a select
@@ -425,7 +430,7 @@ var TagsElement = React.createClass({
       );
     });
     return (
-      <div className="row form-group">
+      <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
@@ -433,6 +438,7 @@ var TagsElement = React.createClass({
         <div className="col-sm-9">
           {items}
           {input}
+          {errorMessage}
           <button
             className="btn btn-success add"
             id={this.props.id + 'Add'}
