@@ -9,7 +9,14 @@ have double data entry enabled.
 
 ## Intended Users
 
-The conflict resolver is used by data entry staff.
+The conflict resolver is usually used by data entry staff to resolve
+double data entry conflicts.
+
+Some studies may have protocols which involve supervisors or committees
+deciding how to properly resolve conflicts, and different studies may
+have different policies of if the same or different data entry staff
+is responsible for conflict resolution, but such policies are not
+enforced by LORIS.
 
 ## Scope
 
@@ -33,7 +40,7 @@ a member.
 ## Configurations
 
 The `DoubleDataEntryInstruments` setting determines whether or not
-a instrument gets flagged for conflicts. This is not directly used
+an instrument gets flagged for conflicts. This is not directly used
 by the module, but the base instrument class uses this to determine
 whether or not to populate the conflicts table upon data entry
 completion.
@@ -51,3 +58,8 @@ Since the module doesn't know every scoring algorithm for every
 instrument, after resolution it loads a copy of the instrument
 itself to re-call the instrument's save (and implicitly, `score()`)
 function so that all dependent fields are recalculated.
+
+If the `conflicts_unresolved` table somehow becomes out of sync
+with the data in LORIS, the `tools/recreate_conflicts.php` script
+can be used to re-compare single and double data entry values
+and repopulate the `conflicts_unresolved` table.
