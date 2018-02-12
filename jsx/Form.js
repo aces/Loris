@@ -351,8 +351,7 @@ var TextboxElement = React.createClass({
       id: null,
       disabled: false,
       required: false,
-      hasError: false,
-      errorMessage: 'The field is required!',
+      errorMessage: '',
       onUserInput: function() {
         console.warn('onUserInput() callback is not set');
       },
@@ -379,7 +378,7 @@ var TextboxElement = React.createClass({
     }
 
     // Add error message
-    if (this.props.hasError) {
+    if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
       elementClass = 'row form-group has-error';
     }
@@ -691,7 +690,6 @@ var StaticElement = React.createClass({
   mixins: [React.addons.PureRenderMixin],
   propTypes: {
     label: React.PropTypes.string,
-    columnSize: 'col-sm-9 col-sm-offset-3',
     text: React.PropTypes.oneOfType([
       React.PropTypes.string,
       React.PropTypes.element
