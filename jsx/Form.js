@@ -277,7 +277,7 @@ var TagsElement = React.createClass({
     btnLabel: React.PropTypes.string,
     onUserInput: React.PropTypes.func,
     onUserAdd: React.PropTypes.func,
-    onUserRemove: React.PropTypes.func,
+    onUserRemove: React.PropTypes.func
   },
 
   getDefaultProps: function() {
@@ -305,7 +305,7 @@ var TagsElement = React.createClass({
       },
       onUserRemove: function() {
         console.warn('onUserRemove() callback is not set');
-      },
+      }
     };
   },
 
