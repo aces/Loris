@@ -21,46 +21,22 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
+
 // TO CHECK: 
-// 1. 1 for each loop for consent data, 1 for history
-// 2. print array at the end of first for each loop
-// 4. check if column in tables is in config (leave till the end)
-// 5. check if consent null but there are still dates
+// 4. check that if a consent has columns in tables but not in config.xml, is date to be transfered?
 // 6. check for zero dates, be explicit in errors - run zerodates php script if they want to remove those because 0 dates cannot be inserted) 
-// 7. for every consent, check that all 3 columns in old table exists
-// 8. every time I check for null, check for empty for consent status values including dates
-// 9. check 'useConsent' and insert into ConfigSettings;
-// TO DO:
-// 1. Check config.xml for consents in /projects/ - DONE
-// 2. Reiterate through <ConsentModule> and put <Consent> <name> and <label> into array i.e. $consentTypes - DONE
-// 3. Populate array into consent_type table - DONE
-// 4. For each CandID in participant_status, and for each consent i.e. $consentTypes[key] where the entry !== NULL OR EMPTY STRING, put into array $consentValues entries from columns consent_name, consent_name_date, and consent_name_withdrawal.
-//      Between the two for loops, add print saying these are the things going into database, and have a confirm flag (argument to the script).
-// 5. Populate into candidate_consent_type_rel CandidateID, ConsentTypeID where Name=$consentTypes[key], select consent_name, consent_name_date, consent_name_withdrawal - DONE
-// 6. Select * from consent_info_history and put in array - DONE
-// 7. Populate candidate_consent_type_history: - DONE
-//          i) for each unique ID entry in consent_info_history, let PSCID = PSCID where CandID = CandID in
-//             consent_info_history
-//         ii) for each $consentTypes[key] as column/field name where entry !== null, insert consent_name in
-//             ConsentName of candidate_consent_type_history, and Consent Label of ConsentTypeID where 'Name'=c
-//             onsent_name
-//        iii) put in array all values under column where not null, along with consent_name_date, and
-//             consent_name_withdrawal, entry_staff, entry_date
 
 require_once 'generic_includes.php';
 
-//$client = new NDB_Client();
-//$client->makeCommandLine();
-//$client->initialize("../project/config.xml");
 $config = NDB_Config::singleton();
 $db     =& Database::singleton();
 
-// Get consent info form Config.xml
+// Get consent info from Config.xml
 $consentConfig = $config->getSettingFromXML('ConsentModule');
 $useConsent = $consentConfig['useConsent'];
 $consents = $consentConfig['Consent'];
 
-//update ConfigSetting with value of 'useConsent' if true
+// Update ConfigSetting table with value of 'useConsent' if true. Default is set to false.
 $configID = $db->pselect(
               'SELECT ID FROM ConfigSettings WHERE Name="useConsent"',
               array()
@@ -76,12 +52,13 @@ if ($useConsent === true) {
        )
   );
 } */
-// start import of consent status information into new tables
+
+// Start import of consent status information into new tables
 $consentType = [];
 $printArray  = [];
 foreach ($consents as $key=>$consent) {
 
-  // populate consent_type table with consents from Config.xml
+  // Populate consent_type table with consents from Config.xml
   $consentName  = $consent['name'];
   $consentLabel = $consent['label'];
 
@@ -93,12 +70,13 @@ foreach ($consents as $key=>$consent) {
          )
   );*/
 
-  //create array of consents to use later in importing history data
+  // Create array of consents to use later in importing history data
   $consentType[$consentName] = $consentLabel;
 
-  //check that consent column exists in old table
+  // CHECK: consent columns exist in old table
   $columnQuery = 'SHOW COLUMNS FROM participant_status LIKE "' . $consentName . '"';
   $columnExists = $db->pselect($columnQuery, array());
+
   if (!empty($columnExists)) {
     //get all data where the consent status has a value
     $psData = $db->pselect(
@@ -107,6 +85,12 @@ foreach ($consents as $key=>$consent) {
                );
     //populate candidate_consent_type_rel with data
     foreach ($psData as $entry) {
+
+      //Check for zero dates
+      if($entry[$consentName . '_date'] === "0000-00-00 00:00:00"){
+        throw new Exception("Zero dates found in: " . $entry . ". Please remove date or run /tools/DB_date_zeros_removal.php.");
+      }
+
       $consentValues = [
           'CandidateID'   => $entry['CandID'],
           'ConsentTypeID' => $key+1,               //follow-up: should this be queried from the database?
@@ -118,6 +102,7 @@ foreach ($consents as $key=>$consent) {
     }
   }
 }
+
 // Output list of consents to terminal
 echo "\nValid consents found: \n";
 $i=1;
@@ -126,26 +111,35 @@ foreach($consentType as $consent) {
   $i++;
 }
 
+//Check for when consent columns exist in table but not in list of consents in Config.xml
+$columnQuery = 'SELECT Column_name FROM Information_schema.columns WHERE Column_name LIKE "%consent%" AND Table_name LIKE "participant_status"';
+$existingColumns = $db->pselect($columnQuery, array());
+print_r($existingColumns);
+ 
+foreach ($existingColumns as $column) {
+  $i=0;
+  foreach ($consents as $consent){
+    $consentName = $consent['name'];
+    if(preg_match("/$consentName/", $column['Column_name'])) {
+      $i++;
+    }
+  }
+  echo "\nThe value of the counter is " . $i . ". \n";
+  if ($i===0) {
+    throw new Exception("The consent type " . $column['Column_name'] . " exists in the database but not in Config.xml. Please add the consent to Config.xml or delete columns and data from \'participant_status\'");
+  }
+}
+
 echo "\nRows to be inserted into 'candidate_consent_type_rel' table ..\n";
 echo "Empty values will be inserted as NULL.\n\n";
 print_r($printArray);
 
-//$line = readline ("Confirm (yes/no?): ");
-
-//if ($line === "no") {
-//  echo "\nEnd of script.\n";
-//}
-//else if ($line === "yes") {
-  foreach ($printArray as $consentValues) {
+foreach ($printArray as $consentValues) {
     //$db->insert('candidate_consent_type_rel', $consentValues);
     print_r($consentValues);
   }
-//}
-//else {
-// echo
-//}
 
-echo "\nData inserted...\n\n";
+echo "\nData insert complete.\n\n";
 
 // Select consent history and import into new history table
 $consentHistory = $db->pselect(
@@ -182,8 +176,9 @@ foreach ($consentHistory as $entry) {
                 ];
 
       }
+      //Populate candidate_consent_type_history table
       //$db->insert('candidate_consent_type_history', $formattedHistory); 
-      print_r($formattedHistory);
+      //print_r($formattedHistory);
     }
   }     
 }
