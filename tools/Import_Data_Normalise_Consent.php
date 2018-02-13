@@ -22,10 +22,6 @@
  * @link     https://github.com/aces/Loris
  */
 
-// TO CHECK: 
-// 4. check that if a consent has columns in tables but not in config.xml, is date to be transfered?
-// 6. check for zero dates, be explicit in errors - run zerodates php script if they want to remove those because 0 dates cannot be inserted) 
-
 require_once 'generic_includes.php';
 
 $config = NDB_Config::singleton();
@@ -37,43 +33,48 @@ $useConsent = $consentConfig['useConsent'];
 $consents = $consentConfig['Consent'];
 
 // Update ConfigSetting table with value of 'useConsent' if true. Default is set to false.
-$configID = $db->pselect(
+$configID = $db->pselectOne(
               'SELECT ID FROM ConfigSettings WHERE Name="useConsent"',
               array()
             );
-/*
-if ($useConsent === true) {
+if ($useConsent === "true") {
   $updateValue = ['Value' => $useConsent];
   $db->update(
        'Config',
        $updateValue,
        array (
-         'ConfigID' => $configID 
+         'ConfigID' => $configID, 
        )
   );
-} */
+  echo "\nConfig settings set to use consent.\n\n";
+}
 
 // Start import of consent status information into new tables
 $consentType = [];
 $printArray  = [];
-foreach ($consents as $key=>$consent) {
 
+foreach ($consents as $key=>$consent) {
   // Populate consent_type table with consents from Config.xml
   $consentName  = $consent['name'];
   $consentLabel = $consent['label'];
 
-  /*$db->insert(
+  $db->insert(
          'consent_type', 
          array(
            'Name'  => $consentName,
            'Label' => $consentLabel,
          )
-  );*/
+  );
+  // Save ConsentTypeID inserted
+  $consentTypeID = $db->pselectOne(
+                     'SELECT ConsentTypeID FROM consent_type WHERE Name=:consentName',
+                     array('consentName' => $consentName)
+                   );
 
   // Create array of consents to use later in importing history data
   $consentType[$consentName] = $consentLabel;
 
-  // CHECK: consent columns exist in old table
+  // CHECK: Do consent columns exist in old table?
   $columnQuery = 'SHOW COLUMNS FROM participant_status LIKE "' . $consentName . '"';
   $columnExists = $db->pselect($columnQuery, array());
 
@@ -83,17 +84,16 @@ foreach ($consents as $key=>$consent) {
                  'SELECT * FROM participant_status WHERE ' . $consentName . ' IS NOT NULL OR ' . $consentName . ' != ""',
                  array()
                );
-    //populate candidate_consent_type_rel with data
-    foreach ($psData as $entry) {
 
+    foreach ($psData as $entry) {
       //Check for zero dates
       if($entry[$consentName . '_date'] === "0000-00-00 00:00:00"){
         throw new Exception("Zero dates found in: " . $entry . ". Please remove date or run /tools/DB_date_zeros_removal.php.");
       }
-
+      //push each formatted old entry to array
       $consentValues = [
           'CandidateID'   => $entry['CandID'],
-          'ConsentTypeID' => $key+1,               //follow-up: should this be queried from the database?
+          'ConsentTypeID' => $consentTypeID,
           'Status'        => $entry[$consentName],
           'DateGiven'     => $entry[$consentName . '_date'],
           'DateWithdrawn' => $entry[$consentName . '_withdrawal'],
@@ -114,39 +114,47 @@ foreach($consentType as $consent) {
 //Check for when consent columns exist in table but not in list of consents in Config.xml
 $columnQuery = 'SELECT Column_name FROM Information_schema.columns WHERE Column_name LIKE "%consent%" AND Table_name LIKE "participant_status"';
 $existingColumns = $db->pselect($columnQuery, array());
-print_r($existingColumns);
- 
-foreach ($existingColumns as $column) {
+
+//format $existingColumns and remove data, withdrawal columns
+$formattedColumns = [];
+
+foreach ($existingColumns as $key=>$column) {
+  $columnName = $column['Column_name']; 
+  if (!(preg_match("/date/", $columnName) || preg_match("/withdrawal/", $columnName))) {
+    array_push($formattedColumns, $columnName);
+  }
+}
+//check that column names are in list of consent names
+foreach ($formattedColumns as $columnName) {
   $i=0;
   foreach ($consents as $consent){
     $consentName = $consent['name'];
-    if(preg_match("/$consentName/", $column['Column_name'])) {
+    if($consentName===$columnName) {
       $i++;
     }
   }
-  echo "\nThe value of the counter is " . $i . ". \n";
   if ($i===0) {
-    throw new Exception("The consent type " . $column['Column_name'] . " exists in the database but not in Config.xml. Please add the consent to Config.xml or delete columns and data from \'participant_status\'");
+    throw new Exception("\nThe consent type " . $columnName . " exists in the database but not in Config.xml. Please add the consent to Config.xml or delete columns and data from 'participant_status'");
   }
 }
 
+//Output list of data to be inserted into new table to terminal
 echo "\nRows to be inserted into 'candidate_consent_type_rel' table ..\n";
 echo "Empty values will be inserted as NULL.\n\n";
 print_r($printArray);
 
+//populate candidate_consent_type_rel with data
 foreach ($printArray as $consentValues) {
-    //$db->insert('candidate_consent_type_rel', $consentValues);
-    print_r($consentValues);
+    $db->insert('candidate_consent_type_rel', $consentValues);
   }
 
-echo "\nData insert complete.\n\n";
+echo "\nData insert complete.\n";
 
 // Select consent history and import into new history table
 $consentHistory = $db->pselect(
     'SELECT * FROM consent_info_history',
     array()
 );
-//print_r($consentHistory);
 
 foreach ($consentHistory as $entry) {
   $candID = $entry['CandID'];
@@ -177,10 +185,18 @@ foreach ($consentHistory as $entry) {
 
       }
       //Populate candidate_consent_type_history table
-      //$db->insert('candidate_consent_type_history', $formattedHistory); 
-      //print_r($formattedHistory);
+      $db->insert('candidate_consent_type_history', $formattedHistory); 
     }
-  }     
+  }
+}
+echo "\nHistory data insert complete.\n";
+echo "\nRun the following commands in mySQL to delete deprecated columns: \n\n";
+
+foreach ($existingColumns as $column) {
+    $columnName = $column['Column_name'];
+    echo "ALTER TABLE participant_status DROP COLUMN " . $columnName . ";\n";
 }
 
+echo "\n\nRun the following command in mySQL to delete deprecated history table: \n";
+echo "\nDROP TABLE consent_info_history;\n\n";
 ?>
