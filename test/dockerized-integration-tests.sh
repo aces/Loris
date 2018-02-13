@@ -7,6 +7,5 @@ then
 else
     CONTAINER=integration-tests
 fi
-docker-compose run -T --rm ${CONTAINER} vendor/bin/phpunit --configuration test/phpunit.xml --testsuite LorisUnitTests $*
-docker-compose run -T --rm ${CONTAINER} vendor/bin/phpunit --configuration test/phpunit.xml --testsuite LorisCoreIntegrationTests $*
+docker-compose run -T --rm ${CONTAINER} vendor/bin/phpunit --configuration test/phpunit.xml  $*
 docker-compose run -T --rm ${CONTAINER} vendor/bin/phpunit --configuration test/phpunit.xml --testsuite LorisModuleIntegrationTests $*
