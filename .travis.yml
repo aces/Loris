@@ -6,8 +6,7 @@ cache:
 dist: trusty
 php:
     - "7"
-    - "7.2.0"
-    - "7.0.9"
+    - "7.2"
 
 sudo: false
 
@@ -15,6 +14,7 @@ addons:
     firefox: "45.0"
 
 before_install:
+    - travis-worker --help
     # Start Xvfb in a desktop screen size,
     # otherwise some tests will fail because the links
     # are hidden when Selenium tries to find them.
@@ -51,6 +51,7 @@ install:
     - DISPLAY=:99.0 java -jar selenium-server-standalone-2.53.0.jar  2>1 > /dev/null &
 
 before_script:
+    - travis-worker --help
     # Set up the Loris environment
     - mkdir -p project smarty/templates_c project/instruments project/tables_sql
     - chmod 777 smarty/templates_c project/instruments project/tables_sql
