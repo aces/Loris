@@ -21,4 +21,4 @@ install:
 - pwd
 - ls
 script:
-- npm run tests:integration
+- npm run lint:php && npm run lint:javascript && npm run tests:integration
