@@ -1,7 +1,7 @@
 sudo: required
 
 # any language should do it
-language: node_js
+language: php
 
 services:
 - docker
@@ -13,5 +13,6 @@ install:
 - sudo apt-get install npm
 - sudo apt-get install composer
 - composer install
+- npm install
 script:
 - npm run tests:integration
