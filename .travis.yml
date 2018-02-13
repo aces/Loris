@@ -11,8 +11,6 @@ install:
 - sudo apt-get update
 - sudo apt-get install -y libapparmor1
 - sudo apt-get install npm
-- sudo apt-get install composer
-- composer install
 - npm install
 script:
 - npm run tests:integration
