@@ -2,7 +2,12 @@ sudo: required
 
 # any language should do it
 language: php
+cache:
+    directories:
+        - vendor
 
+php:
+    - "7"
 services:
 - docker
 
@@ -12,6 +17,7 @@ install:
 - sudo apt-get install -y libapparmor1
 - sudo apt-get install npm
 - npm install
+- composer install
 - pwd
 - ls
 script:
