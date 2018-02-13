@@ -11,8 +11,7 @@
  * @link     https://github.com/aces/Loris
  */
 
-require_once __DIR__ .
-    "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
+require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 
 /**
  * Media module automated integration tests
