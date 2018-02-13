@@ -14,7 +14,6 @@ addons:
     firefox: "45.0"
 
 before_install:
-    - travis-worker --help
     # Start Xvfb in a desktop screen size,
     # otherwise some tests will fail because the links
     # are hidden when Selenium tries to find them.
