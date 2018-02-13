@@ -2,7 +2,7 @@ FROM ubuntu:14.04
 MAINTAINER Dave MacFarlane <david.macfarlane2@mcgill.ca>
 # Stock images come without apt archive -- needs an update
 RUN apt-get -qqq update
-RUN apt-get -y install php5 php5-json curl git php5-mysql mysql-client
+RUN apt-get -y install php7 php7-json curl git php7-mysql mysql-client
 #RUN git clone https://github.com/aces/Loris.git /var/www/loris
 #INCLUDE HOSTNAME REPLACEMENT?
 COPY . /var/www/loris
