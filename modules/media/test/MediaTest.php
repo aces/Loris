@@ -53,7 +53,7 @@ class MediaTest extends LorisIntegrationTest
     function testDoesNotLoadWithoutPermission()
     {
         $this->setupPermissions(array());
-        $this->safeGet($tdhis->url . "/media/");
+        $this->safeGet($this->url . "/media/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();

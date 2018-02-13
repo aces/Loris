@@ -177,9 +177,7 @@ class Media extends \NDB_Menu_Filter
 
         $this->group_by = '';
         $this->order_by = 'm.instrument';
-        $this->headers  = [
-                           'File Name',
-                           'PSCID',
+        $this->headers  = [                           'File Name',                         'PSCID',
                            'Visit Label',
                            'Instrument',
                            'Site',
