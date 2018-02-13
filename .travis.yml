@@ -22,4 +22,3 @@ install:
 - ls
 script:
 - npm run lint:php && npm run lint:javascript && npm run tests:integration
-- npm run tests:debug

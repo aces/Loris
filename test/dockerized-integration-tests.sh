@@ -8,5 +8,4 @@ else
     CONTAINER=integration-tests
 fi
 
-docker-compose run -T --rm ${CONTAINER} vendor/bin/phpunit --configuration test/phpunit.xml  $*
-docker-compose run -T --rm ${CONTAINER} vendor/bin/phpunit --configuration test/phpunit.xml --testsuite LorisModuleIntegrationTests $*
+docker-compose run -T --rm integration-tests vendor/bin/phpunit --configuration test/phpunit.xml  $*
