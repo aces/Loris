@@ -11,8 +11,7 @@
  * @link     https://github.com/aces/Loris
  */
 
-require_once __DIR__ .
-    "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
+require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 
 /**
  * Media module automated integration tests
@@ -38,6 +37,7 @@ class MediaTest extends LorisIntegrationTest
     {
         $this->setupPermissions(array("media_read"));
         $this->safeGet($this->url . "/media/");
+        print_r("dddddddddddddddddddddddddddddddddddddd");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
