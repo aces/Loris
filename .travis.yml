@@ -1,7 +1,7 @@
 sudo: required
 
 # any language should do it
-language: bash
+language: node_js
 
 services:
 - docker
@@ -10,7 +10,7 @@ services:
 install:
 - sudo apt-get update
 - sudo apt-get install -y libapparmor1
-- npm install
+- sudo apt-get install npm
 
 script:
 - npm run tests:integration
