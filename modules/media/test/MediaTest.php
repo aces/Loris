@@ -42,7 +42,7 @@ class MediaTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertNotContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
     /**
@@ -54,7 +54,7 @@ class MediaTest extends LorisIntegrationTest
     function testDoesNotLoadWithoutPermission()
     {
         $this->setupPermissions(array());
-        $this->safeGet($this->url . "/media/");
+        $this->safeGet($tdhis->url . "/media/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
