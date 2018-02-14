@@ -235,15 +235,10 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     function testLinksViewDetails()
     {
         $this->safeGet($this->url . "/dicom_archive/");
-        sleep(2);
-        $text = $this->webDriver->getPageSource();
-        print_r($text);
         $location = "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(8) > a";
         $text     = $this->webDriver->executescript(
             "return document.querySelector('$location').textContent"
         );
-        print_r("============================");
-        print_r($text);
         $this->assertEquals('View Details', $text);
         $this->webDriver->executescript(
             "document.querySelector('$location').click()"
