@@ -78,7 +78,9 @@ foreach ($consents as $key=>$consent) {
   $columnQuery = 'SHOW COLUMNS FROM participant_status LIKE "' . $consentName . '"';
   $columnExists = $db->pselect($columnQuery, array());
 
-  if (!empty($columnExists)) {
+  if (empty($columnExists)) {
+    throw new Exception("\n " . $consentName . " does not exist as a column in participant_status.\n");
+  } else {
     //get all data where the consent status has a value
     $psData = $db->pselect(
                  'SELECT * FROM participant_status WHERE ' . $consentName . ' IS NOT NULL OR ' . $consentName . ' != ""',
@@ -115,9 +117,8 @@ foreach($consentType as $consent) {
 $columnQuery = 'SELECT Column_name FROM Information_schema.columns WHERE Column_name LIKE "%consent%" AND Table_name LIKE "participant_status"';
 $existingColumns = $db->pselect($columnQuery, array());
 
-//format $existingColumns and remove data, withdrawal columns
+//format $existingColumns, and remove data and withdrawal columns
 $formattedColumns = [];
-
 foreach ($existingColumns as $key=>$column) {
   $columnName = $column['Column_name']; 
   if (!(preg_match("/date/", $columnName) || preg_match("/withdrawal/", $columnName))) {

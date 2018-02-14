@@ -435,8 +435,7 @@ function getConsentStatusFields()
 /**
  * Handles the fetching of Consent Status history
  *
- * @param int   $candID   current candidate's ID
- * @param array $consentValue consent values
+ * @param int   $pscid   current candidate's PSCID
  *
  * @throws DatabaseException
  *
