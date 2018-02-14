@@ -11,14 +11,11 @@ php:
 services:
 - docker
 
-# libapparmor1 should be already installed due a running service, but just in case
 install:
 - sudo apt-get update
 - sudo apt-get install -y libapparmor1
 - sudo apt-get install npm
 - npm install
 - composer install
-- pwd
-- ls
 script:
-- npm run lint:php && npm run lint:javascript && npm run tests:integration
+- npm run lint:php && npm run lint:javascript && docker-compose run -T --rm integration-tests vendor/bin/phpunit --configuration test/phpunit.xml
