@@ -180,26 +180,23 @@ class NDB_Factory
     function database()
     {
         if ($this->Testing) {
-            $db_ref = &self::$testdb;
-            if ($db_ref === null) {
+            if (self::$testdb === null) {
                 self::$testdb = new MockDatabase();
             }
             return self::$testdb;
         }
 
-        if (self::$db !== null) {
-            return self::$db;
+        if (self::$db === null) {
+            $dbc = ($this->config())->getSetting('database');
+
+            self::$db = Database::singleton(
+                $dbc['database'],
+                $dbc['username'],
+                $dbc['password'],
+                $dbc['host'],
+                true
+            );
         }
-
-        $dbc = ($this->config())->getSetting('database');
-
-        self::$db = Database::singleton(
-            $dbc['database'],
-            $dbc['username'],
-            $dbc['password'],
-            $dbc['host'],
-            true
-        );
 
         return self::$db;
     }
