@@ -63,25 +63,29 @@ class Imaging_Session_ControlPanel
     function getData()
     {
         $DB        = \Database::singleton();
+        $config    = \NDB_Config::singleton();
         $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
 
         $subjectData['sessionID'] = $_REQUEST['sessionID'];
         $subjectData['candid']    = $timePoint->getCandID();
 
-        $qresult = $DB->pselectOne(
-            "SELECT CommentID FROM flag 
-            WHERE Test_name='mri_parameter_form' AND SessionID = :v_sessions_id",
-            array('v_sessions_id' => $this->sessionID)
-        );
-        $subjectData['ParameterFormCommentID'] = (empty($qresult)) ? "" : $qresult;
+        $linkedInstruments = $config->getSetting('linkedInstruments');
 
-        $qresult = $DB->pselectOne(
-            "SELECT CommentID 
-            FROM flag WHERE Test_name='radiology_review' 
-            AND SessionID = :v_sessions_id",
-            array('v_sessions_id' => $this->sessionID)
-        );
-        $subjectData['RadiologyReviewCommentID'] = (empty($qresult)) ? "" : $qresult;
+        foreach ($linkedInstruments as $k=>$v) {
+            $qresult   = $DB->pselectRow(
+                "SELECT f.CommentID, tn.Full_name FROM flag f
+            JOIN test_names tn ON f.Test_name = tn.Test_name 
+            WHERE f.Test_name = :tname AND f.SessionID = :v_sessions_id",
+                array(
+                 'tname'         => $v,
+                 'v_sessions_id' => $this->sessionID,
+                )
+            );
+            $instrName = $qresult['Full_name'];
+            $commentIDToInstrName[$instrName] =$qresult['CommentID'];
+        }
+        $subjectData['instrNameCommentID']
+            = (empty($commentIDToInstrName)) ? "" : $commentIDToInstrName;
 
         $candidate =& \Candidate::singleton($timePoint->getCandID());
 
@@ -96,22 +100,23 @@ class Imaging_Session_ControlPanel
             $params['PCandID'] = $timePoint->getCandID();
             $params['PVL']     = $timePoint->getVisitLabel();
         }
-        $tarchiveIDs = $DB->pselect(
-            "SELECT TarchiveID 
+        // To enable DICOM download: Add pair: tarchiveID, ArchiveLocation
+        $qresult = $DB->pselect(
+            "SELECT TarchiveID, ArchiveLocation 
             FROM tarchive 
             WHERE PatientName LIKE $ID",
             $params
         );
-        $subjectData['tarchiveids'] = $tarchiveIDs;
+
+        $tarIDToTarLoc =array();
+        foreach ($qresult as $k=>$v) {
+            $tarchiveID = $v['TarchiveID'];
+            $tarIDToTarLoc[$tarchiveID] =$v['ArchiveLocation'];
+        }
+        $subjectData['tarchiveIDLoc'] = $tarIDToTarLoc;
 
         $config =& \NDB_Config::singleton();
 
-        //if table is not in database return false to not display in the template
-        $this->tpl_data['mri_param_form_table_exists']
-            = $DB->tableExists('mri_parameter_form');
-        $this->tpl_data['rad_review_table_exists']     = $DB->tableExists(
-            'radiology_review'
-        );
         $this->tpl_data['mantis']       = $config->getSetting('mantis_url');
         $subjectData['mantis']          = $config->getSetting('mantis_url');
         $subjectData['has_permission']  = $this->_hasAccess();
