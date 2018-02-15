@@ -94,6 +94,6 @@ before_script:
 
 script:
 
-    - npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml --testdox-text
+    - npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml --testdox
 
 dist: precise
