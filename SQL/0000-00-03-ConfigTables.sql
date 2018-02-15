@@ -111,8 +111,6 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'linkedInstruments', 'Instruments that the users want to see linked from Imaging Browser', 1, 1, 'instrument', ID, 'Imaging Browser Links to Instruments', 7 FROM ConfigSettings WHERE Name="imaging_modules";
 
 
-
-
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('statistics', 'Statistics module settings', 1, 0, 'Statistics', 7);
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'excludedMeasures', 'Instruments to be excluded from Statistics calculations', 1, 1, 'instrument', ID, 'Excluded instruments', 1 FROM ConfigSettings WHERE Name="statistics";
 
@@ -214,8 +212,6 @@ INSERT INTO Config (ConfigID, Value) SELECT cs.ID, GROUP_CONCAT(mst.Scan_Type) F
 INSERT INTO Config (ConfigID, Value) SELECT cs.ID, GROUP_CONCAT(mst.Scan_Type) FROM ConfigSettings cs JOIN mri_scan_type mst WHERE cs.Name="tblScanTypes" AND mst.ID=45;
 INSERT INTO Config (ConfigID, Value) SELECT cs.ID, 'mri_parameter_form' FROM ConfigSettings cs WHERE cs.Name="linkedInstruments";
 INSERT INTO Config (ConfigID, Value) SELECT cs.ID, 'radiology_review' FROM ConfigSettings cs WHERE cs.Name="linkedInstruments";
-
-
 
 INSERT INTO Config (ConfigID, Value) SELECT ID, "radiology_review" FROM ConfigSettings WHERE Name="excludedMeasures";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "mri_parameter_form" FROM ConfigSettings WHERE Name="excludedMeasures";

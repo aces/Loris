@@ -4,5 +4,3 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 -- default imaging_browser settings for Linked instruments
 INSERT INTO Config (ConfigID, Value) SELECT cs.ID, 'mri_parameter_form' FROM ConfigSettings cs WHERE cs.Name="linkedInstruments";
 INSERT INTO Config (ConfigID, Value) SELECT cs.ID, 'radiology_review' FROM ConfigSettings cs WHERE cs.Name="linkedInstruments";
-
-
