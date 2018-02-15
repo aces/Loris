@@ -2,15 +2,17 @@
 
 ## Purpose
 
- The Document Repository is a tool that provides studies with a centralized location for non-candidate documents. Files may be uploaded and organized under any user-defined category.
+ The Document Repository is a tool that provides studies with a centralized location for non-candidate documents relevant to the study across multiple candidates.
+ Files may be uploaded and organized under any user-defined category.
 
 ## Intended Users
- 
- All Loris user and data entry staff could view, update, edit and delete the upload files with right permissions.
+
+ Loris users can view, download and upload files, edit information about files, and delete files given appropriate permissions.
+This module is used primarily by study coordinators/administrators who share study protocols and manuals, and by data entry staff who consult these documents.  
 
 ## Scope
 
- It's for all non-candidate documents.
+ The document can only be seen by Users from the Site that the document is associated with.
 
 ## Permissions
 
@@ -31,5 +33,12 @@ upload_max_filesize = 1024M     // Maximum allowed size for uploaded files.
 post_max_size = 1024M           // Maximum size of POST data that PHP will accept.
 ```
 
+- Enable uploads folder:
+"chmod 777 /var/www/loris/modules/document_repository/user_uploads".
+Note that the path is assumed to be var/www/loris however your own path may be var/www/<project-name>, depending on your setup.
+
 - A mail server will be required for sending out email notifications about Document Repository updates. 
 
+- Interactions: Document repository notifications are visible on the dashboard panel.
+  
+- Create user-defined category in the "document_repository_categories" table. For example "INSERT INTO `document_repository_categories` VALUES (1,'text',0,NULL),(2,'photo',0,NULL),(3,'pdf',0,NULL);".
