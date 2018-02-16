@@ -89,7 +89,7 @@ foreach ($consents as $key=>$consent) {
 
     foreach ($psData as $entry) {
       //Check for zero dates
-      if($entry[$consentName . '_date'] === "0000-00-00 00:00:00"){
+      if($entry[$consentName . '_date'] === "0000-00-00"){
         throw new Exception("Zero dates found in: " . $entry . ". Please remove date or run /tools/DB_date_zeros_removal.php.");
       }
       //push each formatted old entry to array
