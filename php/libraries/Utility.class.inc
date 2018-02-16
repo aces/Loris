@@ -183,7 +183,8 @@ class Utility
     /**
      * Returns a list of consents in the database
      *
-     * @return array an associative array("ConsentTypeID" => consent info)
+     * @return array an associative array("ConsentTypeID" => array(['Name']  => "Name",
+     *                                                             ['Label'] => "Label"))
      */
     static function getConsentList()
     {
