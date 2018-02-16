@@ -6,12 +6,59 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="DC.identifier" content="https://doi.org/10.3389/fninf.2011.00037">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>{$page_title}</title>
   <link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="{$baseurl}/css/public_layout.css">
   <link type="image/x-icon" rel="icon" href="{$baseurl}/images/favicon.ico">
+  <script src="{$baseurl}/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function(event) {
+
+    const dcIdentifier = $("meta[name='DC.identifier']").attr("content");
+    if (dcIdentifier === undefined) {
+      return;
+    }
+
+    const doi = dcIdentifier.substr(16);
+    let url = "https://data.datacite.org/application/vnd.schemaorg.ld+json/" + doi;
+
+    const xhr = new XMLHttpRequest();
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4) {
+        if (xhr.status != 200) { 
+          console.error("Request failed");
+        }
+        
+        let script = document.createElement("script");
+        script.type = "application/ld+json";
+        script.text = JSON.stringify({
+          "@context": "http://schema.org",
+          "@type": "SoftwareApplication",
+          "name": "LORIS",
+          "applicationCategory": "Science",
+          "applicationSubCategory": [
+            "neuroimaging",
+            "data management",
+            "data querying",
+            "imaging data",
+            "behavioral data"
+          ],
+          "isBasedOn": "https://github.com/aces/Loris",
+          "citation": JSON.parse(xhr.responseText), 
+          "operatingSystem": "GNU/Linux"
+        });
+        document.head.appendChild(script);
+      }
+    };
+    
+    xhr.open('GET', url);
+    xhr.send();
+  });
+  </script>
 </head>
 <body>
   <header class="header">
