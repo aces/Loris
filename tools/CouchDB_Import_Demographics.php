@@ -2,7 +2,6 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'generic_includes.php';
 require_once 'CouchDB.class.inc';
-require_once 'Database.class.inc';
 class CouchDBDemographicsImporter {
     var $SQLDB; // reference to the database handler, store here instead
                 // of using Database::singleton in case it's a mock.
@@ -75,14 +74,6 @@ class CouchDBDemographicsImporter {
             'Description' => 'Participant status comments',
             'Type' => "text",
         ),
-        'Study_consent' => array(
-            'Description' => 'Study Consent',
-            'Type' => "enum('yes','no','not_answered')",
-        ),
-        'Study_consent_withdrawal' => array(
-            'Description' => 'Study Consent Withdrawal Date',
-            'Type' => "varchar(255)",
-        ),
         'session_feedback' => array(
             'Description' => 'Behavioural feedback at the session level',
             'Type' => "varchar(255)",
@@ -141,8 +132,6 @@ class CouchDBDemographicsImporter {
                                 COALESCE(pso.Description,'Active') as Status, 
                                 ps.participant_suboptions as Status_reason, 
                                 ps.reason_specify as Status_comments, 
-                                ps.study_consent as Study_consent, 
-                                COALESCE(ps.study_consent_withdrawal,'0000-00-00') AS Study_consent_withdrawal,
                                 GROUP_CONCAT(fbe.Comment) as session_feedback";
         $tablesToJoin = " FROM session s 
                                 JOIN candidate c USING (CandID) 
@@ -156,7 +145,7 @@ class CouchDBDemographicsImporter {
 
         $groupBy=" GROUP BY s.ID, 
                             c.DoB,
-							c.CandID, 
+		            c.CandID, 
                             c.PSCID, 
                             s.Visit_label, 
                             s.SubprojectID, 
@@ -172,8 +161,6 @@ class CouchDBDemographicsImporter {
                             pso.Description, 
                             ps.participant_suboptions, 
                             ps.reason_specify, 
-                            ps.study_consent, 
-                            Study_consent_withdrawal
                             ";
 
         // If proband fields are being used, add proband information into the query
@@ -188,6 +175,17 @@ class CouchDBDemographicsImporter {
             $fieldsInQuery .= $EDCFields;
             $groupBy .= ", c.EDC";
         }
+
+        // If consent is being used, add consent information into query
+        if ($config->getSetting("useConsent") === "true") {
+              $consentFields  = ", ct.Name AS Consent_type, COALESCE(cc.Status, 'not available') AS Consent_status, COALESCE(cc.DateWithdrawn, '0000-00-00') AS Consent_withdrawal";
+              $fieldsInQuery .= $consentFields;
+              $tablesToJoin  .= " LEFT JOIN candidate_consent_type_rel cc ON (cc.CandidateID=c.CandID)
+                                  LEFT JOIN consent_type ct ON (ct.ConsentTypeID=cc.ConsentTypeID)
+                                 ";
+              $groupBy .= " Consent_type, Consent_status, Consent_withdrawal";
+        }
+
         $whereClause=" WHERE s.Active='Y' AND c.Active='Y' AND c.Entity_type != 'Scanner'";
 
         $concatQuery = $fieldsInQuery . $tablesToJoin . $whereClause . $groupBy;
@@ -224,6 +222,36 @@ class CouchDBDemographicsImporter {
                 'Type' => $projectsEnum
             );
         }
+
+        // If consent is being used, update the data dictionary
+        if ($config->getSetting("useConsent") === "true") {
+       //   $consents = Utility::getConsentList();
+       //   foreach($consents as $consent) {
+       //     $consentName  = $consent['Name'];
+       //     $consentLabel = $consent['Label'];
+       //     $this->Dictionary[$consentName] = array(
+       //         'Description' => $consentLabel,
+       //         'Type' => "enum('yes','no','not_answered')"
+       //     );
+       //     $this->Dictionary[$consentName . "_withdrawal"] = array(
+       //         'Description' => $consentLabel . ' Withdrawal Date',
+       //         'Type' => "date"
+       //     );
+       //   }
+            $this->Dictionary["Consent_type"] = array(
+                'Description' => 'Name of type of consent',
+                'Type' => "varchar(255)"
+            );
+            $this->Dictionary["Consent_status"] = array(
+                'Description' => 'Status of that consent type',
+                'Type' => "enum('yes','no','not_answered')"
+            );
+            $this->Dictionary["Consent_withdrawal"] = array(
+                'Description' => 'Date of withdrawal of consent',
+                'Type' => "date"
+            );
+        }
+
         /*
         // Add any candidate parameter fields to the data dictionary
         $parameterCandidateFields = $this->SQLDB->pselect("SELECT * from parameter_type WHERE SourceFrom='parameter_candidate' AND Queryable=1",
@@ -311,10 +339,10 @@ class CouchDBDemographicsImporter {
 
     }
 }
-
-// Don't run if we're doing the unit tests; the unit test will call run.
+//Don't run if we're doing the unit tests; the unit test will call run.
 if(!class_exists('UnitTestCase')) {
     $Runner = new CouchDBDemographicsImporter();
     $Runner->run();
 }
+
 ?>
