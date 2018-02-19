@@ -24,7 +24,9 @@ before_install:
     - nvm install node
     - mkdir -p project project/libraries
     - phpenv config-rm xdebug.ini
-
+    - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.0" ]]; then Dir="router.php" ; fi
+    - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.1" ]]; then Dir="htdocs/router.php" ; fi
+    - php -S localhost:8000 -t htdocs $Dir 2>1 > /dev/null &
 install:
     # Install composer modules
     - composer install
@@ -35,9 +37,6 @@ install:
 
     # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
-    - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.0" ]]; then Dir="router.php" ; fi
-    - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.1" ]]; then Dir="htdocs/router.php" ; fi
-    - php -S localhost:8000 -t htdocs $Dir 2>1 > /dev/null &
 
     # Extracting firefox and setting PATH variable...
     - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
