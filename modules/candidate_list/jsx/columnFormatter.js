@@ -5,12 +5,35 @@
  * @param {string} column - column name
  * @param {string} cell - cell content
  * @param {arrray} rowData - array of cell contents for a specific row
+ * @param {arrray} rowHeaders - array of table headers (column names)
  * @return {*} a formated table cell for a given column
  */
-function formatColumn(column, cell, rowData) {
+function formatColumn(column, cell, rowData, rowHeaders) {
+  // If a column is set as hidden, don't display it
+  if (loris.hiddenHeaders.indexOf(column) > -1) {
+    return null;
+  }
+
+  // Create the mapping between rowheaders and rowData in a row object
+  var row = {};
+  rowHeaders.forEach(function(header, index) {
+    row[header] = rowData[index];
+  }, this);
+
+  // create array of classes to be added to td tag
+  var classes = [];
+
+  if (row['Consent To Study'] === 'no') {
+    classes.push("bg-danger");
+  }
   if (column === 'PSCID') {
-    var url = loris.BaseURL + "/" + rowData[1] + "/";
-    return <td><a href ={url}>{cell}</a></td>;
+    var url = loris.BaseURL + "/" + row.DCCID + "/";
+    return (
+        <td className = {classes}>
+          <a href ={url}>
+            {cell}
+          </a>
+        </td>);
   }
   if (column === 'Feedback') {
     switch (cell) {
@@ -33,7 +56,9 @@ function formatColumn(column, cell, rowData) {
         </td>
       );
   }
-  return <td>{cell}</td>;
+  // convert array to string, with blank space separator
+  classes = classes.join(" ");
+  return <td className={classes}>{cell}</td>;
 }
 
 window.formatColumn = formatColumn;

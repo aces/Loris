@@ -53,6 +53,7 @@ class Candidate_List extends \NDB_Menu_Filter
     {
         $user   =& \User::singleton();
         $config =& \NDB_Config::singleton();
+        $db     =& \Database::singleton();
 
         $this->tpl_data['toggled_visible'] =false;
 
@@ -72,6 +73,34 @@ class Candidate_List extends \NDB_Menu_Filter
                           "COALESCE(pso.Description,'Active') "
                           . " AS Participant_Status",
                          );
+
+        //Boilerplate taken from modules/candidate_parameters/ajax/getData.php's
+        //getConsentStatusFields()
+        $consent = $config->getSetting('ConsentModule');
+        //String comparison is required, if ("false") { echo "is true"; }
+        if ($consent['useConsent'] == "true") {
+            $consent_details = $consent['Consent'];
+            //This check is necessary because of the following,
+            //1. Only one consent is configured, an assoc array is returned
+            //2. More than one consent is configured, a numeric array of assoc
+            //   array elements is returned
+            //We want just the numeric array of assoc array elements all the time.
+
+            if (!isset($consent_details[0])) {
+                $consent_details = \Utility::toArray($consent_details);
+            }
+
+            $consentType = $consent_details[0];
+            $name        = $db->escape($consentType["name"]);
+            //This is not foolproof.
+            //This is only done because the following does not work,
+            //"ps.{$name} AS `{$label}`" (notice the backticks `)
+            //The code that creates the tables on the front end will freak out
+            //if it sees a space in the label name
+            //$label           = preg_replace("/\s/", "_", $label);
+            // $label           = str_replace("`", "", $label);
+            $this->columns[] = "ps.$name AS Consent_to_Study";
+        }
         if ($useProjects) {
             $this->columns[] = 'p.Name as Project';
         }
