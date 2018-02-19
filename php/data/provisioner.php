@@ -23,8 +23,8 @@ namespace LORIS\Data;
  * Filters generally do things like site based or project based permissions to
  * the data, while mappers do things like anonymization of data.
  *
- * It In order to use this class, it must be extended and the child must
- * implement the GetAllRows() function, which should try and .
+ * In order to use this class, it must be extended and the child must
+ * implement the GetAllRows() function.
  *
  * @category   Data
  * @package    Main

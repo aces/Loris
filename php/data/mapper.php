@@ -32,7 +32,7 @@ interface Mapper
 {
     /**
      * Map returns a copy of $resource that has been modified in some way
-     * without. It must returns a new Instance without having modified the
+     * without. It must return a new Instance without having modified the
      * original.
      *
      * The data mapping should be a pure function of the original data and

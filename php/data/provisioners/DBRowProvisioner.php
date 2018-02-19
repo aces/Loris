@@ -35,20 +35,5 @@ abstract class DBRowProvisioner extends \LORIS\Data\Provisioner {
         };
         return $iterator;
     }
-
-    /*
-    public function execute(\User $user) : \Traversable
-    {
-        if ($this->iteratorCache != null) {
-            error_log("Using cache");
-            return new \ArrayIterator($this->iteratorCache->getCache());
-        }
-        error_log("Executing");
-        $iterator = parent::execute($user);
-        $this->iteratorCache = new \CachingIterator($iterator, \CachingIterator::FULL_CACHE);
-        return $this->iteratorCache;
-    }
-     */
-
 }
 

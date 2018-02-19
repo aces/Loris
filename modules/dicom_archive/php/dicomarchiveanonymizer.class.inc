@@ -29,6 +29,8 @@ class DICOMArchiveAnonymizer implements \LORIS\Data\Mapper
 {
     /**
      * Maps the Patient Name and Patient ID to 'INVALID - HIDDEN' if it doesn't
+     * meet the regular expressions defined in the LORIS configuration for valid
+     * patient names or ids.
      *
      * @param \User                $user     The user this data is being mapped for
      * @param \LORIS\Data\Instance $resource The unanonymized data being mapped.
