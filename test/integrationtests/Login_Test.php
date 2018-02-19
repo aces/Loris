@@ -5,6 +5,8 @@ class LorisLoginTest extends LorisIntegrationTest
     function testLoginFailure()
     {
        $this->webDriver->get($this->url . '/main.php?logout=true');
+ 
+       $this->assertContains('body', $body = $this->webDriver->getPageSource());
 
        $username = $this->webDriver->findElement(WebDriverBy::Name("username"));
        $this->assertEquals('', $username->getAttribute("value"));

@@ -13,6 +13,7 @@
             <directory>./integrationtests/</directory>
         </testsuite>
 
+<!--
         <testsuite name='LorisModuleIntegrationTests'>
             <directory>../modules/acknowledgements/test/</directory>
             <directory>../modules/brainbrowser/test/</directory>
@@ -52,7 +53,7 @@
             <directory>../test/test_instrument/</directory>
             <directory>../modules/bvl_feedback/test/</directory>
         </testsuite>
-
+-->
     </testsuites>
     <!-- This is currently breaking the coverage.xml generation, so
          for now it's disabled, but eventually we'll want to make
