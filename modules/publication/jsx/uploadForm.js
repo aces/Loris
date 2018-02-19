@@ -169,7 +169,7 @@ class PublicationUploadForm extends React.Component {
           collabEmails.push(
             <TextboxElement
               name={'collabEmail' + c}
-              label={c + (c.slice(-1) === 's' ? "'s" : "'") + " Email"}
+              label={c + (c.slice(-1) !== 's' ? "'s" : "'") + " Email"}
               onUserInput={this.setFormData}
               required={false}
               value={this.state.formData['collabEmail' + c]}
