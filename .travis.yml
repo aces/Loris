@@ -9,6 +9,7 @@ php:
     - "7.1" 
 
 
+
 addons:
     firefox: "44.0"
 
@@ -29,6 +30,9 @@ before_install:
 install:
     # Install composer modules
     - composer install
+    - composer require --dev
+    - phpenv rehash
+
 
     # Install node modules specified in package.json
     - npm install
