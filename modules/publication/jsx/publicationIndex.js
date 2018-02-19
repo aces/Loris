@@ -74,7 +74,7 @@ class PublicationIndex extends React.Component {
       proposalTab = (
         <TabPane TabId={tabList[1].id}>
           <PublicationUploadForm
-            DataURL={`${loris.BaseURL}/publication/ajax/FileUpload.php?action=getData`}
+            DataURL={`${loris.BaseURL}/publication/ajax/getData.php?action=getData`}
             action={`${loris.BaseURL}/publication/ajax/FileUpload.php?action=upload`}
           />
         </TabPane>
