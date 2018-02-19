@@ -40,17 +40,6 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $user =& User::singleton();
         return $user->hasPermission('imaging_browser_qc');
     }
-    /**
-     * Override default behaviour, since the page is loaded from
-     * qualityControlIndex.js
-     *
-     * @return void
-     * @access public
-     */
-    function display()
-    {
-        return null;
-    }
 
     /**
     * Checks configuration module to find which scans are relevant
@@ -340,6 +329,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     {
 
         $db =& Database::singleton();
+        $this->skipTemplate = true;
 
         $scan_types = $this->_getScanTypes();
         foreach ($scan_types as $scan_type) {
