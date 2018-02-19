@@ -420,8 +420,8 @@ var StaticDataTable = React.createClass({
 
             // Only display a row if all filter values have been matched
       if ((filterLength === filterMatchCount) &&
-          ((useKeyword === true && keywordMatch > 0) || (useKeyword === false &&
-            keywordMatch === 0))) {
+          ((useKeyword === true && keywordMatch > 0) ||
+           (useKeyword === false && keywordMatch === 0))) {
         matchesFound++;
         if (matchesFound > currentPageRow) {
           const rowIndex = index[i].Content;
