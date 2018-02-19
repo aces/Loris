@@ -44,6 +44,7 @@ $(document).ready(function() {
 
     ajaxSubmit = function(e) {
         var formEl = document.getElementById("test_form"),
+            documentURI,
             nextpageNode = document.getElementById("nextpage"),
             prevpageNode = document.getElementById("prevpage"),
             nextPage;
@@ -64,10 +65,10 @@ $(document).ready(function() {
         }).appendTo("#test_form");
 
         if (document.documentURI) {
-            var documentURI=document.documentURI;
+            documentURI=document.documentURI;
         }
         else {
-            var documentURI= window.location.href;
+            documentURI= window.location.href;
         }
         formEl.action = documentURI;
         //formEl.action = "submit.php?key=" + document.getElementById("key").textContent;
