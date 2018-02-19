@@ -263,6 +263,11 @@ function backupEntries($selectID, $table_name, $FK_field)
     $IDs = generateIdList($selectID, $FK_field);
     $where = $FK_field . " IN (" . $IDs . ")";
 
+    // create directory where the back up will go if it does not exist yet
+    if ( !file_exists(__DIR__."/../project/backup") ) {
+        mkdir(__DIR__."/../project/backup");
+    }
+
     // grep database connection information from NDB_Config for mysqldump
     $config = NDB_Config::singleton();
     $config->load(__DIR__."/../project/config.xml");
@@ -287,7 +292,7 @@ function backupEntries($selectID, $table_name, $FK_field)
         escapeshellarg($table_name)               . " " .
         "--where=" . escapeshellarg($where)       . " " .
         "--compact --no-create-info"              . " " .
-        ">> ./backup_release_19-0_upgrade.sql";
+        ">> " . __DIR__ . "/../project/backup/backup_release_19-0_upgrade.sql";
 
     system($sqldump, $retval); // execute mysqldump
 
