@@ -38,8 +38,13 @@
         {if $rad_review_table_exists}
             <li><a href="{$baseurl}/{$subject.candid}/{$subject.sessionID}/radiology_review/?commentID={$subject.RadiologyReviewCommentID}">Radiology Review</a></li>
         {/if}
-        {foreach from=$subject.tarchiveids item=tarchive}
-        <li><a href="{$baseurl}/dicom_archive/viewDetails/?tarchiveID={$tarchive.TarchiveID}&backURL={$backURL|escape:"url"}">DICOM Archive {$tarchive.TarchiveID}</a></li>{/foreach}
+        {foreach from=$subject.tarchiveIDLoc key=tarchive item=tarchiveLoc}
+            <li><a href="{$baseurl}/dicom_archive/viewDetails/?tarchiveID={$tarchive}&backURL={$backURL|escape:"url"}">DICOM Archive {$tarchive}</a></li>
+            <li><a href="/mri/jiv/get_file.php?file={$tarchiveLoc}" class="btn btn-primary btn-small">
+                    <span class="glyphicon glyphicon-cloud-download"></span><span class="hidden-xs"> Download DICOM {$tarchive}</span>
+                </a>
+            </li>
+        {/foreach}
         {if $mantis}
             <li><a target="mantis" href="{$mantis}">Report a Bug (Mantis)</a></li>
         {/if}

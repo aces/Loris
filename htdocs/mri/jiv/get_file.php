@@ -38,13 +38,15 @@ if ($client->initialize("../../../project/config.xml") == false) {
 }
 
 // Checks that config settings are set
-$config =& NDB_Config::singleton();
-$paths  = $config->getSetting('paths');
+$config   =& NDB_Config::singleton();
+$paths    = $config->getSetting('paths');
+$pipeline = $config->getSetting('imaging_pipeline');
 
 // Basic config validation
 $imagePath    = $paths['imagePath'];
 $DownloadPath = $paths['DownloadPath'];
 $mincPath     = $paths['mincPath'];
+$tarchivePath = $pipeline['tarchiveLibraryDir'];
 if (empty($imagePath) || empty($DownloadPath) || empty($mincPath)) {
     error_log("ERROR: Config settings are missing");
     header("HTTP/1.1 500 Internal Server Error");
@@ -92,6 +94,12 @@ if (strpos($File, "..") !== false) {
     exit(4);
 }
 
+// If $File contains "DCM_", prefix automatically inserted by the
+// LORIS-MRI pipeline, identify it as $FileExt: "DICOMTAR"
+if (strpos($File, "DCM_") ) {
+    $FileExt = "DICOMTAR";
+}
+
 switch($FileExt) {
 case 'mnc':
     $FullPath         = $mincPath . '/' . $File;
@@ -131,6 +139,12 @@ case 'xml':
 case 'nrrd':
     $FullPath         = $imagePath . '/' . $File;
     $MimeType         = 'image/vnd.nrrd';
+    $DownloadFilename = basename($File);
+    break;
+case 'DICOMTAR':
+    // ADD case for DICOMTAR
+    $FullPath         = $tarchivePath . '/' . $File;
+    $MimeType         = 'application/x-tar';
     $DownloadFilename = basename($File);
     break;
 default:
