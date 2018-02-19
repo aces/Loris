@@ -22,7 +22,7 @@ class PublicationUploadForm extends React.Component {
   }
 
   componentDidMount() {
-    var self = this;
+    let self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
@@ -61,7 +61,7 @@ class PublicationUploadForm extends React.Component {
   }
 
   addVOIGroups() {
-    var currCount = this.state.numVOIGroups;
+    let currCount = this.state.numVOIGroups;
     currCount++;
     this.setState({
       numVOIGroups: currCount
@@ -102,7 +102,7 @@ class PublicationUploadForm extends React.Component {
     let formObj = new FormData();
     for (let key in formData) {
       if (formData[key] !== "") {
-        var formVal;
+        let formVal;
         if (Array.isArray(formData[key])) {
           formVal = JSON.stringify(formData[key]);
         } else {
@@ -162,8 +162,8 @@ class PublicationUploadForm extends React.Component {
     }
 
     // generate optional email input fields for collaborators
+    let collabEmails = [];
     if (this.state.formData.collaborators) {
-      var collabEmails = [];
       this.state.formData.collaborators.forEach(
         function (c) {
           collabEmails.push(
@@ -179,7 +179,7 @@ class PublicationUploadForm extends React.Component {
       );
     }
 
-    var testNames = [];
+    let testNames = [];
     this.state.Data.varsOfInterest.forEach(
       function (v) {
         if (testNames[v.SourceFrom]) {
@@ -191,12 +191,12 @@ class PublicationUploadForm extends React.Component {
     testNames.sort();
 
     // Set test fields to all fields by default
-    var testFields = this.state.Data.varsOfInterest.map(v => v.Name);
+    let testFields = this.state.Data.varsOfInterest.map(v => v.Name);
     testFields.sort();
     
     // if an instrument has been selected, then populate the fields
     // selection with fields only relevant to the selected instrument
-    var inst = this.state.formData['voiInst'];
+    let inst = this.state.formData['voiInst'];
     if (inst) {
       testFields = [];
       testFields[inst+'_AllFields'] = inst + '_AllFields';

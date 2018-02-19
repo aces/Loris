@@ -44,7 +44,7 @@ class PublicationIndex extends React.Component {
   }
 
   resetFilters() {
-    this.refs.publicationsFilter.clearFilter();
+    this.publicationsFilter.clearFilter();
   }
 
   render() {
@@ -64,7 +64,7 @@ class PublicationIndex extends React.Component {
         label: "Browse"
       }
     ];
-    var proposalTab;
+    let proposalTab;
     if (loris.userHasPermission('publication_propose')) {
       tabList.push({
           id: "propose",
@@ -81,6 +81,10 @@ class PublicationIndex extends React.Component {
       );
     }
 
+    const filterRef = function(f) {
+      this.publicationsFilter = f;
+    }.bind(this);
+
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
@@ -88,7 +92,7 @@ class PublicationIndex extends React.Component {
             Module="publication"
             name="publications_filter"
             id="publications_filter_form"
-            ref="publicationsFilter"
+            ref={filterRef}
             columns={3}
             formElements={this.state.Data.form}
             onUpdate={this.updateFilter}

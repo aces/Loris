@@ -13,15 +13,15 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   // Create the mapping between rowHeaders and rowData in a row object.
-  var row = {};
+  let row = {};
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
 
-  var classes  = [];
+  let classes  = [];
   if (column === 'Title') {
-    var pubID = row['Publication ID'];
-    var viewURL = loris.BaseURL + '/publication/view_project?id=' + pubID;
+    let pubID = row['Publication ID'];
+    let viewURL = loris.BaseURL + '/publication/view_project?id=' + pubID;
 
     // need to decode html entities that get stored in database
     cell = decodeHtml(cell);
@@ -38,7 +38,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 }
 
 function decodeHtml(html) {
-  var txt = document.createElement("textarea");
+  let txt = document.createElement("textarea");
   txt.innerHTML = html;
   return txt.value;
 }
