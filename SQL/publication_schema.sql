@@ -49,6 +49,24 @@ CREATE TABLE `publication_keyword_rel` (
   CONSTRAINT `FK_publication_keyword_2` FOREIGN KEY(`PublicationKeywordID`) REFERENCES `publication_keyword` (`PublicationKeywordID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
+
+DROP TABLE IF EXISTS publication_collaborator;
+CREATE TABLE `publication_collaborator` (
+  `PublicationCollaboratorID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) NOT NULL,
+  `Email` varchar(255),
+  PRIMARY KEY(`PublicationCollaboratorID`),
+  UNIQUE (`Name`,`Email`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
+DROP TABLE IF EXISTS publication_collaborator_rel;
+CREATE TABLE `publication_collaborator_rel` (
+  `PublicationID` int(10) unsigned NOT NULL,
+  `PublicationCollaboratorID` int(10) unsigned NOT NULL,
+  CONSTRAINT `FK_publication_collaborator_1` FOREIGN KEY(`PublicationID`) REFERENCES `publication` (`PublicationID`),
+  CONSTRAINT `FK_publication_collaborator_2` FOREIGN KEY(`PublicationCollaboratorID`) REFERENCES `publication_collaborator` (`PublicationCollaboratorID`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
 -- Publication - Variable of Interest  relational table
 DROP TABLE IF EXISTS publication_parameter_type_rel;
 CREATE TABLE `publication_parameter_type_rel` (

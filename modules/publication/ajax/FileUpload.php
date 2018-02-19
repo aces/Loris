@@ -14,27 +14,7 @@ if (isset($_REQUEST['action'])) {
     }
 }
 
-// Gets publication data from database
-// for now just titles to ensure uniqueness upon submission
-function getData() {
-    $db = Database::singleton();
 
-    $data = array();
-    $titles = $db->pselectCol(
-        'SELECT Title FROM publication',
-        array()
-    );
-
-    $varsOfInterest = $db->pselect(
-        "SELECT pt.Name, pt.SourceFrom FROM parameter_type pt ".
-        "JOIN test_names tn ON tn.Test_name=pt.SourceFrom ORDER BY pt.SourceFrom",
-        array()
-    );
-
-    $data['titles'] = $titles;
-    $data['varsOfInterest'] = $varsOfInterest;
-    return $data;
-}
 
 function uploadPublication() {
     $db = Database::singleton();
@@ -68,7 +48,7 @@ function uploadPublication() {
         'Description'           => $_REQUEST['description'],
         'LeadInvestigator'      => $_REQUEST['leadInvestigator'],
         'LeadInvestigatorEmail' => $_REQUEST['leadInvestigatorEmail'],
-        'DateProposed'          => $today
+        'DateProposed'          => $today,
     );
 
     $db->insert('publication', $fields);

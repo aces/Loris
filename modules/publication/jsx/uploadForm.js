@@ -161,6 +161,24 @@ class PublicationUploadForm extends React.Component {
       );
     }
 
+    // generate optional email input fields for collaborators
+    if (this.state.formData.collaborators) {
+      var collabEmails = [];
+      this.state.formData.collaborators.forEach(
+        function (c) {
+          collabEmails.push(
+            <TextboxElement
+              name={'collabEmail' + c}
+              label={c + (c.slice(-1) === 's' ? "'s" : "'") + " Email"}
+              onUserInput={this.setFormData}
+              required={false}
+              value={this.state.formData['collabEmail' + c]}
+            />
+          );
+        }.bind(this)
+      );
+    }
+
     var testNames = [];
     this.state.Data.varsOfInterest.forEach(
       function (v) {
@@ -239,6 +257,7 @@ class PublicationUploadForm extends React.Component {
               items={this.state.formData.collaborators}
               btnLabel="Add Collaborator"
             />
+            {collabEmails}
             <TagsElement
               name="keywords"
               label="Keywords"
