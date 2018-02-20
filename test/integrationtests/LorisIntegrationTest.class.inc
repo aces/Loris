@@ -322,11 +322,12 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      *
      * @return none
      */
-    function createSubproject($title)
+    function createSubproject($SubprojectID,$title)
     {
         $this->DB->insert(
             "subproject",
             array(
+             "SubprojectID"      => $SubprojectID,
              "title"             => $title,
              "WindowDifference"  => "optimal",
              "RecruitmentTarget" => "100",
