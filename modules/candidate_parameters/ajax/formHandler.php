@@ -369,7 +369,7 @@ function editConsentStatusFields($db, $user)
     $candIDParam = $_POST['candID'];
     $candID      = (isset($candIDParam) && $candIDParam !== "null") ?
         $candIDParam : null;
-    
+
     // get pscid
     $pscid = $db->pselectOne(
         'SELECT PSCID FROM candidate where CandID = :candid',
@@ -377,19 +377,19 @@ function editConsentStatusFields($db, $user)
     );
 
     // Get list of all consent types
-    $consentDetails   = Utility::getConsentList(); 
-    
+    $consentDetails = Utility::getConsentList();
+
     // Get list of consents for candidate
     $candidateConsent = Candidate::getConsent($candID);
 
     foreach ($consentDetails as $consentID=>$consentType) {
 
         $consentName  = $consentType['Name'];
-        $consentLabel = $consentType['Label']; 
+        $consentLabel = $consentType['Label'];
 
         /*In React, $consentName: $status i.e. 'study_consent': 'yes' in this.state.formData
-         *Ideally we explicitly want $status = $_POST[$consentName . '_status'] 
-         * 
+         *Ideally we explicitly want $status = $_POST[$consentName . '_status']
+         *
          *Process posted data
          */
         $status     = ($_POST[$consentName] !== 'null') ?
@@ -398,25 +398,23 @@ function editConsentStatusFields($db, $user)
                         $_POST[$consentName . '_date'] : null;
         $withdrawal = ($_POST[$consentName . '_withdrawal'] !== 'null') ?
                         $_POST[$consentName . '_withdrawal'] : null;
-        
+
         $updateStatus = [
-                   'CandidateID'             => $candID,
-                   'ConsentTypeID'           => $consentID,
-                   'Status'                  => $status,
-                   'DateGiven'               => $date,
-                   'DateWithdrawn'           => $withdrawal,
-                    ];
+                         'CandidateID'    => $candID,
+                         'ConsentTypeID'  => $consentID,
+                         'Status'         => $status,
+                         'DateGiven'      => $date,
+                         'DateWithdrawn'  => $withdrawal,
+                         ];
         $updateHistory = [
-                   'PSCID'                   => $pscid,
-                   'ConsentName'             => $consentName,
-                   'ConsentLabel'            => $consentLabel,
-                   'Status'                  => $status,
-                   'DateGiven'               => $date,
-                   'DateWithdrawn'           => $withdrawal,
-                   'EntryStaff'              => $uid,
-                   ];
-
-
+                          'PSCID'         => $pscid,
+                          'ConsentName'   => $consentName,
+                          'ConsentLabel'  => $consentLabel,
+                          'Status'        => $status,
+                          'DateGiven'     => $date,
+                          'DateWithdrawn' => $withdrawal,
+                          'EntryStaff'    => $uid,
+                         ];
         $recordExists = array_key_exists($consentID, $candidateConsent);
 
         if ($recordExists) {
@@ -424,8 +422,8 @@ function editConsentStatusFields($db, $user)
                 'candidate_consent_type_rel',
                 $updateStatus,
                 array(
-                 'CandidateID' => $candID,
-                 'ConsentTypeID'   => $consentID,
+                 'CandidateID'   => $candID,
+                 'ConsentTypeID' => $consentID,
                 )
             );
         } else {

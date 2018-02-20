@@ -396,26 +396,25 @@ function getConsentStatusFields()
 
     // Get list of all consent types
     $consentDetails = Utility::getConsentList();
-    
+
     // Get list of consents for candidate
     $candidateConsent = Candidate::getConsent($candID);
 
     foreach ($consentDetails as $consentID=>$consentType) {
 
-        $consentName = $consentType['Name'];
-        $consents[$consentName] = $consentType['Label'];
-        
-        if (isset($candidateConsent[$consentID])) {
-          $candidateConsentID = $candidateConsent[$consentID];
-          $status[$consentName] = $candidateConsentID['Status'];
-          $date[$consentName]          = $candidateConsentID['DateGiven'];
-          $withdrawalDate[$consentName]    = $candidateConsentID['DateWithdrawn'];
-        }
-	else {
-            $status[$consentName]         = null;
-            $date[$consentName]           = null;
-            $withdrawalDate[$consentName] = null;
-        }
+      $consentName            = $consentType['Name'];
+      $consents[$consentName] = $consentType['Label'];
+
+      if (isset($candidateConsent[$consentID])) {
+          $candidateConsentID           = $candidateConsent[$consentID];
+          $status[$consentName]         = $candidateConsentID['Status'];
+          $date[$consentName]           = $candidateConsentID['DateGiven'];
+          $withdrawalDate[$consentName] = $candidateConsentID['DateWithdrawn'];
+      }else {
+          $status[$consentName]         = null;
+          $date[$consentName]           = null;
+          $withdrawalDate[$consentName] = null;
+      }
     }
         $history = getConsentStatusHistory($pscid);
 
@@ -435,7 +434,7 @@ function getConsentStatusFields()
 /**
  * Handles the fetching of Consent Status history
  *
- * @param int   $pscid   current candidate's PSCID
+ * @param int $pscid current candidate's PSCID
  *
  * @throws DatabaseException
  *
@@ -452,22 +451,22 @@ function getConsentStatusHistory($pscid)
          ORDER BY EntryDate ASC",
         array('pscid' => $pscid)
     );
-    
+
     $formattedHistory = [];
     foreach ($historyData as $key => $entry) {
-      $history = [
-                  'data_entry_date' => $entry['EntryDate'],
-                  'entry_staff' => $entry['EntryStaff'],
-                  $entry['ConsentName'] => $entry['Status'],
-                  $entry['ConsentName'] . '_date' => $entry['DateGiven'],
+          $history        = [
+                  'data_entry_date'                     => $entry['EntryDate'],
+                  'entry_staff'                         => $entry['EntryStaff'],
+                  $entry['ConsentName']                 => $entry['Status'],
+                  $entry['ConsentName'] . '_date'       => $entry['DateGiven'],
                   $entry['ConsentName'] . '_withdrawal' => $entry['DateWithdrawn'],
                  ];
-      $consentHistory = [
-                         $key => $history,
-                         'label' => $entry['ConsentLabel'],
+        $consentHistory = [
+                         $key          => $history,
+                         'label'       => $entry['ConsentLabel'],
                          'consentType' => $entry['ConsentName'],
                         ];
-      $formattedHistory[$key] = $consentHistory;
+        $formattedHistory[$key] = $consentHistory;
     }
     return $formattedHistory;
 }
