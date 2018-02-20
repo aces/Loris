@@ -1,7 +1,7 @@
 <?php
 namespace LORIS\Router;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
 
 
 // Handles the root of a module install. It will mostly delegate to the
@@ -19,11 +19,17 @@ class ModuleRouter extends Prefix {
     }
 
     public function handle(ServerRequestInterface $request) : ResponseInterface {
-        // FIXME: Add Authentication middleware if the module isn't public.
         if($this->module->isPublicModule() !== true) {
-            // FIXME: This whole thing should be in the module class?
-            return (new \LORIS\Middleware\AuthMiddleware(new ModuleAuthenticator($request->getAttribute("user"), $this->module)))->withMiddleware(new \LORIS\Middleware\ResponseGenerator())->process($request, $this->module);
+            // Add the authentication middleware for the current user (which was added by the
+            // base router), and handle the request
+            $authmiddleware = new \LORIS\Middleware\AuthMiddleware(
+                new ModuleAuthenticator($request->getAttribute("user"), $this->module)
+            );
+            return $authmiddleware->withMiddleware(
+                new \LORIS\Middleware\ResponseGenerator(
+            ))->process($request, $this->module);
         }
+        // Directly handle the request, because it was public anyways.
         return $this->module->handle($request);
     }
 }

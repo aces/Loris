@@ -1,10 +1,10 @@
 <?php
 namespace LORIS\Router;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\URIInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-use LORIS\Http\StringStream;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\URIInterface;
+use \Psr\Http\Message\ResponseInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
+use \LORIS\Http\StringStream;
 
 class Prefix implements RequestHandlerInterface {
     protected $paths;
@@ -20,7 +20,7 @@ class Prefix implements RequestHandlerInterface {
     protected function stripPrefix($prefix, URIInterface $uri) : URIInterface {
         $path = $uri->getPath();
         $newpath = substr($path, strlen($prefix));
-        return $uri->withPath((string )$newpath);
+        return $uri->withPath((string) $newpath);
 
     }
 
