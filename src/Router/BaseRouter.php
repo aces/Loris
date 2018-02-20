@@ -29,7 +29,7 @@ use \LORIS\Http\StringStream;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class BaseRouter extends Prefix implements RequestHandlerInterface
+class BaseRouter extends PrefixRouter implements RequestHandlerInterface
 {
     protected $projectdir;
     protected $moduledir;
