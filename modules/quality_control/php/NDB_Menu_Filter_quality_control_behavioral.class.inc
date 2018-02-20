@@ -37,7 +37,7 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
         $user =& User::singleton();
         return $user->hasPermission('data_team_helper');
     }
-    
+
     /**
      * Create a form to filter behavioral QC by various criteria
      *
@@ -95,7 +95,7 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
      * @throws DatabaseException
      */
     function _setupVariables()
-    {  
+    {
         $this->skipTemplate = true;
         $user           =& User::singleton();
         $config         =& NDB_Config::singleton();
