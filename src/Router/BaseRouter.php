@@ -1,19 +1,48 @@
 <?php
+/**
+ * Implements BaseRouter, a Router to handle the base of a LORIS
+ * install.
+ *
+ * PHP Version 7
+ *
+ * @category Router
+ * @package  Router
+ * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+
 namespace LORIS\Router;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
 use \LORIS\Http\StringStream;
 
-// Handles the root of a LORIS install. It will mostly delegate to the
-// module router.
-// FIXME: Add other things in .htaccess here.
+/**
+ * Handles the root of a LORIS install. It will mostly delegate to the
+ * A BaseRouter handles the base of a LORIS install and delegates to
+ * other routers (such as Module routers)
+ *
+ * @category Router
+ * @package  Router
+ * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 class BaseRouter extends Prefix implements RequestHandlerInterface
 {
     protected $projectdir;
     protected $moduledir;
     protected $user;
 
+    /**
+     * Construct a BaseRouter
+     *
+     * @param \User  $user       The user accessing LORIS. (May be an AnonymousUser
+     *                           instance).
+     * @param string $projectdir The base of the LORIS project directory.
+     * @param string $moduledir  The base of the LORIS modules directory.
+     */
     public function __construct(\User $user, string $projectdir, string $moduledir)
     {
         $this->user       = $user;
@@ -21,6 +50,14 @@ class BaseRouter extends Prefix implements RequestHandlerInterface
         $this->moduledir  = $moduledir;
     }
 
+    /**
+     * Handle delegates to an appropriate sub-router to do the real handling of a
+     * LORIS request.
+     *
+     * @param ServerRequestInterface $request The PSR7 request
+     *
+     * @return ServerResponse The PSR15 response.
+     */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $uri  = $request->getUri();
@@ -34,7 +71,7 @@ class BaseRouter extends Prefix implements RequestHandlerInterface
         if ($path == "/" || $path == "") {
             if ($this->user instanceof \LORIS\AnonymousUser) {
                 $modulename = "login";
-            }  else {
+            } else {
                 $modulename = "dashboard";
             }
             $request = $request->withURI($uri->withPath("/"));
@@ -82,9 +119,12 @@ class BaseRouter extends Prefix implements RequestHandlerInterface
                 $request = $request
                     ->withAttribute("baseurl", $baseurl->__toString())
                     ->withAttribute("CandID", $components[0]);
-                // FIXME: Validate
+                // FIXME: Validate CandID is valid before continuing.
                 $request = $request
-                    ->withAttribute("TimePoint", \TimePoint::singleton($components[1]));
+                    ->withAttribute(
+                        "TimePoint",
+                        \TimePoint::singleton($components[1])
+                    );
                 $module  = \Module::factory("instrument_list");
                 $mr      = new ModuleRouter($module, $this->moduledir);
                 return $mr->handle($request);
