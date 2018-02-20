@@ -11,7 +11,7 @@
  * - consent_info_history
  * - consent_type
  * - candidate_consent_type_rel
- * _ candidate_consent_type_history
+ * - candidate_consent_type_history
  * 
  * PHP Version 7
  * 
@@ -27,11 +27,68 @@ require_once 'generic_includes.php';
 $config = NDB_Config::singleton();
 $db     =& Database::singleton();
 
-// Get consent info from Config.xml
+// Get consent details from Config.xml
 $consentConfig = $config->getSettingFromXML('ConsentModule');
 $useConsent = $consentConfig['useConsent'];
 $consents = $consentConfig['Consent'];
 
+// Check and validate existing consent details
+$errors = [];
+// Check for when consent columns exist in table but not in list of consents in Config.xml
+$columnQuery = 'SELECT Column_name FROM Information_schema.columns WHERE
+                Column_name LIKE "%consent%" AND Table_name LIKE "participant_status"';
+$existingColumns = $db->pselect($columnQuery, array());
+
+// Format result to remove columns with 'date' and 'withdrawal'
+$formattedColumns = [];
+foreach ($existingColumns as $key=>$column) {
+  $columnName = $column['Column_name']; 
+  if (!(preg_match("/date/", $columnName) || preg_match("/withdrawal/", $columnName))) {
+    array_push($formattedColumns, $columnName);
+  }
+}
+// Check that column names are in list of consent names
+foreach ($formattedColumns as $columnName) {
+  $i=0;
+  foreach ($consents as $consent){
+    $consentName = $consent['name'];
+    if($consentName===$columnName) {
+      $i++;
+    }
+  }
+  if ($i===0) {
+    array_push($errors,"The consent type " . $columnName . " exists in the database but not in Config.xml.
+                        Please add the consent to Config.xml or delete columns and data from 'participant_status'");
+  }
+}
+foreach ($consents as $key=>$consent) {
+  // Do consent columns exist in old table?
+  $consentName = $consent['name'];
+  $columnQuery = 'SHOW COLUMNS FROM participant_status LIKE "' . $consentName . '"';
+  $columnExists = $db->pselect($columnQuery, array());
+  if (empty($columnExists)) {
+    array_push($errors, $consentName . " does not exist as a column in participant_status.");
+  }
+  // Check for zero dates
+  $psData = $db->pselect(
+              'SELECT * FROM participant_status WHERE ' . $consentName . ' IS NOT NULL OR ' . $consentName . ' != ""',
+              array()
+            );
+  foreach ($psData as $entry) {
+    if($entry[$consentName . '_date'] === "0000-00-00"){
+      array_push($errors, "Zero dates found in: " . $entry . ". Please remove date or run /tools/DB_date_zeros_removal.php.");
+    }
+  }
+}
+// Throw errors
+if (!empty($errors)) {
+  print_r($errors);
+  die("Resolve errors and run script again.");
+} else {
+    echo "\nValidation successful.\n";
+}
+
+// Continue script
 // Update ConfigSetting table with value of 'useConsent' if true. Default is set to false.
 $configID = $db->pselectOne(
               'SELECT ID FROM ConfigSettings WHERE Name="useConsent"',
@@ -54,10 +111,10 @@ $consentType = [];
 $printArray  = [];
 
 foreach ($consents as $key=>$consent) {
-  // Populate consent_type table with consents from Config.xml
   $consentName  = $consent['name'];
   $consentLabel = $consent['label'];
-
+  
+  // Populate consent_type table with consents from Config.xml
   $db->insert(
          'consent_type', 
          array(
@@ -74,77 +131,31 @@ foreach ($consents as $key=>$consent) {
   // Create array of consents to use later in importing history data
   $consentType[$consentName] = $consentLabel;
 
-  // CHECK: Do consent columns exist in old table?
-  $columnQuery = 'SHOW COLUMNS FROM participant_status LIKE "' . $consentName . '"';
-  $columnExists = $db->pselect($columnQuery, array());
-
-  if (empty($columnExists)) {
-    throw new Exception("\n " . $consentName . " does not exist as a column in participant_status.\n");
-  } else {
-    //get all data where the consent status has a value
-    $psData = $db->pselect(
-                 'SELECT * FROM participant_status WHERE ' . $consentName . ' IS NOT NULL OR ' . $consentName . ' != ""',
-                 array()
-               );
-
-    foreach ($psData as $entry) {
-      //Check for zero dates
-      if($entry[$consentName . '_date'] === "0000-00-00"){
-        throw new Exception("Zero dates found in: " . $entry . ". Please remove date or run /tools/DB_date_zeros_removal.php.");
-      }
-      //push each formatted old entry to array
-      $consentValues = [
-          'CandidateID'   => $entry['CandID'],
-          'ConsentTypeID' => $consentTypeID,
-          'Status'        => $entry[$consentName],
-          'DateGiven'     => $entry[$consentName . '_date'],
-          'DateWithdrawn' => $entry[$consentName . '_withdrawal'],
-          ];
-      array_push($printArray, $consentValues);
-    }
+  // Get all data where the consent status has a value
+  $psData = $db->pselect(
+              'SELECT * FROM participant_status WHERE'
+              . $consentName . ' IS NOT NULL OR ' . $consentName . ' != ""',
+              array()
+            );
+  foreach ($psData as $entry) {
+    // Push each formatted old entry to array
+    $consentValues = [
+        'CandidateID'   => $entry['CandID'],
+        'ConsentTypeID' => $consentTypeID,
+        'Status'        => $entry[$consentName],
+        'DateGiven'     => $entry[$consentName . '_date'],
+        'DateWithdrawn' => $entry[$consentName . '_withdrawal'],
+        ];
+    array_push($printArray, $consentValues);
   }
 }
 
-// Output list of consents to terminal
-echo "\nValid consents found: \n";
-$i=1;
-foreach($consentType as $consent) {
-  echo $i . ". " . $consent . "\n";
-  $i++;
-}
-
-//Check for when consent columns exist in table but not in list of consents in Config.xml
-$columnQuery = 'SELECT Column_name FROM Information_schema.columns WHERE Column_name LIKE "%consent%" AND Table_name LIKE "participant_status"';
-$existingColumns = $db->pselect($columnQuery, array());
-
-//format $existingColumns, and remove data and withdrawal columns
-$formattedColumns = [];
-foreach ($existingColumns as $key=>$column) {
-  $columnName = $column['Column_name']; 
-  if (!(preg_match("/date/", $columnName) || preg_match("/withdrawal/", $columnName))) {
-    array_push($formattedColumns, $columnName);
-  }
-}
-//check that column names are in list of consent names
-foreach ($formattedColumns as $columnName) {
-  $i=0;
-  foreach ($consents as $consent){
-    $consentName = $consent['name'];
-    if($consentName===$columnName) {
-      $i++;
-    }
-  }
-  if ($i===0) {
-    throw new Exception("\nThe consent type " . $columnName . " exists in the database but not in Config.xml. Please add the consent to Config.xml or delete columns and data from 'participant_status'");
-  }
-}
-
-//Output list of data to be inserted into new table to terminal
+// Output list of data to be inserted into new table to terminal
 echo "\nRows to be inserted into 'candidate_consent_type_rel' table ..\n";
 echo "Empty values will be inserted as NULL.\n\n";
 print_r($printArray);
 
-//populate candidate_consent_type_rel with data
+// Populate candidate_consent_type_rel with data
 foreach ($printArray as $consentValues) {
     $db->insert('candidate_consent_type_rel', $consentValues);
   }
