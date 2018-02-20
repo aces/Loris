@@ -30,6 +30,13 @@ class MapIterator extends \IteratorIterator
     protected $mapper;
     protected $user;
 
+    /**
+     * Create a MapIterator
+     *
+     * @param array  $rows   The Iterator being mapped from
+     * @param Mapper $mapper The mapper to apply
+     * @param \User  $user   The user to use when calling the Mapper
+     */
     public function __construct($rows, Mapper $mapper, \User $user)
     {
         parent::__construct($rows);
@@ -37,6 +44,12 @@ class MapIterator extends \IteratorIterator
         $this->user   = $user;
     }
 
+    /**
+     * Overrides the \IteratorIterator \Iterator interface to apply
+     * the map passed in the constructor.
+     *
+     * @return DataInstance
+     */
     public function current()
     {
         $row = parent::current();

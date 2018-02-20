@@ -34,7 +34,7 @@ abstract class ProvisionerInstance implements Provisioner
      * The parent which this provisioner is derived from to apply
      * $this->modifier to.
      */
-    private $parent = null;
+    private $_parent = null;
 
     /**
      * Filters (and Mappers) to apply to the data from this Provisioner
@@ -64,7 +64,7 @@ abstract class ProvisionerInstance implements Provisioner
     public function filter(Filter $filter) : Provisioner
     {
         $d           = clone $this;
-        $d->parent   = &$this;
+        $d->_parent  = &$this;
         $d->modifier = $filter;
         return $d;
     }
@@ -79,13 +79,13 @@ abstract class ProvisionerInstance implements Provisioner
     public function map(Mapper $map) : Provisioner
     {
         $d           = clone $this;
-        $d->parent   = &$this;
+        $d->_parent  = &$this;
         $d->modifier = $map;
         return $d;
     }
 
     /**
-     * getAllRecords must be implemented by concrete implementations of this
+     * GetAllRecords must be implemented by concrete implementations of this
      * class. It must return all rows known about for this Provisioner (without
      * respect to the User accessing the data), which then gets mapped and
      * filtered by execute.
@@ -104,18 +104,21 @@ abstract class ProvisionerInstance implements Provisioner
     public function execute(\User $user) : \Traversable
     {
         $rows = new \EmptyIterator();
-        if ($this->parent != null) {
-            $rows = $this->parent->execute($user);
+        if ($this->_parent != null) {
+            $rows = $this->_parent->execute($user);
         } else {
             $rows = $this->getAllRecords();
         }
 
-        if ($this->modifier !== null && !($this->modifier instanceof Filter) && !($this->modifier instanceof Mapper)) {
+        if ($this->modifier !== null
+            && !($this->modifier instanceof Filter)
+            && !($this->modifier instanceof Mapper)
+        ) {
             throw new \Exception("Invalid modifier on provisioner");
         }
 
-        // If it implements both Filter and Mapper, run the filter first so that the mapping
-        // is less expensive.
+        // If it implements both Filter and Mapper, run the filter first so
+        // that the mapping is less expensive.
         if ($this->modifier instanceof Filter) {
             $callback = function ($current, $key, $iterator) use ($user) {
                 return $this->modifier->filter($user, $current);
@@ -125,14 +128,17 @@ abstract class ProvisionerInstance implements Provisioner
                 $rows = new \CallbackFilterIterator($rows, $callback);
             } else {
                 // Convert non-iterator traversables to iterators.
-                $rows = new \CallbackFilterIterator(new \IteratorIterator($rows), $callback);
+                $rows = new \CallbackFilterIterator(
+                    new \IteratorIterator($rows),
+                    $callback
+                );
             }
 
         }
 
         if ($this->modifier instanceof Mapper) {
-            // Convert rows to an iterator where current() returns the map, not the existing
-            // value.
+            // Convert rows to an iterator where current() returns the map,
+            // not the existing value.
             $rows = new MapIterator($rows, $this->modifier, $user);
         }
 
