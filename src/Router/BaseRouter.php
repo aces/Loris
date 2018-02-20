@@ -19,8 +19,7 @@ use \Psr\Http\Server\RequestHandlerInterface;
 use \LORIS\Http\StringStream;
 
 /**
- * Handles the root of a LORIS install. It will mostly delegate to the
- * A BaseRouter handles the base of a LORIS install and delegates to
+ * Handles the root of a LORIS install. It will mostly delegate to
  * other routers (such as Module routers)
  *
  * @category Router
@@ -64,11 +63,11 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         $path = $uri->getPath();
         // Replace multiple slashes in the URL with a single slash
         $path = preg_replace("/\/+/", "/", $path);
-        // Remove a training slash remaining, so that foo/ and foo are the same
+        // Remove any trailing slash remaining, so that foo/ and foo are the same
         // route
         $path    = preg_replace("/\/$/", "", $path);
         $request = $request->withAttribute("user", $this->user);
-        if ($path == "/" || $path == "") {
+        if ($path == "") {
             if ($this->user instanceof \LORIS\AnonymousUser) {
                 $modulename = "login";
             } else {
