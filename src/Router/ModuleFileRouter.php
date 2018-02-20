@@ -67,7 +67,7 @@ class ModuleFileRouter implements RequestHandlerInterface
      * Handle returns a StreamInterface of the file being requested (relative to
      * subdir) if it exists on the filesystem, otherwise it returns a 404.
      *
-     * @param ServerREquestInterface $request The PSR7 request being handled
+     * @param ServerRequestInterface $request The PSR7 request being handled
      *
      * @return ResponseInterface The PSR15 response.
      */
