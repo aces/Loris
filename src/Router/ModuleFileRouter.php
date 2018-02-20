@@ -7,16 +7,19 @@ use \LORIS\Http\FileStream;
 use \LORIS\Http\StringStream;
 
 
-class ModuleFileRouter implements RequestHandlerInterface {
+class ModuleFileRouter implements RequestHandlerInterface
+{
     protected $module;
     protected $subdir;
 
-    public function __construct($module, $moduledir, $subdir) {
-        $this->module = $module;
+    public function __construct($module, $moduledir, $subdir)
+    {
+        $this->module    = $module;
         $this->moduledir = $moduledir;
-        $this->subdir = $subdir;
+        $this->subdir    = $subdir;
     }
-    public function handle(ServerRequestInterface $request) : ResponseInterface {
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
         $fullpath = $this->moduledir . "/" . $this->subdir . "/" . $request->getURI()->getPath();
 
         if (is_file($fullpath)) {

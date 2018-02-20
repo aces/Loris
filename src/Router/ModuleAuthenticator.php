@@ -1,6 +1,18 @@
 <?php
+/**
+ * File implements the ModuleAuthenticator class.
+ *
+ * PHP Version 7
+ *
+ * @category Router
+ * @package  Authentication
+ * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 namespace LORIS\Router;
 use \Psr\Http\Message\ServerRequestInterface;
+
 // FIXME: This shouldn't be in the middleware namespace. There
 // should be a separate LORIS authentication framework to handle
 // things like this.
@@ -9,8 +21,15 @@ use \Psr\Http\Message\ServerRequestInterface;
  * ModuleAuthenticator is an implementation of the Authenticator
  * interface for modules. It determines if a user has access to
  * a module.
+ *
+ * @category Router
+ * @package  Authentication
+ * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
-class ModuleAuthenticator implements \LORIS\Middleware\Authenticator {
+class ModuleAuthenticator implements \LORIS\Middleware\Authenticator
+{
 
     /**
      * The constructor for a ModuleAuthenticator takes the user accessing
@@ -20,8 +39,9 @@ class ModuleAuthenticator implements \LORIS\Middleware\Authenticator {
      * @param \User   $user   The user being authenticated.
      * @param \Module $module The LORIS module being accessed.
      */
-    public function __construct(\User $user, \Module $module) {
-        $this->user = $user;
+    public function __construct(\User $user, \Module $module)
+    {
+        $this->user   = $user;
         $this->Module = $module;
     }
 
@@ -38,7 +58,8 @@ class ModuleAuthenticator implements \LORIS\Middleware\Authenticator {
      *
      * @return bool true if the user should be granted access.
      */
-    public function authenticate(ServerRequestInterface $request) : bool {
+    public function authenticate(ServerRequestInterface $request) : bool
+    {
         if ($this->Module->isPublicModule() === true) {
             return true;
         }

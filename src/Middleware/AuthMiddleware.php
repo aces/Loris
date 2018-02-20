@@ -10,11 +10,13 @@ use \LORIS\Http\StringStream;
 use \LORIS\Http\FileStream;
 use \LORIS\Http\EmptyStream;
 
-class AuthMiddleware implements MiddlewareInterface, MiddlewareChainer {
+class AuthMiddleware implements MiddlewareInterface, MiddlewareChainer
+{
     use MiddlewareChainerMixin;
 
     protected $authenticator;
-    public function __construct(Authenticator $auth) {
+    public function __construct(Authenticator $auth)
+    {
         $this->authenticator = $auth;
     }
 
