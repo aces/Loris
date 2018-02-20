@@ -183,8 +183,9 @@ class Utility
     /**
      * Returns a list of consents in the database
      *
-     * @return array an associative array("ConsentTypeID" => array(['Name']  => "Name",
-     *                                                             ['Label'] => "Label"))
+     * @return array an associative array(
+     *                  "ConsentTypeID" => array(['Name']  => "Name",
+     *                                           ['Label'] => "Label"))
      */
     static function getConsentList()
     {
@@ -193,7 +194,7 @@ class Utility
         $query = "SELECT * FROM consent_type";
 
         $result = $DB->pselect($query, array());
-        
+
         // fix the array
         $list = array();
         foreach ($result as $row) {

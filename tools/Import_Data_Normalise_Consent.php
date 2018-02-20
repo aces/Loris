@@ -42,49 +42,51 @@ $existingColumns = $db->pselect($columnQuery, array());
 // Format result to remove columns with 'date' and 'withdrawal'
 $formattedColumns = [];
 foreach ($existingColumns as $key=>$column) {
-  $columnName = $column['Column_name']; 
-  if (!(preg_match("/date/", $columnName) || preg_match("/withdrawal/", $columnName))) {
-    array_push($formattedColumns, $columnName);
-  }
+    $columnName = $column['Column_name']; 
+    if (!(preg_match("/date/", $columnName) || preg_match("/withdrawal/", $columnName))) {
+        array_push($formattedColumns, $columnName);
+    }
 }
 // Check that column names are in list of consent names
 foreach ($formattedColumns as $columnName) {
-  $i=0;
-  foreach ($consents as $consent){
-    $consentName = $consent['name'];
-    if($consentName===$columnName) {
-      $i++;
+    $i=0;
+    foreach ($consents as $consent){
+        $consentName = $consent['name'];
+        if($consentName===$columnName) {
+            $i++;
+        }
     }
-  }
-  if ($i===0) {
-    array_push($errors,"The consent type " . $columnName . " exists in the database but not in Config.xml.
-           Please add the consent to Config.xml or delete columns and data from 'participant_status'");
-  }
+    if ($i===0) {
+        array_push(
+            $errors, "The consent type " . $columnName . " exists in the database but not in Config.xml.
+           Please add the consent to Config.xml or delete columns and data from 'participant_status'"
+        );
+    }
 }
 foreach ($consents as $key=>$consent) {
-  // Do consent columns exist in old table?
-  $consentName = $consent['name'];
-  $columnQuery = 'SHOW COLUMNS FROM participant_status LIKE "' . $consentName . '"';
-  $columnExists = $db->pselect($columnQuery, array());
-  if (empty($columnExists)) {
-    array_push($errors, $consentName . " does not exist as a column in participant_status.");
-  } else {
-      // Check for zero dates
-      $psData = $db->pselect(
-                  'SELECT * FROM participant_status WHERE ' . $consentName . ' IS NOT NULL OR ' . $consentName . ' != ""',
-                  array()
-                );
-      foreach ($psData as $entry) {
-        if($entry[$consentName . '_date'] === "0000-00-00"){
-          array_push($errors, "Zero dates found in: " . $entry . ". Please remove date or run /tools/DB_date_zeros_removal.php.");
+    // Do consent columns exist in old table?
+    $consentName = $consent['name'];
+    $columnQuery = 'SHOW COLUMNS FROM participant_status LIKE "' . $consentName . '"';
+    $columnExists = $db->pselect($columnQuery, array());
+    if (empty($columnExists)) {
+        array_push($errors, $consentName . " does not exist as a column in participant_status.");
+    } else {
+        // Check for zero dates
+        $psData = $db->pselect(
+            'SELECT * FROM participant_status WHERE ' . $consentName . ' IS NOT NULL OR ' . $consentName . ' != ""',
+            array()
+        );
+        foreach ($psData as $entry) {
+            if($entry[$consentName . '_date'] === "0000-00-00") {
+                array_push($errors, "Zero dates found in: " . $entry . ". Please remove date or run /tools/DB_date_zeros_removal.php.");
+            }
         }
-      }
-  }
+    }
 }
 // Throw errors
 if (!empty($errors)) {
-  print_r($errors);
-  die("Resolve errors and run script again.\n");
+    print_r($errors);
+    die("Resolve errors and run script again.\n");
 } else {
     echo "\nValidation successful.\n";
 }
@@ -92,19 +94,19 @@ if (!empty($errors)) {
 // Continue script
 // Update ConfigSetting table with value of 'useConsent' if true. Default is set to false.
 $configID = $db->pselectOne(
-              'SELECT ID FROM ConfigSettings WHERE Name="useConsent"',
-              array()
-            );
+    'SELECT ID FROM ConfigSettings WHERE Name="useConsent"',
+    array()
+);
 if ($useConsent === "true") {
-  $updateValue = ['Value' => $useConsent];
-  $db->update(
-       'Config',
-       $updateValue,
-       array (
+    $updateValue = ['Value' => $useConsent];
+    $db->update(
+        'Config',
+        $updateValue,
+        array (
          'ConfigID' => $configID, 
-       )
-  );
-  echo "\nConfig settings set to use consent.\n\n";
+        )
+    );
+    echo "\nConfig settings set to use consent.\n\n";
 }
 
 // Start import of consent status information into new tables
@@ -112,43 +114,43 @@ $consentType = [];
 $printArray  = [];
 
 foreach ($consents as $key=>$consent) {
-  $consentName  = $consent['name'];
-  $consentLabel = $consent['label'];
+    $consentName  = $consent['name'];
+    $consentLabel = $consent['label'];
   
-  // Populate consent_type table with consents from Config.xml
-  $db->insert(
-         'consent_type', 
-         array(
+    // Populate consent_type table with consents from Config.xml
+    $db->insert(
+        'consent_type', 
+        array(
            'Name'  => $consentName,
            'Label' => $consentLabel,
          )
-  );
-  // Save ConsentTypeID inserted
-  $consentTypeID = $db->pselectOne(
-                     'SELECT ConsentTypeID FROM consent_type WHERE Name=:consentName',
-                     array('consentName' => $consentName)
-                   );
+    );
+    // Save ConsentTypeID inserted
+    $consentTypeID = $db->pselectOne(
+        'SELECT ConsentTypeID FROM consent_type WHERE Name=:consentName',
+        array('consentName' => $consentName)
+    );
 
-  // Create array of consents to use later in importing history data
-  $consentType[$consentName] = $consentLabel;
+    // Create array of consents to use later in importing history data
+    $consentType[$consentName] = $consentLabel;
 
-  // Get all data where the consent status has a value
-  $psData = $db->pselect(
-              'SELECT * FROM participant_status WHERE '
+    // Get all data where the consent status has a value
+    $psData = $db->pselect(
+        'SELECT * FROM participant_status WHERE '
               . $consentName . ' IS NOT NULL OR ' . $consentName . ' != ""',
-              array()
-            );
-  foreach ($psData as $entry) {
-    // Push each formatted old entry to array
-    $consentValues = [
+        array()
+    );
+    foreach ($psData as $entry) {
+        // Push each formatted old entry to array
+        $consentValues = [
         'CandidateID'   => $entry['CandID'],
         'ConsentTypeID' => $consentTypeID,
         'Status'        => $entry[$consentName],
         'DateGiven'     => $entry[$consentName . '_date'],
         'DateWithdrawn' => $entry[$consentName . '_withdrawal'],
         ];
-    array_push($printArray, $consentValues);
-  }
+        array_push($printArray, $consentValues);
+    }
 }
 
 // Output list of data to be inserted into new table to terminal
@@ -159,7 +161,7 @@ print_r($printArray);
 // Populate candidate_consent_type_rel with data
 foreach ($printArray as $consentValues) {
     $db->insert('candidate_consent_type_rel', $consentValues);
-  }
+}
 
 echo "\nData insert complete.\n";
 
@@ -170,22 +172,22 @@ $consentHistory = $db->pselect(
 );
 
 foreach ($consentHistory as $entry) {
-  $candID = $entry['CandID'];
-  $pscid = $db->pselectOne(
-             'SELECT PSCID FROM candidate WHERE CandID=:cid',
-              array ('cid' => $candID)
-           );
-  $entryStaff = $entry['entry_staff'];
-  $entryDate = $entry['data_entry_date'];
+    $candID = $entry['CandID'];
+    $pscid = $db->pselectOne(
+        'SELECT PSCID FROM candidate WHERE CandID=:cid',
+        array ('cid' => $candID)
+    );
+    $entryStaff = $entry['entry_staff'];
+    $entryDate = $entry['data_entry_date'];
 
-  foreach($consentType as $consentName=>$consentLabel) {
-    if(array_key_exists($consentName, $entry)) {
-      $consentStatus = $entry[$consentName];
-      $consentDate = $entry[$consentName . '_date'];
-      $consentWithdrawal = $entry[$consentName . '_withdrawal'];
+    foreach($consentType as $consentName=>$consentLabel) {
+        if(array_key_exists($consentName, $entry)) {
+            $consentStatus = $entry[$consentName];
+            $consentDate = $entry[$consentName . '_date'];
+            $consentWithdrawal = $entry[$consentName . '_withdrawal'];
 
-      if(!empty($consentStatus) || !empty($consentDate) || !empty($consentWithdrawal)) {
-        $formattedHistory = [
+            if(!empty($consentStatus) || !empty($consentDate) || !empty($consentWithdrawal)) {
+                $formattedHistory = [
                 'PSCID'         => $pscid,
                 'ConsentName'   => $consentName,
                 'ConsentLabel'  => $consentLabel,
@@ -196,11 +198,11 @@ foreach ($consentHistory as $entry) {
                 'EntryDate'     => $entryDate,
                 ];
 
-      }
-      //Populate candidate_consent_type_history table
-      $db->insert('candidate_consent_type_history', $formattedHistory); 
+            }
+            //Populate candidate_consent_type_history table
+            $db->insert('candidate_consent_type_history', $formattedHistory); 
+        }
     }
-  }
 }
 echo "\nHistory data insert complete.\n";
 echo "\nRun the following commands in mySQL to delete deprecated columns: \n\n";
