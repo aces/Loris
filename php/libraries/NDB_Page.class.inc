@@ -67,13 +67,6 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * The format that the page content should be returned in. This is generally
      * the value of the `?format=` GET parameter from the request, and is usually
-     * either 'json' or empty (for the default return value of HTML format.)
-     */
-    protected $format = '';
-
-    /**
-     * The format that the page content should be returned in. This is generally
-     * the value of the `?format=` GET parameter from the request, and is usually
      * either 'json' or empty (for the default return value of HTML format).
      */
     protected $format = '';

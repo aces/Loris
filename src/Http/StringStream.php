@@ -38,6 +38,11 @@ class StringStream implements \Psr\Http\Message\StreamInterface
      */
     public function __construct(string $val)
     {
+        $this->stream = fopen("php://temp", "r+");
+        fwrite($this->stream, $val);
+        rewind($this->stream);
+        $this->size = strlen($val);
+    }
 
     /**
      * Reserialize the string value to a PHP string.
@@ -255,57 +260,6 @@ class StringStream implements \Psr\Http\Message\StreamInterface
      */
     public function getMetadata($key=null)
     {
-=======
-    public function __toString() {
-        $this->rewind();
-        return $this->getContents();
-    }
-
-    public function close() {
-        return fclose($this->stream);
-    }
-
-    public function detach() {
-        return $this->stream = null;
-    }
-    public function getSize() {
-        return $this->size;
-    }
-    public function tell() {
-        return ftell($this->stream);
-    }
-    public function eof() {
-        return feof($this->stream);
-
-    }
-    public function isSeekable() {
-        return true;
-    }
-    public function seek($offset, $whence = SEEK_SET) {
-        return fseek($offset, $whence);
-    }
-    public function rewind() {
-        return rewind($this->stream);
-    }
-    public function isWritable() {
-        return is_writable($this->stream);
-    }
-
-    public function write($string) {
-        return fwrite($this->stream, $string);
-    }
-    public function isReadable() {
-        return $this->stream !== null;
-    }
-
-    public function read($length) {
-        return fread($this->stream, $length);
-    }
-    public function getContents() {
-        return stream_get_contents($this->stream);
-    }
-    public function getMetadata($key=null) {
->>>>>>> Add page decoration middleware
         $metadata = stream_get_meta_data($this->stream);
         if ($key === null) {
             return $metadata;
