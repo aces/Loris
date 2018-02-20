@@ -144,7 +144,7 @@ class CouchDBDemographicsImporter {
                                 LEFT JOIN feedback_bvl_entry fbe ON (fbe.FeedbackID=fbt.FeedbackID)";
 
         $groupBy=" GROUP BY s.ID, 
-                            c.DoB,
+                            c.DoB, 
 		            c.CandID, 
                             c.PSCID, 
                             s.Visit_label, 
@@ -175,7 +175,6 @@ class CouchDBDemographicsImporter {
             $fieldsInQuery .= $EDCFields;
             $groupBy .= ", c.EDC";
         }
-
         // If consent is being used, add consent information into query
         if ($config->getSetting("useConsent") === "true") {
               $consentFields  = ", ct.Name AS Consent_type, COALESCE(cc.Status, 'not available') AS Consent_status, COALESCE(cc.DateWithdrawn, '0000-00-00') AS Consent_withdrawal";
@@ -185,7 +184,6 @@ class CouchDBDemographicsImporter {
                                  ";
               $groupBy .= " Consent_type, Consent_status, Consent_withdrawal";
         }
-
         $whereClause=" WHERE s.Active='Y' AND c.Active='Y' AND c.Entity_type != 'Scanner'";
 
         $concatQuery = $fieldsInQuery . $tablesToJoin . $whereClause . $groupBy;
@@ -222,7 +220,6 @@ class CouchDBDemographicsImporter {
                 'Type' => $projectsEnum
             );
         }
-
         // If consent is being used, update the data dictionary
         if ($config->getSetting("useConsent") === "true") {
        //   $consents = Utility::getConsentList();
@@ -251,7 +248,6 @@ class CouchDBDemographicsImporter {
                 'Type' => "date"
             );
         }
-
         /*
         // Add any candidate parameter fields to the data dictionary
         $parameterCandidateFields = $this->SQLDB->pselect("SELECT * from parameter_type WHERE SourceFrom='parameter_candidate' AND Queryable=1",
@@ -339,10 +335,10 @@ class CouchDBDemographicsImporter {
 
     }
 }
-//Don't run if we're doing the unit tests; the unit test will call run.
+
+// Don't run if we're doing the unit tests; the unit test will call run.
 if(!class_exists('UnitTestCase')) {
     $Runner = new CouchDBDemographicsImporter();
     $Runner->run();
 }
-
 ?>

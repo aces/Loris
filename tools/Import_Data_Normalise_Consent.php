@@ -58,7 +58,7 @@ foreach ($formattedColumns as $columnName) {
   }
   if ($i===0) {
     array_push($errors,"The consent type " . $columnName . " exists in the database but not in Config.xml.
-                        Please add the consent to Config.xml or delete columns and data from 'participant_status'");
+           Please add the consent to Config.xml or delete columns and data from 'participant_status'");
   }
 }
 foreach ($consents as $key=>$consent) {
@@ -68,22 +68,23 @@ foreach ($consents as $key=>$consent) {
   $columnExists = $db->pselect($columnQuery, array());
   if (empty($columnExists)) {
     array_push($errors, $consentName . " does not exist as a column in participant_status.");
-  }
-  // Check for zero dates
-  $psData = $db->pselect(
-              'SELECT * FROM participant_status WHERE ' . $consentName . ' IS NOT NULL OR ' . $consentName . ' != ""',
-              array()
-            );
-  foreach ($psData as $entry) {
-    if($entry[$consentName . '_date'] === "0000-00-00"){
-      array_push($errors, "Zero dates found in: " . $entry . ". Please remove date or run /tools/DB_date_zeros_removal.php.");
-    }
+  } else {
+      // Check for zero dates
+      $psData = $db->pselect(
+                  'SELECT * FROM participant_status WHERE ' . $consentName . ' IS NOT NULL OR ' . $consentName . ' != ""',
+                  array()
+                );
+      foreach ($psData as $entry) {
+        if($entry[$consentName . '_date'] === "0000-00-00"){
+          array_push($errors, "Zero dates found in: " . $entry . ". Please remove date or run /tools/DB_date_zeros_removal.php.");
+        }
+      }
   }
 }
 // Throw errors
 if (!empty($errors)) {
   print_r($errors);
-  die("Resolve errors and run script again.");
+  die("Resolve errors and run script again.\n");
 } else {
     echo "\nValidation successful.\n";
 }
@@ -133,7 +134,7 @@ foreach ($consents as $key=>$consent) {
 
   // Get all data where the consent status has a value
   $psData = $db->pselect(
-              'SELECT * FROM participant_status WHERE'
+              'SELECT * FROM participant_status WHERE '
               . $consentName . ' IS NOT NULL OR ' . $consentName . ' != ""',
               array()
             );
