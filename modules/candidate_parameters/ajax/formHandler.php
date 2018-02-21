@@ -387,7 +387,8 @@ function editConsentStatusFields($db, $user)
         $consentName  = $consentType['Name'];
         $consentLabel = $consentType['Label'];
 
-        /*In React, $consentName: $status i.e. 'study_consent': 'yes' in this.state.formData
+        /*In React, $consentName: $status
+         *i.e. 'study_consent': 'yes' in this.state.formData
          *Ideally we explicitly want $status = $_POST[$consentName . '_status']
          *
          *Process posted data
@@ -399,12 +400,12 @@ function editConsentStatusFields($db, $user)
         $withdrawal = ($_POST[$consentName . '_withdrawal'] !== 'null') ?
                         $_POST[$consentName . '_withdrawal'] : null;
 
-        $updateStatus = [
-                         'CandidateID'    => $candID,
-                         'ConsentTypeID'  => $consentID,
-                         'Status'         => $status,
-                         'DateGiven'      => $date,
-                         'DateWithdrawn'  => $withdrawal,
+        $updateStatus  = [
+                          'CandidateID'   => $candID,
+                          'ConsentTypeID' => $consentID,
+                          'Status'        => $status,
+                          'DateGiven'     => $date,
+                          'DateWithdrawn' => $withdrawal,
                          ];
         $updateHistory = [
                           'PSCID'         => $pscid,
@@ -415,7 +416,7 @@ function editConsentStatusFields($db, $user)
                           'DateWithdrawn' => $withdrawal,
                           'EntryStaff'    => $uid,
                          ];
-        $recordExists = array_key_exists($consentID, $candidateConsent);
+        $recordExists  = array_key_exists($consentID, $candidateConsent);
 
         if ($recordExists) {
             $db->update(
