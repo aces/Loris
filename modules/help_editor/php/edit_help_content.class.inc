@@ -46,7 +46,7 @@ class Edit_Help_Content extends \NDB_Form
       */
     function _getDefaults()
     {
-        $DB = \Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
         //Get the default values
 
         // Sanitize user input
@@ -111,7 +111,7 @@ class Edit_Help_Content extends \NDB_Form
       */
     function _process($values)
     {
-        $DB = \Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
         //Get the default values
 
         // Sanitize user input

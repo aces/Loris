@@ -92,7 +92,7 @@ class Statistics_Mri_Site extends Statistics_Site
     function _getResults($centerID, $projectID, $issue)
     {
         $this->_checkCriteria($centerID, $projectID);
-        $DB =& \Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         $scan_types = $DB->pselect("SELECT Scan_type from mri_scan_type");
         $where      = "WHERE (";
@@ -195,7 +195,7 @@ class Statistics_Mri_Site extends Statistics_Site
                          "PF_Missing",
                         );
 
-        $DB     =& \Database::singleton();
+        $DB     =& (\NDB_Factory::singleton())->database();
         $sqlRow = "SELECT CenterID as ID,".
                   " PSCArea as Name FROM psc WHERE CenterID=:cid";
         $center = $DB->pselectRow($sqlRow, array('cid' => $_REQUEST['CenterID']));

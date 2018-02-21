@@ -179,7 +179,7 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
      */
     function getDistinctValues( $table, $column)
     {
-        $DB      = \Database::singleton();
+        $DB      = (\NDB_Factory::singleton())->database();
         $results = $DB->pselect(
             "SELECT DISTINCT $column FROM $table ",
             array()

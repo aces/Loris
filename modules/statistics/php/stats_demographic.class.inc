@@ -144,7 +144,7 @@ class Stats_Demographic extends \NDB_Form
     {
         parent::setup();
 
-        $DB          =& \Database::singleton();
+        $DB          =& (\NDB_Factory::singleton())->database();
         $config      = \NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         $this->tpl_data['useProjects'] = $useProjects;

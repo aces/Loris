@@ -111,7 +111,7 @@ class Help_Editor extends \NDB_Menu_Filter
        */
     function _setDataTableRows($count)
     {
-        $DB = \Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
         //Get the default values
         // $result will contain an array of size n by 2.
         // this must be transposed to create a dictionary of IDs to Topics

@@ -48,7 +48,7 @@ class Data_Team_Helper extends \NDB_Form
     {
         //initializations
         parent::setup();
-        $DB       =& \Database::singleton();
+        $DB       =& (\NDB_Factory::singleton())->database();
         $user     =& \User::singleton();
         $config   =& \NDB_Config::singleton();
         $sanitize = array_map('htmlspecialchars', $_REQUEST);
@@ -213,7 +213,7 @@ class Data_Team_Helper extends \NDB_Form
         $project=null
     ) {
 
-        $DB      =& \Database::singleton();
+        $DB      =& (\NDB_Factory::singleton())->database();
         $qparams = array();
 
         $select = "SELECT fb.FeedbackID, fb.CandID, fb.SessionID,
@@ -495,7 +495,7 @@ class Data_Team_Helper extends \NDB_Form
         $config         =& \NDB_Config::singleton();
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
         for ($i=0; $i<count($ddeInstruments); ++$i) {
-            $ddeInstruments[$i] = \Database::singleton()->quote($ddeInstruments[$i]);
+            $ddeInstruments[$i] = (\NDB_Factory::singleton())->database()->quote($ddeInstruments[$i]);
         }
 
         global $DB;
@@ -765,7 +765,7 @@ class Data_Team_Helper extends \NDB_Form
      */
     function getTestNameusingMappedName($full_name, $subprojectID = null)
     {
-        $DB     =& \Database::singleton();
+        $DB     =& (\NDB_Factory::singleton())->database();
         $values = array();
 
         $test_name = null;
@@ -796,7 +796,7 @@ class Data_Team_Helper extends \NDB_Form
      */
     static function getVisitInstruments($visit_label)
     {
-        $DB =& \Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
             $sqlSelect  = "SELECT distinct Test_name_display".

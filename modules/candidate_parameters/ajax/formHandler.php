@@ -15,7 +15,7 @@
 if (isset($_POST['tab'])) {
     $tab = $_POST['tab'];
 
-    $db   =& \Database::singleton();
+    $db   =& (\NDB_Factory::singleton())->database();
     $user =& \User::singleton();
 
     if ($tab == "candidateInfo") {

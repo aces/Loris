@@ -63,7 +63,7 @@ class New_Profile extends \NDB_Form
         }
 
         // create the candidate
-        $DB        = \Database::singleton();
+        $DB        = (\NDB_Factory::singleton())->database();
         $site_arr  = $user->getData('CenterIDs');
         $num_sites = count($site_arr);
 
@@ -211,7 +211,7 @@ class New_Profile extends \NDB_Form
 
         // add sites for users with more than one site affiliation
         $user =& \User::singleton();
-        $DB   = \Database::singleton();
+        $DB   = (\NDB_Factory::singleton())->database();
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);
 
@@ -269,7 +269,7 @@ class New_Profile extends \NDB_Form
 
         $PSCIDsettings = $config->getSetting('PSCID');
         if ($PSCIDsettings['generation'] == 'user') {
-            $db =& \Database::singleton();
+            $db =& (\NDB_Factory::singleton())->database();
             if (empty($values['psc'])) { // user is in only one site
                 $user      =& \User::singleton();
                 $centerIDs = $user->getData('CenterIDs');

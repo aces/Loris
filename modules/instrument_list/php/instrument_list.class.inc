@@ -249,7 +249,7 @@ class Instrument_List extends \NDB_Menu_Filter
      */
     function getBatteryInstrumentList($stage=null, $SubprojectID=null)
     {
-        $DB = \Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
 
         // assert that a battery has already been selected
         if (is_null($_REQUEST['sessionID'])) {

@@ -55,7 +55,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
     function _setupVariables()
     {
         $config = \NDB_Config::singleton();
-        $DB     = \Database::singleton();
+        $DB     = (\NDB_Factory::singleton())->database();
         $toTable_scan_types = $config->getSetting('tblScanTypes');
 
         $all_scan_types_2d = $DB->pselect(
@@ -160,7 +160,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
 
         $config =& \NDB_Config::singleton();
         $user   =& \User::singleton();
-        $DB     = \Database::singleton();
+        $DB     = (\NDB_Factory::singleton())->database();
         if (!$user->hasPermission('imaging_browser_view_allsites')) {
             $site_arr = implode(",", $user->getCenterIDs());
             if (!$user->hasPermission('imaging_browser_view_site')) {
@@ -314,7 +314,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
             $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
         }
 
-        $DB    = \Database::singleton();
+        $DB    = (\NDB_Factory::singleton())->database();
         $allAr = array('' => 'All');
 
         $this->addBasicText(

@@ -149,7 +149,7 @@ class SNP_Browser extends \NDB_Menu_Filter
             WHERE
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
-        $DB   = \Database::singleton();
+        $DB   = (\NDB_Factory::singleton())->database();
         $user = \User::singleton();
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
             // restrict data to own site
@@ -359,7 +359,7 @@ class SNP_Browser extends \NDB_Menu_Filter
         $this->addBasicText('Gene_Symbol', 'Gene:');
         $this->addBasicText('Gene_Name', 'Name:');
 
-        $DB = \Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
         $platform_results
             = $DB->pselect(
                 "SELECT distinct Name FROM genotyping_platform ",

@@ -70,7 +70,7 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
     function _insertDataFlag($req)
     {
         $user =& \User::singleton();
-        $db   =& \Database::singleton();
+        $db   =& (\NDB_Factory::singleton())->database();
 
         if (!isset($req['instrument'])
             || !isset($req['visitLabel'])

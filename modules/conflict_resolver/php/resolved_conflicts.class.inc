@@ -253,7 +253,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
     function _getFullList()
     {
         // create DB object
-        $DB =& \Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         $qparams = array();
         // add the base query

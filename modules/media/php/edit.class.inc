@@ -35,7 +35,7 @@ class Edit extends \NDB_Form
     {
         parent::setup();
 
-        $db      =& \Database::singleton();
+        $db      =& (\NDB_Factory::singleton())->database();
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
 

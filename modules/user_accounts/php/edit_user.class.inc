@@ -179,7 +179,7 @@ class Edit_User extends \NDB_Form
     function _process($values)
     {
         $config = \NDB_Config::singleton();
-        $DB     = \Database::singleton();
+        $DB     = (\NDB_Factory::singleton())->database();
         //The arrays that contain the edited permissions
         $permissionsRemoved = array();
         $permissionsAdded   = array();
@@ -648,7 +648,7 @@ class Edit_User extends \NDB_Form
 
         if ($editor->hasPermission('examiner_multisite')) {
             //get site aliases
-            $DB      =& \Database::singleton();
+            $DB      =& (\NDB_Factory::singleton())->database();
             $aliases = $DB->pselect("SELECT CenterID, Alias FROM psc ", array());
 
             foreach ($aliases as $row) {
@@ -822,7 +822,7 @@ class Edit_User extends \NDB_Form
      */
     function _canRejectAccount($id)
     {
-        $DB     = \Database::singleton();
+        $DB     = (\NDB_Factory::singleton())->database();
         $fields =  $DB->pselect(
             "SELECT Password_hash, Pending_approval
                    FROM users
@@ -847,7 +847,7 @@ class Edit_User extends \NDB_Form
     function _validateEditUser($values)
     {
         // create DB object
-        $DB     = \Database::singleton();
+        $DB     = (\NDB_Factory::singleton())->database();
         $errors = array();
 
         //============================================

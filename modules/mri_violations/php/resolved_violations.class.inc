@@ -51,7 +51,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
         if (!is_array($values) || count($values) ==0) {
             return true;
         }
-        $DB   =& \Database::singleton();
+        $DB   =& (\NDB_Factory::singleton())->database();
         $user =& \User::singleton();
 
         foreach ($values AS $key=>$val) {

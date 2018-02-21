@@ -40,7 +40,7 @@ class EditExaminer extends \NDB_Form
                 "Incorrect URL: No examiner ID provided."
             );
         }
-        $DB     = \Database::singleton();
+        $DB     = (\NDB_Factory::singleton())->database();
         $config = \NDB_Config::singleton();
 
         $user         = \User::singleton();
@@ -84,7 +84,7 @@ class EditExaminer extends \NDB_Form
      */
     function _getDefaults()
     {
-        $DB = \Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
 
         // get the certification results for the given examiner
         $result = $DB->pselect(
@@ -113,7 +113,7 @@ class EditExaminer extends \NDB_Form
      */
     function _process($values)
     {
-        $DB = \Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
 
         foreach ($values['certStatus'] as $testID => $certStatus) {
 
@@ -260,7 +260,7 @@ class EditExaminer extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $DB = \Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
 
         // Get the certification history from the database
         $certification_history = $DB->pselect(
@@ -381,7 +381,7 @@ class EditExaminer extends \NDB_Form
     function getCertificationInstruments()
     {
         $config = \NDB_Config::singleton();
-        $DB     = \Database::singleton();
+        $DB     = (\NDB_Factory::singleton())->database();
 
         // Get the instruments requiring certification from the config
         $certificationConfig      = $config->getSetting("Certification");

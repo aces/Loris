@@ -211,7 +211,7 @@ class Examiner extends \NDB_Menu_Filter_Form
     function _process($values)
     {
 
-        $DB     = \Database::singleton();
+        $DB     = (\NDB_Factory::singleton())->database();
         $config = \NDB_Config::singleton();
 
         $fullName    = $values['addName'];
@@ -279,7 +279,7 @@ class Examiner extends \NDB_Menu_Filter_Form
      */
     function examinerExists($fullName, $siteID)
     {
-        $DB         = \Database::singleton();
+        $DB         = (\NDB_Factory::singleton())->database();
         $examinerID = $DB->pselectOne(
             "SELECT e.examinerID
              FROM examiners e
@@ -307,7 +307,7 @@ class Examiner extends \NDB_Menu_Filter_Form
      */
     function getExaminerID($fullName)
     {
-        $DB         = \Database::singleton();
+        $DB         = (\NDB_Factory::singleton())->database();
         $examinerID = $DB->pselectOne(
             "SELECT examinerID
              FROM examiners

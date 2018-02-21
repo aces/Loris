@@ -113,7 +113,7 @@ class Issue extends \NDB_Form
     function _hasAccess()
     {
         $user    =& \User::singleton();
-        $db      = \Database::singleton();
+        $db      = (\NDB_Factory::singleton())->database();
         $issueID = $_GET['issueID'];
 
         if (!$issueID) {

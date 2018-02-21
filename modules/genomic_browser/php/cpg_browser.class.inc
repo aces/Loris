@@ -162,7 +162,7 @@ class CpG_Browser extends \NDB_Menu_Filter
             cpg.beta_value IS NOT NULL AND 
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
-        $DB   = \Database::singleton();
+        $DB   = (\NDB_Factory::singleton())->database();
         $user = \User::singleton();
 
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
@@ -528,7 +528,7 @@ class CpG_Browser extends \NDB_Menu_Filter
      */
     function getDistinctValues( $table, $column)
     {
-        $DB      = \Database::singleton();
+        $DB      = (\NDB_Factory::singleton())->database();
         $results = $DB->pselect(
             "SELECT DISTINCT $column FROM $table ",
             array()
