@@ -14,6 +14,11 @@ if (isset($_REQUEST['action'])) {
 
 function uploadPublication() {
     $db = Database::singleton();
+    $user = \User::singleton();
+    if (!$user->hasPermission('publication_propose')) {
+        header("HTTP/1.1 403 Forbidden");
+        exit;
+    }
 
     $titleRaw = isset($_REQUEST['title']) ? $_REQUEST['title'] : null;
     if (!$titleRaw) {
@@ -35,7 +40,6 @@ function uploadPublication() {
         throw new LorisException('Submitted title already exists');
     }
 
-    $user = \User::singleton();
     $uid = $user->getId();
     $today = date('Y-m-d');
     $fields = array(
@@ -55,6 +59,24 @@ function uploadPublication() {
         'WHERE Title=:t',
         array('t' => $titleProc)
     );
+
+    $publicationPath = "/data/publication_uploads/";
+
+    if(!isset($publicationPath)){
+        throw new LorisException("Error! Publication path is not set in Loris Settings!");
+    }
+
+    if(!file_exists($publicationPath)) {
+        throw new LorisException("Error! The upload folder '$publicationPath' does not exist!'");
+    }
+
+    $fileName = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
+    $fileType  = $_FILES["file"]["type"];
+    $extension = pathinfo($fileName)['extension'];
+
+    if(!isset($extension)) {
+        throw new LorisException("Please make sure your file has a valid extension!");
+    }
 
     $keywords = json_decode($_REQUEST['keywords']);
     foreach ($keywords as $kw) {
@@ -119,6 +141,20 @@ function uploadPublication() {
         }
     }
     notifySubmission($pubID);
+
+    $pubUploadInsert = array(
+        'PublicationID' => $pubID,
+        'PublicationUploadTypeID' => $_REQUEST['publicationType'],
+        'URL' => $fileName,
+        'Citation' => $_REQUEST['publicationCitation'],        //come back to this
+        'Version' => $_REQUEST['publicationVersion']
+    );
+
+    if (move_uploaded_file($_FILES["file"]["tmp_name"], $publicationPath . $fileName)) {
+        $db->insert('publication_upload', $pubUploadInsert);
+    } else {
+        throw new LorisException("Could not upload the file. Please try again!");
+    }
 
 }
 

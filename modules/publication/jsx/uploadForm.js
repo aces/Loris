@@ -214,6 +214,7 @@ class PublicationUploadForm extends React.Component {
             name="publicationUpload"
             onSubmit={this.handleSubmit}
             ref="form"
+            fileUpload = {true}
           >
             <h3>Propose a new project</h3><br/>
             <TextboxElement
@@ -304,6 +305,33 @@ class PublicationUploadForm extends React.Component {
               pendingValKey="pendingItemVF"
               items={this.state.formData.voiFields}
               btnLabel="Add Variable of Interest"
+            />
+            <FileElement
+                name="file"
+                id="publicationUploadEl"
+                onUserInput={this.setFormData}
+                label="File to upload"
+                value={this.state.formData.file}
+            />
+            <SelectElement
+                name="publicationType"
+                label="Publication Type"
+                id="publicationTypeEl"
+                onUserInput={this.setFormData}
+                value={this.state.formData.publicationType}
+                options={this.state.Data.uploadType}
+            />
+            <TextboxElement
+                name="publicationCitation"
+                label="Citation"
+                onUserInput={this.setFormData}
+                value={this.state.formData.publicationCitation}
+            />
+            <TextboxElement
+                name="publicationVersion"
+                label="Publication Version"
+                onUserInput={this.setFormData}
+                value={this.state.formData.publicationVersion}
             />
             <ButtonElement label="Propose Project"/>
           </FormElement>
