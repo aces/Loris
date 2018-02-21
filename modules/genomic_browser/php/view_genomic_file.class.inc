@@ -57,7 +57,7 @@ class View_Genomic_File extends \NDB_Form
     {
         parent::setup();
 
-        $this->DB = \Database::singleton();
+        $this->DB = (\NDB_Factory::singleton())->database();
 
         $this->genomic_file_id = $_REQUEST['GenomicFileID'];
         $this->candID          = $_REQUEST['candID'];

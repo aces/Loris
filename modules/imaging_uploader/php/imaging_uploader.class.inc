@@ -255,7 +255,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         //make sure the file-name is  valid
         $temp_file = $file->fileInfo['tmp_name'];
         $temp_dir  = $this->tempdir();
-        $db        = \Database::singleton();
+        $db        = (\NDB_Factory::singleton())->database();
         $errors    = array();
         $config    = \NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
@@ -370,7 +370,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     function importFile($file, $args)
     {
         $feedbacks  = array();
-        $db         = \Database::singleton();
+        $db         = (\NDB_Factory::singleton())->database();
         $pname      = '';
         $IsPhantom  = $args['values']['IsPhantom'];
         $updateFile = $args['values']['overwrite'] ? true : false;

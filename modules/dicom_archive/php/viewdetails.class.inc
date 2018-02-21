@@ -48,7 +48,7 @@ class ViewDetails extends \NDB_Form
     */
     function setup()
     {
-        $this->DB = \Database::singleton();
+        $this->DB = (\NDB_Factory::singleton())->database();
 
         if ((!empty($_REQUEST['tarchiveID'])) && ($this->_hasAccess())) {
             $tarchiveID = $_REQUEST['tarchiveID'];

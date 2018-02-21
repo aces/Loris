@@ -40,7 +40,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
     {
 
         $user =& \User::singleton();
-        $db   = \Database::singleton();
+        $db   = (\NDB_Factory::singleton())->database();
 
         $this->query = " FROM issues as i " .
             "LEFT JOIN candidate c ON (i.candID=c.CandID) " .
@@ -157,7 +157,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
     {
         parent::setup();
         $user          =& \User::singleton();
-        $db            = \Database::singleton();
+        $db            = (\NDB_Factory::singleton())->database();
         $list_of_sites = array();
 
         //sites

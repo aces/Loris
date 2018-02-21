@@ -34,7 +34,7 @@ class Dashboard extends \NDB_Form
      */
     function setup()
     {
-        $DB     = \Database::singleton();
+        $DB     = (\NDB_Factory::singleton())->database();
         $user   = \User::singleton();
         $config = \NDB_Config::singleton();
         $site   = explode(';', $user->getSiteNames());
@@ -314,7 +314,7 @@ class Dashboard extends \NDB_Form
      */
     function getTotalRecruitment()
     {
-        $DB = \Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
         $totalRecruitment = $DB->pselectOne(
             "SELECT COUNT(*) FROM candidate c
              WHERE c.Active='Y' AND c.Entity_type='Human' AND c.CenterID <> 1",
@@ -332,7 +332,7 @@ class Dashboard extends \NDB_Form
      */
     function getTotalRecruitmentByProject($projectID)
     {
-        $DB = \Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
         $totalRecruitment = $DB->pselectOne(
             "SELECT COUNT(*)
              FROM candidate c
@@ -352,7 +352,7 @@ class Dashboard extends \NDB_Form
      */
     function getTotalGender($gender)
     {
-        $DB    = \Database::singleton();
+        $DB    = (\NDB_Factory::singleton())->database();
         $total = $DB->pselectOne(
             "SELECT COUNT(c.CandID)
              FROM candidate c
@@ -374,7 +374,7 @@ class Dashboard extends \NDB_Form
      */
     function getTotalGenderByProject($gender, $projectID)
     {
-        $DB    = \Database::singleton();
+        $DB    = (\NDB_Factory::singleton())->database();
         $total = $DB->pselectOne(
             "SELECT COUNT(c.CandID)
              FROM candidate c

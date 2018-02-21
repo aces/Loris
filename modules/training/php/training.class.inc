@@ -93,7 +93,7 @@ class Training extends \NDB_Form
      */
     function isExaminer($fullName, $site)
     {
-        $DB         = \Database::singleton();
+        $DB         = (\NDB_Factory::singleton())->database();
         $examinerID = $DB->pselectOne(
             "SELECT examinerID 
              FROM examiners
@@ -117,7 +117,7 @@ class Training extends \NDB_Form
     function getCertificationInstruments()
     {
         $config = \NDB_Config::singleton();
-        $DB     = \Database::singleton();
+        $DB     = (\NDB_Factory::singleton())->database();
 
         // Get the instruments requiring certification from the config
         $certificationConfig      = $config->getSetting("Certification");
@@ -153,7 +153,7 @@ class Training extends \NDB_Form
         $userFullName = $user->getFullname();
         $userCenter   = $user->getCenterIDs();
 
-        $DB = \Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
         $certificationStatus = $DB->pselectOne(
             "SELECT c.pass
              FROM certification c
@@ -180,7 +180,7 @@ class Training extends \NDB_Form
      */
     function getTrainingContentStatus($instrumentID)
     {
-        $DB = \Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
 
         $trainingContent = $DB->pselectOne(
             "SELECT certification_training.TestID

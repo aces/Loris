@@ -72,7 +72,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         }
         $this->tpl_data['writable'] = $writable;
         if ($writable && $_POST['install'] == 'Install Instrument') {
-            $db       = \Database::singleton();
+            $db       = (\NDB_Factory::singleton())->database();
             $instname = basename($_FILES['install_file']['name'], '.linst');
 
             $new_file = $this->path . "project/instruments/" .
@@ -131,7 +131,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     function _setDataTableRows($count)
     {
         $factory = \NDB_Factory::singleton();
-        $db      = \Database::singleton();
+        $db      = (\NDB_Factory::singleton())->database();
         $x       = 0;
         foreach ($this->list as $item) {
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
@@ -235,7 +235,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     function checkType($tablename, $columnname, $type)
     {
         $factory      = \NDB_Factory::singleton();
-        $db           = \Database::singleton();
+        $db           = (\NDB_Factory::singleton())->database();
         $sqlSelectOne = "SELECT count(*)".
                         " FROM information_schema.columns".
                         " WHERE TABLE_SCHEMA=:dbname".
@@ -268,7 +268,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $factory  = \NDB_Factory::singleton();
         $filename = $this->path . "project/instruments/$instname.linst";
         $fp       = fopen($filename, "r");
-        $db       = \Database::singleton();
+        $db       = (\NDB_Factory::singleton())->database();
 
         while (($line = fgets($fp, 4096)) !== false) {
             $pieces = explode("{@}", $line);
@@ -353,7 +353,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     {
         $filename = $this->path . "project/instruments/$instname.linst";
         $fp       = fopen($filename, "r");
-        $db       = \Database::singleton();
+        $db       = (\NDB_Factory::singleton())->database();
 
         while (($line = fgets($fp, 4096)) !== false) {
             $pieces       = explode("{@}", $line);

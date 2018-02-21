@@ -45,7 +45,7 @@ class Statistics extends \NDB_Form
     {
         parent::setup();
 
-        $DB =& \Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
         $this->tpl_data['StatsTabs'] = $DB->pselect(
             "SELECT ModuleName, SubModuleName, Description
                  FROM StatisticsTabs

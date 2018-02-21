@@ -185,7 +185,7 @@ class Create_Timepoint extends \NDB_Form
             $this->addRule('visitLabel', 'Visit label is required', 'required');
             // List of sites for the user
             $user = \User::singleton();
-            $DB   = \Database::singleton();
+            $DB   = (\NDB_Factory::singleton())->database();
             $user_list_of_sites = $user->getData('CenterIDs');
             $num_sites          = count($user_list_of_sites);
             if ($num_sites >1) {

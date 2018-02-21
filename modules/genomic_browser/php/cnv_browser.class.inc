@@ -141,7 +141,7 @@ class CNV_Browser extends \NDB_Menu_Filter
             WHERE
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
-        $DB   = \Database::singleton();
+        $DB   = (\NDB_Factory::singleton())->database();
         $user = \User::singleton();
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
             $site_arr     = implode(",", $user->getCenterIDs());
@@ -325,7 +325,7 @@ class CNV_Browser extends \NDB_Menu_Filter
         $this->addBasicText('genomic_range', 'Genomic Range:');
         $this->addBasicText('Gene_Symbol', 'Gene:');
 
-        $DB = \Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
         $platform_results = $DB->select(
             "SELECT distinct Name FROM genotyping_platform"
         );

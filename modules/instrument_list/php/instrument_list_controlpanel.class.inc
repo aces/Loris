@@ -347,7 +347,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         }
 
         // new DB Object
-        $db =& \Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         // create user object
         $user =& \User::singleton();

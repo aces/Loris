@@ -48,7 +48,7 @@ class Configuration extends \NDB_Form
     {
         parent::setup();
         $config =& \NDB_Config::singleton();
-        $DB     =& \Database::singleton();
+        $DB     =& (\NDB_Factory::singleton())->database();
 
         $scans = $DB->pselect(
             "SELECT Scan_type
@@ -81,7 +81,7 @@ class Configuration extends \NDB_Form
      */
     function _getParentConfigLabels()
     {
-        $this->DB = \Database::singleton();
+        $this->DB = (\NDB_Factory::singleton())->database();
 
         $parentConfigItems = $this->DB->pselect(
             "SELECT Label, Name 
