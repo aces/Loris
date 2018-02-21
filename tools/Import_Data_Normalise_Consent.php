@@ -78,7 +78,10 @@ foreach ($consents as $key=>$consent) {
         );
         foreach ($psData as $entry) {
             if($entry[$consentName . '_date'] === "0000-00-00") {
-                array_push($errors, "Zero dates found in: " . $entry . ". Please remove date or run /tools/DB_date_zeros_removal.php.");
+                array_push($errors, "Zero dates found in participant_status for:
+                           [ID]     => " . $entry['ID'] . "
+                           [CandID] => " . $entry['CandID'] . "
+                           Please remove date or run /tools/DB_date_zeros_removal.php.");
             }
         }
     }
