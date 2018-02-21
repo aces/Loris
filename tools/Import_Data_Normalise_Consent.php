@@ -41,7 +41,7 @@ $existingColumns = $db->pselect($columnQuery, array());
 
 // Format result to remove columns with 'date' and 'withdrawal'
 $formattedColumns = [];
-foreach ($existingColumns as $key=>$column) {
+foreach ($existingColumns as $column) {
     $columnName = $column['Column_name']; 
     if (!(preg_match("/date/", $columnName) || preg_match("/withdrawal/", $columnName))) {
         array_push($formattedColumns, $columnName);
@@ -63,13 +63,15 @@ foreach ($formattedColumns as $columnName) {
         );
     }
 }
-foreach ($consents as $key=>$consent) {
-    // Do consent columns exist in old table?
-    $consentName = $consent['name'];
-    $columnQuery = 'SHOW COLUMNS FROM participant_status LIKE "' . $consentName . '"';
-    $columnExists = $db->pselect($columnQuery, array());
-    if (empty($columnExists)) {
-        array_push($errors, $consentName . " does not exist as a column in participant_status.");
+foreach ($consents as $consent) {
+    // Check that consent status, date, and withdrawal columns exist in participant_status
+    $consentName      = $consent['name'];
+    $statusExists     = $db->columnExists('participant_status', $consentName);
+    $dateExists       = $db->columnExists('participant_status', $consentName . "_date");
+    $withdrawalExists = $db->columnExists('participant_status', $consentName . "_withdrawal");
+    if (!($statusExists && $dateExists && $withdrawalExists)) {
+        array_push($errors, "At least one column is missing for " . $consentName . " in participant_status table.
+           Check that status, date, and withdrawal columns exist for this consent type.");
     } else {
         // Check for zero dates
         $psData = $db->pselect(
