@@ -495,7 +495,9 @@ class Data_Team_Helper extends \NDB_Form
         $config         =& \NDB_Config::singleton();
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
         for ($i=0; $i<count($ddeInstruments); ++$i) {
-            $ddeInstruments[$i] = (\NDB_Factory::singleton())->database()->quote($ddeInstruments[$i]);
+            $ddeInstruments[$i] = (\NDB_Factory::singleton())->database()->quote(
+                $ddeInstruments[$i]
+            );
         }
 
         global $DB;
