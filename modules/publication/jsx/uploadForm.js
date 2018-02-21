@@ -214,7 +214,7 @@ class PublicationUploadForm extends React.Component {
             name="publicationUpload"
             onSubmit={this.handleSubmit}
             ref="form"
-            formUpload = {true}
+            fileUpload = {true}
           >
             <h3>Propose a new project</h3><br/>
             <TextboxElement
