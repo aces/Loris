@@ -114,6 +114,7 @@ class CouchDBDemographicsImporter {
 
     function _generateQuery() {
         $config = NDB_Config::singleton();
+        $consents = Utility::getConsentList();
 
         $fieldsInQuery = "SELECT c.DoB,
                                 c.CandID, 
@@ -142,7 +143,6 @@ class CouchDBDemographicsImporter {
                                 LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)
                                 LEFT JOIN feedback_bvl_thread fbt ON (fbt.CandID=c.CandID) 
                                 LEFT JOIN feedback_bvl_entry fbe ON (fbe.FeedbackID=fbt.FeedbackID)";
-
         $groupBy=" GROUP BY s.ID, 
                             c.DoB, 
 		            c.CandID, 
@@ -160,8 +160,7 @@ class CouchDBDemographicsImporter {
                             pc_comment.Value, 
                             pso.Description, 
                             ps.participant_suboptions, 
-                            ps.reason_specify, 
-                            ";
+                            ps.reason_specify";
 
         // If proband fields are being used, add proband information into the query
         if ($config->getSetting("useProband") === "true") {
@@ -177,12 +176,22 @@ class CouchDBDemographicsImporter {
         }
         // If consent is being used, add consent information into query
         if ($config->getSetting("useConsent") === "true") {
-              $consentFields  = ", ct.Name AS Consent_type, COALESCE(cc.Status, 'not available') AS Consent_status, COALESCE(cc.DateWithdrawn, '0000-00-00') AS Consent_withdrawal";
-              $fieldsInQuery .= $consentFields;
-              $tablesToJoin  .= " LEFT JOIN candidate_consent_type_rel cc ON (cc.CandidateID=c.CandID)
-                                  LEFT JOIN consent_type ct ON (ct.ConsentTypeID=cc.ConsentTypeID)
-                                 ";
-              $groupBy .= " Consent_type, Consent_status, Consent_withdrawal";
+          $i = 1;
+          foreach($consents as $consent) {
+            $consentName    = $consent['Name'];
+            $consentLabel   = $consent['Label'];
+            $consentFields  = ", 
+                                COALESCE(cc" . $i . ".Status, 'not available') AS " . $consentName . ", 
+                                COALESCE(cc" . $i . ".DateWithdrawn, '0000-00-00') AS " . $consentName . "_withdrawal";
+            $fieldsInQuery .= $consentFields;
+            $tablesToJoin  .= "
+                                LEFT JOIN candidate_consent_type_rel cc" . $i . " ON (cc" . $i . ".CandidateID=c.CandID) 
+                                AND cc" . $i . ".ConsentTypeID=(SELECT ConsentTypeID FROM consent_type WHERE Name='" . $consentName . "') ";
+            $groupBy     .= ", 
+                            cc" . $i . ".Status, 
+                            cc" . $i . ".DateWithdrawn";
+            $i++;
+          }
         }
         $whereClause=" WHERE s.Active='Y' AND c.Active='Y' AND c.Entity_type != 'Scanner'";
 
@@ -192,6 +201,8 @@ class CouchDBDemographicsImporter {
 
     function _updateDataDict() {
         $config = NDB_Config::singleton();
+        $consents = Utility::getConsentList();
+
         // If proband fields are being used, update the data dictionary
         if ($config->getSetting("useProband") === "true") {
             $this->Dictionary["Gender_proband"] = array(
@@ -222,31 +233,18 @@ class CouchDBDemographicsImporter {
         }
         // If consent is being used, update the data dictionary
         if ($config->getSetting("useConsent") === "true") {
-       //   $consents = Utility::getConsentList();
-       //   foreach($consents as $consent) {
-       //     $consentName  = $consent['Name'];
-       //     $consentLabel = $consent['Label'];
-       //     $this->Dictionary[$consentName] = array(
-       //         'Description' => $consentLabel,
-       //         'Type' => "enum('yes','no','not_answered')"
-       //     );
-       //     $this->Dictionary[$consentName . "_withdrawal"] = array(
-       //         'Description' => $consentLabel . ' Withdrawal Date',
-       //         'Type' => "date"
-       //     );
-       //   }
-            $this->Dictionary["Consent_type"] = array(
-                'Description' => 'Name of type of consent',
-                'Type' => "varchar(255)"
-            );
-            $this->Dictionary["Consent_status"] = array(
-                'Description' => 'Status of that consent type',
+          foreach($consents as $consent) {
+            $consentName  = $consent['Name'];
+            $consentLabel = $consent['Label'];
+            $this->Dictionary[$consentName] = array(
+                'Description' => $consentLabel,
                 'Type' => "enum('yes','no','not_answered')"
             );
-            $this->Dictionary["Consent_withdrawal"] = array(
-                'Description' => 'Date of withdrawal of consent',
+            $this->Dictionary[$consentName . "_withdrawal"] = array(
+                'Description' => $consentLabel . ' Withdrawal Date',
                 'Type' => "date"
             );
+          }
         }
         /*
         // Add any candidate parameter fields to the data dictionary
