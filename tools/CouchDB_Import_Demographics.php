@@ -117,7 +117,7 @@ class CouchDBDemographicsImporter {
         $consents = Utility::getConsentList();
 
         $fieldsInQuery = "SELECT c.DoB,
-                                c.CandID, 
+                                 c.CandID, 
                                 c.PSCID, 
                                 s.Visit_label, 
                                 s.SubprojectID, 
@@ -182,6 +182,7 @@ class CouchDBDemographicsImporter {
             $consentLabel   = $consent['Label'];
             $consentFields  = ", 
                                 COALESCE(cc" . $i . ".Status, 'not available') AS " . $consentName . ", 
+                                COALESCE(cc" . $i . ".DateGiven, '0000-00-00') AS " . $consentName . "_date,
                                 COALESCE(cc" . $i . ".DateWithdrawn, '0000-00-00') AS " . $consentName . "_withdrawal";
             $fieldsInQuery .= $consentFields;
             $tablesToJoin  .= "
@@ -189,6 +190,7 @@ class CouchDBDemographicsImporter {
                                 AND cc" . $i . ".ConsentTypeID=(SELECT ConsentTypeID FROM consent_type WHERE Name='" . $consentName . "') ";
             $groupBy     .= ", 
                             cc" . $i . ".Status, 
+                            cc" . $i . ".DateGiven, 
                             cc" . $i . ".DateWithdrawn";
             $i++;
           }
@@ -239,6 +241,10 @@ class CouchDBDemographicsImporter {
             $this->Dictionary[$consentName] = array(
                 'Description' => $consentLabel,
                 'Type' => "enum('yes','no','not_answered')"
+            );
+            $this->Dictionary[$consentName . "_date"] = array(
+                'Description' => $consentLabel . 'Date',
+                'Type' => "date"
             );
             $this->Dictionary[$consentName . "_withdrawal"] = array(
                 'Description' => $consentLabel . ' Withdrawal Date',
