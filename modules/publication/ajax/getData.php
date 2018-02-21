@@ -26,6 +26,17 @@ function getData() {
         array()
     );
 
+    $uploadTypeRaw = $db->pselect(
+        "SELECT * FROM publication_upload_type",
+        array()
+    );
+
+    $uploadType = [];
+
+    foreach($uploadTypeRaw as $type){
+        $uploadType[$type['PublicationUploadTypeID']] = $type['Label'];
+    }
+    $data['uploadType'] = $uploadType;
     $data['titles'] = $titles;
     $data['varsOfInterest'] = $varsOfInterest;
     return $data;
