@@ -105,7 +105,7 @@ class Imaging_Session_ControlPanel
         );
 
         $tarIDToTarLoc =array();
-        foreach ($qresult as $k=>$v) {
+        foreach ($qresult as $v) {
             $tarchiveID = $v['TarchiveID'];
             $tarIDToTarLoc[$tarchiveID] =$v['ArchiveLocation'];
         }
