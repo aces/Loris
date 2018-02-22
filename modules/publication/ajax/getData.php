@@ -20,7 +20,7 @@ function getData() {
     );
 
     // for selecting variables of interest
-    $varsOfInterest = $db->pselect(
+    $allVOIs = $db->pselect(
         "SELECT pt.Name, pt.SourceFrom FROM parameter_type pt ".
         "JOIN test_names tn ON tn.Test_name=pt.SourceFrom ORDER BY pt.SourceFrom",
         array()
@@ -38,7 +38,7 @@ function getData() {
     }
     $data['uploadTypes'] = $uploadTypes;
     $data['existingTitles'] = $titles;
-    $data['varsOfInterest'] = $varsOfInterest;
+    $data['allVOIs'] = $allVOIs;
     return $data;
 }
 

@@ -17,7 +17,6 @@ class PublicationUploadForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addListItem = this.addListItem.bind(this);
     this.removeListItem = this.removeListItem.bind(this);
-    this.addVOIGroups = this.addVOIGroups.bind(this);
     this.isValidEmail = this.isValidEmail.bind(this);
   }
 
@@ -57,14 +56,6 @@ class PublicationUploadForm extends React.Component {
     formData[pendingValKey] = null;
     this.setState({
       formData: formData
-    });
-  }
-
-  addVOIGroups() {
-    let currCount = this.state.numVOIGroups;
-    currCount++;
-    this.setState({
-      numVOIGroups: currCount
     });
   }
 
@@ -179,8 +170,10 @@ class PublicationUploadForm extends React.Component {
       );
     }
 
+    // build testNames array
     let testNames = [];
-    this.state.Data.varsOfInterest.forEach(
+    let allVOIs = this.state.Data.allVOIs;
+    allVOIs.forEach(
       function (v) {
         if (testNames[v.SourceFrom]) {
           return;
@@ -191,16 +184,16 @@ class PublicationUploadForm extends React.Component {
     testNames.sort();
 
     // Set test fields to all fields by default
-    let testFields = this.state.Data.varsOfInterest.map(v => v.Name);
+    let testFields = allVOIs.map(v => v.Name);
     testFields.sort();
     
     // if an instrument has been selected, then populate the fields
     // selection with fields only relevant to the selected instrument
-    let inst = this.state.formData['voiInst'];
+    let inst = this.state.formData.voiInst;
     if (inst) {
       testFields = [];
       testFields[inst+'_AllFields'] = inst + '_AllFields';
-      this.state.Data.varsOfInterest.forEach(function(v){
+      allVOIs.forEach(function(v){
         if (v.SourceFrom === inst) {
           testFields[v.Name] = v.Name;
         }
@@ -219,7 +212,7 @@ class PublicationUploadForm extends React.Component {
             name="publicationUpload"
             onSubmit={this.handleSubmit}
             ref="form"
-            fileUpload = {true}
+            fileUpload={true}
           >
             <h3>Propose a new project</h3><br/>
             <TextboxElement

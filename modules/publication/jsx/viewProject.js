@@ -12,6 +12,8 @@ class ViewProject extends React.Component {
     this.createVOIElements = this.createVOIElements.bind(this);
     this.createStaticComponents = this.createStaticComponents.bind(this);
     this.createEditableComponents = this.createEditableComponents.bind(this);
+    this.addListItem = this.addListItem.bind(this);
+    this.removeListItem = this.removeListItem.bind(this);
   }
 
   handleSubmit(e) {
@@ -68,21 +70,32 @@ class ViewProject extends React.Component {
       dataType: 'json',
       success: function(data) {
         console.log(data);
-        var formData = {
+        // format VoIs to be Tags renderable
+        let voiFields = [];
+        for (let inst in data.voi) {
+          if (data.voi[inst].IsFullSet) {
+            voiFields.push(inst + '_AllFields');
+          } else {
+            voiFields.concat(data.voi.inst.Fields);
+          }
+        }
+        let formData = {
           title: data.title,
           description: data.description,
           leadInvestigator: data.leadInvestigator,
           leadInvestigatorEmail: data.leadInvestigatorEmail,
           status: data.status,
-          voi: data.voi,
-          keywords: data.keywords
+          voiFields: voiFields
         };
         self.setState({
           formData: formData,
           statusOpts: data.statusOpts,
           userCanEdit: data.userCanEdit,
-          varsOfInterest: data.varsOfInterest,
+          allVOIs: data.allVOIs,
           uploadTypes: data.uploadTypes,
+          // keep VoIs and keywords separate from formData initially
+          voi: data.voi,
+          keywords: data.keywords,
           isLoaded: true
         });
       },
@@ -117,9 +130,11 @@ class ViewProject extends React.Component {
 
   createVOIElements(vois) {
     var result = [];
+    console.log('in func');
     Object.keys(vois).forEach(
       function(v) {
-        var links = this.createMenuFilterLinks(vois[v], 'voi');
+        console.log(v);
+        var links = this.createMenuFilterLinks(vois[v]['Fields'], 'voi');
         result.push(
           <div>
             <h4 data-toggle="collapse" data-target={"#voi" + v}>
@@ -145,8 +160,8 @@ class ViewProject extends React.Component {
       );
     }
 
-    if (this.state.formData.voi) {
-      var voiLinks = this.createVOIElements(this.state.formData.voi);
+    if (this.state.voi) {
+      var voiLinks = this.createVOIElements(this.state.voi);
     }
     return (
       <div>
@@ -181,19 +196,68 @@ class ViewProject extends React.Component {
           text={this.state.formData.description}
         />
       </div>
-  );
+   );
+  }
+
+
+  addListItem(formElement, value, pendingValKey) {
+    let formData = this.state.formData;
+    let listItems = formData[formElement] || [];
+    listItems.push(value);
+    formData[formElement] = listItems;
+    formData[pendingValKey] = null;
+    this.setState({
+      formData: formData
+    });
+  }
+
+  removeListItem(formElement, value) {
+    let formData = this.state.formData;
+    let listItems = formData[formElement];
+    let index = listItems.indexOf(value);
+
+    if (index > -1) {
+      listItems.splice(index, 1);
+
+      formData[formElement] = listItems;
+      this.setState({
+        formData: formData
+      });
+    }
   }
 
   createEditableComponents() {
+    // build testNames array
+    let testNames = [];
+    let allVOIs = this.state.allVOIs;
+    allVOIs.forEach(
+      function (v) {
+        if (testNames[v.SourceFrom]) {
+          return;
+        }
+        testNames[v.SourceFrom] = v.SourceFrom;
+      }
+    );
+    testNames.sort();
+
+    // Set test fields to all fields by default
+    let testFields = allVOIs.map(v => v.Name);
+    testFields.sort();
+
+    // if an instrument has been selected, then populate the fields
+    // selection with fields only relevant to the selected instrument
+    let inst = this.state.formData.voiInst;
+    if (inst) {
+      testFields = [];
+      testFields[inst+'_AllFields'] = inst + '_AllFields';
+      allVOIs.forEach(function(v){
+        if (v.SourceFrom === inst) {
+          testFields[v.Name] = v.Name;
+        }
+      });
+    }
     return (
       <div>
-        <TextboxElement
-          name="title"
-          label="Title"
-          onUserInput={this.setFormData}
-          required={true}
-          value={this.state.formData.title}
-        />
         <TextareaElement
           name="description"
           label="Description"
@@ -214,6 +278,39 @@ class ViewProject extends React.Component {
           onUserInput={this.setFormData}
           required={true}
           value={this.state.formData.leadInvestigatorEmail}
+        />
+        <div className="row form-group">
+          <label className="col-sm-3 control-label"/>
+          <div className="col-sm-9">
+            <p className="form-control-static">
+              <strong>
+                Variables of Interest
+              </strong>
+            </p>
+          </div>
+        </div>
+        <SelectElement
+          name="voiInst"
+          label="Instrument"
+          id="voiInst"
+          onUserInput={this.setFormData}
+          required={false}
+          value={this.state.formData.voiInst}
+          options={testNames}
+        />
+        <TagsElement
+          name="voiFields"
+          label="Instrument Fields"
+          id="voiFields"
+          onUserInput={this.setFormData}
+          onUserAdd={this.addListItem}
+          onUserRemove={this.removeListItem}
+          required={false}
+          value={this.state.formData.pendingItemVF}
+          options={testFields}
+          pendingValKey="pendingItemVF"
+          items={this.state.formData.voiFields}
+          btnLabel="Add Variable of Interest"
         />
       </div>
     );
