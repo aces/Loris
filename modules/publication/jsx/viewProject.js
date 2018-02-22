@@ -10,6 +10,8 @@ class ViewProject extends React.Component {
     this.setFormData = this.setFormData.bind(this);
     this.createMenuFilterLinks = this.createMenuFilterLinks.bind(this);
     this.createVOIElements = this.createVOIElements.bind(this);
+    this.createStaticComponents = this.createStaticComponents.bind(this);
+    this.createEditableComponents = this.createEditableComponents.bind(this);
   }
 
   handleSubmit(e) {
@@ -78,6 +80,9 @@ class ViewProject extends React.Component {
         self.setState({
           formData: formData,
           statusOpts: data.statusOpts,
+          userCanEdit: data.userCanEdit,
+          varsOfInterest: data.varsOfInterest,
+          uploadTypes: data.uploadTypes,
           isLoaded: true
         });
       },
@@ -132,6 +137,87 @@ class ViewProject extends React.Component {
     return result;
   }
 
+  createStaticComponents() {
+    if (this.state.formData.keywords) {
+      var keywordLinks = this.createMenuFilterLinks(
+        this.state.formData.keywords,
+        'keywords'
+      );
+    }
+
+    if (this.state.formData.voi) {
+      var voiLinks = this.createVOIElements(this.state.formData.voi);
+    }
+    return (
+      <div>
+        <StaticElement
+          name="leadInvestigator"
+          label="Lead Investigator"
+          ref="leadInvestigator"
+          text={this.state.formData.leadInvestigator}
+        />
+        <StaticElement
+         name="leadInvestigatorEmail"
+         label="Lead Investigator Email"
+         ref="leadInvestigatorEmail"
+         text={this.state.formData.leadInvestigatorEmail}
+        />
+        <StaticElement
+          name="variablesOfInterest"
+          label="Variables of Interest"
+          ref="variablesOfInterest"
+          text={voiLinks}
+        />
+        <StaticElement
+          name="keywords"
+          label="Keywords"
+          ref="keywords"
+          text={keywordLinks}
+        />
+        <StaticElement
+          name="description"
+          label="Description"
+          ref="description"
+          text={this.state.formData.description}
+        />
+      </div>
+  );
+  }
+
+  createEditableComponents() {
+    return (
+      <div>
+        <TextboxElement
+          name="title"
+          label="Title"
+          onUserInput={this.setFormData}
+          required={true}
+          value={this.state.formData.title}
+        />
+        <TextareaElement
+          name="description"
+          label="Description"
+          onUserInput={this.setFormData}
+          required={true}
+          value={this.state.formData.description}
+        />
+        <TextboxElement
+          name="leadInvestigator"
+          label="Lead Investigator"
+          onUserInput={this.setFormData}
+          required={true}
+          value={this.state.formData.leadInvestigator}
+        />
+        <TextboxElement
+          name="leadInvestigatorEmail"
+          label="Lead Investigator Email"
+          onUserInput={this.setFormData}
+          required={true}
+          value={this.state.formData.leadInvestigatorEmail}
+        />
+      </div>
+    );
+  }
   render() {
     if (!this.state.isLoaded) {
       return (
@@ -143,24 +229,7 @@ class ViewProject extends React.Component {
         </button>
       );
     }
-    if (this.state.formData.keywords) {
-      var keywordLinks = this.createMenuFilterLinks(
-        this.state.formData.keywords,
-        'keywords'
-      );
-    }
-    
-    if (this.state.formData.voi) {
-      var voiLinks = this.createVOIElements(this.state.formData.voi);
-    }
 
-    // TODO -- add permission for project approval
-    // TODO -- add permission for project editing
-    const statClassMap = {
-      'Pending': 'text-warning',
-      'Approved': 'text-success',
-      'Rejected': 'text-danger'
-    };
 
     // make approval status selectable and supply textbox in case
     // of proposal rejection
@@ -187,19 +256,35 @@ class ViewProject extends React.Component {
         />;
       }
     } else {
+      const statClassMap = {
+        'Pending': 'text-warning',
+        'Approved': 'text-success',
+        'Rejected': 'text-danger'
+      };
       let s = this.state.formData.status;
-      let statusText = <span className={statClassMap[s]}>
-        <strong>{s}</strong>
-      </span>;
+      let statusText =(
+        <span className={statClassMap[s]}>
+          <strong>{s}</strong>
+        </span>
+      );
       statusElement = <StaticElement
         label="Status"
         text={statusText}
       />;
     }
+
+
+    let formElements;
+    if (this.state.userCanEdit) {
+      formElements = this.createEditableComponents();
+    } else {
+      formElements = this.createStaticComponents();
+    }
+
     // only display submit button if user has approval permission
     // or user can edit
     let submitBtn;
-    if (loris.userHasPermission('publication_approve') || this.state.Data.userCanEdit) {
+    if (loris.userHasPermission('publication_approve') || this.state.userCanEdit) {
       submitBtn = <ButtonElement
         name="Submit"
       />;
@@ -220,36 +305,7 @@ class ViewProject extends React.Component {
             </div>
             {statusElement}
             {rejectReason}
-            <StaticElement
-              name="leadInvestigator"
-              label="Lead Investigator"
-              ref="leadInvestigator"
-              text={this.state.formData.leadInvestigator}
-            />
-            <StaticElement
-              name="leadInvestigatorEmail"
-              label="Lead Investigator Email"
-              ref="leadInvestigatorEmail"
-              text={this.state.formData.leadInvestigatorEmail}
-            />
-            <StaticElement
-              name="variablesOfInterest"
-              label="Variables of Interest"
-              ref="variablesOfInterest"
-              text={voiLinks}
-            />
-            <StaticElement
-              name="keywords"
-              label="Keywords"
-              ref="keywords"
-              text={keywordLinks}
-            />
-            <StaticElement
-              name="description"
-              label="Description"
-              ref="description"
-              text={this.state.formData.description}
-            />
+            {formElements}
             {submitBtn}
           </FormElement>
         </div>

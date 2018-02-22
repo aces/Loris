@@ -31,12 +31,12 @@ function getData() {
         array()
     );
 
-    $uploadType = [];
+    $uploadTypes = [];
 
     foreach($uploadTypeRaw as $type){
-        $uploadType[$type['PublicationUploadTypeID']] = $type['Label'];
+        $uploadTypes[$type['PublicationUploadTypeID']] = $type['Label'];
     }
-    $data['uploadType'] = $uploadType;
+    $data['uploadTypes'] = $uploadTypes;
     $data['existingTitles'] = $titles;
     $data['varsOfInterest'] = $varsOfInterest;
     return $data;
@@ -68,7 +68,7 @@ function getPublicationData() {
         // to work around GROUP_CONCAT char limit
         $vois = array();
         $data = $db->pselect(
-            'SELECT pt.Name AS Name, pt.SourceFrom AS Source '.
+            'SELECT pt.Name AS field, pt.SourceFrom AS inst '.
             'FROM parameter_type pt '.
             'LEFT JOIN publication_parameter_type_rel pptr '.
             'ON pptr.ParameterTypeID=pt.ParameterTypeID '.
@@ -77,10 +77,26 @@ function getPublicationData() {
         );
 
         foreach($data as $d) {
-            if (array_key_exists($d['Source'], $vois)) {
-                $vois[$d['Source']][] = $d['Name'];
+            if (array_key_exists($d['inst'], $vois)) {
+                $vois[$d['inst']]['Fields'][] = $d['field'];
             } else {
-                $vois[$d['Source']] = array($d['Name']);
+                $vois[$d['inst']] = array(
+                    'Fields' => array($d['field']),
+                    'IsFullSet' => false,
+                );
+            }
+        }
+
+        // determine if set of instrument fields is equivalent to full set
+        foreach ($vois as $inst => $v) {
+            $fullSet = $db->pselectCol(
+                'SELECT Name FROM parameter_type WHERE SourceFrom=:inst',
+                array('inst' => $inst)
+            );
+
+            // use loose comparison since element ordering may be different
+            if ($fullSet == $v['Fields']) {
+                $vois[$inst]['IsFullSet'] = true;
             }
         }
 

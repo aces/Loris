@@ -58,30 +58,46 @@ function uploadPublication() {
         array('t' => $titleProc)
     );
 
-    $publicationPath = "/data/publication_uploads/";
+    if (isset($_FILES['file'])) {
+        $publicationPath = "/data/publication_uploads/";
 
-    if(!isset($publicationPath)){
-        throw new LorisException("Error! Publication path is not set in Loris Settings!");
-    }
+        if(!isset($publicationPath)){
+            throw new LorisException("Error! Publication path is not set in Loris Settings!");
+        }
 
-    if(!file_exists($publicationPath)) {
-        throw new LorisException("Error! The upload folder '$publicationPath' does not exist!'");
-    }
+        if(!file_exists($publicationPath)) {
+            throw new LorisException("Error! The upload folder '$publicationPath' does not exist!'");
+        }
 
-    $fileName = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
-    $fileType  = $_FILES["file"]["type"];
-    $extension = pathinfo($fileName)['extension'];
+        $fileName = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
+        $fileType = $_FILES["file"]["type"];
+        $extension = pathinfo($fileName)['extension'];
 
-    if(!isset($extension)) {
-        throw new LorisException("Please make sure your file has a valid extension!");
+        if (!isset($extension)) {
+            throw new LorisException("Please make sure your file has a valid extension!");
+        }
+
+        $pubUploadInsert = array(
+            'PublicationID'           => $pubID,
+            'PublicationUploadTypeID' => $_REQUEST['publicationType'],
+            'URL'                     => $fileName,
+            'Citation'                => $_REQUEST['publicationCitation'],
+            'Version'                 => $_REQUEST['publicationVersion'],
+        );
+
+        if (move_uploaded_file($_FILES["file"]["tmp_name"], $publicationPath . $fileName)) {
+            $db->insert('publication_upload', $pubUploadInsert);
+        } else {
+            throw new LorisException("Could not upload the file. Please try again!");
+        }
     }
 
     $keywords = json_decode($_REQUEST['keywords']);
     foreach ($keywords as $kw) {
         // check if keyword exists
         $kwID = $db->pselectOne(
-            'SELECT PublicationKeywordID '.
-            'FROM publication_keyword '.
+            'SELECT PublicationKeywordID ' .
+            'FROM publication_keyword ' .
             'WHERE Label=:kw',
             array('kw' => $kw)
         );
@@ -90,8 +106,8 @@ function uploadPublication() {
             $kwInsert = array('Label' => $kw);
             $db->insert('publication_keyword', $kwInsert);
             $kwID = $db->pselectOne(
-                'SELECT PublicationKeywordID '.
-                'FROM publication_keyword '.
+                'SELECT PublicationKeywordID ' .
+                'FROM publication_keyword ' .
                 'WHERE Label=:kw',
                 array('kw' => $kw)
             );
@@ -104,6 +120,7 @@ function uploadPublication() {
         );
 
         $db->insert('publication_keyword_rel', $pubKWRelInsert);
+
     }
 
     $voiFields = json_decode($_REQUEST['voiFields']);
@@ -139,21 +156,6 @@ function uploadPublication() {
         }
     }
     notifySubmission($pubID);
-
-    $pubUploadInsert = array(
-        'PublicationID' => $pubID,
-        'PublicationUploadTypeID' => $_REQUEST['publicationType'],
-        'URL' => $fileName,
-        'Citation' => $_REQUEST['publicationCitation'],        //come back to this
-        'Version' => $_REQUEST['publicationVersion']
-    );
-
-    if (move_uploaded_file($_FILES["file"]["tmp_name"], $publicationPath . $fileName)) {
-        $db->insert('publication_upload', $pubUploadInsert);
-    } else {
-        throw new LorisException("Could not upload the file. Please try again!");
-    }
-
 }
 
 function notifySubmission($pubID) {
@@ -181,7 +183,7 @@ function notifySubmission($pubID) {
 
 function editProject() {
     $id           = $_REQUEST['id'];
-    $statusID       = $_REQUEST['status'];
+    $statusID     = $_REQUEST['status'];
     $rejectReason = $_REQUEST['rejectReason'];
 
     $db = \Database::singleton();

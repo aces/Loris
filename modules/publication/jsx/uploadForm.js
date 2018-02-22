@@ -207,6 +207,11 @@ class PublicationUploadForm extends React.Component {
       });
     }
 
+    let fileFieldsReq = false;
+    if (this.state.formData.file) {
+      fileFieldsReq = true;
+    }
+
     return (
       <div className="row">
         <div className="col-md-8 col-lg-7">
@@ -319,19 +324,22 @@ class PublicationUploadForm extends React.Component {
                 id="publicationTypeEl"
                 onUserInput={this.setFormData}
                 value={this.state.formData.publicationType}
-                options={this.state.Data.uploadType}
+                options={this.state.Data.uploadTypes}
+                required={fileFieldsReq}
             />
             <TextboxElement
                 name="publicationCitation"
                 label="Citation"
                 onUserInput={this.setFormData}
                 value={this.state.formData.publicationCitation}
+                required={fileFieldsReq}
             />
             <TextboxElement
                 name="publicationVersion"
                 label="Publication Version"
                 onUserInput={this.setFormData}
                 value={this.state.formData.publicationVersion}
+                required={fileFieldsReq}
             />
             <ButtonElement label="Propose Project"/>
           </FormElement>
