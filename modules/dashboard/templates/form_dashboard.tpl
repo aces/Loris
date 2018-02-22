@@ -146,7 +146,7 @@
                             {/if}
                             {if $incomplete_forms neq "" and $incomplete_forms neq 0}
                                 {if $incomplete_forms_site eq "Sites: all"}
-                                     <a href="{$baseURL}/statistics/?submenu=statistics_site" class="list-group-item statistics">
+                                     <a href="{$baseURL}/statistics/statistics_site" class="list-group-item statistics">
                                         <div class="row">
                                             <div class="col-xs-8 text-left">
                                                 <div class="huge">{$incomplete_forms}</div>
@@ -166,8 +166,8 @@
                                                 Incomplete form{if $incomplete_forms neq 1}s{/if}
                                             </div>
                                             <div class="col-xs-4 text-right alert-chevron">
-                                                {foreach from=$user_site key=ind item=centerID}
-                                                    <a href="{$baseURL}/statistics/?submenu=statistics_site&CenterID={$centerID}">
+                                                {foreach from=$incomplete_forms_site key=ind item=centerID}
+                                                    <a href="{$baseURL}/statistics/statistics_site/?CenterID={$centerID}">
                                                         <p style="color:#555" class="small task-site">{$incomplete_forms_site.$ind}
                                                             <span class="glyphicon glyphicon-chevron-right small"></span>
                                                         </p>
@@ -202,21 +202,6 @@
                                             <div class="col-xs-4 text-right alert-chevron">
                                                 <span class="glyphicon glyphicon-chevron-right medium"></span>
                                                 <p class="small task-site">{$violated_scans_site}</p>
-                                            </div>
-                                        </div>
-                                    </a>
-                                {/if}
-                                {if $radiology_review neq "" and $radiology_review neq 0}
-                                    <a href="{$baseURL}/final_radiological_review/"
-                                       class="list-group-item radiological-review">
-                                        <div class="row">
-                                            <div class="col-xs-8 text-left">
-                                                <div class="huge">{$radiology_review}</div>
-                                                Final radiological review{if $radiology_review neq 1}s{/if}
-                                            </div>
-                                            <div class="col-xs-4 text-right alert-chevron">
-                                                <span class="glyphicon glyphicon-chevron-right medium"></span>
-                                                <p class="small task-site">{$radiology_review_site}</p>
                                             </div>
                                         </div>
                                     </a>

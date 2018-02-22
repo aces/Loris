@@ -101,12 +101,12 @@ class CouchDBDemographicsImporter {
     );
 
     function __construct() {
-        $this->SQLDB = Database::singleton();
-        $this->CouchDB = CouchDB::singleton();
+        $this->SQLDB = \Database::singleton();
+        $this->CouchDB = \NDB_Factory::singleton()->couchDB();
     }
 
     function _getSubproject($id) {
-        $config = NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
         $subprojs = $config->getSubprojectSettings($id);
         if($subprojs['id'] == $id) {
             return $subprojs['title'];
@@ -114,7 +114,7 @@ class CouchDBDemographicsImporter {
     }
 
     function _getProject($id) {
-        $config = NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
         $projs = $config->getProjectSettings($id);
         if($projs['id'] == $id) {
             return $projs['Name'];
@@ -122,7 +122,7 @@ class CouchDBDemographicsImporter {
     }
 
     function _generateQuery() {
-        $config = NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
 
         $fieldsInQuery = "SELECT c.DoB,
                                 c.CandID, 
@@ -195,7 +195,7 @@ class CouchDBDemographicsImporter {
     }
 
     function _updateDataDict() {
-        $config = NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
         // If proband fields are being used, update the data dictionary
         if ($config->getSetting("useProband") === "true") {
             $this->Dictionary["Gender_proband"] = array(
@@ -215,7 +215,7 @@ class CouchDBDemographicsImporter {
             );
         }
         if ($config->getSetting("useProjects") === "true") {
-            $projects = Utility::getProjectList();
+            $projects = \Utility::getProjectList();
             $projectsEnum = "enum('";
             $projectsEnum .= implode("', '", $projects);
             $projectsEnum .= "')";
@@ -248,7 +248,7 @@ class CouchDBDemographicsImporter {
         $demographics = $this->SQLDB->pselect($this->_generateQuery(), array());
 
         $this->CouchDB->beginBulkTransaction();
-        $config_setting = NDB_Config::singleton();
+        $config_setting = \NDB_Config::singleton();
         foreach($demographics as $demographics) {
             $id = 'Demographics_Session_' . $demographics['PSCID'] . '_' . $demographics['Visit_label'];
             $demographics['Cohort'] = $this->_getSubproject($demographics['SubprojectID']);

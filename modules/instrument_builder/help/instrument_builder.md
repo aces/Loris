@@ -1,4 +1,4 @@
-**Instrument Builder** 
+# Instrument Builder
 
 The Instrument Builder module is designed to create new behavioural forms on the database. Existing instruments that were created using the instrument builder can be added under the "Load Instrument (optional)" heading. Most new instruments will be generated through the "Create Instrument" tab.
 
