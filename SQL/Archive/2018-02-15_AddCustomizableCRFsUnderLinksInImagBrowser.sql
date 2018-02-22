@@ -3,30 +3,31 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 
 -- Default imaging_browser settings for Linked instruments
 -- This will be the two tables mri_parameter_form and radiology_review; IF they exist in the database
+SET @s1 = (SELECT IF(
+    (SELECT COUNT(*)
+        FROM INFORMATION_SCHEMA.TABLES
+        WHERE table_name = 'mri_parameter_form'
+        AND table_schema = DATABASE()
+    ) > 0,
+    "INSERT INTO Config (ConfigID, Value) SELECT cs.ID, 'mri_parameter_form' FROM ConfigSettings cs WHERE cs.Name='ImagingBrowserLinkedInstruments'",
+    "SELECT 'No. It is therefore not inserted into the Configuration module under Imaging Modules' as 'mri parameter_form table exists?'"
+));
 
-SET @s1 = CONCAT("
-  SET @s2 = (SELECT IF(
-    (SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE table_name = ? AND table_schema = DATABASE()) > 0,
-    \"SELECT CONCAT('INSERT INTO Config (ConfigID, Value) SELECT cs.ID, ',?,' FROM ConfigSettings cs WHERE cs.Name=\"'ImagingBrowserLinkedInstruments'\"') as 'Insertion successful:'\",
-    \"SELECT CONCAT('INSERT in Configuration Settings for the Imaging Modules of ',?,' DID NOT HAPPEN since the table does not exist') as 'Insertion successful:'\"
-  ))
-");
+PREPARE stmt1 FROM @s1;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
 
-SET @table = 'mri_parameter_form';
-
-PREPARE stmt FROM @s1;
-EXECUTE stmt USING @table;
+SET @s2 = (SELECT IF(
+    (SELECT COUNT(*)
+        FROM INFORMATION_SCHEMA.TABLES
+        WHERE table_name = 'radiology_review'
+        AND table_schema = DATABASE()
+    ) > 0,
+    "INSERT INTO Config (ConfigID, Value) SELECT cs.ID, 'mri_parameter_form' FROM ConfigSettings cs WHERE cs.Name='ImagingBrowserLinkedInstruments'",
+    "SELECT 'No. It is therefore not inserted into the Configuration module under Imaging Modules' as 'radiology_review table exists?'"
+));
 
 PREPARE stmt2 FROM @s2;
-EXECUTE stmt2 USING @table;
+EXECUTE stmt2;
+DEALLOCATE PREPARE stmt2;
 
-SET @table = 'radiology_review';
-
-PREPARE stmt FROM @s1;
-EXECUTE stmt USING @table;
-
-PREPARE stmt2 FROM @s2;
-EXECUTE stmt2 USING @table;
-
-
---  \"SELECT CONCAT('INSERT INTO Config (ConfigID, Value) SELECT cs.ID, ',?,' FROM ConfigSettings cs WHERE cs.Name=\"'ImagingBrowserLinkedInstruments'\"') as 'Insertion successful:'\",
