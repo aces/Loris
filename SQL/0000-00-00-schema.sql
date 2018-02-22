@@ -2031,8 +2031,14 @@ CREATE TABLE `candidate_consent_type_rel` (
   `DateGiven` date DEFAULT NULL,
   `DateWithdrawn` date DEFAULT NULL,
   CONSTRAINT `PK_candidate_consent_type_rel` PRIMARY KEY (`CandidateID`,`ConsentTypeID`),
-  CONSTRAINT `FK_candidate_consent_type_rel_CandidateID` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`CandID`),
-  CONSTRAINT `FK_candidate_consent_type_rel_ConsentTypeID` FOREIGN KEY (`ConsentTypeID`) REFERENCES `consent_type` (`ConsentTypeID`)
+  CONSTRAINT `FK_candidate_consent_type_rel_CandidateID` FOREIGN KEY (`CandidateID`)
+      REFERENCES `candidate` (`CandID`)
+      ON DELETE RESTRICT
+      ON UPDATE RESTRICT,
+  CONSTRAINT `FK_candidate_consent_type_rel_ConsentTypeID` FOREIGN KEY (`ConsentTypeID`)
+      REFERENCES `consent_type` (`ConsentTypeID`)
+      ON DELETE RESTRICT
+      ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `candidate_consent_type_history` (

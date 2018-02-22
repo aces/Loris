@@ -17,8 +17,14 @@ CREATE TABLE `candidate_consent_type_rel` (
   `DateGiven` date DEFAULT NULL,
   `DateWithdrawn` date DEFAULT NULL,
   CONSTRAINT `PK_candidate_consent_type_rel` PRIMARY KEY (`CandidateID`,`ConsentTypeID`),
-  CONSTRAINT `FK_candidate_consent_type_rel_CandidateID` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`CandID`),
-  CONSTRAINT `FK_candidate_consent_type_rel_ConsentTypeID` FOREIGN KEY (`ConsentTypeID`) REFERENCES `consent_type` (`ConsentTypeID`)
+  CONSTRAINT `FK_candidate_consent_type_rel_CandidateID` FOREIGN KEY (`CandidateID`)
+      REFERENCES `candidate` (`CandID`)
+      ON DELETE RESTRICT
+      ON UPDATE RESTRICT,
+  CONSTRAINT `FK_candidate_consent_type_rel_ConsentTypeID` FOREIGN KEY (`ConsentTypeID`)
+      REFERENCES `consent_type` (`ConsentTypeID`)
+      ON DELETE RESTRICT
+      ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `candidate_consent_type_history` (
@@ -29,7 +35,7 @@ CREATE TABLE `candidate_consent_type_history` (
   `Status` enum('yes','no','not_answered') NOT NULL,
   `DateGiven` date DEFAULT NULL,
   `DateWithdrawn` date DEFAULT NULL,
-  `EntryStaff` varchar(255) DEFAULT NULL,
   `EntryDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `EntryStaff` varchar(255) DEFAULT NULL,
   CONSTRAINT `PK_candidate_consent_type_history` PRIMARY KEY (`CandidateConsentHistoryID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

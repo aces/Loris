@@ -189,7 +189,8 @@ class Utility
      */
     static function getConsentList()
     {
-        $DB =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
 
         $query = "SELECT * FROM consent_type";
 
