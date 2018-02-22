@@ -88,7 +88,7 @@ class PublicationUploadForm extends React.Component {
 
     let formData = this.state.formData;
     // make sure title is unique
-    let existingTitles = this.state.Data.titles;
+    let existingTitles = this.state.Data.existingTitles;
     if (existingTitles.indexOf(formData.title) > -1) {
       swal("Publication title already exists!", "", "error");
       return;

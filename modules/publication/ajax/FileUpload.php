@@ -10,8 +10,6 @@ if (isset($_REQUEST['action'])) {
     }
 }
 
-
-
 function uploadPublication() {
     $db = Database::singleton();
     $user = \User::singleton();
@@ -182,20 +180,18 @@ function notifySubmission($pubID) {
 }
 
 function editProject() {
-    $id = $_REQUEST['id'];
-    $status = $_REQUEST['status'];
+    $id           = $_REQUEST['id'];
+    $statusID       = $_REQUEST['status'];
+    $rejectReason = $_REQUEST['rejectReason'];
 
     $db = \Database::singleton();
 
-    $statusID = $db->pselectOne(
-        'SELECT PublicationStatusID FROM publication_status '.
-        'WHERE Label=:stat',
-        array('stat' => $status)
-    );
-
     $db->update(
         'publication',
-        array('PublicationStatusID' => $statusID),
+        array(
+            'PublicationStatusID' => $statusID,
+            'RejectedReason'      => $rejectReason,
+        ),
         array('PublicationID' => $id)
     );
 }

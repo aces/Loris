@@ -37,7 +37,7 @@ function getData() {
         $uploadType[$type['PublicationUploadTypeID']] = $type['Label'];
     }
     $data['uploadType'] = $uploadType;
-    $data['titles'] = $titles;
+    $data['existingTitles'] = $titles;
     $data['varsOfInterest'] = $varsOfInterest;
     return $data;
 }
@@ -96,19 +96,19 @@ function getPublicationData() {
 
         $result['Keywords'] = $kws;
 
-        $rawStatus = $db->pselectCol(
-            'SELECT Label FROM publication_status',
+        $rawStatus = $db->pselect(
+            'SELECT * FROM publication_status',
             array()
         );
 
         $statusOpts = array();
         foreach ($rawStatus as $rs) {
-            $statusOpts[$rs] = $rs;
+            $statusOpts[$rs['PublicationStatusID']] = $rs['Label'];
         }
         // allow edit access for user if user is original proposer
         $user = \User::singleton();
         $userCanEdit = $user->getId() === $result['UserID'];
-        return array(
+        $pubData = array(
             'title' => $result['Title'],
             'description' => $result['Description'],
             'leadInvestigator' => $result['LeadInvestigator'],
@@ -119,5 +119,12 @@ function getPublicationData() {
             'statusOpts' => $statusOpts,
             'userCanEdit' => $userCanEdit
         );
+
+        // if user can edit, retrieve getData() options to allow modifications
+        if ($userCanEdit) {
+            return array_merge($pubData, getData());
+        } else {
+            return $pubData;
+        }
     }
 }

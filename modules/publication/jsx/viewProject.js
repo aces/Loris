@@ -156,12 +156,15 @@ class ViewProject extends React.Component {
 
     // TODO -- add permission for project approval
     // TODO -- add permission for project editing
-    var statClassMap = {
+    const statClassMap = {
       'Pending': 'text-warning',
       'Approved': 'text-success',
       'Rejected': 'text-danger'
     };
-    var statusElement;
+
+    // make approval status selectable and supply textbox in case
+    // of proposal rejection
+    let statusElement, rejectReason;
     if (loris.userHasPermission('publication_approve')) {
      statusElement = <SelectElement
         name="status"
@@ -173,9 +176,19 @@ class ViewProject extends React.Component {
         options={this.state.statusOpts}
         emptyOption={false}
       />;
+
+      if (this.state.formData.status === 'Rejected') {
+        rejectReason = <TextboxElement
+          name="rejectReason"
+          label="Reason for rejection"
+          value={this.state.formData.status}
+          onUserInput={this.setFormData}
+          required={true}
+        />;
+      }
     } else {
-      var s = this.state.formData.status;
-      var statusText = <span className={statClassMap[s]}>
+      let s = this.state.formData.status;
+      let statusText = <span className={statClassMap[s]}>
         <strong>{s}</strong>
       </span>;
       statusElement = <StaticElement
@@ -183,10 +196,14 @@ class ViewProject extends React.Component {
         text={statusText}
       />;
     }
-
-    var submitBtn = <ButtonElement
-      name="Submit"
-    />;
+    // only display submit button if user has approval permission
+    // or user can edit
+    let submitBtn;
+    if (loris.userHasPermission('publication_approve') || this.state.Data.userCanEdit) {
+      submitBtn = <ButtonElement
+        name="Submit"
+      />;
+    }
     return (
       <div className="row">
         <div className="col-md-12 col-lg-12">
@@ -202,6 +219,7 @@ class ViewProject extends React.Component {
               </h3>
             </div>
             {statusElement}
+            {rejectReason}
             <StaticElement
               name="leadInvestigator"
               label="Lead Investigator"
