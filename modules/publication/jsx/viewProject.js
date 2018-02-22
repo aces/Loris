@@ -130,10 +130,8 @@ class ViewProject extends React.Component {
 
   createVOIElements(vois) {
     var result = [];
-    console.log('in func');
     Object.keys(vois).forEach(
       function(v) {
-        console.log(v);
         var links = this.createMenuFilterLinks(vois[v]['Fields'], 'voi');
         result.push(
           <div>

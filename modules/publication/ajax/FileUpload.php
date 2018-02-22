@@ -92,6 +92,20 @@ function uploadPublication() {
         }
     }
 
+    $collaborators = json_decode($_REQUEST['collaborators']);
+    foreach ($collaborators as $c) {
+        $cid = $db->pselectOne(
+            'SELECT PublicationCollaboratorID '.
+            'FROM publication_collaborator '.
+            'WHERE Name=:c',
+            array('c' => $c)
+        );
+        $db->insert(
+            'publication_collaborator',
+
+        );
+    }
+
     $keywords = json_decode($_REQUEST['keywords']);
     foreach ($keywords as $kw) {
         // check if keyword exists
