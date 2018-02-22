@@ -14,7 +14,7 @@ namespace LORIS\reliability;
 
 //@codingStandardsIgnoreStart
 function map_cIDs($array){
-    $new_array;
+    $new_array = array();
     for($i = 0; $i < count($array); $i++){
         $element = $array[$i];
         $new_array[$element['CommentID']] = $element['reliability_center_id'];
@@ -86,7 +86,7 @@ class Reliability extends \NDB_Menu_Filter
         $user =& \User::singleton();
 
         // create the centerID map
-        $db =& (\NDB_Factory::singleton())->database();
+        $db = (\NDB_Factory::singleton())->database();
 
         $pscRows = $db->pselect("SELECT CenterID, Name FROM psc", array());
         foreach ($pscRows as $row) {
@@ -400,7 +400,7 @@ class Reliability extends \NDB_Menu_Filter
 
     function _populate_reliability_table()
     {
-        $db =& (\NDB_Factory::singleton())->database();
+        $db = (\NDB_Factory::singleton())->database();
         $this->reliability_table = $db->pselect("SELECT CommentID, reliability_center_id FROM reliability", array());
 
         $this->reliability_table = map_cIDs($this->reliability_table);
