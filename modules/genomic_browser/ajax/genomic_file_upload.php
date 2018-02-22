@@ -218,7 +218,7 @@ function moveFileToFS(&$fileToUpload)
  */
 function registerFile(&$fileToUpload)
 {
-    $DB     =& Database::singleton();
+    $DB     =& (\NDB_Factory::singleton())->database();
     $config = NDB_Config::singleton();
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
 
@@ -277,7 +277,7 @@ function createSampleCandidateRelations(&$fileToUpload)
 
     reportProgress(85, "Creating sample-candidate relations");
 
-    $DB =& Database::singleton();
+    $DB =& (\NDB_Factory::singleton())->database();
 
     $f = fopen(
         $fileToUpload->tmp_name,
@@ -363,7 +363,7 @@ function insertBetaValues(&$fileToUpload)
     // Assuming genomic_cpg_annotation have ialready been created.
     // see: /module/genomic_browser/tool/human...
 
-    $DB =& Database::singleton();
+    $DB =& (\NDB_Factory::singleton())->database();
 
     $f = fopen(
         $fileToUpload->tmp_name,
@@ -464,7 +464,7 @@ function insertBetaValues(&$fileToUpload)
  */
 function createCandidateFileRelations(&$fileToUpload)
 {
-    $DB =& Database::singleton();
+    $DB =& (\NDB_Factory::singleton())->database();
 
     $f = fopen(
         $fileToUpload->tmp_name,
@@ -576,7 +576,7 @@ function reportProgress($progress, $message)
 function candidateExists($pscid)
 {
 
-    $DB =& Database::singleton();
+    $DB =& (\NDB_Factory::singleton())->database();
 
     $CandID = $DB->pselectOne(
         "SELECT CandID from candidate WHERE PSCID = :pscid",
@@ -593,7 +593,7 @@ function candidateExists($pscid)
  */
 function begin()
 {
-    $DB = Database::singleton();
+    $DB = (\NDB_Factory::singleton())->database();
     $DB->beginTransaction();
 }
 
@@ -604,7 +604,7 @@ function begin()
  */
 function endWithFailure()
 {
-    $DB = Database::singleton();
+    $DB = (\NDB_Factory::singleton())->database();
     $DB->rollBack();
 }
 
@@ -615,7 +615,7 @@ function endWithFailure()
  */
 function endWithSuccess()
 {
-    $DB = Database::singleton();
+    $DB = (\NDB_Factory::singleton())->database();
     $DB->commit();
 }
 ?>

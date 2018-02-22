@@ -125,7 +125,7 @@ class My_Preferences extends \NDB_Form
     function _process($values)
     {
         $config = \NDB_Config::singleton();
-        $DB     = \Database::singleton();
+        $DB     = (\NDB_Factory::singleton())->database();
 
         //The arrays that contain the edited permissions
         $permissionsRemoved = array();
@@ -244,7 +244,7 @@ class My_Preferences extends \NDB_Form
     {
         parent::setup();
 
-        $DB =& \Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         $this->identifier = $_SESSION['State']->getUsername();
 
@@ -444,7 +444,7 @@ class My_Preferences extends \NDB_Form
     function _validateMyPreferences($values)
     {
         // create DB object
-        $DB     = \Database::singleton();
+        $DB     = (\NDB_Factory::singleton())->database();
         $errors = array();
 
         // if password is user-defined, and user wants to change password

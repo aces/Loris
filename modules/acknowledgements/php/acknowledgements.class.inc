@@ -71,7 +71,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
         $values['degrees']      = implode(",", $values['degrees']);
         $values['roles']        = implode(",", $values['roles']);
 
-        $DB =& \Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
         if (isset($_POST['fire_away'])) {
 
             if (empty($values['present'])) {

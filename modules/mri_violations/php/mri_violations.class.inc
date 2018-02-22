@@ -52,7 +52,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         if (!is_array($values) || count($values) ==0) {
             return true;
         }
-        $DB   =& \Database::singleton();
+        $DB   =& (\NDB_Factory::singleton())->database();
         $user =& \User::singleton();
         foreach ($values['resolvable'] AS $key=>$val) {
             $hash = $key;
@@ -161,7 +161,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         // set the class variables
         // create user object
         $user        =& \User::singleton();
-        $DB          =& \Database::singleton();
+        $DB          =& (\NDB_Factory::singleton())->database();
         $config      =& \NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         if ($useProjects === "false") {
@@ -355,7 +355,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         // create user object
         $user    =& \User::singleton();
         $config  =& \NDB_Config::singleton();
-        $db      =& \Database::singleton();
+        $db      =& (\NDB_Factory::singleton())->database();
         $minYear = $config->getSetting('startYear') - $config->getSetting('ageMax');
         $maxYear = $config->getSetting('endYear');
 

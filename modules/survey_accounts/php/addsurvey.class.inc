@@ -60,7 +60,7 @@ class AddSurvey extends \NDB_Form
      */
     function _validateAddSurvey($values)
     {
-        $db = \Database::singleton();
+        $db = (\NDB_Factory::singleton())->database();
 
         $numCandidates = $db->pselectOne(
             "SELECT COUNT(*) FROM candidate 
@@ -161,7 +161,7 @@ class AddSurvey extends \NDB_Form
      */
     function _process($values)
     {
-        $db        = \Database::singleton();
+        $db        = (\NDB_Factory::singleton())->database();
         $SessionID = $db->pselectOne(
             "SELECT ID FROM session".
             " WHERE CandID=:v_CandID AND Visit_label=:v_VL",

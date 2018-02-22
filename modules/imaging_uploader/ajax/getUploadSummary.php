@@ -36,7 +36,7 @@ $client->initialize("../../project/config.xml");
 $config = NDB_Config::singleton();
 
 // create Database object
-$DB =& Database::singleton();
+$DB =& (\NDB_Factory::singleton())->database();
 
 // return bad request if uploadId is not in POST argument list
 // or if it is not a number

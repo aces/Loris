@@ -33,7 +33,7 @@ $baseURL = $factory->settings()->getBaseURL();
 $config = NDB_Config::singleton();
 
 // create Database object
-$DB =& Database::singleton();
+$DB =& (\NDB_Factory::singleton())->database();
 
 $editNotifier = new NDB_Notifier(
     "document_repository",

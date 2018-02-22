@@ -34,7 +34,7 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize($configFile);
 
-$DB =& Database::singleton();
+$DB =& (\NDB_Factory::singleton())->database();
 
 // Query as it is in the mri violation module
 // It is complete as it apears in the module for two reasons:

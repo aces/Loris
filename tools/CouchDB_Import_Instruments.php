@@ -7,12 +7,12 @@ require_once 'Utility.class.inc';
 class CouchDBInstrumentImporter
 {
     var $SQLDB; // reference to the database handler, store here instead
-                // of using Database::singleton in case it's a mock.
+                // of using (\NDB_Factory::singleton())->database in case it's a mock.
     var $CouchDB; // reference to the CouchDB database handler
 
     function __construct()
     {
-        $this->SQLDB   = Database::singleton();
+        $this->SQLDB   = (\NDB_Factory::singleton())->database();
         $this->CouchDB = CouchDB::singleton();
     }
 

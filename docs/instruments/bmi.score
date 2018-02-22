@@ -15,7 +15,7 @@
 require_once "../tools/generic_includes.php";
 require_once "Database.class.inc";
 $CommentID = $argv[1];
-$db        =& Database::singleton();
+$db        =& (\NDB_Factory::singleton())->database();
 $query         = "SELECT * from bmi WHERE CommentID = :CommentID";
 $WhereCriteria = array('CommentID'=>$CommentID);
 $record        = array();

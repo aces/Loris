@@ -115,7 +115,7 @@ class TimePoint
         }
 
         // make a local reference to the Database object
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         // get user data from database
         $query = "SELECT s.ID AS SessionID, s.CandID, p.Name AS PSC, s.CenterID,
@@ -346,7 +346,7 @@ class TimePoint
 
         //$this->_timePointInfo = array_merge($this->_timePointInfo, $setData);
 
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
         $db->update('session', $setData, array('ID' => $this->getData('SessionID')));
         $this->select($this->getData('SessionID'));
     }
@@ -666,7 +666,7 @@ class TimePoint
      */
     function setCurrentStage()
     {
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         // this class does not handle Subject & Recycling Bin stage at the moment
         if (in_array($this->getCurrentStage(), array('Subject', 'Recycling Bin'))) {
@@ -779,7 +779,7 @@ class TimePoint
      */
     function setBVLQCType($type)
     {
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         if (!in_array($type, $this->bvlQcTypes)) {
             throw new Exception("You need to specify a valid BVL QC Type");
@@ -808,7 +808,7 @@ class TimePoint
      */
     function setBVLQCStatus($status)
     {
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         if (!in_array($status, $this->bvlQcStatuses)) {
             throw new Exception("You need to specify a valid BVL QC Type");
@@ -845,7 +845,7 @@ class TimePoint
      */
     function setBVLQCExclusion($status)
     {
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         // check the status
         if (!in_array($status, $this->bvlQcExclusionStatuses)) {

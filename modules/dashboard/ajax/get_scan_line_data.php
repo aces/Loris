@@ -23,7 +23,7 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
-$DB = Database::singleton();
+$DB = (\NDB_Factory::singleton())->database();
 
 $scanData           = array();
 $scanStartDate      = $DB->pselectOne(
@@ -83,7 +83,7 @@ function createChartLabels($startDate, $endDate)
  */
 function getScanData($siteID, $labels)
 {
-    $DB   = Database::singleton();
+    $DB   = (\NDB_Factory::singleton())->database();
     $data = array();
     foreach ($labels as $label) {
         $month  = (strlen($label) == 6)

@@ -24,7 +24,7 @@ if (!$user->hasPermission('data_team_helper')) {
     exit;
 }
 
-$db          =& Database::singleton();
+$db          =& (\NDB_Factory::singleton())->database();
 $searchArray = array();
 
     $query = "SELECT DISTINCT ses.candID FROM session AS ses

@@ -55,7 +55,7 @@ class HelpFile
     static function &factory($helpID)
     {
         // create DB object
-        $DB =& \Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         $obj = new HelpFile;
 
@@ -84,7 +84,7 @@ class HelpFile
     function insert($set)
     {
         // create DB object
-        $DB =& \Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         // insert a help file
         $success = $DB->insert('help', $set);
@@ -103,7 +103,7 @@ class HelpFile
     function update($set)
     {
         // create DB object
-        $DB =& \Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         // update the help file
         $success = $DB->update('help', $set, array('helpID' => $this->helpID));
@@ -119,7 +119,7 @@ class HelpFile
     function hasChild()
     {
         // create DB object
-        $DB =& \Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         $result = $DB->pselectOne(
             "SELECT COUNT(*) FROM help WHERE parentID = :HID",
@@ -140,7 +140,7 @@ class HelpFile
     function childIDs($stopat = 1, $level = 1)
     {
         // create DB object
-        $DB =& \Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         // see if it has a child
         $hasChild = $this->hasChild();
@@ -186,7 +186,7 @@ class HelpFile
     function childData($stopat = 1, $level = 1)
     {
         // create DB object
-        $DB =& \Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         // see if it has a child
         $hasChild = $this->hasChild();
@@ -267,7 +267,7 @@ class HelpFile
     function parentData($stopat = 1, $level = 1)
     {
         // create DB object
-        $DB =& \Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         $parentData = array();
 
@@ -323,7 +323,7 @@ class HelpFile
     static function hashToID($hash)
     {
         // create DB object
-        $DB =& \Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         $helpID = $DB->pselectOne(
             "SELECT helpID FROM help WHERE hash = :HID",

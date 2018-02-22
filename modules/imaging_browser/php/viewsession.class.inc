@@ -83,7 +83,7 @@ class ViewSession extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $this->DB = \Database::singleton();
+        $this->DB = (\NDB_Factory::singleton())->database();
 
         $this->sessionID = $_REQUEST['sessionID'];
 

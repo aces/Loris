@@ -30,7 +30,7 @@ if (empty($_GET['GenomicFileID'])) {
     exit(2);
 }
 
-$DB      =& Database::singleton();
+$DB      =& (\NDB_Factory::singleton())->database();
 $results = $DB->pselect(
     'SELECT 
          FileName,

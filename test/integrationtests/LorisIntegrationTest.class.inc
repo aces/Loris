@@ -56,7 +56,7 @@ abstract class LorisIntegrationTest extends TestCase
 
         $database = $this->config->getSetting('database');
 
-        $this->DB  = Database::singleton(
+        $this->DB  = (\NDB_Factory::singleton())->database(
             $database['database'],
             $database['username'],
             $database['password'],

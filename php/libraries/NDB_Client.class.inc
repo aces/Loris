@@ -54,11 +54,11 @@ class NDB_Client
         $config = $factory->config($configFile);
 
         // Load the database object with settings from config
-        // so that after this we can just call Database::singleton()
+        // so that after this we can just call (\NDB_Factory::singleton())->database()
         // with no parameters
         $DBSettings = $config->getSetting("database");
         if (!defined("UNIT_TESTING")) {
-            $DB = Database::singleton(
+            $DB = (\NDB_Factory::singleton())->database(
                 $DBSettings['database'],
                 $DBSettings['username'],
                 $DBSettings['password'],

@@ -55,7 +55,7 @@ class Document_Repository extends \NDB_Menu_Filter
         $user =& \User::singleton();
 
         // create the centerID map
-        $db      =& \Database::singleton();
+        $db      =& (\NDB_Factory::singleton())->database();
         $pscRows = $db->pselect("SELECT CenterID, Name FROM psc", array());
         foreach ($pscRows AS $row) {
             $this->centerIDMap[$row['CenterID']] = $row['Name'];
@@ -154,7 +154,7 @@ class Document_Repository extends \NDB_Menu_Filter
         $subproject_options   = \Utility::getSubprojectList();
         $subproject_options   = array(null => 'Any') + $subproject_options;
 
-        $DB = \Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
 
         //There's no dropdown filter for file names?
         //$fileNames = $DB->pselect(
@@ -239,7 +239,7 @@ class Document_Repository extends \NDB_Menu_Filter
     function parseCategory($value)
     {
         $depth = 0;
-        $DB    = \Database::singleton();
+        $DB    = (\NDB_Factory::singleton())->database();
             $categoryName = $value['category_name'];
         do {
             if ($value['parent_id'] != 0) {
@@ -262,7 +262,7 @@ class Document_Repository extends \NDB_Menu_Filter
      */
     function _getPreparedQuery()
     {
-        $DB = \Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
 
         $qparams = array();
         // add the base query
@@ -306,7 +306,7 @@ class Document_Repository extends \NDB_Menu_Filter
      */
     function _setDataTable()
     {
-        $DB       = \Database::singleton();
+        $DB       = (\NDB_Factory::singleton())->database();
         $results  = array();
         $query    = "SELECT * FROM document_repository_categories".
                     " ORDER BY parent_id ASC";
@@ -363,7 +363,7 @@ class Document_Repository extends \NDB_Menu_Filter
         $config =& \NDB_Config::singleton();
 
         // overriding pagination
-        $DB = \Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
 
         // print out column headings
         $i = 0;
@@ -395,7 +395,7 @@ class Document_Repository extends \NDB_Menu_Filter
      */
     function _setDataTableRows($count)
     {
-        $DB       = \Database::singleton();
+        $DB       = (\NDB_Factory::singleton())->database();
         $query    = $this->_getPreparedQuery();
         $prepared = $DB->prepare($query['query']);
         $prepared->execute($query['params']);

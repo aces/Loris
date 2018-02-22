@@ -23,7 +23,7 @@ ini_set('default_charset', 'utf-8');
 
 require_once __DIR__ . "/../../../vendor/autoload.php";
 
-$DB = Database::singleton();
+$DB = (\NDB_Factory::singleton())->database();
 
 // Get the ID for the instrument that was selected
 $instrumentID   = $_REQUEST['instrument'];

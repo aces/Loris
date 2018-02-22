@@ -403,7 +403,7 @@ class NDB_BVL_Instrument extends NDB_Page
         }
 
         // get saved data to pre-populate form
-        $db = Database::singleton();
+        $db = (\NDB_Factory::singleton())->database();
 
         $defaults = $db->pselect(
             "SELECT * FROM $this->table WHERE CommentID=:CID",
@@ -559,7 +559,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function _saveCandidateAge(&$values)
     {
         if (!empty($values['Date_taken'])) {
-            $DB  = Database::singleton();
+            $DB  = (\NDB_Factory::singleton())->database();
             $age = $this->getCandidateAge($values['Date_taken']);
             if (empty($age)) {
                 throw new LorisException("Candidate age could not be found.");
@@ -741,7 +741,7 @@ class NDB_BVL_Instrument extends NDB_Page
             }
             $values = Utility::nullifyEmpty($values, $key);
         }
-        $db     =& Database::singleton();
+        $db     =& (\NDB_Factory::singleton())->database();
         $result = $db->update(
             $this->table,
             $values,
@@ -881,7 +881,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function _getExaminerNames()
     {
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         $centerID = $db->pselectOne(
             "SELECT session.CenterID FROM session, flag
@@ -957,7 +957,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getFullName()
     {
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         $success = $db->pselectOne(
             "SELECT Full_name FROM test_names WHERE Test_name=:TN",
@@ -1003,7 +1003,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getDateOfAdministration()
     {
-        $db  =& Database::singleton();
+        $db  =& (\NDB_Factory::singleton())->database();
         $doa = $db->pselectOne(
             "SELECT Date_taken FROM $this->table WHERE CommentID=:CID",
             array('CID' => $this->getCommentID())
@@ -1022,7 +1022,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function getSubtestList()
     {
         // get a database connection
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         $query = "SELECT Subtest_name AS Name, Description
             FROM instrument_subtests
@@ -1372,7 +1372,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getFieldValue($field)
     {
-        $DB =& Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         $query      = "SELECT $field FROM $this->table WHERE CommentID = :CID";
         $fieldValue = $DB->pselectOne($query, array('CID' => $this->getCommentID()));
@@ -1391,7 +1391,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getSessionID()
     {
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         $query      = "SELECT SessionID FROM flag WHERE CommentID = :CID";
         $fieldValue = $db->pselectOne($query, array('CID' => $this->getCommentID()));
@@ -1415,7 +1415,7 @@ class NDB_BVL_Instrument extends NDB_Page
             return 'Complete';
         }
 
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         $query = "SELECT " . join(',', $this->_requiredElements)
             . " FROM $this->table WHERE CommentID=:CID";
@@ -1442,7 +1442,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getDataEntryCompletionStatus()
     {
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         $query = "SELECT Data_entry_completion_status
             FROM $this->table WHERE CommentID=:CID";
@@ -1468,7 +1468,7 @@ class NDB_BVL_Instrument extends NDB_Page
             );
         }
 
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         $db->update(
             $this->table,
@@ -1919,7 +1919,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function _nullScores($scoreCols)
     {
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         // set the scoring cols to NULL
         foreach ($scoreCols as $key => $val) {
@@ -2000,7 +2000,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     static function loadInstanceData($instrumentInstance)
     {
-        $db       =& Database::singleton();
+        $db       =& (\NDB_Factory::singleton())->database();
         $defaults = $db->pselect(
             "SELECT * FROM $instrumentInstance->table WHERE CommentID=:CID",
             array('CID' => $instrumentInstance->getCommentID())
@@ -2025,7 +2025,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getCandidateAge($Date_taken = false)
     {
-        $db        =& Database::singleton();
+        $db        =& (\NDB_Factory::singleton())->database();
         $CommentID = $this->getCommentID();
 
         $dates = $db->pselectRow(
@@ -2055,7 +2055,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getPSCID()
     {
-        $db        =& Database::singleton();
+        $db        =& (\NDB_Factory::singleton())->database();
         $CommentID = $this->getCommentID();
 
         $pscid = $db->pselectOne(
@@ -2077,7 +2077,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function clearInstrument()
     {
         $config   = NDB_Config::singleton();
-        $db       = Database::singleton();
+        $db       = (\NDB_Factory::singleton())->database();
         $dbconfig = $config->getSetting('database');
         $columns  = $db->pselect(
             "SELECT COLUMN_NAME FROM information_schema.columns
@@ -2215,7 +2215,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getReview()
     {
-        $DB = Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
 
         $smarty   = new Smarty_neurodb();
         $tpl_data = array();
@@ -2494,7 +2494,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function determineDataEntryAllowed()
     {
-        $DB    = Database::singleton();
+        $DB    = (\NDB_Factory::singleton())->database();
         $entry = $DB->pselectOne(
             "SELECT Data_entry FROM flag WHERE CommentID=:CID",
             array('CID' => $this->getCommentId())

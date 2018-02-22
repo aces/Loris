@@ -121,7 +121,7 @@ function detectIgnoreColumns($instruments)
  * Removes the fields if confirmation is set
  */
 function defaultIgnoreColumns() {
-    $db =& Database::singleton();
+    $db =& (\NDB_Factory::singleton())->database();
 
     if ($this->confirm) {
         foreach ($this->defaultFields as $field) {
@@ -147,7 +147,7 @@ function defaultIgnoreColumns() {
  * Removes the fields if confirmation is set
  */
 function ignoreColumn($instrument, $instrumentFields) {
-    $db =& Database::singleton();
+    $db =& (\NDB_Factory::singleton())->database();
 
     if ($this->confirm) {
         foreach ($instrumentFields as $field => $instr) {

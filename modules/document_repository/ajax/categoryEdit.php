@@ -25,7 +25,7 @@ $client = new NDB_Client();
 $client->initialize("../../project/config.xml");
 
 // create Database object
-$DB =& Database::singleton();
+$DB =& (\NDB_Factory::singleton())->database();
 
 if (get_magic_quotes_gpc()) {
     // Magic quotes adds \ to description, get rid of it.

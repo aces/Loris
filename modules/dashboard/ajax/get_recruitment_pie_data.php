@@ -14,7 +14,7 @@
 
 ini_set('default_charset', 'utf-8');
 
-$DB = Database::singleton();
+$DB = (\NDB_Factory::singleton())->database();
 
 $recruitmentBySiteData = array();
 $list_of_sites         = Utility::getAssociativeSiteList(true, false);

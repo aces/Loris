@@ -54,7 +54,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
             return true;
         }
 
-        $DB =& \Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         $user =& \User::singleton();
 
@@ -394,7 +394,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
     function _getFullList()
     {
         // create DB object
-        $DB =& \Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         $qparams = array();
         // add the base query

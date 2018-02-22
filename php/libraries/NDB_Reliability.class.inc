@@ -366,7 +366,7 @@ class NDB_Reliability extends NDB_Form
      */
     function _getExaminerNames()
     {
-        $db       =& Database::singleton();
+        $db       =& (\NDB_Factory::singleton())->database();
         $user     =& User::singleton();
         $centerID = $user->getCenterIDs();
 

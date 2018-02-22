@@ -33,7 +33,7 @@ class Genomic_File
     */
     function __construct($fileID)
     {
-        $db     =& \Database::singleton();
+        $db     =& (\NDB_Factory::singleton())->database();
         $params = array('FID' => $fileID);
 
         $query    = "SELECT * FROM genomic_files WHERE GenomicFileID=:FID";

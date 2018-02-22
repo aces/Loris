@@ -22,7 +22,7 @@ ini_set('default_charset', 'utf-8');
 
 require_once __DIR__ . "/../../../vendor/autoload.php";
 
-$DB = Database::singleton();
+$DB = (\NDB_Factory::singleton())->database();
 
 $instrumentID = $_REQUEST['instrument'];
 $tabID        = $_REQUEST['tabNumber'];
@@ -88,7 +88,7 @@ exit();
  */
 function getQuizData($instrumentID)
 {
-    $DB = Database::singleton();
+    $DB = (\NDB_Factory::singleton())->database();
     // Get the questions
     $questions = $DB->pselect(
         "SELECT Question, OrderNumber, ID 

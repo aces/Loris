@@ -169,7 +169,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
    function importFile(&$file, $args) {
         $fp=fopen($file->fileInfo['tmp_name'], "r");
 
-        $db=& Database::singleton();
+        $db=& (\NDB_Factory::singleton())->database();
         ///Setting trackchanges to false because getting error messages
         $db->_trackChanges = false;
         ////////////////////////////////////////////////////////////////

@@ -29,7 +29,7 @@ if (!file_exists($FullPath)) {
     header("HTTP/1.1 404 Not Found");
     exit(5);
 }
-$db         =& Database::singleton();
+$db         =& (\NDB_Factory::singleton())->database();
 $fileID     = $db->pselectOne(
     "SELECT ID FROM data_release WHERE "
     . "file_name=:fn",

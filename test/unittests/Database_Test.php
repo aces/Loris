@@ -48,7 +48,7 @@ class Database_Test extends TestCase
         $client->initialize();
 
 
-        $DB = Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
 
         $DB->setFakeTableData(
             "Config",

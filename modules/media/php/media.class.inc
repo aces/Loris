@@ -64,7 +64,7 @@ class Media extends \NDB_Menu_Filter
         parent::setup();
 
         $user =& \User::singleton();
-        $db   = \Database::singleton();
+        $db   = (\NDB_Factory::singleton())->database();
 
         $siteList  = array();
         $visitList = \Utility::getVisitList();

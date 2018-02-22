@@ -104,7 +104,7 @@ class Statistics_DD_Site extends statistics_site
     function _completeCount($centerID, $projectID, $instrument)
     {
         $this->_checkCriteria($centerID, $projectID);
-        $DB =& \Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         $safe_instrument = $DB->escape($instrument);
 
@@ -135,7 +135,7 @@ class Statistics_DD_Site extends statistics_site
     function _getResults($centerID, $projectID, $instrument)
     {
         $this->_checkCriteria($centerID, $projectID);
-        $DB =& \Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
         $safe_instrument = $DB->escape($instrument);
         $result          = $DB->pselect(
             "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID,

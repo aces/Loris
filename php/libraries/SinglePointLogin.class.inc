@@ -390,7 +390,7 @@ class SinglePointLogin
     function insertFailedDetail($description, $setArray)
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         $setArray['Success']     = 'N';
         $setArray['Fail_detail'] = $description;
@@ -411,7 +411,7 @@ class SinglePointLogin
      */
     function disabledDueToInactivity($username, $maximumDaysInactive)
     {
-        $DB    =& Database::singleton();
+        $DB    =& (\NDB_Factory::singleton())->database();
         $query = "SELECT MAX(Login_timestamp) as Login_timestamp
                   FROM user_login_history 
                   WHERE UserID = :username";

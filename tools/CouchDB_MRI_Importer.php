@@ -14,7 +14,7 @@ require_once 'generic_includes.php';
 class CouchDBMRIImporter
 {
     var $SQLDB; // reference to the database handler, store here instead
-    // of using Database::singleton in case it's a mock.
+    // of using (\NDB_Factory::singleton())->database in case it's a mock.
     var $CouchDB; // reference to the CouchDB database handler
 
     // this is just in an instance variable to make

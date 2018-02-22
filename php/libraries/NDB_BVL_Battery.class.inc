@@ -168,7 +168,7 @@ class NDB_BVL_Battery
      */
     function addInstrument($testName)
     {
-        $DB = Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
         // assert that a battery has already been selected
         $this->_assertBatterySelected();
 
@@ -260,7 +260,7 @@ class NDB_BVL_Battery
      */
     function getBattery($stage=null, $SubprojectID=null, $visit_label=null)
     {
-        $DB = Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
         // assert that a battery has already been selected
         $this->_assertBatterySelected();
 
@@ -297,7 +297,7 @@ class NDB_BVL_Battery
      */
     function getBatteryVerbose($stage=null, $SubprojectID=null)
     {
-        $DB = Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
         // assert that a battery has already been selected
         $this->_assertBatterySelected();
 
@@ -379,7 +379,7 @@ class NDB_BVL_Battery
      */
     function getInstrumentNameForCommentId($commentId)
     {
-        $db    =& Database::singleton();
+        $db    =& (\NDB_Factory::singleton())->database();
         $query = "SELECT Test_name FROM flag WHERE CommentID=:CID";
         $instrumentName = $db->pselectOne($query, array('CID' => $commentId));
         return $instrumentName;
@@ -421,7 +421,7 @@ class NDB_BVL_Battery
         $center_ID=null,
         $firstVisit=null
     ) {
-        $DB = Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
         if (empty($this->age)) {
             $this->age = $age;
         }
@@ -558,7 +558,7 @@ class NDB_BVL_Battery
      */
     static function generateCommentID($SessionID, $Test_name)
     {
-        $DB = Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
 
         $TestID = $DB->pselectOne(
             "SELECT ID FROM test_names WHERE Test_name=:TN",
@@ -609,7 +609,7 @@ class NDB_BVL_Battery
      */
     function _assertValidInstrument($testName)
     {
-        $DB    = Database::singleton();
+        $DB    = (\NDB_Factory::singleton())->database();
         $query = "SELECT COUNT(*) AS counter FROM test_names WHERE Test_name=:TN";
         $row   = $DB->pselectRow($query, array('TN' => $testName));
 

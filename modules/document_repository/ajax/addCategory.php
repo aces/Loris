@@ -32,7 +32,7 @@ $client->initialize("../../project/config.xml");
 $config = NDB_Config::singleton();
 
 // create Database object
-$DB =& Database::singleton();
+$DB =& (\NDB_Factory::singleton())->database();
 
 $Notifier = new NDB_Notifier(
     "document_repository",

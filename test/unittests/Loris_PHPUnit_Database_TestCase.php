@@ -116,7 +116,7 @@ abstract class Loris_PHPUnit_Database_TestCase extends TestCase
      */
     protected function createLorisDBConnection()
     {
-        $this->database = Database::singleton(
+        $this->database = (\NDB_Factory::singleton())->database(
             $this->factory->settings()->dbName(),
             $this->factory->settings()->dbUserName(),
             $this->factory->settings()->dbPassword(),

@@ -35,7 +35,7 @@ class Notify
      */
     static function spool($type, $message, $centerID=null)
     {
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         $typeID = Notify::getTypeID($type);
         if (empty($typeID)) {
@@ -62,7 +62,7 @@ class Notify
      */
     static function getTypeID($type)
     {
-        $db     =& Database::singleton();
+        $db     =& (\NDB_Factory::singleton())->database();
         $typeID = $db->pselectOne(
             "SELECT NotificationTypeID FROM notification_types WHERE Type=:TP",
             array('TP' => $type)

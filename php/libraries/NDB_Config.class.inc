@@ -531,7 +531,7 @@ class NDB_Config
      */
     static function checkMenuPermission($menuID)
     {
-        $DB   = Database::singleton();
+        $DB   = (\NDB_Factory::singleton())->database();
         $user = User::singleton();
 
         $perms = $DB->pselect(
@@ -567,7 +567,7 @@ class NDB_Config
      */
     static function getMenuTabs($parent = null)
     {
-        $DB = Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
         if ($parent === null) {
             $thisLevel = $DB->pselect(
                 "SELECT Label,

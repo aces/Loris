@@ -180,7 +180,7 @@ class NDB_Breadcrumb
         }
 
         // create DB object
-        $DB =& Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         // set the 'instrument list' crumb text
         if (!empty($_REQUEST['sessionID'])) {

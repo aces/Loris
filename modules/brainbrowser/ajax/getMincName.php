@@ -15,7 +15,7 @@ ini_set('default_charset', 'utf-8');
 require_once "Utility.class.inc";
 
 
-$DB = Database::singleton();
+$DB = (\NDB_Factory::singleton())->database();
 
 $query = "select File from files where FileID = :MincID";
 $m     = $DB->pselectOne($query, array('MincID' => $_REQUEST['minc_id']));

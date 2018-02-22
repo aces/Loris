@@ -12,7 +12,7 @@
   *  @link     https://github.com/aces/Loris
   */
 
-$DB   =& Database::singleton();
+$DB   =& (\NDB_Factory::singleton())->database();
 $user =& User::singleton();
 
 if ($_POST['action'] == 'upload') {

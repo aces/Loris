@@ -18,7 +18,7 @@ $client->makeCommandLine();
 $client->initialize();
 
 $config = NDB_Config::singleton();
-$db     = Database::singleton();
+$db     = (\NDB_Factory::singleton())->database();
 
 /**
  * HELP SCREEN
