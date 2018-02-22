@@ -117,7 +117,7 @@ class CouchDBDemographicsImporter {
         $consents = Utility::getConsentList();
 
         $fieldsInQuery = "SELECT c.DoB,
-                                 c.CandID, 
+                                c.CandID, 
                                 c.PSCID, 
                                 s.Visit_label, 
                                 s.SubprojectID, 
@@ -145,7 +145,7 @@ class CouchDBDemographicsImporter {
                                 LEFT JOIN feedback_bvl_entry fbe ON (fbe.FeedbackID=fbt.FeedbackID)";
         $groupBy=" GROUP BY s.ID, 
                             c.DoB, 
-		            c.CandID, 
+                            c.CandID, 
                             c.PSCID, 
                             s.Visit_label, 
                             s.SubprojectID, 
