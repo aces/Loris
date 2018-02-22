@@ -945,7 +945,7 @@ class Candidate
      */
     static function getParticipantStatusOptions()
     {
-        $DB           =& Database::singleton();
+        $DB           =& (\NDB_Factory::singleton())->database();
         $options      = $DB->pselect(
             "SELECT ID,Description
             FROM participant_status_options
@@ -969,7 +969,7 @@ class Candidate
      */
     static function getParticipantStatusSubOptions($parentID)
     {
-        $DB           =& Database::singleton();
+        $DB           =& (\NDB_Factory::singleton())->database();
         $options      = $DB->pselect(
             "SELECT ID,Description 
             FROM participant_status_options 

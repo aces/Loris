@@ -19,7 +19,7 @@ if (!$userSingleton->hasPermission('genomic_browser_view_site')
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
-$DB     =& Database::singleton();
+$DB     =& (\NDB_Factory::singleton())->database();
 $result = $DB->pselect(
     'SELECT analysis_modality as genomicFileType
        FROM genomic_analysis_modality_enum',

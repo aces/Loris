@@ -59,7 +59,7 @@ function _hasPerm()
     */
 function _canRejectAccount($identifier)
 {
-    $DB = Database::singleton();
+    $DB = (\NDB_Factory::singleton())->database();
     try{
         $fields =  $DB->pselect(
             "SELECT Password_hash, Pending_approval
@@ -92,7 +92,7 @@ function _canRejectAccount($identifier)
     function reject_user($identifier)
     {
     // @codingStandardsIgnoreEnd
-        $DB      = Database::singleton();
+        $DB      = (\NDB_Factory::singleton())->database();
         $config  = NDB_Config::singleton();
         $baseURL = $config->getSetting('url');
 

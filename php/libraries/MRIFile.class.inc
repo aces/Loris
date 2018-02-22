@@ -33,7 +33,7 @@ class MRIFile
      */
     function __construct($fileID)
     {
-        $db     =& Database::singleton();
+        $db     =& (\NDB_Factory::singleton())->database();
         $params = array('FID' => $fileID);
 
         $query    = "SELECT * FROM files WHERE FileID=:FID";
@@ -109,7 +109,7 @@ class MRIFile
      */
     function getAcquisitionProtocol()
     {
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         if (is_null($this->fileData['AcquisitionProtocolID'])) {
             return null;

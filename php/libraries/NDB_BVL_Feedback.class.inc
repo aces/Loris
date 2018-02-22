@@ -157,7 +157,7 @@ class NDB_BVL_Feedback
     function _setCandidateProfileInfo()
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         // SELECT section
         $query = "SELECT c.CandID";
@@ -227,7 +227,7 @@ class NDB_BVL_Feedback
     function getFeedbackTypes()
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         $query = "SELECT Feedback_type as Type, Name, Description
             FROM feedback_bvl_type";
@@ -306,7 +306,7 @@ class NDB_BVL_Feedback
     function getThreadType($feedbackID)
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         $query = "SELECT Name FROM feedback_bvl_thread
                   JOIN feedback_bvl_type ON
@@ -346,7 +346,7 @@ class NDB_BVL_Feedback
     function getThreadStatus($feedbackID)
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         $query = "SELECT Status FROM feedback_bvl_thread WHERE FeedbackID = :FID";
 
@@ -367,7 +367,7 @@ class NDB_BVL_Feedback
     function getMaxThreadStatus($select_inactive_threads)
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         $query   = "SELECT Status FROM feedback_bvl_thread WHERE";
         $qparams = array();
@@ -404,7 +404,7 @@ class NDB_BVL_Feedback
     function getThreadCount()
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         $query   = "SELECT COUNT(*)
             FROM feedback_bvl_thread
@@ -443,7 +443,7 @@ class NDB_BVL_Feedback
     function getSummaryOfThreads()
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         // get User object
         $user =& User::singleton($this->_username);
@@ -506,7 +506,7 @@ class NDB_BVL_Feedback
     function getThreadList()
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         // create user object
         $user =& User::singleton($this->_username);
@@ -606,7 +606,7 @@ class NDB_BVL_Feedback
     function getThreadEntries($feedbackID)
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         //select the entries (details) for the thread
         $query
@@ -648,7 +648,7 @@ class NDB_BVL_Feedback
     function createThread($level, $type, $comment, $public=null,$fieldname=null)
     {
         // new DB Object
-        $DB = Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
 
         // public threads are inactive by default
         if ($public == 'Y') {
@@ -751,7 +751,7 @@ class NDB_BVL_Feedback
     function createEntry($feedbackID, $comment, $username)
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         // create SET array for the INSERT
         $setArray = array(
@@ -790,7 +790,7 @@ class NDB_BVL_Feedback
         $fieldname =''
     ) {
         // new DB Object
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         // create the new entry - every update need to be follow up with a comment
         $success = $this->createEntry($feedbackID, $comment);
@@ -839,7 +839,7 @@ class NDB_BVL_Feedback
     function deleteThread($feedbackID)
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         // DELETE the thread's entries
         $success = $db->delete(
@@ -865,7 +865,7 @@ class NDB_BVL_Feedback
     function deleteEntry($entryID)
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         // DELETE the thread entries
         $db->delete('feedback_bvl_entry', array("ID" => $entryID));
@@ -881,7 +881,7 @@ class NDB_BVL_Feedback
     function activateThread($feedbackID=null)
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         $setArray = array(
                      "Active"   => 'Y',
@@ -935,7 +935,7 @@ class NDB_BVL_Feedback
     function closeThread($feedbackID=null)
     {
         // new DB Object
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         $setArray = array(
                      "Status" => 'closed',
@@ -992,7 +992,7 @@ class NDB_BVL_Feedback
      */
     function openThread($feedbackID)
     {
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         $setArray = array(
                      "Status" => 'opened',
@@ -1034,7 +1034,7 @@ class NDB_BVL_Feedback
             );
         }
         // new DB Object
-        $db = Database::singleton();
+        $db = (\NDB_Factory::singleton())->database();
 
         $record =array();
         // StatusID is passed in as an integer, but the field in the database

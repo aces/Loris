@@ -33,7 +33,7 @@ if (isset($_GET['action'])) {
  */
 function editFile()
 {
-    $db   =& Database::singleton();
+    $db   =& (\NDB_Factory::singleton())->database();
     $user =& User::singleton();
     if (!$user->hasPermission('media_write')) {
         header("HTTP/1.1 403 Forbidden");
@@ -78,7 +78,7 @@ function uploadFile()
         "upload"
     );
 
-    $db     =& Database::singleton();
+    $db     =& (\NDB_Factory::singleton())->database();
     $config = NDB_Config::singleton();
     $user   =& User::singleton();
     if (!$user->hasPermission('media_write')) {
@@ -185,7 +185,7 @@ function uploadFile()
 function getUploadFields()
 {
 
-    $db =& Database::singleton();
+    $db =& (\NDB_Factory::singleton())->database();
 
     $instruments = $db->pselect(
         "SELECT Test_name FROM test_names ORDER BY Test_name",
@@ -362,7 +362,7 @@ function toSelect($options, $item, $item2)
  */
 function getFilesList()
 {
-    $db       =& Database::singleton();
+    $db       =& (\NDB_Factory::singleton())->database();
     $fileList = $db->pselect("SELECT id, file_name FROM media", []);
 
     $mediaFiles = [];

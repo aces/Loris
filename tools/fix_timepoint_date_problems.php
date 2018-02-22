@@ -51,7 +51,7 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize($configFile);
 
-$db =& Database::singleton();
+$db =& (\NDB_Factory::singleton())->database();
 
 /**
  * HELP SCREEN
@@ -259,7 +259,7 @@ function addInstrument($sessionID, $testName)
         throw new LorisException("SessionID and Test name must be provided");
     }
 
-    $db =& Database::singleton();
+    $db =& (\NDB_Factory::singleton())->database();
 
     // create timepoint object
     $timePoint =& TimePoint::singleton($sessionID);
@@ -335,7 +335,7 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
         throw new LorisException("Error: Database user named " . getenv('USER') . " does not exist. Please create and then retry script\n");
     }
 
-    $db =& Database::singleton();
+    $db =& (\NDB_Factory::singleton())->database();
 
     // check the args
     if (empty($dateType) || !in_array($dateType, array('dob', 'edc', 'screening', 'visit')) || empty($newDate)

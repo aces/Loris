@@ -102,7 +102,7 @@ class Utility
      */
     static function getListOfSubjectEthnicities()
     {
-        $DB =& Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         // get the list of ethnicities
         $query = "SELECT DISTINCT Ethnicity
@@ -132,7 +132,7 @@ class Utility
      */
     static function getSiteList($study_site = true)
     {
-        $DB =& Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         // get the list of study sites - to be replaced by the Site object
         $query = "SELECT CenterID, Name FROM psc ";
@@ -165,7 +165,7 @@ class Utility
      */
     static function getAssociativeSiteList($study_site = true, $DCC = true)
     {
-        $DB =& Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         // get the list of study sites - to be replaced by the Site object
         $query = "SELECT CenterID, Name FROM psc ";
@@ -194,7 +194,7 @@ class Utility
      */
     static function getVisitList()
     {
-        $DB =& Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         $query = "SELECT Visit_label from Visit_Windows ORDER BY Visit_label";
 
@@ -282,7 +282,7 @@ class Utility
      */
     static function getTestNameByCommentID($commentID)
     {
-        $db =& Database::singleton();
+        $db =& (\NDB_Factory::singleton())->database();
 
         $query    = "SELECT Test_name FROM flag WHERE CommentID=:CID";
         $testName = $db->pselectOne($query, array('CID' => $commentID));
@@ -444,7 +444,7 @@ class Utility
      */
     static function lookupBattery($age, $stage=null)
     {
-        $DB =& Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         // craft the select query
         $query  = "SELECT t.Test_name FROM test_battery AS b, test_names AS t
@@ -729,7 +729,7 @@ class Utility
      */
     static function getDirectInstruments()
     {
-        $DB            =& Database::singleton();
+        $DB            =& (\NDB_Factory::singleton())->database();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true",
             array()
@@ -824,7 +824,7 @@ class Utility
         $query    = "SELECT count(*)
             FROM {$table_name}
             WHERE {$column} is NULL";
-        $DB       =& Database::singleton();
+        $DB       =& (\NDB_Factory::singleton())->database();
         $num_null = $DB->pselectOne(
             $query,
             array()
@@ -851,7 +851,7 @@ class Utility
      */
     static function getVisitLabelUsingTestName($test_name)
     {
-        $db    =& Database::singleton();
+        $db    =& (\NDB_Factory::singleton())->database();
         $query = "SELECT DISTINCT s.visit_label FROM session s
             JOIN flag f ON (s.ID = f.SessionID)
             JOIN candidate c ON (c.Candid = s.Candid)
@@ -873,7 +873,7 @@ class Utility
      */
     static function getStageUsingCandID($Cand_id)
     {
-        $db    =& Database::singleton();
+        $db    =& (\NDB_Factory::singleton())->database();
         $query = "select DISTINCT Current_stage from session where ".
             "CandID = :Cand_id";
         $stage = $db->pselect($query, array('Cand_id' => $Cand_id));
@@ -890,7 +890,7 @@ class Utility
      */
     static function getSubprojectIDUsingCandID($Cand_id)
     {
-        $db    =& Database::singleton();
+        $db    =& (\NDB_Factory::singleton())->database();
         $query = "select DISTINCT SubprojectID from session where CandID = :CandID";
         $stage = $db->pselect($query, array('CandID' => $Cand_id));
         return $stage[0]['SubprojectID'];
@@ -910,7 +910,7 @@ class Utility
     static function getTestNameUsingFullName($fullname)
     {
         $test_name = '';
-        $db        =& Database::singleton();
+        $db        =& (\NDB_Factory::singleton())->database();
         //print_r($instument);
         $instrument = $db->pselect(
             "SELECT Test_name FROM test_names WHERE Full_name =:fname",
@@ -935,7 +935,7 @@ class Utility
      */
     static function getSourcefrom()
     {
-        $DB =& Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         $sourcefrom = $DB->pselect(
             "SELECT DISTINCT t.Full_name FROM parameter_type pt
@@ -978,7 +978,7 @@ class Utility
      */
     static function getSourcefields($instrument=null,$commentID=null,$name=null)
     {
-        $DB =& Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
         //get sourcefield using instrument
         if (!is_null($instrument)) {
             $sourcefields = $DB->pselect(
@@ -1070,7 +1070,7 @@ class Utility
      */
     static function getVisitInstruments($visit_label)
     {
-        $DB =& Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
             $test_names = $DB->pselect(

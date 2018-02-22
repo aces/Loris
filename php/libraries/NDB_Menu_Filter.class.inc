@@ -464,7 +464,7 @@ class NDB_Menu_Filter extends NDB_Menu
     function _getList()
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB =& (\NDB_Factory::singleton())->database();
 
         $qparams = array();
         // add the base query
@@ -589,7 +589,7 @@ class NDB_Menu_Filter extends NDB_Menu
     function _getNumberPages($query)
     {
         $wheredetails = $this->_getBaseFilter();
-        $db           = Database::singleton();
+        $db           = (\NDB_Factory::singleton())->database();
         if (empty($this->group_by) && empty($this->having)) {
             $query = "SELECT COUNT(*)" . $this->query . $wheredetails['clause'];
         } else {

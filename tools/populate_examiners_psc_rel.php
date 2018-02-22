@@ -23,7 +23,7 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize("../project/config.xml");
 $config = NDB_Config::singleton();
-$db     =& Database::singleton();
+$db     =& (\NDB_Factory::singleton())->database();
 
 $examinersRows = $db->pselect(
     "SELECT * FROM examiners",

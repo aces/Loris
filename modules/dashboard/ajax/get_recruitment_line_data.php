@@ -15,7 +15,7 @@
 header("content-type:application/json");
 ini_set('default_charset', 'utf-8');
 
-$DB = Database::singleton();
+$DB = (\NDB_Factory::singleton())->database();
 
 $recruitmentData      = array();
 $recruitmentStartDate = $DB->pselectOne(
@@ -84,7 +84,7 @@ function createChartLabels($startDate, $endDate)
  */
 function getRecruitmentData($siteID, $labels)
 {
-    $DB   = Database::singleton();
+    $DB   = (\NDB_Factory::singleton())->database();
     $data = array();
 
     foreach ($labels as $label) {

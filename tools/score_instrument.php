@@ -84,7 +84,7 @@ if($test_name != 'all') {
     }
 }
 
-$db =& Database::singleton();
+$db =& (\NDB_Factory::singleton())->database();
 
 // check that the $test_name is a valid instrument
 if($test_name== 'all') {

@@ -12,7 +12,7 @@
  *  @link     https://github.com/aces/Loris
  */
 
-$DB =& Database::singleton();
+$DB =& (\NDB_Factory::singleton())->database();
 
 if ($_POST['action'] == 'addpermission') {
     $userid          = $_POST['userid'];

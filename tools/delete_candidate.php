@@ -74,7 +74,7 @@ default:
     break;
 }
 
-$DB =& Database::singleton();
+$DB =& (\NDB_Factory::singleton())->database();
 
 /*
  * Perform validations on arguments

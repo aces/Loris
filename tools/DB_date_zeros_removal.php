@@ -20,7 +20,7 @@ $client->makeCommandLine();
 $client->initialize(__DIR__."/../project/config.xml");
 $config = NDB_Config::singleton();
 
-$db =& Database::singleton();
+$db =& (\NDB_Factory::singleton())->database();
 $database = $config->getSetting('database');
 
 $base = $config->getSetting('base');

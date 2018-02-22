@@ -44,7 +44,7 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         );
         
         if (!empty($commentID)) {
-            $db =& Database::singleton();
+            $db =& (\NDB_Factory::singleton())->database();
 
             $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
             $db->selectRow($query, $record);
@@ -432,7 +432,7 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
                 }
               }
                           
-              $db=& Database::singleton();
+              $db=& (\NDB_Factory::singleton())->database();
 
               $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));
               return true;

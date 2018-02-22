@@ -186,7 +186,7 @@ class Installer
                         . "characters long.";
             return false;
         }
-        $DB = Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
         if ($DB->connectAndCreate(
             $values['dbname'],
             $values['dbadminuser'],
@@ -215,7 +215,7 @@ class Installer
      */
     function sourceSchema($values)
     {
-        $DB = Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
         if ($DB->connect(
             $values['dbname'],
             $values['dbadminuser'],
@@ -289,7 +289,7 @@ class Installer
      */
     function updateBaseConfig($values)
     {
-        $DB = Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
         if ($DB->connect(
             $values['dbname'],
             $values['dbadminuser'],
@@ -386,7 +386,7 @@ class Installer
      */
     function createMySQLAccount($values)
     {
-        $DB = Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
         if ($DB->connect(
             $values['dbname'],
             $values['dbadminuser'],
@@ -497,7 +497,7 @@ class Installer
             $this->_lastErr = "All entries must be provided.";
             return false;
         }
-        $DB = Database::singleton();
+        $DB = (\NDB_Factory::singleton())->database();
         if ($DB->connect(
             $values['dbname'],
             $values['dbadminuser'],

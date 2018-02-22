@@ -31,7 +31,7 @@ set_include_path(
 $file = $_GET['File'];
 
 // Ensure file exists in the document_repository table before serving
-$db     =& Database::singleton();
+$db     =& (\NDB_Factory::singleton())->database();
 $record = $db->pselectOne(
     "SELECT record_id FROM document_repository WHERE "
     . "Data_dir=:dd",

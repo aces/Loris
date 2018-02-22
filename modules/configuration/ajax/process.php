@@ -28,7 +28,7 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
-$DB =& Database::singleton();
+$DB =& (\NDB_Factory::singleton())->database();
 foreach ($_POST as $key => $value) {
     if (is_numeric($key)) { //update
         if ($value == "") {

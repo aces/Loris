@@ -36,7 +36,7 @@ require_once 'Utility.class.inc';
 class VisitWindowPopulator
 {
     var $SQLDB; // reference to the database handler, store here instead
-                // of using Database::singleton in case it's a mock.
+                // of using (\NDB_Factory::singleton())->database in case it's a mock.
     var $Config;
 
     /**
@@ -47,7 +47,7 @@ class VisitWindowPopulator
      */
     function __construct()
     {
-        $this->DB = Database::singleton();
+        $this->DB = (\NDB_Factory::singleton())->database();
         $this->Config = NDB_Config::singleton();
     }
 

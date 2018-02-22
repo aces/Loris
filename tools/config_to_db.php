@@ -30,7 +30,7 @@ iterate($iterator, null);
  */
 function iterate($iterator, $parentKey)
 {
-    $db = Database::singleton();
+    $db = (\NDB_Factory::singleton())->database();
     for ($iterator->rewind(); $iterator->valid(); $iterator->next()) {
         $current = $iterator->current();
         $name  = $iterator->key();
@@ -75,7 +75,7 @@ function iterate($iterator, $parentKey)
  */
 function processLeaf($name, $value, $configID)
 {
-    $db = Database::singleton();
+    $db = (\NDB_Factory::singleton())->database();
     $allowMultiple = $db->pselectone(
         "SELECT AllowMultiple 
          FROM ConfigSettings 

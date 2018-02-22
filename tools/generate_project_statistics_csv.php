@@ -13,7 +13,7 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize('../project/config.xml');
 
-$db =& Database::singleton();
+$db =& (\NDB_Factory::singleton())->database();
 $config = NDB_Config::singleton();
 
 $date = date("m_d_Y");

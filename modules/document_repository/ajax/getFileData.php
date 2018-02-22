@@ -24,7 +24,7 @@ $client = new NDB_Client();
 $client->initialize("../../project/config.xml");
 
 // create Database object
-$DB =& Database::singleton();
+$DB =& (\NDB_Factory::singleton())->database();
 
 $result = $DB->pselectRow(
     "SELECT * FROM document_repository where record_id =:identifier",
