@@ -43,17 +43,11 @@ class Stats_Reliability extends \NDB_Form
     /**
      * Reliability tab setup
      *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this     page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
      * @return void
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
 
         $DB          =& \Database::singleton();
         $config      = \NDB_Config::singleton();
