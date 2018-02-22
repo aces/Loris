@@ -266,7 +266,7 @@ class ReliabilityTestIntegrationTest extends LorisIntegrationTest
         )->sendKeys("8888");
 
         $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("Some text that will not be there for sure: cucrapoque", $bodyText);
+        $this->assertContains("Will not be there: cucrapoque", $bodyText);
 
         $this->webDriver->findElement(WebDriverBy::Name("filter"))->click();
         $this->safeGet($this->url . "/reliability/?format=json");
@@ -309,7 +309,7 @@ class ReliabilityTestIntegrationTest extends LorisIntegrationTest
         )->sendKeys("8888");
 
         $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("Some text that will not be there for sure: cucrapoque", $bodyText);
+        $this->assertContains("Will not be there: cucrapoque", $bodyText);
 
         $this->webDriver->findElement(WebDriverBy::Name("reset"))->click();
         $bodyText = $this->webDriver->findElement(WebDriverBy::Name("PSCID"))
