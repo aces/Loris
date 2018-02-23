@@ -681,6 +681,32 @@ class Candidate
         return $vLabel;
     }
 
+    /**
+     * Returns list of consents and value of each for this candidate
+     *
+     * @param int $candID Candidate for which consent details are required
+     *
+     * @return array List of consents and their associated values for this candidate.
+     *               The keys of the arrays are the IDs of the consents
+     */
+    function getConsent($candID)
+    {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $query       = "SELECT ConsentTypeID, Status, DateGiven, DateWithdrawn
+            FROM candidate_consent_type_rel WHERE CandidateID=:cid";
+        $where       = array('cid' => $candID);
+        $consentList = $db->pselect($query, $where);
+
+        $formatted = array();
+        foreach ($consentList as $consent) {
+            $formatted[$consent['ConsentTypeID']] = $consent;
+        }
+
+        return $formatted;
+    }
+
 
     /**
     * Generates a new random CandID

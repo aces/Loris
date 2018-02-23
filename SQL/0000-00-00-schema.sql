@@ -1,6 +1,11 @@
 -- ********************************
 -- DROP TABLE (ORDER MATTERS)
 -- ********************************
+
+DROP TABLE IF EXISTS `candidate_consent_type_rel`;
+DROP TABLE IF EXISTS `consent_type`;
+DROP TABLE IF EXISTS `candidate_consent_type_history`;
+
 DROP TABLE IF EXISTS `acknowledgements`;
 
 DROP TABLE IF EXISTS `data_release_permissions`;
@@ -1058,9 +1063,6 @@ CREATE TABLE `participant_status` (
   `participant_suboptions` int(10) unsigned DEFAULT NULL,
   `reason_specify` text,
   `reason_specify_status` enum('dnk','not_applicable','refusal','not_answered') DEFAULT NULL,
-  `study_consent` enum('yes','no','not_answered') DEFAULT NULL,
-  `study_consent_date` date DEFAULT NULL,
-  `study_consent_withdrawal` date DEFAULT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `CandID` (`CandID`),
   UNIQUE KEY `ID` (`ID`),
@@ -1100,18 +1102,6 @@ CREATE TABLE `participant_status_history` (
   `reason_specify` varchar(255) DEFAULT NULL,
   `reason_specify_status` enum('not_answered') DEFAULT NULL,
   `participant_subOptions` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  UNIQUE KEY `ID` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `consent_info_history` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `CandID` int(6) NOT NULL DEFAULT '0',
-  `entry_staff` varchar(255) DEFAULT NULL,
-  `data_entry_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `study_consent` enum('yes','no','not_answered') DEFAULT NULL,
-  `study_consent_date` date DEFAULT NULL,
-  `study_consent_withdrawal` date DEFAULT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -2025,4 +2015,43 @@ CREATE TABLE `feedback_mri_comments` (
   CONSTRAINT `FK_feedback_mri_comments_1` FOREIGN KEY (`CommentTypeID`) REFERENCES `feedback_mri_comment_types` (`CommentTypeID`),
   CONSTRAINT `FK_feedback_mri_comments_2` FOREIGN KEY (`PredefinedCommentID`) REFERENCES `feedback_mri_predefined_comments` (`PredefinedCommentID`),
   CONSTRAINT `FK_feedback_mri_comments_3` FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `consent_type` (
+  `ConsentTypeID` int(2) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) NOT NULL,
+  `Label` varchar(255) NOT NULL,
+  CONSTRAINT `PK_consent_type` PRIMARY KEY (`ConsentTypeID`),
+  CONSTRAINT `UK_consent_type_Name` UNIQUE KEY `Name` (`Name`),
+  CONSTRAINT `UK_consent_type_Label` UNIQUE KEY `Label` (`Label`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `candidate_consent_type_rel` (
+  `CandidateID` int(6) NOT NULL,
+  `ConsentTypeID` int(2) NOT NULL,
+  `Status` enum('yes', 'no', 'not_answered') NOT NULL,
+  `DateGiven` date DEFAULT NULL,
+  `DateWithdrawn` date DEFAULT NULL,
+  CONSTRAINT `PK_candidate_consent_type_rel` PRIMARY KEY (`CandidateID`,`ConsentTypeID`),
+  CONSTRAINT `FK_candidate_consent_type_rel_CandidateID` FOREIGN KEY (`CandidateID`)
+      REFERENCES `candidate` (`CandID`)
+      ON DELETE RESTRICT
+      ON UPDATE RESTRICT,
+  CONSTRAINT `FK_candidate_consent_type_rel_ConsentTypeID` FOREIGN KEY (`ConsentTypeID`)
+      REFERENCES `consent_type` (`ConsentTypeID`)
+      ON DELETE RESTRICT
+      ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `candidate_consent_type_history` (
+  `CandidateConsentHistoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `EntryDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `DateGiven` date DEFAULT NULL,
+  `DateWithdrawn` date DEFAULT NULL,
+  `PSCID` varchar(255) NOT NULL,
+  `ConsentName` varchar(255) NOT NULL,
+  `ConsentLabel` varchar(255) NOT NULL,
+  `Status` enum('yes','no','not_answered') NOT NULL,
+  `EntryStaff` varchar(255) DEFAULT NULL,
+  CONSTRAINT `PK_candidate_consent_type_history` PRIMARY KEY (`CandidateConsentHistoryID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

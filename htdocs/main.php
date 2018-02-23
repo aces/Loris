@@ -264,9 +264,7 @@ $tpl_data['studyParams'] = array(
                             'useEDC'      => $config->getSetting('useEDC'),
                             'useProband'  => $config->getSetting('useProband'),
                             'useFamilyID' => $config->getSetting('useFamilyID'),
-                            'useConsent'  => $config->getSetting(
-                                'ConsentModule'
-                            )['useConsent'],
+                            'useConsent'  => $config->getSetting('useConsent'),
                            );
 $tpl_data['jsonParams']  = json_encode(
     array(

@@ -2,7 +2,6 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'generic_includes.php';
 require_once 'CouchDB.class.inc';
-require_once 'Database.class.inc';
 class CouchDBDemographicsImporter {
     var $SQLDB; // reference to the database handler, store here instead
                 // of using Database::singleton in case it's a mock.
@@ -75,14 +74,6 @@ class CouchDBDemographicsImporter {
             'Description' => 'Participant status comments',
             'Type' => "text",
         ),
-        'Study_consent' => array(
-            'Description' => 'Study Consent',
-            'Type' => "enum('yes','no','not_answered')",
-        ),
-        'Study_consent_withdrawal' => array(
-            'Description' => 'Study Consent Withdrawal Date',
-            'Type' => "varchar(255)",
-        ),
         'session_feedback' => array(
             'Description' => 'Behavioural feedback at the session level',
             'Type' => "varchar(255)",
@@ -123,6 +114,7 @@ class CouchDBDemographicsImporter {
 
     function _generateQuery() {
         $config = NDB_Config::singleton();
+        $consents = Utility::getConsentList();
 
         $fieldsInQuery = "SELECT c.DoB,
                                 c.CandID, 
@@ -141,8 +133,6 @@ class CouchDBDemographicsImporter {
                                 COALESCE(pso.Description,'Active') as Status, 
                                 ps.participant_suboptions as Status_reason, 
                                 ps.reason_specify as Status_comments, 
-                                ps.study_consent as Study_consent, 
-                                COALESCE(ps.study_consent_withdrawal,'0000-00-00') AS Study_consent_withdrawal,
                                 GROUP_CONCAT(fbe.Comment) as session_feedback";
         $tablesToJoin = " FROM session s 
                                 JOIN candidate c USING (CandID) 
@@ -153,10 +143,9 @@ class CouchDBDemographicsImporter {
                                 LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)
                                 LEFT JOIN feedback_bvl_thread fbt ON (fbt.CandID=c.CandID) 
                                 LEFT JOIN feedback_bvl_entry fbe ON (fbe.FeedbackID=fbt.FeedbackID)";
-
         $groupBy=" GROUP BY s.ID, 
-                            c.DoB,
-							c.CandID, 
+                            c.DoB, 
+                            c.CandID, 
                             c.PSCID, 
                             s.Visit_label, 
                             s.SubprojectID, 
@@ -171,10 +160,7 @@ class CouchDBDemographicsImporter {
                             pc_comment.Value, 
                             pso.Description, 
                             ps.participant_suboptions, 
-                            ps.reason_specify, 
-                            ps.study_consent, 
-                            Study_consent_withdrawal
-                            ";
+                            ps.reason_specify";
 
         // If proband fields are being used, add proband information into the query
         if ($config->getSetting("useProband") === "true") {
@@ -188,6 +174,27 @@ class CouchDBDemographicsImporter {
             $fieldsInQuery .= $EDCFields;
             $groupBy .= ", c.EDC";
         }
+        // If consent is being used, add consent information into query
+        if ($config->getSetting("useConsent") === "true") {
+          $i = 1;
+          foreach($consents as $consent) {
+            $consentName    = $consent['Name'];
+            $consentLabel   = $consent['Label'];
+            $consentFields  = ", 
+                                COALESCE(cc" . $i . ".Status, 'not available') AS " . $consentName . ", 
+                                COALESCE(cc" . $i . ".DateGiven, '0000-00-00') AS " . $consentName . "_date,
+                                COALESCE(cc" . $i . ".DateWithdrawn, '0000-00-00') AS " . $consentName . "_withdrawal";
+            $fieldsInQuery .= $consentFields;
+            $tablesToJoin  .= "
+                                LEFT JOIN candidate_consent_type_rel cc" . $i . " ON (cc" . $i . ".CandidateID=c.CandID) 
+                                AND cc" . $i . ".ConsentTypeID=(SELECT ConsentTypeID FROM consent_type WHERE Name='" . $consentName . "') ";
+            $groupBy     .= ", 
+                            cc" . $i . ".Status, 
+                            cc" . $i . ".DateGiven, 
+                            cc" . $i . ".DateWithdrawn";
+            $i++;
+          }
+        }
         $whereClause=" WHERE s.Active='Y' AND c.Active='Y' AND c.Entity_type != 'Scanner'";
 
         $concatQuery = $fieldsInQuery . $tablesToJoin . $whereClause . $groupBy;
@@ -196,6 +203,8 @@ class CouchDBDemographicsImporter {
 
     function _updateDataDict() {
         $config = NDB_Config::singleton();
+        $consents = Utility::getConsentList();
+
         // If proband fields are being used, update the data dictionary
         if ($config->getSetting("useProband") === "true") {
             $this->Dictionary["Gender_proband"] = array(
@@ -223,6 +232,25 @@ class CouchDBDemographicsImporter {
                 'Description' => 'Project for which the candidate belongs',
                 'Type' => $projectsEnum
             );
+        }
+        // If consent is being used, update the data dictionary
+        if ($config->getSetting("useConsent") === "true") {
+          foreach($consents as $consent) {
+            $consentName  = $consent['Name'];
+            $consentLabel = $consent['Label'];
+            $this->Dictionary[$consentName] = array(
+                'Description' => $consentLabel,
+                'Type' => "enum('yes','no','not_answered')"
+            );
+            $this->Dictionary[$consentName . "_date"] = array(
+                'Description' => $consentLabel . 'Date',
+                'Type' => "date"
+            );
+            $this->Dictionary[$consentName . "_withdrawal"] = array(
+                'Description' => $consentLabel . ' Withdrawal Date',
+                'Type' => "date"
+            );
+          }
         }
         /*
         // Add any candidate parameter fields to the data dictionary
