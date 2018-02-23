@@ -694,9 +694,8 @@ class Candidate
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
-        $query       = "SELECT *
-            FROM candidate_consent_type_rel JOIN consent_type USING (ConsentTypeID) 
-            WHERE CandidateID=:cid";
+        $query       = "SELECT ConsentTypeID, Status, DateGiven, DateWithdrawn
+            FROM candidate_consent_type_rel WHERE CandidateID=:cid";
         $where       = array('cid' => $candID);
         $consentList = $db->pselect($query, $where);
 

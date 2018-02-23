@@ -192,7 +192,7 @@ class Utility
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
-        $query = "SELECT * FROM consent_type";
+        $query = "SELECT ConsentTypeID, Name, Label FROM consent_type";
 
         $result = $DB->pselect($query, array());
 

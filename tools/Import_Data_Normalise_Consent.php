@@ -65,21 +65,22 @@ foreach ($formattedColumns as $columnName) {
 }
 foreach ($consents as $consent) {
     // Check that consent status, date, and withdrawal columns exist in participant_status
-    $consentName      = $consent['name'];
-    $statusExists     = $db->columnExists('participant_status', $consentName);
-    $dateExists       = $db->columnExists('participant_status', $consentName . "_date");
-    $withdrawalExists = $db->columnExists('participant_status', $consentName . "_withdrawal");
+    $consentName       = $consent['name'];
+    $consentDate       = $consentName . "_date";
+    $consentWithdrawal = $consentName . "_withdrawal";
+    $statusExists      = $db->columnExists('participant_status', $consentName);
+    $dateExists        = $db->columnExists('participant_status', $consentDate);
+    $withdrawalExists  = $db->columnExists('participant_status', $consentWithdrawal);
     if (!($statusExists && $dateExists && $withdrawalExists)) {
         array_push($errors, "At least one column is missing for " . $consentName . " in participant_status table.
            Check that status, date, and withdrawal columns exist for this consent type.");
     } else {
         // Check for zero dates
-        $psData = $db->pselect(
-            'SELECT * FROM participant_status WHERE ' . $consentName . ' IS NOT NULL OR ' . $consentName . ' != ""',
-            array()
-        );
+        $dateQuery = 'SELECT ID, CandID, ' . $consentDate . ', ' . $consentWithdrawal . ' FROM participant_status 
+                      WHERE ' . $consentName . ' IS NOT NULL OR ' . $consentName . ' != ""';
+        $psData    = $db->pselect($dateQuery, array());
         foreach ($psData as $entry) {
-            if($entry[$consentName . '_date'] === "0000-00-00") {
+            if($entry[$consentDate] === "0000-00-00" || $entry[$consentWithdrawal] === "0000-00-00") {
                 array_push($errors, "Zero dates found in participant_status for:
                            [ID]     => " . $entry['ID'] . "
                            [CandID] => " . $entry['CandID'] . "
@@ -119,8 +120,8 @@ $consentType = [];
 $printArray  = [];
 
 foreach ($consents as $key=>$consent) {
-    $consentName  = $consent['name'];
-    $consentLabel = $consent['label'];
+    $consentName       = $consent['name'];
+    $consentLabel      = $consent['label'];
   
     // Populate consent_type table with consents from Config.xml
     $db->insert(
@@ -140,19 +141,20 @@ foreach ($consents as $key=>$consent) {
     $consentType[$consentName] = $consentLabel;
 
     // Get all data where the consent status has a value
-    $psData = $db->pselect(
-        'SELECT * FROM participant_status WHERE '
-              . $consentName . ' IS NOT NULL OR ' . $consentName . ' != ""',
-        array()
-    );
+    $consentDate       = $consentName . "_date";
+    $consentWithdrawal = $consentName . "_withdrawal";
+    $dateQuery         = 'SELECT CandID, ' . $consentDate . ', ' . $consentWithdrawal . ' FROM participant_status 
+                         WHERE ' . $consentName . ' IS NOT NULL OR ' . $consentName . ' != ""';
+    $psData            = $db->pselect($dateQuery, array());
+    
     foreach ($psData as $entry) {
         // Push each formatted old entry to array
         $consentValues = [
-        'CandidateID'   => $entry['CandID'],
-        'ConsentTypeID' => $consentTypeID,
-        'Status'        => $entry[$consentName],
-        'DateGiven'     => $entry[$consentName . '_date'],
-        'DateWithdrawn' => $entry[$consentName . '_withdrawal'],
+            'CandidateID'   => $entry['CandID'],
+            'ConsentTypeID' => $consentTypeID,
+            'Status'        => $entry[$consentName],
+            'DateGiven'     => $entry[$consentDate],
+            'DateWithdrawn' => $entry[$consentWithdrawal],
         ];
         array_push($printArray, $consentValues);
     }
@@ -171,10 +173,12 @@ foreach ($printArray as $consentValues) {
 echo "\nData insert complete.\n";
 
 // Select consent history and import into new history table
-$consentHistory = $db->pselect(
-    'SELECT * FROM consent_info_history',
-    array()
-);
+$historyFieldsQuery = 'SELECT CandID, entry_staff, data_entry_date';
+foreach ($consentType as $consentName => $consentLabel) {
+    $historyFieldsQuery .= ', ' . $consentName . ', ' . $consentName . '_date, ' . $consentName . '_withdrawal';
+}
+$historyFieldsQuery .= ' FROM consent_info_history';
+$consentHistory = $db->pselect($historyFieldsQuery, array());
 
 foreach ($consentHistory as $entry) {
     $candID = $entry['CandID'];
