@@ -1,5 +1,6 @@
 <?php
 if (isset($_REQUEST['action'])) {
+    error_log($_REQUEST);
     $action = $_REQUEST['action'];
     if ($action === 'upload') {
         uploadPublication();
@@ -100,9 +101,29 @@ function uploadPublication() {
             'WHERE Name=:c',
             array('c' => $c)
         );
-        $db->insert(
-            'publication_collaborator',
+        if (!$cid) {
+            $collabInsert = array('Name' => $c);
+            $cEnc = preg_replace('/\.|\s/', '_', $c); // .'s and spaces get converted to underscores
+            $collabInsert['Email'] = isset($_REQUEST['collabEmail'.$cEnc]) ? $_REQUEST['collabEmail'.$cEnc] : null;
 
+            $db->insert(
+                'publication_collaborator',
+                $collabInsert
+            );
+            $cid = $db->pselectOne(
+                'SELECT PublicationCollaboratorID ' .
+                'FROM publication_collaborator ' .
+                'WHERE Name=:c',
+                array('c' => $c)
+            );
+        }
+        $collabRelInsert = array(
+            'PublicationID'             => $pubID,
+            'PublicationCollaboratorID' => $cid,
+        );
+        $db->insert(
+            'publication_collaborator_rel',
+            $collabRelInsert
         );
     }
 
@@ -118,7 +139,10 @@ function uploadPublication() {
         // if it doesn't, add it to keyword table and retrieve ID
         if (!$kwID) {
             $kwInsert = array('Label' => $kw);
-            $db->insert('publication_keyword', $kwInsert);
+            $db->insert(
+                'publication_keyword',
+                $kwInsert
+            );
             $kwID = $db->pselectOne(
                 'SELECT PublicationKeywordID ' .
                 'FROM publication_keyword ' .
@@ -133,7 +157,10 @@ function uploadPublication() {
             'PublicationKeywordID' => $kwID,
         );
 
-        $db->insert('publication_keyword_rel', $pubKWRelInsert);
+        $db->insert(
+            'publication_keyword_rel',
+            $pubKWRelInsert
+        );
 
     }
 
@@ -153,7 +180,10 @@ function uploadPublication() {
                     'ParameterTypeID' => $v
                 );
 
-                $db->insertIgnore('publication_parameter_type_rel', $pubParamTypeRelInsert);
+                $db->insertIgnore(
+                    'publication_parameter_type_rel',
+                    $pubParamTypeRelInsert
+                );
             }
         } else {
             $varID = $db->pselectOne(

@@ -103,6 +103,10 @@ class PublicationUploadForm extends React.Component {
       }
     }
 
+    for (var key of formObj.keys()) {
+      console.log(key);
+    }
+
     $.ajax({
       type: 'POST',
       url: this.props.action,
