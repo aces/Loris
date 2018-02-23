@@ -445,7 +445,8 @@ function getConsentStatusHistory($pscid)
     $db =& \Database::singleton();
 
     $historyData = $db->pselect(
-        "SELECT EntryDate, DateGiven, DateWithdrawn, PSCID, ConsentName, ConsentLabel, Status, EntryStaff 
+        "SELECT EntryDate, DateGiven, DateWithdrawn, PSCID, 
+         ConsentName, ConsentLabel, Status, EntryStaff 
          FROM candidate_consent_type_history 
          WHERE PSCID=:pscid 
          ORDER BY EntryDate ASC",
