@@ -160,6 +160,59 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             )
         );
 
+        // create the tarchive entries
+        $this->DB->insert(
+            'tarchive',
+            array(
+             'TarchiveID'             => 263,
+             'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000012' .
+               '100912542610900000004',
+             'PatientID'              => 'AOL0002_000002_Test1',
+             'PatientName'            => 'AOL0002_000002_Test1',
+             'CenterName'             => 'Test site AOL',
+             'AcquisitionCount'       => 10,
+             'NonDicomFileCount'      => 3,
+             'DicomFileCount'         => 1000,
+             'CreatingUser'           => 'lorisdev',
+             'sumTypeVersion'         => 1,
+             'SourceLocation'         => '/data/incoming/AOL0002_000002_Test1',
+             'ScannerManufacturer'    => 'Siemens',
+             'ScannerModel'           => 'TrioTim',
+             'ScannerSerialNumber'    => '33333',
+             'ScannerSoftwareVersion' => 'syngo MR B17',
+             'uploadAttempt'          => 1,
+             'AcquisitionMetadata'    => 'metadata',
+             'SessionID'              => 999998,
+             'PendingTransfer'        => 1,
+            )
+        );
+
+        $this->DB->insert(
+            'tarchive',
+            array(
+             'TarchiveID'             => 264,
+             'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000012' .
+               '100912542610900000001',
+             'PatientID'              => 'BOL0003_000003_Test2',
+             'PatientName'            => 'BOL0003_000003_Test2',
+             'CenterName'             => 'Test site BOL',
+             'AcquisitionCount'       => 10,
+             'NonDicomFileCount'      => 3,
+             'DicomFileCount'         => 1000,
+             'CreatingUser'           => 'lorisdev',
+             'sumTypeVersion'         => 1,
+             'SourceLocation'         => '/data/incoming/BOL0003_000003_Test2',
+             'ScannerManufacturer'    => 'Siemens',
+             'ScannerModel'           => 'TrioTim',
+             'ScannerSerialNumber'    => '33336',
+             'ScannerSoftwareVersion' => 'syngo MR B17',
+             'uploadAttempt'          => 1,
+             'AcquisitionMetadata'    => 'metadata',
+             'SessionID'              => 999999,
+             'PendingTransfer'        => 1,
+            )
+        );
+
         // @codingStandardsIgnoreStart
         $this->DB->insert(
             'files',
@@ -211,7 +264,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'SourceFileID'          => 2222,
              'ProcessProtocolID'     => 2222,
              'Caveat'                => 0,
-             'TarchiveSource'        => 263,
+             'TarchiveSource'        => 264,
             )
         );
         // @codingStandardsIgnoreStart
@@ -288,6 +341,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete("mri_acquisition_dates", array('SessionID' => '999999'));
         $this->DB->delete("files_qcstatus", array('FileID' => '1111'));
         $this->DB->delete("files_qcstatus", array('FileID' => '2222'));
+        $this->DB->delete("tarchive", array('TarchiveID' => '263'));
+        $this->DB->delete("tarchive", array('TarchiveID' => '264'));
         $this->DB->delete("session", array('ID' => '999997'));
         $this->DB->delete("session", array('ID' => '999998'));
         $this->DB->delete("session", array('ID' => '999999'));

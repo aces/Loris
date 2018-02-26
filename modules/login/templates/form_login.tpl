@@ -13,7 +13,7 @@
           {/if}
           <form method="POST" action="{$action}">
             <div class="form-group">
-              <input type="text" name="username" class="form-control" placeholder="Email" value="{$username}"/>
+              <input type="text" name="username" class="form-control" placeholder="Username" value="{$username}"/>
             </div>
             <div class="form-group">
               <input type="password" name="password" class="form-control" placeholder="Password" aria-describedby="helpBlock" />
@@ -28,8 +28,8 @@
             </div>
           </form>
           <div class="help-links">
-            <a href="{$baseurl}/password-reset/">Forgot your password?</a><br/>
-            <a href="{$baseurl}/request-account/">Request Account</a>
+            <a href="{$baseurl}/login/password-reset/">Forgot your password?</a><br/>
+            <a href="{$baseurl}/login/request-account/">Request Account</a>
           </div>
           <div class="help-text">
             A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)

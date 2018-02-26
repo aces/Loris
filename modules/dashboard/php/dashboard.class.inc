@@ -177,28 +177,13 @@ class Dashboard extends \NDB_Form
                 $this->tpl_data['incomplete_forms_site'] = $site;
             }
         }
-        // Final radiological review
-        if ($user->hasPermission('edit_final_radiological_review')
-            && $user->hasPermission('view_final_radiological_review')
-        ) {
-            $this->tpl_data['radiology_review']      = $DB->pselectOne(
-                "SELECT COUNT(*) FROM final_radiological_review f
-			LEFT JOIN flag fg ON (fg.CommentID=f.CommentID)
-			LEFT JOIN session s ON (s.ID=fg.SessionID)
-			LEFT JOIN candidate c ON (c.CandID=s.CandID)
-                WHERE Review_Done IS NULL
-			AND c.Active='Y' AND s.Active='Y'",
-                array()
-            );
-            $this->tpl_data['radiology_review_site'] = 'Sites: all';
-        }
 
         // Accounts pending approval
         if ($user->hasPermission('user_accounts_multisite')
             && $user->hasPermission('user_accounts')
         ) {
             $this->tpl_data['pending_users']      = $DB->pselectOne(
-                "SELECT COUNT(*) FROM users 
+                "SELECT COUNT(DISTINCT users.UserID) FROM users 
                 LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)
 		        WHERE users.Pending_approval='Y' 
                 AND (upr.CenterID <> 1 OR upr.CenterID IS NULL)",
@@ -208,7 +193,7 @@ class Dashboard extends \NDB_Form
         } elseif ($user->hasPermission('user_accounts')) {
             $site_arr = $user->getCenterIDs();
             $this->tpl_data['pending_users'] = $DB->pselectOne(
-                "SELECT COUNT(*) FROM users 
+                "SELECT COUNT(DISTINCT users.UserID) FROM users 
                 LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)
 		        WHERE users.Pending_approval='Y' AND upr.CenterID IN (:CID)",
                 array('CID' => implode(",", $site_arr))

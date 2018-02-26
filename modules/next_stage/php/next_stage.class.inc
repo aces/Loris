@@ -111,20 +111,14 @@ class Next_Stage extends \NDB_Form
 
     }
     /**
-     * Override the form's setupPage to add elements to the page (after LorisForm
-     * has been initialized in the parent.)
-     *
-     * @param string $name       See NDB_Page
-     * @param string $page       See NDB_Page
-     * @param string $identifier See NDB_Page
-     * @param string $commentID  See NDB_Page
-     * @param string $formname   See NDB_Page
+     * Add elements to the page (after LorisForm has been
+     * initialized in the parent.)
      *
      * @return none
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
         $timePoint =& \TimePoint::singleton($this->identifier);
         $config    =& \NDB_Config::singleton();
 

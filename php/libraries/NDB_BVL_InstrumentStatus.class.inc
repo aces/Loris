@@ -171,7 +171,8 @@ class NDB_BVL_InstrumentStatus
             array('Data_entry' => $status),
             array('CommentID' => $this->_commentID)
         );
-        $updateResult = $this->select($this->_commentID);
+
+        $this->select($this->_commentID);
 
         // Run the ConflictDetector if the new status is Complete
         if ($status == 'Complete') {
@@ -192,7 +193,7 @@ class NDB_BVL_InstrumentStatus
 
             // Run ConflictDetector if Data_entry of SDE and DDE are both Complete
             $count = 0;
-            foreach ($query as $key => $dataEntryStatus) {
+            foreach ($query as $dataEntryStatus) {
                 if ($dataEntryStatus['Data_entry'] == 'Complete') {
                     $count++;
                 }
@@ -246,7 +247,7 @@ class NDB_BVL_InstrumentStatus
             array('Administration' => $status),
             array('CommentID' => $this->_commentID)
         );
-        $updateResult = $this->select($this->_commentID);
+        $this->select($this->_commentID);
     }
 
     /**
@@ -272,7 +273,7 @@ class NDB_BVL_InstrumentStatus
             array('Validity' => $status),
             array('CommentID' => $this->_commentID)
         );
-        $updateResult = $this->select($this->_commentID);
+        $this->select($this->_commentID);
     }
 
     /**
@@ -297,7 +298,7 @@ class NDB_BVL_InstrumentStatus
             array('Exclusion' => $status),
             array('CommentID' => $this->_commentID)
         );
-        $updateResult = $this->select($this->_commentID);
+        $this->select($this->_commentID);
     }
 
 } // end of class
