@@ -111,9 +111,9 @@ class Publication extends \NDB_Menu_Filter_Form
      *
      * @return bool
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
 
         $db = \Database::singleton();
         $rawStatus = $db->pselectCol(

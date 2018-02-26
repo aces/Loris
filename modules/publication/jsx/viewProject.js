@@ -73,7 +73,7 @@ class ViewProject extends React.Component {
         // format VoIs to be Tags renderable
         let voiFields = [];
         for (let inst in data.voi) {
-          if (data.voi[inst].IsFullSet) {
+          if (data.voi.hasOwnProperty(inst) && data.voi[inst].IsFullSet) {
             voiFields.push(inst + '_AllFields');
           } else {
             voiFields.concat(data.voi.inst.Fields);
