@@ -410,8 +410,6 @@ var TagsElement = React.createClass({
 
     // iterate through added Tags items and render them
     // with deletion button
-
-    var that = this;
     var items = this.props.items.map(function(item) {
       return (
           <button
@@ -428,7 +426,7 @@ var TagsElement = React.createClass({
             />
           </button>
       );
-    });
+    }, this);
     return (
       <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
