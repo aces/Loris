@@ -415,7 +415,7 @@ var TagsElement = React.createClass({
           <button
             className="btn btn-info btn-inline"
             type="button"
-            onClick={that.handleRemove}
+            onClick={this.handleRemove}
             data-item={item}
           >
             {item}
