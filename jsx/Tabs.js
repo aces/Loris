@@ -138,7 +138,9 @@ Tabs.propTypes = {
 };
 Tabs.defaultProps = {
   onTabChange: function() {},
-  updateURL: false
+  // Set updateURL to default to true but allow for change
+  // Nested tabs should set this variable to false
+  updateURL: true
 };
 
 /**
@@ -255,7 +257,9 @@ VerticalTabs.propTypes = {
 };
 VerticalTabs.defaultProps = {
   onTabChange: function() {},
-  updateURL: false
+  // Set updateURL to default to true but allow for change
+  // Nested tabs should set this variable to false
+  updateURL: true
 };
 
 /*
