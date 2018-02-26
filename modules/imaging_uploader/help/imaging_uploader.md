@@ -1,4 +1,4 @@
-**Imaging Uploader**
+# Imaging Uploader
 
 The Imaging Uploader allows users to upload DICOM scan sessions and browse past uploads.  
 

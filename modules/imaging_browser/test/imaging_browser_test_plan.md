@@ -11,7 +11,7 @@
 
 ### B. ViewSession / Volume List
 
-8. Sidebar:  all links work 
+8. Sidebar:  all links work. Ensure that projects can customize (add/remove) their list of instruments that can be linked to from the Configuration/Imaging Modules/Imaging Browser Links to Insruments
 9. 3d panel overlay etc - they work.  Add panel checkbox works. 3D only or 3D+Overlay loads files if at least one image exists and is selected
 10. "Visit Level Feedback" - pops up QC window (see section E below)
 11. Visit level QC controls (Pass/Fail, Pending, Visit Level Caveat) viewable to all, editable IFF permission imaging_browser_qc
