@@ -532,27 +532,26 @@ CREATE TABLE `tarchive_files` (
 
 
 CREATE TABLE `ImagingFileTypes` (
- `type` varchar(255) NOT NULL PRIMARY KEY
+ `type` varchar(12) NOT NULL PRIMARY KEY,
+ `description` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `ImagingFileTypes` VALUES
-      ('mnc'),
-      ('obj'),
-      ('xfm'),
-      ('xfmmnc'),
-      ('imp'),
-      ('vertstat'),
-      ('xml'),
-      ('txt'),
-      ('nii'),
-      ('nii.gz'),
-      ('nrrd');
+INSERT INTO `ImagingFileTypes` (type, description) VALUES
+  ('mnc',      'MINC file'),
+  ('obj',      'MNI BIC imaging format for a surface'),
+  ('xfm',      'MNI BIC linear transformation matrix file'),
+  ('vertstat', 'MNI BIC imaging format for a field on a surface (e.g. cortical thickness)'),
+  ('xml',      'XML file'),
+  ('txt',      'text file'),
+  ('nii',      'NIfTI file'),
+  ('nrrd',     'NRRD file format (used by DTIPrep)'),
+  ('grid_0',   'MNI BIC non-linear field for non-linear transformation');
 
 CREATE TABLE `mri_processing_protocol` (
   `ProcessProtocolID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `ProtocolFile` varchar(255) NOT NULL DEFAULT '',
-  `FileType` varchar(255) DEFAULT NULL,
+  `FileType` varchar(12) DEFAULT NULL,
   `Tool` varchar(255) NOT NULL DEFAULT '',
   `InsertTime` int(10) unsigned NOT NULL DEFAULT '0',
   `md5sum` varchar(32) DEFAULT NULL,
@@ -620,7 +619,7 @@ CREATE TABLE `files` (
   `CoordinateSpace` varchar(255) default NULL,
   `OutputType` varchar(255) NOT NULL default '',
   `AcquisitionProtocolID` int(10) unsigned default NULL,
-  `FileType` varchar(255) default NULL,
+  `FileType` varchar(12) default NULL,
   `PendingStaging` tinyint(1) NOT NULL default '0',
   `InsertedByUserID` varchar(255) NOT NULL default '',
   `InsertTime` int(10) unsigned NOT NULL default '0',
