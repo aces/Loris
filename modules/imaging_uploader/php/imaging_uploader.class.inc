@@ -116,10 +116,10 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
 
         parent::setup();
         $phantomOptions = [
-                          'N' => 'No',
-                          'Y' => 'Yes',
-                         ];
-        $visitlabels   = \Utility::getExistingVisitLabels();
+                           'N' => 'No',
+                           'Y' => 'Yes',
+                          ];
+        $visitlabels    = \Utility::getExistingVisitLabels();
 
         $this->IDs = $this->getCandidateIDs();
         $pscids    = array();
