@@ -60,7 +60,7 @@ class UserPermissions
         $this->userID = $DB->pselectOne($query, $params);
 
         // load the user's permissions
-        $success = $this->setPermissions();
+        $this->setPermissions();
 
         return true;
     }
@@ -229,7 +229,7 @@ class UserPermissions
         // isolate and return numeric permission values
         $permIDs = array();
         foreach ($results as $row) {
-            foreach ($row as $k=>$v) {
+            foreach ($row as $v) {
                 $permIDs[] = $v;
             }
         }
@@ -275,7 +275,7 @@ class UserPermissions
         $DB =& Database::singleton();
 
         //insert into the login_history
-        $sucess =  $DB->insert(
+        $DB->insert(
             'user_account_history',
             array(
              'userID'     => $this->userID,

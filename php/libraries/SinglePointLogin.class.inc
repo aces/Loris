@@ -48,71 +48,6 @@ class SinglePointLogin
     var $_passwordExpired = false;
 
     /**
-     * Dumps the login form
-     *
-     * @return void
-     * @access public
-     */
-    function showLoginScreen()
-    {
-        $tpl_data = array();
-        if (isset($_POST['username'])) {
-            $tpl_data['username'] = $_POST['username'];
-        } else {
-            $tpl_data['username'] = '';
-        }
-
-        $tpl_data['currentyear'] = date('Y');
-        $tpl_data['version']     = file_get_contents(__DIR__ . "/../../VERSION");
-
-        // remove logout from request
-        if (isset($_SERVER['QUERY_STRING'])) {
-            parse_str($_SERVER['QUERY_STRING'], $params);
-            unset($params['logout']);
-        } else {
-            $params = array();
-        }
-
-        $config =& NDB_Config::singleton();
-
-        $tpl_data['page_title']    = $config->getSetting('title');
-        $tpl_data['css']           = $config->getSetting('css');
-        $tpl_data['action']        = $_SERVER['PHP_SELF']
-            . '?' . http_build_query($params);
-        $tpl_data['error_message'] = $this->_lastError;
-
-        $study_links = $config->getExternalLinks('Studylinks');
-        foreach ($study_links as $label => $url) {
-            $WindowName = md5($url);
-            $tpl_data['studylinks'][] = array(
-                                         'url'        => $url,
-                                         'label'      => $label,
-                                         'windowName' => $WindowName,
-                                        );
-        }
-
-        $study_title       = $config->getSetting('title');
-        $study_description = $config->getSetting('StudyDescription');
-        $tpl_data['study_title']       = $study_title;
-        $tpl_data['study_description'] = html_entity_decode($study_description);
-        try {
-            $tpl_data['study_logo'] = $config->getSetting('studylogo');
-        } catch(ConfigurationException $e) {
-            $tpl_data['study_logo'] = '';
-        }
-
-        $www = $config->getSetting('www');
-        $tpl_data['baseurl'] = $www['url'];
-        $tpl_data['page']    = 'login';
-
-        //Output template using Smarty
-        $smarty = new Smarty_neurodb;
-        $smarty->assign($tpl_data);
-        $smarty->display('public_layout.tpl');
-    }
-
-
-    /**
      * Dumps the password expiry form
      *
      * @return void
@@ -120,43 +55,16 @@ class SinglePointLogin
      */
     function showPasswordExpiryScreen()
     {
-        // Set passwordExpired flag
-        $this->_passwordExpired = true;
-
-        $tpl_data['username'] = $_POST['username'];
-
-        // remove logout from request
-        parse_str($_SERVER['QUERY_STRING'], $params);
-        unset($params['logout']);
-
-        $config =& NDB_Config::singleton();
-
-        $tpl_data['page_title'] = $config->getSetting('title');
-        $tpl_data['css']        = $config->getSetting('css');
-        $study_title            = $config->getSetting('title');
-        $study_description      = $config->getSetting('StudyDescription');
-        try {
-            $study_logo = $config->getSetting('studylogo');
-        } catch(ConfigurationException $e) {
-            $study_logo = '';
-        }
-
-        $tpl_data['study_title']       = $study_title;
-        $tpl_data['study_description'] = $study_description;
-        $tpl_data['study_logo']        = $study_logo;
-        $tpl_data['page'] = 'password-expiry';
-
-        $tpl_data['action'] = $_SERVER['PHP_SELF']
-            .'?'
-            . http_build_query($params);
-
-        $tpl_data['error_message'] = $this->_lastError;
-
-        //Output template using Smarty
-        $smarty = new Smarty_neurodb;
-        $smarty->assign($tpl_data);
-        $smarty->display('public_layout.tpl');
-        return false;
+        // FIXME: This is a temporary hack until the password reset logic is
+        // refactored to be sane and keep a token that can be authenticated.
+        //
+        // We store the username requesting the the password reset on the
+        // PHP session superglobal so that the password expiry page can
+        // trust it.
+        $_SESSION['PasswordExpiredForUser'] = $_POST['username'];
+        header("HTTP/1.1 303 See Other");
+        header("Location: /login/password-expiry/");
+        exit(0);
     }
 
 
@@ -182,7 +90,6 @@ class SinglePointLogin
         return $this->_passwordExpired;
     }
 
-
     /**
      * Saves the new password if last was expired
      *
@@ -201,7 +108,7 @@ class SinglePointLogin
         if (!User::isPasswordStrong(
             $_POST['password'],
             array(
-             $_POST['confirm'],
+             $_POST['confirm'] ?? '',
              $data['UserID'],
              $data['Email'],
             ),
@@ -362,18 +269,6 @@ class SinglePointLogin
                                               ? $_SERVER['REQUEST_URI']
                                               : 'Unknown',
                     );
-        // save the new password if the last password expired
-        if (isset($_POST['expiry'])) {
-            $success = $this->save();
-
-            if ($success == false) {
-                if ($redirect) {
-                    $this->showPasswordExpiryScreen();
-                }
-                return false;
-            }
-        }
-
         // don't waste execution time if no form was submitted
 
         if (empty($username)) {
@@ -401,7 +296,7 @@ class SinglePointLogin
         // check users table to see if we have a valid user
         $query = "SELECT COUNT(*) AS User_count,
                         UserID,
-                        Password_expiry,
+                        Password_expiry < NOW() as Expired,
                         Active,
                         Pending_approval,
                         Password_hash
@@ -410,7 +305,7 @@ class SinglePointLogin
                   GROUP BY UserID";
         $row   = $DB->pselectRow($query, array('username' => $username));
 
-        if ($row['User_count'] == 1) {
+        if (($row['User_count'] ?? 0) == 1) {
             // validate passsword
             $oldhash = $row['Password_hash'];
             if (password_verify($password, $oldhash)) {
@@ -441,19 +336,22 @@ class SinglePointLogin
                     return false;
                 }
 
-                // check if the password expired
-                if (strcmp($row['Password_expiry'], date('Y-m-d', time())) < 1) {
-                    // show password expiry screen
-                    if ($redirect) {
-                        $this->showPasswordExpiryScreen();
+                // save the new password if the last password expired
+                if ($row['Expired']) {
+                    $success = $this->save();
+
+                    if ($success == false) {
+                        if ($redirect) {
+                            $this->showPasswordExpiryScreen();
+                        }
+                        return false;
                     }
-                    return false;
                 }
 
                 // user is valid
                 $this->_username = $row['UserID'];
 
-                $result =  $DB->insert('user_login_history', $setArray);
+                $DB->insert('user_login_history', $setArray);
                 return true;
             }
         }
@@ -518,7 +416,7 @@ class SinglePointLogin
         $setArray['Fail_detail'] = $description;
 
         // in future, add mapping of error message to Failcode field enum
-        $result =  $DB->insert('user_login_history', $setArray);
+        $DB->insert('user_login_history', $setArray);
     }
 
     /**

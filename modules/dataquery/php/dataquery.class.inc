@@ -41,21 +41,15 @@ class Dataquery extends \NDB_Form
     /**
      * Sets up the smarty template variables for the dataquery page.
      *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
      * @return unknown
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
 
         $user     = \User::singleton();
         $username = $user->getUsername();
-        $couch    = \CouchDB::singleton();
+        $couch    = \NDB_Factory::singleton()->couchDB();
 
         $update = $couch->queryView(
             "DQG-2.0",
