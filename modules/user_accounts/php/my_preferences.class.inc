@@ -238,17 +238,11 @@ class My_Preferences extends \NDB_Form
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
      * @return none
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
 
         $this->identifier = $_SESSION['State']->getUsername();
 
@@ -319,6 +313,10 @@ class My_Preferences extends \NDB_Form
         // password
         $this->form->addElement('password', 'Password_hash', 'New Password');
         $this->form->addElement('password', '__Confirm', 'Confirm Password');
+
+        // language preference
+        $languages = \Utility::getLanguageList();
+        $this->addSelect('language_preference', 'Language preference', $languages);
 
         // Notification headers
         $nGroup[] = $this->createLabel("Module");

@@ -3,15 +3,18 @@ Create Timepoint Test Plan:
 1. Access a candidate that does not have all timepoints from project created
    from Access Profile and click "Create time point"[Automation Testing]
 2. Choose a subproject from dropdown.[Manual Testing]
-   Ensure that page reloads with subproject selected and also a list of visit
-   labels if <labelSet> is set in the config.xml and a textbox otherwise.
+   Ensure that page reloads with: 
+       a) subproject selected and also a list of visit labels if <labelSet> 
+       is set in the config.xml and a textbox otherwise
+       b) a site drop down only if the user belongs to more than one site
 3. If visit label is a textbox, ensure that an error appears if the <regex>
    specified in the config file does not pass.[Manual Testing]
 4. Ensure that an error appears if the visit label already exists for the
    candidate.[Manual Testing]
 5. Click create time point without choosing visit. Ensure there's an error.
    [Automation Testing]
-6. Click create time point without choosing a site. Ensure there's an error
+6. Make sure the user belong to more than one site and click create time point 
+	without choosing a site. Ensure there's an error
 7. Choose visit label to be created and click "Create Time Point".
    Ensure that you get a page saying creation was successful.
    Click on "Click here to continue" link and ensure that it brings you back

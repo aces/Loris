@@ -1,5 +1,5 @@
 /* exported FormElement, SelectElement, TextareaElement, TextboxElement, DateElement,
-NumericElement, FileElement, StaticElement, ButtonElement, LorisElement
+NumericElement, FileElement, StaticElement, LinkElement, ButtonElement, LorisElement
 */
 
 /**
@@ -338,7 +338,9 @@ var TextboxElement = React.createClass({
     id: React.PropTypes.string,
     disabled: React.PropTypes.bool,
     required: React.PropTypes.bool,
-    onUserInput: React.PropTypes.func
+    errorMessage: React.PropTypes.string,
+    onUserInput: React.PropTypes.func,
+    onUserBlur: React.PropTypes.func
   },
   getDefaultProps: function() {
     return {
@@ -348,26 +350,40 @@ var TextboxElement = React.createClass({
       id: null,
       disabled: false,
       required: false,
+      errorMessage: '',
       onUserInput: function() {
         console.warn('onUserInput() callback is not set');
+      },
+      onUserBlur: function() {
       }
     };
   },
   handleChange: function(e) {
     this.props.onUserInput(this.props.name, e.target.value);
   },
+  handleBlur: function(e) {
+    this.props.onUserBlur(this.props.name, e.target.value);
+  },
   render: function() {
     var disabled = this.props.disabled ? 'disabled' : null;
     var required = this.props.required ? 'required' : null;
+    var errorMessage = null;
     var requiredHTML = null;
+    var elementClass = 'row form-group';
 
     // Add required asterix
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
     }
 
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
     return (
-      <div className="row form-group">
+      <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
@@ -382,7 +398,9 @@ var TextboxElement = React.createClass({
             required={required}
             disabled={disabled}
             onChange={this.handleChange}
+            onBlur={this.handleBlur}
           />
+          {errorMessage}
         </div>
       </div>
     );
@@ -699,6 +717,44 @@ var StaticElement = React.createClass({
 });
 
 /**
+ * Link element component.
+ * Used to link plain/formated text to an href destination as part of a form
+ */
+var LinkElement = React.createClass({
+
+  mixins: [React.addons.PureRenderMixin],
+  propTypes: {
+    label: React.PropTypes.string,
+    text: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.element
+    ]),
+    href: React.PropTypes.string
+  },
+
+  getDefaultProps: function() {
+    return {
+      label: '',
+      text: null,
+      href: null
+    };
+  },
+
+  render: function() {
+    return (
+      <div className="row form-group">
+        <label className="col-sm-3 control-label">
+          {this.props.label}
+        </label>
+        <div className="col-sm-9">
+          <p className="form-control-static"><a href={this.props.href}>{this.props.text}</a></p>
+        </div>
+      </div>
+    );
+  }
+});
+
+/**
  * Button component
  * React wrapper for <button> element, typically used to submit forms
  */
@@ -773,6 +829,9 @@ var LorisElement = React.createClass({
       case 'static':
         elementHtml = (<StaticElement {...elementProps} />);
         break;
+      case 'link':
+        elementHtml = (<LinkElement {...elementProps} />);
+        break;
       default:
         console.warn(
           "Element of type " + elementProps.type + " is not currently implemented!"
@@ -792,6 +851,7 @@ window.DateElement = DateElement;
 window.NumericElement = NumericElement;
 window.FileElement = FileElement;
 window.StaticElement = StaticElement;
+window.LinkElement = LinkElement;
 window.ButtonElement = ButtonElement;
 window.LorisElement = LorisElement;
 
@@ -804,6 +864,7 @@ export default {
   NumericElement,
   FileElement,
   StaticElement,
+  LinkElement,
   ButtonElement,
   LorisElement
 };

@@ -157,17 +157,11 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
      * @return none
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
 
         // enums should match with acknowledgements table
         $present = array(
@@ -231,6 +225,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
             $baseDeps,
             array(
              $baseurl . '/acknowledgements/js/acknowledgements_helper.js',
+             $baseurl . '/acknowledgements/js/columnFormatter.js',
             )
         );
 
