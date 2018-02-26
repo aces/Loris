@@ -205,8 +205,42 @@ class PublicationUploadForm extends React.Component {
     }
 
     let fileFieldsReq = false;
+    let fileFields = [<FileElement
+      name="file"
+      id="publicationUploadEl"
+      onUserInput={this.setFormData}
+      label="File to upload"
+      value={this.state.formData.file}
+    />];
     if (this.state.formData.file) {
       fileFieldsReq = true;
+      fileFields.push(
+        <div>
+        <SelectElement
+          name="publicationType"
+          label="Publication Type"
+          id="publicationTypeEl"
+          onUserInput={this.setFormData}
+          value={this.state.formData.publicationType}
+          options={this.state.Data.uploadTypes}
+          required={fileFieldsReq}
+        />
+      <TextboxElement
+        name="publicationCitation"
+        label="Citation"
+        onUserInput={this.setFormData}
+        value={this.state.formData.publicationCitation}
+        required={fileFieldsReq}
+        />
+        <TextboxElement
+        name="publicationVersion"
+         label="Publication Version"
+         onUserInput={this.setFormData}
+        value={this.state.formData.publicationVersion}
+        required={fileFieldsReq}
+        />
+        </div>
+      );
     }
 
     return (
@@ -308,36 +342,8 @@ class PublicationUploadForm extends React.Component {
               items={this.state.formData.voiFields}
               btnLabel="Add Variable of Interest"
             />
-            <FileElement
-                name="file"
-                id="publicationUploadEl"
-                onUserInput={this.setFormData}
-                label="File to upload"
-                value={this.state.formData.file}
-            />
-            <SelectElement
-                name="publicationType"
-                label="Publication Type"
-                id="publicationTypeEl"
-                onUserInput={this.setFormData}
-                value={this.state.formData.publicationType}
-                options={this.state.Data.uploadTypes}
-                required={fileFieldsReq}
-            />
-            <TextboxElement
-                name="publicationCitation"
-                label="Citation"
-                onUserInput={this.setFormData}
-                value={this.state.formData.publicationCitation}
-                required={fileFieldsReq}
-            />
-            <TextboxElement
-                name="publicationVersion"
-                label="Publication Version"
-                onUserInput={this.setFormData}
-                value={this.state.formData.publicationVersion}
-                required={fileFieldsReq}
-            />
+
+            {fileFields}
             <ButtonElement label="Propose Project"/>
           </FormElement>
         </div>
