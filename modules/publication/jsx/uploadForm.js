@@ -5,6 +5,7 @@ class PublicationUploadForm extends React.Component {
     this.state = {
       Data: {},
       formData: {},
+      numFiles: 1,
       numVOIGroups: 1,
       uploadResult: null,
       error: undefined,
@@ -38,6 +39,13 @@ class PublicationUploadForm extends React.Component {
         });
       }
     });
+  }
+
+  setFileData(formElement, value) {
+    let numFiles = this.state.numFiles;
+    numFiles += 1;
+    this.setState({numFiles: numFiles});
+    this.setFormData(formElement, value);
   }
 
   setFormData(formElement, value) {
@@ -206,13 +214,13 @@ class PublicationUploadForm extends React.Component {
 
     let fileFieldsReq = false;
     let fileFields = [<FileElement
-      name="file"
+      name="file_1"
       id="publicationUploadEl"
       onUserInput={this.setFormData}
       label="File to upload"
       value={this.state.formData.file}
     />];
-    if (this.state.formData.file) {
+    if (this.state.formData.file_1) {
       fileFieldsReq = true;
       fileFields.push(
         <div>
