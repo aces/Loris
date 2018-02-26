@@ -42,17 +42,11 @@ class Configuration extends \NDB_Form
      /**
      * Loads the main configuration module page.
      *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
      * @return none
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
         $config =& \NDB_Config::singleton();
         $DB     =& \Database::singleton();
 
@@ -200,5 +194,4 @@ class Configuration extends \NDB_Form
             [$baseURL . "/configuration/css/configuration.css"]
         );
     }
-
 }

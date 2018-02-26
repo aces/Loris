@@ -77,9 +77,9 @@ class CpG_Browser extends \NDB_Menu_Filter
                                 'gscr.sample_label as Sample',
                                 'cpg.cpg_name as cpg_name',
                                 'cpg.beta_value as Beta_value',
-                                'genome_loc.Chromosome as Chromosome',
-                                'genome_loc.Strand as Strand',
-                                'genome_loc.StartLoc as StartLoc',
+                                'gca.Chromosome as Chromosome',
+                                'gca.Strand as Strand',
+                                'gca.StartLoc as StartLoc',
                                 'gca.address_id_a as Probe_Loc_A',
                                 'gca.probe_seq_a as Probe_Seq_A',
                                 'gca.address_id_b as Probe_Loc_B',
@@ -154,8 +154,6 @@ class CpG_Browser extends \NDB_Menu_Filter
                 ON (gscr.sample_label = cpg.sample_label)
             LEFT JOIN genomic_cpg_annotation gca
                 USING (cpg_name)
-            LEFT JOIN genome_loc
-                ON (genome_loc.GenomeLocID = gca.location_id)
             LEFT JOIN genotyping_platform platform
                 ON (gca.platform_id = platform.PlatformID)
             WHERE 
@@ -184,10 +182,10 @@ class CpG_Browser extends \NDB_Menu_Filter
                                'show_brief_results',
                                'cpg.cpg_name',
                                'cpg.beta_value',
-                               'genome_loc.Chromosome',
-                               'genome_loc.Strand',
-                               'genome_loc.StartLoc',
-                               'genome_loc.EndLoc',
+                               'gca.Chromosome',
+                               'gca.Strand',
+                               'gca.StartLoc',
+                               'gca.EndLoc',
                                'genomic_range',
                                'gca.gene_name',
                                'gca.genome_build',
@@ -216,12 +214,12 @@ class CpG_Browser extends \NDB_Menu_Filter
                                'Show_Brief_Results' => 'show_brief_results',
                                'cpg_name'           => 'cpg.cpg_name',
                                'Beta_value'         => 'cpg.beta_value',
-                               'Chromosome'         => 'genome_loc.Chromosome',
+                               'Chromosome'         => 'gca.Chromosome',
                                'Gene_Symbol'        => 'gca.gene_name',
                                'Platform'           => 'platform.Name',
-                               'Strand'             => 'genome_loc.Strand',
-                               'StartLoc'           => 'genome_loc.StartLoc',
-                               'EndLoc'             => 'genome_loc.EndLoc',
+                               'Strand'             => 'gca.Strand',
+                               'StartLoc'           => 'gca.StartLoc',
+                               'EndLoc'             => 'gca.EndLoc',
                                'genomic_range'      => 'genomic_range',
                                'Assembly'           => 'gca.genome_build',
                                'Context'            => 'gca.island_relation',
@@ -244,7 +242,7 @@ class CpG_Browser extends \NDB_Menu_Filter
                                   'cpg.cpg_name',
                                   'gca.genome_build',
                                   'gca.design_type',
-                                  'genome_loc.Strand',
+                                  'gca.Strand',
                                  );
 
         return true;
@@ -255,17 +253,11 @@ class CpG_Browser extends \NDB_Menu_Filter
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
      * @return none
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
 
         // create user object
         $user = \User::singleton();
@@ -477,14 +469,14 @@ class CpG_Browser extends \NDB_Menu_Filter
             } elseif ($field == "genomic_range") {
                 $temp_array = explode(':', $val);
                 $chr        = $temp_array[0];
-                $query     .= " AND genome_loc.Chromosome = '$chr'";
+                $query     .= " AND gca.Chromosome = '$chr'";
 
                 if (!empty($temp_array[1]) AND strpos($temp_array[1], '-') ) {
                     $temp_array = explode('-', $temp_array[1]);
                     $from       = $temp_array[0];
                     $to         = $temp_array[1];
-                    $query     .= " AND genome_loc.StartLoc < $to";
-                    $query     .= " AND genome_loc.EndLoc > $from";
+                    $query     .= " AND gca.StartLoc < $to";
+                    $query     .= " AND gca.EndLoc > $from";
                 }
 
                 $query .= " AND :v_$prepared_key IS NOT NULL";

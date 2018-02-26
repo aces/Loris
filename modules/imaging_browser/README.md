@@ -58,6 +58,9 @@ tblScanTypes - This setting determines which scan types are considered "NEW" for
         QC purposes. It also determines which modalities are displayed on the
         main imaging browser menu page.
 
+ImagingBrowserLinkedInstruments - This setting defines which instruments to 
+        include a link to on the viewsession page.
+
 useProjects - This setting determines whether "project" filtering dropdowns exist
         on the menu page.
 
@@ -78,5 +81,7 @@ mantis_url - This setting defines a URL for LORIS to include a link to for bug r
 - The control panel on the viewsession page includes links to instruments
   named "mri_parameter_form" and "radiologyreview" if they exist for the
   currently viewed session.
+- The control panel on the viewsession page includes links to the instruments
+  as configured by the study.
 - The control panel on the viewsession page includes links to the DICOM Archive 
   and download capabilities for any DICOM tars associated with the given session.

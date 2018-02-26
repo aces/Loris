@@ -32,12 +32,9 @@
 
     <h3>Links</h3>
     <ul>
-        {if $mri_param_form_table_exists}
-            <li><a href="{$baseurl}/{$subject.candid}/{$subject.sessionID}/mri_parameter_form/?commentID={$subject.ParameterFormCommentID}">MRI Parameter Form</a></li>
-        {/if}
-        {if $rad_review_table_exists}
-            <li><a href="{$baseurl}/{$subject.candid}/{$subject.sessionID}/radiology_review/?commentID={$subject.RadiologyReviewCommentID}">Radiology Review</a></li>
-        {/if}
+        {foreach from=$subject.links item=link}
+            <li><a href="{$baseurl}/{$subject.candid}/{$subject.sessionID}/{$link.BEName}/?commentID={$link.CommentID}">{$link.FEName}</a></li>
+        {/foreach}
         {foreach from=$subject.tarchiveIDLoc key=tarchive item=tarchiveLoc}
             <li><a href="{$baseurl}/dicom_archive/viewDetails/?tarchiveID={$tarchive}&backURL={$backURL|escape:"url"}">DICOM Archive {$tarchive}</a></li>
             <li><a href="/mri/jiv/get_file.php?file={$tarchiveLoc}" class="btn btn-primary btn-small">

@@ -281,7 +281,7 @@ function getParticipantStatusFields()
         array('candid' => $candID)
     );
 
-    $statusOptions = CP\Candidate_Parameters::getParticipantStatusOptions();
+    $statusOptions = \Candidate::getParticipantStatusOptions();
     $reasonOptions = array();
 
     $req      = $db->pselect(
@@ -290,7 +290,7 @@ function getParticipantStatusFields()
     );
     $required = array();
     foreach ($req as $k=>$row) {
-        $required[$k] =$row['ID'];
+        $required[$k] = $row['ID'];
     }
     $parentIDs   = $db->pselect(
         'SELECT distinct(parentID) from participant_status_options',

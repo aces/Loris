@@ -13,7 +13,7 @@ function formatColumn(column, cell, rowData) {
         );
     }
     if (column == 'FileName') {
-        var url = loris.BaseURL + "/genomic_browser/viewGenomicFile/?GenomicFileID=" + rowData[0] ;
+        var url = loris.BaseURL + "/genomic_browser/view_genomic_file/?GenomicFileID=" + rowData[0] ;
         return React.createElement(
             "td",
             null,
