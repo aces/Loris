@@ -6,8 +6,8 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../php/libraries/NDB_BVL_Instrument_LINST.class.inc';
 require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Config.class.inc';
-
-class NDB_BVL_Instrument_LINST_ToJSON_Test extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
 {
     /**
      * Set up sets a fake $_SESSION object that we can use for
@@ -19,8 +19,8 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends \PHPUnit_Framework_TestCase
             define("UNIT_TESTING", true);
         }
         date_default_timezone_set("UTC");
-        $this->Session = $this->getMock('stdClass', array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn'));
-        $this->MockSinglePointLogin = $this->getMock('SinglePointLogin');
+        $this->Session = $this->getMockBuilder(stdClass::class)->setMethods(array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn'))->getMock();
+        $this->MockSinglePointLogin = $this->getMockBuilder('SinglePointLogin')->getMock();
         $this->Session->method("getProperty")->willReturn($this->MockSinglePointLogin);
 
         $_SESSION = array(
@@ -41,7 +41,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends \PHPUnit_Framework_TestCase
         $this->Client->makeCommandLine();
         $this->Client->initialize(__DIR__ . "/../../project/config.xml");
 
-        $this->i = $this->getMockBuilder("\Loris\Behavioural\NDB_BVL_Instrument_LINST")->setMethods(array("getFullName"))->getMock();
+        $this->i = $this->getMockBuilder("\Loris\Behavioural\NDB_BVL_Instrument_LINST")->disableOriginalConstructor()->setMethods(array("getFullName"))->getMock();
         $this->i->method('getFullName')->willReturn("Test Instrument");
         $this->i->form = $this->QuickForm;
         $this->i->testName = "Test";

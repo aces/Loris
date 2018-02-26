@@ -89,7 +89,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             $hasAccess = $this->_hasAccess();
 
             if ($this->getDataEntryStatus() == null && $hasAccess) {
-                $success = $this->setDataEntryStatus('In Progress');
+                $this->setDataEntryStatus('In Progress');
             }
 
             // generate the administration flag buttons
@@ -168,8 +168,8 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
         // make sure there are at least one flag to save
         if (is_array($flagsToSave) && count($flagsToSave) > 0) {
             foreach ($flagsToSave AS $flagToSave) {
-                $method  = $flagToSave . "Status";
-                $success = $this->$method($_REQUEST[$flagToSave]);
+                $method = $flagToSave . "Status";
+                $this->$method($_REQUEST[$flagToSave]);
             }
         }
 
@@ -217,7 +217,6 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                     && $this->getAdministrationStatus() == 'All'
                 ) {
                     // run the data entry logic test
-                    $testName = Utility::getTestNameByCommentID($this->_commentID);
                     if (isset($this->_instrument)) {
                         if ($showLink == true) {
                             $CompStatus

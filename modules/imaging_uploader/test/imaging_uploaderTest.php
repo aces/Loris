@@ -277,7 +277,6 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->findElement(
             WebDriverBy::ID("upload")
         )->click();
-        sleep(2);
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();

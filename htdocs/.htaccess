@@ -5,9 +5,8 @@
 
  # Bootstrap is not a Loris module, don't rewrite it.
  RewriteRule ^bootstrap/(.*) bootstrap/$1 [L]
-
- RewriteRule ^password-reset/$ lost_password.php [L]
- RewriteRule ^request-account/$ request_account/process_new_account.php [L]
+ # Excel Dumps aren't a Loris module, don't rewrite it.
+ RewriteRule ^dataDumps/(.*) dataDumps/$1 [L]
 
  # Redirect /CandID/ to visit label list
  RewriteRule ^([0-9]{6,6})/$ main.php?test_name=timepoint_list&candID=$1
@@ -36,7 +35,7 @@
 
  # Add trailing slash to all directories
  RewriteCond %{REQUEST_FILENAME} !-f
- RewriteRule ^(.*[^/])$ /$1/ [L,R=301]
+ RewriteRule ^(.*[^/])$ /$1/ [L,R=307]
 
 </IfModule>
 

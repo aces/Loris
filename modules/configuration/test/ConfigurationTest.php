@@ -124,8 +124,7 @@ class ConfigurationTest extends LorisIntegrationTest
          $webElement = $this->safeFindElement(
              WebDriverBy::Xpath("//*[@id='bc2']/a[2]/div")
          )->click();
-         sleep(2);
-         $bodyText = $this->webDriver->findElement(
+         $bodyText   = $this->webDriver->findElement(
              WebDriverBy::cssSelector("body")
          )->getText();
 
@@ -165,7 +164,7 @@ class ConfigurationTest extends LorisIntegrationTest
       */
     private function _linkTest($text)
     {
-        $webElement = $this->safeFindElement(WebDriverBy::linkText($text))->click();
+        $webElement = $this->safeClick(WebDriverBy::linkText($text));
         $webActives = $this->webDriver->findElements(
             WebDriverBy::cssSelector(".active")
         );
@@ -188,7 +187,8 @@ class ConfigurationTest extends LorisIntegrationTest
 
             $this->_testSubprojectBreadcrumbs();
             $this->_testUseProjects();
-
+        } else {
+            $this->assertEquals(true, 1);
         }
     }
     /**
@@ -208,7 +208,6 @@ class ConfigurationTest extends LorisIntegrationTest
         );
 
         $this->setUpConfigSetting("useProjects", "true");
-        sleep(5);
         $this->safeGet($this->url . "/configuration/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")

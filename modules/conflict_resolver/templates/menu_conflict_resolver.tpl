@@ -73,7 +73,7 @@
 <div id="tabs" style="background: white">
     <ul class="nav nav-tabs ">
         <li class="active"><a id="onLoad">Unresolved Conflicts</a></li>
-        <li><a href="{$baseurl}/conflict_resolver/?submenu=resolved_conflicts">Resolved Conflicts</a></li>
+        <li><a href="{$baseurl}/conflict_resolver/resolved_conflicts">Resolved Conflicts</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active">

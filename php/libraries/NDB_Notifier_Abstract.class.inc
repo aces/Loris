@@ -276,7 +276,7 @@ abstract class NDB_Notifier_Abstract
 
         //parse $result and create 2D array
         $n_list =array();
-        foreach ($result as $k=>$row) {
+        foreach ($result as $row) {
             if ($this->_hasNotificationPermission($row['user'])) {
                 $n_list[$row['service']][$row['Real_name']] = $row['user'];
             }
@@ -386,8 +386,8 @@ abstract class NDB_Notifier_Abstract
      */
     protected function log($trigger_user, $target_user, $service)
     {
-        $DB     = Database::singleton();
-        $result = $DB->insert(
+        $DB = Database::singleton();
+        $DB->insert(
             'notification_history',
             array(
              "module_id"    => $this->getNotificationModuleID(
@@ -435,7 +435,7 @@ abstract class NDB_Notifier_Abstract
         $result = $DB->pselect($query, $params);
 
         $n_list =array();
-        foreach ($result as $k=>$row) {
+        foreach ($result as $row) {
             $mn   = $row['module_name'];
             $ot   = $row['operation_type'];
             $perm = $row['code'];
@@ -464,7 +464,7 @@ abstract class NDB_Notifier_Abstract
         $result = $DB->pselect($query, $params);
 
         $n_services =array();
-        foreach ($result as $k=>$row) {
+        foreach ($result as $row) {
             $n_services[$row['id']] = $row['service'];
         }
         return $n_services;
@@ -487,7 +487,7 @@ abstract class NDB_Notifier_Abstract
         $result = $DB->pselect($query, $params);
 
         $n_modules =array();
-        foreach ($result as $k=>$row) {
+        foreach ($result as $row) {
             $n_modules[$row['id']]['module_name']    = $row['module_name'];
             $n_modules[$row['id']]['operation_type'] = $row['operation_type'];
             $n_modules[$row['id']]['description']    = $row['description'];
@@ -575,7 +575,7 @@ abstract class NDB_Notifier_Abstract
         $result = $DB->pselect($query, $params);
 
         $user_n_list =array();
-        foreach ($result as $k=>$row) {
+        foreach ($result as $row) {
             $mn = $row['module_name'];
             $ot = $row['operation_type'];
             $user_n_list[$mn][$ot]['desc']          = $row['description'];

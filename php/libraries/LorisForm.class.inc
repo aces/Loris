@@ -102,6 +102,9 @@ class LorisForm
         if (isset($attribs['align'])) {
             $el['align'] = $attribs['align'];
         }
+        if (isset($attribs['placeholder'])) {
+            $el['placeholder'] = $attribs['placeholder'];
+        }
 
         return $el;
     }
@@ -560,7 +563,7 @@ class LorisForm
             // of filtered values
             if (is_array($_REQUEST[$name])) {
                 $filteredValues = array();
-                foreach ($_REQUEST[$name] as $k => $v) {
+                foreach (array_keys($_REQUEST[$name]) as $k) {
                     // Checkbox values get converted from (on,off) to (1,0)
                     if ($this->_isAdvCheckbox("{$name}[$k]")) {
                         $rawValue = $_REQUEST[$name][$k] == 'on' ? 1 : 0;
@@ -672,7 +675,7 @@ class LorisForm
 
         // Apply filters that should be applied on all fields
         if (isset($this->filters['__ALL__'])) {
-            foreach ($this->filters['__ALL__'] as $filterType) {
+            for ($i = 0; $i < count($this->filters['__ALL__']); $i++) {
                 if (in_array('trim', $this->filters['__ALL__'])) {
                     // Value for the element is in array so filter all
                     // elements in the array of values
@@ -952,6 +955,11 @@ class LorisForm
                 ? ' required' : ''
               )
             . (
+                isset($el['placeholder']) && $el['placeholder']
+                ? " placeholder=\"{$el['placeholder']}\"" : ''
+              )
+
+            . (
                 (!empty($value) || $value === '0')
                 ? ' value="' . $this->getValue($el['name']) . '"'
                 : ''
@@ -1198,8 +1206,9 @@ class LorisForm
             if ($el['type'] === 'group') {
                 if (isset($el['required'])) {
                     foreach ($el['required'] as $elementIndex) {
-                        $childEl = $el['elements'][$elementIndex];
-                        if (empty(($this->getValue($childEl['name'])))) {
+                        $childEl  = $el['elements'][$elementIndex];
+                        $childVal = $this->getValue($childEl['name']);
+                        if ($childVal === null || $childVal === '') {
                             $this->setElementError(
                                 $el['name'],
                                 "$childEl[requireMsg]"
@@ -1365,38 +1374,57 @@ class LorisForm
             $format['value'] = '';
         }
 
-        // confirm that the operator is in the set of valid operators
-        $validOperators = array(
-                           '==',
-                           '===',
-                           '!=',
-                           '<>',
-                           '!==',
-                           '<',
-                           '>',
-                           '<=',
-                           '>=',
-                          );
-        if (!in_array($format['operator'], $validOperators)) {
+        $controlElement = $elements[1];
+        $ruleElement    = $elements[0];
+
+        switch ($format['operator']) {
+        case '==':
+            if ($this->getValue($controlElement) == $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '===':
+            if ($this->getValue($controlElement) === $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '<>': // Fallthrough, it's the same operator..
+        case '!=':
+            if ($this->getValue($controlElement) != $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '!==':
+            if ($this->getValue($controlElement) !== $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '<':
+            if ($this->getValue($controlElement) < $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '>':
+            if ($this->getValue($controlElement) > $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '<=':
+            if ($this->getValue($controlElement) <= $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '>=':
+            if ($this->getValue($controlElement) <= $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        default:
             throw new LorisException(
                 "operator is not a valid operator from the set "
                 . join(', ', $this->validOperators)
             );
         }
-
-        // create the comparison function, based on the defined operator
-        $compareFunction = create_function(
-            '$a,$b',
-            "return (\$a $format[operator] \$b);"
-        );
-
-        // check the case where the controller operator value is true
-        if ($compareFunction($this->getValue($elements[1]), $format['value'])) {
-            return $this->getValue($elements[0]) != '';
-        }
-
-        // if controller operator value is false, validate true
-        return true;
     }
 
     /**
@@ -1811,8 +1839,7 @@ class LorisForm
     {
         if (is_array($arg1)) {
             foreach ($arg1 as $elementIndex => $rules) {
-                $element     =& $this->form[$group]['elements'][$elementIndex];
-                $elementName = $element['name'];
+                $element =& $this->form[$group]['elements'][$elementIndex];
                 foreach ($rules as $rule) {
                     $message  = $rule[0];
                     $ruleType = $rule[1];
@@ -1876,10 +1903,11 @@ class LorisForm
     {
         $name = $this->_generateName($name);
         foreach ($array as $key => $value) {
-            $this->groupMapping[$value['name']] = array(
-                                                   'groupName' => $name,
-                                                   'index'     => $key,
-                                                  );
+             $group_key = $value['name'] ?? $this->_generateName('');
+             $this->groupMapping[$group_key] = array(
+                                                'groupName' => $name,
+                                                'index'     => $key,
+                                               );
         }
         $this->form[$name] = array(
                               'type'      => 'group',
@@ -2134,7 +2162,7 @@ class LorisForm
     function getSubmitValues()
     {
         $retVal     = array();
-        $submitKeys = array_merge($_POST, $_FILES);
+        $submitKeys = $_POST + $_FILES;
 
         $this->getGroupValues(array_keys($submitKeys), $retVal);
         return $retVal;

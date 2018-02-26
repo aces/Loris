@@ -158,7 +158,7 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="{$baseurl}/preferences/">
+                                    <a href="{$baseurl}/user_accounts/my_preferences/">
                                         My Preferences
                                     </a>
                                 </li>
@@ -236,12 +236,12 @@
                                     </ul>
 
                                     If this error persists, please
-                                    <a target="mantis" href="{$mantis_url}">
+                                    <a target="issue_tracker_url" href="{$issue_tracker_url}">
                                         report a bug to your administrator
                                     </a>.
                                 </p>
                                 <p>
-                                    <a href="javascript:history.back(-1)">
+                                    <a href="javascript:history.back()">
                                         Please click here to go back
                                     </a>.
                                 </p>
