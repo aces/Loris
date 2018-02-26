@@ -112,6 +112,18 @@ function getPublicationData() {
 
         $result['Keywords'] = $kws;
 
+
+        $collaborators = $db->pselectCol(
+            'SELECT Name FROM publication_collaborator pc '.
+            'LEFT JOIN publication_collaborator_rel pcr '.
+            'ON pc.PublicationCollaboratorID=pcr.PublicationCollaboratorID '.
+            'LEFT JOIN publication p ON p.PublicationID=pcr.PublicationID '.
+            'WHERE p.PublicationID=:pid',
+            array('pid' => $id)
+        );
+
+        $result['collaborators'] = $collaborators;
+
         $rawStatus = $db->pselect(
             'SELECT * FROM publication_status',
             array()
@@ -132,6 +144,7 @@ function getPublicationData() {
             'status' => $result['Label'],
             'voi' => $result['VOIs'],
             'keywords' => $result['Keywords'],
+            'collaborators' => $result['collaborators'],
             'statusOpts' => $statusOpts,
             'userCanEdit' => $userCanEdit
         );

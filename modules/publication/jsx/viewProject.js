@@ -79,13 +79,17 @@ class ViewProject extends React.Component {
             voiFields.concat(data.voi.inst.Fields);
           }
         }
+
+        let keywords = [];
+
         let formData = {
           title: data.title,
           description: data.description,
           leadInvestigator: data.leadInvestigator,
           leadInvestigatorEmail: data.leadInvestigatorEmail,
           status: data.status,
-          voiFields: voiFields
+          voiFields: voiFields,
+          keywords: data.keywords
         };
         self.setState({
           formData: formData,
@@ -276,6 +280,33 @@ class ViewProject extends React.Component {
           onUserInput={this.setFormData}
           required={true}
           value={this.state.formData.leadInvestigatorEmail}
+        />
+        <TagsElement
+          name="collaborators"
+          label="Collaborators"
+          id="collaborators"
+          onUserInput={this.setFormData}
+          onUserAdd={this.addListItem}
+          onUserRemove={this.removeListItem}
+          required={false}
+          value={this.state.formData.pendingCollab}
+          pendingValKey="pendingCollab"
+          items={this.state.formData.collaborators}
+          btnLabel="Add Collaborator"
+        />
+        <TagsElement
+          name="keywords"
+          label="Keywords"
+          id="keywords"
+          onUserInput={this.setFormData}
+          onUserAdd={this.addListItem}
+          onUserRemove={this.removeListItem}
+          required={false}
+          allowDupl={false}
+          value={this.state.formData.pendingKWItem}
+          pendingValKey="pendingKWItem"
+          items={this.state.formData.keywords}
+          btnLabel='Add Keyword'
         />
         <div className="row form-group">
           <label className="col-sm-3 control-label"/>
