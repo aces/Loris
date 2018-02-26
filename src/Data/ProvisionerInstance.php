@@ -1,6 +1,6 @@
 <?php
 /**
- * This file defines a helper for implementing the \LORIS\\Data\Provisioner
+ * This file defines a helper for implementing the \LORIS\Data\Provisioner
  * interface.
  *
  * PHP Version 7

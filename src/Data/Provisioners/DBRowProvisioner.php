@@ -75,7 +75,7 @@ abstract class DBRowProvisioner extends \LORIS\Data\ProvisionerInstance
      */
     function getAllInstances() : \Traversable
     {
-        $DB      = \Database::singleton();
+        $DB      = (\NDB_Factory::singleton())->database();
         $stmt    = $DB->prepare($this->query);
         $results = $stmt->execute($this->params);
 
