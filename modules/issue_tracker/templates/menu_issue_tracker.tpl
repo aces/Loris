@@ -184,10 +184,10 @@
                 <li class="statsTab active"><a class="statsTabLink" id="onLoad" href="{$baseurl}/issue_tracker/">All Active
                         Issues</a></li>
                 <li class="statsTab"><a class="statsTabLink"
-                                        href="{$baseurl}/issue_tracker/?submenu=resolved_issue_tracker">Closed
+                                        href="{$baseurl}/issue_tracker/resolved_issue_tracker/">Closed
                         Issues</a></li>
                 <li class="statsTab"><a class="statsTabLink"
-                                               href="{$baseurl}/issue_tracker/?submenu=my_issue_tracker">My
+                                               href="{$baseurl}/issue_tracker/my_issue_tracker/">My
                         Issues</a></li>
             </ul>
             <div class="tab-content">

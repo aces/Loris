@@ -1,4 +1,4 @@
-# LORIS Neuroimaging Platform [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=17.1-dev)](https://travis-ci.org/aces/Loris)
+# LORIS Neuroimaging Platform
 
 LORIS (Longitudinal Online Research and Imaging System) is a web-based data and project management software for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging and genetic data acquired over time or at different sites.
 
@@ -7,10 +7,17 @@ NEW <b>⇾  Try LORIS on Heroku</b> before installing it on your system<br>
 Test out the project management and clinical data management side of LORIS (complete Imaging features not yet available)<br>
 Deploy and log in with username <i>admin</i> and the password that's set up during deployment via ClearDB.
 
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/17.1-dev)
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/master)
 <hr>
 
-This Readme covers installation of the <b>18.0</b> LORIS release on <b>Ubuntu</b>.
+| Branch | Status |
+| ------ | ------ |
+| master | [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=master)](https://travis-ci.org/aces/Loris)
+| major  | [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=major)](https://travis-ci.org/aces/Loris)
+| minor  | [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=minor)](https://travis-ci.org/aces/Loris)
+| bugfix | [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=bugfix)](https://travis-ci.org/aces/Loris)
+
+This Readme covers installation of the LORIS <b>v18.0.0</b> release on <b>Ubuntu</b>.
 ([CentOS Readme also available](https://github.com/aces/Loris/blob/master/README.CentOS6.md)).
 
 Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information not included in this Readme. The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki. 

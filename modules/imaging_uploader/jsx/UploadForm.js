@@ -101,6 +101,17 @@ class UploadForm extends React.Component {
       return;
     }
 
+    // File in the middle of insertion pipeline
+    if (mriFile.status === "In Progress...") {
+      swal({
+        title: "File is currently processing!",
+        text: "A file with this name is currently going through the MRI pipeline!\n",
+        type: "error",
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
     // File uploaded but failed during mri pipeline
     if (mriFile.status === "Failure") {
       swal({
@@ -117,8 +128,28 @@ class UploadForm extends React.Component {
           swal("Cancelled", "Your imaginary file is safe :)", "error");
         }
       }.bind(this));
-      return;
     }
+
+    // Pipeline has not been triggered yet
+    if (mriFile.status === "Not Started") {
+      swal({
+        title: "Are you sure?",
+        text: "A file with this name has been uploaded but has not yet started the MRI pipeline." +
+          "\n Would you like to override the existing file?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: 'Yes, I am sure!',
+        cancelButtonText: 'No, cancel it!'
+      }, function(isConfirm) {
+        if (isConfirm) {
+          this.uploadFile(true);
+        } else {
+          swal("Cancelled", "Your upload has been cancelled.", "error");
+        }
+      }.bind(this));
+    }
+
+    return;
   }
 
   /*
@@ -198,6 +229,8 @@ class UploadForm extends React.Component {
       (this.state.uploadProgress > -1) ? "btn btn-primary hide" : undefined
     );
 
+    const notes = "File name must be of type .tgz or tar.gz or .zip. " +
+      "Uploads cannot exceed " + this.props.maxUploadSize;
     return (
       <div className="row">
         <div className="col-md-7">
@@ -211,7 +244,7 @@ class UploadForm extends React.Component {
           >
             <StaticElement
               label="Notes"
-              text="File name should be of type .tgz or tar.gz or .zip"
+              text={notes}
             />
             <div className="row">
               <div className="col-sm-9 col-sm-offset-3">

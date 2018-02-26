@@ -101,28 +101,4 @@ class NDB_Notifier extends NDB_Notifier_Abstract
             }
         }
     }
-
-    /**
-     * Send sms to concerned users.
-     *
-     * @return void
-     *
-     * TODO add validation
-     */
-    private function _sendSMS()
-    {
-
-    }
-
-    /**
-     * Send phone call to concerned users.
-     *
-     * @return void
-     *
-     * TODO add validation
-     */
-    private function _sendPhone()
-    {
-
-    }
 }

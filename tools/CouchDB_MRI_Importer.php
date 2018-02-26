@@ -336,9 +336,10 @@ class CouchDBMRIImporter
     {
 
         $ScanTypes = $this->SQLDB->pselect(
-            "SELECT DISTINCT msc.Scan_type as ScanType from mri_scan_type msc
-JOIN files f ON msc.ID= f.AcquisitionProtocolID
-JOIN files_qcstatus fqc ON f.FileID=fqc.FileID ORDER BY f.AcquisitionProtocolID",
+            "SELECT DISTINCT msc.Scan_type as ScanType, f.AcquisitionProtocolID from mri_scan_type msc
+            JOIN files f ON msc.ID= f.AcquisitionProtocolID
+            JOIN files_qcstatus fqc ON f.FileID=fqc.FileID
+            ORDER BY f.AcquisitionProtocolID",
             array()
         );
 
