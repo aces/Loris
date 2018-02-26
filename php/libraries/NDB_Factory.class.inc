@@ -31,7 +31,7 @@ class NDB_Factory
     public static $db     = null;
     public static $config = null;
 
-    private static $_couchdb    = null;
+    private static $_couchdb    = array();
     private static $_user       = null;
     private static $_candidates = array();
     private static $_timepoints = array();
@@ -87,7 +87,7 @@ class NDB_Factory
         self::$testdb = null;
         self::$db     = null;
 
-        self::$_couchdb = null;
+        self::$_couchdb = array();
         self::$_user    = null;
 
         self::$config = null;
@@ -225,12 +225,18 @@ class NDB_Factory
     /**
      * Returns a reference to a Loris CouchDB database wrapper.
      *
+     * @param string $database The couchDB database name
+     *
      * @return CouchDB CouchDB singleton
      */
-    function couchDB()
+    function couchDB($database = null)
     {
-        if (self::$_couchdb !== null) {
-            return self::$_couchdb;
+        if (empty($database)) {
+            $database = self::config()->getSetting("CouchDB")['dbName'];
+        }
+
+        if (!empty(self::$_couchdb[$database])) {
+            return self::$_couchdb[$database];
         }
         if ($this->Testing) {
             Mock::generatePartial(
@@ -244,11 +250,11 @@ class NDB_Factory
                  '_getURL',
                 )
             );
-            self::$_couchdb = new MockCouchDBWrap();
+            self::$_couchdb[$database] = new MockCouchDBWrap();
         } else {
-            self::$_couchdb = CouchDB::singleton(); //new CouchDB();
+            self::$_couchdb[$database] = CouchDB::getInstance($database);
         }
-        return self::$_couchdb;
+        return self::$_couchdb[$database];
     }
 
     /**

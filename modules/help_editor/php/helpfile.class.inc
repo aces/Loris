@@ -63,7 +63,7 @@ class HelpFile
         $obj->helpID = $helpID;
         $result      = $DB->pselectRow(
             "SELECT helpID, parentID, hash, topic,
-             COALESCE(projectContent, content) AS content,
+             content,
              created, updated FROM help WHERE helpID = :HID",
             array('HID' => $helpID)
         );

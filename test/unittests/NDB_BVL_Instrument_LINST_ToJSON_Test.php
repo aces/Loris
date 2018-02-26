@@ -41,7 +41,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends \PHPUnit_Framework_TestCase
         $this->Client->makeCommandLine();
         $this->Client->initialize(__DIR__ . "/../../project/config.xml");
 
-        $this->i = $this->getMockBuilder("\Loris\Behavioural\NDB_BVL_Instrument_LINST")->setMethods(array("getFullName"))->getMock();
+        $this->i = $this->getMockBuilder("\Loris\Behavioural\NDB_BVL_Instrument_LINST")->disableOriginalConstructor()->setMethods(array("getFullName"))->getMock();
         $this->i->method('getFullName')->willReturn("Test Instrument");
         $this->i->form = $this->QuickForm;
         $this->i->testName = "Test";

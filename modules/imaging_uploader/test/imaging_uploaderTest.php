@@ -66,6 +66,31 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
               )
           );
           $this->DB->insert(
+              'tarchive',
+              array(
+               'TarchiveID'             => 264,
+               'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000' .
+                 '012100912542610900000001',
+               'PatientID'              => 'BOL0003_000003_Test2',
+               'PatientName'            => 'BOL0003_000003_Test2',
+               'CenterName'             => 'Test site BOL',
+               'AcquisitionCount'       => 10,
+               'NonDicomFileCount'      => 3,
+               'DicomFileCount'         => 1000,
+               'CreatingUser'           => 'lorisdev',
+               'sumTypeVersion'         => 1,
+               'SourceLocation'         => '/data/incoming/BOL0003_000003_Test2',
+               'ScannerManufacturer'    => 'Siemens',
+               'ScannerModel'           => 'TrioTim',
+               'ScannerSerialNumber'    => '33336',
+               'ScannerSoftwareVersion' => 'syngo MR B17',
+               'uploadAttempt'          => 1,
+               'AcquisitionMetadata'    => 'metadata',
+               'SessionID'              => 111112,
+               'PendingTransfer'        => 1,
+              )
+          );
+          $this->DB->insert(
               "mri_upload",
               array(
                'UploadID'                 => '9999999',
@@ -78,7 +103,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
                'PatientName'              => 'TestTestTest',
                'number_of_mincInserted'   => '1',
                'number_of_mincCreated'    => '1',
-               'TarchiveID'               => '999999',
+               'TarchiveID'               => '264',
                'SessionID'                => '111112',
                'IsCandidateInfoValidated' => '1',
                'IsTarchiveValidated'      => '0',
@@ -99,6 +124,10 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             array('PatientName' => 'TestTestTest')
         );
         $this->DB->delete(
+            "tarchive",
+            array('TarchiveID' => '264')
+        );
+        $this->DB->delete(
             "session",
             array('CandID' => '999999')
         );
@@ -110,7 +139,6 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
             "psc",
             array('CenterID' => '55')
         );
-
     }
     /**
      * Tests that, when loading the Imaging_uploader module, some

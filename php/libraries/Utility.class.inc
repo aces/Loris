@@ -33,65 +33,6 @@ class Utility
     }
 
     /**
-     * This is identical to PEAR::isError from PEAR only the function
-     * has the static keyword. This is required because PEAR::isError
-     * being called staticly throws a warning in newer versions of PHP
-     * It should be used everywhere in the code instead of PEAR::isError
-     *
-     * @param object         $data The data to check if it is an error
-     * @param string|integer $code If a string, check that data also has
-     *                             the message of $code before returning true.
-     *                             If an integer, the error must also have
-     *                             the same error code for isErrorX to be
-     *                             true
-     *
-     * @return boolean true if data is a PEAR error object
-     */
-    static function isErrorX($data, $code=null)
-    {
-        throw new LorisException(
-            "Utility::isErrorX has been deprecated. Use PHP5 exceptions instead."
-        );
-    }
-
-    /**
-     * Converts a multi-dimensional array to a one-dimensional array
-     *
-     * @param array $array The multi-dimensional array
-     *
-     * @return string
-     *
-     * @deprecated
-     */
-    static function reduce($array)
-    {
-        throw new DeprecatedException(
-            "Utility::reduce has been deprecated."
-        );
-    }
-
-
-    /**
-     * Implodes a multi-dimensional array using array_reduce()
-     *
-     * @param mixed $x Unknown
-     * @param mixed $y Unknown
-     *
-     * @note If any element of the array contains a backtick, you'll run into trouble
-     *
-     * @return string
-     *
-     * @deprecated
-     */
-    static function crunch($x, $y)
-    {
-        throw new DeprecatedException(
-            "Utility::crunch has been deprecated."
-        );
-    }
-
-
-    /**
      * Computes an age in years:months:days (assumes 30 days per months)
      *
      * @param string $dob      date of birth (or first date), formatted YYYY-MM-DD
@@ -297,7 +238,6 @@ class Utility
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
-        $config  = $factory->config();
 
         if (!is_null($projectID)) {
             $subprojects = $DB->pselect(
@@ -812,7 +752,7 @@ class Utility
         $All     = Utility::getAllInstruments();
         $Scored  = array();
         $Nothing = array();
-        foreach ($All as $Instrument=>$Full_name) {
+        foreach (array_keys($All) as $Instrument) {
             if (Utility::getScoreColsForInstrument($Instrument) != $Nothing) {
                 $Scored[] = $Instrument;
             }
@@ -1347,6 +1287,28 @@ class Utility
         default:
             return $val;
         }
+    }
+
+    /**
+     * Get the list of language available in the database
+     *
+     * @return array Array of language which exist in the database table 'language'
+     *               array is of the form
+     *               array($language_id => $language_label)
+     */
+    static function getLanguageList()
+    {
+        $DB = \Database::singleton();
+
+        $languagesDB = $DB->pselect(
+            "SELECT language_id, language_label
+             FROM language",
+            array()
+        );
+        foreach ($languagesDB as $language) {
+            $languages[$language['language_id']] = $language['language_label'];
+        }
+        return $languages;
     }
 }
 ?>
