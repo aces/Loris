@@ -44,8 +44,10 @@ class PublicationUploadForm extends React.Component {
 
   setFileData(formElement, value) {
     let numFiles = this.state.numFiles;
-    numFiles += 1;
-    this.setState({numFiles: numFiles});
+    if(!this.state.formData[formElement]) {
+        numFiles += 1;
+        this.setState({numFiles: numFiles});
+    }
     this.setFormData(formElement, value);
   }
 
