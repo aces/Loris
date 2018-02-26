@@ -5,7 +5,7 @@ class PublicationUploadForm extends React.Component {
     this.state = {
       Data: {},
       formData: {},
-      numFiles: 1,
+      numFiles: 0,
       numVOIGroups: 1,
       uploadResult: null,
       error: undefined,
@@ -19,6 +19,7 @@ class PublicationUploadForm extends React.Component {
     this.addListItem = this.addListItem.bind(this);
     this.removeListItem = this.removeListItem.bind(this);
     this.isValidEmail = this.isValidEmail.bind(this);
+    this.setFileData = this.setFileData.bind(this);
   }
 
   componentDidMount() {
@@ -212,43 +213,53 @@ class PublicationUploadForm extends React.Component {
       });
     }
 
+
     let fileFieldsReq = false;
-    let fileFields = [<FileElement
-      name="file_1"
-      id="publicationUploadEl"
-      onUserInput={this.setFormData}
-      label="File to upload"
-      value={this.state.formData.file}
-    />];
-    if (this.state.formData.file_1) {
-      fileFieldsReq = true;
-      fileFields.push(
-        <div>
-        <SelectElement
-          name="publicationType"
-          label="Publication Type"
-          id="publicationTypeEl"
-          onUserInput={this.setFormData}
-          value={this.state.formData.publicationType}
-          options={this.state.Data.uploadTypes}
-          required={fileFieldsReq}
-        />
-      <TextboxElement
-        name="publicationCitation"
-        label="Citation"
-        onUserInput={this.setFormData}
-        value={this.state.formData.publicationCitation}
-        required={fileFieldsReq}
-        />
-        <TextboxElement
-        name="publicationVersion"
-         label="Publication Version"
-         onUserInput={this.setFormData}
-        value={this.state.formData.publicationVersion}
-        required={fileFieldsReq}
-        />
-        </div>
-      );
+    let fileFields = [];
+    for(let i =0; i <= this.state.numFiles; i++){
+        let fileName = "file_" + i;
+        fileFields.push(
+            <FileElement
+                name={fileName}
+                id="publicationUploadEl"
+                onUserInput={this.setFileData}
+                label="File to upload"
+                value={this.state.formData[fileName]}
+            />
+        );
+        if(this.state.formData[fileName]){
+          fileFieldsReq = true;
+          let publicationType = "publicationType_" + i;
+          let publicationCitation = "publicationCitation_" + i;
+          let publicationVersion = "publicationVersion_" + i;
+          fileFields.push (
+              <div>
+                  <SelectElement
+                      name={publicationType}
+                      label="Publication Type"
+                      id="publicationTypeEl"
+                      onUserInput={this.setFormData}
+                      value={this.state.formData[publicationType]}
+                      options={this.state.Data.uploadTypes}
+                      required={fileFieldsReq}
+                  />
+                  <TextboxElement
+                      name={publicationCitation}
+                      label="Citation"
+                      onUserInput={this.setFormData}
+                      value={this.state.formData[publicationCitation]}
+                      required={fileFieldsReq}
+                  />
+                  <TextboxElement
+                      name={publicationVersion}
+                      label="Publication Version"
+                      onUserInput={this.setFormData}
+                      value={this.state.formData[publicationVersion]}
+                      required={fileFieldsReq}
+                  />
+              </div>
+          );
+        }
     }
 
     return (
@@ -350,7 +361,6 @@ class PublicationUploadForm extends React.Component {
               items={this.state.formData.voiFields}
               btnLabel="Add Variable of Interest"
             />
-
             {fileFields}
             <ButtonElement label="Propose Project"/>
           </FormElement>
