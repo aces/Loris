@@ -11,7 +11,9 @@ if (isset($_REQUEST['action'])) {
     }
 }
 
-function uploadPublication() {
+function uploadPublication()
+{
+    error_log(print_r($_FILES, true));
     $db = Database::singleton();
     $user = \User::singleton();
     if (!$user->hasPermission('publication_propose')) {
@@ -29,8 +31,8 @@ function uploadPublication() {
 
     // back end validation for title uniqueness constraint
     $exists = $db->pselectOne(
-        "SELECT PublicationID ".
-        "FROM publication ".
+        "SELECT PublicationID " .
+        "FROM publication " .
         "WHERE Title=:t",
         array('t' => $titleProc)
     );
@@ -42,56 +44,61 @@ function uploadPublication() {
     $uid = $user->getId();
     $today = date('Y-m-d');
     $fields = array(
-        'UserID'                => $uid,
-        'Title'                 => $titleRaw, // insert titleRaw to avoid double escaping
-        'Description'           => $_REQUEST['description'],
-        'LeadInvestigator'      => $_REQUEST['leadInvestigator'],
+        'UserID' => $uid,
+        'Title' => $titleRaw, // insert titleRaw to avoid double escaping
+        'Description' => $_REQUEST['description'],
+        'LeadInvestigator' => $_REQUEST['leadInvestigator'],
         'LeadInvestigatorEmail' => $_REQUEST['leadInvestigatorEmail'],
-        'DateProposed'          => $today,
+        'DateProposed' => $today,
     );
 
     $db->insert('publication', $fields);
 
     $pubID = $db->pselectOne(
-        'SELECT PublicationID '.
-        'FROM publication '.
+        'SELECT PublicationID ' .
+        'FROM publication ' .
         'WHERE Title=:t',
         array('t' => $titleProc)
     );
 
-    if (isset($_FILES['file'])) {
+
+    if (isset($_FILES['file_0'])) {
         $publicationPath = "/data/publication_uploads/";
 
-        if(!isset($publicationPath)){
+        if (!isset($publicationPath)) {
             throw new LorisException("Error! Publication path is not set in Loris Settings!");
         }
 
-        if(!file_exists($publicationPath)) {
+        if (!file_exists($publicationPath)) {
             throw new LorisException("Error! The upload folder '$publicationPath' does not exist!'");
         }
 
-        $fileName = preg_replace('/\s/', '_', $_FILES["file"]["name"]);
-        $fileType = $_FILES["file"]["type"];
-        $extension = pathinfo($fileName)['extension'];
+        foreach ($_FILES as $name => $values){
+            $fileName = preg_replace('/\s/', '_', $values["name"]);
+            $fileType = $_FILES["file"]["type"];
+            $extension = pathinfo($fileName)['extension'];
+            $index = preg_split('/_/', $name)[1];
 
-        if (!isset($extension)) {
-            throw new LorisException("Please make sure your file has a valid extension!");
-        }
+            if (!isset($extension)) {
+                throw new LorisException("Please make sure your file has a valid extension!");
+            }
 
-        $pubUploadInsert = array(
-            'PublicationID'           => $pubID,
-            'PublicationUploadTypeID' => $_REQUEST['publicationType'],
-            'URL'                     => $fileName,
-            'Citation'                => $_REQUEST['publicationCitation'],
-            'Version'                 => $_REQUEST['publicationVersion'],
-        );
+            $pubUploadInsert = array(
+                'PublicationID' => $pubID,
+                'PublicationUploadTypeID' => $_REQUEST['publicationType_'.$index],
+                'URL' => $fileName,
+                'Citation' => $_REQUEST['publicationCitation_'.$index],
+                'Version' => $_REQUEST['publicationVersion_'.$index],
+            );
 
-        if (move_uploaded_file($_FILES["file"]["tmp_name"], $publicationPath . $fileName)) {
-            $db->insert('publication_upload', $pubUploadInsert);
-        } else {
-            throw new LorisException("Could not upload the file. Please try again!");
+            if (move_uploaded_file($values["tmp_name"], $publicationPath . $fileName)) {
+                $db->insert('publication_upload', $pubUploadInsert);
+            } else {
+                throw new LorisException("Could not upload the file. Please try again!");
+            }
         }
     }
+
 
     $collaborators = json_decode($_REQUEST['collaborators']);
     foreach ($collaborators as $c) {
