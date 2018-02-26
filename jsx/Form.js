@@ -531,7 +531,9 @@ var TextboxElement = React.createClass({
     id: React.PropTypes.string,
     disabled: React.PropTypes.bool,
     required: React.PropTypes.bool,
-    onUserInput: React.PropTypes.func
+    errorMessage: React.PropTypes.string,
+    onUserInput: React.PropTypes.func,
+    onUserBlur: React.PropTypes.func
   },
   getDefaultProps: function() {
     return {
@@ -541,26 +543,40 @@ var TextboxElement = React.createClass({
       id: null,
       disabled: false,
       required: false,
+      errorMessage: '',
       onUserInput: function() {
         console.warn('onUserInput() callback is not set');
+      },
+      onUserBlur: function() {
       }
     };
   },
   handleChange: function(e) {
     this.props.onUserInput(this.props.name, e.target.value);
   },
+  handleBlur: function(e) {
+    this.props.onUserBlur(this.props.name, e.target.value);
+  },
   render: function() {
     var disabled = this.props.disabled ? 'disabled' : null;
     var required = this.props.required ? 'required' : null;
+    var errorMessage = null;
     var requiredHTML = null;
+    var elementClass = 'row form-group';
 
     // Add required asterix
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
     }
 
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
     return (
-      <div className="row form-group">
+      <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
@@ -575,7 +591,9 @@ var TextboxElement = React.createClass({
             required={required}
             disabled={disabled}
             onChange={this.handleChange}
+            onBlur={this.handleBlur}
           />
+          {errorMessage}
         </div>
       </div>
     );

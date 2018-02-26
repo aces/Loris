@@ -75,10 +75,10 @@ In order to use the media module the user might need one or both of the followin
 **Test file edit**
   1. Make sure that PSCID, Visit Label, Instrument and Site display proper information and are greyed-out (unchangeable by the user)
   2. Verify that information (if any) is displayed accordingly in _Date of Administration_, _Comments_ and 'Uploaded File'
-  3. Select a site from the dropdown and click 👉 **Update File**.
-    - After the success message is shown, **refresh the page** and make sure the site is still selected.
+  3. Change the _Date of Administration_ and click 👉 **Update File**.
+    - After the success message is shown, **refresh the page** and make sure the data is still correct.
     - Verify that the database field updated accordingly
-  4. Repeat **Step 3** for _Date of Administration_ and _Comments_ fields
+  4. Repeat **Step 3** for _Comments_ field.
   5. Select YES in **Hide File** dropdown in order to delete/hide the file
     - Click 👉 **Update File** and go back to **Browse** tab under ```$LORISURL/media/```. The file should no longer be displayed in the data table.
     - _Note: only a person with direct database access could revert the hide file action._
