@@ -825,7 +825,8 @@ class LorisForm
     function dateHTML($el)
     {
         if (array_key_exists('options', $el)
-            && ((strtolower($el['options']['format']) == 'y'))
+            && (isset($el['options']['format'])
+            && strtolower($el['options']['format']) == 'y')
         ) {
             return $this->yearHTML($el);
         }
@@ -850,7 +851,7 @@ class LorisForm
         $value    = $this->getValue($el['name']);
         $format   = 'date';
 
-        if (array_key_exists('options', $el)) {
+        if (array_key_exists('options', $el) && isset($el['options']['format'])) {
             $elOptions = $el['options'];
             $elFormat  = strtolower($elOptions['format']);
 
