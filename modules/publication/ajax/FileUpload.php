@@ -74,21 +74,21 @@ function uploadPublication()
         }
 
         foreach ($_FILES as $name => $values){
-            $fileName = preg_replace('/\s/', '_', $values["name"]);
-            $fileType = $_FILES["file"]["type"];
+            $fileName  = preg_replace('/\s/', '_', $values["name"]);
+            $fileType  = $_FILES["file"]["type"];
             $extension = pathinfo($fileName)['extension'];
-            $index = preg_split('/_/', $name)[1];
+            $index     = preg_split('/_/', $name)[1];
 
             if (!isset($extension)) {
                 throw new LorisException("Please make sure your file has a valid extension!");
             }
 
             $pubUploadInsert = array(
-                'PublicationID' => $pubID,
+                'PublicationID'           => $pubID,
                 'PublicationUploadTypeID' => $_REQUEST['publicationType_'.$index],
-                'URL' => $fileName,
-                'Citation' => $_REQUEST['publicationCitation_'.$index],
-                'Version' => $_REQUEST['publicationVersion_'.$index],
+                'URL'                     => $fileName,
+                'Citation'                => $_REQUEST['publicationCitation_'.$index],
+                'Version'                 => $_REQUEST['publicationVersion_'.$index],
             );
 
             if (move_uploaded_file($values["tmp_name"], $publicationPath . $fileName)) {

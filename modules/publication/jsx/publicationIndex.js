@@ -80,7 +80,7 @@ class PublicationIndex extends React.Component {
         </TabPane>
       );
     }
-    console.log(this.state.Data);
+
     const filterRef = function(f) {
       this.publicationsFilter = f;
     }.bind(this);

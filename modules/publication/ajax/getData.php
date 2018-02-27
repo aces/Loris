@@ -64,90 +64,30 @@ function getPublicationData() {
         showError('Invalid publication ID!');
         return;
     } else {
-        // separate queries for keywords & VOIs
-        // to work around GROUP_CONCAT char limit
-        $vois = array();
-        $data = $db->pselect(
-            'SELECT pt.Name AS field, pt.SourceFrom AS inst '.
-            'FROM parameter_type pt '.
-            'LEFT JOIN publication_parameter_type_rel pptr '.
-            'ON pptr.ParameterTypeID=pt.ParameterTypeID '.
-            'WHERE pptr.PublicationID=:pid',
-            array('pid' => $id)
-        );
-
-        foreach($data as $d) {
-            if (array_key_exists($d['inst'], $vois)) {
-                $vois[$d['inst']]['Fields'][] = $d['field'];
-            } else {
-                $vois[$d['inst']] = array(
-                    'Fields' => array($d['field']),
-                    'IsFullSet' => false,
-                );
-            }
-        }
-
-        // determine if set of instrument fields is equivalent to full set
-        foreach ($vois as $inst => $v) {
-            $fullSet = $db->pselectCol(
-                'SELECT Name FROM parameter_type WHERE SourceFrom=:inst',
-                array('inst' => $inst)
-            );
-
-            // use loose comparison since element ordering may be different
-            if ($fullSet == $v['Fields']) {
-                $vois[$inst]['IsFullSet'] = true;
-            }
-        }
-
-        $result['VOIs'] = $vois;
-
-        $kws = $db->pselectCol(
-            'SELECT pk.Label FROM publication_keyword pk '.
-            'LEFT JOIN publication_keyword_rel pkr '.
-            'ON pkr.PublicationKeywordID=pk.PublicationKeywordID '.
-            'WHERE pkr.PublicationID=:pid',
-            array('pid' => $id)
-        );
-
-        $result['Keywords'] = $kws;
-
-
-        $collaborators = $db->pselectCol(
-            'SELECT Name FROM publication_collaborator pc '.
-            'LEFT JOIN publication_collaborator_rel pcr '.
-            'ON pc.PublicationCollaboratorID=pcr.PublicationCollaboratorID '.
-            'LEFT JOIN publication p ON p.PublicationID=pcr.PublicationID '.
-            'WHERE p.PublicationID=:pid',
-            array('pid' => $id)
-        );
-
-        $result['collaborators'] = $collaborators;
-
-        $rawStatus = $db->pselect(
-            'SELECT * FROM publication_status',
-            array()
-        );
-
-        $statusOpts = array();
-        foreach ($rawStatus as $rs) {
-            $statusOpts[$rs['PublicationStatusID']] = $rs['Label'];
-        }
+        $result['VOIs'] = getVOIs($id);
+        $result['Keywords'] = getKeywords($id);
+        $result['collaborators'] = getCollaborators($id);
+        $result['files'] = getFiles($id);
         // allow edit access for user if user is original proposer
         $user = \User::singleton();
         $userCanEdit = $user->getId() === $result['UserID'];
+
         $pubData = array(
-            'title' => $result['Title'],
-            'description' => $result['Description'],
-            'leadInvestigator' => $result['LeadInvestigator'],
+            'title'                 => $result['Title'],
+            'description'           => $result['Description'],
+            'leadInvestigator'      => $result['LeadInvestigator'],
             'leadInvestigatorEmail' => $result['LeadInvestigatorEmail'],
-            'status' => $result['Label'],
-            'voi' => $result['VOIs'],
-            'keywords' => $result['Keywords'],
-            'collaborators' => $result['collaborators'],
-            'statusOpts' => $statusOpts,
+            'status'                => $result['Label'],
+            'voi'                   => $result['VOIs'],
+            'keywords'              => $result['Keywords'],
+            'collaborators'         => $result['collaborators'],
+            'files'                 => $result['files'],
             'userCanEdit' => $userCanEdit
         );
+
+        if ($user->hasPermission('publication_approve')) {
+            $pubData['statusOpts'] = getStatusOptions();
+        }
 
         // if user can edit, retrieve getData() options to allow modifications
         if ($userCanEdit) {
@@ -156,4 +96,97 @@ function getPublicationData() {
             return $pubData;
         }
     }
+}
+
+function getVOIs($id) {
+    $db = \Database::singleton();
+    $vois = array();
+    $data = $db->pselect(
+        'SELECT pt.Name AS field, pt.SourceFrom AS inst '.
+        'FROM parameter_type pt '.
+        'LEFT JOIN publication_parameter_type_rel pptr '.
+        'ON pptr.ParameterTypeID=pt.ParameterTypeID '.
+        'WHERE pptr.PublicationID=:pid',
+        array('pid' => $id)
+    );
+
+    foreach($data as $d) {
+        if (array_key_exists($d['inst'], $vois)) {
+            $vois[$d['inst']]['Fields'][] = $d['field'];
+        } else {
+            $vois[$d['inst']] = array(
+                'Fields' => array($d['field']),
+                'IsFullSet' => false,
+            );
+        }
+    }
+
+    // determine if set of instrument fields is equivalent to full set
+    foreach ($vois as $inst => $v) {
+        $fullSet = $db->pselectCol(
+            'SELECT Name FROM parameter_type WHERE SourceFrom=:inst',
+            array('inst' => $inst)
+        );
+
+        // use loose comparison since element ordering may be different
+        if ($fullSet == $v['Fields']) {
+            $vois[$inst]['IsFullSet'] = true;
+        }
+    }
+
+    return $vois;
+}
+
+function getKeywords($id) {
+    $db = \Database::singleton();
+    $kws = $db->pselectCol(
+        'SELECT pk.Label FROM publication_keyword pk '.
+        'LEFT JOIN publication_keyword_rel pkr '.
+        'ON pkr.PublicationKeywordID=pk.PublicationKeywordID '.
+        'WHERE pkr.PublicationID=:pid',
+        array('pid' => $id)
+    );
+
+    return $kws;
+}
+
+function getCollaborators($id) {
+    $db = \Database::singleton();
+
+    $collaborators = $db->pselectCol(
+        'SELECT Name FROM publication_collaborator pc '.
+        'LEFT JOIN publication_collaborator_rel pcr '.
+        'ON pc.PublicationCollaboratorID=pcr.PublicationCollaboratorID '.
+        'LEFT JOIN publication p ON p.PublicationID=pcr.PublicationID '.
+        'WHERE p.PublicationID=:pid',
+        array('pid' => $id)
+    );
+
+    return $collaborators;
+}
+
+function getFiles($id) {
+    $db = \Database::singleton();
+
+    $files = $db->pselectCol(
+        'SELECT URL FROM publication_upload WHERE PublicationID=:pid',
+        array('pid' => $id)
+    );
+
+    return $files;
+}
+
+function getStatusOptions() {
+    $db = \Database::singleton();
+    $rawStatus = $db->pselect(
+        'SELECT * FROM publication_status',
+        array()
+    );
+
+    $statusOpts = array();
+    foreach ($rawStatus as $rs) {
+        $statusOpts[$rs['PublicationStatusID']] = $rs['Label'];
+    }
+
+    return $statusOpts;
 }

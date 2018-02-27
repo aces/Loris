@@ -92,10 +92,12 @@ class View_Project extends \NDB_Form
      */
     function _hasAccess()
     {
-        //create user object
-        $user =& \User::singleton();
-        
-        return true;
+        // create user object
+        $user = \User::singleton();
+        return ($user->hasPermission('publication_view')
+            || $user->hasPermission('publication_propose')
+            || $user->hasPermission('publication_approve')
+        );
     }
 
 }

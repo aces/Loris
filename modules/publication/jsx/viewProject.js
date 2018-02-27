@@ -8,6 +8,7 @@ class ViewProject extends React.Component {
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
+    this.createFileDownloadLinks = this.createFileDownloadLinks.bind(this);
     this.createMenuFilterLinks = this.createMenuFilterLinks.bind(this);
     this.createVOIElements = this.createVOIElements.bind(this);
     this.createStaticComponents = this.createStaticComponents.bind(this);
@@ -20,12 +21,6 @@ class ViewProject extends React.Component {
     e.preventDefault();
 
     let formData = this.state.formData;
-    // make sure title is unique
-    /*let existingTitles = this.state.Data.titles;
-    if (existingTitles.indexOf(formData.title) > -1) {
-      swal("Publication title already exists!", "", "error");
-      return;
-    }*/
 
     let formObj = new FormData();
     for (let key in formData) {
@@ -56,16 +51,8 @@ class ViewProject extends React.Component {
     });
   }
 
-  setFormData(formElement, value) {
-    let formData = this.state.formData;
-    formData[formElement] = value;
-    this.setState({
-      formData: formData
-    });
-  }
-
   componentDidMount() {
-    var self = this;
+    let self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
@@ -80,8 +67,6 @@ class ViewProject extends React.Component {
           }
         }
 
-        let keywords = [];
-
         let formData = {
           title: data.title,
           description: data.description,
@@ -89,7 +74,8 @@ class ViewProject extends React.Component {
           leadInvestigatorEmail: data.leadInvestigatorEmail,
           status: data.status,
           voiFields: voiFields,
-          keywords: data.keywords
+          keywords: data.keywords,
+          collaborators: data.collaborators,
         };
         self.setState({
           formData: formData,
@@ -97,9 +83,9 @@ class ViewProject extends React.Component {
           userCanEdit: data.userCanEdit,
           allVOIs: data.allVOIs,
           uploadTypes: data.uploadTypes,
-          // keep VoIs and keywords separate from formData initially
+          files: data.files,
+          // keep unformatted VoIs separate for static rendering
           voi: data.voi,
-          keywords: data.keywords,
           isLoaded: true
         });
       },
@@ -112,8 +98,19 @@ class ViewProject extends React.Component {
     });
   }
 
+  createFileDownloadLinks() {
+    let files = this.state.files;
+    return files.map(function(f){
+      let download = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + f;
+      return (<span>
+        <a href={download}>{f}</a>
+        ; &nbsp;
+      </span>);
+    });
+  }
+
   createMenuFilterLinks(stringArr, filterVar) {
-    var links = [];
+    let links = [];
     stringArr.forEach(
       function (value) {
         links.push(
@@ -133,10 +130,10 @@ class ViewProject extends React.Component {
   }
 
   createVOIElements(vois) {
-    var result = [];
+    let result = [];
     Object.keys(vois).forEach(
       function(v) {
-        var links = this.createMenuFilterLinks(vois[v]['Fields'], 'voi');
+        let links = this.createMenuFilterLinks(vois[v]['Fields'], 'voi');
         result.push(
           <div>
             <h4 data-toggle="collapse" data-target={"#voi" + v}>
@@ -155,77 +152,51 @@ class ViewProject extends React.Component {
   }
 
   createStaticComponents() {
+    let keywordLinks, voiLinks;
     if (this.state.formData.keywords) {
-      var keywordLinks = this.createMenuFilterLinks(
+      keywordLinks = this.createMenuFilterLinks(
         this.state.formData.keywords,
         'keywords'
       );
     }
 
     if (this.state.voi) {
-      var voiLinks = this.createVOIElements(this.state.voi);
+      voiLinks = this.createVOIElements(this.state.voi);
     }
     return (
       <div>
         <StaticElement
           name="leadInvestigator"
           label="Lead Investigator"
-          ref="leadInvestigator"
           text={this.state.formData.leadInvestigator}
         />
         <StaticElement
          name="leadInvestigatorEmail"
          label="Lead Investigator Email"
-         ref="leadInvestigatorEmail"
          text={this.state.formData.leadInvestigatorEmail}
         />
         <StaticElement
           name="variablesOfInterest"
           label="Variables of Interest"
-          ref="variablesOfInterest"
           text={voiLinks}
         />
         <StaticElement
           name="keywords"
           label="Keywords"
-          ref="keywords"
           text={keywordLinks}
         />
         <StaticElement
           name="description"
           label="Description"
-          ref="description"
           text={this.state.formData.description}
+        />
+        <StaticElement
+          name="files"
+          label="Download files"
+          text={this.createFileDownloadLinks()}
         />
       </div>
    );
-  }
-
-
-  addListItem(formElement, value, pendingValKey) {
-    let formData = this.state.formData;
-    let listItems = formData[formElement] || [];
-    listItems.push(value);
-    formData[formElement] = listItems;
-    formData[pendingValKey] = null;
-    this.setState({
-      formData: formData
-    });
-  }
-
-  removeListItem(formElement, value) {
-    let formData = this.state.formData;
-    let listItems = formData[formElement];
-    let index = listItems.indexOf(value);
-
-    if (index > -1) {
-      listItems.splice(index, 1);
-
-      formData[formElement] = listItems;
-      this.setState({
-        formData: formData
-      });
-    }
   }
 
   createEditableComponents() {
@@ -243,7 +214,10 @@ class ViewProject extends React.Component {
     testNames.sort();
 
     // Set test fields to all fields by default
-    let testFields = allVOIs.map(v => v.Name);
+    let testFields = [];
+    allVOIs.forEach(function(v) {
+      testFields[v.Name] = v.Name;
+    });
     testFields.sort();
 
     // if an instrument has been selected, then populate the fields
@@ -344,6 +318,41 @@ class ViewProject extends React.Component {
       </div>
     );
   }
+
+  addListItem(formElement, value, pendingValKey) {
+    let formData = this.state.formData;
+    let listItems = formData[formElement] || [];
+    listItems.push(value);
+    formData[formElement] = listItems;
+    formData[pendingValKey] = null;
+    this.setState({
+      formData: formData
+    });
+  }
+
+  removeListItem(formElement, value) {
+    let formData = this.state.formData;
+    let listItems = formData[formElement];
+    let index = listItems.indexOf(value);
+
+    if (index > -1) {
+      listItems.splice(index, 1);
+
+      formData[formElement] = listItems;
+      this.setState({
+        formData: formData
+      });
+    }
+  }
+
+  setFormData(formElement, value) {
+    let formData = this.state.formData;
+    formData[formElement] = value;
+    this.setState({
+      formData: formData
+    });
+  }
+
   render() {
     if (!this.state.isLoaded) {
       return (
