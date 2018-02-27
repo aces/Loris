@@ -29,8 +29,9 @@ CREATE TABLE `ConfigSettings` (
 CREATE TABLE `Config` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `ConfigID` int(11) NOT NULL,
-  `Value` text,
+  `Value` varchar(768),
   PRIMARY KEY (`ID`),
+  UNIQUE (`ConfigID`,`Value`),
   KEY `fk_Config_1_idx` (`ConfigID`),
   CONSTRAINT `fk_Config_1`
   FOREIGN KEY (`ConfigID`)
