@@ -86,6 +86,9 @@ $(function () {
             error: function(xhr, desc, err) {
                 console.log(xhr);
                 console.log("Details: " + desc + "\nError:" + err);
+                var html = "<label>Internal Server Error or Duplicate Values</label>";
+                $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000).fadeOut(500)
+                $('input[type="reset"]').attr('disabled','disabled');
             }
         });
     });
