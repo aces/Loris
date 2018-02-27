@@ -146,7 +146,6 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
                     );
                     $instrument->clearInstrument();
                     return false;
-
                 } else {
                     return false;
                     //print "No permissions to delete";

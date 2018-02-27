@@ -53,8 +53,7 @@ class Help_Editor extends \NDB_Menu_Filter
                  " AND helpChild.topic IS NOT NULL";
 
         // set the class variables
-        $contentColumn  = "COALESCE(helpChild.projectContent,".
-                         " helpChild.content) as Content";
+        $contentColumn  = "helpChild.content as Content";
         $this->columns  = array(
                            'helpChild.helpID as helpID',
                            'helpChild.topic as Topic',

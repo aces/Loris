@@ -10,7 +10,7 @@
  * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
-*/
+ */
 namespace LORIS\login;
 
 /**
@@ -42,6 +42,9 @@ class RequestAccount extends \NDB_Form
      */
     function setup()
     {
+        $config = \NDB_Config::singleton();
+        $this->tpl_data['page_title'] = 'Request Account';
+
         $this->addBasicText(
             "firstname",
             "First name",
@@ -57,16 +60,26 @@ class RequestAccount extends \NDB_Form
             "Email address",
             array("placeholder" => "Email address")
         );
+
+        //merging array using + sign to avoid reindexing of keys which
+        //occurs when array_merge() is used
         $this->addSelect(
             "site",
             "Site",
-            array_merge(
-                ["" => "Choose your site:"],
-                \Utility::getSiteList()
-            )
+            array("" => "Choose your site:") + \Utility::getSiteList()
         );
         $this->addCheckbox("examiner", "Examiner role", array());
         $this->addCheckbox("radiologist", "Radiologist", array());
+
+        // Get reCATPCHA keys
+        $reCAPTCHAPrivate = $config->getSetting('reCAPTCHAPrivate');
+        $reCAPTCHAPublic  = $config->getSetting('reCAPTCHAPublic');
+        // Display reCAPTCHA if both private and public keys are set
+        if ($reCAPTCHAPrivate && $reCAPTCHAPublic) {
+            $tpl_data['captcha_key'] = $reCAPTCHAPublic;
+        }
+
+        $this->form->addFormRule(array(&$this, '_validate'));
     }
 
     /**
@@ -137,51 +150,81 @@ class RequestAccount extends \NDB_Form
      */
     function _process($values)
     {
-        $DB        = \Database::singleton();
-        $name      = htmlspecialchars($values["firstname"], ENT_QUOTES);
-        $lastname  = htmlspecialchars($values["lastname"], ENT_QUOTES);
-        $from      = htmlspecialchars($values["from"], ENT_QUOTES);
-        $verif_box = htmlspecialchars($values["verif_box"], ENT_QUOTES);
-        $site      = htmlspecialchars($values["site"], ENT_QUOTES);
-        // check to see if verificaton code was correct
-        // if verification code was correct send the message and show this page
-        $fullname = "$name $lastname";
-        $vals     = array(
-                     'UserID'           => $from,
-                     'Real_name'        => $fullname,
-                     'First_name'       => $name,
-                     'Last_name'        => $lastname,
-                     'Pending_approval' => 'Y',
-                     'Email'            => $from,
-                     'CenterID'         => $site,
-                    );
+        $DB       = \Database::singleton();
+        $name     = htmlspecialchars($_REQUEST["firstname"], ENT_QUOTES);
+        $lastname = htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES);
+        $from     = htmlspecialchars($_REQUEST["from"], ENT_QUOTES);
+        $site     = $_REQUEST["site"];
+        $fullname = $name." ".$lastname;
 
-        if ($values['examiner']=='on') {
-            $rad = $values['radiologist'] == 'on';
+        $vals = array(
+                 'UserID'           => $from,
+                 'Real_name'        => $fullname,
+                 'First_name'       => $name,
+                 'Last_name'        => $lastname,
+                 'Pending_approval' => 'Y',
+                 'Email'            => $from,
+                );
 
-            //insert in DB as inactive until account approved
-            $DB->insert(
-                'examiners',
-                array(
-                 'full_name'        => $fullname,
-                 'centerID'         => $site,
-                 'radiologist'      => $rad,
-                 'active'           => 'N',
-                 'pending_approval' => 'Y',
-                )
-            );
-        }
         // check email address' uniqueness
         $result = $DB->pselectOne(
             "SELECT COUNT(*) FROM users WHERE Email = :VEmail",
             array('VEmail' => $from)
         );
+
+        $user_id = null;
+
         if ($result == 0) {
-            // insert into db only if email address if it doesnt exist
-            $DB->insert('users', $vals);
+            // insert into DB only if email address doesn't exist
+            $success = $DB->insert('users', $vals);
+            // Get the ID of the new user and insert into user_psc_rel
+            $user_id = $DB->getLastInsertId();
+
+            $DB->insert(
+                'user_psc_rel',
+                array(
+                 'UserID'   => $user_id,
+                 'CenterID' => $site,
+                )
+            );
+
+            if ($_REQUEST['examiner'] == 'on') {
+                $rad = 0;
+                if ($_REQUEST['radiologist'] == 'on') {
+                    $rad = 1;
+                }
+                //insert in DB as inactive until account approved
+                $examinerID = $DB->pselect(
+                    "SELECT e.examinerID
+                 FROM examiners e
+                 WHERE e.full_name=:fn",
+                    array("fn" => $fullname)
+                );
+
+                // If examiner not in table add him
+                if (empty($examinerID)) {
+                    $DB->insert(
+                        'examiners',
+                        array(
+                         'full_name'   => $fullname,
+                         'radiologist' => $rad,
+                         'userID'      => $user_id,
+                        )
+                    );
+                    $examinerID = $DB->getLastInsertID();
+                    $DB->insert(
+                        'examiners_psc_rel',
+                        array(
+                         'examinerID'       => $examinerID,
+                         'centerID'         => $site,
+                         'active'           => 'Y',
+                         'pending_approval' => 'Y',
+                        )
+                    );
+                }
+            }
         }
-        // Show success message even if email already exists for security reasons
-        $this->tpl_data['success'] = true;
+
         unset($_SESSION['tntcon']);
         // Verify reCAPTCHA
         if (isset($values['g-recaptcha-response']) && isset($reCAPTCHAPrivate)) {
@@ -195,6 +238,8 @@ class RequestAccount extends \NDB_Form
                 $err['captcha'] = 'Please complete the reCaptcha!';
             }
         }
+        // Show success message even if email already exists for security reasons
+        $this->tpl_data['success'] = true;
     }
 }
 
