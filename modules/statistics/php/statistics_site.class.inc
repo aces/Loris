@@ -23,7 +23,7 @@ namespace LORIS\statistics;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Statistics_Site extends \NDB_Menu
+class Statistics_Site extends \NDB_Form
 {
 
     var $instruments    = array();
@@ -221,7 +221,6 @@ class Statistics_Site extends \NDB_Menu
         sort($visits);
         $this->tpl_data['AllVisits']      = $visits;
         $this->tpl_data['NumVisitLabels'] = count($visits);
-
     }
 
     /**

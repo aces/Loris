@@ -40,7 +40,7 @@ class Datadict extends \NDB_Menu_Filter
         $user =& \User::singleton();
 
         return ($user->hasPermission('data_dict_view') ||
-            $user->hasPermission('data_dict_edit'));
+                $user->hasPermission('data_dict_edit'));
     }
     /**
      * Setup variables function
@@ -59,7 +59,7 @@ class Datadict extends \NDB_Menu_Filter
                           'coalesce(pto.description,pt.description)'.
                           ' as description',
                          );
-        $config        =& \NDB_Config::singleton();
+
         $this->validFilters = array(
                                'pt.sourceFrom',
                                'pt.Description',
@@ -82,19 +82,13 @@ class Datadict extends \NDB_Menu_Filter
     }
 
     /**
-     * Set Filter Form
-     *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
-     * @return none
-     */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    * Set Filter Form
+    *
+    * @return none
+    */
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
 
         // list of feedback statuses
         $instruments = \Utility::getAllInstruments();
@@ -114,87 +108,25 @@ class Datadict extends \NDB_Menu_Filter
             )
         );
         $this->addBasicText('keyword', 'Search keyword');
+      
+        return true; 
     }
 
-    /**
-     * Set Data Table Rows
-     *
-     * @param string $count the count of table rows
-     *
-     * @note   Set Data Table Rows
-     * @return bool
-     * @access private
-     */
-    function _setDataTableRows($count)
-    {
-
-        $x = 0;
-        foreach ($this->list as $item) {
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-            $i = 1;
-
-            foreach ($item as $key => $val) {
-                if ($key =='description') {
-                    $key = $item['Name'] . "___" . "description";
-                }
-                if ($key == "sourceFrom" && $val== "parameter_session") {
-                    $val = $item['Name'];
-                }
-                $this->tpl_data['items'][$x][$i]['name']  = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
-
-                $i++;
-            }
-
-            $x++;
-        }
-        return true;
-    }
-    /**
-     * Get base query
-     *
-     * @note   Get base query
-     * @return string
-     * @access private
-     */
-    function _getBaseQuery()
-    {
-        // make the SELECT statement
-        $query = "SELECT ";
-        if (is_array($this->columns) && count($this->columns) > 0) {
-            $query .= implode(', ', $this->columns);
-        } else {
-            $query .= "*";
-        }
-        // add the base query
-        if (isset($_REQUEST['Description'])
-            && $_REQUEST['Description'] =='modified'
-        ) {
-            $query .= " FROM parameter_type pt JOIN parameter_type_override pto
-                        USING (Name) WHERE pt.Queryable=1";
-        } else {
-            $query .= $this->query;
-        }
-
-        return $query;
-    }
-    /**
-     * Get base query
-     *
-     * @param string $prepared_key the query string
-     * @param string $key          the key of filter
-     * @param string $val          the value of filter
-     *
-     * @note   Get base query
-     * @return string
-     * @access private
-     */
+  /**
+    * Add query filters
+    *
+    * @param string $prepared_key the query string
+    * @param string $key          the key of filter
+    * @param string $val          the value of filter
+    *
+    * @note   Get base query
+    * @return string
+    * @access private
+    */
     function _addValidFilters($prepared_key, $key, $val)
     {
         $query = '';
         if ((!empty($val) || $val === '0') && $key != 'order') {
-            //print "key: $key val: $val <BR>"	;
-
             // special rule for dropdowns where value is numeric
             if (strtolower(substr($key, -8)) == 'centerid'
                 || strtolower(substr($key, -10)) == 'categoryid'
@@ -205,9 +137,9 @@ class Datadict extends \NDB_Menu_Filter
                 if ($val == 'empty') {
                     $query .= " AND COALESCE(pto.description,pt.description) = ''";
                 } elseif ($val=='modified') {
-                    //NO where clause added
+                    $query .= " AND pto.name IS NOT NULL";
                 } elseif ($val=='unmodified') {
-                    $query .= " AND pto.description IS NULL";
+                    $query .= " AND pto.name IS NULL";
                 } else {
                     $query .= " AND $key LIKE '$val%' ";
                 }
@@ -215,6 +147,7 @@ class Datadict extends \NDB_Menu_Filter
         }
         return $query;
     }
+
 
     /**
      * Converts the results of this menu filter to a JSON format to be retrieved
@@ -243,7 +176,6 @@ class Datadict extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/datadict/js/datadict_helper.js",
              $baseURL . "/datadict/js/dataDictIndex.js",
             )
         );
