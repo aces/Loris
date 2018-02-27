@@ -34,8 +34,8 @@ CREATE TABLE `Config` (
   `ConfigID` int(11) NOT NULL,
   `Value` varchar(767),
   PRIMARY KEY (`ID`),
-  UNIQUE (`ConfigID`,`Value`),
   KEY `fk_Config_1_idx` (`ConfigID`),
+  CONSTRAINT `uk_Config_ConfigID_Value` UNIQUE (`ConfigID`,`Value`),
   CONSTRAINT `fk_Config_1`
   FOREIGN KEY (`ConfigID`)
     REFERENCES `ConfigSettings` (`ID`) 
