@@ -186,7 +186,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             "/genomic_browser/gwas_browser/",
             "BP_Position",
             "19009011",
-            "1 rows"
+            "No result found."
         );
         $this->_testFilter(
             "/genomic_browser/gwas_browser/",
