@@ -152,16 +152,40 @@ class ViewProject extends React.Component {
   }
 
   createStaticComponents() {
-    let keywordLinks, voiLinks;
+    let collaborators, keywords, vois,
+      collabLinks, keywordLinks, voiLinks;
+
+    if (this.state.formData.collaborators) {
+      collabLinks = this.createMenuFilterLinks(
+        this.state.formData.collaborators,
+        'collaborators'
+      );
+      collaborators = <StaticElement
+        name="collaborators"
+        label="Collaborators"
+        text={collabLinks}
+      />
+    }
+
     if (this.state.formData.keywords) {
       keywordLinks = this.createMenuFilterLinks(
         this.state.formData.keywords,
         'keywords'
       );
+      keywords = <StaticElement
+        name="keywords"
+        label="Keywords"
+        text={keywordLinks}
+      />;
     }
 
     if (this.state.voi) {
       voiLinks = this.createVOIElements(this.state.voi);
+      vois = <StaticElement
+        name="variablesOfInterest"
+        label="Variables of Interest"
+        text={voiLinks}
+      />;
     }
     return (
       <div>
@@ -175,16 +199,9 @@ class ViewProject extends React.Component {
          label="Lead Investigator Email"
          text={this.state.formData.leadInvestigatorEmail}
         />
-        <StaticElement
-          name="variablesOfInterest"
-          label="Variables of Interest"
-          text={voiLinks}
-        />
-        <StaticElement
-          name="keywords"
-          label="Keywords"
-          text={keywordLinks}
-        />
+        {collaborators}
+        {keywords}
+        {vois}
         <StaticElement
           name="description"
           label="Description"
@@ -314,6 +331,9 @@ class ViewProject extends React.Component {
           pendingValKey="pendingItemVF"
           items={this.state.formData.voiFields}
           btnLabel="Add Variable of Interest"
+        />
+        <StaticElement
+
         />
       </div>
     );

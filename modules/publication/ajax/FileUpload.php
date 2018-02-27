@@ -1,6 +1,5 @@
 <?php
 if (isset($_REQUEST['action'])) {
-    error_log($_REQUEST);
     $action = $_REQUEST['action'];
     if ($action === 'upload') {
         uploadPublication();
@@ -233,18 +232,53 @@ function notifySubmission($pubID) {
 }
 
 function editProject() {
-    $id           = $_REQUEST['id'];
-    $statusID     = $_REQUEST['status'];
-    $rejectReason = $_REQUEST['rejectReason'];
-
+    $user = \User::singleton();
+    $id           = isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
+    $statusID     = isset($_REQUEST['status']) ? $_REQUEST['status'] : null;
+    $rejectReason = isset($_REQUEST['rejectReason']) ? $_REQUEST['rejectReason'] : null;
     $db = \Database::singleton();
 
-    $db->update(
-        'publication',
-        array(
-            'PublicationStatusID' => $statusID,
-            'RejectedReason'      => $rejectReason,
-        ),
-        array('PublicationID' => $id)
+
+    $pubData = $db->pselectRow(
+        'SELECT * FROM publication WHERE PublicationID=:pid',
+        array('pid' => $id)
     );
+
+    // build array of changed values
+    $toUpdate = array();
+
+    if ($pubData['Description'] !== $_REQUEST['description']) {
+        $toUpdate['Description'] = $_REQUEST['description'];
+    }
+    if ($pubData['LeadInvestigator'] !== $_REQUEST['leadInvestigator'] ) {
+        $toUpdate['LeadInvestigator'] = $_REQUEST['leadInvestigator'];
+    }
+    if ($pubData['LeadInvestigatorEmail'] !== $_REQUEST['leadInvestigatorEmail']) {
+        $toUpdate['LeadInvestigatorEmail'] = $_REQUEST['leadInvestigatorEmail'];
+    }
+
+    $collaborators = json_decode($_REQUEST['collaborators']);
+    $currentCollabs = $db->pselectCol(
+        'SELECT Name FROM publication_collaborator pc '.
+        'LEFT JOIN publication_collaborator_rel pcr '.
+        'ON pcr.PublicationCollaboratorID=pc.PublicationCollaboratorID '.
+        'LEFT JOIN publication p ON p.PublicationID=pcr.PublicationID '.
+        'WHERE p.PublicationID=:pid',
+        array('pid' => $id)
+    );
+    
+    if ($collaborators != $currentCollabs) {
+        // new collaborators will be in array diff result of entered vs stored
+        $newCollabs = array_diff($collaborators, $currentCollabs);
+
+        // collaborators who should be removed will appear in inverse operation
+        $oldCollabs = array_diff($currentCollabs, $collaborators);
+        error_log(print_r($oldCollabs, true));
+    }
+
+    /*$db->update(
+        'publication',
+        $toUpdate,
+        array('PublicationID' => $id)
+    );*/
 }
