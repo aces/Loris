@@ -29,7 +29,7 @@ $client->makeCommandLine();
 $client->initialize();
 
 $DB =& Database::singleton();
-foreach (array_unique($_POST) as $key => $value) {
+foreach ($_POST as $key => $value) {
     if (is_numeric($key)) { //update
         if ($value == "") {
             $DB->delete('Config', array('ID' => $key));
