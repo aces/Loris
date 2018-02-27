@@ -61,7 +61,7 @@ class DataDictIndex extends React.Component {
   }
 
   resetFilters() {
-    this.refs.dataDictFilter.clearFilter();
+    this.dataDictFilter.clearFilter();
   }
 
   render() {
@@ -77,13 +77,17 @@ class DataDictIndex extends React.Component {
       );
     }
 
+    const filterRef = function(f) {
+        this.dataDictFilter = f;
+    }.bind(this);
+
     return (
         <div>
             <FilterForm
                 Module="datadict"
                 name="data_dict_filter"
                 id="data_dict_filter"
-                ref="dataDictFilter"
+                ref={filterRef}
                 columns={2}
                 formElements={this.state.Data.form}
                 onUpdate={this.updateFilter}
