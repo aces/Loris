@@ -41,7 +41,7 @@ CREATE TABLE `Config` (
     REFERENCES `ConfigSettings` (`ID`) 
     ON DELETE CASCADE 
     ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 --
 -- Filling ConfigSettings table
