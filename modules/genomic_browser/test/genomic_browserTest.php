@@ -54,17 +54,6 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                                            'div:nth-child(2) > div >div > form >'.
                                            'div>div>div.form-group.col-sm-8>div> '.
                                            'div.panel-heading',
-          // expected_headers
-                               'No.'           => '#dynamictable > thead',
-                               'SNP ID'        => '#dynamictable > thead',
-                               'Chromosome'    => '#dynamictable > thead',
-                               'Position BP'   => '#dynamictable > thead',
-                               'Major Allele'  => '#dynamictable > thead',
-                               'Minor Allele'  => '#dynamictable > thead',
-                               'MAF'           => '#dynamictable > thead',
-                               'Estimate'      => '#dynamictable > thead',
-                               'StdErr'        => '#dynamictable > thead',
-                               'Pvalue'        => '#dynamictable > thead',
                               );
     // expect UIs for SNP Tab
     private $_loadingSNPUI = array(
@@ -191,13 +180,13 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             "/genomic_browser/gwas_browser/",
             "Chromosome",
             "chr14",
-            "20 rows"
+            "No result found."
         );
         $this->_testFilter(
             "/genomic_browser/gwas_browser/",
             "BP_Position",
             "19009011",
-            "1 rows"
+            "No result found."
         );
         $this->_testFilter(
             "/genomic_browser/gwas_browser/",

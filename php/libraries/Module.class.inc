@@ -138,8 +138,9 @@ class Module
         $identifier = $_REQUEST['identifier'] ?? '';
         $commentID  = $_REQUEST['commentID'] ?? '';
         $cls        = new $className($this, $page, $identifier, $commentID, $page);
-        // Smarty needs the Module name as a parameter to autoload the right
+        // Smarty needs the Module as a reference to autoload the right
         // templates. Every type of page uses this.
+        $cls->Module = $this;
 
         // Hacks so that existing display() functions load the right template
         // for different page types.
