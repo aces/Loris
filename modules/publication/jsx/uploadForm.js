@@ -1,3 +1,4 @@
+import ProgressBar from 'ProgressBar';
 class PublicationUploadForm extends React.Component {
   constructor(props) {
     super(props);
@@ -125,10 +126,21 @@ class PublicationUploadForm extends React.Component {
       cache: false,
       contentType: false,
       processData: false,
+      xhr: function() {
+        let xhr = new window.XMLHttpRequest();
+        xhr.upload.addEventListener("progress", function(evt) {
+          if (evt.lengthComputable) {
+            let percentage = Math.round((evt.loaded / evt.total) * 100);
+            this.setState({uploadProgress: percentage});
+          }
+        }.bind(this), false);
+        return xhr;
+      }.bind(this),
       success: function() {
         // reset form data
         this.setState({
-          formData: {}
+          formData: {},
+          uploadProgress: -1
         });
         swal("Submission Successful!", "", "success");
       }.bind(this),
@@ -250,14 +262,12 @@ class PublicationUploadForm extends React.Component {
                       label="Citation"
                       onUserInput={this.setFormData}
                       value={this.state.formData[publicationCitation]}
-                      required={fileFieldsReq}
                   />
                   <TextboxElement
                       name={publicationVersion}
                       label="Publication Version"
                       onUserInput={this.setFormData}
                       value={this.state.formData[publicationVersion]}
-                      required={fileFieldsReq}
                   />
               </div>
           );
@@ -365,6 +375,11 @@ class PublicationUploadForm extends React.Component {
             />
             {fileFields}
             <ButtonElement label="Propose Project"/>
+            <div className="row">
+              <div className="col-sm-9 col-sm-offset-3">
+                <ProgressBar value={this.state.uploadProgress}/>
+              </div>
+            </div>
           </FormElement>
         </div>
       </div>

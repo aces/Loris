@@ -332,9 +332,6 @@ class ViewProject extends React.Component {
           items={this.state.formData.voiFields}
           btnLabel="Add Variable of Interest"
         />
-        <StaticElement
-
-        />
       </div>
     );
   }

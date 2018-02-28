@@ -82,9 +82,9 @@ CREATE TABLE `publication_upload` (
     `PublicationUploadID` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `PublicationID` int(10) unsigned NOT NULL,
     `PublicationUploadTypeID` int(2) unsigned NOT NULL,
-    `Citation` varchar(255) NOT NULL,
     `URL` varchar(255) NOT NULL,
-    `Version` varchar(255) NOT NULL,
+    `Citation` varchar(255),
+    `Version` varchar(255),
     PRIMARY KEY (`PublicationUploadID`),
     CONSTRAINT `FK_publication_upload_1` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
