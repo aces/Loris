@@ -18,7 +18,7 @@ namespace LORIS\Data;
  * A ProvisionerInstance is an abstract base class which can be used to
  * provide most details for an implementation of the Provisioner interface.
  *
- * In order to use this class, the getAllRecords function must be
+ * In order to use this class, the getAllInstances function must be
  * implemented.
  *
  * @category   Data
@@ -85,14 +85,14 @@ abstract class ProvisionerInstance implements Provisioner
     }
 
     /**
-     * GetAllRecords must be implemented by concrete implementations of this
+     * GetAllInstances must be implemented by concrete implementations of this
      * class. It must return all rows known about for this Provisioner (without
      * respect to the User accessing the data), which then gets mapped and
      * filtered by execute.
      *
      * @return Traversable of all resources provided by this data source.
      */
-    abstract protected function getAllRecords() : \Traversable;
+    abstract protected function getAllInstances() : \Traversable;
 
     /**
      * Implements the execute function for the Provisioner interface.
