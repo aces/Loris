@@ -21,6 +21,7 @@ class PublicationUploadForm extends React.Component {
     this.removeListItem = this.removeListItem.bind(this);
     this.isValidEmail = this.isValidEmail.bind(this);
     this.setFileData = this.setFileData.bind(this);
+    this.toggleEmailNotify = this.toggleEmailNotify.bind(this);
   }
 
   componentDidMount() {
@@ -153,6 +154,10 @@ class PublicationUploadForm extends React.Component {
 
   isValidEmail(email) {
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
+  }
+
+  toggleEmailNotify(e) {
+    console.log(e);
   }
 
   render() {
@@ -305,6 +310,8 @@ class PublicationUploadForm extends React.Component {
               required={true}
               value={this.state.formData.leadInvestigator}
             />
+            {/*TODO turn email fields into wrapper components */}
+
             <TextboxElement
               name="leadInvestigatorEmail"
               label="Lead Investigator Email"
@@ -312,6 +319,8 @@ class PublicationUploadForm extends React.Component {
               required={true}
               value={this.state.formData.leadInvestigatorEmail}
             />
+            <input type="checkbox" onChange={this.toggleEmailNotify}/>
+            <span>Send email notification?</span>
             <TagsElement
               name="collaborators"
               label="Collaborators"

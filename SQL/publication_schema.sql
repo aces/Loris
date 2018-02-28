@@ -1,4 +1,3 @@
-
 SET FOREIGN_KEY_CHECKS=0;
 -- Publication Status
 DROP TABLE IF EXISTS publication_status;
@@ -104,7 +103,7 @@ INSERT INTO publication_upload_type VALUES (4, 'Other');
 SET FOREIGN_KEY_CHECKS=1;
 
 DELETE FROM LorisMenu WHERE Label='Publication';
-INSERT INTO LorisMenu (Parent, Label, Link) VALUES (4, 'Publication', 'publication/');
+INSERT INTO LorisMenu (Parent, Label, Link) VALUES (32, 'Publication', 'publication/');
 DELETE FROM user_perm_rel WHERE permID=(SELECT permID FROM permissions WHERE code='publication_approve');
 DELETE FROM user_perm_rel WHERE permID=(SELECT permID FROM permissions WHERE code='publication_propose');
 DELETE FROM user_perm_rel WHERE permID=(SELECT permID FROM permissions WHERE code='publication_view');
