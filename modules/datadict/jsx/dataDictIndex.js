@@ -78,7 +78,7 @@ class DataDictIndex extends React.Component {
     }
 
     const filterRef = function(f) {
-        this.dataDictFilter = f;
+      this.dataDictFilter = f;
     }.bind(this);
 
     return (
