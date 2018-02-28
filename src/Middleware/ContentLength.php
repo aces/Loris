@@ -27,7 +27,7 @@ use \LORIS\Http\EmptyStream;
  * which takes a response, and adds an HTTP Content-Length header.
  *
  * It should be called near the top of a middleware chain (after the response
- * is fully created, and when you can be sure that the body won't be modified.)
+ * is fully created, and when you can be sure that the body won't be modified).
  *
  * @category Router
  * @package  Middleware
