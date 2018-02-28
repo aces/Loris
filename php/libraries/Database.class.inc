@@ -760,7 +760,7 @@ class Database
     }
 
     /**
-     * Runs a query as a prepared statement and returns the values of the one
+     * Runs a query as a prepared statement and returns the values of the
      * column given in the select statement. If multiple columns are given, an error
      * is thrown.
      *
