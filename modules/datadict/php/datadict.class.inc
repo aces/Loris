@@ -64,7 +64,7 @@ class Datadict extends \NDB_Menu_Filter
                                'pt.sourceFrom',
                                'pt.Description',
                               );
-        $this->query        = " FROM parameter_type pt LEFT JOIN 
+        $this->query        = " FROM parameter_type pt LEFT JOIN
                                 parameter_type_override pto USING (Name)
                  		WHERE pt.Queryable=1";
 
@@ -107,12 +107,11 @@ class Datadict extends \NDB_Menu_Filter
              'unmodified' => 'Unmodified',
             )
         );
-        $this->addBasicText('keyword', 'Search keyword');
-      
-        return true; 
+        $this->addBasicText('keyword', "Search keyword");
+        return true;
     }
 
-  /**
+    /**
     * Add query filters
     *
     * @param string $prepared_key the query string
