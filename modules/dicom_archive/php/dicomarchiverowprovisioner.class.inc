@@ -52,7 +52,7 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
             FROM tarchive t
                   LEFT JOIN session s ON (s.ID=t.SessionID)
                   LEFT JOIN candidate c ON (c.CandID=s.CandID)
-            WHERE c.Active='Y' AND s.Active='Y'",
+            WHERE COALESCE(c.Active, 'Y')='Y' AND COALESCE(s.Active, 'Y')='Y'",
             array()
         );
     }

@@ -48,7 +48,7 @@ class DICOMArchiveAnonymizer implements Mapper
             $config = \NDB_Config::singleton()->getSetting("imaging_modules");
         }
 
-        $newrow = $resource->ToArray();
+        $newrow = json_decode($resource->toJSON(), true);
         $cid    = $resource->getCenterID();
 
         if (!preg_match($config['patientNameRegex'], $newrow['Patient Name'])

@@ -107,7 +107,7 @@ abstract class ProvisionerInstance implements Provisioner
         if ($this->_parent != null) {
             $rows = $this->_parent->execute($user);
         } else {
-            $rows = $this->getAllRecords();
+            $rows = $this->getAllInstances();
         }
 
         if ($this->modifier !== null
