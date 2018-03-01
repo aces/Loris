@@ -1,6 +1,10 @@
 -- ********************************
 -- DROP TABLE (ORDER MATTERS)
 -- ********************************
+DROP TABLE IF EXISTS `candidate_consent_rel`;
+DROP TABLE IF EXISTS `consent`;
+DROP TABLE IF EXISTS `candidate_consent_history`;
+
 DROP TABLE IF EXISTS `acknowledgements`;
 
 DROP TABLE IF EXISTS `data_release_permissions`;
@@ -2014,4 +2018,41 @@ CREATE TABLE `feedback_mri_comments` (
   CONSTRAINT `FK_feedback_mri_comments_1` FOREIGN KEY (`CommentTypeID`) REFERENCES `feedback_mri_comment_types` (`CommentTypeID`),
   CONSTRAINT `FK_feedback_mri_comments_2` FOREIGN KEY (`PredefinedCommentID`) REFERENCES `feedback_mri_predefined_comments` (`PredefinedCommentID`),
   CONSTRAINT `FK_feedback_mri_comments_3` FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ********************************
+-- Consent tables
+-- ********************************
+
+CREATE TABLE `consent` (
+  `ConsentID` integer unsigned NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) NOT NULL,
+  `Label` varchar(255) NOT NULL,
+  CONSTRAINT `PK_consent` PRIMARY KEY (`ConsentID`),
+  CONSTRAINT `UK_consent_Name` UNIQUE KEY `Name` (`Name`),
+  CONSTRAINT `UK_consent_Label` UNIQUE KEY `Label` (`Label`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `candidate_consent_rel` (
+  `CandidateID` int(6) NOT NULL,
+  `ConsentID` integer unsigned NOT NULL,
+  `Status` enum('yes','no') DEFAULT NULL,
+  `DateGiven` date DEFAULT NULL,
+  `DateWithdrawn` date DEFAULT NULL,
+  CONSTRAINT `PK_candidate_consent_rel` PRIMARY KEY (`CandidateID`,`ConsentID`),
+  CONSTRAINT `FK_candidate_consent_rel_CandidateID` FOREIGN KEY (`CandidateID`) REFERENCES `candidate` (`CandID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `FK_candidate_consent_rel_ConsentID` FOREIGN KEY (`ConsentID`) REFERENCES `consent` (`ConsentID`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `candidate_consent_history` (
+  `CandidateConsentHistoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `EntryDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `DateGiven` date DEFAULT NULL,
+  `DateWithdrawn` date DEFAULT NULL,
+  `PSCID` varchar(255) NOT NULL,
+  `ConsentName` varchar(255) NOT NULL,
+  `ConsentLabel` varchar(255) NOT NULL,
+  `Status` enum('yes','no') DEFAULT NULL,
+  `EntryStaff` varchar(255) DEFAULT NULL,
+  CONSTRAINT `PK_candidate_consent_history` PRIMARY KEY (`CandidateConsentHistoryID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
