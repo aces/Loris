@@ -58,13 +58,21 @@ class Dicom_Archive extends \NDB_Menu_Filter
 
     }
 
-    function getDataProvisioner() : \LORIS\Data\Provisioner {
+    /**
+     * Gets the data source for this menu filter.
+     *
+     * @return \LORIS\Data\Provisioner
+     */
+    function getDataProvisioner() : \LORIS\Data\Provisioner
+    {
         $provisioner = new DicomArchiveRowProvisioner();
 
         $user = \User::singleton();
 
         if ($user->hasPermission("access_all_profiles") == false) {
-            $provisioner = $provisioner->filter(new \LORIS\Data\Filters\UserSiteMatch());
+            $provisioner = $provisioner->filter(
+                new \LORIS\Data\Filters\UserSiteMatch()
+            );
         }
         $provisioner = $provisioner->map(new DICOMArchiveAnonymizer());
         return $provisioner;
@@ -98,35 +106,37 @@ class Dicom_Archive extends \NDB_Menu_Filter
      */
     function toJSON()
     {
-        $table = (new \LORIS\Data\Table())->withDataFrom($this->getDataProvisioner());
-        $arr = json_decode($table->toJSON(\User::singleton()), true);
-        return json_encode([
-            'Headers' => [
-                'Patient ID',
-                'Patient Name',
-                'Gender',
-                'Date Of Birth',
-                'Acquisition',
-                'Archive Location',
-                'Metadata',
-                'MRI Browser',
-                'Site',
-                'TarchiveID',
-                'SessionID',
-            ],
-            'Data' => $arr,
-
-            /* FIXME: These lines are really stupid, but left over from a
-             * previous incarnation of this module and the js front-end
-             * requires them to be returned in the JSON response. */
-            'hiddenHeaders' => [
-                'Seriesuid',
-                'Site',
-                'TarchiveID',
-                'SessionID',
-            ],
-            'form' => $this->form->form
-        ]);
+        $table = (new \LORIS\Data\Table())
+            ->withDataFrom($this->getDataProvisioner());
+        $arr   = json_decode($table->toJSON(\User::singleton()), true);
+        return json_encode(
+            [
+             'Headers'       => [
+                                 'Patient ID',
+                                 'Patient Name',
+                                 'Gender',
+                                 'Date Of Birth',
+                                 'Acquisition',
+                                 'Archive Location',
+                                 'Metadata',
+                                 'MRI Browser',
+                                 'Site',
+                                 'TarchiveID',
+                                 'SessionID',
+                                ],
+             'Data'          => $arr,
+             /* FIXME: These lines are really stupid, but left over from a
+              * previous incarnation of this module and the js front-end
+              * requires them to be returned in the JSON response. */
+             'hiddenHeaders' => [
+                                 'Seriesuid',
+                                 'Site',
+                                 'TarchiveID',
+                                 'SessionID',
+                                ],
+             'form'          => $this->form->form,
+            ]
+        );
     }
 
     /**

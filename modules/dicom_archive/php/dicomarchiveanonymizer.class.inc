@@ -13,7 +13,8 @@
  * @link       https://www.github.com/aces/Loris/
  */
 namespace LORIS\dicom_archive;
-use \LORIS\Data\{Mapper, DataInstance};
+use \LORIS\Data\{Mapper, DataInstance
+};
 
 /**
  * A DICOMArchiveAnonymizer is a \LORIS\Data\Mapper which anonymizes improperly
