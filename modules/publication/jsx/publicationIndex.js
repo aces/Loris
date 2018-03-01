@@ -76,6 +76,7 @@ class PublicationIndex extends React.Component {
           <PublicationUploadForm
             DataURL={`${loris.BaseURL}/publication/ajax/getData.php?action=getData`}
             action={`${loris.BaseURL}/publication/ajax/FileUpload.php?action=upload`}
+            editMode={false}
           />
         </TabPane>
       );

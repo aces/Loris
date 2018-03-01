@@ -1,3 +1,5 @@
+import PublicationUploadForm from './uploadForm.js';
+
 class ViewProject extends React.Component {
   constructor(props) {
     super(props);
@@ -251,7 +253,7 @@ class ViewProject extends React.Component {
     }
     return (
       <div>
-        <TextareaElement
+        {/*<TextareaElement
           name="description"
           label="Description"
           onUserInput={this.setFormData}
@@ -331,6 +333,11 @@ class ViewProject extends React.Component {
           pendingValKey="pendingItemVF"
           items={this.state.formData.voiFields}
           btnLabel="Add Variable of Interest"
+        />*/}
+        <PublicationUploadForm
+          DataURL={`${loris.BaseURL}/publication/ajax/getData.php?action=getData`}
+          action={`${loris.BaseURL}/publication/ajax/FileUpload.php?action=upload`}
+          editMode={true}
         />
       </div>
     );

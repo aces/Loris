@@ -98,7 +98,7 @@ class PublicationUploadForm extends React.Component {
       isLoaded: false,
       loadedData: 0,
       uploadProgress: -1,
-      toNotify: {}
+      toNotify: {},
     };
 
     this.setFormData = this.setFormData.bind(this);
@@ -301,11 +301,7 @@ class PublicationUploadForm extends React.Component {
 
   toggleEmailNotify(e) {
     let toNotify = this.state.toNotify;
-    if(e.target.checked) {
-      toNotify[e.target.value] = true;
-    } else {
-      toNotify[e.target.value] = false;
-    }
+    toNotify[e.target.value] = e.target.checked;
     this.setState({toNotify: toNotify})
   }
 
@@ -429,13 +425,25 @@ class PublicationUploadForm extends React.Component {
               addressee="leadInvestigator"
             />
             <TagsElement
-              name="collaborators"
-              label="Collaborators"
-              id="collaborators"
+              name="usersWithEditPerm"
+              id="usersWithEditPerm"
+              label="Users with Edit Permission"
+              options={this.state.Data.users}
               onUserInput={this.setFormData}
               onUserAdd={this.addListItem}
               onUserRemove={this.removeListItem}
-              required={false}
+              value={this.state.formData.pendingUWEP}
+              pendingValKey="pendingUWEP"
+              items={this.state.formData.usersWithEditPerm}
+              btnLabel="Add User"
+            />
+            <TagsElement
+              name="collaborators"
+              id="collaborators"
+              label="Collaborators"
+              onUserInput={this.setFormData}
+              onUserAdd={this.addListItem}
+              onUserRemove={this.removeListItem}
               value={this.state.formData.pendingCollab}
               pendingValKey="pendingCollab"
               items={this.state.formData.collaborators}
@@ -444,13 +452,11 @@ class PublicationUploadForm extends React.Component {
             {collabEmails}
             <TagsElement
               name="keywords"
-              label="Keywords"
               id="keywords"
+              label="Keywords"
               onUserInput={this.setFormData}
               onUserAdd={this.addListItem}
               onUserRemove={this.removeListItem}
-              required={false}
-              allowDupl={false}
               value={this.state.formData.pendingKWItem}
               pendingValKey="pendingKWItem"
               items={this.state.formData.keywords}
@@ -477,8 +483,8 @@ class PublicationUploadForm extends React.Component {
             />
             <TagsElement
               name="voiFields"
-              label="Instrument Fields"
               id="voiFields"
+              label="Instrument Fields"
               onUserInput={this.setFormData}
               onUserAdd={this.addListItem}
               onUserRemove={this.removeListItem}

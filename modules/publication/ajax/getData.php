@@ -36,6 +36,20 @@ function getData() {
     foreach($uploadTypeRaw as $type){
         $uploadTypes[$type['PublicationUploadTypeID']] = $type['Label'];
     }
+
+    $usersRaw = $db->pselect(
+        "SELECT UserID, Real_name FROM users ".
+        "WHERE Active='Y' AND Pending_approval='N' ".
+        "ORDER BY Real_name",
+        array()
+    );
+
+    $users = array();
+    foreach($usersRaw as $u) {
+        $users[$u['UserID']] = $u['Real_name'];
+    }
+
+    $data['users'] = $users;
     $data['uploadTypes'] = $uploadTypes;
     $data['existingTitles'] = $titles;
     $data['allVOIs'] = $allVOIs;
