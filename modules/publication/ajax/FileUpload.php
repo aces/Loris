@@ -206,6 +206,7 @@ function uploadPublication()
         }
     }
     notifySubmission($pubID);
+    error_log(print_r($_REQUEST, true));
 }
 
 function notifySubmission($pubID) {

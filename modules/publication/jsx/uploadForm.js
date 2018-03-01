@@ -1,4 +1,89 @@
 import ProgressBar from 'ProgressBar';
+
+class EmailElement extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+  }
+
+  handleChange(e) {
+    this.props.onUserInput(this.props.name, e.target.value);
+  }
+
+  handleBlur(e) {
+    this.props.onUserBlur(this.props.name, e.target.value);
+  }
+
+  render() {
+  let disabled = this.props.disabled ? 'disabled' : null;
+  let required = this.props.required ? 'required' : null;
+  let errorMessage = null;
+  let requiredHTML = null;
+  let elementClass = 'row form-group';
+
+  // Add required asterix
+  if (required) {
+    requiredHTML = <span className="text-danger">*</span>;
+  }
+
+  // Add error message
+  if (this.props.errorMessage) {
+    errorMessage = <span>{this.props.errorMessage}</span>;
+    elementClass = 'row form-group has-error';
+  }
+
+  return (
+    <div className={elementClass}>
+      <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+        {this.props.label}
+        {requiredHTML}
+      </label>
+      <div className="col-sm-7">
+        <input
+          type="text"
+          className="form-control"
+          name={this.props.name}
+          id={this.props.id}
+          value={this.props.value || ""}
+          required={required}
+          disabled={disabled}
+          onChange={this.handleChange}
+          onBlur={this.handleBlur}
+        />
+        {errorMessage}
+      </div>
+      <div className="col-sm-2">
+        <span>
+          <input
+            type="checkbox"
+            onChange={this.props.toggleEmailNotify}
+            value={this.props.addressee}
+          />
+          <span>Send email notification?</span>
+        </span>
+      </div>
+    </div>
+  );
+}
+}
+
+EmailElement.defaultProps = {
+  name: '',
+  label: '',
+  value: '',
+  addressee: '',
+  id: null,
+  disabled: false,
+  required: false,
+  errorMessage: '',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+  onUserBlur: function() {
+  }
+};
+
 class PublicationUploadForm extends React.Component {
   constructor(props) {
     super(props);
@@ -7,20 +92,22 @@ class PublicationUploadForm extends React.Component {
       Data: {},
       formData: {},
       numFiles: 0,
-      numVOIGroups: 1,
       uploadResult: null,
-      error: undefined,
+      loadError: undefined,
+      formErrors: {},
       isLoaded: false,
       loadedData: 0,
-      uploadProgress: -1
+      uploadProgress: -1,
+      toNotify: {}
     };
 
     this.setFormData = this.setFormData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.addListItem = this.addListItem.bind(this);
     this.removeListItem = this.removeListItem.bind(this);
-    this.isValidEmail = this.isValidEmail.bind(this);
+    this.validateEmail = this.validateEmail.bind(this);
     this.setFileData = this.setFileData.bind(this);
+    this.createFileFields = this.createFileFields.bind(this);
     this.toggleEmailNotify = this.toggleEmailNotify.bind(this);
   }
 
@@ -38,7 +125,7 @@ class PublicationUploadForm extends React.Component {
       error: function(data, errorCode, errorMsg) {
         console.error(data, errorCode, errorMsg);
         self.setState({
-          error: 'An error occurred when loading the form!'
+          loadError: 'An error occurred when loading the form!'
         });
       }
     });
@@ -51,6 +138,54 @@ class PublicationUploadForm extends React.Component {
         this.setState({numFiles: numFiles});
     }
     this.setFormData(formElement, value);
+  }
+
+  createFileFields() {
+    let fileFields = [];
+    for(let i =0; i <= this.state.numFiles; i++){
+      let fileName = "file_" + i;
+      fileFields.push(
+        <FileElement
+          name={fileName}
+          id="publicationUploadEl"
+          onUserInput={this.setFileData}
+          label="File to upload"
+          value={this.state.formData[fileName]}
+        />
+      );
+      if(this.state.formData[fileName]){
+        let publicationType = "publicationType_" + i;
+        let publicationCitation = "publicationCitation_" + i;
+        let publicationVersion = "publicationVersion_" + i;
+        fileFields.push (
+          <div>
+            <SelectElement
+              name={publicationType}
+              label="Publication Type"
+              id="publicationTypeEl"
+              onUserInput={this.setFormData}
+              value={this.state.formData[publicationType]}
+              options={this.state.Data.uploadTypes}
+              required={true}
+            />
+            <TextboxElement
+              name={publicationCitation}
+              label="Citation"
+              onUserInput={this.setFormData}
+              value={this.state.formData[publicationCitation]}
+            />
+            <TextboxElement
+              name={publicationVersion}
+              label="Publication Version"
+              onUserInput={this.setFormData}
+              value={this.state.formData[publicationVersion]}
+            />
+          </div>
+        );
+      }
+    }
+
+    return fileFields;
   }
 
   setFormData(formElement, value) {
@@ -97,11 +232,6 @@ class PublicationUploadForm extends React.Component {
       swal("Publication title already exists!", "", "error");
       return;
     }
-    // validate email
-    if (!this.isValidEmail(formData.leadInvestigatorEmail)) {
-      swal("Lead Investigator Email is invalid!", "", "error");
-      return;
-    }
 
     let formObj = new FormData();
     for (let key in formData) {
@@ -115,6 +245,7 @@ class PublicationUploadForm extends React.Component {
         formObj.append(key, formVal);
       }
     }
+    formObj.append('toNotify', JSON.stringify(this.state.toNotify));
 
     for (var key of formObj.keys()) {
       console.log(key);
@@ -152,17 +283,35 @@ class PublicationUploadForm extends React.Component {
     });
   }
 
-  isValidEmail(email) {
-    return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
+  validateEmail(field, email) {
+    let formErrors = this.state.formErrors;
+
+    // don't supply error if email is blank
+    if (email === '' || email === null || email === undefined) {
+      delete formErrors[field];
+
+      // if email is invalid, set error, else nullify error
+    } else if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
+      formErrors[field] = 'Invalid email';
+    } else {
+      delete formErrors[field];
+    }
+    this.setState({formErrors});
   }
 
   toggleEmailNotify(e) {
-    console.log(e);
+    let toNotify = this.state.toNotify;
+    if(e.target.checked) {
+      toNotify[e.target.value] = true;
+    } else {
+      toNotify[e.target.value] = false;
+    }
+    this.setState({toNotify: toNotify})
   }
 
   render() {
     // Data loading error
-    if (this.state.error !== undefined) {
+    if (this.state.loadError !== undefined) {
       return (
         <div className="alert alert-danger text-center">
           <strong>
@@ -189,17 +338,21 @@ class PublicationUploadForm extends React.Component {
     if (this.state.formData.collaborators) {
       this.state.formData.collaborators.forEach(
         function (c) {
+          let name = 'collabEmail' + c;
           collabEmails.push(
-            <TextboxElement
-              name={'collabEmail' + c}
+            <EmailElement
+              name={name}
               label={c + (c.slice(-1) !== 's' ? "'s" : "'") + " Email"}
               onUserInput={this.setFormData}
+              onUserBlur={this.validateEmail}
+              toggleEmailNotify={this.toggleEmailNotify}
+              errorMessage={this.state.formErrors[name]}
               required={false}
-              value={this.state.formData['collabEmail' + c]}
+              value={this.state.formData[name]}
+              addressee={c}
             />
           );
-        }.bind(this)
-      );
+        }, this);
     }
 
     // build testNames array
@@ -232,53 +385,7 @@ class PublicationUploadForm extends React.Component {
       });
     }
 
-
-    let fileFieldsReq = false;
-    let fileFields = [];
-    for(let i =0; i <= this.state.numFiles; i++){
-        let fileName = "file_" + i;
-        fileFields.push(
-            <FileElement
-                name={fileName}
-                id="publicationUploadEl"
-                onUserInput={this.setFileData}
-                label="File to upload"
-                value={this.state.formData[fileName]}
-            />
-        );
-        if(this.state.formData[fileName]){
-          fileFieldsReq = true;
-          let publicationType = "publicationType_" + i;
-          let publicationCitation = "publicationCitation_" + i;
-          let publicationVersion = "publicationVersion_" + i;
-          fileFields.push (
-              <div>
-                  <SelectElement
-                      name={publicationType}
-                      label="Publication Type"
-                      id="publicationTypeEl"
-                      onUserInput={this.setFormData}
-                      value={this.state.formData[publicationType]}
-                      options={this.state.Data.uploadTypes}
-                      required={fileFieldsReq}
-                  />
-                  <TextboxElement
-                      name={publicationCitation}
-                      label="Citation"
-                      onUserInput={this.setFormData}
-                      value={this.state.formData[publicationCitation]}
-                  />
-                  <TextboxElement
-                      name={publicationVersion}
-                      label="Publication Version"
-                      onUserInput={this.setFormData}
-                      value={this.state.formData[publicationVersion]}
-                  />
-              </div>
-          );
-        }
-    }
-
+    let fileFields = this.createFileFields();
     return (
       <div className="row">
         <div className="col-md-8 col-lg-7">
@@ -310,17 +417,17 @@ class PublicationUploadForm extends React.Component {
               required={true}
               value={this.state.formData.leadInvestigator}
             />
-            {/*TODO turn email fields into wrapper components */}
-
-            <TextboxElement
+            <EmailElement
               name="leadInvestigatorEmail"
               label="Lead Investigator Email"
               onUserInput={this.setFormData}
+              onUserBlur={this.validateEmail}
+              toggleEmailNotify={this.toggleEmailNotify}
+              errorMessage={this.state.formErrors.leadInvestigatorEmail}
               required={true}
               value={this.state.formData.leadInvestigatorEmail}
+              addressee="leadInvestigator"
             />
-            <input type="checkbox" onChange={this.toggleEmailNotify}/>
-            <span>Send email notification?</span>
             <TagsElement
               name="collaborators"
               label="Collaborators"
