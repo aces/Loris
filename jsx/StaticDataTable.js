@@ -269,8 +269,8 @@ var StaticDataTable = React.createClass({
     let filterData = null;
     let exactMatch = false;
     let result = false;
-    let searchKey = null; 
-    let searchString = null; 
+    let searchKey = null;
+    let searchString = null;
 
     if (this.props.Filter[header]) {
       filterData = this.props.Filter[header].value;
@@ -279,7 +279,7 @@ var StaticDataTable = React.createClass({
 
     // Handle null inputs
     if (filterData === null || data === null) {
-      return false;  
+      return false;
     }
 
     // Handle numeric inputs
@@ -302,7 +302,6 @@ var StaticDataTable = React.createClass({
 
     // Handle array inputs for multiselects
     if (typeof filterData === 'object') {
-console.log(filterData);
       var match = false;
       for (let i = 0; i < filterData.length; i += 1) {
         searchKey = filterData[i].toLowerCase();
