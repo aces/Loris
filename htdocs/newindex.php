@@ -30,7 +30,7 @@ $middlewarechain = (new \LORIS\Middleware\ContentLength())
 $serverrequest = \Zend\Diactoros\ServerRequestFactory::fromGlobals();
 
 // Now that we've created the ServerRequest, handle it.
-$user  = \User::singleton();
+$user = \User::singleton();
 
 $entrypoint = new \LORIS\Router\BaseRouter(
     $user,
