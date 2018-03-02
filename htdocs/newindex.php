@@ -27,18 +27,19 @@ $client->initialize();
 $middlewarechain = (new \LORIS\Middleware\ContentLength())
     ->withMiddleware(new \LORIS\Middleware\ResponseGenerator());
 
-$request = \Zend\Diactoros\ServerRequestFactory::fromGlobals();
+$serverrequest = \Zend\Diactoros\ServerRequestFactory::fromGlobals();
 
 // Now that we've created the ServerRequest, handle it.
 $user  = \User::singleton();
-$loris = new \LORIS\Router\BaseRouter(
+
+$entrypoint = new \LORIS\Router\BaseRouter(
     $user,
     __DIR__ . "/../project/",
     __DIR__ . "/../modules/"
 );
 
 // Now handle the request.
-$response = $middlewarechain->process($request, $loris);
+$response = $middlewarechain->process($serverrequest, $entrypoint);
 
 // Add the HTTP header line.
 header(
