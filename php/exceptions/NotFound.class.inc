@@ -1,10 +1,8 @@
 <?php
 /**
- * This class is an Exception extension created to distinguish any
- * Exception from the case when a module can't be loaded because
- * it is not a module (instruments, forms, reliability forms, ...).
+ * This file contains the NotFound exception type.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Errors
  * @package  Loris
@@ -14,7 +12,8 @@
  */
 
 /**
- * The LorisNoSuchModuleException class.
+ * The NotFound exception is thrown when a resource can not
+ * be found. It maps to a 404 error.
  *
  * @category Errors
  * @package  Loris
