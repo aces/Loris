@@ -121,7 +121,11 @@ function showHelp()
 
     die();
 }
-
+/*
+ * All tables with entries to be deleted here are only those with FOREIGN KEY relations to `candidate`.
+ * All other tables with FOREIGN KEY relations to these tables (second-level relations) should
+ * have actions on delete specified in the database schema
+ */
 function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, $output)
 {
 

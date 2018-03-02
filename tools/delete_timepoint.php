@@ -134,7 +134,11 @@ function showHelp()
 
     die();
 }
-
+/*
+ * All tables with entries to be deleted here are only those with FOREIGN KEY relations to `session`.
+ * All other tables with FOREIGN KEY relations to these tables (second-level relations) should
+ * have actions on delete specified in the database schema
+ */
 function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $output)
 {
     echo "\n#########################################################################\n";
