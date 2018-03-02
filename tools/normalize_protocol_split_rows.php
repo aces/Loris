@@ -66,6 +66,8 @@ foreach ($idx as $id) {
     $DB->delete("mri_protocol", array("ID" => $id)); 
 }
 
+echo("All mri_protocol entries are now unique and not comma-separated."); 
+
  
   
 ?>
