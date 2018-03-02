@@ -14,13 +14,8 @@
 namespace LORIS\Middleware;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
-use \Psr\Http\Message\URIInterface;
 use \Psr\Http\Server\MiddlewareInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
-use \LORIS\Http\ServerResponse;
-use \LORIS\Http\StringStream;
-use \LORIS\Http\FileStream;
-use \LORIS\Http\EmptyStream;
 
 /**
  * A ContentLength middleware is a chainable type of PSR15-based middleware
