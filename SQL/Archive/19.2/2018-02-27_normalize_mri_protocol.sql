@@ -1,0 +1,27 @@
+-- This patch adds min & max columns for every field in `mri_protocol` which presently can hold range values. 
+ALTER TABLE
+	`mri_protocol`
+		ADD COLUMN `TR_min` varchar(10) DEFAULT NULL,
+		ADD COLUMN `TR_max` varchar(10) DEFAULT NULL,
+		ADD COLUMN `TE_min` varchar(10) DEFAULT NULL,
+		ADD COLUMN `TE_max` varchar(10) DEFAULT NULL,
+		ADD COLUMN `TI_min` varchar(10) DEFAULT NULL,
+		ADD COLUMN `TI_max` varchar(10) DEFAULT NULL,
+		ADD COLUMN `slice_thickness_min` varchar(10) DEFAULT NULL,
+		ADD COLUMN `slice_thickness_max` varchar(10) DEFAULT NULL,
+		ADD COLUMN `FOV_x_min` varchar(5) DEFAULT NULL,
+		ADD COLUMN `FOV_x_max` varchar(5) DEFAULT NULL,
+		ADD COLUMN `FOV_y_min` varchar(5) DEFAULT NULL,
+		ADD COLUMN `FOV_y_max` varchar(5) DEFAULT NULL,
+		ADD COLUMN `FOV_z_min` varchar(5) DEFAULT NULL,
+		ADD COLUMN `FOV_z_max` varchar(5) DEFAULT NULL,
+		ADD COLUMN `xspace_min` varchar(5) DEFAULT NULL,
+		ADD COLUMN `xspace_max` varchar(5) DEFAULT NULL,
+		ADD COLUMN `yspace_min` varchar(5) DEFAULT NULL,
+		ADD COLUMN `yspace_max` varchar(5) DEFAULT NULL,
+		ADD COLUMN `zspace_min` varchar(5) DEFAULT NULL,
+		ADD COLUMN `zspace_max` varchar(5) DEFAULT NULL,
+		ADD COLUMN `xstep_min` varchar(5) DEFAULT NULL,
+		ADD COLUMN `xstep_max` varchar(5) DEFAULT NULL,
+		ADD COLUMN `time_min` varchar(50) DEFAULT NULL,
+		ADD COLUMN `time_max` varchar(50) DEFAULT NULL;
