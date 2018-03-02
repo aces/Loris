@@ -109,9 +109,10 @@ class PublicationUploadForm extends React.Component {
     this.setFileData = this.setFileData.bind(this);
     this.createFileFields = this.createFileFields.bind(this);
     this.toggleEmailNotify = this.toggleEmailNotify.bind(this);
+    this.fetchData = this.fetchData.bind(this);
   }
 
-  componentDidMount() {
+  fetchData() {
     let self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
@@ -129,6 +130,12 @@ class PublicationUploadForm extends React.Component {
         });
       }
     });
+  }
+
+  componentDidMount() {
+    if (!this.props.editMode) {
+      this.fetchData();
+    }
   }
 
   setFileData(formElement, value) {
@@ -246,10 +253,6 @@ class PublicationUploadForm extends React.Component {
       }
     }
     formObj.append('toNotify', JSON.stringify(this.state.toNotify));
-
-    for (var key of formObj.keys()) {
-      console.log(key);
-    }
 
     $.ajax({
       type: 'POST',
@@ -382,6 +385,21 @@ class PublicationUploadForm extends React.Component {
     }
 
     let fileFields = this.createFileFields();
+
+    let createElements;
+    if (this.props.editMode) {
+      createElements = [
+        <h3>Propose a new project</h3>,
+        <TextboxElement
+          name="title"
+          label="Title"
+          onUserInput={this.setFormData}
+          required={true}
+          value={this.state.formData.title}
+        />
+      ];
+    }
+
     return (
       <div className="row">
         <div className="col-md-8 col-lg-7">
@@ -391,14 +409,7 @@ class PublicationUploadForm extends React.Component {
             ref="form"
             fileUpload={true}
           >
-            <h3>Propose a new project</h3><br/>
-            <TextboxElement
-              name="title"
-              label="Title"
-              onUserInput={this.setFormData}
-              required={true}
-              value={this.state.formData.title}
-            />
+            {createElements}
             <TextareaElement
               name="description"
               label="Description"
