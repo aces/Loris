@@ -111,44 +111,16 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                       *
                   FROM
                       tarchive_series ts
+                  LEFT JOIN mri_protocol mp ON mp.Scan_type=".$acqID."
                   WHERE
                       ts.TarchiveID = t.TarchiveID
-                      AND(
-                          ts.EchoTime BETWEEN(
-                              SELECT
-                                  SUBSTRING_INDEX(mp.TE_range, '-', 1)
-                              FROM
-                                  mri_protocol mp
-                              WHERE
-                                  mp.Scan_type = ".$acqID." LIMIT 1
-                          ) AND(
-                              SELECT
-                                  SUBSTRING_INDEX(mp.TE_range, '-', -1)
-                              FROM
-                                  mri_protocol mp
-                              WHERE
-                                   mp.Scan_type = ".$acqID." LIMIT 1
-                           )
-                      )
-                      AND(
-                          ts.RepetitionTime BETWEEN(
-                              SELECT
-                                  SUBSTRING_INDEX(mp.TR_range, ',', 1)
-                              FROM
-                                  mri_protocol mp
-                              WHERE
-                                  mp.Scan_type = ".$acqID." LIMIT 1
-                          ) AND(
-                              SELECT
-                                  SUBSTRING_INDEX(mp.TR_range, ',', -1)
-                              FROM
-                                  mri_protocol mp
-                              WHERE
-                                  mp.Scan_type = ".$acqID." LIMIT 1
-                           )
-                      )
-               ) THEN 'In DICOM'
-              ELSE 'Missing'
+                      AND (ts.EchoTime BETWEEN mp.TE_min AND mp.TE_max)
+                      AND (ts.RepetitionTime BETWEEN mp.TR_min AND mp.TR_max)
+                      AND (ts.InversionTime BETWEEN mp.TI_min AND mp.TI_max)".
+                      " AND (ts.SliceThickness BETWEEN mp.slice_thickness_min".
+                      " AND mp.slice_thickness_max)".
+               ") THEN 'In DICOM'".
+              "ELSE 'Missing'
            END as tarchive_loc,
            (SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project,".
            " (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID)
@@ -157,19 +129,19 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
               WHEN m.Data_entry_completion_status='Incomplete' THEN 'Incomplete'
               ELSE 'Complete'
            END AS mri_parameter_form,
-           CASE 
+           CASE
               WHEN m.".$scan_done." IS NULL THEN ''
               WHEN (m.".$scan_done." = 'Complete'
               OR m.".$scan_done." = 'Partial') THEN 'Yes'
               ELSE 'No'
            END as scan_done,
-           CASE 
+           CASE
               WHEN (fi.fileID IS NULL AND mvl.PatientName IS NULL) THEN 'Missing'
               WHEN fi.fileID IS NOT NULL THEN 'In Imaging Browser'
               WHEN mvl.PatientName IS NOT NULL THEN 'In MRI Violated Scans'
            END as scan_location,
-           CASE 
-              WHEN qc.Selected = '' THEN 'False' 
+           CASE
+              WHEN qc.Selected = '' THEN 'False'
               WHEN qc.Selected = 'true' THEN 'True'
            END as selected,
            qc.QCStatus as qc_status,
@@ -359,7 +331,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         }
 
         $query = implode(
-            " 
+            "
           UNION ALL
           ",
             $scan_types
