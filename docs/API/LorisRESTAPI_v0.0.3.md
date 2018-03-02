@@ -155,11 +155,11 @@ Will return a JSON object of the form:
       "Candidate": "123456",
       "PSCID": "MTL001",
       "Visit": "V1",
-      "Visit_date": "2016-08-09",
+      "Visit_date": "2016-08-09", /* The date of the session. This will be null for phantoms and session that are not yet started */
       "Site": "Montreal Neurological Institute",
       "ScanType": "t2", /* Acquisition protocol */
-      "QC_status": "Pass|Fail",
-      "Selected": "true|false",
+      "QC_status": "Pass|Fail|null",
+      "Selected": "true|false|null",
       "Link": "\/candidates\/300022\/V1\/images\/loris-MRI_123456_V1_t2_001.mnc", /* URL relative to this API */
       "InsertTime": "2016-08-09T14:15:30-05:00" /* The inserted date ISO 8601 */
     },
