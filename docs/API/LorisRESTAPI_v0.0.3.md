@@ -166,7 +166,7 @@ It is possible to provide a GET parameter named `since` where the value need to 
 ```
 ex: 2016-08-09 or 2016-08-09 10:00:00 or 2016-08-09T10:00:00-05:00
 ```
-The format must follow php Supported Date and Time Formats for Datetime objects. See http://php.net/manual/en/datetime.formats.php  
+We recommand using a format that include timezone.
 
 ### 2.1.2 Single project instruments  
 ```
