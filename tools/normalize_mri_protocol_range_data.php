@@ -1,7 +1,11 @@
 <?php
 /**
- * This script is the part of the second step for normalizing the mri_protocol table. It populates the new min & max columns for each field that
- * can contain ranges and returns SQL statements to remove the old %_range columns.
+ * This script is the part of the second step for normalizing the mri_protocol table.
+ * It populates the new min & max columns for each field that can contain ranges and
+ * returns SQL statements to remove the old %_range columns.
+ *
+ * "Usage: php normalize_mri_protocol_range_data.php [tosql]";
+ * "Example: php normalize_mri_protocol_range_data.php tosql";
  *
  * PHP Version 7
  *
@@ -14,6 +18,18 @@
 require_once 'generic_includes.php';
 require_once 'Database.class.inc';
 require_once 'Utility.class.inc';
+
+// set default arguments
+$confirm = false;
+$printToSQL = false;
+// SQL output
+$output     = "";
+
+// check if the 'tosql' option is passed
+if (!empty($argv[1]) && $argv[1] == "tosql") {
+  $printToSQL = true;
+}
+
 $DB = \Database::singleton();
 
 // get all "ID" values from the mri_protocol table
@@ -51,9 +67,23 @@ foreach($idx as $id) {
     $DB->update("mri_protocol_3", $data_to_insert, array('ID' => $id));
 }
 
-echo("Data insertion for new min & max columns is complete. Please execute the
-      following SQL commands to delete the original range columns\n\n.");
+echo("Data insertion for new min & max columns is complete.\n");
 
 foreach($mp_range_columns as $range_column) {
-  echo("DELETE $range_column FROM mri_protocol\n"); 
+    $output .= "ALTER TABLE mri_protocol_3 DROP $range_column;\n";
+}
+
+if ($printToSQL) {
+  _exportSQL($output);
+} else {
+  echo("Please execute the following SQL statements to delete the original range columns.\n\n");
+  echo($output);
+}
+
+function _exportSQL ($output) {
+    //export file
+    $filename = __DIR__ . "/../project/tables_sql/DELETE_mri_protocol_range_columns.sql";
+    $fp       = fopen($filename, "w");
+    fwrite($fp, $output);
+    fclose($fp);
 }
