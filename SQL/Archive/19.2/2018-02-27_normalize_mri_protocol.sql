@@ -23,5 +23,9 @@ ALTER TABLE
 		ADD COLUMN `zspace_max` varchar(5) DEFAULT NULL,
 		ADD COLUMN `xstep_min` varchar(5) DEFAULT NULL,
 		ADD COLUMN `xstep_max` varchar(5) DEFAULT NULL,
+                ADD COLUMN `ystep_min` varchar(5) DEFAULT NULL, 
+                ADD COLUMN `ystep_max` varchar(5) DEFAULT NULL,
+                ADD COLUMN `zstep_min` varchar(5) DEFAULT NULL,
+                ADD COLUMN `zstep_max` varchar(5) DEFAULT NULL,
 		ADD COLUMN `time_min` varchar(50) DEFAULT NULL,
 		ADD COLUMN `time_max` varchar(50) DEFAULT NULL;

@@ -710,6 +710,10 @@ CREATE TABLE `mri_protocol` (
 	`zspace_max` varchar(5) DEFAULT NULL,
 	`xstep_min` varchar(5) DEFAULT NULL,
 	`xstep_max` varchar(5) DEFAULT NULL,
+        `ystep_min` varchar(5) DEFAULT NULL,
+        `ystep_max` varchar(5) DEFAULT NULL,
+        `zstep_min` varchar(5) DEFAULT NULL,
+        `zstep_max` varchar(5) DEFAULT NULL,
 	`time_min` varchar(50) DEFAULT NULL,
 	`time_max` varchar(50) DEFAULT NULL;
   `series_description_regex` varchar(255) default NULL,
