@@ -329,7 +329,6 @@ class Document_Repository extends \NDB_Menu_Filter
                         = &$thisref;
                 }
             }
-            $tree; // contains the newly sorted tree.
         }
         $query           ="SELECT id,category_name,parent_id,comments".
                          " FROM document_repository_categories ORDER BY parent_id";
