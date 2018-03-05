@@ -156,7 +156,7 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
     {
         $this->Header(
             "Access-Control-Allow-Methods: ".
-            join($this->AllowedMethods, ",")
+            join(",", $this->AllowedMethods)
         );
     }
 
