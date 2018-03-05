@@ -1,4 +1,5 @@
 <?php
+use Psr\Http\Server\RequestHandlerInterface;
 /**
  * This file contains a class which encapsulates the concept of a "module"
  * in LORIS.
@@ -22,7 +23,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Module
+class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterface
 {
     protected $name;
     protected $dir;
@@ -73,6 +74,9 @@ class Module
                     $fpath = $mpath . "/php/"
                     . strtolower(substr($class, strlen("LORIS\\$name\\")))
                     . ".class.inc";
+                    if (!file_exists($fpath)) {
+                        throw new \NotFound($name);
+                    }
                     include $fpath;
                 }
             }
@@ -82,9 +86,7 @@ class Module
         // namespacing
         //require_once $mpath . "/php/Module.class.inc";
         $className = "\LORIS\\$name\Module";
-        $cls       = new $className($name);
-        $cls->dir  = $mpath;
-
+        $cls       = new $className($name, $mpath);
         return $cls;
     }
 
@@ -93,9 +95,18 @@ class Module
      *
      * @param string $name The name of the module
      */
-    public function __construct($name)
+    public function __construct($name, $moduledir)
     {
+        parent::__construct(
+            new \ArrayIterator([
+                "/css/" => new \LORIS\Router\ModuleFileRouter($this, $moduledir,     "css"),
+                "/js/" => new \LORIS\Router\ModuleFileRouter($this, $moduledir, "js"),
+                "/static/" => new \LORIS\Router\ModuleFileRouter($this, $moduledir, "static"),
+
+            ])
+        );
         $this->name = $name;
+        $this->dir = $moduledir;
     }
 
     /**
@@ -121,6 +132,20 @@ class Module
     }
 
     /**
+     * Return true if the given user should have access to this module.
+     *
+     * By default, this will assume that anonymous users do not have access
+     * to non-public modules, but otherwise everyone has access to anything.
+     */
+    public function hasAccess(User $user) {
+        if ($this->isPublicModule() !== true) {
+            if ($user instanceof \LORIS\AnonymousUser) {
+                return false;
+            }
+        }
+        return true;
+    }
+    /**
      * Loads a page within this module and calls all necessary setup.
      *
      * @param string $page The name of the page within the module to load.
@@ -138,22 +163,10 @@ class Module
         $identifier = $_REQUEST['identifier'] ?? '';
         $commentID  = $_REQUEST['commentID'] ?? '';
         $cls        = new $className($this, $page, $identifier, $commentID, $page);
-        // Smarty needs the Module as a reference to autoload the right
-        // templates. Every type of page uses this.
-        $cls->Module = $this;
 
         // Hacks so that existing display() functions load the right template
         // for different page types.
         $cls->menu = $page;
-        if (!$cls->_hasAccess()) {
-            throw new \LorisException("You do not have access to this page.", 403);
-        }
-        $cls->setup();
-
-        // Handles form submission
-        if (method_exists($cls, 'save')) {
-            $cls->save();
-        }
 
         return $cls;
     }
@@ -172,5 +185,36 @@ class Module
                 return file_get_contents($helpFile);
         }
         return "No help available for $page ($helpFile)";
+    }
+
+    /**
+     * The default handler for a module routes to a page of the first component of
+     * the URL's name, or the same name as the module if serving the root of the
+     * module.
+     *
+     * Modules extend PrefixRouter, so that the parent handler knows that the
+     * css, static, and js routes should be routed through the file system to
+     * retrieve the files before trying to load any specific pages.
+     */
+    public function handle(\Psr\Http\Message\ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface {
+        $resp = parent::handle($request);
+        if ($resp->getStatusCode() != 404) {
+            return $resp;
+        }
+        switch ($request->getURI()->getPath()) {
+        case "":
+        case "/":
+            $page = $this->loadPage($this->getName());
+            return $page->process($request, $page);
+        default:
+            // Fall back on the old way of doing subpages
+            $components = explode("@", trim($request->getURI()->getPath(), "/"));
+            $page = $this->loadPage($components[0]);
+            return $page->process($request, $page);
+        }
+
+        return (new \Zend\Diactoros\Response())
+            ->withStatus(404)
+            ->withBody(new \LORIS\Http\StringStream("File not found: " . $request->getURI()->__toString()));
     }
 }
