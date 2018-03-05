@@ -19,7 +19,8 @@
         "phpunit/phpunit" : "6.5.*",
         "phpunit/dbunit": "3.0.*",
         "facebook/webdriver" : "dev-master",
-        "phpmd/phpmd": "^2.6"
+        "phpmd/phpmd": "^2.6",
+        "phan/phan": "0.12.x"
     },
     "scripts": {
       "pre-install-cmd": "mkdir -p project/libraries"
