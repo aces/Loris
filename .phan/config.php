@@ -53,7 +53,6 @@ return [
 		"PhanTypeInvalidRightOperand",
 		"PhanRedefineFunctionInternal",
 		"PhanRedefineFunction",
-		"PhanParamSpecial2",
 	],
 	"analyzed_file_extensions" => ["php", "inc"],
 	"directory_list" => [
