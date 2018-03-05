@@ -603,7 +603,7 @@ class NDB_BVL_Feedback
     *
     * @return array
     */
-    function getThreadEntries($feedbackID)
+    static function getThreadEntries($feedbackID)
     {
         // new DB Object
         $db =& Database::singleton();

@@ -286,7 +286,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
                 $selectElement->selectByVisibleText($elementValue);
                 break;
             default:
-                throw Exception(
+                throw new Exception(
                     'Element type ' . $element->getTagName() . ' not supported'
                 );
             }
