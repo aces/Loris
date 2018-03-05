@@ -30,6 +30,9 @@ namespace LORIS\instrument_list;
  */
 class Instrument_List extends \NDB_Menu_Filter
 {
+    protected $Candidate;
+    protected $TimePoint;
+
     /**
     * Checking permissions
     *
@@ -40,24 +43,48 @@ class Instrument_List extends \NDB_Menu_Filter
         // create user object
         $user =& \User::singleton();
 
-        $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
-        $candID    = $timePoint->getCandID();
-
-        $candidate =& \Candidate::singleton($candID);
-
         // check user permissions
         return ($user->hasPermission('access_all_profiles')
                 || (in_array(
-                    $candidate->getData('CenterID'),
+                    $this->Candidate->getData('CenterID'),
                     $user->getData('CenterIDs')
                 )
                    )
                 || (in_array(
-                    $timePoint->getData('CenterID'),
+                    $this->TimePoint->getData('CenterID'),
                     $user->getData('CenterIDs')
                 )
                    )
         );
+    }
+
+    /**
+     * The handler for the instrument_list extracts both the timepoint and candidate from the URL
+     * and attaches them to the class as class member variables before handling (displaying) the
+     * page.
+     *
+     * This makes it possible to not depend on PHP superglobals within the page itself.
+     */
+    public function handle(\Psr\Http\Message\ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface {
+        $gets = $request->getQueryParams();
+
+        $attribute = $request->getAttribute("CandID");
+        if ($attribute !== null) {
+            $this->Candidate = \Candidate::singleton($attribute);
+        } else {
+            $this->Candidate = \Candidate::singleton($gets['candID']);
+        }
+
+        $attribute = $request->getAttribute("TimePoint");
+        if ($attribute !== null) {
+            $this->TimePoint = $attribute;
+        } else {
+            // FIXME: Make VisitLabel not sessionID
+            $this->TimePoint = \TimePoint::singleton($gets['sessionID']);
+        }
+
+        $this->setup();
+        return parent::handle($request);
     }
 
     /**
@@ -68,17 +95,14 @@ class Instrument_List extends \NDB_Menu_Filter
     function getControlPanel()
     {
         $controlPanel = new Instrument_List_ControlPanel(
-            $_REQUEST['sessionID']
+            $this->TimePoint->getSessionID()
         );
         // save possible changes from the control panel...
         $success = $controlPanel->save();
 
         // display the control panel
         $html = $controlPanel->display();
-        // I don't know why this is here, but it
-        // was in main.php, so moved it to be safe.
-        $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
-        $timePoint->select($_REQUEST['sessionID']);
+
         return $html;
     }
 
@@ -92,12 +116,12 @@ class Instrument_List extends \NDB_Menu_Filter
         // Don't call parent setup, we don't want it to try to run any SQL
 
         // set template data
-        $this->tpl_data['candID']    = $_REQUEST['candID'];
-        $this->tpl_data['sessionID'] = $_REQUEST['sessionID'];
+        $this->tpl_data['candID']    = $this->Candidate->getCandID();
+        $this->tpl_data['sessionID'] = $this->TimePoint->getSessionID();
 
         // get behavioral battery for this visit (time point)
         $battery = new \NDB_BVL_Battery;
-        $success = $battery->selectBattery($_REQUEST['sessionID']);
+        $success = $battery->selectBattery($this->TimePoint->getSessionID());
 
         $this->tpl_data['stage']        = \Utility::getStageUsingCandID(
             $this->tpl_data['candID']
@@ -210,13 +234,8 @@ class Instrument_List extends \NDB_Menu_Filter
             }
         }
 
-        $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
-        $candID    = $timePoint->getCandID();
-
-        $candidate =& \Candidate::singleton($candID);
-
         $this->tpl_data['display']
-            = array_merge($candidate->getData(), $timePoint->getData());
+            = array_merge($this->Candidate->getData(), $this->TimePoint->getData());
     }
 
     /**
@@ -252,7 +271,7 @@ class Instrument_List extends \NDB_Menu_Filter
         $DB = \Database::singleton();
 
         // assert that a battery has already been selected
-        if (is_null($_REQUEST['sessionID'])) {
+        if (is_null($this->TimePoint)) {
             throw new Exception("No battery selected");
         }
 
@@ -271,7 +290,7 @@ class Instrument_List extends \NDB_Menu_Filter
             	JOIN test_names t ON (f.Test_name=t.Test_name)
             	JOIN test_subgroups ts ON (ts.ID = t.Sub_group)
             	LEFT JOIN session s ON (s.ID=f.SessionID) ";
-        $qparams = array('SID' => $_REQUEST['sessionID']);
+        $qparams = array('SID' => $this->TimePoint->getSessionID());
 
         if (!is_null($stage)) {
             $query .= "
