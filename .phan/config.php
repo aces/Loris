@@ -53,7 +53,6 @@ return [
 		"PhanParamTooFew",
 		"PhanParamTooMany",
 		"PhanStaticCallToNonStatic",
-		"PhanTypeComparisonToArray",
 		"PhanTypeArraySuspicious",
 		"PhanTypeInvalidRightOperand",
 		"PhanRedefineFunctionInternal",
