@@ -21,10 +21,10 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface {
     /**
      * Displays a page to an anonymous (not logged in) user.
      *
-     * @param array $get  The GET parameters from the request.
-     * @param array $post The POST parameters from the request.
+     * @param ServerRequestInterface  $request The incoming PSR7 request
+     * @param RequestHandlerInterface $handler The PSR15 handler to delegate to
      *
-     * @return string the page content
+     * @return ResponseInterface The response with the the page content
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface {
         // Basic page outline variables

@@ -20,15 +20,12 @@ return [
 	"scalar_implicit_cast" => false,
 	"ignore_undeclared_variables_in_global_scope" => false,
 	"suppress_issue_types" => [
-        "PhanUnreferencedUseNormal",
-        "PhanCommentParamWithoutRealParam",
         "PhanTypeMismatchDeclaredReturn",
         "PhanTypeNonVarPassByRef",
-        "PhanTypeMismatchDeclaredParam",
         "PhanTypeExpectedObjectPropAccessButGotNull",
         "PhanTypeInvalidDimOffset",
         "PhanTypeMismatchDimAssignment",
-		"PhanDeprecatedFunction",
+        "PhanDeprecatedFunction",
         "PhanParamSuspiciousOrder",
         "PhanTypeExpectedObjectPropAccess",
 		"PhanRedefineClass",
@@ -64,7 +61,6 @@ return [
 		"PhanTypeInvalidRightOperand",
 		"PhanRedefineFunctionInternal",
 		"PhanRedefineFunction",
-		"PhanNoopVariable",
 		"PhanParamSpecial1",
 		"PhanParamSpecial2",
         "PhanUnextractableAnnotation",
@@ -79,8 +75,6 @@ return [
 		"php/libraries",
 		"php/exceptions",
 		"htdocs",
-		/* Modules should be included, but there's enough problems
-		identified by phan without the modules included.. */
 		"modules",
         "src",
 		"vendor",

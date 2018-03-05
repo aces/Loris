@@ -55,7 +55,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
      *
      * @param ServerRequestInterface $request The PSR7 request
      *
-     * @return ServerResponse The PSR15 response.
+     * @return ResponseInterface The PSR15 response.
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {

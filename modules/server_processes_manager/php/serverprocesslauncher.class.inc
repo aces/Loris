@@ -39,10 +39,10 @@ class ServerProcessLauncher
     /**
      * Builds a new ServerProcessesLauncher
      *
-     * @param mixed $databaseProvider entity used to access the database
+     * @param IDatabaseProvider $databaseProvider entity used to access the database
      */
     public function __construct(
-        IDatabaseProvider $databaseProvider = null
+        IDatabaseProvider $databaseProvider
     ) {
         $this->setDatabaseProvider($databaseProvider);
     }
