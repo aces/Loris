@@ -21,7 +21,6 @@ return [
 	"ignore_undeclared_variables_in_global_scope" => false,
 	"suppress_issue_types" => [
         "PhanTypeMismatchDeclaredReturn",
-        "PhanTypeNonVarPassByRef",
         "PhanTypeExpectedObjectPropAccessButGotNull",
         "PhanTypeInvalidDimOffset",
         "PhanTypeMismatchDimAssignment",
@@ -36,7 +35,6 @@ return [
 		"PhanUndeclaredTypeReturnType",
         "PhanTypeMismatchDimFetch",
         "PhanTypeArraySuspiciousNullable",
-		"PhanUndeclaredStaticMethod",
 		"PhanUndeclaredClassMethod",
 		"PhanUndeclaredTypeParameter",
 		"PhanUndeclaredConstant",
@@ -61,7 +59,6 @@ return [
 		"PhanTypeInvalidRightOperand",
 		"PhanRedefineFunctionInternal",
 		"PhanRedefineFunction",
-		"PhanParamSpecial1",
 		"PhanParamSpecial2",
         "PhanUnextractableAnnotation",
 	],

@@ -63,7 +63,8 @@ if ($userSingleton->hasPermission('document_repository_view')
 
         $fileSize = $_FILES["file"]["size"];
         $fileName = $_FILES["file"]["name"];
-        $fileType = end((explode(".", $fileName)));
+        $ft = explode(".", $fileName);
+        $fileType = end($ft);
 
         // __DIR__ is the document_repository ajax directory
         // when this script is executing. Go up a level to the
