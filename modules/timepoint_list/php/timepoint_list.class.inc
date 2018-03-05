@@ -25,6 +25,7 @@ namespace LORIS\timepoint_list;
  */
 class Timepoint_List extends \NDB_Menu
 {
+    protected $CandID;
     /**
      * Overloading this method to allow access to timepoint list
      *
@@ -35,7 +36,7 @@ class Timepoint_List extends \NDB_Menu
         // create user object
         $user =& \User::singleton();
 
-        $candidate =& \Candidate::singleton($_REQUEST['candID']);
+        $candidate =& \Candidate::singleton($this->CandID);
 
         // check user permissions
         if ($user->hasPermission('access_all_profiles')
@@ -66,6 +67,20 @@ class Timepoint_List extends \NDB_Menu
 
         return false;
     }
+
+    public function handle(\Psr\Http\Message\ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface {
+        $attribute = $request->getAttribute("CandID");
+        if ($attribute !== null) {
+            // FIXME: Update the code to add the singleton here, not the identifier.
+            $this->CandID = $attribute;
+        } else {
+            $gets = $request->getQueryParams();
+            $this->CandID = $gets['candID'];
+        }
+        $this->setup();
+        return parent::handle($request);
+    }
+
     /**
      * Setup function
      *
@@ -74,11 +89,11 @@ class Timepoint_List extends \NDB_Menu
     function setup()
     {
         // create candidate object
-        $candidate =& \Candidate::singleton($_REQUEST['candID']);
+        $candidate =& \Candidate::singleton($this->CandID);
         $DB        =& \Database::singleton();
 
         $numberOfVisits           = 0;
-        $this->tpl_data['candID'] = $_REQUEST['candID'];
+        $this->tpl_data['candID'] = $this->CandID;
         $this->tpl_data['PSCID']  = $candidate->getPSCID();
         $listOfTimePoints         = $candidate->getListOfTimePoints();
 
@@ -247,7 +262,7 @@ class Timepoint_List extends \NDB_Menu
      */
     function getActionButtons()
     {
-        $controlPanel = new TimePoint_List_ControlPanel($_REQUEST['candID']);
+        $controlPanel = new TimePoint_List_ControlPanel($this->CandID);
         return $controlPanel->display();
     }
 
@@ -269,4 +284,3 @@ class Timepoint_List extends \NDB_Menu
         );
     }
 }
-?>

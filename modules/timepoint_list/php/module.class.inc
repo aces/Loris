@@ -26,4 +26,21 @@ namespace LORIS\timepoint_list;
  */
 class Module extends \Module
 {
+    /**
+     * The timepoint_list module overrides the default routing to ensure that
+     * the "timepoint_list" subpage is loaded when called with an unknown
+     * page. This makes it possible to provide routes which fallback on loading
+     * the timepoint in the module.
+     */
+    public function handle(\Psr\Http\Message\ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface {
+        try {
+         $resp = parent::handle($request);
+         if ($resp->getStatusCode() != 404) {
+               return $resp;
+        }
+        } catch (\NotFound $e) {
+        }
+        $page = $this->loadPage("timepoint_list");
+        return $page->process($request, $page);
+    }
 }

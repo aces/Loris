@@ -26,4 +26,20 @@ namespace LORIS\instrument_list;
  */
 class Module extends \Module
 {
+
+    /**
+     * The instrument_list module falls back to the instrument_list page regardless
+     * of what the page loaded was. This ensures that routes which use the CandID
+     * (and not the word "instrument_list") are still able to be loaded and not
+     * 404 errors.
+     */
+    public function handle(\Psr\Http\Message\ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface {
+        $resp = parent::handle($request);
+        if ($resp->getStatusCode() != 404) {
+            return $resp;
+        }
+        $page = $this->loadPage("instrument_list");
+        return $page->process($request, $page);
+
+    }
 }
