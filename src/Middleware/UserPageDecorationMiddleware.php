@@ -32,6 +32,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface { 
         ob_start();
         // Set the page template variables
+        // $user is set by the page base router
+        $user = $request->getAttribute("user");
         $tpl_data = array(
                      'test_name' => $this->PageName,
                     );
@@ -48,16 +50,20 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
 
 
         $get = $request->getQueryParams();
-        $tpl_data['candID']      = $get['candID'] ?? '';
         $tpl_data['sessionID']   = $get['sessionID'] ?? '';
         $tpl_data['commentID']   = $get['commentID'] ?? '';
         $tpl_data['dynamictabs'] = $get['dynamictabs'] ?? '';
 
-        if (!empty($get['candID'])) {
-            $candidate = \Candidate::singleton($get['candID']);
+        $candID = $request->getAttribute("CandID");
+        if ($candID == null && !empty($get['candID'])) {
+            $candID = $get['candID'];
+        }
+        if ($candID != null) {
+            $candidate = \Candidate::singleton($candID);
 
             $tpl_data['candidate'] = $candidate->getData();
         }
+        $tpl_data['candID']      = $candID ?? '';
 
         // Stuff that probably shouldn't be here, but exists because it was in
         // main.php
@@ -79,9 +85,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
         }
         if (method_exists($page, 'getFeedbackPanel')
             && $user->hasPermission('bvl_feedback')
+            && isset($get['candID'])
         ) {
             $tpl_data['feedback_panel'] = $page->getFeedbackPanel(
-                $get['candID'],
+                $candID,
                 $get['sessionID'] ?? null
             );
 
