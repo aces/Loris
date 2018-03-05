@@ -21,7 +21,6 @@ return [
         "PhanTypeExpectedObjectPropAccessButGotNull",
         "PhanTypeInvalidDimOffset",
         "PhanTypeMismatchDimAssignment",
-        "PhanParamSuspiciousOrder",
         "PhanTypeExpectedObjectPropAccess",
 		"PhanRedefineClass",
 		"PhanUndeclaredMethod",

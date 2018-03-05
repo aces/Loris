@@ -199,7 +199,7 @@ abstract class APIBase
     {
         $this->Header(
             "Access-Control-Allow-Methods: ".
-            join($this->AllowedMethods, ",")
+            join(",", $this->AllowedMethods)
         );
         $this->safeExit(0);
     }
