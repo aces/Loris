@@ -1,8 +1,8 @@
 <?php
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -16,9 +16,9 @@ require_once __DIR__ . "/../../reliability/php/reliability.class.inc";
 use LORIS\reliability\Reliability as Reliability;
 
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -59,50 +59,60 @@ class Stats_Reliability extends \NDB_Form
             $projects[$key] = $value;
         }
 
-        if ($_REQUEST['ReliabilityProject'] ?? ''
-        ) {
-            $currentProject = htmlspecialchars($_REQUEST['ReliabilityProject']);
+        $reliabilityProject = $_REQUEST['ReliabilityProject'] ?? '';
+        $reliabilityProject = htmlspecialchars($reliabilityProject);
+        $Param_Project      = '';
+        if (!empty($reliabilityProject)) {
             $this->tpl_data['CurrentProject']
                 = array(
-                   'ID'   => $currentProject,
-                   'Name' => $projects[$currentProject],
+                   'ID'   => $reliabilityproject,
+                   'Name' => $projects[$reliabilityProject],
                   );
-            $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
-            $this->params['pid'] = htmlspecialchars($_REQUEST['ReliabilityProject']);
+            $Param_Project       = 'AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+            $this->params['pid'] = $reliabilityProject;
         } else {
             $Param_Project ='';
         }
 
         //SITES
-        if ($_REQUEST['ReliabilitySite'] ?? ''
-        ) {
-            $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
-            $this->params['sid'] = htmlspecialchars($_REQUEST['ReliabilitySite']);
+        $reliabilitySite = $_REQUEST['ReliabilitySite'] ?? '';
+        $Param_Site      = '';
+        if (empty($reliabilitySite)) {
+            error_log('No reliability site specified in request');
         } else {
-            $Param_Site = '';
+            $reliabilitySite     = htmlspecialchars($reliabilitySite);
+            $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
+            $this->params['sid'] = $reliabilitySite;
         }
         $centers     = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
-                    CenterID as NumericID,
-                    IFNULL(PSCArea,Name) as LongName,
-                    Name as ShortName
-              FROM psc
-              WHERE CenterID <> '1'
-                AND Study_site = 'Y'",
+            CenterID as NumericID,
+            IFNULL(PSCArea,Name) as LongName,
+            Name as ShortName
+            FROM psc
+            WHERE CenterID <> '1'
+            AND Study_site = 'Y'",
             array()
         );
         $sites[null] ="All sites";
-        foreach ($centers as $row) {
-            $sites[$row['NumericID']] = $row['ShortName'];
-            if (($_REQUEST['ReliabilitySite'] ?? -1) == $row['NumericID']) {
-                $this->tpl_data['CurrentSite'] = array(
-                                                  'ID'   => $row['NumericID'],
-                                                  'Name' => $row['LongName'],
-                                                 );
+        if (empty($centers)) {
+            error_log('No center data could be retrieved from the database!');
+        } else {
+            foreach ($centers as $row) {
+                $id         = $row['NumericID'] ?? '';
+                $shortName  = $row['ShortName'] ?? '';
+                $longName   = $row['LongName'] ?? '';
+                $sites[$id] = $shortName;
+                if ($reliabilitySite == $shortName) {
+                    $this->tpl_data['CurrentSite'] = array(
+                                                      'ID'   => $id,
+                                                      'Name' => $longName,
+                                                     );
+                }
             }
+            $this->tpl_data['Centers'] = $centers;
         }
 
-        $this->tpl_data['Centers']  = $centers;
         $this->tpl_data['Projects'] = $projects;
         $this->tpl_data['Sites']    = $sites;
 
@@ -173,46 +183,46 @@ class Stats_Reliability extends \NDB_Form
         $ret['name'] = $name;
         $ret['complete'] = $db->pselectOne(
             "SELECT count(*)
-                      FROM reliability r
-                           JOIN flag f USING(CommentID)
-                           JOIN session s ON (s.ID=f.SessionID)
-                           JOIN candidate c ON (c.CandID=s.CandID)
-                      WHERE Instrument='$inst_name'
-                           AND Invalid <> 'yes'
-                           AND Reliability_score IS NOT NULL
-                           AND c.CenterID <> 1
-                                $Param_Project
-                                   $Param_Site",
+            FROM reliability r
+            JOIN flag f USING(CommentID)
+            JOIN session s ON (s.ID=f.SessionID)
+            JOIN candidate c ON (c.CandID=s.CandID)
+            WHERE Instrument='$inst_name'
+            AND Invalid <> 'yes'
+            AND Reliability_score IS NOT NULL
+            AND c.CenterID <> 1
+            $Param_Project
+            $Param_Site",
             $this->params
         );
 
         $ret['reliable'] = $db->pselectOne(
             "SELECT count(*)
-                      FROM reliability r
-                           JOIN flag f USING(CommentID)
-                           JOIN session s ON (s.ID=f.SessionID)
-                           JOIN candidate c ON (c.CandID=s.CandID)
-                      WHERE Instrument='$inst_name'
-                           AND Invalid <> 'yes'
-                           AND Reliability_score IS NOT NULL
-                           AND Reliability_score > $cutoff
-                           AND c.CenterID <> 1
-                                $Param_Project
-                                   $Param_Site",
+            FROM reliability r
+            JOIN flag f USING(CommentID)
+            JOIN session s ON (s.ID=f.SessionID)
+            JOIN candidate c ON (c.CandID=s.CandID)
+            WHERE Instrument='$inst_name'
+            AND Invalid <> 'yes'
+            AND Reliability_score IS NOT NULL
+            AND Reliability_score > $cutoff
+            AND c.CenterID <> 1
+            $Param_Project
+            $Param_Site",
             $this->params
         );
 
         $ret['total'] = $db->pselectOne(
             "SELECT count(*)
-                     FROM reliability r
-                          JOIN flag f USING(CommentID)
-                          JOIN session s ON (s.ID=f.SessionID)
-                          JOIN candidate c ON (c.CandID=s.CandID)
-                     WHERE Instrument='$inst_name'
-                          AND Invalid <> 'yes'
-                          AND c.CenterID <> 1
-                               $Param_Project
-                                 $Param_Site",
+            FROM reliability r
+            JOIN flag f USING(CommentID)
+            JOIN session s ON (s.ID=f.SessionID)
+            JOIN candidate c ON (c.CandID=s.CandID)
+            WHERE Instrument='$inst_name'
+            AND Invalid <> 'yes'
+            AND c.CenterID <> 1
+            $Param_Project
+            $Param_Site",
             $this->params
         );
 

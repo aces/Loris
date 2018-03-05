@@ -1,8 +1,8 @@
 <?php
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -13,9 +13,9 @@
 namespace LORIS\statistics;
 
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -38,15 +38,15 @@ class Stats_MRI extends \NDB_Form
     /**
      * InCenter function
      *
-     * @param string $centerID the value of centreID
-     * @param string $Centres  the value of Centres
+     * @param string $centerID the value of centerID
+     * @param string $Centers  the value of Centers
      *
      * @return bool
      */
-    function _inCenter($centerID, $Centres)
+    function _inCenter($centerID, $Centers)
     {
-        foreach ($Centres as $Centre) {
-            if ($Centre['NumericID'] == $centerID) {
+        foreach ($Centers as $Center) {
+            if ($Center['NumericID'] == $centerID) {
                 return true;
             }
         }
@@ -63,7 +63,7 @@ class Stats_MRI extends \NDB_Form
      * @param string $dropdown_name     the value of dropdown_name
      * @param string $dropdown_opt      the value of dropdown_opt
      * @param string $dropdown_selected the value of dropdown_selected
-     * @param string $centres           the value of centres
+     * @param string $centers           the value of centers
      * @param string $data              the value of data
      * @param string $Subsection        the value of Subsection=''
      * @param string $disclamer         the value of disclamer=''
@@ -78,7 +78,7 @@ class Stats_MRI extends \NDB_Form
         $dropdown_name,
         $dropdown_opt,
         $dropdown_selected,
-        $centres,
+        $centers,
         $data,
         $Subsection="",
         $disclamer='',
@@ -99,7 +99,7 @@ class Stats_MRI extends \NDB_Form
         $tpl_data['DropdownName']     = $dropdown_name;
         $tpl_data['DropdownOptions']  = $dropdown_opt;
         $tpl_data['DropdownSelected'] = $dropdown_selected;
-        $tpl_data['Centers']          = $centres;
+        $tpl_data['Centers']          = $centers ?? array();
         foreach ($data as $row) {
             $subproj = $row['SubprojectID'];
             $vl      = $row['VLabel'];
@@ -108,7 +108,7 @@ class Stats_MRI extends \NDB_Form
 
             if (in_array($vl, $visits)
                 && in_array($subcat, $subcats)
-                && $this->_inCenter($center, $centres)
+                && $this->_inCenter($center, $centers)
             ) {
                 $C = 'C' . $center;
                 $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
@@ -160,67 +160,82 @@ class Stats_MRI extends \NDB_Form
         foreach (\Utility::getProjectList() as $key => $value) {
             $projects[$key] = $value;
         }
-        $currentProject = null;
-        if ($_REQUEST['MRIProject'] ?? '') {
-            $currentProject = htmlspecialchars($_REQUEST['MRIProject']);
+        $mriProject       = $_REQUEST['MRIProject'] ?? '';
+        $Param_Project    = '';
+        $subproject_query = '';
+        $subprojects      = array();
+        if (empty($mriProject)) {
+            error_log('No MRI project specified in request');
+        } else {
+            $mriProject = htmlspecialchars($mriProject);
             $this->tpl_data['CurrentProject']
                 = array(
-                   'ID'   => $currentProject,
-                   'Name' => $projects[$currentProject],
+                   'ID'   => $mriProject,
+                   'Name' => $projects[$mriProject] ?? '',
                   );
             $sqlVar        = 'AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
             $Param_Project =$sqlVar;
-            $this->params['pid']    = htmlspecialchars($_REQUEST['MRIProject']);
-            $bigTable_params['pid'] = htmlspecialchars($_REQUEST['MRIProject']);
-        } else {
-            $Param_Project = '';
+            $this->params['pid']    = $mriProject;
+            $bigTable_params['pid'] = $mriProject;
+
+            //SUBPROJECTS
+            $subprojList ='';
+            $subprojects = \Utility::getSubprojectsForProject($mriProject);
+            if (empty($subprojects)) {
+                error_log('Could not load subproject data for mri stats');
+            } else {
+                foreach ($subprojects as $key=>$val) {
+                    $subprojList .= $key.",";
+                }
+                $subprojList = substr($subprojList, 0, -1);
+                if (!empty($subprojList)) {
+                    $subproject_query ="AND s.SubprojectID IN ($subprojList)";
+                }
+            }
         }
 
-        //SUBPROJECTS
-        $subprojList ="";
-        $subprojects = \Utility::getSubprojectsForProject($currentProject);
-        foreach ($subprojects as $key=>$val) {
-            $subprojList .= $key.",";
-        }
-        $subprojList = substr($subprojList, 0, -1);
-        if (!empty($subprojList)) {
-            $suproject_query ="AND s.SubprojectID IN ($subprojList)";
-        } else {
-            $suproject_query ='';
-        }
         //SITES
-        if ($_REQUEST['MRIsite'] ?? '') {
-            $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
-            $this->params['sid'] = htmlspecialchars($_REQUEST['MRIsite']);
-        } else {
-            $Param_Site = '';
+        $mriSite    = $_REQUEST['MRIsite'] ?? '';
+        $Param_Site = '';
+        if (empty($mriSite)) {
+            error_log('No MRI site specified in request');
         }
-        $centers     = $DB->pselect(
+        $mriSite    = htmlspecialchars($mriSite);
+        $Param_Site = 'AND (c.CenterID IS NULL OR c.CenterID=:sid)';
+        $this->params['sid'] = $mriSite;
+        $centers = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
-                    CenterID as NumericID,
-                    IFNULL(PSCArea,Name) as LongName,
-                    Name as ShortName
-              FROM psc
-              WHERE CenterID <> '1'
-                AND Study_site = 'Y'",
+            CenterID as NumericID,
+            IFNULL(PSCArea,Name) as LongName,
+            Name as ShortName
+            FROM psc
+            WHERE CenterID <> '1'
+            AND Study_site = 'Y'",
             array()
         );
-        $sites[null] ="All sites";
-        foreach ($centers as $row) {
-            $sites[$row['NumericID']] = $row['ShortName'];
-            if ($_REQUEST['MRIsite'] == $row['NumericID']) {
-                $this->tpl_data['CurrentSite'] = array(
-                                                  'ID'   => $row['NumericID'],
-                                                  'Name' => $row['LongName'],
-                                                 );
+        if (empty($centers)) {
+            error_log('No center data could be retrieved from the database!');
+        } else {
+            $sites[null] ="All sites";
+            foreach ($centers as $row) {
+                $id         = $row['NumericID'] ?? '';
+                $shortName  = $row['ShortName'] ?? '';
+                $longName   = $row['LongName'] ?? '';
+                $sites[$id] = $shortName;
+                if ($mriSite == $shortName) {
+                    $this->tpl_data['CurrentSite'] = array(
+                                                      'ID'   => $id,
+                                                      'Name' => $longName,
+                                                     );
+                }
             }
         }
 
         //GET SCAN TYPES
         $Scan_type_results = $DB->pselect(
             "SELECT mst.ID, mst.Scan_type
-              FROM mri_scan_type mst
-                JOIN mri_protocol mp ON (mst.ID=mp.Scan_type)",
+            FROM mri_scan_type mst
+            JOIN mri_protocol mp ON (mst.ID=mp.Scan_type)",
             array()
         );
 
@@ -228,19 +243,23 @@ class Stats_MRI extends \NDB_Form
             $scan_types[$row['ID']] = $row['Scan_type'];
         }
 
-        $scans_selected =array();
-        if ($_REQUEST['Scans'] ?? '') {
-            $scans_selected_input = explode(",", $_REQUEST['Scans']);
-        }
-        if (empty($scans_selected_input)) {
-            $scans_selected =$scan_types;
+        $scans_selected = array();
+        $scans          = $_REQUEST['Scans'] ?? '';
+        if (empty($scans)) {
+            error_log('No scans specified in request');
         } else {
-            foreach ($scans_selected_input as $key => $scid) {
-                $scans_selected[$scid] =$scan_types[$scid];
+            $scans = htmlspecialchars($scans);
+            $scans_selected_input = explode(",", $scans);
+            if (empty($scans_selected_input)) {
+                $scans_selected =$scan_types;
+            } else {
+                foreach ($scans_selected_input as $key => $scid) {
+                    $scans_selected[$scid] =$scan_types[$scid];
+                }
             }
         }
 
-        $Visits = \Utility::getExistingVisitLabels($currentProject);
+        $Visits = \Utility::getExistingVisitLabels($mriProject);
         $this->tpl_data['scan_types']     = $scan_types;
         $this->tpl_data['Scans_sel_box']  = array_keys($scans_selected);
         $this->tpl_data['Scans_selected'] = $scans_selected;
@@ -264,10 +283,11 @@ class Stats_MRI extends \NDB_Form
 
         //Check if a specific scan is requested otherwise display first
         //available scan
-        if (!$_REQUEST['mri_type']) {
+        $mriRequest = $_REQUEST['mri_type'] ?? '';
+        if (empty($mriRequest)) {
             $MRI_Type = current($scan_types);
         } else {
-            $MRI_Type = $scan_types[$_REQUEST['mri_type']];
+            $MRI_Type = $scan_types[$mriRequest];
         }
         //TODO IBIS
         if ($MRI_Type==='t1w') {
@@ -293,30 +313,30 @@ class Stats_MRI extends \NDB_Form
 
         $result = $DB->pselect(
             "SELECT s.SubprojectID,
-                    c.CenterID,
-                    s.Visit_label as VLabel,
-                    $CaseStatement as Subcat,
-                    COUNT(*) as val
-              FROM mri_parameter_form m
-                    JOIN flag f USING (CommentID)
-                    JOIN session s ON (f.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
-              WHERE s.Current_stage <> 'Recycling Bin'
-                    AND f.Administration <> 'None'
-                    AND s.Active='Y'
-                    AND c.Active='Y'
-                    AND f.CommentID NOT LIKE 'DDE%'
-                    AND s.CenterID <> '1'
-                    $suproject_query
-                    $Param_Project
-              GROUP BY Subcat,
-                    s.SubprojectID,
-                    c.CenterID,
-                    s.Visit_label",
+            c.CenterID,
+            s.Visit_label as VLabel,
+            $CaseStatement as Subcat,
+            COUNT(*) as val
+            FROM mri_parameter_form m
+            JOIN flag f USING (CommentID)
+            JOIN session s ON (f.SessionID=s.ID)
+            JOIN candidate c ON (c.CandID=s.CandID)
+            WHERE s.Current_stage <> 'Recycling Bin'
+            AND f.Administration <> 'None'
+            AND s.Active='Y'
+            AND c.Active='Y'
+            AND f.CommentID NOT LIKE 'DDE%'
+            AND s.CenterID <> '1'
+            $subproject_query
+            $Param_Project
+            GROUP BY Subcat,
+            s.SubprojectID,
+            c.CenterID,
+            s.Visit_label",
             $bigTable_params
         );
 
-        $M_Visits = \Utility::getExistingVisitLabels($currentProject);
+        $M_Visits = \Utility::getExistingVisitLabels($mriProject);
         $this->tpl_data['MRI_Done_Table'] = $this->renderStatsTable(
             "Breakdown By Scan Type",
             $MRIHeader,
@@ -324,12 +344,12 @@ class Stats_MRI extends \NDB_Form
             $M_Visits,
             "mri_type",
             $scan_types,
-            $_REQUEST['mri_type'],
+            $mriRequest,
             $centers,
             $result,
             "mri",
             "",
-            $currentProject
+            $mriProject
         );
         //END BIGTABLE
 
@@ -343,17 +363,17 @@ class Stats_MRI extends \NDB_Form
             $Scan_data_results[$key]['insert_count']['total'] = $DB->pselectOne(
                 "SELECT COUNT(*)
                 FROM files fi
-                    JOIN session s ON (fi.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                JOIN session s ON (fi.SessionID=s.ID)
+                JOIN candidate c ON (c.CandID=s.CandID)
                 WHERE s.Current_stage <> 'Recycling Bin'
-                    AND s.Active='Y'
-                    AND c.Active='Y'
-                    AND s.CenterID <> '1'
-                    AND fi.FileType='mnc'
-                    AND fi.File LIKE CONCAT('%_', :scan, '_%')
-                    $suproject_query
-                    $Param_Project
-                    $Param_Site
+                AND s.Active='Y'
+                AND c.Active='Y'
+                AND s.CenterID <> '1'
+                AND fi.FileType='mnc'
+                AND fi.File LIKE CONCAT('%_', :scan, '_%')
+                $subproject_query
+                $Param_Project
+                $Param_Site
                 ",
                 $scan_params
             );
@@ -361,17 +381,17 @@ class Stats_MRI extends \NDB_Form
             $count_data = $DB->pselect(
                 "SELECT s.SubprojectID as subID, COUNT(*) as cnt
                 FROM files fi
-                    JOIN session s ON (fi.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                JOIN session s ON (fi.SessionID=s.ID)
+                JOIN candidate c ON (c.CandID=s.CandID)
                 WHERE s.Current_stage <> 'Recycling Bin'
-                    AND s.Active='Y'
-                    AND c.Active='Y'
-                    AND s.CenterID <> '1'
-                    AND fi.FileType='mnc'
-                    AND fi.File LIKE CONCAT('%_', :scan, '_%')
-                    $suproject_query
-                    $Param_Project
-                    $Param_Site
+                AND s.Active='Y'
+                AND c.Active='Y'
+                AND s.CenterID <> '1'
+                AND fi.FileType='mnc'
+                AND fi.File LIKE CONCAT('%_', :scan, '_%')
+                $subproject_query
+                $Param_Project
+                $Param_Site
                 GROUP BY s.SubprojectID",
                 $scan_params
             );
@@ -388,19 +408,19 @@ class Stats_MRI extends \NDB_Form
             $Scan_data_results[$key]['qc_pass_count']['total'] = $DB->pselectOne(
                 "SELECT COUNT(*)
                 FROM files_qcstatus fqc
-                	JOIN files fi on (fi.FileID=fqc.FileID)
-                    JOIN session s ON (fi.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                JOIN files fi on (fi.FileID=fqc.FileID)
+                JOIN session s ON (fi.SessionID=s.ID)
+                JOIN candidate c ON (c.CandID=s.CandID)
                 WHERE s.Current_stage <> 'Recycling Bin'
-                    AND fqc.FileId IS NOT NULL
-                    AND s.Active='Y'
-                    AND c.Active='Y'
-                    AND s.CenterID <> '1'
-                    AND fqc.QCStatus='Pass'
-                    AND fi.File LIKE CONCAT('%_', :scan, '_%')
-                    $suproject_query
-                    $Param_Project
-                    $Param_Site
+                AND fqc.FileId IS NOT NULL
+                AND s.Active='Y'
+                AND c.Active='Y'
+                AND s.CenterID <> '1'
+                AND fqc.QCStatus='Pass'
+                AND fi.File LIKE CONCAT('%_', :scan, '_%')
+                $subproject_query
+                $Param_Project
+                $Param_Site
                 ",
                 $scan_params
             );
@@ -408,19 +428,19 @@ class Stats_MRI extends \NDB_Form
             $count_data = $DB->pselect(
                 "SELECT s.SubprojectID as subID, COUNT(*) as cnt
                 FROM files_qcstatus fqc
-                	JOIN files fi on (fi.FileID=fqc.FileID)
-                    JOIN session s ON (fi.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                JOIN files fi on (fi.FileID=fqc.FileID)
+                JOIN session s ON (fi.SessionID=s.ID)
+                JOIN candidate c ON (c.CandID=s.CandID)
                 WHERE s.Current_stage <> 'Recycling Bin'
-                    AND fqc.FileId IS NOT NULL
-                    AND s.Active='Y'
-                    AND c.Active='Y'
-                    AND s.CenterID <> '1'
-                    AND fqc.QCStatus='Pass'
-                    AND fi.File LIKE CONCAT('%_', :scan, '_%')
-                    $suproject_query
-                    $Param_Project
-                    $Param_Site
+                AND fqc.FileId IS NOT NULL
+                AND s.Active='Y'
+                AND c.Active='Y'
+                AND s.CenterID <> '1'
+                AND fqc.QCStatus='Pass'
+                AND fi.File LIKE CONCAT('%_', :scan, '_%')
+                $subproject_query
+                $Param_Project
+                $Param_Site
                 GROUP BY s.SubprojectID",
                 $scan_params
             );
@@ -431,26 +451,26 @@ class Stats_MRI extends \NDB_Form
                 // and the sum of passed qc and failed qc
                 $Scan_data_results[$key]['no_qc_count'][$row['subID']]
                     = $Scan_data_results[$key]['no_qc_count'][$row['subID']]-
-                      $row['cnt'];
+                    $row['cnt'];
             }
 
             //QC STATUS: FAILED TOTAL
             $Scan_data_results[$key]['qc_fail_count']['total'] = $DB->pselectOne(
                 "SELECT COUNT(*)
                 FROM files_qcstatus fqc
-                	JOIN files fi on (fi.FileID=fqc.FileID)
-                    JOIN session s ON (fi.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                JOIN files fi on (fi.FileID=fqc.FileID)
+                JOIN session s ON (fi.SessionID=s.ID)
+                JOIN candidate c ON (c.CandID=s.CandID)
                 WHERE s.Current_stage <> 'Recycling Bin'
-                    AND fqc.FileId IS NOT NULL
-                    AND s.Active='Y'
-                    AND c.Active='Y'
-                    AND s.CenterID <> '1'
-                    AND fqc.QCStatus='Fail'
-                    AND fi.File LIKE CONCAT('%_', :scan, '_%')
-                    $suproject_query
-                    $Param_Project
-                    $Param_Site
+                AND fqc.FileId IS NOT NULL
+                AND s.Active='Y'
+                AND c.Active='Y'
+                AND s.CenterID <> '1'
+                AND fqc.QCStatus='Fail'
+                AND fi.File LIKE CONCAT('%_', :scan, '_%')
+                $subproject_query
+                $Param_Project
+                $Param_Site
                 ",
                 $scan_params
             );
@@ -458,19 +478,19 @@ class Stats_MRI extends \NDB_Form
             $count_data = $DB->pselect(
                 "SELECT s.SubprojectID as subID, COUNT(*) as cnt
                 FROM files_qcstatus fqc
-                	JOIN files fi on (fi.FileID=fqc.FileID)
-                    JOIN session s ON (fi.SessionID=s.ID)
-                    JOIN candidate c ON (c.CandID=s.CandID)
+                JOIN files fi on (fi.FileID=fqc.FileID)
+                JOIN session s ON (fi.SessionID=s.ID)
+                JOIN candidate c ON (c.CandID=s.CandID)
                 WHERE s.Current_stage <> 'Recycling Bin'
-                    AND fqc.FileId IS NOT NULL
-                    AND s.Active='Y'
-                    AND c.Active='Y'
-                    AND s.CenterID <> '1'
-                    AND fqc.QCStatus='Fail'
-                    AND fi.File LIKE CONCAT('%_', :scan, '_%')
-                    $suproject_query
-                    $Param_Project
-                    $Param_Site
+                AND fqc.FileId IS NOT NULL
+                AND s.Active='Y'
+                AND c.Active='Y'
+                AND s.CenterID <> '1'
+                AND fqc.QCStatus='Fail'
+                AND fi.File LIKE CONCAT('%_', :scan, '_%')
+                $subproject_query
+                $Param_Project
+                $Param_Site
                 GROUP BY s.SubprojectID",
                 $scan_params
             );
@@ -481,13 +501,13 @@ class Stats_MRI extends \NDB_Form
                 // and the sum of passed qc and failed qc
                 $Scan_data_results[$key]['no_qc_count'][$row['subID']]
                     = $Scan_data_results[$key]['no_qc_count'][$row['subID']]-
-                       $row['cnt'];
+                     $row['cnt'];
             }
 
             $Scan_data_results[$key]['no_qc_count']['total']
                 = $Scan_data_results[$key]['insert_count']['total'] -
-                  $Scan_data_results[$key]['qc_pass_count']['total'] -
-                  $Scan_data_results[$key]['qc_fail_count']['total'];
+                $Scan_data_results[$key]['qc_pass_count']['total'] -
+                $Scan_data_results[$key]['qc_fail_count']['total'];
         }
         $this->tpl_data['scan_data_results'] = $Scan_data_results;
 

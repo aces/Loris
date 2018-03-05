@@ -1,8 +1,8 @@
 <?php
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -13,9 +13,9 @@
 namespace LORIS\statistics;
 
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -38,15 +38,20 @@ class Stats_Behavioural extends \NDB_Form
     /**
      * InCenter function
      *
-     * @param string $centerID the value of centreID
-     * @param string $Centres  the value of Centres
+     * @param string $centerID the value of centerID
+     * @param array  $Centers  a complex object storing ID, NumericID,
+     *                         LongName and Shortname for each center
      *
      * @return bool
      */
-    function _inCenter($centerID, $Centres)
+    function _inCenter($centerID, $Centers)
     {
-        foreach ($Centres as $Centre) {
-            if ($Centre['NumericID'] == $centerID) {
+        if (is_null($centerID)) {
+            error_log("CenterID is null");
+            return false;
+        }
+        foreach ($Centers as $Center) {
+            if ($Center['NumericID'] == $centerID) {
                 return true;
             }
         }
@@ -66,82 +71,94 @@ class Stats_Behavioural extends \NDB_Form
         $config      = \NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         $this->tpl_data['useProjects'] = $useProjects;
-        $subprojList ="";
+        $subprojList ='';
 
-        $centers = $DB->pselect(
-            "SELECT CONCAT('C', CenterID) as ID,
-                    CenterID as NumericID,
-                    IFNULL(PSCArea,Name) as LongName,
-                    Name as ShortName
-              FROM psc
-              WHERE CenterID <> '1'
-                    AND Study_site = 'Y'",
-            array()
-        );
-
-        $this->tpl_data['Centers'] = $centers;
-
+        // Get project data
         $projects[null] = 'All Projects';
         foreach (\Utility::getProjectList() as $key=>$value) {
             $projects[$key] = $value;
         }
         $this->tpl_data['Projects'] = $projects;
-        foreach ($centers as $row) {
-            $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
-            if ($_REQUEST['site'] == $row['NumericID']) {
-                $this->tpl_data['CurrentSite'] = array(
-                                                  'ID'   => $row['NumericID'],
-                                                  'Name' => $row['LongName'],
-                                                 );
-            }
 
+        // SITES
+        $site = $_REQUEST['site'] ?? '';
+        if (empty($site)) {
+            error_log('No site data specified in request');
+        }
+        $site = htmlspecialchars($site);
+        // Get center data
+        $centers = $DB->pselect(
+            "SELECT CONCAT('C', CenterID) as ID,
+            CenterID as NumericID,
+            IFNULL(PSCArea,Name) as LongName,
+            Name as ShortName
+            FROM psc
+            WHERE CenterID <> '1'
+            AND Study_site = 'Y'",
+            array()
+        );
+        if (empty($centers)) {
+            error_log('No center data could be retrieved from the database!');
+        } else {
+            foreach ($centers as $row) {
+                $id        = $row['NumericID'] ?? '';
+                $shortName = $row['ShortName'] ?? '';
+                $longName  = $row['LongName'] ?? '';
+                $this->tpl_data['Sites'][$id]
+                    = $longName;
+                if ($site == $id) {
+                    $this->tpl_data['CurrentSite'] = array(
+                                                      'ID'   => $id,
+                                                      'Name' => $longName,
+                                                     );
+                }
+            }
+            $this->tpl_data['Centers'] = $centers;
         }
 
-        if ($_REQUEST['BehaviouralProject'] ?? ''
-        ) {
-            $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
+        $Param_Project      = '';
+        $subproject_query   = '';
+        $behaviouralProject = $_REQUEST['BehaviouralProject'] ?? '';
+        if (empty($behaviouralProject)) {
+            error_log('No behavioural project specified in request');
+        } else {
+            $behaviouralProject = htmlspecialchars($behaviouralProject);
             $this->tpl_data['CurrentProject']
                 = array(
-                   'ID'   => $currentProject,
-                   'Name' => $projects[$currentProject],
+                   'ID'   => $behaviouralProject,
+                   'Name' => $projects[$behaviouralProject],
                   );
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
-            $this->params['pid'] = htmlspecialchars($_REQUEST['BehaviouralProject']);
-        } else {
-            $Param_Project = '';
-        }
-        $subprojects = \Utility::getSubprojectsForProject($currentProject);
+            $this->params['pid'] = $behaviouralProject;
+            $subprojects         = \Utility::getSubprojectsForProject(
+                $behaviouralProject
+            );
 
-        $this->tpl_data['Subprojects'] = $subprojects;
-        foreach ($subprojects as $key=>$val) {
-            $subprojList .= $key.",";
+            $this->tpl_data['Subprojects'] = $subprojects;
+            $subprojList = implode(",", array_keys($subprojects));
+            if (!empty($subprojList)) {
+                $subproject_query ="AND s.SubprojectID IN ($subprojList)";
+            }
+            $Visits = \Utility::getExistingVisitLabels($behaviouralProject);
+            $this->tpl_data['Visits'] = $Visits;
         }
-        $subprojList = substr($subprojList, 0, -1);
-        if (!empty($subprojList)) {
-            $suproject_query ="AND s.SubprojectID IN ($subprojList)";
-        } else {
-            $suproject_query ='';
-        }
-
-        $Visits = \Utility::getExistingVisitLabels($currentProject);
-        $this->tpl_data['Visits'] = $Visits;
 
         //---- BEHAVIORAL STATS -----
         $result = $DB->pselect(
             "SELECT s.CenterID,
-                    f.Data_Entry as Data_Entry,
-                    s.visit_label as VLabel,
-                    COUNT(s.CandID) as val
-                FROM session s JOIN candidate c ON (s.CandID=c.CandID)
-                    JOIN flag f ON (f.SessionID=s.ID)
-                WHERE 
-                    s.Active='Y' AND c.Active='Y'
-                    AND s.Current_stage <> 'Recycling Bin'
-                    AND f.CommentID NOT LIKE 'DDE%'
-                    AND s.CenterID <> '1'
-                    $suproject_query
-                    $Param_Project
-                GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
+            f.Data_Entry as Data_Entry,
+            s.visit_label as VLabel,
+            COUNT(s.CandID) as val
+            FROM session s JOIN candidate c ON (s.CandID=c.CandID)
+            JOIN flag f ON (f.SessionID=s.ID)
+            WHERE 
+            s.Active='Y' AND c.Active='Y'
+            AND s.Current_stage <> 'Recycling Bin'
+            AND f.CommentID NOT LIKE 'DDE%'
+            AND s.CenterID <> '1'
+            $subproject_query
+            $Param_Project
+            GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
             $this->params
         );
 
@@ -152,6 +169,13 @@ class Stats_Behavioural extends \NDB_Form
             $center = $row['CenterID'];
             $vl     = $row['VLabel'];
             $c      =& $this->tpl_data['behaviour']['C' . $center];
+
+            if (is_null($c)) {
+                error_log(
+                    "No tpl_data for C$center in behavioural statistics"
+                );
+                continue;
+            }
 
             $c[$vl]['total']   += $row['val'];
             $c['all']['total'] += $row['val'];
@@ -168,23 +192,24 @@ class Stats_Behavioural extends \NDB_Form
                     = floor($c['all']['complete'] / $c['all']['total']*100);
             }
         }
+
         // DDE STATS
         $result = $DB->pselect(
             "SELECT s.CenterID, 
-                f.Data_Entry as Data_Entry, 
-                s.visit_label as VLabel,
-                COUNT(s.CandID) as val
-                FROM session as s
-                    JOIN candidate as c ON (s.CandID=c.CandID)
-                    JOIN flag as f ON (f.SessionID=s.ID)
-                WHERE s.Active='Y' 
-                AND s.Current_stage <> 'Recycling Bin'
-                AND f.CommentID LIKE 'DDE%' 
-                AND c.Active='Y'
-                AND s.CenterID <> '1'
-                $suproject_query
-                $Param_Project
-                GROUP BY s.CenterID, VLabel, f.Data_Entry",
+            f.Data_Entry as Data_Entry, 
+            s.visit_label as VLabel,
+            COUNT(s.CandID) as val
+            FROM session as s
+            JOIN candidate as c ON (s.CandID=c.CandID)
+            JOIN flag as f ON (f.SessionID=s.ID)
+            WHERE s.Active='Y' 
+            AND s.Current_stage <> 'Recycling Bin'
+            AND f.CommentID LIKE 'DDE%' 
+            AND c.Active='Y'
+            AND s.CenterID <> '1'
+            $subproject_query
+            $Param_Project
+            GROUP BY s.CenterID, VLabel, f.Data_Entry",
             $this->params
         );
 
@@ -192,6 +217,13 @@ class Stats_Behavioural extends \NDB_Form
             $center = $row['CenterID'];
             $vl     = $row['VLabel'];
             $c      =& $this->tpl_data['dde']['C' . $center];
+
+            if (is_null($c)) {
+                error_log(
+                    "No tpl_data for C$center in behavioural statistics"
+                );
+                continue;
+            }
 
             $c[$vl]['total']   += $row['val'];
             $c['all']['total'] += $row['val'];
