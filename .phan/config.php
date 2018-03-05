@@ -14,9 +14,7 @@ return [
 	// FIXME: allow_missing_properties should be false, but there's
 	// too many other things to fix first.
 	"allow_missing_properties" => true,
-	// FIXME: null_casts_as_any_type should be false.
-	// This only adds 2 errors, which should be fairly easy to fix.
-	"null_casts_as_any_type" => true,
+	"null_casts_as_any_type" => false,
 	"scalar_implicit_cast" => false,
 	"ignore_undeclared_variables_in_global_scope" => false,
 	"suppress_issue_types" => [
