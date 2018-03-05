@@ -38,6 +38,10 @@ class DirectDataEntryMainPage
     var $key;
 
     var $TestName;
+
+    /**
+     * @var mixed
+     */
     var $Subtest;
 
     var $NumPages;

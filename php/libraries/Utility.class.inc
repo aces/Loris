@@ -614,7 +614,7 @@ class Utility
      * @param string $inst The test_name of the instrument for which you would
      *                     like to know the score columns
      *
-     * @return non-associative array of scored columns for the instrument given
+     * @return array (non-associative) of scored columns for the instrument given
      */
     static function getScoreColsForInstrument($inst)
     {
