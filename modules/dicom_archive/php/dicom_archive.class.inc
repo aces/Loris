@@ -108,7 +108,12 @@ class Dicom_Archive extends \NDB_Menu_Filter
     {
         $table = (new \LORIS\Data\Table())
             ->withDataFrom($this->getDataProvisioner());
-        $arr   = json_decode($table->toJSON(\User::singleton()), true);
+        $arr   = array_map(
+            function ($row) {
+                return array_values($row);
+            },
+            json_decode($table->toJSON(\User::singleton()), true)
+        );
         return json_encode(
             [
              'Headers'       => [
@@ -120,6 +125,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
                                  'Archive Location',
                                  'Metadata',
                                  'MRI Browser',
+                                 'Seriesuid',
                                  'Site',
                                  'TarchiveID',
                                  'SessionID',
