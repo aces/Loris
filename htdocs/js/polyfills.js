@@ -35,7 +35,7 @@ $(document).ready(function() {
   }
   if (!Modernizr.inputtypes.time) {
     var timeInputs = $('input.timepicker');
-      timeInputs.timepicker({
+    timeInputs.timepicker({
       timeFormat: 'H:mm',
       defaultTime: 'now',
       dynamic: false,
