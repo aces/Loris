@@ -24,7 +24,7 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface {
      * @param ServerRequestInterface  $request The incoming PSR7 request
      * @param RequestHandlerInterface $handler The PSR15 handler to delegate to
      *
-     * @return ResponseInterface The response with the the page content
+     * @return ResponseInterface The response with the page content
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface {
         // Basic page outline variables
