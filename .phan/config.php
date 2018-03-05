@@ -24,7 +24,6 @@ return [
         "PhanTypeExpectedObjectPropAccessButGotNull",
         "PhanTypeInvalidDimOffset",
         "PhanTypeMismatchDimAssignment",
-        "PhanDeprecatedFunction",
         "PhanParamSuspiciousOrder",
         "PhanTypeExpectedObjectPropAccess",
 		"PhanRedefineClass",
@@ -60,7 +59,6 @@ return [
 		"PhanRedefineFunctionInternal",
 		"PhanRedefineFunction",
 		"PhanParamSpecial2",
-        "PhanUnextractableAnnotation",
 	],
 	"analyzed_file_extensions" => ["php", "inc"],
 	"directory_list" => [

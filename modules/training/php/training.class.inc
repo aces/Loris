@@ -121,11 +121,14 @@ class Training extends \NDB_Form
 
         foreach ($certificationInstruments['test'] as $certificationInstrument) {
             $test_key = $certificationInstrument['@']['value'];
-            $testID   = $DB->selectOne(
+            $testID   = $DB->pselectOne(
                 "SELECT ID
                  FROM test_names
                  WHERE Test_name
-                 LIKE '%$test_key%'"
+                 LIKE CONCAT('%', :testkey, '%')",
+                array(
+                    'testkey' => $test_key
+                )
             );
             $instruments[$testID] = $certificationInstrument['#'];
         }
