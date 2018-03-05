@@ -48,17 +48,17 @@ class ModuleRouter extends PrefixRouter
             new \ArrayIterator(
                 [
                  "/css/"    => new ModuleFileRouter(
-                     $module->getName(),
+                     $module,
                      $moduledir,
                      "css"
                  ),
                  "/js/"     => new ModuleFileRouter(
-                     $module->getName(),
+                     $module,
                      $moduledir,
                      "js"
                  ),
                  "/static/" => new ModuleFileRouter(
-                     $module->getName(),
+                     $module,
                      $moduledir,
                      "static"
                  ),
