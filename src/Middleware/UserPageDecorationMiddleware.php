@@ -91,7 +91,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
             );
 
             $tpl_data['bvl_feedback'] = \NDB_BVL_Feedback::bvlFeedbackPossible(
-                $this->page
+                $page
             );
         }
 
