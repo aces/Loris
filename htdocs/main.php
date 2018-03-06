@@ -233,7 +233,7 @@ try {
 
 if (!$anonymous) {
     try {
-        $breadcrumb = new NDB_Breadcrumb;
+        $breadcrumb = new NDB_Breadcrumb($_REQUEST['test_name']);
         $crumbs     = $breadcrumb->getBreadcrumb();
 
         $tpl_data['crumbs'] = $crumbs;
