@@ -15,6 +15,8 @@
 $url = ltrim($_SERVER['REQUEST_URI'], "/");
 $request = $_SERVER['REQUEST_URI'];
 if ($request != '/' && file_exists(__DIR__ . $request)) {
+    // FIXME: Should this be in the main index.php to prevent the need
+    // for 2 router files? (The AjaxHelper needs to be handled separatedly)
     return false;
 }
 if (preg_match(
