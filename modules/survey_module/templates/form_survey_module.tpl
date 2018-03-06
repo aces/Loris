@@ -58,10 +58,7 @@
 	$(function() {
         var DirectEntryApp = React.createElement("div", {
             	className: "page-media"
-        	}, React.createElement(DirectEntry, {
-        		"InstrumentJSON" : {$InstrumentJSON},
-        		"Values" : {$Values}
-        	}));
+        	}, React.createElement(DirectEntry));
         ReactDOM.render(DirectEntryApp, document.getElementById("reactInput"));
     });
 </script>

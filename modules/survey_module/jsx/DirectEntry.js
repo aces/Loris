@@ -25,11 +25,6 @@ class DirectEntry extends React.Component {
 	    let page = -1;
 		const url = new URL(window.location.href);
 
-	    if (props.InstrumentJSON.Elements[0].Type === 'ElementGroup' && props.InstrumentJSON.Elements[0].GroupType === 'Page') {
-	    	// The following Instrument has pages
-	    	page = 0;
-	    }
-
 	    this.nextPage = this.nextPage.bind(this);
 	    this.prevPage = this.prevPage.bind(this);
 	    this.updateAnswer = this.updateAnswer.bind(this);
@@ -45,12 +40,14 @@ class DirectEntry extends React.Component {
 			total++;
 		}
 
+
+
 	    this.state = {
 	    	style: style,
 	    	page: page,
-	    	values: this.props.Values,
+	    	values: {},
 	    	errors: {},
-	    	InstrumentJSON: props.InstrumentJSON,
+	    	InstrumentJSON: {},
 	    	completionStats: {
 				total: total,
 				completed: completed
@@ -60,11 +57,40 @@ class DirectEntry extends React.Component {
 
 	}
 
-	componentDidMount() {
-		this.setupPageValues(this.state.page);
+	componentWillMount() {
+
+		$.ajax({
+		  url: this.state.api_url,
+	      method: "GET",
+	      dataType: 'json',
+	      success: function(data) {
+	        const InstrumentJSON = JSON.parse(data.InstrumentJSON);
+	        const Values = JSON.parse(data.Values);
+	        let page = -1;
+
+	        if (
+	        	InstrumentJSON.Elements[0].Type === 'ElementGroup' 
+	        	&& InstrumentJSON.Elements[0].GroupType === 'Page'
+	        ) {
+	    		// The following Instrument has pages
+	    		page = 0;
+	    	}
+
+	       	this.setState({
+	       		values: Values,
+	    		InstrumentJSON: InstrumentJSON,
+	    		page: page
+	       	}, this.setupPageValues.bind(this, this.state.page));
+	      }.bind(this)
+	    }).fail((responseData) => {
+			error_log("HERERERERER");
+		});
+
+		
 	}
 
 	setupPageValues(page) {
+		console.log(page);
 		const pageElements = this.state.InstrumentJSON.Elements[page].Elements;
 		let pageValues = {};
 
@@ -212,6 +238,13 @@ class DirectEntry extends React.Component {
 	}
 
 	render() {
+		if(!this.state.InstrumentJSON.Elements){
+			// Since the Instrument data is set when the component is
+			// mounted we want to display nothing until it has been set
+			return (
+				<div></div>
+			);
+		}
 		let DirectEntryFormElements;
 		let buttons;
 		if (this.state.page === this.state.InstrumentJSON.Elements.length) {

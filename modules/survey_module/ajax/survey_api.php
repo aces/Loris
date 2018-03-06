@@ -113,6 +113,8 @@ class DirectDataEntryMainPage
 
         $this->tpl_data['Values'] = json_encode($Values);
 
+        echo json_encode($this->tpl_data); 
+
         // $this->display();
     }
 
