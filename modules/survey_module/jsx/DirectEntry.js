@@ -31,17 +31,6 @@ class DirectEntry extends React.Component {
 	    this.setupPageValues = this.setupPageValues.bind(this);
 	    this.submit = this.submit.bind(this);
 
-	    let total = 0;
-		let completed = 0;
-		for (let key in this.props.Values) {
-			if(this.props.Values[key] != null && this.props.Values[key] != '') {
-				completed++;
-			}
-			total++;
-		}
-
-
-
 	    this.state = {
 	    	style: style,
 	    	page: page,
@@ -49,8 +38,8 @@ class DirectEntry extends React.Component {
 	    	errors: {},
 	    	InstrumentJSON: {},
 	    	completionStats: {
-				total: total,
-				completed: completed
+				total: 0,
+				completed: 0
 			},
 			api_url: url.origin + "/survey_module/ajax/survey_api.php" + url.search
 	    };
@@ -76,11 +65,24 @@ class DirectEntry extends React.Component {
 	    		page = 0;
 	    	}
 
+	    	let total = 0;
+			let completed = 0;
+			for (let key in Values) {
+				if(Values[key] != null && Values[key] != '') {
+					completed++;
+				}
+				total++;
+			}
+
 	       	this.setState({
 	       		values: Values,
 	    		InstrumentJSON: InstrumentJSON,
-	    		page: page
-	       	}, this.setupPageValues.bind(this, this.state.page));
+	    		page: page,
+	    		completionStats: {
+					total: total,
+					completed: completed
+				}
+	       	}, this.setupPageValues.bind(this, page));
 	      }.bind(this)
 	    }).fail((responseData) => {
 			error_log("HERERERERER");
@@ -98,12 +100,12 @@ class DirectEntry extends React.Component {
 			const name = this.getElementName(pageElements[i]);
 			if(name instanceof Array) {
 				for(let j = 0; j < name.length; j++) {
-					if(name[j] in this.props.Values) {
-						pageValues[name[j]] = this.props.Values[name[j]];
+					if(name[j] in this.state.values) {
+						pageValues[name[j]] = this.state.values[name[j]];
 					}
 				}
-			} else if(name in this.props.Values) {
-				pageValues[name] = this.props.Values[name];
+			} else if(name in this.state.values) {
+				pageValues[name] = this.state.values[name];
 			}
 		}
 
