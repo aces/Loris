@@ -224,7 +224,7 @@ class NDB_BVL_Feedback
      *
      * @return array
      */
-    function getFeedbackTypes()
+    static function getFeedbackTypes()
     {
         // new DB Object
         $db =& Database::singleton();

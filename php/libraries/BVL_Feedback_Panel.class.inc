@@ -89,7 +89,7 @@ class BVL_Feedback_Panel
         $summary = $this->_feedbackThread->getSummaryOfThreads();
         $this->tpl_data['thread_summary_headers'] = json_encode($summary);
 
-        $field_names = Utility::getSourcefields($_REQUEST['test_name']);
+        $field_names = Utility::getSourcefields($_REQUEST['test_name'] ?? '');
         $Fields['Across All Fields'] = 'Across All Fields';
         foreach ($field_names as $field_name) {
             $Fields[$field_name['SourceField']] = $field_name['SourceField'];

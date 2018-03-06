@@ -71,8 +71,6 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
         // This seems to only be used in imaging_browser, it can probably be
         // moved to properly use OOP.
         $tpl_data['formaction'] = $this->FormAction ?? '';
-        // Doesn't appear to be used
-        $tpl_data['lastURL'] = $_SESSION['State']->getLastURL();
         // I don't think anyone uses this. It's not really supported
         $tpl_data['css'] = $this->Config->getSetting('css');
 
@@ -92,7 +90,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
                 $get['sessionID'] ?? null
             );
 
-            $tpl_data['bvl_feedback'] = NDB_BVL_Feedback::bvlFeedbackPossible(
+            $tpl_data['bvl_feedback'] = \NDB_BVL_Feedback::bvlFeedbackPossible(
                 $this->page
             );
         }
