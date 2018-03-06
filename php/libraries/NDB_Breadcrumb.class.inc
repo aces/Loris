@@ -30,7 +30,7 @@ class NDB_Breadcrumb
      *
      * @var string
      */
-    private $pagename;
+    private $_pagename;
 
     /**
      * The breadcrumb
@@ -73,9 +73,12 @@ class NDB_Breadcrumb
 
     /**
      * Construct a Breadcrumb object.
+     *
+     * @param string $testname The test name to display the breadcrumb for
      */
-    public function __construct(string $testname) {
-        $this->pagename = $testname;
+    public function __construct(string $testname)
+    {
+        $this->_pagename = $testname;
     }
     /**
      * Adds a crumb to the breadcrumb
@@ -179,7 +182,7 @@ class NDB_Breadcrumb
     {
         // set the parameters array
         $this->_parameters = array(
-                              'test_name'  => $this->pagename,
+                              'test_name'  => $this->_pagename,
                               'subtest'    => $this->_getRequest('subtest'),
                               'candID'     => $this->_getRequest('candID'),
                               'sessionID'  => $this->_getRequest('sessionID'),

@@ -98,15 +98,28 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
     public function __construct($name, $moduledir)
     {
         parent::__construct(
-            new \ArrayIterator([
-                "/css/" => new \LORIS\Router\ModuleFileRouter($this, $moduledir,     "css"),
-                "/js/" => new \LORIS\Router\ModuleFileRouter($this, $moduledir, "js"),
-                "/static/" => new \LORIS\Router\ModuleFileRouter($this, $moduledir, "static"),
-
-            ])
+            new \ArrayIterator(
+                [
+                 "/css/"    => new \LORIS\Router\ModuleFileRouter(
+                     $this,
+                     $moduledir,
+                     "css"
+                 ),
+                 "/js/"     => new \LORIS\Router\ModuleFileRouter(
+                     $this,
+                     $moduledir,
+                     "js"
+                 ),
+                 "/static/" => new \LORIS\Router\ModuleFileRouter(
+                     $this,
+                     $moduledir,
+                     "static"
+                 ),
+                ]
+            )
         );
         $this->name = $name;
-        $this->dir = $moduledir;
+        $this->dir  = $moduledir;
     }
 
     /**
@@ -137,7 +150,8 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
      * By default, this will assume that anonymous users do not have access
      * to non-public modules, but otherwise everyone has access to anything.
      */
-    public function hasAccess(User $user) {
+    public function hasAccess(User $user)
+    {
         if ($this->isPublicModule() !== true) {
             if ($user instanceof \LORIS\AnonymousUser) {
                 return false;
@@ -196,7 +210,8 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
      * css, static, and js routes should be routed through the file system to
      * retrieve the files before trying to load any specific pages.
      */
-    public function handle(\Psr\Http\Message\ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface {
+    public function handle(\Psr\Http\Message\ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
+    {
         $resp = parent::handle($request);
         if ($resp->getStatusCode() != 404) {
             return $resp;
@@ -209,7 +224,7 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
         default:
             // Fall back on the old way of doing subpages
             $components = explode("@", trim($request->getURI()->getPath(), "/"));
-            $page = $this->loadPage($components[0]);
+            $page       = $this->loadPage($components[0]);
             return $page->process($request, $page);
         }
 
