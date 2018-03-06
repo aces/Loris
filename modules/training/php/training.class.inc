@@ -126,9 +126,7 @@ class Training extends \NDB_Form
                  FROM test_names
                  WHERE Test_name
                  LIKE CONCAT('%', :testkey, '%')",
-                array(
-                    'testkey' => $test_key
-                )
+                array('testkey' => $test_key)
             );
             $instruments[$testID] = $certificationInstrument['#'];
         }
