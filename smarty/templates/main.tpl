@@ -163,7 +163,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{$baseurl}/main.php?logout=true">
+                                    <a href="{$baseurl}/?logout=true">
                                         Log Out
                                     </a>
                                 </li>
