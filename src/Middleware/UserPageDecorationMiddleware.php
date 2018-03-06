@@ -43,7 +43,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
                       'study_title' => $this->Config->getSetting('title'),
                       'baseurl'     => $this->BaseURL,
                       'tabs'        => \NDB_Config::getMenuTabs(),
-                      'crumbs'      => (new \NDB_Breadcrumb())->getBreadcrumb(),
+                      'crumbs'      => (new \NDB_Breadcrumb($this->PageName))->getBreadcrumb(),
                       'currentyear' => date('Y'),
                       'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
                      );

@@ -26,6 +26,13 @@
 class NDB_Breadcrumb
 {
     /**
+     * The current pagename
+     *
+     * @var string
+     */
+    private $pagename;
+
+    /**
      * The breadcrumb
      *
      * @var    array
@@ -64,6 +71,12 @@ class NDB_Breadcrumb
                                'datadict'         => 'Data Dictionary',
                               );
 
+    /**
+     * Construct a Breadcrumb object.
+     */
+    public function __construct(string $testname) {
+        $this->pagename = $testname;
+    }
     /**
      * Adds a crumb to the breadcrumb
      *
@@ -166,7 +179,7 @@ class NDB_Breadcrumb
     {
         // set the parameters array
         $this->_parameters = array(
-                              'test_name'  => $this->_getRequest('test_name'),
+                              'test_name'  => $this->pagename,
                               'subtest'    => $this->_getRequest('subtest'),
                               'candID'     => $this->_getRequest('candID'),
                               'sessionID'  => $this->_getRequest('sessionID'),
