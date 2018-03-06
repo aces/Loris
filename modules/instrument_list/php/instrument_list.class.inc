@@ -16,6 +16,9 @@
  * @package behavioural
  */
 namespace LORIS\instrument_list;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
+use \Psr\Http\Message\ResponseInterface;
 
 /**
  * Instrument_List
@@ -58,14 +61,10 @@ class Instrument_List extends \NDB_Menu_Filter
         );
     }
 
-    /**
-     * The handler for the instrument_list extracts both the timepoint and candidate from the URL
-     * and attaches them to the class as class member variables before handling (displaying) the
-     * page.
-     *
-     * This makes it possible to not depend on PHP superglobals within the page itself.
-     */
-    public function handle(\Psr\Http\Message\ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface {
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ) : ResponseInterface {
         $gets = $request->getQueryParams();
 
         $attribute = $request->getAttribute("CandID");
@@ -82,9 +81,8 @@ class Instrument_List extends \NDB_Menu_Filter
             // FIXME: Make VisitLabel not sessionID
             $this->TimePoint = \TimePoint::singleton($gets['sessionID']);
         }
-
         $this->setup();
-        return parent::handle($request);
+        return parent::process($request, $handler);
     }
 
     /**
