@@ -787,7 +787,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 if (isset($this->LinstQuestions[$question])) {
                     $q =& $this->LinstQuestions[$question];
 
-                    if ($q['UserRules'] !== true) {
+                    if (($q['UserRules'] ?? false) !== true) {
                         // Unregister the rules that were added by the wrapper
                         // for the group, because otherwise that'll override the
                         // user specified rules from the .rules file
