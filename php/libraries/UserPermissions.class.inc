@@ -46,7 +46,7 @@ class UserPermissions
      *
      * @param string $username Identifies the user
      *
-     * @return void
+     * @return bool true if the user exists, false otherwise
      */
     function select($username)
     {
@@ -58,6 +58,9 @@ class UserPermissions
         $params = array('UName' => $username);
 
         $this->userID = $DB->pselectOne($query, $params);
+        if (empty($this->userID)) {
+            return false;
+        }
 
         // load the user's permissions
         $this->setPermissions();
