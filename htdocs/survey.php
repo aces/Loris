@@ -40,6 +40,8 @@ class DirectDataEntryMainPage
     var $TestName;
 
     /**
+     * The instrument subpage being accessed
+     *
      * @var mixed
      */
     var $Subtest;
