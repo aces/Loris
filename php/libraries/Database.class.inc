@@ -620,7 +620,7 @@ class Database
      */
     function selectRow($query, &$result)
     {
-        $result = $this->pselect($query, []);
+        $result = $this->pselect($query, array());
         if (is_array($result) && isset($result[0])) {
             $result = $result[0];
         }
@@ -642,7 +642,7 @@ class Database
      */
     function selectOne($query)
     {
-        $result = $this->pselect($query);
+        $result = $this->pselect($query, array());
         if (is_array($result) && count($result)) {
             list(,$result) = each($result[0]);
         }
