@@ -131,6 +131,7 @@ class ViewSession extends \NDB_Form
 
         }
     }
+
     /**
      * Sets files values
      *
@@ -744,18 +745,15 @@ class ViewSession extends \NDB_Form
     function getJSDependencies()
     {
         $depends = parent::getJSDependencies();
-        if ($this->page === 'viewSession') {
-            $factory = \NDB_Factory::singleton();
-            $baseurl = $factory->settings()->getBaseURL();
-            $depends = array_merge(
-                $depends,
-                array(
-                 $baseurl . "/imaging_browser/js/jiv_and_imaging_browser.js",
-                 $baseurl . "/imaging_browser/js/ImagePanel.js",
-                )
-            );
-
-        }
+        $factory = \NDB_Factory::singleton();
+        $baseurl = $factory->settings()->getBaseURL();
+        $depends = array_merge(
+            $depends,
+            array(
+                $baseurl . "/imaging_browser/js/jiv_and_imaging_browser.js",
+                $baseurl . "/imaging_browser/js/ImagePanel.js",
+            )
+        );
         return $depends;
     }
 

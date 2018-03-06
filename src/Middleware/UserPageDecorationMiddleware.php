@@ -68,9 +68,6 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
         // Stuff that probably shouldn't be here, but exists because it was in
         // main.php
 
-        // This seems to only be used in imaging_browser, it can probably be
-        // moved to properly use OOP.
-        $tpl_data['formaction'] = $this->FormAction ?? '';
         // I don't think anyone uses this. It's not really supported
         $tpl_data['css'] = $this->Config->getSetting('css');
 
@@ -170,7 +167,13 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
                                    );
         }
 
+        // Handle needs to be called before formaction, because handle potentially
+        // calls setup which modifies the $page->FormAction value (ie in the imaging
+        // browser)
         $undecorated = $handler->handle($request);
+        // This seems to only be used in imaging_browser, it can probably be
+        // moved to properly use OOP.
+        $tpl_data['FormAction'] = $page->FormAction ?? '';
         // Finally, the actual content and render it..
         $tpl_data += array(
                       'jsfiles'   => $this->JSFiles,
@@ -182,7 +185,6 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
         $tpl_data['console'] = htmlspecialchars(ob_get_contents());
         ob_end_clean();
 
-        $undecorated = $handler->handle($request);
         // Finally, the actual content and render it..
         $tpl_data += array(
             'jsfiles'   => $this->JSFiles,
