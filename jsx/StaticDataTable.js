@@ -302,7 +302,7 @@ var StaticDataTable = React.createClass({
 
     // Handle array inputs for multiselects
     if (typeof filterData === 'object') {
-      var match = false;
+      let match = false;
       for (let i = 0; i < filterData.length; i += 1) {
         searchKey = filterData[i].toLowerCase();
         searchString = data.toLowerCase();
