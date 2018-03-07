@@ -1,0 +1,1 @@
+This directory contains tools that interact directly with CouchDB.

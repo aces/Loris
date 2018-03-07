@@ -1,0 +1,1 @@
+This Directory contains tools that delete entries from the database.
