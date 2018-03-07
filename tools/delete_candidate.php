@@ -94,7 +94,20 @@ if ($candExists == 0) {
         "not exist in the database or is set to Active='N' state.\n\n";
     die();
 }
-
+$entityType = $DB->pselectOne(
+    "SELECT Entity_type 
+      FROM candidate 
+      WHERE CandID = :cid AND PSCID = :pid AND Active ='Y'",
+    array(
+        'cid' => $CandID,
+        'pid' => $PSCID,
+    )
+);
+if ($entityType === "Scanner") {
+    echo "\nThe candidate with CandID : $CandID  and PSCID : $PSCID is a scanner ".
+        "and should not be deleted using this script.\n\n";
+    die();
+}
 /*
  * The switch to execute actions
  */
