@@ -19,9 +19,9 @@ if (!$user->hasPermission('user_accounts')) {
 }
 
 $data = array(
-    'roles'       => getRoles(),
-    'permissions' => getPermissions(),
-);
+         'roles'       => getRoles(),
+         'permissions' => getPermissions(),
+        );
 
 echo json_encode($data);
 exit();
@@ -122,8 +122,8 @@ function getPermissions()
             } else {
                 $permission['disabled']
                     = !$userEditing->hasPermission(
-                    $permission['code']
-                );
+                        $permission['code']
+                    );
             }
             $permissions[] = $permission;
         }
@@ -150,8 +150,8 @@ function userHasRole($roleID)
          LEFT JOIN users u ON u.ID=urr.UserID
          WHERE u.userID=:UID AND urr.RoleID=:RID",
         array(
-            'UID' => $_REQUEST['identifier'],
-            'RID' => $roleID,
+         'UID' => $_REQUEST['identifier'],
+         'RID' => $roleID,
         )
     );
 
