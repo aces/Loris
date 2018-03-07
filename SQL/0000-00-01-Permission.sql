@@ -9,6 +9,10 @@ DROP TABLE IF EXISTS `permissions_category`;
 
 DROP TABLE IF EXISTS `user_perm_rel`;
 
+DROP TABLE IF EXISTS `role`;
+DROP TABLE IF EXISTS `role_permission_rel`;
+DROP TABLE IF EXISTS `user_role_rel`;
+
 SET FOREIGN_KEY_CHECKS=1;
 --
 -- Table structure for table `permissions_category`
@@ -22,7 +26,7 @@ CREATE TABLE `permissions_category` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `permissions_category` VALUES 
+INSERT INTO `permissions_category` VALUES
   (1,'Roles'),
   (2,'Permission');
 
@@ -113,9 +117,9 @@ INSERT INTO `permissions` VALUES
 
 
 INSERT INTO `user_perm_rel` (userID, permID)
-  SELECT u.ID, p.permID 
-  FROM users u JOIN permissions p 
-  WHERE u.userid = 'admin' 
+  SELECT u.ID, p.permID
+  FROM users u JOIN permissions p
+  WHERE u.userid = 'admin'
   ORDER BY p.permID;
 
 -- permissions for each notification module
@@ -131,3 +135,28 @@ CREATE TABLE `notification_modules_perm_rel` (
 -- populate notification perm table
 INSERT INTO notification_modules_perm_rel SELECT nm.id, p.permID FROM notification_modules nm JOIN permissions p WHERE nm.module_name='media' AND (p.code='media_write' OR p.code='media_read');
 INSERT INTO notification_modules_perm_rel SELECT nm.id, p.permID FROM notification_modules nm JOIN permissions p WHERE nm.module_name='document_repository' AND (p.code='document_repository_view' OR p.code='document_repository_delete');
+
+
+CREATE TABLE `role` (
+ `RoleID` INTEGER unsigned NOT NULL AUTO_INCREMENT,
+ `Name` varchar(255),
+ `Label` varchar(255),
+ PRIMARY KEY (`RoleID`),
+ UNIQUE KEY `UK_Name` (`Name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `role_permission_rel` (
+  `RoleID` INTEGER unsigned NOT NULL,
+  `PermissionID` INTEGER unsigned NOT NULL,
+  PRIMARY KEY  (`RoleID`,`PermissionID`),
+  CONSTRAINT `FK_role_permission_rel_RoleID` FOREIGN KEY (`RoleID`) REFERENCES `role` (`RoleID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_role_permission_rel_PermissionID` FOREIGN KEY (`PermissionID`) REFERENCES `permissions` (`permID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `user_role_rel` (
+  `UserID` INTEGER unsigned NOT NULL,
+  `RoleID` INTEGER unsigned NOT NULL,
+  PRIMARY KEY  (`UserID`,`RoleID`),
+  CONSTRAINT `FK_user_role_rel_userID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_user_role_rel_RoleID` FOREIGN KEY (`RoleID`) REFERENCES `role` (`RoleID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
