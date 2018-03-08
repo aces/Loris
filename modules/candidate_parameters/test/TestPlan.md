@@ -46,7 +46,7 @@
 24. Try editing the Comments field and saving.
 
 ### Consent Status Tab
-25. Check that the consent status tab only shows up if `<useConsent>true</useConsent>` in the config.xml.
+25. Check that the consent status tab only shows up if _useConsent_ is set to true in the configuration module.
 26. Tab should render with only one consent type.
 27. Add a new consent type following [the guide](https://github.com/aces/Loris/wiki/Candidate-Information-Page) on the LORIS Wiki. Does it show up in this tab when you refresh the page?
 28. Does the consent info shown in this table match what is stored in the participant_status table?
