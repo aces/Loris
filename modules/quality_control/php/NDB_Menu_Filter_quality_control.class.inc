@@ -188,7 +188,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $visitList = Utility::getVisitList();
         // allow to view all sites data through filter
         if ($user->hasPermission('imaging_browser_qc')) {
-            $siteList = Utility::getSiteList(false);
+            $siteList = Utility::getSiteList();
             // Index sites using their names (used to filter react tables)
             foreach ($siteList as $key => $site) {
                 unset($siteList[$key]);
