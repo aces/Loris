@@ -121,7 +121,7 @@ class Stats_Demographic extends \NDB_Form
                 $tpl_data['data'][$subproj]['total']      += $row['val'];
                 $tpl_data['data'][$vl][$subcat]           += $row['val'];
                 $tpl_data['data'][$vl]['total']           += $row['val'];
-                $tpl_data['data'][$subproj][$C][$vl][$subcat]  = $row['val'];
+                $tpl_data['data'][$subproj][$C][$vl][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj][$C][$vl]['total'] += $row['val'];
                 $tpl_data['data'][$subproj][$C][$subcat]      += $row['val'];
                 $tpl_data['data'][$subproj][$C]['total']      += $row['val'];
@@ -192,7 +192,10 @@ class Stats_Demographic extends \NDB_Form
         if (empty($subprojects)) {
             error_log('Could not load subproject data for demographic stats');
         } else {
-            $subprojList = implode(",", "'".$subprojects."'");
+            foreach ($subprojects as $key=>$val) {
+                $subprojList .= "'$key',";
+            }
+            $subprojList = substr($subprojList, 0, -1);
             if (!empty($subprojList)) {
                 $subproject_query = "AND s.SubprojectID IN ($subprojList)";
             }
