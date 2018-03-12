@@ -187,13 +187,12 @@ class Stats_Demographic extends \NDB_Form
         $subprojList      = '';
         $subproject_query = '';
         $Visits           = \Utility::getExistingVisitLabels($demographicProject);
-        $subprojects      = \Utility::getSubprojectsForProject($demographicProject);
-        $this->params     = array();
+        $subprojects      = \Utility::getSubprojectsForProject($demographicProject == '' ? null : $demographicProject);
 
         if (empty($subprojects)) {
             error_log('Could not load subproject data for demographic stats');
         } else {
-            $subprojList = implode(",", $subprojects);
+            $subprojList = implode(",", "'".$subprojects."'");
             if (!empty($subprojList)) {
                 $subproject_query = "AND s.SubprojectID IN ($subprojList)";
             }
@@ -204,7 +203,7 @@ class Stats_Demographic extends \NDB_Form
         $Param_Site      = '';
 
         if (empty($demographicSite)) {
-            error_log('No deomgraphic site specified in request');
+            error_log('No demographic site specified in request');
         } else {
             $demographicSite     = htmlspecialchars($demographicSite);
             $Param_Site          = 'AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
