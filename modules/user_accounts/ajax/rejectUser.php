@@ -23,7 +23,7 @@
 
 if (isset($_POST['identifier'])) {
     $identifier = $_POST["identifier"];
-    Reject_user($identifier);
+    reject_user($identifier);
 } else {
     throw new LorisException("No identifier supplied", NO_IDENTIFIER_SUPPLIED);
     exit(1);
@@ -32,7 +32,8 @@ if (isset($_POST['identifier'])) {
 * Checks that logged in user has user_accounts permissions, which is
 * also included in admin permissions
 *
-* @return boolean true if user has admin permission or user accounts false otherwise
+* @return boolean true if user has admin permission or user accounts
+*         false otherwise
 */
 function _hasPerm()
 {
@@ -51,10 +52,10 @@ function _hasPerm()
     *
     * @return void
     */
-    function _reject_user($identifier)
+    function reject_user($identifier)
     {
-    $DB       = Database::singleton();
-    $config   = NDB_Config::singleton();
+    $DB       = \Database::singleton();
+    $config   = \NDB_Config::singleton();
     $baseURL  = $config->getSetting('url');
     $redirect = $baseURL . "/user_accounts/";
     

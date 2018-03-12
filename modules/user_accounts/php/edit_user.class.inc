@@ -116,7 +116,21 @@ class Edit_User extends \NDB_Form
                     $defaults[$fieldName] = htmlspecialchars($defaults[$fieldName]);
                 }
             }
-            
+
+            $defaults['UserID']      = htmlspecialchars($defaults['UserID']);
+            $defaults['First_name']  = htmlspecialchars($defaults['First_name']);
+            $defaults['Last_name']   = htmlspecialchars($defaults['Last_name']);
+            $defaults['Real_name']   = htmlspecialchars($defaults['Real_name']);
+            $defaults['Email']       = htmlspecialchars($defaults['Email']);
+            $defaults['Degree']      = htmlspecialchars($defaults['Degree']);
+            $defaults['Institution'] = htmlspecialchars($defaults['Institution']);
+            $defaults['Address']     = htmlspecialchars($defaults['Address']);
+            $defaults['City']        = htmlspecialchars($defaults['City']);
+            $defaults['State']       = htmlspecialchars($defaults['State']);
+            $defaults['Zip_code']    = htmlspecialchars($defaults['Zip_code']);
+            $defaults['Country']     = htmlspecialchars($defaults['Country']);
+            $defaults['Fax']         = htmlspecialchars($defaults['Fax']);
+
             foreach ($defaults['examiner'] as $cid=>$vals) {
                 //sets pending approval info
                 if ($cid=='pending') {
@@ -180,6 +194,7 @@ class Edit_User extends \NDB_Form
     {
         $config = \NDB_Config::singleton();
         $DB     = \Database::singleton();
+
         //The arrays that contain the edited permissions
         $permissionsRemoved = array();
         $permissionsAdded   = array();
@@ -826,7 +841,7 @@ class Edit_User extends \NDB_Form
     */
     static function canRejectAccount($id)
     {
-        $DB     = Database::singleton();
+        $DB     = \Database::singleton();
         $fields =  $DB->pselect(
             "SELECT Password_hash, Pending_approval
                    FROM users
@@ -855,8 +870,8 @@ class Edit_User extends \NDB_Form
     function reject_user()
     {
     // @codingStandardsIgnoreEnd
-        $DB     = Database::singleton();
-        $editor = User::singleton();
+        $DB     = \Database::singleton();
+        $editor = \User::singleton();
 
         $redirect = $baseURL . "/user_accounts/";
 
@@ -876,36 +891,6 @@ class Edit_User extends \NDB_Form
         // permissions
         header('Location: '.$redirect);
 
-    }
-
-    /**
-     * Query database on UserID to check that password has doesn't
-     * exist and account is still pending approval, to ensure the
-     * users with account activity can't be rejected by setting
-     * their status to pending.
-     * Controls the output/behaviour of the form is used to edit
-     * the user's preferences.
-     *
-     * @param string $id identifier of account to verify
-     *
-     * @return boolean true is Password_hash is null and
-     * Pending_approval is Yes, false otherwsie
-     */
-    function _canRejectAccount($id)
-    {
-        $DB     = \Database::singleton();
-        $fields =  $DB->pselect(
-            "SELECT Password_hash, Pending_approval
-                   FROM users
-                   WHERE UserID=:id",
-            array("id" => $id)
-        );
-        if (is_null($fields[0]['Password_hash'])
-            && $fields[0]['Pending_approval']=="Y"
-        ) {
-            return true;
-        }
-        return false;
     }
 
     /**
