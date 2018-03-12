@@ -110,7 +110,7 @@ class Database
             // create the connection if none exists
             if (empty($connections[$connection])) {
                 $connections[$connection] = new Database;
-                $ok = $connections[$connection]->connect(
+                $connections[$connection]->connect(
                     $database,
                     $username,
                     $password,
@@ -350,7 +350,7 @@ class Database
         $this->lastInsertID = $this->_PDO->lastInsertId();
 
         // Track changes must be called after last insertId is set
-        $err = $this->trackChanges($table, $set, '2=1', 'I');
+        $this->trackChanges($table, $set, '2=1', 'I');
         return true;
     }
 
@@ -394,8 +394,6 @@ class Database
                 "Replace statement did not execute successfully.",
                 $query
             );
-        } elseif ($result === 0) {
-            $this->insert('empty_queries', array('query' => $query));
         }
 
         $this->affected = $result;
@@ -487,7 +485,7 @@ class Database
             );
         }
 
-        $err = $this->trackChanges($table, $set, $where);
+        $this->trackChanges($table, $set, $where);
         $this->_printQuery($query.$where);
 
         $prep   = $this->_PDO->prepare($prepQ);
@@ -534,7 +532,7 @@ class Database
 
         // There is no set clause for a delete, so add a fake
         // one.
-        $err = $this->trackChanges($table, array(), $where, 'D');
+        $this->trackChanges($table, array(), $where, 'D');
 
         $this->_printQuery($query);
         $result = $this->_PDO->exec($query);
@@ -545,8 +543,6 @@ class Database
                 $query,
                 $where
             );
-        } elseif ($result === 0) {
-            $this->insert('empty_queries', array('query' => $query));
         }
 
         $this->affected = $result;
@@ -672,8 +668,6 @@ class Database
                 "Could not run query $query"
                 . print_r($this->_PDO->errorInfo(), true)
             );
-        } elseif ($result === 0) {
-            $this->insert('empty_queries', array('query' => $query));
         }
 
         $this->affected = $result;
@@ -746,6 +740,77 @@ class Database
     }
 
     /**
+     * Runs an SQL select statement as a prepared query and re-indexes
+     * the results using the given unique non-nullable key.
+     *
+     * @param string $query     The SQL SELECT query to be run
+     * @param array  $params    Values to use for binding to the prepared statement
+     * @param string $uniqueKey Key to use when re-indexing, this key must be a
+     *                          single column, must be unique and must not be
+     *                          nullable
+     *
+     * @throws LorisException     If the supplied key is empty or null
+     * @throws DatabaseException  If the key is not part of the query itself
+     * @throws DatabaseException  If the key is not unique within the resulting set
+     *
+     * @return array An array of arrays containing the data. The outermost array is
+     *                  associative and uses the supplied $uniqueKey parameter as
+     *                  a key for each of the sub-arrays with the format
+     *                  rowPrimaryKey=>rowValuesArray. Each nested array represents
+     *                  a row from the returned by the query. Each element in the
+     *                  nested array is an associative array representing the row in
+     *                  the format ColumnName => Value
+     */
+    function pselectWithIndexKey($query, $params, $uniqueKey)
+    {
+        if (is_null($uniqueKey) || empty($uniqueKey)) {
+            throw new LorisException(
+                "The pselectWithIndexKey() function expects the uniqueKey parameter 
+                to not be null or empty. If re-indexing on the primary key is 
+                not necessary please use the pselect() function instead."
+            );
+        }
+
+        $result = $this->pselect($query, $params);
+
+        if (empty($result)) {
+            return $result;
+        }
+
+        $filteredResult = array();
+        // re-order the return array
+        foreach ($result as $row) {
+            // Check first that the row contains the primary key supplied
+            if (!array_key_exists($uniqueKey, $row)) {
+                throw new DatabaseException(
+                    "The query supplied to pselectWithIndexKey() does not contain 
+                    the unique key to re-index on. Make sure to supply the 
+                    appropriate key in the SELECT statement to match the supplied 
+                    parameter of this function",
+                    $query
+                );
+            }
+
+            // Check that the primary key is indeed unique to avoid overriding data
+            // in the result array
+            if (isset($filteredResult[$row[$uniqueKey]])) {
+                throw new DatabaseException(
+                    "The uniqueKey supplied to pselectWithIndexKey() does not appear
+                     to be unique or is nullable. This function expects the key to 
+                     be both UNIQUE and NOT NULL.",
+                    $query
+                );
+            }
+
+            // If you get here, we just need to build the new array
+            $filteredResult[$row[$uniqueKey]] = $row;
+            unset($filteredResult[$row[$uniqueKey]][$uniqueKey]);
+        }
+
+        return $filteredResult;
+    }
+
+    /**
      * Runs a query as a prepared statement and returns the first row as an
      * associative array. Automatically adds a limit clause to the query being
      * run for efficiency.
@@ -766,15 +831,17 @@ class Database
     }
 
     /**
-     * Runs a query as a prepared statement and returns the values of the first
-     * column in the select statement. If multiple columns are given, only the first
-     * will be returned.
+     * Runs a query as a prepared statement and returns the values of the
+     * column given in the select statement. If multiple columns are given, an error
+     * is thrown.
      *
      * @param string $query  The SQL SELECT query to be run
      * @param array  $params Values to use for binding to prepared statement
      *
+     * @throws DatabaseException if the query selected more than one column
+     *
      * @return array Associative array of form rowID=>value containing all values
-     *               for the first element of the select statement
+     *               for the only column of the select statement
      */
     function pselectCol($query, $params)
     {
@@ -795,6 +862,82 @@ class Database
             $result[$k] =reset($row);
         }
         return $result;
+    }
+
+    /**
+     * Runs an SQL select statement as a prepared query and re-indexes
+     * the results using the given unique non-nullable key in the same
+     * format as the pselectCol() function.
+     *
+     * @param string $query     The SQL SELECT query to be run
+     * @param array  $params    Values to use for binding to the prepared statement
+     * @param string $uniqueKey Key to use when re-indexing, this key must be a
+     *                          single column, must be unique and must not be
+     *                          nullable
+     *
+     * @throws LorisException     If the supplied key is empty or null
+     * @throws DatabaseException  If the key is not part of the query itself or
+     *                            if there are not exactly 2 columns selected
+     * @throws DatabaseException  If the key is not unique within the resulting set
+     *
+     * @return array Associative array of form uniqueKey=>value containing all
+     *               value for the non-uniqueKey element of the select statement
+     */
+    function pselectColWithIndexKey($query, $params, $uniqueKey)
+    {
+        if (is_null($uniqueKey) || empty($uniqueKey)) {
+            throw new LorisException(
+                "The pselectColWithIndexKey() function expects the uniqueKey
+                 parameter to not be null or empty. If re-indexing on the primary 
+                 key is not necessary please use the pselectCol() function instead."
+            );
+        }
+
+        $result = $this->pselect($query, $params);
+
+        if (empty($result)) {
+            return $result;
+        }
+
+        $filteredResult = array();
+        // re-order the return array
+        foreach ($result as $row) {
+            $colNumber = count($row);
+            // Check first that the row contains the primary key supplied
+            if (!array_key_exists($uniqueKey, $row) || $colNumber !== 2) {
+                throw new DatabaseException(
+                    "The query supplied to pselectColWithIndexKey() should only 
+                    contain the unique key and one other column in the SELECT 
+                    clause. Make sure to supply the appropriate key in the SELECT 
+                    statement to match the supplied parameter of this function.",
+                    $query
+                );
+            }
+
+            // Check that the primary key is indeed unique to avoid overriding data
+            // in the result array
+            if (isset($filteredResult[$row[$uniqueKey]])) {
+                throw new DatabaseException(
+                    "The uniqueKey supplied to pselectColWithIndexKey() does not 
+                    appear to be unique or is nullable. This function expects the 
+                    key to be both UNIQUE and NOT NULL.",
+                    $query
+                );
+            }
+
+            // Store the value of the key for this specific row then unset that
+            // value from the $row array so that the only element remaining is
+            // the column desired and its value for this row
+            $uniqueKeyValue = $row[$uniqueKey];
+            unset($row[$uniqueKey]);
+
+            // Note: reset() rewinds array's internal pointer to the first element
+            // and returns the value of the first array element, in this case the
+            // desired column value
+            $filteredResult[$uniqueKeyValue] = reset($row);
+        }
+
+        return $filteredResult;
     }
 
     /**
@@ -971,7 +1114,7 @@ class Database
                 $prim_vals = join(",", $primaryValues);
                 $this->_preparedStoreHistory->bindParam(":newval", $set[$column]);
                 $this->_preparedStoreHistory->bindParam(":primaryVals", $prim_vals);
-                $history = $this->_preparedStoreHistory->execute();
+                $this->_preparedStoreHistory->execute();
             }
         } else if ($type == 'U' || $type == 'D') {
             // construct the select query
@@ -1100,21 +1243,6 @@ class Database
         };
     }
 
-    /**
-     * Database class no longer extends PEAR
-     *
-     * @param mixed $data    The variable to check
-     * @param mixed $msgcode Additional error message / error code to check
-     *
-     * @return     none
-     * @deprecated Database class no longer extends PEAR
-     */
-    function isError($data, $msgcode)
-    {
-        throw new DatabaseException(
-            "Database class no longer extends PEAR"
-        );
-    }
     /**
      * Checks to see if a table exists in the Database
      *

@@ -29,7 +29,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
            <td>
                <a href= "#"
                   onClick={loris.loadFilteredMenuClickHandler(
-                      "mri_violations/?submenu=mri_protocol_check_violations",
+                      "mri_violations/mri_protocol_check_violations",
                       {PatientName: patientname,
                        SeriesUID: uid}
                   )}>Protocol Violation</a>
@@ -41,7 +41,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
            <td>
             <a href= "#"
                onClick={loris.loadFilteredMenuClickHandler(
-                   "mri_violations/?submenu=mri_protocol_violations",
+                   "mri_violations/mri_protocol_violations",
                       {PatientName: patientname,
                        SeriesUID: uid}
                )}>Could not identify scan type</a>

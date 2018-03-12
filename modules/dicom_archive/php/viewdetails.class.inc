@@ -46,7 +46,7 @@ class ViewDetails extends \NDB_Form
     *
     * @return NULL
     */
-    function __construct()
+    function setup()
     {
         $this->DB = \Database::singleton();
 

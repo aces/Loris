@@ -108,6 +108,9 @@ class DirectDataEntryMainPage
                 )
             );
         }
+        if ($this->Subtest === array()) {
+            $this->Subtest = "";
+        }
 
         $totalPages        = $DB->pselectOne(
             "SELECT COUNT(*)+1 from instrument_subtests WHERE Test_name=:TN",
