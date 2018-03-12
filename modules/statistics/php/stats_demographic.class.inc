@@ -88,7 +88,8 @@ class Stats_Demographic extends \NDB_Form
         $disclamer='',
         $projectID=null
     ) {
-        $tpl_data = array();
+        $projectID = $projectID == '' ? null : $projectID;
+        $tpl_data  = array();
         $tpl_data['test_name']  = htmlspecialchars($_REQUEST['test_name']);
         $tpl_data['Subsection'] = $Subsection;
         $tpl_data['Visits']     = $visits;
@@ -97,7 +98,7 @@ class Stats_Demographic extends \NDB_Form
         $tpl_data['TableHeader']   = $tableHeader;
         $tpl_data['Disclamer']     = $disclamer;
         $tpl_data['Subcategories'] = $subcats;
-        $tpl_var = \Utility::getSubprojectsForProject($projectID == '' ? null : $projectID);
+        $tpl_var = \Utility::getSubprojectsForProject($projectID);
         $tpl_data['Subprojects']      = $tpl_var;
         $tpl_data['DropdownName']     = $dropdown_name;
         $tpl_data['DropdownOptions']  = $dropdown_opt;
@@ -186,7 +187,8 @@ class Stats_Demographic extends \NDB_Form
         $subprojList      = '';
         $subproject_query = '';
         $Visits           = \Utility::getExistingVisitLabels($demographicProject);
-        $subprojects      = \Utility::getSubprojectsForProject($demographicProject == '' ? null : $demographicProject);
+        $project          = $demographicProject != '' ?? null : $demographicProject;
+        $subprojects      = \Utility::getSubprojectsForProject($project);
 
         if (empty($subprojects)) {
             error_log('Could not load subproject data for demographic stats');
