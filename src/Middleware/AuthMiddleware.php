@@ -63,10 +63,6 @@ class AuthMiddleware implements MiddlewareInterface, MiddlewareChainer
         if ($this->authenticator->authenticate($request) === true) {
             return $this->next->process($request, $handler);
         }
-        // FIXME: Use smarty template.
-        return (new \Zend\Diactoros\Response())
-           ->withStatus(403)
-          ->withBody(new \LORIS\Http\StringStream("Permission denied"));
-
+        return (new \LORIS\Http\Error($request, 403, "Permission denied"));
     }
 }

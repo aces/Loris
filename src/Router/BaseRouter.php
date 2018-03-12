@@ -133,9 +133,6 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             }
         }
 
-        // FIXME: Use 404 from smarty template.
-        return (new \Zend\Diactoros\Response())
-            ->withStatus(404)
-            ->withBody(new StringStream("Not Found"));
+        return (new \LORIS\Http\Error($request, 404));
     }
 }

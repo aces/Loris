@@ -173,6 +173,9 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
         $page = str_replace("-", "", $page);
 
         $className = "\LORIS\\" . $this->name . "\\$page";
+        if (!class_exists($className)) {
+            throw new \NotFound($className);
+        }
 
         $identifier = $_REQUEST['identifier'] ?? '';
         $commentID  = $_REQUEST['commentID'] ?? '';
@@ -216,20 +219,20 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
         if ($resp->getStatusCode() != 404) {
             return $resp;
         }
-        switch ($request->getURI()->getPath()) {
-        case "":
-        case "/":
-            $page = $this->loadPage($this->getName());
-            return $page->process($request, $page);
-        default:
-            // Fall back on the old way of doing subpages
-            $components = explode("@", trim($request->getURI()->getPath(), "/"));
-            $page       = $this->loadPage($components[0]);
-            return $page->process($request, $page);
+
+        $pagename = $this->getName();
+        $path     = trim($request->getURI()->getPath(), "/");
+        if (!empty($path)) {
+            // There is a subpage
+            $pagename = explode("@", $path)[0];
         }
 
-        return (new \Zend\Diactoros\Response())
-            ->withStatus(404)
-            ->withBody(new \LORIS\Http\StringStream("File not found: " . $request->getURI()->__toString()));
+        try {
+            $page = $this->loadPage($pagename);
+        } catch (\Notfound $e) {
+            return (new \LORIS\Http\Error($request, 404, "File not found: " . $request->getURI()->__toString()));
+        }
+
+        return $page->process($request, $page);
     }
 }
