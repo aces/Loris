@@ -162,7 +162,10 @@ class User_Accounts extends \NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/user_accounts/js/columnFormatter.js")
+            array(
+             $baseURL . "/user_accounts/js/columnFormatter.js",
+             //   $baseURL . "/user_accounts/js/reject_users.js"
+            )
         );
     }
 }
