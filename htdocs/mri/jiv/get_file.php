@@ -38,13 +38,15 @@ if ($client->initialize("../../../project/config.xml") == false) {
 }
 
 // Checks that config settings are set
-$config =& NDB_Config::singleton();
-$paths  = $config->getSetting('paths');
+$config   =& NDB_Config::singleton();
+$paths    = $config->getSetting('paths');
+$pipeline = $config->getSetting('imaging_pipeline');
 
 // Basic config validation
 $imagePath    = $paths['imagePath'];
 $DownloadPath = $paths['DownloadPath'];
 $mincPath     = $paths['mincPath'];
+$tarchivePath = $pipeline['tarchiveLibraryDir'];
 if (empty($imagePath) || empty($DownloadPath) || empty($mincPath)) {
     error_log("ERROR: Config settings are missing");
     header("HTTP/1.1 500 Internal Server Error");
@@ -98,16 +100,10 @@ if (strpos($File, "DCM_") ) {
     $FileExt = "DICOMTAR";
 }
 
-
 switch($FileExt) {
 case 'mnc':
     $FullPath         = $mincPath . '/' . $File;
     $MimeType         = "application/x-minc";
-    $DownloadFilename = basename($File);
-    break;
-case 'DICOMTAR':
-    $FullPath         = $imagePath . '/' . $File;
-    $MimeType         = 'application/x-tar';
     $DownloadFilename = basename($File);
     break;
 case 'nii':
@@ -143,6 +139,12 @@ case 'xml':
 case 'nrrd':
     $FullPath         = $imagePath . '/' . $File;
     $MimeType         = 'image/vnd.nrrd';
+    $DownloadFilename = basename($File);
+    break;
+case 'DICOMTAR':
+    // ADD case for DICOMTAR
+    $FullPath         = $tarchivePath . '/' . $File;
+    $MimeType         = 'application/x-tar';
     $DownloadFilename = basename($File);
     break;
 default:
