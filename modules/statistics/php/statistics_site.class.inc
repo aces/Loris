@@ -41,6 +41,10 @@ class Statistics_Site extends \NDB_Form
         $user     =& \User::singleton();
         $centerID = htmlspecialchars($_REQUEST['CenterID']);
         //TODO: Create a permission specific to statistics
+        if (is_null($centerID)) {
+            error_log("CenterID passed in statistics module is null.");
+            return false;
+        }
         return $user->hasCenterPermission('data_entry', $centerID);
     }
 
@@ -129,18 +133,18 @@ class Statistics_Site extends \NDB_Form
         $this->_checkCriteria($centerID, $projectID);
         $DB     =& \Database::singleton();
         $result = $DB->pselect(
-            "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID, 
-               s.Visit_label 
-               FROM session s, candidate c, flag  f, 
-               {$instrument} i 
-               WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID 
-               AND s.CandID=c.CandID  
-               AND s.Active='Y' 
-               AND s.CenterID <> '1' 
-               AND s.Current_stage <> 'Recycling Bin'
-               $this->query_criteria
-               AND (f.Data_entry is NULL OR f.Data_entry<>'Complete') 
-               AND i.CommentID NOT LIKE 'DDE%' ORDER BY s.Visit_label, c.PSCID",
+            "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID,
+                s.Visit_label
+                FROM session s, candidate c, flag  f,
+                {$instrument} i
+                WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID
+                AND s.CandID=c.CandID
+                AND s.Active='Y'
+                AND s.CenterID <> '1'
+                AND s.Current_stage <> 'Recycling Bin'
+                $this->query_criteria
+                AND (f.Data_entry is NULL OR f.Data_entry<>'Complete')
+                AND i.CommentID NOT LIKE 'DDE%' ORDER BY s.Visit_label, c.PSCID",
             $this->query_vars
         );
         return $result;
