@@ -193,7 +193,7 @@ class Stats_Demographic extends \NDB_Form
             error_log('Could not load subproject data for demographic stats');
         } else {
             foreach ($subprojects as $key=>$val) {
-                $subprojList .= "'$key',";
+                $subprojList .= "$key,";
             }
             $subprojList = substr($subprojList, 0, -1);
             if (!empty($subprojList)) {
