@@ -133,9 +133,9 @@ class PublicationUploadForm extends React.Component {
   }
 
   componentDidMount() {
-    if (!this.props.editMode) {
+
       this.fetchData();
-    }
+
   }
 
   setFileData(formElement, value) {
@@ -387,7 +387,8 @@ class PublicationUploadForm extends React.Component {
     let fileFields = this.createFileFields();
 
     let createElements;
-    if (this.props.editMode) {
+    let formClass = "col-md-8 col-lg-7";
+    if (!this.props.editMode) {
       createElements = [
         <h3>Propose a new project</h3>,
         <TextboxElement
@@ -398,11 +399,15 @@ class PublicationUploadForm extends React.Component {
           value={this.state.formData.title}
         />
       ];
+
+      // if in edit mode, max out form size to better match
+      // creation display
+      formClass = "col-md-12 col-lg-12";
     }
 
     return (
       <div className="row">
-        <div className="col-md-8 col-lg-7">
+        <div className={formClass}>
           <FormElement
             name="publicationUpload"
             onSubmit={this.handleSubmit}
