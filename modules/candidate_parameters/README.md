@@ -34,18 +34,18 @@ is sufficient to have access to the module.
 The candidate parameters module has the following configurations that affect its usage
 
  - useProband 
-    - This setting displays/hides the Proband tab of the module
+    - This setting displays/hides the Proband tab of the module.
 
  - useFamilyID
-    - This setting displays/hides the Family tab of the module
+    - This setting displays/hides the Family tab of the module.
 
  - useConsent 
-    - This setting displays/hides the Consent tab of the module
+    - This setting displays/hides the Consent tab of the module.
 
 ## Interactions with LORIS
 
-- Information collected in this modules is exported into the Data Query Tool (DQT) 
+- Information collected in this modules is exported towards the Data Query Tool (DQT) 
 using the `CouchDB_Import_Demographics.php` tool. Any modifications or 
 additions to this module should be manually added to the script in order to view 
 them in the DQT Demographics table or alternatively added to 
-another script to be imported separately into the DQT.
+another script to be exported separately towards the DQT.
