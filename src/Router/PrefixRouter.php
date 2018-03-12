@@ -100,10 +100,6 @@ class PrefixRouter implements RequestHandlerInterface
                 return $subhandler->handle($request);
             }
         }
-        return (new \Zend\Diactoros\Response())
-            ->withStatus(404)
-            ->withBody(
-                new StringStream("Not found")
-            );
+        return (new \LORIS\Http\Error($request, 404));
     }
 }
