@@ -168,7 +168,7 @@ class NDB_Reliability extends NDB_Form
      * @param string $name  The element name
      * @param string $label The label to attach to this element
      *
-     * @return none
+     * @return void
      */
     function addDateElement($name, $label)
     {
@@ -241,7 +241,7 @@ class NDB_Reliability extends NDB_Form
      * @param array  $refusals     List of options to include in the _status
      *                             dropdown
      *
-     * @return none
+     * @return void
      */
     function addTextElement(
         $field,
@@ -270,7 +270,7 @@ class NDB_Reliability extends NDB_Form
       * @param array  $rules        {@} delimited rules
       * @param string $rule_message rule message to display upon rule violation
       *
-      * @return none
+      * @return void
       */
     function addTextAreaElement(
         $field,
@@ -327,7 +327,7 @@ class NDB_Reliability extends NDB_Form
      * Adds standard meta data fields (ie. Examiner, Date_taken
      * to the form object.
      *
-     * @return none
+     * @return void
      */
     function _addMetadataFields()
     {

@@ -39,7 +39,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     /**
      * Insert testing data into the database
      *
-     * @return none
+     * @return void
      */
     function setUp()
     {
@@ -48,7 +48,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     /**
      * Delete testing data from database
      *
-     * @return none
+     * @return void
      */
     function tearDown()
     {

@@ -111,7 +111,7 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
     /**
      * Handle a GET request
      *
-     * @return none, but populate $this->JSON
+     * @return void (but modifies $this->JSON)
      */
     function handleGET()
     {
@@ -150,7 +150,7 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
     /**
      * Handle an OPTIONS request
      *
-     * @return none, but modifies HTTP headers sent
+     * @return void (but modifies HTTP headers sent)
      */
     function handleOPTIONS()
     {
@@ -163,7 +163,7 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
     /**
      * Handle a PUT request
      *
-     * @return none, but populates $this->JSON and writes to database
+     * @return void (but populates $this->JSON and writes to database)
      */
     function handlePUT()
     {
@@ -195,7 +195,7 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
     /**
      * Handle a PUT request
      *
-     * @return none, but populates $this->JSON and writes to database
+     * @return void (but populates $this->JSON and writes to database)
      */
     function handlePATCH()
     {

@@ -57,7 +57,7 @@ class DirectDataEntryMainPage
      * Initialize all of the class variables and things required from the
      * REQUEST.
      *
-     * @return none, but as a side-effect modifies class
+     * @return void (but as a side-effect modifies class)
      */
     function initialize()
     {
@@ -204,7 +204,7 @@ class DirectDataEntryMainPage
     /**
      * Run the current page, consists of initializing and then displaying the page
      *
-     * @return none
+     * @return void
      */
     function run()
     {
@@ -238,7 +238,7 @@ class DirectDataEntryMainPage
      *
      * @param Exception $e The exception which was thrown by the code
      *
-     * @return none, but as a side-effect changes the HTTP return code
+     * @return void (but as a side-effect changes the HTTP return code)
      */
     function displayError($e)
     {
@@ -300,7 +300,7 @@ class DirectDataEntryMainPage
      *                          survey to use
      * @param string  $comments Comments entered by survey user on review page
      *
-     * @return none
+     * @return void
      */
     function updateComments($ease, $comments)
     {
@@ -320,7 +320,7 @@ class DirectDataEntryMainPage
      * that we never lose user data and can retrieve it in the event of an
      * emergency
      *
-     * @return none
+     * @return void
      */
     function logRequest()
     {
@@ -338,7 +338,7 @@ class DirectDataEntryMainPage
     /**
      * Loads the correct page and renders it to the user
      *
-     * @return none
+     * @return void
      */
     function display()
     {

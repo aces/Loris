@@ -42,7 +42,6 @@ return [
 		"PhanTypeMismatchArgumentInternal",
 		"PhanTypeMismatchReturn",
 		"PhanTypeMismatchProperty",
-		"PhanTypeMissingReturn",
 		"PhanNonClassMethodCall",
 		"PhanTypeVoidAssignment",
 		"PhanParamTooFew",

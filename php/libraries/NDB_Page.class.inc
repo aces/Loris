@@ -90,8 +90,6 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $identifier The identifier for the data to load on this page
      * @param string $commentID  The CommentID to load the data for
      * @param string $formname   The name to give this form
-     *
-     * @return none
      */
     function __construct(
         \Module $module,
@@ -143,7 +141,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $options Options to pass to the form for this
      *                        file chooser.
      *
-     * @return none
+     * @return void
      */
     function addFile($name, $label, $options=array())
     {
@@ -160,7 +158,7 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $header The text to put in the header
      *
-     * @return none
+     * @return void
      */
     function addHeader($header)
     {
@@ -177,7 +175,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $optional Optional extra HTML attributes to add
      *                         to the select
      *
-     * @return none
+     * @return void
      */
     function addSelect($name, $label, $options, $optional=array())
     {
@@ -193,7 +191,7 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $label The text to add to the label.
      *
-     * @return none
+     * @return void
      */
     function addLabel($label)
     {
@@ -206,7 +204,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $name  The name of the score column
      * @param string $label Label to attach to the score
      *
-     * @return none
+     * @return void
      */
     function addScoreColumn($name, $label)
     {
@@ -222,7 +220,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $label   Label to attach to the text element
      * @param array  $options QuickForm options to pass to addElement
      *
-     * @return none
+     * @return void
      */
     function addBasicText($field, $label, $options=array())
     {
@@ -238,7 +236,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $label          Label to attach to the text area field
      * @param array  $specifications Extra HTML options to add to the textarea
      *
-     * @return none
+     * @return void
      */
     function addBasicTextArea(
         $field,
@@ -261,7 +259,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $options Options to pass to HTML_QuickForm
      * @param array  $attr    Extra HTML attributes to add to the date group.
      *
-     * @return none
+     * @return void
      */
     function addBasicDate(
         $field,
@@ -285,7 +283,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $optional Optional extra HTML attributes to add
      *                         to the checkbox
      *
-     * @return none
+     * @return void
      */
     function addCheckbox($name, $label, $options, $optional=array())
     {
@@ -308,7 +306,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $options    Options to pass to LorisForm for this
      *                           radio button. Do not pass value here.
      *
-     * @return none
+     * @return void
      */
     function addRadio($name, $groupLabel, $radios, $options=array())
     {
@@ -337,7 +335,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $value      The value of the hidden element to add
      * @param array  $attributes Additional html attributes for element
      *
-     * @return none
+     * @return void
      */
     function addHidden($name, $value=null, $attributes=array())
     {
@@ -353,7 +351,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $not_answered_options List of options to use in the "_status"
      *                                     dropdown.
      *
-     * @return none
+     * @return void
      */
     function addTextAreaGroup(
         $field,
@@ -383,7 +381,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $label The label to attach to this element
      * @param array  $attr  List of extra HTML attributes to add to the element
      *
-     * @return none
+     * @return void
      */
     function addPassword(
         $field,
@@ -401,7 +399,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $type    The type of rule to add
      * @param string $format  See QuickForm documentation.
      *
-     * @return none
+     * @return void
      */
     function addRule($element, $message, $type, $format=null)
     {
@@ -417,7 +415,7 @@ class NDB_Page implements RequestHandlerInterface
      *                       See QuickForm documentation for details.
      * @param string $format The group format. (See QuickForm documentation)
      *
-     * @return none
+     * @return void
      */
     function addGroupRule($group, $arg1, $type='', $format=null)
     {
@@ -434,7 +432,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $separator  The separator to use between group elements
      * @param string $appendName ????
      *
-     * @return none
+     * @return void
      */
     function addGroup($elements, $name, $label, $separator, $appendName=null)
     {
@@ -821,7 +819,7 @@ class NDB_Page implements RequestHandlerInterface
      * Does any setup required for this page. This is generally overridden
      * by NDB_Page subtypes to add form elements.
      *
-     * @return none, but may have side-effects
+     * @return void (but may have side-effects)
      */
     function setup()
     {

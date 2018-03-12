@@ -80,7 +80,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
     /**
      * Create a form to filter media by various criteria
      *
-     * @return bool
+     * @return void
      * @throws ConfigurationException
      * @throws DatabaseException
      * @throws Exception

@@ -163,7 +163,7 @@ ob_end_clean();
  *
  * @param string $name The request parameter to add to a smarty variable
  *
- * @return none
+ * @return void
  */
 function tplvar($name)
 {
