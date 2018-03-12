@@ -205,6 +205,14 @@ class Edit_User extends \NDB_Form
             $permIDs = array_keys($values['permID']);
         }
         unset($values['permID']);
+
+        // store the role IDs
+        $roleIDs = array();
+        if (!empty($values['roleID'])) {
+            $roleIDs = $values['roleID'];
+        }
+        unset($values['roleID']);
+
         // store whether to send an email or not
         if (!empty($values['SendEmail'])) {
             $send = $values['SendEmail'];
@@ -471,6 +479,26 @@ class Edit_User extends \NDB_Form
             if (!empty($permIDs)) {
                 $user->addPermissions($permIDs);
             }
+
+            // Update roles
+            $userID = $user->getData('ID');
+
+            //TODO: move to a save function in user model
+            $DB->delete(
+                'user_role_rel',
+                array('UserID' => $userID)
+            );
+
+            foreach ($roleIDs as $roleID) {
+                //TODO: move to a save function in user model
+                $DB->insert(
+                    'user_role_rel',
+                    array(
+                     'UserID' => $userID,
+                     'RoleID' => $roleID,
+                    )
+                );
+            }
         }
         // send the user an email
         if (!empty($send)) {
@@ -715,44 +743,10 @@ class Edit_User extends \NDB_Form
 
         // checking if the account can be rejected (no password hash
         // pending approval)
-        $this->tpl_data['can_reject'] =$this->_canRejectAccount($this->identifier);
-
-        // get the editor's permissions
-
-        $perms    = $editor->getPermissionsVerbose();
-        $lastRole = '';
-        foreach ($perms as $row) {
-            if ($row['type'] != $lastRole) {
-                $lastRole = $row['type'];
-                $group[]  = $this->form->createElement(
-                    'static',
-                    null,
-                    null,
-                    '</div>'
-                    . "<h3 id=\"header_$lastRole\" "
-                    . "class=\"perm_header button\" "
-                    . "style=\"text-align: center; margin-top: 5px;\">"
-                    .ucwords($row['type'])
-                    . '</h3>'
-                    . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">"
-                );
-            }
-
-            // If the user is editing his/her own account, disable all permission
-            // checkboxes. Note that they will not be submitted when the form is
-            // saved
-            $attribs = array("class" => "perm_$lastRole");
-            if ($this->_isEditingOwnAccount()) {
-                $attribs['disabled'] = true;
-            }
-            $group[] = $this->createCheckbox(
-                'permID['.$row['permID'].']',
-                htmlspecialchars($row['description']) . "<br>",
-                $attribs
-            );
+        if (!$this->isCreatingNewUser()) {
+            $this->tpl_data['can_reject']
+                = $this->_canRejectAccount($this->identifier);
         }
-        $this->addGroup($group, 'PermID_Group', 'Permissions', "", false);
-        unset($group);
 
         //getting users name and emails to create checkboxes
         // to email supervisors on permissions changes
@@ -945,15 +939,17 @@ class Edit_User extends \NDB_Form
         }
 
         // if password is generated then the email user button should be clicked
-        if ($values['NA_Password'] == "on" && $values['SendEmail'] != "on") {
-            $errors['Email_Group']
-                = 'When generating a new password, '
-                . 'please notify the user by checking Send email to user box';
-        }
+        if (isset($values['NA_Password'])) {
+            if ($values['NA_Password'] == "on" && $values['SendEmail'] != "on") {
+                $errors['Email_Group']
+                    = 'When generating a new password, '
+                    . 'please notify the user by checking Send email to user box';
+            }
 
-        if ($values['NA_Password'] == 'on' && $values['Password_hash'] != '') {
-            $errors['Password_Group'] = 'You must leave the password field empty '
-                . 'if you want the system to generate one for you';
+            if ($values['NA_Password'] == 'on' && $values['Password_hash'] != '') {
+                $errors['Password_Group'] = 'You must leave the password field empty'
+                    . ' if you want the system to generate one for you';
+            }
         }
 
         if (is_null($this->identifier)
@@ -1104,6 +1100,22 @@ class Edit_User extends \NDB_Form
             list(,$description) = each($permission[0]);
         }
         return $permission;
+    }
+
+    /**
+     * Get javascript dependencies
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . "/user_accounts/js/permissions.js"]
+        );
     }
 }
 ?>
