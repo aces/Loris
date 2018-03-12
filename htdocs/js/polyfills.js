@@ -33,7 +33,7 @@ $(document).ready(function() {
       e.preventDefault();
     });
   }
-  if (!Modernizr.inputtypes.time) {
+  if (!Modernizr.inputtypes.time) { // eslint-disable-line
     var timeInputs = $('input.timepicker');
     timeInputs.timepicker({
       timeFormat: 'H:mm',
