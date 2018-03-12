@@ -187,7 +187,7 @@ class Stats_Demographic extends \NDB_Form
         $subprojList      = '';
         $subproject_query = '';
         $Visits           = \Utility::getExistingVisitLabels($demographicProject);
-        $project          = $demographicProject != '' ?? null : $demographicProject;
+        $project          = $demographicProject != '' ? null : $demographicProject;
         $subprojects      = \Utility::getSubprojectsForProject($project);
 
         if (empty($subprojects)) {
