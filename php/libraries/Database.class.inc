@@ -171,6 +171,7 @@ class Database
             $password
         );
         $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        $this->_PDO->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
         $this->_preparedStoreHistory = $this->_PDO->prepare(
             "INSERT INTO history (tbl, col, new, old,"
