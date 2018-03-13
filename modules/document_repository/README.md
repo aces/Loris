@@ -34,7 +34,7 @@ post_max_size = 1024M           // Maximum size of POST data that PHP will accep
 ```
 chmod 777 /var/www/loris/modules/document_repository/user_uploads
 ```
-[Note that the path is assumed to be ```/var/www/loris```, however your own path may be ``` /var/www/<project-name>``` , depending on your setup.]
+[Note that the path is assumed to be ```/var/www/loris```, however your own path may be ```/var/www/<project-name>``` , depending on your setup.]
 
 - A mail server will be required for sending out email notifications about Document Repository updates. 
 
