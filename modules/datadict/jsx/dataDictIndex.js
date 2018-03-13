@@ -17,6 +17,7 @@ import formatDataDictColumn from './columnFormatter';
 class DataDictIndex extends React.Component {
 
   constructor(props) {
+    loris.hiddenHeaders = ['DescriptionStatus'];
     super(props);
 
     this.state = {

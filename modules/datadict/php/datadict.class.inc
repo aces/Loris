@@ -42,6 +42,31 @@ class Datadict extends \NDB_Menu_Filter
         return ($user->hasPermission('data_dict_view') ||
                 $user->hasPermission('data_dict_edit'));
     }
+
+    /** 
+     *
+     *  
+     */
+
+    function _buildQuery()
+    {
+        $select = " SELECT DISTINCT 
+         pt.sourceFrom as source_from,
+         pt.name as name,  
+         pt.sourceField as source_field,  
+         coalesce(pto.description,pt.description) as description, 
+         CASE  
+           WHEN COALESCE(pto.description,pt.description) = '' THEN 'Empty'
+           WHEN pto.name IS NOT NULL THEN 'Modified' 
+           WHEN pto.name IS NULL THEN 'Unmodified'
+         END as description_status ";
+
+        $joins = " FROM parameter_type pt 
+        LEFT JOIN parameter_type_override pto USING (Name)
+        WHERE pt.Queryable=1 ";
+        $query = $select . $joins;
+        return $query;
+    }
     /**
      * Setup variables function
      *
@@ -51,26 +76,12 @@ class Datadict extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        // set the class variables
-        $this->columns = array(
-                          'pt.sourceFrom',
-                          'pt.Name',
-                          'pt.sourceField',
-                          'coalesce(pto.description,pt.description)'.
-                          ' as description',
-                         );
-
-        $this->validFilters = array(
-                               'pt.sourceFrom',
-                               'pt.Description',
-                              );
-        $this->query        = " FROM parameter_type pt LEFT JOIN
-                                parameter_type_override pto USING (Name)
-                 		WHERE pt.Queryable=1";
+        $query = $this->_buildQuery();
+        $this->query = " FROM (" . $query . ") as tmp";
 
         $this->formToFilter = array(
                                'sourceFrom'  => 'pt.sourceFrom',
-                               'Description' => 'pt.Description',
+                               'description' => 'pt.Description',
                               );
 
         $this->searchKeyword = array(
@@ -78,6 +89,23 @@ class Datadict extends \NDB_Menu_Filter
                                 'pt.sourceField',
                                 'pto.description',
                                );
+        // set the class variables
+
+        $this->columns = array(
+            'source_from',
+            'name',
+            'source_field',
+            'description',
+            'description_status',
+        );
+
+        $this->headers = array(
+            'Source From', 
+            'Name',
+            'Source Field',
+            'Description', 
+            'Description Status'
+        );
         return true;
     }
 
@@ -98,8 +126,8 @@ class Datadict extends \NDB_Menu_Filter
         );
         $this->addSelect('sourceFrom', 'Instruments', $instruments);
         $this->addSelect(
-            'Description',
-            'Description',
+            'descriptionStatus',
+            'Description Status',
             array(
              ''           => 'All',
              'empty'      => 'Empty',
