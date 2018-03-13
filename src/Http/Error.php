@@ -30,19 +30,31 @@ use \Psr\Http\Message\ServerRequestInterface;
 class Error extends HtmlResponse
 {
     /**
-     * Takes the value $val and converts it to a PSR7 StreamInterface.
+     * Takes the status code and and use the Zend\Response constructor to provide
+     * the approcriate reason phrase. It also add the appropriate body using
+     * smarty templates based on status code.
      *
-     * @param string $val The string value to convert to a stream.
+     * @param ServerRequestInterface $request this HTTP request.
+     * @param int                    $status  The HTTP status code to use.
+     * @param string                 $message A value to pass to smarty template
      */
-    public function __construct(ServerRequestInterface $request, int $status, string $message = '')
-    {
-        // TODO :: Extract baseurl from request. The '/' might break if the DirectoryRoot is different
+    public function __construct(
+        ServerRequestInterface $request,
+        int $status,
+        string $message = ''
+    ) {
+
+        $uri     = $request->getURI();
+        $baseurl = $uri->getScheme() .'://'. $uri->getAuthority();
+
         $tpl_data = array(
                      'message' => $message,
-                     'baseurl' => '/',
+                     'baseurl' => $baseurl,
                     );
+
         $template_file = (string) $status . '.tpl';
-        $body          = (new \Smarty_neurodb())
+
+        $body = (new \Smarty_neurodb())
             ->assign($tpl_data)
             ->fetch($template_file);
 
