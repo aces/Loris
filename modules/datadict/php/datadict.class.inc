@@ -43,11 +43,11 @@ class Datadict extends \NDB_Menu_Filter
                 $user->hasPermission('data_dict_edit'));
     }
 
-    /** 
+    /**
+     * Build data dictionary query function
      *
-     *  
+     * @return string $query
      */
-
     function _buildQuery()
     {
         $select = " SELECT DISTINCT 
@@ -76,7 +76,7 @@ class Datadict extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $query = $this->_buildQuery();
+        $query       = $this->_buildQuery();
         $this->query = " FROM (" . $query . ") as tmp";
 
         $this->formToFilter = array(
@@ -92,20 +92,20 @@ class Datadict extends \NDB_Menu_Filter
         // set the class variables
 
         $this->columns = array(
-            'source_from',
-            'name',
-            'source_field',
-            'description',
-            'description_status',
-        );
+                          'source_from',
+                          'name',
+                          'source_field',
+                          'description',
+                          'description_status',
+                         );
 
         $this->headers = array(
-            'Source From', 
-            'Name',
-            'Source Field',
-            'Description', 
-            'Description Status'
-        );
+                          'Source From',
+                          'Name',
+                          'Source Field',
+                          'Description',
+                          'Description Status',
+                         );
         return true;
     }
 
