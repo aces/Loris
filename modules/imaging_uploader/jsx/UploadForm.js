@@ -197,8 +197,7 @@ class UploadForm extends React.Component {
       error: function(err) {
         const errMessage = "The following errors occured while " +
           "attempting to display this page:";
-        // Last remaining part of the old module.
-        // Need to update to use proper AJAX request/response
+        
         let responseText = err.responseText;
         if (responseText.indexOf(errMessage) > -1) {
           responseText = responseText.replace('history.back()', 'location.reload()');
