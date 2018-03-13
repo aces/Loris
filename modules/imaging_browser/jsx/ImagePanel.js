@@ -6,6 +6,9 @@
 
 var ImagePanelHeader = React.createClass({
   mixins: [React.addons.PureRenderMixin],
+  componentDidMount: function() {
+    $(".panel-title").tooltip();
+  },
   render: function() {
     var QCStatusLabel;
     if (this.props.QCStatus === 'Pass') {
@@ -42,7 +45,6 @@ var ImagePanelHeader = React.createClass({
                 </div>
             </div>
             );
-    $(".panel-title").tooltip();
     return (
 
             <div className="panel-heading clearfix">
