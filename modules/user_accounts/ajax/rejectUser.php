@@ -2,7 +2,7 @@
 /**
  * User accounts
  *
- * Handles rejection of pending user accounts by a user with 'user_accounts' permissions
+ * Handles rejection of pending user accounts by a user that has permissions
  *
  * PHP Version 5
  *
@@ -49,13 +49,15 @@ function _hasPerm()
  * can be removed (no password hash => has never had an activity on
  * Loris, and is pending).
  *
+ * @param string $userID of account to reject
+ *
  * @return void
  */
-function _rejectUser($identifier)
+function _rejectUser($userID)
 {
-    $DB      = \Database::singleton();
-    $config  = \NDB_Config::singleton();
-    $baseURL = $config->getSetting('url');
+    $DB       = \Database::singleton();
+    $config   = \NDB_Config::singleton();
+    $baseURL  = $config->getSetting('url');
     $redirect = $baseURL . "/user_accounts/";
     if (!_hasPerm()) {
         throw new LorisException(
@@ -64,14 +66,14 @@ function _rejectUser($identifier)
             INCORRECT_PERMISSION
         );
         exit(1);
-    } else if (!UA\Edit_User::canRejectAccount($identifier)) {
+    } else if (!UA\Edit_User::canRejectAccount($userID)) {
         throw new LorisException(
             "This account is active and connot be rejected",
             ACCOUNT_ACTIVE
         );
         exit(1);
     } else {
-        $DB->delete('users', array("UserID" => $identifier));
+        $DB->delete('users', array("UserID" => $userID));
         exit;
     }
 }

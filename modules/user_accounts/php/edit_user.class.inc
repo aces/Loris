@@ -833,7 +833,9 @@ class Edit_User extends \NDB_Form
                            WHERE UserID=:id",
                 array("id" => $userID)
             );
-            if (is_null($fields[0]['Password_hash']) && $fields[0]['Pending_approval']=="Y") {
+            if (is_null($fields[0]['Password_hash'])
+                && $fields[0]['Pending_approval']=="Y"
+            ) {
                 return true;
             }
             return false;
@@ -1124,9 +1126,7 @@ class Edit_User extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
-             $baseURL . "/user_accounts/js/rejectUser.js"
-            )
+            array($baseURL . "/user_accounts/js/rejectUser.js")
         );
     }
 }
