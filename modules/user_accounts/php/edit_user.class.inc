@@ -715,7 +715,7 @@ class Edit_User extends \NDB_Form
 
         // checking if the account can be rejected (no password hash
         // pending approval)
-        $this->tpl_data['can_reject'] =$this->_canRejectAccount($this->identifier);
+        $this->tpl_data['can_reject'] =$this->canRejectAccount($this->identifier);
 
         // get the editor's permissions
 
@@ -810,31 +810,37 @@ class Edit_User extends \NDB_Form
     }
 
     /**
-     * Query database on UserID to check that password has doesn't
-     * exist and account is still pending approval, to ensure the
-     * users with account activity can't be rejected by setting
-     * their status to pending.
+     * Query database on UserID to check that password hash does not
+     * exist and account is still pending approval.
      *
-     * @param string $id identifier of account to verify
+     * This ensures that users with account activity cannot be rejected
+     * if their approval status is, for some reason, set to pending.
      *
-     * @return boolean true is Password_hash is null and
-     * Pending_approval is Yes, false otherwsie
+     * @param string $userID of account to verify
+     *
+     * @return boolean true if 'Password_hash' is null and
+     *         'Pending_approval' is Yes. False, otherwise.
+     *
+     * @throws Loris exception if the userID is not found in the database.
      */
-    function _canRejectAccount($id)
+    static function canRejectAccount($userID)
     {
-        $DB     = \Database::singleton();
-        $fields =  $DB->pselect(
-            "SELECT Password_hash, Pending_approval
-                   FROM users
-                   WHERE UserID=:id",
-            array("id" => $id)
-        );
-        if (is_null($fields[0]['Password_hash'])
-            && $fields[0]['Pending_approval']=="Y"
-        ) {
-            return true;
+        $DB = \Database::singleton();
+        try{
+            $fields =  $DB->pselect(
+                "SELECT Password_hash, Pending_approval
+                           FROM users
+                           WHERE UserID=:id",
+                array("id" => $userID)
+            );
+            if (is_null($fields[0]['Password_hash']) && $fields[0]['Pending_approval']=="Y") {
+                return true;
+            }
+            return false;
+        } catch (DatabaseException $e) {
+            throw new LorisException("User not found in database", USER_NOT_FOUND);
+            exit(1);
         }
-        return false;
     }
 
     /**
@@ -1104,6 +1110,24 @@ class Edit_User extends \NDB_Form
             list(,$description) = each($permission[0]);
         }
         return $permission;
+    }
+
+    /**
+     * Gathers JS dependencies and merges them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/user_accounts/js/rejectUser.js"
+            )
+        );
     }
 }
 ?>
