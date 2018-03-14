@@ -13,12 +13,13 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
-    use LORIS\user_accounts as UA;
 
-    define('NO_IDENTIFIER_SUPPLIED', 1);
-    define('USER_NOT_FOUND', 2);
-    define('INCORRECT_PERMISSION', 3);
-    define('ACCOUNT_ACTIVE', 4);
+use LORIS\user_accounts as UA;
+
+define('NO_IDENTIFIER_SUPPLIED', 1);
+define('USER_NOT_FOUND', 2);
+define('INCORRECT_PERMISSION', 3);
+define('ACCOUNT_ACTIVE', 4);
 
 if (isset($_POST['identifier'])) {
     $identifier = $_POST['identifier'];
