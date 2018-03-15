@@ -166,7 +166,7 @@ class Edit_User extends \NDB_Form
     {
         $editor = \User::singleton();
         return !$this->isCreatingNewUser()
-        && ($editor->getUsername() == $this->identifier);
+            && ($editor->getUsername() == $this->identifier);
     }
 
     /**
@@ -182,8 +182,8 @@ class Edit_User extends \NDB_Form
         $DB     = \Database::singleton();
 
         //The arrays that contain the edited permissions
-        $permissionsRemoved = [];
-        $permissionsAdded   = [];
+        $permissionsRemoved = array();
+        $permissionsAdded   = array();
 
         $editor = \User::singleton();
 
@@ -205,7 +205,7 @@ class Edit_User extends \NDB_Form
         ////Get the current permissions/////
         $current_permissionids = $user->getPermissionIDs();
 
-        $permIDs = [];
+        $permIDs = array();
         // store the permission IDs
         if (!empty($values['permID'])) {
             $permIDs = array_keys($values['permID']);
@@ -251,14 +251,14 @@ class Edit_User extends \NDB_Form
         $uid           = $user->getData('ID');
         $us_curr_sites = $values['CenterIDs'];
         if (!$this->isCreatingNewUser()) {
-            $DB->delete('user_psc_rel', ["UserID" => $uid]);
+            $DB->delete('user_psc_rel', array("UserID" => $uid));
             foreach ($us_curr_sites as $site) {
                 $DB->insert(
                     'user_psc_rel',
-                    [
+                    array(
                      "UserID"   => $uid,
                      "CenterID" => $site,
-                    ]
+                    )
                 );
             }
         }
@@ -268,9 +268,8 @@ class Edit_User extends \NDB_Form
         // EXAMINER UPDATE
         if ($editor->hasPermission('examiner_multisite')) {
             // get all fields that are related to examiners
-
-            $ex_curr_sites  = [];
-            $ex_prev_sites  = [];
+            $ex_curr_sites  = array();
+            $ex_prev_sites  = array();
             $ex_radiologist = 'N';
             $ex_pending     = 'Y';
 
@@ -302,9 +301,9 @@ class Edit_User extends \NDB_Form
                     "SELECT e.examinerID
                  FROM examiners e
                  WHERE e.full_name=:fn",
-                    [
+                    array(
                      "fn" => $values['Real_name'],
-                    ]
+                    )
                 );
 
                 // If examiner not in table add him,
@@ -314,29 +313,29 @@ class Edit_User extends \NDB_Form
 
                     $DB->insert(
                         'examiners',
-                        [
+                        array(
                          'full_name'   => $values['Real_name'],
                          'radiologist' => $ex_radiologist,
                          'userID'      => $uid,
-                        ]
+                        )
                     );
                     $examinerID = $examinerID = $DB->pselectOne(
                         "SELECT examinerID
                      FROM examiners
                      WHERE full_name=:fullName",
-                        ['fullName' => $values['Real_name']]
+                        array('fullName' => $values['Real_name'])
                     );
                 } else {
 
                     $DB->update(
                         'examiners',
-                        [
+                        array(
                          'radiologist' => $ex_radiologist,
                          'userID'      => $uid,
-                        ],
-                        [
+                        ),
+                        array(
                          "full_name" => $values['Real_name'],
-                        ]
+                        )
                     );
                     $examinerID = $examinerID[0]['examinerID'];
 
@@ -345,7 +344,7 @@ class Edit_User extends \NDB_Form
                         "SELECT centerID
                  FROM examiners_psc_rel epr
                  WHERE examinerID=:eid",
-                        ["eid" => $examinerID]
+                        array("eid" => $examinerID)
                     );
 
                     //get sites where user is already an examiner at for compare
@@ -361,34 +360,34 @@ class Edit_User extends \NDB_Form
                         "SELECT epr.centerID
                          FROM examiners_psc_rel epr 
                          WHERE epr.examinerID=:eid AND epr.centerID=:cid",
-                        [
+                        array(
                          "eid" => $examinerID,
                          "cid" => $v,
-                        ]
+                        )
                     );
 
                     // examiner was not previously added, add and set to active
                     if (empty($result)) {
                         $DB->insert(
                             'examiners_psc_rel',
-                            [
+                            array(
                              'examinerID'       => $examinerID,
                              'centerID'         => $v,
                              'active'           => 'Y',
                              'pending_approval' => $ex_pending,
-                            ]
+                            )
                         );
                     } else {
                         $DB->update(
                             'examiners_psc_rel',
-                            [
+                            array(
                              'active'           => 'Y',
                              'pending_approval' => $ex_pending,
-                            ],
-                            [
+                            ),
+                            array(
                              'examinerID' => $examinerID,
                              'centerID'   => $v,
-                            ]
+                            )
                         );
                     }
                     unset($values[$k]);
@@ -400,22 +399,21 @@ class Edit_User extends \NDB_Form
                 foreach ($ex_inactive as $cid) {
                     $DB->update(
                         'examiners_psc_rel',
-                        ["active" => 'N'],
-                        [
+                        array("active" => 'N'),
+                        array(
                          'examinerID' => $examinerID,
                          'centerID'   => $cid,
-                        ]
+                        )
                     );
                 }
             }
             unset($values['examiner_radiologist']);
             unset($values['examiner_pending']);
-            //END EXAMINER UPDATE
         }
+        //END EXAMINER UPDATE
 
         // make the set
-        foreach ($values as $key => $value)
-        {
+        foreach ($values as $key => $value) {
             if (!empty($value)) {
                 $set[$key] = $value;
             } else {
@@ -893,9 +891,6 @@ class Edit_User extends \NDB_Form
      */
     function _validateEditUser($values)
     {
-        // get user permissions
-        $editor = \User::singleton();
-
         // create DB object
         $DB     = \Database::singleton();
         $errors = array();
