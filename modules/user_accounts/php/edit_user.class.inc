@@ -1046,15 +1046,15 @@ class Edit_User extends \NDB_Form
                 if (preg_match("/^ex_[0-9]+$/", $k)) {
                     $matched = true;
                     if ($values['examiner_radiologist'] == '') {
-                        $errors['examiner_group'] = "Please specify if examiner is a " .
-                            "radiologist";
+                        $errors['examiner_group'] = "Please specify if examiner " .
+                            "is a radiologist";
 
                     }
                     if ($values['examiner_radiologist'] !== ''
                         && $values['examiner_pending'] == ''
                     ) {
-                        $errors['examiner_group'] = "Please set pending approval Yes " .
-                            "or No";
+                        $errors['examiner_group'] = "Please set pending " .
+                            "approval Yes or No";
                     }
                 }
             }
@@ -1062,7 +1062,8 @@ class Edit_User extends \NDB_Form
                 && ($values['examiner_radiologist'] !== ''
                 || $values['examiner_pending'] !== '')
             ) {
-                $errors['examiner_sites'] = "Please select at least one examiner site.";
+                $errors['examiner_sites'] = "Please select at least one examiner 
+                site.";
             }
         }
         return $errors;
