@@ -34,5 +34,13 @@ $results = $cdb->queryView(
      "endkey"   => "[\"$category\", \"$fieldName\", $value]",
     )
 );
+
+$sessionResults = array_map(
+    function ($element) {
+        return $element['value'];
+    },
+    $results
+);
+
 print json_encode($sessionResults);
 ?>
