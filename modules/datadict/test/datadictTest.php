@@ -34,10 +34,11 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     private $_loadingUI
         =  array(
             'Data Dictionary' => '#bc2 > a:nth-child(2) > div',
-            'SourceFrom'      => '#dynamictable > thead > tr > th:nth-child(2)',
+            'Source From'      => '#dynamictable > thead > tr > th:nth-child(2)',
             'Name'            => '#dynamictable > thead > tr > th:nth-child(3)',
-            'SourceField'     => '#dynamictable > thead > tr > th:nth-child(4)',
+            'Source Field'     => '#dynamictable > thead > tr > th:nth-child(4)',
             'Description'     => '#dynamictable > thead > tr > th:nth-child(5)',
+            'Description Status' => '#dynamictable > thead > tr > th:nth-child(6)'
            );
 
     /**
