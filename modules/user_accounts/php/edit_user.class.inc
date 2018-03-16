@@ -891,6 +891,7 @@ class Edit_User extends \NDB_Form
      */
     function _validateEditUser($values)
     {
+        $editor = \User::singleton();
         // create DB object
         $DB     = \Database::singleton();
         $errors = array();
