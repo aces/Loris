@@ -72,6 +72,44 @@ class Database_Test extends PHPUnit_Framework_TestCase
                 )
 
             )
+        ); 
+
+        $DB->setFakeTableData(
+            "ConfigSettings",
+            array(
+                0 => array(
+                    'ID' => 99991,
+                    'Name' => 'test 1',
+                    'Description' => 'permanent',
+                    'Visible' => '1'
+                ),
+                1 => array(
+                    'ID' => 99992,
+                    'Name' => 'test 2',
+                    'Description' => null,
+                    'Visible' => '1'
+                )
+            )
+        );
+
+        $allSetting = $DB->pselect("SELECT ID, Name, Description, Visible FROM ConfigSettings", array());
+
+        $this->assertEquals(
+            $allSetting,
+            array(
+                0 => array(
+                    'ID' => '99991',
+                    'Name' => 'test 1',
+                    'Description' => 'permanent',
+                    'Visible' => '1'
+                ),
+                1 => array(
+                    'ID' => '99992',
+                    'Name' => 'test 2',
+                    'Description' => null,
+                    'Visible' => '1'
+               )
+            )
         );
 
     }
@@ -155,6 +193,26 @@ class Database_Test extends PHPUnit_Framework_TestCase
         $stub->unsafeinsert("test", array('field' => '<b>Hello</b>'), array());
 
     }
+
+    function testDeleteWithIsNull() {
+        $this->_factory   = NDB_Factory::singleton();
+        $DB = Database::singleton();
+        $DB->delete("ConfigSettings", array('Visible' => 1, 'Description' => null));
+        $allSetting = $DB->pselect("SELECT ID, Name, Description, Visible FROM ConfigSettings", array());
+
+        $this->assertEquals(
+            $allSetting,
+            array(
+                0 => array(
+                    'ID' => '99991',
+                    'Name' => 'test 1',
+                    'Description' => 'permanent',
+                    'Visible' => '1'
+                )
+            )
+        );
+
+    } 
 }
 
 
