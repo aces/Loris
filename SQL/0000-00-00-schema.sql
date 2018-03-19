@@ -708,9 +708,9 @@ CREATE TABLE `mri_protocol` (
   `ystep_max` DECIMAL(9,4) DEFAULT NULL,
   `zstep_min` DECIMAL(9,4) DEFAULT NULL,
   `zstep_max` DECIMAL(9,4) DEFAULT NULL,
-	`time_min` int(4) DEFAULT NULL AFTER `series_description_regex`,
-	`time_max` int(4) DEFAULT NULL AFTER `series_description_regex`,
   `series_description_regex` varchar(255) default NULL,
+	`time_min` int(4) DEFAULT NULL,
+	`time_max` int(4) DEFAULT NULL,
   PRIMARY KEY  (`ID`),
   KEY `FK_mri_protocol_1` (`ScannerID`),
   CONSTRAINT `FK_mri_protocol_1` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`)
