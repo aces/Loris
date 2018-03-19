@@ -495,7 +495,7 @@ function emailUser($issueID, $changed_assignee)
     );
 
     $msg_data['url']         = $baseurl .
-        "/issue_tracker/issue/?backURL=/issue_tracker/&issueID=" . $issueID;
+        "/issue_tracker/issue/?issueID=" . $issueID;
     $msg_data['issueID']     = $issueID;
     $msg_data['currentUser'] = $user->getUsername();
     $msg_data['title']       = $title;
@@ -533,7 +533,7 @@ function emailUser($issueID, $changed_assignee)
     );
 
     $msg_data['url']         = $baseurl .
-        "/issue_tracker/issue/?backURL=/issue_tracker/&issueID=" . $issueID;
+        "/issue_tracker/issue/?issueID=" . $issueID;
     $msg_data['issueID']     = $issueID;
     $msg_data['currentUser'] = $user->getUsername();
 
