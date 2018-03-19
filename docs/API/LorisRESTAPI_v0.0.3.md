@@ -166,7 +166,7 @@ It is possible to provide a GET parameter named `since` where the value need to 
 ```
 ex: 2016-08-09 or 2016-08-09 10:00:00 or 2016-08-09T10:00:00-05:00
 ```
-We recommand using a format that include timezone.
+We recommend using a format that includes timezone.
 
 ### 2.1.2 Single project instruments  
 ```
