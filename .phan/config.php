@@ -33,7 +33,6 @@ return [
 		"PhanUndeclaredTypeParameter",
 		"PhanUndeclaredConstant",
 		"PhanUndeclaredClass",
-		"PhanUndeclaredStaticMethod",
 		"PhanUndeclaredExtendedClass",
 		"PhanTypeMismatchForeach",
 		"PhanTypeMismatchDefault",
