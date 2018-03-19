@@ -1041,7 +1041,7 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
      * @param array  $where the selection filter, joined as a boolean and
-     * @param char   $type  The type of change being tracked (*I*nsert,
+     * @param string $type  The type of change being tracked (*I*nsert,
      *                      *U*pdate or *D*elete)
      *
      * @return void As a side-effect populates history table

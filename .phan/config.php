@@ -44,7 +44,6 @@ return [
 		"PhanParamTooFew",
 		"PhanParamTooMany",
 		"PhanTypeArraySuspicious",
-		"PhanTypeInvalidRightOperand",
 		"PhanRedefineFunctionInternal",
 		"PhanRedefineFunction",
 	],
