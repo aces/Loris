@@ -389,7 +389,8 @@ class ViewProject extends React.Component {
       );
     }
 
-
+    let statusID = this.state.formData.status;
+    let status = this.state.statusOpts[statusID];
     // make approval status selectable and supply textbox in case
     // of proposal rejection
     let statusElement, rejectReason;
@@ -405,11 +406,11 @@ class ViewProject extends React.Component {
         emptyOption={false}
       />;
 
-      if (this.state.formData.status === 'Rejected') {
+      if (status === 'Rejected') {
         rejectReason = <TextboxElement
           name="rejectReason"
           label="Reason for rejection"
-          value={this.state.formData.status}
+          value={this.state.formData.rejectReason}
           onUserInput={this.setFormData}
           required={true}
         />;
@@ -420,10 +421,9 @@ class ViewProject extends React.Component {
         'Approved': 'text-success',
         'Rejected': 'text-danger'
       };
-      let s = this.state.formData.status;
       let statusText =(
-        <span className={statClassMap[s]}>
-          <strong>{s}</strong>
+        <span className={statClassMap[status]}>
+          <strong>{status}</strong>
         </span>
       );
       statusElement = <StaticElement
@@ -442,12 +442,12 @@ class ViewProject extends React.Component {
 
     // only display submit button if user has approval permission
     // or user can edit
-    let submitBtn;
+    /*let submitBtn;
     if (loris.userHasPermission('publication_approve') || this.state.userCanEdit) {
       submitBtn = <ButtonElement
         name="Submit"
       />;
-    }
+    }*/
     return (
       <div className="row">
         <div className="col-md-12 col-lg-12">
@@ -465,7 +465,6 @@ class ViewProject extends React.Component {
             {statusElement}
             {rejectReason}
             {formElements}
-            {submitBtn}
           </FormElement>
         </div>
       </div>

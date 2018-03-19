@@ -133,9 +133,7 @@ class PublicationUploadForm extends React.Component {
   }
 
   componentDidMount() {
-
       this.fetchData();
-
   }
 
   setFileData(formElement, value) {
@@ -387,7 +385,8 @@ class PublicationUploadForm extends React.Component {
     let fileFields = this.createFileFields();
 
     let createElements;
-    let formClass = "col-md-8 col-lg-7";
+
+    let formClass = "col-md-12 col-lg-12";
     if (!this.props.editMode) {
       createElements = [
         <h3>Propose a new project</h3>,
@@ -402,7 +401,7 @@ class PublicationUploadForm extends React.Component {
 
       // if in edit mode, max out form size to better match
       // creation display
-      formClass = "col-md-12 col-lg-12";
+      formClass = "col-md-8 col-lg-7";
     }
 
     return (
@@ -512,7 +511,7 @@ class PublicationUploadForm extends React.Component {
               btnLabel="Add Variable of Interest"
             />
             {fileFields}
-            <ButtonElement label="Propose Project"/>
+            <ButtonElement label={this.props.editMode ? "Submit" : "Propose Project"}/>
             <div className="row">
               <div className="col-sm-9 col-sm-offset-3">
                 <ProgressBar value={this.state.uploadProgress}/>
