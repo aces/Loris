@@ -717,11 +717,12 @@ CREATE TABLE `mri_protocol` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8;
 
 
-INSERT INTO mri_protocol (Center_name,Scan_type,TR_range,TE_range,time_range) VALUES
-  ('ZZZZ',48,'8000-14000','80-130','0-200'),
-  ('ZZZZ',40,'1900-2700','10-30','0-500'),
-  ('ZZZZ',44,'2000-2500','2-5',NULL),
-  ('ZZZZ',45,'3000-9000','100-550',NULL);
+INSERT INTO mri_protocol (Center_name,Scan_type,TR_min,TR_max,TE_min,
+TE_max,time_min,time_max) VALUES
+  ('ZZZZ',48,8000,14000,80,130,0,200),
+  ('ZZZZ',40,1900,2700,10,30,0,500),
+  ('ZZZZ',44,2000,2500,2,5,NULL,NULL),
+  ('ZZZZ',45,3000,9000,100,550,NULL,NULL);
 
 CREATE TABLE `mri_upload` (
   `UploadID` int(10) unsigned NOT NULL AUTO_INCREMENT,
