@@ -59,7 +59,7 @@ class Table
      *
      * @param \User $user The user who is attempting to load the table.
      *
-     * @return \LORIS\Data\Instance[] of all the filtered data.
+     * @return \Traversable of DataInstance values of all the filtered data.
      */
     public function getRows(\User $user) : \Traversable
     {

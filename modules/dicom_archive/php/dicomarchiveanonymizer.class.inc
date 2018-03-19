@@ -34,10 +34,10 @@ class DICOMArchiveAnonymizer implements Mapper
      * meet the regular expressions defined in the LORIS configuration for valid
      * patient names or ids.
      *
-     * @param \User                $user     The user this data is being mapped for
-     * @param \LORIS\Data\Instance $resource The unanonymized data being mapped.
+     * @param \User                    $user     The user this data is being mapped for
+     * @param \LORIS\Data\DataInstance $resource The unanonymized data being mapped.
      *
-     * @return \LORIS\Data\Instance the anonymized data
+     * @return \LORIS\Data\DataInstance the anonymized data
      */
     public function map(
         \User $user,
