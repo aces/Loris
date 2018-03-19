@@ -168,12 +168,10 @@ class Stats_Demographic extends \NDB_Form
             $projects[$key] = $value;
         }
         $demographicProject = $_REQUEST['DemographicProject'] ?? '';
+        $demographicProject = htmlspecialchars($demographicProject);
         $Param_Project      = '';
 
-        if (empty($demographicProject)) {
-            error_log('No demographic project specified in request');
-        } else {
-            $demographicProject = htmlspecialchars($demographicProject);
+        if (!empty($demographicProject)) {
             $this->tpl_data['CurrentProject']
                 = array(
                    'ID'   => $demographicProject,
