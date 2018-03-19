@@ -1,12 +1,12 @@
 -- This patch adds min & max columns for every field in `mri_protocol` which presently can hold range values. 
 ALTER TABLE
 	`mri_protocol`
-		ADD COLUMN `TR_min` DECIMAL(7,4) DEFAULT NULL,
-		ADD COLUMN `TR_max` DECIMAL(7,4) DEFAULT NULL,
-		ADD COLUMN `TE_min` DECIMAL(7,4) DEFAULT NULL,
-		ADD COLUMN `TE_max` DECIMAL(7,4)  DEFAULT NULL,
-		ADD COLUMN `TI_min` DECIMAL(7,4)  DEFAULT NULL,
-		ADD COLUMN `TI_max` DECIMAL(7,4)  DEFAULT NULL,
+		ADD COLUMN `TR_min` DECIMAL(10,4) DEFAULT NULL,
+		ADD COLUMN `TR_max` DECIMAL(10,4) DEFAULT NULL,
+		ADD COLUMN `TE_min` DECIMAL(10,4) DEFAULT NULL,
+		ADD COLUMN `TE_max` DECIMAL(10,4)  DEFAULT NULL,
+		ADD COLUMN `TI_min` DECIMAL(10,4)  DEFAULT NULL,
+		ADD COLUMN `TI_max` DECIMAL(10,4)  DEFAULT NULL,
 		ADD COLUMN `slice_thickness_min` DECIMAL(7,4) DEFAULT NULL,
 		ADD COLUMN `slice_thickness_max` DECIMAL(7,4) DEFAULT NULL,
 		ADD COLUMN `xspace_min` int(4) DEFAULT NULL,
@@ -22,7 +22,7 @@ ALTER TABLE
     ADD COLUMN `zstep_min` varchar(5) DEFAULT NULL,
     ADD COLUMN `zstep_max` varchar(5) DEFAULT NULL,
 		ADD COLUMN `time_min` int(4) DEFAULT NULL AFTER `series_description_regex`,
-		ADD COLUMN `time_max` int(4) DEFAULT NULL AFTER `series_description_regex`,
+		ADD COLUMN `time_max` int(4) DEFAULT NULL AFTER `time_min`,
 		DROP `FOV_x_range`,
 		DROP `FOV_y_range`,
 		DROP `FOV_z_range`;
