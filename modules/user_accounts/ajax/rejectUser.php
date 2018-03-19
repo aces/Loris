@@ -26,14 +26,13 @@ if (isset($_POST['identifier'])) {
     _rejectUser($identifier);
 } else {
     throw new LorisException("No identifier supplied", NO_IDENTIFIER_SUPPLIED);
-    exit(1);
 }
 
 /**
  * Checks that logged in user has user_accounts permissions, which is
  * also included in admin permissions
  *
- * @return boolean true if user has admin permission or user accounts false otherwise
+ * @return boolean true if user has user accounts permissions, false otherwise
  */
 function _hasPerm()
 {
@@ -66,16 +65,13 @@ function _rejectUser($userID)
             operation (need admin or user accounts)",
             INCORRECT_PERMISSION
         );
-        exit(1);
     } else if (!UA\Edit_User::canRejectAccount($userID)) {
         throw new LorisException(
             "This account is active and connot be rejected",
             ACCOUNT_ACTIVE
         );
-        exit(1);
     } else {
         $DB->delete('users', array("UserID" => $userID));
-        exit;
     }
 }
 ?>

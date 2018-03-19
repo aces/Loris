@@ -715,7 +715,7 @@ class Edit_User extends \NDB_Form
 
         // checking if the account can be rejected (no password hash
         // pending approval)
-        $this->tpl_data['can_reject'] =$this->canRejectAccount($this->identifier);
+        $this->tpl_data['can_reject'] = Edit_User::canRejectAccount($this->identifier);
 
         // get the editor's permissions
 
@@ -827,21 +827,20 @@ class Edit_User extends \NDB_Form
     {
         $DB = \Database::singleton();
         try{
-            $fields =  $DB->pselect(
+            $fields =  $DB->pselectRow(
                 "SELECT Password_hash, Pending_approval
                            FROM users
                            WHERE UserID=:id",
                 array("id" => $userID)
             );
-            if (is_null($fields[0]['Password_hash'])
-                && $fields[0]['Pending_approval']=="Y"
+            if (empty($fields['Password_hash'])
+                && $fields['Pending_approval']=="Y"
             ) {
                 return true;
             }
             return false;
         } catch (DatabaseException $e) {
             throw new LorisException("User not found in database", USER_NOT_FOUND);
-            exit(1);
         }
     }
 
