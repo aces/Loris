@@ -19,10 +19,18 @@ require_once __DIR__ . '/../../../vendor/autoload.php';
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
-$cdb       = \NDB_Factory::singleton()->couchDB();
-$category  = $_REQUEST['category'];
-$fieldName = $_REQUEST['field'];
-$value     = $_REQUEST['value'];
+$config      = \NDB_Config::singleton();
+$couchConfig = $config->getSetting('CouchDB');
+$cdb         = \NDB_Factory::singleton()->couchDB(
+    $couchConfig['dbName'],
+    $couchConfig['hostname'],
+    $couchConfig['port'],
+    $couchConfig['admin'],
+    $couchConfig['adminpass']
+);
+$category    = $_REQUEST['category'];
+$fieldName   = $_REQUEST['field'];
+$value       = $_REQUEST['value'];
 // There's no way to do "not" in an index, so we need to
 // get all the values of the field name, and then iterate
 // through them and exclude the ones where the value is
