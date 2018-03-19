@@ -160,9 +160,9 @@ class Utility
      * Gets a list of visits used by the database as specified from
      * the Visit_Windows table
      *
-     * @return associative array of the form VisitLabel => Visit_label
+     * @return array<string, string> of the form VisitLabel => Visit_label
      */
-    static function getVisitList()
+    static function getVisitList() : array
     {
         $DB =& Database::singleton();
 
