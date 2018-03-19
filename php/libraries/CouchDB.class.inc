@@ -42,7 +42,7 @@ class SocketWrapper
      *
      * @param string $host The hostname
      *
-     * @return none
+     * @return void
      */
     function setHost($host)
     {
@@ -55,7 +55,7 @@ class SocketWrapper
      *
      * @param integer $port The port number
      *
-     * @return none
+     * @return void
      */
     function setPort($port)
     {
@@ -66,7 +66,7 @@ class SocketWrapper
      * Opens the socket and stores a reference to the socket handler for other
      * I/O functions. setHost and setPort must be called before this.
      *
-     * @return none
+     * @return void
      */
     function open()
     {
@@ -81,7 +81,7 @@ class SocketWrapper
     /**
      * Closes the previously opened socket.
      *
-     * @return none
+     * @return void
      */
     function close()
     {
@@ -129,7 +129,7 @@ class SocketWrapper
      *
      * @param string $str The string to write to the socket
      *
-     * @return none
+     * @return void
      */
     function write($str)
     {
@@ -624,7 +624,7 @@ class CouchDB
      * current revision, but the PUT requests will be queued until commited
      * with commitBulkTransaction();
      *
-     * @return none
+     * @return void
      */
     function beginBulkTransaction()
     {

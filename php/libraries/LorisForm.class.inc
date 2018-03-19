@@ -405,7 +405,7 @@ class LorisForm
      *                        and attribs takes the place of what "options"
      *                        is for other types.
      *
-     * @return none, but modifies this->form as a side-effect
+     * @return void (but modifies this->form as a side-effect)
      */
     public function addElement(
         $type,
@@ -1175,7 +1175,7 @@ class LorisForm
      * @param array $arr The array to use as the default values for the form
      *                   elements
      *
-     * @return none
+     * @return void
      */
     function setDefaults($arr)
     {
@@ -1185,7 +1185,7 @@ class LorisForm
     /**
      * Reimplementation of HTML_QuickForm isSubmitted API.
      *
-     * @return true if data was submitted by the user to the form.
+     * @return bool true if data was submitted by the user to the form.
      */
     function isSubmitted()
     {
@@ -1433,7 +1433,7 @@ class LorisForm
      *
      * @param callable $func The callback to use to process this form.
      *
-     * @return none
+     * @return void
      */
     function process($func)
     {
@@ -1450,7 +1450,7 @@ class LorisForm
      *                            should be applied.
      * @param string $filterType  type of filter to apply.
      *
-     * @return none
+     * @return void
      */
     function applyFilter($elementName, $filterType)
     {
@@ -1470,7 +1470,7 @@ class LorisForm
      *
      * Not currently supported.
      *
-     * @return none
+     * @return void
      */
     function freeze()
     {
@@ -1751,7 +1751,7 @@ class LorisForm
      * @param string $message The message to display if the rule is violated
      * @param string $type    The rule type. 'compare', 'required' or 'numeric'
      *
-     * @return none
+     * @return void
      */
     function addRule($element, $message, $type)
     {
@@ -1814,7 +1814,7 @@ class LorisForm
      * Register a rule type to be added from the QuickForm API. This
      * is unlikely to ever be implemented.
      *
-     * @return none.
+     * @return void.
      */
     function registerRule()
     {
@@ -1834,7 +1834,7 @@ class LorisForm
      * @param string $type  (optional)Rule type use getRegisteredRules()
      *                      to get types
      *
-     * @return none.
+     * @return void.
      */
     function addGroupRule($group, $arg1, $type='')
     {
@@ -1877,7 +1877,7 @@ class LorisForm
      *
      * @param callable $func The callback to use to validate this form.
      *
-     * @return none.
+     * @return void.
      */
     function addFormRule($func)
     {
@@ -1898,7 +1898,7 @@ class LorisForm
      *                          postfix_wrapper strings - html that will be
      *                          placed before and after the group html
      *
-     * @return none
+     * @return void
      */
     function addGroup($array, $name, $label, $delimiter, $options = array())
     {
@@ -1929,7 +1929,7 @@ class LorisForm
      * @param string $label   The label to show to the user for the new page
      * @param string $attribs Extra attributes for this page.
      *
-     * @return None
+     * @return void
      */
     function addPageBreak($name, $label, $attribs)
     {
@@ -2060,7 +2060,7 @@ class LorisForm
      * @param array $arr        A reference to an array to store the
      *                             extracted values into.
      *
-     * @return none, but will modify &$arr parameter passed as a side-effect
+     * @return void (but will modify &$arr parameter passed as a side-effect)
      */
     function getGroupValues($submitKeys, &$arr)
     {
@@ -2158,7 +2158,7 @@ class LorisForm
      *
      * Gets the values submitted by the user
      *
-     * @return none
+     * @return void
      */
     function getSubmitValues()
     {
@@ -2195,7 +2195,7 @@ class LorisForm
      * @param string $el    The name of the element which has an error
      * @param string $error The error to display with the element.
      *
-     * @return none
+     * @return void
      */
     function setElementError($el, $error)
     {
@@ -2227,7 +2227,7 @@ class LorisForm
      *
      * @param array $attribs List of form attributes to update
      *
-     * @return none
+     * @return void
      */
     function updateAttributes($attribs)
     {
@@ -2258,7 +2258,7 @@ class LorisFormElement
     /**
      * Stub. Does nothing.
      *
-     * @return none
+     * @return void
      */
     function freeze()
     {
@@ -2267,7 +2267,7 @@ class LorisFormElement
     /**
      * Stub. Does nothing.
      *
-     * @return none
+     * @return void
      */
     function getValue()
     {
@@ -2318,7 +2318,7 @@ class LorisFormFileElement extends LorisFormElement
      * @param string $destinationDir      The directory to move the file into
      * @param string $destinationFileName The filename to use in that directory.
      *
-     * @return none
+     * @return void
      */
     function moveUploadedFile($destinationDir, $destinationFileName)
     {

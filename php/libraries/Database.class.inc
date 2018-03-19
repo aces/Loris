@@ -139,7 +139,7 @@ class Database
      * @param boolean $trackChanges whether to use the trackChanges mechanism on
      *                              this connection (defaults to true)
      *
-     * @return none
+     * @return void
      * @access public
      */
     function connect($database, $username, $password, $host, $trackChanges = true)
@@ -237,7 +237,7 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
      *
-     * @return none
+     * @return void
      */
     public function insert($table, $set)
     {
@@ -254,7 +254,7 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
      *
-     * @return none
+     * @return void
      */
     public function unsafeinsert($table, $set)
     {
@@ -270,7 +270,7 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
      *
-     * @return none
+     * @return void
      */
     public function insertIgnore($table, $set)
     {
@@ -310,7 +310,7 @@ class Database
      * @param bool   $ignore     determines whether the insert throws and error or
      *                           is discarded when value exists in DB
      *
-     * @return none
+     * @return void
      */
     private function _realinsert($table, $set, $autoescape = true, $ignore = false)
     {
@@ -375,7 +375,7 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
      *
-     * @return none
+     * @return void
      * @access public
      */
     function replace($table, $set)
@@ -410,7 +410,7 @@ class Database
      * @param array  $set     the values with which to fill the new row
      * @param array  $i_where the selection filter, joined as a boolean and
      *
-     * @return none
+     * @return void
      */
     public function update($table, $set, $i_where)
     {
@@ -428,7 +428,7 @@ class Database
      * @param array  $set     the values with which to fill the new row
      * @param array  $i_where the selection filter, joined as a boolean and
      *
-     * @return none
+     * @return void
      */
     public function unsafeupdate($table, $set, $i_where)
     {
@@ -445,7 +445,7 @@ class Database
      * @param bool   $autoescape determines whether the values to be set should
      *                           automatically have the html escaped
      *
-     * @return none
+     * @return void
      * @access public
      */
     private function _realupdate($table, $set, $i_where, $autoescape = true)
@@ -510,7 +510,7 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $where the selection filter, joined as a boolean and
      *
-     * @return none
+     * @return void
      * @access public
      */
     function delete($table, $where)
@@ -614,13 +614,13 @@ class Database
      * @param array  $result an array into which the results of the select will
      *                       be stored - this array gets overwritten completely
      *
-     * @return     none
+     * @return     void
      * @access     public
      * @deprecated Use pselect wrappers instead
      */
     function selectRow($query, &$result)
     {
-        $this->select($query, $result);
+        $result = $this->pselect($query, array());
         if (is_array($result) && isset($result[0])) {
             $result = $result[0];
         }
@@ -642,8 +642,7 @@ class Database
      */
     function selectOne($query)
     {
-        $result = null;
-        $this->select($query, $result);
+        $result = $this->pselect($query, array());
         if (is_array($result) && count($result)) {
             list(,$result) = each($result[0]);
         }
@@ -655,8 +654,8 @@ class Database
      *
      * @param string $query The SQL query to run
      *
-     * @return None As a side-effect updates affected and lastInsertID
-     *              if applicable
+     * @return void (As a side-effect updates affected and lastInsertID
+     *              if applicable.)
      */
     function run($query)
     {
@@ -1045,7 +1044,7 @@ class Database
      * @param char   $type  The type of change being tracked (*I*nsert,
      *                      *U*pdate or *D*elete)
      *
-     * @return none As a side-effect populates history table
+     * @return void As a side-effect populates history table
      */
     protected function trackChanges($table, $set, $where, $type='U')
     {
@@ -1204,7 +1203,7 @@ class Database
      * @param array  $rowData   An array of data to be inserted into
      *                          the fake table.
      *
-     * @return none
+     * @return void
      */
     function setFakeTableData($tableName, $rowData)
     {

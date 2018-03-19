@@ -42,7 +42,7 @@ class Issue extends \NDB_Form
     /**
      * Sets up the smarty menu filter items
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

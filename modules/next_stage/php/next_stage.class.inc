@@ -114,7 +114,7 @@ class Next_Stage extends \NDB_Form
      * Add elements to the page (after LorisForm has been
      * initialized in the parent.)
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

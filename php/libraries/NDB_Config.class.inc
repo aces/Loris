@@ -243,7 +243,7 @@ class NDB_Config
      * that to get site specific settings and override study defaults,
      * building the _siteSettings property
      *
-     * @return none, but modifies $this->siteSettings
+     * @return void (but modifies $this->siteSettings)
      */
     function mergeSettings()
     {

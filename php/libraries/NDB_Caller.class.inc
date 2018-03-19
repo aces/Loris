@@ -508,7 +508,7 @@ class NDB_Caller
      * @param string $type "normal" or "direct", the type of data entry
      *                     being performed.
      *
-     * @return none
+     * @return void
      */
     function setDataEntryType($type)
     {

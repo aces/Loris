@@ -90,7 +90,7 @@ class Create_Timepoint extends \NDB_Form
      * Does the setup required for this page.
      * Particularly creates all the form elements.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

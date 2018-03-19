@@ -90,7 +90,7 @@ abstract class ProvisionerInstance implements Provisioner
      * respect to the User accessing the data), which then gets mapped and
      * filtered by execute.
      *
-     * @return Traversable of all resources provided by this data source.
+     * @return \Traversable of all resources provided by this data source.
      */
     abstract protected function getAllInstances() : \Traversable;
 
@@ -99,7 +99,7 @@ abstract class ProvisionerInstance implements Provisioner
      *
      * @param \User $user The user who data is being provisioned on behalf of.
      *
-     * @return Instance[]
+     * @return \Traversable of DataInstance objects
      */
     public function execute(\User $user) : \Traversable
     {

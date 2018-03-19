@@ -52,7 +52,7 @@ $config =& NDB_Config::singleton();
  *
  * @param string $param The $_REQUEST parameter to convert to a smarty variable
  *
- * @return none, side effect of modifying $tpl_data
+ * @return void (side effect of modifying $tpl_data)
  */
 function tplFromRequest($param)
 {

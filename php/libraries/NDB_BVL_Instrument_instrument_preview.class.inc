@@ -32,7 +32,7 @@ class NDB_BVL_Instrument_Instrument_Preview
      * @param string $commentID The CommentID being loaded
      * @param string $page      The page being loaded
      *
-     * @return none
+     * @return void
      */
     function setup($commentID, $page)
     {

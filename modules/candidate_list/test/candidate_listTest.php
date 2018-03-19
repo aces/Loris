@@ -65,21 +65,23 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             'Latest Visit Status' => '#dynamictable > thead > tr > th:nth-child(13)',
             'Feedback'            => '#dynamictable > thead > tr > th:nth-child(14)',
            );
+
     /**
      * Backs up the useEDC config value and sets the value to a known
      * value (true) for testing.
      *
-     * @return none
+     * @return void
      */
     function setUp()
     {
         parent::setUp();
         $this->setupConfigSetting("useEDC", "true");
     }
+
     /**
      * Restore the values backed up in the setUp function
      *
-     * @return none
+     * @return void
      */
     function tearDown()
     {
@@ -286,7 +288,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
                 $selectElement->selectByVisibleText($elementValue);
                 break;
             default:
-                throw Exception(
+                throw new Exception(
                     'Element type ' . $element->getTagName() . ' not supported'
                 );
             }

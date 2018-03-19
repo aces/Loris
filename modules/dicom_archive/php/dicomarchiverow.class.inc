@@ -44,9 +44,9 @@ class DICOMArchiveRow implements \LORIS\Data\DataInstance
     }
 
     /**
-     * Implements \LORIS\Data\Instance interface for this row.
+     * Implements \LORIS\Data\DataInstance interface for this row.
      *
-     * @return array the row data.
+     * @return string the row data.
      */
     public function toJSON() : string
     {

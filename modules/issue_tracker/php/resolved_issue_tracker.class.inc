@@ -149,7 +149,7 @@ class Resolved_Issue_Tracker extends \NDB_Menu_Filter_Form
     /**
      * Sets up the smarty menu filter items
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

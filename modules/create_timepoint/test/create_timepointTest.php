@@ -29,7 +29,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      /**
      * It does the setUp before running the tests
      *
-     * @return none
+     * @return void
      */
     function setUp()
     {
@@ -42,7 +42,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     /**
      * It does the tearDown after running the tests
      *
-     * @return none
+     * @return void
      */
     function tearDown()
     {

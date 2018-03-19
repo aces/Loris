@@ -121,7 +121,7 @@ class NDB_BVL_Feedback
      * @param string $commentID The commentID we're getting a feedback thread for.
      *                          (optional)
      *
-     * @return none
+     * @return void
      */
     function setup($username, $candID=null, $sessionID=null, $commentID=null)
     {
@@ -603,7 +603,7 @@ class NDB_BVL_Feedback
     *
     * @return array
     */
-    function getThreadEntries($feedbackID)
+    static function getThreadEntries($feedbackID)
     {
         // new DB Object
         $db =& Database::singleton();

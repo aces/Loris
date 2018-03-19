@@ -204,7 +204,7 @@ class Document_Repository extends \NDB_Menu_Filter
      * @param string $item the value of item
      * @param string $key  the value of key
      *
-     * @return array
+     * @return void
      */
     function walkTree($item,$key)
     {

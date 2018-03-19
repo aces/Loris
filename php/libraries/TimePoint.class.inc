@@ -102,7 +102,7 @@ class TimePoint
      *
      * @param integer $sessionID The $sessionID to load.
      *
-     * @return none, but side-effect loads current object.
+     * @return void (but side-effect loads current object.)
      */
     function select($sessionID)
     {
@@ -190,7 +190,7 @@ class TimePoint
      * @param string  $nextVisitLabel The visit label of the timepoint being created
      * @param string  $psc            The centre of the timepoint
      *
-     * @return A new TimePoint instance.
+     * @return void
      */
     static function createNew($candID, $SubprojectID,
         $nextVisitLabel = null, $psc = null
@@ -334,7 +334,7 @@ class TimePoint
      * @param string $var   The variable to set for this timepoint.
      * @param string $value The value to set $var to.
      *
-     * @return none, side-effect modifies session table.
+     * @return void (side-effect modifies session table.)
      */
     function setData($var, $value = null)
     {
@@ -727,7 +727,7 @@ class TimePoint
      *
      * @deprecated
      *
-     * @return none
+     * @return void
      */
     function startNextStage()
     {
@@ -745,7 +745,7 @@ class TimePoint
      *                      valid options are those in session.Current_stage
      *                      enum
      *
-     * @return none, but as a side-effect modifies database.
+     * @return void (but as a side-effect modifies database.)
      */
     function startStage($stage)
     {
@@ -804,7 +804,7 @@ class TimePoint
      * @param string $status The status to set the BVL QC to.
      *                       Valid options are Complete or null.
      *
-     * @return none
+     * @return void
      */
     function setBVLQCStatus($status)
     {

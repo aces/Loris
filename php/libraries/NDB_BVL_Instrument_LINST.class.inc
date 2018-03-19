@@ -42,7 +42,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      * @param string $commentID The CommentID being loaded
      * @param string $page      The page being loaded
      *
-     * @return none
+     * @return void
      */
     function setup($commentID = null, $page = null)
     {
@@ -416,7 +416,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      *                          when no file has yet been saved to the
      *                          instruments/ directory
      *
-     * @return none, but as a side effect displays the Instrument page
+     * @return void (but as a side effect displays the Instrument page)
      */
     function loadInstrumentFile($filename, $base64 = false)
     {
