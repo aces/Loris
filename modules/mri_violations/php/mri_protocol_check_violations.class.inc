@@ -147,7 +147,7 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
      *
      * @param integer $count The offset that this page is starting at
      *
-     * @return void but as a side-effect populates $this->tpl_data['items']
+     * @return void (but as a side-effect populates $this->tpl_data['items'])
      */
     function _setDataTableRows($count)
     {

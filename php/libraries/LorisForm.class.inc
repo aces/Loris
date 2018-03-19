@@ -2060,7 +2060,7 @@ class LorisForm
      * @param array $arr        A reference to an array to store the
      *                             extracted values into.
      *
-     * @return void, but will modify &$arr parameter passed as a side-effect
+     * @return void (but will modify &$arr parameter passed as a side-effect)
      */
     function getGroupValues($submitKeys, &$arr)
     {
