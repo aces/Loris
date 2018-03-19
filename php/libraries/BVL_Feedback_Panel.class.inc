@@ -29,7 +29,12 @@
  */
 class BVL_Feedback_Panel
 {
-    var $_feedbackThread = '';
+    /**
+     * The feedback thread that this panel is for
+     *
+     * @var NDB_BVL_Feedback
+     */
+    var $_feedbackThread;
 
     /**
      * Creates the feedback thread for the given combination of candID,
