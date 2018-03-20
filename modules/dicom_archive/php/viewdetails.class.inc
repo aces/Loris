@@ -208,9 +208,9 @@ class ViewDetails extends \NDB_Form
                 && ((! $protocol['TE_min'] && ! $protocol['TE_max'])
                 || $this->_inRange($te, $protocol['TE_min'], $protocol['TE_max']))
                 && ((! $protocol['TI_min'] && ! $protocol['TI_max'])
-                || $this->_inRange($ti, $protocol['TI_range']))
-                && ((! $protocol['slice_thickness_min'] &&
-                 ! $protocol['slice_thickness_max'])
+                || $this->_inRange($ti, $protocol['TI_min'], $protocol['TI_max']))
+                && ((! $protocol['slice_thickness_min']
+                && ! $protocol['slice_thickness_max'])
                 || $this->_inRange(
                     $sliceThickness,
                     $protocol['slice_thickness_min'],
@@ -225,10 +225,10 @@ class ViewDetails extends \NDB_Form
     /**
      * Compares parameters of a series and of the protocols
      *
-     * @param string $seriesRange   series parameter to be compared
-     * @param string $protocolMin   minimum value of protocol's parameter
+     * @param string $seriesRange series parameter to be compared
+     * @param string $protocolMin minimum value of protocol's parameter
      *        to be compared with
-     * @param string $protocolMax   minimum value of protocol's parameter
+     * @param string $protocolMax minimum value of protocol's parameter
      *         to be compared with
      *
      * @return bool true if series parameter is in range with
@@ -242,11 +242,10 @@ class ViewDetails extends \NDB_Form
             return false;
         } else {
             //$seriesRangeTrimmed = (float)trim($seriesRange);
-            if ($protocolMin <= $seriesRange
-            && $seriesRange <= $protocolMax) {
-              return true;
+            if ($protocolMin <= $seriesRange && $seriesRange <= $protocolMax) {
+                return true;
             } else {
-              return false;
+                return false;
             }
         }
     }
@@ -264,7 +263,6 @@ class ViewDetails extends \NDB_Form
         try {
             $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
             $array = $this->DB->pselectRow($query, array('ID' => $id));
-            print_r($array['Scan_type']);
             return $array['Scan_type'];
         } catch (LorisException $e) {
             return "Unknown";
