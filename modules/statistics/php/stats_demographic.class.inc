@@ -388,11 +388,11 @@ class Stats_Demographic extends \NDB_Form
         $demographicInstrument = $_REQUEST['DemographicInstrument'] ?? '';
         $demographicInstrument = htmlspecialchars($demographicInstrument);
         if (!empty($demographicInstrument)) {
-            $Subcategories         = array(
-                                      'Complete',
-                                      'Incomplete',
-                                     );
-            $result = $DB->pselect(
+            $Subcategories = array(
+                              'Complete',
+                              'Incomplete',
+                             );
+            $result        = $DB->pselect(
                 "SELECT count(*) as val,
                         f.Data_entry as Subcat,
                         c.CenterID as CenterID,
