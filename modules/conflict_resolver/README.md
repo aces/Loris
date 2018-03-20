@@ -12,11 +12,13 @@ have double data entry enabled.
 The conflict resolver is usually used by data entry staff to resolve
 double data entry conflicts.
 
-Some studies may have protocols which involve supervisors or committees
-deciding how to properly resolve conflicts, and different studies may
-have different policies of if the same or different data entry staff
-is responsible for conflict resolution, but such policies are not
-enforced by LORIS.
+Some studies may have protocols which involve supervisors or
+committees deciding how to properly resolve conflicts. For example,
+studies may adopt different policies regarding the personnel that
+should be responsible for conflict resolution (which could be the
+same data entry staff that performed the double data entry or a
+different data entry staff). Such policies are not enforced by
+LORIS.
 
 ## Scope
 
@@ -52,7 +54,8 @@ by looking into the `conflicts_unresolved` table, which instruments
 must populate upon the "Data Entry" flag being set to Complete.
 This is done by the base `NDB_BVL_Instrument` class and shouldn't
 need to be specifically set up for any instrument (other than as
-mentioned in the configurations setting.)
+described for the `DoubleDataEntryInstruments` configuration setting
+above).
 
 Since the module doesn't know every scoring algorithm for every
 instrument, after resolution it loads a copy of the instrument
