@@ -21,7 +21,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }, this);
 
   if (column === 'Archive Location') {
-    var downloadURL = '/mri/jiv/get_file.php?file=tarchive/' + cell;
+    var downloadURL = '/mri/jiv/get_file.php?file=' + cell;
     var toRet =
       <td>
         <a href={downloadURL}>
