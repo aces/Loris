@@ -7,14 +7,14 @@ LORIS data dictionary descriptions.
 
 ## Scope
 
-The module displays and manages the data dictionary for things
+The module displays and manages the data dictionary for fields
 already stored in the LORIS `parameter_type` table. This table is
 generally autopopulated and provides a dictionary for imaging headers
 (populated by the imaging pipeline) and behavioural instrument
 (populated by the `lorisform_parser.php` script).
 
-It does not provide a way to enter new things into the data dictionary,
-or describe the data dictionary for arbitrary SQL tables which are
+It does not provide a way to enter new fields into the data dictionary,
+or describe the data dictionary for arbitrary SQL fields which are
 not stored in the `parameter_type` table, such as instrument flags
 or candidate/session data.
 
