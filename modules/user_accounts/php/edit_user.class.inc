@@ -715,7 +715,7 @@ class Edit_User extends \NDB_Form
 
         // checking if the account can be rejected (no password hash
         // pending approval)
-        $this->tpl_data['can_reject'] = Edit_User::canRejectAccount($this->identifier);
+        $this->tpl_data['can_reject'] = self::canRejectAccount($this->identifier);
 
         // get the editor's permissions
 
