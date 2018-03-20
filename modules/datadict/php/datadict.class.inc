@@ -58,7 +58,7 @@ class Datadict extends \NDB_Menu_Filter
          CASE  
            WHEN COALESCE(pto.description,pt.description) = '' THEN 'Empty'
            WHEN pto.name IS NOT NULL THEN 'Modified' 
-           WHEN pto.name IS NULL THEN 'Unmodified'
+           WHEN pto.name IS NULL THEN 'Unchanged'
          END as description_status ";
 
         $joins = " FROM parameter_type pt 
@@ -129,10 +129,9 @@ class Datadict extends \NDB_Menu_Filter
             'descriptionStatus',
             'Description Status',
             array(
-             ''           => 'All',
              'empty'      => 'Empty',
              'modified'   => 'Modified',
-             'unmodified' => 'Unmodified',
+             'unchanged' => 'Unchanged',
             )
         );
         $this->addBasicText('keyword', "Search keyword");
