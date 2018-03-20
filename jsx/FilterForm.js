@@ -125,15 +125,17 @@ class FilterForm extends React.Component {
     if (this.props.filter) {
       filter = JSON.parse(JSON.stringify(this.props.filter));
     }
-
-    if (key && value) {
+    if (key) {
       filter[key] = {};
-      filter[key].value = value;
+      if (value.length === 0) {
+        filter[key].value = '';
+      } else if (key && value) {
+        filter[key].value = value;
+      }
       filter[key].exactMatch = (type === "SelectElement");
     } else if (filter && key && value === '') {
       delete filter[key];
     }
-
     return filter;
   }
 
