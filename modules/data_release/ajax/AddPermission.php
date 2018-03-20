@@ -12,12 +12,11 @@
  *  @link     https://github.com/aces/Loris
  */
 
-$DB =& Database::singleton();
-
 $user     = User::singleton();
 $factory  = NDB_Factory::singleton();
 $settings = $factory->settings();
 $baseURL  = $settings->getBaseURL();
+$DB       = $factory->database();
 
 if ($_POST['action'] == 'addpermission' && $user->hasPermission('superuser')) {
     if (!empty($_POST['data_release_id']) && empty($_POST['data_release_version'])) {
