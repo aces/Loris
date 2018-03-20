@@ -704,16 +704,10 @@ tr.directentry {
    position: absolute;
    right:    0;4, 45, 84
 }
-.help-content h3 {
-    color: #FFFFFF;
-}
-
 .help-content a {
    text-decoration: underline;
    color: white;
-
 }
-
 .help-content a:hover {
    background: rgb(4, 45, 84);
    color: white;

@@ -680,7 +680,6 @@ class NDB_Page
 
         $files = array(
                   $baseurl . '/js/jquery/jquery-1.11.0.min.js',
-                  $baseurl . '/js/helpHandler.js',
                   $baseurl . '/js/modernizr/modernizr.min.js',
                   // Only load minified file on production, not sandboxes
                   $baseurl . '/js/polyfills.js',
@@ -695,6 +694,9 @@ class NDB_Page
                   $baseurl . "/js/util/queryString.js",
                   $baseurl . '/js/components/Form.js',
                   $baseurl . '/js/components/Markdown.js',
+                  $baseurl . '/js/components/DisplayHelp.js',
+                  $baseurl . '/js/helpHandler.js',
+                  $baseurl . '/help_editor/js/PreviewHelp.js',
                  );
         return $files;
     }

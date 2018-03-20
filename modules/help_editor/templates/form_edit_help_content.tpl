@@ -39,6 +39,6 @@
         <input type="button" name="reset" value="Reset" class="btn btn-sm btn-primary" onclick="location.href='{$baseurl}/help_editor/edit_help_content/?section={$section}&subsection={$subsection}'" />
         <input class="btn btn-sm btn-primary" name="preview" value="Preview" type="button" />
         {/if}
-        <input class="btn btn-sm btn-primary" onclick="goBack()" value="Return to {$module_name}" type="button" />
+        <input class="btn btn-sm btn-primary" onclick="window.history.back()" value="Return to {$module_name}" type="button" />
     </div>
 </div>

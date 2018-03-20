@@ -1,5 +1,5 @@
-/* global ReactDOM, RMarkdown */
-/* eslint new-cap: ["error", {capIsNewExceptions: ["RMarkdown", "DynamicTable", "FileUpload"]}]*/
+/* global ReactDOM, RMarkdown, RDisplayHelp */
+/* eslint new-cap: ["error", {capIsNewExceptions: ["RMarkdown", "DynamicTable", "FileUpload", "RDisplayHelp"]}]*/
 
 $(document).ready(function() {
   $("#menu-toggle").click(function(e) {
@@ -18,6 +18,7 @@ $(document).ready(function() {
     if (loris.Subtest !== "") {
       getParams.subtest = loris.Subtest;
     }
+
     document.cookie = 'LastUrl=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
     $.get(loris.BaseURL + "/help_editor/ajax/help.php", getParams, function(content) {
       var div = document.createElement("div");
@@ -34,19 +35,7 @@ $(document).ready(function() {
       } else {
         wrap = document.createElement("pre");
         wrap.setAttribute("id", "help-wrapper");
-        wrap.innerHTML = "<hr id='help-separator'>";
-        if (content.topic) {
-          wrap.innerHTML = "<h3>" + content.topic + "</h3>";
-        } else {
-          // This is a hack because otherwise the alignment of the edit/close
-          // buttons gets screwed up. The CSS should eventually be fixed and
-          // this removed.
-          wrap.innerHTML = "<h3></h3>";
-        }
-        wrap.innerHTML += content.content;
-        if (content.updated) {
-          wrap.innerHTML = wrap.innerHTML + "<hr>Last updated: " + content.updated;
-        }
+        ReactDOM.render(RDisplayHelp({Topic: content.topic, Content: content.content, Updated: content.updated}), wrap);
       }
       btn.appendChild(button);
       btn.className = "btn btn-default";
@@ -57,8 +46,6 @@ $(document).ready(function() {
       div.appendChild(wrap);
       div.appendChild(btn);
 
-      // Markdown format content came from the filesystem and can't
-      // be edited online.
       if (loris.userHasPermission("context_help") && content.format !== 'markdown') {
         div.appendChild(edit);
         edit.addEventListener("click", function(e) {

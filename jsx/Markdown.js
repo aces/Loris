@@ -17,14 +17,23 @@
  * @author Dave MacFarlane
  * @version 0.0.1
  *
+ * @editor Zaliqa Rosli
+ * @version 0.0.2
  */
-var Markdown = React.createClass({
-  propTypes: {
-    content: React.PropTypes.string.isRequired
-  },
-  render: function() {
+class Markdown extends React.Component {
+
+  render() {
+    function htmlSpecialCharsDecode(text) {
+      return text
+        .replace(/&amp;/g, "&")
+        .replace(/&quot;/g, "\"");
+    }
+
     // Fix stupid-style newlines to be just \n.
-    var fixedNewlines = this.props.content.replace("\r\n", "\n");
+    var fixedNewlines = this.props.content.replace(/\r\n/g, "\n");
+
+    // Fix escaped html
+    fixedNewlines = htmlSpecialCharsDecode(fixedNewlines);
 
     // 2 newlines in a row mean it's a paragraph breaker.
     var paragraphs = fixedNewlines.split("\n\n");
@@ -104,9 +113,17 @@ var Markdown = React.createClass({
         paragraphs[i] = <p dangerouslySetInnerHTML={ {__html: paramd}} />;
       }
     }
-    return <div>{paragraphs}</div>;
+    return (
+      <div>
+        {paragraphs}
+      </div>
+    );
   }
-});
+}
+
+Markdown.propTypes = {
+  content: React.PropTypes.string.isRequired
+};
 
 var RMarkdown = React.createFactory(Markdown);
 
