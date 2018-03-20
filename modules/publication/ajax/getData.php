@@ -84,7 +84,14 @@ function getPublicationData() {
         $result['files'] = getFiles($id);
         // allow edit access for user if user is original proposer
         $user = \User::singleton();
-        $userCanEdit = $user->getId() === $result['UserID'];
+        $usersWithEditPerm = $db->pselectCol(
+            'SELECT UserID FROM publication_users_edit_perm_rel WHERE PublicationID=:p',
+            array('p' => $id)
+        );
+        $userCanEdit = (
+            $user->getId() === $result['UserID'] ||
+            in_array($user->getId(), $usersWithEditPerm)
+        );
 
         $pubData = array(
             'title'                 => $result['Title'],
@@ -96,7 +103,7 @@ function getPublicationData() {
             'keywords'              => $result['Keywords'],
             'collaborators'         => $result['collaborators'],
             'files'                 => $result['files'],
-            'userCanEdit' => $userCanEdit
+            'userCanEdit'           => $userCanEdit,
         );
 
         if ($user->hasPermission('publication_approve')) {

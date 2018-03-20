@@ -12,7 +12,6 @@ if (isset($_REQUEST['action'])) {
 
 function uploadPublication()
 {
-    error_log(print_r($_FILES, true));
     $db = Database::singleton();
     $user = \User::singleton();
     if (!$user->hasPermission('publication_propose')) {
@@ -40,6 +39,7 @@ function uploadPublication()
         throw new LorisException('Submitted title already exists');
     }
 
+    // INSERT INTO publication ...
     $uid = $user->getId();
     $today = date('Y-m-d');
     $fields = array(
@@ -60,7 +60,7 @@ function uploadPublication()
         array('t' => $titleProc)
     );
 
-
+    // process files
     if (isset($_FILES['file_0'])) {
         $publicationPath = "/data/publication_uploads/";
 
@@ -98,7 +98,7 @@ function uploadPublication()
         }
     }
 
-
+    // INSERT INTO publication_collaborator
     $collaborators = json_decode($_REQUEST['collaborators']);
     foreach ($collaborators as $c) {
         $cid = $db->pselectOne(
@@ -133,6 +133,26 @@ function uploadPublication()
         );
     }
 
+    // INSERT INTO publication_users_edit_perm_rel
+    $usersWithEditPerm = json_decode($_REQUEST['usersWithEditPerm']);
+    foreach ($usersWithEditPerm as $u) {
+        $uid = $db->pselectOne(
+            'SELECT ID FROM users WHERE UserID=:u',
+            array('u' => $u)
+        );
+
+        $insert = array(
+            'PublicationID' => $pubID,
+            'UserID'        => $uid,
+        );
+
+        $db->insertIgnore(
+            'publication_users_edit_perm_rel',
+            $insert
+        );
+    }
+
+    // INSERT INTO publication_keyword
     $keywords = json_decode($_REQUEST['keywords']);
     foreach ($keywords as $kw) {
         // check if keyword exists
@@ -170,6 +190,7 @@ function uploadPublication()
 
     }
 
+    // INSERT INTO publication_parameter_type_rel
     $voiFields = json_decode($_REQUEST['voiFields']);
     foreach ($voiFields as $vf) {
         // if AllFields option is selected, grab all entries for provided instrument
@@ -205,8 +226,8 @@ function uploadPublication()
             $db->insertIgnore('publication_parameter_type_rel', $pubParamTypeRelInsert);
         }
     }
+
     notifySubmission($pubID);
-    error_log(print_r($_REQUEST, true));
 }
 
 function notifySubmission($pubID) {
@@ -225,10 +246,17 @@ function notifySubmission($pubID) {
     $emailData['Title'] = $data['Title'];
     $emailData['Date'] = $data['DateProposed'];
     $emailData['URL'] = $url . '/publication/view_project/?id='.$pubID;
+
+    $cc = json_decode($_REQUEST['toNotify']);
+    /*$notify = new NDB_Notifier('publication', 'submission', $emailData);
+    $notify->notify();*/
     Email::send(
         $data['LeadInvestigatorEmail'],
         'publication_submission_confirmation.tpl',
-        $emailData
+        $emailData,
+        '', // reply_to
+        '', // from
+        $cc
     );
 }
 
@@ -238,7 +266,6 @@ function editProject() {
     $statusID     = isset($_REQUEST['status']) ? $_REQUEST['status'] : null;
     $rejectReason = isset($_REQUEST['rejectReason']) ? $_REQUEST['rejectReason'] : null;
     $db = \Database::singleton();
-
 
     $pubData = $db->pselectRow(
         'SELECT * FROM publication WHERE PublicationID=:pid',
@@ -269,7 +296,7 @@ function editProject() {
     );
     
     if ($collaborators != $currentCollabs) {
-        // new collaborators will be in array diff result of entered vs stored
+        // new collaborators will be in array_diff result of entered vs stored
         $newCollabs = array_diff($collaborators, $currentCollabs);
 
         // collaborators who should be removed will appear in inverse operation

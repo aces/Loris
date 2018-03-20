@@ -389,12 +389,16 @@ class ViewProject extends React.Component {
       );
     }
 
-    let statusID = this.state.formData.status;
-    let status = this.state.statusOpts[statusID];
+
     // make approval status selectable and supply textbox in case
     // of proposal rejection
     let statusElement, rejectReason;
     if (loris.userHasPermission('publication_approve')) {
+      // if user has publication_approve permission, this means that status
+      // in formData reflects the ID, not the description
+     let statusID = this.state.formData.status;
+     let status = this.state.statusOpts[statusID];
+
      statusElement = <SelectElement
         name="status"
         label="Status"
@@ -416,6 +420,7 @@ class ViewProject extends React.Component {
         />;
       }
     } else {
+      let status = this.state.formData.status;
       const statClassMap = {
         'Pending': 'text-warning',
         'Approved': 'text-success',
@@ -440,14 +445,6 @@ class ViewProject extends React.Component {
       formElements = this.createStaticComponents();
     }
 
-    // only display submit button if user has approval permission
-    // or user can edit
-    /*let submitBtn;
-    if (loris.userHasPermission('publication_approve') || this.state.userCanEdit) {
-      submitBtn = <ButtonElement
-        name="Submit"
-      />;
-    }*/
     return (
       <div className="row">
         <div className="col-md-12 col-lg-12">

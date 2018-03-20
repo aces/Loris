@@ -98,7 +98,7 @@ class PublicationUploadForm extends React.Component {
       isLoaded: false,
       loadedData: 0,
       uploadProgress: -1,
-      toNotify: {},
+      toNotify: [],
     };
 
     this.setFormData = this.setFormData.bind(this);
@@ -302,7 +302,14 @@ class PublicationUploadForm extends React.Component {
 
   toggleEmailNotify(e) {
     let toNotify = this.state.toNotify;
-    toNotify[e.target.value] = e.target.checked;
+    let i = toNotify.indexOf(e.target.value);
+    // if box is checked and toNotify does not include addressee, add them
+    if (e.target.checked && i < 0) {
+      toNotify.push(e.target.value);
+      // otherwise delete them
+    } else if (!e.target.checked && i >= 0) {
+      toNotify.splice(i, 1);
+    }
     this.setState({toNotify: toNotify})
   }
 

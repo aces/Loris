@@ -97,9 +97,9 @@ CREATE TABLE `publication_upload_type` (
 DROP TABLE IF EXISTS publication_users_edit_perm_rel;
 CREATE TABLE `publication_users_edit_perm_rel` (
   `PublicationID` int(10) unsigned NOT NULL,
-  `UserID` varchar(255) NOT NULL,
+  `UserID` int(10) unsigned NOT NULL,
   CONSTRAINT `FK_publication_users_edit_perm_rel_1` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
-  CONSTRAINT `FK_publication_users_edit_perm_rel_2` FOREIGN KEY (`UserID`) REFERENCES `UserID` (`users`)
+  CONSTRAINT `FK_publication_users_edit_perm_rel_2` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
 DELETE FROM publication_upload_type;
@@ -127,3 +127,9 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID) VALUES ((SELECT ID FROM LorisM
 INSERT INTO user_perm_rel (userID, permID) VALUES(1, (SELECT permID FROM permissions WHERE code='publication_approve'));
 INSERT INTO user_perm_rel (userID, permID) VALUES(1, (SELECT permID FROM permissions WHERE code='publication_view'));
 INSERT INTO user_perm_rel (userID, permID) VALUES(1, (SELECT permID FROM permissions WHERE code='publication_propose'));
+
+INSERT INTO notification_modules ('publication', 'submission', 'notifier_publication_submission.tpl', 'Publication: Submission Received');
+INSERT INTO notification_modules ('publication', 'rate', 'notifier_publication_rate.tpl', 'Publication: Proposal has been rated');
+INSERT INTO notification_modules ('publication', 'edit', 'notifier_publication_edit.tpl', 'Publication: Proposal has been editted');
+
+INSERT INTO notifcation_modules_services_rel ((SELECT id FROM notification_modules WHERE module_name='publication'), 1);
