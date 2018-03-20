@@ -129,8 +129,8 @@ class Datadict extends \NDB_Menu_Filter
             'descriptionStatus',
             'Description Status',
             array(
-             'empty'      => 'Empty',
-             'modified'   => 'Modified',
+             'empty'     => 'Empty',
+             'modified'  => 'Modified',
              'unchanged' => 'Unchanged',
             )
         );
