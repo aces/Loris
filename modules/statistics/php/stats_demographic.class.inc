@@ -46,10 +46,6 @@ class Stats_Demographic extends \NDB_Form
      */
     function _inCenter($centerID, $Centers)
     {
-        if (is_null($centerID)) {
-            error_log("CenterID is NULL in function _inCenter");
-            return false;
-        }
         foreach ($Centers as $Center) {
             if ($Center['NumericID'] == $centerID) {
                 return true;
@@ -188,9 +184,7 @@ class Stats_Demographic extends \NDB_Form
         $project          = $demographicProject != '' ? null : $demographicProject;
         $subprojects      = \Utility::getSubprojectsForProject($project);
 
-        if (empty($subprojects)) {
-            error_log('Could not load subproject data for demographic stats');
-        } else {
+        if (!empty($subprojects)) {
             foreach ($subprojects as $key=>$val) {
                 $subprojList .= "$key,";
             }
@@ -202,12 +196,10 @@ class Stats_Demographic extends \NDB_Form
 
         //SITES
         $demographicSite = $_REQUEST['DemographicSide'] ?? '';
+        $demographicSite = htmlspecialchars($demographicSite);
         $Param_Site      = '';
 
-        if (empty($demographicSite)) {
-            error_log('No demographic site specified in request');
-        } else {
-            $demographicSite     = htmlspecialchars($demographicSite);
+        if (!empty($demographicSite)) {
             $Param_Site          = 'AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
             $this->params['sid'] = $demographicSite;
         }
@@ -225,9 +217,7 @@ class Stats_Demographic extends \NDB_Form
 
         $sites[null] ="All sites";
 
-        if (empty($centers)) {
-            error_log('No center data could be retrieved from the database!');
-        } else {
+        if (!empty($centers)) {
             foreach ($centers as $row) {
                 $sites[$row['NumericID']] = $row['ShortName'];
                 if ($demographicSite == $row['NumericID']) {
@@ -396,8 +386,8 @@ class Stats_Demographic extends \NDB_Form
         $instrument_list = \Utility::getAllInstruments();
         $this->tpl_data['all_instruments'] = $instrument_list;
         $demographicInstrument = $_REQUEST['DemographicInstrument'] ?? '';
+        $demographicInstrument = htmlspecialchars($demographicInstrument);
         if (!empty($demographicInstrument)) {
-            $demographicInstrument = htmlspecialchars($demographicInstrument);
             $Subcategories         = array(
                                       'Complete',
                                       'Incomplete',
