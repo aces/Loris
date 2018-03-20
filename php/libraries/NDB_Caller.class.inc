@@ -179,7 +179,7 @@ class NDB_Caller
                 : $base . "modules/$test_name";
             // Newer module style
             // Only supports Menu_Filters and Forms.
-            // Modules can not have instruments or reliability.
+            // Modules can not have instruments
             set_include_path(
                 "$ModuleDir/php:"
                 . get_include_path()
@@ -229,24 +229,6 @@ class NDB_Caller
             error_log("Could not load Loris module $test_name.");
             exit(-1);
         } else {
-            // Reliability and instruments aren't "real" modules. They probably
-            // should be at some point in the future.
-            $proj_reliable = $base . "project/reliability/"
-                                   . "NDB_Reliability_$test_name.class.inc";
-            if ($this->existsAndRequire($proj_reliable)
-            ) {
-
-                $html = $this->loadReliability(
-                    $test_name,
-                    $subtest,
-                    $_REQUEST['identifier'],
-                    $_REQUEST['reliability_center_id']
-                );
-
-                $this->type = 'reliability';
-                return $html;
-            }
-
             // it is an instrument
             $phpfile   = $base . "project/instruments/"
                                . "NDB_BVL_Instrument_$test_name.class.inc";
@@ -365,35 +347,6 @@ class NDB_Caller
         }
         $this->page = $form;
         $html       = $form->display();
-        return $html;
-    }
-
-    /**
-     * Renders html for a Reliability Form
-     *
-     * @param string $class                 The Form to load
-     * @param string $page                  The page of the Form to load
-     * @param string $identifier            The identifier of the Form
-     * @param string $reliability_center_id The id of the center at which the
-     *                                      reliability test is being performed.
-     *
-     * @return string HTML to render to browser
-     */
-    function loadReliability($class, $page, $identifier, $reliability_center_id)
-    {
-        // make an instance of the form's object
-        $form = NDB_Reliability::reliabilityfactory(
-            $class,
-            $page,
-            $identifier,
-            $reliability_center_id
-        );
-
-        $form->save();
-
-        $this->page = $form;
-        $html       = $form->display();
-
         return $html;
     }
 
