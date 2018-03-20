@@ -44,8 +44,8 @@ function cartesian($input) {
     return $result;
 }
 
-// Get the list of unique IDs from the mri_protocol_3_3 table
-$mp_idx = $DB->pselect("SELECT ID FROM mri_protocol_3", array());
+// Get the list of unique IDs from the mri_protocol table
+$mp_idx = $DB->pselect("SELECT ID FROM mri_protocol", array());
 $idx = array();
 foreach($mp_idx as $num => $value) {
     array_push($idx, $value["ID"]);
@@ -53,20 +53,20 @@ foreach($mp_idx as $num => $value) {
 
 // insert new rows for comma separated values
 foreach ($idx as $id) {
-    $mp_data = $DB->pselectRow("SELECT * FROM mri_protocol_3 mp WHERE mp.ID=:id", array('id' => $id));
+    $mp_data = $DB->pselectRow("SELECT * FROM mri_protocol mp WHERE mp.ID=:id", array('id' => $id));
     foreach($mp_data as $key => $value) {
        $mp_data[$key] = explode(",", $value);
     }
     $all_mp_combinations = cartesian($mp_data);
     foreach ($all_mp_combinations as $mp_combination) {
         unset($mp_combination["ID"]);
-        $DB->insert("mri_protocol_3", $mp_combination);
+        $DB->insert("mri_protocol", $mp_combination);
     }
     // remove the row for the original ID
-    $DB->delete("mri_protocol_3", array("ID" => $id));
+    $DB->delete("mri_protocol", array("ID" => $id));
 }
 
-echo("All mri_protocol_3 entries are now unique and not comma-separated.\n\n");
+echo("All mri_protocol entries are now unique and not comma-separated.\n\n");
 
 
 
