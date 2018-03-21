@@ -19,7 +19,7 @@
  *
  */
 class Markdown extends React.Component {
-  
+
   htmlSpecialCharsDecode(text) {
     return text
       .replace(/&amp;/g, "&")
@@ -117,7 +117,7 @@ class Markdown extends React.Component {
 
 Markdown.propTypes = {
   content: React.PropTypes.string.isRequired
-}
+};
 
 var RMarkdown = React.createFactory(Markdown);
 
