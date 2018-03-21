@@ -118,3 +118,7 @@ h3 {
   color: #064785;
   text-decoration: none;
 }
+
+.tooltip-inner {
+  max-width: none;
+}

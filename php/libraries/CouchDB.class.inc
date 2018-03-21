@@ -154,6 +154,36 @@ class CouchDB
 {
 
     /**
+     * This array keep a reference for each instance of this class.
+     */
+    private static $_instances = array();
+
+    /**
+     * Keep the database name
+     */
+    private $_database = '';
+
+    /**
+     * Keep the host name
+     */
+    private $_host = '';
+
+    /**
+     * Keep the port number
+     */
+    private $_port = '';
+
+    /**
+     * Keep the user name
+     */
+    private $_user = '';
+
+    /**
+     * Keep the password value
+     */
+    private $_password = '';
+
+    /**
      * Boolean true if we are currently doing a bulk transaction.
      */
     var $bulk = false;
@@ -165,22 +195,120 @@ class CouchDB
     var $bulkDocuments = array();
 
     /**
-     * Returns one and only one CouchDB database wrapper object.
+     * Private Constructor for CouchDB
+     *
+     * @param string $database The couchDB database name
+     * @param string $host     The couchDB host name
+     * @param string $port     The couchDB port number
+     * @param string $user     The couchDB user name
+     * @param string $password The couchDB password
+     */
+    private function __construct(
+        string $database = '',
+        string $host = '',
+        string $port = '',
+        string $user = '',
+        string $password = ''
+    ) {
+
+        $this->_database = $database;
+        $this->_host     = $host;
+        $this->_port     = $port;
+        $this->_user     = $user;
+        $this->_password = $password;
+    }
+
+    /**
+     * Returns one and only one CouchDB database wrapper object for a given
+     * database name.
+     *
      * NOTE: You shouldn't call this directly, instead you should
      *       probably use the NDB_Factory->couchDB() factory method
      *       which calls this.
      *
+     * @param string $database The couchDB database name
+     * @param string $host     The couchDB host name
+     * @param string $port     The couchDB port number
+     * @param string $user     The couchDB user name
+     * @param string $password The couchDB password
+     *
+     * @throws ConfigurationException When not all parameters are passed and it
+     *                                is not a backwards support deprecated case
+     *
      * @return CouchDB A Loris CouchDB wrapper object
      */
-    static function singleton()
-    {
-        static $db = null;
-        if ($db === null) {
-            $db = new CouchDB();
+    static function &getInstance(
+        string $database = null,
+        string $host = null,
+        string $port = null,
+        string $user = null,
+        string $password = null
+    ) {
+
+        if (empty(self::$_instances[$database])) {
+            if (empty($database)
+                && empty($host)
+                && empty($port)
+                && empty($user)
+                && empty($password)
+            ) {
+                // check if no parameters are passed
+                // deprecated behaviour, backwards compatible until next major
+                // Default to DQT
+                $config      = \NDB_Config::singleton();
+                $couchConfig = $config->getSetting("CouchDB");
+
+                $database = $couchConfig['dbName'];
+                $host     = $couchConfig['hostname'];
+                $port     = $couchConfig['port'];
+                $user     = $couchConfig['admin'];
+                $password = $couchConfig['adminpass'];
+                error_log(
+                    "LORIS Deprecation Warning: CouchDB::getInstance() will no 
+                    longer auto-loading CouchDB credentials, make sure to specify 
+                    all necessary parameters in the function call."
+                );
+            } else if (!empty($database)
+                && empty($host)
+                && empty($port)
+                && empty($user)
+                && empty($password)
+            ) {
+                // check if only database name given (assume the rest same as dqt)
+                // deprecated behaviour, backwards compatible until next major
+                // Default to DQT
+                $config      = \NDB_Config::singleton();
+                $couchConfig = $config->getSetting("CouchDB");
+
+                $host     = $couchConfig['hostname'];
+                $port     = $couchConfig['port'];
+                $user     = $couchConfig['admin'];
+                $password = $couchConfig['adminpass'];
+                error_log(
+                    "LORIS Deprecation Warning: CouchDB::getInstance() will no 
+                    longer support accepting only a database name, make sure to 
+                    specify all necessary parameters in the function call."
+                );
+            } else if (empty($database)
+                || empty($host)
+                || empty($port)
+                || empty($user)
+                || empty($password)
+            ) {
+                // check if only some parameters given but not all AND does not
+                // enter any of the above IF statements. this behavior was never
+                // supported and should be an error.
+                throw new ConfigurationException(
+                    "CouchDB::getInstance() requires all parameters to be supplied."
+                );
+            }
+
+            $db = new CouchDB($database, $host, $port, $user, $password);
             $db->SocketHandler = new SocketWrapper();
-            return $db;
+
+            self::$_instances[$database] = $db;
         }
-        return $db;
+        return self::$_instances[$database];
     }
 
     /**
@@ -193,10 +321,7 @@ class CouchDB
      */
     function _constructURL($op, $doc)
     {
-        $config = NDB_Config::singleton();
-        $db     = $config->getSetting('CouchDB');
-
-        return "$op /$db[dbName]/$doc";
+        return "$op /$this->_database/$doc";
     }
 
     /**
@@ -211,12 +336,9 @@ class CouchDB
      */
     function _getURL($url, $op = 'GET', $headers = array())
     {
-        $config      = NDB_Config::singleton();
-        $couchconfig = $config->getSetting('CouchDB');
-
         $handler = $this->SocketHandler;
-        $handler->setHost($couchconfig['hostname']);
-        $handler->setPort($couchconfig['port']);
+        $handler->setHost($this->_host);
+        $handler->setPort($this->_port);
 
         $handler->open();
         $handler->write("$op $url HTTP/1.0\r\n");
@@ -246,19 +368,16 @@ class CouchDB
      */
     function _getRelativeURL($url, $op = 'GET')
     {
-        $config      = NDB_Config::singleton();
-        $couchconfig = $config->getSetting('CouchDB');
-
         $handler = $this->SocketHandler;
-        $handler->setHost($couchconfig['hostname']);
-        $handler->setPort($couchconfig['port']);
+        $handler->setHost($this->_host);
+        $handler->setPort($this->_port);
 
         $handler->open();
         $handler->write($this->_constructURL($op, $url) . " HTTP/1.0\r\n");
         $handler->write(
             "Authorization: Basic "
             . base64_encode(
-                $couchconfig['admin'] . ":" . $couchconfig['adminpass']
+                $this->_user . ":" . $this->_password
             )
             . "\r\n"
         );
@@ -307,12 +426,9 @@ class CouchDB
      */
     function _postURL($url, $data, $headers = array(), $printValue = false)
     {
-        $config      = NDB_Config::singleton();
-        $couchconfig = $config->getSetting('CouchDB');
-
         $handler = $this->SocketHandler;
-        $handler->setHost($couchconfig['hostname']);
-        $handler->setPort($couchconfig['port']);
+        $handler->setHost($this->_host);
+        $handler->setPort($this->_port);
 
         $handler->open();
         $handler->write($url . " HTTP/1.0\r\n");
@@ -322,9 +438,7 @@ class CouchDB
         $handler->write(
             "Authorization: Basic "
             . base64_encode(
-                $couchconfig['admin']
-                . ":"
-                . $couchconfig['adminpass']
+                $this->_user . ":" . $this->_password
             )
             . "\r\n"
         );
