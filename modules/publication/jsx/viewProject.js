@@ -1,4 +1,4 @@
-import PublicationUploadForm from './uploadForm.js';
+import ProjectFormFields from './projectFields';
 
 class ViewProject extends React.Component {
   constructor(props) {
@@ -6,6 +6,8 @@ class ViewProject extends React.Component {
 
     this.state = {
       formData: {},
+      formErrors: {},
+      numFiles: 0,
       isLoaded: false
     };
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -62,11 +64,11 @@ class ViewProject extends React.Component {
         // format VoIs to be Tags renderable
         let voi = data.voi || {};
         let voiFields = [];
-        for (let inst in data.voi) {
-          if (data.voi.hasOwnProperty(inst) && data.voi[inst].IsFullSet) {
+        for (let inst in voi) {
+          if (voi.hasOwnProperty(inst) && voi[inst].IsFullSet) {
             voiFields.push(inst + '_AllFields');
           } else {
-            voiFields.concat(data.voi[inst].Fields);
+            voiFields.concat(voi[inst].Fields);
           }
         }
 
@@ -87,6 +89,9 @@ class ViewProject extends React.Component {
           allVOIs: data.allVOIs,
           uploadTypes: data.uploadTypes,
           files: data.files,
+          // adding duplicate Data property into state because
+          // i messed up
+          Data: data,
           // keep unformatted VoIs separate for static rendering
           voi: data.voi,
           isLoaded: true
@@ -253,13 +258,25 @@ class ViewProject extends React.Component {
       });
     }
 
-    const args = QueryString.get();
+
     return (
       <div>
-        <PublicationUploadForm
+       {/* <PublicationUploadForm
           DataURL={`${loris.BaseURL}/publication/ajax/getData.php?action=getProjectData&id=${args.id}`}
           action={`${loris.BaseURL}/publication/ajax/FileUpload.php?action=editProject`}
           editMode={true}
+        />*/}
+        <ProjectFormFields
+          Data={this.state.Data}
+          formData={this.state.formData}
+          formErrors={this.state.formErrors}
+          numFiles={this.state.numFiles}
+          setFormData={this.setFormData}
+          setFileData={this.setFileData}
+          addListItem={this.addListItem}
+          removeListItem={this.removeListItem}
+          validateEmail={this.validateEmail}
+          toggleEmailNotify={this.toggleEmailNotify}
         />
       </div>
     );

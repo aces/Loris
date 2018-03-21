@@ -1,5 +1,5 @@
 import ProgressBar from 'ProgressBar';
-
+import ProjectFormFields from './projectFields';
 class EmailElement extends React.Component {
   constructor(props) {
     super(props);
@@ -133,7 +133,7 @@ class PublicationUploadForm extends React.Component {
   }
 
   componentDidMount() {
-      this.fetchData();
+    this.fetchData();
   }
 
   setFileData(formElement, value) {
@@ -400,7 +400,7 @@ class PublicationUploadForm extends React.Component {
     let formClass = "col-md-12 col-lg-12";
     if (!this.props.editMode) {
       createElements = [
-        <h3>Propose a new project</h3>,
+        <h3 className="col-md-offset-3 col-lg-offset-3">Propose a new project</h3>,
         <TextboxElement
           name="title"
           label="Title"
@@ -409,7 +409,6 @@ class PublicationUploadForm extends React.Component {
           value={this.state.formData.title}
         />
       ];
-
       // if in edit mode, max out form size to better match
       // creation display
       formClass = "col-md-8 col-lg-7";
@@ -425,7 +424,7 @@ class PublicationUploadForm extends React.Component {
             fileUpload={true}
           >
             {createElements}
-            <TextareaElement
+            {/*<TextareaElement
               name="description"
               label="Description"
               onUserInput={this.setFormData}
@@ -521,7 +520,19 @@ class PublicationUploadForm extends React.Component {
               items={this.state.formData.voiFields}
               btnLabel="Add Variable of Interest"
             />
-            {fileFields}
+            {fileFields}*/}
+            <ProjectFormFields
+              Data={this.state.Data}
+              formData={this.state.formData}
+              formErrors={this.state.formErrors}
+              numFiles={this.state.numFiles}
+              setFormData={this.setFormData}
+              setFileData={this.setFileData}
+              addListItem={this.addListItem}
+              removeListItem={this.removeListItem}
+              validateEmail={this.validateEmail}
+              toggleEmailNotify={this.toggleEmailNotify}
+            />
             <ButtonElement label={this.props.editMode ? "Submit" : "Propose Project"}/>
             <div className="row">
               <div className="col-sm-9 col-sm-offset-3">
