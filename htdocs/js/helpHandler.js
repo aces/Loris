@@ -26,6 +26,7 @@ $(document).ready(function() {
       var text = document.createTextNode("Edit");
       var button = document.createTextNode("Close");
       var wrap;
+      var markdownContent;
 
       if (content.format === "markdown") {
         wrap = document.createElement("div");
@@ -37,13 +38,10 @@ $(document).ready(function() {
         wrap.innerHTML = "<hr id='help-separator'>";
         if (content.topic) {
           wrap.innerHTML = "<h3>" + content.topic + "</h3>";
-        } else {
-          // This is a hack because otherwise the alignment of the edit/close
-          // buttons gets screwed up. The CSS should eventually be fixed and
-          // this removed.
-          wrap.innerHTML = "<h3></h3>";
         }
-        wrap.innerHTML += content.content;
+        markdownContent = document.createElement("div");
+        ReactDOM.render(RMarkdown({content: content.content}), markdownContent);
+        wrap.appendChild(markdownContent);
         if (content.updated) {
           wrap.innerHTML = wrap.innerHTML + "<hr>Last updated: " + content.updated;
         }
