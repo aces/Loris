@@ -2,13 +2,12 @@
 
 ## Purpose
 
-The Document Repository is a tool that provides a centralized location for non-candidate documents relevant to the study. For example, copies of non-filled instruments, publications, manual of operations.
+ The Document Repository is a tool that provides a centralized location for non-candidate documents that are relevant to the study i.e. unfilled versions of instruments, publications, or manual of operations.
 
 ## Intended Users
 
- LORIS users can view, download/upload files, edit information about files, and delete files given appropriate permissions.
-This module is used primarily by study coordinators/administrators who share study protocols and manuals, and by data entry staff who consult these documents.  
-
+ Given the appropriate permissions, LORIS users can view, download, upload, and delete files, as well as edit information pertaining to those files.
+ This module is used primarily by study coordinators/administrators who share study protocols and manuals, as well as data entry staff who consult these documents.
 ## Scope
 
  The document can only be seen by Users from the Site that the document is associated with.
