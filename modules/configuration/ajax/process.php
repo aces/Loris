@@ -28,42 +28,32 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 // this qurey could delete duplicate ConfigID-value pairs 
-$query = "Delete from Config  Where ID in
-    (
-      select temp.ID from
-       (select ID from Config c
-          where (c.ConfigId,c.Value) in 
-                (
-                 select ConfigId,Value
-                 from Config group by ConfigId,Value
-                 having count(*) > 1
-                )
-          and ID not in
-               (
-                select min(ID)
-                from Config group by ConfigId,Value having count(*)>1
-               )
-       ) temp
-    )";
 $DB =& Database::singleton();
 foreach ($_POST as $key => $value) {
     if (is_numeric($key)) { //update
         if ($value == "") {
             $DB->delete('Config', array('ID' => $key));
         } else {
+error_log(print_r("============",true));
+error_log(print_r(checkDuplicateUpdateDropdown($key,$value),true));
+error_log(print_r("============",true));
             $DB->update(
                 'Config',
                 array('Value' => $value),
                 array('ID' => $key)
             );
+             //  else {
+             //           header("HTTP/1.1 303 Duplicate value for update");
+             //           exit();          
+             //   }
             //delete duplicate ConfigID-value pairs 
-            $DB->run($query);
         }
     } else { //add new or remove
         $keySplit   = explode("-", $key);
         $valueSplit = explode("-", $value);
         if ($keySplit[0] == 'add') {
             if ($value !== "") {
+                if (checkDuplicate($keySplit[1],$value) == '0'){
                 $DB->insert(
                     'Config',
                     array(
@@ -71,14 +61,40 @@ foreach ($_POST as $key => $value) {
                      'Value'    => $value,
                     )
                 );
+                } else {
+                        header("HTTP/1.1 303 Duplicate value");
+                        exit();   
+                }
             }
         } elseif ($valueSplit[0] == 'remove') {
             $DB->delete('Config', array('ID' => $valueSplit[1]));
         }
     }
 }
+//check 
+function checkDuplicate($key,$value){
+       $DB =& Database::singleton();
+       $result = $DB->pselectOne(
+           "Select count(*) from Config where ConfigID =:ConfigID and Value =:Value",
+            array(':ConfigID' => $key,':Value'=>$value)
+       );
+       return $result;
+}
 
+function checkDuplicateUpdateDropdown($id,$value){
+       $DB =& Database::singleton();
+       $ConfigID = $DB->pselectOne(
+           "Select ConfigID from Config where ID =:ID and Value =:Value",
+            array(':ID' => $id,':Value'=>$value)
+       );
 
+       $result = $DB->pselectOne(
+           "Select count(*) from Config where ConfigID =:ConfigID and Value =:Value",
+            array(':ConfigID' => $ConfigID,':Value'=>$value)
+       );
+       
+       return $result;
+}
 exit();
 
 ?>
