@@ -8,6 +8,7 @@
 
  Given the appropriate permissions, LORIS users can view, download, upload, and delete files, as well as edit information pertaining to those files.
  This module is used primarily by study coordinators/administrators who share study protocols and manuals, as well as data entry staff who consult these documents.
+
 ## Scope
 
  The document can only be seen by Users from the Site that the document is associated with.
@@ -18,7 +19,6 @@
  A user that has "document_repository_delete" permission can delete files in Document Repository.
 
 ## Configurations
-
 
 - The Document Repository enables users to upload and organize project files of any type that can easily be viewable for users with appropriate permissions. Give full permissions to store documents on server.
 ```
