@@ -60,12 +60,13 @@ class ViewProject extends React.Component {
       success: function(data) {
         console.log(data);
         // format VoIs to be Tags renderable
+        let voi = data.voi || {};
         let voiFields = [];
         for (let inst in data.voi) {
           if (data.voi.hasOwnProperty(inst) && data.voi[inst].IsFullSet) {
             voiFields.push(inst + '_AllFields');
           } else {
-            voiFields.concat(data.voi.inst.Fields);
+            voiFields.concat(data.voi[inst].Fields);
           }
         }
 
@@ -251,91 +252,12 @@ class ViewProject extends React.Component {
         }
       });
     }
+
+    const args = QueryString.get();
     return (
       <div>
-        {/*<TextareaElement
-          name="description"
-          label="Description"
-          onUserInput={this.setFormData}
-          required={true}
-          value={this.state.formData.description}
-        />
-        <TextboxElement
-          name="leadInvestigator"
-          label="Lead Investigator"
-          onUserInput={this.setFormData}
-          required={true}
-          value={this.state.formData.leadInvestigator}
-        />
-        <TextboxElement
-          name="leadInvestigatorEmail"
-          label="Lead Investigator Email"
-          onUserInput={this.setFormData}
-          required={true}
-          value={this.state.formData.leadInvestigatorEmail}
-        />
-        <TagsElement
-          name="collaborators"
-          label="Collaborators"
-          id="collaborators"
-          onUserInput={this.setFormData}
-          onUserAdd={this.addListItem}
-          onUserRemove={this.removeListItem}
-          required={false}
-          value={this.state.formData.pendingCollab}
-          pendingValKey="pendingCollab"
-          items={this.state.formData.collaborators}
-          btnLabel="Add Collaborator"
-        />
-        <TagsElement
-          name="keywords"
-          label="Keywords"
-          id="keywords"
-          onUserInput={this.setFormData}
-          onUserAdd={this.addListItem}
-          onUserRemove={this.removeListItem}
-          required={false}
-          allowDupl={false}
-          value={this.state.formData.pendingKWItem}
-          pendingValKey="pendingKWItem"
-          items={this.state.formData.keywords}
-          btnLabel='Add Keyword'
-        />
-        <div className="row form-group">
-          <label className="col-sm-3 control-label"/>
-          <div className="col-sm-9">
-            <p className="form-control-static">
-              <strong>
-                Variables of Interest
-              </strong>
-            </p>
-          </div>
-        </div>
-        <SelectElement
-          name="voiInst"
-          label="Instrument"
-          id="voiInst"
-          onUserInput={this.setFormData}
-          required={false}
-          value={this.state.formData.voiInst}
-          options={testNames}
-        />
-        <TagsElement
-          name="voiFields"
-          label="Instrument Fields"
-          id="voiFields"
-          onUserInput={this.setFormData}
-          onUserAdd={this.addListItem}
-          onUserRemove={this.removeListItem}
-          required={false}
-          value={this.state.formData.pendingItemVF}
-          options={testFields}
-          pendingValKey="pendingItemVF"
-          items={this.state.formData.voiFields}
-          btnLabel="Add Variable of Interest"
-        />*/}
         <PublicationUploadForm
-          DataURL={`${loris.BaseURL}/publication/ajax/getData.php?action=getData`}
+          DataURL={`${loris.BaseURL}/publication/ajax/getData.php?action=getProjectData&id=${args.id}`}
           action={`${loris.BaseURL}/publication/ajax/FileUpload.php?action=editProject`}
           editMode={true}
         />

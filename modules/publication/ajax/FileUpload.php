@@ -59,46 +59,73 @@ function uploadPublication()
         'WHERE Title=:t',
         array('t' => $titleProc)
     );
-
-    // process files
-    if (isset($_FILES['file_0'])) {
-        $publicationPath = "/data/publication_uploads/";
-
-        if (!isset($publicationPath)) {
-            throw new LorisException("Error! Publication path is not set in Loris Settings!");
-        }
-
-        if (!file_exists($publicationPath)) {
-            throw new LorisException("Error! The upload folder '$publicationPath' does not exist!'");
-        }
-
-        foreach ($_FILES as $name => $values){
-            $fileName  = preg_replace('/\s/', '_', $values["name"]);
-            $fileType  = $_FILES["file"]["type"];
-            $extension = pathinfo($fileName)['extension'];
-            $index     = preg_split('/_/', $name)[1];
-
-            if (!isset($extension)) {
-                throw new LorisException("Please make sure your file has a valid extension!");
-            }
-
-            $pubUploadInsert = array(
-                'PublicationID'           => $pubID,
-                'PublicationUploadTypeID' => $_REQUEST['publicationType_'.$index],
-                'URL'                     => $fileName,
-                'Citation'                => $_REQUEST['publicationCitation_'.$index],
-                'Version'                 => $_REQUEST['publicationVersion_'.$index],
-            );
-
-            if (move_uploaded_file($values["tmp_name"], $publicationPath . $fileName)) {
-                $db->insert('publication_upload', $pubUploadInsert);
-            } else {
-                throw new LorisException("Could not upload the file. Please try again!");
-            }
-        }
+    try {
+        // process files
+        processFiles($pubID);
+        // INSERT INTO publication_collaborator
+        processCollaborators($pubID);
+        // INSERT INTO publication_users_edit_perm_rel
+        processEditors($pubID);
+        // INSERT INTO publication_keyword
+        processKeywords($pubID);
+        // INSERT INTO publication_parameter_type_rel
+        processVOIs($pubID);
+    } catch (Exception $e) {
+        cleanup($pubID);
+        echo $e->getMessage();
     }
 
-    // INSERT INTO publication_collaborator
+    notifySubmission($pubID);
+}
+
+function processFiles($pubID) {
+    if (empty($_FILES)) {
+        return;
+    }
+    $db = Database::singleton();
+    // TODO: make configurable
+    $publicationPath = "/data/publication_uploads/";
+
+    if (!isset($publicationPath)) {
+        throw new LorisException("Error! Publication path is not set in Loris Settings!");
+    }
+
+    if (!file_exists($publicationPath)) {
+        throw new LorisException("Error! The upload folder '$publicationPath' does not exist!'");
+    }
+
+    foreach ($_FILES as $name => $values){
+        $fileName  = preg_replace('/\s/', '_', $values["name"]);
+        $fileType  = $_FILES["file"]["type"];
+        $extension = pathinfo($fileName)['extension'];
+        $index     = preg_split('/_/', $name)[1];
+
+        if (!isset($extension)) {
+            throw new LorisException("Please make sure your file has a valid extension!");
+        }
+
+        $pubUploadInsert = array(
+            'PublicationID'           => $pubID,
+            'PublicationUploadTypeID' => $_REQUEST['publicationType_'.$index],
+            'URL'                     => $fileName,
+            'Citation'                => $_REQUEST['publicationCitation_'.$index],
+            'Version'                 => $_REQUEST['publicationVersion_'.$index],
+        );
+
+        if (move_uploaded_file($values["tmp_name"], $publicationPath . $fileName)) {
+            $db->insert('publication_upload', $pubUploadInsert);
+        } else {
+            throw new LorisException("Could not upload the file. Please try again!");
+        }
+    }
+}
+
+function processCollaborators($pubID) {
+    if (!$_REQUEST['collaborators']) {
+        return;
+    }
+    $db = Database::singleton();
+
     $collaborators = json_decode($_REQUEST['collaborators']);
     foreach ($collaborators as $c) {
         $cid = $db->pselectOne(
@@ -132,8 +159,14 @@ function uploadPublication()
             $collabRelInsert
         );
     }
+}
 
-    // INSERT INTO publication_users_edit_perm_rel
+function processEditors($pubID) {
+    if (empty($_REQUEST['usersWithEditPerm'])) {
+        return;
+    }
+
+    $db = Database::singleton();
     $usersWithEditPerm = json_decode($_REQUEST['usersWithEditPerm']);
     foreach ($usersWithEditPerm as $u) {
         $uid = $db->pselectOne(
@@ -151,8 +184,13 @@ function uploadPublication()
             $insert
         );
     }
+}
 
-    // INSERT INTO publication_keyword
+function processKeywords($pubID) {
+    if (empty($_REQUEST['keywords'])) {
+        return;
+    }
+    $db = Database::singleton();
     $keywords = json_decode($_REQUEST['keywords']);
     foreach ($keywords as $kw) {
         // check if keyword exists
@@ -189,8 +227,13 @@ function uploadPublication()
         );
 
     }
+}
 
-    // INSERT INTO publication_parameter_type_rel
+function processVOIs($pubID) {
+    if (empty($_REQUEST['voiFields'])) {
+        return;
+    }
+    $db = Database::singleton();
     $voiFields = json_decode($_REQUEST['voiFields']);
     foreach ($voiFields as $vf) {
         // if AllFields option is selected, grab all entries for provided instrument
@@ -226,8 +269,28 @@ function uploadPublication()
             $db->insertIgnore('publication_parameter_type_rel', $pubParamTypeRelInsert);
         }
     }
+}
 
-    notifySubmission($pubID);
+function cleanup($pubID) {
+    $db    = Database::singleton();
+    $where = array(
+        'PublicationID' => $pubID
+    );
+
+    $tables = array(
+        'publication_users_edit_perm_rel',
+        'publication_upload',
+        'publication_parameter_type_rel',
+        'publication_collaborator_rel',
+        'publication_keyword_rel',
+        'publication',
+    );
+
+    foreach ($tables as $table) {
+        $db->delete($table, $where);
+    }
+
+    // TODO: delete uploaded files
 }
 
 function notifySubmission($pubID) {
@@ -252,7 +315,7 @@ function notifySubmission($pubID) {
     $notify->notify();*/
     Email::send(
         $data['LeadInvestigatorEmail'],
-        'publication_submission_confirmation.tpl',
+        'publication_submission.tpl',
         $emailData,
         '', // reply_to
         '', // from

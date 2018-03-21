@@ -4,7 +4,7 @@ if (isset($_REQUEST['action'])) {
     if ($action === 'getData') {
         echo json_encode(getData());
     } elseif($action === 'getProjectData') {
-        echo json_encode(getPublicationData());
+        echo json_encode(getProjectData());
     } else {
         header("HTTP/1.1 400 Bad Request");
     }
@@ -57,7 +57,7 @@ function getData() {
 }
 
 // Gets Data for a specific PublicationID
-function getPublicationData() {
+function getProjectData() {
     $id = $_REQUEST['id'];
 
     $db = Database::singleton();
@@ -75,8 +75,7 @@ function getPublicationData() {
     );
 
     if (!$result) {
-        showError('Invalid publication ID!');
-        return;
+        throw new LorisException('Invalid publication ID!');
     } else {
         $result['VOIs'] = getVOIs($id);
         $result['Keywords'] = getKeywords($id);

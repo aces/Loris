@@ -275,7 +275,11 @@ class PublicationUploadForm extends React.Component {
           formData: {},
           uploadProgress: -1
         });
-        swal("Submission Successful!", "", "success");
+        swal("Submission Successful!", "", "success")
+          .then( () => {
+            window.location.replace(loris.BaseURL + '/publication');
+          });
+
       }.bind(this),
       error: function(jqXHR, textStatus, errorThrown) {
         console.error(textStatus);
