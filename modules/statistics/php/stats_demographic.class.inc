@@ -163,11 +163,12 @@ class Stats_Demographic extends \NDB_Form
         foreach (\Utility::getProjectList() as $key => $value) {
             $projects[$key] = $value;
         }
-        $demographicProject = $_REQUEST['DemographicProject'] ?? '';
-        $demographicProject = htmlspecialchars($demographicProject);
+
+        $demographicProject = $_REQUEST['DemographicProject'] ?? null;
         $Param_Project      = '';
 
         if (!empty($demographicProject)) {
+            $demographicProject = htmlspecialchars($demographicProject);
             $this->tpl_data['CurrentProject']
                 = array(
                    'ID'   => $demographicProject,
