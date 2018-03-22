@@ -77,20 +77,27 @@ function getProjectData() {
     if (!$result) {
         throw new LorisException('Invalid publication ID!');
     } else {
-        $result['VOIs'] = getVOIs($id);
-        $result['Keywords'] = getKeywords($id);
-        $result['collaborators'] = getCollaborators($id);
-        $result['files'] = getFiles($id);
+        $result['VOIs']              = getVOIs($id);
+        $result['files']             = getFiles($id);
+        $result['Keywords']          = getKeywords($id);
+        $result['collaborators']     = getCollaborators($id);
+
         // allow edit access for user if user is original proposer
         $user = \User::singleton();
-        $usersWithEditPerm = $db->pselectCol(
-            'SELECT UserID FROM publication_users_edit_perm_rel WHERE PublicationID=:p',
+        $userIDs = $db->pselect(
+            'SELECT pu.UserID as ID, u.UserID as Username '.
+            'FROM publication_users_edit_perm_rel pu '.
+            'JOIN users u ON pu.UserID=u.ID '.
+            'WHERE PublicationID=:p',
             array('p' => $id)
         );
+
         $userCanEdit = (
             $user->getId() === $result['UserID'] ||
-            in_array($user->getId(), $usersWithEditPerm)
+            in_array($user->getId(), array_column($userIDs, 'ID'))
         );
+
+        $usersWithEditPerm = array_column($userIDs, 'Username');
 
         $pubData = array(
             'title'                 => $result['Title'],
@@ -102,6 +109,7 @@ function getProjectData() {
             'keywords'              => $result['Keywords'],
             'collaborators'         => $result['collaborators'],
             'files'                 => $result['files'],
+            'usersWithEditPerm'     => $usersWithEditPerm,
             'userCanEdit'           => $userCanEdit,
         );
 
@@ -183,6 +191,12 @@ function getCollaborators($id) {
     );
 
     return $collaborators;
+}
+
+function getUsersWithEditPerm($id) {
+    $db = Database::singleton();
+
+
 }
 
 function getFiles($id) {

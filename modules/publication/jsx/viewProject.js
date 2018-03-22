@@ -68,7 +68,7 @@ class ViewProject extends React.Component {
           if (voi.hasOwnProperty(inst) && voi[inst].IsFullSet) {
             voiFields.push(inst + '_AllFields');
           } else {
-            voiFields.concat(voi[inst].Fields);
+            voiFields.push(voi[inst].Fields);
           }
         }
 
@@ -81,6 +81,7 @@ class ViewProject extends React.Component {
           voiFields: voiFields,
           keywords: data.keywords,
           collaborators: data.collaborators,
+          usersWithEditPerm: data.usersWithEditPerm,
         };
         self.setState({
           formData: formData,
