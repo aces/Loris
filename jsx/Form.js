@@ -138,6 +138,115 @@ var FormElement = React.createClass({
  * Select Component
  * React wrapper for a simple or 'multiple' <select> element.
  */
+var DatalistElement = React.createClass({
+
+  propTypes: {
+    name: React.PropTypes.string.isRequired,
+    id: React.PropTypes.string.isRequired,
+    options: React.PropTypes.object.isRequired,
+    strictDatalist: React.PropTypes.bool,
+    label: React.PropTypes.string,
+    value: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.array
+    ]),
+    class: React.PropTypes.string,
+    disabled: React.PropTypes.bool,
+    required: React.PropTypes.bool,
+    hasError: React.PropTypes.bool,
+    errorMessage: React.PropTypes.string,
+    onUserInput: React.PropTypes.func
+  },
+
+  getDefaultProps: function() {
+    return {
+      name: '',
+      options: {},
+      strictDatalist: false,
+      label: '',
+      value: undefined,
+      id: '',
+      class: '',
+      disabled: false,
+      required: false,
+      hasError: false,
+      errorMessage: 'The field is required!',
+      onUserInput: function() {
+        console.warn('onUserInput() callback is not set');
+      }
+    };
+  },
+
+  handleChange: function(e) {
+    this.props.onUserInput(this.props.name, e.target.value);
+  },
+
+  handleBlur: function(e) {
+    if (this.props.strictDatalist) {
+      var value = e.target.value;
+      var options = this.props.options;
+      console.log(options);
+      if (Object.keys(options).indexOf(value) === -1) {
+        this.props.onUserInput(this.props.name, null);
+      }
+    }
+  },
+
+  render: function() {
+    var required = this.props.required ? 'required' : null;
+    var disabled = this.props.disabled ? 'disabled' : null;
+    var options = this.props.options;
+    var errorMessage = null;
+    var requiredHTML = null;
+    var elementClass = 'row form-group';
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    // Add error message
+    if (this.props.hasError || (this.props.required && this.props.value === "")) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
+    return (
+      <div className={elementClass}>
+        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+        <div className="col-sm-9">
+          <input
+            type="text"
+            name={this.props.name}
+            id={this.props.id}
+            list={this.props.id + '_list'}
+            className="form-control"
+            value={this.props.value || ""}
+            disabled={disabled}
+            onChange={this.handleChange}
+            onBlur={this.handleBlur}
+          />
+          <datalist id={this.props.id + '_list'}>
+            {Object.keys(options).map(function(option) {
+              return (
+                <option value={option} key={option}>{options[option]}</option>
+              );
+            })}
+          </datalist>
+          {errorMessage}
+        </div>
+      </div>
+    );
+  }
+});
+
+/**
+ * Select Component
+ * React wrapper for a simple or 'multiple' <select> element.
+ */
 var SelectElement = React.createClass({
 
   propTypes: {
@@ -814,6 +923,9 @@ var LorisElement = React.createClass({
       case 'select':
         elementHtml = (<SelectElement {...elementProps} />);
         break;
+      case 'datalist':
+        elementHtml = (<DatalistElement {...elementProps}/>);
+        break;
       case 'date':
         elementHtml = (<DateElement {...elementProps} />);
         break;
@@ -845,6 +957,7 @@ var LorisElement = React.createClass({
 
 window.FormElement = FormElement;
 window.SelectElement = SelectElement;
+window.DatalistElement = DatalistElement;
 window.TextareaElement = TextareaElement;
 window.TextboxElement = TextboxElement;
 window.DateElement = DateElement;
@@ -858,6 +971,7 @@ window.LorisElement = LorisElement;
 export default {
   FormElement,
   SelectElement,
+  DatalistElement,
   TextareaElement,
   TextboxElement,
   DateElement,
