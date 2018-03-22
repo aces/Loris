@@ -99,12 +99,10 @@ class MediaUploadForm extends React.Component {
               label="Note"
               text={helpText}
             />
-            <DatalistElement
+            <SelectElement
               name="pscid"
-              id="pscid"
               label="PSCID"
               options={this.state.Data.candidates}
-              strictDatalist={true}
               onUserInput={this.setFormData}
               ref="pscid"
               hasError={false}
@@ -120,10 +118,11 @@ class MediaUploadForm extends React.Component {
               required={true}
               value={this.state.formData.visitLabel}
             />
-            <SelectElement
+            <DatalistElement
               name="forSite"
               label="Site"
               options={this.state.Data.sites}
+              strictDatalist={true}
               onUserInput={this.setFormData}
               ref="forSite"
               required={true}

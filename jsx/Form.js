@@ -185,7 +185,6 @@ var DatalistElement = React.createClass({
     if (this.props.strictDatalist) {
       var value = e.target.value;
       var options = this.props.options;
-      console.log(options);
       if (Object.keys(options).indexOf(value) === -1) {
         this.props.onUserInput(this.props.name, null);
       }
@@ -232,7 +231,7 @@ var DatalistElement = React.createClass({
           <datalist id={this.props.id + '_list'}>
             {Object.keys(options).map(function(option) {
               return (
-                <option value={option} key={option}>{options[option]}</option>
+                <option value={option} label={options[option]} key={option}>{options[option]}</option>
               );
             })}
           </datalist>
