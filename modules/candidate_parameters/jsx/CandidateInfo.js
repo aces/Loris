@@ -247,9 +247,9 @@ var CandidateInfo = React.createClass(
         'Goldfish': 'Goldfish',
         'Cheezball': 'Cheezball',
         'Gummi worm': 'Gummi worm',
-        'Bugle' : 'Bugle',
+        'Bugle': 'Bugle',
         'Fruit rollup': 'Fruit rollup',
-        'Fruit by the foot': 'Fruit by the foot',
+        'Fruit by the foot': 'Fruit by the foot'
       };
       return (
         <div className="row">
