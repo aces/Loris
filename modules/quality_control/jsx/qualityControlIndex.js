@@ -1,10 +1,10 @@
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
-import formatColumnImg from './columnFormatterImg';
 
 class QualityControlIndex extends React.Component {
   constructor(props) {
-    loris.hiddenHeaders = ['CommentID'];
+    const hiddenHeaders = ['CommentID'];
+    console.log(loris.hiddenHeaders);
 
     super(props);
     this.state = {
@@ -17,6 +17,40 @@ class QualityControlIndex extends React.Component {
     this.updateBehavioralFilter = this.updateBehavioralFilter.bind(this);
     this.updateImgFilter = this.updateImgFilter.bind(this);
   }
+
+   formatColumn(column, cell, rowData, rowHeaders, hiddenHeaders) {
+    // If a column if set as hidden, don't display it
+     if (hiddenHeaders.indexOf(column) > -1) {
+         return null;
+     }
+
+    // Create the mapping between rowHeaders and rowData in a row object.
+     var row = {};
+     rowHeaders.forEach(function(header, index) {
+         row[header] = rowData[index];
+     }, this);
+
+     if (column === "MRI Parameter Form") {
+         var mpfURL = loris.BaseURL + '/mri_parameter_form/?commentID=' +
+             row.CommentID + '&sessionID=' + row['Session ID'] +
+             '&candID=' + row.DCCID;
+         return <td> <a href={mpfURL}>{cell}</a> </td>;
+     } else if (column === "Scan Location" && cell === "In Imaging Browser") {
+         var imgURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' +
+             row['Session ID'];
+         return <td><a href={imgURL}>{cell}</a></td>;
+     } else if (column === "Tarchive") {
+         if (cell === "In DICOM") {
+             var tarchiveURL = loris.BaseURL +
+                 '/dicom_archive/viewDetails/?tarchiveID=' + row.TarchiveID;
+             return <td><a href = {tarchiveURL}>{cell}</a></td>;
+         }
+         return <td>Missing</td>;
+     }
+
+     return <td>{cell}</td>;
+     }
+
   componentDidMount() {
     this.fetchData("imaging");
     this.fetchData("behavioral");
@@ -112,7 +146,7 @@ class QualityControlIndex extends React.Component {
                 Data={this.state.ImgData.Data}
                 Headers={this.state.ImgData.Headers}
                 Filter={this.state.imgFilter}
-                getFormattedCell={formatColumnImg}
+                getFormattedCell={this.formatColumn}
             />
         </TabPane>
     );
