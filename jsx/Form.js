@@ -293,6 +293,8 @@ var TagsElement = React.createClass({
       emptyOption: true,
       hasError: false,
       allowDupl: false,
+      useDatalist: false,
+      strictDatalist: false, // only accept items specified in options
       errorMessage: '',
       pendingValKey: '',
       btnLabel: 'Add Tag',
@@ -338,17 +340,26 @@ var TagsElement = React.createClass({
 
   // helper function to detect if item should be added to Tags
   canAddItem: function(value) {
+    var result = true;
     // reject empty values
     if (!value) {
-      return false;
+      result = false;
     }
 
     // reject if allowDupl is false and item is already in array
     if (!this.props.allowDupl && this.props.items.indexOf(value) > -1) {
-      return false;
+      result = false;
     }
 
-    return true;
+    // reject if using a strict datalist and value is not in options
+    if (this.props.useDatalist &&
+      this.props.strictDatalist &&
+      Object.keys(this.props.options).indexOf(value) === -1
+    ) {
+      result = false;
+    }
+
+    return result;
   },
 
   render: function() {
@@ -372,23 +383,34 @@ var TagsElement = React.createClass({
       elementClass = 'row form-group has-error';
     }
 
-    // if options are given, render input as a select
-    // otherwise render input as text
+    // if options are given and useDatalist is specified
     var input;
-    if (Object.keys(this.props.options).length === 0) {
-      input = <input
-        type="text"
-        name={this.props.name}
-        id={this.props.id}
-        className="form-control"
-        value={this.props.value || ""}
-        disabled={disabled}
-        onChange={this.handleChange}
-        onKeyPress={this.handleKeyPress}
-        onSubmit={this.handleSubmit}
-      />;
-    } else {
-      var options = this.props.options;
+    var options = this.props.options;
+    if (Object.keys(options).length > 0 && this.props.useDatalist) {
+      input = (
+        <div>
+        <input
+          type="text"
+          name={this.props.name}
+          id={this.props.id}
+          list={this.props.id + '_list'}
+          className="form-control"
+          value={this.props.value || ""}
+          disabled={disabled}
+          onChange={this.handleChange}
+          onKeyPress={this.handleKeyPress}
+          onSubmit={this.handleSubmit}
+        />
+        <datalist id={this.props.id + '_list'}>
+          {Object.keys(options).map(function(option) {
+            return (
+              <option value={option} key={option}>{options[option]}</option>
+            );
+          })}
+        </datalist>
+        </div>
+      );
+    } else if (Object.keys(options).length > 0) {
       input = <select
         name={this.props.name}
         className="form-control"
@@ -406,6 +428,18 @@ var TagsElement = React.createClass({
           );
         })}
       </select>;
+    } else {
+      input = <input
+        type="text"
+        name={this.props.name}
+        id={this.props.id}
+        className="form-control"
+        value={this.props.value || ""}
+        disabled={disabled}
+        onChange={this.handleChange}
+        onKeyPress={this.handleKeyPress}
+        onSubmit={this.handleSubmit}
+      />;
     }
 
     // iterate through added Tags items and render them
