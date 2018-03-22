@@ -703,8 +703,8 @@ tr.directentry {
 #helpedit {
    position: absolute;
    right:    0;
-   bottom:   20px;
-   margin-right: 5px;
+   top:   20px;
+   margin-right: 70px;
 }
 .help-content h3 {
     color: #FFFFFF;
