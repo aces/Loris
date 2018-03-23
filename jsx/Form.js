@@ -344,15 +344,11 @@ var TagsElement = React.createClass({
     // reject empty values
     if (!value) {
       result = false;
-    }
-
-    // reject if allowDupl is false and item is already in array
-    if (!this.props.allowDupl && this.props.items.indexOf(value) > -1) {
+      // reject if allowDupl is false and item is already in array
+    } else if (!this.props.allowDupl && this.props.items.indexOf(value) > -1) {
       result = false;
-    }
-
-    // reject if using a strict datalist and value is not in options
-    if (this.props.useDatalist &&
+      // reject if using a strict datalist and value is not in options
+    } else if (this.props.useDatalist &&
       this.props.strictDatalist &&
       Object.keys(this.props.options).indexOf(value) === -1
     ) {
@@ -399,7 +395,6 @@ var TagsElement = React.createClass({
           disabled={disabled}
           onChange={this.handleChange}
           onKeyPress={this.handleKeyPress}
-          onSubmit={this.handleSubmit}
         />
         <datalist id={this.props.id + '_list'}>
           {Object.keys(options).map(function(option) {
@@ -419,7 +414,6 @@ var TagsElement = React.createClass({
         disabled={disabled}
         onChange={this.handleChange}
         onKeyPress={this.handleKeyPress}
-        onSubmit={this.handleSubmit}
       >
         {emptyOptionHTML}
         {Object.keys(options).map(function(option) {
@@ -438,7 +432,6 @@ var TagsElement = React.createClass({
         disabled={disabled}
         onChange={this.handleChange}
         onKeyPress={this.handleKeyPress}
-        onSubmit={this.handleSubmit}
       />;
     }
 
