@@ -98,7 +98,7 @@ if (strpos($File, "..") !== false) {
 // LORIS-MRI pipeline, identify it as $FileExt: "DICOMTAR"
 // Caveat: this is not a real file extension, but a LORIS-MRI
 // convention to identify archived DICOMs
-if (strpos($File, "DCM_") ) {
+if (strpos($File, "DCM_") !== false) {
     $FileExt = "DICOMTAR";
 }
 
