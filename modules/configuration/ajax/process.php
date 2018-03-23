@@ -27,42 +27,42 @@ if (!$user->hasPermission('config')) {
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
-// this qurey could delete duplicate ConfigID-value pairs 
+// this qurey could delete duplicate ConfigID-value pairs
 $DB =& Database::singleton();
-error_log(print_r($_POST,true));
+error_log(print_r($_POST, true));
 foreach ($_POST as $key => $value) {
     if (is_numeric($key)) { //update
         if ($value == "") {
             $DB->delete('Config', array('ID' => $key));
         } else {
-          // if no duplicate value then do updating
-          if (checkDuplicateUpdateDropdown($key,$value)) {
-            $DB->update(
-                'Config',
-                array('Value' => $value),
-                array('ID' => $key)
-            );
-           } else {
+            // if no duplicate value then do updating
+            if (checkDuplicateUpdateDropdown($key, $value)) {
+                $DB->update(
+                    'Config',
+                    array('Value' => $value),
+                    array('ID' => $key)
+                );
+            } else {
                    header("HTTP/1.1 303 Duplicate value for update");
-                   exit();          
-                }
+                   exit();
+            }
         }
     } else { //add new or remove
         $keySplit   = explode("-", $key);
         $valueSplit = explode("-", $value);
         if ($keySplit[0] == 'add') {
             if ($value !== "") {
-                if (checkDuplicate($keySplit[1],$value) == '0'){
-                $DB->insert(
-                    'Config',
-                    array(
-                     'ConfigID' => $keySplit[1],
-                     'Value'    => $value,
-                    )
-                );
+                if (checkDuplicate($keySplit[1], $value) == '0') {
+                    $DB->insert(
+                        'Config',
+                        array(
+                         'ConfigID' => $keySplit[1],
+                         'Value'    => $value,
+                        )
+                    );
                 } else {
                         header("HTTP/1.1 303 Duplicate value");
-                        exit();   
+                        exit();
                 }
             }
         } elseif ($valueSplit[0] == 'remove') {
@@ -70,31 +70,54 @@ foreach ($_POST as $key => $value) {
         }
     }
 }
-//check Duplicate value
-function checkDuplicate($key,$value){
-       $DB =& Database::singleton();
+/**
+ * Check Duplicate value
+ *
+ * @param string $key   The value of the key
+ * @param string $value The value of the value
+ *
+ * @return string $result
+ */
+function checkDuplicate($key,$value)
+{
+       $DB     =& Database::singleton();
        $result = $DB->pselectOne(
            "Select count(*) from Config where ConfigID =:ConfigID and Value =:Value",
-            array(':ConfigID' => $key,':Value'=>$value)
+           array(
+            ':ConfigID' => $key,
+            ':Value'    => $value,
+           )
        );
        return $result;
 }
-//check dropdown list Duplicate value
-function checkDuplicateUpdateDropdown($id,$value){
-       $DB =& Database::singleton();
+/**
+ * Check dropdown list Duplicate value
+ *
+ * @param string $id    The value of the id
+ * @param string $value The value of the value
+ *
+ * @return boolean return true if there is no Duplicate value
+ */
+function checkDuplicateUpdateDropdown($id,$value)
+{
+       $DB       =& Database::singleton();
        $ConfigID = $DB->pselectOne(
            "Select ConfigID from Config where ID =:ID",
-            array(':ID' => $id)
+           array(':ID' => $id)
        );
 
        $IDBefore = $DB->pselectOne(
            "Select ID from Config where ConfigID =:ConfigID and Value =:Value",
-            array(':ConfigID' => $ConfigID,':Value'=>$value)
+           array(
+            ':ConfigID' => $ConfigID,
+            ':Value'    => $value,
+           )
        );
-       if ((int)$id == (int)$IDBefore || $IDBefore == null){
-        return true;  
-       }
-       return false;
+
+       if ((int)$id == (int)$IDBefore || $IDBefore == null) {
+           return true;
+}
+        return false;
 }
 exit();
 
