@@ -142,8 +142,8 @@ var DatalistElement = React.createClass({
 
   propTypes: {
     name: React.PropTypes.string.isRequired,
-    id: React.PropTypes.string,
     options: React.PropTypes.object.isRequired,
+    id: React.PropTypes.string,
     strictDatalist: React.PropTypes.bool,
     label: React.PropTypes.string,
     value: React.PropTypes.oneOfType([
@@ -201,7 +201,9 @@ var DatalistElement = React.createClass({
       var value = e.target.value;
       var options = this.props.options;
       if (Object.values(options).indexOf(value) === -1) {
-        this.props.onUserInput(this.props.name, null);
+        // null out both the hidden value as well as the input text
+        document.querySelector(`input[name="${this.props.name + '_list'}"]`).value = '';
+        this.props.onUserInput(this.props.name, '');
       }
     }
   },
