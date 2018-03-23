@@ -191,6 +191,10 @@ var DatalistElement = React.createClass({
     }
   },
 
+  handleSubmit: function(e) {
+    console.log('asdasdasd');
+  },
+
   render: function() {
     var required = this.props.required ? 'required' : null;
     var disabled = this.props.disabled ? 'disabled' : null;
@@ -227,6 +231,7 @@ var DatalistElement = React.createClass({
             disabled={disabled}
             onChange={this.handleChange}
             onBlur={this.handleBlur}
+            onSubmit={this.handleSubmit}
           />
           <datalist id={this.props.id + '_list'}>
             {Object.keys(options).map(function(option) {
