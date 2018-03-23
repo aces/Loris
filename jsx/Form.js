@@ -185,14 +185,10 @@ var DatalistElement = React.createClass({
     if (this.props.strictDatalist) {
       var value = e.target.value;
       var options = this.props.options;
-      if (Object.keys(options).indexOf(value) === -1) {
+      if (Object.values(options).indexOf(value) === -1) {
         this.props.onUserInput(this.props.name, null);
       }
     }
-  },
-
-  handleSubmit: function(e) {
-    console.log('asdasdasd');
   },
 
   render: function() {
@@ -214,6 +210,16 @@ var DatalistElement = React.createClass({
       elementClass = 'row form-group has-error';
     }
 
+    // get the key value in case options key-values are not the same
+    // e.g. {CenterID : Site name}
+    var keyValue;
+    Object.keys(options).forEach(function (o){
+      if (options[o] === this.props.value) {
+        keyValue = o;
+        return;
+      }
+    }, this);
+
     return (
       <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
@@ -223,7 +229,7 @@ var DatalistElement = React.createClass({
         <div className="col-sm-9">
           <input
             type="text"
-            name={this.props.name}
+            name={this.props.name + '_list'}
             id={this.props.id}
             list={this.props.id + '_list'}
             className="form-control"
@@ -231,15 +237,15 @@ var DatalistElement = React.createClass({
             disabled={disabled}
             onChange={this.handleChange}
             onBlur={this.handleBlur}
-            onSubmit={this.handleSubmit}
           />
           <datalist id={this.props.id + '_list'}>
             {Object.keys(options).map(function(option) {
               return (
-                <option value={option} label={options[option]} key={option}>{options[option]}</option>
+                <option value={options[option]} key={option}/>
               );
             })}
           </datalist>
+          <input type="hidden" name={this.props.name} value={keyValue}/>
           {errorMessage}
         </div>
       </div>
