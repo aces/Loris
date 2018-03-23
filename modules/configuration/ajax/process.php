@@ -29,24 +29,23 @@ $client->makeCommandLine();
 $client->initialize();
 // this qurey could delete duplicate ConfigID-value pairs 
 $DB =& Database::singleton();
+error_log(print_r($_POST,true));
 foreach ($_POST as $key => $value) {
     if (is_numeric($key)) { //update
         if ($value == "") {
             $DB->delete('Config', array('ID' => $key));
         } else {
-error_log(print_r("============",true));
-error_log(print_r(checkDuplicateUpdateDropdown($key,$value),true));
-error_log(print_r("============",true));
+          // if no duplicate value then do updating
+          if (checkDuplicateUpdateDropdown($key,$value)) {
             $DB->update(
                 'Config',
                 array('Value' => $value),
                 array('ID' => $key)
             );
-             //  else {
-             //           header("HTTP/1.1 303 Duplicate value for update");
-             //           exit();          
-             //   }
-            //delete duplicate ConfigID-value pairs 
+           } else {
+                   header("HTTP/1.1 303 Duplicate value for update");
+                   exit();          
+                }
         }
     } else { //add new or remove
         $keySplit   = explode("-", $key);
@@ -71,7 +70,7 @@ error_log(print_r("============",true));
         }
     }
 }
-//check 
+//check Duplicate value
 function checkDuplicate($key,$value){
        $DB =& Database::singleton();
        $result = $DB->pselectOne(
@@ -80,20 +79,22 @@ function checkDuplicate($key,$value){
        );
        return $result;
 }
-
+//check dropdown list Duplicate value
 function checkDuplicateUpdateDropdown($id,$value){
        $DB =& Database::singleton();
        $ConfigID = $DB->pselectOne(
-           "Select ConfigID from Config where ID =:ID and Value =:Value",
-            array(':ID' => $id,':Value'=>$value)
+           "Select ConfigID from Config where ID =:ID",
+            array(':ID' => $id)
        );
 
-       $result = $DB->pselectOne(
-           "Select count(*) from Config where ConfigID =:ConfigID and Value =:Value",
+       $IDBefore = $DB->pselectOne(
+           "Select ID from Config where ConfigID =:ConfigID and Value =:Value",
             array(':ConfigID' => $ConfigID,':Value'=>$value)
        );
-       
-       return $result;
+       if ((int)$id == (int)$IDBefore || $IDBefore == null){
+        return true;  
+       }
+       return false;
 }
 exit();
 
