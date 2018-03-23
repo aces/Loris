@@ -135,8 +135,8 @@ var FormElement = React.createClass({
 });
 
 /**
- * Select Component
- * React wrapper for a simple or 'multiple' <select> element.
+ * Datalist Component
+ * React wrapper for a searchable dropdown
  */
 var DatalistElement = React.createClass({
 
