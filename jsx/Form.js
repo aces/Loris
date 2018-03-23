@@ -142,7 +142,7 @@ var DatalistElement = React.createClass({
 
   propTypes: {
     name: React.PropTypes.string.isRequired,
-    id: React.PropTypes.string.isRequired,
+    id: React.PropTypes.string,
     options: React.PropTypes.object.isRequired,
     strictDatalist: React.PropTypes.bool,
     label: React.PropTypes.string,
@@ -231,14 +231,14 @@ var DatalistElement = React.createClass({
             type="text"
             name={this.props.name + '_list'}
             id={this.props.id}
-            list={this.props.id + '_list'}
+            list={this.props.name + '_list'}
             className="form-control"
             value={this.props.value || ""}
             disabled={disabled}
             onChange={this.handleChange}
             onBlur={this.handleBlur}
           />
-          <datalist id={this.props.id + '_list'}>
+          <datalist id={this.props.name + '_list'}>
             {Object.keys(options).map(function(option) {
               return (
                 <option value={options[option]} key={option}/>
