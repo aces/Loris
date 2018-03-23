@@ -177,11 +177,26 @@ var DatalistElement = React.createClass({
     };
   },
 
+  getKeyFromValue: function(value) {
+    var options = this.props.options;
+    var keyValue;
+    Object.keys(options).forEach(function(o) {
+      if (options[o] === value) {
+        keyValue = o;
+        return;
+      }
+    }, this);
+
+    return keyValue;
+  },
+
   handleChange: function(e) {
-    this.props.onUserInput(this.props.name, e.target.value);
+    var keyValue = this.getKeyFromValue(e.target.value);
+    this.props.onUserInput(this.props.name, keyValue);
   },
 
   handleBlur: function(e) {
+    // null out entry if not present in options in strict mode
     if (this.props.strictDatalist) {
       var value = e.target.value;
       var options = this.props.options;
@@ -210,16 +225,6 @@ var DatalistElement = React.createClass({
       elementClass = 'row form-group has-error';
     }
 
-    // get the key value in case options key-values are not the same
-    // e.g. {CenterID : Site name}
-    var keyValue;
-    Object.keys(options).forEach(function (o){
-      if (options[o] === this.props.value) {
-        keyValue = o;
-        return;
-      }
-    }, this);
-
     return (
       <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
@@ -233,7 +238,6 @@ var DatalistElement = React.createClass({
             id={this.props.id}
             list={this.props.name + '_list'}
             className="form-control"
-            value={this.props.value || ""}
             disabled={disabled}
             onChange={this.handleChange}
             onBlur={this.handleBlur}
@@ -245,7 +249,7 @@ var DatalistElement = React.createClass({
               );
             })}
           </datalist>
-          <input type="hidden" name={this.props.name} value={keyValue}/>
+          <input type="hidden" name={this.props.name} value={this.props.value}/>
           {errorMessage}
         </div>
       </div>
