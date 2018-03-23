@@ -113,11 +113,13 @@ function checkDuplicateUpdateDropdown($id,$value)
             ':Value'    => $value,
            )
        );
-
-       if ((int)$id == (int)$IDBefore || $IDBefore == null) {
+/* @codingStandardsIgnoreStart */
+       if ($id == $IDBefore || $IDBefore == null
+       ) {
            return true;
-}
-        return false;
+       }  
+       return false;
+/* @codingStandardsIgnoreEnd */
 }
 exit();
 
