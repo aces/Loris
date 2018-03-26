@@ -12,8 +12,8 @@
  *  @link     https://github.com/aces/Loris
  */
 
-$user     = User::singleton();
-$factory  = NDB_Factory::singleton();
+$user     = \User::singleton();
+$factory  = \NDB_Factory::singleton();
 $settings = $factory->settings();
 $baseURL  = $settings->getBaseURL();
 $DB       = $factory->database();
