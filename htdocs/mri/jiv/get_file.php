@@ -96,7 +96,9 @@ if (strpos($File, "..") !== false) {
 
 // If $File contains "DCM_", prefix automatically inserted by the
 // LORIS-MRI pipeline, identify it as $FileExt: "DICOMTAR"
-if (strpos($File, "DCM_") ) {
+// Caveat: this is not a real file extension, but a LORIS-MRI
+// convention to identify archived DICOMs
+if (strpos($File, "DCM_") !== false) {
     $FileExt = "DICOMTAR";
 }
 
