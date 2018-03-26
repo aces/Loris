@@ -227,7 +227,7 @@ class EditExaminer extends \NDB_Form
                     }
                     $DB->update(
                         'certification',
-                        $data,  
+                        $data,
                         array(
                          'examinerID' => $examinerID,
                          'testID'     => $testID,
@@ -379,7 +379,7 @@ class EditExaminer extends \NDB_Form
             ) {
                 if (($certificationStatus == "certified")
                     && empty($values['date_cert'][$instrumentID])
-                 ) {
+                ) {
                     $errors['certStatus[' . $instrumentID .']'] = 'Both certification
                         status and date must be filled out';
                 }
