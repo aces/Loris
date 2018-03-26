@@ -56,6 +56,11 @@ if ($_POST['action'] == 'addpermission' && $user->hasPermission('superuser')) {
 } elseif ($_POST['action'] == 'managepermissions'
     && $user->hasPermission('superuser')
 ) {
+    // 1) so with checkboxes it's not straightforward to figure out
+    //    which permissions were either set or unset during the save,
+    //    hence the TRUNCATE at the beginning
+    // 2) put it in a transaction to make sure it succeeds or not at all
+    // 3) some special characters become "_" so we wildcard match the username
     try {
         $DB->_PDO->beginTransaction();
         $DB->run("TRUNCATE data_release_permissions");
