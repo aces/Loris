@@ -154,6 +154,7 @@ var SearchElement = React.createClass({
     disabled: React.PropTypes.bool,
     required: React.PropTypes.bool,
     errorMessage: React.PropTypes.string,
+    placeHolder: React.PropTypes.string,
     onUserInput: React.PropTypes.func
   },
 
@@ -169,6 +170,7 @@ var SearchElement = React.createClass({
       disabled: false,
       required: false,
       errorMessage: '',
+      placeHolder: '',
       onUserInput: function() {
         console.warn('onUserInput() callback is not set');
       }
@@ -249,6 +251,7 @@ var SearchElement = React.createClass({
             list={this.props.name + '_list'}
             className="form-control"
             disabled={disabled}
+            placeholder={this.props.placeHolder}
             onChange={this.handleChange}
             onBlur={this.handleBlur}
           />

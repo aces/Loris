@@ -121,6 +121,7 @@ class MediaUploadForm extends React.Component {
             <SearchElement
               name="forSite"
               label="Site"
+              placeHolder="Search for site"
               options={this.state.Data.sites}
               strictSearch={true}
               onUserInput={this.setFormData}
