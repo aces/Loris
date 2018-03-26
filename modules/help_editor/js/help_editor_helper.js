@@ -10,11 +10,10 @@ $("input[name=preview]").click(function(e) {
         myDate  = new Date(),
         div     = document.createElement("div"),
         btn     = document.createElement("BUTTON"),
-        button  = document.createTextNode("Close");
-        wrap    = document.createElement("pre"),
+        button  = document.createTextNode("Close"),
+        wrap    = document.createElement("pre");
 
      wrap.setAttribute("id", "help-wrapper");
-     wrap.innerHTML = "<hr id='help-separator'>";
      wrap.innerHTML  = "<h3>" + title + "</h3>";
      markdownContent = document.createElement("div");
      ReactDOM.render(RMarkdown({content: content}), markdownContent);
