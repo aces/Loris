@@ -27,9 +27,7 @@ if (!$user->hasPermission('config')) {
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
-// this qurey could delete duplicate ConfigID-value pairs
 $DB =& Database::singleton();
-error_log(print_r($_POST, true));
 foreach ($_POST as $key => $value) {
     if (is_numeric($key)) { //update
         if ($value == "") {
@@ -105,7 +103,6 @@ function checkDuplicateUpdateDropdown($id,$value)
            "Select ConfigID from Config where ID =:ID",
            array(':ID' => $id)
        );
-
        $IDBefore = $DB->pselectOne(
            "Select ID from Config where ConfigID =:ConfigID and Value =:Value",
            array(
@@ -113,13 +110,7 @@ function checkDuplicateUpdateDropdown($id,$value)
             ':Value'    => $value,
            )
        );
-/* @codingStandardsIgnoreStart */
-       if ($id == $IDBefore || $IDBefore == null
-       ) {
-           return true;
-       }  
-       return false;
-/* @codingStandardsIgnoreEnd */
+       return ($id == $IDBefore || $IDBefore == null);
 }
 exit();
 
