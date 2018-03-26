@@ -169,8 +169,7 @@ var DatalistElement = React.createClass({
       class: '',
       disabled: false,
       required: false,
-      hasError: false,
-      errorMessage: 'The field is required!',
+      errorMessage: '',
       onUserInput: function() {
         console.warn('onUserInput() callback is not set');
       }
@@ -224,8 +223,11 @@ var DatalistElement = React.createClass({
     }
 
     // Add error message
-    if (this.props.hasError || (this.props.required && this.props.value === "")) {
-      var msg = this.props.errorMessage;
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    } else if (this.props.required && this.props.value === "") {
+      var msg = 'This field is required!';
       msg += (this.props.strictDatalist ? ' ' + strictMessage : '');
       errorMessage = <span>{msg}</span>;
       elementClass = 'row form-group has-error';
