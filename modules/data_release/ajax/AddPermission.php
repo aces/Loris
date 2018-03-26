@@ -35,7 +35,7 @@ if ($_POST['action'] == 'addpermission' && $user->hasPermission('superuser')) {
         $userid = $_POST['userid'];
         $data_release_version = $_POST['data_release_version'];
 
-        $IDs = $DB->pselect(
+        $IDs = $DB->pselectCol(
             "SELECT id FROM data_release WHERE "
             . "version=:data_release_version",
             array('data_release_version' => $data_release_version)
