@@ -7,7 +7,7 @@ CREATE TABLE `language` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO language (language_code, language_label) VALUES ('en-CA', 'English');
---INSERT INTO language (language_code, language_label) VALUES ('fr-CA', 'French');
+-- INSERT INTO language (language_code, language_label) VALUES ('fr-CA', 'French');
 
 ALTER TABLE users ADD language_preference integer unsigned DEFAULT NULL;
 ALTER TABLE users ADD CONSTRAINT `FK_users_2` FOREIGN KEY (`language_preference`) REFERENCES `language` (`language_id`);
