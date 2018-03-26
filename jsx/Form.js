@@ -162,7 +162,7 @@ var DatalistElement = React.createClass({
     return {
       name: '',
       options: {},
-      strictDatalist: false,
+      strictDatalist: true,
       label: '',
       value: undefined,
       id: '',
@@ -179,20 +179,21 @@ var DatalistElement = React.createClass({
 
   getKeyFromValue: function(value) {
     var options = this.props.options;
-    var keyValue;
-    Object.keys(options).forEach(function(o) {
-      if (options[o] === value) {
-        keyValue = o;
-        return;
-      }
-    }, this);
+    var keyValue = Object.keys(options).find(function(o) {
+      return options[o] === value;
+    });
 
     return keyValue;
   },
 
   handleChange: function(e) {
-    var keyValue = this.getKeyFromValue(e.target.value);
-    this.props.onUserInput(this.props.name, keyValue);
+    var value = this.getKeyFromValue(e.target.value);
+    // if not in strict mode and key value is not defined (i.e., not in options)
+    // set value equal to e.target.value
+    if (!this.props.strictDatalist && value === undefined) {
+      value = e.target.value;
+    }
+    this.props.onUserInput(this.props.name, value);
   },
 
   handleBlur: function(e) {
@@ -201,7 +202,7 @@ var DatalistElement = React.createClass({
       var value = e.target.value;
       var options = this.props.options;
       if (Object.values(options).indexOf(value) === -1) {
-        // null out both the hidden value as well as the input text
+        // empty string out both the hidden value as well as the input text
         document.querySelector(`input[name="${this.props.name + '_list'}"]`).value = '';
         this.props.onUserInput(this.props.name, '');
       }
@@ -212,6 +213,7 @@ var DatalistElement = React.createClass({
     var required = this.props.required ? 'required' : null;
     var disabled = this.props.disabled ? 'disabled' : null;
     var options = this.props.options;
+    var strictMessage = 'Entry must be included in provided list of options.';
     var errorMessage = null;
     var requiredHTML = null;
     var elementClass = 'row form-group';
@@ -223,7 +225,12 @@ var DatalistElement = React.createClass({
 
     // Add error message
     if (this.props.hasError || (this.props.required && this.props.value === "")) {
-      errorMessage = <span>{this.props.errorMessage}</span>;
+      var msg = this.props.errorMessage;
+      msg += (this.props.strictDatalist ? ' ' + strictMessage : '');
+      errorMessage = <span>{msg}</span>;
+      elementClass = 'row form-group has-error';
+    } else if (this.props.strictDatalist && this.props.value === "") {
+      errorMessage = <span>{strictMessage}</span>;
       elementClass = 'row form-group has-error';
     }
 

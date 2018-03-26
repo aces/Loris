@@ -125,7 +125,7 @@ class MediaUploadForm extends React.Component {
               strictDatalist={true}
               onUserInput={this.setFormData}
               ref="forSite"
-              required={true}
+              required={false}
               value={this.state.formData.forSite}
             />
             <SelectElement
