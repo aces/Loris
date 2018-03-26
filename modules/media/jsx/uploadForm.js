@@ -118,11 +118,11 @@ class MediaUploadForm extends React.Component {
               required={true}
               value={this.state.formData.visitLabel}
             />
-            <DatalistElement
+            <SearchElement
               name="forSite"
               label="Site"
               options={this.state.Data.sites}
-              strictDatalist={true}
+              strictSearch={true}
               onUserInput={this.setFormData}
               ref="forSite"
               required={true}

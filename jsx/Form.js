@@ -138,13 +138,13 @@ var FormElement = React.createClass({
  * Datalist Component
  * React wrapper for a searchable dropdown
  */
-var DatalistElement = React.createClass({
+var SearchElement = React.createClass({
 
   propTypes: {
     name: React.PropTypes.string.isRequired,
     options: React.PropTypes.object.isRequired,
     id: React.PropTypes.string,
-    strictDatalist: React.PropTypes.bool,
+    strictSearch: React.PropTypes.bool,
     label: React.PropTypes.string,
     value: React.PropTypes.oneOfType([
       React.PropTypes.string,
@@ -153,7 +153,6 @@ var DatalistElement = React.createClass({
     class: React.PropTypes.string,
     disabled: React.PropTypes.bool,
     required: React.PropTypes.bool,
-    hasError: React.PropTypes.bool,
     errorMessage: React.PropTypes.string,
     onUserInput: React.PropTypes.func
   },
@@ -162,7 +161,7 @@ var DatalistElement = React.createClass({
     return {
       name: '',
       options: {},
-      strictDatalist: true,
+      strictSearch: true,
       label: '',
       value: undefined,
       id: '',
@@ -189,7 +188,7 @@ var DatalistElement = React.createClass({
     var value = this.getKeyFromValue(e.target.value);
     // if not in strict mode and key value is not defined (i.e., not in options)
     // set value equal to e.target.value
-    if (!this.props.strictDatalist && value === undefined) {
+    if (!this.props.strictSearch && value === undefined) {
       value = e.target.value;
     }
     this.props.onUserInput(this.props.name, value);
@@ -197,7 +196,7 @@ var DatalistElement = React.createClass({
 
   handleBlur: function(e) {
     // null out entry if not present in options in strict mode
-    if (this.props.strictDatalist) {
+    if (this.props.strictSearch) {
       var value = e.target.value;
       var options = this.props.options;
       if (Object.values(options).indexOf(value) === -1) {
@@ -228,10 +227,10 @@ var DatalistElement = React.createClass({
       elementClass = 'row form-group has-error';
     } else if (this.props.required && this.props.value === "") {
       var msg = 'This field is required!';
-      msg += (this.props.strictDatalist ? ' ' + strictMessage : '');
+      msg += (this.props.strictSearch ? ' ' + strictMessage : '');
       errorMessage = <span>{msg}</span>;
       elementClass = 'row form-group has-error';
-    } else if (this.props.strictDatalist && this.props.value === "") {
+    } else if (this.props.strictSearch && this.props.value === "") {
       errorMessage = <span>{strictMessage}</span>;
       elementClass = 'row form-group has-error';
     }
@@ -948,8 +947,8 @@ var LorisElement = React.createClass({
       case 'select':
         elementHtml = (<SelectElement {...elementProps} />);
         break;
-      case 'datalist':
-        elementHtml = (<DatalistElement {...elementProps}/>);
+      case 'search':
+        elementHtml = (<SearchElement {...elementProps}/>);
         break;
       case 'date':
         elementHtml = (<DateElement {...elementProps} />);
@@ -982,7 +981,7 @@ var LorisElement = React.createClass({
 
 window.FormElement = FormElement;
 window.SelectElement = SelectElement;
-window.DatalistElement = DatalistElement;
+window.SearchElement = SearchElement;
 window.TextareaElement = TextareaElement;
 window.TextboxElement = TextboxElement;
 window.DateElement = DateElement;
@@ -996,7 +995,7 @@ window.LorisElement = LorisElement;
 export default {
   FormElement,
   SelectElement,
-  DatalistElement,
+  SearchElement,
   TextareaElement,
   TextboxElement,
   DateElement,
