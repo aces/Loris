@@ -22,41 +22,52 @@ function save() {
     "use strict";
     var default_value, id, value;
     /**To get the default value**/
-    $('.description').click(function (event) {
+    $('.description').focus(function (event) {
         id = event.target.id;
         default_value = $("#" + id).text();
     });
 
-    $('.description').bind('blur', function (event) {
-        event.stopImmediatePropagation();
-        id = event.target.id;
-        value = $("#" + id).text();
-        $('<div/>').appendTo('body')
-            //.css({background : 'black', opacity: '0.9'})
-            .html("<div id ='asdfsaf'>Are you sure?</div>")
-            .dialog({
-                title: 'Modification',
-                width: 'auto',
-                resizable: false,
-                //dialogClass:'transparent',
-                position: [800, 120],
-                buttons: {
-                    Yes: function () {
-                        $.get(loris.BaseURL + "/mri_violations/ajax/UpdateMRIProtocol.php?field_id=" + id + "&field_value=" + value, function () {});
-                        $(this).dialog("close");
-                    },
-                    close: function () {
-                        $(this).remove();
-                        $("#" + id).text(default_value);
-                    }
-                }
-            });
-    }).keypress(function (e) {
-        if (e.which === 13) { // Determine if the user pressed the enter button
-	    e.preventDefault();
-            $(this).blur();
+    $('.description').keypress(
+      function(event) {
+        if (event.which === 13 || event.keyCode === 13) {
+          event.preventDefault();
+          var id = '#' + event.target.id;
+          $(id).blur();
         }
-    });
+      }
+    );
+
+    $('.description').blur(
+      function(event) {
+          event.stopImmediatePropagation();
+          id = event.target.id;
+          value = $('#'+id).text();
+          if (value !== default_value) {
+            $('.description').attr('contenteditable', false);
+            swal({
+              title: "Are you sure?",
+              text: "Are you sure you want to edit this field?",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonText: 'Yes, I am sure!',
+              cancelButtonText: "No, cancel it!"
+            }, function(isConfirm) {
+              if (isConfirm) {
+                $.post(
+                  loris.BaseURL + '/mri_violations/ajax/UpdateMRIProtocol.php',
+                  {
+                    field_id: id,
+                    field_value: value
+                  }
+                );
+              } else {
+                $('#' + id).text(default_value);
+              }
+            });
+            $('.description').attr('contenteditable', true);
+          }
+      }
+    );
 }
 
 $(function () {
