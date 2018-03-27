@@ -51,11 +51,21 @@ foreach($mp_idx as $num => $value) {
     array_push($idx, $value["ID"]);
 }
 
+$total_commas = 0;
+
 // insert new rows for comma separated values
 foreach ($idx as $id) {
+    $num_commas = 0;
     $mp_data = $DB->pselectRow("SELECT * FROM mri_protocol mp WHERE mp.ID=:id", array('id' => $id));
     foreach($mp_data as $key => $value) {
-       $mp_data[$key] = explode(",", $value);
+        $mp_data[$key] = explode(",", $value);
+        if (sizeof($mp_data[$key]) > 1) {
+            $num_commas += sizeof($mp_data[$key]) - 1;
+        }
+    }
+    $total_commas += $num_commas;
+    if ($num_commas == 0) {
+        continue;
     }
     $all_mp_combinations = cartesian($mp_data);
     foreach ($all_mp_combinations as $mp_combination) {
@@ -66,7 +76,11 @@ foreach ($idx as $id) {
     $DB->delete("mri_protocol", array("ID" => $id));
 }
 
-echo("All mri_protocol entries are now unique and not comma-separated.\n\n");
+if ($total_commas == 0) {
+    echo("No commas have been detected. The mri_protocol table has been unaltered.\n\n"); 
+} else {
+    echo("All mri_protocol entries are now unique and not comma-separated.\n\n");
+}
 
 
 
