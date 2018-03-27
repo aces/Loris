@@ -149,8 +149,8 @@ class FilterForm extends React.Component {
   onElementUpdate(type, fieldName, fieldValue) {
     // Make sure key is of string type and value is of string or object type
     // before sending them to querystring
-    if (typeof fieldName !== "string" ||
-        (typeof fieldValue !== "string" && typeof fieldValue !== "object")) {
+    if (typeof fieldName !== 'string' ||
+        (typeof fieldValue !== 'string' && typeof fieldValue !== 'object')) {
       return;
     }
 
