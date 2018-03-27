@@ -1,6 +1,3 @@
-SET GLOBAL innodb_file_format=Barracuda;
-SET GLOBAL innodb_file_per_table=ON;
-SET GLOBAL innodb_large_prefix=1;
 --
 -- DROP tables
 --
@@ -32,16 +29,15 @@ CREATE TABLE `ConfigSettings` (
 CREATE TABLE `Config` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `ConfigID` int(11) NOT NULL,
-  `Value` varchar(767),
+  `Value` text,
   PRIMARY KEY (`ID`),
   KEY `fk_Config_1_idx` (`ConfigID`),
-  CONSTRAINT `uk_Config_ConfigID_Value` UNIQUE (`ConfigID`,`Value`),
   CONSTRAINT `fk_Config_1`
   FOREIGN KEY (`ConfigID`)
     REFERENCES `ConfigSettings` (`ID`) 
     ON DELETE CASCADE 
     ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Filling ConfigSettings table
