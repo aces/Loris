@@ -45,29 +45,26 @@ function cartesian($input) {
 }
 
 // Get the list of unique IDs from the mri_protocol table
-$mp_idx = $DB->pselect("SELECT ID FROM mri_protocol", array());
-$idx = array();
-foreach($mp_idx as $num => $value) {
-    array_push($idx, $value["ID"]);
-}
-
+$mp_rows = $DB->pselect("SELECT * FROM mri_protocol", array());
 $total_commas = 0;
 
 // insert new rows for comma separated values
-foreach ($idx as $id) {
-    $num_commas = 0;
-    $mp_data = $DB->pselectRow("SELECT * FROM mri_protocol mp WHERE mp.ID=:id", array('id' => $id));
-    foreach($mp_data as $key => $value) {
-        $mp_data[$key] = explode(",", $value);
-        if (sizeof($mp_data[$key]) > 1) {
-            $num_commas += sizeof($mp_data[$key]) - 1;
+foreach ($mp_rows as $row) {
+    $num_commas = 0; 
+    foreach($row as $key => $value) {
+        if ($key == "ID") {
+            $id = $row[$key];
+        }
+        $row[$key] = explode(",", $value);
+        if (sizeof($row[$key]) > 1) {
+            $num_commas += sizeof($row[$key]) - 1;
         }
     }
-    $total_commas += $num_commas;
-    if ($num_commas == 0) {
-        continue;
+    $total_commas += $num_commas; 
+    if ($num_commas == 0) {  
+        continue; 
     }
-    $all_mp_combinations = cartesian($mp_data);
+    $all_mp_combinations = cartesian($row);
     foreach ($all_mp_combinations as $mp_combination) {
         unset($mp_combination["ID"]);
         $DB->insert("mri_protocol", $mp_combination);
@@ -77,7 +74,7 @@ foreach ($idx as $id) {
 }
 
 if ($total_commas == 0) {
-    echo("No commas have been detected. The mri_protocol table has been unaltered.\n\n"); 
+    echo("No commas have been detected. The mri_protocol table has been unaltered.\n\n");
 } else {
     echo("All mri_protocol entries are now unique and not comma-separated.\n\n");
 }
