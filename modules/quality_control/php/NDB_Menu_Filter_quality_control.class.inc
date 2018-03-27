@@ -115,12 +115,9 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
                   WHERE
                       ts.TarchiveID = t.TarchiveID
                       AND (ts.EchoTime BETWEEN mp.TE_min AND mp.TE_max)
-                      AND (ts.RepetitionTime BETWEEN mp.TR_min AND mp.TR_max)
-                      AND (ts.InversionTime BETWEEN mp.TI_min AND mp.TI_max)".
-                      " AND (ts.SliceThickness BETWEEN mp.slice_thickness_min".
-                      " AND mp.slice_thickness_max)".
-               ") THEN 'In DICOM'".
-              "ELSE 'Missing'
+                      AND (ts.RepetitionTime BETWEEN mp.TR_min AND mp.TR_max)".
+               " ) THEN 'In DICOM'".
+              " ELSE 'Missing'
            END as tarchive_loc,
            (SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project,".
            " (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID)
