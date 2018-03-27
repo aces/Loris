@@ -135,7 +135,7 @@ var FormElement = React.createClass({
 });
 
 /**
- * Datalist Component
+ * Search Component
  * React wrapper for a searchable dropdown
  */
 var SearchElement = React.createClass({
@@ -209,6 +209,10 @@ var SearchElement = React.createClass({
     }
   },
 
+  getTextInputValue: function() {
+    return document.querySelector(`input[name="${this.props.name + '_list'}"]`).value;
+  },
+
   render: function() {
     var required = this.props.required ? 'required' : null;
     var disabled = this.props.disabled ? 'disabled' : null;
@@ -237,6 +241,18 @@ var SearchElement = React.createClass({
       elementClass = 'row form-group has-error';
     }
 
+    // determine value to place into text input
+    var value;
+    // use value in options if valid
+    if (this.props.value !== undefined) {
+      if (Object.keys(options).indexOf(this.props.value) > -1) {
+        value = options[this.props.value];
+        // else, use input text value
+      } else {
+        value = this.getTextInputValue();
+      }
+    }
+
     return (
       <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
@@ -247,6 +263,7 @@ var SearchElement = React.createClass({
           <input
             type="text"
             name={this.props.name + '_list'}
+            value={value}
             id={this.props.id}
             list={this.props.name + '_list'}
             className="form-control"
