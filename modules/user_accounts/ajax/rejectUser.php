@@ -17,9 +17,8 @@
 use LORIS\user_accounts as UA;
 
 define('NO_IDENTIFIER_SUPPLIED', 1);
-define('USER_NOT_FOUND', 2);
-define('INCORRECT_PERMISSION', 3);
-define('ACCOUNT_ACTIVE', 4);
+define('INCORRECT_PERMISSION', 2);
+define('ACCOUNT_ACTIVE', 3);
 
 if (isset($_POST['identifier'])) {
     $identifier = $_POST['identifier'];
@@ -67,7 +66,7 @@ function _rejectUser($userID)
         );
     } else if (!UA\Edit_User::canRejectAccount($userID)) {
         throw new LorisException(
-            "This account is active and connot be rejected",
+            "This account is active and cannot be rejected",
             ACCOUNT_ACTIVE
         );
     } else {

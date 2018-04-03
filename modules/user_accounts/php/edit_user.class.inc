@@ -715,7 +715,14 @@ class Edit_User extends \NDB_Form
 
         // checking if the account can be rejected (no password hash
         // pending approval)
-        $this->tpl_data['can_reject'] = self::canRejectAccount($this->identifier);
+
+        // if new user
+        if ($this->isCreatingNewUser()) {
+            $this->tpl_data['can_reject'] = false;
+        } else {
+            $this->tpl_data['can_reject']
+                = self::canRejectAccount($this->identifier);
+        }
 
         // get the editor's permissions
 
@@ -825,22 +832,23 @@ class Edit_User extends \NDB_Form
      */
     static function canRejectAccount($userID)
     {
-        $DB = \Database::singleton();
-        try{
-            $fields =  $DB->pselectRow(
-                "SELECT Password_hash, Pending_approval
-                           FROM users
-                           WHERE UserID=:id",
-                array("id" => $userID)
-            );
-            if (empty($fields['Password_hash'])
-                && $fields['Pending_approval']=="Y"
-            ) {
-                return true;
-            }
+        $DB_factory = \NDB_Factory::singleton();
+        $DB         = $DB_factory->database();
+
+        $fields = $DB->pselectRow(
+            "SELECT Password_hash, Pending_approval
+                       FROM users
+                       WHERE UserID=:id",
+            array("id" => $userID)
+        );
+        if (empty($fields)) {
+            throw new LorisException("User not found in database");
+        } else if (empty($fields['Password_hash'])
+            && $fields['Pending_approval']=="Y"
+        ) {
+            return true;
+        } else {
             return false;
-        } catch (DatabaseException $e) {
-            throw new LorisException("User not found in database", USER_NOT_FOUND);
         }
     }
 
