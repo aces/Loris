@@ -243,13 +243,13 @@ var CandidateInfo = React.createClass(
       }
 
       var snacks = {
-        'Pretzel': 'Pretzel',
-        'Goldfish': 'Goldfish',
-        'Cheezball': 'Cheezball',
-        'Gummi worm': 'Gummi worm',
-        'Bugle': 'Bugle',
-        'Fruit rollup': 'Fruit rollup',
-        'Fruit by the foot': 'Fruit by the foot'
+        1: 'Pretzel',
+        57: 'Goldfish',
+        15: 'Cheezball',
+        25: 'Gummi worm',
+        33: 'Bugle',
+        45: 'Fruit rollup',
+        102: 'Fruit by the foot'
       };
       return (
         <div className="row">
@@ -294,8 +294,8 @@ var CandidateInfo = React.createClass(
               name="testList"
               id="testList"
               btnLabel="Add Snack"
-              useDatalist={true}
-              strictDatalist={true}
+              useSearch={true}
+              strictSearch={false}
               options={snacks}
               items={this.state.formData.testList}
               value={this.state.formData.pendingListItem}

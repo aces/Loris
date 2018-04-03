@@ -293,8 +293,8 @@ var TagsElement = React.createClass({
       emptyOption: true,
       hasError: false,
       allowDupl: false,
-      useDatalist: false,
-      strictDatalist: false, // only accept items specified in options
+      useSearch: false,
+      strictSearch: false, // only accept items specified in options
       errorMessage: '',
       pendingValKey: '',
       btnLabel: 'Add Tag',
@@ -326,8 +326,13 @@ var TagsElement = React.createClass({
 
   // send pendingValKey as an argument in order to null out entered item
   handleAdd: function() {
+    var options = this.props.options;
     // reference pending value through input ID attr
     var value = document.getElementById(this.props.id).value;
+    // if using a datalist (search), set value to be the key in options
+    if (this.props.useSearch && Object.values(options).indexOf(value) > -1) {
+      value = this.getKeyFromValue(value);
+    }
     if (this.canAddItem(value)) {
       this.props.onUserAdd(this.props.name, value, this.props.pendingValKey);
     }
@@ -336,6 +341,15 @@ var TagsElement = React.createClass({
   handleRemove: function(e) {
     var value = e.target.getAttribute('data-item');
     this.props.onUserRemove(this.props.name, value);
+  },
+
+  getKeyFromValue: function(value) {
+    var options = this.props.options;
+    var keyValue = Object.keys(options).find(function(o) {
+      return options[o] === value;
+    });
+
+    return keyValue;
   },
 
   // helper function to detect if item should be added to Tags
@@ -348,8 +362,8 @@ var TagsElement = React.createClass({
     } else if (!this.props.allowDupl && this.props.items.indexOf(value) > -1) {
       result = false;
       // reject if using a strict datalist and value is not in options
-    } else if (this.props.useDatalist &&
-      this.props.strictDatalist &&
+    } else if (this.props.useSearch &&
+      this.props.strictSearch &&
       Object.keys(this.props.options).indexOf(value) === -1
     ) {
       result = false;
@@ -379,30 +393,30 @@ var TagsElement = React.createClass({
       elementClass = 'row form-group has-error';
     }
 
-    // if options are given and useDatalist is specified
+    // if options are given and useSearch is specified
     var input;
     var options = this.props.options;
-    if (Object.keys(options).length > 0 && this.props.useDatalist) {
+    if (Object.keys(options).length > 0 && this.props.useSearch) {
       input = (
         <div>
-        <input
-          type="text"
-          name={this.props.name}
-          id={this.props.id}
-          list={this.props.id + '_list'}
-          className="form-control"
-          value={this.props.value || ""}
-          disabled={disabled}
-          onChange={this.handleChange}
-          onKeyPress={this.handleKeyPress}
-        />
-        <datalist id={this.props.id + '_list'}>
-          {Object.keys(options).map(function(option) {
-            return (
-              <option value={option} key={option}>{options[option]}</option>
-            );
-          })}
-        </datalist>
+          <input
+            type="text"
+            name={this.props.name}
+            id={this.props.id}
+            list={this.props.id + '_list'}
+            className="form-control"
+            value={this.props.value || ""}
+            disabled={disabled}
+            onChange={this.handleChange}
+            onKeyPress={this.handleKeyPress}
+          />
+          <datalist id={this.props.id + '_list'}>
+            {Object.keys(options).map(function(option) {
+              return (
+                <option value={options[option]} key={option}>{options[option]}</option>
+              );
+            })}
+          </datalist>
         </div>
       );
     } else if (Object.keys(options).length > 0) {
@@ -438,6 +452,12 @@ var TagsElement = React.createClass({
     // iterate through added Tags items and render them
     // with deletion button
     var items = this.props.items.map(function(item) {
+      var itmTxt;
+      if (Object.keys(options).length > 0 && options[item] !== undefined) {
+        itmTxt = options[item];
+      } else {
+        itmTxt = item;
+      }
       return (
           <button
             className="btn btn-info btn-inline"
@@ -445,7 +465,7 @@ var TagsElement = React.createClass({
             onClick={this.handleRemove}
             data-item={item}
           >
-            {item}
+            {itmTxt}
             &nbsp;
             <span
               className="glyphicon glyphicon-remove"
