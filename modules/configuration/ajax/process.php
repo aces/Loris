@@ -27,39 +27,91 @@ if (!$user->hasPermission('config')) {
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
-
 $DB =& Database::singleton();
 foreach ($_POST as $key => $value) {
     if (is_numeric($key)) { //update
         if ($value == "") {
             $DB->delete('Config', array('ID' => $key));
         } else {
-            $DB->update(
-                'Config',
-                array('Value' => $value),
-                array('ID' => $key)
-            );
+            // if no duplicate value then do updating
+            if (checkDuplicateUpdateDropdown($key, $value)) {
+                $DB->update(
+                    'Config',
+                    array('Value' => $value),
+                    array('ID' => $key)
+                );
+            } else {
+                   header("HTTP/1.1 303 Duplicate value for update");
+                   exit();
+            }
         }
     } else { //add new or remove
         $keySplit   = explode("-", $key);
         $valueSplit = explode("-", $value);
         if ($keySplit[0] == 'add') {
             if ($value !== "") {
-                $DB->insert(
-                    'Config',
-                    array(
-                     'ConfigID' => $keySplit[1],
-                     'Value'    => $value,
-                    )
-                );
+                if (checkDuplicate($keySplit[1], $value) == '0') {
+                    $DB->insert(
+                        'Config',
+                        array(
+                         'ConfigID' => $keySplit[1],
+                         'Value'    => $value,
+                        )
+                    );
+                } else {
+                        header("HTTP/1.1 303 Duplicate value");
+                        exit();
+                }
             }
         } elseif ($valueSplit[0] == 'remove') {
             $DB->delete('Config', array('ID' => $valueSplit[1]));
         }
     }
 }
-
-
+/**
+ * Check Duplicate value
+ *
+ * @param string $key   The value of the key
+ * @param string $value The value of the value
+ *
+ * @return string $result
+ */
+function checkDuplicate($key,$value)
+{
+       $DB     =& Database::singleton();
+       $result = $DB->pselectOne(
+           "Select count(*) from Config where ConfigID =:ConfigID and Value =:Value",
+           array(
+            ':ConfigID' => $key,
+            ':Value'    => $value,
+           )
+       );
+       return $result;
+}
+/**
+ * Check dropdown list Duplicate value
+ *
+ * @param string $id    The value of the id
+ * @param string $value The value of the value
+ *
+ * @return boolean return true if there is no Duplicate value
+ */
+function checkDuplicateUpdateDropdown($id,$value)
+{
+       $DB       =& Database::singleton();
+       $ConfigID = $DB->pselectOne(
+           "Select ConfigID from Config where ID =:ID",
+           array(':ID' => $id)
+       );
+       $IDBefore = $DB->pselectOne(
+           "Select ID from Config where ConfigID =:ConfigID and Value =:Value",
+           array(
+            ':ConfigID' => $ConfigID,
+            ':Value'    => $value,
+           )
+       );
+       return ($id == $IDBefore || $IDBefore == null);
+}
 exit();
 
 ?>
