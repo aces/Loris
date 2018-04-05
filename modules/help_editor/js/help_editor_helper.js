@@ -11,7 +11,7 @@ $("input[name=preview]").click(function(e) {
         div     = document.createElement("div"),
         btn     = document.createElement("BUTTON"),
         button  = document.createTextNode("Close"),
-        wrap    = document.createElement("pre");
+        wrap    = document.createElement("div");
 
      wrap.setAttribute("id", "help-wrapper");
      wrap.innerHTML  = "<h3>" + title + "</h3>";
@@ -24,8 +24,8 @@ $("input[name=preview]").click(function(e) {
      btn.appendChild(button);
      btn.className="btn btn-default";
      btn.setAttribute("id","helpclose");
-     div.appendChild(wrap);
      div.appendChild(btn);
+     div.appendChild(wrap);
      document.getElementById('page').appendChild(div);
      div.setAttribute("class", "help-content");
      btn.addEventListener("click", function(e) {

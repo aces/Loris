@@ -33,7 +33,7 @@ $(document).ready(function() {
         wrap.setAttribute("id", "help-wrapper");
         ReactDOM.render(RMarkdown({content: content.content}), wrap);
       } else {
-        wrap = document.createElement("pre");
+        wrap = document.createElement("div");
         wrap.setAttribute("id", "help-wrapper");
         wrap.innerHTML = "<hr id='help-separator'>";
         if (content.topic) {
@@ -52,7 +52,6 @@ $(document).ready(function() {
       edit.appendChild(text);
       edit.className = "btn btn-default";
       edit.setAttribute("id", "helpedit");
-      div.appendChild(wrap);
       div.appendChild(btn);
 
       // Markdown format content came from the filesystem and can't
@@ -66,6 +65,7 @@ $(document).ready(function() {
             getParams.testName + "&subsection=" + getParams.subtest, "_self");
         });
       }
+      div.appendChild(wrap);
       document.getElementById('page').appendChild(div);
       div.setAttribute("class", "help-content");
       $(div).addClass('visible');

@@ -695,16 +695,13 @@ tr.directentry {
     background: #064785;
 }
 #helpclose {
-   position: absolute;
-   right:    0;
-   top:   20px;
-   margin-right : 5px;
+   float: right;
+   margin: 10px;
 }
 #helpedit {
-   position: absolute;
-   right:    0;
-   top:   20px;
-   margin-right: 70px;
+   float: right;
+   margin: 10px;
+   margin-right: 0px;
 }
 .help-content h3 {
     color: #FFFFFF;
