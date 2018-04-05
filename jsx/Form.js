@@ -138,55 +138,24 @@ var FormElement = React.createClass({
  * Search Component
  * React wrapper for a searchable dropdown
  */
-var SearchElement = React.createClass({
-
-  propTypes: {
-    name: React.PropTypes.string.isRequired,
-    options: React.PropTypes.object.isRequired,
-    id: React.PropTypes.string,
-    strictSearch: React.PropTypes.bool,
-    label: React.PropTypes.string,
-    value: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.array
-    ]),
-    class: React.PropTypes.string,
-    disabled: React.PropTypes.bool,
-    required: React.PropTypes.bool,
-    errorMessage: React.PropTypes.string,
-    placeHolder: React.PropTypes.string,
-    onUserInput: React.PropTypes.func
-  },
-
-  getDefaultProps: function() {
-    return {
-      name: '',
-      options: {},
-      strictSearch: true,
-      label: '',
-      value: undefined,
-      id: '',
-      class: '',
-      disabled: false,
-      required: false,
-      errorMessage: '',
-      placeHolder: '',
-      onUserInput: function() {
-        console.warn('onUserInput() callback is not set');
-      }
-    };
-  },
-
-  getKeyFromValue: function(value) {
+class SearchElement extends React.Component {
+  constructor(props) {
+    super(props);
+    this.getKeyFromValue = this.getKeyFromValue.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+    this.getTextInputValue = this.getTextInputValue.bind(this);
+  }
+  getKeyFromValue(value) {
     var options = this.props.options;
     var keyValue = Object.keys(options).find(function(o) {
       return options[o] === value;
     });
 
     return keyValue;
-  },
+  }
 
-  handleChange: function(e) {
+  handleChange(e) {
     var value = this.getKeyFromValue(e.target.value);
     // if not in strict mode and key value is not defined (i.e., not in options)
     // set value equal to e.target.value
@@ -194,9 +163,9 @@ var SearchElement = React.createClass({
       value = e.target.value;
     }
     this.props.onUserInput(this.props.name, value);
-  },
+  }
 
-  handleBlur: function(e) {
+  handleBlur(e) {
     // null out entry if not present in options in strict mode
     if (this.props.strictSearch) {
       var value = e.target.value;
@@ -207,13 +176,13 @@ var SearchElement = React.createClass({
         this.props.onUserInput(this.props.name, '');
       }
     }
-  },
+  }
 
-  getTextInputValue: function() {
+  getTextInputValue() {
     return document.querySelector(`input[name="${this.props.name + '_input'}"]`).value;
-  },
+  }
 
-  render: function() {
+  render() {
     var required = this.props.required ? 'required' : null;
     var disabled = this.props.disabled ? 'disabled' : null;
     var options = this.props.options;
@@ -279,13 +248,49 @@ var SearchElement = React.createClass({
               );
             })}
           </datalist>
-          <input type="hidden" name={this.props.name} value={this.props.value}/>
           {errorMessage}
         </div>
       </div>
     );
   }
-});
+}
+
+SearchElement.propTypes = {
+  name: React.PropTypes.string.isRequired,
+  options: React.PropTypes.object.isRequired,
+  id: React.PropTypes.string,
+  // strictSearch, if set to true, will require that only options
+  // provided in the options prop can be submitted
+  strictSearch: React.PropTypes.bool,
+  label: React.PropTypes.string,
+  value: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.array
+  ]),
+  class: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  errorMessage: React.PropTypes.string,
+  placeHolder: React.PropTypes.string,
+  onUserInput: React.PropTypes.func
+};
+
+SearchElement.defaultProps = {
+  name: '',
+  options: {},
+  strictSearch: true,
+  label: '',
+  value: undefined,
+  id: '',
+  class: '',
+  disabled: false,
+  required: false,
+  errorMessage: '',
+  placeHolder: '',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  }
+};
 
 /**
  * Select Component
