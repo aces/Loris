@@ -203,14 +203,14 @@ var SearchElement = React.createClass({
       var options = this.props.options;
       if (Object.values(options).indexOf(value) === -1) {
         // empty string out both the hidden value as well as the input text
-        document.querySelector(`input[name="${this.props.name + '_list'}"]`).value = '';
+        document.querySelector(`input[name="${this.props.name + '_input'}"]`).value = '';
         this.props.onUserInput(this.props.name, '');
       }
     }
   },
 
   getTextInputValue: function() {
-    return document.querySelector(`input[name="${this.props.name + '_list'}"]`).value;
+    return document.querySelector(`input[name="${this.props.name + '_input'}"]`).value;
   },
 
   render: function() {
@@ -262,7 +262,7 @@ var SearchElement = React.createClass({
         <div className="col-sm-9">
           <input
             type="text"
-            name={this.props.name + '_list'}
+            name={this.props.name + '_input'}
             value={value}
             id={this.props.id}
             list={this.props.name + '_list'}
