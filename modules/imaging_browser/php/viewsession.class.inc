@@ -168,7 +168,7 @@ class ViewSession extends \NDB_Form
              on (files.FileID=sel.FileID) 
             WHERE SessionID=:SID AND (AcquisitionProtocolID IS NULL 
             OR AcquisitionProtocolID not in (1, 2, 3, 52)) 
-            AND PendingStaging=0 $extra_where_string 
+            $extra_where_string 
             ORDER BY files.OutputType, 
                      files.AcquisitionProtocolID, 
                      files.File",

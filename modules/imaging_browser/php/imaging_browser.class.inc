@@ -153,7 +153,6 @@ class Imaging_Browser extends \NDB_Menu_Filter
         $where = "
             WHERE 
             s.Active = 'Y' AND
-            f.PendingStaging=0 AND 
             f.FileType='mnc'";
 
         $this->query .= $left_joins;
