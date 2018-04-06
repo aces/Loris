@@ -255,77 +255,33 @@ var SelectElement = React.createClass({
   }
 });
 
-var TagsElement = React.createClass({
-  propTypes: {
-    name: React.PropTypes.string.isRequired,
-    id: React.PropTypes.string.isRequired,
-    pendingValKey: React.PropTypes.string.isRequired,
-    options: React.PropTypes.object,
-    items: React.PropTypes.array,
-    label: React.PropTypes.string,
-    value: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.array
-    ]),
-    class: React.PropTypes.string,
-    multiple: React.PropTypes.bool,
-    required: React.PropTypes.bool,
-    disabled: React.PropTypes.bool,
-    emptyOption: React.PropTypes.bool,
-    errorMessage: React.PropTypes.string,
-    btnLabel: React.PropTypes.string,
-    onUserInput: React.PropTypes.func,
-    onUserAdd: React.PropTypes.func,
-    onUserRemove: React.PropTypes.func
-  },
+class TagsElement extends React.Component {
+  constructor(props) {
+    super(props);
 
-  getDefaultProps: function() {
-    return {
-      name: '',
-      options: {},
-      items: [],
-      label: '',
-      value: undefined,
-      id: '',
-      class: '',
-      required: false,
-      disabled: false,
-      emptyOption: true,
-      hasError: false,
-      allowDupl: false,
-      useSearch: false,
-      strictSearch: false, // only accept items specified in options
-      errorMessage: '',
-      pendingValKey: '',
-      btnLabel: 'Add Tag',
-      onUserInput: function() {
-        console.warn('onUserInput() callback is not set');
-      },
-      onUserAdd: function() {
-        console.warn('onUserAdd() callback is not set');
-      },
-      onUserRemove: function() {
-        console.warn('onUserRemove() callback is not set');
-      }
-    };
-  },
+    this.handleChange = this.handleChange.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.handleAdd = this.handleAdd.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
+    this.getKeyFromValue = this.getKeyFromValue.bind(this);
+    this.canAddItem = this.canAddItem.bind(this);
+  }
 
   // pendingValKey is the placeholder variable for temporarily storing
   // typed or selected items before adding them to the Tags
-  handleChange: function(e) {
+  handleChange(e) {
     this.props.onUserInput(this.props.pendingValKey, e.target.value);
-  },
-
+  }
   // also add tags if enter key is hit within input field
-  handleKeyPress: function(e) {
+  handleKeyPress(e) {
     if (e.keyCode === 13 || e.which === 13) {
       e.preventDefault();
       this.handleAdd();
     }
-  },
+  }
 
   // send pendingValKey as an argument in order to null out entered item
-  handleAdd: function() {
+  handleAdd() {
     var options = this.props.options;
     // reference pending value through input ID attr
     var value = document.getElementById(this.props.id).value;
@@ -336,24 +292,24 @@ var TagsElement = React.createClass({
     if (this.canAddItem(value)) {
       this.props.onUserAdd(this.props.name, value, this.props.pendingValKey);
     }
-  },
+  }
 
-  handleRemove: function(e) {
+  handleRemove(e) {
     var value = e.target.getAttribute('data-item');
     this.props.onUserRemove(this.props.name, value);
-  },
+  }
 
-  getKeyFromValue: function(value) {
+  getKeyFromValue(value) {
     var options = this.props.options;
     var keyValue = Object.keys(options).find(function(o) {
       return options[o] === value;
     });
 
     return keyValue;
-  },
+  }
 
   // helper function to detect if item should be added to Tags
-  canAddItem: function(value) {
+  canAddItem(value) {
     var result = true;
     // reject empty values
     if (!value) {
@@ -370,9 +326,9 @@ var TagsElement = React.createClass({
     }
 
     return result;
-  },
+  }
 
-  render: function() {
+  render() {
     var disabled = this.props.disabled ? 'disabled' : null;
     var requiredHTML = null;
     var emptyOptionHTML = null;
@@ -497,7 +453,60 @@ var TagsElement = React.createClass({
       </div>
     );
   }
-});
+}
+
+TagsElement.propTypes = {
+  name: React.PropTypes.string.isRequired,
+    id: React.PropTypes.string.isRequired,
+  pendingValKey: React.PropTypes.string.isRequired,
+  options: React.PropTypes.object,
+  items: React.PropTypes.array,
+  label: React.PropTypes.string,
+  value: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.array
+  ]),
+  class: React.PropTypes.string,
+  multiple: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  disabled: React.PropTypes.bool,
+  emptyOption: React.PropTypes.bool,
+  errorMessage: React.PropTypes.string,
+  btnLabel: React.PropTypes.string,
+  onUserInput: React.PropTypes.func,
+  onUserAdd: React.PropTypes.func,
+  onUserRemove: React.PropTypes.func
+};
+
+TagsElement.defaultProps = {
+    name: '',
+    options: {},
+    items: [],
+    label: '',
+    value: undefined,
+    id: '',
+    class: '',
+    required: false,
+    disabled: false,
+    emptyOption: true,
+    hasError: false,
+    allowDupl: false,
+    useSearch: false,
+    strictSearch: false, // only accept items specified in options
+    errorMessage: '',
+    pendingValKey: '',
+    btnLabel: 'Add Tag',
+    onUserInput: function() {
+      console.warn('onUserInput() callback is not set');
+    },
+    onUserAdd: function() {
+      console.warn('onUserAdd() callback is not set');
+    },
+    onUserRemove: function() {
+      console.warn('onUserRemove() callback is not set');
+    }
+};
+
 
 /**
  * Textarea Component
