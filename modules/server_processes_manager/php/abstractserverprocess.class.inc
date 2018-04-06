@@ -378,7 +378,7 @@ abstract class AbstractServerProcess
       * task's completion status (return code, return text, end time).
       *
       * @return boolean true if the operation succeeded, false otherwise.
-      * @throws /UnexpectedValueException if the return code file does not exists,
+      * @throws \UnexpectedValueException if the return code file does not exists,
       *                                  cannot be read or has invalid content
       */
     private function _syncTaskProperties()

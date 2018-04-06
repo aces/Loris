@@ -34,7 +34,7 @@ class Create_Timepoint extends \NDB_Form
      * Check user permissions
      *
      * @return bool
-     * @throws /ConfigurationException
+     * @throws \ConfigurationException
      */
     function _hasAccess()
     {

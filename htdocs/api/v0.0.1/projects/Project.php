@@ -114,7 +114,7 @@ class Project extends \Loris\API\APIBase
     /**
      * Handles a GET request for a project data
      *
-     * @return void 
+     * @return void (but populates $this->JSON) 
      */
     function handleGET()
     {

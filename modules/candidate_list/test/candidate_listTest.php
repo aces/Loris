@@ -270,7 +270,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      * @param array  $criteria        criteria for the search.
      * @param string $expectedResults the candidates that should be returned.
      *
-     * @return void.
+     * @return void
      */
     private function _assertSearchBy(array $criteria, $expectedResults)
     {
