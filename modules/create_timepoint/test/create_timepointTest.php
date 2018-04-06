@@ -109,7 +109,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      * @param string $subproject text of subproject
      * @param string $visitlabel text of visit label
      *
-     * @return void.
+     * @return void
      */
     private function _createTimepoint($canID, $subproject, $visitlabel)
     {

@@ -193,7 +193,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     /**
      * Performs various searches by PSCID (and PSCID only).
      *
-     * @return void.
+     * @return void
      */
     function testFilterByPscid()
     {
@@ -233,7 +233,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     /**
      * Performs various searches by DCCID (and DCCID only).
      *
-     * @return void.
+     * @return void
      */
     function testFilterByDccId()
     {

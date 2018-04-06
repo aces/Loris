@@ -27,7 +27,7 @@ namespace LORIS\candidate_parameters;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Candidate_Parameters extends \NDB_Form
+class \Candidate_Parameters extends \NDB_Form
 {
     public $hasWritePermission = false;
 
@@ -35,7 +35,7 @@ class Candidate_Parameters extends \NDB_Form
      * Check user permissions
      *
      * @return bool
-     * @throws ConfigurationException
+     * @throws ConfigurationException 
      */
     function _hasAccess()
     {
