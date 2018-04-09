@@ -29,9 +29,9 @@ class EditExaminer extends \NDB_Form
      * Checks if the user has access to the edit examiner form
      *
      * @return bool
-     * @throws ConfigurationException
-     * @throws DatabaseException
-     * @throws LorisException
+     * @throws \ConfigurationException
+     * @throws \DatabaseException
+     * @throws \LorisException
      */
     function _hasAccess()
     {

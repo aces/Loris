@@ -988,7 +988,7 @@ class NDB_BVL_Feedback
      *
      * @author Evan McIlroy <evanmcilroy@gmail.com>
      *
-     * @return void*
+     * @return void
      */
     function openThread($feedbackID)
     {

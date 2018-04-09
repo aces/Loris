@@ -81,7 +81,7 @@ class ServerProcessLauncher
      * @param AbstractServerProcess $process the process that was just started
      *
      * @return void
-     * @throws InvalidArgumentException if the process is null or if either the
+     * @throws \InvalidArgumentException if the process is null or if either the
      *                                  PID or the process start time is null.
      */
     private function _saveProcess(AbstractServerProcess $process)

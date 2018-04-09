@@ -377,7 +377,7 @@ class LorisForm
      *
      * @param string $name The current element name
      *
-     * @return $name if it exists, otherwise a unique new name.
+     * @return string ($name if it exists, otherwise a unique new name.)
      */
     private function _generateName($name)
     {
@@ -1814,7 +1814,7 @@ class LorisForm
      * Register a rule type to be added from the QuickForm API. This
      * is unlikely to ever be implemented.
      *
-     * @return void.
+     * @return void
      */
     function registerRule()
     {
@@ -1834,7 +1834,7 @@ class LorisForm
      * @param string $type  (optional)Rule type use getRegisteredRules()
      *                      to get types
      *
-     * @return void.
+     * @return void
      */
     function addGroupRule($group, $arg1, $type='')
     {
@@ -1877,7 +1877,7 @@ class LorisForm
      *
      * @param callable $func The callback to use to validate this form.
      *
-     * @return void.
+     * @return void
      */
     function addFormRule($func)
     {

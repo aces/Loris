@@ -58,7 +58,7 @@ class Imaging_Session_ControlPanel
     /**
     *  Gets data for the control panel template
     *
-    * @return $subjectData array with data for the template
+    * @return array ($subjectData) with data for the template
     */
     function getData()
     {

@@ -408,7 +408,7 @@ class NDB_Menu_Filter extends NDB_Menu
     /**
     * Gets the base query
     *
-    * @return $query
+    * @return string ($query)
     */
     function _getBaseQuery()
     {
@@ -429,7 +429,7 @@ class NDB_Menu_Filter extends NDB_Menu
     * @param string $field        filter field
     * @param string $val          filter value
     *
-    * @return $query
+    * @return string ($query)
     */
     function _addValidFilters($prepared_key, $field, $val)
     {
