@@ -93,7 +93,7 @@ class NDB_Config
      *
      * @param string $configFile the neurodb config.xml config file
      *
-     * @return void, but as side-effect loads $this->_settings
+     * @return void (but as side-effect loads $this->_settings)
      *
      * @throws Exception
      */

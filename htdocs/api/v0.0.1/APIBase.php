@@ -248,7 +248,7 @@ abstract class APIBase
      *
      * @param integer $code The program exit code
      *
-     * @return none, but exits the running program
+     * @return void (but exits the running program)
      */
     function safeExit($code)
     {

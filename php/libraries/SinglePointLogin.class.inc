@@ -141,7 +141,7 @@ class SinglePointLogin
     /**
      * Attempt to authenticate a user's credentials by any supported means.
      *
-     * @return none, but may modified session state
+     * @return none (but may modified session state)
      */
     function authenticate()
     {

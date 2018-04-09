@@ -702,7 +702,7 @@ class Utility
      *
      * @param string $fullname Descriptive name to be looked up
      *
-     * @return  Non-associative array of the form array(Test1, Test2, ..)
+     * @return  string (Non-associative array of the form array(Test1, Test2, ..))
      * @note    This should be moved out of the Utility class into whatever
      *       module uses it. (Data team helper?)
      * @note    Function comment written by Dave, not the author of this function.

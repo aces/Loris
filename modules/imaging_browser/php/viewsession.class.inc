@@ -649,7 +649,7 @@ class ViewSession extends \NDB_Form
     /**
      * Gets header table html
      *
-     * @return $html of the header table
+     * @return string ($html of the header table)
      */
     function getHeaderTable()
     {
@@ -673,7 +673,7 @@ class ViewSession extends \NDB_Form
     /**
      * Populates data for the template
      *
-     * @return $subjectData array with data
+     * @return array ($subjectData array with data)
      */
     function getSubjectData()
     {
@@ -729,7 +729,7 @@ class ViewSession extends \NDB_Form
     /**
      * Gets control panel
      *
-     * @return $controlPanel
+     * @return string ($controlPanel)
      */
     function getControlPanel()
     {

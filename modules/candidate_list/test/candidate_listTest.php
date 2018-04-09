@@ -193,7 +193,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     /**
      * Performs various searches by PSCID (and PSCID only).
      *
-     * @return void.
+     * @return void
      */
     function testFilterByPscid()
     {
@@ -233,7 +233,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     /**
      * Performs various searches by DCCID (and DCCID only).
      *
-     * @return void.
+     * @return void
      */
     function testFilterByDccId()
     {
@@ -270,7 +270,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      * @param array  $criteria        criteria for the search.
      * @param string $expectedResults the candidates that should be returned.
      *
-     * @return void.
+     * @return void
      */
     private function _assertSearchBy(array $criteria, $expectedResults)
     {
