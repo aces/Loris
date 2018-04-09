@@ -1,6 +1,6 @@
 ## Media module set up 
 
-Set the `mdiaPath` config value to the desired path on the server where the files 
+Set the `mediaPath` config value to the desired path on the server where the files 
 will be uploaded.
 
 Create the directory on the server.
