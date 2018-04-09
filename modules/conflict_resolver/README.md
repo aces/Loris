@@ -24,13 +24,13 @@ LORIS.
 
 The module only provides data entry conflict resolution and triggers
 the recalculation of fields which are dependent on the data that's
-been changed (ie. score fields, age, etc). It does not do the initial
+been changed (i.e. score fields, age, etc). It does not do the initial
 data entry on the instruments themselves, only the resolution.
 
 It is up to any given study's internal policy to determine if
 resolution should be done by the same person or a different person
-than the person who did the initial data entry and not enforced by
-LORIS.
+than the person who did the initial data entry. The adopted policy
+will not be enforced by LORIS.
 
 ## Permissions
 
