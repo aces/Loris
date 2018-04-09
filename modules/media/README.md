@@ -11,7 +11,8 @@ associated to a specific instrument form within a given candidate timepoint.
 ## Intended Users
 
 The Media module is used by data entry staff to upload candidate and timepoint 
-specific media. The module can also be used by 
+specific media. The module can also be used by data-monitoring staff ensuring the 
+integrity of the data for each candidate.
 
 ## Scope
 
@@ -54,4 +55,4 @@ Media module depends on a session to be already created before any files can be
 uploaded for it.
 
 Uploaded files are displayed in the browse tab. Each entry has a link to download 
-the file and a link to the timepoint the the file was uploaded to.
+the file itself and a link to the timepoint the file was uploaded for.
