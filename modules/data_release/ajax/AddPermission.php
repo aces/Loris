@@ -66,12 +66,12 @@ if ($_POST['action'] == 'addpermission' && $user->hasPermission('superuser')) {
         $DB->run("TRUNCATE data_release_permissions");
         foreach ($_POST as $key => $value) {
             if (strpos($key, 'permissions') !== false) {
-                $parsed_user   = str_replace(
+                $parsed_user = str_replace(
                     "_",
                     "%",
                     str_replace("permissions_", "", $key)
                 );
-                $userid = $DB->pselectOne(
+                $userid      = $DB->pselectOne(
                     "SELECT ID FROM users WHERE UserID LIKE :userid",
                     array('userid' => $parsed_user)
                 );
