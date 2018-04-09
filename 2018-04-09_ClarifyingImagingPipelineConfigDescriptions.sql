@@ -7,7 +7,7 @@ UPDATE ConfigSettings
     WHERE Name="create_nii";
 
 UPDATE ConfigSettings
-    SET Description='Enable creation of candidates from the upload'
+    SET Description='Enable candidate creation in the imaging pipeline'
         WHERE Name='createCandidates';
 
 UPDATE ConfigSettings
