@@ -637,11 +637,8 @@ class NDB_Page implements RequestHandlerInterface
         if (isset($get['format'])) {
             $this->format = $get['format'];
             return $handler->handle($request)->withHeader("Content-Type", "applicaiton/json");
-            // Do not add the decoration middleware for json format requests. See
-            // FIXME above.
         }
-        return $handler->handle($request)->withHeader("Content-Type", "text/html");
-        //return (new \LORIS\Middleware\PageDecorationMiddleware($this, $user))->process($request, $handler);
+        return (new \LORIS\Middleware\PageDecorationMiddleware($user, $this))->process($request, $handler)->withHeader("Content-Type", "text/html");
     }
 
     /**

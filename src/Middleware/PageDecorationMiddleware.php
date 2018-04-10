@@ -13,8 +13,7 @@ use \Psr\Http\Server\RequestHandlerInterface;
 class PageDecorationMiddleware implements MiddlewareInterface {
     protected $page;
     protected $user;
-    public function __construct(\NDB_Page $page, \User $user) {
-        $this->page = $page;
+    public function __construct(\User $user) {
         $this->user = $user;
     }
     /**

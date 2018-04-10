@@ -205,8 +205,6 @@
 
             {/if}
             {if $dynamictabs neq "dynamictabs"}
-            {* Add enough spacing to get below the menu *}
-                <br><br><br>
             <div class="page-content inset">
 
                 {if $console}
