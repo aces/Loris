@@ -133,7 +133,6 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
         }
 
         return (new \LORIS\Middleware\PageDecorationMiddleware(
-            new \NDB_Page(new \Module("", ""), "", "", "", ""),
             $this->user
         ))->process(
             $request,

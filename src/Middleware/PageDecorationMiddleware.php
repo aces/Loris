@@ -27,22 +27,24 @@ class PageDecorationMiddleware implements MiddlewareInterface {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface {
         $baseURL = $request->getAttribute("baseurl");
         $config  = \NDB_Config::singleton();
+        $page = $request->getAttribute("pageclass") ?? new \NDB_Page(new \Module("", ""), "", "", "", "");
         if ($this->user instanceof \LORIS\AnonymousUser) {
             return (new \LORIS\Middleware\AnonymousPageDecorationMiddleware(
-                $baseURL,
+                $baseURL ?? "",
                 $config,
-                $this->page->getJSDependencies(),
-                $this->page->getCSSDependencies()
+                $page->getJSDependencies(),
+                $page->getCSSDependencies()
             )
             )->process($request, $handler);
         }
+
         return (new \LORIS\Middleware\UserPageDecorationMiddleware(
             $this->user,
             $baseURL ?? "",
-            $this->page->name,
+            $page->name ?? "",
             $config,
-            $this->page->getJSDependencies(),
-            $this->page->getCSSDependencies()
+            $page->getJSDependencies(),
+            $page->getCSSDependencies()
         )
         )->process($request, $handler);
     }

@@ -233,7 +233,11 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
         try {
             $page = $this->loadPage($pagename);
         } catch (\NotFound $e) {
-            return (new \LORIS\Http\Error($request, 404, "File not found: " . $request->getURI()->__toString()));
+            return (new \LORIS\Middleware\PageDecorationMiddleware($request->getAttribute("user") ?? new \LORIS\AnonymousUser())
+            )->process(
+                $request,
+                new \LORIS\Router\NoopResponder(new \LORIS\Http\Error($request, 404, "File not found: " . $request->getURI()->__toString()))
+            );
         }
 
         return $page->process($request, $page);
