@@ -45,7 +45,7 @@ if (empty($username)) {
     header("HTTP/1.1 404 Not Found");
     header("Content-Type: text/plain");
     exit(
-        "This account do not exists"
+        "This account does not exist"
     );
 }
 
