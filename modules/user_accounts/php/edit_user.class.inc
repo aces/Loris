@@ -842,7 +842,7 @@ class Edit_User extends \NDB_Form
             array("id" => $userID)
         );
         if (empty($fields)) {
-            throw new LorisException("User not found in database");
+            throw new \LorisException("User not found in database");
         } else if (empty($fields['Password_hash'])
             && $fields['Pending_approval']=="Y"
         ) {
