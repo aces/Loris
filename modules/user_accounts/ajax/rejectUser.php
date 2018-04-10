@@ -4,7 +4,12 @@
  *
  * Handles rejection of pending user accounts by a user that has permissions
  *
- * PHP Version 5
+ * Send DB query to remove user based on userID, checking that the
+ * user sending the request has admin permissions and the account
+ * can be removed (no password hash => has never had an activity on
+ * Loris, and is pending).
+ *
+ * PHP Version 7
  *
  * @category Loris
  * @package  User_Accounts
@@ -14,63 +19,44 @@
  * @link     https://github.com/aces/Loris
  */
 
-use LORIS\user_accounts as UA;
+namespace LORIS\user_accounts;
 
-define('NO_IDENTIFIER_SUPPLIED', 1);
-define('INCORRECT_PERMISSION', 2);
-define('ACCOUNT_ACTIVE', 3);
-
-if (isset($_POST['identifier'])) {
-    $identifier = $_POST['identifier'];
-    _rejectUser($identifier);
-} else {
-    throw new LorisException("No identifier supplied", NO_IDENTIFIER_SUPPLIED);
+// Make sure the permission is checked first to avoid malicious userID scans
+if (!(\User::singleton())->hasPermission('user_accounts')) {
+    header("HTTP/1.1 403 Forbidden");
+    print_r(
+        "You do not have the correct permissions for this 
+         operation (need admin or user accounts)"
+    );
+    exit(1);
 }
 
-/**
- * Checks that logged in user has user_accounts permissions, which is
- * also included in admin permissions
- *
- * @return boolean true if user has user accounts permissions, false otherwise
- */
-function _hasPerm()
-{
-    $user =& User::singleton();
-    if (isset($user)) {
-        return $user->hasPermission('user_accounts');
-    }
-    return false;
+if (!isset($_POST['identifier'])) {
+    header("HTTP/1.1 400 Bad Request");
+    print_r(
+        "No identifier supplied"
+    );
+    exit(2);
 }
 
-/**
- * Send DB query to remove user based on userID, checking that the
- * user sending the request has admin permissions and the account
- * can be removed (no password hash => has never had an activity on
- * Loris, and is pending).
- *
- * @param string $userID of account to reject
- *
- * @return void
- */
-function _rejectUser($userID)
-{
-    $DB       = \Database::singleton();
-    $config   = \NDB_Config::singleton();
-    $baseURL  = $config->getSetting('url');
-    $redirect = $baseURL . "/user_accounts/";
-    if (!_hasPerm()) {
-        throw new LorisException(
-            "You do not have the correct permissions for this 
-            operation (need admin or user accounts)",
-            INCORRECT_PERMISSION
-        );
-    } else if (!UA\Edit_User::canRejectAccount($userID)) {
-        throw new LorisException(
-            "This account is active and cannot be rejected",
-            ACCOUNT_ACTIVE
-        );
-    } else {
-        $DB->delete('users', array("UserID" => $userID));
-    }
+$username = (\User::factory($_POST['identifier']))->getUsername();
+
+if (empty($username)) {
+    header("HTTP/1.1 404 Not Found");
+    print_r(
+        "This account do not exists"
+    );
+    exit(3);
 }
-?>
+
+if (!Edit_User::canRejectAccount($username)) {
+    header("HTTP/1.1 403 Forbidden");
+    print_r(
+        "This account is active and cannot be rejected"
+    );
+    exit(4);
+}
+
+(\Database::singleton())->delete('users', array("UserID" => $username()));
+header("HTTP/1.1 204 No Content");
+
