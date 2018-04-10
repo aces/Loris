@@ -16,7 +16,6 @@ namespace LORIS\Router;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
-use \LORIS\Http\StringStream;
 
 /**
  * Handles the root of a LORIS install. It will mostly delegate to

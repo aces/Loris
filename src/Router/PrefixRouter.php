@@ -16,7 +16,6 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\URIInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
-use \LORIS\Http\StringStream;
 
 /**
  * A PrefixRouter is a type of router which delegates to other
