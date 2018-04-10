@@ -229,8 +229,8 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
 
         try {
             $page = $this->loadPage($pagename);
-        } catch (\Notfound $e) {
-            return (new \LORIS\Http\Error($request, 404, "File not found: " . $request->getURI()->__toString()));
+        } catch (\NotFound $e) {
+            return new \LORIS\Http\Error($request, 404);
         }
 
         return $page->process($request, $page);

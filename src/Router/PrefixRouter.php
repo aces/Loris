@@ -100,6 +100,6 @@ class PrefixRouter implements RequestHandlerInterface
                 return $subhandler->handle($request);
             }
         }
-        return (new \LORIS\Http\Error($request, 404));
+        return new \LORIS\Http\Error($request, 404);
     }
 }

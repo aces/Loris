@@ -618,9 +618,6 @@ class NDB_Page implements RequestHandlerInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
-        $baseURL = $request->getAttribute("baseurl");
-        $config  = NDB_Config::singleton();
-
         $user = $request->getAttribute("user");
 
         // The NDB_Page object itself is sometimes required by middleware,
@@ -643,26 +640,7 @@ class NDB_Page implements RequestHandlerInterface
             // FIXME above.
             return $handler->handle($request);
         }
-
-        if ($user instanceOf \LORIS\AnonymousUser) {
-            return (new \LORIS\Middleware\AnonymousPageDecorationMiddleware(
-                $baseURL,
-                $config,
-                $this->getJSDependencies(),
-                $this->getCSSDependencies()
-            )
-            )->process($request, $handler);
-        }
-
-        return (new \LORIS\Middleware\UserPageDecorationMiddleware(
-            $user,
-            $baseURL,
-            $this->name,
-            $config,
-            $this->getJSDependencies(),
-            $this->getCSSDependencies()
-        )
-        )->process($request, $handler);
+        return (new \LORIS\Middleware\PageDecorationMiddleware($this, $user))->process($request, $handler);
     }
 
     /**

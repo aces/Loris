@@ -95,7 +95,12 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $request = $request->withAttribute("baseurl", $baseurl->__toString());
             $mr      = new ModuleRouter($module, $this->moduledir);
             $request = $request->withURI($suburi);
-            return $mr->handle($request);
+        return (new \LORIS\Middleware\PageDecorationMiddleware(
+            new \NDB_Page(new \Module("", ""), "", "", "", ""),
+            $this->user
+        ))->process(
+            $request,
+            $mr);
         }
 
         // Legacy from .htaccess. A CandID goes to the timepoint_list
@@ -133,6 +138,11 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             }
         }
 
-        return (new \LORIS\Http\Error($request, 404));
+        return (new \LORIS\Middleware\PageDecorationMiddleware(
+            new \NDB_Page(new \Module("", ""), "", "", "", ""),
+            $this->user
+        ))->process(
+            $request,
+            new NoopResponder(new \LORIS\Http\Error($request, 404)));
     }
 }
