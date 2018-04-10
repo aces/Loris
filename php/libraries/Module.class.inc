@@ -103,17 +103,20 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
                  "/css/"    => new \LORIS\Router\ModuleFileRouter(
                      $this,
                      $moduledir,
-                     "css"
+                     "css",
+                     "text/css"
                  ),
                  "/js/"     => new \LORIS\Router\ModuleFileRouter(
                      $this,
                      $moduledir,
-                     "js"
+                     "js",
+                     "application/javascript"
                  ),
                  "/static/" => new \LORIS\Router\ModuleFileRouter(
                      $this,
                      $moduledir,
-                     "static"
+                     "static",
+                     ""
                  ),
                 ]
             )
