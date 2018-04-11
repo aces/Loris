@@ -1,0 +1,219 @@
+<?php
+/**
+ * This file contains the Visit class.
+ *
+ * PHP Version 5
+ *
+ * @category Main
+ * @package  Main
+ * @author   Mélanie Legault <melanie.legault2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+
+/**
+ * Base class that contains method to access the visit of projects
+ *
+ * @category Main
+ * @package  Main
+ * @author   Mélanie Legault <melanie.legault2@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+
+class Visit
+{
+
+    // TODO creer le constructeur.
+
+    /**
+     * Return an array containing the label and legacyLabel of a visit
+     *
+     * @param integer $id the identifier of the label
+     *
+     * @return array a hash with both label
+     *                 hash is of the form
+     *                 array('Label'       => 'label',
+     *                       'LegacyLabel' => 'legacy label')
+     */
+    public function getLabel($id)   // TODO mettre en OOP
+    {
+        $DB = Database::singleton();
+
+        $result = $DB->pselect(
+            "SELECT VisitLabel, VisitLegacyLabel
+             FROM visit
+             WHERE VisitID = :id",
+            array('id' => $id)
+        );
+        return $result;
+    }
+
+    /**
+     * Return an array of hash containing all the visit available
+     * for a project
+     *
+     * @param array $param array['projectID'] the ID of the project
+     *                     array['subprojectID'] the ID of the subproject
+     *                     for which the visit should be available
+     *                     if none, all visit
+     *
+     * @return array an array of hash with id and both label
+     *               array is of the form
+     *               array(0 => array('VisitID'     => visit ID,
+     *                                'Label'       => 'label',
+     *                                'LegacyLabel' => 'legacy label'))
+     */
+    public static function getList($param = array())
+    {
+        $DB = Database::singleton();
+
+        $where      = "";
+        $queryParam = array();
+        if (isset($param['projectID']) && !is_null($param['projectID'])) {
+            $where = " JOIN visit_project_subproject_rel using(VisitID)
+                       WHERE ProjectID = :projectID";
+            $queryParam['projectID'] = $param['projectID'];
+            if (empty($param['subprojectID'])) {
+                $where .= " AND SubprojectID IS NULL";
+            } else {
+                $where .= " AND SubprojectID = :subprojectID";
+                $queryParam['subprojectID'] = $param['subprojectID'];
+
+            }
+        } elseif (isset($param['subprojectID'])
+            && !is_null($param['subprojectID'])
+        ) {
+            $where = " JOIN visit_project_subproject_rel using(VisitID)
+                       WHERE SubprojectID = :subprojectID AND ProjectID IS NULL";
+            $queryParam['subprojectID'] = $param['subprojectID'];
+        }
+        $result = $DB->pselect(
+            "SELECT VisitID, VisitLabel, VisitLegacyLabel
+             FROM visit" . $where,
+            $queryParam
+        );
+        return $result;
+    }
+
+    /**
+     * Modify the label and legacyLabel of a visit
+     *
+     * @param string $id          the ID of the visit
+     * @param string $label       the front-end label
+     * @param string $legacyLabel the back-end label
+     *
+     * @return boolean true on succes, false otherwise
+     */
+    public function setLabel($id, $label, $legacyLabel=null) // TODO mettre en OOP
+    {
+        $DB = Database::singleton();
+
+        $set = array('VisitLabel' => $label);
+        if (!is_null($legacyLabel)) {
+            $set['VisitLegacyLabel'] = $legacyLabel;
+        }
+        $DB->update("visit", $set, array('VisitID' => $id));
+
+    }
+
+    /**
+     * Create a new visit and label and legacyLabel
+     *
+     * @param string $label       the front-end label
+     * @param string $legacyLabel the back-end label
+     *
+     * @return mixed the VisitID in case on success, false otherwise
+     */
+    public function createVisit($label, $legacyLabel=null) // TODO mettre en OOP
+    {
+        $DB = Database::singleton();
+
+        $set = array('VisitLabel' => $label);
+        if (!is_null($legacyLabel)) {
+            $set['VisitLegacyLabel'] = $legacyLabel;
+        }
+        $DB->insert("visit", $set);
+        return $DB->getLastInsertId();
+
+    }
+
+    /**
+     * Add a visit to a project and/or subprojet
+     *
+     * @param integer $visitID the visit ID
+     * @param array   $param   array['projectID'] the ID of the project
+     *                         array['subprojectID'] the ID of the subproject
+     *                         for which the visit should be added
+     *                         if none, error
+     *
+     * @return mixed the VisitProjectSubprojectID on succes, false otherwise
+     */
+    public function addToProjectSubproject($visitID, $param) // TODO mettre en OOP
+    {
+        $DB = Database::singleton();
+
+        $set = array('VisitID' => $visitID);
+        if (isset($param['projectID']) && !is_null($param['projectID'])) {
+            $set['ProjectID'] = $param['projectID'];
+            if (isset($param['subprojectID'])
+                && !is_null($param['subprojectID'])
+            ) {
+                $set['SubprojectID'] = $param['subprojectID'];
+            }
+        } elseif (isset($param['subprojectID'])
+            && !is_null($param['subprojectID'])
+        ) {
+            $set['SubprojectID'] = $param['subprojectID'];
+        } else {
+            // TODO error need project or subproject
+            error_log('Need at least a project or subproject');
+            return false;
+        }
+
+        $DB->insert("visit_project_subproject_rel", $set);
+        return $DB->getLastInsertId();
+
+    }
+
+    /**
+     * Delete a visit from a project and/or subproject
+     *
+     * @param integer $visitID the visit ID
+     * @param array   $param   array['projectID'] the ID of the project
+     *                         array['subprojectID'] the ID of the subproject
+     *                         for which the visit should be deleted
+     *                         if none, all visit
+     *
+     * @return boolean true on success, false otherwise
+     */
+    public function deleteFromProject($visitID, $param)
+    {
+        $succes = true;
+        $DB     = Database::singleton();
+
+        $where = array('VisitID' => $visitID);
+        if (isset($param['projectID']) && !is_null($param['projectID'])) {
+            $where['ProjectID'] = $param['projectID'];
+            if (empty($param['subprojectID'])) {
+                $where['SubprojectID'] = null;
+            } else {
+                $where['SubprojectID'] = $param['subprojectID'];
+            }
+        } elseif (isset($param['subprojectID'])
+            && !is_null($param['subprojectID'])
+        ) {
+            $where['SubprojectID'] = $param['subprojectID'];
+            $where['ProjectID']    = null;
+        } else {
+            // TODO error need project or subproject
+            error_log('Need at least a project or subproject');
+            $succes = false;
+        }
+        $DB->delete("visit_project_subproject_rel", $where);
+        return $succes;
+    }
+
+}
+
+?>
