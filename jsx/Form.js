@@ -282,9 +282,9 @@ class TagsElement extends React.Component {
 
   // send pendingValKey as an argument in order to null out entered item
   handleAdd() {
-    var options = this.props.options;
+    let options = this.props.options;
     // reference pending value through input ID attr
-    var value = document.getElementById(this.props.id).value;
+    let value = document.getElementById(this.props.id).value;
     // if using a datalist (search), set value to be the key in options
     if (this.props.useSearch && Object.values(options).indexOf(value) > -1) {
       value = this.getKeyFromValue(value);
@@ -295,22 +295,20 @@ class TagsElement extends React.Component {
   }
 
   handleRemove(e) {
-    var value = e.target.getAttribute('data-item');
+    let value = e.target.getAttribute('data-item');
     this.props.onUserRemove(this.props.name, value);
   }
 
   getKeyFromValue(value) {
-    var options = this.props.options;
-    var keyValue = Object.keys(options).find(function(o) {
+    let options = this.props.options;
+    return Object.keys(options).find(function(o) {
       return options[o] === value;
     });
-
-    return keyValue;
   }
 
   // helper function to detect if item should be added to Tags
   canAddItem(value) {
-    var result = true;
+    let result = true;
     // reject empty values
     if (!value) {
       result = false;
@@ -329,11 +327,11 @@ class TagsElement extends React.Component {
   }
 
   render() {
-    var disabled = this.props.disabled ? 'disabled' : null;
-    var requiredHTML = null;
-    var emptyOptionHTML = null;
-    var errorMessage = null;
-    var elementClass = "row form-group";
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let requiredHTML = null;
+    let emptyOptionHTML = null;
+    let errorMessage = null;
+    let elementClass = "row form-group";
     // Add required asterix
     if (this.props.required) {
       requiredHTML = <span className="text-danger">*</span>;
@@ -350,8 +348,8 @@ class TagsElement extends React.Component {
     }
 
     // if options are given and useSearch is specified
-    var input;
-    var options = this.props.options;
+    let input;
+    let options = this.props.options;
     if (Object.keys(options).length > 0 && this.props.useSearch) {
       input = (
         <div>
@@ -407,8 +405,8 @@ class TagsElement extends React.Component {
 
     // iterate through added Tags items and render them
     // with deletion button
-    var items = this.props.items.map(function(item) {
-      var itmTxt;
+    let items = this.props.items.map(function(item) {
+      let itmTxt;
       if (Object.keys(options).length > 0 && options[item] !== undefined) {
         itmTxt = options[item];
       } else {
