@@ -130,6 +130,8 @@ DROP TABLE IF EXISTS `psc`;
 DROP TABLE IF EXISTS `project_rel`;
 DROP TABLE IF EXISTS `subproject`;
 DROP TABLE IF EXISTS `Project`;
+DROP TABLE IF EXISTS `visit_project_subproject_rel`;
+DROP TABLE IF EXISTS `visit`;
 
 -- ********************************
 -- Core tables
