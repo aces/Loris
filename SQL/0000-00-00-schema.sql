@@ -2020,6 +2020,7 @@ CREATE TABLE `visit` (
   `VisitLabel` varchar(255) NOT NULL,
   `VisitLegacyLabel` varchar(255) DEFAULT NULL,
   CONSTRAINT visit_PK PRIMARY KEY (`VisitID`),
+  CONSTRAINT visit_label_UK UNIQUE KEY (`VisitLabel`),
   CONSTRAINT visit_legacy_label_UK UNIQUE KEY (`VisitLegacyLabel`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

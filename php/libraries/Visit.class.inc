@@ -23,20 +23,19 @@
 
 class Visit
 {
-
-    // TODO creer le constructeur.
-
     /**
      * Return an array containing the label and legacyLabel of a visit
      *
      * @param integer $id the identifier of the label
+     *
+     * @throws DatabaseException
      *
      * @return array a hash with both label
      *                 hash is of the form
      *                 array('Label'       => 'label',
      *                       'LegacyLabel' => 'legacy label')
      */
-    public function getLabel($id)   // TODO mettre en OOP
+    public function getLabel($id)
     {
         $DB = Database::singleton();
 
@@ -57,6 +56,8 @@ class Visit
      *                     array['subprojectID'] the ID of the subproject
      *                     for which the visit should be available
      *                     if none, all visit
+     *
+     * @throws DatabaseException
      *
      * @return array an array of hash with id and both label
      *               array is of the form
@@ -103,9 +104,11 @@ class Visit
      * @param string $label       the front-end label
      * @param string $legacyLabel the back-end label
      *
-     * @return boolean true on succes, false otherwise
+     * @throws DatabaseException
+     *
+     * @return none
      */
-    public function setLabel($id, $label, $legacyLabel=null) // TODO mettre en OOP
+    public function setLabel($id, $label, $legacyLabel=null)
     {
         $DB = Database::singleton();
 
@@ -123,9 +126,11 @@ class Visit
      * @param string $label       the front-end label
      * @param string $legacyLabel the back-end label
      *
-     * @return mixed the VisitID in case on success, false otherwise
+     * @throws DatabaseException
+     *
+     * @return int the VisitID
      */
-    public function createVisit($label, $legacyLabel=null) // TODO mettre en OOP
+    public function createVisit($label, $legacyLabel=null)
     {
         $DB = Database::singleton();
 
@@ -147,9 +152,12 @@ class Visit
      *                         for which the visit should be added
      *                         if none, error
      *
-     * @return mixed the VisitProjectSubprojectID on succes, false otherwise
+     * @throws DatabaseException
+     * @throws LorisException
+     *
+     * @return int the VisitProjectSubprojectID
      */
-    public function addToProjectSubproject($visitID, $param) // TODO mettre en OOP
+    public function addToProjectSubproject($visitID, $param)
     {
         $DB = Database::singleton();
 
@@ -166,14 +174,11 @@ class Visit
         ) {
             $set['SubprojectID'] = $param['subprojectID'];
         } else {
-            // TODO error need project or subproject
-            error_log('Need at least a project or subproject');
-            return false;
+            throw new LorisException("Need at least a project or subproject");
         }
 
         $DB->insert("visit_project_subproject_rel", $set);
         return $DB->getLastInsertId();
-
     }
 
     /**
@@ -185,12 +190,14 @@ class Visit
      *                         for which the visit should be deleted
      *                         if none, all visit
      *
-     * @return boolean true on success, false otherwise
+     * @throws DatabaseException
+     * @throws LorisException
+     *
+     * @return none
      */
     public function deleteFromProject($visitID, $param)
     {
-        $succes = true;
-        $DB     = Database::singleton();
+        $DB = Database::singleton();
 
         $where = array('VisitID' => $visitID);
         if (isset($param['projectID']) && !is_null($param['projectID'])) {
@@ -206,12 +213,9 @@ class Visit
             $where['SubprojectID'] = $param['subprojectID'];
             $where['ProjectID']    = null;
         } else {
-            // TODO error need project or subproject
-            error_log('Need at least a project or subproject');
-            $succes = false;
+            throw new LorisException("Need at least a project or subproject");
         }
         $DB->delete("visit_project_subproject_rel", $where);
-        return $succes;
     }
 
 }
