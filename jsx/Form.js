@@ -147,16 +147,14 @@ class SearchElement extends React.Component {
     this.getTextInputValue = this.getTextInputValue.bind(this);
   }
   getKeyFromValue(value) {
-    var options = this.props.options;
-    var keyValue = Object.keys(options).find(function(o) {
+    let options = this.props.options;
+    return Object.keys(options).find(function(o) {
       return options[o] === value;
     });
-
-    return keyValue;
   }
 
   handleChange(e) {
-    var value = this.getKeyFromValue(e.target.value);
+    let value = this.getKeyFromValue(e.target.value);
     // if not in strict mode and key value is not defined (i.e., not in options)
     // set value equal to e.target.value
     if (!this.props.strictSearch && value === undefined) {
@@ -168,8 +166,8 @@ class SearchElement extends React.Component {
   handleBlur(e) {
     // null out entry if not present in options in strict mode
     if (this.props.strictSearch) {
-      var value = e.target.value;
-      var options = this.props.options;
+      let value = e.target.value;
+      let options = this.props.options;
       if (Object.values(options).indexOf(value) === -1) {
         // empty string out both the hidden value as well as the input text
         document.querySelector(`input[name="${this.props.name + '_input'}"]`).value = '';
@@ -183,13 +181,13 @@ class SearchElement extends React.Component {
   }
 
   render() {
-    var required = this.props.required ? 'required' : null;
-    var disabled = this.props.disabled ? 'disabled' : null;
-    var options = this.props.options;
-    var strictMessage = 'Entry must be included in provided list of options.';
-    var errorMessage = null;
-    var requiredHTML = null;
-    var elementClass = 'row form-group';
+    let required = this.props.required ? 'required' : null;
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let options = this.props.options;
+    let strictMessage = 'Entry must be included in provided list of options.';
+    let errorMessage = null;
+    let requiredHTML = null;
+    let elementClass = 'row form-group';
 
     // Add required asterix
     if (required) {
@@ -201,7 +199,7 @@ class SearchElement extends React.Component {
       errorMessage = <span>{this.props.errorMessage}</span>;
       elementClass = 'row form-group has-error';
     } else if (this.props.required && this.props.value === "") {
-      var msg = 'This field is required!';
+      let msg = 'This field is required!';
       msg += (this.props.strictSearch ? ' ' + strictMessage : '');
       errorMessage = <span>{msg}</span>;
       elementClass = 'row form-group has-error';
@@ -211,7 +209,7 @@ class SearchElement extends React.Component {
     }
 
     // determine value to place into text input
-    var value;
+    let value;
     // use value in options if valid
     if (this.props.value !== undefined) {
       if (Object.keys(options).indexOf(this.props.value) > -1) {
