@@ -2024,7 +2024,7 @@ CREATE TABLE `visit` (
   CONSTRAINT `visit_PK` PRIMARY KEY (`VisitID`),
   CONSTRAINT `visit_label_UK` UNIQUE KEY (`VisitLabel`),
   CONSTRAINT `visit_legacy_label_UK` UNIQUE KEY (`VisitLegacyLabel`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `visit_project_subproject_rel` (
   `VisitProjetSubProjetID` int unsigned NOT NULL auto_increment,
@@ -2039,5 +2039,5 @@ CREATE TABLE `visit_project_subproject_rel` (
     REFERENCES `Project`(`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `visit_project_subproject_SubprojectID_visit_SubProjectID_FK` FOREIGN KEY (`SubprojectID`)
     REFERENCES `subproject`(`SubprojectID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
