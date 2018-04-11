@@ -108,7 +108,7 @@ class VisitTest
         $error = false;
         for ($i = 0; $i < sizeof($this->visit); $i++) {
             $result = Visit::getLabel($this->idList[$i]);
-            if ($this->assertArray($result[0], $this->visit[$i]) !== true) {
+            if ($this->_assertArray($result[0], $this->visit[$i]) !== true) {
                 $error = true;
             }
         }
@@ -153,7 +153,7 @@ class VisitTest
         $error  = false;
         $param  = array('projectID' => 1);
         $result = Visit::getList($param);
-        if ($this->assertArray(
+        if ($this->_assertArray(
             $result[0],
             array_merge($this->visit[1], array('VisitID' => $this->idList[1]))
         ) !== true
@@ -163,7 +163,7 @@ class VisitTest
 
         $param  = array('subprojectID' => 11);
         $result = Visit::getList($param);
-        if ($this->assertArray(
+        if ($this->_assertArray(
             $result[0],
             array_merge($this->visit[2], array('VisitID' => $this->idList[2]))
         ) !== true
@@ -176,7 +176,7 @@ class VisitTest
                    'subprojectID' => 12,
                   );
         $result = Visit::getList($param);
-        if ($this->assertArray(
+        if ($this->_assertArray(
             $result[0],
             array_merge($this->visit[3], array('VisitID' => $this->idList[3]))
         ) !== true
@@ -190,7 +190,7 @@ class VisitTest
             $this->visit[2],
             array('VisitID' => $this->idList[2])
         );
-        if ($this->assertArray($result[0], $expect) !== true) {
+        if ($this->_assertArray($result[0], $expect) !== true) {
             $error = true;
 
         }
@@ -200,23 +200,23 @@ class VisitTest
         $expect = array(
                    array_merge(
                        $this->visit[0],
-                       array('VisitID' => $this->idList[0]),
+                       array('VisitID' => $this->idList[0])
                    ),
                    array_merge(
                        $this->visit[1],
-                       array('VisitID' => $this->idList[1]),
+                       array('VisitID' => $this->idList[1])
                    ),
                    array_merge(
                        $this->visit[2],
-                       array('VisitID' => $this->idList[2]),
+                       array('VisitID' => $this->idList[2])
                    ),
                    array_merge(
                        $this->visit[3],
-                       array('VisitID' => $this->idList[3]),
+                       array('VisitID' => $this->idList[3])
                    ),
                   );
         for ($i = 0; $i < 4; $i++) {
-            if ($this->assertArray($result[$i], $expect[$i]) !== true) {
+            if ($this->_assertArray($result[$i], $expect[$i]) !== true) {
                 $error = true;
             }
         }
@@ -268,8 +268,8 @@ class VisitTest
                     'subprojectID' => 12,
                    );
         $result2 = Visit::getList($param);
-        if ($this->assertArray($result1, array()) == false
-            || $this->assertArray(
+        if ($this->_assertArray($result1, array()) == false
+            || $this->_assertArray(
                 $result2,
                 array(
                  array_merge(
@@ -288,14 +288,14 @@ class VisitTest
                  );
         Visit::deleteFromProject($this->idList[3], $param);
         $result = Visit::getList($param);
-        if ($this->assertArray($result, array()) == false) {
+        if ($this->_assertArray($result, array()) == false) {
             $error = true;
         }
 
         $param = array('subprojectID' => 11);
         Visit::deleteFromProject($this->idList[2], $param);
         $result = Visit::getList($param);
-        if ($this->assertArray($result, array()) == false) {
+        if ($this->_assertArray($result, array()) == false) {
             $error = true;
         }
 
@@ -326,7 +326,7 @@ class VisitTest
 
         foreach ($array1 as $key=>$value) {
             if (isset($array2[$key]) && is_array($array2[$key])) {
-                $result = $this->assertArray($value, $array2[$key]);
+                $result = $this->_assertArray($value, $array2[$key]);
                 if ($result == false) {
                     return false;
                 }
