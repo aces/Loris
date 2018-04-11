@@ -455,7 +455,7 @@ class TagsElement extends React.Component {
 
 TagsElement.propTypes = {
   name: React.PropTypes.string.isRequired,
-    id: React.PropTypes.string.isRequired,
+  id: React.PropTypes.string.isRequired,
   pendingValKey: React.PropTypes.string.isRequired,
   options: React.PropTypes.object,
   items: React.PropTypes.array,
@@ -477,34 +477,33 @@ TagsElement.propTypes = {
 };
 
 TagsElement.defaultProps = {
-    name: '',
-    options: {},
-    items: [],
-    label: '',
-    value: undefined,
-    id: '',
-    class: '',
-    required: false,
-    disabled: false,
-    emptyOption: true,
-    hasError: false,
-    allowDupl: false,
-    useSearch: false,
-    strictSearch: false, // only accept items specified in options
-    errorMessage: '',
-    pendingValKey: '',
-    btnLabel: 'Add Tag',
-    onUserInput: function() {
-      console.warn('onUserInput() callback is not set');
-    },
-    onUserAdd: function() {
-      console.warn('onUserAdd() callback is not set');
-    },
-    onUserRemove: function() {
-      console.warn('onUserRemove() callback is not set');
-    }
+  name: '',
+  options: {},
+  items: [],
+  label: '',
+  value: undefined,
+  id: '',
+  class: '',
+  required: false,
+  disabled: false,
+  emptyOption: true,
+  hasError: false,
+  allowDupl: false,
+  useSearch: false,
+  strictSearch: false, // only accept items specified in options
+  errorMessage: '',
+  pendingValKey: '',
+  btnLabel: 'Add Tag',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+  onUserAdd: function() {
+    console.warn('onUserAdd() callback is not set');
+  },
+  onUserRemove: function() {
+    console.warn('onUserRemove() callback is not set');
+  }
 };
-
 
 /**
  * Textarea Component
