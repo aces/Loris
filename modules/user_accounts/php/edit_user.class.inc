@@ -828,7 +828,7 @@ class Edit_User extends \NDB_Form
     static function canRejectAccount(\User $user)
     {
         return $user->getData('Pending_approval') == 'Y'
-            && !$user->hasEverLoggedIn();
+            && !$user->hasLoggedIn();
     }
 
     /**
