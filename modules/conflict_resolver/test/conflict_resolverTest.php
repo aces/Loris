@@ -179,7 +179,6 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      */
     function testSearchConflictResolved()
     {
-         $this->markTestSkipped("Skipping test which only fails on Travis.");
          $this->safeGet($this->url."/conflict_resolver/?submenu=resolved_conflicts");
          $keywordElement = $this->webDriver->findElement(
              WebDriverBy::Name("Question")
