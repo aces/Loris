@@ -33,8 +33,8 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Instrument_List extends \NDB_Menu_Filter
 {
-    protected $Candidate;
-    protected $TimePoint;
+    protected $candidate;
+    protected $timePoint;
 
     /**
     * Checking permissions
@@ -49,12 +49,12 @@ class Instrument_List extends \NDB_Menu_Filter
         // check user permissions
         return ($user->hasPermission('access_all_profiles')
                 || (in_array(
-                    $this->Candidate->getData('CenterID'),
+                    $this->candidate->getData('CenterID'),
                     $user->getData('CenterIDs')
                 )
                    )
                 || (in_array(
-                    $this->TimePoint->getData('CenterID'),
+                    $this->timePoint->getData('CenterID'),
                     $user->getData('CenterIDs')
                 )
                    )
@@ -88,17 +88,17 @@ class Instrument_List extends \NDB_Menu_Filter
 
         $attribute = $request->getAttribute("CandID");
         if ($attribute !== null) {
-            $this->Candidate = \Candidate::singleton($attribute);
+            $this->candidate = \Candidate::singleton($attribute);
         } else {
-            $this->Candidate = \Candidate::singleton($gets['candID']);
+            $this->candidate = \Candidate::singleton($gets['candID']);
         }
 
         $attribute = $request->getAttribute("TimePoint");
         if ($attribute !== null) {
-            $this->TimePoint = $attribute;
+            $this->timePoint = $attribute;
         } else {
             // FIXME: Make VisitLabel not sessionID
-            $this->TimePoint = \TimePoint::singleton($gets['sessionID']);
+            $this->timePoint = \TimePoint::singleton($gets['sessionID']);
         }
         $this->setup();
         return parent::process($request, $handler);
@@ -112,7 +112,7 @@ class Instrument_List extends \NDB_Menu_Filter
     function getControlPanel()
     {
         $controlPanel = new Instrument_List_ControlPanel(
-            $this->TimePoint->getSessionID()
+            $this->timePoint->getSessionID()
         );
         // save possible changes from the control panel...
         $success = $controlPanel->save();
@@ -133,12 +133,12 @@ class Instrument_List extends \NDB_Menu_Filter
         // Don't call parent setup, we don't want it to try to run any SQL
 
         // set template data
-        $this->tpl_data['candID']    = $this->Candidate->getCandID();
-        $this->tpl_data['sessionID'] = $this->TimePoint->getSessionID();
+        $this->tpl_data['candID']    = $this->candidate->getCandID();
+        $this->tpl_data['sessionID'] = $this->timePoint->getSessionID();
 
         // get behavioral battery for this visit (time point)
         $battery = new \NDB_BVL_Battery;
-        $success = $battery->selectBattery($this->TimePoint->getSessionID());
+        $success = $battery->selectBattery($this->timePoint->getSessionID());
 
         $this->tpl_data['stage']        = \Utility::getStageUsingCandID(
             $this->tpl_data['candID']
@@ -252,7 +252,7 @@ class Instrument_List extends \NDB_Menu_Filter
         }
 
         $this->tpl_data['display']
-            = array_merge($this->Candidate->getData(), $this->TimePoint->getData());
+            = array_merge($this->candidate->getData(), $this->timePoint->getData());
     }
 
     /**
@@ -288,7 +288,7 @@ class Instrument_List extends \NDB_Menu_Filter
         $DB = \Database::singleton();
 
         // assert that a battery has already been selected
-        if (is_null($this->TimePoint)) {
+        if (is_null($this->timePoint)) {
             throw new Exception("No battery selected");
         }
 
@@ -307,7 +307,7 @@ class Instrument_List extends \NDB_Menu_Filter
             	JOIN test_names t ON (f.Test_name=t.Test_name)
             	JOIN test_subgroups ts ON (ts.ID = t.Sub_group)
             	LEFT JOIN session s ON (s.ID=f.SessionID) ";
-        $qparams = array('SID' => $this->TimePoint->getSessionID());
+        $qparams = array('SID' => $this->timePoint->getSessionID());
 
         if (!is_null($stage)) {
             $query .= "

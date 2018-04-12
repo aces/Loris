@@ -91,9 +91,10 @@ class ModuleFileRouter implements RequestHandlerInterface
             }
             return $resp;
         }
-        return (new \Zend\Diactoros\Response())
-            ->withStatus(404)
-            ->withBody(new StringStream($fullpath . ": File not found"))
+        return (new \LORIS\Http\Error(
+            $request,
+            404,
+            $fullpath . ": File not found"))
             ->withHeader("Content-Type", "text/html");
     }
 }
