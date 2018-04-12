@@ -454,8 +454,6 @@ abstract class LorisIntegrationTest extends TestCase
             }
         } catch (StaleElementReferenceException $e) {
             return $newWebDriver;
-        } catch (UnknownServerException $e) {
-            return $newWebDriver;
         }
     }
 
