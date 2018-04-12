@@ -619,6 +619,9 @@ class NDB_Page implements RequestHandlerInterface
         RequestHandlerInterface $handler
     ) : ResponseInterface {
         $user = $request->getAttribute("user");
+        if ($this->_hasAccess() !== true) {
+            throw new PermissionDenied();
+        }
 
         // The NDB_Page object itself is sometimes required by middleware,
         // but since the PSR15 Middleware interface is fixed, it needs to be

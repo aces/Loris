@@ -61,6 +61,7 @@ class AuthMiddleware implements MiddlewareInterface, MiddlewareChainer
         if ($this->authenticator->authenticate($request) === true) {
             return $this->next->process($request, $handler);
         }
+
         return (new \LORIS\Http\Error($request, 403, "Permission denied"));
     }
 }

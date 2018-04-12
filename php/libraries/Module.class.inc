@@ -242,6 +242,20 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
 
         try {
             $page = $this->loadPage($pagename);
+            if ($page->_hasAccess() !== true) {
+                return (new \LORIS\Middleware\PageDecorationMiddleware(
+                    $request->getAttribute("user") ?? new \LORIS\AnonymousUser()
+                ))->process(
+                    $request,
+                    new \LORIS\Router\NoopResponder(
+                        new \LORIS\Http\Error(
+                            $request,
+                            403,
+                            "You do not have access to this page."
+                        )
+                    )
+                );
+            }
         } catch (\NotFound $e) {
             return (new \LORIS\Middleware\PageDecorationMiddleware(
                 $request->getAttribute("user") ?? new \LORIS\AnonymousUser()
