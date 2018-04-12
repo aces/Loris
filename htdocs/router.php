@@ -12,8 +12,9 @@
  */
 
 
-$url = ltrim($_SERVER['REQUEST_URI'], "/");
+$url     = ltrim($_SERVER['REQUEST_URI'], "/");
 $request = $_SERVER['REQUEST_URI'];
+
 if ($request != '/' && file_exists(__DIR__ . $request)) {
     // FIXME: Should this be in the main index.php to prevent the need
     // for 2 router files? (The AjaxHelper needs to be handled separatedly)
@@ -46,7 +47,7 @@ if (preg_match(
     $getParams = explode("/", $url);
 
     $_REQUEST["test_name"] = $getParams[1];
-    $_GET['test_name'] = $getParams[1];
+    $_GET['test_name']     = $getParams[1];
 
     include_once __DIR__ . "/main.php";
 } else if (preg_match(

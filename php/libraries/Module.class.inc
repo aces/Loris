@@ -1,5 +1,4 @@
 <?php
-use Psr\Http\Server\RequestHandlerInterface;
 /**
  * This file contains a class which encapsulates the concept of a "module"
  * in LORIS.
@@ -12,7 +11,9 @@ use Psr\Http\Server\RequestHandlerInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-
+use \Psr\Http\Server\RequestHandlerInterface;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
 /**
  * The Module class encapsulates all details of a module which are not specific
  * to a certain page.
@@ -93,7 +94,8 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
     /**
      * Creates a new module instance
      *
-     * @param string $name The name of the module
+     * @param string $name      The name of the module
+     * @param string $moduledir The directory on the filesystem containing the module
      */
     public function __construct($name, $moduledir)
     {
@@ -152,6 +154,10 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
      *
      * By default, this will assume that anonymous users do not have access
      * to non-public modules, but otherwise everyone has access to anything.
+     *
+     * @param User $user The user to check access for.
+     *
+     * @return bool True if the user has access
      */
     public function hasAccess(User $user)
     {
@@ -215,8 +221,12 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
      * Modules extend PrefixRouter, so that the parent handler knows that the
      * css, static, and js routes should be routed through the file system to
      * retrieve the files before trying to load any specific pages.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface the outgoing PSR7 response
      */
-    public function handle(\Psr\Http\Message\ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
+    public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         $resp = parent::handle($request);
         if ($resp->getStatusCode() != 404) {
@@ -233,10 +243,17 @@ class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterfa
         try {
             $page = $this->loadPage($pagename);
         } catch (\NotFound $e) {
-            return (new \LORIS\Middleware\PageDecorationMiddleware($request->getAttribute("user") ?? new \LORIS\AnonymousUser())
-            )->process(
+            return (new \LORIS\Middleware\PageDecorationMiddleware(
+                $request->getAttribute("user") ?? new \LORIS\AnonymousUser()
+            ))->process(
                 $request,
-                new \LORIS\Router\NoopResponder(new \LORIS\Http\Error($request, 404, "File not found: " . $request->getURI()->__toString()))
+                new \LORIS\Router\NoopResponder(
+                    new \LORIS\Http\Error(
+                        $request,
+                        404,
+                        "File not found: " . $request->getURI()->__toString()
+                    )
+                )
             );
         }
 

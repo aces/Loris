@@ -61,6 +61,25 @@ class Instrument_List extends \NDB_Menu_Filter
         );
     }
 
+    /**
+     * Instrument_list overrides the page PSR15 middleware to ensure that page setup
+     * is done and appropriate variables are set before the PageDecorationMiddleware
+     * is called.
+     *
+     * Due to an unfortunate series of historical accidents, getControlPanel (which
+     * depends on $this->TimePoint being valid) is called by the middleware before
+     * the handler, so this needs to be done in process.
+     *
+     * FIXME: The longterm solution is to remove the getControlPanel call from the
+     * middleware, but the few pages that use it need to be updated to properly
+     * reflect their control panel in the templates in a sane way first.
+     *
+     * @param ServerRequestInterface  $request The incoming PSR7 request
+     * @param RequestHandlerInterface $handler The PSR15 request handler when
+     *                                         acting as a middleware.
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
     public function process(
         ServerRequestInterface $request,
         RequestHandlerInterface $handler

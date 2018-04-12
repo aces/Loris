@@ -207,7 +207,7 @@ class NDB_Breadcrumb
 
         // set the 'timepoint list' crumb text
         if (!empty($_REQUEST['candID'])) {
-            $candidate =& Candidate::singleton($_REQUEST['candID']);
+            $candidate = \Candidate::singleton($_REQUEST['candID']);
             $this->_userFriendlyNames['timepoint_list']
                 = 'Candidate Profile '
                     . $candidate->getData('CandID')
