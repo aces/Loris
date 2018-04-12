@@ -696,7 +696,6 @@ class NDB_Menu_Filter extends NDB_Menu
     {
         switch($this->format) {
         case 'json':
-            header('Content-Type: application/json');
             return $this->toJSON();
         }
         if ($this->skipTemplate) {
