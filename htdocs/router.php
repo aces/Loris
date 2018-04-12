@@ -15,7 +15,10 @@
 $url     = ltrim($_SERVER['REQUEST_URI'], "/");
 $request = $_SERVER['REQUEST_URI'];
 
-if ($request != '/' && file_exists(__DIR__ . $request)) {
+if ($request != '/'
+    && file_exists(__DIR__ . $request)
+    && $request != "/acknowledgements/"
+) {
     // FIXME: Should this be in the main index.php to prevent the need
     // for 2 router files? (The AjaxHelper needs to be handled separatedly)
     return false;
