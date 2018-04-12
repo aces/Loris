@@ -666,7 +666,7 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Displays the form
      *
-     * @return a string of the content to be inserted into the template
+     * @return string of the content to be inserted into the template
      */
     function display()
     {

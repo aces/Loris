@@ -191,8 +191,7 @@ class NDB_Form extends NDB_Page
         }
 
         return (new \Zend\Diactoros\Response())
-            ->withBody(new \LORIS\Http\StringStream($this->display()));
+            ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
     }
-
 }
 ?>
