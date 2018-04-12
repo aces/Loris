@@ -106,7 +106,7 @@ class Visit
      *
      * @throws DatabaseException
      *
-     * @return none
+     * @return void
      */
     public function setLabel($id, $label, $legacyLabel=null)
     {
@@ -117,7 +117,6 @@ class Visit
             $set['VisitLegacyLabel'] = $legacyLabel;
         }
         $DB->update("visit", $set, array('VisitID' => $id));
-
     }
 
     /**
@@ -140,7 +139,6 @@ class Visit
         }
         $DB->insert("visit", $set);
         return $DB->getLastInsertId();
-
     }
 
     /**
@@ -193,7 +191,7 @@ class Visit
      * @throws DatabaseException
      * @throws LorisException
      *
-     * @return none
+     * @return void
      */
     public function deleteFromProject($visitID, $param)
     {
@@ -217,7 +215,6 @@ class Visit
         }
         $DB->delete("visit_project_subproject_rel", $where);
     }
-
 }
-
+?>
 ?>

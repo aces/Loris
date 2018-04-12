@@ -341,7 +341,7 @@ class VisitTest
     }
 }
 
-//prepare Database for test;
+// prepare Database for test;
 global $DB ;
 $DB = new Database();
 $DB = Database::singleton($database, $username, $password, $host);
@@ -371,7 +371,7 @@ try {
 }
 catch (LorisException $e) {
     if ($e->getMessage() != "Need at least a project or subproject") {
-        print("** ERROR in inserting project or subproject\n");
+        print("** ERROR in deleting visit for a project or subproject\n");
     }
 }
 
