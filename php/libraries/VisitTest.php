@@ -83,7 +83,7 @@ class VisitTest
      *
      * @throws DatabaseException
      *
-     * @return none
+     * @return void
      */
     public function testCreate()
     {
@@ -120,7 +120,7 @@ class VisitTest
      *
      * @throws DatabaseException
      *
-     * @return none
+     * @return void
      */
     public function testAddToProjectSubproject()
     {
