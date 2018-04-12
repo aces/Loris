@@ -27,7 +27,8 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Timepoint_List extends \NDB_Menu
 {
-    protected $CandID;
+    protected $candID;
+
     /**
      * Overloading this method to allow access to timepoint list
      *
@@ -38,7 +39,7 @@ class Timepoint_List extends \NDB_Menu
         // create user object
         $user =& \User::singleton();
 
-        $candidate =& \Candidate::singleton($this->CandID);
+        $candidate =& \Candidate::singleton($this->candID);
 
         // check user permissions
         if ($user->hasPermission('access_all_profiles')
@@ -83,10 +84,10 @@ class Timepoint_List extends \NDB_Menu
         $attribute = $request->getAttribute("CandID");
         if ($attribute !== null) {
             // FIXME: Update the code to add the singleton here, not the identifier.
-            $this->CandID = $attribute;
+            $this->candID = $attribute;
         } else {
             $gets         = $request->getQueryParams();
-            $this->CandID = $gets['candID'];
+            $this->candID = $gets['candID'];
         }
         $this->setup();
         return parent::handle($request);
@@ -100,11 +101,11 @@ class Timepoint_List extends \NDB_Menu
     function setup()
     {
         // create candidate object
-        $candidate =& \Candidate::singleton($this->CandID);
+        $candidate =& \Candidate::singleton($this->candID);
         $DB        =& \Database::singleton();
 
         $numberOfVisits           = 0;
-        $this->tpl_data['candID'] = $this->CandID;
+        $this->tpl_data['candID'] = $this->candID;
         $this->tpl_data['PSCID']  = $candidate->getPSCID();
         $listOfTimePoints         = $candidate->getListOfTimePoints();
 
