@@ -32,6 +32,7 @@ html, body {
 #page {
     min-height: 100%;
     position: relative;
+    padding-top: 50px;
 }
 
 
