@@ -17,7 +17,7 @@ CentOS: $GROUP$ = apache
 To find the `user` of your web server, run 
 `ps aux | grep 'apache' | egrep -v 'grep|Ss' | awk '{ print $1 }' | sort | uniq`
 To find the `group` of your web server, run 
-`ps aux | grep 'apache' | egrep -v 'grep|Ss' | awk '{ print $1 }' | sort | uniq | groups`
+`ps aux | grep 'apache' | egrep -v 'grep|Ss' | awk '{ print $1 }' | sort | uniq | xargs groups`
 
 To see if your web server's user or group owns the upload path, run 
 `ls -ld /data/uploads | awk '{ print "user:" $3 ", group:" $4 }'`
