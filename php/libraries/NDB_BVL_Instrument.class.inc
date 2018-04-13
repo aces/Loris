@@ -2533,9 +2533,6 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function toDirectJSON()
     {
-        $smarty = new Smarty_neurodb;
-        //$renderer = new HTML_QuickForm_Renderer_Array($smarty);
-
         $instrumentJSON = array(
          "form" => array(),
          "testname" => $this->testName,
@@ -2549,7 +2546,7 @@ class NDB_BVL_Instrument extends NDB_Page
             "GroupType" => "Page",
             "Type" => "ElementGroup",
         );
-        $this->_setupForm();
+
         foreach ($this->form->form as $key => $value) {
             $tempForm[] = PageElementsFormatter::formatElement($value, $key);
         }
