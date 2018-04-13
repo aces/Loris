@@ -353,5 +353,17 @@ class Candidate_List extends \NDB_Menu_Filter
             )
         );
     }
+
+    /**
+     * Generate a breadcrumb trail for that page.
+     *
+     * @return \LORIS\BreadcrumbTrail The trail.
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb('Access Profile', $_SERVER['REQUEST_URI'])
+        );
+    }
 }
 ?>

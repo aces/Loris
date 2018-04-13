@@ -25,6 +25,16 @@ namespace LORIS\next_stage;
 class Next_Stage extends \NDB_Form
 {
     /**
+     * @var \TimePoint
+     */
+    protected $timepoint;
+
+    /**
+     * @var \Candidate
+     */
+    protected $candidate;
+
+    /**
      * Tie the access to a data_entry permission
      *
      * @return bool true if they have access to this page
@@ -119,6 +129,10 @@ class Next_Stage extends \NDB_Form
     function setup()
     {
         parent::setup();
+
+        $this->timepoint = \TimePoint::singleton($this->identifier);
+        $this->candidate = \Candidate::singleton($this->timepoint->getCandID());
+
         $timePoint =& \TimePoint::singleton($this->identifier);
         $config    =& \NDB_Config::singleton();
 
@@ -246,5 +260,36 @@ class Next_Stage extends \NDB_Form
         }
         return $errors;
     }
+
+    /**
+     * Generate a breadcrumb trail for that page.
+     *
+     * @return \LORIS\BreadcrumbTrail The trail.
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $candid    = $this->candidate->getCandID();
+        $pscid     = $this->candidate->getPSCID();
+        $sessionid = $this->timepoint->getSessionID();
+
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                'Access Profile',
+                '/candidate_list'
+            ),
+            new \LORIS\Breadcrumb(
+                'Candidate Profile ' . $candid . ' / ' . $pscid,
+                '/timepoint_list/?candID=' . $candid
+            ),
+            new \LORIS\Breadcrumb(
+                'TimePoint ' . $this->timepoint->getVisitLabel() . ' Details',
+                '/instrument_list/?candID='. $candid .'&sessionID=' . $sessionid
+            ),
+            new \LORIS\Breadcrumb(
+                'Start Next Stage',
+                $_SERVER['REQUEST_URI']
+            )
+        );
+    }
+
 }
-?>

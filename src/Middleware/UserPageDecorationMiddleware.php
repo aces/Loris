@@ -89,6 +89,9 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
                 $this->page
             );
         }
+        if (method_exists($page, 'getBreadcrumbs')) {
+            $tpl_data['breadcrumbs'] = $page->getBreadcrumbs();
+        }
 
         // This shouldn't exist. (And if it does, it shouldn't reference
         // mantis..)

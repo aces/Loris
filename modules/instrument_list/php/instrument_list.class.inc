@@ -31,6 +31,16 @@ namespace LORIS\instrument_list;
 class Instrument_List extends \NDB_Menu_Filter
 {
     /**
+     * @var \TimePoint
+     */
+    protected $timepoint;
+
+    /**
+     * @var \Candidate
+     */
+    protected $candidate;
+
+    /**
     * Checking permissions
     *
     * @return bool
@@ -210,13 +220,14 @@ class Instrument_List extends \NDB_Menu_Filter
             }
         }
 
-        $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
-        $candID    = $timePoint->getCandID();
+        $this->timepoint = \TimePoint::singleton($_REQUEST['sessionID']);
 
-        $candidate =& \Candidate::singleton($candID);
+        $candID = $this->timepoint->getCandID();
+
+        $this->candidate = \Candidate::singleton($candID);
 
         $this->tpl_data['display']
-            = array_merge($candidate->getData(), $timePoint->getData());
+            = array_merge($this->candidate->getData(), $this->timepoint->getData());
     }
 
     /**
@@ -320,5 +331,31 @@ class Instrument_List extends \NDB_Menu_Filter
             )
         );
     }
+
+    /**
+     * Generate a breadcrumb trail for that page.
+     *
+     * @return \LORIS\BreadcrumbTrail The trail.
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $candid = $this->candidate->getCandID();
+        $pscid  = $this->candidate->getPSCID();
+
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                'Access Profile',
+                '/candidate_list'
+            ),
+            new \LORIS\Breadcrumb(
+                'Candidate Profile ' . $candid . ' / ' . $pscid,
+                '/timepoint_list/?candID=' . $candid
+            ),
+            new \LORIS\Breadcrumb(
+                'TimePoint ' . $this->timepoint->getVisitLabel() . ' Details',
+                $_SERVER['REQUEST_URI']
+            )
+        );
+    }
+
 }
-?>

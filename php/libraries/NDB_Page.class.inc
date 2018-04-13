@@ -846,5 +846,18 @@ class NDB_Page implements RequestHandlerInterface
     {
         return true;
     }
+
+    /**
+     * Generate a breadcrumb trail for that page.
+     *
+     * @return \LORIS\BreadcrumbTrail The trail.
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $label = ucwords(str_replace('_', ' ', $this->name));
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb($label, $_SERVER['REQUEST_URI'])
+        );
+    }
 }
 ?>

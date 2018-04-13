@@ -26,6 +26,11 @@ namespace LORIS\create_timepoint;
 class Create_Timepoint extends \NDB_Form
 {
     /**
+     * @var \Candidate
+     */
+    protected $candidate;
+
+    /**
      * The subprojectID being created
      */
     var $subprojectID;
@@ -95,6 +100,8 @@ class Create_Timepoint extends \NDB_Form
     function setup()
     {
         parent::setup();
+
+        $this->candidate = \Candidate::singleton($this->identifier);
 
         $config =& \NDB_Config::singleton();
         if (!empty($_GET['subprojectID']) && is_numeric($_GET['subprojectID'])) {
@@ -241,6 +248,32 @@ class Create_Timepoint extends \NDB_Form
         }
 
         return $errors;
+    }
+
+    /**
+     * Generate a breadcrumb trail for that page.
+     *
+     * @return \LORIS\BreadcrumbTrail The trail.
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $candid = $this->candidate->getCandID();
+        $pscid  = $this->candidate->getPSCID();
+
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                'Access Profile',
+                '/candidate_list'
+            ),
+            new \LORIS\Breadcrumb(
+                'Candidate Profile ' . $candid . ' / ' . $pscid,
+                '/timepoint_list/?candID=' . $candid
+            ),
+            new \LORIS\Breadcrumb(
+                'Create Time Point',
+                $_SERVER['REQUEST_URI']
+            )
+        );
     }
 }
 ?>

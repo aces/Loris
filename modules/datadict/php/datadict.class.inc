@@ -170,6 +170,15 @@ class Datadict extends \NDB_Menu_Filter
         );
     }
 
-
+    /**
+     * Generate a breadcrumb trail for that page.
+     *
+     * @return \LORIS\BreadcrumbTrail The trail.
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb('Data Dictionary',$this->name)
+        );
+    }
 }
-?>

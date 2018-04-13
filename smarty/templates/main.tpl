@@ -39,6 +39,15 @@
                         baseURL: baseurl
                       });
               ReactDOM.render(breadcrumbs, document.getElementById("breadcrumbs"));
+
+              ReactDOM.render(
+                RBreadcrumbs({
+                  breadcrumbs: [{$breadcrumbs}],
+                  baseURL: loris.BaseURL
+                }),
+                document.getElementById("breadcrumbs2")
+              );
+               
             {/if}
 
             // Initialize bootstrap tooltip for site affiliations
@@ -220,6 +229,7 @@
                 {/if}
                 {if $crumbs != "" && empty($error_message)}
                     <div id="breadcrumbs"></div>
+                    <div id="breadcrumbs2"></div>
                 {/if}
                         <div>
                             {if $error_message != ""}
