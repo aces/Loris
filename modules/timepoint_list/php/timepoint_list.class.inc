@@ -13,6 +13,7 @@
 namespace LORIS\timepoint_list;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * The timepoint list menu
@@ -75,12 +76,15 @@ class Timepoint_List extends \NDB_Menu
      * Handle an incoming HTTP request. The timepoint_list overrides the default
      * handler to populate the CandID field for the page class.
      *
-     * @param ServerRequestInterface $request The incoming PSR7 request
+     * @param ServerRequestInterface  $request The incoming PSR7 request
+     * @param RequestHandlerInterface $handler The PSR15 handler.
      *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    public function handle(ServerRequestInterface $request) : ResponseInterface
-    {
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ) : ResponseInterface {
         $attribute = $request->getAttribute("CandID");
         if ($attribute !== null) {
             // FIXME: Update the code to add the singleton here, not the identifier.
@@ -90,7 +94,7 @@ class Timepoint_List extends \NDB_Menu
             $this->candID = $gets['candID'];
         }
         $this->setup();
-        return parent::handle($request);
+        return parent::process($request, $handler);
     }
 
     /**
@@ -274,7 +278,7 @@ class Timepoint_List extends \NDB_Menu
      */
     function getActionButtons()
     {
-        $controlPanel = new TimePoint_List_ControlPanel($this->CandID);
+        $controlPanel = new TimePoint_List_ControlPanel($this->candID);
         return $controlPanel->display();
     }
 
