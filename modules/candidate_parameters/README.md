@@ -58,11 +58,11 @@ the database. The following SQL tables affect the behaviour of these fields:
     - Identifies the categories for `parameter_type` entries. This table requires an 
     entry for the _Candidate Parameters_ module for customizations to take effect.
  - `parameter_type`
-    - Lists fields to be displayed on the front-end of the module and all their 
-    attributes.
+    - Lists fields, and all of their attributes, that are to be displayed on the 
+    front-end of the module.
  - `parameter_type_category_rel`
     - Associates the Candidate Parameters from the `parameter_type` 
-    table with the entry in the `parameter_type_category` 
+    table with the entry in the `parameter_type_category`.
  - `parameter_candidate`
     - Stores values saved for each custom field added in the 3 tables above.
 
