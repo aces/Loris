@@ -46,8 +46,6 @@ class Breadcrumb
      *
      * @param string $label The label to display
      * @param string $link  The hyperlink for that breadcrumb
-     *
-     * @return Breadcrumb
      */
     public function __construct(string $label = '', string $link = '')
     {

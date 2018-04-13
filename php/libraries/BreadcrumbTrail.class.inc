@@ -35,9 +35,7 @@ class BreadcrumbTrail
     /**
      * The contructor
      *
-     * @param array<Breadcrumb> ...$crumbs A list of breadcrumbs
-     *
-     * @return BreadcrumbTrail
+     * @param Breadcrumb ...$crumbs A list of breadcrumbs
      */
     public function __construct(Breadcrumb ...$crumbs)
     {
