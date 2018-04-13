@@ -230,21 +230,6 @@ try {
         $tpl_data['cssfiles'] = $page->getCSSDependencies();
     }
 }
-//--------------------------------------------------
-
-if (!$anonymous) {
-    try {
-        $breadcrumb = new NDB_Breadcrumb;
-        $crumbs     = $breadcrumb->getBreadcrumb();
-
-        $tpl_data['crumbs'] = $crumbs;
-    } catch(Exception $e) {
-        $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
-    }
-}
-
-//--------------------------------------------------
-
 
 // show the back button
 $tpl_data['lastURL'] = $_SESSION['State']->getLastURL();
