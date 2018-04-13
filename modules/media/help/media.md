@@ -1,25 +1,43 @@
-# Media Module
+# Media
 
-## Overview
+The Media module serves as a repository for files associated with a particular 
+candidate-timepoint or instrument in a study.  Users can access and upload files 
+such as PDF scans, recordings, log files, or stimulus presentation media in multiple 
+formats such as .pdf, .mp4, .mp3, .txt, etc. 
 
-Media module allows users to **upload**, **search** and **edit** media files 
-associated with a specific candidate timepoint in Loris.
-Any kind of data associated with a candidate timepoint can be uploaded through 
-this module: PDFs, videos, recordings, scripts, log files, etc. Files can optionally 
-be associated to a specific instrument form within a given candidate timepoint.
+## Searching for a Media File
 
+Under the Browse tab, use the Selection Filters to search for files by fields such 
+as including filename, file type, candidate PSCID, Visit Label, Instrument, Site, or 
+name of user who uploaded the file.  Partial string matching can be used on many 
+fields (e.g. filename).  As filters are selected, the below data table will 
+dynamically update with relevant results.  Click the “Clear Filters” button to reset 
+all filters. 
 
->Note: Currently editing functionality only allows editing of certain metadata 
-fields, such as `Comments` and `Date of Administration`.
+Within the data table, results can be sorted in ascending or descending order by 
+clicking on any column header. To download a file, click on the filename (in blue 
+text). 
 
-## Features
+## Uploading a Media File
 
-1. **Browse** a list of uploaded files and related information
-2. **Edit** metadata about media files (except timepoint related data such as 
-PSCID, Visit Label and Instrument)
-3. **Upload** new files associated to a specific timepoint
-  - PSCID, Visit Label and Site are required fields for all uploaded files
-  - File name should always start with [PSCID]\_[Visit Label]\_[Instrument] 
-  corresponding to the selection in the upload form
-4. **Delete** files. Deleting a file hides it from the frontend, but preserves a 
-copy in the database
+Under the “Upload” tab, users will be able to upload a new media file. 
+Users must specify information about the file by selecting from a number of dropdown 
+menus including PSCID, Visit Label, Site, Instrument (optional), Date of 
+Administration, and enter comments on the file in the textbox provided. Lastly, 
+users will select the file they wish to upload by clicking the “Browse” button and 
+selecting the file from their computer. To begin the upload, users must click 
+“Upload File”. 
+
+_Note that a file to be uploaded should follow the naming convention listed at the 
+top of the Upload page: [PSCID]\_[VisitLabel]\_[Instrument]_
+
+## Editing a Media File
+
+Click “Edit” from the “Edit Metadata” column to update or edit certain file 
+properties, via the “Edit Media File” page. 
+
+This page allows users to modify information about an uploaded file.  Fields such 
+as Date of Administration, Comments, and file visibility (hidden or visible) can be 
+updated.  Note that fields such as PSCID, Visit Label, Site, and Instrument cannot 
+be modified on uploaded media files. To finalize an update, users must click “Update 
+File”. 
