@@ -284,8 +284,8 @@ class Instrument_List_ControlPanel extends \TimePoint
             && $user->hasPermission('bvl_feedback')
         ) {
             $status = \Utility::nullifyEmpty(
-                $_REQUEST['setBVLQCStatus'],
-                'BVLQCStatus'
+                $_REQUEST,
+                'setBVLQCStatus'
             );
             $this->setData('BVLQCStatus', $status);
             return;
@@ -294,8 +294,8 @@ class Instrument_List_ControlPanel extends \TimePoint
             && $user->hasPermission('bvl_feedback')
         ) {
             $QCtype = \Utility::nullifyEmpty(
-                $_REQUEST['setBVLQCType'],
-                'BVLQCType'
+                $_REQUEST,
+                'setBVLQCType'
             );
             $this->setData('BVLQCType', $QCtype);
             return;
