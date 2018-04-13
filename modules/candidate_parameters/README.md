@@ -20,7 +20,7 @@ at the visit level.
 
 ## Permissions
 
-The Candidate Parameters module uses the following permissions, either one
+The Candidate Parameters module uses the following permissions. Either one
 is sufficient to access the module.
 
  - `candidate_parameter_view`
@@ -34,10 +34,10 @@ is sufficient to access the module.
 The following configurations affect the usage of the Candidate Parameters module:
 
  - `useProband` 
-    - This setting displays/hides the Proband tab of the module.
+    - This setting displays/hides the _Proband_ tab of the module.
 
  - `useFamilyID`
-    - This setting displays/hides the Family tab of the module.
+    - This setting displays/hides the _Family_ tab of the module.
 
  - `useConsent`
     - This setting displays/hides the _Consent Status_ tab of the module.
@@ -61,15 +61,15 @@ the database. The following SQL tables affect the behaviour of these fields:
     - Lists fields to be displayed on the front-end of the module and all their 
     attributes.
  - `parameter_type_category_rel`
-    - Relational table associating the Candidate Parameters from the `parameter_type` 
-    table to the entry in the `parameter_type_category` 
+    - Associates the Candidate Parameters from the `parameter_type` 
+    table with the entry in the `parameter_type_category` 
  - `parameter_candidate`
-    - Table storing values saved for each custom field added in the 3 tables above.
+    - Stores values saved for each custom field added in the 3 tables above.
 
 ## Interactions with LORIS
 
 - Information collected in this modules is exported to the Data Query Tool (DQT) 
 using the `CouchDB_Import_Demographics.php` tool script. Any modifications or additions 
-to this module should be manually added to the script in order for them to be included 
+to this module should be manually added to the script in order to be included 
 in the DQT Demographics table. Alternatively, these modifications or additions can be 
-added to separate script that is then exported to the DQT.
+added to a separate script that is then exported to the DQT.
