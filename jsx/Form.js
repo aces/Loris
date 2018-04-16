@@ -135,6 +135,162 @@ var FormElement = React.createClass({
 });
 
 /**
+ * Search Component
+ * React wrapper for a searchable dropdown
+ */
+class SearchableDropdown extends React.Component {
+  constructor(props) {
+    super(props);
+    this.getKeyFromValue = this.getKeyFromValue.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+    this.getTextInputValue = this.getTextInputValue.bind(this);
+  }
+  getKeyFromValue(value) {
+    let options = this.props.options;
+    return Object.keys(options).find(function(o) {
+      return options[o] === value;
+    });
+  }
+
+  handleChange(e) {
+    let value = this.getKeyFromValue(e.target.value);
+    // if not in strict mode and key value is not defined (i.e., not in options)
+    // set value equal to e.target.value
+    if (!this.props.strictSearch && value === undefined) {
+      value = e.target.value;
+    }
+    this.props.onUserInput(this.props.name, value);
+  }
+
+  handleBlur(e) {
+    // null out entry if not present in options in strict mode
+    if (this.props.strictSearch) {
+      let value = e.target.value;
+      let options = this.props.options;
+      if (Object.values(options).indexOf(value) === -1) {
+        // empty string out both the hidden value as well as the input text
+        document.querySelector(`input[name="${this.props.name + '_input'}"]`).value = '';
+        this.props.onUserInput(this.props.name, '');
+      }
+    }
+  }
+
+  getTextInputValue() {
+    return document.querySelector(`input[name="${this.props.name + '_input'}"]`).value;
+  }
+
+  render() {
+    let required = this.props.required ? 'required' : null;
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let options = this.props.options;
+    let strictMessage = 'Entry must be included in provided list of options.';
+    let errorMessage = null;
+    let requiredHTML = null;
+    let elementClass = 'row form-group';
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    } else if (this.props.required && this.props.value === "") {
+      let msg = 'This field is required!';
+      msg += (this.props.strictSearch ? ' ' + strictMessage : '');
+      errorMessage = <span>{msg}</span>;
+      elementClass = 'row form-group has-error';
+    } else if (this.props.strictSearch && this.props.value === "") {
+      errorMessage = <span>{strictMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
+    // determine value to place into text input
+    let value;
+    // use value in options if valid
+    if (this.props.value !== undefined) {
+      if (Object.keys(options).indexOf(this.props.value) > -1) {
+        value = options[this.props.value];
+        // else, use input text value
+      } else {
+        value = this.getTextInputValue();
+      }
+    }
+
+    return (
+      <div className={elementClass}>
+        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+        <div className="col-sm-9">
+          <input
+            type="text"
+            name={this.props.name + '_input'}
+            value={value}
+            id={this.props.id}
+            list={this.props.name + '_list'}
+            className="form-control"
+            disabled={disabled}
+            placeholder={this.props.placeHolder}
+            onChange={this.handleChange}
+            onBlur={this.handleBlur}
+          />
+          <datalist id={this.props.name + '_list'}>
+            {Object.keys(options).map(function(option) {
+              return (
+                <option value={options[option]} key={option}/>
+              );
+            })}
+          </datalist>
+          {errorMessage}
+        </div>
+      </div>
+    );
+  }
+}
+
+SearchableDropdown.propTypes = {
+  name: React.PropTypes.string.isRequired,
+  options: React.PropTypes.object.isRequired,
+  id: React.PropTypes.string,
+  // strictSearch, if set to true, will require that only options
+  // provided in the options prop can be submitted
+  strictSearch: React.PropTypes.bool,
+  label: React.PropTypes.string,
+  value: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.array
+  ]),
+  class: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  errorMessage: React.PropTypes.string,
+  placeHolder: React.PropTypes.string,
+  onUserInput: React.PropTypes.func
+};
+
+SearchableDropdown.defaultProps = {
+  name: '',
+  options: {},
+  strictSearch: true,
+  label: '',
+  value: undefined,
+  id: '',
+  class: '',
+  disabled: false,
+  required: false,
+  errorMessage: '',
+  placeHolder: '',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  }
+};
+
+/**
  * Select Component
  * React wrapper for a simple or 'multiple' <select> element.
  */
@@ -814,6 +970,9 @@ var LorisElement = React.createClass({
       case 'select':
         elementHtml = (<SelectElement {...elementProps} />);
         break;
+      case 'search':
+        elementHtml = (<SearchableDropdown {...elementProps}/>);
+        break;
       case 'date':
         elementHtml = (<DateElement {...elementProps} />);
         break;
@@ -845,6 +1004,7 @@ var LorisElement = React.createClass({
 
 window.FormElement = FormElement;
 window.SelectElement = SelectElement;
+window.SearchableDropdown = SearchableDropdown;
 window.TextareaElement = TextareaElement;
 window.TextboxElement = TextboxElement;
 window.DateElement = DateElement;
@@ -858,6 +1018,7 @@ window.LorisElement = LorisElement;
 export default {
   FormElement,
   SelectElement,
+  SearchableDropdown,
   TextareaElement,
   TextboxElement,
   DateElement,
