@@ -25,11 +25,15 @@ namespace LORIS\next_stage;
 class Next_Stage extends \NDB_Form
 {
     /**
+     * The timePoint to affect
+     *
      * @var \TimePoint
      */
     protected $timepoint;
 
     /**
+     * The timepoint's candidate
+     *
      * @var \Candidate
      */
     protected $candidate;

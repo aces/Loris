@@ -26,6 +26,8 @@ namespace LORIS\create_timepoint;
 class Create_Timepoint extends \NDB_Form
 {
     /**
+     * This timepoint's candidate
+     *
      * @var \Candidate
      */
     protected $candidate;

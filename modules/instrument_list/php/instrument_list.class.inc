@@ -31,11 +31,15 @@ namespace LORIS\instrument_list;
 class Instrument_List extends \NDB_Menu_Filter
 {
     /**
+     * The timepoint to which the instrument list belongs to.
+     *
      * @var \TimePoint
      */
     protected $timepoint;
 
     /**
+     * The candidate to which the instrument list belongs to.
+     *
      * @var \Candidate
      */
     protected $candidate;

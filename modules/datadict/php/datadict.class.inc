@@ -178,7 +178,7 @@ class Datadict extends \NDB_Menu_Filter
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb('Data Dictionary',$this->name)
+            new \LORIS\Breadcrumb('Data Dictionary', $this->name)
         );
     }
 }
