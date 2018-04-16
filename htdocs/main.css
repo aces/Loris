@@ -29,9 +29,11 @@ html, body {
 	font-family: verdana, sans-serif;
 	font-size: 90%;
 }
+
 #page {
     min-height: 100%;
     position: relative;
+    padding-top: 50px;
 }
 
 

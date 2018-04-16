@@ -1,14 +1,12 @@
 language: php
 
+
 cache:
     directories:
         - vendor
-
 php:
-    - "7"
+    - "7.0"
     - "7.1"
-
-sudo: false
 
 addons:
     firefox: "44.0"
@@ -24,20 +22,21 @@ before_install:
     - nvm install node
     - mkdir -p project project/libraries
     - phpenv config-rm xdebug.ini
-
+    - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.0" ]]; then Dir="router.php" ; fi
+    - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.1" ]]; then Dir="htdocs/router.php" ; fi
+    - php -S localhost:8000 -t htdocs $Dir 2>1 > /dev/null &
 install:
     # Install composer modules
     - composer install
+    - composer require --dev
     - phpenv rehash
+
 
     # Install node modules specified in package.json
     - npm install
 
     # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
-
-    - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
-
     # Extracting firefox and setting PATH variable...
     - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
     - export PATH="/tmp/firefox:$PATH"
@@ -49,6 +48,8 @@ install:
     - DISPLAY=:99.0 java -jar selenium-server-standalone-2.52.0.jar  2>1 > /dev/null &
 
 before_script:
+
+
     # Set up the Loris environment
     - mkdir -p project smarty/templates_c project/instruments project/tables_sql
     - chmod 777 smarty/templates_c project/instruments project/tables_sql
@@ -93,7 +94,6 @@ before_script:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
-
     - npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise

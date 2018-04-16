@@ -45,13 +45,13 @@ Where each key should be interpreted as so:
                         are no restrictions on how to determine the InstrumentVersion,
                         but it SHOULD change with any changes to the instrument object.
 
-                        For instance, if an `InstrumentVersion` of "MyInstrument-V1" exists
+ For instance, if an `InstrumentVersion` of "MyInstrument-V1" exists
                         and the options were changed in a `SelectPageElement` to better match
                         the paper copy of the instrument, the InstrumentVersion of the new
                         version SHOULD be changed to "MyInstrument-V2" or in some other way
                         that could differentiate the instrument objects.
 
-                        The `InstrumentVersion` is a self-contained string which can be interpreted
+ The `InstrumentVersion` is a self-contained string which can be interpreted
                         independently of the `ShortName` or `LongName` of the instrument.
 
 `Meta.InstrumentFormatVersion`: A hardcoded string specifying what version of this spec
@@ -116,9 +116,9 @@ the following format:
 
 ## 2.1: Specific element types
 
-2.1.x describes input related types
-2.2.x describes layout related types
-3.x   describes element group related types.
+2.1.x describes input related types  
+2.2.x describes layout related types  
+3.x   describes element group related types.  
 
 ### 2.1.1: Select Element
 
@@ -151,7 +151,7 @@ as follows. It denotes a group of values of which the user must select one optio
 
 `Options.Values`: REQUIRED. Contains a JSON object specifying the
                 options to be selected. Each key/value corresponds
-                to <option value="JSONKey">JSONValue</option> in an
+                to `<option value="JSONKey">JSONValue</option>` in an
                 HTML implementation. The JSONKey contains the value
                 to be saved if selected, and the JSONValue contains
                 the human friendly text to display to the user.
@@ -192,7 +192,7 @@ save it. The format is as follows:
 }
 ```
 
-`Type`: MUST be "text"
+`Type`: MUST be "text".
 
 `Name`: Required. Follows PageElement.Name rules.
 
@@ -200,9 +200,9 @@ save it. The format is as follows:
 
 `Options.Type`: Either "large" or "small". If "large", the user is meant to enter
               a lot of text (ie. a comment box) and is likely to be represented
-              by a textarea in an HTML implementation.
+              by a `<textarea>` in an HTML implementation.
               If "small" the user is meant to enter a little text and is likely
-              to be implemented by a <input type="text"> in an HTML implementation.
+              to be implemented by a `<input type="text">` in an HTML implementation.
               Default: small
 
 `Options.Regex`: Optional, a regex that the data entered must conform to. If not
@@ -233,7 +233,7 @@ as follows:
 }
 ```
 
-`Type`: MUST be "date"
+`Type`: MUST be "date".
 
 `Name`: Required. Follows `PageElement.Name` rules.
 
@@ -243,7 +243,7 @@ as follows:
 
 `Options.MaxDate`: The maximum date that can be chosen by the user. Format is YYYY-MM-DD
 
-`Options.RequireResponse`: Follows the same rules as TextElement:Options.RequireResponse
+`Options.RequireResponse`: Follows the same rules as TextElement:Options.RequireResponse.
 
 
 
@@ -276,14 +276,14 @@ A NumericElement represents a numeric data input and has the general form of:
 
 `Options.MinValue`: A number representing the minimum value that can be chosen
                   by the user. May be a decimal if "NumberType" is decimal, and
-                  an integer if "NumberType" is integer
+                  an integer if "NumberType" is integer.
 
 `Options.MaxValue`: A number representing the maximum value that the user can select.
                   Type of number depends on "NumberType" value. If both MinValue and
                   MaxValue are specified MaxValue MUST be greater than or equal to
                   MinValue.
 
-`Options.RequireResponse`: Follows the same rules as TextElement:Options.RequireResponse
+`Options.RequireResponse`: Follows the same rules as TextElement:Options.RequireResponse.
 
 
 
@@ -338,9 +338,9 @@ may be used by an instrument.
 }
 ```
 
-`Type`: MUST be "header"
+`Type`: MUST be "header".
 
-`Description`: Required. The text to display in the header
+`Description`: Required. The text to display in the header.
 
 `Options.Level`: The level of the header. 1 is the most prominent and subheaders (or sub-subheaders, or
                sub-sub-sub-headers) get increasingly high levels.
@@ -364,11 +364,11 @@ input. It has the following form:
 }
 ```
 
-`Type`: MUST be "label"
+`Type`: MUST be "label".
 
 `Description`: Required. The text to display in the label.
 
-`Options`: None
+`Options`: None.
 
 # 3.0.0: ElementGroups
 
@@ -385,7 +385,7 @@ Groups have the general form of:
 }
 ```
 
-`Type`: MUST be "ElementGroup",
+`Type`: MUST be "ElementGroup".
 
 `GroupType`: must be one of the types defined in section 3 of this documents.
 
@@ -401,8 +401,8 @@ has the following form:
 
 ```js
 {
-    "Type"      : "ElementGroup"
-    "GroupType" : "Page"
+    "Type"      : "ElementGroup",
+    "GroupType" : "Page",
     "Elements"  : [ /* Array of elements of any element or group type defined in this document */],
     "Description" : OPTIONAL
 }
@@ -410,9 +410,9 @@ has the following form:
 
 Any element that it not part of a Page group will be placed on a default top level page.
 
-`Type`: MUST be "ElementGroup",
+`Type`: MUST be "ElementGroup".
 
-`GroupType`: MUST be "Page"
+`GroupType`: MUST be "Page".
 
 `Elements`: May be of any type except with the exception that a Page MUST NOT have further
             Page groups embedded into the Page.
@@ -433,14 +433,14 @@ Element groups have the form:
 ```js
 {
     "Type"      : "ElementGroup",
-    "GroupType" : "Element"
+    "GroupType" : "Element",
     "Elements"  : [ /* Array of elements defined in section 2 of this document */]
 }
 ```
 
-`Type`: MUST be "ElementGroup",
+`Type`: MUST be "ElementGroup".
 
-`GroupType`: MUST be "Element"
+`GroupType`: MUST be "Element".
 
 `Elements`: May be any element type defined in section 2, but MUST NOT contain further
             subgroups.
@@ -462,9 +462,9 @@ to grow smaller rows to the size of the biggest row.
 }
 ```
 
-`Type`: MUST be "ElementGroup",
+`Type`: MUST be "ElementGroup".
 
-`GroupType`: MUST be "Table"
+`GroupType`: MUST be "Table".
 
 `Elements`: MUST only contain Row groups.
 
@@ -488,8 +488,8 @@ of type "header" into the row group.
 }
 ```
 
-`Type`: MUST be "ElementGroup",
+`Type`: MUST be "ElementGroup".
 
-`GroupType`: MUST be "Row"
+`GroupType`: MUST be "Row".
 
 `Elements`: May contain any standard element type from section 2.

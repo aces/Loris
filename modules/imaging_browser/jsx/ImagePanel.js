@@ -6,6 +6,9 @@
 
 var ImagePanelHeader = React.createClass({
   mixins: [React.addons.PureRenderMixin],
+  componentDidMount: function() {
+    $(".panel-title").tooltip();
+  },
   render: function() {
     var QCStatusLabel;
     if (this.props.QCStatus === 'Pass') {
@@ -47,7 +50,9 @@ var ImagePanelHeader = React.createClass({
             <div className="panel-heading clearfix">
             <input type="checkbox" data-file-id={this.props.FileID}
                      className="mripanel user-success" />
-                <h3 className="panel-title">{this.props.Filename} </h3>
+                <h3 className="panel-title" data-toggle="tooltip" title={this.props.Filename}>
+                  {this.props.Filename}
+                </h3>
                 {QCStatusLabel}
                 {arrow}
                 {headerButton}
@@ -56,7 +61,6 @@ var ImagePanelHeader = React.createClass({
   }
 
 });
-
 var ImagePanelHeadersTable = React.createClass({
   componentDidMount: function() {
     $(ReactDOM.findDOMNode(this)).DynamicTable();
@@ -80,14 +84,6 @@ var ImagePanelHeadersTable = React.createClass({
                         {this.props.HeaderInfo.SeriesUID}
                       </td>
                     </tr>
-
-                {/* SERIES NUMBER */}
-                    <tr>
-                      <th className="col-xs-4 info">Series Number</th>
-                      <td className="col-xs-8" colSpan="3">
-                        {this.props.HeaderInfo.SeriesNumber}
-                      </td>
-                    </tr>
                 {/* VOXEL SIZE */}
                     <tr>
                         <th className="col-xs-4 info">Voxel Size</th>
@@ -100,7 +96,17 @@ var ImagePanelHeadersTable = React.createClass({
                                     this.props.HeaderInfo.ZStep + " mm "}
                         </td>
                     </tr>
-
+                {/* SERIES NUMBER x SNR */}
+                <tr>
+                  <th className="col-xs-4 info">Series Number</th>
+                  <td className="col-xs-2">
+                    {this.props.HeaderInfo.SeriesNumber}
+                  </td>
+                  <th className="col-xs-4 info">SNR</th>
+                  <td className="col-xs-2">
+                    {this.props.SNR}
+                  </td>
+                </tr>
                 {/* SERIES DESCRIPTION x SERIES PROTOCOL */}
                     <tr>
                       <th className="col-xs-4 info">Series Description</th>
@@ -217,6 +223,8 @@ var ImagePanelHeadersTable = React.createClass({
         );
   }
 });
+
+// generic component for QC selectors (QC Status, Selected, Caveat)
 var ImageQCDropdown = React.createClass({
 
   render: function() {
@@ -256,10 +264,10 @@ var ImageQCDropdown = React.createClass({
             );
     }
     return (
-            <div className="row">
+            <span className="col-xs-4">
                 {label}
                 {dropdown}
-            </div>
+            </span>
         );
   }
 });
@@ -279,15 +287,13 @@ var ImageQCStatic = React.createClass({
         );
   }
 });
-
 var ImagePanelQCStatusSelector = React.createClass({
   render: function() {
     var qcStatusLabel;
     if (this.props.HasQCPerm && this.props.FileNew) {
       qcStatusLabel = <span>
                         QC Status <span className="text-info">
-                             ( <span className="glyphicon glyphicon-star">
-                           </span> New )
+                             (<span className="glyphicon glyphicon-star"/> New)
                          </span>
                       </span>;
     } else {
@@ -382,10 +388,6 @@ var ImagePanelQCPanel = React.createClass({
                     HasQCPerm={this.props.HasQCPerm}
                     Caveat={this.props.Caveat}
                     SeriesUID={this.props.SeriesUID}
-                />
-                <ImagePanelQCSNRValue
-                    FileID={this.props.FileID}
-                    SNR={this.props.SNR}
                 />
             </div>
         );
@@ -511,13 +513,15 @@ var ImagePanelBody = React.createClass({
     return (
                 <div className="panel-body">
                     <div className="row">
-                        <div className="col-xs-9 imaging_browser_pic">
+                        <div className="col-xs-12 imaging_browser_pic">
                             <a href="#noID" onClick={this.openWindowHandler}>
-                                <img className="img-checkpic img-responsive"
+                                <img className="img-responsive"
                                   src={this.props.Checkpic} />
                             </a>
                         </div>
-                        <div className="col-xs-3 mri-right-panel">
+                    </div>
+                    <div className="row">
+                        <div className="col-xs-12 mri-right-panel">
                             <ImagePanelQCPanel
                                 FileID={this.props.FileID}
                                 FileNew={this.props.FileNew}
@@ -525,7 +529,6 @@ var ImagePanelBody = React.createClass({
                                 QCStatus={this.props.QCStatus}
                                 Caveat={this.props.Caveat}
                                 Selected={this.props.Selected}
-                                SNR={this.props.SNR}
                                 SeriesUID={this.props.SeriesUID}
                             />
                          </div>
@@ -564,7 +567,7 @@ var ImagePanel = React.createClass({
   render: function() {
     return (
       <div className="col-xs-12">
-            <div className="col-xs-12 col-md-6">
+            <div className="col-md-12 col-lg-6">
                 <div className="panel panel-default">
                 <ImagePanelHeader
                     FileID={this.props.FileID}
@@ -603,9 +606,10 @@ var ImagePanel = React.createClass({
                 </div>
             </div>
 
-            <div className="col-xs-12 col-md-6">
+            <div className="col-md-12 col-lg-6">
             {!this.state.HeadersCollapsed && !this.state.BodyCollapsed ? <ImagePanelHeadersTable
                 HeaderInfo={this.props.HeaderInfo}
+                SNR={this.props.SNR}
               /> : ''
             }
             </div>
