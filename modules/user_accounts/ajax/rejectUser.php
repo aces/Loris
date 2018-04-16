@@ -39,7 +39,8 @@ if (!isset($_POST['identifier'])) {
     );
 }
 
-$username = (\User::factory($_POST['identifier']))->getUsername();
+$rejectee = \User::factory($_POST['identifier']);
+$username = $rejectee->getUsername();
 
 if (empty($username)) {
     header("HTTP/1.1 404 Not Found");
@@ -49,7 +50,7 @@ if (empty($username)) {
     );
 }
 
-if (!Edit_User::canRejectAccount($username)) {
+if (!Edit_User::canRejectAccount($rejectee)) {
     header("HTTP/1.1 403 Forbidden");
     header("Content-Type: text/plain");
     exit(

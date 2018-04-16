@@ -721,7 +721,7 @@ class Edit_User extends \NDB_Form
             $this->tpl_data['can_reject'] = false;
         } else {
             $this->tpl_data['can_reject']
-                = self::canRejectAccount($this->identifier);
+                = self::canRejectAccount(\User::factory($this->identifier));
         }
 
         // get the editor's permissions
@@ -817,39 +817,18 @@ class Edit_User extends \NDB_Form
     }
 
     /**
-     * Query database on UserID to check that password hash does not
-     * exist and account is still pending approval.
-     *
      * This ensures that users with account activity cannot be rejected
      * if their approval status is, for some reason, set to pending.
      *
-     * @param string $userID of account to verify
+     * @param \User $user The User to verify
      *
-     * @return boolean true if 'Password_hash' is null and
-     *         'Pending_approval' is Yes. False, otherwise.
-     *
-     * @throws Loris exception if the userID is not found in the database.
+     * @return boolean true if 'Pending_approval' is Yes and the user never
+     *                      ever logged in.
      */
-    static function canRejectAccount($userID)
+    static function canRejectAccount(\User $user)
     {
-        $DB_factory = \NDB_Factory::singleton();
-        $DB         = $DB_factory->database();
-
-        $fields = $DB->pselectRow(
-            "SELECT Password_hash, Pending_approval
-                       FROM users
-                       WHERE UserID=:id",
-            array("id" => $userID)
-        );
-        if (empty($fields)) {
-            throw new \LorisException("User not found in database");
-        } else if (empty($fields['Password_hash'])
-            && $fields['Pending_approval']=="Y"
-        ) {
-            return true;
-        } else {
-            return false;
-        }
+        return $user->getData('Pending_approval') == 'Y'
+            && !$user->hasLoggedIn();
     }
 
     /**
@@ -1137,4 +1116,4 @@ class Edit_User extends \NDB_Form
         );
     }
 }
-?>
+

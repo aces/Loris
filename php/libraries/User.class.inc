@@ -541,5 +541,24 @@ class User extends UserPermissions
         return $this->hasPermission($code)
             && $this->hasCenter($center_id);
     }
+
+    /**
+     * Determines if the user has ever logged in successfully
+     *
+     * @return bool
+     */
+    public function hasLoggedIn(): bool
+    {
+        $count = (\NDB_Factory::singleton()->database())->pselectOne(
+            "SELECT
+               COUNT(1)
+             FROM user_login_history 
+             WHERE
+               UserID = :v_userid AND
+               Success = 'Y'
+            ",
+            array('v_userid' => $this->userInfo['UserID'])
+        );
+        return $count > 0;
+    }
 }
-?>
