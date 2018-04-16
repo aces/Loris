@@ -2,8 +2,11 @@
 
 ## Purpose
 
-The Data Release module can be used to easily distribute packaged data releases
-of the study.
+The Data Release module can be used to distribute packaged data releases 
+of the study to the analysis team. This module can be used by projects 
+which desires to publish based on the exact same set of data referred
+as data release. Along the lifespan of a study, several data releases might
+be made available as the dataset keeps growing.
 
 ## Intended users
 
@@ -23,8 +26,8 @@ web interface.
 
 ## Permissions
 
-- Users permissions to view data releases are managed within the data release
-  module.
+- Users permissions to view data releases based on their versions are managed 
+  within the data release module.
 - Only superusers have permission to upload and view all data releases.
   Superusers can also grant other users permissions to specific data release
   within the data release module.
