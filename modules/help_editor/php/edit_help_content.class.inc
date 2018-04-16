@@ -50,14 +50,13 @@ class Edit_Help_Content extends \NDB_Form
         //Get the default values
 
         // Sanitize user input
-        $safeHelpID     = htmlspecialchars($_REQUEST['helpID']);
         $safeSection    = $_REQUEST['section'] ?
             htmlspecialchars($_REQUEST['section']) : '';
         $safeSubsection = $_REQUEST['subsection'] ?
             htmlspecialchars($_REQUEST['subsection']) : '';
 
         if (isset($_REQUEST['helpID'])) {
-            $helpID = $safeHelpID;
+            $helpID = htmlspecialchars($_REQUEST['helpID']);
         }
         if (!empty($_REQUEST['section'])) {
             $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
@@ -82,6 +81,8 @@ class Edit_Help_Content extends \NDB_Form
             }
 
         }
+        // let escaped html display as intended in form
+        $defaults['content'] = htmlspecialchars_decode($defaults['content']);
         // case where no help content exists
         if (empty($defaults['title'])) {
             if (!empty($_REQUEST['section'])) {
@@ -115,15 +116,13 @@ class Edit_Help_Content extends \NDB_Form
         //Get the default values
 
         // Sanitize user input
-        $safeHelpID     = htmlspecialchars($_REQUEST['helpID']);
-        $safeParentID   = htmlspecialchars($_REQUEST['parentID']);
         $safeSection    = htmlspecialchars($_REQUEST['section']);
         $safeSubsection = htmlspecialchars($_REQUEST['subsection']);
         if (isset($_REQUEST['helpID'])) {
-            $helpID = $safeHelpID;
+            $helpID = htmlspecialchars($_REQUEST['helpID']);
         }
         if (isset($_REQUEST['parentID'])) {
-            $parentID = $safeParentID;
+            $parentID = htmlspecialchars($_REQUEST['parentID']);
         }
 
         if (!empty($_REQUEST['section'])) {
