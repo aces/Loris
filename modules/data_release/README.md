@@ -13,12 +13,12 @@ of the study.
 ## Scope
 
 The module is used to manage, upload and download data releases of the study.
-- Different data releases can be differentiated using the version tag
+- Different data releases can be differentiated using the version tag.
 - Data coordinators can upload data releases of the study via the front-end
-web interface
+web interface.
 - For each data release, data coordinators can manage permissions of any
-  specific user
-- Upload date will automatically be added during file upload
+  specific user.
+- Upload date will automatically be added during file upload.
 
 
 ## Permissions
