@@ -34,7 +34,7 @@ foreach ($_POST as $key => $value) {
             $DB->delete('Config', array('ID' => $key));
         } else {
             // if no duplicate value then do updating
-            if (checkDuplicateUpdateDropdown($key, $value)) {
+            if (duplicateExistsInDropdown($key, $value)) {
                 $DB->update(
                     'Config',
                     array('Value' => $value),
@@ -50,7 +50,7 @@ foreach ($_POST as $key => $value) {
         $valueSplit = explode("-", $value);
         if ($keySplit[0] == 'add') {
             if ($value !== "") {
-                if (checkDuplicate($keySplit[1], $value) == '0') {
+                if (countDuplicate($keySplit[1], $value) == '0') {
                     $DB->insert(
                         'Config',
                         array(
@@ -76,11 +76,11 @@ foreach ($_POST as $key => $value) {
  *
  * @return string $result
  */
-function checkDuplicate($key,$value)
+function countDuplicate($key,$value)
 {
        $DB     =& Database::singleton();
        $result = $DB->pselectOne(
-           "Select count(*) from Config where ConfigID =:ConfigID and Value =:Value",
+           "SELECT count(*) FROM Config WHERE ConfigID =:ConfigID AND Value =:Value",
            array(
             ':ConfigID' => $key,
             ':Value'    => $value,
@@ -96,15 +96,15 @@ function checkDuplicate($key,$value)
  *
  * @return boolean return true if there is no Duplicate value
  */
-function checkDuplicateUpdateDropdown($id,$value)
+function duplicateExistsInDropdown($id,$value)
 {
        $DB       =& Database::singleton();
        $ConfigID = $DB->pselectOne(
-           "Select ConfigID from Config where ID =:ID",
+           "SELECT ConfigID FROM Config WHERE ID =:ID",
            array(':ID' => $id)
        );
        $IDBefore = $DB->pselectOne(
-           "Select ID from Config where ConfigID =:ConfigID and Value =:Value",
+           "SELECT ID FROM Config WHERE ConfigID =:ConfigID AND Value =:Value",
            array(
             ':ConfigID' => $ConfigID,
             ':Value'    => $value,

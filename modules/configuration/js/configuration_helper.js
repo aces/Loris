@@ -86,7 +86,7 @@ $(function () {
             error: function(xhr, desc, err) {
                 console.log(xhr);
                 console.log("Details: " + desc + "\nError:" + err);
-                var html = "<label>Duplicate Values</label>";
+                var html = "<label>One or more fields with multiple-entry option has duplicate values</label>";
                 $(html).hide().appendTo('.submit-area').fadeIn(500).delay(1000).fadeOut(500)
                 $('input[type="reset"]').attr('disabled','disabled')
             }
