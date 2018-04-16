@@ -2,7 +2,7 @@
 
 ## Purpose
 
- The Document Repository is a tool that provides a centralized location for non-candidate documents that are relevant to the study i.e. unfilled versions of instruments, publications, or manual of operations.
+ The Document Repository is a tool that provides a centralized location for non-candidate documents that are relevant to the study (i.e. unfilled versions of instruments, publications, or manual of operations).
 
 ## Intended Users
 
@@ -39,7 +39,3 @@ chmod 777 /var/www/loris/modules/document_repository/user_uploads
 
 - Interactions: Document repository notifications are visible on the dashboard panel.
   
-- Create user-defined category in the "document_repository_categories" table. For example: 
-```
-INSERT INTO `document_repository_categories` VALUES (1,'text',0,NULL),(2,'photo',0,NULL),(3,'pdf',0,NULL);
-```
