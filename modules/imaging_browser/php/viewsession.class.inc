@@ -776,5 +776,19 @@ class ViewSession extends \NDB_Form
         );
     }
 
+    /**
+     * Generate a breadcrumb trail for that page.
+     *
+     * @return \LORIS\BreadcrumbTrail The trail.
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $label = ucwords(str_replace('_', ' ', $this->name));
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb($label, "/$this->name"),
+            new \LORIS\Breadcrumb('View Session', "/$this->name/$this->page")
+        );
+    }
+
 }
 

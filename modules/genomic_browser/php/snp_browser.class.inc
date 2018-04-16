@@ -461,5 +461,19 @@ class SNP_Browser extends \NDB_Menu_Filter
         );
     }
 
+    /**
+     * Generate a breadcrumb trail for that page.
+     *
+     * @return \LORIS\BreadcrumbTrail The trail.
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $label    = ucwords(str_replace('_', ' ', $this->name));
+        $sublabel = ucwords(str_replace('_', ' ', $this->page));
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb($label, "/$this->name"),
+            new \LORIS\Breadcrumb($sublabel, "/$this->name/$this->page")
+        );
+    }
+
 }
-?>
