@@ -362,7 +362,7 @@ class Candidate_List extends \NDB_Menu_Filter
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb('Access Profile', $_SERVER['REQUEST_URI'])
+            new \LORIS\Breadcrumb('Access Profile', "/$this->name")
         );
     }
 }

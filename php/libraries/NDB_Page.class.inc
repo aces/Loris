@@ -856,7 +856,7 @@ class NDB_Page implements RequestHandlerInterface
     {
         $label = ucwords(str_replace('_', ' ', $this->name));
         return new \LORIS\BreadcrumbTrail(
-            new \LORIS\Breadcrumb($label, $_SERVER['REQUEST_URI'])
+            new \LORIS\Breadcrumb($label, "/$this->name")
         );
     }
 }
