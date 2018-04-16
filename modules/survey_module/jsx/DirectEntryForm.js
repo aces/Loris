@@ -182,7 +182,7 @@ class SelectElement extends React.Component {
 		let description = '';
 		if (!!this.props.element.Description) {
 			description = (
-				<h3 className='col-xs-12 field_question'>
+				<h3 className={classInfo}>
 					<Markdown content={this.props.element.Description} />
 				</h3>
 			);
@@ -231,18 +231,22 @@ class TextElement extends React.Component {
 			);
 		}
 		let classInfo = 'col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4';
+		let descClass = 'col-xs-12 field_question';
 		let value = '';
-		let description = '';
-		if (!!this.props.element.Description) {
-			description = (
-				<h3 className='col-xs-12 field_question'>
-					<Markdown content={this.props.element.Description} />
-				</h3>
-			);
-		}
+		
 
 		if(this.props.error) {
 			classInfo += ' has-error';
+			descClass += ' has-error';
+		}
+
+		let description = '';
+		if (!!this.props.element.Description) {
+			description = (
+				<h3 className={descClass}>
+					<Markdown content={this.props.element.Description} />
+				</h3>
+			);
 		}
 
 		if(this.props.value) {
