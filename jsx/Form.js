@@ -894,8 +894,6 @@ class DateElement extends React.Component {
             value={this.props.value || ""}
             required={required}
             disabled={disabled}
-            pattern="([0-1][0-9]|2[0-4]|[1-24]):([0-5][0-9])(:([0-5][0-9]))?"
-            title="Input must be one of the following formats: ##:## or ##:##:##"
           />
         </div>
       </div>
@@ -983,6 +981,8 @@ var TimeElement = React.createClass({
             value={this.props.value || ""}
             required={required}
             disabled={disabled}
+            pattern="([0-1][0-9]|2[0-4]|[1-24]):([0-5][0-9])(:([0-5][0-9]))?"
+            title="Input must be one of the following formats: ##:## or ##:##:##"
           />
         </div>
       </div>
