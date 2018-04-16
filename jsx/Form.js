@@ -138,7 +138,7 @@ var FormElement = React.createClass({
  * Search Component
  * React wrapper for a searchable dropdown
  */
-class SearchElement extends React.Component {
+class SearchableDropdown extends React.Component {
   constructor(props) {
     super(props);
     this.getKeyFromValue = this.getKeyFromValue.bind(this);
@@ -253,7 +253,7 @@ class SearchElement extends React.Component {
   }
 }
 
-SearchElement.propTypes = {
+SearchableDropdown.propTypes = {
   name: React.PropTypes.string.isRequired,
   options: React.PropTypes.object.isRequired,
   id: React.PropTypes.string,
@@ -273,7 +273,7 @@ SearchElement.propTypes = {
   onUserInput: React.PropTypes.func
 };
 
-SearchElement.defaultProps = {
+SearchableDropdown.defaultProps = {
   name: '',
   options: {},
   strictSearch: true,
@@ -971,7 +971,7 @@ var LorisElement = React.createClass({
         elementHtml = (<SelectElement {...elementProps} />);
         break;
       case 'search':
-        elementHtml = (<SearchElement {...elementProps}/>);
+        elementHtml = (<SearchableDropdown {...elementProps}/>);
         break;
       case 'date':
         elementHtml = (<DateElement {...elementProps} />);
@@ -1004,7 +1004,7 @@ var LorisElement = React.createClass({
 
 window.FormElement = FormElement;
 window.SelectElement = SelectElement;
-window.SearchElement = SearchElement;
+window.SearchableDropdown = SearchableDropdown;
 window.TextareaElement = TextareaElement;
 window.TextboxElement = TextboxElement;
 window.DateElement = DateElement;
@@ -1018,7 +1018,7 @@ window.LorisElement = LorisElement;
 export default {
   FormElement,
   SelectElement,
-  SearchElement,
+  SearchableDropdown,
   TextareaElement,
   TextboxElement,
   DateElement,
