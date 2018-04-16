@@ -33,15 +33,5 @@ $(document).ready(function() {
       e.preventDefault();
     });
   }
-  if (!Modernizr.inputtypes.time) { // eslint-disable-line
-    var timeInputs = $('input.timepicker');
-    timeInputs.timepicker({
-      timeFormat: 'H:mm',
-      defaultTime: 'now',
-      dynamic: false,
-      dropdown: false,
-      scrollbar: false
-    });
-  }
 });
 
