@@ -14,7 +14,7 @@ The primary types of users are:
 ## Scope
 
 The Candidate Parameters module stores all information 
-for a candidate that are not timepoint dependent. All data 
+for a candidate that is not timepoint dependent. All data 
 collected during a visit should be entered as an instrument 
 at the visit level.
 
