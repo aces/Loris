@@ -122,7 +122,8 @@ class Datadict extends \NDB_Menu_Filter
         $instruments = \Utility::getAllInstruments();
         $instruments = array_merge(
             array('' => 'All Instruments'),
-            $instruments
+            $instruments, 
+            array("multiple") 
         );
         $this->addSelect('sourceFrom', 'Instruments', $instruments);
         $this->addSelect(
