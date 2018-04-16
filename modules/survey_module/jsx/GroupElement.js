@@ -83,11 +83,18 @@ class ElementGroup extends React.Component {
 			);
 		}.bind(this));
 
-		return (
-			<div className='col-xs-12'>
+		let description = '';
+		if (!!this.props.element.Description) {
+			description = (
 				<div className={labelClass}>
 					<Markdown content={this.props.element.Description} />
 				</div>
+			);
+		}
+
+		return (
+			<div className='col-xs-12'>
+				{description}
 				{elements}
 			</div>
 		);
@@ -97,14 +104,11 @@ class ElementGroup extends React.Component {
 class BaseElement extends React.Component {
 	constructor(props) {
 	    super(props);
-	    console.log(props);
 
 	    this.updateValue = this.updateValue.bind(this);
 	}
 
 	updateValue(e) {
-		console.log(e.target.value);
-
 		this.props.updateAnswer(this.props.element.Name, e.target.value);
 	}
 
@@ -148,7 +152,12 @@ class BaseElement extends React.Component {
 				);
 				break;
 			case 'label':
-				let content = this.props.value ? this.props.value : this.props.element.Description;
+				let content = '';
+				if(!!this.props.value) {
+					content = this.props.value;
+				} else if(!!this.props.element.Description) {
+					content = this.props.element.Description;
+				}
 				element = (
 					<Markdown content={content} />
 				);

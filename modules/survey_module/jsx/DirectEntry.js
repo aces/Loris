@@ -92,7 +92,6 @@ class DirectEntry extends React.Component {
 	}
 
 	setupPageValues(page) {
-		console.log(page);
 		const pageElements = this.state.InstrumentJSON.Elements[page].Elements;
 		let pageValues = {};
 

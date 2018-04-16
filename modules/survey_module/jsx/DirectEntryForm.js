@@ -106,7 +106,6 @@ class Page extends React.Component {
 	constructor(props) {
 	    super(props);
 
-	    // console.lo/?g(props);
 	}
 
 	render() {
@@ -180,11 +179,18 @@ class SelectElement extends React.Component {
 			classInfo += ' has-error';
 		}
 
-		return (
-			<div>
-				<h3 className={classInfo}>
+		let description = '';
+		if (!!this.props.element.Description) {
+			description = (
+				<h3 className='col-xs-12 field_question'>
 					<Markdown content={this.props.element.Description} />
 				</h3>
+			);
+		}
+
+		return (
+			<div>
+				{description}
 				{element}
 			</div>
 		);
@@ -226,6 +232,14 @@ class TextElement extends React.Component {
 		}
 		let classInfo = 'col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4';
 		let value = '';
+		let description = '';
+		if (!!this.props.element.Description) {
+			description = (
+				<h3 className='col-xs-12 field_question'>
+					<Markdown content={this.props.element.Description} />
+				</h3>
+			);
+		}
 
 		if(this.props.error) {
 			classInfo += ' has-error';
@@ -237,9 +251,7 @@ class TextElement extends React.Component {
 
 		return (
 			<div>
-				<h3 className='col-xs-12 field_question'>
-					<Markdown content={this.props.element.Description} />
-				</h3>
+				{description}
 				<div className={classInfo}>
 					{type}
 				</div>
@@ -268,11 +280,18 @@ class DateElement extends React.Component {
 			classInfo += ' has-error';
 		}
 
-		return (
-			<div>
-				<h3 className={classInfo}>
+		let description = '';
+		if (!!this.props.element.Description) {
+			description = (
+				<h3 className='col-xs-12 field_question'>
 					<Markdown content={this.props.element.Description} />
 				</h3>
+			);
+		}
+
+		return (
+			<div>
+				{description}
 				<div className='col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4'>
 					<input
 						name = {this.props.element.Name}
@@ -295,9 +314,17 @@ class LabelElement extends React.Component {
 	}
 
 	render() {
+		let description = '';
+		if (!!this.props.element.Description) {
+			description = (
+				<h3 className='col-xs-12 field_question'>
+					<Markdown content={this.props.element.Description} />
+				</h3>
+			);
+		}
 		return (
 			<div>
-				<Markdown content={this.props.element.Description} />
+				{description}
 			</div>
 		);
 	}
@@ -327,3 +354,4 @@ class HeaderElement extends React.Component {
 
 
 export default Page;
+
