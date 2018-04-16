@@ -43,7 +43,7 @@ The following configurations affect the usage of the Candidate Parameters module
     - This setting displays/hides the _Consent Status_ tab of the module.
 
 The _Consent Status_ tab dynamically displays consents defined under the 
-`<ConsentModule> <Consent>` tags in the config.xml file. 
+`<ConsentModule> <Consent>` tags in the config.xml file (see [setup.md](setup.md) for an example).
 
  - The `<name> </name>` tag defines the field name on the form and is required to 
  match the name of the sql fields in the `participant_status` and 
