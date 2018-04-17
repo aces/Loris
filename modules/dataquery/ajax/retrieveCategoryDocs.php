@@ -20,10 +20,18 @@ require_once __DIR__ . '/../../../vendor/autoload.php';
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
-$cdb      = \NDB_Factory::singleton()->couchDB();
-$category = $_REQUEST['DocType'];
-$sessions = json_decode($_REQUEST['Sessions']);
-$keys     = array_map(
+$config      = \NDB_Config::singleton();
+$couchConfig = $config->getSetting('CouchDB');
+$cdb         = \NDB_Factory::singleton()->couchDB(
+    $couchConfig['dbName'],
+    $couchConfig['hostname'],
+    $couchConfig['port'],
+    $couchConfig['admin'],
+    $couchConfig['adminpass']
+);
+$category    = $_REQUEST['DocType'];
+$sessions    = json_decode($_REQUEST['Sessions']);
+$keys        = array_map(
     function ($row) use ($category) {
         return array_merge(array($category), $row);
     },

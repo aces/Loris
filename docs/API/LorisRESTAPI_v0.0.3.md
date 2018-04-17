@@ -37,7 +37,7 @@ no further authentication is required. Requests will be evaluated as requests fr
 so that standard Loris modules can simply use the API.
 
 If a user is not logged in to Loris (for instance, in a third party app or a CORS application),
-they can be be authenticated using [JSON Web Tokens](https://jwt.io).
+they can be authenticated using [JSON Web Tokens](https://jwt.io).
 
 The client should POST a request to /login with a payload of the form:
 
@@ -153,8 +153,13 @@ Will return a JSON object of the form:
   "Images" : [
     {
       "Candidate": "123456",
+      "PSCID": "MTL001",
       "Visit": "V1",
+      "Visit_date": "2016-08-09", /* The date of the session. This will be null for phantoms and session that are not yet started */
+      "Site": "Montreal Neurological Institute",
       "ScanType": "t2", /* Acquisition protocol */
+      "QC_status": "Pass|Fail|null",
+      "Selected": "true|false|null",
       "Link": "\/candidates\/300022\/V1\/images\/loris-MRI_123456_V1_t2_001.mnc", /* URL relative to this API */
       "InsertTime": "2016-08-09T14:15:30-05:00" /* The inserted date ISO 8601 */
     },
@@ -166,7 +171,7 @@ It is possible to provide a GET parameter named `since` where the value need to 
 ```
 ex: 2016-08-09 or 2016-08-09 10:00:00 or 2016-08-09T10:00:00-05:00
 ```
-The format must follow php Supported Date and Time Formats for Datetime objects. See http://php.net/manual/en/datetime.formats.php  
+We recommend using a format that includes timezone.
 
 ### 2.1.2 Single project instruments  
 ```
