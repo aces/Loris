@@ -26,14 +26,21 @@ web interface.
 
 ## Permissions
 
-- Users permissions to view data releases based on their versions are managed 
-  within the data release module.
-- Only superusers have permission to upload and view all data releases.
-  Superusers can also grant other users permissions to specific data release
-  within the data release module.
+- Only superusers can upload anything, no one else has upload permission.
+- Only superusers can grant permissions - whether by "version" or specific
+  "file_name", no one else has granting permissions.
+- Once a user is granted permission on any data release, it will show up in
+  they will have be able to see the data release and download it directly from
+  the module.
 - At the moment, the only way to remove a user's permission to a specific data
   release is via the backend, by manually deleting rows in the
   `data_release_permissions` MySQL table.
+
+
+- Users permissions to view data releases are based on the granular file
+  level permissions in the `data_release_permissions` table. Granting by
+  version grants every file tied to the specified version.
+
 
 ## Configurations
 
