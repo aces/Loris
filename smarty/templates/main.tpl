@@ -27,14 +27,18 @@
         <script type="text/javascript">
           $(document).ready(function() {
             {if $breadcrumbs != "" && empty($error_message)}
+              const breadcrumbs = [{$breadcrumbs}];
+
               ReactDOM.render(
                 RBreadcrumbs({
-                  breadcrumbs: [{$breadcrumbs}],
+                  breadcrumbs: breadcrumbs,
                   baseURL: loris.BaseURL
                 }),
                 document.getElementById("breadcrumbs")
               );
-            document.title = document.title.concat(' - ', document.getElementById('breadcrumbs').innerText.replace('\n',' - '));
+              document.title = document.title.concat(breadcrumbs.reduce(function (carry, item) {
+                return carry.concat(' - ', item.text);
+              }, ''));
             {/if}
 
             // Initialize bootstrap tooltip for site affiliations
