@@ -441,7 +441,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->_testMytaskPanelAndLink(
             ".new-scans",
             "9",
-            "Imaging  Browser"
+            "Imaging Browser"
         );
         $this->resetPermissions();
     }
@@ -469,7 +469,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->_testMytaskPanelAndLink(
             ".conflict_resolver",
             "585",
-            "-  Conflict  Resolver"
+            "- Conflict Resolver"
         );
         $this->resetPermissions();
     }
@@ -489,7 +489,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->_testMytaskPanelAndLink(
             ".issue_tracker",
             "1",
-            "-  Issue  Tracker"
+            "- Issue Tracker"
         );
         $this->resetPermissions();
     }
@@ -546,7 +546,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->_testMytaskPanelAndLink(
             ".pending-accounts",
             "1",
-            "-  User  Accounts"
+            "- User Accounts"
         );
         $this->resetPermissions();
     }
