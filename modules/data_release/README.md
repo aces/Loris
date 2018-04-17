@@ -1,5 +1,6 @@
 # Data Release
 
+
 ## Purpose
 
 The Data Release module can be used to distribute packaged data releases 
@@ -8,10 +9,12 @@ which desires to publish based on the exact same set of data referred
 as data release. Along the lifespan of a study, several data releases might
 be made available as the dataset keeps growing.
 
+
 ## Intended users
 
 - Researchers and analysis teams
 - Data coordinator that will manage access to, and upload of, the data releases
+
 
 ## Scope
 
@@ -32,14 +35,12 @@ web interface.
 - Once a user is granted permission on any data release, it will show up in
   they will have be able to see the data release and download it directly from
   the module.
-- At the moment, the only way to remove a user's permission to a specific data
-  release is via the backend, by manually deleting rows in the
-  `data_release_permissions` MySQL table.
-
-
 - Users permissions to view data releases are based on the granular file
   level permissions in the `data_release_permissions` table. Granting by
   version grants every file tied to the specified version.
+- At the moment, the only way to remove a user's permission to a specific data
+  release is via the backend, by manually deleting rows in the
+  `data_release_permissions` MySQL table.
 
 
 ## Configurations
