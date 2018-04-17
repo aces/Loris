@@ -116,7 +116,7 @@ class Imaging_Session_ControlPanel
         $tarIDToTarLoc =array();
         foreach ($qresult as $v) {
             $tarchiveID = $v['TarchiveID'];
-            $tarIDToTarLoc[$tarchiveID] =$v['ArchiveLocation'];
+            $tarIDToTarLoc[$tarchiveID] = $v['ArchiveLocation'];
         }
         $subjectData['tarchiveIDLoc'] = $tarIDToTarLoc;
 
