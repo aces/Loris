@@ -50,18 +50,18 @@ class Datadict extends \NDB_Menu_Filter
      */
     function _buildQuery()
     {
-        $select = " SELECT DISTINCT 
+        $select = " SELECT DISTINCT
          pt.sourceFrom as source_from,
-         pt.name as name,  
-         pt.sourceField as source_field,  
-         coalesce(pto.description,pt.description) as description, 
-         CASE  
+         pt.name as name,
+         pt.sourceField as source_field,
+         coalesce(pto.description,pt.description) as description,
+         CASE
            WHEN COALESCE(pto.description,pt.description) = '' THEN 'Empty'
-           WHEN pto.name IS NOT NULL THEN 'Modified' 
+           WHEN pto.name IS NOT NULL THEN 'Modified'
            WHEN pto.name IS NULL THEN 'Unchanged'
          END as description_status ";
 
-        $joins = " FROM parameter_type pt 
+        $joins = " FROM parameter_type pt
         LEFT JOIN parameter_type_override pto USING (Name)
         WHERE pt.Queryable=1 ";
         $query = $select . $joins;
@@ -122,8 +122,8 @@ class Datadict extends \NDB_Menu_Filter
         $instruments = \Utility::getAllInstruments();
         $instruments = array_merge(
             array('' => 'All Instruments'),
-            $instruments, 
-            array("multiple") 
+            $instruments,
+            array("multiple")
         );
         $this->addSelect('sourceFrom', 'Instruments', $instruments);
         $this->addSelect(
