@@ -27,7 +27,7 @@ import React, {Component, PropTypes} from 'react';
 class FormElement extends React.Component {
   constructor() {
     super();
-    this.getFormElements = this.getFormElements.bind(this); 
+    this.getFormElements = this.getFormElements.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -127,7 +127,7 @@ FormElement.propTypes = {
   }),
   onSubmit: PropTypes.func,
   onUserInput: PropTypes.func
-}
+};
 
 FormElement.defaultProps = {
   name: null,
@@ -142,7 +142,6 @@ FormElement.defaultProps = {
     console.warn('onSubmit() callback is not set!');
   }
 };
-
 
 /**
  * Search Component
@@ -264,7 +263,6 @@ class SearchableDropdown extends React.Component {
   }
 }
 
-
 SearchableDropdown.propTypes = {
   name: PropTypes.string.isRequired,
   options: PropTypes.object.isRequired,
@@ -301,7 +299,6 @@ SearchableDropdown.defaultProps = {
     console.warn('onUserInput() callback is not set');
   }
 };
-
 
 /**
  * Select Component
@@ -407,7 +404,7 @@ SelectElement.propTypes = {
   hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func
-}
+};
 
 SelectElement.defaultProps = {
   name: '',
@@ -426,7 +423,6 @@ SelectElement.defaultProps = {
     console.warn('onUserInput() callback is not set');
   }
 };
-
 
 /**
  * Tags Component
@@ -768,7 +764,6 @@ TextareaElement.defaultProps = {
   }
 };
 
-
 /**
  * Textbox Component
  * React wrapper for a <input type="text"> element.
@@ -841,7 +836,7 @@ TextboxElement.propTypes = {
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func,
   onUserBlur: PropTypes.func
-}
+};
 
 TextboxElement.defaultProps = {
   name: '',
@@ -857,7 +852,6 @@ TextboxElement.defaultProps = {
   onUserBlur: function() {
   }
 };
-
 
 /**
  * Date Component
@@ -916,7 +910,7 @@ DateElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   onUserInput: PropTypes.func
-}
+};
 
 DateElement.defaultProps = {
   name: '',
@@ -930,7 +924,6 @@ DateElement.defaultProps = {
   }
 };
 
-
 /**
  * Numeric Component
  * React wrapper for a <input type="number"> element.
@@ -941,7 +934,7 @@ class NumericElement extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange() {
+  handleChange(e) {
     this.props.onUserInput(this.props.name, e.target.value);
   }
 
@@ -985,7 +978,7 @@ NumericElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   onUserInput: PropTypes.func
-}
+};
 
 NumericElement.defaultProps = {
   name: '',
@@ -1000,7 +993,6 @@ NumericElement.defaultProps = {
     console.warn('onUserInput() callback is not set');
   }
 };
-
 
 /**
  * File Component
@@ -1122,7 +1114,7 @@ FileElement.propTypes = {
   hasError: PropTypes.bool,
   errorMessage: PropTypes.string,
   onUserInput: PropTypes.func
-}
+};
 
 FileElement.defaultProps = {
   name: '',
@@ -1137,7 +1129,6 @@ FileElement.defaultProps = {
     console.warn('onUserInput() callback is not set');
   }
 };
-
 
 /**
  * Static element component.
@@ -1183,7 +1174,6 @@ StaticElement.defaultProps = {
   text: null
 };
 
-
 /**
  * Link element component.
  * Used to link plain/formated text to an href destination as part of a form
@@ -1218,7 +1208,6 @@ LinkElement.defaultProps = {
   text: null,
   href: null
 };
-
 
 /**
  * Button component
@@ -1255,7 +1244,7 @@ ButtonElement.propTypes = {
   label: PropTypes.string,
   type: PropTypes.string,
   onUserInput: PropTypes.func
-}
+};
 
 ButtonElement.defaultProps = {
   label: 'Submit',
@@ -1266,7 +1255,6 @@ ButtonElement.defaultProps = {
     console.warn('onUserInput() callback is not set');
   }
 };
-
 
 /**
  * Generic form element.
