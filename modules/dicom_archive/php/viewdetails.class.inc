@@ -323,7 +323,7 @@ class ViewDetails extends \NDB_Form
         $label = ucwords(str_replace('_', ' ', $this->name));
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb($label, "/$this->name"),
-            new \LORIS\Breadcrumb('View Details', $_SERVER['REQUEST_URI']),
+            new \LORIS\Breadcrumb('View Details', $_SERVER['REQUEST_URI'])
         );
     }
 }
