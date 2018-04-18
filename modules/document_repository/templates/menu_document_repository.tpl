@@ -372,7 +372,6 @@
                             </div>
                         </div>
                         <input type="hidden" name = "action" id = "action" value = "upload">
-                        <input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value="100000000" />
                     </div>
                 </div>
                 <div class="modal-footer">
