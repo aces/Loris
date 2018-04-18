@@ -85,7 +85,7 @@ class Timepoint_List extends \NDB_Menu
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
-        $attribute = $request->getAttribute("candID");
+        $attribute = $request->getAttribute("CandID");
         if ($attribute !== null) {
             // FIXME: Update the code to add the singleton here, not the identifier.
             $this->candID = $attribute;

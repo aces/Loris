@@ -210,7 +210,7 @@ class NDB_BVL_Instrument extends NDB_Page
             }
             // Now go ahead and instantiate it
             $obj = new $class(
-                new Module($instrument),
+                new Module($instrument, $base ."project/"),
                 $page,
                 $commentID,
                 $commentID,
