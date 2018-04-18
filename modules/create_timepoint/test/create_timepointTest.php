@@ -35,8 +35,8 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     {
         parent::setUp();
 
-        $this->createSubproject(1, "subprojet 1");
-        $this->createSubproject(2, "subprojet 2");
+        $this->createSubproject(11, "subprojet 1");
+        $this->createSubproject(12, "subprojet 2");
     }
 
     /**
@@ -62,7 +62,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     {
         $this->safeGet(
             $this->url . "/create_timepoint/".
-            "?candID=900000&identifier=900000&subprojectID=1"
+            "?candID=900000&identifier=900000&subprojectID=11"
         );
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
