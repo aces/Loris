@@ -371,7 +371,6 @@
                                 <input type="text" size = "27" name="version" id="version" class="ui-corner-all form-fields form-control input-sm" />
                             </div>
                         </div>
-                        <input type="hidden" name = "user" id = "user" value = "{$User}">
                         <input type="hidden" name = "action" id = "action" value = "upload">
                         <input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value="100000000" />
                     </div>
