@@ -14,6 +14,17 @@
                     {literal}
     }
 </script>
+<script id="hasDeletePerm" type="text/json">
+    {
+        "hasDeletePerm": {/literal}
+                        {if isset($noDeletePerm) && $noDeletePerm}
+                            false
+                        {else}
+                            true
+                        {/if}
+                    {literal}
+    }
+</script>
 
 <script id="dir" type="x-tmpl-mustache">
     <tr id="{{ id }}a" {{ #parentID }}class="{{ parentID }}a directoryRow" style="display:none"{{ /parentID }}>
@@ -66,9 +77,11 @@
         <td nowrap="nowrap">
             <a href="#" id="{{ record_id }}" class="theeditlink">Edit</a>
         </td>
+        {{ #hasDeletePerm}}
         <td nowrap="nowrap">
             <a href="#" id="{{ record_id }}" class="thedeletelink">Delete</a>
         </td>
+        {{ /hasDeletePerm }}
     </tr>
 </script>
 {/literal}

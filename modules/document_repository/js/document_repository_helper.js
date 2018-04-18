@@ -195,6 +195,7 @@ function uploadForm() {
 function renderTree() {
   var fileDir = JSON.parse($("#json_data").html());
   var filtered = JSON.parse($("#isFiltered").html()).filtered;
+  var hasDeletePerm = JSON.parse($("#hasDeletePerm").html()).hasDeletePerm;
 
   for (var i in fileDir) {
     if (fileDir[i]) {
@@ -239,6 +240,13 @@ function renderTree() {
         //new table layout
         var file = $('#file').html();
         Mustache.parse(file);   // optional, speeds up future uses
+
+        //pass delete permissions info
+        if (hasDeletePerm) {
+          files[ii].hasDeletePerm = true;
+        } else {
+          files[ii].hasDeletePerm = false;
+        }
         if (!filtered) {
           files[ii].indent = (depth) * 60;
           files[ii].parentID = dirID;
