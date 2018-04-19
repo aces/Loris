@@ -594,7 +594,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeClick(WebDriverBy::cssSelector($className));
         $this->webDriver->wait(3, 500)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
-                WebDriverById('lorisworkspace')
+                WebDriverBy::Id('lorisworkspace')
             )
         );
         $pageSource = $this->webDriver->getPageSource();
