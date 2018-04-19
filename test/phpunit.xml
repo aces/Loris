@@ -14,6 +14,7 @@
         </testsuite>
 
         <testsuite name='LorisModuleIntegrationTests'>
+<!--
             <directory>../modules/acknowledgements/test/</directory>
             <directory>../modules/brainbrowser/test/</directory>
             <directory>../modules/candidate_list/test/</directory>
@@ -21,7 +22,9 @@
             <directory>../modules/configuration/test/</directory>
             <directory>../modules/conflict_resolver/test/</directory>
             <directory>../modules/create_timepoint/test/</directory>
+-->
             <directory>../modules/dashboard/test/</directory>
+<!--
             <directory>../modules/data_integrity_flag/test/</directory>
             <directory>../modules/data_team_helper/test/</directory>
             <directory>../modules/datadict/test/</directory>
@@ -51,6 +54,7 @@
             <directory>../modules/server_processes_manager/test/</directory>
             <directory>../test/test_instrument/</directory>
             <directory>../modules/bvl_feedback/test/</directory>
+-->
         </testsuite>
 
     </testsuites>

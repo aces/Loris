@@ -441,7 +441,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->_testMytaskPanelAndLink(
             ".new-scans",
             "9",
-            "Imaging Browser"
+            "- Imaging Browser"
         );
         $this->resetPermissions();
     }
@@ -592,6 +592,7 @@ class DashboardTest extends LorisIntegrationTest
         $bodyText = $link->findElement(WebDriverBy::cssSelector(".huge"))->getText();
         $this->assertContains($value, $bodyText);
         $this->safeClick(WebDriverBy::cssSelector($className));
+sleep(10);
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains($dataSeed, $bodyText);
 
