@@ -591,8 +591,7 @@ class DashboardTest extends LorisIntegrationTest
         $link     =$this->safeFindElement(WebDriverBy::cssSelector($className));
         $bodyText = $link->findElement(WebDriverBy::cssSelector(".huge"))->getText();
         $this->assertContains($value, $bodyText);
-        $link->click();
-        sleep(1);
+        $this->safeClick(WebDriverBy::cssSelector($className));
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains($dataSeed, $bodyText);
 
