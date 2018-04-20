@@ -47,13 +47,17 @@ $imagePath    = $paths['imagePath'];
 $DownloadPath = $paths['DownloadPath'];
 $mincPath     = $paths['mincPath'];
 $tarchivePath = $pipeline['tarchiveLibraryDir'];
-if (empty($imagePath) || empty($DownloadPath) || empty($mincPath)) {
+if (empty($imagePath) || empty($DownloadPath)
+    || empty($mincPath) || empty($tarchivePath)
+) {
     error_log("ERROR: Config settings are missing");
     header("HTTP/1.1 500 Internal Server Error");
     exit(1);
 }
 
-if ($imagePath === '/' || $DownloadPath === '/' || $mincPath === '/') {
+if ($imagePath === '/' || $DownloadPath === '/'
+    || $mincPath === '/' || tarchivePath === '/'
+) {
     error_log("ERROR: Path can not be root for security reasons.");
     header("HTTP/1.1 500 Internal Server Error");
     exit(2);
@@ -74,6 +78,7 @@ if (strpos($File, ".") === false) {
 // Find the extension
 $path_parts = pathinfo($File);
 $FileExt    = $path_parts['extension'];
+$FileBase   = $path_parts['basename'];
 
 //make sure that we have a .nii.gz image if FileExt equal gz
 if (strcmp($FileExt, "gz") == 0) {
@@ -94,11 +99,12 @@ if (strpos($File, "..") !== false) {
     exit(4);
 }
 
-// If $File contains "DCM_", prefix automatically inserted by the
-// LORIS-MRI pipeline, identify it as $FileExt: "DICOMTAR"
+// If basename of $File starts with "DCM_", prefix automatically
+// inserted by the LORIS-MRI pipeline, identify it as $FileExt:
+// "DICOMTAR"
 // Caveat: this is not a real file extension, but a LORIS-MRI
 // convention to identify archived DICOMs
-if (strpos($File, "DCM_") !== false) {
+if (strpos($FileBase, "DCM_") === 0) {
     $FileExt = "DICOMTAR";
 }
 
