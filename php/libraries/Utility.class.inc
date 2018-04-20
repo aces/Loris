@@ -157,8 +157,7 @@ class Utility
     }
 
     /**
-     * Gets a list of visits used by the database as specified from
-     * the Visit_Windows table
+     * Gets a list of all visits and return a specifically formated array
      *
      * @return array<string, string> of the form VisitLabel => Visit_label
      */
@@ -171,7 +170,7 @@ class Utility
             function ($carry, $visit) {
                 $name         = $visit->getName();
                 $carry[$name] = ucfirst($name);
-                return ;
+                return $carry;
             },
             []
         );
