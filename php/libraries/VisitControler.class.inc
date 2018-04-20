@@ -53,17 +53,16 @@ class VisitControler
     {
         return array_map(
             function ($row) {
-                    return new \LORIS\Visit(
-                        $row['visit']
-                    );
+                return new \LORIS\Visit(
+                    $row['visit']
+                );
             },
             $this->database->pselect(
-                '
-          SELECT 
-            v.VisitLabel as "visit"
-          FROM
-            visit v
-        ',
+                'SELECT 
+                  v.VisitLabel as "visit"
+                 FROM
+                  visit v
+                ',
                 array()
             )
         );
