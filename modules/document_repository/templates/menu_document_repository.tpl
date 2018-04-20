@@ -36,10 +36,12 @@
 <script id="file" type="x-tmpl-mustache">
     <tr class="{{ parentID }}a fileRow" {{ ^filtered }}style="display:none" {{ /filtered }}>
         <td class="blah fileColumn">
-            <div {{ ^filtered }}class="fileDDD" style="{{ margin }}"{{ /filtered }}><div style="padding-top: 8px">
-                <a href="{/literal}{$baseurl}{literal}/document_repository/ajax/GetFile.php?File={{ Data_dir }}" target="_blank" download="{{ File_name }}">
+            <div {{ ^filtered }}class="fileDDD" style="{{ margin }}"{{ /filtered }}><div class="document" style="padding-top: 8px">
+                <div class="tree_line"></div>
+		<div><a href="{/literal}{$baseurl}{literal}/document_repository/ajax/GetFile.php?File={{ Data_dir }}" target="_blank" download="{{ File_name }}">
                         {{ File_name }}
-                </a>({{ File_size }})
+                </a></div>
+		<div>({{ File_size }})</div>
             </div></div>
         </td>
         <td>

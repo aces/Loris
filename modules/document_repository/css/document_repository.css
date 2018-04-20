@@ -277,7 +277,8 @@ label em {
     float: left;
     border: 1px solid #999;
 }
-.fileDDD::before{
+
+/*.fileDDD::before{
     position: absolute;
     margin-top: 20px;
     margin-left: -30px;
@@ -286,7 +287,19 @@ label em {
     height: 1px;
     content: '\a0';
     background-color: #999;
+}*/
+
+.document {
+  display: flex;
+  flex-direction: row;
 }
+
+.tree_line {
+  width: 30px;
+  border: 1px solid #999;
+  margin: auto 0px;
+}
+
 #dir-tree>tr>td:first-child {
     padding: 0px;
     /*height: 100%;*/
@@ -296,7 +309,6 @@ label em {
        -moz-box-sizing: border-box;
             box-sizing: border-box;
     border-left:1px solid #999;
-    padding-left: 30px;
     height:100%;
     overflow: auto;
     word-break: break-word;
