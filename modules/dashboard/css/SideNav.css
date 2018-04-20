@@ -1,0 +1,44 @@
+.sidenav {
+    float:left;
+    background: #D8D8D8;
+    display: inline-block;
+    white-space: nowrap;
+    width: 70px;
+    position: fixed;
+    top:50px;
+    left:0px;
+    bottom:0px;
+}
+
+.sidenav .glyphicon {
+    margin:20px;
+    color:#4A4A4A;
+    font-size: 30px;
+}
+
+.sidenav-item {
+    height:70px;
+    overflow:hidden;
+}
+
+.sidenav-item:hover {
+    background-color:#8B94AF;
+    color:#fff;
+}
+
+.sidenav-item:hover .glyphicon {
+    color:#ffffff;
+}
+
+.active.sidenav-item {
+    background-color:#8B94AF;
+    color:#fff;
+}
+
+.active.sidenav-item .glyphicon {
+    color:#ffffff;
+}
+
+#content {
+    margin-left: 70px;
+}

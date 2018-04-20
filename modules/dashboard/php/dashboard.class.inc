@@ -438,7 +438,10 @@ class Dashboard extends \NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/dashboard/css/dashboard.css"]
+            array(
+             $baseURL . '/dashboard/css/dashboard.css',
+             $baseURL . '/css/c3.css',
+            )
         );
     }
 
@@ -454,16 +457,17 @@ class Dashboard extends \NDB_Form
         $config  = $factory->config();
 
         $www     = $config->getSetting('www');
-        $baseurl = $www['url'];
+        $baseURL = $www['url'];
 
         $baseDeps = parent::getJSDependencies();
 
         return array_merge(
             $baseDeps,
             array(
-             $baseurl . '/js/d3.min.js',
-             $baseurl . '/js/c3.min.js',
-             $baseurl . '/dashboard/js/dashboard-helper.js',
+             $baseURL . '/dashboard/js/Dashboard.js',
+             $baseURL . '/js/d3.min.js',
+             $baseURL . '/js/c3.min.js',
+             $baseURL . '/dashboard/js/dashboard-helper.js',
             )
         );
 
