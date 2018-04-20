@@ -13,7 +13,7 @@ be made available as the dataset keeps growing.
 ## Intended users
 
 - Researchers and analysis teams
-- Data coordinator that will manage access to, and upload of, the data releases
+- Data coordinator that will manage access to and upload of the data releases
 
 
 ## Scope
@@ -32,9 +32,8 @@ web interface.
 - Only superusers can upload anything, no one else has upload permission.
 - Only superusers can grant permissions - whether by "version" or specific
   "file_name", no one else has granting permissions.
-- Once a user is granted permission on any data release, it will show up in
-  they will have be able to see the data release and download it directly from
-  the module.
+- Once a user is granted permission on any data release, they will be able
+  to see the data release and download it directly from the module.
 - Users permissions to view data releases are based on the granular file
   level permissions in the `data_release_permissions` table. Granting by
   version grants every file tied to the specified version.
@@ -47,5 +46,5 @@ web interface.
 
 - Data release uploads are stored under the
   `modules/data_release/user_uploads directory`, which can easily be symlinked
-  to another location if necessary. Note that the this directory needs to be
+  to another location if necessary. Note that this directory needs to be
   writable by your web server.
