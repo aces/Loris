@@ -53,24 +53,14 @@ class VisitControler
     {
         return array_map( function ($row) {
             return new \LORIS\Visit(
-                $row['visit'],
-                $row['project'],
-                $row['subproject']
+                $row['visit']
             );
         }, $this->database->pselect(
             '
           SELECT 
-            v.name as "visit",
-            p.Name as "project",
-            s.title as "subproject"
+            v.name as "visit"
           FROM
             visit
-          LEFT JOIN visit_project_subproject_rel vpsr
-            USING (VisitID)
-          LEFT JOIN Project
-            USING (ProjectID)
-          LEFT JOIN subproject
-            USING (SubprojectID)
         ',
             array()
         );
