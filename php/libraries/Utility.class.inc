@@ -163,7 +163,9 @@ class Utility
      */
     static function getVisitList() : array
     {
-        $visit_controler = new \LORIS\VisitControler(Database::singleton());
+        $db = (\NDB_Factory::singleton())->database();
+
+        $visit_controler = new \LORIS\VisitControler($db);
 
         return array_reduce(
             $controler->getAllVisits(),
