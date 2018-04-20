@@ -60,7 +60,7 @@ class VisitControler
           SELECT 
             v.name as "visit"
           FROM
-            visit
+            visit v
         ',
             array()
         );
