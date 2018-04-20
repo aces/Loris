@@ -39,8 +39,8 @@
             <div {{ ^filtered }}class="fileDDD" style="{{ margin }}"{{ /filtered }}>
                 <div class="document" style="padding-top: 8px">
                     <div class="line_element_container"><div class="line_element"></div><div></div></div>
-		    <div><a href="{/literal}{$baseurl}{literal}/document_repository/ajax/GetFile.php?File={{ Data_dir }}" target="_blank" download="{{ File_name }}">{{ File_name }}</a></div>
-		    <div>({{ File_size }})</div>
+		    <a href="{/literal}{$baseurl}{literal}/document_repository/ajax/GetFile.php?File={{ Data_dir }}" target="_blank" download="{{ File_name }}">{{ File_name }}</a>
+		    ({{ File_size }})
                 </div>
             </div>
         </td>
