@@ -29,25 +29,46 @@ class Visit
      *
      * @var string
      */
-    protected $name;
+    protected $visit;
+
+    /**
+     * The project name
+     *
+     * @var string
+     */
+    protected $project;
+
+    /**
+     * The subproject name
+     *
+     * @var string
+     */
+    protected $subproject;
 
     /**
      * The contructor
      *
-     * @param string $name The visit name
+     * @param string $visit      The visit name
+     * @param string $project    The project name
+     * @param string $subproject The subproject name
      */
-    public function __construct(string $name)
-    {
-        $this->name = $name;
+    public function __construct(
+        string $visit = null,
+        string $project = null,
+        string $subproject = null
+    ) {
+        $this->visit      = $visit;
+        $this->project    = $project;
+        $this->subproject = $subproject;
     }
 
     /**
-     * Getter for name
+     * Getter for visit name
      *
      * @return string The visit's name
      */
     public function getName(): string
     {
-        return $this->name;
+        return $this->visit;
     }
 }

@@ -164,17 +164,17 @@ class Utility
      */
     static function getVisitList() : array
     {
-        $DB =& Database::singleton();
+        $visit_controler = new \LORIS\VisitControler(Database::singleton());
 
-        $query = "SELECT Visit_label from Visit_Windows ORDER BY Visit_label";
-
-        $result = $DB->pselect($query, array());
-
-        $list = array();
-        foreach ($result as $row) {
-            $list[$row["Visit_label"]] = ucfirst($row["Visit_label"]);
-        }
-        return $list;
+        return array_reduce(
+            $controler->getAllVisits(),
+            function ($carry, $visit) {
+                $name         = $visit->getName();
+                $carry[$name] = ucfirst($name);
+                return ;
+            },
+            []
+        );
     }
 
     /**
