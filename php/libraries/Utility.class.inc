@@ -165,7 +165,7 @@ class Utility
     {
         $db = (\NDB_Factory::singleton())->database();
 
-        $visit_controler = new \LORIS\VisitControler($db);
+        $controler = new \LORIS\VisitControler($db);
 
         return array_reduce(
             $controler->getAllVisits(),
