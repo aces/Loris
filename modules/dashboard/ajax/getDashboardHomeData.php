@@ -14,17 +14,17 @@
 
 header('Content-Type: application/json');
 $result = array(
-    "username"                 => getUsername(),
-    "lastlogin"                => getLastLogin(),
-    "description"              => getDescription(),
-    "links"                    => getLinks(),
-    "recruitment"              => getRecruitment(),
-    "useProject"               => getUseProject(),
-    "totalScans"               => getTotalScans(),
-    "tasks"                    => getTasks(),
-    "docRepoNotifications"     => getDocRepoNotifications(),
-    "bvlFeedbackNotifications" => getBVLFeedbackNotifications(),
-);
+           "username"                 => getUsername(),
+           "lastlogin"                => getLastLogin(),
+           "description"              => getDescription(),
+           "links"                    => getLinks(),
+           "recruitment"              => getRecruitment(),
+           "useProject"               => getUseProject(),
+           "totalScans"               => getTotalScans(),
+           "tasks"                    => getTasks(),
+           "docRepoNotifications"     => getDocRepoNotifications(),
+           "bvlFeedbackNotifications" => getBVLFeedbackNotifications(),
+          );
 echo json_encode($result);
 
 /**
@@ -49,7 +49,7 @@ function getLastLogin()
     $DB     = Database::singleton();
     $user   = User::singleton();
     $userID = $user->getUsername();
-    
+
     $lastLogin = $DB->pselectOne(
         "SELECT MAX(Login_timestamp)
          FROM user_login_history
@@ -93,10 +93,10 @@ function getLinks()
         $dashboardLinkArray = array();
         foreach ($dashboardLinks as $text => $url) {
             $dashboardLinkArray[] = array(
-                   'url'        => $url,
-                   'label'      => $text,
-                   'windowName' => md5($url),
-                  );
+                                     'url'        => $url,
+                                     'label'      => $text,
+                                     'windowName' => md5($url),
+                                    );
         }
         return $dashboardLinkArray;
     }
@@ -183,9 +183,9 @@ function getTasks()
 {
     $tasks = array();
 
-    $newScans                = getNewScans();
-    $dataEntryConflicts      = getDataEntryConflicts();
-    $incompleteForms         = getIncompleteForms();
+    $newScans           = getNewScans();
+    $dataEntryConflicts = getDataEntryConflicts();
+    $incompleteForms    = getIncompleteForms();
     $finalRadiologicalReview = getFinalRadiologicalReview();
     $accountsPendingApproval = getAccountsPendingApproval();
     $violatedScans           = getViolatedScans();
@@ -212,7 +212,7 @@ function getTasks()
     if (!is_null($issueTracker)) {
         $tasks[] = $issueTracker;
     }
-    
+
     if (empty($tasks)) {
         return null;
     }
@@ -229,7 +229,7 @@ function getDocRepoNotifications()
     $user = User::singleton();
     $DB   = Database::singleton();
 
-    if ($user->hasPermission('document_repository_view') 
+    if ($user->hasPermission('document_repository_view')
         || $user->hasPermission('document_repository_delete')
     ) {
         $document_repository = $DB->pselect(
@@ -456,9 +456,9 @@ function createProjectProgressBar($ID, $title, $recruitmentTarget, $totalRecruit
  */
 function getNewScans()
 {
-    $user = User::singleton();
-    $DB   = Database::singleton();
-    $config = NDB_Config::singleton();
+    $user    = User::singleton();
+    $DB      = Database::singleton();
+    $config  = NDB_Config::singleton();
     $baseURL = $config->getSetting('url');
     if ($user->hasPermission('imaging_browser_qc')) {
         $count = $DB->pselectOne(
@@ -473,12 +473,13 @@ function getNewScans()
         );
 
         if ($count > 0) {
-            $data = array (
-             'URL'   => $baseURL . "/imaging_browser/",
-             'count' => $count,
-             'label' => 'New and pending imaging session' . ($count != 1 ? "s" : ""),
-             'site'  => "Sites: all"
-            );
+            $data = array(
+                     'URL'   => $baseURL . "/imaging_browser/",
+                     'count' => $count,
+                     'label' => 'New and pending imaging session'.
+                         ($count != 1 ? "s" : ""),
+                     'site'  => "Sites: all",
+                    );
 
             return $data;
         }
@@ -494,16 +495,16 @@ function getNewScans()
  */
 function getDataEntryConflicts()
 {
-    $user = User::singleton();
-    $DB   = Database::singleton();
-    $siteID = $user->getCenterIDs();
-    $config = NDB_Config::singleton();
+    $user    = User::singleton();
+    $DB      = Database::singleton();
+    $siteID  = $user->getCenterIDs();
+    $config  = NDB_Config::singleton();
     $baseURL = $config->getSetting('url');
     if ($user->hasPermission('conflict_resolver')) {
         $count    = 0;
         $siteText = 'Sites: All User Sites';
         if ($user->hasPermission('access_all_profiles')) {
-            $count = $DB->pselectOne(
+            $count    = $DB->pselectOne(
                 "SELECT COUNT(*) FROM conflicts_unresolved cu
                  LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) 
                  LEFT JOIN session s ON (flag.SessionID=s.ID)
@@ -527,12 +528,12 @@ function getDataEntryConflicts()
         }
 
         if ($count > 0) {
-            $data = array (
-             'URL'   => $baseURL . "/conflict_resolver/",
-             'count' => $count,
-             'label' => 'Data entry conflict' . ($count != 1 ? "s" : ""),
-             'site'  => $siteText
-            );
+            $data = array(
+                     'URL'   => $baseURL . "/conflict_resolver/",
+                     'count' => $count,
+                     'label' => 'Data entry conflict' . ($count != 1 ? "s" : ""),
+                     'site'  => $siteText,
+                    );
 
             return $data;
         }
@@ -547,18 +548,18 @@ function getDataEntryConflicts()
  */
 function getIncompleteForms()
 {
-    $user   = User::singleton();
-    $DB     = Database::singleton();
-    $siteIDs = $user->getCenterIDs();
-    $config = NDB_Config::singleton();
-    $baseURL = $config->getSetting('url');
+    $user     = User::singleton();
+    $DB       = Database::singleton();
+    $siteIDs  = $user->getCenterIDs();
+    $config   = NDB_Config::singleton();
+    $baseURL  = $config->getSetting('url');
     $siteText = null;
     if ($user->hasPermission('data_entry')) {
-        $count    = 0;
-        $url = $baseURL . "/statistics/?submenu=statistics_site";
+        $count = 0;
+        $url   = $baseURL . "/statistics/?submenu=statistics_site";
 
         if ($user->hasPermission('access_all_profiles')) {
-            $count = $DB->pselectOne(
+            $count    = $DB->pselectOne(
                 "SELECT COUNT(*) FROM flag
                  LEFT JOIN session s ON (s.ID=flag.SessionID)
                  LEFT JOIN candidate c ON (s.CandID=c.CandID)
@@ -576,30 +577,30 @@ function getIncompleteForms()
                  WHERE Data_entry='In Progress' 
                  AND FIND_IN_SET(psc.CenterID,:siteIDs)
                  AND s.Active='Y' AND c.Active='Y'",
-                array('siteIDs' => implode(',',$siteIDs))
+                array('siteIDs' => implode(',', $siteIDs))
             );
 
             $url = array();
 
             foreach ($siteIDs as $id) {
-                $siteName = $DB->pselectOne(
+                $siteName       = $DB->pselectOne(
                     'SELECT Name 
                      FROM psc
                      WHERE CenterID=:cid',
                     array('cid' => $id)
                 );
-                $url[$siteName] = $baseURL . "/statistics/?submenu=statistics_site&CenterID="
-                    . $id;
+                $url[$siteName] = $baseURL . "/statistics/?submenu=
+                statistics_site&CenterID=" . $id;
             }
         }
 
         if ($count > 0) {
-            $data = array (
-             'URL'   => $url,
-             'count' => $count,
-             'label' => 'Incomplete form' . ($count != 1 ? "s" : ""),
-             'site'  => $siteText
-            );
+            $data = array(
+                     'URL'   => $url,
+                     'count' => $count,
+                     'label' => 'Incomplete form' . ($count != 1 ? "s" : ""),
+                     'site'  => $siteText,
+                    );
 
             return $data;
         }
@@ -614,9 +615,9 @@ function getIncompleteForms()
  */
 function getFinalRadiologicalReview()
 {
-    $user = User::singleton();
-    $DB   = Database::singleton();
-    $config = NDB_Config::singleton();
+    $user    = User::singleton();
+    $DB      = Database::singleton();
+    $config  = NDB_Config::singleton();
     $baseURL = $config->getSetting('url');
     if ($user->hasPermission('edit_final_radiological_review')
         && $user->hasPermission('view_final_radiological_review')
@@ -633,12 +634,12 @@ function getFinalRadiologicalReview()
         );
 
         if ($count > 0) {
-            $data = array (
-             'URL'   => $baseURL . "/final_radiological_review/",
-             'count' => $count,
-             'label' => 'Final radiological review' . ($count != 1 ? "s" : ""),
-             'site'  => 'Sites: all'
-            );
+            $data = array(
+                     'URL'   => $baseURL . "/final_radiological_review/",
+                     'count' => $count,
+                     'label' => 'Final radiological review'.($count != 1 ? "s" : ""),
+                     'site'  => 'Sites: all',
+                    );
 
             return $data;
         }
@@ -653,9 +654,9 @@ function getFinalRadiologicalReview()
  */
 function getAccountsPendingApproval()
 {
-    $user = User::singleton();
-    $DB   = Database::singleton();
-    $config = NDB_Config::singleton();
+    $user    = User::singleton();
+    $DB      = Database::singleton();
+    $config  = NDB_Config::singleton();
     $baseURL = $config->getSetting('url');
 
     if ($user->hasPermission('user_accounts')) {
@@ -675,21 +676,22 @@ function getAccountsPendingApproval()
 
         } else {
             $site_arr = $user->getCenterIDs();
-            $count = $DB->pselectOne(
+            $count    = $DB->pselectOne(
                 "SELECT COUNT(DISTINCT u.UserID) FROM users u
                  LEFT JOIN user_psc_rel as upr ON (upr.UserID=u.ID)  
                  WHERE Pending_approval='Y' AND FIND_IN_SET(upr.CenterID, :CID)",
-                array('CID' => implode(',',$site_arr))
+                array('CID' => implode(',', $site_arr))
             );
         }
 
         if ($count > 0) {
-            $data = array (
-             'URL'   => $baseURL . "/user_accounts/",
-             'count' => $count,
-             'label' => 'Account' . ($count != 1 ? "s" : "") . ' pending approval',
-             'site'  => $siteText
-            );
+            $data = array(
+                     'URL'   => $baseURL . "/user_accounts/",
+                     'count' => $count,
+                     'label' => 'Account' .
+                         ($count != 1 ? "s" : "") . ' pending approval',
+                     'site'  => $siteText,
+                    );
 
             return $data;
         }
@@ -704,9 +706,9 @@ function getAccountsPendingApproval()
  */
 function getViolatedScans()
 {
-    $user = User::singleton();
-    $DB   = Database::singleton();
-    $config = NDB_Config::singleton();
+    $user    = User::singleton();
+    $DB      = Database::singleton();
+    $config  = NDB_Config::singleton();
     $baseURL = $config->getSetting('url');
 
     if ($user->hasPermission('violated_scans_view_allsites')) {
@@ -720,12 +722,12 @@ function getViolatedScans()
         );
 
         if ($count > 0) {
-            $data = array (
-             'URL'   => $baseURL . "/mri_violations/",
-             'count' => $count,
-             'label' => 'Violated scan' . ($count != 1 ? "s" : ""),
-             'site'  => 'Sites: all'
-            );
+            $data = array(
+                     'URL'   => $baseURL . "/mri_violations/",
+                     'count' => $count,
+                     'label' => 'Violated scan' . ($count != 1 ? "s" : ""),
+                     'site'  => 'Sites: all',
+                    );
 
             return $data;
         }
@@ -740,9 +742,9 @@ function getViolatedScans()
  */
 function getIssueTrackerAssignedIssues()
 {
-    $user   = User::singleton();
-    $DB     = Database::singleton();
-    $config = NDB_Config::singleton();
+    $user    = User::singleton();
+    $DB      = Database::singleton();
+    $config  = NDB_Config::singleton();
     $baseURL = $config->getSetting('url');
     if ($user->hasPermission('issue_tracker_developer')) {
         $count = $DB->pselectOne(
@@ -753,12 +755,14 @@ function getIssueTrackerAssignedIssues()
         );
 
         if ($count > 0) {
-            $data = array (
-             'URL'   => $baseURL . "/issue_tracker/?submenu=my_issue_tracker",
-             'count' => $count,
-             'label' => 'Issue' . ($count != 1 ? "s" : "") . " assigned to you",
-             'site'  => 'Site: all'
-            );
+            $data = array(
+                     'URL'   => $baseURL . "/issue_tracker/?submenu=
+                     my_issue_tracker",
+                     'count' => $count,
+                     'label' => 'Issue' .
+                         ($count != 1 ? "s" : "") . " assigned to you",
+                     'site'  => 'Site: all',
+                    );
 
             return $data;
         }
