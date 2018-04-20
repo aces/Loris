@@ -750,15 +750,37 @@ $(function() {
 
     for (i = 0; i < minc_ids_arr.length; i += 1) {
 
-        minc_volumes.push({
-            type: 'minc',
-	    header_url: "",
-	    raw_data_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + minc_ids_arr[i],
-            template: {
-                element_id: "volume-ui-template4d",
-                viewer_insert_class: "volume-viewer-display"
-            }
+        var filename = null;
+        $.ajax({
+            url: loris.BaseURL + "/brainbrowser/ajax/getMincName.php",
+            data: 'minc_id=' + minc_ids_arr[i],
+            method: 'POST',
+            success: function (data) {
+              filename = data;
+            },
+            async: false
         });
+
+        if ( filename.endsWith("mnc") ) {
+            minc_volumes.push({
+                type: 'minc',
+                header_url: "",
+                raw_data_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + minc_ids_arr[i],
+                template: {
+                    element_id: "volume-ui-template4d",
+                    viewer_insert_class: "volume-viewer-display"
+                }
+            });
+        } else if ( filename.endsWith("nii") ) {
+            minc_volumes.push({
+                type: 'nifti1',
+                nii_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + minc_ids_arr[i],
+                template: {
+                    element_id: "volume-ui-template4d",
+                    viewer_insert_class: "volume-viewer-display"
+                }
+            });
+        }
     }
 
     if (getQueryVariable("overlay") === "true") {
