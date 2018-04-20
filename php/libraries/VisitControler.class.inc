@@ -51,18 +51,21 @@ class VisitControler
      */
     public function getAllVisits(): array
     {
-        return array_map( function ($row) {
-            return new \LORIS\Visit(
-                $row['visit']
-            );
-        }, $this->database->pselect(
-            '
+        return array_map(
+            function ($row) {
+                    return new \LORIS\Visit(
+                        $row['visit']
+                    );
+            },
+            $this->database->pselect(
+                '
           SELECT 
-            v.name as "visit"
+            v.VisitLabel as "visit"
           FROM
             visit v
         ',
-            array()
+                array()
+            )
         );
     }
 }
