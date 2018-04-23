@@ -314,11 +314,11 @@ class SelectElement extends Component {
   handleChange(e) {
     let value = e.target.value;
     let options = e.target.options;
+    const numOfOptions = options.length;
 
     // Multiple values
     if (this.props.multiple && numOfOptions > 1) {
       value = [];
-      const numOfOptions = options.length
       for (let i = 0, l = numOfOptions; i < l; i++) {
         if (options[i].selected) {
           value.push(options[i].value);
