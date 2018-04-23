@@ -937,7 +937,7 @@ class TimeElement extends React.Component {
   handleChange(e) {
     this.props.onUserInput(this.props.name, e.target.value);
   }
- 
+
   render() {
     var disabled = this.props.disabled ? 'disabled' : null;
     var required = this.props.required ? 'required' : null;
