@@ -11,7 +11,7 @@
 
 ## Scope
 
- The document can only be seen by Users from the Site that the document is associated with.
+ Any LORIS user can edit and delete the all files in the Document Repository module. 
 
 ## Permissions
 
@@ -20,8 +20,8 @@
 
 ## Configurations
 
-- The Document Repository enables users to upload and organize project files of any type that can easily be viewable for users with appropriate permissions.
-- Give full permissions to store documents on server. 
+- The Document Repository enables users to upload and organize project files of any type (PDF,Photo,Txt...) that can easily be viewable for users with appropriate permissions ("document_repository_view").
+- Give full permissions to store documents on server: 
 ```
 session.gc_maxlifetime = 10800  // After this number of seconds, stored data will be seen as 'garbage' and cleaned up by the garbage collection process.
 max_input_time = 10800          // Maximum amount of time each script may spend parsing request data (in seconds)
