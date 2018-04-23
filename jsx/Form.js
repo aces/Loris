@@ -927,35 +927,18 @@ DateElement.defaultProps = {
  * Time Component
  * React wrapper for a <input type="time"> element.
  */
-var TimeElement = React.createClass({
+class TimeElement extends React.Component {
+  constructor() {
+    super();
 
-  propTypes: {
-    name: React.PropTypes.string.isRequired,
-    label: React.PropTypes.string,
-    value: React.PropTypes.string,
-    id: React.PropTypes.string,
-    disabled: React.PropTypes.bool,
-    required: React.PropTypes.bool,
-    onUserInput: React.PropTypes.func
-  },
+    this.handleChange = this.handleChange.bind(this);
+  }
 
-  getDefaultProps: function() {
-    return {
-      name: '',
-      label: '',
-      value: '',
-      id: null,
-      disabled: false,
-      required: false,
-      onUserInput: function() {
-        console.warn('onUserInput() callback is not set');
-      }
-    };
-  },
-  handleChange: function(e) {
+  handleChange(e) {
     this.props.onUserInput(this.props.name, e.target.value);
-  },
-  render: function() {
+  }
+ 
+  render() {
     var disabled = this.props.disabled ? 'disabled' : null;
     var required = this.props.required ? 'required' : null;
     var requiredHTML = null;
@@ -988,7 +971,29 @@ var TimeElement = React.createClass({
       </div>
     );
   }
-});
+}
+
+TimeElement.propTypes = {
+  name: React.PropTypes.string.isRequired,
+  label: React.PropTypes.string,
+  value: React.PropTypes.string,
+  id: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  onUserInput: React.PropTypes.func
+};
+
+TimeElement.defaultProps = {
+  name: '',
+  label: '',
+  value: '',
+  id: '',
+  disabled: false,
+  required: false,
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  }
+};
 
 /**
  * Numeric Component
