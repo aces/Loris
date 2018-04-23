@@ -135,7 +135,7 @@ var FormElement = React.createClass({
 });
 
 /**
- *\ Search Component
+ * Search Component
  * React wrapper for a searchable dropdown
  */
 class SearchableDropdown extends React.Component {
