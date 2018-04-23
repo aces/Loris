@@ -368,7 +368,6 @@ class Document_Repository extends \NDB_Menu_Filter
         // print out column headings
         if (!$user->hasPermission('document_repository_delete')) {
             unset($this->headers[array_search('Delete', $this->headers)]);
-            $this->tpl_data['noDeletePerm'] = true;
         }
         $i = 0;
         foreach ($this->headers as $header) {
