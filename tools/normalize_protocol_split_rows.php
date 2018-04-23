@@ -17,8 +17,6 @@ require_once 'generic_includes.php';
 require_once 'Database.class.inc';
 require_once 'Utility.class.inc';
 
-$DB = \Database::singleton();
-
 /*
  * Converts an array of arrays of values for different fields into
  * an array of unique combinations of the different values.
@@ -44,41 +42,44 @@ function cartesian($input) {
     return $result;
 }
 
-// Get the list of unique IDs from the mri_protocol table
-$mp_rows = $DB->pselect("SELECT * FROM mri_protocol", array());
-$total_commas = 0;
-
-// insert new rows for comma separated values
-foreach ($mp_rows as $row) {
-    $num_commas = 0; 
-    foreach($row as $key => $value) {
-        if ($key == "ID") {
-            $id = $row[$key];
+function split_commas($table_name) {
+    $DB = \Database::singleton();
+    // Get the list of unique IDs from the table
+    $rows = $DB->pselect("SELECT * FROM ".$table_name."", array());
+    $total_commas = 0;
+    foreach ($rows as $row) {
+        $num_commas = 0;
+        foreach($row as $key => $value) {
+            if ($key == "ID") {
+                $id = $row[$key];
+            }
+            $row[$key] = explode(",", $value);
+            if (sizeof($row[$key]) > 1) {
+                $num_commas += sizeof($row[$key]) - 1;
+            }
         }
-        $row[$key] = explode(",", $value);
-        if (sizeof($row[$key]) > 1) {
-            $num_commas += sizeof($row[$key]) - 1;
+        $total_commas += $num_commas;
+        if ($num_commas == 0) {
+            continue;
         }
+        $all_combinations = cartesian($row);
+        foreach ($all_combinations as $combination) {
+            unset($combination["ID"]);
+            $DB->insert($table_name, $combination);
+        }
+        // remove the row for the original ID
+        $DB->delete($table_name, array("ID" => $id));
     }
-    $total_commas += $num_commas; 
-    if ($num_commas == 0) {  
-        continue; 
+    if ($total_commas == 0) {
+        echo("No commas have been detected. The $table_name table has been unaltered.\n\n");
+    } else {
+        echo("All $table_name entries are now unique and not comma-separated.\n\n");
     }
-    $all_mp_combinations = cartesian($row);
-    foreach ($all_mp_combinations as $mp_combination) {
-        unset($mp_combination["ID"]);
-        $DB->insert("mri_protocol", $mp_combination);
-    }
-    // remove the row for the original ID
-    $DB->delete("mri_protocol", array("ID" => $id));
 }
 
-if ($total_commas == 0) {
-    echo("No commas have been detected. The mri_protocol table has been unaltered.\n\n");
-} else {
-    echo("All mri_protocol entries are now unique and not comma-separated.\n\n");
+$tables_to_normalize = array("mri_protocol", "mri_protocol_checks");
+foreach ($tables_to_normalize as $table) {
+    split_commas($table);
 }
-
-
 
 ?>
