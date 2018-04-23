@@ -959,7 +959,7 @@ class TimeElement extends React.Component {
             type="time"
             className="form-control"
             name={this.props.name}
-            id={this.props.label}
+            id={this.props.id}
             onChange={this.handleChange}
             value={this.props.value || ""}
             required={required}
