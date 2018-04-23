@@ -31,9 +31,11 @@ $config    =& NDB_Config::singleton();
 $minc_path = $config->getSetting("MINCToolsPath") ?? '';
 if (empty($minc_path)) {
     header('HTTP/1.1 500 Internal Server Error');
-    error_log('BrainBrowser cannot load because MINCToolsPath' .
+    error_log(
+        'BrainBrowser cannot load because MINCToolsPath' .
         ' is not set. Set MINCToolsPath in the database or ' .
-        'disable this module');
+        'disable this module'
+    );
     exit;
 }
 
