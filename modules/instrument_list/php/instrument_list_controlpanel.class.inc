@@ -285,10 +285,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         ) {
             $this->setData('BVLQCStatus', $_REQUEST['setBVLQCStatus']);
             return;
-        }
-        if (empty($_REQUEST['setBVLQCStatus'])
-            && $user->hasPermission('bvl_feedback')
-        ) {
+        } else {
             $this->setData('BVLQCStatus', null);
             return;
         }
@@ -297,10 +294,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         ) {
             $this->setData('BVLQCType', $_REQUEST['setBVLQCType']);
             return;
-        }
-        if (empty($_REQUEST['setBVLQCType'])
-            && $user->hasPermission('bvl_feedback')
-        ) {
+        } else {
             $this->setData('BVLQCType', null);
             return;
         }
