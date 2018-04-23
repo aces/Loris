@@ -447,7 +447,13 @@ class NDB_Config
         // nothing in the config file, so get the value from the DB
         // This will throw a ConfigurationException if it does not
         // exist.
-        return $this->getSettingFromDB($name);
+        try {
+            return $this->getSettingFromDB($name);
+        } catch (ConfigurationException $e) {
+            error_log($e);
+            header('HTTP/1.1 500 Internal Server Error');
+            return;
+        }
     }
 
     /**
