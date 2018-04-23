@@ -157,24 +157,25 @@ class Utility
     }
 
     /**
-     * Gets a list of visits used by the database as specified from
-     * the Visit_Windows table
+     * Gets a list of all visits and return a specifically formated array
      *
      * @return array<string, string> of the form VisitLabel => Visit_label
      */
     static function getVisitList() : array
     {
-        $DB =& Database::singleton();
+        $db = (\NDB_Factory::singleton())->database();
 
-        $query = "SELECT Visit_label from Visit_Windows ORDER BY Visit_label";
+        $controler = new \LORIS\VisitControler($db);
 
-        $result = $DB->pselect($query, array());
-
-        $list = array();
-        foreach ($result as $row) {
-            $list[$row["Visit_label"]] = ucfirst($row["Visit_label"]);
-        }
-        return $list;
+        return array_reduce(
+            $controler->getAllVisits(),
+            function ($carry, $visit) {
+                $name         = $visit->getName();
+                $carry[$name] = ucfirst($name);
+                return $carry;
+            },
+            []
+        );
     }
 
     /**

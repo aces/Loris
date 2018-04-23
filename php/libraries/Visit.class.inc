@@ -29,25 +29,26 @@ class Visit
      *
      * @var string
      */
-    protected $name;
+    protected $visit;
 
     /**
      * The contructor
      *
-     * @param string $name The visit name
+     * @param string $visit The visit name
      */
-    public function __construct(string $name)
-    {
-        $this->name = $name;
+    public function __construct(
+        string $visit = null
+    ) {
+        $this->visit = $visit;
     }
 
     /**
-     * Getter for name
+     * Getter for visit name
      *
      * @return string The visit's name
      */
     public function getName(): string
     {
-        return $this->name;
+        return $this->visit;
     }
 }
