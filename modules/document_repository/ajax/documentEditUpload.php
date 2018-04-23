@@ -63,19 +63,19 @@ if ($userSingleton->hasPermission('document_repository_view')
         $fileSize = $_FILES["file"]["size"];
         $fileName = $_FILES["file"]["name"];
 
-        $ft       = explode(".", $fileName);
-        $fileType = end($ft);
+        $fileType = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
 
-        // __DIR__ is the document_repository ajax directory
-        // when this script is executing. Go up a level to the
-        // document_repository module directory, and use a
-        // user_uploads directory as a base for user uploads
-        $base_path = __DIR__ . "/../user_uploads/";
-        $puser     = $userSingleton->getUsername();
-        $fileBase  = $puser . "/" . $fileName;
+        $uploadPath = "$base/modules/document_repository/user_uploads/$name/";
+        $fullPath  = $uploadPath . $fileName;
 
-        if (!file_exists($base_path . $puser)) {
-            mkdir($base_path . $puser, 0777);
+        if (!is_writable($uploadPath)) {
+            if (file_exists($uploadPath)){
+                error_log("Could not write to $uploadPath. Check permissions");
+                exit;
+            }
+            error_log('Creating document repository upload folder for ' .
+                'user ' . $name);
+            mkdir($uploadPath, 0770);
         }
 
         $target_path = $base_path  . $fileBase;
