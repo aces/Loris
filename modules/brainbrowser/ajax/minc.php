@@ -70,7 +70,10 @@ if (!is_readable($minc_path)) {
         header('HTTP/1.1 404 Not Found');
         exit();
     } else {
-        error_log("$minc_path was requested but is not readable. Possible permission error");
+        error_log(
+            "$minc_path was requested but is not readable. " .
+            'Possible permission error'
+        );
         header('HTTP/1.1 403 Forbidden');
         exit();
     }
