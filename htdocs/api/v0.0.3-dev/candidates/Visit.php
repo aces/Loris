@@ -266,7 +266,7 @@ class Visit extends \Loris\API\Candidates\Candidate
             $this->safeExit(0);
         }
 
-        \TimePoint::createNew($CandID, $subprojectID, $VL);
+        \TimePoint::createNew($CandID, $subprojectID, $VL, $CID);
     }
 }
 
