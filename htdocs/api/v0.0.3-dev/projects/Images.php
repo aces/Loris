@@ -107,16 +107,28 @@ class Images extends \Loris\API\APIBase
         $result = $this->DB->pselect(
             "SELECT
                s.CandID,
+               c.PSCID,
                s.Visit_label,
+               s.Date_visit,
+               p.Name as SiteName,
                f.File,
+               f.InsertTime,
                mst.Scan_type,
-               f.InsertTime
+               qc.QCStatus,
+               qc.Selected
              FROM files f 
              LEFT JOIN mri_scan_type mst
                ON (mst.ID = f.AcquisitionProtocolID)
              LEFT JOIN session s
                ON (f.SessionID = s.ID)
+             LEFT JOIN candidate c
+               USING (CandID)
+             LEFT JOIN psc p
+               ON (s.CenterID = p.CenterID)
+             LEFT JOIN files_qcstatus qc
+               USING (FileID)
              WHERE
+                  c.Active = 'Y' AND
                   f.InsertTime > :v_time
              ORDER BY f.InsertTime ASC",
             array('v_time' => $this->RequestData['since']->getTimestamp())
@@ -125,15 +137,25 @@ class Images extends \Loris\API\APIBase
         $images = array_map(
             function ($item) {
                 $candid      = $item['CandID'];
+                $pscid       = $item['PSCID'];
                 $session     = $item['Visit_label'];
+                $visit_date  = $item['Date_visit'];
+                $site_name   = $item['SiteName'];
                 $file_name   = basename($item['File']);
                 $scan_type   = $item['Scan_type'];
+                $qc_status   = $item['QCStatus'];
+                $selected    = $item['Selected'];
                 $link        = "/candidates/$candid/$session/images/$file_name";
                 $insert_time = date('c', $item['InsertTime']);
                 return array(
                         'Candidate'  => $candid,
+                        'PCSID'      => $pscid,
                         'Visit'      => $session,
+                        'Visit_date' => $visit_date,
+                        'Site'       => $site_name,
                         'ScanType'   => $scan_type,
+                        'QC_status'  => $qc_status,
+                        'Selected'   => $selected,
                         'Link'       => $link,
                         'InsertTime' => $insert_time,
                        );

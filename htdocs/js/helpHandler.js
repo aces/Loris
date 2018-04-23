@@ -25,39 +25,35 @@ $(document).ready(function() {
       var edit = document.createElement("BUTTON");
       var text = document.createTextNode("Edit");
       var button = document.createTextNode("Close");
-      var wrap;
+      var wrap = document.createElement("div");
+      var markdownContent = document.createElement("div");
 
+      // Render Markdown in wrap div.
+      // If help content is from Markdown helpfile.
       if (content.format === "markdown") {
-        wrap = document.createElement("div");
-        wrap.setAttribute("id", "help-wrapper");
         ReactDOM.render(RMarkdown({content: content.content}), wrap);
       } else {
-        wrap = document.createElement("pre");
-        wrap.setAttribute("id", "help-wrapper");
+        // If help content is from DB.
         wrap.innerHTML = "<hr id='help-separator'>";
         if (content.topic) {
           wrap.innerHTML = "<h3>" + content.topic + "</h3>";
-        } else {
-          // This is a hack because otherwise the alignment of the edit/close
-          // buttons gets screwed up. The CSS should eventually be fixed and
-          // this removed.
-          wrap.innerHTML = "<h3></h3>";
         }
-        wrap.innerHTML += content.content;
+        ReactDOM.render(RMarkdown({content: content.content}), markdownContent);
+        wrap.appendChild(markdownContent);
         if (content.updated) {
           wrap.innerHTML = wrap.innerHTML + "<hr>Last updated: " + content.updated;
         }
       }
+      wrap.setAttribute("id", "help-wrapper");
       btn.appendChild(button);
       btn.className = "btn btn-default";
       btn.setAttribute("id", "helpclose");
       edit.appendChild(text);
       edit.className = "btn btn-default";
       edit.setAttribute("id", "helpedit");
-      div.appendChild(wrap);
       div.appendChild(btn);
 
-      // Markdown format content came from the filesystem and can't
+      // If help content comes from DB `help` table and can
       // be edited online.
       if (loris.userHasPermission("context_help") && content.format !== 'markdown') {
         div.appendChild(edit);
@@ -68,6 +64,7 @@ $(document).ready(function() {
             getParams.testName + "&subsection=" + getParams.subtest, "_self");
         });
       }
+      div.appendChild(wrap);
       document.getElementById('page').appendChild(div);
       div.setAttribute("class", "help-content");
       $(div).addClass('visible');
