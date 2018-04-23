@@ -11,7 +11,8 @@ ButtonElement, LorisElement
  *
  */
 
-import React, {Component, PropTypes} from 'react';
+import {Component} from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Form Component.
@@ -24,7 +25,7 @@ import React, {Component, PropTypes} from 'react';
  * Note that if both are passed `this.props.formElements` is displayed first.
  *
  */
-class FormElement extends React.Component {
+class FormElement extends Component {
   constructor() {
     super();
     this.getFormElements = this.getFormElements.bind(this);
@@ -315,9 +316,10 @@ class SelectElement extends Component {
     let options = e.target.options;
 
     // Multiple values
-    if (this.props.multiple && options.length > 1) {
+    if (this.props.multiple && numOfOptions > 1) {
       value = [];
-      for (let i = 0, l = options.length; i < l; i++) {
+      const numOfOptions = options.length
+      for (let i = 0, l = numOfOptions; i < l; i++) {
         if (options[i].selected) {
           value.push(options[i].value);
         }
