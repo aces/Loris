@@ -135,7 +135,7 @@ var FormElement = React.createClass({
 });
 
 /**
- * Search Component
+ *\ Search Component
  * React wrapper for a searchable dropdown
  */
 class SearchableDropdown extends React.Component {
@@ -595,7 +595,7 @@ class TagsElement extends React.Component {
           {input}
           {errorMessage}
           <button
-            className="btn btn-success add"
+            className="btn btn-success btn-add-tag"
             id={this.props.id + 'Add'}
             type="button"
             onClick={this.handleAdd}

@@ -310,6 +310,9 @@ display: block;
     margin-right: 3px;
     margin-bottom: 3px;
 }
+.btn-add-tag {
+    margin-top: 3px;
+}
 
 /** Primary button **/
 .btn-breadcrumb .btn.btn-primary:not(:last-child):after {
