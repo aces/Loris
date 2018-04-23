@@ -6,7 +6,7 @@
 
 ## Intended Users
 
- Given the appropriate permissions, LORIS users can view, download, upload, and delete files, as well as edit information pertaining to those files.
+ LORIS users can view, download, upload, and delete files, as well as edit information pertaining to those files.
  This module is used primarily by study coordinators/administrators who share study protocols and manuals, as well as data entry staff who consult these documents.
 
 ## Scope
@@ -20,7 +20,8 @@
 
 ## Configurations
 
-- The Document Repository enables users to upload and organize project files of any type that can easily be viewable for users with appropriate permissions.Give full permissions to store documents on server. To give full permissions to store documents on the server: 
+- The Document Repository enables users to upload and organize project files of any type that can easily be viewable for users with appropriate permissions.
+- Give full permissions to store documents on server. 
 ```
 session.gc_maxlifetime = 10800  // After this number of seconds, stored data will be seen as 'garbage' and cleaned up by the garbage collection process.
 max_input_time = 10800          // Maximum amount of time each script may spend parsing request data (in seconds)
