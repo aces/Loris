@@ -179,7 +179,14 @@ class DirectEntry extends React.Component {
 				this.setState({
 					errors: response
 				});
-				alert("Please resolve page errors before continuing");
+				swal({
+					title: "Error",
+					text: "Please resolve page errors before continuing"
+				}, function(e){
+					$('html, body').animate({
+	                    scrollTop: $($(".questionError")[0]).offset().top - 100
+	                }, 100);
+				});
 			}
 		});
 

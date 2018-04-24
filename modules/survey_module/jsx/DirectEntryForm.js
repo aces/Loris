@@ -37,6 +37,7 @@ class DirectEntryFormElement extends React.Component {
 	render() {
 		let element;
 		let errorMessage;
+		let questionClass = 'question-container col-xs-12 col-sm-10 col-sm-offset-1';
 
 		switch(this.props.element.Type) {
 			case "select":
@@ -96,6 +97,7 @@ class DirectEntryFormElement extends React.Component {
 		};
 
 		if (this.props.errors[this.props.element.Name]) {
+			questionClass += " questionError";
 			errorMessage = (
 				<h4 className='col-xs-12 has-error'>
 					* {this.props.errors[this.props.element.Name]}
@@ -104,9 +106,7 @@ class DirectEntryFormElement extends React.Component {
 		}
 
 		return (
-			<div 
-				className='question-container col-xs-12 col-sm-10 col-sm-offset-1'
-			>
+			<div className={questionClass}>
 				{element}
 				{errorMessage}
 			</div>
