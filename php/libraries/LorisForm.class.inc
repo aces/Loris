@@ -559,9 +559,9 @@ class LorisForm
      */
     function getValue($name)
     {
-        // For the survey module, values are passed via JSON so using the 
+        // For the survey module, values are passed via JSON so using the
         // global _REQUEST variable doesn't work
-        if($this->directEntry) {
+        if ($this->directEntry) {
             return $this->_getFilteredValue($name, $this->directValues[$name]);
         }
         // Not all elements of the form go into $_REQUEST, thus the isset test
@@ -1703,9 +1703,9 @@ class LorisForm
     {
 
         $curPage = array(
-                    'elements'    => array(),
-                    'type'        => 'page',
-                    'errors'      => $this->errors,
+                    'elements' => array(),
+                    'type'     => 'page',
+                    'errors'   => $this->errors,
                    );
         $retVal  = $curPage;
 
