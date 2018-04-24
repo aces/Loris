@@ -99,10 +99,12 @@ function countDuplicate($key,$value)
 function duplicateExistsInDropdown($id,$value)
 {
        $DB       =& Database::singleton();
+       // ConfigID can be found in the Config table by searching new id. 
        $ConfigID = $DB->pselectOne(
            "SELECT ConfigID FROM Config WHERE ID =:ID",
            array(':ID' => $id)
        );
+       // IDBefore means that row ID contains the same configID and value pair.
        $IDBefore = $DB->pselectOne(
            "SELECT ID FROM Config WHERE ConfigID =:ConfigID AND Value =:Value",
            array(
@@ -110,6 +112,13 @@ function duplicateExistsInDropdown($id,$value)
             ':Value'    => $value,
            )
        );
+       //If the new "id" equals "IDBefore" in Config table means
+       //it can be updated in the table. Otherwise, it means Dropdown menu has
+       // already had the same configID and value pair.
+
+       //If the "IDBefore" is empty in the table means
+       //we can insert the new configID and value pair into the table.Otherwise,
+       // it means Dropdown menu has already had the same configID and value pair.
        return ($id == $IDBefore || $IDBefore == null);
 }
 exit();
