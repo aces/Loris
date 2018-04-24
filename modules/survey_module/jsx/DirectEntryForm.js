@@ -214,6 +214,10 @@ class TextElement extends React.Component {
 
 	render() {
 		let type;
+		let value = '';
+		if(this.props.value) {
+			value = this.props.value;
+		}
 		if (this.props.element.Options.Type === 'small') {
 			type = (
 				<input
@@ -236,9 +240,7 @@ class TextElement extends React.Component {
 		}
 		let classInfo = 'col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4';
 		let descClass = 'col-xs-12 field_question';
-		let value = '';
 		
-
 		if(this.props.error) {
 			classInfo += ' has-error';
 			descClass += ' has-error';
@@ -251,10 +253,6 @@ class TextElement extends React.Component {
 					<Markdown content={this.props.element.Description} />
 				</h3>
 			);
-		}
-
-		if(this.props.value) {
-			value = this.props.value;
 		}
 
 		return (
