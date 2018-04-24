@@ -68,9 +68,11 @@
         <td nowrap="nowrap">
             <a href="#" id="{{ record_id }}" class="theeditlink">Edit</a>
         </td>
+        {{ #hasDeletePerm}}
         <td nowrap="nowrap">
             <a href="#" id="{{ record_id }}" class="thedeletelink">Delete</a>
         </td>
+        {{ /hasDeletePerm }}
     </tr>
 </script>
 {/literal}
