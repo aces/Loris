@@ -17,20 +17,12 @@ if (!$userSingleton->hasPermission('document_repository_view')
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
-
-set_include_path(
-    get_include_path().
-    ":../../project/libraries:../../php/libraries:"
-);
-require_once "NDB_Client.class.inc";
-require_once "NDB_Config.class.inc";
-require_once "Email.class.inc";
-$client = new NDB_Client();
-$client->initialize("../../project/config.xml");
 $factory = NDB_Factory::singleton();
 $baseURL = $factory->settings()->getBaseURL();
 
-$config = NDB_Config::singleton();
+$config = $factory->config();
+$base   = $config->getSetting('base');
+$name   = $userSingleton->getUsername();
 
 // create Database object
 $DB =& Database::singleton();
@@ -69,7 +61,8 @@ if ($userSingleton->hasPermission('document_repository_view')
         $fullPath  = $uploadPath . $fileName;
 
         if (!is_writable($uploadPath)) {
-            if (file_exists($uploadPath)){
+            if (file_exists($uploadPath)) {
+                header('HTTP/1.1 403 Forbidden');
                 error_log("Could not write to $uploadPath. Check permissions");
                 exit;
             }
@@ -78,9 +71,11 @@ if ($userSingleton->hasPermission('document_repository_view')
             mkdir($uploadPath, 0770);
         }
 
-        $target_path = $base_path  . $fileBase;
-
-        if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {
+        if (!move_uploaded_file($_FILES['file']['tmp_name'], $fullPath)) {
+            error_log('File upload failed for unknown reasons.');
+            header('HTTP/1.1 500 Internal Server Error');
+            echo('ERROR: Could not upload file. Contact your administrator');
+        } else {
             $success = $DB->insert(
                 'document_repository',
                 array(
@@ -104,12 +99,8 @@ if ($userSingleton->hasPermission('document_repository_view')
 
             $uploadNotifier->notify($msg_data);
 
-            $header = "Location:".
-                      " $baseURL/document_repository/?uploadSuccess=true";
-            header($header);
-
-        } else {
-            echo "There was an error uploading the file";
+            header('HTTP/1.1 303 See Other');
+            header('Location:' . $baseURL . '/document_repository/');
         }
     } elseif ($action == 'edit') {
         $id         = $_POST['idEdit'];
