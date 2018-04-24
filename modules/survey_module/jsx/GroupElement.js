@@ -71,6 +71,7 @@ class ElementGroup extends React.Component {
 		elements = this.props.element.Elements.map(function(element) {
 			if(!error && this.props.errors[element.Name]) {
 				error = true;
+				labelClass += ' has-error';
 			}
 			return (
 				<BaseElement
