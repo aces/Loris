@@ -111,11 +111,33 @@ class DirectDataEntryMainPage
         // unset($Values['Testdate']);
         unset($Values['Data_entry_completion_status']);
 
+        // Unset score values
+        $json_instrument = json_decode($this->tpl_data['InstrumentJSON']);
+        $this->unsetScores($Values, $json_instrument->Elements);
+
         $this->tpl_data['Values'] = json_encode($Values);
 
         echo json_encode($this->tpl_data); 
 
         // $this->display();
+    }
+
+    /**
+     * Unsets Score values so that they are not transferred to the frontend
+     *
+     * @return none
+     */ 
+    function unsetScores(&$values, $elements) {
+        foreach ($elements as $element) {
+            if($element->Type === 'ElementGroup') {
+                $this->unsetScores($values, $element->Elements);
+            } else if(
+                $element->Type === 'label' &&
+                isset($values[$element->Name])
+            ) {
+                unset($values[$element->Name]);
+            }
+        }
     }
 
     /**
