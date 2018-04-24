@@ -424,9 +424,8 @@ var SelectElement = React.createClass({
  */
 
 class TagsElement extends React.Component {
-  constructor(props) {
-    super(props);
-
+  constructor() {
+    super();
     this.handleChange = this.handleChange.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleAdd = this.handleAdd.bind(this);
