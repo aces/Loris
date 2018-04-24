@@ -1,6 +1,6 @@
 class EmailElement extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
   }
@@ -85,8 +85,8 @@ EmailElement.defaultProps = {
 // This class combines the common form elements between
 // Edit mode and initial Project Proposal/Creation mode
 class ProjectFormFields extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.createCollabEmailFields = this.createCollabEmailFields.bind(this);
     this.createVOIOptions = this.createVOIOptions.bind(this);
   }
@@ -237,6 +237,8 @@ class ProjectFormFields extends React.Component {
           id="usersWithEditPerm"
           label="Users with Edit Permission"
           options={this.props.Data.users}
+          useSearch={true}
+          strictSearch={true}
           onUserInput={this.props.setFormData}
           onUserAdd={this.props.addListItem}
           onUserRemove={this.props.removeListItem}
@@ -270,29 +272,12 @@ class ProjectFormFields extends React.Component {
           items={this.props.formData.keywords}
           btnLabel='Add Keyword'
         />
-        <div className="row form-group">
-          <label className="col-sm-3 control-label"/>
-          <div className="col-sm-9">
-            <p className="form-control-static">
-              <strong>
-                Variables of Interest
-              </strong>
-            </p>
-          </div>
-        </div>
-        <SelectElement
-          name="voiInst"
-          label="Instrument"
-          id="voiInst"
-          onUserInput={this.props.setFormData}
-          required={false}
-          value={this.props.formData.voiInst}
-          options={voiOptions.testNames}
-        />
         <TagsElement
           name="voiFields"
           id="voiFields"
-          label="Instrument Fields"
+          label="Variables of Interest"
+          useSearch={true}
+          strictSearch={true}
           onUserInput={this.props.setFormData}
           onUserAdd={this.props.addListItem}
           onUserRemove={this.props.removeListItem}
@@ -304,12 +289,6 @@ class ProjectFormFields extends React.Component {
           btnLabel="Add Variable of Interest"
         />
         {fileFields}
-        {/*<ButtonElement label={this.props.editMode ? "Submit" : "Propose Project"}/>*/}
-        {/*<div className="row">
-          <div className="col-sm-9 col-sm-offset-3">
-            <ProgressBar value={this.state.uploadProgress}/>
-          </div>
-        </div>*/}
       </div>
     );
   }

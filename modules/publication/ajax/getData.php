@@ -19,7 +19,7 @@ function getData() {
         array()
     );
 
-    // for selecting variables of interest
+    // for selecting variables of interest0
     $allVOIs = $db->pselect(
         "SELECT pt.Name, pt.SourceFrom FROM parameter_type pt ".
         "JOIN test_names tn ON tn.Test_name=pt.SourceFrom ORDER BY pt.SourceFrom",
