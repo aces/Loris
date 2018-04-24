@@ -403,6 +403,12 @@ class Installer
             return false;
         }
 
+        if (!$DB->hasPrivilege("mysql", "user", "SELECT")) {
+            $this->_lastErr = $values['dbadminuser'] . " does not have privilege to"
+                . " check if a mysql user exists. Please create that user manually"
+                . " then use the `Already created checkbox below.";
+            return false;
+        }
         // This script is being run by the web server, so get the host
         // that the current user is connect from to be the host of the
         // new user, since the new user is also going to be used from
@@ -443,17 +449,16 @@ class Installer
             // (the MySQL Password() function has been deprecated,
             // so we can't rely on it to select a hash from the mysql.user
             // table and compare.)
-            try {
-                $test = new PDO(
-                    "mysql:host=$values[dbhost];dbname=$values[dbname];charset=UTF8",
-                    $values['lorismysqluser'],
-                    $values['lorismysqlpassword']
-                );
-
+            if (Database::canLogIn(
+                $values["dbhost"],
+                $values["dbname"],
+                $values["lorismysqluser"],
+                $values["lorismysqlpassword"]
+            )) {
                 // the user already exists and the password is valid.
                 // we don't need to go any further than this.
                 return true;
-            } catch(Exception $e) {
+            } else {
                 // the user already exists but we couldn't connect as it.
                 $this->_lastErr = "MySQL user $quotedUser already exists and "
                 . " password does not match or it does not"
@@ -463,6 +468,11 @@ class Installer
             }
         }
 
+        if (!$DB->hasPrivilege("*", "*", "CREATE USER")) {
+            $this->_lastErr = "User does not have privilege to create "
+                . "a mysql user.";
+            return false;
+        }
         // The user does not exist and needs to be created
         $DB->PDO->exec(
             "CREATE USER $quotedUser IDENTIFIED BY " .
@@ -515,10 +525,13 @@ class Installer
         }
 
         $stmt = $DB->prepare(
-            "UPDATE users SET UserID=:q_userID, Password_hash=:q_password, "
-            . "   Password_expiry=DATE_FORMAT(DATE_ADD(CURRENT_TIMESTAMP, "
-            . "                     INTERVAL 30 DAY), '%Y-%m-%d')"
-            . " WHERE ID=1"
+            "UPDATE users
+             SET
+               UserID=:q_userID,
+               Password_hash=:q_password,
+               Active='Y',
+               Password_expiry=DATE_ADD(NOW(),INTERVAL 30 DAY)
+             WHERE ID=1"
         );
         return $stmt->execute(
             [
@@ -554,6 +567,14 @@ class Installer
      */
     function getConfigContent($values)
     {
+        // Value cleanup
+        $escapedValues = array_map(
+            function ($val) {
+                return htmlspecialchars($val, ENT_XML1, 'ISO-8859-1');
+            },
+            $values
+        );
+
         $contents = file_get_contents(__DIR__ . "/../../docs/config/config.xml");
         return str_replace(
             [
@@ -563,10 +584,10 @@ class Installer
              '%DATABASE%',
             ],
             [
-             $values['dbhost'],
-             $values['lorismysqluser'],
-             $values['lorismysqlpassword'],
-             $values['dbname'],
+             $escapedValues['dbhost'],
+             $escapedValues['lorismysqluser'],
+             $escapedValues['lorismysqlpassword'],
+             $escapedValues['dbname'],
             ],
             $contents
         );
@@ -584,13 +605,7 @@ class Installer
      */
     function writeConfig($values)
     {
-        $escapedValues = array_map(
-            function ($val) {
-                return htmlspecialchars($val, ENT_XML1, 'ISO-8859-1');
-            },
-            $values
-        );
-        $contents = $this->getConfigContent($escapedValues);
+        $contents = $this->getConfigContent($values);
         file_put_contents(__DIR__ . "/../../project/config.xml", $contents);
         return true;
     }

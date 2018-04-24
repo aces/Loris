@@ -45,7 +45,7 @@ if (empty($argv[1]) || $argv[1] == 'help' || !in_array($argv[2], array('all','on
  * get cmd-line arguments
  */
 // get $action argument
-$test_name = strtolower($argv[1]);
+$test_name = $argv[1];
 // get $action argument
 $action = strtolower($argv[2]);
 // CandID
@@ -76,7 +76,7 @@ function log_msg($message) {
 }
 
 // include instrument class
-if($test_name != 'all') {
+if(strtolower($test_name) != 'all') {
      if (!is_file("../project/instruments/NDB_BVL_Instrument_$test_name.class.inc")
             && !is_file("../project/instruments/$test_name.linst")) {
         fwrite(STDERR, "Included file does not exist (../project/instruments/NDB_BVL_Instrument_$test_name.class.inc)\n");
@@ -90,9 +90,9 @@ $db =& Database::singleton();
 if($test_name== 'all') {
     $query = "SELECT DISTINCT test_name FROM test_battery WHERE Active='Y'";
 } else {
-    $query = "SELECT DISTINCT test_name FROM test_battery WHERE Active='Y' AND Test_name ='$test_name'";
+    $query = "SELECT DISTINCT test_name FROM test_battery WHERE Active='Y' AND Test_name = :tnm";
 }
-$result = $db->pselect($query, array());
+$result = $db->pselect($query, array('tnm' => $test_name));
 // if nothing is returned than the instrument DNE
 if (!is_array($result) || count($result)==0) {
     fwrite(STDERR, "Invalid Instrument ($test_name)!\n");
@@ -113,10 +113,19 @@ foreach($result as $test) {
         WHERE c.CandID=s.CandID AND s.ID=f.SessionID AND f.CommentID=t.CommentID
         AND s.Active = 'Y' AND c.Active='Y' 
         AND f.Test_name = :tnm AND f.Administration <> 'None' AND f.Administration IS NOT NULL";
+
+    $params = array('tnm' => $test_name);
     if ($action=='one') {
-        $query .= " AND s.ID = '$sessionID' AND s.CandID='$candID'";
+        $query .= " AND s.ID = :sid AND s.CandID= :cid";
+        $params = array_merge(
+            $params,
+            array(
+                'sid' => $sessionID,
+                'cid' => $candID
+            )
+        );
     }
-    $result = $db->pselect($query, array('tnm' => $test_name));
+    $result = $db->pselect($query, $params);
     // return error if no candidates/timepoint matched the args
     if (!is_array($result) || count($result)==0) {
         fwrite(STDERR, "No records match the criteria returned for candidate ($candID), timepoint ($sessionID)!\n");
@@ -128,7 +137,7 @@ foreach($result as $test) {
     // loop the list and derive scores for each record
     foreach ($result as $record) {
         // make an instance of the instrument's object
-        $instrument =& NDB_BVL_Instrument::factory($test_name, $record['CommentID'],null);
+        $instrument = NDB_BVL_Instrument::factory($test_name, $record['CommentID'],null);
 
         // check if the instrument has a scoring method
         if (!method_exists($instrument, "score")) {

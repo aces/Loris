@@ -22,18 +22,8 @@ namespace LORIS\brainbrowser;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Brainbrowser extends \NDB_Form
+class Brainbrowser extends \NDB_Page
 {
-    /**
-     * Stub method so that LORIS doesn't throw an exception
-     * about form named brainbrowser not found.
-     *
-     * @return none
-     */
-    function brainbrowser()
-    {
-
-    }
     /**
      * Everyone has access to the BrainBrowser module.
      *
@@ -52,7 +42,7 @@ class Brainbrowser extends \NDB_Form
      */
     function getJSDependencies()
     {
-        $factory =& \NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
 
         $deps = parent::getJSDependencies();
@@ -79,7 +69,7 @@ class Brainbrowser extends \NDB_Form
      */
     function getCSSDependencies()
     {
-        $factory =& \NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getCSSDependencies();
         return array_merge(

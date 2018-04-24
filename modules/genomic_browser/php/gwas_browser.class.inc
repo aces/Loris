@@ -60,8 +60,8 @@ class GWAS_Browser extends \NDB_Menu_Filter
         // set the class variables
         $this->columns = array(
                           'GWAS.rsID AS SNP_ID',
-                          'genome_loc.Chromosome AS Chromosome',
-                          'genome_loc.StartLoc AS Position_BP',
+                          'SNP.Chromosome AS Chromosome',
+                          'SNP.StartLoc AS Position_BP',
                           'GWAS.MajorAllele AS Major_Allele',
                           'GWAS.MinorAllele AS Minor_Allele',
                           'GWAS.MAF AS MAF',
@@ -83,14 +83,13 @@ class GWAS_Browser extends \NDB_Menu_Filter
 
         // $this->query = " FROM GWAS ";
         $this->query = " FROM GWAS
-            JOIN SNP ON (GWAS.SNPID = SNP.SNPID)
-            JOIN genome_loc ON (genome_loc.GenomeLocID = SNP.GenomeLocID)";
+            JOIN SNP ON (GWAS.SNPID = SNP.SNPID)";
 
-        $this->order_by     = 'genome_loc.Chromosome, GWAS.Pvalue DESC';
+        $this->order_by     = 'SNP.Chromosome, GWAS.Pvalue DESC';
         $this->validFilters = array(
                                'GWAS.rsID',
-                               'genome_loc.Chromosome',
-                               'genome_loc.StartLoc',
+                               'SNP.Chromosome',
+                               'SNP.StartLoc',
                                'GWAS.MajorAllele',
                                'GWAS.MinorAllele',
                                'GWAS.MAF',
@@ -101,8 +100,8 @@ class GWAS_Browser extends \NDB_Menu_Filter
 
         $this->formToFilter = array(
                                'SNP_ID'       => 'GWAS.rsID',
-                               'Chromosome'   => 'genome_loc.Chromosome',
-                               'BP_Position'  => 'genome_loc.StartLoc',
+                               'Chromosome'   => 'SNP.Chromosome',
+                               'BP_Position'  => 'SNP.StartLoc',
                                'Major_Allele' => 'GWAS.MajorAllele',
                                'Minor_Allele' => 'GWAS.MinorAllele',
                                'MAF'          => 'GWAS.MAF',
@@ -119,17 +118,11 @@ class GWAS_Browser extends \NDB_Menu_Filter
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
      * @return none
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
 
         // create user object
         $user = \User::singleton();

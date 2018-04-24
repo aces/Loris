@@ -53,7 +53,7 @@ foreach ($files AS $file) {
     echo "Requiring file...\n";
     include_once $file;
     echo "Instantiating new object...\n";
-    $obj =new $className;
+    $obj =new $className(new Module(""), "", "", "", "");
     echo "Initializing instrument object...\n";
     $obj->setup(null, null);
 
@@ -69,9 +69,10 @@ foreach ($files AS $file) {
         echo "Building instrument page '$subtest[Name]'...\n";
         $obj->_setupForm();
     }
-    
+
     if (is_array($obj->getFullName())) {
-        echo "Could not find row for $matches[1] in table test_names, please populate test_names, instrument_subtests\n";
+        echo "Could not find row for $matches[1] in table test_names, 
+        please populate test_names, instrument_subtests\n";
         continue;
     }
 
@@ -105,7 +106,7 @@ if (empty($output)) {
  * @param LorisFormElement $elements   The element to parse.
  * @param String           $groupLabel The group label
  *
- * @return LINST formated element.
+ * @return string LINST formated element.
  */
 function parseElements($elements, $groupLabel="")
 {
@@ -151,7 +152,10 @@ function parseElements($elements, $groupLabel="")
 
         case "date":
             $options = "{@}";
-            if (array_key_exists('options', $element)) {
+            if (array_key_exists('options', $element)
+                && isset($el['options']['minYear'])
+                && isset($el['options']['maxYear'])
+            ) {
                 $options = $element['options']['minYear']
                     ."{@}"
                     .$element['options']['maxYear'];
