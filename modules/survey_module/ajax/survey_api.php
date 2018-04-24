@@ -133,7 +133,7 @@ class DirectDataEntryMainPage
                 $this->unsetScores($values, $element->Elements);
             } else if(
                 $element->Type === 'label' &&
-                isset($values[$element->Name])
+                array_key_exists($element->Name, $values)
             ) {
                 unset($values[$element->Name]);
             }
