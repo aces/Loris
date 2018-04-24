@@ -141,8 +141,11 @@ class SelectElement extends React.Component {
 	}
 
 	onSelect(value) {
-		// this.setState({'value': value});
-		this.props.updateAnswer(this.props.element.Name, value);
+		if (this.props.value !== value) {
+			this.props.updateAnswer(this.props.element.Name, value);
+		} else {
+			this.props.updateAnswer(this.props.element.Name, null);
+		}
 	}
 
 	render() {
@@ -160,7 +163,7 @@ class SelectElement extends React.Component {
 			options.push(
 				<div className="col-xs-12 col-sm-6 select-option" onClick={this.onSelect.bind(this, key)}>
 					<div className="selectBox">
-						<label className="btn btn-defualt btn-circle active">
+						<label className="btn btn-defualt btn-circle">
 							{checked}
 						</label>
 					</div>
