@@ -44,9 +44,9 @@ class Survey_Module extends \NDB_Page
      */
     function getJSDependencies()
     {
-        $factory         = \NDB_Factory::singleton();
-        $baseurl         = $factory->settings()->getBaseURL();
-        $depends         = parent::getJSDependencies();
+        $factory = \NDB_Factory::singleton();
+        $baseurl = $factory->settings()->getBaseURL();
+        $depends = parent::getJSDependencies();
 
         return array_merge(
             $depends,

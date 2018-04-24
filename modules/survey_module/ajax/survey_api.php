@@ -4,7 +4,7 @@
  * template for the current instrument. It is used in the survey_accounts
  * page via AJAX to update the email template with the current page
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Survey
  * @package  Loris
@@ -13,6 +13,17 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
+/**
+ * Class to handle request types
+ *
+ * PHP Version 7
+ *
+ * @category Survey
+ * @package  Loris
+ * @author   Jordan Stirling <jstirling91@gmail.com>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris/
+ */
 class DirectDataEntryMainPage
 {
     var $tpl_data = array();
@@ -117,7 +128,7 @@ class DirectDataEntryMainPage
 
         $this->tpl_data['Values'] = json_encode($Values);
 
-        echo json_encode($this->tpl_data); 
+        echo json_encode($this->tpl_data);
 
         // $this->display();
     }
@@ -125,15 +136,19 @@ class DirectDataEntryMainPage
     /**
      * Unsets Score values so that they are not transferred to the frontend
      *
+     * @param pointer $values   pointer to the values array
+     * @param array   $elements the elements to check if
+     *                          score fields are present
+     *
      * @return none
-     */ 
-    function unsetScores(&$values, $elements) {
+     */
+    function unsetScores(&$values, $elements)
+    {
         foreach ($elements as $element) {
-            if($element->Type === 'ElementGroup') {
+            if ($element->Type === 'ElementGroup') {
                 $this->unsetScores($values, $element->Elements);
-            } else if(
-                $element->Type === 'label' &&
-                array_key_exists($element->Name, $values)
+            } else if ($element->Type === 'label'
+                && array_key_exists($element->Name, $values)
             ) {
                 unset($values[$element->Name]);
             }
@@ -145,7 +160,8 @@ class DirectDataEntryMainPage
      *
      * @return none
      */
-    function handlePATCH() {
+    function handlePATCH()
+    {
 
         try {
             $this->Instrument = \NDB_BVL_Instrument::factory(
@@ -168,7 +184,7 @@ class DirectDataEntryMainPage
         $data            = json_decode($data);
         $instrument_name = $this->Instrument->testName;
 
-        if(count($data) !== 1) {
+        if (count($data) !== 1) {
             // The survey module will only PATCH one variable at a time.
             header("HTTP/1.0 400 Bad Request");
         }
@@ -176,7 +192,7 @@ class DirectDataEntryMainPage
         if ($this->Instrument->validate($data)) {
             try {
                 $this->Instrument->_save($data);
-                
+
             } catch (Exception $e) {
                 header("HTTP/1.0 400 Bad Request");
             }
@@ -197,7 +213,8 @@ class DirectDataEntryMainPage
      *
      * @return none
      */
-    function handlePUT() {
+    function handlePUT()
+    {
 
         $fp   = fopen("php://input", "r");
         $data = '';
@@ -206,10 +223,10 @@ class DirectDataEntryMainPage
         }
         fclose($fp);
 
-        $data = json_decode($data, true);
+        $data    = json_decode($data, true);
         $subtest = null;
 
-        if($data['page'] !== 0) {
+        if ($data['page'] !== 0) {
             $subtest = $data['page'];
         }
 
@@ -224,11 +241,11 @@ class DirectDataEntryMainPage
             throw new Exception("Instrument not found", 405);
         }
 
-        $this->Instrument->form->directEntry = true;
+        $this->Instrument->form->directEntry  = true;
         $this->Instrument->form->directValues = $data['data'];
 
-        if($this->Instrument->form->validate()) {
-            if($data['FinalPage']) {
+        if ($this->Instrument->form->validate()) {
+            if ($data['FinalPage']) {
                 echo $this->Instrument->getReactReview();
             } else {
                 echo $this->Instrument->toDirectJSON();
@@ -238,15 +255,16 @@ class DirectDataEntryMainPage
             echo json_encode($this->Instrument->form->errors);
         }
 
-    }  
+    }
 
     /**
      * Handle a PATCH request. This will update a single field
      *
      * @return none
      */
-    function handlePOST() {
-        
+    function handlePOST()
+    {
+
         $fp   = fopen("php://input", "r");
         $data = '';
         while (!feof($fp)) {
@@ -269,7 +287,7 @@ class DirectDataEntryMainPage
 
         $valid = $this->Instrument->directEntryValidation();
 
-        if($valid === true) {
+        if ($valid === true) {
             header("HTTP/1.0 200 OK");
             $DB = Database::singleton();
             $DB->update(
@@ -282,7 +300,7 @@ class DirectDataEntryMainPage
             echo json_encode($valid);
         }
 
-    }   
+    }
 
     /**
      * Run the current page, consists of initializing and then displaying the page
