@@ -152,7 +152,7 @@ class PageElementsFormatter
         $newElem['GroupType'] = "Element";
         $newElem['Elements']  = array();
 
-        foreach ($oldElem['elements'] as $key => $value) {
+        foreach ($oldElem['elements'] as $value) {
             $newElem['Elements'][] = self::formatElement($value, $value['name']);
         }
 

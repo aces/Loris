@@ -2261,7 +2261,6 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         $DB = Database::singleton();
 
-        $smarty   = new Smarty_neurodb();
         $tpl_data = array();
 
         $tpl_data['questions'] = $DB->pselect(
@@ -2599,7 +2598,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $temp   = json_decode($this->getReactReview());
         $values = array();
 
-        foreach ($temp->questions as $key => $value) {
+        foreach ($temp->questions as $value) {
             // $this->form->directValues[$value->SourceField] = $value->response;
             $values[$value->SourceField] = $value->response;
         }
@@ -2653,7 +2652,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function getPageValues($form, $fullValues)
     {
         $values = array();
-        foreach ($form as $key => $value) {
+        foreach ($form as $value) {
             if ($value['type'] === 'group') {
                 $values = array_merge(
                     $values,
