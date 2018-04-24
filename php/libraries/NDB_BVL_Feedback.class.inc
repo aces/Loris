@@ -1065,25 +1065,22 @@ class NDB_BVL_Feedback
      */
     static function bvlFeedbackPossible($test_name)
     {
-
         $user =& User::singleton();
 
-        if ($user->hasStudySite()) {
-            if ($user->hasPermission('bvl_feedback')) {
-                if (($test_name === "timepoint_list")
-                    || ($test_name === "instrument_list")
-                ) {
+        if ($user->hasPermission('bvl_feedback')) {
+            if (($test_name === "timepoint_list")
+                || ($test_name === "instrument_list")
+            ) {
+                return true;
+            } else {
+                $Factory       = NDB_Factory::singleton();
+                $DB            = $Factory->Database();
+                $instruments_q = $DB->pselectOne(
+                    "SELECT Count(*) FROM test_names WHERE Test_name=:testName",
+                    array('testName' => $test_name)
+                );
+                if ($instruments_q == 1) {
                     return true;
-                } else {
-                    $Factory       = NDB_Factory::singleton();
-                    $DB            = $Factory->Database();
-                    $instruments_q = $DB->pselectOne(
-                        "SELECT Count(*) FROM test_names WHERE Test_name=:testName",
-                        array('testName' => $test_name)
-                    );
-                    if ($instruments_q == 1) {
-                        return true;
-                    }
                 }
             }
         }
