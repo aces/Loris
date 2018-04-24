@@ -159,10 +159,14 @@ class SelectElement extends React.Component {
 			}
 			options.push(
 				<div className="col-xs-12 col-sm-6 select-option" onClick={this.onSelect.bind(this, key)}>
-					<label className="btn btn-defualt btn-circle active">
-						{checked}
-					</label>
-					{this.props.element.Options.Values[key]}
+					<div className="selectBox">
+						<label className="btn btn-defualt btn-circle active">
+							{checked}
+						</label>
+					</div>
+					<div className="selectOption">
+						<Markdown content={this.props.element.Options.Values[key]} />
+					</div>
 				</div>
 			);
 		}

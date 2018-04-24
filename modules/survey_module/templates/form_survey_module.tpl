@@ -49,6 +49,13 @@
         color: white;
         text-align: right;
     }
+    .selectOption {
+        padding-top: 5px;
+    }
+    .selectBox {
+        width: 50px;
+        float: left;
+    }
 </style>
 
 <div id="reactInput">
