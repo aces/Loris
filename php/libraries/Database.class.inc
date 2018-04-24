@@ -110,7 +110,7 @@ class Database
             // create the connection if none exists
             if (empty($connections[$connection])) {
                 $connections[$connection] = new Database;
-                $ok = $connections[$connection]->connect(
+                $connections[$connection]->connect(
                     $database,
                     $username,
                     $password,
@@ -350,7 +350,7 @@ class Database
         $this->lastInsertID = $this->_PDO->lastInsertId();
 
         // Track changes must be called after last insertId is set
-        $err = $this->trackChanges($table, $set, '2=1', 'I');
+        $this->trackChanges($table, $set, '2=1', 'I');
         return true;
     }
 
@@ -394,8 +394,6 @@ class Database
                 "Replace statement did not execute successfully.",
                 $query
             );
-        } elseif ($result === 0) {
-            $this->insert('empty_queries', array('query' => $query));
         }
 
         $this->affected = $result;
@@ -487,7 +485,7 @@ class Database
             );
         }
 
-        $err = $this->trackChanges($table, $set, $where);
+        $this->trackChanges($table, $set, $where);
         $this->_printQuery($query.$where);
 
         $prep   = $this->_PDO->prepare($prepQ);
@@ -534,7 +532,7 @@ class Database
 
         // There is no set clause for a delete, so add a fake
         // one.
-        $err = $this->trackChanges($table, array(), $where, 'D');
+        $this->trackChanges($table, array(), $where, 'D');
 
         $this->_printQuery($query);
         $result = $this->_PDO->exec($query);
@@ -545,8 +543,6 @@ class Database
                 $query,
                 $where
             );
-        } elseif ($result === 0) {
-            $this->insert('empty_queries', array('query' => $query));
         }
 
         $this->affected = $result;
@@ -671,8 +667,6 @@ class Database
                 "Could not run query $query"
                 . print_r($this->_PDO->errorInfo(), true)
             );
-        } elseif ($result === 0) {
-            $this->insert('empty_queries', array('query' => $query));
         }
 
         $this->affected = $result;
@@ -938,7 +932,7 @@ class Database
                 $prim_vals = join(",", $primaryValues);
                 $this->_preparedStoreHistory->bindParam(":newval", $set[$column]);
                 $this->_preparedStoreHistory->bindParam(":primaryVals", $prim_vals);
-                $history = $this->_preparedStoreHistory->execute();
+                $this->_preparedStoreHistory->execute();
             }
         } else if ($type == 'U' || $type == 'D') {
             // construct the select query
@@ -1067,21 +1061,6 @@ class Database
         };
     }
 
-    /**
-     * Database class no longer extends PEAR
-     *
-     * @param mixed $data    The variable to check
-     * @param mixed $msgcode Additional error message / error code to check
-     *
-     * @return     none
-     * @deprecated Database class no longer extends PEAR
-     */
-    function isError($data, $msgcode)
-    {
-        throw new DatabaseException(
-            "Database class no longer extends PEAR"
-        );
-    }
     /**
      * Checks to see if a table exists in the Database
      *

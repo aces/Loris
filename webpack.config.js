@@ -18,6 +18,7 @@ var config = {
     './modules/bvl_feedback/js/react.behavioural_feedback_panel.js': './modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
     './modules/data_team_helper/js/behavioural_qc_module.js': './modules/data_team_helper/jsx/behavioural_qc_module.js',
     './modules/candidate_list/js/columnFormatter.js': './modules/candidate_list/jsx/columnFormatter.js',
+    './modules/candidate_list/js/onLoad.js': './modules/candidate_list/jsx/onLoad.js',
     './modules/datadict/js/columnFormatter.js': './modules/datadict/jsx/columnFormatter.js',
     './modules/dataquery/js/react.app.js': './modules/dataquery/jsx/react.app.js',
     './modules/dataquery/js/react.fieldselector.js': './modules/dataquery/jsx/react.fieldselector.js',

@@ -67,15 +67,21 @@ class NDB_Caller
     *
     * @param string $test_name The object type to load.  The test_name of the
     *                          menu, form or instrument
-    * @param string $subtest   The subtest.  The page of the form or instrument.
-    * @param string $CommentID The commentid being loaded.
-    * @param string $nextpage  A page to forward to on completion of save.
-    *                          Used in direct data entry.
+    * @param string $subtest   The subpage of the module to load.
+    * @param string $CommentID The CommentID identifier to load the page with
+    * @param string $nextpage  The page to go to after submitting this page (surveys
+    *                          only)
+    * @param string $anonymous True if the user has not logged in.
     *
     * @return string rendered object, as html
     */
-    function load($test_name, $subtest, $CommentID = '', $nextpage=null)
-    {
+    function load(
+        $test_name,
+        $subtest,
+        $CommentID='',
+        $nextpage=null,
+        $anonymous=true
+    ) {
         $factory  = NDB_Factory::singleton();
         $config   = $factory->config();
         $settings = $factory->settings();
@@ -84,7 +90,7 @@ class NDB_Caller
             return;
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST'
-            && isset($_POST['login'])
+            && isset($_POST['login']) && $test_name != 'login'
         ) {
             header("HTTP/1.1 303 See Other");
             $url  = $settings->getBaseURL();
@@ -114,10 +120,12 @@ class NDB_Caller
              $mname = $test_name;
         }
         try {
-
             // This will throw an exception if the module name doesn't exist, so
             // below this we can assume a valid module.
             $m = Module::factory($mname);
+            if (!$m->isPublicModule() && $anonymous) {
+                throw new Exception(403);
+            }
             if (!empty($subtest)) {
                 // We shouldn't care what type of page something is, we should
                 // just load it and let the module do whatever it wants.
@@ -128,6 +136,22 @@ class NDB_Caller
                 $p = $mname;
             }
             $this->page = $m->LoadPage($p);
+
+            // FIXME: These two method_exists calls were hacks that were previously
+            // in the load* classes, which for now need to be preserved for
+            // compatibility with existing modules.
+            //
+            // The proper solution is probably to re-write anything that uses them
+            // in React.
+            if (method_exists($this->page, 'getControlPanel')) {
+                $this->controlPanel = $this->page->getControlPanel();
+            }
+            if (method_exists($this->page, 'getFeedbackPanel')) {
+                $this->feedbackPanel = $this->page->getFeedbackPanel(
+                    $_REQUEST['candID'],
+                    $_REQUEST['sessionID'] ?? null
+                );
+            }
             return $this->page->display();
         } catch (LorisModuleMissingException $e) {
             //print_r($e);
@@ -145,9 +169,11 @@ class NDB_Caller
             // this code. If we do it right now, absolutely every page will
             // include an error.. at the very least, this should be uncommented
             // in 18.0 so that we can delete the old code for 19.0.
-            //error_log("Module $mname is missing Module class descriptor. " .
-            //     . "Modules missing a Module file will stop working in a future"
-            //     . "version of LORIS.");
+            error_log(
+                "Module $test_name is missing Module class descriptor. "
+                . "Modules missing a Module file will stop working in a future"
+                . "version of LORIS."
+            );
             $ModuleDir = is_dir($base . "project/modules/$test_name")
                 ? $base . "project/modules/$test_name"
                 : $base . "modules/$test_name";
@@ -203,61 +229,8 @@ class NDB_Caller
             error_log("Could not load Loris module $test_name.");
             exit(-1);
         } else {
-            // Old precedence style for "modules"
-            // This (except for instruments and reliability) should be removed
-            // in LORIS 18.0 now that all modules are updated, but we forgot
-            // to include a warning in the 16.x line so that we could have
-            // removed it in 17.0.
-            error_log(
-                "php/libraries 'modules' are deprecated and will be "
-                . " removed in a future release. Please update your code in "
-                . "$test_name to use proper LORIS style modules. See the loris-dev"
-                . "  mailing list for help if required."
-            );
-            // it is a menu
-            $proj_menu = $base . "project/libraries/NDB_Menu_$test_name.class.inc";
-            $php_menu  = $base . "php/libraries/NDB_Menu_$test_name.class.inc";
-
-            $proj_menu_filter = $base . "project/libraries/"
-                                      . "NDB_Menu_Filter_$test_name.class.inc";
-            $php_menu_filter  = $base . "php/libraries/"
-                                      . "NDB_Menu_Filter_$test_name.class.inc";
-
-            $proj_menu_filter_form = $base . "project/libraries/"
-                . "NDB_Menu_Filter_Form_$test_name.class.inc";
-            $php_menu_filter_form  = $base . "php/libraries/"
-                . "NDB_Menu_Filter_Form_$test_name.class.inc";
-
-            if (empty($subtest) && ($this->existsAndRequire($proj_menu)
-                || $this->existsAndRequire($php_menu)
-                || $this->existsAndRequire($proj_menu_filter)
-                || $this->existsAndRequire($php_menu_filter)
-                || $this->existsAndRequire($proj_menu_filter_form)
-                || $this->existsAndRequire($php_menu_filter_form))
-            ) {
-
-                $mode = $_REQUEST['mode'] ?? '';
-                $html = $this->loadMenu($test_name, $mode);
-
-                $this->type = 'menu';
-                return $html;
-            }
-
-            // it is a form
-            $proj_form = $base."project/libraries/NDB_Form_$test_name.class.inc";
-            $php_form  = $base."php/libraries/NDB_Form_$test_name.class.inc";
-            if ($this->existsAndRequire($proj_form)
-                || $this->existsAndRequire($php_form)
-            ) {
-
-                $identifier = $_REQUEST['identifier'] ?? '';
-                $html       = $this->loadForm($test_name, $subtest, $identifier);
-
-                $this->type = 'form';
-                return $html;
-            }
-
-            // it is a reliability form
+            // Reliability and instruments aren't "real" modules. They probably
+            // should be at some point in the future.
             $proj_reliable = $base . "project/reliability/"
                                    . "NDB_Reliability_$test_name.class.inc";
             if ($this->existsAndRequire($proj_reliable)
@@ -314,7 +287,7 @@ class NDB_Caller
     function loadMenu($menu, $mode)
     {
         // make an instance of the menu's object
-        $menu =& NDB_Menu::factory($menu, $mode);
+        $menu = NDB_Menu::factory($menu, $mode);
 
         $success = $menu->setup();
 
@@ -384,7 +357,8 @@ class NDB_Caller
         if (method_exists($form, 'getControlPanel')) {
             $this->controlPanel = $form->getControlPanel();
         }
-        $success = $form->save();
+
+        $form->save();
 
         if (method_exists($form, 'getControlPanel')) {
             $this->controlPanel = $form->getControlPanel();
@@ -415,7 +389,7 @@ class NDB_Caller
             $reliability_center_id
         );
 
-        $success = $form->save();
+        $form->save();
 
         $this->page = $form;
         $html       = $form->display();
@@ -441,7 +415,7 @@ class NDB_Caller
         $redirectToOnSuccess=null
     ) {
         if ($page === 'finalpage') {
-            $instrument =& NDB_BVL_Instrument::factory(
+            $instrument = NDB_BVL_Instrument::factory(
                 $instrumentName,
                 $commentID,
                 $page
@@ -451,14 +425,14 @@ class NDB_Caller
             header("Location: $redirectToOnSuccess");
             return "";
         }
-        $user =& User::singleton();
+        $user = User::singleton();
 
         if ($_REQUEST['sessionID']) {
             $timepoint =& TimePoint::singleton($_REQUEST['sessionID']);
         }
 
         // make an instance of the instrument's object
-        $instrument =& NDB_BVL_Instrument::factory(
+        $instrument = NDB_BVL_Instrument::factory(
             $instrumentName,
             $commentID,
             $page
@@ -477,7 +451,12 @@ class NDB_Caller
         }
 
         // save instrument form data
-        $success = $instrument->save();
+        if (!isset($_REQUEST['ClearInstrument'])) {
+            // If ClearInstrument was set, it's the control
+            // panel, not the instrument that needs to be
+            // saved.
+            $success = $instrument->save();
+        }
 
         if ($redirectToOnSuccess !== null && $success !== false) {
             header("Location: $redirectToOnSuccess");

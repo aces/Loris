@@ -48,7 +48,7 @@ $(document).ready(function() {
             $(".cnv_link").click(function(e) {
                     e.preventDefault();
                     var form = $('<form />', {
-                            "action" : "genomic_browser/?submenu=cnv_browser",
+                            "action" : "genomic_browser/cnv_browser/",
                             "method" : "post"
                         });
             
@@ -74,7 +74,7 @@ $(document).ready(function() {
             $(".snp_link").click(function(e) {
                     e.preventDefault();
                     var form = $('<form />', {
-                            "action" : "genomic_browser/?submenu=snp_browser",
+                            "action" : "genomic_browser/snp_browser/",
                             "method" : "post"
                         });
             

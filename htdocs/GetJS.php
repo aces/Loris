@@ -31,11 +31,8 @@ set_include_path(
 require_once __DIR__ . "/../vendor/autoload.php";
 // Ensures the user is logged in, and parses the config file.
 require_once "NDB_Client.class.inc";
-$client = new NDB_Client();
-
-if ($client->initialize(null) == false) {
-    return false;
-}
+$client    = new NDB_Client();
+$anonymous = ($client->initialize() === false);
 
 // Checks that config settings are set
 $config =& NDB_Config::singleton();
@@ -84,6 +81,19 @@ if (strpos($File, ".js") === false) {
     error_log("ERROR: Not a javascript file.");
     header("HTTP/1.1 400 Bad Request");
     exit(3);
+}
+
+$public = false;
+try {
+    $m = Module::factory($Module);
+
+    $public = $m->isPublicModule();
+} catch(LorisModuleMissingException $e) {
+    $public = false;
+}
+if ($anonymous === true && $public === false) {
+    header("HTTP/1.1 403 Forbidden");
+    exit(6);
 }
 
 // Make sure that the user isn't trying to break out of the $path by

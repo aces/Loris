@@ -77,10 +77,11 @@ class MediaUploadForm extends React.Component {
 
     var helpText = (
       <span>
-        File name should begin with <b>[PSCID]_[Visit Label]_[Instrument]</b><br/>
+        File name must begin with <b>[PSCID]_[Visit Label]_[Instrument]</b><br/>
         For example, for candidate <i>ABC123</i>, visit <i>V1</i> for
         <i>Body Mass Index</i> the file name should be prefixed by:
-        <b> ABC123_V1_Body_Mass_Index</b>
+        <b> ABC123_V1_Body_Mass_Index</b><br/>
+        File cannot exceed {this.props.maxUploadSize}
       </span>
     );
 
