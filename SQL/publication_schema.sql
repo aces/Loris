@@ -128,8 +128,12 @@ INSERT INTO user_perm_rel (userID, permID) VALUES(1, (SELECT permID FROM permiss
 INSERT INTO user_perm_rel (userID, permID) VALUES(1, (SELECT permID FROM permissions WHERE code='publication_view'));
 INSERT INTO user_perm_rel (userID, permID) VALUES(1, (SELECT permID FROM permissions WHERE code='publication_propose'));
 
-INSERT INTO notification_modules ('publication', 'submission', 'notifier_publication_submission.tpl', 'Publication: Submission Received');
-INSERT INTO notification_modules ('publication', 'rate', 'notifier_publication_rate.tpl', 'Publication: Proposal has been rated');
-INSERT INTO notification_modules ('publication', 'edit', 'notifier_publication_edit.tpl', 'Publication: Proposal has been editted');
+DELETE FROM notification_modules where module_name='publication';
+INSERT INTO notification_modules (module_name, operation_type, template_file, description) VALUES ('publication', 'submission', 'notifier_publication_submission.tpl', 'Publication: Submission Received');
+INSERT INTO notification_modules (module_name, operation_type, template_file, description) VALUES ('publication', 'rate', 'notifier_publication_rate.tpl', 'Publication: Proposal has been rated');
+INSERT INTO notification_modules (module_name, operation_type, template_file, description) VALUES ('publication', 'edit', 'notifier_publication_edit.tpl', 'Publication: Proposal has been editted');
 
-INSERT INTO notifcation_modules_services_rel ((SELECT id FROM notification_modules WHERE module_name='publication'), 1);
+
+INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES ((SELECT id FROM notification_modules WHERE module_name='publication' AND operation_type='submission'), 1);
+INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES ((SELECT id FROM notification_modules WHERE module_name='publication' AND operation_type='rate'), 1);
+INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES ((SELECT id FROM notification_modules WHERE module_name='publication' AND operation_type='edit'), 1);
