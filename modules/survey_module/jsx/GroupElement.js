@@ -248,5 +248,4 @@ class BaseElement extends React.Component {
 }
 /*eslint-enable */
 
-
 export default GroupElement;

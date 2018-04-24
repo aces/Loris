@@ -405,6 +405,4 @@ class HeaderElement extends React.Component {
 }
 /*eslint-enable */
 
-
 export default Page;
-
