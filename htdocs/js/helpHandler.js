@@ -63,7 +63,7 @@ $(document).ready(function() {
         div.appendChild(edit);
         edit.addEventListener("click", function(e) {
           e.preventDefault();
-          document.cookie = "LastUrl = " + document.location.toString();
+          document.cookie = "LastUrl = " + document.location.toString() + "; path=/";
           window.open(loris.BaseURL + "/help_editor/edit_help_content/?section=" +
             getParams.testName + "&subsection=" + getParams.subtest, "_self");
         });

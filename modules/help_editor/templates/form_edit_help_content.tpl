@@ -1,6 +1,6 @@
 {if $success}
 
-<p>Content was updated successful<br /></p>
+<p>Content was updated successfully!<br /></p>
 <br />
 {/if}
 <form method="post" name="edit_help_content" id="edit_help_content" enctype="multipart/form-data">
@@ -39,6 +39,6 @@
         <input type="button" name="reset" value="Reset" class="btn btn-sm btn-primary" onclick="location.href='{$baseurl}/help_editor/edit_help_content/?section={$section}&subsection={$subsection}'" />
         <input class="btn btn-sm btn-primary" name="preview" value="Preview" type="button" />
         {/if}
-        <input class="btn btn-sm btn-primary" onclick="goBack()" value="Return to {$module_name}" type="button" />
+        <input class="btn btn-sm btn-primary" onclick="location.href='{$url}'" value="Return to {$module_name}" type="button" />
     </div>
 </div>
