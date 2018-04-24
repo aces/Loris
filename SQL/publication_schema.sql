@@ -75,6 +75,14 @@ CREATE TABLE `publication_parameter_type_rel` (
     CONSTRAINT `FK_publication_parameter_type_rel_2` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
+DROP TABLE IF EXISTS publication_test_names_rel;
+CREATE TABLE `publication_test_names_rel` (
+    `PublicationID` int(10) unsigned NOT NULL,
+    `TestNameID` int(10) unsigned NOT NULL,
+    CONSTRAINT `FK_publication_test_names_rel_1` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
+    CONSTRAINT `FK_publication_test_names_rel_2` FOREIGN KEY (`TestNameID`) REFERENCES `test_names` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET='utf8';
+
 -- Publication Uploads
 DROP TABLE IF EXISTS publication_upload;
 CREATE TABLE `publication_upload` (
@@ -108,8 +116,6 @@ INSERT INTO publication_upload_type VALUES (2, 'Poster');
 INSERT INTO publication_upload_type VALUES (3, 'Presentation');
 INSERT INTO publication_upload_type VALUES (4, 'Other');
 
-SET FOREIGN_KEY_CHECKS=1;
-
 DELETE FROM LorisMenu WHERE Label='Publications';
 INSERT INTO LorisMenu (Parent, Label, Link) VALUES (32, 'Publications', 'publication/');
 DELETE FROM user_perm_rel WHERE permID=(SELECT permID FROM permissions WHERE code='publication_approve');
@@ -137,3 +143,5 @@ INSERT INTO notification_modules (module_name, operation_type, template_file, de
 INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES ((SELECT id FROM notification_modules WHERE module_name='publication' AND operation_type='submission'), 1);
 INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES ((SELECT id FROM notification_modules WHERE module_name='publication' AND operation_type='rate'), 1);
 INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES ((SELECT id FROM notification_modules WHERE module_name='publication' AND operation_type='edit'), 1);
+
+SET FOREIGN_KEY_CHECKS=1;

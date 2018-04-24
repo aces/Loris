@@ -234,39 +234,39 @@ function processVOIs($pubID) {
         return;
     }
     $db = Database::singleton();
+    $testNames = $db->pselectColWithIndexKey(
+        'SELECT ID, Test_name FROM test_names',
+        array(),
+        'ID'
+    );
+
+    $paramTypes = $db->pselectColWithIndexKey(
+        'SELECT ParameterTypeID, Name FROM parameter_type',
+        array(),
+        'ParameterTypeID'
+    );
+
     $voiFields = json_decode($_REQUEST['voiFields']);
     foreach ($voiFields as $vf) {
-        // if AllFields option is selected, grab all entries for provided instrument
-        if (substr($vf, -strlen('_AllFields')) === '_AllFields') {
-            $inst = substr($vf, 0, strlen($vf) - strlen('_AllFields'));
-            $varIDs = $db->pselectCol(
-                'SELECT ParameterTypeID FROM parameter_type WHERE SourceFrom=:src',
-                array('src' => $inst)
+        // search test_names for
+        if (in_array($vf, $testNames)) {
+           $pubTNRelInsert = array(
+               'TestNameID'    => array_search($vf, $testNames),
+               'PublicationID' => $pubID,
+           );
+            $db->insertIgnore(
+                'publication_test_names_rel',
+                $pubTNRelInsert
             );
-
-            foreach ($varIDs as $v) {
-                $pubParamTypeRelInsert = array(
-                    'PublicationID' => $pubID,
-                    'ParameterTypeID' => $v
-                );
-
-                $db->insertIgnore(
-                    'publication_parameter_type_rel',
-                    $pubParamTypeRelInsert
-                );
-            }
-        } else {
-            $varID = $db->pselectOne(
-                "SELECT ParameterTypeID FROM parameter_type WHERE Name=:n",
-                array('n' => $vf)
-            );
-
+        } elseif (in_array($vf, $paramTypes)){
             $pubParamTypeRelInsert = array(
-                'PublicationID' => $pubID,
-                'ParameterTypeID' => $varID
+                'ParameterTypeID' => array_search(),
+                'PublicationID'   => $pubID,
             );
 
             $db->insertIgnore('publication_parameter_type_rel', $pubParamTypeRelInsert);
+        } else {
+            throw new LorisException("Unknown variable of interest: $vf");
         }
     }
 }
