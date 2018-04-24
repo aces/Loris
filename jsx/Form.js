@@ -139,8 +139,8 @@ var FormElement = React.createClass({
  * React wrapper for a searchable dropdown
  */
 class SearchableDropdown extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.getKeyFromValue = this.getKeyFromValue.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
@@ -411,6 +411,18 @@ var SelectElement = React.createClass({
   }
 });
 
+/**
+ * Tags Component
+ * Allows for multiple values to be entered for a single field
+ *
+ * Comes in 3 flavors:
+ * 1: If options are passed and useSearch = true
+ *    input field is rendered as a searchable dropdown
+ * 2: If only options are passed, input is rendered as
+ *    a normal dropdown select
+ * 3: Without options, input is a normal, free text input
+ */
+
 class TagsElement extends React.Component {
   constructor(props) {
     super(props);
@@ -439,8 +451,7 @@ class TagsElement extends React.Component {
   // send pendingValKey as an argument in order to null out entered item
   handleAdd() {
     let options = this.props.options;
-    // reference pending value through input ID attr
-    let value = document.getElementById(this.props.id).value;
+    let value = this.props.value;
     // if using a datalist (search), set value to be the key in options
     if (this.props.useSearch && Object.values(options).indexOf(value) > -1) {
       value = this.getKeyFromValue(value);
@@ -503,9 +514,9 @@ class TagsElement extends React.Component {
       elementClass = 'row form-group has-error';
     }
 
-    // if options are given and useSearch is specified
     let input;
     let options = this.props.options;
+    // if options are given and useSearch is specified
     if (Object.keys(options).length > 0 && this.props.useSearch) {
       input = (
         <div>
@@ -529,6 +540,7 @@ class TagsElement extends React.Component {
           </datalist>
         </div>
       );
+      // if options are present but useSearch is false, use normal dropdown
     } else if (Object.keys(options).length > 0) {
       input = <select
         name={this.props.name}
@@ -546,6 +558,7 @@ class TagsElement extends React.Component {
           );
         })}
       </select>;
+      // else, use a text input by default
     } else {
       input = <input
         type="text"
@@ -563,8 +576,11 @@ class TagsElement extends React.Component {
     // with deletion button
     let items = this.props.items.map(function(item) {
       let itmTxt;
+      // in event that the passed item is a key of options,
+      // render option value
       if (Object.keys(options).length > 0 && options[item] !== undefined) {
         itmTxt = options[item];
+        // otherwise just render item as is
       } else {
         itmTxt = item;
       }
@@ -616,10 +632,7 @@ TagsElement.propTypes = {
   options: React.PropTypes.object,
   items: React.PropTypes.array,
   label: React.PropTypes.string,
-  value: React.PropTypes.oneOfType([
-    React.PropTypes.string,
-    React.PropTypes.array
-  ]),
+  value: React.PropTypes.string,
   class: React.PropTypes.string,
   multiple: React.PropTypes.bool,
   required: React.PropTypes.bool,
@@ -627,6 +640,9 @@ TagsElement.propTypes = {
   emptyOption: React.PropTypes.bool,
   errorMessage: React.PropTypes.string,
   btnLabel: React.PropTypes.string,
+  allowDupl: React.PropTypes.bool,
+  useSearch: React.PropTypes.bool,
+  strictSearch: React.PropTypes.bool,
   onUserInput: React.PropTypes.func,
   onUserAdd: React.PropTypes.func,
   onUserRemove: React.PropTypes.func
