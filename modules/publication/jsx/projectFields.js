@@ -88,7 +88,6 @@ class ProjectFormFields extends React.Component {
   constructor() {
     super();
     this.createCollabEmailFields = this.createCollabEmailFields.bind(this);
-    this.createVOIOptions = this.createVOIOptions.bind(this);
   }
 
   createCollabEmailFields() {
@@ -113,42 +112,6 @@ class ProjectFormFields extends React.Component {
         }, this);
     }
     return collabEmails;
-  }
-
-  createVOIOptions(){
-    let testNames = [];
-    let allVOIs = this.props.Data.allVOIs;
-    allVOIs.forEach(
-      function (v) {
-        if (testNames[v.SourceFrom]) {
-          return;
-        }
-        testNames[v.SourceFrom] = v.SourceFrom;
-      }
-    );
-    testNames.sort();
-
-    // Set test fields to all fields by default
-    let testFields = allVOIs.map(v => v.Name);
-    testFields.sort();
-
-    // if an instrument has been selected, then populate the fields
-    // selection with fields only relevant to the selected instrument
-    let inst = this.props.formData.voiInst;
-    if (inst) {
-      testFields = [];
-      testFields[inst+'_AllFields'] = inst + '_AllFields';
-      allVOIs.forEach(function(v){
-        if (v.SourceFrom === inst) {
-          testFields[v.Name] = v.Name;
-        }
-      });
-    }
-
-    return {
-      testNames: testNames,
-      testFields: testFields,
-    };
   }
 
   createFileFields() {
@@ -201,10 +164,11 @@ class ProjectFormFields extends React.Component {
 
   render() {
     let collabEmails = this.createCollabEmailFields();
-
-    let voiOptions = this.createVOIOptions();
-
     let fileFields = this.createFileFields();
+
+    let voiHelp = (<div>For help finding variables of interest, consult
+      the <a href={loris.BaseURL + '/datadict/'}>Data Dictionary</a>
+      </div>);
     return (
       <div>
         <TextareaElement
@@ -283,10 +247,13 @@ class ProjectFormFields extends React.Component {
           onUserRemove={this.props.removeListItem}
           required={false}
           value={this.props.formData.pendingItemVF}
-          options={voiOptions.testFields}
+          options={this.props.Data.allVOIs}
           pendingValKey="pendingItemVF"
           items={this.props.formData.voiFields}
           btnLabel="Add Variable of Interest"
+        />
+        <StaticElement
+          text={voiHelp}
         />
         {fileFields}
       </div>

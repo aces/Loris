@@ -26,6 +26,12 @@ function getData() {
         array()
     );
 
+    $allVOIs = array_merge(
+        array_column($allVOIs, 'Name'),
+        array_unique(array_column($allVOIs, 'SourceFrom'))
+    );
+    sort($allVOIs);
+
     $uploadTypeRaw = $db->pselect(
         "SELECT * FROM publication_upload_type",
         array()
