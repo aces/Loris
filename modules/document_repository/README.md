@@ -11,7 +11,7 @@
 
 ## Scope
 
- Any LORIS user can edit and delete the all files in the Document Repository module. 
+ Any LORIS user can edit and delete all the files in the Document Repository module. 
 
 ## Permissions
 
@@ -30,10 +30,6 @@ upload_max_filesize = 1024M     // Maximum allowed size for uploaded files.
 post_max_size = 1024M           // Maximum size of POST data that PHP will accept.
 ```
 
-- To enable folder upload:
-```
-chmod 777 /var/www/loris/modules/document_repository/user_uploads
-```
 [Note that the path is assumed to be ```/var/www/loris```, however your own path may be ```/var/www/<project-name>``` , depending on your setup.]
 
 - A mail server is required to send out email notification regarding the Document Repository updates.
