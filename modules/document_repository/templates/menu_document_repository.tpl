@@ -19,10 +19,13 @@
     <tr id="{{ id }}a" {{ #parentID }}class="{{ parentID }}a directoryRow" style="display:none"{{ /parentID }}>
         <td class="fileColumn" colspan="10">
             {{ #indent }}
-                <div class="fileDDD" style="{{ margin }}">
-                    <span style="padding: 8px" class='directory glyphicon glyphicon-chevron-right' data-container="body" data-toggle="popover" data-placement="right" data-content="{{ Comment }}">
-                        {{ name }}
-                    </span>
+                <div class = "document" style="{{ margin }}">
+                    <div class="line_element_container"><div class="line_element"></div><div></div></div>
+                    <div class="fileDDD">
+                        <span style="padding: 8px;" class='directory glyphicon glyphicon-chevron-right' data-container="body" data-toggle="popover" data-placement="right" data-content="{{ Comment }}">
+                            {{ name }}
+                        </span>
+                    </div>
                 </div>
             {{ /indent }}
             {{ ^indent }}
