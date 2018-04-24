@@ -271,6 +271,19 @@ class DateElement extends React.Component {
 	    this.updateDate = this.updateDate.bind(this)
 	}
 
+	componentDidMount() {
+		var that = this;
+		if(!checkInput(this.props.element.Type)) {
+			$("#" + this.props.element.Name).datepicker({
+				"dateFormat" : "yy-mm-dd",
+				"minDate" : this.props.element.Options.MinDate,
+				"maxDate" : this.props.element.Options.MaxDate,
+			}).on("change", function(e) {
+			    that.updateDate(e);
+			});
+		}
+	}
+
 	updateDate(e) {
 
 		this.props.updateAnswer(this.props.element.Name, e.target.value);
@@ -279,6 +292,30 @@ class DateElement extends React.Component {
 	render() {
 
 		let classInfo = 'col-xs-12 field_question';
+
+		let input = (
+			<input
+				name = {this.props.element.Name}
+				type="date"
+				className="form-control"
+				min = {this.props.element.Options.MinDate}
+				max = {this.props.element.Options.MaxDate}
+				onChange = {this.updateDate}
+				value = {this.props.value}
+			/>
+		);
+
+		if(!checkInput(this.props.element.Type)) {
+			input = (
+				<input
+					name = {this.props.element.Name}
+					type="text"
+					className="form-control"
+					value = {this.props.value}
+					id = {this.props.element.Name}
+				/>
+			);
+		} 
 
 		if(this.props.error) {
 			classInfo += ' has-error';
@@ -297,15 +334,7 @@ class DateElement extends React.Component {
 			<div>
 				{description}
 				<div className='col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4'>
-					<input
-						name = {this.props.element.Name}
-						type="date"
-						className="form-control"
-						min = {this.props.element.Options.MinDate}
-						max = {this.props.element.Options.MaxDate}
-						onChange = {this.updateDate}
-						value = {this.props.value}
-					/>
+					{input}
 				</div>
 			</div>
 		);

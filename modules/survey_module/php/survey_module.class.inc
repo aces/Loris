@@ -52,6 +52,7 @@ class Survey_Module extends \NDB_Page
             $depends,
             array(
              $baseurl . "/survey_module/js/DirectEntry.js",
+             $baseurl . "/survey_module/js/CheckInput.js",
             )
         );
     }
