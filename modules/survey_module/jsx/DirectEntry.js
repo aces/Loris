@@ -131,8 +131,8 @@ class DirectEntry extends React.Component {
 
 		let page = 0;
 		let finalPage = false;
-		if(this.state.page > 0) {
-			page = this.state.page + 1;
+		if(this.state.page != 0) {
+			page = this.state.InstrumentJSON.Elements[this.state.page].Subtest;
 		}
 
 		let data = {

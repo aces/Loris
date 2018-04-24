@@ -2573,6 +2573,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 "Elements" => array(),
                 "GroupType" => "Page",
                 "Type" => "ElementGroup",
+                "Subtest" => $this->page,
             );
             foreach ($this->form->form as $key => $value) {
                 $tempForm[] = PageElementsFormatter::formatElement($value, $key);

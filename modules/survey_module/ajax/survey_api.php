@@ -177,8 +177,6 @@ class DirectDataEntryMainPage
      */
     function handlePUT() {
 
-    	error_log("SHOULD BE HERE");
-
         $fp   = fopen("php://input", "r");
         $data = '';
         while (!feof($fp)) {
@@ -189,8 +187,8 @@ class DirectDataEntryMainPage
         $data = json_decode($data, true);
         $subtest = null;
 
-        if($data['page'] > 0) {
-            $subtest = $this->SurveyInfo['Test_name'] . "_page" . $data['page'];
+        if($data['page'] !== 0) {
+            $subtest = $data['page'];
         }
 
         try {
