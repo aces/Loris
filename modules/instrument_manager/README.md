@@ -27,7 +27,8 @@ Only the instrument metadata is managed by the instrument manager.
 It does not concern itself with data collection or analysis,
 which are the responsibility of the instruments themselves, nor does
 it concern itself with the creation of instruments which is the
-responsibility of the `instrument_builder` module or PHP programmer.
+responsibility of the `instrument_builder` module or PHP programmer. 
+The test_battery is also managed seperately directly from the database.
 
 ## Permissions
 
@@ -46,6 +47,6 @@ patch respectively.)
 In order to automatically source the SQL patch and fully configure
 LINST instruments, the LORIS `quatUser` and `quatPassword` configuration
 must be set to a user which has the MySQL `CREATE TABLE` permission.
-(The name `quatUser` and `quatPassword is an anachronism and should
+(The name `quatUser` and `quatPassword` is an anachronism and should
 be renamed.)
 
