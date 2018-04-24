@@ -378,7 +378,9 @@ class HeaderElement extends React.Component {
 		switch(this.props.element.Options.Level) {
 			default: 
 				element = (
-					<h1>{this.props.element.Description}</h1>
+					<h1>
+						<Markdown content={this.props.element.Description} />
+					</h1>
 				);
 		}
 		return (
