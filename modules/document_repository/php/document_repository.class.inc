@@ -204,7 +204,7 @@ class Document_Repository extends \NDB_Menu_Filter
      * @param string $item the value of item
      * @param string $key  the value of key
      *
-     * @return array
+     * @return void
      */
     function walkTree($item,$key)
     {
@@ -329,7 +329,6 @@ class Document_Repository extends \NDB_Menu_Filter
                         = &$thisref;
                 }
             }
-            $tree; // contains the newly sorted tree.
         }
         $query           ="SELECT id,category_name,parent_id,comments".
                          " FROM document_repository_categories ORDER BY parent_id";

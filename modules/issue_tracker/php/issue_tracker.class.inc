@@ -34,7 +34,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
      * Set up the variables required by NDB_Menu_Filter class for constructing
      * a query
      *
-     * @return null
+     * @return void
      */
     function _setupVariables()
     {
@@ -151,7 +151,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
     /**
      * Sets up the smarty menu filter items
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

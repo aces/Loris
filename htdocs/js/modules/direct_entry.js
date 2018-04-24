@@ -63,7 +63,7 @@ $(document).ready(function() {
             value: nextPage
         }).appendTo("#test_form");
 
-        formEl.action = document.documentURI;
+        formEl.action = window.location.href;
         //formEl.action = "submit.php?key=" + document.getElementById("key").textContent;
         $("#test_form").submit();
     }

@@ -583,7 +583,7 @@ class DashboardTest extends LorisIntegrationTest
      * @param string $value     the total of test data
      * @param string $dataSeed  test result
      *
-     * @return void.
+     * @return void
      */
     private function _testMytaskPanelAndLink($className,$value,$dataSeed)
     {
@@ -615,6 +615,8 @@ class DashboardTest extends LorisIntegrationTest
             $this->_testPlan5And6();
             $this->_testPlan7And8();
 
+        } else {
+            $this->assertEquals(true, 1);
         }
 
     }

@@ -52,7 +52,7 @@ $config =& NDB_Config::singleton();
  *
  * @param string $param The $_REQUEST parameter to convert to a smarty variable
  *
- * @return none, side effect of modifying $tpl_data
+ * @return void (side effect of modifying $tpl_data)
  */
 function tplFromRequest($param)
 {
@@ -249,7 +249,7 @@ if (!$anonymous) {
 $tpl_data['lastURL'] = $_SESSION['State']->getLastURL();
 
 // bug tracking link
-$tpl_data['mantis_url'] = $config->getSetting('mantis_url');
+$tpl_data['issue_tracker_url'] = $config->getSetting('issue_tracker_url');
 
 
 //Display the links, as specified in the config file

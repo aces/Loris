@@ -112,8 +112,8 @@ class Module
      * Returns true if this module should be publicly available to people who
      * are not logged in to LORIS.
      *
-     * @return false: not that this is not currently possible because main.php
-     *         checks that the user is logged in before it calls NDB_Caller.
+     * @return bool (false: not that this is not currently possible because main.php
+     *         checks that the user is logged in before it calls NDB_Caller.)
      */
     public function isPublicModule()
     {

@@ -42,7 +42,7 @@ class Issue extends \NDB_Form
     /**
      * Sets up the smarty menu filter items
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -78,7 +78,7 @@ class Issue extends \NDB_Form
     /**
     * Gets control panel
     *
-    * @return $controlPanel
+    * @return string ($controlPanel)
     */
     function getControlPanel()
     {
@@ -108,7 +108,7 @@ class Issue extends \NDB_Form
      * Does not govern editing abilities; those are controlled by issueIndex.js
      *
      * @return bool
-     * @throws ConfigurationException
+     * @throws \ConfigurationException
      */
     function _hasAccess()
     {

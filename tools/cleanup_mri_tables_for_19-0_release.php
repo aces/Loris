@@ -263,21 +263,36 @@ function backupEntries($selectID, $table_name, $FK_field)
     $IDs = generateIdList($selectID, $FK_field);
     $where = $FK_field . " IN (" . $IDs . ")";
 
+    // create directory where the back up will go if it does not exist yet
+    if ( !file_exists(__DIR__."/../project/backup") ) {
+        mkdir(__DIR__."/../project/backup");
+    }
+
     // grep database connection information from NDB_Config for mysqldump
     $config = NDB_Config::singleton();
-    $config->load();
+    $config->load(__DIR__."/../project/config.xml");
     $database = $config->getSettingFromXML("database");
+
+    // prompt for mysql username
+    $prompt   = "Enter MySQL username with mysqldump permission:";
+    $username = readline($prompt);
+
+    // prompt for mysql password
+    echo "Enter password:";
+    system('/bin/stty -echo');
+    $password = trim(fgets(STDIN));
+    system("/bin/stty echo");
 
     // create the mysqldump query to back the orphan entries to be deleted
     $sqldump = "mysqldump " .
-        "-u " . escapeshellarg($database['username']) . " " .
-        "-h " . escapeshellarg($database['host'])     . " " .
-        "-p"  . escapeshellarg($database['password']) . " " .
-        escapeshellarg($database['database'])         . " " .
-        escapeshellarg($table_name)                   . " " .
-        "--where=" . escapeshellarg($where)           . " " .
-        "--compact --no-create-info"                  . " " .
-        ">> ./backup_release_19-0_upgrade.sql";
+        "-u " . escapeshellarg($username)         . " " .
+        "-h " . escapeshellarg($database['host']) . " " .
+        "-p"  . escapeshellarg($password)         . " " .
+        escapeshellarg($database['database'])     . " " .
+        escapeshellarg($table_name)               . " " .
+        "--where=" . escapeshellarg($where)       . " " .
+        "--compact --no-create-info"              . " " .
+        ">> " . __DIR__ . "/../project/backup/backup_release_19-0_upgrade.sql";
 
     system($sqldump, $retval); // execute mysqldump
 

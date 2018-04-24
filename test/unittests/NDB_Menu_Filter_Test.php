@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../php/libraries/NDB_Menu_Filter.class.inc';
-
-class NDB_Menu_Filter_Test extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+class NDB_Menu_Filter_Test extends TestCase
 {
     /**
      * Set up sets a fake $_SESSION object that we can use for
@@ -10,8 +10,7 @@ class NDB_Menu_Filter_Test extends PHPUnit_Framework_TestCase
      */
     function setUp() {
         global $_SESSION;
-        $this->Session = $this->getMock('stdClass', array('getProperty', 'setProperty'));
-
+        $this->Session = $this->getMockBuilder(stdClass::class)->setMethods(array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn'))->getMock();
         $_SESSION = array(
             'State' => $this->Session
         );

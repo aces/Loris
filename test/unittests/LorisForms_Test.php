@@ -24,7 +24,8 @@ require_once __DIR__ . '/../../php/libraries/LorisForm.class.inc';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class LorisForms_Test extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+class LorisForms_Test extends TestCase
 {
     /**
      * Creates a new LorisForm to use for testing

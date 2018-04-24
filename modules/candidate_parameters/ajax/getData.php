@@ -12,7 +12,6 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
-use LORIS\candidate_parameters as CP;
 if (isset($_GET['data'])) {
     $data = $_GET['data'];
     if ($data == "candidateInfo") {

@@ -38,7 +38,7 @@ class Media extends \NDB_Menu_Filter
      * Check user permissions
      *
      * @return bool
-     * @throws ConfigurationException
+     * @throws \ConfigurationException
      */
     function _hasAccess()
     {
@@ -135,7 +135,7 @@ class Media extends \NDB_Menu_Filter
      * Build a list of media to display in Data Table
      *
      * @return bool
-     * @throws DatabaseException
+     * @throws \DatabaseException
      */
     function _setupVariables()
     {

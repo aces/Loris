@@ -557,7 +557,7 @@ class NDB_BVL_Instrument extends NDB_Page
      *                       have Candidate_Age and Window_Difference if the
      *                       Date_taken field is included.
      *
-     * @return none, but as a side-effect modifies array that was passed.
+     * @return void (but as a side-effect modifies array that was passed.)
      */
     function _saveCandidateAge(&$values)
     {
@@ -662,7 +662,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param array $values A reference to the array which will be passed
      *                       to $DB->update().
      *
-     * @return none, but as a side-effect modifies &$values array
+     * @return void (but as a side-effect modifies &$values array)
      */
     function _nullStatus(&$values)
     {
@@ -1336,18 +1336,26 @@ class NDB_BVL_Instrument extends NDB_Page
         //to pop a required rule)
         $valFlag = array();
         foreach ($values AS $value) {
-            $compareFunction = create_function(
-                '$a, $b',
-                "return (\$a $operator \$b);"
-            );
+            switch ($operator) {
+            case '==':
+                if ($controller != $value) {
+                    $valFlag[] = false;
+                }
+                break;
+            case '!=':
+                if ($controller == $value) {
+                    $valFlag[] = false;
+                }
+                break;
+            default:
+                throw new \LorisException(
+                    "Unsupported operator ($operator) for XIN Rule."
+                    . " If this used to work, please file a bug report."
+                );
+            }
             if ($this->XINDebug) {
                 //debugging code
                 echo "'$controller' $operator '$value'<br>";
-            }
-            if (!$compareFunction($controller, $value)) {
-                // IF one of the conditions is not  met then this rule
-                // does not need to be run.
-                $valFlag[] = false;
             }
         }
         //For conditions
@@ -1356,7 +1364,6 @@ class NDB_BVL_Instrument extends NDB_Page
         }
         return $is_required;
     }
-
 
     /**
      * Get a the value of $field from the instrument table.
@@ -1453,7 +1460,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param string $status The status - either 'Complete'
      *                       or 'Incomplete'
      *
-     * @return none
+     * @return void
      */
     function _setDataEntryCompletionStatus($status)
     {
@@ -1484,7 +1491,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param array  $rules        {@} delimited rules
      * @param string $rule_message rule message to display
      *
-     * @return none
+     * @return void
      */
     function addYesNoElement(
         $field,
@@ -1524,7 +1531,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param array  $refusals     options in the refusal select (ie. Refusal,
      *                             Unknown, Not Answered).
      *
-     * @return none
+     * @return void
      */
     function addTextElement(
         $field,
@@ -1560,7 +1567,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param array  $rules        XINRules for this question
      * @param string $rule_message The error message if rules are violated
      *
-     * @return none
+     * @return void
      * @note   This was only ever used by the EARLI instrument and should be moved
      *       out of the NDB_BVL_Instrument into an EARLI base class.
      */
@@ -1604,7 +1611,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param array  $rules        {@} delimited rules
      * @param string $rule_message rule message to display upon rule violation
      *
-     * @return none
+     * @return void
      */
     function addTextAreaElement(
         $field,
@@ -1653,7 +1660,7 @@ class NDB_BVL_Instrument extends NDB_Page
      *                             being added,{@} delimited
      * @param string $rule_message Message to display upon rule violation.
      *
-     * @return none
+     * @return void
      * @note   only used by EARLI? What is "dnk"? This should be cleaned up to use
      */
     function addHourMinElement(
@@ -1704,7 +1711,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param string $label   Element label
      * @param array  $options optional override of class's dateOptions
      *
-     * @return none
+     * @return void
      */
     function addDateElement($name, $label, $options = null)
     {
@@ -1765,7 +1772,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param string $label   Element label
      * @param array  $options optional override of class's dateOptions
      *
-     * @return none
+     * @return void
      */
     function addMonthYear($field, $label, $options=array())
     {
@@ -1784,7 +1791,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param string $label     The question text
      * @param array  $dateArray QuickForm date options to use
      *
-     * @return none
+     * @return void
      * @note   This was only ever used by the EARLI instrument and should be moved
      *       out of the NDB_BVL_Instrument into an EARLI base class.
      */
@@ -1836,7 +1843,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param string  $label   The question text to display
      * @param unknown $options Does not appear to be used?
      *
-     * @return none
+     * @return void
      */
     function addNumericElement($field, $label, $options = null)
     {
@@ -1872,7 +1879,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param string $field The database name to add
      * @param string $label The user friendly label to display
      *
-     * @return none
+     * @return void
      */
     function addNumericElementRD($field, $label)
     {
@@ -2069,7 +2076,7 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Clears all the data saved into this instrument instance
      *
-     * @return none
+     * @return void
      */
     function clearInstrument()
     {
@@ -2118,7 +2125,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param boolean $base64   If true, read the filename as a base64 encoded
      *                          string of the file content, used for preview.
      *
-     * @return none
+     * @return void
      */
     function loadInstrumentFile($filename, $base64 = false)
     {
@@ -2137,7 +2144,7 @@ class NDB_BVL_Instrument extends NDB_Page
      *                         data URL, so we shouldn't check that the file exists
      *                         on the filesystem. (Used by preview)
      *
-     * @return none
+     * @return void
      */
     function loadInstrumentRules($filename, $base64 = false)
     {
@@ -2378,8 +2385,8 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param array  $formArray The currently existing form that was converted
      *                          to instrument_json.tpl format.
      *
-     * @return none, but side-effect modified $formArray to populate the element
-     *         with the appropriate format needed for JSON serialization.
+     * @return void (but side-effect modified $formArray to populate the element
+     *         with the appropriate format needed for JSON serialization.)
      */
     function _toJSONParsePageElement(&$element, &$formArray)
     {

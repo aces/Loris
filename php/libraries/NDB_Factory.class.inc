@@ -232,7 +232,7 @@ class NDB_Factory
     function couchDB($database = null)
     {
         if (empty($database)) {
-            $database = self::config()->getSetting("CouchDB")['database'];
+            $database = self::config()->getSetting("CouchDB")['dbName'];
         }
 
         if (!empty(self::$_couchdb[$database])) {

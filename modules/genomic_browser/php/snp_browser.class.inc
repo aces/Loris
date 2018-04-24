@@ -391,7 +391,7 @@ class SNP_Browser extends \NDB_Menu_Filter
      *
      * @note overloaded function
      *
-     * @return $query
+     * @return string
     */
     function _addValidFilters($prepared_key, $field, $val)
     {

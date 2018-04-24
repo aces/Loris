@@ -26,10 +26,10 @@ require_once __DIR__ . "/../../../test/integrationtests"
  */
 class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandidate
 {
-     /**
+    /**
      * It does the setUp before running the tests
      *
-     * @return none
+     * @return void
      */
     function setUp()
     {
@@ -42,7 +42,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     /**
      * It does the tearDown after running the tests
      *
-     * @return none
+     * @return void
      */
     function tearDown()
     {
@@ -78,25 +78,30 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepoint()
     {
-        $this->_createTimepoint('900000', 'subprojet 1', 'V1');
+        $this->_createTimepoint('900000', 'subprojet 1', 'V02');
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("New time point successfully registered", $bodyText);
 
     }
+
     /**
-     * Tests that, create a timepoint and input a error format visit label
-     * get Error message
+     * Tests that, create a timepoint and test the success link
      *
      * @return void
      */
-    function testCreateTimepointErrorVisitLabel()
+    function testCreateTimepointSuccessLink()
     {
-        $this->_createTimepoint('900000', 'subprojet 2', 'V9999');
+        $this->markTestSkipped(
+            'Skipping tests until create timepoint works well'
+        );
+
+        $this->_createTimepoint('900000', 'subprojet 1', 'V01');
+        $this->safeClick(WebDriverBy::LinkText("Click here to continue."));
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains(
-            "This visit label does not match the required structure.",
+            "List of Visits (Time Points)",
             $bodyText
         );
 
@@ -109,7 +114,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      * @param string $subproject text of subproject
      * @param string $visitlabel text of visit label
      *
-     * @return void.
+     * @return void
      */
     private function _createTimepoint($canID, $subproject, $visitlabel)
     {
@@ -118,13 +123,14 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             "&identifier=" .$canID
         );
 
-        $select  = $this->safeFindElement(WebDriverBy::Name("subprojectID"));
-        $element = new WebDriverSelect($select);
-        $element->selectByVisibleText($subproject);
+        $selectSid  = $this->safeFindElement(WebDriverBy::Name("subprojectID"));
+        $elementSid = new WebDriverSelect($selectSid);
+        $elementSid->selectByVisibleText($subproject);
 
-        $this->webDriver->findElement(
-            WebDriverBy::Name("visitLabel")
-        )->sendKeys($visitlabel);
+        $selectVl  = $this->safeFindElement(WebDriverBy::Name("visitLabel"));
+        $elementVl = new WebDriverSelect($selectVl);
+        $elementVl->selectByVisibleText($visitlabel);
+
         $this->webDriver->findElement(
             WebDriverBy::Name("fire_away")
         )->click();
@@ -153,22 +159,22 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
 
     }
     /**
-      * Tests that timepoint loads with the permission
-      *
-      * @return void
-      */
+     * Tests that timepoint loads with the permission
+     *
+     * @return void
+     */
     public function testCreateTimepointPermission()
     {
-         $this->setupPermissions(array("data_entry"));
-         $this->safeGet(
-             $this->url . "/create_timepoint/?candID=900000&identifier=900000"
-         );
-         $bodyText = $this->webDriver->findElement(
-             WebDriverBy::cssSelector("body")
-         )->getText();
+        $this->setupPermissions(array("data_entry"));
+        $this->safeGet(
+            $this->url . "/create_timepoint/?candID=900000&identifier=900000"
+        );
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
 
-         $this->assertNotContains("You do not have access to this page.", $bodyText);
-         $this->resetPermissions();
+        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->resetPermissions();
     }
 }
 ?>

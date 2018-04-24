@@ -35,7 +35,7 @@ class Candidate_Parameters extends \NDB_Form
      * Check user permissions
      *
      * @return bool
-     * @throws ConfigurationException
+     * @throws \ConfigurationException
      */
     function _hasAccess()
     {
@@ -58,27 +58,6 @@ class Candidate_Parameters extends \NDB_Form
     function display()
     {
         return null;
-    }
-
-    /**
-     * Gets CandID and whether the consent tab should be displayed
-     *
-     * @throws DatabaseException
-     *
-     * @return void
-     */
-    function candidate_parameters()//@codingStandardsIgnoreLine
-    {
-        $config    =& \NDB_Config::singleton();
-        $candidate =& \Candidate::singleton($this->identifier);
-
-        // candID
-        $this->tpl_data['candID'] = $candidate->getData('CandID');
-
-        // consent
-        $consent = $config->getSetting('ConsentModule');
-
-        $this->tpl_data['useConsent'] = $consent['useConsent'];
     }
 
     /**

@@ -110,7 +110,7 @@ class New_Profile extends \NDB_Form
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -240,7 +240,7 @@ class New_Profile extends \NDB_Form
     /**
      * Validate function
      *
-     * @param string $values the value
+     * @param array $values the value
      *
      * @return string
      */

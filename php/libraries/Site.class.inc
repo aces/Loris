@@ -56,7 +56,7 @@ class Site
      *
      * @param int $centerID The CentreID to load data for
      *
-     * @return none
+     * @return void
      */
     function select($centerID)
     {

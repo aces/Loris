@@ -195,7 +195,7 @@ class NDB_Menu_Filter extends NDB_Menu
      * This method will reset any saved filters that are associated with
      * the session back to its default state.
      *
-     * @return none
+     * @return void
      */
     function _resetFilters()
     {
@@ -257,8 +257,8 @@ class NDB_Menu_Filter extends NDB_Menu
      *                          'fieldOrder' => "ASC|DESC"
      *                      ]
      *
-     * @return none, modifies both $_SESSION and $this->filter as
-     *         a side-effect.
+     * @return void (modifies both $_SESSION and $this->filter as
+     *         a side-effect.)
      */
     function _setFilterSortOrder($order)
     {
@@ -283,7 +283,7 @@ class NDB_Menu_Filter extends NDB_Menu
      *
      * @param string $keyword The keyword to search through columns for.
      *
-     * @return none, but side-effect modifies $this->searchKey
+     * @return void (but side-effect modifies $this->searchKey)
      */
     function _setSearchKeyword($keyword)
     {
@@ -304,7 +304,7 @@ class NDB_Menu_Filter extends NDB_Menu
      * The end result should be that $this->filter and $this->having are setup
      * properly so that the query can be constructed by $this->_getList()
      *
-     * @return none
+     * @return void
      */
     function _setupFilters()
     {
@@ -408,7 +408,7 @@ class NDB_Menu_Filter extends NDB_Menu
     /**
     * Gets the base query
     *
-    * @return $query
+    * @return string ($query)
     */
     function _getBaseQuery()
     {
@@ -429,7 +429,7 @@ class NDB_Menu_Filter extends NDB_Menu
     * @param string $field        filter field
     * @param string $val          filter value
     *
-    * @return $query
+    * @return string ($query)
     */
     function _addValidFilters($prepared_key, $field, $val)
     {
@@ -596,7 +596,7 @@ class NDB_Menu_Filter extends NDB_Menu
             $query = "SELECT COUNT(*) FROM ($query) as tmptable";
         }
         $this->TotalItems = $db->pselectOne($query, $wheredetails['params']);
-
+        return $this->TotalItems;
     }
 
     /**

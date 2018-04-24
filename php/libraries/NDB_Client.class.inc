@@ -32,7 +32,7 @@ class NDB_Client
     /**
     * Defines that the client is a command line client
     *
-    * @return none
+    * @return void
     */
     function makeCommandLine()
     {

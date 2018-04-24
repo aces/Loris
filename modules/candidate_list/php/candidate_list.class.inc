@@ -11,7 +11,6 @@
 * @link     https://www.github.com/aces/Loris/
 */
 namespace LORIS\candidate_list;
-use LORIS\candidate_parameters as CP;
 /**
  * Implements the candidate_list menu
  *
