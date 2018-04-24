@@ -1,10 +1,3 @@
 /*  delete duplicate ConfigID-value pairs */
-
-Delete from Config  Where ID in
-    (
-      select temp.ID from
-       (select ID from Config c
-          where (c.ConfigId,c.Value) in (select ConfigId,Value from Config group by ConfigId,Value having count(*) > 1)
-          and ID not in (select min(ID) from Config group by ConfigId,Value having count(*)>1)
-       ) temp
-    );
+DELETE FROM Config USING Config, Config c1 
+       WHERE Config.ID > c1.ID AND Config.ConfigID = c1.ConfigID AND Config.Value = c1.Value;

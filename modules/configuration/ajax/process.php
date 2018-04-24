@@ -41,7 +41,7 @@ foreach ($_POST as $key => $value) {
                     array('ID' => $key)
                 );
             } else {
-                   header("HTTP/1.1 303 Duplicate value for update");
+                   header("HTTP/1.1 400 Bad Request");
                    exit();
             }
         }
@@ -74,13 +74,13 @@ foreach ($_POST as $key => $value) {
  * @param string $key   The value of the key
  * @param string $value The value of the value
  *
- * @return string $result
+ * @return int $result
  */
 function countDuplicate($key,$value)
 {
        $DB     =& Database::singleton();
        $result = $DB->pselectOne(
-           "SELECT count(*) FROM Config WHERE ConfigID =:ConfigID AND Value =:Value",
+           "SELECT COUNT(*) FROM Config WHERE ConfigID =:ConfigID AND Value =:Value",
            array(
             ':ConfigID' => $key,
             ':Value'    => $value,
