@@ -9,7 +9,7 @@
 import GroupElement from './GroupElement.js';
 // import Markdown from './Markdown.js';
 
-
+/*eslint-disable */
 /**
  * 	THIS ELEMENT IS FOR DEVELOPMENT PURPOSES ONLY
  */ 
@@ -403,6 +403,7 @@ class HeaderElement extends React.Component {
 		);
 	}
 }
+/*eslint-enable */
 
 
 export default Page;

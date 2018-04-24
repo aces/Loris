@@ -13,6 +13,7 @@
 
 import Page from './DirectEntryForm';
 
+/*eslint-disable */
 class DirectEntry extends React.Component {
 
 	constructor(props) {
@@ -370,6 +371,7 @@ class ReviewPage extends React.Component {
 		)
 	}	
 }
+/*eslint-enable */
 
 window.DirectEntry = DirectEntry;
 

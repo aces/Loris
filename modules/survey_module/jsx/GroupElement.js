@@ -1,3 +1,4 @@
+/*eslint-disable */
 class GroupElement extends React.Component {
 
 	constructor(props) {
@@ -245,6 +246,7 @@ class BaseElement extends React.Component {
 		);
 	}
 }
+/*eslint-enable */
 
 
 export default GroupElement;
