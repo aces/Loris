@@ -101,6 +101,64 @@ class ElementGroup extends React.Component {
 	}
 }
 
+class GroupDateElement extends React.Component {
+	constructor(props) {
+	    super(props);
+
+	    this.updateValue = this.updateValue.bind(this);
+	}
+
+	updateValue(e) {
+		this.props.updateAnswer(this.props.element.Name, e.target.value);
+	}
+
+	componentDidMount() {
+		var that = this;
+		if(!checkInput(this.props.element.Type)) {
+			$("#" + this.props.element.Name).datepicker({
+				"dateFormat" : "yy-mm-dd",
+				"minDate" : this.props.element.Options.MinDate,
+				"maxDate" : this.props.element.Options.MaxDate,
+			}).on("change", function(e) {
+			    that.updateValue(e);
+			});
+		}
+	}
+
+	render() {
+
+		let input = (
+			<input
+				name = {this.props.element.Name}
+				type="date"
+				className="form-control"
+				min = {this.props.element.Options.MinDate}
+				max = {this.props.element.Options.MaxDate}
+				onChange = {this.updateValue}
+				value = {this.props.value}
+			/>
+		);
+
+		if(!checkInput(this.props.element.Type)) {
+			input = (
+				<input
+					name = {this.props.element.Name}
+					type="text"
+					className="form-control"
+					value = {this.props.value}
+					id = {this.props.element.Name}
+				/>
+			);
+		}
+
+		return (
+			<div>
+				{input}
+			</div>
+		);
+	}
+}
+
 class BaseElement extends React.Component {
 	constructor(props) {
 	    super(props);
@@ -160,6 +218,15 @@ class BaseElement extends React.Component {
 				}
 				element = (
 					<Markdown content={content} />
+				);
+				break;
+			case 'date':
+				element = (
+					<GroupDateElement
+						element = {this.props.element}
+						value = {this.props.value}
+						updateAnswer = {this.props.updateAnswer}
+					/>
 				);
 				break;
 			default:
