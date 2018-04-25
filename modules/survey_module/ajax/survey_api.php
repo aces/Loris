@@ -32,7 +32,7 @@ class DirectDataEntryMainPage
      * Initialize all of the class variables and things required from the
      * REQUEST.
      *
-     * @return none, but as a side-effect modifies class
+     * @return null
      */
     function initialize()
     {
@@ -71,7 +71,7 @@ class DirectDataEntryMainPage
      * Handles a request by delegating to the appropriate
      * handle method
      *
-     * @return none
+     * @return null
      */
     function handleRequest()
     {
@@ -97,7 +97,7 @@ class DirectDataEntryMainPage
     /**
      * Handle a GET request. This will render and display the page.
      *
-     * @return none
+     * @return null
      */
     function handleGET()
     {
@@ -140,7 +140,7 @@ class DirectDataEntryMainPage
      * @param array   $elements the elements to check if
      *                          score fields are present
      *
-     * @return none
+     * @return null
      */
     function unsetScores(&$values, $elements)
     {
@@ -158,7 +158,7 @@ class DirectDataEntryMainPage
     /**
      * Handle a PATCH request. This will update a single field
      *
-     * @return none
+     * @return null
      */
     function handlePATCH()
     {
@@ -211,7 +211,7 @@ class DirectDataEntryMainPage
     /**
      * Handle a PATCH request. This will update a single field
      *
-     * @return none
+     * @return null
      */
     function handlePUT()
     {
@@ -260,7 +260,7 @@ class DirectDataEntryMainPage
     /**
      * Handle a PATCH request. This will update a single field
      *
-     * @return none
+     * @return null
      */
     function handlePOST()
     {
@@ -305,7 +305,7 @@ class DirectDataEntryMainPage
     /**
      * Run the current page, consists of initializing and then displaying the page
      *
-     * @return none
+     * @return null
      */
     function run()
     {
@@ -320,7 +320,7 @@ class DirectDataEntryMainPage
     /**
      * Loads the correct page and renders it to the user
      *
-     * @return none
+     * @return null
      */
     function display()
     {
@@ -334,7 +334,7 @@ class DirectDataEntryMainPage
      *
      * @param Exception $e The exception which was thrown by the code
      *
-     * @return none, but as a side-effect changes the HTTP return code
+     * @return null, but as a side-effect changes the HTTP return code
      */
     function displayError($e)
     {

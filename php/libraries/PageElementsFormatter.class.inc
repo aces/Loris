@@ -43,14 +43,14 @@ class PageElementsFormatter
                        );
         switch ($tempElement['Type']) {
         case 'select':
-            $tempElement = self::_formatSelect($element, $tempElement);
+            $tempElement = $this->_formatSelect($element, $tempElement);
             break;
         case 'textarea':
         case 'text':
-            $tempElement = self::_formatText($element, $tempElement);
+            $tempElement = $this->_formatText($element, $tempElement);
             break;
         case 'date':
-            $tempElement = self::_formatDate($element, $tempElement);
+            $tempElement = $this->_formatDate($element, $tempElement);
             break;
         case 'static':
             $tempElement['Type'] = 'label';
@@ -59,7 +59,7 @@ class PageElementsFormatter
             $tempElement['Options'] = array("Level" => 1);
             break;
         case 'group':
-            $tempElement = self::_formatGroup($element, $tempElement);
+            $tempElement = $this->_formatGroup($element, $tempElement);
             break;
         }
         return $tempElement;
