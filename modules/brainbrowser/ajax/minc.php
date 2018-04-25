@@ -35,7 +35,7 @@ if (strpos($_REQUEST['minc_id'], 'l') !== false) {
         $query = "SELECT MincFile FROM MRICandidateErrors WHERE ID = :LogID";
         break;
     default:
-        header("HTTP/1.1 400 Bad Request");
+        http_response_code(400);
         exit();
     }
 
@@ -67,14 +67,12 @@ if (strpos($_REQUEST['minc_id'], 'l') !== false) {
 if (!is_readable($minc_path)) {
     if (!file_exists($minc_path)) {
         error_log("ERROR: $minc_path exists in the DB but not in the file system");
-        header('HTTP/1.1 404 Not Found');
         exit();
     } else {
         error_log(
             "$minc_path was requested but is not readable. " .
             'Possible permission error'
         );
-        header('HTTP/1.1 403 Forbidden');
         exit();
     }
 } else {
@@ -94,7 +92,7 @@ function getMincLocation()
     $paths     = $config->getSetting('paths');
     $minc_path = $paths['mincPath'] ?? '';
     if (empty($minc_path)) {
-        header('HTTP/1.1 500 Internal Server Error');
+        http_response_code(500);
         exit();
     }
     return $minc_path;
