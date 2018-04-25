@@ -26,11 +26,15 @@ function getData() {
         array()
     );
 
+    // merge variables and test names into one array
     $allVOIs = array_merge(
         array_column($allVOIs, 'Name'),
         array_unique(array_column($allVOIs, 'SourceFrom'))
     );
     sort($allVOIs);
+
+    // sets keys and values to be equal
+    $allVOIs = array_combine($allVOIs, $allVOIs);
 
     $uploadTypeRaw = $db->pselect(
         "SELECT * FROM publication_upload_type",

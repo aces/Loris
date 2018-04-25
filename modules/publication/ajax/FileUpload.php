@@ -71,6 +71,7 @@ function uploadPublication()
         // INSERT INTO publication_parameter_type_rel
         processVOIs($pubID);
     } catch (Exception $e) {
+        header("HTTP/1.1 400 Bad Request");
         cleanup($pubID);
         echo $e->getMessage();
     }

@@ -226,47 +226,8 @@ class ViewProject extends React.Component {
   }
 
   createEditableComponents() {
-    // build testNames array
-    let testNames = [];
-    let allVOIs = this.state.allVOIs;
-    allVOIs.forEach(
-      function (v) {
-        if (testNames[v.SourceFrom]) {
-          return;
-        }
-        testNames[v.SourceFrom] = v.SourceFrom;
-      }
-    );
-    testNames.sort();
-
-    // Set test fields to all fields by default
-    let testFields = [];
-    allVOIs.forEach(function(v) {
-      testFields[v.Name] = v.Name;
-    });
-    testFields.sort();
-
-    // if an instrument has been selected, then populate the fields
-    // selection with fields only relevant to the selected instrument
-    let inst = this.state.formData.voiInst;
-    if (inst) {
-      testFields = [];
-      testFields[inst+'_AllFields'] = inst + '_AllFields';
-      allVOIs.forEach(function(v){
-        if (v.SourceFrom === inst) {
-          testFields[v.Name] = v.Name;
-        }
-      });
-    }
-
-
     return (
       <div>
-       {/* <PublicationUploadForm
-          DataURL={`${loris.BaseURL}/publication/ajax/getData.php?action=getProjectData&id=${args.id}`}
-          action={`${loris.BaseURL}/publication/ajax/FileUpload.php?action=editProject`}
-          editMode={true}
-        />*/}
         <ProjectFormFields
           Data={this.state.Data}
           formData={this.state.formData}

@@ -362,41 +362,7 @@ class PublicationUploadForm extends React.Component {
           );
         }, this);
     }
-
-    // build testNames array
-    let testNames = [];
-    let allVOIs = this.state.Data.allVOIs;
-    allVOIs.forEach(
-      function (v) {
-        if (testNames[v.SourceFrom]) {
-          return;
-        }
-        testNames[v.SourceFrom] = v.SourceFrom;
-      }
-    );
-    testNames.sort();
-
-    // Set test fields to all fields by default
-    let testFields = allVOIs.map(v => v.Name);
-    testFields.sort();
-    
-    // if an instrument has been selected, then populate the fields
-    // selection with fields only relevant to the selected instrument
-    let inst = this.state.formData.voiInst;
-    if (inst) {
-      testFields = [];
-      testFields[inst+'_AllFields'] = inst + '_AllFields';
-      allVOIs.forEach(function(v){
-        if (v.SourceFrom === inst) {
-          testFields[v.Name] = v.Name;
-        }
-      });
-    }
-
-    let fileFields = this.createFileFields();
-
     let createElements;
-
     let formClass = "col-md-12 col-lg-12";
     if (!this.props.editMode) {
       createElements = [
@@ -424,103 +390,6 @@ class PublicationUploadForm extends React.Component {
             fileUpload={true}
           >
             {createElements}
-            {/*<TextareaElement
-              name="description"
-              label="Description"
-              onUserInput={this.setFormData}
-              required={true}
-              value={this.state.formData.description}
-            />
-            <TextboxElement
-              name="leadInvestigator"
-              label="Lead Investigator"
-              onUserInput={this.setFormData}
-              required={true}
-              value={this.state.formData.leadInvestigator}
-            />
-            <EmailElement
-              name="leadInvestigatorEmail"
-              label="Lead Investigator Email"
-              onUserInput={this.setFormData}
-              onUserBlur={this.validateEmail}
-              toggleEmailNotify={this.toggleEmailNotify}
-              errorMessage={this.state.formErrors.leadInvestigatorEmail}
-              required={true}
-              value={this.state.formData.leadInvestigatorEmail}
-              addressee="leadInvestigator"
-            />
-            <TagsElement
-              name="usersWithEditPerm"
-              id="usersWithEditPerm"
-              label="Users with Edit Permission"
-              options={this.state.Data.users}
-              onUserInput={this.setFormData}
-              onUserAdd={this.addListItem}
-              onUserRemove={this.removeListItem}
-              value={this.state.formData.pendingUWEP}
-              pendingValKey="pendingUWEP"
-              items={this.state.formData.usersWithEditPerm}
-              btnLabel="Add User"
-            />
-            <TagsElement
-              name="collaborators"
-              id="collaborators"
-              label="Collaborators"
-              onUserInput={this.setFormData}
-              onUserAdd={this.addListItem}
-              onUserRemove={this.removeListItem}
-              value={this.state.formData.pendingCollab}
-              pendingValKey="pendingCollab"
-              items={this.state.formData.collaborators}
-              btnLabel="Add Collaborator"
-            />
-            {collabEmails}
-            <TagsElement
-              name="keywords"
-              id="keywords"
-              label="Keywords"
-              onUserInput={this.setFormData}
-              onUserAdd={this.addListItem}
-              onUserRemove={this.removeListItem}
-              value={this.state.formData.pendingKWItem}
-              pendingValKey="pendingKWItem"
-              items={this.state.formData.keywords}
-              btnLabel='Add Keyword'
-            />
-            <div className="row form-group">
-              <label className="col-sm-3 control-label"/>
-              <div className="col-sm-9">
-                <p className="form-control-static">
-                  <strong>
-                    Variables of Interest
-                  </strong>
-                </p>
-              </div>
-            </div>
-            <SelectElement
-              name="voiInst"
-              label="Instrument"
-              id="voiInst"
-              onUserInput={this.setFormData}
-              required={false}
-              value={this.state.formData.voiInst}
-              options={testNames}
-            />
-            <TagsElement
-              name="voiFields"
-              id="voiFields"
-              label="Instrument Fields"
-              onUserInput={this.setFormData}
-              onUserAdd={this.addListItem}
-              onUserRemove={this.removeListItem}
-              required={false}
-              value={this.state.formData.pendingItemVF}
-              options={testFields}
-              pendingValKey="pendingItemVF"
-              items={this.state.formData.voiFields}
-              btnLabel="Add Variable of Interest"
-            />
-            {fileFields}*/}
             <ProjectFormFields
               Data={this.state.Data}
               formData={this.state.formData}

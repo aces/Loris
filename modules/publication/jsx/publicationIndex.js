@@ -4,8 +4,8 @@ import PublicationUploadForm from './uploadForm.js';
 import formatColumn from './columnFormatter';
 
 class PublicationIndex extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     loris.hiddenHeaders = ['Description', 'Keywords', 'Variables Of Interest', 'Publication ID'];
     this.state = {
       isLoaded: false,
