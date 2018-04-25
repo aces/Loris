@@ -21,7 +21,8 @@
 ## Configurations
 
 - The Document Repository enables users to upload and organize project files of any type (PDF,Photo,Txt...) that can easily be viewable for users with appropriate permissions ("document_repository_view").
-- Give full permissions to store documents on server: 
+
+- Check that the following settings are in the php.ini file. 
 ```
 session.gc_maxlifetime = 10800  // After this number of seconds, stored data will be seen as 'garbage' and cleaned up by the garbage collection process.
 max_input_time = 10800          // Maximum amount of time each script may spend parsing request data (in seconds)
@@ -29,8 +30,6 @@ max_execution_time = 10800      // Maximum execution time of each script (in sec
 upload_max_filesize = 1024M     // Maximum allowed size for uploaded files.
 post_max_size = 1024M           // Maximum size of POST data that PHP will accept.
 ```
-
-[Note that the path is assumed to be ```/var/www/loris```, however your own path may be ```/var/www/<project-name>``` , depending on your setup.]
 
 - A mail server is required to send out email notification regarding the Document Repository updates.
 
