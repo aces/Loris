@@ -136,9 +136,9 @@ class DirectDataEntryMainPage
     /**
      * Unsets Score values so that they are not transferred to the frontend
      *
-     * @param pointer $values   pointer to the values array
-     * @param array   $elements the elements to check if
-     *                          score fields are present
+     * @param array $values   pointer to the values array
+     * @param array $elements the elements to check if
+     *                        score fields are present
      *
      * @return null
      */
@@ -334,7 +334,7 @@ class DirectDataEntryMainPage
      *
      * @param Exception $e The exception which was thrown by the code
      *
-     * @return null, but as a side-effect changes the HTTP return code
+     * @return null
      */
     function displayError($e)
     {
