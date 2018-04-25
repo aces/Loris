@@ -6,7 +6,7 @@ Media module allows users to **upload**, **search** and **edit** media files
 associated with a specific candidate timepoint in Loris. Any kind of data 
 associated with a candidate timepoint can be uploaded through this module: 
 PDFs, videos, recordings, scripts, log files, etc. Files can optionally be 
-associated to a specific instrument form within a given candidate timepoint.
+associated with a specific instrument from within a given candidate timepoint.
 
 ## Intended Users
 
@@ -16,12 +16,12 @@ integrity of the data for each candidate.
 
 ## Scope
 
-The Media module provides a tool to upload files to the server and track uploaded 
-files. Data uploaded must be specific to a candidate and a timepoint and optionally 
-an instrument. The *Edit* functionality only allows modification of the date of
-upload and comments linked to the upload. The *Delete* functionality only hides the 
-file from the front-end without removing the database entry for it nor the file on 
-the server.
+The Media module provides a tool for uploading files to the server and tracking 
+them, once uploaded. Data uploaded must be specific to a candidate and timepoint, 
+and, optionally, an instrument. The *Edit* functionality only allows modification of 
+the date of upload and of comments linked to the upload. The *Delete* functionality 
+only hides the file from the front-end; it does not remove its database entry nor 
+the file on the server.
 
 Out of scope: media that is not affiliated with a candidate does not belong in Media.
 
@@ -40,7 +40,7 @@ the logged in user's own site affiliations.
 
 ## Configurations
 
-the following configuration is necessary for the media module to function
+The following configuration is necessary for the media module to function
 
 - `mediaPath`: determine where files will be uploaded on the server. Files are 
 uploaded directly into the directory specified (no subdirectories are created). 
