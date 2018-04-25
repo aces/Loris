@@ -101,6 +101,7 @@ class AddSurvey extends \NDB_Form
             "SELECT f.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
              WHERE s.CandID=:v_CandID  
+             AND f.Data_entry IS NOT NULL
              AND UPPER(s.Visit_label)=UPPER(:v_VL) 
              AND s.Active='Y'",
             array(
@@ -108,7 +109,8 @@ class AddSurvey extends \NDB_Form
              'v_VL'     => $values['VL'],
             )
         );
-        $reminder        = " already exists for given candidate for visit ";
+        $reminder        = ": can't add survey -- data entry in this instrument".
+                           " form is already in progress or complete";
         foreach ($instrument_list as $instrument) {
             if ($values['Test_name'] == $instrument['Test_name']) {
                 return array(
