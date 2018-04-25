@@ -92,10 +92,6 @@ class Instrument_Manager extends \NDB_Menu_Filter
                     'php generate_tables_sql_and_testNames.php < '
                     . escapeshellarg($new_file)
                 );
-                error_log(
-                    'php generate_tables_sql_and_testNames.php < '
-                    . escapeshellarg($new_file)
-                );
 
                 $instrument = \NDB_BVL_Instrument::factory(
                     $instname,
