@@ -84,7 +84,7 @@ foreach ($field_names as $key=>$field)
     $autoUpdateSQL = '';
     if (array_key_exists($field['TABLE_NAME'], $autoUpdateFields)) {
         foreach ($autoUpdateFields[$field['TABLE_NAME']] as $col) {
-            $autoUpdateSQL .= ", $db->escape($col)=$col";
+            $autoUpdateSQL .= ", ".$db->escape($col)."=".$col;
         }
     }
 

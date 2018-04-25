@@ -118,10 +118,12 @@ class MediaUploadForm extends React.Component {
               required={true}
               value={this.state.formData.visitLabel}
             />
-            <SelectElement
+            <SearchableDropdown
               name="forSite"
               label="Site"
+              placeHolder="Search for site"
               options={this.state.Data.sites}
+              strictSearch={true}
               onUserInput={this.setFormData}
               ref="forSite"
               required={true}
@@ -150,6 +152,15 @@ class MediaUploadForm extends React.Component {
               onUserInput={this.setFormData}
               ref="comments"
               value={this.state.formData.comments}
+            />
+            <SelectElement
+              name="language"
+              label="Document's Language"
+              options={this.state.Data.language}
+              onUserInput={this.setFormData}
+              ref="language"
+              required={false}
+              value={this.state.formData.language}
             />
             <FileElement
               name="file"

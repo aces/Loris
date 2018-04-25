@@ -6,6 +6,9 @@
 
 var ImagePanelHeader = React.createClass({
   mixins: [React.addons.PureRenderMixin],
+  componentDidMount: function() {
+    $(".panel-title").tooltip();
+  },
   render: function() {
     var QCStatusLabel;
     if (this.props.QCStatus === 'Pass') {
@@ -47,7 +50,9 @@ var ImagePanelHeader = React.createClass({
             <div className="panel-heading clearfix">
             <input type="checkbox" data-file-id={this.props.FileID}
                      className="mripanel user-success" />
-                <h3 className="panel-title">{this.props.Filename} </h3>
+                <h3 className="panel-title" data-toggle="tooltip" title={this.props.Filename}>
+                  {this.props.Filename}
+                </h3>
                 {QCStatusLabel}
                 {arrow}
                 {headerButton}

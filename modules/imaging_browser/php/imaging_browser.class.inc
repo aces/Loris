@@ -37,16 +37,8 @@ class Imaging_Browser extends \NDB_Menu_Filter
     {
         $user =& \User::singleton();
 
-        // allow only to view own site data
-        $site_arr = $user->getData('CenterIDs');
-        foreach ($site_arr as $key=>$val) {
-            $site[$key]        =& \Site::singleton($val);
-            $isStudySite[$key] = $site[$key]->isStudySite();
-        }
-        $oneIsStudySite = in_array("1", $isStudySite);
-
         return ($user->hasPermission('imaging_browser_view_allsites')
-               || ($oneIsStudySite
+               || ($user->hasStudySite()
                    && $user->hasPermission('imaging_browser_view_site')
                   )
                || $user->hasPermission('imaging_browser_phantom_allsites')
@@ -298,17 +290,11 @@ class Imaging_Browser extends \NDB_Menu_Filter
     /**
      * Setup $this->tpl_data for use by Smarty
      *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
      * @return null
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
         // create user object
         $user          =& \User::singleton();
         $list_of_sites = array();
