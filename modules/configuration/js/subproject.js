@@ -6,7 +6,6 @@ $(document).ready(function() {
         var subprojectID = $(form.find(".subprojectID")).val();
         var title = $(form.find(".subprojectTitle")).val();
         var useEDC = $(form.find(".subprojectuseEDC")).val();
-        var windowDifference = $(form.find(".subprojectWindowDifference")).val();
         var recruitmentTarget = $(form.find(".subprojectRecruitmentTarget")).val();
         e.preventDefault();
         var successClosure = function(i, form) {
@@ -32,7 +31,6 @@ $(document).ready(function() {
                         "subprojectID" : subprojectID,
                         "title" : title,
                         "useEDC" : useEDC,
-                        "WindowDifference" : windowDifference,
                         "RecruitmentTarget" : recruitmentTarget,
                     },
                     "success" : successClosure(subprojectID, form),

@@ -63,10 +63,5 @@ class Subproject extends \NDB_Form
                '0' => 'No',
               );
 
-        $this->tpl_data['WindowDifferenceOptions']
-            = array(
-               'battery' => 'Closest Test Battery',
-               'optimal' => 'Optimal Visit Window for Visit Label',
-              );
     }
 }

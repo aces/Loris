@@ -42,7 +42,6 @@ class BaseTestCase extends TestCase
                             'SubprojectID' => '1',
                             'title' => 'Test Battery',
                             'useEDC' => 0,
-                            'WindowDifference' => 'optimal'
                         ]];
                 }
 

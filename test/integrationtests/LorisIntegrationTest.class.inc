@@ -329,7 +329,6 @@ abstract class LorisIntegrationTest extends TestCase
             array(
              "SubprojectID"      => $SubprojectID,
              "title"             => $title,
-             "WindowDifference"  => "optimal",
              "RecruitmentTarget" => "100",
             )
         );
@@ -348,7 +347,6 @@ abstract class LorisIntegrationTest extends TestCase
             "subproject",
             array(
              "title"             => $title,
-             "WindowDifference"  => "optimal",
              "RecruitmentTarget" => "100",
             )
         );
