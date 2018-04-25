@@ -39,7 +39,7 @@ class Site
         if (!isset($siteList[$centerID])) {
             try {
                 $siteList[$centerID] = new Site();
-                $error = $siteList[$centerID]->select($centerID);
+                $siteList[$centerID]->select($centerID);
             } catch(Exception $e) {
                 $message = $e->getMessage();
                 unset($siteList[$centerID]);
@@ -56,7 +56,7 @@ class Site
      *
      * @param int $centerID The CentreID to load data for
      *
-     * @return none
+     * @return void
      */
     function select($centerID)
     {

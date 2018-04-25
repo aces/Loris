@@ -1,13 +1,13 @@
 <?php
 namespace Loris\Tests;
 set_include_path(get_include_path().":" .  __DIR__  . "/../../php/libraries:");
-
+use PHPUnit\Framework\TestCase;
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../php/libraries/NDB_BVL_Instrument.class.inc';
 require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Config.class.inc';
 
-class NDB_BVL_Instrument_ToJSON_Test extends \PHPUnit_Framework_TestCase
+class NDB_BVL_Instrument_ToJSON_Test extends TestCase
 {
     /**
      * Set up sets a fake $_SESSION object that we can use for
@@ -19,8 +19,8 @@ class NDB_BVL_Instrument_ToJSON_Test extends \PHPUnit_Framework_TestCase
             define("UNIT_TESTING", true);
         }
         date_default_timezone_set("UTC");
-        $this->Session = $this->getMock('stdClass', array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn'));
-        $this->MockSinglePointLogin = $this->getMock('SinglePointLogin');
+        $this->Session = $this->getMockBuilder(stdClass::class)->setMethods(array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn'))->getMock();
+        $this->MockSinglePointLogin = $this->getMockBuilder('SinglePointLogin')->getMock();
         $this->Session->method("getProperty")->willReturn($this->MockSinglePointLogin);
 
         $_SESSION = array(
@@ -42,7 +42,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends \PHPUnit_Framework_TestCase
         $this->Client->makeCommandLine();
         $this->Client->initialize(__DIR__ . "/../../project/config.xml");
 
-        $this->i = $this->getMockBuilder("\NDB_BVL_Instrument")->setMethods(array("getFullName"))->getMock();
+        $this->i = $this->getMockBuilder("\NDB_BVL_Instrument")->disableOriginalConstructor()->setMethods(array("getFullName"))->getMock();
         $this->i->method('getFullName')->willReturn("Test Instrument");
         $this->i->form = $this->QuickForm;
         $this->i->testName = "Test";
@@ -364,7 +364,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends \PHPUnit_Framework_TestCase
     }
 
     function testPageGroup() {
-        $this->i = $this->getMockBuilder("\NDB_BVL_Instrument")->setMethods(array("getFullName", "getSubtestList", '_setupForm'))->getMock();
+        $this->i = $this->getMockBuilder("\NDB_BVL_Instrument")->disableOriginalConstructor()->setMethods(array("getFullName", "getSubtestList", '_setupForm'))->getMock();
         $this->i->method('getFullName')->willReturn("Test Instrument");
         $this->i->method('getSubtestList')->willReturn(
             array(

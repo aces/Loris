@@ -55,7 +55,7 @@ function _hasPerm()
     * @return boolean true if Password_hash is null and
     * Pending_approval is Yes, false otherwsie
     *
-    * @throws Loris exception if the userID isn't found in the database.
+    * @throws \Lorisexception if the userID isn't found in the database.
     */
 function _canRejectAccount($identifier)
 {

@@ -87,7 +87,7 @@ class Visit extends \Loris\API\Candidates\Candidate
     /**
      * Handles a GET request
      *
-     * @return none, but populates $this->JSON
+     * @return void (but populates $this->JSON)
      */
     public function handleGET()
     {
@@ -136,7 +136,7 @@ class Visit extends \Loris\API\Candidates\Candidate
     /**
      * Handles a PUT request for a visit
      *
-     * @return none
+     * @return void
      */
     public function handlePUT()
     {
@@ -185,7 +185,7 @@ class Visit extends \Loris\API\Candidates\Candidate
      * @param string  $VL           The visit label of the visit to
      *                              be created
      *
-     * @return none
+     * @return void
      */
     function createNew($CandID, $subprojectID, $VL)
     {

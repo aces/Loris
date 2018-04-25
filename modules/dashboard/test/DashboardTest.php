@@ -226,13 +226,6 @@ class DashboardTest extends LorisIntegrationTest
              )
          );
           $this->DB->insert(
-              "final_radiological_review",
-              array(
-               'CommentID'            => 'CommentID111',
-               'Final_Review_Results' => 'not_answered',
-              )
-          );
-          $this->DB->insert(
               "issues",
               array(
                'issueID'  => '999999',
@@ -278,10 +271,6 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->delete(
             "issues",
             array('issueID' => '999999')
-        );
-        $this->DB->delete(
-            "final_radiological_review",
-            array('CommentID' => 'CommentID111')
         );
         $this->DB->delete(
             "conflicts_resolved",
@@ -594,7 +583,7 @@ class DashboardTest extends LorisIntegrationTest
      * @param string $value     the total of test data
      * @param string $dataSeed  test result
      *
-     * @return void.
+     * @return void
      */
     private function _testMytaskPanelAndLink($className,$value,$dataSeed)
     {
@@ -626,6 +615,8 @@ class DashboardTest extends LorisIntegrationTest
             $this->_testPlan5And6();
             $this->_testPlan7And8();
 
+        } else {
+            $this->assertEquals(true, 1);
         }
 
     }

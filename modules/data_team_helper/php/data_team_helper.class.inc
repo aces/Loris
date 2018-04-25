@@ -30,7 +30,7 @@ class Data_Team_Helper extends \NDB_Form
      * Class that returns the data team helper.
      *
      * @return bool|object
-     * @throws ConfigurationException
+     * @throws \ConfigurationException
      */
     function _hasAccess()
     {
@@ -42,18 +42,12 @@ class Data_Team_Helper extends \NDB_Form
     /**
      * Sets up main parameters
      *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
      * @return NULL
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
         //initializations
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
         $DB       =& \Database::singleton();
         $user     =& \User::singleton();
         $config   =& \NDB_Config::singleton();
@@ -179,7 +173,7 @@ class Data_Team_Helper extends \NDB_Form
      * Returns the default site value.
      *
      * @return string
-     * @throws DatabaseException
+     * @throws \DatabaseException
      */
     function getDefaultSite()
     {
@@ -209,7 +203,7 @@ class Data_Team_Helper extends \NDB_Form
      *
      * @return   Array containing a list of feedbacks for
      * the appropriate feedback level.
-     * @throws   DatabaseException
+     * @throws   \DatabaseException
      * @internal param unknown_type $field_name
      */
     function getFeedbacks($test_name = null,
@@ -767,7 +761,7 @@ class Data_Team_Helper extends \NDB_Form
      * @param string|null $subprojectID the value of subproject ID
      *
      * @return mixed|Non
-     * @throws DatabaseException
+     * @throws \DatabaseException
      */
     function getTestNameusingMappedName($full_name, $subprojectID = null)
     {
@@ -797,7 +791,7 @@ class Data_Team_Helper extends \NDB_Form
      * @param string $visit_label the value of visit label
      *
      * @return   unknown
-     * @throws   DatabaseException
+     * @throws   \DatabaseException
      * @internal param unknown_type $visit
      */
     static function getVisitInstruments($visit_label)

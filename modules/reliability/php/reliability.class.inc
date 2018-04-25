@@ -14,7 +14,7 @@ namespace LORIS\reliability;
 
 //@codingStandardsIgnoreStart
 function map_cIDs($array){
-    $new_array;
+    $new_array = [];
     for($i = 0; $i < count($array); $i++){
         $element = $array[$i];
         $new_array[$element['CommentID']] = $element['reliability_center_id'];
@@ -196,17 +196,11 @@ class Reliability extends \NDB_Menu_Filter
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
-     * @return none
+     * @return void
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
 
         // create user object
         $user          =& \User::singleton();
@@ -397,13 +391,12 @@ class Reliability extends \NDB_Menu_Filter
         }
         return $list_of_thresholds;
     }
-    /**
- * _Populate_reliability_table function
-     *
-     * @return string
-     */
-//@codingStandardsIgnoreStart
 
+    /**
+     * _Populate_reliability_table function
+     *
+     * @return void
+     */
     function _populate_reliability_table()
     {
         $db =& \Database::singleton();
@@ -431,15 +424,12 @@ class Reliability extends \NDB_Menu_Filter
                 $this->cross_site_flagging($reliabilityInstrument['Testname'], $site, array_remove($site, $site_list), $db);
             }
         }
-
     }
-//@codingStandardsIgnoreEnd
-//@codingStandardsIgnoreStart
 
     /**
- * Within_site_flagging function
+     * Within_site_flagging function
      *
-     * @return string
+     * @return void
      */
     function within_site_flagging($instrument, $ratio, $current_site, $db)
     {
@@ -472,13 +462,12 @@ class Reliability extends \NDB_Menu_Filter
             }
         }
     }
-//@codingStandardsIgnoreEnd
+
     /**
- * Cross_site_flagging function
+     * Cross_site_flagging function
      *
-     * @return string
+     * @return void
      */
-//@codingStandardsIgnoreStart
     function cross_site_flagging($instrument, $current_site, $reliability_sites, $db)
     {
         $ratio = 0.1;
@@ -519,13 +508,12 @@ class Reliability extends \NDB_Menu_Filter
             $reliability_site_index = ($reliability_site_index + 1) % count($reliability_sites);
         }
     }
-//@codingStandardsIgnoreEnd
+
     /**
      * Get_current_index function
      *
      * @return array
      */
-//@codingStandardsIgnoreStart
     function get_current_index($instrument, $current_site, $reliability_sites, $db)
     {
         $site_name = array_flip($this->site_id);
@@ -549,13 +537,12 @@ class Reliability extends \NDB_Menu_Filter
             return $res % count($reliability_sites);
         }
     }
-//@codingStandardsIgnoreEnd
+
     /**
      * Swap candidates function
      *
      * @return array
      */
-//@codingStandardsIgnoreStart
     function _swap_candidates()
     {
         $user =& \User::singleton();
@@ -676,9 +663,8 @@ class Reliability extends \NDB_Menu_Filter
                   " for".$params_new['id_Replace'],
                );
     }
-//@codingStandardsIgnoreEnd
     /**
- * Add Candidate function
+     * Add Candidate function
      *
      * @return array
      */

@@ -470,7 +470,7 @@ class Instrument_List_ControlPanel extends \TimePoint
     /**
      * DisplayStatus function
      *
-     * @return bool
+     * @return void
      */
     function _displayBVLQCType()
     {
@@ -501,7 +501,7 @@ class Instrument_List_ControlPanel extends \TimePoint
      * Generates the HTML to display the set
      * of buttons for the Time Point status update
      *
-     * @return string
+     * @return void
      * @access private
      */
     function _displayBVLQCStatus()

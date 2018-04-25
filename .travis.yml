@@ -5,7 +5,7 @@ cache:
         - vendor
 
 php:
-    - "7"
+    - "7.2"
     - "7.1"
 
 sudo: false
@@ -24,10 +24,12 @@ before_install:
     - nvm install node
     - mkdir -p project project/libraries
     - phpenv config-rm xdebug.ini
+    - pecl install -f ast-0.1.6
 
 install:
     # Install composer modules
     - composer install
+    - composer require --dev
     - phpenv rehash
 
     # Install node modules specified in package.json
@@ -93,7 +95,7 @@ before_script:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
-
+    - vendor/bin/phan
     - npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise

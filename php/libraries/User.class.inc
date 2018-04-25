@@ -41,7 +41,7 @@ class User extends UserPermissions
      * @return User
      * @access public
      */
-    static function &factory($username)
+    static function &factory($username) : User
     {
         $obj = new User;
 
@@ -49,7 +49,10 @@ class User extends UserPermissions
         $obj->userInfo['UserID'] = $username;
 
         // get the user's permissions
-        $success = $obj->select($username);
+        if ($obj->select($username) === false) {
+            $obj = new \LORIS\AnonymousUser();
+            return $obj;
+        };
 
         // create DB object
         $DB =& Database::singleton();
@@ -71,7 +74,7 @@ class User extends UserPermissions
                         WHERE upr.UserID= :UID",
             array('UID' => $row['ID'])
         );
-
+        $user_cid            = array();
         foreach ($user_centerID_query as $key=>$val) {
             $user_cid[$key] =$val['CenterID'];
         }
@@ -96,7 +99,7 @@ class User extends UserPermissions
 
         $examiner_info =array();
         if (!empty($examiner_check) && !is_null($examiner_check)) {
-            foreach ($examiner_check as $rw=>$val) {
+            foreach ($examiner_check as $val) {
                 if ($val['active'] == 'Y') {
                     $examiner_info['pending'] = $val['pending_approval'];
                 }
@@ -107,9 +110,9 @@ class User extends UserPermissions
             }
         }
         // store user data in object property
-        $row['examiner']  =$examiner_info;
-        $row['CenterIDs'] =$user_cid;
-        $obj->userInfo    =$row;
+        $row['examiner']  = $examiner_info;
+        $row['CenterIDs'] = $user_cid;
+        $obj->userInfo    = $row;
         return $obj;
     }
 
@@ -148,7 +151,7 @@ class User extends UserPermissions
         // create DB object
         $DB =& Database::singleton();
 
-        $success = $DB->insert('users', $set);
+        $DB->insert('users', $set);
 
         return true;
     }
@@ -167,7 +170,7 @@ class User extends UserPermissions
         // create DB object
         $DB =& Database::singleton();
 
-        $success = $DB->update(
+        $DB->update(
             'users',
             $set,
             array('UserID' => $this->userInfo['UserID'])
@@ -285,6 +288,16 @@ class User extends UserPermissions
         return $this->userInfo['CenterIDs'];
     }
 
+    /**
+     * Get the user's language preference
+     *
+     * @return int
+     */
+    function getLanguagePreference()
+    {
+        return $this->userInfo['language_preference'];
+    }
+
 
     /**
      * Returns all sites where Examiner is active
@@ -326,7 +339,7 @@ class User extends UserPermissions
     function hasStudySite()
     {
         $site_arr = $this->getCenterIDs();
-        foreach ($site_arr as $key => $sitename) {
+        foreach ($site_arr as $sitename) {
             $site = Site::singleton($sitename);
             if ($site->isStudySite()) {
                 return true;
@@ -358,7 +371,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    function newPassword($length = 8)
+    static function newPassword($length = 8)
     {
         // start with a blank password
         $password = '';
@@ -421,8 +434,16 @@ class User extends UserPermissions
         $values = array(),
         $operators = array()
     ) {
+        // FIXME: This should be cleaned up to more cleanly separate
+        // concerns. The "values" and "operators" are the same at
+        // every call site, and some of them are only required because
+        // the function is static despite working with instance data.
+        // (ie the second value/operator pair is always the UserID of
+        // the user whose password is being checked, the third is their
+        // email, and the first is the "Confirm" password which has
+        // nothing to do with whether the password is strong or not..)
         $CharTypes = 0;
-        // less than 6 characters
+        // less than 8 characters
         if (strlen($password) < 8) {
             return false;
         }
@@ -447,18 +468,27 @@ class User extends UserPermissions
 
         // compare password to values
         foreach ($values as $key => $value) {
-            $function = create_function(
-                '$a, $b',
-                'return $a ' . $operators[$key] . ' $b;'
-            );
-            // if the comparison fails
-            if (!$function($password, $value)) {
-                return false;
+            switch ($operators[$key]) {
+            case '==':
+                // They must be equal, so the whole thing is false
+                // if they're not.
+                if ($password != $value) {
+                    return false;
+                }
+                break;
+            case '!=':
+                if ($password == $value) {
+                    return false;
+                }
+                break;
+            default:
+                throw new \LorisException("Invalid operator in isPasswordStrong");
             }
         }
 
         return true;
     }
+
     /**
      * Check if user belongs to DCC
      *

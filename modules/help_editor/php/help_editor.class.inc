@@ -53,8 +53,7 @@ class Help_Editor extends \NDB_Menu_Filter
                  " AND helpChild.topic IS NOT NULL";
 
         // set the class variables
-        $contentColumn  = "COALESCE(helpChild.projectContent,".
-                         " helpChild.content) as Content";
+        $contentColumn  = "helpChild.content as Content";
         $this->columns  = array(
                            'helpChild.helpID as helpID',
                            'helpChild.topic as Topic',
@@ -90,17 +89,11 @@ class Help_Editor extends \NDB_Menu_Filter
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
      * @return none
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
 
         // add form elements
         $this->addBasicText('topic', 'Help topic:');

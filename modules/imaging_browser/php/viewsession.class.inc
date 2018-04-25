@@ -78,17 +78,11 @@ class ViewSession extends \NDB_Form
     /**
      * Sets up main parameters
      *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
      * @return NULL
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
         $this->DB = \Database::singleton();
 
         $this->sessionID = $_REQUEST['sessionID'];
@@ -655,7 +649,7 @@ class ViewSession extends \NDB_Form
     /**
      * Gets header table html
      *
-     * @return $html of the header table
+     * @return string ($html of the header table)
      */
     function getHeaderTable()
     {
@@ -679,7 +673,7 @@ class ViewSession extends \NDB_Form
     /**
      * Populates data for the template
      *
-     * @return $subjectData array with data
+     * @return array ($subjectData array with data)
      */
     function getSubjectData()
     {
@@ -735,7 +729,7 @@ class ViewSession extends \NDB_Form
     /**
      * Gets control panel
      *
-     * @return $controlPanel
+     * @return string ($controlPanel)
      */
     function getControlPanel()
     {

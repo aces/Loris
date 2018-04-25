@@ -89,7 +89,7 @@ class FeedbackMRI
         // create DB object
         $DB =& Database::singleton();
 
-        $success = $DB->delete('feedback_mri_comments', $this->_buildWhereAssoc());
+        $DB->delete('feedback_mri_comments', $this->_buildWhereAssoc());
         return true;
     }
 
@@ -352,8 +352,7 @@ class FeedbackMRI
 
         // build the output array and keep overall section at the end of the array
         $commentNames = array();
-        $overallType;
-        $overallName = array();
+        $overallName  = array();
         if (is_array($result)) {
             foreach ($result as $row) {
                 $CommentName = $row['CommentName'];
@@ -456,7 +455,7 @@ class FeedbackMRI
             $set['PredefinedCommentID'] = $predefinedCommentID;
         }
 
-        $success = $DB->insert('feedback_mri_comments', $set);
+        $DB->insert('feedback_mri_comments', $set);
 
         return true;
     }

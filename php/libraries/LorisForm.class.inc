@@ -102,6 +102,9 @@ class LorisForm
         if (isset($attribs['align'])) {
             $el['align'] = $attribs['align'];
         }
+        if (isset($attribs['placeholder'])) {
+            $el['placeholder'] = $attribs['placeholder'];
+        }
 
         return $el;
     }
@@ -374,7 +377,7 @@ class LorisForm
      *
      * @param string $name The current element name
      *
-     * @return $name if it exists, otherwise a unique new name.
+     * @return string ($name if it exists, otherwise a unique new name.)
      */
     private function _generateName($name)
     {
@@ -402,7 +405,7 @@ class LorisForm
      *                        and attribs takes the place of what "options"
      *                        is for other types.
      *
-     * @return none, but modifies this->form as a side-effect
+     * @return void (but modifies this->form as a side-effect)
      */
     public function addElement(
         $type,
@@ -560,7 +563,7 @@ class LorisForm
             // of filtered values
             if (is_array($_REQUEST[$name])) {
                 $filteredValues = array();
-                foreach ($_REQUEST[$name] as $k => $v) {
+                foreach (array_keys($_REQUEST[$name]) as $k) {
                     // Checkbox values get converted from (on,off) to (1,0)
                     if ($this->_isAdvCheckbox("{$name}[$k]")) {
                         $rawValue = $_REQUEST[$name][$k] == 'on' ? 1 : 0;
@@ -672,7 +675,7 @@ class LorisForm
 
         // Apply filters that should be applied on all fields
         if (isset($this->filters['__ALL__'])) {
-            foreach ($this->filters['__ALL__'] as $filterType) {
+            for ($i = 0; $i < count($this->filters['__ALL__']); $i++) {
                 if (in_array('trim', $this->filters['__ALL__'])) {
                     // Value for the element is in array so filter all
                     // elements in the array of values
@@ -822,7 +825,8 @@ class LorisForm
     function dateHTML($el)
     {
         if (array_key_exists('options', $el)
-            && ((strtolower($el['options']['format']) == 'y'))
+            && (isset($el['options']['format'])
+            && strtolower($el['options']['format']) == 'y')
         ) {
             return $this->yearHTML($el);
         }
@@ -847,7 +851,7 @@ class LorisForm
         $value    = $this->getValue($el['name']);
         $format   = 'date';
 
-        if (array_key_exists('options', $el)) {
+        if (array_key_exists('options', $el) && isset($el['options']['format'])) {
             $elOptions = $el['options'];
             $elFormat  = strtolower($elOptions['format']);
 
@@ -951,6 +955,11 @@ class LorisForm
                 isset($el['required']) && $el['required']
                 ? ' required' : ''
               )
+            . (
+                isset($el['placeholder']) && $el['placeholder']
+                ? " placeholder=\"{$el['placeholder']}\"" : ''
+              )
+
             . (
                 (!empty($value) || $value === '0')
                 ? ' value="' . $this->getValue($el['name']) . '"'
@@ -1166,7 +1175,7 @@ class LorisForm
      * @param array $arr The array to use as the default values for the form
      *                   elements
      *
-     * @return none
+     * @return void
      */
     function setDefaults($arr)
     {
@@ -1176,7 +1185,7 @@ class LorisForm
     /**
      * Reimplementation of HTML_QuickForm isSubmitted API.
      *
-     * @return true if data was submitted by the user to the form.
+     * @return bool true if data was submitted by the user to the form.
      */
     function isSubmitted()
     {
@@ -1366,38 +1375,57 @@ class LorisForm
             $format['value'] = '';
         }
 
-        // confirm that the operator is in the set of valid operators
-        $validOperators = array(
-                           '==',
-                           '===',
-                           '!=',
-                           '<>',
-                           '!==',
-                           '<',
-                           '>',
-                           '<=',
-                           '>=',
-                          );
-        if (!in_array($format['operator'], $validOperators)) {
+        $controlElement = $elements[1];
+        $ruleElement    = $elements[0];
+
+        switch ($format['operator']) {
+        case '==':
+            if ($this->getValue($controlElement) == $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '===':
+            if ($this->getValue($controlElement) === $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '<>': // Fallthrough, it's the same operator..
+        case '!=':
+            if ($this->getValue($controlElement) != $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '!==':
+            if ($this->getValue($controlElement) !== $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '<':
+            if ($this->getValue($controlElement) < $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '>':
+            if ($this->getValue($controlElement) > $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '<=':
+            if ($this->getValue($controlElement) <= $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        case '>=':
+            if ($this->getValue($controlElement) <= $format['value']) {
+                return $this->getValue($ruleElement) != '';
+            }
+            return true;
+        default:
             throw new LorisException(
                 "operator is not a valid operator from the set "
                 . join(', ', $this->validOperators)
             );
         }
-
-        // create the comparison function, based on the defined operator
-        $compareFunction = create_function(
-            '$a,$b',
-            "return (\$a $format[operator] \$b);"
-        );
-
-        // check the case where the controller operator value is true
-        if ($compareFunction($this->getValue($elements[1]), $format['value'])) {
-            return $this->getValue($elements[0]) != '';
-        }
-
-        // if controller operator value is false, validate true
-        return true;
     }
 
     /**
@@ -1405,7 +1433,7 @@ class LorisForm
      *
      * @param callable $func The callback to use to process this form.
      *
-     * @return none
+     * @return void
      */
     function process($func)
     {
@@ -1422,7 +1450,7 @@ class LorisForm
      *                            should be applied.
      * @param string $filterType  type of filter to apply.
      *
-     * @return none
+     * @return void
      */
     function applyFilter($elementName, $filterType)
     {
@@ -1442,7 +1470,7 @@ class LorisForm
      *
      * Not currently supported.
      *
-     * @return none
+     * @return void
      */
     function freeze()
     {
@@ -1723,7 +1751,7 @@ class LorisForm
      * @param string $message The message to display if the rule is violated
      * @param string $type    The rule type. 'compare', 'required' or 'numeric'
      *
-     * @return none
+     * @return void
      */
     function addRule($element, $message, $type)
     {
@@ -1786,7 +1814,7 @@ class LorisForm
      * Register a rule type to be added from the QuickForm API. This
      * is unlikely to ever be implemented.
      *
-     * @return none.
+     * @return void
      */
     function registerRule()
     {
@@ -1806,14 +1834,13 @@ class LorisForm
      * @param string $type  (optional)Rule type use getRegisteredRules()
      *                      to get types
      *
-     * @return none.
+     * @return void
      */
     function addGroupRule($group, $arg1, $type='')
     {
         if (is_array($arg1)) {
             foreach ($arg1 as $elementIndex => $rules) {
-                $element     =& $this->form[$group]['elements'][$elementIndex];
-                $elementName = $element['name'];
+                $element =& $this->form[$group]['elements'][$elementIndex];
                 foreach ($rules as $rule) {
                     $message  = $rule[0];
                     $ruleType = $rule[1];
@@ -1850,7 +1877,7 @@ class LorisForm
      *
      * @param callable $func The callback to use to validate this form.
      *
-     * @return none.
+     * @return void
      */
     function addFormRule($func)
     {
@@ -1871,7 +1898,7 @@ class LorisForm
      *                          postfix_wrapper strings - html that will be
      *                          placed before and after the group html
      *
-     * @return none
+     * @return void
      */
     function addGroup($array, $name, $label, $delimiter, $options = array())
     {
@@ -1902,7 +1929,7 @@ class LorisForm
      * @param string $label   The label to show to the user for the new page
      * @param string $attribs Extra attributes for this page.
      *
-     * @return None
+     * @return void
      */
     function addPageBreak($name, $label, $attribs)
     {
@@ -2033,7 +2060,7 @@ class LorisForm
      * @param array $arr        A reference to an array to store the
      *                             extracted values into.
      *
-     * @return none, but will modify &$arr parameter passed as a side-effect
+     * @return void (but will modify &$arr parameter passed as a side-effect)
      */
     function getGroupValues($submitKeys, &$arr)
     {
@@ -2131,7 +2158,7 @@ class LorisForm
      *
      * Gets the values submitted by the user
      *
-     * @return none
+     * @return void
      */
     function getSubmitValues()
     {
@@ -2168,7 +2195,7 @@ class LorisForm
      * @param string $el    The name of the element which has an error
      * @param string $error The error to display with the element.
      *
-     * @return none
+     * @return void
      */
     function setElementError($el, $error)
     {
@@ -2200,7 +2227,7 @@ class LorisForm
      *
      * @param array $attribs List of form attributes to update
      *
-     * @return none
+     * @return void
      */
     function updateAttributes($attribs)
     {
@@ -2231,7 +2258,7 @@ class LorisFormElement
     /**
      * Stub. Does nothing.
      *
-     * @return none
+     * @return void
      */
     function freeze()
     {
@@ -2240,7 +2267,7 @@ class LorisFormElement
     /**
      * Stub. Does nothing.
      *
-     * @return none
+     * @return void
      */
     function getValue()
     {
@@ -2291,7 +2318,7 @@ class LorisFormFileElement extends LorisFormElement
      * @param string $destinationDir      The directory to move the file into
      * @param string $destinationFileName The filename to use in that directory.
      *
-     * @return none
+     * @return void
      */
     function moveUploadedFile($destinationDir, $destinationFileName)
     {

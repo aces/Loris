@@ -34,7 +34,7 @@ class DefaultProcessMonitor implements IProcessMonitor
      *
      * @return array            list of the processes in $pids that are currently
      *                          running.
-     * @throws RuntimeException if the ps command failed to run
+     * @throws \RuntimeException if the ps command failed to run
      */
     public function getRunningProcesses(array $pids)
     {

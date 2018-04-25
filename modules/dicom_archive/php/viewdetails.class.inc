@@ -46,7 +46,7 @@ class ViewDetails extends \NDB_Form
     *
     * @return NULL
     */
-    function __construct()
+    function setup()
     {
         $this->DB = \Database::singleton();
 
@@ -182,7 +182,7 @@ class ViewDetails extends \NDB_Form
                 slice_thickness_range FROM mri_protocol";
             $this->protocols = $this->DB->pselect($query, array());
             return true;
-        } catch(LorisException $e) {
+        } catch(\LorisException $e) {
             return false;
         }
     }
@@ -274,7 +274,7 @@ class ViewDetails extends \NDB_Form
             $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
             $array = $this->DB->pselectRow($query, array('ID' => $id));
             return $array['Scan_type'];
-        } catch (LorisException $e) {
+        } catch (\LorisException $e) {
             return "Unknown";
         }
     }

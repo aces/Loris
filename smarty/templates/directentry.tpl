@@ -11,6 +11,8 @@
 <link type="text/css" href="{$baseurl}/js/jquery/datepicker/datepicker.css" rel="Stylesheet" />
 <script src="{$baseurl}/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="{$baseurl}/js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
+<script src="{$baseurl}/js/modernizr/modernizr.min.js" type="text/javascript"></script>
+<script src="{$baseurl}/js/polyfills.js" type="text/javascript"></script>
 <script type="text/javascript" src="{$baseurl}/js/modules/direct_entry.js"></script>
 
 {if $test_name_js}
@@ -54,7 +56,7 @@
     {/section}
             </ul>
             
-            If this error persists, please <a target="mantis" href="{$mantis_url}">report a bug to your administrator</a>.</p>
+            If this error persists, please <a target="issue_tracker_url" href="{$issue_tracker_url}">report a bug to your administrator</a>.</p>
             <p><a href="javascript:history.back(-1)">Please click here to go back</a>.</p>
 {else}
 

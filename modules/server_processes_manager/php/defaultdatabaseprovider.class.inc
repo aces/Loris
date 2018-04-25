@@ -29,7 +29,7 @@ class DefaultDatabaseProvider implements IDatabaseProvider
      * Gets access to the database through the Database::singleton() method.
      *
      * @return Database an instance of the database.
-     * @throws DatabaseException if connection to the database cannot be established
+     * @throws \DatabaseException if connection to the database cannot be established
      */
     public function getDatabase()
     {

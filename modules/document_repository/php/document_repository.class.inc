@@ -44,19 +44,12 @@ class Document_Repository extends \NDB_Menu_Filter
     }
 
     /**
-     * Setup variables function
-     *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
+     * Function _setupVariables
      *
      * @return none
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function _setupVariables()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
 
         $user =& \User::singleton();
 
@@ -211,7 +204,7 @@ class Document_Repository extends \NDB_Menu_Filter
      * @param string $item the value of item
      * @param string $key  the value of key
      *
-     * @return array
+     * @return void
      */
     function walkTree($item,$key)
     {
@@ -336,7 +329,6 @@ class Document_Repository extends \NDB_Menu_Filter
                         = &$thisref;
                 }
             }
-            $tree; // contains the newly sorted tree.
         }
         $query           ="SELECT id,category_name,parent_id,comments".
                          " FROM document_repository_categories ORDER BY parent_id";

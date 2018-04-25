@@ -133,6 +133,8 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function setup()
     {
+        parent::setup();
+
         // setup the menu's variables
         $success = $this->_setupVariables();
 
@@ -145,7 +147,6 @@ class NDB_Menu_Filter extends NDB_Menu
         }
 
         // start the filter form
-        $this->_setupPage($this->menu, null, null, null, 'filter');
         $this->registerDefaultFilter();
 
         // $this->form = new HTML_QuickForm('filter');
@@ -194,7 +195,7 @@ class NDB_Menu_Filter extends NDB_Menu
      * This method will reset any saved filters that are associated with
      * the session back to its default state.
      *
-     * @return none
+     * @return void
      */
     function _resetFilters()
     {
@@ -221,8 +222,6 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function _setFilters($values)
     {
-        $filters = $this->formToFilter;
-
         $newFormFilters = array();
 
         // Go through the form's fields and set the valid ones.
@@ -258,8 +257,8 @@ class NDB_Menu_Filter extends NDB_Menu
      *                          'fieldOrder' => "ASC|DESC"
      *                      ]
      *
-     * @return none, modifies both $_SESSION and $this->filter as
-     *         a side-effect.
+     * @return void (modifies both $_SESSION and $this->filter as
+     *         a side-effect.)
      */
     function _setFilterSortOrder($order)
     {
@@ -284,7 +283,7 @@ class NDB_Menu_Filter extends NDB_Menu
      *
      * @param string $keyword The keyword to search through columns for.
      *
-     * @return none, but side-effect modifies $this->searchKey
+     * @return void (but side-effect modifies $this->searchKey)
      */
     function _setSearchKeyword($keyword)
     {
@@ -305,7 +304,7 @@ class NDB_Menu_Filter extends NDB_Menu
      * The end result should be that $this->filter and $this->having are setup
      * properly so that the query can be constructed by $this->_getList()
      *
-     * @return none
+     * @return void
      */
     function _setupFilters()
     {
@@ -409,7 +408,7 @@ class NDB_Menu_Filter extends NDB_Menu
     /**
     * Gets the base query
     *
-    * @return $query
+    * @return string ($query)
     */
     function _getBaseQuery()
     {
@@ -430,7 +429,7 @@ class NDB_Menu_Filter extends NDB_Menu
     * @param string $field        filter field
     * @param string $val          filter value
     *
-    * @return $query
+    * @return string ($query)
     */
     function _addValidFilters($prepared_key, $field, $val)
     {
@@ -597,7 +596,7 @@ class NDB_Menu_Filter extends NDB_Menu
             $query = "SELECT COUNT(*) FROM ($query) as tmptable";
         }
         $this->TotalItems = $db->pselectOne($query, $wheredetails['params']);
-
+        return $this->TotalItems;
     }
 
     /**
@@ -717,7 +716,7 @@ class NDB_Menu_Filter extends NDB_Menu
         );
 
         // dump the html for the menu
-        $smarty = new Smarty_neurodb($this->Module);
+        $smarty = new Smarty_neurodb($this->Module->getName());
         $smarty->assign('mode', $this->mode);
         $smarty->assign('form', $this->form->toArray());
         $smarty->assign($this->getTemplateData());
@@ -817,9 +816,7 @@ class NDB_Menu_Filter extends NDB_Menu
         // get the list
         $this->_getNumberPages($query);
 
-        $config         =& NDB_Config::singleton();
-        $resultsPerPage = $config->getSetting('rowsPerPage');
-        $result         = $DB->pselect($query, $qparams);
+        $result = $DB->pselect($query, $qparams);
 
         return $result;
     }
@@ -833,7 +830,7 @@ class NDB_Menu_Filter extends NDB_Menu
     function _getFilterValues()
     {
         $FilterValues = array();
-        foreach ($this->formToFilter as $formName => $field) {
+        foreach (array_keys($this->formToFilter) as $formName) {
             if (isset($_REQUEST[$formName])) {
                 $FilterValues[$formName] = $_REQUEST[$formName];
             } else {

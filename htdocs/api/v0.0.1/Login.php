@@ -57,7 +57,7 @@ class Login extends APIBase
     /**
      * Handle a POST request
      *
-     * @return none
+     * @return void
      */
     function handlePOST()
     {

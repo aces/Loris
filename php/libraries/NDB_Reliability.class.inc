@@ -33,32 +33,6 @@ class NDB_Reliability extends NDB_Form
      */
     var $reliability_center_id;
 
-
-    /**
-     * Override the default page form to use HTML_QuickForm instead of
-     * LorisForm. Reliability instruments aren't yet ready to use LorisForm,
-     * as they depend on a type of QuickForm renderer that is not implemented
-     * by LorisForm. This should be removed once that is fixed..
-     *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
-     * @return none
-     */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
-    {
-        $this->form       = new LorisForm($formname);
-        $this->name       = $name;
-        $this->page       = $page;
-        $this->identifier = $identifier;
-        $this->commentID  = $commentID;
-        $this->defaults   = array();
-    }
-
-
     /**
      * Generates a new form instance and runs the appropriate method
      *
@@ -83,10 +57,7 @@ class NDB_Reliability extends NDB_Form
         }
 
         // create a form instance
-        $obj = new $class;
-
-        // set the local variables
-        $obj->_setupPage($name, $page, $identifier, null, 'test_form');
+        $obj = new $class($name, $page, $identifier, null, 'test_form');
 
         $obj->reliability_center_id = $reliability_center_id;
 
@@ -157,7 +128,7 @@ class NDB_Reliability extends NDB_Form
     function save()
     {
         if ($this->form->validate()) {
-            $success = $this->form->process(array(&$this, "_save"), false);
+            $this->form->process(array(&$this, "_save"), false);
         }
     }
 
@@ -187,7 +158,7 @@ class NDB_Reliability extends NDB_Form
             }
         }
 
-        $success = $this->_process($values);
+        $this->_process($values);
     }
 
     /**
@@ -197,7 +168,7 @@ class NDB_Reliability extends NDB_Form
      * @param string $name  The element name
      * @param string $label The label to attach to this element
      *
-     * @return none
+     * @return void
      */
     function addDateElement($name, $label)
     {
@@ -270,7 +241,7 @@ class NDB_Reliability extends NDB_Form
      * @param array  $refusals     List of options to include in the _status
      *                             dropdown
      *
-     * @return none
+     * @return void
      */
     function addTextElement(
         $field,
@@ -299,7 +270,7 @@ class NDB_Reliability extends NDB_Form
       * @param array  $rules        {@} delimited rules
       * @param string $rule_message rule message to display upon rule violation
       *
-      * @return none
+      * @return void
       */
     function addTextAreaElement(
         $field,
@@ -356,7 +327,7 @@ class NDB_Reliability extends NDB_Form
      * Adds standard meta data fields (ie. Examiner, Date_taken
      * to the form object.
      *
-     * @return none
+     * @return void
      */
     function _addMetadataFields()
     {

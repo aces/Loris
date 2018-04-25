@@ -19,9 +19,7 @@ require_once __DIR__ . '/../../../vendor/autoload.php';
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
-
-
-$cdb       = CouchDB::singleton();
+$cdb       = \NDB_Factory::singleton()->couchDB();
 $category  = $_REQUEST['category'];
 $fieldName = $_REQUEST['field'];
 $value     = $_REQUEST['value'];
@@ -38,5 +36,13 @@ $results = $cdb->queryView(
      "key"    => "[\"$category\", \"$fieldName\", $value]",
     )
 );
+
+$sessionResults = array_map(
+    function ($element) {
+        return $element['value'];
+    },
+    $results
+);
+
 print json_encode($sessionResults);
 ?>

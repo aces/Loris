@@ -64,7 +64,7 @@ class Issue_Tracker_ControlPanel
     /**
     *  Gets data for the control panel template
     *
-    * @return $subjectData array with data for the template
+    * @return array ($subjectData array with data for the template)
     */
     function getData()
     {

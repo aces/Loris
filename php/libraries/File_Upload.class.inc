@@ -148,7 +148,7 @@ class File_Upload
     function preProcessFile()
     {
         if (!$this->isCLImport) {
-            $this->file =& $this->form->getElement($this->fieldName);
+            $this->file = $this->form->getElement($this->fieldName);
             if (!method_exists($this->file, "isUploadedFile")) {
                 return false;
             }
@@ -612,7 +612,7 @@ class File_Upload
     *
     * @param boolean $mode The desired mode.
     *
-    * @return boolean true
+    * @return void
     * @see    File_Upload::moveFile()
     */
     function setFileVerify($mode)
