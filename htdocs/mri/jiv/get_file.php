@@ -56,7 +56,7 @@ if (empty($imagePath) || empty($DownloadPath)
 }
 
 if ($imagePath === '/' || $DownloadPath === '/'
-    || $mincPath === '/' || tarchivePath === '/'
+    || $mincPath === '/' || $tarchivePath === '/'
 ) {
     error_log("ERROR: Path can not be root for security reasons.");
     header("HTTP/1.1 500 Internal Server Error");
