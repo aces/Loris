@@ -1,8 +1,8 @@
 <?php
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -13,9 +13,9 @@
 namespace LORIS\statistics;
 
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -56,17 +56,11 @@ class Stats_Behavioural extends \NDB_Form
     /**
      * Stats_behavioural function
      *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this     page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
      * @return void
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
 
         $DB          =& \Database::singleton();
         $config      = \NDB_Config::singleton();

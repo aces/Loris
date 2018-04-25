@@ -12,8 +12,17 @@ class CouchDBInstrumentImporter
 
     function __construct()
     {
-        $this->SQLDB   = Database::singleton();
-        $this->CouchDB = CouchDB::singleton();
+        $factory       = \NDB_Factory::singleton();
+        $config        = \NDB_Config::singleton();
+        $couchConfig   = $config->getSetting('CouchDB');
+        $this->SQLDB   = $factory->Database();
+        $this->CouchDB = $factory->couchDB(
+            $couchConfig['dbName'],
+            $couchConfig['hostname'],
+            $couchConfig['port'],
+            $couchConfig['admin'],
+            $couchConfig['adminpass']
+        );
     }
 
     function UpdateDataDicts($Instruments)
@@ -133,7 +142,7 @@ class CouchDBInstrumentImporter
 
     function GetInstruments()
     {
-        return Utility::getAllInstruments();
+        return \Utility::getAllInstruments();
     }
 
     function createRunLog($results)

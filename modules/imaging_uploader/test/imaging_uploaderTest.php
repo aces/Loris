@@ -120,6 +120,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
                                   "selector" => "#upload",
                                  ),
                                 );
+
     /**
      * Tests that, when loading the Imaging_uploader module, some
      * text appears in the body.

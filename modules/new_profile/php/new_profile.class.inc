@@ -35,15 +35,9 @@ class New_Profile extends \NDB_Form
         // create user object
         $user =& \User::singleton();
 
-        $site_arr = $user->getData('CenterIDs');
-        foreach ($site_arr as $key=>$val) {
-            $site[$key]        =& \Site::singleton($val);
-            $isStudySite[$key] = $site[$key]->isStudySite();
-            $isDCCSite[$key]   = $site[$key]->getCenterName();
-        }
-        $oneIsStudySite = in_array("1", $isStudySite);
-        $oneIsDCCSite   = in_array("DCC", $isDCCSite);
-        if ($oneIsStudySite or $oneIsDCCSite) {
+        $site_arr      = $user->getData('CenterIDs');
+        $userInDCCSite = in_array("1", $site_arr);
+        if ($user->hasStudySite() or $userInDCCSite) {
             return $user->hasPermission('data_entry');
         }
 
@@ -116,17 +110,11 @@ class New_Profile extends \NDB_Form
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
      * @return none
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
 
         $config    =& \NDB_Config::singleton();
         $startYear = $config->getSetting('startYear');
@@ -259,9 +247,8 @@ class New_Profile extends \NDB_Form
     function _validate($values)
     {
         $errors = array();
-
         $config =& \NDB_Config::singleton();
-
+        $user   = \User::singleton();
         if ($values['dob1'] != $values['dob2']) {
             $errors['dob1'] = 'Date of Birth fields must match.';
         }
@@ -310,6 +297,15 @@ class New_Profile extends \NDB_Form
                     $errors['PSCID'] = 'PSCID has already been registered';
             }
         }
+
+        // validate site entered
+        $site = $values['psc'];
+        $user_list_of_sites = $user->getData('CenterIDs');
+        $num_sites          = count($user_list_of_sites);
+        if ($num_sites > 1 && (empty($site) || !$user->hasCenter($site))) {
+            $errors['psc'] = "Site must be selected from the available dropdown.";
+        }
+
         $useProjects = $config->getSetting('useProjects');
         if ($useProjects === "true" && empty($values['ProjectID'])) {
             $errors['ProjectID'] = "Project is required";

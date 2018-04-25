@@ -34,8 +34,11 @@ class ConflictDetector
      * @return array An array of differences between the 2 data entry
      *               points.
      */
-    function detectConflictsForCommentIds($instrumentName, $commentId1, $commentId2)
-    {
+    static function detectConflictsForCommentIds(
+        $instrumentName,
+        $commentId1,
+        $commentId2
+    ) {
         $diffResult = array();
 
         // Get data entry status for $commentId1
@@ -80,7 +83,7 @@ class ConflictDetector
      *
      * @return null As a side-effect inserts into database.
      */
-    function recordUnresolvedConflicts($diffResult)
+    static function recordUnresolvedConflicts($diffResult)
     {
         $db =& Database::singleton();
 

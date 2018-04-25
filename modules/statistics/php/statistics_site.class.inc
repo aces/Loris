@@ -1,8 +1,8 @@
 <?php
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -13,9 +13,9 @@
 namespace LORIS\statistics;
 
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -23,7 +23,7 @@ namespace LORIS\statistics;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Statistics_Site extends \NDB_Menu
+class Statistics_Site extends \NDB_Form
 {
 
     var $instruments    = array();
@@ -40,6 +40,7 @@ class Statistics_Site extends \NDB_Menu
     {
         $user     =& \User::singleton();
         $centerID = htmlspecialchars($_REQUEST['CenterID']);
+        //TODO: Create a permission specific to statistics
         return $user->hasCenterPermission('data_entry', $centerID);
     }
 
@@ -221,7 +222,6 @@ class Statistics_Site extends \NDB_Menu
         sort($visits);
         $this->tpl_data['AllVisits']      = $visits;
         $this->tpl_data['NumVisitLabels'] = count($visits);
-
     }
 
     /**

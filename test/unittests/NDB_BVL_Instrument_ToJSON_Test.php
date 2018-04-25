@@ -42,7 +42,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends \PHPUnit_Framework_TestCase
         $this->Client->makeCommandLine();
         $this->Client->initialize(__DIR__ . "/../../project/config.xml");
 
-        $this->i = $this->getMockBuilder("\NDB_BVL_Instrument")->setMethods(array("getFullName"))->getMock();
+        $this->i = $this->getMockBuilder("\NDB_BVL_Instrument")->disableOriginalConstructor()->setMethods(array("getFullName"))->getMock();
         $this->i->method('getFullName')->willReturn("Test Instrument");
         $this->i->form = $this->QuickForm;
         $this->i->testName = "Test";
@@ -364,7 +364,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends \PHPUnit_Framework_TestCase
     }
 
     function testPageGroup() {
-        $this->i = $this->getMockBuilder("\NDB_BVL_Instrument")->setMethods(array("getFullName", "getSubtestList", '_setupForm'))->getMock();
+        $this->i = $this->getMockBuilder("\NDB_BVL_Instrument")->disableOriginalConstructor()->setMethods(array("getFullName", "getSubtestList", '_setupForm'))->getMock();
         $this->i->method('getFullName')->willReturn("Test Instrument");
         $this->i->method('getSubtestList')->willReturn(
             array(

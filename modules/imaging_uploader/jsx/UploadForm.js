@@ -187,31 +187,25 @@ class UploadForm extends React.Component {
         return xhr;
       }.bind(this),
       success: function(data) {
-        const errMessage = "The following errors occured while " +
-          "attempting to display this page:";
-        // Last remaining part of the old module.
-        // Need to update to use proper AJAX request/response
-        if (data.indexOf(errMessage) > -1) {
-          data = data.replace('history.back()', 'location.reload()');
-          document.open();
-          document.write(data);
-          document.close();
-        } else {
-          // If no error is shown, assume "success" and redirect to main page
-          swal({
-            title: "Upload Successful!",
-            type: "success"
-          }, function() {
-            window.location.assign(loris.BaseURL + "/imaging_uploader/");
-          });
-        }
+        swal({
+          title: "Upload Successful!",
+          type: "success"
+        }, function() {
+          window.location.assign(loris.BaseURL + "/imaging_uploader/");
+        });
       },
       error: function(err) {
+        const errMessage = "The following errors occured while " +
+          "attempting to display this page:";
+        let responseText = err.responseText;
+        if (responseText.indexOf(errMessage) > -1) {
+          responseText = responseText.replace('history.back()', 'location.reload()');
+          document.open();
+          document.write(responseText);
+          document.close();
+        }
         console.error(err);
-        this.setState({
-          uploadProgress: -1
-        });
-      }.bind(this)
+      }
     });
   }
 
