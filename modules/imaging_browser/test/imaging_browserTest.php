@@ -404,10 +404,13 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$value').click()"
         );
+        //print page
+        $this->webDriver->getPageSource()
         $value = "#sidebar-content > ul:nth-child(7) > li > a";
         $text  = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
         );
+        //
         $this->assertContains("Radiology Review", $text);
         $this->webDriver->executescript(
             "document.querySelector('$value').click()"
