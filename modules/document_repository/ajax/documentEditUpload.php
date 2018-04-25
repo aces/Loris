@@ -14,7 +14,7 @@ $userSingleton =& User::singleton();
 if (!$userSingleton->hasPermission('document_repository_view')
     && !$userSingleton->hasPermission('document_repository_delete')
 ) {
-    header("HTTP/1.1 403 Forbidden");
+    http_response_code(403);
     exit;
 }
 $factory = NDB_Factory::singleton();
@@ -62,7 +62,7 @@ if ($userSingleton->hasPermission('document_repository_view')
 
         if (!is_writable($uploadPath)) {
             if (file_exists($uploadPath)) {
-                header('HTTP/1.1 403 Forbidden');
+                http_response_code(403);
                 error_log("Could not write to $uploadPath. Check permissions");
                 exit;
             }
@@ -73,7 +73,7 @@ if ($userSingleton->hasPermission('document_repository_view')
 
         if (!move_uploaded_file($_FILES['file']['tmp_name'], $fullPath)) {
             error_log('File upload failed for unknown reasons.');
-            header('HTTP/1.1 500 Internal Server Error');
+            http_response_code(500);
             echo('ERROR: Could not upload file. Contact your administrator');
         } else {
             $success = $DB->insert(
@@ -99,7 +99,7 @@ if ($userSingleton->hasPermission('document_repository_view')
 
             $uploadNotifier->notify($msg_data);
 
-            header('HTTP/1.1 303 See Other');
+            http_response_code(303);
             header('Location:' . $baseURL . '/document_repository/');
         }
     } elseif ($action == 'edit') {
@@ -112,7 +112,10 @@ if ($userSingleton->hasPermission('document_repository_view')
         $comments   = $_POST['commentsEdit'];
         $version    = $_POST['versionEdit'];
 
-        if (empty($category) && $category !== '0') {
+        // $category is a string representation of a number.
+        // only proceed if its int value is greater than or equal to 0
+        if (!(int)$category >= 0) {
+            http_response_code(403);
             header("HTTP/1.1 400 Bad Request");
             exit;
         }
