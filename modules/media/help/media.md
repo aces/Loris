@@ -8,7 +8,7 @@ formats such as .pdf, .mp4, .mp3, .txt, etc.
 ## Searching for a Media File
 
 Under the Browse tab, use the Selection Filters to search for files by fields such 
-as including filename, file type, candidate PSCID, Visit Label, Instrument, Site, or 
+as filename, file type, candidate PSCID, Visit Label, Instrument, Site, or 
 name of user who uploaded the file.  Partial string matching can be used on many 
 fields (e.g. filename).  As filters are selected, the data table below will
 dynamically update with relevant results.  Click the “Clear Filters” button to reset 
