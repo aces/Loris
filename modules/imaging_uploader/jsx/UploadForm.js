@@ -194,17 +194,18 @@ class UploadForm extends React.Component {
           window.location.assign(loris.BaseURL + "/imaging_uploader/");
         });
       },
-      error: function(err) {
-        const errMessage = "The following errors occurred while " +
-          "attempting to display this page:";
-        let responseText = err.responseText;
-        if (responseText.indexOf(errMessage) > -1) {
-          responseText = responseText.replace('history.back()', 'location.reload()');
-          document.open();
-          document.write(responseText);
-          document.close();
-        }
-        console.error(err);
+      error: (error, textStatus, errorThrown) => {
+            let errors = (error.responseJSON||{}).errors || 'Submission error!'; 
+            const renderedErrorList = errors.map(err => `<li>${err}</li>`);
+            const renderedErrors = `<ul>${renderedErrorList.join('')}</ul>`;
+            console.error(error, textStatus, errorThrown);
+            swal({
+              title: "Errors with Field Values",
+              text: renderedErrors,
+              html: true,
+              type: "error"
+            });
+            this.setState({uploadProgress: -1});
       }
     });
   }

@@ -188,7 +188,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
        *
        * @param array $values the array of values from the form
        *
-       * @return true on success, false othewise
+       * @return true on success, false otherwise
        */
     function _saveFile($values)
     {
@@ -227,15 +227,6 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         //proccesses them (including verify, move, and import steps)
         $file->processFiles();
 
-        //display error messages
-        if (!empty($file->errorLog)) {
-            while (list($fileType,$fileErrors)=each($file->errorLog)) {
-                foreach ($fileErrors AS $error) {
-                    throw new \LorisException(" $fileType: $error ");
-                }
-            }
-            return false;
-        }
         return true;
     }
     /**
@@ -243,7 +234,9 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      *  - The uploaded file is compressed and is of type:
      *       .gz, .zip or .tgz
      *  - The fields   CandID, PSCID  and VisitLabel are filled out
-     *  - The inputted PSCID,  CandID and VisitLabel exist in the database
+     *  - The PSCID, CandID and VisitLabel that were input exist in the database
+     *  - The candidate that was input is active in the database
+     *  - The session is active in the database
      *  - The uploaded file is copied to a newly created temporary folder
      *
      * @param FILE  $file The uploaded file
@@ -258,7 +251,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $temp_file = $file->fileInfo['tmp_name'];
         $temp_dir  = $this->tempdir();
         $db        = \Database::singleton();
-        $errors    = array();
+        $errors = array();
         $config    = \NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
             'imaging_modules'
@@ -268,9 +261,10 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $file_name = $file->fileInfo['name'];
         $file_path = $temp_dir. "/". $file_name;
         $isPhantom = $args['values']['IsPhantom'];
+
         if (empty($isPhantom)) {
-            $errors[] ="Make sure 'Are these Phantom Scans' is filled out.
-            Please refresh this page to return to the Imaging Uploader module";
+            array_push($errors,
+                       "Make sure 'Are these Phantom Scans' is filled out.");
         }
         ///////////////////////////////////////////////////////////////////////
         /////////Validate the advanced Options only if it's not a Phantom//////
@@ -283,11 +277,10 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             $pscid       = trim($args['values']['pSCID']);
             $visit_label = trim($args['values']['visitLabel']);
             if ((empty($candid)) || (empty($pscid)) || (empty($visit_label))) {
-                $errors[] ="Make sure the Cand ID, PSCID and Visit Label are ".
-                "filled out. Please refresh this page to return to the Imaging
-                Uploader module.";
+                array_push($errors,
+                           "Make sure the Cand ID, PSCID and Visit Label are ".
+                           "filled out.");
             }
-
             ///////////////////////////////////////////////////////////////////////
             ///////////    Make sure the file name matches the format   ///////////
             ///////////         $pscid_$candid_$visit_label             ///////////
@@ -299,34 +292,57 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             if ((!preg_match("/^{$pcv}\.(zip|tgz|tar.gz)/", $file_name))
                 && (!preg_match("/^{$pcvu}.*(\.(zip|tgz|tar.gz))/", $file_name))
             ) {
-                    $errors[] = "File name must match " . $pcv .
-                    " or begin with " . "\"". $pcvu . "\"" .
-                    ", and have the extension of .tgz, tar.gz or .zip";
+                    array_push($errors,
+                               "File name must match " . $pcv .
+                               " or begin with " . "\"". $pcvu . "\"" .
+                               ", and have the extension of .tgz, tar.gz or .zip.");
             }
 
             ///////////////////////////////////////////////////////////////////////
             //////check to see if candid/pscid and visit-label exist///////////////
+            //////        check to see if candidate is active        //////////////
+            //////        check to see if session is active          //////////////
             ///////////////////////////////////////////////////////////////////////
             if ((!empty($candid)) && (!empty($pscid)) && (!empty($visit_label))) {
-                $result = $db->pselectOne(
-                    "SELECT COUNT(*) FROM session s
-                     JOIN candidate c ON (c.candid=s.candid)
-                     WHERE s.Visit_label = :vlabel
-                     AND c.pscid = :pid AND c.candid = :cid",
+                $candidate = $db->pselectRow(
+                    "SELECT c2.candid AS candid_with_pscid, s.visit_label,
+                     c2.active AS candidate_active,
+                     s.active AS session_active
+                     FROM candidate c
+                     LEFT JOIN candidate c2
+                     ON (c.candid=c2.candid AND c2.pscid = :pid)
+                     LEFT JOIN session s
+                     ON (s.candid=c.candid and s.visit_label = :vlabel)
+                     WHERE c.candid = :cid",
                     [
                      ':cid'    => $candid,
-                     ':vlabel' => $visit_label,
                      ':pid'    => $pscid,
+                     ':vlabel' => $visit_label,
                     ]
                 );
 
-                if ($result == 0) {
-                    $errors[] = "Make sure you enter the CandID: $candid,".
-                                " PSCID: $pscid and the corresponding".
-                                " Visit-label: $visit_label. Candidate and".
-                                " corresponding visit label must already be" .
-                                " created in the database. Please refresh this".
-                                " page to return to the Imaging Uploader module";
+                if (sizeOf($candidate) == 0) {
+                    array_push($errors,
+                               "The candidate associated with that CandID".
+                               " does not exist in the database.");
+                } else {
+                    if (!$candidate['candid_with_pscid']) {
+                        array_push($errors,
+                                   "The CandID and the PSCID do not match.");
+                    }
+                    if (!$candidate['visit_label']) {
+                        array_push($errors,
+                                   "The candidate associated with that CandID".
+                                   " and PSCID does not have that Visit Label.");
+                    }
+                    if ($candidate['candidate_active'] == 'N') {
+                        array_push($errors,
+                                   "The candidate is not active in the database.");
+                    }
+                    if ($candidate['session_active'] == 'N') {
+                        array_push($errors,
+                                   "The session is not active in the database.");
+                    }
                 }
             }
         }
@@ -335,13 +351,15 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         //////////////.gz, .zip or .tgz////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
         if (!$this->isCompressed($temp_file)) {
-            $errors[] = "The file $temp_file is not of type".
-                        " .tgz, .tar.gz or .zip. Please refresh this
-                        page to return to the Imaging Uploader module";
+            array_push($errors,
+                       "The file $temp_file is not of type".
+                       " .tgz, .tar.gz or .zip.");
         }
 
         if (count($errors) > 0) {
-            return $errors;
+            http_response_code(400);
+            header('Content-Type: application/json; charset=UTF-8');
+            exit(json_encode(['errors' => $errors]));
         }
         ///////////////////////////////////////////////////////////////////////
         /////////copy the temporary file to a temporary directory//////////////
