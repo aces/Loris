@@ -98,8 +98,8 @@ function countDuplicate($key,$value)
  */
 function duplicateExistsInDropdown($id,$value)
 {
-       $DB       =& Database::singleton();
-       // ConfigID can be found in the Config table by searching new id. 
+       $DB =& Database::singleton();
+       // ConfigID can be found in the Config table by searching new id.
        $ConfigID = $DB->pselectOne(
            "SELECT ConfigID FROM Config WHERE ID =:ID",
            array(':ID' => $id)
