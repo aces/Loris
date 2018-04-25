@@ -260,11 +260,14 @@ function processVOIs($pubID) {
             );
         } elseif (in_array($vf, $paramTypes)){
             $pubParamTypeRelInsert = array(
-                'ParameterTypeID' => array_search(),
+                'ParameterTypeID' => array_search($vf, $paramTypes),
                 'PublicationID'   => $pubID,
             );
 
-            $db->insertIgnore('publication_parameter_type_rel', $pubParamTypeRelInsert);
+            $db->insertIgnore(
+                'publication_parameter_type_rel',
+                $pubParamTypeRelInsert
+            );
         } else {
             throw new LorisException("Unknown variable of interest: $vf");
         }
