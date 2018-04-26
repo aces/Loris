@@ -18,7 +18,6 @@ $(document).ready(function() {
     if (loris.Subtest !== "") {
       getParams.subtest = loris.Subtest;
     }
-    document.cookie = 'LastUrl=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
     $.get(loris.BaseURL + "/help_editor/ajax/help.php", getParams, function(content) {
       var div = document.createElement("div");
       var btn = document.createElement("BUTTON");
@@ -59,7 +58,6 @@ $(document).ready(function() {
         div.appendChild(edit);
         edit.addEventListener("click", function(e) {
           e.preventDefault();
-          document.cookie = "LastUrl = " + document.location.toString();
           window.open(loris.BaseURL + "/help_editor/edit_help_content/?section=" +
             getParams.testName + "&subsection=" + getParams.subtest, "_self");
         });
