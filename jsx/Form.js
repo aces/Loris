@@ -11,11 +11,8 @@ ButtonElement, LorisElement
  *
  */
 
-import {Component} from 'react';
-import PropTypes from 'prop-types';
-
 /**
- * Form Component.
+ * Form React.Component.
  * React wrapper for <form> element that accepts children react components
  *
  * The form elements can be passed in two ways:
@@ -25,7 +22,7 @@ import PropTypes from 'prop-types';
  * Note that if both are passed `this.props.formElements` is displayed first.
  *
  */
-class FormElement extends Component {
+class FormElement extends React.Component {
   constructor() {
     super();
     this.getFormElements = this.getFormElements.bind(this);
@@ -114,20 +111,20 @@ class FormElement extends Component {
 }
 
 FormElement.propTypes = {
-  name: PropTypes.string.isRequired,
-  id: PropTypes.string,
-  method: PropTypes.oneOf(['POST', 'GET']),
-  action: PropTypes.string,
-  class: PropTypes.string,
-  columns: PropTypes.number,
-  formElements: PropTypes.shape({
-    elementName: PropTypes.shape({
-      name: PropTypes.string,
-      type: PropTypes.string
+  name: React.PropTypes.string.isRequired,
+  id: React.PropTypes.string,
+  method: React.PropTypes.oneOf(['POST', 'GET']),
+  action: React.PropTypes.string,
+  class: React.PropTypes.string,
+  columns: React.PropTypes.number,
+  formElements: React.PropTypes.shape({
+    elementName: React.PropTypes.shape({
+      name: React.PropTypes.string,
+      type: React.PropTypes.string
     })
   }),
-  onSubmit: PropTypes.func,
-  onUserInput: PropTypes.func
+  onSubmit: React.PropTypes.func,
+  onUserInput: React.PropTypes.func
 };
 
 FormElement.defaultProps = {
@@ -145,7 +142,7 @@ FormElement.defaultProps = {
 };
 
 /**
- * Search Component
+ * Search React.Component
  * React wrapper for a searchable dropdown
  */
 class SearchableDropdown extends React.Component {
@@ -265,23 +262,23 @@ class SearchableDropdown extends React.Component {
 }
 
 SearchableDropdown.propTypes = {
-  name: PropTypes.string.isRequired,
-  options: PropTypes.object.isRequired,
-  id: PropTypes.string,
+  name: React.PropTypes.string.isRequired,
+  options: React.PropTypes.object.isRequired,
+  id: React.PropTypes.string,
   // strictSearch, if set to true, will require that only options
   // provided in the options prop can be submitted
-  strictSearch: PropTypes.bool,
-  label: PropTypes.string,
-  value: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.array
+  strictSearch: React.PropTypes.bool,
+  label: React.PropTypes.string,
+  value: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.array
   ]),
-  class: PropTypes.string,
-  disabled: PropTypes.bool,
-  required: PropTypes.bool,
-  errorMessage: PropTypes.string,
-  placeHolder: PropTypes.string,
-  onUserInput: PropTypes.func
+  class: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  errorMessage: React.PropTypes.string,
+  placeHolder: React.PropTypes.string,
+  onUserInput: React.PropTypes.func
 };
 
 SearchableDropdown.defaultProps = {
@@ -302,10 +299,10 @@ SearchableDropdown.defaultProps = {
 };
 
 /**
- * Select Component
+ * Select React.Component
  * React wrapper for a simple or 'multiple' <select> element.
  */
-class SelectElement extends Component {
+class SelectElement extends React.Component {
   constructor() {
     super();
     this.handleChange = this.handleChange.bind(this);
@@ -390,22 +387,22 @@ class SelectElement extends Component {
 }
 
 SelectElement.propTypes = {
-  name: PropTypes.string.isRequired,
-  options: PropTypes.object.isRequired,
-  label: PropTypes.string,
-  value: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.array
+  name: React.PropTypes.string.isRequired,
+  options: React.PropTypes.object.isRequired,
+  label: React.PropTypes.string,
+  value: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.array
   ]),
-  id: PropTypes.string,
-  class: PropTypes.string,
-  multiple: PropTypes.bool,
-  disabled: PropTypes.bool,
-  required: PropTypes.bool,
-  emptyOption: PropTypes.bool,
-  hasError: PropTypes.bool,
-  errorMessage: PropTypes.string,
-  onUserInput: PropTypes.func
+  id: React.PropTypes.string,
+  class: React.PropTypes.string,
+  multiple: React.PropTypes.bool,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  emptyOption: React.PropTypes.bool,
+  hasError: React.PropTypes.bool,
+  errorMessage: React.PropTypes.string,
+  onUserInput: React.PropTypes.func
 };
 
 SelectElement.defaultProps = {
@@ -695,7 +692,7 @@ TagsElement.defaultProps = {
  * Textarea Component
  * React wrapper for a <textarea> element.
  */
-class TextareaElement extends Component {
+class TextareaElement extends React.Component {
   constructor() {
     super();
     this.handleChange = this.handleChange.bind(this);
@@ -741,15 +738,15 @@ class TextareaElement extends Component {
 }
 
 TextareaElement.propTypes = {
-  name: PropTypes.string.isRequired,
-  label: PropTypes.string,
-  value: PropTypes.string,
-  id: PropTypes.string,
-  disabled: PropTypes.bool,
-  required: PropTypes.bool,
-  rows: PropTypes.number,
-  cols: PropTypes.number,
-  onUserInput: PropTypes.func
+  name: React.PropTypes.string.isRequired,
+  label: React.PropTypes.string,
+  value: React.PropTypes.string,
+  id: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  rows: React.PropTypes.number,
+  cols: React.PropTypes.number,
+  onUserInput: React.PropTypes.func
 };
 
 TextareaElement.defaultProps = {
@@ -767,10 +764,10 @@ TextareaElement.defaultProps = {
 };
 
 /**
- * Textbox Component
+ * Textbox React.Component
  * React wrapper for a <input type="text"> element.
  */
-class TextboxElement extends Component {
+class TextboxElement extends React.Component {
   constructor() {
     super();
     this.handleChange = this.handleChange.bind(this);
@@ -829,15 +826,15 @@ class TextboxElement extends Component {
 }
 
 TextboxElement.propTypes = {
-  name: PropTypes.string.isRequired,
-  label: PropTypes.string,
-  value: PropTypes.string,
-  id: PropTypes.string,
-  disabled: PropTypes.bool,
-  required: PropTypes.bool,
-  errorMessage: PropTypes.string,
-  onUserInput: PropTypes.func,
-  onUserBlur: PropTypes.func
+  name: React.PropTypes.string.isRequired,
+  label: React.PropTypes.string,
+  value: React.PropTypes.string,
+  id: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  errorMessage: React.PropTypes.string,
+  onUserInput: React.PropTypes.func,
+  onUserBlur: React.PropTypes.func
 };
 
 TextboxElement.defaultProps = {
@@ -856,10 +853,10 @@ TextboxElement.defaultProps = {
 };
 
 /**
- * Date Component
+ * Date React.Component
  * React wrapper for a <input type="date"> element.
  */
-class DateElement extends Component {
+class DateElement extends React.Component {
   constructor() {
     super();
     this.handleChange = this.handleChange.bind(this);
@@ -905,13 +902,13 @@ class DateElement extends Component {
 }
 
 DateElement.propTypes = {
-  name: PropTypes.string.isRequired,
-  label: PropTypes.string,
-  value: PropTypes.string,
-  id: PropTypes.string,
-  disabled: PropTypes.bool,
-  required: PropTypes.bool,
-  onUserInput: PropTypes.func
+  name: React.PropTypes.string.isRequired,
+  label: React.PropTypes.string,
+  value: React.PropTypes.string,
+  id: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  onUserInput: React.PropTypes.func
 };
 
 DateElement.defaultProps = {
@@ -927,10 +924,10 @@ DateElement.defaultProps = {
 };
 
 /**
- * Numeric Component
+ * Numeric React.Component
  * React wrapper for a <input type="number"> element.
  */
-class NumericElement extends Component {
+class NumericElement extends React.Component {
   constructor() {
     super();
     this.handleChange = this.handleChange.bind(this);
@@ -971,15 +968,15 @@ class NumericElement extends Component {
 }
 
 NumericElement.propTypes = {
-  name: PropTypes.string.isRequired,
-  min: PropTypes.number.isRequired,
-  max: PropTypes.number.isRequired,
-  label: PropTypes.string,
-  value: PropTypes.string,
-  id: PropTypes.string,
-  disabled: PropTypes.bool,
-  required: PropTypes.bool,
-  onUserInput: PropTypes.func
+  name: React.PropTypes.string.isRequired,
+  min: React.PropTypes.number.isRequired,
+  max: React.PropTypes.number.isRequired,
+  label: React.PropTypes.string,
+  value: React.PropTypes.string,
+  id: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  onUserInput: React.PropTypes.func
 };
 
 NumericElement.defaultProps = {
@@ -997,10 +994,10 @@ NumericElement.defaultProps = {
 };
 
 /**
- * File Component
+ * File React.Component
  * React wrapper for a simple or 'multiple' <select> element.
  */
-class FileElement extends Component {
+class FileElement extends React.Component {
   constructor() {
     super();
     this.handleChange = this.handleChange.bind(this);
@@ -1104,18 +1101,18 @@ class FileElement extends Component {
 }
 
 FileElement.propTypes = {
-  name: PropTypes.string.isRequired,
-  label: PropTypes.string,
-  value: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.object
+  name: React.PropTypes.string.isRequired,
+  label: React.PropTypes.string,
+  value: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.object
   ]),
-  id: PropTypes.string,
-  disabled: PropTypes.bool,
-  required: PropTypes.bool,
-  hasError: PropTypes.bool,
-  errorMessage: PropTypes.string,
-  onUserInput: PropTypes.func
+  id: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  hasError: React.PropTypes.bool,
+  errorMessage: React.PropTypes.string,
+  onUserInput: React.PropTypes.func
 };
 
 FileElement.defaultProps = {
@@ -1147,7 +1144,7 @@ FileElement.defaultProps = {
  * />
  * ```
  */
-class StaticElement extends Component {
+class StaticElement extends React.Component {
 
   render() {
     return (
@@ -1164,10 +1161,10 @@ class StaticElement extends Component {
 }
 
 StaticElement.propTypes = {
-  label: PropTypes.string,
-  text: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.element
+  label: React.PropTypes.string,
+  text: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.element
   ])
 };
 
@@ -1180,7 +1177,7 @@ StaticElement.defaultProps = {
  * Link element component.
  * Used to link plain/formated text to an href destination as part of a form
  */
-class LinkElement extends Component {
+class LinkElement extends React.Component {
 
   render() {
     return (
@@ -1197,12 +1194,12 @@ class LinkElement extends Component {
 }
 
 LinkElement.propTypes = {
-  label: PropTypes.string,
-  text: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.element
+  label: React.PropTypes.string,
+  text: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.element
   ]),
-  href: PropTypes.string
+  href: React.PropTypes.string
 };
 
 LinkElement.defaultProps = {
@@ -1215,7 +1212,7 @@ LinkElement.defaultProps = {
  * Button component
  * React wrapper for <button> element, typically used to submit forms
  */
-class ButtonElement extends Component {
+class ButtonElement extends React.Component {
   constructor() {
     super();
     this.handleClick = this.handleClick.bind(this);
@@ -1243,9 +1240,9 @@ class ButtonElement extends Component {
 }
 
 ButtonElement.propTypes = {
-  label: PropTypes.string,
-  type: PropTypes.string,
-  onUserInput: PropTypes.func
+  label: React.PropTypes.string,
+  type: React.PropTypes.string,
+  onUserInput: React.PropTypes.func
 };
 
 ButtonElement.defaultProps = {
@@ -1261,7 +1258,7 @@ ButtonElement.defaultProps = {
 /**
  * Generic form element.
  */
-class LorisElement extends Component {
+class LorisElement extends React.Component {
 
   render() {
     let elementProps = this.props.element;
