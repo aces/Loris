@@ -141,8 +141,6 @@ FormElement.defaultProps = {
   }
 };
 
-
-
 /**
  * Search React.Component
  * React wrapper for a searchable dropdown
