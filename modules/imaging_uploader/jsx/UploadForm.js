@@ -1,4 +1,7 @@
-import ProgressBar from 'ProgressBar';
+import {Component} from 'react';
+import PropTypes from 'prop-types';
+import ProgressBar from 'jsx/ProgressBar';
+import {FormElement, ButtonElement, StaticElement} from 'jsx/Form';
 
 /**
  * Imaging Upload Form
@@ -255,8 +258,5 @@ class UploadForm extends React.Component {
     );
   }
 }
-
-UploadForm.propTypes = {};
-UploadForm.defaultProps = {};
 
 export default UploadForm;

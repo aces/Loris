@@ -1,33 +1,35 @@
 /* exported RDynamicDataTable */
+import {Component} from 'react';
+import PropTypes from 'prop-types';
 
-var DynamicDataTable = React.createClass({
-  propTypes: {
-    DataURL: React.PropTypes.string.isRequired
-  },
+import StaticDataTable from 'jsx/StaticDataTable';
 
-  getInitialState: function() {
-    return {
+class DynamicDataTable extends Component {
+  constructor() {
+    super();
+
+    this.state = {
       Headers: [],
       Data: [],
       isLoaded: false,
       loadedData: 0
     };
-  },
-  getDefaultProps: function() {
-    return {
-      DataURL: ''
-    };
-  },
-  componentDidMount: function() {
+
+    this.fetchData = this.fetchData.bind(this);
+  }
+
+  componentDidMount() {
     this.fetchData();
       // Listen for update event to update data table on outside changes
     window.addEventListener('update-datatable', this.fetchData);
-  },
-  componentWillUnmount: function() {
+  }
+
+  componentWillUnmount() {
       // Unsubscribe from the event before component is destroyed
     window.removeEventListener('update-datatable', this.fetchData);
-  },
-  fetchData: function() {
+  }
+
+  fetchData() {
     var that = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
@@ -53,40 +55,41 @@ var DynamicDataTable = React.createClass({
         that.setState({error: "Error loading data"});
       }
     });
-  },
-  render: function() {
+  }
+
+  render() {
     if (!this.state.isLoaded) {
+
       if (this.state.error !== undefined) {
-        return <div className="alert alert-danger">
-                         <strong>
-                           {this.state.error}
-                         </strong>
-                       </div>;
+        return (
+          <div className="alert alert-danger">
+            <strong>{this.state.error}</strong>
+          </div>
+        );
       }
 
-      return <button className="btn-info has-spinner">
-                     Loading
-                     <span className="glyphicon
-                     glyphicon-refresh glyphicon-refresh-animate">
-                     </span>
-                   </button>;
+      return (
+        <button className="btn-info has-spinner">
+          Loading
+          <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+        </button>
+      );
     }
 
     return (
-                <StaticDataTable Headers={this.state.Headers}
-                                 Data={this.state.Data}
-                                 Filter={this.props.Filter}
-                                 getFormattedCell={this.props.getFormattedCell}
-                                 freezeColumn={this.props.freezeColumn}
-                                 onSort={this.props.onSort}
-                />
-            );
+      <StaticDataTable Headers={this.state.Headers}
+        Data={this.state.Data}
+        Filter={this.props.Filter}
+        getFormattedCell={this.props.getFormattedCell}
+        freezeColumn={this.props.freezeColumn}
+        onSort={this.props.onSort}
+      />
+    );
   }
-});
+}
 
-var RDynamicDataTable = React.createFactory(DynamicDataTable);
-
-window.DynamicDataTable = DynamicDataTable;
-window.RDynamicDataTable = RDynamicDataTable;
+DynamicDataTable.propTypes = {
+  DataURL: PropTypes.string.isRequired
+};
 
 export default DynamicDataTable;

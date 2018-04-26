@@ -1,6 +1,6 @@
 /* global UploadProgress */
-
-import Panel from 'Panel';
+import {Component} from 'react';
+import Panel from 'jsx/Panel';
 
 /**
  * Log Panel Component
@@ -13,7 +13,7 @@ import Panel from 'Panel';
  * @since 2017/04/01
  *
  */
-class LogPanel extends React.Component {
+class LogPanel extends Component {
 
   constructor(props) {
     super(props);
@@ -181,8 +181,5 @@ class LogPanel extends React.Component {
     );
   }
 }
-
-LogPanel.propTypes = {};
-LogPanel.defaultProps = {};
 
 export default LogPanel;

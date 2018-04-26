@@ -34,7 +34,7 @@
             {if $crumbs != "" && empty($error_message)}
               var crumbs = {$crumbs|@json_encode},
                       baseurl = "{$baseurl}",
-                      breadcrumbs = RBreadcrumbs({
+                      breadcrumbs = Breadcrumbs({
                         breadcrumbs: crumbs,
                         baseURL: baseurl
                       });

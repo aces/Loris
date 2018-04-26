@@ -14,7 +14,9 @@
  * Breadcrumbs Component.
  * Used for navigation on all Loris pages.
  */
-class Breadcrumbs extends React.Component {
+import {Component} from 'react';
+
+class Breadcrumbs extends Component {
 
   constructor(props) {
     super(props);
@@ -118,12 +120,6 @@ class Breadcrumbs extends React.Component {
       </div>
     );
   }
-
 }
-
-var RBreadcrumbs = React.createFactory(Breadcrumbs);
-
-window.Breadcrumbs = Breadcrumbs;
-window.RBreadcrumbs = RBreadcrumbs;
 
 export default Breadcrumbs;

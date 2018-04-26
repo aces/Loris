@@ -12,18 +12,35 @@
  * Static Data Table component
  * Displays a set of data that is receives via props.
  */
-var StaticDataTable = React.createClass({
-  mixins: [React.addons.PureRenderMixin],
-  propTypes: {
-    Headers: React.PropTypes.array.isRequired,
-    Data: React.PropTypes.array.isRequired,
-    RowNumLabel: React.PropTypes.string,
-    // Function of which returns a JSX element for a table cell, takes
-    // parameters of the form: func(ColumnName, CellData, EntireRowData)
-    getFormattedCell: React.PropTypes.func,
-    onSort: React.PropTypes.func
-  },
-  componentDidMount: function() {
+
+import {Component, Fragment} from 'react';
+import PropTypes from 'prop-types';
+import PaginationLinks from 'jsx/PaginationLinks';
+
+class StaticDataTable extends Component
+{
+  constructor() {
+    super();
+
+    this.state = {
+      PageNumber: 1,
+      SortColumn: -1,
+      SortOrder: 'ASC',
+      RowsPerPage: 20
+    };
+
+    this.hasFilterKeyword  = this.hasFilterKeyword.bind(this);
+    this.changePage        = this.changePage.bind(this); 
+    this.setSortColumn     = this.setSortColumn.bind(this);
+    this.changeRowsPerPage = this.changeRowsPerPage.bind(this);
+    this.downloadCSV       = this.downloadCSV.bind(this);
+    this.countFilteredRows = this.countFilteredRows.bind(this);
+    this.toCamelCase       = this.toCamelCase.bind(this);
+    this.getSortedRows     = this.getSortedRows.bind(this);
+    this.hasFilterKeyword  = this.hasFilterKeyword.bind(this);
+  }
+
+  componentDidMount() {
     if (jQuery.fn.DynamicTable) {
       if (this.props.freezeColumn) {
         $("#dynamictable").DynamicTable({
@@ -56,8 +73,9 @@ var StaticDataTable = React.createClass({
 
         // Make prefs accesible within component
     this.modulePrefs = modulePrefs;
-  },
-  componentDidUpdate: function(prevProps, prevState) {
+  }
+ 
+  componentDidUpdate(prevProps, prevState) {
     if (jQuery.fn.DynamicTable) {
       if (this.props.freezeColumn) {
         $("#dynamictable").DynamicTable({
@@ -74,29 +92,15 @@ var StaticDataTable = React.createClass({
       var index = this.getSortedRows();
       this.props.onSort(index, this.props.Data, this.props.Headers);
     }
-  },
-  getInitialState: function() {
-    return {
-      PageNumber: 1,
-      SortColumn: -1,
-      SortOrder: 'ASC',
-      RowsPerPage: 20
-    };
-  },
-  getDefaultProps: function() {
-    return {
-      Headers: [],
-      Data: {},
-      RowNumLabel: 'No.',
-      Filter: {}
-    };
-  },
-  changePage: function(pageNo) {
+  }
+ 
+  changePage(pageNo) {
     this.setState({
       PageNumber: pageNo
     });
-  },
-  setSortColumn: function(colNumber) {
+  }
+
+  setSortColumn(colNumber) {
     var that = this;
     return function(e) {
       if (that.state.SortColumn === colNumber) {
@@ -109,8 +113,9 @@ var StaticDataTable = React.createClass({
         });
       }
     };
-  },
-  changeRowsPerPage: function(val) {
+  }
+ 
+  changeRowsPerPage(val) {
     var rowsPerPage = val.target.value;
     var modulePrefs = this.modulePrefs;
 
@@ -124,8 +129,9 @@ var StaticDataTable = React.createClass({
       RowsPerPage: rowsPerPage,
       PageNumber: 1
     });
-  },
-  downloadCSV: function(csvData) {
+  }
+
+  downloadCSV(csvData) {
     var csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
 
     csvworker.addEventListener('message', function(e) {
@@ -150,8 +156,9 @@ var StaticDataTable = React.createClass({
       headers: this.props.Headers,
       identifiers: this.props.RowNameMap
     });
-  },
-  countFilteredRows: function() {
+  }
+
+  countFilteredRows() {
     var filterMatchCount = 0;
     var filterValuesCount = (this.props.Filter ?
         Object.keys(this.props.Filter).length :
@@ -181,13 +188,15 @@ var StaticDataTable = React.createClass({
     }
 
     return (filterMatchCount === 0) ? tableData.length : filterMatchCount;
-  },
-  toCamelCase: function(str) {
+  }
+
+  toCamelCase(str) {
     return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
       if (Number(match) === 0) return "";
       return index === 0 ? match.toLowerCase() : match.toUpperCase();
     });
-  },
+  }
+
   getSortedRows() {
     const index = [];
 
@@ -253,7 +262,8 @@ var StaticDataTable = React.createClass({
       return 0;
     }.bind(this));
     return index;
-  },
+  }
+
   /**
    * Searches for the filter keyword in the column cell
    *
@@ -264,7 +274,7 @@ var StaticDataTable = React.createClass({
    * @return {boolean} true, if filter value is found to be a substring
    * of one of the column values, false otherwise.
    */
-  hasFilterKeyword: function(headerData, data) {
+  hasFilterKeyword(headerData, data) {
     let header = this.toCamelCase(headerData);
     let filterData = null;
     let exactMatch = false;
@@ -298,8 +308,9 @@ var StaticDataTable = React.createClass({
     }
 
     return false;
-  },
-  render: function() {
+  }
+
+  render() {
     if (this.props.Data === null || this.props.Data.length === 0) {
       return (
         <div className="alert alert-info no-result-found-panel">
@@ -379,7 +390,7 @@ var StaticDataTable = React.createClass({
           if (data !== null) {
             // Note: Can't currently pass a key, need to update columnFormatter
             // to not return a <td> node. Using createFragment instead.
-            curRow.push(React.addons.createFragment({data}));
+            curRow.push(Fragment({data}));
           }
         } else {
           curRow.push(<td key={key}>{data}</td>);
@@ -481,11 +492,23 @@ var StaticDataTable = React.createClass({
       </div>
     );
   }
-});
+}
 
-var RStaticDataTable = React.createFactory(StaticDataTable);
+StaticDataTable.propTypes = {
+  Headers: PropTypes.array.isRequired,
+  Data: PropTypes.array.isRequired,
+  RowNumLabel: PropTypes.string,
+    // Function of which returns a JSX element for a table cell, takes
+    // parameters of the form: func(ColumnName, CellData, EntireRowData)
+  getFormattedCell: PropTypes.func,
+  onSort: PropTypes.func
+};
 
-window.StaticDataTable = StaticDataTable;
-window.RStaticDataTable = RStaticDataTable;
+StaticDataTable.defaultProps = {
+  Headers: [],
+  Data: {},
+  RowNumLabel: 'No.',
+  Filter: {}
+}
 
 export default StaticDataTable;

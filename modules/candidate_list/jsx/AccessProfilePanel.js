@@ -1,6 +1,8 @@
-import Panel from 'Panel';
+import {Component} from 'react';
+import Panel from 'jsx/Panel';
+import {FormElement, TextboxElement, ButtonEleme} from 'jsx/Form';
 
-class AccessProfilePanel extends React.Component {
+class AccessProfilePanel extends Component {
   constructor(props) {
     super(props);
 
@@ -78,14 +80,16 @@ class AccessProfilePanel extends React.Component {
   render() {
     var warning;
     if (loris.userHasPermission('access_all_profiles')) {
-      return <div />;
+      return (
+        <div />
+      );
     }
 
     if (this.state.error.message !== '') {
       warning = (
-              <div className={this.state.error.className}>
-                {this.state.error.message}
-              </div>
+        <div className={this.state.error.className}>
+          {this.state.error.message}
+        </div>
       );
     }
     return (<div className="col-sm-3">
@@ -118,4 +122,5 @@ class AccessProfilePanel extends React.Component {
        );
   }
 }
+
 export default AccessProfilePanel;

@@ -6,7 +6,10 @@
  *
  */
 
-import Panel from 'Panel';
+import React from 'react';
+import PropTypes from 'prop-types';
+import Panel from 'jsx/Panel';
+import {FormElement} from 'jsx/Form';
 
 /**
  * FilterForm component.
@@ -71,7 +74,7 @@ class FilterForm extends React.Component {
    */
   getFormChildren() {
     let formChildren = [];
-    React.Children.forEach(this.props.children, function(child, key) {
+    Children.forEach(this.props.children, function(child, key) {
       // If child is a React component (i.e not a simple DOM element)
       if (React.isValidElement(child) &&
         typeof child.type === "function" &&
@@ -194,13 +197,14 @@ FilterForm.defaultProps = {
     console.warn('onUpdate() callback is not set!');
   }
 };
+
 FilterForm.propTypes = {
-  Module: React.PropTypes.string.isRequired,
-  filter: React.PropTypes.object.isRequired,
-  id: React.PropTypes.string,
-  height: React.PropTypes.string,
-  title: React.PropTypes.string,
-  onUpdate: React.PropTypes.func
+  Module: PropTypes.string.isRequired,
+  filter: PropTypes.object.isRequired,
+  id: PropTypes.string,
+  height: PropTypes.string,
+  title: PropTypes.string,
+  onUpdate: PropTypes.func
 };
 
 export default FilterForm;
