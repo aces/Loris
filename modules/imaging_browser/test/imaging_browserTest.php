@@ -405,7 +405,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$value').click()"
         );
         //print page
-        $text=$this->webDriver->getPageSource();
+        $text =$this->webDriver->getPageSource();
         print_r($text);
         $value = "#sidebar-content > ul:nth-child(7) > li > a";
         $text  = $this->webDriver->executescript(
