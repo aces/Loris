@@ -12,7 +12,7 @@ ButtonElement, LorisElement
  */
 
 /**
- * Form React.Component.
+ * Form Component.
  * React wrapper for <form> element that accepts children react components
  *
  * The form elements can be passed in two ways:
@@ -140,6 +140,8 @@ FormElement.defaultProps = {
     console.warn('onSubmit() callback is not set!');
   }
 };
+
+
 
 /**
  * Search React.Component
