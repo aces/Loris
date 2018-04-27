@@ -13,11 +13,11 @@
  * Displays a set of data that is receives via props.
  */
 
-import {Component, Fragment} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import PaginationLinks from 'jsx/PaginationLinks';
 
-class StaticDataTable extends Component
+class StaticDataTable extends React.Component
 {
   constructor() {
     super();
@@ -390,7 +390,7 @@ class StaticDataTable extends Component
           if (data !== null) {
             // Note: Can't currently pass a key, need to update columnFormatter
             // to not return a <td> node. Using createFragment instead.
-            curRow.push(Fragment({data}));
+            curRow.push({data});
           }
         } else {
           curRow.push(<td key={key}>{data}</td>);
@@ -405,7 +405,11 @@ class StaticDataTable extends Component
           rows.push(
             <tr key={'tr_' + rowIndex} colSpan={headers.length}>
               <td>{rowIndex}</td>
-              {curRow}
+{curRow.map((item,index) => (
+        <React.Fragment key={index}>
+          {item.data}
+        </React.Fragment>
+      ))}
             </tr>
           );
         }

@@ -1,9 +1,9 @@
 /* exported RPaginationLinks */
 
-import {Component} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-class PaginationLinks extends Component
+class PaginationLinks extends React.Component
 {
   constructor() {
     super();

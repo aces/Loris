@@ -1,10 +1,10 @@
 /* exported RDynamicDataTable */
-import {Component} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import StaticDataTable from 'jsx/StaticDataTable';
 
-class DynamicDataTable extends Component {
+class DynamicDataTable extends React.Component {
   constructor() {
     super();
 
