@@ -78,9 +78,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
         if (method_exists($page, 'getControlPanel')) {
             $tpl_data['control_panel'] = $page->getControlPanel();
         }
+
         if (method_exists($page, 'getFeedbackPanel')
             && $user->hasPermission('bvl_feedback')
-            && isset($get['candID'])
+            && $candID !== null
         ) {
             $tpl_data['feedback_panel'] = $page->getFeedbackPanel(
                 $candID,
