@@ -90,9 +90,12 @@ if ($_POST['action'] == 'addpermission' && $user->hasPermission('superuser')) {
             }
         }
         $DB->_PDO->commit();
+        header("HTTP/1.1 303 See Other");
         header("Location: {$baseURL}/data_release/?addpermissionSuccess=true");
     } catch (Exception $e) {
         $DB->_PDO->rollback();
+        error_log("ERROR: Did not update Data Release permissions.");
+        header("HTTP/1.1 500 Internal Server Error");
         header("Location: {$baseURL}/data_release/?addpermissionSuccess=false");
     }
 } else {
