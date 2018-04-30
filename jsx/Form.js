@@ -142,7 +142,7 @@ FormElement.defaultProps = {
 };
 
 /**
- * Search React.Component
+ * Search Component
  * React wrapper for a searchable dropdown
  */
 class SearchableDropdown extends React.Component {
@@ -299,7 +299,7 @@ SearchableDropdown.defaultProps = {
 };
 
 /**
- * Select React.Component
+ * Select Component
  * React wrapper for a simple or 'multiple' <select> element.
  */
 class SelectElement extends React.Component {
@@ -764,7 +764,7 @@ TextareaElement.defaultProps = {
 };
 
 /**
- * Textbox React.Component
+ * Textbox Component
  * React wrapper for a <input type="text"> element.
  */
 class TextboxElement extends React.Component {
@@ -853,7 +853,7 @@ TextboxElement.defaultProps = {
 };
 
 /**
- * Date React.Component
+ * Date Component
  * React wrapper for a <input type="date"> element.
  */
 class DateElement extends React.Component {
@@ -924,7 +924,7 @@ DateElement.defaultProps = {
 };
 
 /**
- * Numeric React.Component
+ * Numeric Component
  * React wrapper for a <input type="number"> element.
  */
 class NumericElement extends React.Component {
@@ -994,7 +994,7 @@ NumericElement.defaultProps = {
 };
 
 /**
- * File React.Component
+ * File Component
  * React wrapper for a simple or 'multiple' <select> element.
  */
 class FileElement extends React.Component {
