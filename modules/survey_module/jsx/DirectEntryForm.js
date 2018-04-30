@@ -162,6 +162,7 @@ class SelectElement extends React.Component {
 
 	render() {
 		let options = [];
+		let optionLabel;
 
 		for (var key in this.props.element.Options.Values) {
 			let checked;
@@ -172,6 +173,7 @@ class SelectElement extends React.Component {
 					<i className="glyphicon glyphicon-ok" ></i>
 				);
 			}
+			optionLabel = String(this.props.element.Options.Values[key]);
 			options.push(
 				<div className="col-xs-12 col-sm-6 select-option" onClick={this.onSelect.bind(this, key)}>
 					<div className="selectBox">
@@ -180,7 +182,7 @@ class SelectElement extends React.Component {
 						</label>
 					</div>
 					<div className="selectOption">
-						<Markdown content={this.props.element.Options.Values[key]} />
+						<Markdown content={optionLabel} />
 					</div>
 				</div>
 			);
