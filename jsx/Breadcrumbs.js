@@ -128,7 +128,7 @@ class Breadcrumbs extends React.Component {
 }
 
 document.addEventListener("DOMContentLoaded", evt => {
-  if (crumbs) {
+  if (typeof crumbs != 'undefined') {
     const breadcrumbs = (
       <Breadcrumbs breadcrumbs={crumbs} baseURL={loris.BaseURL} />
     );
