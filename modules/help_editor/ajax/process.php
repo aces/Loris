@@ -33,7 +33,7 @@ if (!empty($_POST['helpID'])
     && !empty($_POST['title'])
     && !empty($_POST['content'])
 ) {
-    $helpID = $_POST['helpID'];
+    $helpID    = $_POST['helpID'];
     $help_file = HelpFile::factory($helpID);
     // update the help file
     $success = $help_file->update(
@@ -51,7 +51,7 @@ if (!empty($_POST['helpID'])
     if (!empty($_POST['section'])
         && $_POST['subsection'] != 'undefined'
         && empty($_POST['parentID'])
-    ) { 
+    ) {
         //create parent help section first
         $parentID = HelpFile::insert(
             array(
@@ -61,15 +61,15 @@ if (!empty($_POST['helpID'])
              'created' => date(
                  'Y-m-d h:i:s',
                  time()
-             ),  
+             ),
             )
         );
          // check errors
-    }    
+    }
     if (!empty($_POST['section'])
         && $_POST['subsection'] != 'undefined'
         && !empty($_POST['parentID'])
-    ) { 
+    ) {
 
         // insert the help file
         $helpID = HelpFile::insert(
@@ -81,25 +81,25 @@ if (!empty($_POST['helpID'])
              'created'  => date(
                  'Y-m-d h:i:s',
                  time()
-             ),  
+             ),
             )
         );
 
     } else if (!empty($_POST['section'])
         && $_POST['subsection'] == 'undefined'
-    ) { 
-      //default case
-      $helpID = HelpFile::insert(
-      array(
-           'hash'    => md5($_POST['section']),
-           'topic'   => $_POST['title'],
-           'content' => $_POST['content'],
-           'created' => date(
-               'Y-m-d h:i:s',
-               time()
-           ),  
-          )
-      );
+    ) {
+        //default case
+        $helpID = HelpFile::insert(
+            array(
+             'hash'    => md5($_POST['section']),
+             'topic'   => $_POST['title'],
+             'content' => $_POST['content'],
+             'created' => date(
+                 'Y-m-d h:i:s',
+                 time()
+             ),
+            )
+        );
     }
 }
 ?>

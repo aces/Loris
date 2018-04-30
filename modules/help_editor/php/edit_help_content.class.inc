@@ -67,7 +67,7 @@ class Edit_Help_Content extends \NDB_Form
         if (!empty($_REQUEST['section'])
             && $_REQUEST['subsection'] != 'undefined'
         ) {
-            $helpID = HelpFile::hashToID(md5($_REQUEST['subsection']));
+            $helpID   = HelpFile::hashToID(md5($_REQUEST['subsection']));
             $parentID = \LORIS\help_editor\HelpFile::hashToID(md5($_GET['section']));
         }
         $this->tpl_data['section']    = $safeSection;
