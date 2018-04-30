@@ -447,10 +447,7 @@ class NDB_Config
         // nothing in the config file, so get the value from the DB
         // This will throw a ConfigurationException if it does not
         // exist.
-        try {
-            return $this->getSettingFromDB($name);
-        } catch (ConfigurationException $e) {
-        }
+        return $this->getSettingFromDB($name);
     }
 
     /**
