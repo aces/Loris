@@ -26,8 +26,8 @@ if (!(\User::singleton())->hasPermission('user_accounts')) {
     header("HTTP/1.1 403 Forbidden");
     header("Content-Type: text/plain");
     exit(
-        "You do not have the correct permissions for this 
-         operation (need admin or user accounts)"
+        "You do not have valid permissions for this
+         operation."
     );
 }
 
