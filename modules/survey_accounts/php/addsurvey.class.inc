@@ -109,14 +109,13 @@ class AddSurvey extends \NDB_Form
              'v_VL'     => $values['VL'],
             )
         );
-        $reminder        = " already exists for given candidate for visit".
+        $msg = " already exists for given candidate for visit".
                            " ${values['VL']}, and data entry has begun or".
                            " is complete.";
         foreach ($instrument_list as $instrument) {
             if ($values['Test_name'] == $instrument['Test_name']) {
                 return array(
-                        'Test_name' => "Instrument ". $values['Test_name'].
-                                       $reminder,
+                        'Test_name' => "Instrument ".$values['Test_name'].$msg,
                        );
             }
         }
@@ -196,8 +195,8 @@ class AddSurvey extends \NDB_Form
             AND Test_name=:TN
             AND CommentID NOT LIKE 'DDE%'",
             array(
-              'TN'  => $values['Test_name'],
-              'SID' => $SessionID,
+             'TN'  => $values['Test_name'],
+             'SID' => $SessionID,
             )
         ) ?? $battery->addInstrument($values['Test_name']);
 
