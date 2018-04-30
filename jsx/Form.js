@@ -366,7 +366,7 @@ class SelectElement extends React.Component {
             name={this.props.name}
             multiple={multiple}
             className="form-control"
-            id={this.props.label}
+            id={this.props.id}
             value={value}
             onChange={this.handleChange}
             required={required}
@@ -887,7 +887,7 @@ class DateElement extends React.Component {
             type="date"
             className="form-control"
             name={this.props.name}
-            id={this.props.label}
+            id={this.props.id}
             min={this.props.minYear}
             max={this.props.maxYear}
             onChange={this.handleChange}
