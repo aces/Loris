@@ -28,14 +28,15 @@
 require_once "NDB_Config.class.inc";
 
 $config    =& NDB_Config::singleton();
-$minc_path = $config->getSetting("MINCToolsPath") ?? '';
-if (empty($minc_path)) {
-    http_response_code(500);
+try {
+    $minc_path = $config->getSetting("MINCToolsPath") ?? '';
+} catch (ConfigurationException $e){
     error_log(
         'BrainBrowser cannot load because MINCToolsPath' .
         ' is not set. Set MINCToolsPath in the database or ' .
         'disable this module'
     );
+    http_response_code(500);
     exit;
 }
 
