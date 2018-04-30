@@ -27,7 +27,7 @@
 
 require_once "NDB_Config.class.inc";
 
-$config    =& NDB_Config::singleton();
+$config =& NDB_Config::singleton();
 try {
     $minc_path = $config->getSetting("MINCToolsPath") ?? '';
 } catch (ConfigurationException $e){
