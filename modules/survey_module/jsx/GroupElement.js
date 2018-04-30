@@ -164,6 +164,137 @@ class GroupDateElement extends React.Component {
 	}
 }
 
+class GroupTimeElement extends React.Component {
+	constructor(props) {
+	    super(props);
+
+	    if(!checkInput(this.props.element.Type)) {
+	    	let hour = "";
+	    	let min = "";
+	    	if(this.props.value) {
+	    		const val = this.props.value.split(":");
+	    		hour = val[0];
+	    		min = val[1];
+	    	}
+	    	this.state = {
+	    		"hour" : hour,
+	    		"min" : min
+	    	};
+	    }
+
+	    this.updateValue = this.updateValue.bind(this);
+	}
+
+	updateValue(e) {
+		if(checkInput(this.props.element.Type)) {
+			const val = e.target.value != '' ? this.props.value : null;
+			this.props.updateAnswer(this.props.element.Name, val);
+		}
+	}
+
+	updateTime(unit, e) {
+		let val
+		if(unit == "hour") {
+			if(e.target.value == "") {
+				val = null;
+			} else if(this.state.min != "") {
+				val = e.target.value + ":" + this.state.min + ":00";
+			}
+			this.props.updateAnswer(this.props.element.Name, val);
+			this.setState({
+				"hour" : e.target.value
+			});
+		} else if(unit == "min") {
+			if(e.target.value == "") {
+				val = null;
+			} else if(this.state.hour != "") {
+				val = this.state.hour + ":" + e.target.value + ":00";
+			}
+			this.props.updateAnswer(this.props.element.Name, val);
+			this.setState({
+				"min" : e.target.value
+			});
+		}
+	}
+
+	render() {
+
+		let input = (
+			<input
+				type="time"
+				name={this.props.element.Name}
+				className="form-control"
+				onChange={this.updateValue}
+				value={this.props.value}
+			/>
+		);
+
+		if(!checkInput(this.props.element.Type)) {
+			let hourOptions = [];
+			let minOptions = [];
+			let val;
+			let i;
+
+			hourOptions.push(
+				<option value=""></option>
+			);
+			minOptions.push(
+				<option value=""></option>
+			);
+
+			for (i = 0; i < 24; i++) {
+				if (i < 10) {
+					val = "0" + i;
+				} else {
+					val = String(i);
+				}
+				hourOptions.push(
+					<option value={val}>{val}</option>
+				);
+			}
+			for (i = 0; i < 60; i++) {
+				if (i < 10) {
+					val = "0" + i;
+				} else {
+					val = String(i);
+				}
+				minOptions.push(
+					<option value={val}>{val}</option>
+				);
+			}
+
+			input = (
+				<div className="row">
+					<div className="col-xs-4">
+						<select
+							className="form-control"
+							onChange={this.updateTime.bind(this, "hour")}
+							value={this.state.hour}
+						>
+							{hourOptions}
+						</select>
+					</div>
+					<div className="col-xs-4">
+						<select
+							className="form-control"
+							onChange={this.updateTime.bind(this, "min")}
+							value={this.state.min}
+						>
+							{minOptions}
+						</select>
+					</div>
+				</div>
+			);
+		}
+
+		return (
+			<div>
+				{input}
+			</div>
+		);
+	}
+}
+
 class BaseElement extends React.Component {
 	constructor(props) {
 	    super(props);
@@ -245,6 +376,18 @@ class BaseElement extends React.Component {
 						updateAnswer = {this.props.updateAnswer}
 					/>
 				);
+				break;
+			case 'time':
+				value = this.props.value != null ? this.props.value : '';
+
+				element = (
+					<GroupTimeElement
+						element = {this.props.element}
+						value = {this.props.value}
+						updateAnswer = {this.props.updateAnswer}
+					/>
+				);
+				
 				break;
 			default:
 				element = (
