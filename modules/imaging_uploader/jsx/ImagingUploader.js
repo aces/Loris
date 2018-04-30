@@ -1,6 +1,6 @@
-import FilterForm from 'FilterForm';
-import {Tabs, TabPane} from 'Tabs';
-
+import FilterForm from 'jsx/FilterForm';
+import {TextboxElement, SelectElement, ButtonElement} from 'jsx/Form';
+import {Tabs, TabPane} from 'jsx/Tabs';
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
 import formatColumn from './columnFormatter';
@@ -108,8 +108,5 @@ class ImagingUploader extends React.Component {
     );
   }
 }
-
-ImagingUploader.propTypes = {};
-ImagingUploader.defaultProps = {};
 
 export default ImagingUploader;

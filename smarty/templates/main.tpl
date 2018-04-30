@@ -32,13 +32,7 @@
         <script type="text/javascript">
           $(document).ready(function() {
             {if $crumbs != "" && empty($error_message)}
-              var crumbs = {$crumbs|@json_encode},
-                      baseurl = "{$baseurl}",
-                      breadcrumbs = RBreadcrumbs({
-                        breadcrumbs: crumbs,
-                        baseURL: baseurl
-                      });
-              ReactDOM.render(breadcrumbs, document.getElementById("breadcrumbs"));
+              window.crumbs = {$crumbs|@json_encode};
             {/if}
 
             // Initialize bootstrap tooltip for site affiliations

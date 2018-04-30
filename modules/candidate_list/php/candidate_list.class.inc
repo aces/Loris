@@ -346,9 +346,7 @@ class Candidate_List extends \NDB_Menu_Filter
             $deps,
             array(
              $baseURL . "/js/advancedMenu.js",
-             $baseURL . "/candidate_list/js/columnFormatter.js",
              $baseURL . "/candidate_list/js/candidate_list_helper.js",
-             $baseURL . "/js/components/Form.js",
              $baseURL . "/candidate_list/js/onLoad.js",
             )
         );

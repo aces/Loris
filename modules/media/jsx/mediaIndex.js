@@ -1,5 +1,5 @@
-import FilterForm from 'FilterForm';
-import {Tabs, TabPane} from 'Tabs';
+import FilterForm from 'jsx/FilterForm';
+import {Tabs, TabPane} from 'jsx/Tabs';
 
 import MediaUploadForm from './uploadForm';
 import formatColumn from './columnFormatter';

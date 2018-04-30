@@ -14,6 +14,9 @@
  * Breadcrumbs Component.
  * Used for navigation on all Loris pages.
  */
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 class Breadcrumbs extends React.Component {
 
   constructor(props) {
@@ -24,6 +27,10 @@ class Breadcrumbs extends React.Component {
     };
 
     this.checkScreenSize = this.checkScreenSize.bind(this);
+  }
+
+  componentDidMount() {
+    console.log(crumbs);
   }
 
   componentWillMount() {
@@ -118,12 +125,14 @@ class Breadcrumbs extends React.Component {
       </div>
     );
   }
-
 }
 
-var RBreadcrumbs = React.createFactory(Breadcrumbs);
+document.addEventListener("DOMContentLoaded", evt => {
+  if (typeof crumbs != 'undefined') {
+    const breadcrumbs = (
+      <Breadcrumbs breadcrumbs={crumbs} baseURL={loris.BaseURL} />
+    );
+    ReactDOM.render(breadcrumbs, document.getElementById("breadcrumbs"));
+  }
+});
 
-window.Breadcrumbs = Breadcrumbs;
-window.RBreadcrumbs = RBreadcrumbs;
-
-export default Breadcrumbs;

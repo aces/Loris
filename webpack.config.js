@@ -4,12 +4,7 @@ var fs = require('fs');
 
 var config = [{
   entry: {
-    './htdocs/js/components/DynamicDataTable.js': './jsx/DynamicDataTable.js',
-    './htdocs/js/components/PaginationLinks.js': './jsx/PaginationLinks.js',
-    './htdocs/js/components/StaticDataTable.js': './jsx/StaticDataTable.js',
     './htdocs/js/components/Breadcrumbs.js': './jsx/Breadcrumbs.js',
-    './htdocs/js/components/Form.js': './jsx/Form.js',
-    './htdocs/js/components/Markdown.js': './jsx/Markdown.js',
     './modules/media/js/mediaIndex.js': './modules/media/jsx/mediaIndex.js',
     './modules/media/js/editFormIndex.js': './modules/media/jsx/editFormIndex.js',
     './modules/issue_tracker/js/columnFormatter.js': './modules/issue_tracker/jsx/columnFormatter.js',
@@ -18,7 +13,6 @@ var config = [{
     './modules/configuration/js/SubprojectRelations.js': './modules/configuration/jsx/SubprojectRelations.js',
     './modules/bvl_feedback/js/react.behavioural_feedback_panel.js': './modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
     './modules/data_team_helper/js/behavioural_qc_module.js': './modules/data_team_helper/jsx/behavioural_qc_module.js',
-    './modules/candidate_list/js/columnFormatter.js': './modules/candidate_list/jsx/columnFormatter.js',
     './modules/candidate_list/js/onLoad.js': './modules/candidate_list/jsx/onLoad.js',
     './modules/datadict/js/columnFormatter.js': './modules/datadict/jsx/columnFormatter.js',
     './modules/dataquery/js/react.app.js': './modules/dataquery/jsx/react.app.js',
@@ -68,22 +62,9 @@ var config = [{
     root: path.resolve(__dirname),
     alias: {
       util: 'htdocs/js/util',
-      jsx: 'jsx',
-      Breadcrumbs: 'jsx/Breadcrumbs',
-      DynamicDataTable: 'jsx/DynamicDataTable',
-      FilterForm: 'jsx/FilterForm',
-      Form: 'jsx/Form',
-      Markdown: 'jsx/Markdown',
-      PaginationLinks: 'jsx/PaginationLinks',
-      Panel: 'jsx/Panel',
-      ProgressBar: 'jsx/ProgressBar',
-      StaticDataTable: 'jsx/StaticDataTable',
-      Tabs: 'jsx/Tabs'
+      jsx: 'jsx'
     },
     extensions: ['', '.js', '.jsx']
-  },
-  externals: {
-    react: 'React'
   },
   node: {
     fs: "empty"

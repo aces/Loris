@@ -18,11 +18,11 @@
  * @version 0.0.1
  *
  */
-var Markdown = React.createClass({
-  propTypes: {
-    content: React.PropTypes.string.isRequired
-  },
-  render: function() {
+import {Component} from 'react';
+import PropTypes from 'prop-types';
+
+class Markdown extends Component{
+  render() {
     // Fix stupid-style newlines to be just \n.
     var fixedNewlines = this.props.content.replace("\r\n", "\n");
 
@@ -106,11 +106,10 @@ var Markdown = React.createClass({
     }
     return <div>{paragraphs}</div>;
   }
-});
+}
 
-var RMarkdown = React.createFactory(Markdown);
-
-window.Markdown = Markdown;
-window.RMarkdown = RMarkdown;
+Markdown.propTypes = {
+  content: PropTypes.string.isRequired
+};
 
 export default Markdown;

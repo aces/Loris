@@ -1,4 +1,4 @@
-import {Tabs, TabPane} from 'Tabs';
+import {Tabs, TabPane} from 'jsx/Tabs';
 /* global Instrument */
 /* exported RInstrumentBuilderApp */
 

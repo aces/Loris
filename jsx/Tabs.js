@@ -29,7 +29,10 @@
  * =================================================
  *
  */
-class Tabs extends React.Component {
+import {Component, Children} from 'react';
+import PropTypes from 'prop-types';
+
+class Tabs extends Component {
 
   constructor(props) {
     super(props);
@@ -132,9 +135,9 @@ class Tabs extends React.Component {
   }
 }
 Tabs.propTypes = {
-  tabs: React.PropTypes.array.isRequired,
-  defaultTab: React.PropTypes.string,
-  updateURL: React.PropTypes.bool
+  tabs: PropTypes.array.isRequired,
+  defaultTab: PropTypes.string,
+  updateURL: PropTypes.bool
 };
 Tabs.defaultProps = {
   onTabChange: function() {},
@@ -145,7 +148,7 @@ Tabs.defaultProps = {
  * TabPane component.
  * Used to wrap content for every tab.
  */
-class TabPane extends React.Component {
+class TabPane extends Component {
   render() {
     let classList = "tab-pane";
     let title;
@@ -165,10 +168,11 @@ class TabPane extends React.Component {
     );
   }
 }
+
 TabPane.propTypes = {
-  TabId: React.PropTypes.string.isRequired,
-  Title: React.PropTypes.string,
-  activeTab: React.PropTypes.string
+  TabId: PropTypes.string.isRequired,
+  Title: PropTypes.string,
+  activeTab: PropTypes.string
 };
 
 export {

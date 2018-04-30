@@ -1,4 +1,6 @@
-import ProgressBar from 'ProgressBar';
+import {Component} from 'react';
+import PropTypes from 'prop-types';
+import ProgressBar from 'jsx/ProgressBar';
 
 /**
  * Media Upload Form
@@ -385,8 +387,8 @@ class MediaUploadForm extends React.Component {
 }
 
 MediaUploadForm.propTypes = {
-  DataURL: React.PropTypes.string.isRequired,
-  action: React.PropTypes.string.isRequired
+  DataURL: PropTypes.string.isRequired,
+  action: PropTypes.string.isRequired
 };
 
 export default MediaUploadForm;

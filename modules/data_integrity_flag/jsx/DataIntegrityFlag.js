@@ -1,7 +1,10 @@
+import {Component} from 'react';
 import SetFlagForm from './SetFlagForm';
 import formatColumn from './columnFormatter';
-import {Tabs, TabPane} from 'Tabs';
-import FilterForm from 'FilterForm';
+import {Tabs, TabPane} from 'jsx/Tabs';
+import FilterForm from 'jsx/FilterForm';
+import {FormElement, SelectElement, ButtonElement} from 'jsx/Form';
+import StaticDataTable from 'jsx/StaticDataTable';
 
  /**
   * Data Integrity Flag
@@ -12,7 +15,7 @@ import FilterForm from 'FilterForm';
   * @version 1.0.0
   *
   * */
-class DataIntegrityFlag extends React.Component {
+class DataIntegrityFlag extends Component {
 
   constructor(props) {
     super(props);

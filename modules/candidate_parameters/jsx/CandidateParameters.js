@@ -3,7 +3,7 @@ import ProbandInfo from './ProbandInfo';
 import FamilyInfo from './FamilyInfo';
 import ParticipantStatus from './ParticipantStatus';
 import ConsentStatus from './ConsentStatus';
-import {Tabs, TabPane} from 'Tabs';
+import {Tabs, TabPane} from 'jsx/Tabs';
 
 class CandidateParameters extends React.Component {
 
@@ -59,8 +59,5 @@ class CandidateParameters extends React.Component {
     );
   }
 }
-
-CandidateParameters.propTypes = {};
-CandidateParameters.defaultProps = {};
 
 export default CandidateParameters;

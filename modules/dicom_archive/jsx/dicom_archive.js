@@ -1,4 +1,4 @@
-import FilterForm from 'FilterForm';
+import FilterForm from 'jsx/FilterForm';
 import formatColumn from './columnFormatter';
 
 /**
