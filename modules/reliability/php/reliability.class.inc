@@ -730,7 +730,9 @@ class Reliability extends \NDB_Menu_Filter
         $threshold = $this->getThreshholds();
         $cohort    = \Utility::getSubprojectList();
 
+        var_dump($cohort);
         foreach ($tableData['Data'] as $key => $record) {
+            var_dump($record);
 
             // Calculate and set `Reliable` column
             $instrumentThreshold = isset($record[9], $threshold[$record[9]]) ?
