@@ -450,9 +450,6 @@ class NDB_Config
         try {
             return $this->getSettingFromDB($name);
         } catch (ConfigurationException $e) {
-            error_log($e);
-            http_response_code(500);
-            return;
         }
     }
 
