@@ -1169,7 +1169,6 @@ class NDB_BVL_Instrument extends NDB_Page
                     echo "<p><b>$elname</b><br> ";
                 }
                 if (!empty($this->XINRules[$elname])) {
-                    error_log("XINRULE RUNNING    $elname");
                     $result = $this->XINRunElementRules(
                         $elname,
                         $elements,
@@ -2621,7 +2620,6 @@ class NDB_BVL_Instrument extends NDB_Page
                 $this->form->form,
                 $values
             );
-            error_log(print_r($this->form->directValues, true));
 
             if (!$this->form->validate()) {
                 $allErrors = array_merge($allErrors, $this->form->errors);
