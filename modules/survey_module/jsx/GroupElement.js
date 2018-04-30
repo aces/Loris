@@ -175,6 +175,7 @@ class BaseElement extends React.Component {
 	render() {
 		let element;
 		let classInfo = this.props.classInfo;
+		let value;
 
 		if(this.props.error) {
 			classInfo += " has-error";
@@ -182,19 +183,20 @@ class BaseElement extends React.Component {
 
 		switch(this.props.element.Type){
 			case 'text':
+				value = this.props.value != null ? this.props.value : '';
 				element = (
 					<input
 						type="text"
 						name={this.props.element.Name}
 						className="form-control"
 						onChange={this.updateValue}
-						value={this.props.value}
+						value={value}
 					/>
 				);
 				break;
 			case 'select':
 				let options = [];
-				const value = this.props.value != null ? this.props.value : '';
+				value = this.props.value != null ? this.props.value : '';
 
 				for (var key in this.props.element.Options.Values) {
 					options.push(
