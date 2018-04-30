@@ -41,6 +41,7 @@ class ElementGroup extends React.Component {
 		let elementClass;
 		let elements;
 		let error;
+		let errorMessage;
 
 		switch(this.props.element.Elements.length) {
 			case 1:
@@ -67,12 +68,13 @@ class ElementGroup extends React.Component {
 
 		if(this.props.errors[this.props.element.Name]) {
 			error = true;
+			labelClass += ' has-error';
 		}
 
 		elements = this.props.element.Elements.map(function(element) {
 			if(!error && this.props.errors[element.Name]) {
 				error = true;
-				labelClass += ' has-error';
+				errorMessage = this.props.errors[element.Name];
 			}
 			return (
 				<BaseElement
@@ -81,6 +83,7 @@ class ElementGroup extends React.Component {
 					value={this.props.values[element.Name]}
 					updateAnswer={this.props.updateAnswer}
 					error={error}
+					errorMessage={errorMessage}
 				/>
 			);
 		}.bind(this));
@@ -176,9 +179,19 @@ class BaseElement extends React.Component {
 		let element;
 		let classInfo = this.props.classInfo;
 		let value;
+		let errorMessage;
 
 		if(this.props.error) {
 			classInfo += " has-error";
+		}
+
+		if(this.props.errorMessage) {
+			classInfo += " questionError";
+			errorMessage = (
+				<div>
+					{this.props.errorMessage}
+				</div>
+			);
 		}
 
 		switch(this.props.element.Type){
@@ -244,6 +257,7 @@ class BaseElement extends React.Component {
 		return (
 			<div className={classInfo}>
 				{element}
+				{errorMessage}
 			</div>
 		);
 	}
