@@ -86,7 +86,8 @@ class DirectEntry extends React.Component {
 	       	}, this.setupPageValues.bind(this, page));
 	      }.bind(this)
 	    }).fail((responseData) => {
-			error_log("HERERERERER");
+			// TODO display error to user 
+			console.log(responseData);
 		});
 
 		
