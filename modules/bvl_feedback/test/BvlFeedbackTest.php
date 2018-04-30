@@ -40,11 +40,11 @@ class BvlFeedbackTest extends LorisIntegrationTest
     {
         // Candidate Profile
         $this->safeGet($this->url . "/300002/");
-        var_dump($this->webDriver->getPageSource());
         $this->webDriver->executescript(
             "document.querySelector('#nav-right >".
             " li:nth-child(1) > a > span').click()"
         );
+        var_dump($this->webDriver->getPageSource());
         $text = $this->webDriver->executescript(
             "return document.querySelector".
                       "('#bvl_feedback_menu > div.breadcrumb-panel > a').textContent"
