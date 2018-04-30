@@ -29,6 +29,10 @@ if ($_POST['action'] == 'upload') {
     if (!file_exists(__DIR__ . "/../user_uploads/")) {
         header("HTTP/1.1 400 Bad Request");
         echo "File upload failed. Default user_uploads directory not found.";
+    } elseif (!is_writable(__DIR__ . "/../user_uploads/")) {
+        header("HTTP/1.1 400 Bad Request");
+        echo "File upload failed. Default user_uploads directory"
+        . " does not appear to be writeable.";
     } else {
         $target_path = $base_path . $fileName;
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {
