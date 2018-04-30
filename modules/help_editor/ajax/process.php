@@ -15,9 +15,6 @@
 
 namespace LORIS\help_editor;
 
-require_once 'Database.class.inc';
-require_once 'helpfile.class.inc';
-
 $user = \User::singleton();
 if (!$user->hasPermission('context_help')) {
     header("HTTP/1.1 403 Forbidden");
@@ -26,9 +23,8 @@ if (!$user->hasPermission('context_help')) {
     );
 }
 
-$DB = \Database::singleton();
-//Get the default values
-// Sanitize user input
+$DB = (\NDB_Factory::singleton())->database();
+
 if (!empty($_POST['helpID'])
     && !empty($_POST['title'])
     && !empty($_POST['content'])

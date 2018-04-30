@@ -65,12 +65,11 @@ $("#save-help").click(function(e) {
                 location.href = document.referrer;
             });
         },
-        error: function(xhr, errStatus, errThrown) {
-            console.log("THIS IS THE STATUS:" + errStatus);
-            console.error(errThrown);
+        error: function(xhr, errorCode, errorMsg) {
+            console.error(xhr);
             swal({
                 title: "Content update unsuccessful.",
-                text: xhr.responseText,
+                text: errorCode + ": " + xhr.status + " " + errorMsg,
                 type: "error",
                 confirmButtonText: "Try again",
                 closeOnConfirm: true,
