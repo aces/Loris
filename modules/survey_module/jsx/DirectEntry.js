@@ -24,7 +24,12 @@ class DirectEntry extends React.Component {
 	    	"margin-top": height
 	    }
 	    let page = -1;
-		const url = new URL(window.location.href);
+		let url = window.location;
+		if (!window.location.origin) {
+  			url.origin = url.protocol
+  				+ "//" + url.hostname
+  				+ (url.port ? ':' + url.port: '');
+		}
 
 	    this.nextPage = this.nextPage.bind(this);
 	    this.prevPage = this.prevPage.bind(this);
