@@ -66,6 +66,7 @@ if (strpos($_REQUEST['minc_id'], 'l') !== false) {
 
 if (!is_readable($minc_path)) {
     if (!file_exists($minc_path)) {
+        http_response_code(500);
         error_log("ERROR: $minc_path exists in the DB but not in the file system");
         exit();
     } else {
@@ -73,6 +74,7 @@ if (!is_readable($minc_path)) {
             "$minc_path was requested but is not readable. " .
             'Possible permission error'
         );
+        http_response_code(403);
         exit();
     }
 } else {
