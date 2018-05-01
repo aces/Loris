@@ -725,12 +725,16 @@ class Utility
      * This should return an array in a format suitable for addSelect() from
      * NDB_Page
      *
-     * @return associative array of test_names in a Test_Name => "Full Name"
+     * @return array $instruments associative array of test_names in a Test_Name => "Full Name"
      */
     static function getDirectInstruments()
     {
         $DB            =& Database::singleton();
+<<<<<<< HEAD
         $instruments   = array();
+=======
+        $instruments = [];
+>>>>>>> fixed bug where undefined array  inside getDirectInstruments() could occur
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true",
             array()
