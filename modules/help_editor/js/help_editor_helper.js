@@ -41,7 +41,8 @@ $("#save-help").click(function(e) {
         section = $("#section").val(),
         subsection = $("#subsection").val(),
         parentID = $("#parentID").val(),
-        helpID = $("#helpID").val();
+        helpID = $("#helpID").val(),
+        returnString = $("#return").val();
 
     $.ajax({
         type: 'POST',
@@ -58,8 +59,11 @@ $("#save-help").click(function(e) {
             swal({
                 title: "Content update successful!",
                 type: "success",
-                confirmButtonText: "Return to " + title,
+                showCancelButton: true,
+                confirmButtonText: returnString,
+                cancelButtonText: "Close",
                 closeOnConfirm: false,
+                closeOnCancel: true,
             },
             function(){
                 location.href = document.referrer;

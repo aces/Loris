@@ -33,8 +33,8 @@
         <input type="hidden" id="helpID" value="{$helpID}">
         <input type="hidden" id="parentID" value="{$parentID}">
         <input class="btn btn-sm btn-primary col-sm-offset-3" id="save-help" name="fire_away" value="Save" type="submit" />
-        <input type="button" name="reset" value="Reset" class="btn btn-sm btn-primary" onclick="location.href='{$baseurl}/help_editor/edit_help_content/?section={$section}&subsection={$subsection}'" />
+        <input type="reset" name="reset" value="Reset" class="btn btn-sm btn-primary" />
         <input class="btn btn-sm btn-primary" name="preview" value="Preview" type="button" />
-        <input class="btn btn-sm btn-primary" onclick="location.href='{$url}'" value="Return to {$module_name}" type="button" />
+        <input class="btn btn-sm btn-primary" id="return" onclick="location.href='{$url}'" value="Return to {$module_name}" type="button" />
     </div>
 </div>
