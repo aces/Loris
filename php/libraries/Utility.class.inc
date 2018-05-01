@@ -1288,5 +1288,97 @@ class Utility
             return $val;
         }
     }
+
+    /**
+     * Takes in a string supplied by a user (e.g. an html form submission)
+     * and two arrays containing strings representing whitelisted "(tags & attributes)"
+     * used to filter the non-whitelisted data from the user supplied string.
+     *
+     * This function can be used to prevent admins from stealing visitor info or
+     * mine cryptographic-currency on the visitor's browser without knowledge.
+     *
+     * @param string $user_data The string containing possible "security issue" content.
+     *
+     * @param array $tags_whitelisted The array of allowed (whitelisting) tags.
+     *
+     * @param array $tag_attributes_whitelisted The array of allowed (whitelisting) tag attributes.
+     *
+     * @return string $result The formatted string with only the allowed whitelisting data.
+     *
+     * @note See http://php.net/manual/en/class.domdocument.php and http://php.net/manual/en/libxml.constants.php
+     * @note Used in the "configuration" module.
+     * @note $tags_whitelisted must contain "html" and "body"
+     */
+    static function getWhiteListingString($user_data, $tags_whitelisted, $tag_attributes_whitelisted)
+    {
+        if (!strlen($user_data)) { return ""; } // Error Handler for empty $user_data.
+        //$user_data = html_entity_decode($user_data);
+        $document = new DOMDocument();
+        // mb_convert_encoding used to process UTF-8 pages and so user data does not alter.
+        $converted_user_data = mb_convert_encoding($user_data, "HTML-ENTITIES", "UTF-8");
+        libxml_use_internal_errors(true); // Suppress warnings, such as $user_data is invalid HTML.
+        $libXmlConstants = LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD;
+        if ($document->loadHTML($converted_user_data, $libXmlConstants)) {
+            foreach ($document->getElementsByTagName("*") as $tag) {
+                if (!in_array($tag->tagName, $tags_whitelisted)) {
+                    $tag->parentNode->removeChild($tag);
+                }
+                else {
+                    foreach ($tag->attributes as $attribute) {
+                        if (!in_array($attribute->nodeName, $tag_attributes_whitelisted)) {
+                            $tag->DOMElement::removeAttribute($attribute->nodeName);
+                        }
+                    }
+                }
+            }
+        } else { // DOMDocument::loadHTML failure
+            // We can benefit by logging $user_data here
+            error_log("Warning! Inside Utility.class.inc", 0);
+            error_log("getWhiteListingString(..,..,..); had unusual case occur with user_data:", 0);
+            error_log($user_data, 0);
+            return "";
+        }
+        $result = $document->saveHTML();
+        if (!in_array("img", $tags_whitelisted)) {
+            $img_arrays = null;
+            preg_match_all('/<img[^>]+>/i', $result, $img_arrays);
+            if (!empty($img_arrays)) {
+                foreach ($img_arrays as $img_array) {
+                    if (!empty($img_array)) {
+                        $result = str_replace($img_array, "", $result);
+                    }
+                }
+            }
+        }
+        libxml_clear_errors(); // Clear libxml error buffer.
+        if (!$result) { // Error Handler for if saveHTML() returns FALSE.
+            $result = "";
+        }
+        return $result;
+    }
+
+    /**
+     * Update the string passing the Security Check for the database,
+     * where the table is 'Config' and where ID = 3
+     * Takes in a string containing possible "security issue" content.
+     *
+     * @param string $value The string supplied by a user (e.g. an html form submission).
+     *
+     * @param int $key The int for the individual key.
+     *
+     * @return string $result for the Study Description.
+     *
+     * @note Study Description field within the Configuration module.
+     * @note Go to Admin -> Configuration, choose GUI and modify the Study Description field to change it.
+     */
+    static function updateStudyDescriptionPassingSecurityCheckString($value, $key) {
+        if ($key == 3) {
+            $whitelist_tag_rules = array("html", "body", "a", "br", "em", "hr", "i", "li", "ol", "p", "s", "span", "table", "tr", "td", "u", "ul");
+            $whitelist_tag_attributes_rules = array("class", "id", "style");
+            $value = \Utility::getWhiteListingString($value, $whitelist_tag_rules, $whitelist_tag_attributes_rules);
+        }
+        return $value;
+    }
+
 }
 ?>

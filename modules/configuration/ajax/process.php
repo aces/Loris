@@ -31,6 +31,10 @@ $client->initialize();
 $DB =& Database::singleton();
 foreach ($_POST as $key => $value) {
     if (is_numeric($key)) { //update
+
+        // Security Check for Study Description.
+        $value = \Utility::updateStudyDescriptionPassingSecurityCheckString($value, $key);
+
         if ($value == "") {
             $DB->delete('Config', array('ID' => $key));
         } else {
