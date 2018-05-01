@@ -111,7 +111,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                     " -p" . escapeshellarg($db_config['quatPassword']).
                     " " . escapeshellarg($db_config['database']).
                     " < " . $this->path . "project/tables_sql/".
-                    escapeshellarg($instrument->table).".sql"
+                    escapeshellarg("$instrument->table.sql");
                 );
             }
         }
