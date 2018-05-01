@@ -275,8 +275,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 return '? (File not found in filesystem)';
             }
         }
-        $fp       = fopen($filename, "r");
-        $db       = \Database::singleton();
+        $fp = fopen($filename, "r");
+        $db = \Database::singleton();
 
         while (($line = fgets($fp, 4096)) !== false) {
             $pieces = explode("{@}", $line);
@@ -367,8 +367,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 return '? (File not found in filesystem)';
             }
         }
-        $fp       = fopen($filename, "r");
-        $db       = \Database::singleton();
+        $fp = fopen($filename, "r");
+        $db = \Database::singleton();
 
         while (($line = fgets($fp, 4096)) !== false) {
             $pieces       = explode("{@}", $line);
