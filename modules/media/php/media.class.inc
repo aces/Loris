@@ -57,7 +57,7 @@ class Media extends \NDB_Menu_Filter
     /**
      * Create a form to filter media by various criteria
      *
-     * @return bool
+     * @return void
      */
     function setup()
     {
@@ -134,7 +134,7 @@ class Media extends \NDB_Menu_Filter
     /**
      * Build a list of media to display in Data Table
      *
-     * @return bool
+     * @return void
      * @throws \DatabaseException
      */
     function _setupVariables()
@@ -219,7 +219,7 @@ class Media extends \NDB_Menu_Filter
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
-     * @return a json encoded string of the headers and data from this table
+     * @return string a json encoded string of the headers and data from this table
      */
     function toJSON()
     {

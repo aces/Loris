@@ -69,7 +69,7 @@ class Timepoint_List extends \NDB_Menu
     /**
      * Setup function
      *
-     * @return null
+     * @return void
      */
     function setup()
     {

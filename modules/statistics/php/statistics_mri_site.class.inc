@@ -87,7 +87,7 @@ class Statistics_Mri_Site extends Statistics_Site
      * @param string $projectID the value of projectID
      * @param string $issue     the value of issue
      *
-     * @return void
+     * @return array
      */
     function _getResults($centerID, $projectID, $issue)
     {

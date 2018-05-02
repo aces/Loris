@@ -101,7 +101,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
      * Sets up all the class variables needed for the
      * acknowledgements menu filter
      *
-     * @return true on success
+     * @return void
      */
     function _setupVariables()
     {
@@ -157,7 +157,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

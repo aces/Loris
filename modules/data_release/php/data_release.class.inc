@@ -29,7 +29,7 @@ class Data_Release extends \NDB_Menu_Filter
     /**
      * Setup variables
      *
-     * @return None
+     * @return void
      */
     function _setupVariables()
     {

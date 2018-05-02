@@ -42,7 +42,7 @@ class Edit_Help_Content extends \NDB_Form
      /**
       * Returns default help content of the page
       *
-      * @return default array
+      * @return array
       */
     function _getDefaults()
     {
@@ -105,7 +105,7 @@ class Edit_Help_Content extends \NDB_Form
      /**
       * Process function
       *
-      * @param string $values the value
+      * @param array $values the values being processed
       *
       * @return void
       */

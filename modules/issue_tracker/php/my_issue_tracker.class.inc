@@ -35,7 +35,7 @@ class My_Issue_Tracker extends \NDB_Menu_Filter_Form
      * Set up the variables required by NDB_Menu_Filter class for constructing
      * a query
      *
-     * @return null
+     * @return void
      */
     function _setupVariables()
     {
@@ -284,7 +284,7 @@ WHERE Parent IS NOT NULL ORDER BY Label",
      * @param string $field        filter field
      * @param string $val          filter value
      *
-     * @return null
+     * @return string
      */
     function _addValidFilters($prepared_key, $field, $val)
     {
@@ -350,7 +350,7 @@ WHERE Parent IS NOT NULL ORDER BY Label",
      *         will be used for the Navigation Links in  the viewSession
      *         page.
      *
-     * @return associative array
+     * @return array
      */
     function toArray()
     {

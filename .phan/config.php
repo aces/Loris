@@ -8,9 +8,7 @@ return [
 	// This is false on the assumption that that's a typo.
 	// It doesn't seem to have any effect on LORIS's codebase anyways.
 	"quick_mode" => false,
-	// FIXME: analyze signature compatibility should be true, but
-	// there's too many other things to fix first.
-	"analyze_signature_compatibility" => false,
+	"analyze_signature_compatibility" => true,
 	// FIXME: allow_missing_properties should be false, but there's
 	// too many other things to fix first.
 	"allow_missing_properties" => true,
@@ -51,7 +49,7 @@ return [
 	"directory_list" => [
 		/* This doesn't include php/installer, because there's
 		   (intentionally) classes in the installer namespace
-                   which redeclare classes from php/libraries, in order
+           which redeclare classes from php/libraries, in order
 		   to bootstrap the installer before the config/database
 		   is set up */
 		"php/libraries",

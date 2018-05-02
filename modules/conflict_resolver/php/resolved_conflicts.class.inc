@@ -45,7 +45,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
     /**
      * Sets up the query for the resolved_conflicts submodule
      *
-     * @return none
+     * @return void
      */
     function _setupVariables()
     {
@@ -176,7 +176,7 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
     /**
      * Adds the form elements required for the filter
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

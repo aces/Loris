@@ -57,7 +57,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     /**
      * Sets up the Filter Variables
      *
-     * @return boolean
+     * @return void
      */
     function _setupVariables()
     {
@@ -106,7 +106,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      /**
      * Sets up the smarty menu filter items for the imaging uploader
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -658,7 +658,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
-     * @return a json encoded string of the headers and data from this table
+     * @return string a json encoded string of the headers and data from this table
      */
     function toJSON()
     {

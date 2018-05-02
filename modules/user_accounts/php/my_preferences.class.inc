@@ -40,7 +40,7 @@ class My_Preferences extends \NDB_Form
     /**
      * Computes the initial values this page will be filled with.
      *
-     * @return the default values for the initial state of this page.
+     * @return array the default values for the initial state of this page.
      */
     function _getDefaults()
     {
