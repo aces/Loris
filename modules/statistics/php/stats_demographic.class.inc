@@ -227,6 +227,11 @@ class Stats_Demographic extends \NDB_Form
         $this->tpl_data['Subprojects'] = $subprojects;
         $this->tpl_data['Visits']      = $Visits;
 
+        // PREVENT Undefined property Console Output
+        if (!isset($this->params)) {
+            $this->params = null;
+        }
+
         //REGISTERED CANDIDATES ROW
         $result = $DB->pselect(
             "SELECT s.subprojectid as rowid,
