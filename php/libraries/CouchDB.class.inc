@@ -70,7 +70,14 @@ class SocketWrapper
      */
     function open()
     {
-        $this->socket = fsockopen($this->host, $this->port);
+        if (strpos($this->host, "%") !== false) { // %COUCH_HOSTNAME%
+            $this->socket = false;
+        }
+        if (!is_numeric($this->port)) { // %COUCH_PORT%
+            $this->socket = false;
+        } else {
+            $this->socket = fsockopen($this->host, $this->port);
+        }
         if ($this->socket === false) {
             throw new \LorisException(
                 "Could not connect to CouchDB server at $this->host:$this->port"
