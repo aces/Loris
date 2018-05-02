@@ -91,6 +91,8 @@ class Instrument_List extends \NDB_Menu_Filter
     {
         // Don't call parent setup, we don't want it to try to run any SQL
 
+        $DB = \Database::singleton();
+        
         // set template data
         $this->tpl_data['candID']    = $_REQUEST['candID'];
         $this->tpl_data['sessionID'] = $_REQUEST['sessionID'];
@@ -126,6 +128,26 @@ class Instrument_List extends \NDB_Menu_Filter
             $prevSubgroup = null;
 
             foreach ($listOfInstruments as $instrument) {
+                $isSurvey = $DB->pselectOne(
+                    "SELECT IsDirectEntry
+                    FROM test_names
+                    WHERE Test_name=:TN",
+                    array(
+                      'TN' => $instrument['Test_name'],
+                    )
+                );
+
+                $isSent = $DB->pselectOne(
+                    "SELECT ID
+                    FROM participant_accounts
+                    WHERE Test_name=:TN
+                    AND CommentID=:CID",
+                    array(
+                      'TN'  => $instrument['Test_name'],
+                      'CID' => $instrument['CommentID'],
+                    )
+                );
+ 
                 // print the sub group header row
                 if ($instrument['Sub_group'] != $prevSubgroup) {
                     $x++;
@@ -144,6 +166,11 @@ class Instrument_List extends \NDB_Menu_Filter
 
                 $Ins = "instruments";
 
+                $val = !$isSent;
+                if ($isSurvey == '1' && !$isSent) {
+                    $this->tpl_data[$Ins][$x][$i]['survey'] = $isSurvey; //link is blocked
+                }
+                
                 $ins = $instrument['Full_name'];
                 $this->tpl_data[$Ins][$x][$i]['fullName'] = $ins;
 
@@ -320,5 +347,17 @@ class Instrument_List extends \NDB_Menu_Filter
             )
         );
     }
+
+    function getCSSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            array($baseURL . "/instrument_list/css/instrument_list.css")
+        );
+    }
+
 }
 ?>
