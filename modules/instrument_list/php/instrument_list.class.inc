@@ -92,7 +92,7 @@ class Instrument_List extends \NDB_Menu_Filter
         // Don't call parent setup, we don't want it to try to run any SQL
 
         $DB = \Database::singleton();
-        
+
         // set template data
         $this->tpl_data['candID']    = $_REQUEST['candID'];
         $this->tpl_data['sessionID'] = $_REQUEST['sessionID'];
@@ -133,7 +133,7 @@ class Instrument_List extends \NDB_Menu_Filter
                     FROM test_names
                     WHERE Test_name=:TN",
                     array(
-                      'TN' => $instrument['Test_name'],
+                     'TN' => $instrument['Test_name'],
                     )
                 );
 
@@ -143,11 +143,11 @@ class Instrument_List extends \NDB_Menu_Filter
                     WHERE Test_name=:TN
                     AND CommentID=:CID",
                     array(
-                      'TN'  => $instrument['Test_name'],
-                      'CID' => $instrument['CommentID'],
+                     'TN'  => $instrument['Test_name'],
+                     'CID' => $instrument['CommentID'],
                     )
                 );
- 
+
                 // print the sub group header row
                 if ($instrument['Sub_group'] != $prevSubgroup) {
                     $x++;
@@ -168,9 +168,9 @@ class Instrument_List extends \NDB_Menu_Filter
 
                 $val = !$isSent;
                 if ($isSurvey == '1' && !$isSent) {
-                    $this->tpl_data[$Ins][$x][$i]['survey'] = $isSurvey; //link is blocked
+                    $this->tpl_data[$Ins][$x][$i]['survey'] = $isSurvey;
                 }
-                
+
                 $ins = $instrument['Full_name'];
                 $this->tpl_data[$Ins][$x][$i]['fullName'] = $ins;
 
@@ -348,6 +348,11 @@ class Instrument_List extends \NDB_Menu_Filter
         );
     }
 
+    /**
+     * Gathers CSS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
     function getCSSDependencies()
     {
         $factory = \NDB_Factory::singleton();
