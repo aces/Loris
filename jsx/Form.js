@@ -1284,6 +1284,7 @@ LinkElement.defaultProps = {
  * Button component
  * React wrapper for <button> element, typically used to submit forms
  */
+
 class ButtonElement extends React.Component {
   constructor() {
     super();
@@ -1299,6 +1300,8 @@ class ButtonElement extends React.Component {
       <div className="row form-group">
         <div className={this.props.columnSize}>
           <button
+            {...(this.props.id ? {id: this.props.id} : {})}
+            {...(this.props.name ? {name: this.props.name} : {})}
             type={this.props.type}
             className={this.props.buttonClass}
             onClick={this.handleClick}
