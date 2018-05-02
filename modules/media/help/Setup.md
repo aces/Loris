@@ -27,7 +27,7 @@ To see if your web server's user or group owns the upload path, run:
 `ls -ld /data/uploads | awk '{ print "user:" $3 ", group:" $4 }'`
 
 If neither owns the folder, you should run the following two commands:
-
-`sudo chown <unix-user>:<web-server-group> /data/uploads`
-
-`chmod 775 /data/uploads`
+```
+sudo chown <unix-user>:<web-server-group> /data/uploads
+sudo chmod 775 /data/uploads
+```
