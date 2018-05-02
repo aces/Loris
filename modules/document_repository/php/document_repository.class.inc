@@ -78,10 +78,9 @@ class Document_Repository extends \NDB_Menu_Filter
                           'v.Data_dir',
                           'v.Date_uploaded',
                          );
-
-        $openAccordion = $_GET['openAccordion'];
+        $openAccordion = isset($_GET['openAccordion']) ?? false;
         $this->tpl_data['openAccordion'] = $openAccordion;
-        $filtered = $_GET['filtered'];
+        $filtered = isset($_GET['filtered']) ?? null;
         $this->tpl_data['filtered'] = $filtered;
         $this->query        = $query;
         $this->group_by     = '';
@@ -172,7 +171,13 @@ class Document_Repository extends \NDB_Menu_Filter
         $this->addBasicText('version', 'Version:');
 
         $this->addSelect('File_type', 'File type:', $fileTypes);
-        $this->addSelect('File_category', 'File category:', $fileCategories);
+        // Note: $fileCategories = $fileCategories ?? array()
+        // handles the case where $fileCategories hasn't been initiated.
+        $this->addSelect(
+            'File_category',
+            'File category:',
+            $fileCategories            = $fileCategories ?? array()
+        );
         $this->tpl_data['Sites']       = $list_of_sites;
         $this->tpl_data['Instruments'] = $list_of_instruments;
         $user   =& \User::singleton();
@@ -310,6 +315,7 @@ class Document_Repository extends \NDB_Menu_Filter
         $query    = "SELECT * FROM document_repository_categories".
                     " ORDER BY parent_id ASC";
         $dbresult = $DB->pselect($query, array());
+        $tree     = new \stdClass();
         foreach ($dbresult as $row) {
             $results[] =$row;
             $tree      = null;
@@ -340,6 +346,7 @@ class Document_Repository extends \NDB_Menu_Filter
         // as json and then decoding it into a php associative array
         $tmpIDCategories  = json_decode(json_encode($tree), true);
         $categoryOrdering = $this->parseTree($tmpIDCategories);
+        $fileCategories   = array();
 
         foreach ($categoryOrdering as $order) {
             foreach ($IDCategories as $key=>$value) {
