@@ -166,7 +166,6 @@ class Instrument_List extends \NDB_Menu_Filter
 
                 $Ins = "instruments";
 
-                $val = !$isSent;
                 if ($isSurvey == '1' && !$isSent) {
                     $this->tpl_data[$Ins][$x][$i]['survey'] = $isSurvey;
                 }
