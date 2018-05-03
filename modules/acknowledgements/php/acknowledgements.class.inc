@@ -148,8 +148,6 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
                               );
 
         $this->tpl_data['citation_policy'] = $config->getSetting('citation_policy');
-
-        return true;
     }
 
     /**
@@ -205,8 +203,6 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
         $this->addBasicDate('addstart_date', 'Start Date:', $dateOptions);
         $this->addBasicDate('addend_date', 'End Date:', $dateOptions);
         $this->addSelect('addpresent', 'Present?', $present);
-
-        return true;
     }
 
     /**
