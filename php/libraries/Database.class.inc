@@ -730,9 +730,9 @@ class Database
     }
 
     /**
-     * Runs a query as a prepared statement and returns the values of the first
-     * column in the select statement. If multiple columns are given, only the first
-     * will be returned.
+     * Runs a query as a prepared statement and returns the values of the
+     * column given in the select statement. If multiple columns are given, an error
+     * is thrown.
      *
      * @param string $query  The SQL SELECT query to be run
      * @param array  $params Values to use for binding to prepared statement
@@ -740,7 +740,7 @@ class Database
      * @throws DatabaseException if the query selected more than one column
      *
      * @return array Associative array of form rowID=>value containing all values
-     *               for the first element of the select statement
+     *               for the only column of the select statement
      */
     function pselectCol($query, $params)
     {

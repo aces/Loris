@@ -33,6 +33,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
 
     /**
      * ID of the uploaded file in mri_upload table (if upload successful).
+     * If the file is a reupload of an existing file, then it will be set to
+     * the ID of the original upload.
      */
     var $mri_upload_id;
 
@@ -294,7 +296,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////////
             $pcv  = $pscid . "_" . $candid . "_" . $visit_label;
             $pcvu = $pcv . "_";
-            if ((!preg_match("/{$pcv}\.(zip|tgz|tar.gz)/", $file_name))
+            if ((!preg_match("/^{$pcv}\.(zip|tgz|tar.gz)/", $file_name))
                 && (!preg_match("/^{$pcvu}.*(\.(zip|tgz|tar.gz))/", $file_name))
             ) {
                     $errors[] = "File name must match " . $pcv .
@@ -453,6 +455,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             );
             if (!empty($id)) {
                 $db->update('mri_upload', $values, array('UploadID' => $id));
+                $this->mri_upload_id = $id;
+
                 return true;
             }
         }

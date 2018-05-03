@@ -4,7 +4,7 @@
  * This class features the code for the menu portion of the Loris issue
  * tracker.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category   Loris
  * @package    Main
@@ -272,8 +272,6 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
         $this->addBasicDate('minDate', 'Created After', $dateOptions);
         $this->addBasicDate('maxDate', 'Created Before', $dateOptions);
         $this->addCheckbox('watching', 'Watching', array('value' => '1'));
-
-        $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
     }
 
 
