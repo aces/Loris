@@ -242,15 +242,6 @@ var CandidateInfo = React.createClass(
         }
       }
 
-      var snacks = {
-        1: 'Pretzel',
-        57: 'Goldfish',
-        15: 'Cheezball',
-        25: 'Gummi worm',
-        33: 'Bugle',
-        45: 'Fruit rollup',
-        102: 'Fruit by the foot'
-      };
       return (
         <div className="row">
           <div className={alertClass} role="alert" ref="alert-message">
