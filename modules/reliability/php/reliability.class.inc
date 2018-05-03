@@ -14,7 +14,7 @@ namespace LORIS\reliability;
 
 //@codingStandardsIgnoreStart
 function map_cIDs($array){
-    $new_array;
+    $new_array = [];
     for($i = 0; $i < count($array); $i++){
         $element = $array[$i];
         $new_array[$element['CommentID']] = $element['reliability_center_id'];

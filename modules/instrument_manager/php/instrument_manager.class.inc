@@ -88,7 +88,10 @@ class Instrument_Manager extends \NDB_Menu_Filter
             );
             if ($exists <= 0) {
                 $db_config = $config->getSetting('database');
-                exec("php generate_tables_sql_and_testNames.php < $new_file");
+                exec(
+                    'php generate_tables_sql_and_testNames.php < '
+                    . escapeshellarg($new_file)
+                );
 
                 $instrument = \NDB_BVL_Instrument::factory(
                     $instname,
@@ -108,7 +111,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                     " -p" . escapeshellarg($db_config['quatPassword']).
                     " " . escapeshellarg($db_config['database']).
                     " < " . $this->path . "project/tables_sql/".
-                    $instrument->table.".sql"
+                    escapeshellarg($instrument->table . '.sql')
                 );
             }
         }
