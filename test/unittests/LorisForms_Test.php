@@ -30,7 +30,7 @@ class LorisForms_Test extends TestCase
     /**
      * Creates a new LorisForm to use for testing
      *
-     * @return none
+     * @return void
      */
     function setUp()
     {
@@ -45,7 +45,7 @@ class LorisForms_Test extends TestCase
      * @param string $type The expected type of this element
      *                     (ie select, checkbox, etc)
      *
-     * @return none, but makes assertions
+     * @return void, but makes assertions
      */
     function assertType($el, $type)
     {
@@ -68,7 +68,7 @@ class LorisForms_Test extends TestCase
      * @param string $label The expected type of this element
      *                      (ie select, checkbox, etc)
      *
-     * @return none, but makes assertions
+     * @return void, but makes assertions
      */
     function assertLabel($el, $label)
     {
@@ -88,7 +88,7 @@ class LorisForms_Test extends TestCase
      * Test that the addSelect wrapper adds an element of the appropriate
      * type to the page
      *
-     * @return none
+     * @return void
      */
     function testAddSelect()
     {
@@ -103,7 +103,7 @@ class LorisForms_Test extends TestCase
      * Test that the addSelect wrapper adds an element of the appropriate
      * type to the page
      *
-     * @return none
+     * @return void
      */
     function testAddMultiSelect()
     {
@@ -131,7 +131,7 @@ class LorisForms_Test extends TestCase
      * Test that the addText wrapper adds an element of the appropriate
      * type to the page
      *
-     * @return none
+     * @return void
      */
     function testAddText()
     {
@@ -144,7 +144,7 @@ class LorisForms_Test extends TestCase
      * Test that the addDate wrapper adds an element of the appropriate
      * type to the page
      *
-     * @return none
+     * @return void
      */
     function testAddDate()
     {
@@ -158,7 +158,7 @@ class LorisForms_Test extends TestCase
      * Test that the addDate wrapper adds an element of the appropriate
      * type to the page
      *
-     * @return none
+     * @return void
      */
     function testAddFile()
     {
@@ -172,7 +172,7 @@ class LorisForms_Test extends TestCase
      * Test that the addDate wrapper adds an element of the appropriate
      * type to the page
      *
-     * @return none
+     * @return void
      */
     function testAddPassword()
     {
@@ -186,7 +186,7 @@ class LorisForms_Test extends TestCase
      * Test that the addElement wrapper with type "select" adds an element of
      * the appropriate type to the page
      *
-     * @return none
+     * @return void
      */
     function testAddElementSelect()
     {
@@ -202,7 +202,7 @@ class LorisForms_Test extends TestCase
      * Test that the addElement wrapper with type "date" adds an element of
      * the appropriate type to the page
      *
-     * @return none
+     * @return void
      */
     function testAddElementDate()
     {
@@ -218,7 +218,7 @@ class LorisForms_Test extends TestCase
      * Test that the addElement wrapper with type "text" adds an element of
      * the appropriate type to the page
      *
-     * @return none
+     * @return void
      */
     function testAddElementText()
     {
@@ -234,7 +234,7 @@ class LorisForms_Test extends TestCase
      * Test that the addElement wrapper with type "text" adds an element of
      * the appropriate type to the page
      *
-     * @return none
+     * @return void
      */
     function testAddElementFile()
     {
@@ -250,7 +250,7 @@ class LorisForms_Test extends TestCase
      * Test that the addElement wrapper with type "password" adds an element of
      * the appropriate type to the page
      *
-     * @return none
+     * @return void
      */
     function testAddElementPassword()
     {
