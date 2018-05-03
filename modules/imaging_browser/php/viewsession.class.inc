@@ -78,7 +78,7 @@ class ViewSession extends \NDB_Form
     /**
      * Sets up main parameters
      *
-     * @return NULL
+     * @return void
      */
     function setup()
     {
@@ -739,7 +739,7 @@ class ViewSession extends \NDB_Form
     /**
      * Get js Dependencies
      *
-     * @return string
+     * @return array
      */
     function getJSDependencies()
     {

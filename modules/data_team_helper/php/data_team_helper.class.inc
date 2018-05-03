@@ -42,7 +42,7 @@ class Data_Team_Helper extends \NDB_Form
     /**
      * Sets up main parameters
      *
-     * @return NULL
+     * @return void
      */
     function setup()
     {

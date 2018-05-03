@@ -2265,12 +2265,14 @@ class LorisFormElement
     }
 
     /**
-     * Stub. Does nothing.
+     * Stub. Does nothing. Child classes may return nearly any type
+     * as relevant for the value of their element type.
      *
-     * @return void
+     * @return array|string|bool|null
      */
     function getValue()
     {
+        return null;
     }
 };
 
@@ -2332,7 +2334,8 @@ class LorisFormFileElement extends LorisFormElement
      * Extracts the value of the file as represented in PHP $_FILES
      * superglobal. This seems to be how QuickForm handled it.
      *
-     * @return array of the form used by $_FILES superglobal
+     * @return array|false of the form used by $_FILES superglobal or false
+     *         on failure
      */
     function getValue()
     {

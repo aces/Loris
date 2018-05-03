@@ -86,8 +86,7 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
      *
      * @param array $values form values
      *
-     * @return void
-     * @access private
+     * @return bool true if successful
      */
     function _process($values)
     {

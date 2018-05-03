@@ -361,10 +361,9 @@ class NDB_BVL_Instrument extends NDB_Page
 
 
     /**
-     * Method to display the form - usually not overridden as it
-     * includes all the base code that any instrument will require.
+     * Method to display the form for an instrument
      *
-     * @return void
+     * @return string
      * @access public
      */
     function display()
@@ -493,7 +492,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * Attempts to validate the form (using the defined rules) and
      * saves the validated data into the database
      *
-     * @return false if failure to save data
+     * @return bool false if failure to save data
      * @access public
      */
     function save()
@@ -1139,8 +1138,8 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param array $elements The value of all the elements on the current page
      *                        to validate.
      *
-     * @return associative array of errors (fieldname => errormessage) or true
-     *         if no errors.
+     * @return array|true associative array of errors (fieldname => errormessage)
+     *         or true if no errors.
      */
     function XINValidate($elements)
     {
@@ -1210,7 +1209,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param string $group   Empty if a non-grouped element is registering the rule.
      *                        Otherwise, name of the group registering the rule.
      *
-     * @return none
+     * @return void
      */
     function XINRegisterRule($elname, $rules, $message="", $group="")
     {

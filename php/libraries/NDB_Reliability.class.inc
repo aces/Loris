@@ -86,7 +86,7 @@ class NDB_Reliability extends NDB_Form
     /**
      * Displays the form
      *
-     * @return void
+     * @return string
      * @access public
      */
     function display()

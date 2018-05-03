@@ -46,7 +46,7 @@ class Document_Repository extends \NDB_Menu_Filter
     /**
      * Function _setupVariables
      *
-     * @return none
+     * @return void
      */
     function _setupVariables()
     {
@@ -125,7 +125,7 @@ class Document_Repository extends \NDB_Menu_Filter
     /**
      * Set filter form function
      *
-     * @return bool
+     * @return void
      */
     function _setFilterForm()
     {
@@ -290,11 +290,11 @@ class Document_Repository extends \NDB_Menu_Filter
      * filter table, it doesn't
      * use pagination
      *
-     * @return void
+     * @return array
      */
     function _getList()
     {
-        return;
+        return array();
     }
 
     /**
@@ -387,9 +387,9 @@ class Document_Repository extends \NDB_Menu_Filter
     /**
      * SetDataTableRows function
      *
-     * @param string $count the value of count
+     * @param int $count the number of data rows
      *
-     * @return bool
+     * @return void
      */
     function _setDataTableRows($count)
     {

@@ -101,7 +101,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
      * Sets up all the class variables needed for the
      * acknowledgements menu filter
      *
-     * @return true on success
+     * @return void
      */
     function _setupVariables()
     {
@@ -148,8 +148,6 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
                               );
 
         $this->tpl_data['citation_policy'] = $config->getSetting('citation_policy');
-
-        return true;
     }
 
     /**
@@ -157,7 +155,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -205,8 +203,6 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
         $this->addBasicDate('addstart_date', 'Start Date:', $dateOptions);
         $this->addBasicDate('addend_date', 'End Date:', $dateOptions);
         $this->addSelect('addpresent', 'Present?', $present);
-
-        return true;
     }
 
     /**

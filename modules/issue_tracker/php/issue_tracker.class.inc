@@ -297,7 +297,7 @@ WHERE Parent IS NOT NULL ORDER BY Label",
      * @param string $field        filter field
      * @param string $val          filter value
      *
-     * @return null
+     * @return string
      */
     function _addValidFilters($prepared_key, $field, $val)
     {
@@ -341,7 +341,7 @@ WHERE Parent IS NOT NULL ORDER BY Label",
      *         will be used for the Navigation Links in  the viewSession
      *         page.
      *
-     * @return associative array
+     * @return array
      */
     function toArray()
     {
