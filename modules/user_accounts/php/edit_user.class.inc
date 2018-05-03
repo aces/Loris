@@ -180,16 +180,12 @@ class Edit_User extends \NDB_Form
     {
         $config = \NDB_Config::singleton();
         $DB     = \Database::singleton();
-
         //The arrays that contain the edited permissions
         $permissionsRemoved = array();
         $permissionsAdded   = array();
-
         $editor = \User::singleton();
-
         // build the "real name"
         $values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
-
         //create the user
         if (!is_null($this->identifier)) {
             $user = \User::factory($this->identifier);
@@ -201,29 +197,24 @@ class Edit_User extends \NDB_Form
                 ? $values['Email'] : $values['UserID'];
             $user         = \User::factory($effectiveUID);
         }
-
         ////Get the current permissions/////
         $current_permissionids = $user->getPermissionIDs();
-
         $permIDs = array();
         // store the permission IDs
         if (!empty($values['permID'])) {
             $permIDs = array_keys($values['permID']);
         }
         unset($values['permID']);
-
         // store whether to send an email or not
         if (!empty($values['SendEmail'])) {
             $send = $values['SendEmail'];
         }
         unset($values['SendEmail']);
-
         //store the supervisors emails
         if (!empty($values['supervisorEmail'])) {
             $supervisorEmails = $values['supervisorEmail'];
         }
         unset($values['supervisorEmail']);
-
         // make user name match email address
         if (!empty($values['NA_UserID'])) {
             $values['UserID'] = $values['Email'];
@@ -232,21 +223,18 @@ class Edit_User extends \NDB_Form
             $values['UserID'] = trim($values['UserID']);
         }
         unset($values['NA_UserID']);
-
         // generate new password
         if (!empty($values['NA_Password'])) {
             $values['Password_hash']   = \User::newPassword();
             $values['Password_expiry'] = '1990-04-01';
         }
         unset($values['NA_Password']);
-
         // If editing a user and nothing was specified in the password text field
         // remove Password_md5 from the value set, otherwise Password_md5
         // will be set to '' by the system
         if ($values['Password_hash'] == '' && !$this->isCreatingNewUser()) {
             unset($values['Password_hash']);
         }
-
         // multi-site UPDATE
         $uid           = $user->getData('ID');
         $us_curr_sites = $values['CenterIDs'];
@@ -264,7 +252,6 @@ class Edit_User extends \NDB_Form
         }
         unset($values['CenterIDs']);
         // END multi-site UPDATE
-
         // EXAMINER UPDATE
         if ($editor->hasPermission('examiner_multisite')) {
             // get all fields that are related to examiners
@@ -411,7 +398,6 @@ class Edit_User extends \NDB_Form
             unset($values['examiner_pending']);
         }
         //END EXAMINER UPDATE
-
         // make the set
         foreach ($values as $key => $value) {
             if (!empty($value)) {
@@ -420,7 +406,6 @@ class Edit_User extends \NDB_Form
                 $set[$key] = null;
             }
         }
-
         // update the user
         if ($this->isCreatingNewUser()) {
             // insert a new user
@@ -441,7 +426,6 @@ class Edit_User extends \NDB_Form
             $user    = \User::factory($this->identifier);
             $success = $user->update($set);
         }
-
         // prepend two random characters
         if (isset($set['Password_hash'])) {
             // Update CouchDB. Must do before password is salted/hashed.
@@ -449,7 +433,6 @@ class Edit_User extends \NDB_Form
                 ? $values['Password_expiry'] : null;
             $user->updatePassword($set['Password_hash'], $expiry);
         }
-
         // update the user permissions if applicable
         // If the user is editing his/her own account, skip the part where
         // changes to the permissions are handled (there should not be any
@@ -457,7 +440,6 @@ class Edit_User extends \NDB_Form
         // disabled)
         if (!$this->_isEditingOwnAccount()) {
             $success = $user->removePermissions();
-
             // Check for new permissions
             if (!empty($permIDs)) {
                 foreach ($permIDs as $permID) {
@@ -472,7 +454,6 @@ class Edit_User extends \NDB_Form
                     }
                 }
             }
-
             if (!empty($current_permissionids)) {
                 // Check for permissions that are to be deleted
                 foreach ($current_permissionids as $currentPermID) {
@@ -485,7 +466,6 @@ class Edit_User extends \NDB_Form
                     }
                 }
             }
-
             // send the selected supervisors an email
             // (only if permissions have changed for the user)
             if (isset($supervisorEmails)) {
@@ -507,31 +487,25 @@ class Edit_User extends \NDB_Form
                     }
                 }
             }
-
             if (!empty($permIDs)) {
                 $user->addPermissions($permIDs);
             }
         }
-
         // send the user an email
         if (!empty($send)) {
             // create an instance of the config object
             $config = \NDB_Config::singleton();
-
             // send the user an email
             $msg_data['study']    = $config->getSetting('title');
             $msg_data['url']      = $config->getSetting('url');
             $msg_data['realname'] = $values['Real_name'];
             $msg_data['username'] = $user->getUsername();
             $msg_data['password'] = $values['Password_hash'];
-
             $template = (is_null($this->identifier))
                 ? 'new_user.tpl' : 'edit_user.tpl';
             \Email::send($values['Email'], $template, $msg_data);
         }
-
         $this->tpl_data['success'] = true;
-
         if ($this->isCreatingNewUser()) {
             $baseURL  = $config->getSetting('url');
             $redirect = $baseURL

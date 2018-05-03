@@ -177,19 +177,6 @@ if (preg_match(
     $_REQUEST['subtest']   = $getParams[1];
 
     include_once __DIR__ . "/main.php";
-} else if (preg_match(
-    '#^preferences/$#',
-    $url
-)) {
-    // Preferences is a special case for url rewriting
-    // RewriteRule
-    //      ^preferences/$
-    //      /main.php?test_name=user_accounts&subtest=my_preferences
-
-    $_REQUEST["test_name"] = "user_accounts";
-    $_REQUEST['subtest']   = "my_preferences";
-
-    include_once __DIR__ . "/main.php";
 } else {
     return false;
 }

@@ -186,6 +186,16 @@ CREATE TABLE `psc` (
 
 INSERT INTO `psc` (Name, Alias, Study_site) VALUES ('Data Coordinating Center','DCC', 'Y');
 
+CREATE TABLE `language` (
+  `language_id` integer unsigned NOT NULL AUTO_INCREMENT,
+  `language_code` varchar(255) NOT NULL,
+  `language_label` varchar(255) NOT NULL,
+  PRIMARY KEY (`language_id`),
+  UNIQUE KEY (`language_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO language (language_code, language_label) VALUES ('en-CA', 'English');
+
 CREATE TABLE `users` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `UserID` varchar(255) NOT NULL default '',
@@ -213,9 +223,11 @@ CREATE TABLE `users` (
   `Password_expiry` date NOT NULL default '1990-04-01',
   `Pending_approval` enum('Y','N') default 'Y',
   `Doc_Repo_Notifications` enum('Y','N') default 'N',
+  `language_preference` integer unsigned default NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Email` (`Email`),
-  UNIQUE KEY `UserID` (`UserID`)
+  UNIQUE KEY `UserID` (`UserID`),
+  CONSTRAINT `FK_users_2` FOREIGN KEY (`language_preference`) REFERENCES `language` (`language_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -520,27 +532,26 @@ CREATE TABLE `tarchive_files` (
 
 
 CREATE TABLE `ImagingFileTypes` (
- `type` varchar(255) NOT NULL PRIMARY KEY
+ `type` varchar(12) NOT NULL PRIMARY KEY,
+ `description` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `ImagingFileTypes` VALUES
-      ('mnc'),
-      ('obj'),
-      ('xfm'),
-      ('xfmmnc'),
-      ('imp'),
-      ('vertstat'),
-      ('xml'),
-      ('txt'),
-      ('nii'),
-      ('nii.gz'),
-      ('nrrd');
+INSERT INTO `ImagingFileTypes` (type, description) VALUES
+  ('mnc',      'MINC file'),
+  ('obj',      'MNI BIC imaging format for a surface'),
+  ('xfm',      'MNI BIC linear transformation matrix file'),
+  ('vertstat', 'MNI BIC imaging format for a field on a surface (e.g. cortical thickness)'),
+  ('xml',      'XML file'),
+  ('txt',      'text file'),
+  ('nii',      'NIfTI file'),
+  ('nrrd',     'NRRD file format (used by DTIPrep)'),
+  ('grid_0',   'MNI BIC non-linear field for non-linear transformation');
 
 CREATE TABLE `mri_processing_protocol` (
   `ProcessProtocolID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `ProtocolFile` varchar(255) NOT NULL DEFAULT '',
-  `FileType` varchar(255) DEFAULT NULL,
+  `FileType` varchar(12) DEFAULT NULL,
   `Tool` varchar(255) NOT NULL DEFAULT '',
   `InsertTime` int(10) unsigned NOT NULL DEFAULT '0',
   `md5sum` varchar(32) DEFAULT NULL,
@@ -608,7 +619,7 @@ CREATE TABLE `files` (
   `CoordinateSpace` varchar(255) default NULL,
   `OutputType` varchar(255) NOT NULL default '',
   `AcquisitionProtocolID` int(10) unsigned default NULL,
-  `FileType` varchar(255) default NULL,
+  `FileType` varchar(12) default NULL,
   `PendingStaging` tinyint(1) NOT NULL default '0',
   `InsertedByUserID` varchar(255) NOT NULL default '',
   `InsertTime` int(10) unsigned NOT NULL default '0',
@@ -1328,11 +1339,13 @@ CREATE TABLE `media` (
   `uploaded_by` varchar(255) DEFAULT NULL,
   `hide_file` tinyint(1) DEFAULT '0',
   `date_uploaded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `language_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `file_name` (`file_name`),
   FOREIGN KEY (`session_id`) REFERENCES `session` (`ID`),
-  FOREIGN KEY (`instrument`) REFERENCES `test_names` (`Test_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  FOREIGN KEY (`instrument`) REFERENCES `test_names` (`Test_name`),
+  CONSTRAINT `FK_media_language` FOREIGN KEY (`language_id`) REFERENCES `language` (`language_id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
 -- issues tables
