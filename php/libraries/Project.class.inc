@@ -194,7 +194,7 @@ class Project
      * @note If the database value is null then the return value will be the sum of
      * all this project's subproject recruitment target.
      *
-     * @return int This project's name
+     * @return int
      */
     public function getRecruitmentTarget() : int
     {
