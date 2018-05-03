@@ -289,22 +289,6 @@ var CandidateInfo = React.createClass(
               disabled={reasonDisabled}
               required={reasonRequired}
             />
-            <TagsElement
-              label="Favorite snacks?"
-              name="testList"
-              id="testList"
-              btnLabel="Add Snack"
-              useSearch={true}
-              strictSearch={true}
-              options={snacks}
-              items={this.state.formData.testList}
-              value={this.state.formData.pendingListItem}
-              required={true}
-              pendingValKey="pendingListItem"
-              onUserInput={this.setFormData}
-              onUserAdd={this.addListItem}
-              onUserRemove={this.removeListItem}
-            />
             {specifyOther}
             {extraParameterFields}
             {updateButton}
