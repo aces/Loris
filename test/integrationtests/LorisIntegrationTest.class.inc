@@ -124,7 +124,7 @@ abstract class LorisIntegrationTest extends TestCase
      * @param string $username The username to log in as
      * @param string $password The (plain text) password to login as.
      *
-     * @return void, side-effect logs in active webDriver
+     * @return void but side-effect logs in active webDriver
      */
     protected function login($username, $password)
     {
@@ -502,12 +502,12 @@ abstract class LorisIntegrationTest extends TestCase
      * @throws ElementNotVisibleException if $allowJavascriptClick is false and the
      *                                    element cannot be clicked on because it is
      *                                    not visible.
-     * @throws StaleElementReferenceExceptoin if $allowJavascriptClick is false and
+     * @throws StaleElementReferenceException if $allowJavascriptClick is false and
      *                                        the element cannot be clicked on
      *                                        because the DOM was updated since the
      *                                        element was found.
      *
-     * @return void.
+     * @return void
      */
     function safeClick(WebDriverBy $by, $waitPeriod=15, $allowJavascriptClick=true)
     {

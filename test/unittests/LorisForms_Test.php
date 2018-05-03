@@ -45,7 +45,7 @@ class LorisForms_Test extends TestCase
      * @param string $type The expected type of this element
      *                     (ie select, checkbox, etc)
      *
-     * @return void, but makes assertions
+     * @return void but makes assertions
      */
     function assertType($el, $type)
     {
@@ -68,7 +68,7 @@ class LorisForms_Test extends TestCase
      * @param string $label The expected type of this element
      *                      (ie select, checkbox, etc)
      *
-     * @return void, but makes assertions
+     * @return void but makes assertions
      */
     function assertLabel($el, $label)
     {
