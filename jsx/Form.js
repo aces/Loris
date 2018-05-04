@@ -839,6 +839,7 @@ var DateElement = React.createClass({
     label: React.PropTypes.string,
     value: React.PropTypes.string,
     id: React.PropTypes.string,
+    maxYear: React.PropTypes.string,
     disabled: React.PropTypes.bool,
     required: React.PropTypes.bool,
     onUserInput: React.PropTypes.func
@@ -850,6 +851,7 @@ var DateElement = React.createClass({
       label: '',
       value: '',
       id: null,
+      maxYear: '9999-12-31',
       disabled: false,
       required: false,
       onUserInput: function() {
