@@ -401,13 +401,8 @@ class PublicationUploadForm extends React.Component {
               removeListItem={this.removeListItem}
               validateEmail={this.validateEmail}
               toggleEmailNotify={this.toggleEmailNotify}
+              editMode={false}
             />
-            <ButtonElement label={this.props.editMode ? "Submit" : "Propose Project"}/>
-            <div className="row">
-              <div className="col-sm-9 col-sm-offset-3">
-                <ProgressBar value={this.state.uploadProgress}/>
-              </div>
-            </div>
           </FormElement>
         </div>
       </div>

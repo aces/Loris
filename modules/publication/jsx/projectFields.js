@@ -88,6 +88,7 @@ class ProjectFormFields extends React.Component {
   constructor() {
     super();
     this.createCollabEmailFields = this.createCollabEmailFields.bind(this);
+    this.createFileFields = this.createFileFields.bind(this);
   }
 
   createCollabEmailFields() {
@@ -256,6 +257,7 @@ class ProjectFormFields extends React.Component {
           text={voiHelp}
         />
         {fileFields}
+        <ButtonElement label={this.props.editMode ? "Submit" : "Propose Project"}/>
       </div>
     );
   }

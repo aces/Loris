@@ -251,7 +251,7 @@ function processVOIs($pubID) {
 
     $voiFields = json_decode($_REQUEST['voiFields']);
     foreach ($voiFields as $vf) {
-        // search test_names for
+        // search test_names for value
         if (in_array($vf, $testNames)) {
            $pubTNRelInsert = array(
                'TestNameID'    => array_search($vf, $testNames),
@@ -331,9 +331,17 @@ function notifySubmission($pubID) {
 
 function editProject() {
     $user = \User::singleton();
-    $id           = isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
-    $statusID     = isset($_REQUEST['status']) ? $_REQUEST['status'] : null;
-    $rejectReason = isset($_REQUEST['rejectReason']) ? $_REQUEST['rejectReason'] : null;
+    $id                     = isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
+    $statusID               = isset($_REQUEST['status']) ? $_REQUEST['status'] : null;
+    $rejectReason           = isset($_REQUEST['rejectReason']) ? $_REQUEST['rejectReason'] : null;
+    $description            = isset($_REQUEST['description']) ? $_REQUEST['description'] : null;
+    $leadInvestigator       = isset($_REQUEST['leadInvestigator']) ? $_REQUEST['leadInvestigator'] : null;
+    $leadInvestigatorEmail  = isset($_REQUEST['leadInvestigatorEmail']) ? $_REQUEST['leadInvestigatorEmail'] : null;
+    $usersWithEditPerm      = isset($_REQUEST['usersWithEditPerm']) ? json_decode($_REQUEST['usersWithEditPerm']) : null;
+    $collaborators          = isset($_REQUEST['collaborators']) ? json_decode($_REQUEST['collaborators']) : null;
+    $keywords               = isset($_REQUEST['keywords']) ? json_decode($_REQUEST['keywords']) : null;
+
+
     $db = \Database::singleton();
 
     $pubData = $db->pselectRow(
@@ -343,35 +351,47 @@ function editProject() {
 
     // build array of changed values
     $toUpdate = array();
+    $toDelete = array();
 
-    if ($pubData['Description'] !== $_REQUEST['description']) {
-        $toUpdate['Description'] = $_REQUEST['description'];
+    if ($pubData['Description'] !== ) {
+        $toUpdate['Description'] = $description;
     }
-    if ($pubData['LeadInvestigator'] !== $_REQUEST['leadInvestigator'] ) {
-        $toUpdate['LeadInvestigator'] = $_REQUEST['leadInvestigator'];
+    if ($pubData['LeadInvestigator'] !== $leadInvestigator) {
+        $toUpdate['LeadInvestigator'] = $leadInvestigator;
     }
-    if ($pubData['LeadInvestigatorEmail'] !== $_REQUEST['leadInvestigatorEmail']) {
-        $toUpdate['LeadInvestigatorEmail'] = $_REQUEST['leadInvestigatorEmail'];
+    if ($pubData['LeadInvestigatorEmail'] !== $leadInvestigatorEmail) {
+        $toUpdate['LeadInvestigatorEmail'] = $leadInvestigatorEmail;
     }
 
-    $collaborators = json_decode($_REQUEST['collaborators']);
+    $currentUWEP = $db->pselectCol(
+        'SELECT u.UserID FROM users u'.
+        'LEFT JOIN publications_users_edit_perm_rel pu '.
+        'ON pu.UserID=u.ID '.
+        'WHERE pu.PublicationID=:pid',
+        array('pid' => $id)
+    );
+
+    if ($usersWithEditPerm != $currentUWEP) {
+        $newUWEP = array_diff($usersWithEditPerm, $currentUWEP);
+        $oldUWEP = array_diff($currentUWEP, $usersWithEditPerm);
+    }
+
     $currentCollabs = $db->pselectCol(
         'SELECT Name FROM publication_collaborator pc '.
         'LEFT JOIN publication_collaborator_rel pcr '.
         'ON pcr.PublicationCollaboratorID=pc.PublicationCollaboratorID '.
-        'LEFT JOIN publication p ON p.PublicationID=pcr.PublicationID '.
-        'WHERE p.PublicationID=:pid',
+        'WHERE pcr.PublicationID=:pid',
         array('pid' => $id)
     );
     
     if ($collaborators != $currentCollabs) {
-        // new collaborators will be in array_diff result of entered vs stored
+        // new collaborators will be in array_diff result of submitted vs stored
         $newCollabs = array_diff($collaborators, $currentCollabs);
-
         // collaborators who should be removed will appear in inverse operation
         $oldCollabs = array_diff($currentCollabs, $collaborators);
-        error_log(print_r($oldCollabs, true));
     }
+
+
 
     /*$db->update(
         'publication',

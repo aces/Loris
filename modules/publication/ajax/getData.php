@@ -140,7 +140,7 @@ function getVOIs($id) {
     $db = \Database::singleton();
     $vois = array();
     $fields = $db->pselectCol(
-        'SELECT pt.Name AS field '.
+        'SELECT pt.Name AS field ' .
         'FROM parameter_type pt '.
         'LEFT JOIN publication_parameter_type_rel pptr '.
         'ON pptr.ParameterTypeID=pt.ParameterTypeID '.
@@ -155,8 +155,7 @@ function getVOIs($id) {
         'WHERE PublicationID=:pid',
         array('pid' => $id)
     );
-
-    $vois = $fields + $testNames;
+    $vois =  array_merge($testNames, $fields);
     return $vois;
 }
 
@@ -180,8 +179,7 @@ function getCollaborators($id) {
         'SELECT Name FROM publication_collaborator pc '.
         'LEFT JOIN publication_collaborator_rel pcr '.
         'ON pc.PublicationCollaboratorID=pcr.PublicationCollaboratorID '.
-        'LEFT JOIN publication p ON p.PublicationID=pcr.PublicationID '.
-        'WHERE p.PublicationID=:pid',
+        'WHERE pcr.PublicationID=:pid',
         array('pid' => $id)
     );
 

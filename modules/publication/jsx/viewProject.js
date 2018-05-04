@@ -61,24 +61,13 @@ class ViewProject extends React.Component {
       dataType: 'json',
       success: function(data) {
         console.log(data);
-        // format VoIs to be Tags renderable
-        let voi = data.voi || {};
-        let voiFields = [];
-        for (let inst in voi) {
-          if (voi.hasOwnProperty(inst) && voi[inst].IsFullSet) {
-            voiFields.push(inst + '_AllFields');
-          } else {
-            voiFields.push(voi[inst].Fields);
-          }
-        }
-
         let formData = {
           title: data.title,
           description: data.description,
           leadInvestigator: data.leadInvestigator,
           leadInvestigatorEmail: data.leadInvestigatorEmail,
           status: data.status,
-          voiFields: voiFields,
+          voiFields: data.voi,
           keywords: data.keywords,
           collaborators: data.collaborators,
           usersWithEditPerm: data.usersWithEditPerm,
@@ -239,6 +228,7 @@ class ViewProject extends React.Component {
           removeListItem={this.removeListItem}
           validateEmail={this.validateEmail}
           toggleEmailNotify={this.toggleEmailNotify}
+          editMode={true}
         />
       </div>
     );
