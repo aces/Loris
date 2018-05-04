@@ -793,7 +793,10 @@ class NDB_BVL_Feedback
         $db =& Database::singleton();
 
         // create the new entry - every update need to be follow up with a comment
-        $success = $this->createEntry($feedbackID, $comment);
+        // FIXME: I don't think the third parameter is correct, but I'm not sure
+        // what it's supposed to be, and I'm not sure if this code is even used
+        // at all.
+        $success = $this->createEntry($feedbackID, $comment, '');
 
         // force private threads to status='comment'
         if ($public=='N') {

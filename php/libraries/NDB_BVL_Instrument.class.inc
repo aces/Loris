@@ -807,13 +807,11 @@ class NDB_BVL_Instrument extends NDB_Page
         if (strrpos($this->testName, '_proband') === false) {
             $this->addScoreColumn(
                 'Candidate_Age',
-                'Candidate Age (Months)',
-                'Please enter date of administration and press Save'
+                'Candidate Age (Months)'
             );
             $this->addScoreColumn(
                 'Window_Difference',
-                'Window Difference (+/- Days)',
-                'Please enter date of administration and press Save'
+                'Window Difference (+/- Days)'
             );
         }
         $examiners = $this->_getExaminerNames();

@@ -94,7 +94,7 @@ class Statistics_Mri_Site extends Statistics_Site
         $this->_checkCriteria($centerID, $projectID);
         $DB =& \Database::singleton();
 
-        $scan_types = $DB->pselect("SELECT Scan_type from mri_scan_type");
+        $scan_types = $DB->pselect("SELECT Scan_type from mri_scan_type", array());
         $where      = "WHERE (";
         $counter    = 1;
         foreach ($scan_types as $index=>$scan) {

@@ -1956,7 +1956,7 @@ class LorisForm
     ) {
         switch($type) {
         case 'text':
-            return $this->createText($elname, $label, $options, $attribs);
+            return $this->createText($elname, $label, $options);
         case 'select':
             return $this->createSelect($elname, $label, $options, $attribs);
         case 'submit':
@@ -2003,7 +2003,7 @@ class LorisForm
             $el['options'] = $options;
             break;
         case 'radio':
-            $el         = $this->createBase($elname, $label, $options, $attribs);
+            $el         = $this->createBase($elname, $label, $options);
             $el['type'] = 'radio';
             break;
         case 'time':
@@ -2181,7 +2181,7 @@ class LorisForm
         if ($this->form[$name]['type'] === 'file') {
             return new LorisFormFileElement($this->form[$name]);
         }
-        return new LorisFormElement($this->form[$name]);
+        return new LorisFormElement();
     }
 
     /**
