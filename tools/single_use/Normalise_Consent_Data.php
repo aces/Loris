@@ -22,8 +22,7 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris
  */
-
-require_once 'generic_includes.php';
+require_once __DIR__ . '/../generic_includes.php';
 
 $config = \NDB_Config::singleton();
 $db     =& \Database::singleton();
