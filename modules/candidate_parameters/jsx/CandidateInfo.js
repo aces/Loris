@@ -65,33 +65,6 @@ var CandidateInfo = React.createClass(
       });
     },
 
-    addListItem: function(formElement, value, pendingValKey) {
-      var formData = this.state.formData;
-      var listItems = formData[formElement] || [];
-      listItems.push(value);
-      formData[formElement] = listItems;
-      formData[pendingValKey] = null;
-
-      this.setState({
-        formData: formData
-      });
-    },
-
-    removeListItem: function(formElement, value) {
-      var formData = this.state.formData;
-      var listItems = formData[formElement];
-      var index = listItems.indexOf(value);
-
-      if (index > -1) {
-        listItems.splice(index, 1);
-
-        formData[formElement] = listItems;
-        this.setState({
-          formData: formData
-        });
-      }
-    },
-
     onSubmit: function(e) {
       e.preventDefault();
     },
