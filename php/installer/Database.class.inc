@@ -13,6 +13,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+namespace LORIS\Installer;
 
 /**
  * The Installer Database class is like the LORIS database class, except it
