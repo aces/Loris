@@ -375,6 +375,16 @@ function editProject() {
         $newUWEP = array_diff($usersWithEditPerm, $currentUWEP);
         $oldUWEP = array_diff($currentUWEP, $usersWithEditPerm);
     }
+    
+    $db->insertIgnore(
+        'publications_users_edit_perm_rel',
+        $newUWEP
+    );
+    $oldUWEP = implode(',', $oldUWEP);
+    $db->delete(
+        'publications_users_edit_perm_rel',
+        array("FIND_IN_SET(UserID, $oldUWEP)")
+    );
 
     $currentCollabs = $db->pselectCol(
         'SELECT Name FROM publication_collaborator pc '.
@@ -391,11 +401,19 @@ function editProject() {
         $oldCollabs = array_diff($currentCollabs, $collaborators);
     }
 
+    $db->insertIgnore(
+        'publications_use_rel',
+        $newUWEP
+    );
+    $oldUWEP = implode(',', $oldUWEP);
+    $db->delete(
+        'publications_users_edit_perm_rel',
+        array("FIND_IN_SET(UserID, $oldUWEP)")
+    );
 
-
-    /*$db->update(
+    $db->update(
         'publication',
         $toUpdate,
         array('PublicationID' => $id)
-    );*/
+    );
 }
