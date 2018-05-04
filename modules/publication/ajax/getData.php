@@ -139,39 +139,24 @@ function getProjectData() {
 function getVOIs($id) {
     $db = \Database::singleton();
     $vois = array();
-    $data = $db->pselect(
-        'SELECT pt.Name AS field, pt.SourceFrom AS inst '.
+    $fields = $db->pselectCol(
+        'SELECT pt.Name AS field '.
         'FROM parameter_type pt '.
         'LEFT JOIN publication_parameter_type_rel pptr '.
         'ON pptr.ParameterTypeID=pt.ParameterTypeID '.
         'WHERE pptr.PublicationID=:pid',
         array('pid' => $id)
     );
+    $testNames = $db->pselectCol(
+        'SELECT Test_name '.
+        'FROM publication_test_names_rel ptnr '.
+        'LEFT JOIN test_names tn '.
+        'ON tn.ID=ptnr.TestNameID '.
+        'WHERE PublicationID=:pid',
+        array('pid' => $id)
+    );
 
-    foreach($data as $d) {
-        if (array_key_exists($d['inst'], $vois)) {
-            $vois[$d['inst']]['Fields'][] = $d['field'];
-        } else {
-            $vois[$d['inst']] = array(
-                'Fields' => array($d['field']),
-                'IsFullSet' => false,
-            );
-        }
-    }
-
-    // determine if set of instrument fields is equivalent to full set
-    foreach ($vois as $inst => $v) {
-        $fullSet = $db->pselectCol(
-            'SELECT Name FROM parameter_type WHERE SourceFrom=:inst',
-            array('inst' => $inst)
-        );
-
-        // use loose comparison since element ordering may be different
-        if ($fullSet == $v['Fields']) {
-            $vois[$inst]['IsFullSet'] = true;
-        }
-    }
-
+    $vois = $fields + $testNames;
     return $vois;
 }
 
@@ -205,7 +190,7 @@ function getCollaborators($id) {
 
 function getUsersWithEditPerm($id) {
     $db = Database::singleton();
-
+    
 
 }
 

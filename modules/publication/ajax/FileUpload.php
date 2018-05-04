@@ -70,6 +70,7 @@ function uploadPublication()
         processKeywords($pubID);
         // INSERT INTO publication_parameter_type_rel
         processVOIs($pubID);
+        // INSERT INTO publication_users_edit_perm_rel
     } catch (Exception $e) {
         header("HTTP/1.1 400 Bad Request");
         cleanup($pubID);
@@ -170,6 +171,7 @@ function processEditors($pubID) {
     $db = Database::singleton();
     $usersWithEditPerm = json_decode($_REQUEST['usersWithEditPerm']);
     foreach ($usersWithEditPerm as $u) {
+        error_log($u);
         $uid = $db->pselectOne(
             'SELECT ID FROM users WHERE UserID=:u',
             array('u' => $u)
