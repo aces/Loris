@@ -65,33 +65,6 @@ var CandidateInfo = React.createClass(
       });
     },
 
-    addListItem: function(formElement, value, pendingValKey) {
-      var formData = this.state.formData;
-      var listItems = formData[formElement] || [];
-      listItems.push(value);
-      formData[formElement] = listItems;
-      formData[pendingValKey] = null;
-
-      this.setState({
-        formData: formData
-      });
-    },
-
-    removeListItem: function(formElement, value) {
-      var formData = this.state.formData;
-      var listItems = formData[formElement];
-      var index = listItems.indexOf(value);
-
-      if (index > -1) {
-        listItems.splice(index, 1);
-
-        formData[formElement] = listItems;
-        this.setState({
-          formData: formData
-        });
-      }
-    },
-
     onSubmit: function(e) {
       e.preventDefault();
     },
@@ -242,15 +215,6 @@ var CandidateInfo = React.createClass(
         }
       }
 
-      var snacks = {
-        1: 'Pretzel',
-        57: 'Goldfish',
-        15: 'Cheezball',
-        25: 'Gummi worm',
-        33: 'Bugle',
-        45: 'Fruit rollup',
-        102: 'Fruit by the foot'
-      };
       return (
         <div className="row">
           <div className={alertClass} role="alert" ref="alert-message">
@@ -288,22 +252,6 @@ var CandidateInfo = React.createClass(
               ref="flaggedReason"
               disabled={reasonDisabled}
               required={reasonRequired}
-            />
-            <TagsElement
-              label="Favorite snacks?"
-              name="testList"
-              id="testList"
-              btnLabel="Add Snack"
-              useSearch={true}
-              strictSearch={true}
-              options={snacks}
-              items={this.state.formData.testList}
-              value={this.state.formData.pendingListItem}
-              required={true}
-              pendingValKey="pendingListItem"
-              onUserInput={this.setFormData}
-              onUserAdd={this.addListItem}
-              onUserRemove={this.removeListItem}
             />
             {specifyOther}
             {extraParameterFields}
