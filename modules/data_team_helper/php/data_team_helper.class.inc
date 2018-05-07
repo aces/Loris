@@ -296,10 +296,10 @@ class Data_Team_Helper extends \NDB_Form
      * AddWhere
      * Constructs the query....
      *
-     * @param unknown_type $Column the value of cloumn
-     * @param unknown_type $Filter the value fo filter
+     * @param string $Column the value of cloumn
+     * @param string $Filter the value fo filter
      *
-     * @return unknown
+     * @return string
      */
     function addWhere($Column, $Filter)
     {

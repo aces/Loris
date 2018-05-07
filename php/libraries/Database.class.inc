@@ -866,7 +866,6 @@ class Database
      * @param array  $dataArray The array with keys to implode
      *
      * @return string the string containing the imploded array
-     * @access private
      */
     function _implodeWithKeys($glue, $dataArray)
     {
