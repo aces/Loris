@@ -63,13 +63,13 @@ function uploadPublication()
         // process files
         processFiles($pubID);
         // INSERT INTO publication_collaborator
-        processCollaborators($pubID);
+        insertCollaborators($pubID);
         // INSERT INTO publication_users_edit_perm_rel
-        processEditors($pubID);
+        insertEditors($pubID);
         // INSERT INTO publication_keyword
-        processKeywords($pubID);
+        insertKeywords($pubID);
         // INSERT INTO publication_parameter_type_rel
-        processVOIs($pubID);
+        insertVOIs($pubID);
         // INSERT INTO publication_users_edit_perm_rel
     } catch (Exception $e) {
         header("HTTP/1.1 400 Bad Request");
@@ -80,7 +80,7 @@ function uploadPublication()
     notifySubmission($pubID);
 }
 
-function processFiles($pubID) {
+function insertFiles($pubID) {
     if (empty($_FILES)) {
         return;
     }
@@ -122,7 +122,7 @@ function processFiles($pubID) {
     }
 }
 
-function processCollaborators($pubID) {
+function insertCollaborators($pubID) {
     if (!$_REQUEST['collaborators']) {
         return;
     }
@@ -136,6 +136,7 @@ function processCollaborators($pubID) {
             'WHERE Name=:c',
             array('c' => $c)
         );
+        // if collaborator does not already exist in table, add them
         if (!$cid) {
             $collabInsert = array('Name' => $c);
             $cEnc = preg_replace('/\.|\s/', '_', $c); // .'s and spaces get converted to underscores
@@ -156,27 +157,21 @@ function processCollaborators($pubID) {
             'PublicationID'             => $pubID,
             'PublicationCollaboratorID' => $cid,
         );
-        $db->insert(
+        $db->insertIgnore(
             'publication_collaborator_rel',
             $collabRelInsert
         );
     }
 }
 
-function processEditors($pubID) {
+function insertEditors($pubID) {
     if (empty($_REQUEST['usersWithEditPerm'])) {
         return;
     }
 
     $db = Database::singleton();
     $usersWithEditPerm = json_decode($_REQUEST['usersWithEditPerm']);
-    foreach ($usersWithEditPerm as $u) {
-        error_log($u);
-        $uid = $db->pselectOne(
-            'SELECT ID FROM users WHERE UserID=:u',
-            array('u' => $u)
-        );
-
+    foreach ($usersWithEditPerm as $uid) {
         $insert = array(
             'PublicationID' => $pubID,
             'UserID'        => $uid,
@@ -189,7 +184,7 @@ function processEditors($pubID) {
     }
 }
 
-function processKeywords($pubID) {
+function insertKeywords($pubID) {
     if (empty($_REQUEST['keywords'])) {
         return;
     }
@@ -232,7 +227,7 @@ function processKeywords($pubID) {
     }
 }
 
-function processVOIs($pubID) {
+function insertVOIs($pubID) {
     if (empty($_REQUEST['voiFields'])) {
         return;
     }
@@ -331,6 +326,7 @@ function notifySubmission($pubID) {
 
 function editProject() {
     $user = \User::singleton();
+
     $id                     = isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
     $statusID               = isset($_REQUEST['status']) ? $_REQUEST['status'] : null;
     $rejectReason           = isset($_REQUEST['rejectReason']) ? $_REQUEST['rejectReason'] : null;
@@ -351,9 +347,8 @@ function editProject() {
 
     // build array of changed values
     $toUpdate = array();
-    $toDelete = array();
 
-    if ($pubData['Description'] !== ) {
+    if ($pubData['Description'] !== $description) {
         $toUpdate['Description'] = $description;
     }
     if ($pubData['LeadInvestigator'] !== $leadInvestigator) {
@@ -364,27 +359,30 @@ function editProject() {
     }
 
     $currentUWEP = $db->pselectCol(
-        'SELECT u.UserID FROM users u'.
-        'LEFT JOIN publications_users_edit_perm_rel pu '.
-        'ON pu.UserID=u.ID '.
-        'WHERE pu.PublicationID=:pid',
+        'SELECT UserID '.
+        'FROM publication_users_edit_perm_rel '.
+        'WHERE PublicationID=:pid',
         array('pid' => $id)
     );
 
     if ($usersWithEditPerm != $currentUWEP) {
+        // new UWEP will be in array_diff result of submitted vs stored
         $newUWEP = array_diff($usersWithEditPerm, $currentUWEP);
+        // old UWEP who should be removed will appear in inverse operation
         $oldUWEP = array_diff($currentUWEP, $usersWithEditPerm);
     }
-    
-    $db->insertIgnore(
-        'publications_users_edit_perm_rel',
-        $newUWEP
-    );
-    $oldUWEP = implode(',', $oldUWEP);
-    $db->delete(
-        'publications_users_edit_perm_rel',
-        array("FIND_IN_SET(UserID, $oldUWEP)")
-    );
+
+    if (!empty($newUWEP)) {
+        insertEditors($id);
+    }
+    if (!empty($oldUWEP)) {
+        foreach($oldUWEP as $uid) {
+            $db->delete(
+                'publication_users_edit_perm_rel',
+                array('UserID' => $uid)
+            );
+        }
+    }
 
     $currentCollabs = $db->pselectCol(
         'SELECT Name FROM publication_collaborator pc '.
@@ -395,25 +393,31 @@ function editProject() {
     );
     
     if ($collaborators != $currentCollabs) {
-        // new collaborators will be in array_diff result of submitted vs stored
         $newCollabs = array_diff($collaborators, $currentCollabs);
-        // collaborators who should be removed will appear in inverse operation
         $oldCollabs = array_diff($currentCollabs, $collaborators);
     }
-
-    $db->insertIgnore(
-        'publications_use_rel',
-        $newUWEP
-    );
-    $oldUWEP = implode(',', $oldUWEP);
-    $db->delete(
-        'publications_users_edit_perm_rel',
-        array("FIND_IN_SET(UserID, $oldUWEP)")
-    );
-
-    $db->update(
-        'publication',
-        $toUpdate,
-        array('PublicationID' => $id)
-    );
+    if (!empty($newCollabs)) {
+        insertCollaborators($id);
+    }
+    if (!empty($oldCollabs)) {
+        foreach($oldCollabs as $name) {
+            $uid = $db->pselectOne(
+                'SELECT PublicationCollaboratorID '.
+                'FROM publication_collaborator '.
+                'WHERE Name=:n',
+                array('n' => $name)
+            );
+            $db->delete(
+                'publication_collaborator_rel',
+                array('PublicationCollaboratorID' => $uid)
+            );
+        }
+    }
+    if(!empty($toUpdate)) {
+        $db->update(
+            'publication',
+            $toUpdate,
+            array('PublicationID' => $id)
+        );
+    }
 }

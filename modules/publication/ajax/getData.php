@@ -48,7 +48,7 @@ function getData() {
     }
 
     $usersRaw = $db->pselect(
-        "SELECT UserID, Real_name FROM users ".
+        "SELECT ID, Real_name FROM users ".
         "WHERE Active='Y' AND Pending_approval='N' ".
         "ORDER BY Real_name",
         array()
@@ -56,7 +56,7 @@ function getData() {
 
     $users = array();
     foreach($usersRaw as $u) {
-        $users[$u['UserID']] = $u['Real_name'];
+        $users[$u['ID']] = $u['Real_name'];
     }
 
     $data['users'] = $users;
@@ -94,10 +94,9 @@ function getProjectData() {
 
         // allow edit access for user if user is original proposer
         $user = \User::singleton();
-        $userIDs = $db->pselect(
-            'SELECT pu.UserID as ID, u.UserID as Username '.
+        $userIDs = $db->pselectCol(
+            'SELECT pu.UserID as ID '.
             'FROM publication_users_edit_perm_rel pu '.
-            'JOIN users u ON pu.UserID=u.ID '.
             'WHERE PublicationID=:p',
             array('p' => $id)
         );
@@ -107,7 +106,7 @@ function getProjectData() {
             in_array($user->getId(), array_column($userIDs, 'ID'))
         );
 
-        $usersWithEditPerm = array_column($userIDs, 'Username');
+        $usersWithEditPerm = $userIDs;
 
         $pubData = array(
             'title'                 => $result['Title'],

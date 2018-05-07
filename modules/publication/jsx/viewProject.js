@@ -48,9 +48,10 @@ class ViewProject extends React.Component {
       processData: false,
       success: function() {
         swal("Edit Successful!", "", "success");
-      }.bind(this),
+      },
       error: function(jqXHR, textStatus) {
-        console.error(textStatus);
+        console.error(jqXHR);
+        swal("Edit failed!", jqXHR.responseText, "")
       }
     });
   }
