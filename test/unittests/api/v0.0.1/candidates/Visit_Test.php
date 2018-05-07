@@ -88,6 +88,14 @@ class Visit_Test extends BaseTestCase
         }
         $this->assertEquals($API->Headers, ["HTTP/1.1 400 Bad Request"]);
     }
+
+    /**
+     * PhanParamTooMany is incorrectly being triggered by the mockBuilders because
+     * it uses reflection. Phan thinks it takes 0 parameters for the constructor,
+     * but doing so would cause all the tests to fail.
+     *
+     * @phan-file-suppress PhanParamTooMany
+     */
     function testPostValidVisit() {
         $JSON = json_encode([
             "Meta" => [
