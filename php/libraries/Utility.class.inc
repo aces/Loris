@@ -730,11 +730,7 @@ class Utility
     static function getDirectInstruments()
     {
         $DB            =& Database::singleton();
-<<<<<<< HEAD
         $instruments   = array();
-=======
-        $instruments = [];
->>>>>>> fixed bug where undefined array  inside getDirectInstruments() could occur
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true",
             array()
