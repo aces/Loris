@@ -665,7 +665,7 @@ TagsElement.defaultProps = {
   items: [],
   label: '',
   value: undefined,
-  id: '',
+  id: null,
   class: '',
   required: false,
   disabled: false,
