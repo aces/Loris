@@ -53,6 +53,8 @@ class Candidate_List extends \NDB_Menu_Filter
         $user   =& \User::singleton();
         $config =& \NDB_Config::singleton();
 
+        $this->columns = [];
+        /*
         $this->tpl_data['toggled_visible'] =false;
 
         // set the class variables
@@ -190,10 +192,9 @@ class Candidate_List extends \NDB_Menu_Filter
              'Entity_type'         => 'c.Entity_type',
             )
         );
-
         return true;
+         */
     }
-
 
     /**
      * Create the form for the candidate_list menu page
@@ -329,6 +330,50 @@ class Candidate_List extends \NDB_Menu_Filter
         );
 
         return true;
+    }
+
+    function getDataProvisioner() : \LORIS\Data\Provisioner {
+        $provisioner = new CandidateListRowProvisioner();
+
+        $user = \User::singleton();
+
+        if ($user->hasPermission("access_all_profiles") == false) {
+            $provisioner = $provisioner->filter(
+                new \LORIS\Data\Filters\UserSiteMatch()
+            );
+        }
+        return $provisioner;
+    }
+
+    function toJSON() {
+        $table = (new \LORIS\Data\Table())
+            ->withDataFrom($this->getDataProvisioner());
+        $arr   = array_map(
+            function ($row) {
+                return array_values($row);
+            },
+            json_decode($table->toJSON(\User::singleton()), true)
+        );
+        return json_encode(
+            [
+             'Headers'       => [
+                          'Site',
+                          'DCCID',
+                          'PSCID',
+                          'Gender',
+                          'Entity Type',
+                          'Participant Status',
+                          'Project',
+                          'Subproject',
+                          'DoB',
+                          'Scan Done',
+                          'Visit Count',
+                          'Latest Visit Status',
+                          'Feedback',
+                                ],
+             'Data'          => $arr,
+            ]
+        );
     }
 
     /**
