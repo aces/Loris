@@ -2,7 +2,7 @@
 /**
  * Instrument_manager
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Instrument_Manager
@@ -15,7 +15,7 @@ namespace LORIS\instrument_manager;
 /**
  * Instrument_manager
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Instrument_Manager
@@ -106,15 +106,6 @@ class Instrument_Manager extends \NDB_Menu_Filter
                         $instrument->table.".sql"
                     );
                 }
-                exec(
-                    "mysql".
-                    " -h" . escapeshellarg($db_config['host']).
-                    " -u" . escapeshellarg($db_config['quatUser']).
-                    " -p" . escapeshellarg($db_config['quatPassword']).
-                    " " . escapeshellarg($db_config['database']).
-                    " < " . $this->path . "project/tables_sql/".
-                    escapeshellarg($instrument->table . '.sql')
-                );
             }
         }
     }
