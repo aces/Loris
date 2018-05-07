@@ -862,10 +862,10 @@ class Database
      * Sets each hash element into the format key='value', and then
      * implodes the resultant array with the specified glue
      *
-     * @param string $glue      The glue to pass to php's implode function
-     * @param array  $dataArray The array with keys to implode
+     * @param string                $glue      The glue to pass to php's implode function
+     * @param array<string,string>  $dataArray The array with keys to implode
      *
-     * @return string the string containing the imploded array
+     * @return string
      */
     function _implodeWithKeys($glue, $dataArray)
     {
