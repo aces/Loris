@@ -71,7 +71,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
             $writable = true;
         }
         $this->tpl_data['writable'] = $writable;
-        if ($writable && $_POST['install'] == 'Install Instrument') {
+        $install = $_POST['install'] ?? '';
+        if ($writable && $install === 'Install Instrument') {
             $db       = \Database::singleton();
             $instname = basename($_FILES['install_file']['name'], '.linst');
 
@@ -270,8 +271,15 @@ class Instrument_Manager extends \NDB_Menu_Filter
     {
         $factory  = \NDB_Factory::singleton();
         $filename = $this->path . "project/instruments/$instname.linst";
-        $fp       = fopen($filename, "r");
-        $db       = \Database::singleton();
+        if (!is_readable($filename)) {
+            if (file_exists($filename)) {
+                return '? (Insufficient read permissions)';
+            } else {
+                return '? (File not found in filesystem)';
+            }
+        }
+        $fp = fopen($filename, "r");
+        $db = \Database::singleton();
 
         while (($line = fgets($fp, 4096)) !== false) {
             $pieces = explode("{@}", $line);
@@ -355,8 +363,15 @@ class Instrument_Manager extends \NDB_Menu_Filter
     function checkPages($instname)
     {
         $filename = $this->path . "project/instruments/$instname.linst";
-        $fp       = fopen($filename, "r");
-        $db       = \Database::singleton();
+        if (!is_readable($filename)) {
+            if (file_exists($filename)) {
+                return '? (Insufficient read permissions)';
+            } else {
+                return '? (File not found in filesystem)';
+            }
+        }
+        $fp = fopen($filename, "r");
+        $db = \Database::singleton();
 
         while (($line = fgets($fp, 4096)) !== false) {
             $pieces       = explode("{@}", $line);
