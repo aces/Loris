@@ -856,6 +856,7 @@ class Database
         }
         return $result;
     }
+
     /**
      * Implodes a hash including the keys (unlike php's implode)
      *
