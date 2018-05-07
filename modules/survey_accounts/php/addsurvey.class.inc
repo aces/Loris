@@ -29,13 +29,12 @@ class AddSurvey extends \NDB_Form
      * Determine whether the logged in user has access to this page.
      * Tied to data_entry
      *
-     * @return boolean true if user has access to this page
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true if user has access to this page
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $editor =& \User::singleton();
-
         return $editor->hasPermission('user_accounts');
     }
 

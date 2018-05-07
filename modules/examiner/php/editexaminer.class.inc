@@ -28,12 +28,12 @@ class EditExaminer extends \NDB_Form
     /**
      * Checks if the user has access to the edit examiner form
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
-     * @throws \ConfigurationException
-     * @throws \DatabaseException
      * @throws \LorisException
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
         if (empty($_REQUEST['identifier'])) {
             throw new LorisException(
@@ -43,7 +43,6 @@ class EditExaminer extends \NDB_Form
         $DB     = \Database::singleton();
         $config = \NDB_Config::singleton();
 
-        $user         = \User::singleton();
         $userFullName = $user->getFullname();
         $userCenter   = $user->getCenterIDs();
 

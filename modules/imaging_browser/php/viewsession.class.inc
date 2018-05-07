@@ -42,12 +42,12 @@ class ViewSession extends \NDB_Form
      * Determine whether the user has permission to view the
      * imaging_browser page
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool whether the user has access
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
-
         // allow only to view own site data
         $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
 
@@ -88,7 +88,8 @@ class ViewSession extends \NDB_Form
         $this->sessionID = $_REQUEST['sessionID'];
 
         if (!empty($this->sessionID) && is_numeric($this->sessionID)) {
-            if ($this->_hasAccess() && isset($_POST['save_changes'])) {
+            $user = User::singleton();
+            if ($this->_hasAccess($user) && isset($_POST['save_changes'])) {
                 $this->_updateStatus($_POST);
                 $this->_updateSelected();
                 $this->_updateVisitStatus();
@@ -120,7 +121,7 @@ class ViewSession extends \NDB_Form
                                                     true  => 'True',
                                                     false => 'False',
                                                    );
-            $this->tpl_data['has_permission']    = ($this->_hasAccess()) ?
+            $this->tpl_data['has_permission']    = ($this->_hasAccess($user)) ?
                                                  true : false;
             $this->tpl_data['has_qc_permission'] = ($this->_hasQCPerm()) ?
                                                     true : false;

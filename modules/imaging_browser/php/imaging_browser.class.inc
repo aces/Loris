@@ -31,12 +31,12 @@ class Imaging_Browser extends \NDB_Menu_Filter
     /**
      * Determine whether the user has permission to view this page
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool whether the user hass access
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
-
         return ($user->hasPermission('imaging_browser_view_allsites')
                || ($user->hasStudySite()
                    && $user->hasPermission('imaging_browser_view_site')

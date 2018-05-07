@@ -35,13 +35,12 @@ class View_Genomic_File extends \NDB_Form
     /**
     * Determine whether the user has permission to view this page
     *
+    * @param \User $user The user whose access is being checked
+    *
     * @return bool whether the user has access
     */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
-
-        // Add site control? See Imaging Browser example
         return ($user->hasPermission('genomic_browser_view_allsites') ||
                 $user->hasPermission('genomic_browser_view_site'));
     }
@@ -64,7 +63,9 @@ class View_Genomic_File extends \NDB_Form
 
         if (!empty($this->candID) || !empty($this->genomic_file_id) ) {
             $this->_setFileData();
-            $this->tpl_data['has_permission'] = ($this->_hasAccess()) ? true : false;
+            $user = User::singleton();
+            $this->tpl_data['has_permission']
+                = ($this->_hasAccess($user)) ? true : false;
         }
     }
 

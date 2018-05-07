@@ -29,9 +29,11 @@ class User_Accounts extends \NDB_Menu_Filter
     /**
      * Overloading this method to allow access to users account
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return boolean
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
         // create user object
         $user =& \User::singleton();

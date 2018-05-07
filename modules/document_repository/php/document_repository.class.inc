@@ -31,13 +31,12 @@ class Document_Repository extends \NDB_Menu_Filter
     /**
      * Checking user permissions
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        //create user object
-        $user =& \User::singleton();
-
         return $user->hasPermission('document_repository_view')
                || $user->hasPermission('document_repository_delete');
 

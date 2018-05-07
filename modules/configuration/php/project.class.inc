@@ -30,12 +30,12 @@ class Project extends \NDB_Form
      * _has_access returns true
      * if the user has the specific permission
      *
-     * @return boolean
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
         return $user->hasPermission('config');
     }
 

@@ -37,14 +37,12 @@ class Media extends \NDB_Menu_Filter
     /**
      * Check user permissions
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
-     * @throws \ConfigurationException
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        //create user object
-        $user =& \User::singleton();
-
         // Set global permission to control access to different modules of media page
         $this->hasWritePermission = $user->hasPermission('media_write');
 

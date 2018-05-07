@@ -26,16 +26,6 @@ namespace LORIS\login;
 class PasswordReset extends \NDB_Form
 {
     /**
-     * Determine whether the user has permission to view this page
-     *
-     * @return bool whether the user has access
-     */
-    function _hasAccess()
-    {
-        return true;
-    }
-
-    /**
      * CommonPageSetup sets up the common form elements which
      * are on the page, regardless of HTTP request method.
      *

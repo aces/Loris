@@ -29,13 +29,12 @@ class Data_Team_Helper extends \NDB_Form
     /**
      * Class that returns the data team helper.
      *
-     * @return bool|object
-     * @throws \ConfigurationException
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
         return ($user->hasPermission('data_team_helper'));
     }
 
@@ -576,7 +575,7 @@ class Data_Team_Helper extends \NDB_Form
      *
      * @return int
      */
-    function getInstrumentCount($test_name,
+    function getInstrumentCount(string $test_name,
         $visit_label=null,
         $candidate=null,
         $site=null,
