@@ -725,7 +725,7 @@ class Utility
      * This should return an array in a format suitable for addSelect() from
      * NDB_Page
      *
-     * @return array $instruments associative array of test_names in a Test_Name => "Full Name"
+     * @return associative array of test_names in a Test_Name => "Full Name"
      */
     static function getDirectInstruments()
     {
