@@ -84,17 +84,14 @@ foreach ($consentList as $consentName=>$consentLabel) {
     if (!($statusExists && $dateExists && $withdrawalExists)) {
         array_push($errors, "At least one column is missing for " . $consentName . " in participant_status table.
            Check that status, date, and withdrawal columns exist for this consent type.");
-    }
-    // Check data
-    $dataQuery = "SELECT ID, CandID, " . $db->escape($consentName) . ", " . $db->escape($consentDate) . ", " .
-                 $db->escape($consentWithdrawal) . " FROM participant_status";
-    try {
-        $psData    = $db->pselect($dataQuery, array());
-    } catch (DatabaseException $e) {
         print_r($errors);
         echo "\nResolve errors and run script again.\n";
         die();
     }
+    // Check data
+    $dataQuery = "SELECT ID, CandID, " . $db->escape($consentName) . ", " . $db->escape($consentDate) . ", " .
+                 $db->escape($consentWithdrawal) . " FROM participant_status";
+    $psData    = $db->pselect($dataQuery, array());
     foreach ($psData as $entry) {
         $status     = $entry[$consentName];
         $date       = $entry[$consentDate];
@@ -250,9 +247,15 @@ echo "\nConsent data insert complete.\n";
 $historyFieldsQuery = "SELECT CandID, entry_staff, data_entry_date";
 
 foreach ($consentList as $consentName=>$consentLabel) {
-    $consentDate       = $consentName . "_date";
-    $consentWithdrawal = $consentName . "_withdrawal";
-    $historyFieldsQuery .= ", " . $db->escape($consentName) . ", " . $db->escape($consentDate) . ", " . $db->escape($consentWithdrawal);
+    $consentDate             = $consentName . "_date";
+    $consentWithdrawal       = $consentName . "_withdrawal";
+    $statusHistoryExists     = $db->columnExists('consent_info_history', $consentName);
+    $dateHistoryExists       = $db->columnExists('consent_info_history', $consentDate);
+    $withdrawalHistoryExists = $db->columnExists('consent_info_history', $consentWithdrawal);
+    // As long as consent has columns in history table, import data
+    if ($statusHistoryExists && $dateHistoryExists && $withdrawalHistoryExists) {
+        $historyFieldsQuery .= ", " . $db->escape($consentName) . ", " . $db->escape($consentDate) . ", " . $db->escape($consentWithdrawal);
+    }
 }
 $historyFieldsQuery .= " FROM consent_info_history";
 $consentHistory = $db->pselect($historyFieldsQuery, array());
@@ -271,6 +274,10 @@ foreach ($consentHistory as $entry) {
             $consentStatus = $entry[$consentName];
             $consentDate = $entry[$consentName . '_date'];
             $consentWithdrawal = $entry[$consentName . '_withdrawal'];
+            // import deprecated "not_answered" status as NULL
+            if ($consentStatus === "not_answered") {
+                $consentStatus = NULL;
+            }
             // As long as there's some data in the history
             if(!empty($consentStatus) || !empty($consentDate) || !empty($consentWithdrawal)) {
                 $formattedHistory = [
@@ -300,7 +307,7 @@ foreach ($existingColumns as $column) {
     $columnName = $column['Column_name'];
     $output .= "ALTER TABLE participant_status DROP COLUMN " . $columnName . ";\n";
 }
-$filename = __DIR__ . "/../SQL/Cleanup_patches/delete_old_consent_tables.sql";
+$filename = __DIR__ . "/../../SQL/Cleanup_patches/delete_old_consent_tables.sql";
 $fp       = fopen($filename, "w");
 fwrite($fp, $output);
 fclose($fp);
