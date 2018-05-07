@@ -26,7 +26,13 @@ class Login_Test extends BaseTestCase
         $API->expects($this->once())->method('header')->with($this->equalTo("HTTP/1.1 401 Unauthorized"));
 
         $API->method("getLoginAuthenticator")->will($this->returnValue($Login));
-        $API->__construct();
+        $API->__construct(
+            'POST',
+            array(
+             'username' => 'MadeUp',
+             'password' => 'fake'
+            )
+        );
 
         $this->assertEquals($API->JSON, [
             'error' => 'I am a test case'
@@ -44,7 +50,13 @@ class Login_Test extends BaseTestCase
         $API->method("getEncodedToken")->will($this->returnValue("FakeToken"));
 
         $API->expects($this->once())->method("getEncodedToken");
-        $API->__construct();
+        $API->__construct(
+            'POST',
+            array(
+             'username' => 'MadeUp',
+             'password' => 'fake'
+            )
+        );
 
         $this->assertEquals($API->JSON, [
             "token" => "FakeToken"
