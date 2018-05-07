@@ -15,6 +15,5 @@ RewriteRule ^([a-zA-Z0-9_-]+)reliability([a-zA-Z0-9_-]*) main.php?test_name=$1re
 # directly from apache
 RewriteCond "%{REQUEST_FILENAME}" "!-f"
 RewriteRule ^(.*)$ index.php?lorispath=$1 [QSA,L]
-
 </IfModule>
 

@@ -90,10 +90,10 @@ foreach ($field_names as $key=>$field)
 
     if ($field['COLUMN_DEFAULT']=='0000-00-00') {
         echo "The script will modify the date schema for TABLE: `".$field['TABLE_NAME']."` FIELD: `".$field['COLUMN_NAME']."` to default to NULL\n";
-        $alters .= "ALTER TABLE ".$db->escape($field['TABLE_NAME'])." MODIFY ".$db->escape($field['COLUMN_NAME'])." ".$field['COLUMN_TYPE']." DEFAULT NULL;\n";
+        $alters .= "ALTER TABLE ".$db->escape($field['TABLE_NAME'])." MODIFY ".$db->escape($field['COLUMN_NAME'])." ".$field['COLUMN_TYPE']." NULL DEFAULT NULL;\n";
     } else if ($field['COLUMN_DEFAULT']=='0000-00-00 00:00:00') {
         echo "The script will modify the date schema for TABLE: `".$field['TABLE_NAME']."` FIELD: `".$field['COLUMN_NAME']."` to default to NULL\n";
-        $alters .= "ALTER TABLE ".$db->escape($field['TABLE_NAME'])." MODIFY ".$db->escape($field['COLUMN_NAME'])." ".$field['COLUMN_TYPE']." DEFAULT NULL;\n";
+        $alters .= "ALTER TABLE ".$db->escape($field['TABLE_NAME'])." MODIFY ".$db->escape($field['COLUMN_NAME'])." ".$field['COLUMN_TYPE']." NULL DEFAULT NULL;\n";
     }
 
 

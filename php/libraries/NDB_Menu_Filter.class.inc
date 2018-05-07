@@ -689,7 +689,7 @@ class NDB_Menu_Filter extends NDB_Menu
     /**
      * Displays the menu page
      *
-     * @return void
+     * @return string
      * @access public
      */
     function display()
@@ -746,7 +746,7 @@ class NDB_Menu_Filter extends NDB_Menu
      *
      * Suitable for serializing to JSON, CSV, etc..
      *
-     * @return associative array
+     * @return array
      */
     function toArray()
     {
@@ -774,7 +774,7 @@ class NDB_Menu_Filter extends NDB_Menu
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
-     * @return a json encoded string of the headers and data from this table
+     * @return string a json encoded string of the headers and data from this table
      */
     function toJSON()
     {

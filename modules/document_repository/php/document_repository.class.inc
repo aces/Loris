@@ -46,7 +46,7 @@ class Document_Repository extends \NDB_Menu_Filter
     /**
      * Function _setupVariables
      *
-     * @return none
+     * @return void
      */
     function _setupVariables()
     {
@@ -125,7 +125,7 @@ class Document_Repository extends \NDB_Menu_Filter
     /**
      * Set filter form function
      *
-     * @return bool
+     * @return void
      */
     function _setFilterForm()
     {
@@ -290,11 +290,11 @@ class Document_Repository extends \NDB_Menu_Filter
      * filter table, it doesn't
      * use pagination
      *
-     * @return void
+     * @return array
      */
     function _getList()
     {
-        return;
+        return array();
     }
 
     /**
@@ -306,6 +306,7 @@ class Document_Repository extends \NDB_Menu_Filter
     function _setDataTable()
     {
         $DB       = \Database::singleton();
+        $user     = \User::singleton();
         $results  = array();
         $query    = "SELECT * FROM document_repository_categories".
                     " ORDER BY parent_id ASC";
@@ -364,6 +365,9 @@ class Document_Repository extends \NDB_Menu_Filter
         $DB = \Database::singleton();
 
         // print out column headings
+        if (!$user->hasPermission('document_repository_delete')) {
+            unset($this->headers[array_search('Delete', $this->headers)]);
+        }
         $i = 0;
         foreach ($this->headers as $header) {
             $this->tpl_data['headers'][$i]['name'] = $header;
@@ -387,9 +391,9 @@ class Document_Repository extends \NDB_Menu_Filter
     /**
      * SetDataTableRows function
      *
-     * @param string $count the value of count
+     * @param int $count the number of data rows
      *
-     * @return bool
+     * @return void
      */
     function _setDataTableRows($count)
     {
