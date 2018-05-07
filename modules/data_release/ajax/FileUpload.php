@@ -27,12 +27,13 @@ if ($_POST['action'] == 'upload') {
     $baseURL = $settings->getBaseURL();
 
     if (!file_exists(__DIR__ . "/../user_uploads/")) {
-        header("HTTP/1.1 400 Bad Request");
-        echo "File upload failed. Default user_uploads directory not found.";
+        error_log("ERROR: File upload failed. Default user_uploads"
+        . " directory not found.");
+        header("HTTP/1.1 500 Internal Server Error");
     } elseif (!is_writable(__DIR__ . "/../user_uploads/")) {
-        header("HTTP/1.1 400 Bad Request");
-        echo "File upload failed. Default user_uploads directory"
-        . " does not appear to be writeable.";
+        error_log("File upload failed. Default user_uploads directory"
+        . " does not appear to be writeable.");
+        header("HTTP/1.1 500 Internal Server Error");
     } else {
         $target_path = $base_path . $fileName;
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {
