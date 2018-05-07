@@ -42,7 +42,7 @@ if (!isset($_POST['identifier'])) {
 $rejectee = \User::factory($_POST['identifier']);
 $username = $rejectee->getUsername();
 
-if (empty($username)) {
+if (empty($username) || $rejectee instanceof \LORIS\AnonymousUser) {
     header("HTTP/1.1 404 Not Found");
     header("Content-Type: text/plain");
     exit(
