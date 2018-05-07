@@ -87,16 +87,7 @@ class Candidates_Test extends TestCase
             $API = $this->getMockBuilder(
                 '\Loris\API\Candidates')->disableOriginalConstructor()->setMethods(['createNew'])->getMock();
             $API->expects($this->once())->method('createNew');
-            $API->__construct("POST",
-                    ['Candidate' => [
-                        'Project' => "loris",
-                        'PSCID'   => 'HelloPSC',
-                        'EDC'     => '2015-05-19',
-                        'DoB'     => '2015-05-26',
-                        'Gender'  => 'Male'
-                    ]
-                ]
-                );
+            $API->__construct();
         } catch(\Loris\API\SafeExitException $e) {
             $API = $e->Object;
         }
