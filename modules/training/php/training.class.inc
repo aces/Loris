@@ -116,16 +116,17 @@ class Training extends \NDB_Form
         $certificationConfig      = $config->getSetting("Certification");
         $certificationInstruments = $certificationConfig['CertificationInstruments'];
         $instruments = array();
-        if (trim($certificationInstruments) != "") {
+
+        if (isset($certificationInstruments['test'])) {
             $certificationInstruments['test']
                 = \Utility::toArray($certificationInstruments['test']);
             foreach ($certificationInstruments['test'] as $certificationInstrument) {
                 $test_key = $certificationInstrument['@']['value'];
                 $testID   = $DB->selectOne(
                     "SELECT ID
-                 FROM test_names
-                 WHERE Test_name
-                 LIKE '%$test_key%'"
+             FROM test_names
+             WHERE Test_name
+             LIKE '%$test_key%'"
                 );
                 $instruments[$testID] = $certificationInstrument['#'];
             }
