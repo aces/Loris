@@ -336,6 +336,7 @@ function editProject() {
     $usersWithEditPerm      = isset($_REQUEST['usersWithEditPerm']) ? json_decode($_REQUEST['usersWithEditPerm']) : null;
     $collaborators          = isset($_REQUEST['collaborators']) ? json_decode($_REQUEST['collaborators']) : null;
     $keywords               = isset($_REQUEST['keywords']) ? json_decode($_REQUEST['keywords']) : null;
+    $voi                    = isset($_REQUEST['voiFields']) ? json_decode($_REQUEST['voiFields']) : null;
 
 
     $db = \Database::singleton();
@@ -347,7 +348,12 @@ function editProject() {
 
     // build array of changed values
     $toUpdate = array();
-
+    if ($pubData['PublicationStatusID'] !== $statusID) {
+        $toUpdate['PublicationStatusID'] = $statusID;
+    }
+    if ($pubData['RejectedReason'] !== $rejectReason) {
+        $toUpdate['RejectedReason'] = $rejectReason;
+    }
     if ($pubData['Description'] !== $description) {
         $toUpdate['Description'] = $description;
     }
@@ -409,10 +415,49 @@ function editProject() {
             );
             $db->delete(
                 'publication_collaborator_rel',
-                array('PublicationCollaboratorID' => $uid)
+                array(
+                    'PublicationCollaboratorID' => $uid,
+                    'PublicationID' => $id
+                )
             );
         }
     }
+
+    $currentKW = $db->pselectCol(
+        'SELECT Label FROM publication_keyword pk '.
+        'LEFT JOIN publication_keyword_rel pkr '.
+        'ON pk.PublicationKeywordID=pkr.PublicationKeywordID '.
+        'WHERE pkr.PublicationID=:pid',
+        array('pid' => $id)
+    );
+
+    if ($currentKW != $keywords) {
+        $newKWs = array_diff($keywords, $currentKW);
+        $oldKWs = array_diff($currentKW, $keywords);
+    }
+
+    if (!empty($newKWs)) {
+        insertKeywords($id);
+    }
+    if (!empty($oldKWs)) {
+        foreach($oldKWs as $kw) {
+            $kid = $db->pselectOne(
+                'SELECT PublicationKeywordID '.
+                'FROM publication_keyword '.
+                'WHERE Label=:kw',
+                array('kw' => $kw)
+            );
+
+            $db->delete(
+                'publication_keyword_rel',
+                array(
+                    'PublicationKeywordID' => $kid,
+                    'PublicationID' => $id
+                )
+            );
+        }
+    }
+
     if(!empty($toUpdate)) {
         $db->update(
             'publication',
