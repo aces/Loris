@@ -398,13 +398,13 @@ class User extends UserPermissions
         if (strpbrk($password, $numbers) === false) {
             $password .= substr(
                 $numbers,
-                mt_rand(0, strlen($numbers)-1),
+                random_int(0, strlen($numbers)-1),
                 1
             );
         }
 
         for ($i = strlen($password); $i < $length; $i++) {
-            $password .= substr($possible, mt_rand(0, $possible_cnt), 1);
+            $password .= substr($possible, random_int(0, $possible_cnt), 1);
         }
 
         return $password;
