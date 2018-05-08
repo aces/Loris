@@ -396,11 +396,7 @@ class User extends UserPermissions
         }
 
         if (strpbrk($password, $numbers) === false) {
-            $password .= substr(
-                $numbers,
-                random_int(0, strlen($numbers)-1),
-                1
-            );
+            $password .= random_int(0, 9);
         }
 
         for ($i = strlen($password); $i < $length; $i++) {
