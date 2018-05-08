@@ -114,7 +114,6 @@ if ($sessionID != null) {
 switch ($action) {
 case 'delete_timepoint':
     return deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $output);
-    break;
 }
 
 /*
