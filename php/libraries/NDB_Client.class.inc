@@ -133,10 +133,12 @@ class NDB_Client
             . $config_additions
         );
         // start php session
-        session_start([
-            'cookie_httponly' => true,
-            'cookie_secure' => true
-        ]);
+        session_start(
+            [
+             'cookie_httponly' => true,
+             'cookie_secure'   => true,
+            ]
+        );
 
         // if exiting, destroy the php session
         if (isset($_REQUEST['logout']) && $_REQUEST['logout']) {
@@ -144,10 +146,12 @@ class NDB_Client
             setcookie("FeedbackButtonBoolean", "");
             header("HTTP/1.1 303 See Other");
             header("Location: /");
-            session_start([
-                'cookie_httponly' => true,
-                'cookie_secure' => true
-            ]);
+            session_start(
+                [
+                 'cookie_httponly' => true,
+                 'cookie_secure'   => true,
+                ]
+            );
         }
 
         /**
