@@ -329,7 +329,7 @@ function editProject() {
 
     $id                     = isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
     $statusID               = isset($_REQUEST['status']) ? $_REQUEST['status'] : null;
-    $rejectReason           = isset($_REQUEST['rejectReason']) ? $_REQUEST['rejectReason'] : null;
+    $rejectedReason           = isset($_REQUEST['rejectedReason']) ? $_REQUEST['rejectedReason'] : null;
     $description            = isset($_REQUEST['description']) ? $_REQUEST['description'] : null;
     $leadInvestigator       = isset($_REQUEST['leadInvestigator']) ? $_REQUEST['leadInvestigator'] : null;
     $leadInvestigatorEmail  = isset($_REQUEST['leadInvestigatorEmail']) ? $_REQUEST['leadInvestigatorEmail'] : null;
@@ -351,8 +351,8 @@ function editProject() {
     if ($pubData['PublicationStatusID'] !== $statusID) {
         $toUpdate['PublicationStatusID'] = $statusID;
     }
-    if ($pubData['RejectedReason'] !== $rejectReason) {
-        $toUpdate['RejectedReason'] = $rejectReason;
+    if ($pubData['RejectedReason'] !== $rejectedReason) {
+        $toUpdate['RejectedReason'] = $rejectedReason;
     }
     if ($pubData['Description'] !== $description) {
         $toUpdate['Description'] = $description;

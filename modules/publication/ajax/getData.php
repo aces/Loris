@@ -112,13 +112,14 @@ function getProjectData() {
             'leadInvestigator'      => $result['LeadInvestigator'],
             'leadInvestigatorEmail' => $result['LeadInvestigatorEmail'],
             'status'                => $result['PublicationStatusID'],
-            'statusOpts'            => getStatusOptions(),
+            'rejectedReason'        => $result['RejectedReason'],
             'voi'                   => $result['VOIs'],
             'keywords'              => $result['Keywords'],
             'collaborators'         => $result['collaborators'],
             'files'                 => $result['files'],
             'usersWithEditPerm'     => $usersWithEditPerm,
             'userCanEdit'           => $userCanEdit,
+            'statusOpts'            => getStatusOptions(),
         );
 
         // if user can edit, retrieve getData() options to allow modifications

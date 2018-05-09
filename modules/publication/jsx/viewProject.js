@@ -72,6 +72,7 @@ class ViewProject extends React.Component {
           keywords: data.keywords,
           collaborators: data.collaborators,
           usersWithEditPerm: data.usersWithEditPerm,
+          rejectedReason: data.rejectedReason,
         };
         self.setState({
           formData: formData,
@@ -309,7 +310,7 @@ class ViewProject extends React.Component {
         rejectReason = <TextboxElement
           name="rejectReason"
           label="Reason for rejection"
-          value={this.state.formData.rejectReason}
+          value={this.state.formData.rejectedReason}
           onUserInput={this.setFormData}
           required={true}
         />;
@@ -331,10 +332,10 @@ class ViewProject extends React.Component {
         label="Status"
         text={statusText}
       />;
-      let rejectReason;
       if (status === 'Rejected') {
         rejectReason = <StaticElement
-          
+          label="Reason for rejection"
+          text={this.state.formData.rejectedReason}
         />;
       }
     }
