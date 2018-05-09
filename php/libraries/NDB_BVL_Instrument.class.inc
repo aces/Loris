@@ -189,7 +189,10 @@ class NDB_BVL_Instrument extends NDB_Page
         ) {
             include_once 'NDB_BVL_Instrument_LINST.class.inc';
             $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST(
-                new Module($instrument),
+                // The module directory we use for instruments is arbitrary,
+                // since it isn't a real module, but it's required for the page
+                // constructor.
+                new Module($instrument, $base ."project/"),
                 $page,
                 $commentID,
                 $commentID,
@@ -207,7 +210,7 @@ class NDB_BVL_Instrument extends NDB_Page
             }
             // Now go ahead and instantiate it
             $obj = new $class(
-                new Module($instrument),
+                new Module($instrument, $base ."project/"),
                 $page,
                 $commentID,
                 $commentID,

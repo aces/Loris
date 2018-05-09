@@ -163,7 +163,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{$baseurl}/main.php?logout=true">
+                                    <a href="{$baseurl}/?logout=true">
                                         Log Out
                                     </a>
                                 </li>
@@ -243,13 +243,6 @@
                                         Please click here to go back
                                     </a>.
                                 </p>
-                            {elseif $test_name == ""}
-                                <h1 style="align:center" class="text-primary">
-                                    Welcome to the LORIS Database!
-                                </h1>
-                                <div style="max-width:700px">
-                                    This database provides an on-line mechanism to store both MRI and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help icon at the top right. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun.
-                                </div>
                             {else}
                                 {if $candID != ""}
                                     <!-- table with candidate profile info -->

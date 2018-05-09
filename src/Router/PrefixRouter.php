@@ -16,7 +16,6 @@ use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\URIInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
-use \LORIS\Http\StringStream;
 
 /**
  * A PrefixRouter is a type of router which delegates to other
@@ -100,10 +99,6 @@ class PrefixRouter implements RequestHandlerInterface
                 return $subhandler->handle($request);
             }
         }
-        return (new \Zend\Diactoros\Response())
-            ->withStatus(404)
-            ->withBody(
-                new StringStream("Not found")
-            );
+        return new \LORIS\Http\Error($request, 404);
     }
 }

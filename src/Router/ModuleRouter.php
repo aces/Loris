@@ -50,17 +50,20 @@ class ModuleRouter extends PrefixRouter
                  "/css/"    => new ModuleFileRouter(
                      $module,
                      $moduledir,
-                     "css"
+                     "css",
+                     "text/css"
                  ),
                  "/js/"     => new ModuleFileRouter(
                      $module,
                      $moduledir,
-                     "js"
+                     "js",
+                     "application/javascript"
                  ),
                  "/static/" => new ModuleFileRouter(
                      $module,
                      $moduledir,
-                     "static"
+                     "static",
+                     ""
                  ),
                 ]
             )

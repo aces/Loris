@@ -52,8 +52,9 @@ class Candidate
      *                        a candidate in the candidate table
      *
      * @return Candidate the Candidate object
+     * @static
      */
-    static function &singleton($candID)
+    static public function &singleton($candID)
     {
         $candidateList =& $GLOBALS['__candidateObjects'];
         if (!isset($candidateList[$candID])) {

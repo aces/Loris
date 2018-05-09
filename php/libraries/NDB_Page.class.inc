@@ -618,10 +618,10 @@ class NDB_Page implements RequestHandlerInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
-        $baseURL = $request->getAttribute("baseurl");
-        $config  = NDB_Config::singleton();
-
         $user = $request->getAttribute("user");
+        if ($this->_hasAccess() !== true) {
+            throw new PermissionDenied();
+        }
 
         // The NDB_Page object itself is sometimes required by middleware,
         // but since the PSR15 Middleware interface is fixed, it needs to be
@@ -639,30 +639,12 @@ class NDB_Page implements RequestHandlerInterface
         $get = $request->getQueryParams();
         if (isset($get['format'])) {
             $this->format = $get['format'];
-            // Do not add the decoration middleware for json format requests. See
-            // FIXME above.
-            return $handler->handle($request);
+            return $handler->handle($request)
+                ->withHeader("Content-Type", "application/json");
         }
-
-        if ($user instanceOf \LORIS\AnonymousUser) {
-            return (new \LORIS\Middleware\AnonymousPageDecorationMiddleware(
-                $baseURL,
-                $config,
-                $this->getJSDependencies(),
-                $this->getCSSDependencies()
-            )
-            )->process($request, $handler);
-        }
-
-        return (new \LORIS\Middleware\UserPageDecorationMiddleware(
-            $user,
-            $baseURL,
-            $this->name,
-            $config,
-            $this->getJSDependencies(),
-            $this->getCSSDependencies()
-        )
-        )->process($request, $handler);
+        return (new \LORIS\Middleware\PageDecorationMiddleware($user, $this))
+            ->process($request, $handler)
+            ->withHeader("Content-Type", "text/html");
     }
 
     /**
