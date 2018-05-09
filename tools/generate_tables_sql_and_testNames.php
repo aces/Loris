@@ -193,7 +193,6 @@ if (is_array($instruments)) {
                 "PRIMARY KEY  (`CommentID`)\n) ENGINE=InnoDB "
                 ."DEFAULT CHARSET=utf8;\n";
             $statement            = $db->prepare($sql_query_statement);
-            echo $sql_query_statement;
             $statement->execute();
         } else {
             $error_message = "Instrument(s) file uses existing name.";
