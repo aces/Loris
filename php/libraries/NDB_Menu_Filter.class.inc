@@ -689,22 +689,20 @@ class NDB_Menu_Filter extends NDB_Menu
     /**
      * Displays the menu page
      *
-     * @return void
+     * @return string
      * @access public
      */
     function display()
     {
-        if (isset($_REQUEST['format'])) {
-            switch($_REQUEST['format']) {
-            case 'json':
-                       header('Content-Type: application/json');
-                return $this->toJSON();
-            }
+        switch($this->format) {
+        case 'json':
+            return $this->toJSON();
         }
         if ($this->skipTemplate) {
             return "";
         }
         // Set the csvFile links
+        /*
         $uri    = ltrim($_SERVER['REQUEST_URI'], "/");
         $suffix = strpos($uri, '?') ? '&format=csv' : '?&format=csv';
         $this->setTemplateVar('csvURL', $uri . $suffix);
@@ -714,6 +712,7 @@ class NDB_Menu_Filter extends NDB_Menu
             . ($_REQUEST['subtest'] ?? $_REQUEST['submenu'] ?? '')
             . date('-Y_m_d')
         );
+         */
 
         // dump the html for the menu
         $smarty = new Smarty_neurodb($this->Module->getName());
@@ -747,7 +746,7 @@ class NDB_Menu_Filter extends NDB_Menu
      *
      * Suitable for serializing to JSON, CSV, etc..
      *
-     * @return associative array
+     * @return array
      */
     function toArray()
     {
@@ -775,7 +774,7 @@ class NDB_Menu_Filter extends NDB_Menu
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
-     * @return a json encoded string of the headers and data from this table
+     * @return string a json encoded string of the headers and data from this table
      */
     function toJSON()
     {

@@ -32,6 +32,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface { 
         ob_start();
         // Set the page template variables
+        // $user is set by the page base router
+        $user = $request->getAttribute("user");
         $tpl_data = array(
                      'test_name' => $this->PageName,
                     );
@@ -47,25 +49,24 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
 
 
         $get = $request->getQueryParams();
-        $tpl_data['candID']      = $get['candID'] ?? '';
         $tpl_data['sessionID']   = $get['sessionID'] ?? '';
         $tpl_data['commentID']   = $get['commentID'] ?? '';
         $tpl_data['dynamictabs'] = $get['dynamictabs'] ?? '';
 
-        if (!empty($get['candID'])) {
-            $candidate = \Candidate::singleton($get['candID']);
+        $candID = $request->getAttribute("CandID");
+        if ($candID == null && !empty($get['candID'])) {
+            $candID = $get['candID'];
+        }
+        if ($candID != null) {
+            $candidate = \Candidate::singleton($candID);
 
             $tpl_data['candidate'] = $candidate->getData();
         }
+        $tpl_data['candID']      = $candID ?? '';
 
         // Stuff that probably shouldn't be here, but exists because it was in
         // main.php
 
-        // This seems to only be used in imaging_browser, it can probably be
-        // moved to properly use OOP.
-        $tpl_data['formaction'] = $this->FormAction ?? '';
-        // Doesn't appear to be used
-        $tpl_data['lastURL'] = $_SESSION['State']->getLastURL();
         // I don't think anyone uses this. It's not really supported
         $tpl_data['css'] = $this->Config->getSetting('css');
 
@@ -76,16 +77,18 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
         if (method_exists($page, 'getControlPanel')) {
             $tpl_data['control_panel'] = $page->getControlPanel();
         }
+
         if (method_exists($page, 'getFeedbackPanel')
             && $user->hasPermission('bvl_feedback')
+            && $candID !== null
         ) {
             $tpl_data['feedback_panel'] = $page->getFeedbackPanel(
-                $get['candID'],
+                $candID,
                 $get['sessionID'] ?? null
             );
 
-            $tpl_data['bvl_feedback'] = NDB_BVL_Feedback::bvlFeedbackPossible(
-                $this->page
+            $tpl_data['bvl_feedback'] = \NDB_BVL_Feedback::bvlFeedbackPossible(
+                $this->PageName
             );
         }
         if ($page instanceOf \NDB_Page) {
@@ -167,7 +170,13 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
                                    );
         }
 
+        // Handle needs to be called before formaction, because handle potentially
+        // calls setup which modifies the $page->FormAction value (ie in the imaging
+        // browser)
         $undecorated = $handler->handle($request);
+        // This seems to only be used in imaging_browser, it can probably be
+        // moved to properly use OOP.
+        $tpl_data['FormAction'] = $page->FormAction ?? '';
         // Finally, the actual content and render it..
         $tpl_data += array(
                       'jsfiles'   => $this->JSFiles,
@@ -179,7 +188,6 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
         $tpl_data['console'] = htmlspecialchars(ob_get_contents());
         ob_end_clean();
 
-        $undecorated = $handler->handle($request);
         // Finally, the actual content and render it..
         $tpl_data += array(
             'jsfiles'   => $this->JSFiles,

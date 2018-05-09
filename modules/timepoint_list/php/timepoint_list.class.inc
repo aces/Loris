@@ -11,6 +11,9 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\timepoint_list;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * The timepoint list menu
@@ -25,6 +28,8 @@ namespace LORIS\timepoint_list;
  */
 class Timepoint_List extends \NDB_Menu
 {
+    protected $candID;
+
     /**
      * Overloading this method to allow access to timepoint list
      *
@@ -35,7 +40,7 @@ class Timepoint_List extends \NDB_Menu
         // create user object
         $user =& \User::singleton();
 
-        $candidate =& \Candidate::singleton($_REQUEST['candID']);
+        $candidate =& \Candidate::singleton($this->candID);
 
         // check user permissions
         if ($user->hasPermission('access_all_profiles')
@@ -66,19 +71,45 @@ class Timepoint_List extends \NDB_Menu
 
         return false;
     }
+
+    /**
+     * Handle an incoming HTTP request. The timepoint_list overrides the default
+     * handler to populate the CandID field for the page class.
+     *
+     * @param ServerRequestInterface  $request The incoming PSR7 request
+     * @param RequestHandlerInterface $handler The PSR15 handler.
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ) : ResponseInterface {
+        $attribute = $request->getAttribute("CandID");
+        if ($attribute !== null) {
+            // FIXME: Update the code to add the singleton here, not the identifier.
+            $this->candID = $attribute;
+        } else {
+            $gets         = $request->getQueryParams();
+            $this->candID = $gets['candID'];
+        }
+        $this->setup();
+        return parent::process($request, $handler);
+    }
+
     /**
      * Setup function
      *
-     * @return null
+     * @return void
      */
     function setup()
     {
         // create candidate object
-        $candidate =& \Candidate::singleton($_REQUEST['candID']);
+        $candidate =& \Candidate::singleton($this->candID);
         $DB        =& \Database::singleton();
 
         $numberOfVisits           = 0;
-        $this->tpl_data['candID'] = $_REQUEST['candID'];
+        $this->tpl_data['candID'] = $this->candID;
         $this->tpl_data['PSCID']  = $candidate->getPSCID();
         $listOfTimePoints         = $candidate->getListOfTimePoints();
 
@@ -247,7 +278,7 @@ class Timepoint_List extends \NDB_Menu
      */
     function getActionButtons()
     {
-        $controlPanel = new TimePoint_List_ControlPanel($_REQUEST['candID']);
+        $controlPanel = new TimePoint_List_ControlPanel($this->candID);
         return $controlPanel->display();
     }
 

@@ -101,6 +101,11 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
     function testPageUIs()
     {
         $this->safeGet($this->url . "/instrument_list/?candID=300001&sessionID=1");
+        $this->webDriver->wait(3, 500)->until(
+            WebDriverExpectedCondition::presenceOfElementLocated(
+                WebDriverBy::Id('lorisworkspace')
+            )
+        );
         foreach ($this->_loadingUI as $key => $value) {
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"

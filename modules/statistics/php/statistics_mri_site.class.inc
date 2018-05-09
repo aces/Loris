@@ -1,8 +1,8 @@
 <?php
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -13,9 +13,9 @@
 namespace LORIS\statistics;
 
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -87,7 +87,7 @@ class Statistics_Mri_Site extends Statistics_Site
      * @param string $projectID the value of projectID
      * @param string $issue     the value of issue
      *
-     * @return void
+     * @return array
      */
     function _getResults($centerID, $projectID, $issue)
     {

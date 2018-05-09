@@ -28,10 +28,10 @@ class AnonymousUser extends \User
     /**
      * An anonymous user is not a member of any site.
      *
-     * @return array of site names
+     * @return string The empty string
      */
-    public function getSiteNames() : array
+    public function getSiteNames() : string
     {
-        return array();
+        return "";
     }
 }

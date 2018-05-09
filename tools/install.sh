@@ -156,6 +156,7 @@ fi
 
 if [ $os_distro = "Ubuntu" ]; then
     sudo chown www-data.www-data ../modules/document_repository/user_uploads
+    sudo chown www-data.www-data ../modules/data_release/user_uploads
     sudo chown www-data.www-data ../smarty/templates_c
     # Make Apache the group for project directory, so that the web based install
     # can write the config.xml file.
@@ -163,13 +164,14 @@ if [ $os_distro = "Ubuntu" ]; then
     sudo chmod 770 ../project
 elif [ $os_distro = "CentOS" ]; then
     sudo chown apache.apache ../modules/document_repository/user_uploads
+    sudo chown apache.apache ../modules/data_release/user_uploads
     sudo chown apache.apache ../smarty/templates_c
     # Make Apache the group for project directory, so that the web based install
     # can write the config.xml file.
     sudo chgrp apache ../project
     sudo chmod 770 ../project
 else
-    echo "$os_distro Linux distribution detected. We currently do not support this. Please manually chown/chgrp the user_uploads directory in ../modules/document_repository to the web server and ../smarty/templates_c"
+    echo "$os_distro Linux distribution detected. We currently do not support this. Please manually chown/chgrp to the web server user in: the user_uploads directory in ../modules/data_release/ and ../modules/document_repository/, as well as ../smarty/templates_c/"
 fi
 
 
@@ -182,7 +184,7 @@ if [ -d logs ]; then
     elif [ $os_distro = "CentOS" ]; then
         sudo chgrp apache logs
     else
-        echo "$os_distro Linux distribution detected. We currently do not support this. Please manually set the permissions for user_uploads directory in ../modules/document_repository"
+        echo "$os_distro Linux distribution detected. We currently do not support this. Please manually set the permissions for the directory tools/logs/"
     fi
 fi
 

@@ -146,7 +146,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      * @param array $elements The value of all the elements on the current page
      *                        to validate.
      *
-     * @return associative array of errors (fieldname => errormessage) or true
+     * @return array associative array of errors (fieldname => errormessage) or true
      *         if no errors.
      */
     function XINValidate($elements)
@@ -374,7 +374,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     * @param string $group   Empty if a non-grouped element is registering the rule.
     *                        Otherwise, name of the group registering the rule.
     *
-    * @return none
+    * @return void
     */
     function XINRegisterRule($elname, $rules, $message="", $group="")
     {
@@ -770,7 +770,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      *                         data URL, so we shouldn't check that the file exists
      *                         on the filesystem. (Used by preview)
      *
-     * @return null Registers all instrument rules as a side-effect.
+     * @return void but registers all instrument rules as a side-effect.
      */
     function loadInstrumentRules($filename, $base64 = false)
     {
@@ -787,7 +787,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 if (isset($this->LinstQuestions[$question])) {
                     $q =& $this->LinstQuestions[$question];
 
-                    if ($q['UserRules'] !== true) {
+                    if (($q['UserRules'] ?? false) !== true) {
                         // Unregister the rules that were added by the wrapper
                         // for the group, because otherwise that'll override the
                         // user specified rules from the .rules file

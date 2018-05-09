@@ -408,7 +408,7 @@ abstract class AbstractServerProcess
                 $errorMessage
                     = "Failed to retrieve exit code of process with pid "
                       . $this->getPid() . " in "
-                      . $this->_exitCodeFile . ": $tailOutput";
+                      . $this->_exitCodeFile . ": " . implode("\n", $tailOutput);
                 error_log($errorMessage);
                 throw new \UnexpectedValueException($errorMessage);
             }
