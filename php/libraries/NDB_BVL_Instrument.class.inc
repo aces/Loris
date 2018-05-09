@@ -1398,6 +1398,22 @@ class NDB_BVL_Instrument extends NDB_Page
         return false;
     }
 
+    /**
+     * Gets the VisitLabel for the timepoint to which this instrument pertains
+     *
+     * @return String for the VisitLabel
+     */
+    function getVisitLabel{
+        $sessionID = $this->getSessionID();
+
+        if(!empty($sessionID)){
+            $t = Timepoint::singleton($sessionID);
+            $visitLabel = $t->getVisitLabel();
+            return $visitLabel;
+        }
+        return false;
+    }
+
 
     /**
      * Determines what the data entry status flag should be set to
