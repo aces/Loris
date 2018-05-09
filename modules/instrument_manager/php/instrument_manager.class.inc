@@ -94,10 +94,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
                     . escapeshellarg($new_file),
                     $error_message
                 );
-                if ($error_message) {
+                $error_message = implode($error_message);
+                if (!empty($error_message)) {
+                    //echo $error_message;
                     throw new \LorisException(
-                        "Error uploading the Instrument(s) file!\n".
-                        "Details: $error_message"
+                        "Error uploading the Instrument(s) file:\n".
+                        "$error_message"
                     );
                     // See the /project/tables_sql/{file} for debugging the error.
                     error_log(
