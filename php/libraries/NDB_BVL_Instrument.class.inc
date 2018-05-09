@@ -1403,7 +1403,8 @@ class NDB_BVL_Instrument extends NDB_Page
      *
      * @return String for the VisitLabel
      */
-    function getVisitLabel{
+    function getVisitLabel()
+    {
         $sessionID = $this->getSessionID();
 
         if(!empty($sessionID)){
