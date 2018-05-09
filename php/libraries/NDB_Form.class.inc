@@ -73,7 +73,7 @@ class NDB_Form extends NDB_Page
                 $module = \Module::factory($name);
             }
         } catch(\LorisModuleMissingException $e) {
-            $module = new Module($name);
+            $module = new Module($name, "");
         }
 
         // create a form instance

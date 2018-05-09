@@ -87,7 +87,7 @@ class NDB_Menu extends NDB_Page
                 $module = \Module::factory($menu);
             }
         } catch(\LorisModuleMissingException $e) {
-            $module = new Module($menu);
+            $module = new Module($menu, "");
         }
 
         $obj = new $class($module, $menu, '', '', 'menu');
