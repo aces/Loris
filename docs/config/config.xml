@@ -25,30 +25,26 @@
         <name>Example database</name>
     </database>
 
-    <CouchDB>
-        <dbName>%COUCH_DATABASE%</dbName>
-        <hostname>%COUCH_HOSTNAME%</hostname>
-        <port>%COUCH_PORT%</port>
-        <admin>%COUCH_USERNAME%</admin>
-        <adminpass>%COUCH_PASSWORD%</adminpass>
-    </CouchDB>
+    <!-- MINC TOOLS PATH -->
+    <MINCToolsPath>%MINCTOOLSPATH%</MINCToolsPath>
+
 
     <!-- study variables -->
     <study>
         <PSCID>
             <!-- PSCID (Study Center ID) generation method possible options: sequential/random/user -->
-            <generation>sequential</generation>
+            <generation>random</generation>
             <structure>
                 <seq type="siteAbbrev"/>
-                <seq type="alphanumeric" minLength="4"/> <!-- Ex: AAA1-->
+                <seq type="numeric" length="3" min='100' max='999'/> <!-- Ex: AAA1-->
             </structure>
         </PSCID>
-        
+
         <ExternalID>
             <generation>random</generation>
             <structure>
-                <seq type="static">BBB</seq>
-                <seq type="numeric" length="4" min='1000' max='9999'/>
+                <seq type="siteAbbrev"/>
+                <seq type="numeric" length="3" min='100' max='999'/>
             </structure>
         </ExternalID>
         <!--Header table is diplayed on top of instrument list page and instrument pages -->
@@ -61,86 +57,98 @@
         <!-- defines how visit labels are assigned -->
         <visitLabel subprojectID="1">
             <!-- generation can have either 'user' or 'sequence' to denote user entered or a pre-defined sequence -->
-            <!-- if 'user', the frontend will display a textbox for the user to enter date which is
-                 enforced against the regex. If 'sequence', a dropdown will be displayed
-                 based on the options in the labelSet tag -->
-            <generation>user</generation>
+            <generation>sequence</generation>
             <regex>/^[A-Z0-9]{2}$/i</regex>
             <length>2</length>
             <suggest>V%value%</suggest> <!-- %value% will be substituted for the next unique number -->
             <labelSet>
-                <item value="V01">V01</item>
-                <item value="V02">V02</item>
+                <item value="V1">V1</item>
+                <item value="V2">V2</item>
+                <item value="V3">V3</item>
             </labelSet>
         </visitLabel>
         <visitLabel subprojectID="2">
             <!-- generation can have either 'user' or 'sequence' to denote user entered or a pre-defined sequence -->
-            <!-- if 'user', the frontend will display a textbox for the user to enter date which is
-                 enforced against the regex. If 'sequence', a dropdown will be displayed
-                 based on the options in the labelSet tag -->
-            <generation>user</generation>
+            <generation>sequence</generation>
             <regex>/^[A-Z0-9]{2}$/i</regex>
             <length>2</length>
             <suggest>V%value%</suggest> <!-- %value% will be substituted for the next unique number -->
             <labelSet>
-                <item value="V01">V01</item>
-                <item value="V02">V02</item>
+                <item value="V1">V1</item>
+                <item value="V2">V2</item>
+                <item value="V3">V3</item>
             </labelSet>
         </visitLabel>
-        <!-- Instruments for relability module -->
+        <visitLabel subprojectID="3">
+            <!-- generation can have either 'user' or 'sequence' to denote user entered or a pre-defined sequence -->
+            <generation>sequence</generation>
+            <regex>/^[A-Z0-9]{2}$/i</regex>
+            <length>2</length>
+            <suggest>V%value%</suggest> <!-- %value% will be substituted for the next unique number -->
+            <labelSet>
+                <item value="V3">V3</item>
+                <item value="V4">V4</item>
+                <item value="V5">V5</item>
+                <item value="V6">V6</item>
+            </labelSet>
+        </visitLabel>
+        <visitLabel subprojectID="4">
+            <!-- generation can have either 'user' or 'sequence' to denote user entered or a pre-defined sequence -->
+            <generation>sequence</generation>
+            <regex>/^[A-Z0-9]{2}$/i</regex>
+            <length>2</length>
+            <suggest>V%value%</suggest> <!-- %value% will be substituted for the next unique number -->
+            <labelSet>
+                <item value="V3">V3</item>
+                <item value="V4">V4</item>
+                <item value="V5">V5</item>
+                <item value="V6">V6</item>
+            </labelSet>
+        </visitLabel>
+        <!-- Instruments for reliability module -->
         <ReliabilityInstruments>
             <Instrument>
-                <Testname>aosi</Testname>
+                <Testname>bmi</Testname>
                 <Threshold>0.5</Threshold>
-                <Displayname>AOSI</Displayname>
+                <Displayname>BMI</Displayname>
             </Instrument>
-            <Instrument>
-                <Testname>adi_r_proband</Testname>
-                <Threshold>89.5</Threshold>
-                <Displayname>ADI-R (Proband)</Displayname>
-            </Instrument>
-            <Instrument>
-                <Testname>adi_r_subject</Testname>
-                <Threshold>89.5</Threshold>
-                <Displayname>ADI-R (Subject)</Displayname>
-            </Instrument>
-            <Instrument>
-                <Testname>csbs</Testname>
-                <Threshold>79.5</Threshold>
-                <Displayname>CSBS</Displayname>
-            </Instrument>
-            <Instrument>
-                <Testname>ados_module1</Testname>
-                <Threshold>79.5</Threshold>
-                <Displayname>ADOS (Module1)</Displayname>
-            </Instrument>
-            <Instrument>
-                <Testname>ados_module2</Testname>
-                <Threshold>79.5</Threshold>
-                <Displayname>ADOS (Module2)</Displayname>
-            </Instrument>
+
         </ReliabilityInstruments>
 
-         <!-- certification module -->
+        <!-- certification module -->
         <Certification>
-            <EnableCertification>0</EnableCertification>
+            <EnableCertification>1</EnableCertification>
             <CertificationProjects>
                 <!-- add project for which certification module should be enabled-->
-                <CertificationProject></CertificationProject>
+                <CertificationProject>1</CertificationProject>
+                <CertificationProject>2</CertificationProject>
+                <CertificationProject>3</CertificationProject>
             </CertificationProjects>
 
             <CertificationInstruments>
-                <!--test value=InstrumentName>InstrumentName</test-->
+                <test value="bmi">BMI</test>
+                <test value="radiology_review">Radiology Review</test>
             </CertificationInstruments>
         </Certification>
+        <!--This permission allows users from sites to have access to other sites bvl feedback info -->
+        <multiSiteEnabledCenters>0</multiSiteEnabledCenters>
 
         <!-- Consent module allows addition of consent information in the candidate information page-->
-         <ConsentModule>
-            <useConsent>false</useConsent>
+        <ConsentModule>
+            <useConsent>true</useConsent>
             <Consent>
                 <name>study_consent</name>
                 <label>Consent to Study</label>
             </Consent>
+            <Consent>
+                <name>raisin_consent</name>
+                <label>Consent to Raisin</label>
+            </Consent>
+            <Consent>
+                <name>bread_consent</name>
+                <label>Consent to Bread</label>
+            </Consent>
+
         </ConsentModule>
 
     </study>
@@ -174,8 +182,5 @@
             <permission>sampleInstrument2PermissionName</permission>
         </instrument>
     </instrumentPermissions>
-
-    <!-- MINC TOOLS PATH -->
-    <MINCToolsPath>%MINCTOOLSPATH%</MINCToolsPath>
 
 </config>
