@@ -575,7 +575,7 @@ class Data_Team_Helper extends \NDB_Form
      *
      * @return int
      */
-    function getInstrumentCount(string $test_name,
+    function getInstrumentCount($test_name,
         $visit_label=null,
         $candidate=null,
         $site=null,
