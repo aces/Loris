@@ -1407,8 +1407,8 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         $sessionID = $this->getSessionID();
 
-        if(!empty($sessionID)){
-            $t = Timepoint::singleton($sessionID);
+        if (!empty($sessionID)) {
+            $t          = Timepoint::singleton($sessionID);
             $visitLabel = $t->getVisitLabel();
             return $visitLabel;
         }
