@@ -51,7 +51,7 @@ class ViewProject extends React.Component {
       },
       error: function(jqXHR, textStatus) {
         console.error(jqXHR);
-        swal("Edit failed!", jqXHR.responseText, "")
+        swal("Edit failed!", jqXHR.responseText, "error")
       }
     });
   }
@@ -179,7 +179,10 @@ class ViewProject extends React.Component {
     }
 
     if (this.state.voi) {
-      voiLinks = this.createVOIElements(this.state.voi);
+      voiLinks = this.createMenuFilterLinks(
+        this.state.voi,
+        'voi'
+      );
       vois = <StaticElement
         name="variablesOfInterest"
         label="Variables of Interest"
@@ -312,7 +315,8 @@ class ViewProject extends React.Component {
         />;
       }
     } else {
-      let status = this.state.formData.status;
+      let statusID = this.state.formData.status;
+      let status = this.state.statusOpts[statusID];
       const statClassMap = {
         'Pending': 'text-warning',
         'Approved': 'text-success',
@@ -327,6 +331,12 @@ class ViewProject extends React.Component {
         label="Status"
         text={statusText}
       />;
+      let rejectReason;
+      if (status === 'Rejected') {
+        rejectReason = <StaticElement
+          
+        />;
+      }
     }
 
 

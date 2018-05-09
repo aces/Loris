@@ -458,6 +458,64 @@ function editProject() {
         }
     }
 
+    $currentVOI = array();
+    $fields = $db->pselectCol(
+        'SELECT pt.Name AS field ' .
+        'FROM parameter_type pt '.
+        'LEFT JOIN publication_parameter_type_rel pptr '.
+        'ON pptr.ParameterTypeID=pt.ParameterTypeID '.
+        'WHERE pptr.PublicationID=:pid',
+        array('pid' => $id)
+    );
+    $testNames = $db->pselectCol(
+        'SELECT Test_name '.
+        'FROM publication_test_names_rel ptnr '.
+        'LEFT JOIN test_names tn '.
+        'ON tn.ID=ptnr.TestNameID '.
+        'WHERE PublicationID=:pid',
+        array('pid' => $id)
+    );
+
+    $currentVOI = array_merge($fields, $testNames);
+
+    if ($currentVOI != $voi) {
+        $newVOI = array_diff($voi, $currentVOI);
+        $oldVOI = array_diff($currentVOI, $voi);
+    }
+    if (!empty($newVOI)) {
+        insertVOIs($id);
+    }
+    if (!empty($oldVOI)) {
+        foreach($oldVOI as $ov) {
+            $tnID = $db->pselectOne(
+                'SELECT ID FROM test_names WHERE Test_name=:tn',
+                array('tn' => $ov)
+            );
+            if ($tnID) {
+                $db->delete(
+                  'publication_test_names_rel',
+                    array(
+                        'PublicationID' => $id,
+                        'TestNameID'    => $tnID
+                    )
+                );
+            } else {
+                $ptID = $db->pselectOne(
+                    'SELECT ParameterTypeID FROM parameter_type WHERE Name=:n',
+                    array('n' => $ov)
+                );
+                $db->delete(
+                    'publication_parameter_type_rel',
+                    array(
+                        'PublicationID'   => $id,
+                        'ParameterTypeID' => $ptID
+                    )
+                );
+            }
+        }
+    }
+
+
     if(!empty($toUpdate)) {
         $db->update(
             'publication',

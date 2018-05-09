@@ -73,12 +73,10 @@ function getProjectData() {
     $db = Database::singleton();
 
     $query = 'SELECT Title, Description, DateProposed, '.
-        'LeadInvestigator, LeadInvestigatorEmail, Label, UserID '.
+        'LeadInvestigator, LeadInvestigatorEmail, '.
+        'PublicationStatusID, UserID, RejectedReason  '.
         'FROM publication p '.
-        'LEFT JOIN publication_status ps '.
-        'ON p.PublicationStatusID=ps.PublicationStatusID '.
-        'WHERE p.PublicationID=:pid '.
-        'GROUP BY p.PublicationID';
+        'WHERE p.PublicationID=:pid ';
     $result = $db->pselectRow(
         $query,
         array('pid' => $id)
@@ -113,7 +111,8 @@ function getProjectData() {
             'description'           => $result['Description'],
             'leadInvestigator'      => $result['LeadInvestigator'],
             'leadInvestigatorEmail' => $result['LeadInvestigatorEmail'],
-            'status'                => $result['Label'],
+            'status'                => $result['PublicationStatusID'],
+            'statusOpts'            => getStatusOptions(),
             'voi'                   => $result['VOIs'],
             'keywords'              => $result['Keywords'],
             'collaborators'         => $result['collaborators'],
@@ -121,10 +120,6 @@ function getProjectData() {
             'usersWithEditPerm'     => $usersWithEditPerm,
             'userCanEdit'           => $userCanEdit,
         );
-
-        if ($user->hasPermission('publication_approve')) {
-            $pubData['statusOpts'] = getStatusOptions();
-        }
 
         // if user can edit, retrieve getData() options to allow modifications
         if ($userCanEdit) {
