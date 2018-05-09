@@ -66,6 +66,7 @@ if (is_array($instruments)) {
                 // Generate the CREATE TABLE syntax
             case "table":
                 $sql_query_table_name = str_replace('`', '', $db->escape($bits[1]));
+
                 $file_name = "../project/tables_sql/".$bits[1].".sql";
                 $output    = "CREATE TABLE `$bits[1]` (\n";
                 $output   .= "`CommentID` varchar(255) NOT NULL default '',\n"
@@ -134,11 +135,11 @@ if (is_array($instruments)) {
                     $bits[0] = "varchar(255)";
                 } else {
                     // Safety SQL injection prevention.
-                    $bits[0] = $db->escape($bits[0]);
+                    $bits[0] = str_replace('`', '', $db->escape($bits[0]));
                 }
                 $bits[2]     = htmlspecialchars($bits[2]);
                 $output     .= "`$bits[1]` $bits[0] default NULL,\n";
-                $column_name = $db->escape($bits[1]);
+                $column_name = str_replace('`', '', $db->escape($bits[1]));
                 array_push(
                     $sql_query_columns,
                     "`$column_name` $bits[0] default NULL,\n"
@@ -192,6 +193,7 @@ if (is_array($instruments)) {
                 "PRIMARY KEY  (`CommentID`)\n) ENGINE=InnoDB "
                 ."DEFAULT CHARSET=utf8;\n";
             $statement            = $db->prepare($sql_query_statement);
+            echo $sql_query_statement;
             $statement->execute();
         } else {
             $error_message = "Instrument(s) file uses existing name.";
