@@ -33,15 +33,12 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Instrument_List extends \NDB_Menu_Filter
 {
-    protected $candidate;
-    protected $timePoint;
-
     /**
      * The timepoint to which the instrument list belongs to.
      *
      * @var \TimePoint
      */
-    protected $timepoint;
+    protected $timePoint;
 
     /**
      * The candidate to which the instrument list belongs to.
@@ -266,7 +263,7 @@ class Instrument_List extends \NDB_Menu_Filter
         }
 
         $this->tpl_data['display']
-            = array_merge($this->candidate->getData(), $this->timepoint->getData());
+            = array_merge($this->candidate->getData(), $this->timePoint->getData());
     }
 
     /**
@@ -391,7 +388,7 @@ class Instrument_List extends \NDB_Menu_Filter
                 '/timepoint_list/?candID=' . $candid
             ),
             new \LORIS\Breadcrumb(
-                'TimePoint ' . $this->timepoint->getVisitLabel() . ' Details',
+                'TimePoint ' . $this->timePoint->getVisitLabel() . ' Details',
                 $_SERVER['REQUEST_URI']
             )
         );
