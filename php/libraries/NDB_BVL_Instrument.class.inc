@@ -1412,7 +1412,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $visitLabel = $t->getVisitLabel();
             return $visitLabel;
         }
-        return false;
+        return '';
     }
 
 
