@@ -89,21 +89,20 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 array('testname' => $_FILES['install_file']['name'])
             );
             if ($exists <= 0) {
-                $db_config = $config->getSetting('database');
                 exec(
                     'php generate_tables_sql_and_testNames.php < '
-                    . escapeshellarg($new_file)
+                    . escapeshellarg($new_file),
+                    $error_message
                 );
-
-                $instrument = \NDB_BVL_Instrument::factory(
-                    $instname,
-                    '',
-                    ''
-                );
-                if (!isset($db_config['quatUser'], $db_config['quatPassword'])) {
+                if ($error_message) {
                     throw new \LorisException(
-                        "SQL needs to be sourced manually at /project/tables_sql/".
-                        $instrument->table.".sql"
+                        "Error uploading the Instrument(s) file!\n".
+                        "Details: $error_message"
+                    );
+                    // See the /project/tables_sql/{file} for debugging the error.
+                    error_log(
+                        "Error uploading the Instrument(s) file: "
+                        .$error_message
                     );
                 }
             }
