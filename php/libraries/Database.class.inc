@@ -925,7 +925,7 @@ class Database
      *
      * @param string $value An unsafe string
      *
-     * @return The value appropriately quoted/escaped
+     * @return string The value appropriately quoted/escaped
      */
     function quote($value)
     {
@@ -940,7 +940,7 @@ class Database
      *
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
-     * @param array  $where the selection filter, joined as a boolean and
+     * @param string $where the selection filter, joined as a boolean and
      * @param string $type  The type of change being tracked (*I*nsert,
      *                      *U*pdate or *D*elete)
      *
