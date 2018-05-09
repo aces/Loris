@@ -115,7 +115,7 @@ foreach ($instruments AS $instrument) {
             if ($bits[0]=="select") {
                 $bits[0] = enumizeOptions(
                     $bits[3],
-                    isset($tablename)
+                    $tablename
                     ?? null,
                     $bits[1]
                 );
