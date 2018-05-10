@@ -138,7 +138,7 @@ class NDB_Client
         session_start(
             [
              'cookie_httponly' => true,
-             'cookie_secure'   => true,
+             'cookie_secure'   => false,
             ]
         );
 
