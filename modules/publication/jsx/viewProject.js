@@ -12,9 +12,9 @@ class ViewProject extends React.Component {
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
+    this.setFileData = this.setFileData.bind(this);
     this.createFileDownloadLinks = this.createFileDownloadLinks.bind(this);
     this.createMenuFilterLinks = this.createMenuFilterLinks.bind(this);
-    this.createVOIElements = this.createVOIElements.bind(this);
     this.createStaticComponents = this.createStaticComponents.bind(this);
     this.createEditableComponents = this.createEditableComponents.bind(this);
     this.addListItem = this.addListItem.bind(this);
@@ -127,28 +127,6 @@ class ViewProject extends React.Component {
     );
 
     return links;
-  }
-
-  createVOIElements(vois) {
-    let result = [];
-    Object.keys(vois).forEach(
-      function(v) {
-        let links = this.createMenuFilterLinks(vois[v]['Fields'], 'voi');
-        result.push(
-          <div>
-            <h4 data-toggle="collapse" data-target={"#voi" + v}>
-              {v} &nbsp;
-              <span className="glyphicon glyphicon-chevron-down"/>
-            </h4>
-            <div id={"voi" + v} className="collapse">
-            {links}
-            </div>
-          </div>
-        );
-      }.bind(this)
-    );
-
-    return result;
   }
 
   createStaticComponents() {
@@ -271,6 +249,15 @@ class ViewProject extends React.Component {
     this.setState({
       formData: formData
     });
+  }
+
+  setFileData(formElement, value) {
+    let numFiles = this.state.numFiles;
+    if(!this.state.formData[formElement]) {
+      numFiles += 1;
+      this.setState({numFiles: numFiles});
+    }
+    this.setFormData(formElement, value);
   }
 
   render() {

@@ -21,7 +21,7 @@ function uploadPublication()
 
     $titleRaw = isset($_REQUEST['title']) ? $_REQUEST['title'] : null;
     if (!$titleRaw) {
-        throw new LorisException('Title is empty');
+        showError('Title is empty');
     }
     // title that gets inserted is run through htmlspecialchars()
     // so need to query based on Processed title
@@ -36,7 +36,7 @@ function uploadPublication()
     );
 
     if ($exists) {
-        throw new LorisException('Submitted title already exists');
+        showError('Submitted title already exists');
     }
 
     // INSERT INTO publication ...
@@ -72,21 +72,21 @@ function uploadPublication()
         insertVOIs($pubID);
         // INSERT INTO publication_users_edit_perm_rel
     } catch (Exception $e) {
-        header("HTTP/1.1 400 Bad Request");
         cleanup($pubID);
-        echo $e->getMessage();
+        showError($e->getMessage());
     }
 
     notifySubmission($pubID);
 }
 
-function insertFiles($pubID) {
+function processFiles($pubID) {
     if (empty($_FILES)) {
         return;
     }
-    $db = Database::singleton();
-    // TODO: make configurable
-    $publicationPath = "/data/publication_uploads/";
+    $db = \Database::singleton();
+    $config = \NDB_Config::singleton();
+
+    $publicationPath = $config->getSetting('publication_uploads');
 
     if (!isset($publicationPath)) {
         throw new LorisException("Error! Publication path is not set in Loris Settings!");
@@ -103,7 +103,7 @@ function insertFiles($pubID) {
         $index     = preg_split('/_/', $name)[1];
 
         if (!isset($extension)) {
-            throw new LorisException("Please make sure your file has a valid extension!");
+            throw new LorisException("Please make sure your file has a valid extension: " . $values['name']);
         }
 
         $pubUploadInsert = array(
@@ -325,21 +325,41 @@ function notifySubmission($pubID) {
 }
 
 function editProject() {
-    $user = \User::singleton();
-
-    $id                     = isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
-    $statusID               = isset($_REQUEST['status']) ? $_REQUEST['status'] : null;
-    $rejectedReason           = isset($_REQUEST['rejectedReason']) ? $_REQUEST['rejectedReason'] : null;
-    $description            = isset($_REQUEST['description']) ? $_REQUEST['description'] : null;
-    $leadInvestigator       = isset($_REQUEST['leadInvestigator']) ? $_REQUEST['leadInvestigator'] : null;
-    $leadInvestigatorEmail  = isset($_REQUEST['leadInvestigatorEmail']) ? $_REQUEST['leadInvestigatorEmail'] : null;
-    $usersWithEditPerm      = isset($_REQUEST['usersWithEditPerm']) ? json_decode($_REQUEST['usersWithEditPerm']) : null;
-    $collaborators          = isset($_REQUEST['collaborators']) ? json_decode($_REQUEST['collaborators']) : null;
-    $keywords               = isset($_REQUEST['keywords']) ? json_decode($_REQUEST['keywords']) : null;
-    $voi                    = isset($_REQUEST['voiFields']) ? json_decode($_REQUEST['voiFields']) : null;
-
-
     $db = \Database::singleton();
+    $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
+
+    if (isset($id)) {
+        // double check that current user has edit access
+        $user = \User::singleton();
+        $creatorUser = $db->pselectOne(
+            'SELECT UserID FROM publication WHERE PublicationID=:id',
+            array('id' => $id)
+        );
+
+        $editors = $db->pselectCol(
+            'SELECT UserID FROM publication_users_edit_perm_rel WHERE PublicationID=:id',
+            array('id' => $id)
+        );
+        $uid = $user->getId();
+        if ($uid !== $creatorUser &&
+            !in_array($uid, $editors)
+        ) {
+            header("HTTP/1.1 403 Forbidden");
+            exit;
+        }
+    } else {
+        showError('No Publication ID provided');
+    }
+
+    $statusID              = isset($_REQUEST['status']) ? $_REQUEST['status'] : null;
+    $rejectedReason        = isset($_REQUEST['rejectedReason']) ? $_REQUEST['rejectedReason'] : null;
+    $description           = isset($_REQUEST['description']) ? $_REQUEST['description'] : null;
+    $leadInvestigator      = isset($_REQUEST['leadInvestigator']) ? $_REQUEST['leadInvestigator'] : null;
+    $leadInvestigatorEmail = isset($_REQUEST['leadInvestigatorEmail']) ? $_REQUEST['leadInvestigatorEmail'] : null;
+    $usersWithEditPerm     = isset($_REQUEST['usersWithEditPerm']) ? json_decode($_REQUEST['usersWithEditPerm']) : null;
+    $collaborators         = isset($_REQUEST['collaborators']) ? json_decode($_REQUEST['collaborators']) : null;
+    $keywords              = isset($_REQUEST['keywords']) ? json_decode($_REQUEST['keywords']) : null;
+    $voi                   = isset($_REQUEST['voiFields']) ? json_decode($_REQUEST['voiFields']) : null;
 
     $pubData = $db->pselectRow(
         'SELECT * FROM publication WHERE PublicationID=:pid',
@@ -458,7 +478,6 @@ function editProject() {
         }
     }
 
-    $currentVOI = array();
     $fields = $db->pselectCol(
         'SELECT pt.Name AS field ' .
         'FROM parameter_type pt '.
@@ -523,4 +542,21 @@ function editProject() {
             array('PublicationID' => $id)
         );
     }
+}
+
+/**
+ * Utility function to return errors from the server
+ *
+ * @param string $message error message to display
+ *
+ * @return void
+ */
+function showError($message)
+{
+    if (!isset($message)) {
+        $message = 'An unknown error occurred!';
+    }
+    header('HTTP/1.1 500 Internal Server Error');
+    header('Content-Type: application/json; charset=UTF-8');
+    die(json_encode(['message' => $message]));
 }
