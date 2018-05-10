@@ -5,11 +5,13 @@
  *
  * PHP Version 7
  *
- * The generate_tables_sql.php takes the ip_output.txt file generated from
- * quickform_parser.php and outputs an sql build file for the table of each
- * instrument it finds in the ip_output.txt file.  These sql files are output
- * to the tables_sql/ subdirectory.
- * Ex cmd:  php generate_tables_sql.php
+ * The generate_tables_sql_and_testNames.php takes the {instrument_name}.linst file
+ * from /instrument_manager and installs an instrument for the table of each
+ * instrument it finds in the {instrument_name}.linst file.
+ * These sql files are output to the tables_sql/ subdirectory.
+ *
+ * Ex cmd: php generate_tables_sql_and_testNames.php <
+ * ../instruments/[instrument_name].linst
  *
  * @category Tools
  * @package  Behavioural
@@ -17,24 +19,16 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-//Ensure php version compatibility
-//taken from php.net notes
-// require all relevant OO class libraries
 
+// require all relevant OO class libraries
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "../php/libraries/Database.class.inc";
 require_once "../php/libraries/NDB_Config.class.inc";
 require_once "../php/libraries/NDB_BVL_Instrument.class.inc";
 
-$data           = stream_get_contents(STDIN);
-$instruments    = explode("{-@-}", trim($data));
-$error_message  = "";
-$error_messages = [
-                   "Instrument(s) file has invalid instrument data.",
-                   "Instrument(s) file uses existing name.",
-                   "Instrument(s) file uses invalid name.",
-                   "Database error when uploading Instrument(s) file",
-                  ];
+$data          = stream_get_contents(STDIN);
+$instruments   = explode("{-@-}", trim($data));
+$error_message = "";
 
 // User supplied instrument(s).
 if (is_array($instruments)) {
@@ -79,28 +73,16 @@ if (is_array($instruments)) {
                     ."NOT NULL default 'Incomplete',\n";
                 $sql_query_statement = "CREATE TABLE `$sql_query_table_name` (\n";
                 // Create first five query entries.
-                array_push(
-                    $sql_query_columns,
-                    "`CommentID` varchar(255) NOT NULL default '',\n"
-                );
-                array_push(
-                    $sql_query_columns,
-                    "`UserID` varchar(255) default NULL,\n"
-                );
-                array_push(
-                    $sql_query_columns,
-                    "`Examiner` varchar(255) default NULL,\n"
-                );
-                array_push(
-                    $sql_query_columns,
-                    "`Testdate` timestamp DEFAULT CURRENT_TIMESTAMP "
-                    ."ON UPDATE CURRENT_TIMESTAMP,\n"
-                );
-                array_push(
-                    $sql_query_columns,
-                    "`Data_entry_completion_status` enum('Incomplete','Complete') "
-                    ."NOT NULL default 'Incomplete',\n"
-                );
+                $sql_query_columns[] = "`CommentID` "
+                                      ."varchar(255) NOT NULL default '',\n";
+                $sql_query_columns[] = "`UserID` varchar(255) default NULL,\n";
+                $sql_query_columns[] = "`Examiner` varchar(255) default NULL,\n";
+                $sql_query_columns[] = "`Testdate` "
+                                      ."timestamp DEFAULT CURRENT_TIMESTAMP "
+                                      ."ON UPDATE CURRENT_TIMESTAMP,\n";
+                $sql_query_columns[] = "`Data_entry_completion_status` "
+                                      ."enum('Incomplete','Complete') "
+                                      ."NOT NULL default 'Incomplete',\n";
                 break;
             case "page":
                 $pages[] = $bits[2];
@@ -119,8 +101,7 @@ if (is_array($instruments)) {
                 if ($bits[0] == "select") {
                     $bits[0] = enumizeOptions(
                         $bits[3],
-                        $sql_query_table_name
-                        ?? "",
+                        $sql_query_table_name,
                         $bits[1]
                     );
                 } else if ($bits[0] == "selectmultiple") {
@@ -140,10 +121,7 @@ if (is_array($instruments)) {
                 $bits[2]     = htmlspecialchars($bits[2]);
                 $output     .= "`$bits[1]` $bits[0] default NULL,\n";
                 $column_name = str_replace('`', '', $db->escape($bits[1]));
-                array_push(
-                    $sql_query_columns,
-                    "`$column_name` $bits[0] default NULL,\n"
-                );
+                $sql_query_columns[] = "`$column_name` $bits[0] default NULL,\n";
             }
         }
         $output .= "PRIMARY KEY  (`CommentID`)\n) ENGINE=InnoDB"
@@ -175,7 +153,7 @@ if (is_array($instruments)) {
         if (!empty($error_message)) {
             fwrite(
                 $fp,
-                "/* The SQL file should be invalid! \n"
+                "/* The SQL file is invalid! \n"
                 ."tools/generate_tables_sql_and_testNames.php error_message:\n"
                 ."$error_message\n"
                 ."*/"
