@@ -273,7 +273,8 @@ class Installer
         // This is apparently the most reliable way to figure out if
         // the requery is over http or https.. $_SERVER[REQUEST_SCHEME]
         // is not reliable.
-        $RequestScheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on'
+        $RequestScheme = isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
+                            && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'
                             ? 'https' : 'http';
 
         return $RequestScheme . '://' . $_SERVER['HTTP_HOST']
