@@ -76,8 +76,10 @@ function main() {
     if (empty($tarball_path)) {
         die('Could not download the latest LORIS release.');
     }
+$loris_root_dir = '/tmp/testing/';
     $cmd = "tar -zxvf $tarball_path -C $loris_root_dir"; 
     exec($cmd, $output, $status);
+    print_r($output);
     if ($status !== 0) {
         die(bashErrorToString($cmd, $output, $status));
     }
@@ -288,6 +290,11 @@ function readAnswer($possibleAnswers, $defaultAnswer)
 
 function bashErrorToString($cmd, $output, $status) : string
 {
-        return "ERROR: Command `$cmd` failed (error code $status): $output"
-             . PHP_EOL;
+    $error = "ERROR: Command `$cmd` failed (error code $status):" . PHP_EOL;
+    if (is_iterable($output)){
+        foreach($output as $item) {
+            $error .= $item . PHP_EOL;
+        }
+    }
+    return $error;
 }
