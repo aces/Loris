@@ -268,6 +268,9 @@ var StaticDataTable = React.createClass({
     let header = this.toCamelCase(headerData);
     let filterData = null;
     let exactMatch = false;
+    let result = false;
+    let searchKey = null;
+    let searchString = null;
 
     if (this.props.Filter[header]) {
       filterData = this.props.Filter[header].value;
@@ -282,22 +285,35 @@ var StaticDataTable = React.createClass({
     // Handle numeric inputs
     if (typeof filterData === 'number') {
       var intData = Number.parseInt(data, 10);
-      return filterData === intData;
+      result = (filterData === intData);
     }
 
     // Handle string inputs
     if (typeof filterData === 'string') {
-      var searchKey = filterData.toLowerCase();
-      var searchString = data.toLowerCase();
+      searchKey = filterData.toLowerCase();
+      searchString = data.toLowerCase();
 
       if (exactMatch) {
-        return searchString === searchKey;
+        result = (searchString === searchKey);
       }
 
-      return (searchString.indexOf(searchKey) > -1);
+      result = (searchString.indexOf(searchKey) > -1);
     }
 
-    return false;
+    // Handle array inputs for multiselects
+    if (typeof filterData === 'object') {
+      let match = false;
+      for (let i = 0; i < filterData.length; i += 1) {
+        searchKey = filterData[i].toLowerCase();
+        searchString = data.toLowerCase();
+
+        match = (searchString.indexOf(searchKey) > -1);
+        if (match) {
+          result = true;
+        }
+      }
+    }
+    return result;
   },
   render: function() {
     if (this.props.Data === null || this.props.Data.length === 0) {

@@ -311,6 +311,10 @@ display: block;
     margin-bottom: 3px;
 }
 
+.btn-add-tag {
+    margin-top: 3px;
+}
+
 /** Primary button **/
 .btn-breadcrumb .btn.btn-primary:not(:last-child):after {
   border-left: 10px solid #064785;
