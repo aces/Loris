@@ -694,7 +694,7 @@ class Candidate
         $db      = $factory->database();
 
         // generate a candidate id
-        $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
+        $candID = random_int(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
 
         // make sure the cand id is not used
         while ($db->pselectOne(
@@ -702,7 +702,7 @@ class Candidate
             array('CaID' => $candID)
         ) > 0) {
             // pick a new candidate id
-            $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
+            $candID = random_int(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
         }
 
         return $candID;
@@ -935,6 +935,52 @@ class Candidate
         }
 
         return $arrays;
+    }
+
+    /**
+     * Gets the participant_status options from participant_status_options table
+     *
+     * @return array Options array suitable for use in QuickForm select
+     *               element
+     */
+    static function getParticipantStatusOptions()
+    {
+        $DB           =& Database::singleton();
+        $options      = $DB->pselect(
+            "SELECT ID,Description
+            FROM participant_status_options
+            WHERE parentID IS NULL",
+            array()
+        );
+        $option_array = array();
+        foreach ($options as $option) {
+            $option_array[$option['ID']] = $option['Description'];
+        }
+        return $option_array;
+    }
+
+    /**
+     * Gets the participant_status options suboptions from participant_status_options
+     *
+     * @param int $parentID parent ID of the participant status option
+     *
+     * @return array Options array suitable for use in QuickForm select
+     *               element
+     */
+    static function getParticipantStatusSubOptions($parentID)
+    {
+        $DB           =& Database::singleton();
+        $options      = $DB->pselect(
+            "SELECT ID,Description 
+            FROM participant_status_options 
+            WHERE parentID=:pid",
+            array('pid' => $parentID)
+        );
+        $option_array = array();
+        foreach ($options as $option) {
+            $option_array[$option['ID']] = $option['Description'];
+        }
+        return $option_array;
     }
 
 }

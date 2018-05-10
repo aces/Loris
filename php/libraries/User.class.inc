@@ -49,7 +49,7 @@ class User extends UserPermissions
         $obj->userInfo['UserID'] = $username;
 
         // get the user's permissions
-        $success = $obj->select($username);
+        $obj->select($username);
 
         // create DB object
         $DB =& Database::singleton();
@@ -96,7 +96,7 @@ class User extends UserPermissions
 
         $examiner_info =array();
         if (!empty($examiner_check) && !is_null($examiner_check)) {
-            foreach ($examiner_check as $rw=>$val) {
+            foreach ($examiner_check as $val) {
                 if ($val['active'] == 'Y') {
                     $examiner_info['pending'] = $val['pending_approval'];
                 }
@@ -148,7 +148,7 @@ class User extends UserPermissions
         // create DB object
         $DB =& Database::singleton();
 
-        $success = $DB->insert('users', $set);
+        $DB->insert('users', $set);
 
         return true;
     }
@@ -167,7 +167,7 @@ class User extends UserPermissions
         // create DB object
         $DB =& Database::singleton();
 
-        $success = $DB->update(
+        $DB->update(
             'users',
             $set,
             array('UserID' => $this->userInfo['UserID'])
@@ -336,7 +336,7 @@ class User extends UserPermissions
     function hasStudySite()
     {
         $site_arr = $this->getCenterIDs();
-        foreach ($site_arr as $key => $sitename) {
+        foreach ($site_arr as $sitename) {
             $site = Site::singleton($sitename);
             if ($site->isStudySite()) {
                 return true;
@@ -368,7 +368,7 @@ class User extends UserPermissions
      * @access public
      * @static
      */
-    function newPassword($length = 8)
+    static function newPassword($length = 8)
     {
         // start with a blank password
         $password = '';
@@ -396,15 +396,11 @@ class User extends UserPermissions
         }
 
         if (strpbrk($password, $numbers) === false) {
-            $password .= substr(
-                $numbers,
-                mt_rand(0, strlen($numbers)-1),
-                1
-            );
+            $password .= random_int(0, 9);
         }
 
         for ($i = strlen($password); $i < $length; $i++) {
-            $password .= substr($possible, mt_rand(0, $possible_cnt), 1);
+            $password .= substr($possible, random_int(0, $possible_cnt), 1);
         }
 
         return $password;

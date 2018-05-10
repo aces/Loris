@@ -72,20 +72,19 @@ class CNV_Browser extends \NDB_Menu_Filter
                           'cohort.SubprojectID as Subproject',
                           'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
                           'candidate.ExternalID as ExternalID',
-                          'genome_loc.Chromosome as Chromosome',
-                          'genome_loc.Strand as Strand',
-                          'genome_loc.StartLoc as StartLoc',
-                          'genome_loc.EndLoc as EndLoc',
-                          'genome_loc.Size as Size',
+                          'CNV.Chromosome as Chromosome',
+                          'CNV.Strand as Strand',
+                          'CNV.StartLoc as StartLoc',
+                          'CNV.EndLoc as EndLoc',
                           'CONCAT(
-                              genome_loc.Chromosome, 
+                              CNV.Chromosome, 
                               ":",
-                              genome_loc.StartLoc,
+                              CNV.StartLoc,
                               "-",
-                              genome_loc.EndLoc
+                              CNV.EndLoc
                            ) as Location',
-                          'gene.OfficialSymbol as Gene_Symbol',
-                          'gene.OfficialName as Gene_Name',
+                          'CNV.OfficialSymbol as Gene_Symbol',
+                          'CNV.OfficialName as Gene_Name',
                           'CNV.Description as CNV_Description',
                           'CNV.Type as CNV_Type',
                           'CNV.CopyNumChange as Copy_Num_Change',
@@ -116,7 +115,6 @@ class CNV_Browser extends \NDB_Menu_Filter
                  'Strand',
                  'StartLoc',
                  'EndLoc',
-                 'Size',
                  'Event_Name',
                  'Gene_Symbol',
                  'Gene_Name',
@@ -134,8 +132,6 @@ class CNV_Browser extends \NDB_Menu_Filter
                 ON (cohort.CandID=candidate.CandID)
             LEFT JOIN psc ON (psc.CenterID=candidate.CenterID)
             JOIN CNV ON (candidate.CandID = CNV.CandID)
-            LEFT JOIN genome_loc ON (genome_loc.GenomeLocID = CNV.GenomeLocID)
-            LEFT JOIN gene ON (gene.GenomeLocID = CNV.GenomeLocID)
             LEFT JOIN genotyping_platform ON
               (CNV.PlatformID = genotyping_platform.PlatformID)
             WHERE
@@ -171,11 +167,11 @@ class CNV_Browser extends \NDB_Menu_Filter
                                'CNV.ArrayReport',
                                'CNV.Markers',
                                'CNV.ValidationMethod',
-                               'genome_loc.Chromosome',
-                               'genome_loc.Strand',
+                               'CNV.Chromosome',
+                               'CNV.Strand',
                                'genomic_range',
-                               'gene.OfficialSymbol',
-                               'gene.OfficialName',
+                               'CNV.OfficialSymbol',
+                               'CNV.OfficialName',
                                'genotyping_platform.Name',
                               );
 
@@ -197,11 +193,11 @@ class CNV_Browser extends \NDB_Menu_Filter
                                'Array_Report'       => 'CNV.ArrayReport',
                                'Markers'            => 'CNV.Markers',
                                'Validation_Method'  => 'CNV.ValidationMethod',
-                               'Chromosome'         => 'genome_loc.Chromosome',
-                               'Strand'             => 'genome_loc.Strand',
+                               'Chromosome'         => 'CNV.Chromosome',
+                               'Strand'             => 'CNV.Strand',
                                'genomic_range'      => 'genomic_range',
-                               'Gene_Symbol'        => 'gene.OfficialSymbol',
-                               'Gene_Name'          => 'gene.OfficialName',
+                               'Gene_Symbol'        => 'CNV.OfficialSymbol',
+                               'Gene_Name'          => 'CNV.OfficialName',
                                'Platform'           => 'genotyping_platform.Name',
                               );
 
@@ -213,17 +209,11 @@ class CNV_Browser extends \NDB_Menu_Filter
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
-     *
      * @return none
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+        parent::setup();
 
         // create user object
         $user = \User::singleton();
@@ -332,8 +322,9 @@ class CNV_Browser extends \NDB_Menu_Filter
         $this->addBasicText('Gene_Symbol', 'Gene:');
 
         $DB = \Database::singleton();
-        $platform_results = $DB->select(
-            "SELECT distinct Name FROM genotyping_platform"
+        $platform_results = $DB->pselect(
+            "SELECT distinct Name FROM genotyping_platform",
+            array()
         );
 
         $platform_options = array('' => 'Any');
@@ -395,15 +386,15 @@ class CNV_Browser extends \NDB_Menu_Filter
                 $chr        = $GLOBALS['DB']->quote($temp_array[0]);
                 $chrchr     = $GLOBALS['DB']->quote('chr'.$temp_array[0]);
 
-                $query .= " AND (genome_loc.Chromosome = $chr";
-                $query .= " OR genome_loc.Chromosome = $chrchr)";
+                $query .= " AND (CNV.Chromosome = $chr";
+                $query .= " OR CNV.Chromosome = $chrchr)";
 
                 if (!empty($temp_array[1]) AND strpos($temp_array[1], '-') ) {
                     $temp_array = explode('-', $temp_array[1]);
                     $from       = $temp_array[0];
                     $to         = $temp_array[1];
-                    $query     .= " AND genome_loc.StartLoc < $to";
-                    $query     .= " AND genome_loc.EndLoc > $from";
+                    $query     .= " AND CNV.StartLoc < $to";
+                    $query     .= " AND CNV.EndLoc > $from";
                 }
                 $query .= " AND :v_$prepared_key IS NOT NULL";
 

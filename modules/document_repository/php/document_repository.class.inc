@@ -44,19 +44,12 @@ class Document_Repository extends \NDB_Menu_Filter
     }
 
     /**
-     * Setup variables function
-     *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
+     * Function _setupVariables
      *
      * @return none
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function _setupVariables()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
 
         $user =& \User::singleton();
 
@@ -313,6 +306,7 @@ class Document_Repository extends \NDB_Menu_Filter
     function _setDataTable()
     {
         $DB       = \Database::singleton();
+        $user     = \User::singleton();
         $results  = array();
         $query    = "SELECT * FROM document_repository_categories".
                     " ORDER BY parent_id ASC";
@@ -372,6 +366,9 @@ class Document_Repository extends \NDB_Menu_Filter
         $DB = \Database::singleton();
 
         // print out column headings
+        if (!$user->hasPermission('document_repository_delete')) {
+            unset($this->headers[array_search('Delete', $this->headers)]);
+        }
         $i = 0;
         foreach ($this->headers as $header) {
             $this->tpl_data['headers'][$i]['name'] = $header;

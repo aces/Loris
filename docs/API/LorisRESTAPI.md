@@ -37,7 +37,7 @@ no further authentication is required. Requests will be evaluated as requests fr
 so that standard Loris modules can simply use the API.
 
 If a user is not logged in to Loris (for instance, in a third party app or a CORS application),
-they can be be authenticated using [JSON Web Tokens](https://jwt.io).
+they can be authenticated using [JSON Web Tokens](https://jwt.io).
 
 The client should POST a request to /login with a payload of the form
 

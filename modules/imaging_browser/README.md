@@ -27,7 +27,7 @@ The imaging browser module does not display raw DICOMs or perform automated
 quality control on images. It only displays images that have already been
 inserted into LORIS.
 
-## Permissions
+## <a name="imaging_browser_perm_link"></a> Permissions
 
 The imaging browser module uses the following permissions. Any one of them
 (except imaging_browser_qc) is sufficient to have access to the module.
@@ -58,6 +58,9 @@ tblScanTypes - This setting determines which scan types are considered "NEW" for
         QC purposes. It also determines which modalities are displayed on the
         main imaging browser menu page.
 
+ImagingBrowserLinkedInstruments - This setting defines which instruments to 
+        include a link to on the viewsession page.
+
 useProjects - This setting determines whether "project" filtering dropdowns exist
         on the menu page.
 
@@ -75,8 +78,7 @@ mantis_url - This setting defines a URL for LORIS to include a link to for bug r
   `$LORIS/tools/CouchDB_Import_MRI.php` alongside all other CouchDB
   import scripts, but should logically be considered part of this module.)
 - The imaging browser module includes links to BrainBrowser to visualize data.
-- The control panel on the viewsession page includes links to instruments
-  named "mri_parameter_form" and "radiologyreview" if they exist for the
-  currently viewed session.
+- The control panel on the viewsession page includes links to the instruments
+  as configured by the study.
 - The control panel on the viewsession page includes links to the DICOM Archive
   for any DICOM tars associated with the given session.
