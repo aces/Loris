@@ -1,51 +1,43 @@
-# Media Module
+# Media
 
-## Overview
+The Media module serves as a repository for files associated with a particular 
+candidate-timepoint or instrument in a study.  Users can access and upload files 
+such as PDF scans, recordings, log files, or stimulus presentation media in multiple 
+formats such as .pdf, .mp4, .mp3, .txt, etc. 
 
-Media module allows users to **upload**, **search** and **edit** media files associated with a specific candidate timepoint in Loris.
-Any kind of data associated with a candidate timepoint can be uploaded through this module: PDFs, videos, recordings, scripts, log files, etc. Files can optionally be associated to a specific instrument form within a given candidate timepoint.
+## Searching for a Media File
 
+Under the Browse tab, use the Selection Filters to search for files by fields such 
+as filename, file type, candidate PSCID, Visit Label, Instrument, Site, or 
+name of user who uploaded the file.  Partial string matching can be used on many 
+fields (e.g. filename).  As filters are selected, the data table below will
+dynamically update with relevant results.  Click the “Clear Filters” button to reset 
+all filters. 
 
->Note: Currently editing functionality only allows editing of certain metadata fields, such as `Comments` and `Date of Administration`.
+Within the data table, results can be sorted in ascending or descending order by 
+clicking on any column header. To download a file, click on the filename (in blue 
+text). 
 
-## Permissions
+## Uploading a Media File
 
-In order to use the media module the user needs one or both of the following permissions:
+Under the “Upload” tab, users will be able to upload a new media file. 
+Users must specify information about the file by selecting from a number of dropdown 
+menus including PSCID, Visit Label, Site, Instrument (optional), Date of 
+Administration, and enter comments on the file in the textbox provided. Lastly, 
+users will select the file they wish to upload by clicking the “Browse” button and 
+selecting the file from their computer. To begin the upload, users must click 
+“Upload File”. 
 
-1. **media_read** - gives user a read-only access to media module (file browsing only)
-2. **media_write** - gives user a write access to media module (upload/delete files and edit metadata)
+_Note that a file to be uploaded should follow the naming convention listed at the 
+top of the Upload page: [PSCID]\_[VisitLabel]\_[Instrument]_
 
->**Note**: superusers have both of the aforementioned permissions by default! 
+## Editing a Media File
 
-## :file_folder: Upload path
+Click “Edit” from the “Edit Metadata” column to update or edit certain file 
+properties, via the “Edit Media File” page. 
 
-By default, all files are uploaded under `/data/uploads/`.
-*(Note this directory is not created by the Loris install script and should be manually created by the admin.)*
-
-The upload path is configurable in `Paths` section of `Configuration` module.
-
->**Important** 
->
->The upload path must be readable and writable by your web server; either the web server `user` or `group` must have read and write permissions.
->The default group for your web server process is listed below
->```
->Ubuntu: $GROUP$ = www-data
->CentOS: $GROUP$ = apache
->```
->
->To find the `user` of your web server, run `ps aux | grep 'apache' | egrep -v 'grep|Ss' | awk '{ print $1 }' | sort | uniq`
->To find the `group` of your web server, run `ps aux | grep 'apache' | egrep -v 'grep|Ss' | awk '{ print $1 }' | sort | uniq | groups`
-
->To see if your web server's user or group owns the upload path, run `ls -ld /data/uploads | awk '{ print "user:" $3 ", group:" $4 }'`
-
->If neither owns the folder, you should run `sudo chown <unix-user>:<web-server-group> /data/uploads`
->Then, run `chmod 775 /data/uploads`
-
-## Features
-
-1. **Browse** a list of uploaded files and related information
-2. **Edit** metadata about media files (except timepoint related data such as PSCID, Visit Label and Instrument)
-3. **Upload** new files associated to a specific timepoint
-  - PSCID, Visit Label and Site are required fields for all uploaded files
-  - File name should always start with [PSCID]\_[Visit Label]\_[Instrument] corresponding to the selection in the upload form
-4. **Delete** files. Deleting a file hides it from the frontend, but preserves a copy in the database
+This page allows users to modify information about an uploaded file.  Fields such 
+as Date of Administration, Comments, and file visibility (hidden or visible) can be 
+updated.  Note that fields such as PSCID, Visit Label, Site, and Instrument cannot 
+be modified on uploaded media files. To finalize an update, users must click “Update 
+File”. 

@@ -1,8 +1,8 @@
 <?php
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -13,9 +13,9 @@
 namespace LORIS\statistics;
 
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -40,6 +40,7 @@ class Statistics_Site extends \NDB_Form
     {
         $user     =& \User::singleton();
         $centerID = htmlspecialchars($_REQUEST['CenterID']);
+        //TODO: Create a permission specific to statistics
         return $user->hasCenterPermission('data_entry', $centerID);
     }
 

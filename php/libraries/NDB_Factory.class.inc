@@ -120,6 +120,8 @@ class NDB_Factory
         }
 
         self::$config = $config;
+        // NDB_Config::singleton() is already loading the config file
+        // in a better way. this needs to be modified
         $config->load($configfile);
         return $config;
     }
@@ -226,13 +228,75 @@ class NDB_Factory
      * Returns a reference to a Loris CouchDB database wrapper.
      *
      * @param string $database The couchDB database name
+     * @param string $host     The couchDB host name
+     * @param string $port     The couchDB port number
+     * @param string $user     The couchDB user name
+     * @param string $password The couchDB password
      *
      * @return CouchDB CouchDB singleton
      */
-    function couchDB($database = null)
-    {
-        if (empty($database)) {
-            $database = self::config()->getSetting("CouchDB")['dbName'];
+    function couchDB(
+        string $database = null,
+        string $host = null,
+        string $port = null,
+        string $user = null,
+        string $password = null
+    ) {
+        if (empty($database)
+            && empty($host)
+            && empty($port)
+            && empty($user)
+            && empty($password)
+        ) {
+            // check if no parameters are passed
+            // deprecated behaviour, backwards compatible until next major
+            // Default to DQT
+            $config      = \NDB_Config::singleton();
+            $couchConfig = $config->getSetting("CouchDB");
+
+            $database = $couchConfig['dbName'];
+            $host     = $couchConfig['hostname'];
+            $port     = $couchConfig['port'];
+            $user     = $couchConfig['admin'];
+            $password = $couchConfig['adminpass'];
+            error_log(
+                "LORIS Deprecation Warning: NDB_Factory::CouchDB() will no 
+                 longer support accepting only a database name, make sure to 
+                 specify all necessary parameters in the function call."
+            );
+        } else if (!empty($database)
+            && empty($host)
+            && empty($port)
+            && empty($user)
+            && empty($password)
+        ) {
+            // check if only database name given (assume the rest same as dqt)
+            // deprecated behaviour, backwards compatible until next major
+            // Default to DQT
+            $config      = \NDB_Config::singleton();
+            $couchConfig = $config->getSetting("CouchDB");
+
+            $host     = $couchConfig['hostname'];
+            $port     = $couchConfig['port'];
+            $user     = $couchConfig['admin'];
+            $password = $couchConfig['adminpass'];
+            error_log(
+                "LORIS Deprecation Warning: NDB_Factory::CouchDB() will no 
+                 longer support accepting only a database name, make sure to 
+                 specify all necessary parameters in the function call."
+            );
+        } else if (empty($database)
+            || empty($host)
+            || empty($port)
+            || empty($user)
+            || empty($password)
+        ) {
+            // check if only some parameters given but not all AND does not
+            // enter any of the above IF statements. this behavior was never
+            // supported and should be an error.
+            throw new ConfigurationException(
+                "NDB_Factory::CouchDB() requires all parameters to be supplied."
+            );
         }
 
         if (!empty(self::$_couchdb[$database])) {
@@ -252,7 +316,13 @@ class NDB_Factory
             );
             self::$_couchdb[$database] = new MockCouchDBWrap();
         } else {
-            self::$_couchdb[$database] = CouchDB::getInstance($database);
+            self::$_couchdb[$database] = CouchDB::getInstance(
+                $database,
+                $host,
+                $port,
+                $user,
+                $password
+            );
         }
         return self::$_couchdb[$database];
     }

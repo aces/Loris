@@ -21,9 +21,17 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
 
-$user = User::singleton();
-$cdb  = \NDB_Factory::singleton()->couchDB();
-$qid  = $user->getUserName() . "_" . $_REQUEST['QueryName'];
+$user        = User::singleton();
+$config      = \NDB_Config::singleton();
+$couchConfig = $config->getSetting('CouchDB');
+$cdb         = \NDB_Factory::singleton()->couchDB(
+    $couchConfig['dbName'],
+    $couchConfig['hostname'],
+    $couchConfig['port'],
+    $couchConfig['admin'],
+    $couchConfig['adminpass']
+);
+$qid         = $user->getUserName() . "_" . $_REQUEST['QueryName'];
 
 if ($_REQUEST['SharedQuery'] === "true") {
     $qid = "global:" . $qid;

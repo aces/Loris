@@ -64,6 +64,7 @@ var CandidateInfo = React.createClass(
         formData: formData
       });
     },
+
     onSubmit: function(e) {
       e.preventDefault();
     },

@@ -19,11 +19,19 @@ require_once __DIR__ . '/../../../vendor/autoload.php';
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
-$cdb       = \NDB_Factory::singleton()->couchDB();
-$category  = $_REQUEST['category'];
-$fieldName = $_REQUEST['field'];
-$value     = $_REQUEST['value'];
-$value     = is_numeric($value) ? $value : "\"$value\"";
+$config      = \NDB_Config::singleton();
+$couchConfig = $config->getSetting('CouchDB');
+$cdb         = \NDB_Factory::singleton()->couchDB(
+    $couchConfig['dbName'],
+    $couchConfig['hostname'],
+    $couchConfig['port'],
+    $couchConfig['admin'],
+    $couchConfig['adminpass']
+);
+$category    = $_REQUEST['category'];
+$fieldName   = $_REQUEST['field'];
+$value       = $_REQUEST['value'];
+$value       = is_numeric($value) ? $value : "\"$value\"";
 
 $results = $cdb->queryView(
     "DQG-2.0",
@@ -34,5 +42,13 @@ $results = $cdb->queryView(
      "endkey"   => "[\"$category\", \"$fieldName\", $value]",
     )
 );
+
+$sessionResults = array_map(
+    function ($element) {
+        return $element['value'];
+    },
+    $results
+);
+
 print json_encode($sessionResults);
 ?>
