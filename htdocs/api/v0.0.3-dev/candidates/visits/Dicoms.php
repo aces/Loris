@@ -103,14 +103,19 @@ class Dicoms extends \Loris\API\Candidates\Candidate\Visit
 
         $query = "SELECT SUBSTRING_INDEX(ArchiveLocation, '/', -1) as Tarname,
            ts.SeriesDescription as SeriesDescription,
-           ts.SeriesNumber as SeriesNumber,                    
-           ts.EchoTime as EchoTime,                    
-           ts.SeriesUID as SeriesUID      
-           FROM tarchive t                      
-           JOIN tarchive_series ts ON (ts.TarchiveID=t.TarchiveID)                
-           WHERE t.PatientName LIKE $ID            
-           GROUP BY t.TarchiveID, ts.SeriesDescription, ts.SeriesNUmber, 
-           ts.EchoTime, ts.SeriesUID
+           ts.SeriesNumber as SeriesNumber,
+           ts.EchoTime as EchoTime,
+           ts.RepetitionTime as RepetitionTime,
+           ts.InversionTime as InversionTime,
+           ts.SliceThickness as SliceThickness,
+           ts.Modality as Modality,
+           ts.SeriesUID as SeriesUID
+           FROM tarchive t
+           JOIN tarchive_series ts ON (ts.TarchiveID=t.TarchiveID)
+           WHERE t.PatientName LIKE $ID
+           GROUP BY t.TarchiveID, ts.SeriesDescription, ts.SeriesNUmber,
+           ts.EchoTime, ts.RepetitionTime, ts.InversionTime, ts.SliceThickness,
+           ts.Modality, ts.SeriesUID
            ORDER BY Tarname";
 
         $rows = $DB->pselect($query, $params);
@@ -118,14 +123,15 @@ class Dicoms extends \Loris\API\Candidates\Candidate\Visit
         $result = array();
         $entry  = array();
 
-        // The following loop will create the DicomTar object, formatted 
+        // The following loop will create the DicomTar object, formatted
         // according to:
         // [{"Tarname1" :"DCM_yyyy-mm-dd_ImagingUpload-hh-mm-abc123.tar",
-        // "SeriesInfo1":[{"Series1Field1":"Value", "Series1Field2":"Value", ...}, 
-        //                 {"Series2Field1":"Value", "Series1Field2":"Value", ...}, ...}],
-        // }, 
+        // "SeriesInfo1":[{"Series1Field1":"Value", "Series1Field2":"Value", ...},
+        //                {"Series2Field1":"Value", "Series1Field2":"Value", ...},
+        //                ...}],
+        // },
         // ... as Multiple TarNames/SeriesInfo can be present here
-        // ] 
+        // ]
         foreach ($rows as $row) {
             if (empty($entry)) {
                 $entry['Tarname']    = $row['Tarname'];

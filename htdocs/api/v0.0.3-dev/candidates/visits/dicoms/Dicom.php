@@ -109,7 +109,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     }
 
     /**
-     * Gets the DICOM archive relative location and name, as saved 
+     * Gets the DICOM archive relative location and name, as saved
      * in the database, for this file
      *
      * @return string
