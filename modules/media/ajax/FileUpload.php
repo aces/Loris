@@ -25,21 +25,6 @@ if (isset($_GET['action'])) {
 }
 
 /**
- * Handles the media view data process
- *
- * @return void
- */
-function viewData()
-{
-    $user =& User::singleton();
-    if (!$user->hasPermission('media_read')) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
-    }
-    echo json_encode(getUploadFields());
-}
-
-/**
  * Handles the media update/edit process
  *
  * @throws DatabaseException
@@ -191,6 +176,21 @@ function uploadFile()
     } else {
         showError("Could not upload the file. Please try again!");
     }
+}
+
+/**
+ * Handles the media view data process
+ *
+ * @return void
+ */
+function viewData()
+{
+    $user =& User::singleton();
+    if (!$user->hasPermission('media_read')) {
+        header("HTTP/1.1 403 Forbidden");
+        exit;
+    }
+    echo json_encode(getUploadFields());
 }
 
 /**
