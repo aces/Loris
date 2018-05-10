@@ -93,7 +93,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
                     'php generate_tables_sql_and_testNames.php < '
                     . escapeshellarg($new_file)
                 );
-                if (!empty($error_message) && strpos($error_message, "Instrument") !== false) {
+                if (!empty($error_message)
+                    && strpos($error_message, "Instrument") !== false
+                ) {
                     // Instrument(s)
                     throw new \LorisException(
                         "Error uploading the Instrument(s) file:\n".
