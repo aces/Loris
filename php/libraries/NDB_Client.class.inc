@@ -133,7 +133,7 @@ class NDB_Client
             . $config_additions
         );
         ini_set('session.cookie_httponly', '1');
-        ini_set('session. cookie_secure', '1');
+        ini_set('session.cookie_secure', '1');
         // start php session
         session_start();
 
