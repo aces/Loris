@@ -139,7 +139,8 @@ class NDB_Client
             [
              'cookie_httponly' => true,
              'cookie_secure'   => true,
-            ]);
+            ]
+        );
 
         // if exiting, destroy the php session
         if (isset($_REQUEST['logout']) && $_REQUEST['logout']) {
