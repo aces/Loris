@@ -117,7 +117,9 @@ INSERT INTO publication_upload_type VALUES (3, 'Presentation');
 INSERT INTO publication_upload_type VALUES (4, 'Other');
 
 DELETE FROM LorisMenu WHERE Label='Publications';
-INSERT INTO LorisMenu (Parent, Label, Link) VALUES (32, 'Publications', 'publication/');
+SET @reportsTab = (SELECT ID FROM LorisMenu WHERE Label='Reports');
+SET @orderNum = (SELECT MAX(OrderNumber) + 1 FROM LorisMenu WHERE Parent=@reportsTab);
+INSERT INTO LorisMenu (Parent, Label, Link, OrderNumber) VALUES (@reportsTab, 'Publications', 'publication/', @orderNum);
 DELETE FROM user_perm_rel WHERE permID=(SELECT permID FROM permissions WHERE code='publication_approve');
 DELETE FROM user_perm_rel WHERE permID=(SELECT permID FROM permissions WHERE code='publication_propose');
 DELETE FROM user_perm_rel WHERE permID=(SELECT permID FROM permissions WHERE code='publication_view');
@@ -148,7 +150,7 @@ DELETE FROM Config WHERE Value='/data/publication_uploads/';
 DELETE FROM ConfigSettings WHERE Name='publication_uploads';
 SET @pathID = (SELECT ID FROM ConfigSettings WHERE Name='paths');
 SET @order  = (SELECT MAX(OrderNumber) + 1 FROM ConfigSettings WHERE Parent=@pathID);
-INSERT INTO ConfigSettings (Name, Description, Visible, Parent, Label, DataType, OrderNumber) VALUES ('publication_uploads', 'Path to upload publications', 1, @pathID, 'Publications', 'text', @order);
+INSERT INTO ConfigSettings (Name, Description, Visible, Parent, Label, DataType, OrderNumber) VALUES ('publication_uploads', 'Path to uploaded publications', 1, @pathID, 'Publications', 'text', @order);
 INSERT INTO Config (ConfigID, Value) VALUES ((SELECT ID FROM ConfigSettings WHERE Name='publication_uploads'), '/data/publication_uploads/');
 
 SET FOREIGN_KEY_CHECKS=1;
