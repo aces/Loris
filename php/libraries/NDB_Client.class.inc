@@ -132,6 +132,7 @@ class NDB_Client
             . "img-src 'self' data:; "
             . $config_additions
         );
+        ini_set('session. cookie_secure', '1');
         // start php session
         session_start();
 
