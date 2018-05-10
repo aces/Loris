@@ -313,7 +313,7 @@ class Document_Repository extends \NDB_Menu_Filter
         $dbresult = $DB->pselect($query, array());
         foreach ($dbresult as $row) {
             $results[] =$row;
-            $tree      = null;
+            $tree      = new stdClass();
             foreach ($results as $result) {
                 $thisref = &$refs->{$result['id']};
                 if (empty($thisref)) {
