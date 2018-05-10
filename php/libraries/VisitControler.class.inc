@@ -22,7 +22,7 @@ namespace LORIS;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class VisitControler
+class VisitControler 
 {
     /**
      * The database connection to use
@@ -58,8 +58,8 @@ class VisitControler
                 );
             },
             $this->database->pselect(
-                'SELECT 
-                  v.VisitLabel as "visit"
+                'SELECT
+                  v.VisitName as "visit"
                  FROM
                   visit v
                 ',
@@ -67,4 +67,64 @@ class VisitControler
             )
         );
     }
+
+    /**
+     * Retruns a VisitID by name
+     *
+     * @param string $visit the name of the visit
+     *
+     * @return array the ID of the visit
+     */
+    public function getVisitsWithID(string $visit): integer
+    {
+        return array_map(
+            function ($row) {
+                return new \LORIS\Visit(
+                    $row['ID']
+                );
+            },
+            $this->database->pselect(
+                'SELECT
+                  v.VisitID as "ID"
+                 FROM
+                  visit v
+                 WHERE
+                  v.VisitName = :name
+                ',
+                array('name' => $visit)
+            )
+        );
+    }
+    /**
+     * Retruns a list of configured Visits and their association with projects
+     * and subprojects
+     *
+     * @return array The list of visits, projectID and subprojectID
+     */
+    public function getVisitsProject(): array
+    {
+        return array_map(
+            function ($row) {
+                return new \LORIS\Visit(
+                    $row['visit'], 
+                    $row['project'], 
+                    $row['subproject']
+                );
+            },
+            $this->database->pselect(
+                'SELECT
+                  v.VisitName as "visit",
+                  vps.ProjectID as "project",
+                  vps.SubProjectID as "subproject"
+                 FROM
+                  visit v
+                 JOIN
+                  visit_project_subproject_rel
+                 USING (VisitID)
+                ',
+                array()
+            )
+        );
+    }
+
 }

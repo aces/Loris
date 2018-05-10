@@ -25,6 +25,13 @@ namespace LORIS;
 class Visit
 {
     /**
+     * The visit ID
+     *
+     * @var int
+     */
+    protected $id;
+
+    /**
      * The visit name (formely known as visit_label)
      *
      * @var string
@@ -35,11 +42,14 @@ class Visit
      * The contructor
      *
      * @param string $visit The visit name
+     * @param string $id    The ID of the visit
      */
     public function __construct(
-        string $visit = null
+        string $visit = null,
+        string $id    = null
     ) {
         $this->visit = $visit;
+        $this->id    = $id;
     }
 
     /**
