@@ -135,7 +135,11 @@ class NDB_Client
         ini_set('session.cookie_httponly', '1');
         ini_set('session. cookie_secure', '1');
         // start php session
-        session_start();
+        session_start(
+            [
+             'cookie_httponly' => true,
+             'cookie_secure'   => true,
+            ]);
 
         // if exiting, destroy the php session
         if (isset($_REQUEST['logout']) && $_REQUEST['logout']) {
