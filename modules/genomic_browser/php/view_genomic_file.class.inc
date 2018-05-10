@@ -64,8 +64,7 @@ class View_Genomic_File extends \NDB_Form
         if (!empty($this->candID) || !empty($this->genomic_file_id) ) {
             $this->_setFileData();
             $user = User::singleton();
-            $this->tpl_data['has_permission']
-                = ($this->_hasAccess($user)) ? true : false;
+            $this->tpl_data['has_permission'] = $this->_hasAccess($user);
         }
     }
 
