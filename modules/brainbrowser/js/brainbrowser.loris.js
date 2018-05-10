@@ -537,13 +537,14 @@ $(function() {
       });
 
       $.ajax({
+          dataType: "json",
           data: 'minc_id=' + minc_ids_arr[vol_id],
           url: loris.BaseURL + '/brainbrowser/ajax/getMincName.php',
           method: 'GET',
           success: function(data) {
               var fileName = $("#filename-" + vol_id);
-              fileName.html(data);
-              fileName.data("title", data);
+              fileName.html(data.filename);
+              fileName.data("title", data.filename);
               fileName.tooltip();
           }
       });
@@ -748,39 +749,39 @@ $(function() {
         minc_ids_arr = [minc_ids];
     }
 
+    var request;
     for (i = 0; i < minc_ids_arr.length; i += 1) {
 
-        var filename = null;
-        $.ajax({
-            url: loris.BaseURL + "/brainbrowser/ajax/getMincName.php",
-            data: 'minc_id=' + minc_ids_arr[i],
-            method: 'POST',
-            success: function (data) {
-              filename = data;
-            },
-            async: false
-        });
-
-        if ( filename.endsWith("mnc") ) {
+      request = $.ajax({
+        dataType: "json",
+        url: loris.BaseURL + "/brainbrowser/ajax/getMincName.php",
+        data: 'minc_id=' + minc_ids_arr[i],
+        method: 'GET',
+        success: function (data) {
+          var fileid   = data.fileid;
+          var filename = data.filename;
+          if (filename.endsWith("mnc")) {
             minc_volumes.push({
-                type: 'minc',
-                header_url: "",
-                raw_data_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + minc_ids_arr[i],
-                template: {
-                    element_id: "volume-ui-template4d",
-                    viewer_insert_class: "volume-viewer-display"
-                }
+              type: 'minc',
+              header_url: "",
+              raw_data_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + fileid,
+              template: {
+                element_id: "volume-ui-template4d",
+                viewer_insert_class: "volume-viewer-display"
+              }
             });
-        } else if ( filename.endsWith("nii") ) {
+          } else if (filename.endsWith("nii")) {
             minc_volumes.push({
-                type: 'nifti1',
-                nii_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + minc_ids_arr[i],
-                template: {
-                    element_id: "volume-ui-template4d",
-                    viewer_insert_class: "volume-viewer-display"
-                }
+              type: 'nifti1',
+              nii_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + fileid,
+              template: {
+                element_id: "volume-ui-template4d",
+                viewer_insert_class: "volume-viewer-display"
+              }
             });
+          }
         }
+      });
     }
 
     if (getQueryVariable("overlay") === "true") {
@@ -790,13 +791,6 @@ $(function() {
                 viewer_insert_class: "overlay-viewer-display"
             }
         }
-    }
-
-    bboptions.volumes = minc_volumes;
-
-    viewer.setFileNames = function (filenames) {
-        for (i=0; i < filenames.length; i += 1) {
-       }
     }
 
     var color_map_config = BrainBrowser.config.get("color_maps")[0];
@@ -825,15 +819,14 @@ $(function() {
 
     viewer.setDefaultPanelSize(panelSize, panelSize);
 
-    ///////////////////
-    // Start rendering.
-    ///////////////////
-    viewer.render();
-
     /////////////////////
     // Load the volumes.
     /////////////////////
-    viewer.loadVolumes(bboptions);
+    request.then(function(filename) {
+      bboptions.volumes = minc_volumes;
+      viewer.render();                // start the rendering
+      viewer.loadVolumes(bboptions);  // load the volumes
+    });
 
   });
 

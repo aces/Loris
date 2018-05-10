@@ -18,8 +18,12 @@ require_once "Utility.class.inc";
 $DB = Database::singleton();
 
 $query = "select File from files where FileID = :MincID";
-$m     = $DB->pselectOne($query, array('MincID' => $_REQUEST['minc_id']));
-//echo json_encode(($m));
-$m = substr($m, strrpos($m, '/') + 1);
-echo ($m);
+$file  = $DB->pselectOne($query, array('MincID' => $_REQUEST['minc_id']));
+$file  = substr($file, strrpos($file, '/') + 1);
+
+// create a JSON object with the file information
+$result->filename = $file;
+$result->fileid   = $_REQUEST['minc_id'];
+
+echo json_encode($result);
 ?>
