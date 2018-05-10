@@ -49,7 +49,7 @@ foreach($instruments AS $instrument){
                           `Examiner` varchar(255) default NULL,
                           `Testdate` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                           `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',\n";
-                break;
+            break;
             case "page":
                 $pages[] = $bits[2];
                 continue;
@@ -59,7 +59,7 @@ foreach($instruments AS $instrument){
                 $title = $bits[1];
             case "header":
                 continue;
-                break;
+            break;
 
             //generate specific column definitions for specific types of HTML elements
             default:
