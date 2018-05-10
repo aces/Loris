@@ -101,7 +101,7 @@ class NDB_Page implements RequestHandlerInterface
         $this->Module = $module;
         $this->name   = $module->getName(); // for legacy purposes.
 
-        $this->form       = new LorisForm($formname);
+        $this->form       = new LorisForm();
         $this->page       = $page;
         $this->identifier = $identifier;
         $this->commentID  = $commentID;
@@ -419,7 +419,7 @@ class NDB_Page implements RequestHandlerInterface
      */
     function addGroupRule($group, $arg1, $type='', $format=null)
     {
-        $this->form->addGroupRule($group, $arg1, $type, $format);
+        $this->form->addGroupRule($group, $arg1, $type);
     }
 
     /**
@@ -642,7 +642,7 @@ class NDB_Page implements RequestHandlerInterface
             return $handler->handle($request)
                 ->withHeader("Content-Type", "application/json");
         }
-        return (new \LORIS\Middleware\PageDecorationMiddleware($user, $this))
+        return (new \LORIS\Middleware\PageDecorationMiddleware($user))
             ->process($request, $handler)
             ->withHeader("Content-Type", "text/html");
     }

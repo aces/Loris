@@ -129,7 +129,7 @@ class NDB_Reliability extends NDB_Form
     function save()
     {
         if ($this->form->validate()) {
-            $this->form->process(array(&$this, "_save"), false);
+            $this->form->process(array(&$this, "_save"));
         }
     }
 

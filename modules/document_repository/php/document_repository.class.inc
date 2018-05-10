@@ -132,7 +132,7 @@ class Document_Repository extends \NDB_Menu_Filter
         // create user object
         $user =& \User::singleton();
 
-        $list_of_sites = \Utility::getSiteList(true, false);
+        $list_of_sites = \Utility::getSiteList(true);
            // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object

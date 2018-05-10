@@ -37,17 +37,6 @@ class ServerProcessLauncher
     private $_databaseProvider;
 
     /**
-     * Builds a new ServerProcessesLauncher
-     *
-     * @param IDatabaseProvider $databaseProvider entity used to access the database
-     */
-    public function __construct(
-        IDatabaseProvider $databaseProvider
-    ) {
-        $this->setDatabaseProvider($databaseProvider);
-    }
-
-    /**
       * Accessor for field $_databaseProvider
       *
       * @return IDatabaseProvider value of field $_databaseProvider

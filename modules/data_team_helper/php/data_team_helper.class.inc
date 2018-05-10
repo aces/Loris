@@ -571,7 +571,7 @@ class Data_Team_Helper extends \NDB_Form
      * @param string     $visit_label the value of visit label
      * @param string     $candidate   the value of candidate
      * @param int|string $site        the id or default value of the site
-     * @param int|null   $project     the id of the project or can be null
+     * @param ?int       $project     the id of the project or can be null
      *
      * @return int
      */

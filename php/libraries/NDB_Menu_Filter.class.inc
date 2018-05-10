@@ -311,7 +311,7 @@ class NDB_Menu_Filter extends NDB_Menu
         // 1. Reset filters
         if (isset($_REQUEST['reset'])) {
             // erase filter data from the session
-            $this->_resetFilters(true);
+            $this->_resetFilters();
         }
 
         // 2. After resetting filters (if applicable), set the new

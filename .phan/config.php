@@ -37,8 +37,6 @@ return [
 		"PhanTypeMismatchProperty",
 		"PhanNonClassMethodCall",
 		"PhanTypeVoidAssignment",
-		"PhanParamTooFew",
-		"PhanParamTooMany",
 		"PhanTypeArraySuspicious",
 		"PhanRedefineFunctionInternal",
 		"PhanRedefineFunction",
