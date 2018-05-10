@@ -42,7 +42,7 @@ class LorisLoginTest extends LorisIntegrationTest
 
        $username->sendKeys("UnitTester");
        $password->sendKeys("4test4");
-
+ini_set('session.cookie_secure', '0');
        $login->click();
 
        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
