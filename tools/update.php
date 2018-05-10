@@ -85,7 +85,7 @@ function main() {
 
 function installMissingScriptRequirements($dependencies) : bool
 {
-    $tools_to_install = getMissingScriptRequirements($dependencies);
+    $tools_to_install = getMissingRequirements($dependencies);
     if (empty($tools_to_install)) {
         return true;
     }
@@ -165,7 +165,7 @@ function downloadLatestRelease($download_path = '/tmp/loris_') : string {
  *
  * @return array of names of missing dependencies
  */
-function getMissingScriptRequirements($required) : array
+function getMissingRequirements($required) : array
 {
     $missing = [];
     foreach($required as $tool){
@@ -173,9 +173,6 @@ function getMissingScriptRequirements($required) : array
     }
 
     return $missing;
-}
-
-function getLatestVersion(){
 }
 
 /** Use bash to determine if certain unix tools are installed
