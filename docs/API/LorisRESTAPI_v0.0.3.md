@@ -783,8 +783,8 @@ object of the form:
 GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname
 ```
 
-Returns a `tar` file which contains a `.meta` and a `.log` text files, 
-and a `.tar.gz` of the raw DICOM data as acquired during the candidate
+Returns/Downloads a `tar` file which contains a `.meta` and a `.log` text 
+files, and a `.tar.gz` of the raw DICOM data as acquired during the candidate
 scanning session, and as retrieved from `/candidates/$CandID/$Visit/dicoms`.
 
 Only `GET` is currently supported.

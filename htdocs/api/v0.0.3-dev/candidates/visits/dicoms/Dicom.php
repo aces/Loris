@@ -1,6 +1,6 @@
 <?php
 /**
- * Handles API requests for the candidate's visit dicom tar file
+ * Handles API requests for the candidate's visit DICOM tar file
  *
  * PHP Version 5.5+
  *
@@ -13,7 +13,7 @@
 namespace Loris\API\Candidates\Candidate\Visit\Dicoms;
 require_once __DIR__ . '/../../Visit.php';
 /**
- * Handles API requests for the candidate's visit dicom tar file. Extends
+ * Handles API requests for the candidate's visit DICOM tar file. Extends
  * Visit so that the constructor will validate the candidate
  * and visit_label portion of URL automatically.
  *
@@ -26,12 +26,12 @@ require_once __DIR__ . '/../../Visit.php';
 class Dicom extends \Loris\API\Candidates\Candidate\Visit
 {
     /**
-     * Construct a Dicom class object to output the candidate visits dicom tar file
+     * Construct a DICOM class object to output the candidate's visit DICOM tar file
      *
      * @param string $method     The method of the HTTP request
      * @param string $CandID     The CandID to be serialized
      * @param string $VisitLabel The visit label to be serialized
-     * @param string $Tarname    The Tar name to be retrieved
+     * @param string $Tarname    The DICOM archive to be retrieved
      */
     public function __construct($method, $CandID, $VisitLabel, $Tarname)
     {
@@ -109,7 +109,8 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     }
 
     /**
-     * Gets the Tarname saved in the database for this file
+     * Gets the DICOM archive relative location and name, as saved 
+     * in the database, for this file
      *
      * @return string
      */
@@ -117,7 +118,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
     {
         $factory      = \NDB_Factory::singleton();
         $db           = $factory->Database();
-        $partial_path = $db->pselectRow(
+        $partial_path = $db->pselectOne(
             "SELECT ArchiveLocation
                 FROM tarchive t
                     JOIN session s ON (t.SessionID=t.SessionID)
@@ -131,7 +132,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
              'Tname' => $this->Tarname,
             )
         );
-        return $partial_path['ArchiveLocation'];
+        return $partial_path;
     }
 }
 

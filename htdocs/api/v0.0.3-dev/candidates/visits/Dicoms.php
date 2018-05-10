@@ -1,6 +1,6 @@
 <?php
 /**
- * Handles API requests for the candidate's dicom files
+ * Handles API requests for the candidate's DICOM files
  *
  * PHP Version 5.5+
  *
@@ -14,9 +14,9 @@ namespace Loris\API\Candidates\Candidate\Visit;
 require_once '../Visit.php';
 
 /**
- * Handles API requests for the candidate's dicom files. Extends
+ * Handles API requests for the candidate's DICOM files. Extends
  * Visit so that the constructor will validate the candidate
- * and visit_label portion of URL automatically.
+ * and visit_label portion of the URL automatically.
  *
  * @category Main
  * @package  API
@@ -27,7 +27,7 @@ require_once '../Visit.php';
 class Dicoms extends \Loris\API\Candidates\Candidate\Visit
 {
     /**
-     * Construct a Dicoms class object to serialize candidate visit dicoms
+     * Construct a Dicoms class object to serialize candidate visit DICOMs
      *
      * @param string $method     The method of the HTTP request
      * @param string $CandID     The CandID to be serialized
@@ -71,7 +71,7 @@ class Dicoms extends \Loris\API\Candidates\Candidate\Visit
     }
 
     /**
-     * Gets a list of Tars for this visit. Tarname only.
+     * Gets a list of DICOM archives (.tar) for this visit. Tarname only.
      *
      * @return array of strings of Tarnames
      */
@@ -118,6 +118,14 @@ class Dicoms extends \Loris\API\Candidates\Candidate\Visit
         $result = array();
         $entry  = array();
 
+        // The following loop will create the DicomTar object, formatted 
+        // according to:
+        // [{"Tarname1" :"DCM_yyyy-mm-dd_ImagingUpload-hh-mm-abc123.tar",
+        // "SeriesInfo1":[{"Series1Field1":"Value", "Series1Field2":"Value", ...}, 
+        //                 {"Series2Field1":"Value", "Series1Field2":"Value", ...}, ...}],
+        // }, 
+        // ... as Multiple TarNames/SeriesInfo can be present here
+        // ] 
         foreach ($rows as $row) {
             if (empty($entry)) {
                 $entry['Tarname']    = $row['Tarname'];
