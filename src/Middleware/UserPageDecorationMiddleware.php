@@ -91,9 +91,6 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
                 $this->PageName
             );
         }
-        if ($page instanceOf \NDB_Page) {
-            $tpl_data['breadcrumbs'] = $page->getBreadcrumbs();
-        }
 
         // This shouldn't exist. (And if it does, it shouldn't reference
         // mantis..)
@@ -183,6 +180,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
                       'cssfiles'  => $this->CSSFiles,
                       'workspace' => $undecorated->getBody(),
                      );
+
+        if ($page instanceOf \NDB_Page) {
+            $tpl_data['breadcrumbs'] = $page->getBreadcrumbs();
+        }
 
         // Assign the console template variable as the very, very last thing.
         $tpl_data['console'] = htmlspecialchars(ob_get_contents());
