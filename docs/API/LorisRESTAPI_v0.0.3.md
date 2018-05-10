@@ -790,6 +790,9 @@ object of the form:
 }
 ```
 
+The `Modality` header in the SeriesInfo is either `MR` or `PT` for MRI or PET 
+scans, respectively.
+
 ## 5.2 Tar Level Data
 ```
 GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname
