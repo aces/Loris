@@ -72,19 +72,14 @@ function main() {
     
     echo "Backing up $loris_root_dir to $backup_dir" . PHP_EOL;
     recurse_copy($loris_root_dir, $backup_dir);
-    $archive_path = downloadLatestRelease();
-    if (empty($archive_path)) {
+    $tarball_path = downloadLatestRelease();
+    if (empty($tarball_path)) {
         die('Could not download the latest LORIS release.');
     }
-    $ext = pathinfo($archive_path, PATHINFO_EXTENSION);
-    if ($ext === 'zip') {
-        echo "Zip found for $archive_path";
-        #shell_exec('tar -zxvf $archive_path -C $loris_root_dir');
-    } else if ($ext === 'gz') {
-        echo "Tar/gzip found for $archive_path";
-        #shell_exec('unzip -o $archive_path -d $loris_root_dir');
-    } else {
-        die('Can\'t do anything with extension' . $ext . PHP_EOL);
+    $cmd = "tar -zxvf $tarball_path -C $loris_root_dir"; 
+    exec($cmd, $output, $status);
+    if ($status !== 0) {
+        die(bashErrorToString($cmd, $output, $status));
     }
 }
 
@@ -115,6 +110,7 @@ function installAptPackages($packages) : bool
 {
     foreach($packages as $package) {
         if (installAptPackage($package) === false) {
+            echo bashErrorToString($cmd, $output, $status);
             return false;
         }
     }
@@ -128,8 +124,7 @@ function installAptPackage($name) : bool
     exec($cmd, $output, $status);
     // in Bash a 0 exit status means success
     if ($status !== 0) {
-        echo "ERROR: Command `$cmd` failed (error code $status): $output" 
-             . PHP_EOL;
+        echo bashErrorToString($cmd, $output, $status);
         return false;
     }
     echo ' Done.' . PHP_EOL;
@@ -148,7 +143,7 @@ function downloadLatestRelease($download_path = '/tmp/loris_') : string {
     // capture json content using wget in quiet mode, reading from STDIN
     $response = shell_exec('wget -qnv -O - ' . escapeshellarg($release_url));
     $j = json_decode($response);
-    echo 'Got ' . $j->{'tag-name'} . PHP_EOL;
+    echo 'Got ' . $j->{'tag_name'} . PHP_EOL;
     $download_path .= $j->{'tag_name'}; // include
 
     $src_code_url = $j->{'tarball_url'};
@@ -160,7 +155,7 @@ function downloadLatestRelease($download_path = '/tmp/loris_') : string {
     $cmd = "wget -qnv -O $download_path $src_code_url";
     exec($cmd, $output, $status);
     if ($status !== 0) {
-        echo "Command `$cmd` failed (exit code $status): $output" . PHP_EOL;
+        echo bashErrorToString($cmd, $output, $status);
         return '';
     }
     return $download_path;
@@ -211,6 +206,8 @@ function recurse_copy($src,$dst) {
         '..',
         '.git', // let git handle this
         'vendor', // let composer handle this
+        'user_uploads', // let composer handle this
+        'templates_c', // no need to backup compiled files
     ];
     $dir = opendir($src); 
     if (file_exists($dst)){
@@ -292,3 +289,8 @@ function readAnswer($possibleAnswers, $defaultAnswer)
     return $answer;
 }
 
+function bashErrorToString($cmd, $output, $status) : string
+{
+        return "ERROR: Command `$cmd` failed (error code $status): $output"
+             . PHP_EOL;
+}
