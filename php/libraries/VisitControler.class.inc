@@ -22,7 +22,7 @@ namespace LORIS;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class VisitControler 
+class VisitControler
 {
     /**
      * The database connection to use
@@ -105,11 +105,11 @@ class VisitControler
     {
         return array_map(
             function ($row) {
-                return new \LORIS\Visit(
-                    $row['visit'], 
-                    $row['project'], 
-                    $row['subproject']
-                );
+                return array(
+                        new \LORIS\Visit($row['visit']),
+                        $row['project'],
+                        $row['subproject'],
+                       );
             },
             $this->database->pselect(
                 'SELECT
@@ -119,8 +119,8 @@ class VisitControler
                  FROM
                   visit v
                  JOIN
-                  visit_project_subproject_rel
-                 USING (VisitID)
+                  visit_project_subproject_rel vps
+                 ON v.VisitID = vps.VisitID
                 ',
                 array()
             )

@@ -14,7 +14,10 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../php/libraries/VisitControler.class.inc';
 require_once __DIR__ . '/../../php/libraries/Visit.class.inc';
-use PHPUnit\Framework\TestCase;
+
+use \LORIS\Visit;
+use \LORIS\VisitControler;
+use \PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for Candidate class
@@ -69,29 +72,39 @@ class VisitTest extends TestCase
         );
         $this->_visitControler = new \Loris\VisitControler($db);
 
-        $this->_listOfVisit = array(
-                               new \Loris\Visit('v1'),
-                               new \Loris\Visit('v2'),
-                               new \Loris\Visit('v3')
-                              );
+        $v1 = new \Loris\Visit('v1');
+        $v2 = new \Loris\Visit('v2');
+        $v3 = new \Loris\Visit('v3');
+
+        $this->_listOfVisit = array($v1, $v2, $v3);
+
+        $this->_listOfVisitProject = array(
+                                      array($v1, 1, 11),
+                                      array($v1, 2, 13),
+                                      array($v1, 3, 11),
+                                      array($v2, 1, 12),
+                                      array($v2, 3, 11),
+                                      array($v3, 3, 11)
+                                     );
     }
 
     function testVisit()
     {
-        $visits = $this->_visitControler->getAllVisits();
-        for ($i = 0; $i < 3; $i++) {
-//            $this->assertInstanceOF(Visit::class, $visits[$i], "is not an instance of Visit");
-//            $this->assertEquals($this->_listOfVisit[$i], $visits[$i]->getName(), "the name of the visit does not match");
-            $this->assertEquals($this->_listOfVisit[$i], $visits[$i], "the name of the visit does not match");
-        }
+       $visit_name = "Visit 1";
+       $visit = new Visit($visit_name);
+       $this->assertEquals($visit_name, $visit->getName(), "the name of the visit does not match");
+    }
 
+    function testAllVisit()
+    {
+        $visits = $this->_visitControler->getAllVisits();
+        $this->assertEquals($this->_listOfVisit, $visits, "the name of the visit does not match value in DB");
     }  
 
     function testVisitsProjects()
     {
         $visits = $this->_visitControler->getVisitsProject();
-        for ($i = 0; $i < 6; $i++) {
-        }
+        $this->assertEquals($this->_listOfVisitProject, $visits, "the project and subproject relation does not match value in DB");
     }
 
     /**
