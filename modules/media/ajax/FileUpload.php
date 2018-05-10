@@ -16,12 +16,27 @@
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
     if ($action == "getData") {
-        echo json_encode(getUploadFields());
+        viewData();
     } else if ($action == "upload") {
         uploadFile();
     } else if ($action == "edit") {
         editFile();
     }
+}
+
+/**
+ * Handles the media view data process
+ *
+ * @return void
+ */
+function viewData()
+{
+    $user =& User::singleton();
+    if (!$user->hasPermission('media_read')) {
+        header("HTTP/1.1 403 Forbidden");
+        exit;
+    }
+    echo json_encode(getUploadFields());
 }
 
 /**
@@ -50,10 +65,10 @@ function editFile()
     }
 
     $updateValues = [
-                     'date_taken' => $req['dateTaken'],
-                     'comments'   => $req['comments'],
-                     'hide_file'  => $req['hideFile'] ? $req['hideFile'] : 0,
-                    ];
+        'date_taken' => $req['dateTaken'],
+        'comments'   => $req['comments'],
+        'hide_file'  => $req['hideFile'] ? $req['hideFile'] : 0,
+    ];
 
     try {
         $db->update('media', $updateValues, ['id' => $idMediaFile]);
@@ -129,9 +144,9 @@ function uploadFile()
         "LEFT JOIN session s USING(CandID) WHERE c.PSCID = :v_pscid AND " .
         "s.Visit_label = :v_visit_label AND s.CenterID = :v_center_id",
         [
-         'v_pscid'       => $pscid,
-         'v_visit_label' => $visit,
-         'v_center_id'   => $site,
+            'v_pscid'       => $pscid,
+            'v_visit_label' => $visit,
+            'v_center_id'   => $site,
         ]
     );
 
@@ -146,18 +161,18 @@ function uploadFile()
 
     // Build insert query
     $query = [
-              'session_id'    => $sessionID,
-              'instrument'    => $instrument,
-              'date_taken'    => $dateTaken,
-              'comments'      => $comments,
-              'file_name'     => $fileName,
-              'file_type'     => $fileType,
-              'data_dir'      => $mediaPath,
-              'uploaded_by'   => $userID,
-              'hide_file'     => 0,
-              'date_uploaded' => date("Y-m-d H:i:s"),
-              'language_id'   => $language,
-             ];
+        'session_id'    => $sessionID,
+        'instrument'    => $instrument,
+        'date_taken'    => $dateTaken,
+        'comments'      => $comments,
+        'file_name'     => $fileName,
+        'file_type'     => $fileType,
+        'data_dir'      => $mediaPath,
+        'uploaded_by'   => $userID,
+        'hide_file'     => 0,
+        'date_uploaded' => date("Y-m-d H:i:s"),
+        'language_id'   => $language,
+    ];
 
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
         $existingFiles = getFilesList();
@@ -223,10 +238,10 @@ function getUploadFields()
             $sessionData[$record["PSCID"]]['sites'] = [];
         }
         if ($record["CenterID"] !== null && !in_array(
-            $record["CenterID"],
-            $sessionData[$record["PSCID"]]['sites'],
-            true
-        )
+                $record["CenterID"],
+                $sessionData[$record["PSCID"]]['sites'],
+                true
+            )
         ) {
             $sessionData[$record["PSCID"]]['sites'][$record["CenterID"]]
                 = $siteList[$record["CenterID"]];
@@ -237,10 +252,10 @@ function getUploadFields()
             $sessionData[$record["PSCID"]]['visits'] = [];
         }
         if ($record["Visit_label"] !== null && !in_array(
-            $record["Visit_label"],
-            $sessionData[$record["PSCID"]]['visits'],
-            true
-        )
+                $record["Visit_label"],
+                $sessionData[$record["PSCID"]]['visits'],
+                true
+            )
         ) {
             $sessionData[$record["PSCID"]]['visits'][$record["Visit_label"]]
                 = $record["Visit_label"];
@@ -258,10 +273,10 @@ function getUploadFields()
         }
 
         if ($record["Test_name"] !== null && !in_array(
-            $record["Test_name"],
-            $sessionData[$pscid]['instruments'][$visit],
-            true
-        )
+                $record["Test_name"],
+                $sessionData[$pscid]['instruments'][$visit],
+                true
+            )
         ) {
             $sessionData[$pscid]['instruments'][$visit][$record["Test_name"]]
                 = $record["Test_name"];
@@ -302,16 +317,16 @@ function getUploadFields()
     }
 
     $result = [
-               'candidates'  => $candidatesList,
-               'candIDs'     => $candIdList,
-               'visits'      => $visitList,
-               'instruments' => $instrumentsList,
-               'sites'       => $siteList,
-               'mediaData'   => $mediaData,
-               'mediaFiles'  => array_values(getFilesList()),
-               'sessionData' => $sessionData,
-               'language'    => $languageList,
-              ];
+        'candidates'  => $candidatesList,
+        'candIDs'     => $candIdList,
+        'visits'      => $visitList,
+        'instruments' => $instrumentsList,
+        'sites'       => $siteList,
+        'mediaData'   => $mediaData,
+        'mediaFiles'  => array_values(getFilesList()),
+        'sessionData' => $sessionData,
+        'language'    => $languageList,
+    ];
 
     return $result;
 }
