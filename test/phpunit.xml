@@ -14,6 +14,7 @@
         <testsuite name='LorisModuleIntegrationTests'>
             <directory>../modules/acknowledgements/test/</directory>
             <directory>../modules/bvl_feedback/test/</directory>
+<directory>../modules/media/test/</directory>
         </testsuite>
 
     </testsuites>
