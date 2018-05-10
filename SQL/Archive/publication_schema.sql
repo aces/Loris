@@ -144,4 +144,11 @@ INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES ((S
 INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES ((SELECT id FROM notification_modules WHERE module_name='publication' AND operation_type='rate'), 1);
 INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES ((SELECT id FROM notification_modules WHERE module_name='publication' AND operation_type='edit'), 1);
 
+DELETE FROM Config WHERE Value='/data/publication_uploads/';
+DELETE FROM ConfigSettings WHERE Name='publication_uploads';
+SET @pathID = (SELECT ID FROM ConfigSettings WHERE Name='paths');
+SET @order  = (SELECT MAX(OrderNumber) + 1 FROM ConfigSettings WHERE Parent=@pathID);
+INSERT INTO ConfigSettings (Name, Description, Visible, Parent, Label, DataType, OrderNumber) VALUES ('publication_uploads', 'Path to upload publications', 1, @pathID, 'Publications', 'text', @order);
+INSERT INTO Config (ConfigID, Value) VALUES ((SELECT ID FROM ConfigSettings WHERE Name='publication_uploads'), '/data/publication_uploads/');
+
 SET FOREIGN_KEY_CHECKS=1;
