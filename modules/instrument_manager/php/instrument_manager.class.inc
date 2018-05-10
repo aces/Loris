@@ -313,17 +313,17 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 // check the values in the enum
                 $enums        = explode("{-}", $pieces[3]);
                 $sqlSelectOne = "SELECT COLUMN_TYPE".
-                    " FROM information_schema.columns".
-                    " WHERE TABLE_SCHEMA=:dbname".
-                    " AND TABLE_NAME=:tablename".
-                    " AND COLUMN_NAME=:columnname".
-                    " AND DATA_TYPE='enum'";
+                                " FROM information_schema.columns".
+                                " WHERE TABLE_SCHEMA=:dbname".
+                                " AND TABLE_NAME=:tablename".
+                                " AND COLUMN_NAME=:columnname".
+                                " AND DATA_TYPE='enum'";
                 $db_enum      = $db->pselectOne(
                     $sqlSelectOne,
                     array(
-                        'dbname'     => $factory->settings()->dbName(),
-                        'columnname' => $name,
-                        'tablename'  => $instname,
+                     'dbname'     => $factory->settings()->dbName(),
+                     'columnname' => $name,
+                     'tablename'  => $instname,
                     )
                 );
                 $options      = array();
@@ -373,8 +373,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 $exists = $db->pselectOne(
                     $sqlSelectOne,
                     array(
-                        'testname' => $instname,
-                        'testdesc' => trim($pieces[2]),
+                     'testname' => $instname,
+                     'testdesc' => trim($pieces[2]),
                     )
                 );
                 if ($exists <= 0) {
