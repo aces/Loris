@@ -4,7 +4,7 @@
  * script under htdocs. It's put in a class for testability (even if there
  * aren't currently any tests for it.) and to keep installdb.php neat.
  *
- * PHP Version 5.5+
+ * PHP Version 7
  *
  * @category Installer
  * @package  Installer
