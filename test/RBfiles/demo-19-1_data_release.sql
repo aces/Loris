@@ -20,6 +20,7 @@
 
 LOCK TABLES `data_release` WRITE;
 /*!40000 ALTER TABLE `data_release` DISABLE KEYS */;
+TRUNCATE TABLE `data_release`; INSERT INTO `data_release` (`id`, `file_name`, `version`, `upload_date`) VALUES (1,'46-054.gif','','2018-05-07');
 /*!40000 ALTER TABLE `data_release` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -31,4 +32,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-05-07 13:31:36
+-- Dump completed on 2018-05-11 10:31:40
