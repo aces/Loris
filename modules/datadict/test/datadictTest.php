@@ -76,6 +76,12 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
                 array()
             )
         );
+        print_r(
+            $this->DB->pselect(
+                "SELECT * FROM parameter_type",
+                array()
+            )
+        );
 
         $this->DB->delete(
             'parameter_type',
