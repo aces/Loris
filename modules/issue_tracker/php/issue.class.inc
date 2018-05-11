@@ -31,8 +31,7 @@ class Issue extends \NDB_Form
     /**
     * Override default behaviour, since the page is loaded from issueIndex.js
     *
-    * @return void
-    * @access public
+    * @return string
     */
     function display()
     {

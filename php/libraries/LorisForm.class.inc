@@ -1301,11 +1301,7 @@ class LorisForm
 
                 // Check if date fields have errors and add them to error list
                 if ($el['type'] === 'date') {
-                    $date = (
-                        $values[$elName] ?
-                            $values[$elName] :
-                        $this->getValue($el['name'])
-                    );
+                    $date = $values[$elName] ?? $this->getValue($el['name']);
                     if (empty($date)) {
                         continue;
                     }
@@ -1960,7 +1956,7 @@ class LorisForm
     ) {
         switch($type) {
         case 'text':
-            return $this->createText($elname, $label, $options, $attribs);
+            return $this->createText($elname, $label, $options);
         case 'select':
             return $this->createSelect($elname, $label, $options, $attribs);
         case 'submit':
@@ -2007,7 +2003,7 @@ class LorisForm
             $el['options'] = $options;
             break;
         case 'radio':
-            $el         = $this->createBase($elname, $label, $options, $attribs);
+            $el         = $this->createBase($elname, $label, $options);
             $el['type'] = 'radio';
             break;
         case 'time':
@@ -2185,7 +2181,7 @@ class LorisForm
         if ($this->form[$name]['type'] === 'file') {
             return new LorisFormFileElement($this->form[$name]);
         }
-        return new LorisFormElement($this->form[$name]);
+        return new LorisFormElement();
     }
 
     /**
@@ -2265,12 +2261,14 @@ class LorisFormElement
     }
 
     /**
-     * Stub. Does nothing.
+     * Stub. Does nothing. Child classes may return nearly any type
+     * as relevant for the value of their element type.
      *
-     * @return void
+     * @return array|string|bool|null
      */
     function getValue()
     {
+        return null;
     }
 };
 
@@ -2332,7 +2330,8 @@ class LorisFormFileElement extends LorisFormElement
      * Extracts the value of the file as represented in PHP $_FILES
      * superglobal. This seems to be how QuickForm handled it.
      *
-     * @return array of the form used by $_FILES superglobal
+     * @return array|false of the form used by $_FILES superglobal or false
+     *         on failure
      */
     function getValue()
     {

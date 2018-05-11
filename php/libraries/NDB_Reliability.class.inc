@@ -56,8 +56,9 @@ class NDB_Reliability extends NDB_Form
             throw new Exception("The form class ($name) is not defined.");
         }
 
+        $m = \Module::factory("reliability");
         // create a form instance
-        $obj = new $class($name, $page, $identifier, null, 'test_form');
+        $obj = new $class($m, $page, $identifier, '', 'test_form');
 
         $obj->reliability_center_id = $reliability_center_id;
 
@@ -86,7 +87,7 @@ class NDB_Reliability extends NDB_Form
     /**
      * Displays the form
      *
-     * @return void
+     * @return string
      * @access public
      */
     function display()
@@ -128,7 +129,7 @@ class NDB_Reliability extends NDB_Form
     function save()
     {
         if ($this->form->validate()) {
-            $this->form->process(array(&$this, "_save"), false);
+            $this->form->process(array(&$this, "_save"));
         }
     }
 

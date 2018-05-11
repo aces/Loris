@@ -730,9 +730,9 @@ class Database
     }
 
     /**
-     * Runs a query as a prepared statement and returns the values of the first
-     * column in the select statement. If multiple columns are given, only the first
-     * will be returned.
+     * Runs a query as a prepared statement and returns the values of the
+     * column given in the select statement. If multiple columns are given, an error
+     * is thrown.
      *
      * @param string $query  The SQL SELECT query to be run
      * @param array  $params Values to use for binding to prepared statement
@@ -740,7 +740,7 @@ class Database
      * @throws DatabaseException if the query selected more than one column
      *
      * @return array Associative array of form rowID=>value containing all values
-     *               for the first element of the select statement
+     *               for the only column of the select statement
      */
     function pselectCol($query, $params)
     {
@@ -856,17 +856,18 @@ class Database
         }
         return $result;
     }
+
     /**
      * Implodes a hash including the keys (unlike php's implode)
      *
      * Sets each hash element into the format key='value', and then
      * implodes the resultant array with the specified glue
      *
-     * @param string $glue      The glue to pass to php's implode function
-     * @param array  $dataArray The array with keys to implode
+     * @param string               $glue      The glue to pass to php's implode
+     *                                        function
+     * @param array<string,string> $dataArray The array with keys to implode
      *
-     * @return string the string containing the imploded array
-     * @access private
+     * @return string
      */
     function _implodeWithKeys($glue, $dataArray)
     {
@@ -925,7 +926,7 @@ class Database
      *
      * @param string $value An unsafe string
      *
-     * @return The value appropriately quoted/escaped
+     * @return string The value appropriately quoted/escaped
      */
     function quote($value)
     {
@@ -940,7 +941,7 @@ class Database
      *
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
-     * @param array  $where the selection filter, joined as a boolean and
+     * @param string $where the selection filter, joined as a boolean and
      * @param string $type  The type of change being tracked (*I*nsert,
      *                      *U*pdate or *D*elete)
      *

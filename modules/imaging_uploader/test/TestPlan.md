@@ -66,11 +66,18 @@
     (PSCID and visit label should be correct though). Check that an appropriate message is written in the Console 
     Output.
     [Manual Testing]
-18. Upload a valid, anonymized .tar.gz DICOM archive but with a PSCID that does not match the one in the archive 
+18. First, set the config setting 'ImagingUploader auto launch' to 'Yes'. Then, edit your prod file (in
+	<LORIS MRI code dir>/dicom-archive/.loris-mri) and comment out the definition of the @db array. Once these operations
+	are done, upload any valid scan: check in the server processes manager that this fails with an error code of 4.
+	Now try to upload the scan again. When the system asks you if you want to overwrite the existing 
+	archive, answer 'Yes'. Check that this reupload fails with error code 4 (and not 2). 
+	Related to Redmine#14093 and PR#3555.
+	[Manual Testing]
+19. Upload a valid, anonymized .tar.gz DICOM archive but with a PSCID that does not match the one in the archive 
     (CandID and visit label should be correct though). Check that an appropriate message is written in the Console 
     Output.
     [Automation Testing]
-19. Upload a valid, anonymized .tar.gz DICOM archive but with a visit label that does not match the one in the 
+20. Upload a valid, anonymized .tar.gz DICOM archive but with a visit label that does not match the one in the 
     archive (CandID and PSCID should be correct though). Check that an appropriate message is written in the Console 
     Output.
     [Automation Testing]

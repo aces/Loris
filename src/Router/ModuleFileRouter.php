@@ -15,7 +15,6 @@ namespace LORIS\Router;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
-use \LORIS\Http\StringStream;
 
 
 /**
@@ -45,6 +44,7 @@ class ModuleFileRouter implements RequestHandlerInterface
      */
     protected $subdir;
 
+    protected $contenttype;
     /**
      * The constructor for a ModuleFileRouter takes the Module class,
      * the directory which the module is stored in, and the subdirectory of
@@ -55,11 +55,12 @@ class ModuleFileRouter implements RequestHandlerInterface
      *                           module lives.
      * @param string  $subdir    The subdirectory of moduledir to serve.
      */
-    public function __construct(\Module $module, string $moduledir, string $subdir)
+    public function __construct(\Module $module, string $moduledir, string $subdir, string $contenttype)
     {
         $this->module    = $module;
         $this->moduledir = $moduledir;
         $this->subdir    = $subdir;
+        $this->contenttype = $contenttype;
     }
 
     /**
@@ -81,12 +82,18 @@ class ModuleFileRouter implements RequestHandlerInterface
         );
 
         if (is_file($fullpath)) {
-            return (new \Zend\Diactoros\Response)
+            $resp = (new \Zend\Diactoros\Response)
                 ->withStatus(200)
                 ->withBody(new \Zend\Diactoros\Stream($fullpath));
+            if ($this->contenttype != "") {
+                $resp = $resp->withHeader("Content-Type", $this->contenttype);
+            }
+            return $resp;
         }
-        return (new \Zend\Diactoros\Response())
-            ->withStatus(404)
-            ->withBody(new StringStream($fullpath . ": File not found"));
+        return (new \LORIS\Http\Error(
+            $request,
+            404,
+            $fullpath . ": File not found"))
+            ->withHeader("Content-Type", "text/html");
     }
 }

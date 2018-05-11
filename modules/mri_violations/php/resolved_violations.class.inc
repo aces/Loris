@@ -42,9 +42,9 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
     /**
      * Process function
      *
-     * @param string $values the value of values
+     * @param array $values the value of values
      *
-     * @return boolean true if the user is permitted to see violated scans
+     * @return bool true if the user is permitted to see violated scans
      */
     function _process($values)
     {
@@ -143,7 +143,7 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
      * Set up the class and smarty variables to use for the menu filter to
      * generate the proper query for the menu filter
      *
-     * @return none
+     * @return void
      */
     function _setupVariables()
     {
@@ -316,14 +316,15 @@ class Resolved_Violations extends \NDB_Menu_Filter_Form
                                'v.SeriesUID',
                                'v.Resolved',
                               );
-        return true;
+        return;
     }
+
     /**
      * Does the setup required for this page. By default, sets up elements
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

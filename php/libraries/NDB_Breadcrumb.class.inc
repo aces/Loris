@@ -26,6 +26,13 @@
 class NDB_Breadcrumb
 {
     /**
+     * The current pagename
+     *
+     * @var string
+     */
+    private $_pagename;
+
+    /**
      * The breadcrumb
      *
      * @var    array
@@ -64,6 +71,15 @@ class NDB_Breadcrumb
                                'datadict'         => 'Data Dictionary',
                               );
 
+    /**
+     * Construct a Breadcrumb object.
+     *
+     * @param string $testname The test name to display the breadcrumb for
+     */
+    public function __construct(string $testname)
+    {
+        $this->_pagename = $testname;
+    }
     /**
      * Adds a crumb to the breadcrumb
      *
@@ -166,7 +182,7 @@ class NDB_Breadcrumb
     {
         // set the parameters array
         $this->_parameters = array(
-                              'test_name'  => $this->_getRequest('test_name'),
+                              'test_name'  => $this->_pagename,
                               'subtest'    => $this->_getRequest('subtest'),
                               'candID'     => $this->_getRequest('candID'),
                               'sessionID'  => $this->_getRequest('sessionID'),
@@ -191,7 +207,7 @@ class NDB_Breadcrumb
 
         // set the 'timepoint list' crumb text
         if (!empty($_REQUEST['candID'])) {
-            $candidate =& Candidate::singleton($_REQUEST['candID']);
+            $candidate = \Candidate::singleton($_REQUEST['candID']);
             $this->_userFriendlyNames['timepoint_list']
                 = 'Candidate Profile '
                     . $candidate->getData('CandID')

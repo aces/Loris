@@ -89,7 +89,7 @@ class NDB_Client
         if (!$this->_isWebClient) {
             // Set user as unix username.
             // Requires Loris to have user with this username
-            $user =& User::singleton(getenv('USER'));
+            User::singleton(getenv('USER'));
             return true;
         }
 
@@ -138,7 +138,6 @@ class NDB_Client
         // if exiting, destroy the php session
         if (isset($_REQUEST['logout']) && $_REQUEST['logout']) {
             session_destroy();
-            setcookie("FeedbackButtonBoolean", "");
             header("HTTP/1.1 303 See Other");
             header("Location: /");
             session_start();
@@ -162,7 +161,6 @@ class NDB_Client
                     header("Location: /login/password-expiry");
 
                 }
-
                 $login->setState();
             } elseif ($auth === false) {
                 // only send a 403 error if they were attempting to log in,
@@ -184,7 +182,7 @@ class NDB_Client
             return false;
         }
 
-        $user =& User::singleton($_SESSION['State']->getUsername());
+        User::singleton($_SESSION['State']->getUsername());
 
         // finished initializing
         return true;

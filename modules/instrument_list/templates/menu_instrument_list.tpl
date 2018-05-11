@@ -25,14 +25,15 @@
 	<tbody>
 	   	<tr{if $instruments[group][instrument].isDirectEntry} class="directentry"{/if}>
 	    	<td>
-                {if !$instruments[group][instrument].survey}
+            {if !$instruments[group][instrument].survey}
                 <a href="{$baseurl}/{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].commentID}&sessionID={$sessionID}&candID={$candID}">
 	            {$instruments[group][instrument].fullName}</a>
                 {else}
                 <div class="note">{$instruments[group][instrument].fullName}
                     <span class="notetext">Instrument cannot be opened until survey is created in survey module.</span>
                 </div>
-                {/if}</td>
+            {/if}
+        </td>
 	    	<td>{$instruments[group][instrument].dataEntryStatus}</td>
 	    	<td>{$instruments[group][instrument].administrationStatus}</td>
 	    	<td bgcolor="{$instruments[group][instrument].feedbackColor}">
@@ -40,7 +41,7 @@
 	        </td>
 			<td>
 				{if $instruments[group][instrument].isDdeEnabled }
-				    	<a href="{$baseurl}/{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].ddeCommentID}&sessionID={$sessionID}&candID={$candID}">Double Data Entry</a>
+				    	<a href="{$baseurl}/instruments/{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].ddeCommentID}&sessionID={$sessionID}&candID={$candID}">Double Data Entry</a>
 			   {/if}&nbsp;
 			</td>
 			<td>{if $instruments[group][instrument].isDdeEnabled }{$instruments[group][instrument].ddeDataEntryStatus}{/if}&nbsp;</td>
