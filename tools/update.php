@@ -4,7 +4,7 @@
 //
 // 1. Create a back-up of the DB and of the loris root (?)
 //
-// 2. Update server dependencies (e.g. PHP version, other dependencies0
+// 2. Update server requirements (e.g. PHP version, other requirements0
 //
 // 3. Clone/download files from LORIS
 //
@@ -45,18 +45,26 @@ function main() {
         $db_config['password'],
         $db_config['host']
     );
-    // make sure we have all the tools necessary to run the script
-    $script_dependencies = [
+    // PHP version required for LORIS. Change this value as needed.
+    $version = '7.2'; 
+    // all necessary apt packages to get LORIS running
+    //https://github.com/aces/Loris/wiki/Installing-Loris-in-Depth
+    $loris_requirements = [
         'wget',
-        'tar',
+        'zip',
+        'unzip',
         'php-json',
+        'python-software-properties',
+        'software-properties-common',
+        "php$version",
+        "php$version-mysql",
+        "php$version-xml",
+        "php$version-json",
+        "php$version-mbstring",
+        "php$version-gd",
+        "libapache2-mod-php$version",
     ];
-    if (installMissingScriptRequirements($script_dependencies) === false) {
-        die("Could not install required dependencies for $argv[0]. Exiting."
-            . PHP_EOL
-        );
-    }
-    echo 'All script dependencies satisfied.' . PHP_EOL;
+    updateRequiredPackages($loris_requirements);
 
     $paths = $config->getSetting('paths');
     $loris_root_dir = $paths['base'];
@@ -76,8 +84,8 @@ function main() {
     if (empty($tarball_path)) {
         die('Could not download the latest LORIS release.');
     }
-$loris_root_dir = '/tmp/testing/';
-    $cmd = "tar -zxvf $tarball_path -C $loris_root_dir"; 
+$dst_dir = '/tmp/';
+    $cmd = "unzip -o $tarball_path -d $dst_dir"; 
     exec($cmd, $output, $status);
     print_r($output);
     if ($status !== 0) {
@@ -85,43 +93,69 @@ $loris_root_dir = '/tmp/testing/';
     }
 }
 
-function installMissingScriptRequirements($dependencies) : bool
+function updateRequiredPackages($requirements) : bool {
+    echo 'Updating required packages...' . PHP_EOL;
+    echo 'Adding external PPA for most up-to-date PHP' . PHP_EOL;
+    // -y flag required to suppress a message from the author
+    exec('apt-add-repository ppa:ondrej/php -y');
+    exec('apt-add-repository ppa:ondrej/apache2 -y');
+
+    echo 'Updating apt package list...' . PHP_EOL;
+    exec('apt-get update');
+    // die unless all required packages are installed and up-to-date
+    if (!(installMissingRequirements($requirements))
+        && (installAptPackages($requirements, $upgrade_mode = true))) {
+        die('Could not upgrade all required packages. Exiting.'
+            . PHP_EOL
+        );
+    }
+    echo 'All requirements satisfied and up-to-date.' . PHP_EOL;
+    return true;
+}
+
+function installMissingRequirements($requirements) : bool
 {
-    $tools_to_install = getMissingRequirements($dependencies);
-    if (empty($tools_to_install)) {
+    $to_install = getMissingRequirements($requirements);
+    if (empty($to_install)) {
         return true;
     }
-    echo "Found missing requirements" . PHP_EOL;
-    foreach ($tools_to_install as $tool) {
+    echo 'Required package(s) not installed:' . PHP_EOL;
+    foreach ($to_install as $tool) {
         echo "\t* {$tool}" . PHP_EOL;
     }
     $answers = ['Y', 'n'];
     $defaultAnswer = 'Y';
-    writeQuestion('Do you want to install them now?', $answers);
+    writeQuestion('Install now?', $answers);
     $answer = readAnswer($answers, $defaultAnswer);
-    if ($answer != 'Y') return false;
-    echo 'OK.' . PHP_EOL;
-    return installAptPackages($tools_to_install);
+    if ($answer != 'Y') {
+        echo 'Not installing requirements...' . PHP_EOL;
+        return false;
+    }
+    echo 'Installing requirements...' . PHP_EOL;
+    return installAptPackages($to_install);
 }
 
 /** Takes an array of packages to install using apt-get
  *
  * @return bool true if all packages installed properly. False otherwise.
  */
-function installAptPackages($packages) : bool
+function installAptPackages($packages, $upgrade_mode = false) : bool
 {
     foreach($packages as $package) {
-        if (installAptPackage($package) === false) {
-            echo bashErrorToString($cmd, $output, $status);
+        if (installAptPackage($package, $upgrade_mode) !== true) {
             return false;
         }
     }
     return true;
 }
 
-function installAptPackage($name) : bool 
+function installAptPackage($name, $only_upgrade = false) : bool 
 {
-    $cmd = "apt-get install {$name}";
+    if ($only_upgrade) {
+        $cmd = "apt-get install --only-upgrade {$name}";
+    } else {
+        $cmd = "apt-get install {$name}";
+    }
     echo "Running command `$cmd`...";
     exec($cmd, $output, $status);
     // in Bash a 0 exit status means success
@@ -140,7 +174,7 @@ function installAptPackage($name) : bool
  */
 function downloadLatestRelease($download_path = '/tmp/loris_') : string {
     // get latest release based on GithubAPI
-    echo "Querying for latest release version...";
+    echo "Querying for latest release version... ";
     $release_url = 'https://api.github.com/repos/aces/Loris/releases/latest';
     // capture json content using wget in quiet mode, reading from STDIN
     $response = shell_exec('wget -qnv -O - ' . escapeshellarg($release_url));
@@ -148,8 +182,8 @@ function downloadLatestRelease($download_path = '/tmp/loris_') : string {
     echo 'Got ' . $j->{'tag_name'} . PHP_EOL;
     $download_path .= $j->{'tag_name'}; // include
 
-    $src_code_url = $j->{'tarball_url'};
-    $download_path .= '.tar.gz';
+    $src_code_url = $j->{'zipball_url'};
+    $download_path .= '.zip';
     if(file_exists($download_path)) {
         echo "$download_path already exists. Aborting download." . PHP_EOL;
         return $download_path;
@@ -165,7 +199,7 @@ function downloadLatestRelease($download_path = '/tmp/loris_') : string {
 
 /** Check that tools required by this script are installed
  *
- * @return array of names of missing dependencies
+ * @return array of names of missing requirements
  */
 function getMissingRequirements($required) : array
 {
@@ -193,7 +227,7 @@ function installed($tool) : bool
 }
 
 function update_apt_packages() {
-    $dependencies = [];
+    $requirements = [];
 }
 
 /** 
@@ -236,13 +270,12 @@ function recurse_copy($src,$dst) {
     closedir($dir); 
 }
 
-/** Check that all required system dependencies are installed
+/** Check that all required system requirements are installed
  *
- * @return array of names of missing dependencies
+ * @return array of names of missing requirements
  */
-function getMissingSystemRequirements() : array
+function getMissingSystemRequirements($loris_php_version, $requirements) : array
 {
-    $missing = [];
 
     // Check that we have the php json libraries. These are not installed by
     // default on Debian.
@@ -254,7 +287,7 @@ function getMissingSystemRequirements() : array
 }
 
 
-/** Check that the system being installed on meets all LORIS dependencies
+/** Check that the system being installed on meets all LORIS requirements
  * which can be checked.
  *
  * @return true if system is dependable.
