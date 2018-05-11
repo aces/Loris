@@ -23,16 +23,11 @@ require_once "../php/libraries/Database.class.inc";
 require_once "../php/libraries/NDB_Config.class.inc";
 
 error_reporting(E_ALL);
-if (posix_geteuid() !== 0) {
-    die('This script won\'t work without superuser privileges'
-        . ' as they are needed to e.g. update apt packages.' . PHP_EOL
-        . 'Please run this script again as `sudo php ' . $argv[0] . '`' 
-        . PHP_EOL
-    );
-}
 if (PHP_MAJOR_VERSION < 7) {
     die("{$argv[0]} and LORIS require PHP 7 or higher.");
 }
+echo'This script will prompt for superuser privileges'
+    . ' as they are needed to e.g. update apt packages.' . PHP_EOL;
 main();
 
 function main() {
@@ -68,10 +63,10 @@ function main() {
 
     $paths = $config->getSetting('paths');
     $loris_root_dir = $paths['base'];
-    $backup_dir = "/tmp/bkp_loris"; // TODO: maybe later this should be configurable
+    $backup_dir = "/tmp/bkp_loris"; // TODO: should this be configurable?
 
     $version_filepath = $loris_root_dir . 'VERSION';
-    if (!file_exists($loris_root_dir . 'VERSION')) {
+    if (!file_exists($version_filepath)) {
         echo "Could not find VERSION file in $loris_root_dir." . PHP_EOL;
     } else {
         $backup_dir .= '-v' . trim(file_get_contents($version_filepath));
@@ -85,23 +80,25 @@ function main() {
         die('Could not download the latest LORIS release.');
     }
 $dst_dir = '/tmp/';
-    $cmd = "unzip -o $tarball_path -d $dst_dir"; 
+    $cmd = "unzip -o " .escapeshellarg($tarball_path) . ' -d ' 
+        . escapeshellarg($dst_dir);
     exec($cmd, $output, $status);
-    print_r($output);
     if ($status !== 0) {
         die(bashErrorToString($cmd, $output, $status));
     }
+    // TODO: Retrive name of inflated directory. aces_Loris_commit(?)
+    // TODO: Use rsync to overwrite files in $loris_root
 }
 
 function updateRequiredPackages($requirements) : bool {
     echo 'Updating required packages...' . PHP_EOL;
     echo 'Adding external PPA for most up-to-date PHP' . PHP_EOL;
     // -y flag required to suppress a message from the author
-    exec('apt-add-repository ppa:ondrej/php -y');
-    exec('apt-add-repository ppa:ondrej/apache2 -y');
+    exec('sudo apt-add-repository ppa:ondrej/php -y');
+    exec('sudo apt-add-repository ppa:ondrej/apache2 -y');
 
     echo 'Updating apt package list...' . PHP_EOL;
-    exec('apt-get update');
+    exec('sudo apt-get update');
     // die unless all required packages are installed and up-to-date
     if (!(installMissingRequirements($requirements))
         && (installAptPackages($requirements, $upgrade_mode = true))) {
@@ -152,10 +149,11 @@ function installAptPackages($packages, $upgrade_mode = false) : bool
 function installAptPackage($name, $only_upgrade = false) : bool 
 {
     if ($only_upgrade) {
-        $cmd = "apt-get install --only-upgrade {$name}";
+        $cmd = "sudo apt-get install --only-upgrade ";
     } else {
-        $cmd = "apt-get install {$name}";
+        $cmd = "sudo apt-get install ";
     }
+    $cmd .= escapeshellarg($name);
     echo "Running command `$cmd`...";
     exec($cmd, $output, $status);
     // in Bash a 0 exit status means success
@@ -235,7 +233,7 @@ function recurse_copy($src,$dst) {
         '..',
         '.git', // let git handle this
         'vendor', // let composer handle this
-        'user_uploads', // let composer handle this
+        'user_uploads', 
         'templates_c', // no need to backup compiled files
     ];
     $dir = opendir($src); 
