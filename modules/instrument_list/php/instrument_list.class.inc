@@ -132,6 +132,8 @@ class Instrument_List extends \NDB_Menu_Filter
     {
         // Don't call parent setup, we don't want it to try to run any SQL
 
+        $DB = \Database::singleton();
+
         // set template data
         $this->tpl_data['candID']    = $this->candidate->getCandID();
         $this->tpl_data['sessionID'] = $this->timePoint->getSessionID();
@@ -167,6 +169,26 @@ class Instrument_List extends \NDB_Menu_Filter
             $prevSubgroup = null;
 
             foreach ($listOfInstruments as $instrument) {
+                $isSurvey = $DB->pselectOne(
+                    "SELECT IsDirectEntry
+                    FROM test_names
+                    WHERE Test_name=:TN",
+                    array(
+                     'TN' => $instrument['Test_name'],
+                    )
+                );
+
+                $isSent = $DB->pselectOne(
+                    "SELECT ID
+                    FROM participant_accounts
+                    WHERE Test_name=:TN
+                    AND CommentID=:CID",
+                    array(
+                     'TN'  => $instrument['Test_name'],
+                     'CID' => $instrument['CommentID'],
+                    )
+                );
+
                 // print the sub group header row
                 if ($instrument['Sub_group'] != $prevSubgroup) {
                     $x++;
@@ -184,6 +206,10 @@ class Instrument_List extends \NDB_Menu_Filter
                 $success   = $ddeStatus->select($instrument['DDECommentID']);
 
                 $Ins = "instruments";
+
+                if ($isSurvey == '1' && !$isSent) {
+                    $this->tpl_data[$Ins][$x][$i]['survey'] = $isSurvey;
+                }
 
                 $ins = $instrument['Full_name'];
                 $this->tpl_data[$Ins][$x][$i]['fullName'] = $ins;
@@ -356,5 +382,22 @@ class Instrument_List extends \NDB_Menu_Filter
             )
         );
     }
+
+    /**
+     * Gathers CSS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            array($baseURL . "/instrument_list/css/instrument_list.css")
+        );
+    }
+
 }
 ?>

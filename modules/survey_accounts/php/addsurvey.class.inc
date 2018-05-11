@@ -102,18 +102,20 @@ class AddSurvey extends \NDB_Form
              JOIN session s on s.ID = f.SessionID
              WHERE s.CandID=:v_CandID  
              AND UPPER(s.Visit_label)=UPPER(:v_VL) 
-             AND s.Active='Y'",
+             AND s.Active='Y'
+             AND f.Data_entry IS NOT NULL",
             array(
              'v_CandID' => $values['CandID'],
              'v_VL'     => $values['VL'],
             )
         );
-        $reminder        = " already exists for given candidate for visit ";
+        $msg = " already exists for given candidate for visit".
+                           " ${values['VL']}, and data entry has begun or".
+                           " is complete.";
         foreach ($instrument_list as $instrument) {
             if ($values['Test_name'] == $instrument['Test_name']) {
                 return array(
-                        'Test_name' => "Instrument ". $values['Test_name'].
-                                       $reminder. $values['VL'],
+                        'Test_name' => "Instrument ".$values['Test_name'].$msg,
                        );
             }
         }
@@ -187,7 +189,16 @@ class AddSurvey extends \NDB_Form
         $battery = new \NDB_BVL_Battery();
         $battery->selectBattery($SessionID);
 
-        $commentID = $battery->addInstrument($values['Test_name']);
+        $commentID = $db->pselectOne(
+            "SELECT CommentID FROM flag
+            WHERE SessionID=:SID
+            AND Test_name=:TN
+            AND CommentID NOT LIKE 'DDE%'",
+            array(
+             'TN'  => $values['Test_name'],
+             'SID' => $SessionID,
+            )
+        ) ?? $battery->addInstrument($values['Test_name']);
 
         $key = $this->_generateSurveyKey();
 

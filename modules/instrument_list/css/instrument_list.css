@@ -1,0 +1,33 @@
+.note {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+    overflow: visible;
+}
+
+.note .notetext {
+    visibility: hidden;
+    width: 325px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    overflow: visible;
+}
+
+
+.note:hover .notetext {
+    visibility: visible;
+    opacity: 1;
+    position: absolute;
+    z-index: 9999;
+    overflow: visible;
+}
