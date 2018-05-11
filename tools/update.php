@@ -226,10 +226,6 @@ function installed($tool) : bool
     return false;
 }
 
-function update_apt_packages() {
-    $requirements = [];
-}
-
 /** 
  * @link https://secure.php.net/manual/en/function.copy.php#91010
  */
@@ -268,39 +264,6 @@ function recurse_copy($src,$dst) {
         } 
     } 
     closedir($dir); 
-}
-
-/** Check that all required system requirements are installed
- *
- * @return array of names of missing requirements
- */
-function getMissingSystemRequirements($loris_php_version, $requirements) : array
-{
-
-    // Check that we have the php json libraries. These are not installed by
-    // default on Debian.
-    if (!function_exists('json_encode')) {
-        $missing[] = 'php-json';
-    }
-
-    return $missing;
-}
-
-
-/** Check that the system being installed on meets all LORIS requirements
- * which can be checked.
- *
- * @return true if system is dependable.
- */
-function getOutdatedSystemRequirements() : array
-{
-    $outdated = [];
-    // Check PHP version is supported.
-    if (PHP_MAJOR_VERSION < 7) {
-        $outdated[] = 'php';
-    }
-
-    return $outdated;
 }
 
 function writeQuestion($question, $answers)
