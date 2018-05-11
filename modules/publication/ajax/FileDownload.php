@@ -22,7 +22,7 @@ if (!$user->hasPermission('publication_view')) {
 
 // Make sure that the user isn't trying to break out of the $path
 // by using a relative filename.
-$file     = basename($_GET['File']);
+$file = basename($_GET['File']);
 // $config   =& NDB_Config::singleton();
 $path     = "/data/publication_uploads/";
 $filePath = $path . $file;

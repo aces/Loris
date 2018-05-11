@@ -47,67 +47,64 @@ class Publication extends \NDB_Menu_Filter_Form
      * @return boolean
      */
     function _setupVariables()
-
     {
-        $query = " FROM publication p ".
-            "LEFT JOIN publication_status ps ON ps.PublicationStatusID=p.PublicationStatusID ".
-            "LEFT JOIN publication_parameter_type_rel pptr ON p.PublicationID=pptr.PublicationID ".
-            "LEFT JOIN parameter_type pt ON pt.ParameterTypeID=pptr.ParameterTypeID " .
-            "LEFT JOIN publication_keyword_rel pkr ON p.PublicationID=pkr.PublicationID ".
-            "LEFT JOIN publication_keyword pk ON pkr.PublicationKeywordID=pk.PublicationKeywordID ";
+        $query  = " FROM publication p ".
+            "LEFT JOIN publication_status ps ".
+            "ON ps.PublicationStatusID=p.PublicationStatusID ".
+            "LEFT JOIN publication_parameter_type_rel pptr ".
+            "ON p.PublicationID=pptr.PublicationID ".
+            "LEFT JOIN parameter_type pt ".
+            "ON pt.ParameterTypeID=pptr.ParameterTypeID " .
+            "LEFT JOIN publication_keyword_rel pkr ".
+            "ON p.PublicationID=pkr.PublicationID ".
+            "LEFT JOIN publication_keyword pk ".
+            "ON pkr.PublicationKeywordID=pk.PublicationKeywordID ";
         $query .= " WHERE 1=1 ";
         $query .= " GROUP BY p.PublicationID ";
 
         $this->columns = array(
-            'p.Title',
-            'p.LeadInvestigator',
-            'p.DateProposed',
-            'ps.Label',
-            'p.Description',
-            'GROUP_CONCAT(pt.Name)', // Variables of Interest
-            'GROUP_CONCAT(pk.Label)', // Keywords
-            'p.PublicationID',
-        );
+                          'p.Title',
+                          'p.LeadInvestigator',
+                          'p.DateProposed',
+                          'ps.Label',
+                          'p.Description',
+                          'GROUP_CONCAT(pt.Name)', // Variables of Interest
+                          'GROUP_CONCAT(pk.Label)', // Keywords
+                          'p.PublicationID',
+                         );
 
-        $this->query = $query;
+        $this->query   = $query;
         $this->headers = array(
-            'Title',
-            'Lead Investigator',
-            'Date Proposed',
-            'Approval Status',
-            'Description',
-            'Variables Of Interest',
-            'Keywords',
-            'Publication ID'
-        );
-
+                          'Title',
+                          'Lead Investigator',
+                          'Date Proposed',
+                          'Approval Status',
+                          'Description',
+                          'Variables Of Interest',
+                          'Keywords',
+                          'Publication ID',
+                         );
 
         $this->validFilters = array(
-            'p.Title',
-            'p.ApprovalStatus',
-            'pk.Label',
-            'p.LeadInvestigator',
-            'pt.Name',
-        );
+                               'p.Title',
+                               'p.ApprovalStatus',
+                               'pk.Label',
+                               'p.LeadInvestigator',
+                               'pt.Name',
+                              );
 
         $this->formToFilter = array(
-            'titleOrDescription'  => 'p.Title',
-            'approvalStatus'      => 'ps.Label',
-            'keywords'            => 'pk.Label',
-            'variablesOfInterest' => 'pt.Name',
-            'leadInvestigator'    => 'p.LeadInvestigator',
-        );
+                               'titleOrDescription'  => 'p.Title',
+                               'approvalStatus'      => 'ps.Label',
+                               'keywords'            => 'pk.Label',
+                               'variablesOfInterest' => 'pt.Name',
+                               'leadInvestigator'    => 'p.LeadInvestigator',
+                              );
         return true;
     }
 
     /**
      * Sets up the smarty menu filter items for publication
-     *
-     * @param string $name       The test name being accessed
-     * @param string $page       The subtest being accessed (may be null)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
-     * @param string $formname   The name to give this form
      *
      * @return bool
      */
@@ -115,13 +112,14 @@ class Publication extends \NDB_Menu_Filter_Form
     {
         parent::setup();
 
-        $db = \Database::singleton();
+        $db        = \Database::singleton();
         $rawStatus = $db->pselectCol(
             'SELECT Label FROM publication_status',
             array()
         );
+
         $statusOptions = array();
-        foreach($rawStatus as $rs) {
+        foreach ($rawStatus as $rs) {
             $statusOptions[$rs] = $rs;
         }
 
@@ -149,7 +147,6 @@ class Publication extends \NDB_Menu_Filter_Form
             'Variables of Interest'
         );
 
-
         return true;
     }
 
@@ -167,9 +164,7 @@ class Publication extends \NDB_Menu_Filter_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
-                $baseURL . '/publication/js/publicationIndex.js'
-            )
+            array($baseURL . '/publication/js/publicationIndex.js')
         );
     }
 
@@ -186,9 +181,7 @@ class Publication extends \NDB_Menu_Filter_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array(
-                $baseURL . '/publication/css/publication.css'
-            )
+            array($baseURL . '/publication/css/publication.css')
         );
     }
 
@@ -200,8 +193,8 @@ class Publication extends \NDB_Menu_Filter_Form
      */
     function toJSON()
     {
-        $result            = $this->toArray();
-        $result['form']    = $this->form->form;
+        $result         = $this->toArray();
+        $result['form'] = $this->form->form;
 
         return json_encode($result);
     }

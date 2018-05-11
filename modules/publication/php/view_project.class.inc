@@ -1,4 +1,15 @@
 <?php
+/**
+ * This file contains the NDB_Form_media class
+ *
+ * PHP Version 7
+ *
+ * @category Loris
+ * @package  Publication
+ * @author   David Blader <dblader.mcin@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/CCNA/
+ */
 namespace LORIS\publication;
 
 /**
@@ -16,7 +27,8 @@ class View_Project extends \NDB_Form
 
     /**
      * Entry point for /publications/view_project
-     * Checks if project id is provided and otherwise redirects to /publications/ page
+     * Checks if project id is provided and otherwise
+     * redirects to /publications/ page
      *
      * @param string $name       The test name being accessed
      * @param string $page       The subtest being accessed (may be null)

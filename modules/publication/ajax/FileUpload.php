@@ -1,18 +1,36 @@
 <?php
+/**
+ * Publication file upload & editing handler
+ *
+ * This processes and inserts data for publication uploads & editing
+ *
+ * PHP Version 7
+ *
+ * @category Loris
+ * @package  Publication
+ * @author   David <dblader.mcin@gmail.com>
+ * @license  Loris license
+ * @link     https://github.com/aces/Loris-Trunk
+ */
 if (isset($_REQUEST['action'])) {
     $action = $_REQUEST['action'];
     if ($action === 'upload') {
         uploadPublication();
-    }  elseif ($action === 'editProject') {
+    } elseif ($action === 'editProject') {
         editProject();
     } else {
         header("HTTP/1.1 400 Bad Request");
     }
 }
 
+/**
+ * Function for new publications
+ *
+ * @return null
+ */
 function uploadPublication()
 {
-    $db = Database::singleton();
+    $db   = Database::singleton();
     $user = \User::singleton();
     if (!$user->hasPermission('publication_propose')) {
         header("HTTP/1.1 403 Forbidden");
@@ -38,18 +56,28 @@ function uploadPublication()
     if ($exists) {
         showError('Submitted title already exists');
     }
+    $desc            = isset($_REQUEST['description'])
+        ? $_REQUEST['description'] : null;
+    $leadInvest      = isset($_REQUEST['leadInvestigator'])
+        ? $_REQUEST['leadInvestigator'] : null;
+    $leadInvestEmail = isset($_REQUEST['leadInvestigatorEmail'])
+        ? $_REQUEST['leadInvestigatorEmail'] : null;
 
+    if (!isset($desc) || !isset($leadInvest) || !isset($leadInvestEmail)) {
+        showError('A mandatory field is missing!');
+    }
     // INSERT INTO publication ...
-    $uid = $user->getId();
+    $uid   = $user->getId();
     $today = date('Y-m-d');
+    // insert the titleRaw to avoid double escaping
     $fields = array(
-        'UserID' => $uid,
-        'Title' => $titleRaw, // insert titleRaw to avoid double escaping
-        'Description' => $_REQUEST['description'],
-        'LeadInvestigator' => $_REQUEST['leadInvestigator'],
-        'LeadInvestigatorEmail' => $_REQUEST['leadInvestigatorEmail'],
-        'DateProposed' => $today,
-    );
+               'UserID'                => $uid,
+               'Title'                 => $titleRaw,
+               'Description'           => $desc,
+               'LeadInvestigator'      => $leadInvest,
+               'LeadInvestigatorEmail' => $leadInvestEmail,
+               'DateProposed'          => $today,
+              );
 
     $db->insert('publication', $fields);
 
@@ -79,40 +107,60 @@ function uploadPublication()
     notifySubmission($pubID);
 }
 
-function processFiles($pubID) {
+/**
+ * Function for storing files and inserting file meta data into database
+ *
+ * @param int $pubID ID of Publication in publication table
+ *
+ * @return null
+ */
+function processFiles($pubID)
+{
     if (empty($_FILES)) {
         return;
     }
-    $db = \Database::singleton();
+    $db     = \Database::singleton();
     $config = \NDB_Config::singleton();
 
     $publicationPath = $config->getSetting('publication_uploads');
 
     if (!isset($publicationPath)) {
-        throw new LorisException("Error! Publication path is not set in Loris Settings!");
+        throw new LorisException(
+            "Error! Publication path is not set in Loris Settings!"
+        );
     }
 
     if (!file_exists($publicationPath)) {
-        throw new LorisException("Error! The upload folder '$publicationPath' does not exist!'");
+        throw new LorisException(
+            "Error! The upload folder '$publicationPath' does not exist!'"
+        );
     }
 
-    foreach ($_FILES as $name => $values){
+    foreach ($_FILES as $name => $values) {
         $fileName  = preg_replace('/\s/', '_', $values["name"]);
         $fileType  = $_FILES["file"]["type"];
         $extension = pathinfo($fileName)['extension'];
         $index     = preg_split('/_/', $name)[1];
 
         if (!isset($extension)) {
-            throw new LorisException("Please make sure your file has a valid extension: " . $values['name']);
+            throw new LorisException(
+                "Please make sure your file has a valid extension: " .
+                $values['name']
+            );
         }
-
+        $pubTypeID       = isset($_REQUEST['publicationType_'.$index]) ?
+            $_REQUEST['publicationType_'.$index] : null;
+        $pubCitation     = isset($_REQUEST['publicationCitation_'.$index]) ?
+            $_REQUEST['publicationCitation_'.$index] : null;
+        $pubVersion      = isset($_REQUEST['publicationVersion_'.$index]) ?
+            $_REQUEST['publicationVersion_'.$index] : null;
         $pubUploadInsert = array(
-            'PublicationID'           => $pubID,
-            'PublicationUploadTypeID' => $_REQUEST['publicationType_'.$index],
-            'URL'                     => $fileName,
-            'Citation'                => $_REQUEST['publicationCitation_'.$index],
-            'Version'                 => $_REQUEST['publicationVersion_'.$index],
-        );
+                            'PublicationID'           => $pubID,
+                            'PublicationUploadTypeID' => $pubTypeID,
+                            'URL'                     => $fileName,
+                            'Citation'                => $pubCitation,
+                            'Version'                 => $pubVersion,
+                           );
 
         if (move_uploaded_file($values["tmp_name"], $publicationPath . $fileName)) {
             $db->insert('publication_upload', $pubUploadInsert);
@@ -122,7 +170,15 @@ function processFiles($pubID) {
     }
 }
 
-function insertCollaborators($pubID) {
+/**
+ * Insert new collaborators into collaborator table and/or put them in rel table
+ *
+ * @param int $pubID the publication ID
+ *
+ * @return null
+ */
+function insertCollaborators($pubID)
+{
     if (!$_REQUEST['collaborators']) {
         return;
     }
@@ -139,8 +195,10 @@ function insertCollaborators($pubID) {
         // if collaborator does not already exist in table, add them
         if (!$cid) {
             $collabInsert = array('Name' => $c);
-            $cEnc = preg_replace('/\.|\s/', '_', $c); // .'s and spaces get converted to underscores
-            $collabInsert['Email'] = isset($_REQUEST['collabEmail'.$cEnc]) ? $_REQUEST['collabEmail'.$cEnc] : null;
+            // .'s and spaces get converted to underscores when sent to the server
+            $cEnc = preg_replace('/\.|\s/', '_', $c);
+            $collabInsert['Email'] = isset($_REQUEST['collabEmail'.$cEnc])
+                ? $_REQUEST['collabEmail'.$cEnc] : null;
 
             $db->insert(
                 'publication_collaborator',
@@ -154,9 +212,9 @@ function insertCollaborators($pubID) {
             );
         }
         $collabRelInsert = array(
-            'PublicationID'             => $pubID,
-            'PublicationCollaboratorID' => $cid,
-        );
+                            'PublicationID'             => $pubID,
+                            'PublicationCollaboratorID' => $cid,
+                           );
         $db->insertIgnore(
             'publication_collaborator_rel',
             $collabRelInsert
@@ -164,7 +222,15 @@ function insertCollaborators($pubID) {
     }
 }
 
-function insertEditors($pubID) {
+/**
+ * Inserts users with edit access for the given publication project
+ *
+ * @param int $pubID publication ID
+ *
+ * @return null
+ */
+function insertEditors($pubID)
+{
     if (empty($_REQUEST['usersWithEditPerm'])) {
         return;
     }
@@ -173,9 +239,9 @@ function insertEditors($pubID) {
     $usersWithEditPerm = json_decode($_REQUEST['usersWithEditPerm']);
     foreach ($usersWithEditPerm as $uid) {
         $insert = array(
-            'PublicationID' => $pubID,
-            'UserID'        => $uid,
-        );
+                   'PublicationID' => $pubID,
+                   'UserID'        => $uid,
+                  );
 
         $db->insertIgnore(
             'publication_users_edit_perm_rel',
@@ -184,11 +250,19 @@ function insertEditors($pubID) {
     }
 }
 
-function insertKeywords($pubID) {
+/**
+ * Inserts keywords for the given publication project
+ *
+ * @param int $pubID publication ID
+ *
+ * @return null
+ */
+function insertKeywords($pubID)
+{
     if (empty($_REQUEST['keywords'])) {
         return;
     }
-    $db = Database::singleton();
+    $db       = Database::singleton();
     $keywords = json_decode($_REQUEST['keywords']);
     foreach ($keywords as $kw) {
         // check if keyword exists
@@ -215,9 +289,9 @@ function insertKeywords($pubID) {
         // add it pub_kw_rel table
         // get publication ID
         $pubKWRelInsert = array(
-            'PublicationID' => $pubID,
-            'PublicationKeywordID' => $kwID,
-        );
+                           'PublicationID'        => $pubID,
+                           'PublicationKeywordID' => $kwID,
+                          );
 
         $db->insert(
             'publication_keyword_rel',
@@ -227,11 +301,19 @@ function insertKeywords($pubID) {
     }
 }
 
-function insertVOIs($pubID) {
+/**
+ * Inserts Variables of Interest for the given publication project
+ *
+ * @param int $pubID publication ID
+ *
+ * @return null
+ */
+function insertVOIs($pubID)
+{
     if (empty($_REQUEST['voiFields'])) {
         return;
     }
-    $db = Database::singleton();
+    $db        = Database::singleton();
     $testNames = $db->pselectColWithIndexKey(
         'SELECT ID, Test_name FROM test_names',
         array(),
@@ -248,19 +330,20 @@ function insertVOIs($pubID) {
     foreach ($voiFields as $vf) {
         // search test_names for value
         if (in_array($vf, $testNames)) {
-           $pubTNRelInsert = array(
-               'TestNameID'    => array_search($vf, $testNames),
-               'PublicationID' => $pubID,
-           );
+            $pubTNRelInsert = array(
+                               'TestNameID'    => array_search($vf, $testNames),
+                               'PublicationID' => $pubID,
+                              );
             $db->insertIgnore(
                 'publication_test_names_rel',
                 $pubTNRelInsert
             );
-        } elseif (in_array($vf, $paramTypes)){
+        } elseif (in_array($vf, $paramTypes)) {
+            $ptID = array_search($vf, $paramTypes);
             $pubParamTypeRelInsert = array(
-                'ParameterTypeID' => array_search($vf, $paramTypes),
-                'PublicationID'   => $pubID,
-            );
+                                      'ParameterTypeID' => $ptID,
+                                      'PublicationID'   => $pubID,
+                                     );
 
             $db->insertIgnore(
                 'publication_parameter_type_rel',
@@ -271,21 +354,26 @@ function insertVOIs($pubID) {
         }
     }
 }
-
-function cleanup($pubID) {
+/**
+ * Deletes all inserted data if there is an exception thrown
+ *
+ * @param int $pubID publication ID
+ *
+ * @return null
+ */
+function cleanup($pubID)
+{
     $db    = Database::singleton();
-    $where = array(
-        'PublicationID' => $pubID
-    );
+    $where = array('PublicationID' => $pubID);
 
     $tables = array(
-        'publication_users_edit_perm_rel',
-        'publication_upload',
-        'publication_parameter_type_rel',
-        'publication_collaborator_rel',
-        'publication_keyword_rel',
-        'publication',
-    );
+               'publication_users_edit_perm_rel',
+               'publication_upload',
+               'publication_parameter_type_rel',
+               'publication_collaborator_rel',
+               'publication_keyword_rel',
+               'publication',
+              );
 
     foreach ($tables as $table) {
         $db->delete($table, $where);
@@ -294,9 +382,17 @@ function cleanup($pubID) {
     // TODO: delete uploaded files
 }
 
-function notifySubmission($pubID) {
-    $db = \Database::singleton();
-    $config = \NDB_Config::singleton();
+/**
+ * Send out email notifications
+ *
+ * @param int $pubID publication ID
+ *
+ * @return null
+ */
+function notifySubmission($pubID)
+{
+    $db        = \Database::singleton();
+    $config    = \NDB_Config::singleton();
     $emailData = array();
 
     $data = $db->pselectRow(
@@ -305,11 +401,11 @@ function notifySubmission($pubID) {
         "WHERE PublicationID=:pubID",
         array('pubID' => $pubID)
     );
-    $url = $config->getSetting('url');
+    $url  = $config->getSetting('url');
 
     $emailData['Title'] = $data['Title'];
-    $emailData['Date'] = $data['DateProposed'];
-    $emailData['URL'] = $url . '/publication/view_project/?id='.$pubID;
+    $emailData['Date']  = $data['DateProposed'];
+    $emailData['URL']   = $url . '/publication/view_project/?id='.$pubID;
 
     $cc = json_decode($_REQUEST['toNotify']);
     /*$notify = new NDB_Notifier('publication', 'submission', $emailData);
@@ -324,25 +420,32 @@ function notifySubmission($pubID) {
     );
 }
 
-function editProject() {
+/**
+ * Edits fields for an existing publication project
+ *
+ * @return null
+ */
+function editProject()
+{
     $db = \Database::singleton();
     $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
 
     if (isset($id)) {
         // double check that current user has edit access
-        $user = \User::singleton();
+        $user        = \User::singleton();
         $creatorUser = $db->pselectOne(
             'SELECT UserID FROM publication WHERE PublicationID=:id',
             array('id' => $id)
         );
 
         $editors = $db->pselectCol(
-            'SELECT UserID FROM publication_users_edit_perm_rel WHERE PublicationID=:id',
+            'SELECT UserID FROM publication_users_edit_perm_rel '.
+            'WHERE PublicationID=:id',
             array('id' => $id)
         );
-        $uid = $user->getId();
-        if ($uid !== $creatorUser &&
-            !in_array($uid, $editors)
+        $uid     = $user->getId();
+        if ($uid !== $creatorUser
+            && !in_array($uid, $editors)
         ) {
             header("HTTP/1.1 403 Forbidden");
             exit;
@@ -351,15 +454,24 @@ function editProject() {
         showError('No Publication ID provided');
     }
 
-    $statusID              = isset($_REQUEST['status']) ? $_REQUEST['status'] : null;
-    $rejectedReason        = isset($_REQUEST['rejectedReason']) ? $_REQUEST['rejectedReason'] : null;
-    $description           = isset($_REQUEST['description']) ? $_REQUEST['description'] : null;
-    $leadInvestigator      = isset($_REQUEST['leadInvestigator']) ? $_REQUEST['leadInvestigator'] : null;
-    $leadInvestigatorEmail = isset($_REQUEST['leadInvestigatorEmail']) ? $_REQUEST['leadInvestigatorEmail'] : null;
-    $usersWithEditPerm     = isset($_REQUEST['usersWithEditPerm']) ? json_decode($_REQUEST['usersWithEditPerm']) : null;
-    $collaborators         = isset($_REQUEST['collaborators']) ? json_decode($_REQUEST['collaborators']) : null;
-    $keywords              = isset($_REQUEST['keywords']) ? json_decode($_REQUEST['keywords']) : null;
-    $voi                   = isset($_REQUEST['voiFields']) ? json_decode($_REQUEST['voiFields']) : null;
+    $statusID         = isset($_REQUEST['status'])
+        ? $_REQUEST['status'] : null;
+    $rejectedReason   = isset($_REQUEST['rejectedReason'])
+        ? $_REQUEST['rejectedReason'] : null;
+    $description      = isset($_REQUEST['description'])
+        ? $_REQUEST['description'] : null;
+    $leadInvestigator = isset($_REQUEST['leadInvestigator'])
+        ? $_REQUEST['leadInvestigator'] : null;
+    $leadInvestigatorEmail = isset($_REQUEST['leadInvestigatorEmail'])
+        ? $_REQUEST['leadInvestigatorEmail'] : null;
+    $usersWithEditPerm     = isset($_REQUEST['usersWithEditPerm'])
+        ? json_decode($_REQUEST['usersWithEditPerm']) : null;
+    $collaborators         = isset($_REQUEST['collaborators'])
+        ? json_decode($_REQUEST['collaborators']) : null;
+    $keywords = isset($_REQUEST['keywords'])
+        ? json_decode($_REQUEST['keywords']) : null;
+    $voi      = isset($_REQUEST['voiFields'])
+        ? json_decode($_REQUEST['voiFields']) : null;
 
     $pubData = $db->pselectRow(
         'SELECT * FROM publication WHERE PublicationID=:pid',
@@ -402,7 +514,7 @@ function editProject() {
         insertEditors($id);
     }
     if (!empty($oldUWEP)) {
-        foreach($oldUWEP as $uid) {
+        foreach ($oldUWEP as $uid) {
             $db->delete(
                 'publication_users_edit_perm_rel',
                 array('UserID' => $uid)
@@ -417,7 +529,7 @@ function editProject() {
         'WHERE pcr.PublicationID=:pid',
         array('pid' => $id)
     );
-    
+
     if ($collaborators != $currentCollabs) {
         $newCollabs = array_diff($collaborators, $currentCollabs);
         $oldCollabs = array_diff($currentCollabs, $collaborators);
@@ -426,7 +538,7 @@ function editProject() {
         insertCollaborators($id);
     }
     if (!empty($oldCollabs)) {
-        foreach($oldCollabs as $name) {
+        foreach ($oldCollabs as $name) {
             $uid = $db->pselectOne(
                 'SELECT PublicationCollaboratorID '.
                 'FROM publication_collaborator '.
@@ -436,8 +548,8 @@ function editProject() {
             $db->delete(
                 'publication_collaborator_rel',
                 array(
-                    'PublicationCollaboratorID' => $uid,
-                    'PublicationID' => $id
+                 'PublicationCollaboratorID' => $uid,
+                 'PublicationID'             => $id,
                 )
             );
         }
@@ -460,7 +572,7 @@ function editProject() {
         insertKeywords($id);
     }
     if (!empty($oldKWs)) {
-        foreach($oldKWs as $kw) {
+        foreach ($oldKWs as $kw) {
             $kid = $db->pselectOne(
                 'SELECT PublicationKeywordID '.
                 'FROM publication_keyword '.
@@ -471,14 +583,14 @@ function editProject() {
             $db->delete(
                 'publication_keyword_rel',
                 array(
-                    'PublicationKeywordID' => $kid,
-                    'PublicationID' => $id
+                 'PublicationKeywordID' => $kid,
+                 'PublicationID'        => $id,
                 )
             );
         }
     }
 
-    $fields = $db->pselectCol(
+    $fields    = $db->pselectCol(
         'SELECT pt.Name AS field ' .
         'FROM parameter_type pt '.
         'LEFT JOIN publication_parameter_type_rel pptr '.
@@ -505,17 +617,17 @@ function editProject() {
         insertVOIs($id);
     }
     if (!empty($oldVOI)) {
-        foreach($oldVOI as $ov) {
+        foreach ($oldVOI as $ov) {
             $tnID = $db->pselectOne(
                 'SELECT ID FROM test_names WHERE Test_name=:tn',
                 array('tn' => $ov)
             );
             if ($tnID) {
                 $db->delete(
-                  'publication_test_names_rel',
+                    'publication_test_names_rel',
                     array(
-                        'PublicationID' => $id,
-                        'TestNameID'    => $tnID
+                     'PublicationID' => $id,
+                     'TestNameID'    => $tnID,
                     )
                 );
             } else {
@@ -526,16 +638,15 @@ function editProject() {
                 $db->delete(
                     'publication_parameter_type_rel',
                     array(
-                        'PublicationID'   => $id,
-                        'ParameterTypeID' => $ptID
+                     'PublicationID'   => $id,
+                     'ParameterTypeID' => $ptID,
                     )
                 );
             }
         }
     }
 
-
-    if(!empty($toUpdate)) {
+    if (!empty($toUpdate)) {
         $db->update(
             'publication',
             $toUpdate,

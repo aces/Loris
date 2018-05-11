@@ -25,7 +25,6 @@ class ViewProject extends React.Component {
     e.preventDefault();
 
     let formData = this.state.formData;
-
     let formObj = new FormData();
     for (let key in formData) {
       if (formData[key] !== "") {
@@ -49,7 +48,7 @@ class ViewProject extends React.Component {
       success: function() {
         swal("Edit Successful!", "", "success");
       },
-      error: function(jqXHR, textStatus) {
+      error: function(jqXHR) {
         console.error(jqXHR);
         swal("Edit failed!", jqXHR.responseText, "error")
       }

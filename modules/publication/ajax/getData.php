@@ -1,19 +1,37 @@
 <?php
+/**
+ * Publication data retriever
+ *
+ * This retrieves data for publication uploads & editing
+ *
+ * PHP Version 7
+ *
+ * @category Loris
+ * @package  Publication
+ * @author   David <dblader.mcin@gmail.com>
+ * @license  Loris license
+ * @link     https://github.com/aces/Loris-Trunk
+ */
 if (isset($_REQUEST['action'])) {
     $action = $_REQUEST['action'];
     if ($action === 'getData') {
         echo json_encode(getData());
-    } elseif($action === 'getProjectData') {
+    } elseif ($action === 'getProjectData') {
         echo json_encode(getProjectData());
     } else {
         header("HTTP/1.1 400 Bad Request");
     }
 }
-// Gets publication and parameter_type data from database
-function getData() {
+/**
+ * Gets publication and parameter_type data from database
+ *
+ * @return array Array of general publication data
+ */
+function getData()
+{
     $db = Database::singleton();
 
-    $data = array();
+    $data   = array();
     $titles = $db->pselectCol(
         'SELECT Title FROM publication',
         array()
@@ -43,7 +61,7 @@ function getData() {
 
     $uploadTypes = [];
 
-    foreach($uploadTypeRaw as $type){
+    foreach ($uploadTypeRaw as $type) {
         $uploadTypes[$type['PublicationUploadTypeID']] = $type['Label'];
     }
 
@@ -55,24 +73,29 @@ function getData() {
     );
 
     $users = array();
-    foreach($usersRaw as $u) {
+    foreach ($usersRaw as $u) {
         $users[$u['ID']] = $u['Real_name'];
     }
 
-    $data['users'] = $users;
-    $data['uploadTypes'] = $uploadTypes;
+    $data['users']          = $users;
+    $data['uploadTypes']    = $uploadTypes;
     $data['existingTitles'] = $titles;
-    $data['allVOIs'] = $allVOIs;
+    $data['allVOIs']        = $allVOIs;
     return $data;
 }
 
-// Gets Data for a specific PublicationID
-function getProjectData() {
+/**
+ * Gets Data for a specific PublicationID
+ *
+ * @return array Array of data for a specific project
+ */
+function getProjectData()
+{
     $id = $_REQUEST['id'];
 
     $db = \Database::singleton();
 
-    $query = 'SELECT Title, Description, DateProposed, '.
+    $query  = 'SELECT Title, Description, DateProposed, '.
         'LeadInvestigator, LeadInvestigatorEmail, '.
         'PublicationStatusID, UserID, RejectedReason  '.
         'FROM publication p '.
@@ -85,13 +108,13 @@ function getProjectData() {
     if (!$result) {
         throw new LorisException('Invalid publication ID!');
     } else {
-        $result['VOIs']              = getVOIs($id);
-        $result['files']             = getFiles($id);
-        $result['Keywords']          = getKeywords($id);
-        $result['collaborators']     = getCollaborators($id);
+        $result['VOIs']          = getVOIs($id);
+        $result['files']         = getFiles($id);
+        $result['Keywords']      = getKeywords($id);
+        $result['collaborators'] = getCollaborators($id);
 
         // allow edit access for user if user is original proposer
-        $user = \User::singleton();
+        $user    = \User::singleton();
         $userIDs = $db->pselectCol(
             'SELECT pu.UserID as ID '.
             'FROM publication_users_edit_perm_rel pu '.
@@ -107,20 +130,20 @@ function getProjectData() {
         $usersWithEditPerm = $userIDs;
 
         $pubData = array(
-            'title'                 => $result['Title'],
-            'description'           => $result['Description'],
-            'leadInvestigator'      => $result['LeadInvestigator'],
-            'leadInvestigatorEmail' => $result['LeadInvestigatorEmail'],
-            'status'                => $result['PublicationStatusID'],
-            'rejectedReason'        => $result['RejectedReason'],
-            'voi'                   => $result['VOIs'],
-            'keywords'              => $result['Keywords'],
-            'collaborators'         => $result['collaborators'],
-            'files'                 => $result['files'],
-            'usersWithEditPerm'     => $usersWithEditPerm,
-            'userCanEdit'           => $userCanEdit,
-            'statusOpts'            => getStatusOptions(),
-        );
+                    'title'                 => $result['Title'],
+                    'description'           => $result['Description'],
+                    'leadInvestigator'      => $result['LeadInvestigator'],
+                    'leadInvestigatorEmail' => $result['LeadInvestigatorEmail'],
+                    'status'                => $result['PublicationStatusID'],
+                    'rejectedReason'        => $result['RejectedReason'],
+                    'voi'                   => $result['VOIs'],
+                    'keywords'              => $result['Keywords'],
+                    'collaborators'         => $result['collaborators'],
+                    'files'                 => $result['files'],
+                    'usersWithEditPerm'     => $usersWithEditPerm,
+                    'userCanEdit'           => $userCanEdit,
+                    'statusOpts'            => getStatusOptions(),
+                   );
 
         // if user can edit, retrieve getData() options to allow modifications
         if ($userCanEdit) {
@@ -130,10 +153,17 @@ function getProjectData() {
         }
     }
 }
-
-function getVOIs($id) {
-    $db = \Database::singleton();
-    $fields = $db->pselectCol(
+/**
+ * Gets Variables of Interest for a given publication ID
+ *
+ * @param int $id the PublicationID
+ *
+ * @return array Array of VoIs
+ */
+function getVOIs($id)
+{
+    $db        = \Database::singleton();
+    $fields    = $db->pselectCol(
         'SELECT pt.Name AS field ' .
         'FROM parameter_type pt '.
         'LEFT JOIN publication_parameter_type_rel pptr '.
@@ -149,12 +179,19 @@ function getVOIs($id) {
         'WHERE PublicationID=:pid',
         array('pid' => $id)
     );
-    $vois =  array_merge($testNames, $fields);
+    $vois      =  array_merge($testNames, $fields);
     return $vois;
 }
-
-function getKeywords($id) {
-    $db = \Database::singleton();
+/**
+ * Gets Keywords for a given publication ID
+ *
+ * @param int $id the PublicationID
+ *
+ * @return array Array of keywords
+ */
+function getKeywords($id)
+{
+    $db  = \Database::singleton();
     $kws = $db->pselectCol(
         'SELECT pk.Label FROM publication_keyword pk '.
         'LEFT JOIN publication_keyword_rel pkr '.
@@ -166,7 +203,15 @@ function getKeywords($id) {
     return $kws;
 }
 
-function getCollaborators($id) {
+/**
+ * Gets Collaborators for a given publication ID
+ *
+ * @param int $id the PublicationID
+ *
+ * @return array Array of collaborators
+ */
+function getCollaborators($id)
+{
     $db = \Database::singleton();
 
     $collaborators = $db->pselectCol(
@@ -180,8 +225,15 @@ function getCollaborators($id) {
     return $collaborators;
 }
 
-
-function getFiles($id) {
+/**
+ * Gets file uploads for a given publication ID
+ *
+ * @param int $id the PublicationID
+ *
+ * @return array Array of file (meta) data
+ */
+function getFiles($id)
+{
     $db = \Database::singleton();
 
     $files = $db->pselect(
@@ -192,8 +244,14 @@ function getFiles($id) {
     return $files;
 }
 
-function getStatusOptions() {
-    $db = \Database::singleton();
+/**
+ * Gets options for setting the approval status for projects
+ *
+ * @return array Array of status options
+ */
+function getStatusOptions()
+{
+    $db        = \Database::singleton();
     $rawStatus = $db->pselect(
         'SELECT * FROM publication_status',
         array()
