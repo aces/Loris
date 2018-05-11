@@ -190,6 +190,7 @@ class PublicationUploadForm extends React.Component {
         // reset form data
         this.setState({
           formData: {},
+          numFiles: 0,
           uploadProgress: -1
         });
         swal("Submission Successful!", "", "success");

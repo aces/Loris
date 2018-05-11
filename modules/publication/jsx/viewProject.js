@@ -81,11 +81,7 @@ class ViewProject extends React.Component {
           allVOIs: data.allVOIs,
           uploadTypes: data.uploadTypes,
           files: data.files,
-          // adding duplicate Data property into state because
-          // i messed up
           Data: data,
-          // keep unformatted VoIs separate for static rendering
-          voi: data.voi,
           isLoaded: true
         });
       },
@@ -101,9 +97,9 @@ class ViewProject extends React.Component {
   createFileDownloadLinks() {
     let files = this.state.files;
     return files.map(function(f){
-      let download = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + f;
+      let download = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + f.URL;
       return (<span>
-        <a href={download}>{f}</a>
+        <a href={download}>{f.URL}</a>
         ; &nbsp;
       </span>);
     });
@@ -130,8 +126,12 @@ class ViewProject extends React.Component {
   }
 
   createStaticComponents() {
-    let collaborators, keywords, vois,
-      collabLinks, keywordLinks, voiLinks;
+    let collaborators;
+    let keywords;
+    let vois;
+    let collabLinks;
+    let keywordLinks;
+    let voiLinks;
 
     if (this.state.formData.collaborators) {
       collabLinks = this.createMenuFilterLinks(
@@ -157,9 +157,9 @@ class ViewProject extends React.Component {
       />;
     }
 
-    if (this.state.voi) {
+    if (this.state.formData.voiFields) {
       voiLinks = this.createMenuFilterLinks(
-        this.state.voi,
+        this.state.formData.voiFields,
         'voi'
       );
       vois = <StaticElement

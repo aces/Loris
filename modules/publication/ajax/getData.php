@@ -70,7 +70,7 @@ function getData() {
 function getProjectData() {
     $id = $_REQUEST['id'];
 
-    $db = Database::singleton();
+    $db = \Database::singleton();
 
     $query = 'SELECT Title, Description, DateProposed, '.
         'LeadInvestigator, LeadInvestigatorEmail, '.
@@ -133,7 +133,6 @@ function getProjectData() {
 
 function getVOIs($id) {
     $db = \Database::singleton();
-    $vois = array();
     $fields = $db->pselectCol(
         'SELECT pt.Name AS field ' .
         'FROM parameter_type pt '.
@@ -181,17 +180,12 @@ function getCollaborators($id) {
     return $collaborators;
 }
 
-function getUsersWithEditPerm($id) {
-    $db = Database::singleton();
-    
-
-}
 
 function getFiles($id) {
     $db = \Database::singleton();
 
-    $files = $db->pselectCol(
-        'SELECT URL FROM publication_upload WHERE PublicationID=:pid',
+    $files = $db->pselect(
+        'SELECT * FROM publication_upload WHERE PublicationID=:pid',
         array('pid' => $id)
     );
 
