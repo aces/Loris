@@ -70,19 +70,6 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     function tearDown()
     {
         parent::tearDown();
-        print_r(
-            $this->DB->pselect(
-                "SELECT * FROM parameter_type_category_rel",
-                array()
-            )
-        );
-        print_r(
-            $this->DB->pselect(
-                "SELECT * FROM parameter_type",
-                array()
-            )
-        );
-
         $this->DB->delete(
             'parameter_type',
             array('Name' => 'TestParameterNotRealMAGICNUMBER335')
