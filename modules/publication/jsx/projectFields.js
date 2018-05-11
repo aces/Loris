@@ -96,12 +96,12 @@ class ProjectFormFields extends React.Component {
     let collabEmails = [];
     if (this.props.formData.collaborators) {
       this.props.formData.collaborators.forEach(
-        function (c) {
+        function(c) {
           let name = 'collabEmail' + c;
           collabEmails.push(
             <EmailElement
               name={name}
-              label={c + (c.slice(-1) !== 's' ? "'s" : "'") + " Email"}
+              label={c + (c.slice(-1) === 's' ? "'" : "'s") + " Email"}
               onUserInput={this.props.setFormData}
               onUserBlur={this.props.validateEmail}
               toggleEmailNotify={this.props.toggleEmailNotify}
@@ -118,7 +118,7 @@ class ProjectFormFields extends React.Component {
 
   createFileFields() {
     let fileFields = [];
-    for(let i =0; i <= this.props.numFiles; i++){
+    for (let i = 0; i <= this.props.numFiles; i++) {
       let fileName = "file_" + i;
       fileFields.push(
         <FileElement
@@ -129,11 +129,11 @@ class ProjectFormFields extends React.Component {
           value={this.props.formData[fileName]}
         />
       );
-      if(this.props.formData[fileName]){
+      if (this.props.formData[fileName]) {
         let publicationType = "publicationType_" + i;
         let publicationCitation = "publicationCitation_" + i;
         let publicationVersion = "publicationVersion_" + i;
-        fileFields.push (
+        fileFields.push(
           <div>
             <SelectElement
               name={publicationType}
@@ -236,7 +236,7 @@ class ProjectFormFields extends React.Component {
           value={this.props.formData.pendingKWItem}
           pendingValKey="pendingKWItem"
           items={this.props.formData.keywords}
-          btnLabel='Add Keyword'
+          btnLabel="Add Keyword"
         />
         <TagsElement
           name="voiFields"

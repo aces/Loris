@@ -36,7 +36,6 @@ class PublicationIndex extends React.Component {
         console.error(error);
       }
     });
-
   }
 
   updateFilter(filter) {
@@ -67,9 +66,9 @@ class PublicationIndex extends React.Component {
     let proposalTab;
     if (loris.userHasPermission('publication_propose')) {
       tabList.push({
-          id: "propose",
-          label: "Propose a Project"
-        });
+        id: "propose",
+        label: "Propose a Project"
+      });
 
       proposalTab = (
         <TabPane TabId={tabList[1].id}>

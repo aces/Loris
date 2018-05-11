@@ -50,7 +50,7 @@ class ViewProject extends React.Component {
       },
       error: function(jqXHR) {
         console.error(jqXHR);
-        swal("Edit failed!", jqXHR.responseText, "error")
+        swal("Edit failed!", jqXHR.responseText, "error");
       }
     });
   }
@@ -71,7 +71,7 @@ class ViewProject extends React.Component {
           keywords: data.keywords,
           collaborators: data.collaborators,
           usersWithEditPerm: data.usersWithEditPerm,
-          rejectedReason: data.rejectedReason,
+          rejectedReason: data.rejectedReason
         };
         self.setState({
           formData: formData,
@@ -95,7 +95,7 @@ class ViewProject extends React.Component {
 
   createFileDownloadLinks() {
     let files = this.state.files;
-    return files.map(function(f){
+    return files.map(function(f) {
       let download = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + f.URL;
       return (<span>
         <a href={download}>{f.URL}</a>
@@ -107,11 +107,11 @@ class ViewProject extends React.Component {
   createMenuFilterLinks(stringArr, filterVar) {
     let links = [];
     stringArr.forEach(
-      function (value) {
+      function(value) {
         links.push(
           <span>
             <a
-              href={loris.BaseURL + "/publication/?"+filterVar+"="+value}
+              href={loris.BaseURL + "/publication/?" + filterVar + "=" + value}
             >
               {value}
             </a>
@@ -141,7 +141,7 @@ class ViewProject extends React.Component {
         name="collaborators"
         label="Collaborators"
         text={collabLinks}
-      />
+      />;
     }
 
     if (this.state.formData.keywords) {
@@ -252,7 +252,7 @@ class ViewProject extends React.Component {
 
   setFileData(formElement, value) {
     let numFiles = this.state.numFiles;
-    if(!this.state.formData[formElement]) {
+    if (!this.state.formData[formElement]) {
       numFiles += 1;
       this.setState({numFiles: numFiles});
     }
@@ -271,17 +271,17 @@ class ViewProject extends React.Component {
       );
     }
 
-
     // make approval status selectable and supply textbox in case
     // of proposal rejection
-    let statusElement, rejectReason;
+    let statusElement;
+    let rejectReason;
     if (loris.userHasPermission('publication_approve')) {
       // if user has publication_approve permission, this means that status
       // in formData reflects the ID, not the description
-     let statusID = this.state.formData.status;
-     let status = this.state.statusOpts[statusID];
+      let statusID = this.state.formData.status;
+      let status = this.state.statusOpts[statusID];
 
-     statusElement = <SelectElement
+      statusElement = <SelectElement
         name="status"
         label="Status"
         id="status"
@@ -305,11 +305,11 @@ class ViewProject extends React.Component {
       let statusID = this.state.formData.status;
       let status = this.state.statusOpts[statusID];
       const statClassMap = {
-        'Pending': 'text-warning',
-        'Approved': 'text-success',
-        'Rejected': 'text-danger'
+        Pending: 'text-warning',
+        Approved: 'text-success',
+        Rejected: 'text-danger'
       };
-      let statusText =(
+      let statusText = (
         <span className={statClassMap[status]}>
           <strong>{status}</strong>
         </span>
@@ -325,7 +325,6 @@ class ViewProject extends React.Component {
         />;
       }
     }
-
 
     let formElements;
     if (this.state.userCanEdit) {

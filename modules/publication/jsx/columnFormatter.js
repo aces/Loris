@@ -2,8 +2,8 @@
  * Modify behaviour of specified column cells in the Data Table component
  * @param {string} column - column name
  * @param {string} cell - cell content
- * @param {arrray} rowData - array of cell contents for a specific row
- * @param {arrray} rowHeaders - array of table headers (column names)
+ * @param {array} rowData - array of cell contents for a specific row
+ * @param {array} rowHeaders - array of table headers (column names)
  * @return {*} a formated table cell for a given column
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
@@ -18,7 +18,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     row[header] = rowData[index];
   }, this);
 
-  let classes  = [];
+  let classes = [];
   if (column === 'Title') {
     let pubID = row['Publication ID'];
     let viewURL = loris.BaseURL + '/publication/view_project?id=' + pubID;
@@ -36,7 +36,13 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
   return <td className={classes}>{cell}</td>;
 }
-
+/**
+ * Hacky trick to unescape text that has been encoded by the database
+ *
+ * @param {string} html The encoded string
+ *
+ * @return {string} the decoded string
+ */
 function decodeHtml(html) {
   let txt = document.createElement("textarea");
   txt.innerHTML = html;

@@ -1,4 +1,3 @@
-import ProgressBar from 'ProgressBar';
 import ProjectFormFields from './projectFields';
 
 class PublicationUploadForm extends React.Component {
@@ -15,7 +14,7 @@ class PublicationUploadForm extends React.Component {
       isLoaded: false,
       loadedData: 0,
       uploadProgress: -1,
-      toNotify: [],
+      toNotify: []
     };
 
     this.setFormData = this.setFormData.bind(this);
@@ -55,16 +54,16 @@ class PublicationUploadForm extends React.Component {
 
   setFileData(formElement, value) {
     let numFiles = this.state.numFiles;
-    if(!this.state.formData[formElement]) {
-        numFiles += 1;
-        this.setState({numFiles: numFiles});
+    if (!this.state.formData[formElement]) {
+      numFiles += 1;
+      this.setState({numFiles: numFiles});
     }
     this.setFormData(formElement, value);
   }
 
   createFileFields() {
     let fileFields = [];
-    for(let i =0; i <= this.state.numFiles; i++){
+    for (let i = 0; i <= this.state.numFiles; i++) {
       let fileName = "file_" + i;
       fileFields.push(
         <FileElement
@@ -75,11 +74,11 @@ class PublicationUploadForm extends React.Component {
           value={this.state.formData[fileName]}
         />
       );
-      if(this.state.formData[fileName]){
+      if (this.state.formData[fileName]) {
         let publicationType = "publicationType_" + i;
         let publicationCitation = "publicationCitation_" + i;
         let publicationVersion = "publicationVersion_" + i;
-        fileFields.push (
+        fileFields.push(
           <div>
             <SelectElement
               name={publicationType}
@@ -194,42 +193,12 @@ class PublicationUploadForm extends React.Component {
           uploadProgress: -1
         });
         swal("Submission Successful!", "", "success");
-
       }.bind(this),
       error: function(jqXHR, textStatus, errorThrown) {
         console.error(textStatus);
         swal("Something went wrong!", jqXHR.responseText, "error");
       }
     });
-  }
-
-  validateEmail(field, email) {
-    let formErrors = this.state.formErrors;
-
-    // don't supply error if email is blank
-    if (email === '' || email === null || email === undefined) {
-      delete formErrors[field];
-
-      // if email is invalid, set error, else nullify error
-    } else if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
-      formErrors[field] = 'Invalid email';
-    } else {
-      delete formErrors[field];
-    }
-    this.setState({formErrors});
-  }
-
-  toggleEmailNotify(e) {
-    let toNotify = this.state.toNotify;
-    let i = toNotify.indexOf(e.target.value);
-    // if box is checked and toNotify does not include addressee, add them
-    if (e.target.checked && i < 0) {
-      toNotify.push(e.target.value);
-      // otherwise delete them
-    } else if (!e.target.checked && i >= 0) {
-      toNotify.splice(i, 1);
-    }
-    this.setState({toNotify: toNotify})
   }
 
   render() {
@@ -256,27 +225,6 @@ class PublicationUploadForm extends React.Component {
       );
     }
 
-    // generate optional email input fields for collaborators
-    let collabEmails = [];
-    if (this.state.formData.collaborators) {
-      this.state.formData.collaborators.forEach(
-        function (c) {
-          let name = 'collabEmail' + c;
-          collabEmails.push(
-            <EmailElement
-              name={name}
-              label={c + (c.slice(-1) !== 's' ? "'s" : "'") + " Email"}
-              onUserInput={this.setFormData}
-              onUserBlur={this.validateEmail}
-              toggleEmailNotify={this.toggleEmailNotify}
-              errorMessage={this.state.formErrors[name]}
-              required={false}
-              value={this.state.formData[name]}
-              addressee={c}
-            />
-          );
-        }, this);
-    }
     let createElements;
     let formClass = "col-md-12 col-lg-12";
     if (!this.props.editMode) {
