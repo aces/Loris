@@ -760,7 +760,11 @@ $(function() {
         success: function (data) {
           var fileid   = data.fileid;
           var filename = data.filename;
-          if (filename.endsWith("mnc")) {
+          if (filename == null) {
+              var msg = "ERROR: could not load the file.";
+              $("#loading").html(msg);
+              console.error(msg);
+          } else if (filename.endsWith("mnc")) {
             minc_volumes.push({
               type: 'minc',
               header_url: "",
@@ -779,6 +783,15 @@ $(function() {
                 viewer_insert_class: "volume-viewer-display"
               }
             });
+          } else {
+            var msg = "WARNING: The volume viewer only supports MINC and" +
+                      " NIfTI file types.";
+            $("#loading").html(msg);
+            console.group('warning message');
+              console.warn(msg);
+              console.warn("\nNot supported file was " + filename);
+            console.groupEnd();
+            console.log($("#loading").text());
           }
         }
       });
