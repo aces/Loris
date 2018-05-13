@@ -42,12 +42,6 @@ $db        = \Database::singleton(
     $db_config['host']
 );
 
-if ($db->isConnected()) {
-    echo "successfully connected";
-} else {
-    echo "not connected";
-}
-
 $editNotifier = new NDB_Notifier(
     "document_repository",
     "edit"
