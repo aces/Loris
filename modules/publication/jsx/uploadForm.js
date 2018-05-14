@@ -23,9 +23,36 @@ class PublicationUploadForm extends React.Component {
     this.removeListItem = this.removeListItem.bind(this);
     this.validateEmail = this.validateEmail.bind(this);
     this.setFileData = this.setFileData.bind(this);
-    this.createFileFields = this.createFileFields.bind(this);
     this.toggleEmailNotify = this.toggleEmailNotify.bind(this);
     this.fetchData = this.fetchData.bind(this);
+  }
+
+  validateEmail(field, email) {
+    let formErrors = this.state.formErrors;
+
+    // don't supply error if email is blank
+    if (email === '' || email === null || email === undefined) {
+      delete formErrors[field];
+      // if email is invalid, set error, else nullify error
+    } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+      formErrors[field] = 'Invalid email';
+    } else {
+      delete formErrors[field];
+    }
+    this.setState({formErrors});
+  }
+
+  toggleEmailNotify(e) {
+    let toNotify = this.state.toNotify;
+    let i = toNotify.indexOf(e.target.value);
+    // if box is checked and toNotify does not include addressee, add them
+    if (e.target.checked && i < 0) {
+      toNotify.push(e.target.value);
+      // otherwise delete them
+    } else if (!e.target.checked && i >= 0) {
+      toNotify.splice(i, 1);
+    }
+    this.setState({toNotify: toNotify})
   }
 
   fetchData() {
@@ -61,54 +88,6 @@ class PublicationUploadForm extends React.Component {
     this.setFormData(formElement, value);
   }
 
-  createFileFields() {
-    let fileFields = [];
-    for (let i = 0; i <= this.state.numFiles; i++) {
-      let fileName = "file_" + i;
-      fileFields.push(
-        <FileElement
-          name={fileName}
-          id="publicationUploadEl"
-          onUserInput={this.setFileData}
-          label="File to upload"
-          value={this.state.formData[fileName]}
-        />
-      );
-      if (this.state.formData[fileName]) {
-        let publicationType = "publicationType_" + i;
-        let publicationCitation = "publicationCitation_" + i;
-        let publicationVersion = "publicationVersion_" + i;
-        fileFields.push(
-          <div>
-            <SelectElement
-              name={publicationType}
-              label="Publication Type"
-              id="publicationTypeEl"
-              onUserInput={this.setFormData}
-              value={this.state.formData[publicationType]}
-              options={this.state.Data.uploadTypes}
-              required={true}
-            />
-            <TextboxElement
-              name={publicationCitation}
-              label="Citation"
-              onUserInput={this.setFormData}
-              value={this.state.formData[publicationCitation]}
-            />
-            <TextboxElement
-              name={publicationVersion}
-              label="Publication Version"
-              onUserInput={this.setFormData}
-              value={this.state.formData[publicationVersion]}
-            />
-          </div>
-        );
-      }
-    }
-
-    return fileFields;
-  }
-
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
@@ -135,7 +114,6 @@ class PublicationUploadForm extends React.Component {
 
     if (index > -1) {
       listItems.splice(index, 1);
-
       formData[formElement] = listItems;
       this.setState({
         formData: formData
@@ -254,7 +232,6 @@ class PublicationUploadForm extends React.Component {
           >
             {createElements}
             <ProjectFormFields
-              Data={this.state.Data}
               formData={this.state.formData}
               formErrors={this.state.formErrors}
               numFiles={this.state.numFiles}
@@ -264,6 +241,9 @@ class PublicationUploadForm extends React.Component {
               removeListItem={this.removeListItem}
               validateEmail={this.validateEmail}
               toggleEmailNotify={this.toggleEmailNotify}
+              uploadTypes={this.state.Data.uploadTypes}
+              users={this.state.Data.users}
+              allVOIs={this.state.Data.allVOIs}
               editMode={false}
             />
           </FormElement>

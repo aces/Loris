@@ -132,7 +132,7 @@ class ViewProject extends React.Component {
     let keywordLinks;
     let voiLinks;
 
-    if (this.state.formData.collaborators) {
+    if (this.state.formData.collaborators.length > 0) {
       collabLinks = this.createMenuFilterLinks(
         this.state.formData.collaborators,
         'collaborators'
@@ -144,7 +144,7 @@ class ViewProject extends React.Component {
       />;
     }
 
-    if (this.state.formData.keywords) {
+    if (this.state.formData.keywords.length > 0) {
       keywordLinks = this.createMenuFilterLinks(
         this.state.formData.keywords,
         'keywords'
@@ -156,7 +156,7 @@ class ViewProject extends React.Component {
       />;
     }
 
-    if (this.state.formData.voiFields) {
+    if (this.state.formData.voiFields.length > 0) {
       voiLinks = this.createMenuFilterLinks(
         this.state.formData.voiFields,
         'voi'
@@ -200,16 +200,19 @@ class ViewProject extends React.Component {
     return (
       <div>
         <ProjectFormFields
-          Data={this.state.Data}
+          files={this.state.files}
+          numFiles={this.state.numFiles}
           formData={this.state.formData}
           formErrors={this.state.formErrors}
-          numFiles={this.state.numFiles}
           setFormData={this.setFormData}
           setFileData={this.setFileData}
           addListItem={this.addListItem}
           removeListItem={this.removeListItem}
           validateEmail={this.validateEmail}
           toggleEmailNotify={this.toggleEmailNotify}
+          uploadTypes={this.state.Data.uploadTypes}
+          users={this.state.Data.users}
+          allVOIs={this.state.Data.allVOIs}
           editMode={true}
         />
       </div>
@@ -271,6 +274,7 @@ class ViewProject extends React.Component {
       );
     }
 
+    // TODO: clean this up
     // make approval status selectable and supply textbox in case
     // of proposal rejection
     let statusElement;

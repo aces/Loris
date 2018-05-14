@@ -97,6 +97,7 @@ class ProjectFormFields extends React.Component {
     if (this.props.formData.collaborators) {
       this.props.formData.collaborators.forEach(
         function(c) {
+          // TODO: make this less stupid
           let name = 'collabEmail' + c;
           collabEmails.push(
             <EmailElement
@@ -118,6 +119,21 @@ class ProjectFormFields extends React.Component {
 
   createFileFields() {
     let fileFields = [];
+    this.props.files.forEach(function (f) {
+      let downloadURL = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + f.URL;
+      let link = <a href={downloadURL}>{f.URL}</a>;
+      fileFields.push(
+        <div>
+          <StaticElement
+            text={link}
+          />
+          <SelectElement
+
+          />
+        </div>
+      );
+    });
+
     for (let i = 0; i <= this.props.numFiles; i++) {
       let fileName = "file_" + i;
       fileFields.push(
@@ -141,7 +157,7 @@ class ProjectFormFields extends React.Component {
               id="publicationTypeEl"
               onUserInput={this.props.setFormData}
               value={this.props.formData[publicationType]}
-              options={this.props.Data.uploadTypes}
+              options={this.props.uploadTypes}
               required={true}
             />
             <TextboxElement
@@ -202,7 +218,7 @@ class ProjectFormFields extends React.Component {
           name="usersWithEditPerm"
           id="usersWithEditPerm"
           label="Users with Edit Permission"
-          options={this.props.Data.users}
+          options={this.props.users}
           useSearch={true}
           strictSearch={true}
           onUserInput={this.props.setFormData}
@@ -249,7 +265,7 @@ class ProjectFormFields extends React.Component {
           onUserRemove={this.props.removeListItem}
           required={false}
           value={this.props.formData.pendingItemVF}
-          options={this.props.Data.allVOIs}
+          options={this.props.allVOIs}
           pendingValKey="pendingItemVF"
           items={this.props.formData.voiFields}
           btnLabel="Add Variable of Interest"
