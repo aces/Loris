@@ -1,12 +1,13 @@
+/* eslint-disable indent */
 /* exported LorisElement, QuestionText, BasicOptions, DropdownOptions, DateOptions,
  NumericOptions, ListElements, AddElement */
 
 /* global Instrument */
 
 /**
- *	This file contains the React classes for instrument builder
- * 	module. It is used to add and edit questions in the instrument
- *	builder.
+ *    This file contains the React classes for instrument builder
+ *    module. It is used to add and edit questions in the instrument
+ *    builder.
  */
 
 /*
@@ -28,8 +29,7 @@ var LorisElement = React.createClass({
         elementHtml = <p>{element.Description}</p>;
         break;
       case 'score':
-        elementHtml = <StaticElement text={0} label={element.Description} />;
-
+        elementHtml = <StaticElement text={0} label={element.Description}/>;
         break;
       case 'text':
         if (element.Options.Type === 'small') {
@@ -75,17 +75,21 @@ var LorisElement = React.createClass({
  *	This is the React class for the question text input
  */
 var QuestionText = React.createClass({
-    // Keep track of the current input
+  // Keep track of the current input
   onChange: function(e) {
     this.props.updateState({Description: e.target.value});
   },
-    // Render the HTML
+  // Render the HTML
   render: function() {
     let errorMessage = '';
     let errorClass = 'form-group';
     if (this.props.element.error && this.props.element.error.questionText) {
       // If an error is present, display the error
-      errorMessage = (<font className="form-error">{this.props.element.error.questionText}</font>);
+      errorMessage = (
+        <font className="form-error">
+          {this.props.element.error.questionText}
+        </font>
+      );
       errorClass += " has-error";
     }
     return (
@@ -93,10 +97,10 @@ var QuestionText = React.createClass({
         <label className="col-sm-2 control-label">Question Text: </label>
         <div className="col-sm-6">
           <input className="form-control col-xs-12"
-            type="text" id="questionText"
-            size="75"
-            value={this.props.element ? this.props.element.Description : ''}
-            onChange={this.onChange}
+                 type="text" id="questionText"
+                 size="75"
+                 value={this.props.element ? this.props.element.Description : ''}
+                 onChange={this.onChange}
           />
           {errorMessage}
         </div>
@@ -130,9 +134,9 @@ var BasicOptions = React.createClass({
           <label className="col-sm-2 control-label">Question Name: </label>
           <div className="col-sm-6">
             <input className="form-control"
-              type="text" id="questionName"
-              onChange={this.onChange}
-              value={this.props.element ? this.props.element.Name : ''}
+                   type="text" id="questionName"
+                   onChange={this.onChange}
+                   value={this.props.element ? this.props.element.Name : ''}
             />
             {errorMessage}
           </div>
@@ -240,7 +244,7 @@ var DropdownOptions = React.createClass({
             className="btn btn-default"
             type="button"
             value="Add option"
-            onClick={this.addOption.bind(this, false) }
+            onClick={this.addOption.bind(this, false)}
           />
           <input
             className="btn btn-default"
@@ -284,7 +288,7 @@ var DateOptions = React.createClass({
   componentDidMount: function() {
     this.props.element.Options.dateFormat = "";
   },
-    // Keep track of the inputed years
+  // Keep track of the inputed years
   onChange: function(e) {
     var options = Instrument.clone(this.props.element.Options);
     if (e.target.id === 'datemin' && e.target.value.length > 0) {
@@ -361,7 +365,7 @@ var DateOptions = React.createClass({
                     {dateFormatOptions[option]}
                   </option>
                 );
-              }) }
+              })}
             </select>
           </div>
         </div>
@@ -391,7 +395,7 @@ var NumericOptions = React.createClass({
     var errorMessage = '';
     var optionsClass = 'options form-group';
 
-        // If an error is present, display the error
+    // If an error is present, display the error
     if (this.props.element.error && this.props.element.error.numeric) {
       errorMessage = (<span className="form-error">{this.props.element.error.numeric}</span>);
       optionsClass += "options form-group has-error";
@@ -438,7 +442,7 @@ var NumericOptions = React.createClass({
  * 	different question types.
  */
 var ListElements = React.createClass({
-    // Set the desired question type
+  // Set the desired question type
   selectType: function(newId, newValue) {
     let newState = {
       selected: {
@@ -452,7 +456,7 @@ var ListElements = React.createClass({
     switch (newId) {
       case 'textarea':
         textSize = 'large';
-        // falls through
+      // falls through
       case 'textbox':
         newState.Options = {
           Type: textSize
@@ -460,7 +464,7 @@ var ListElements = React.createClass({
         break;
       case 'multiselect':
         multi = true;
-        // falls through
+      // falls through
       case 'dropdown':
         newState.Options = {
           Values: {},
@@ -484,67 +488,67 @@ var ListElements = React.createClass({
     }
     this.props.updateState(newState);
   },
-    // Render the HTML
+  // Render the HTML
   render: function() {
     return (
-            <div className="form-group">
-                <label htmlFor="selected-input" className="col-sm-2 control-label">Question Type:</label>
-                <div className="col-sm-4">
-                    <div className="btn-group">
-                        <button id="selected-input" type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                            <span id="search_concept">{this.props.value} </span>
-                            <span className="caret"></span>
-                        </button>
-                        <ul className="dropdown-menu" role="menu">
-                            <li>
-                                <div className="col-sm-12"><h5 className="">Information</h5></div>
-                            </li>
-                            <li onClick={this.selectType.bind(this, "header", "Header")}>
-                                <a id="header" className="option" title="Centered, header information">Header</a>
-                            </li>
-                            <li onClick={this.selectType.bind(this, "label", "Label")}>
-                                <a id="label" className="option" title="Unemphasized display text">Label</a>
-                            </li>
-                            <li onClick={this.selectType.bind(this, "score", "Scored Field")}>
-                                <a id="scored" className="option" title="Column which stores calculated data">Scored Field</a>
-                            </li>
-                            <li className="divider"></li>
-                            <li>
-                                <div className="col-sm-12"><h5 className="">Data entry</h5></div>
-                            </li>
-                            <li onClick={this.selectType.bind(this, "textbox", "Textbox")}>
-                                <a id="textbox" className="option" title="Text box for user data entry">Textbox</a>
-                            </li>
-                            <li onClick={this.selectType.bind(this, "textarea", "Textarea")}>
-                                <a id="textarea" className="option" title="Larger text area for data entry">Textarea</a>
-                            </li>
-                            <li onClick={this.selectType.bind(this, "dropdown", "Dropdown")}>
-                                <a id="dropdown" className="option" title="Dropdown menu for users to select data from">Dropdown</a>
-                            </li>
-                            <li onClick={this.selectType.bind(this, "multiselect", "Multiselect")}>
-                                <a id="multiselect" className="option" title="Data entry where multiple options may be selected">Multiselect</a>
-                            </li>
-                            <li onClick={this.selectType.bind(this, "date", "Date")}>
-                                <a id="date" className="option" title="User data entry of a date">Date</a>
-                            </li>
-                            <li onClick={this.selectType.bind(this, "numeric", "Numeric")}>
-                                <a id="numeric" className="option" title="User data entry of a number">Numeric</a>
-                            </li>
-                            <li className="divider"></li>
-                            <li>
-                                <div className="col-sm-12"><h5 className="">Formatting</h5></div>
-                            </li>
-                            <li onClick={this.selectType.bind(this, "line", "Blank Line")}>
-                                <a id="line" className="option" title="Empty line">Blank Line</a>
-                            </li>
-                            <li onClick={this.selectType.bind(this, "page-break", "Page Break")}>
-                                <a id="page-break" className="option" title="Start a new page">Page Break</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        );
+      <div className="form-group">
+        <label htmlFor="selected-input" className="col-sm-2 control-label">Question Type:</label>
+        <div className="col-sm-4">
+          <div className="btn-group">
+            <button id="selected-input" type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
+              <span id="search_concept">{this.props.value} </span>
+              <span className="caret"></span>
+            </button>
+            <ul className="dropdown-menu" role="menu">
+              <li>
+                <div className="col-sm-12"><h5 className="">Information</h5></div>
+              </li>
+              <li onClick={this.selectType.bind(this, "header", "Header")}>
+                <a id="header" className="option" title="Centered, header information">Header</a>
+              </li>
+              <li onClick={this.selectType.bind(this, "label", "Label")}>
+                <a id="label" className="option" title="Unemphasized display text">Label</a>
+              </li>
+              <li onClick={this.selectType.bind(this, "score", "Scored Field")}>
+                <a id="scored" className="option" title="Column which stores calculated data">Scored Field</a>
+              </li>
+              <li className="divider"></li>
+              <li>
+                <div className="col-sm-12"><h5 className="">Data entry</h5></div>
+              </li>
+              <li onClick={this.selectType.bind(this, "textbox", "Textbox")}>
+                <a id="textbox" className="option" title="Text box for user data entry">Textbox</a>
+              </li>
+              <li onClick={this.selectType.bind(this, "textarea", "Textarea")}>
+                <a id="textarea" className="option" title="Larger text area for data entry">Textarea</a>
+              </li>
+              <li onClick={this.selectType.bind(this, "dropdown", "Dropdown")}>
+                <a id="dropdown" className="option" title="Dropdown menu for users to select data from">Dropdown</a>
+              </li>
+              <li onClick={this.selectType.bind(this, "multiselect", "Multiselect")}>
+                <a id="multiselect" className="option" title="Data entry where multiple options may be selected">Multiselect</a>
+              </li>
+              <li onClick={this.selectType.bind(this, "date", "Date")}>
+                <a id="date" className="option" title="User data entry of a date">Date</a>
+              </li>
+              <li onClick={this.selectType.bind(this, "numeric", "Numeric")}>
+                <a id="numeric" className="option" title="User data entry of a number">Numeric</a>
+              </li>
+              <li className="divider"></li>
+              <li>
+                <div className="col-sm-12"><h5 className="">Formatting</h5></div>
+              </li>
+              <li onClick={this.selectType.bind(this, "line", "Blank Line")}>
+                <a id="line" className="option" title="Empty line">Blank Line</a>
+              </li>
+              <li onClick={this.selectType.bind(this, "page-break", "Page Break")}>
+                <a id="page-break" className="option" title="Start a new page">Page Break</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    );
   }
 });
 
@@ -616,10 +620,18 @@ var AddElement = React.createClass({
         hasError = true;
       }
 
-      if (minDate > maxDate && min !== '' && max !== '') {
+      if (min === '' || max === '') {
         let temp = (this.state.error) ? this.state.error : {};
 
-        temp.dateOption = "End year append befor start year";
+        temp.dateOption = "Invalid start or end year";
+        this.setState({
+          error: temp
+        });
+        hasError = true;
+      } else if (minDate > maxDate) {
+        let temp = (this.state.error) ? this.state.error : {};
+
+        temp.dateOption = "End year append before start year";
         this.setState({
           error: temp
         });
@@ -635,7 +647,7 @@ var AddElement = React.createClass({
       }
     }
 
-        // Checking for error on numeric field
+    // Checking for error on numeric field
     if (selected === 'numeric') {
       let min = this.state.Options.MinValue;
       let max = this.state.Options.MaxValue;
@@ -649,7 +661,7 @@ var AddElement = React.createClass({
         hasError = true;
       }
 
-            // If error corrected, remove error message and error
+      // If error corrected, remove error message and error
       if (!hasError && this.state.error) {
         let temp = this.state.error;
         delete temp.numeric;
@@ -660,8 +672,8 @@ var AddElement = React.createClass({
     }
 
     if (questionText === '' && selected !== 'line') {
-        // Error, question text is required. Set the element error flag
-        // for the questionText with message. Set the hasError flag
+      // Error, question text is required. Set the element error flag
+      // for the questionText with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
       if (selected === 'page-break') {
         temp.questionText = "Must use question text as page header";
@@ -675,8 +687,8 @@ var AddElement = React.createClass({
     }
 
     if (!hasError && this.state.error) {
-        // No error, remove the elememt's questionText error flag
-        // if set
+      // No error, remove the elememt's questionText error flag
+      // if set
       let temp = this.state.error;
       delete temp.questionText;
       this.setState({
@@ -762,7 +774,7 @@ var AddElement = React.createClass({
       });
     }
   },
-    // Add an option to the options array
+  // Add an option to the options array
   addOption: function(multi) {
     // Use a function to update the state to enqueue an atomic
     // update that consults the previous value of state before
@@ -776,18 +788,18 @@ var AddElement = React.createClass({
       };
     });
   },
-    // Reset the options array
+  // Reset the options array
   resetOptions: function() {
     this.setState({
       options: []
     });
   },
-    // Render the HTML
+  // Render the HTML
   render: function() {
     let questionInput;
     let header = '';
     let buttons;
-        // Set the inputs to display based on the desired element type
+    // Set the inputs to display based on the desired element type
     switch (this.state.selected.id) {
       case 'header':
       case 'label':
