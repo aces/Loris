@@ -127,7 +127,7 @@ class FilterForm extends React.Component {
     }
     if (key) {
       filter[key] = {};
-      if (value.length === 0) {
+      if (Array.isArray(value) && value.length === 0) {
         filter[key].value = '';
       } else if (key && value) {
         filter[key].value = value;
