@@ -108,7 +108,6 @@ class Site
      */
     function getSiteAlias()
     {
-        error_log(print_r($this,true));
         return $this->_siteInfo['Alias'];
     }
 
