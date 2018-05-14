@@ -73,6 +73,19 @@ class ViewProject extends React.Component {
           usersWithEditPerm: data.usersWithEditPerm,
           rejectedReason: data.rejectedReason
         };
+        // set formdata for file meta data
+        if (data.files) {
+          data.files.forEach(function(f) {
+            let existFileFlag = 'existingUpload_';
+            let pubType = existFileFlag + 'publicationType_' + f.PublicationUploadID;
+            let pubCit = existFileFlag + 'publicationCitation_' + f.PublicationUploadID;
+            let pubVer = existFileFlag + 'publicationVersion_' + f.PublicationUploadID;
+            formData[pubType] = f.PublicationUploadTypeID;
+            formData[pubCit] = f.Citation;
+            formData[pubVer] = f.Version;
+          });
+        }
+
         self.setState({
           formData: formData,
           statusOpts: data.statusOpts,

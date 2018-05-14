@@ -122,17 +122,38 @@ class ProjectFormFields extends React.Component {
     this.props.files.forEach(function (f) {
       let downloadURL = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + f.URL;
       let link = <a href={downloadURL}>{f.URL}</a>;
+      let existFileFlag = 'existingUpload_';
+      let pubType = existFileFlag + 'publicationType_' + f.PublicationUploadID;
+      let pubCit = existFileFlag + 'publicationCitation_' + f.PublicationUploadID;
+      let pubVer = existFileFlag + 'publicationVersion_' + f.PublicationUploadID;
       fileFields.push(
         <div>
           <StaticElement
             text={link}
           />
           <SelectElement
-
+            name={pubType}
+            label="Publication Type"
+            onUserInput={this.props.setFormData}
+            value={this.props.formData[pubType]}
+            options={this.props.uploadTypes}
+            required={true}
+          />
+          <TextboxElement
+            name={pubCit}
+            label="Citation"
+            onUserInput={this.props.setFormData}
+            value={this.props.formData[pubCit]}
+          />
+          <TextboxElement
+            name={pubVer}
+            label="Publication Version"
+            onUserInput={this.props.setFormData}
+            value={this.props.formData[pubVer]}
           />
         </div>
       );
-    });
+    }, this);
 
     for (let i = 0; i <= this.props.numFiles; i++) {
       let fileName = "file_" + i;
@@ -154,7 +175,6 @@ class ProjectFormFields extends React.Component {
             <SelectElement
               name={publicationType}
               label="Publication Type"
-              id="publicationTypeEl"
               onUserInput={this.props.setFormData}
               value={this.props.formData[publicationType]}
               options={this.props.uploadTypes}
