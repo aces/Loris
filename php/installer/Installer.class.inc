@@ -131,7 +131,7 @@ class Installer
         // Check that some standard PHP packages which are removed in Debian
         // without a special package installed are available.
         if (function_exists('json_encode') == false) {
-            $this->_lastErr = "json functions do not appear to be accessible "
+            $this->_lastErr = "JSON functions do not appear to be accessible "
                 . "in your PHP installation. If you're running on Debian or "
                 , "Ubuntu, please install the php-json package.";
             return false;
