@@ -111,6 +111,36 @@ function postCategory() {
   });
 }
 
+function postEditCategory(id) {
+  var data = {
+    idEdit: id,
+    categoryEdit: $(categoryEditCategory).val(),
+    nameEdit: $(nameEditCategory).val(),
+    commentsEdit: $(commentsEditCategory).val(),
+    action: $(actionEdit).val(),
+    submit: 'yeah!!!!'
+  };
+
+  $.ajax({
+    type: "POST",
+    url: loris.BaseURL + "/document_repository/ajax/documentEditCategoryUpload.php",
+    data: data,
+    success: function() {
+      $('.edit-success').show();
+      $("#editModal").modal('hide');
+      $("#editFileCategory").removeClass("has-error");
+      $("#categoryEditError").hide();
+      setTimeout(function() {
+        location.reload()
+      }, 3000);
+    },
+    error: function() {
+      $("#editFileCategory").addClass("has-error");
+      $("#categoryEditError").show();
+    }
+  });
+}
+
 function postEdit(id) {
   var data = {
     idEdit: id,
@@ -143,6 +173,42 @@ function postEdit(id) {
       $("#categoryEditError").show();
     }
   });
+}
+
+function editCategoryModal() {
+  "use strict";
+
+  console.log('editCategoryModal() has ran..');
+  var id = this.id;
+  console.log('id is: ' + id);
+  $("#editCategoryModal").modal();
+
+  $.ajax({
+    type: "GET",
+    url: loris.BaseURL + "/document_repository/ajax/getCategory.php",
+    data: {id: id},
+    async: false,
+    dataType: "json",
+    success: function(data) {
+      console.log('Success:' + JSON.stringify(data));
+      //Pre-populate the form with the existing values
+      selectElement("categoryEditCategory", data.id);
+      selectElement("nameEditCategory", data.category_name);
+      selectElement("commentsEditCategory", data.comments);
+      //Disable user changing the category for now.
+      document.getElementById('categoryEditCategory').disabled = true;
+    }
+  });
+
+  $("#postEditCategory").click(function(e) {
+    e.preventDefault();
+    postEditCategory(id);
+  });
+  $("#cancelEditButton").click(function() {
+    $(".dialog-form-edit").dialog("close");
+  });
+
+  return false;
 }
 
 function editModal() {
@@ -196,6 +262,11 @@ function renderTree() {
   var fileDir = JSON.parse($("#json_data").html());
   var filtered = JSON.parse($("#isFiltered").html()).filtered;
 
+  console.log('fileDir:');
+  console.log(JSON.stringify(fileDir));
+  console.log('filtered:');
+  console.log(JSON.stringify(filtered));
+
   for (var i in fileDir) {
     if (fileDir[i]) {
       var dir = fileDir[i];
@@ -209,6 +280,9 @@ function renderTree() {
         parentID = path[depth - 2].replace(/[^\w]/gi, "_") + "_" + dir.ParentID;
       }
 
+      console.log('dir: ');
+      console.log(JSON.stringify(dir));
+
       //new table layout
       var directory = $('#dir').html();
       Mustache.parse(directory);
@@ -216,6 +290,7 @@ function renderTree() {
         var dirData = {
           name: path[depth - 1],
           id: dirID,
+          categoryID: dir.CategoryID,
           Comment: dir.Comment,
           parentID: parentID,
           indent: function() {
@@ -329,6 +404,9 @@ $(document).ready(function() {
   $("#upload").click(deleteModal);
 
   $("#postCategory").click(postCategory);
+
+  //The Edit file function
+  $(".theeditcategory").click(editCategoryModal);
 
   //The Edit file function
   $(".theeditlink").click(editModal);

@@ -17,7 +17,7 @@
 
 <script id="dir" type="x-tmpl-mustache">
     <tr id="{{ id }}a" {{ #parentID }}class="{{ parentID }}a directoryRow" style="display:none"{{ /parentID }}>
-        <td class="fileColumn" colspan="10">
+        <td class="fileColumn" colspan="8">
             {{ #indent }}
                 <div class="fileDDD" style="{{ margin }}">
                     <span style="padding: 8px" class='directory glyphicon glyphicon-chevron-right' data-container="body" data-toggle="popover" data-placement="right" data-content="{{ Comment }}">
@@ -30,6 +30,11 @@
                     {{ name }}
                 </span>
             {{ /indent }}
+        </td>
+        <td nowrap="nowrap">
+            <a href="#" id="{{ categoryID }}" class="theeditcategory">Edit</a>
+        </td>
+        <td>
         </td>
     </tr>
 </script>
@@ -74,72 +79,72 @@
 {/literal}
 
 <div class="row">
-<div class="col-sm-12">
-    <div class="col-xs-12">
-        <form method="post" action="{$baseurl}/document_repository/?filtered=true" id = "filterForm">
-            <div class="panel panel-primary">
-                <div class="panel-heading" onclick="hideFilter();">
-                    Selection Filter
-                    <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
-                    <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
+    <div class="col-sm-12">
+        <div class="col-xs-12">
+            <form method="post" action="{$baseurl}/document_repository/?filtered=true" id = "filterForm">
+                <div class="panel panel-primary">
+                    <div class="panel-heading" onclick="hideFilter();">
+                        Selection Filter
+                        <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
+                        <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
+                    </div>
+                    <div class="panel-body" id="panel-body">
+                        <div class="row">
+                            <div class="form-group col-sm-12">
+                                <label class="col-sm-12 col-md-1">{$form.File_name.label}</label>
+                                <div class="col-sm-12 col-md-3">{$form.File_name.html}</div>
+                                <label class="col-sm-12 col-md-1">{$form.version.label}</label>
+                                <div class="col-sm-12 col-md-3">{$form.version.html}</div>
+                                <label class="col-sm-12 col-md-1">{$form.uploaded_by.label}</label>
+                                <div class="col-sm-12 col-md-3">{$form.uploaded_by.html}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-12">
+                                <label class="col-sm-12 col-md-1">{$form.File_type.label}</label>
+                                <div class="col-sm-12 col-md-3">{$form.File_type.html}</div>
+                                <label class="col-sm-12 col-md-1">{$form.For_site.label}</label>
+                                <div class="col-sm-12 col-md-3">{$form.For_site.html}</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-sm-2 col-sm-offset-4">
+                                    <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
+                                </div>
+                                <div class="visible-xs col-xs-12"> </div>
+                                <div class="visible-xs col-xs-12"> </div>
+                                <div class="visible-xs col-xs-12"> </div>
+                                <div class="visible-xs col-xs-12"> </div>
+                                <div class="col-sm-2">
+                                    <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseURL}/document_repository/?reset=true'" />
+                                </div>
+                                <div class="visible-xs col-xs-12"> </div>
+                                <div class="visible-xs col-xs-12"> </div>
+                                <div class="visible-xs col-xs-12"> </div>
+                                <div class="visible-xs col-xs-12"> </div>
+                                <div class="col-sm-2">
+                                    <button type="button" name = "upload" class = "btn btn-sm btn-primary col-xs-12" data-toggle="modal" data-target="#fileUploadModal">Upload File</button>
+                                </div>
+                                <div class="visible-xs col-xs-12"> </div>
+                                <div class="visible-xs col-xs-12"> </div>
+                                <div class="visible-xs col-xs-12"> </div>
+                                <div class="visible-xs col-xs-12"> </div>
+                                <div class="col-sm-2">
+                                    <button type="button" name = "addCategory" class = "btn btn-sm btn-primary col-xs-12" data-toggle="modal" data-target="#addCategoryModal">Add Category</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="panel-body" id="panel-body">
-                    <div class="row">
-                        <div class="form-group col-sm-12">
-                            <label class="col-sm-12 col-md-1">{$form.File_name.label}</label>
-                            <div class="col-sm-12 col-md-3">{$form.File_name.html}</div>
-                            <label class="col-sm-12 col-md-1">{$form.version.label}</label>
-                            <div class="col-sm-12 col-md-3">{$form.version.html}</div>
-                            <label class="col-sm-12 col-md-1">{$form.uploaded_by.label}</label>
-                            <div class="col-sm-12 col-md-3">{$form.uploaded_by.html}</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-sm-12">
-                            <label class="col-sm-12 col-md-1">{$form.File_type.label}</label>
-                            <div class="col-sm-12 col-md-3">{$form.File_type.html}</div>
-                            <label class="col-sm-12 col-md-1">{$form.For_site.label}</label>
-                            <div class="col-sm-12 col-md-3">{$form.For_site.html}</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group">
-                            <div class="col-sm-2 col-sm-offset-4">
-                                <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
-                            </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="col-sm-2">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseURL}/document_repository/?reset=true'" />
-                            </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="col-sm-2">
-                                <button type="button" name = "upload" class = "btn btn-sm btn-primary col-xs-12" data-toggle="modal" data-target="#fileUploadModal">Upload File</button>
-                            </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="visible-xs col-xs-12"> </div>
-                            <div class="col-sm-2">
-                                <button type="button" name = "addCategory" class = "btn btn-sm btn-primary col-xs-12" data-toggle="modal" data-target="#addCategoryModal">Add Category</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
-</div>
 
-<center>
+<div style="text-align: center;">
     <button class="btn btn-lg btn-primary loading"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...</button>
-</center>
+</div>
 
 <div class = "upload-success">
     <p>
@@ -379,7 +384,59 @@
 </div>
 
 
-<!--The Edit Dialog-->
+<!--The Edit Category Dialog-->
+<div class="modal fade" id="editCategoryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h3 class="modal-title" id="myModalLabel">Edit Category</h3>
+            </div>
+            <form name = "editCategoryForm" id = "editCategoryForm" method = "post">
+                <div class="modal-body">
+                    <div class="row">
+                        <div id="editCategory" class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="category">Category<font color="red"><sup> *</sup></font></label>
+                            <div class="col-xs-8">
+                                <select name="category" id = "categoryEditCategory" class = "form-fields form-control input-sm">
+                                    <option value=""> </option>
+                                    {foreach from = $File_categories item=val key=k}
+                                        {if $val != "Any"}
+                                            <option value={$k}>{$val.CategoryName}</option>
+                                        {/if}
+                                    {/foreach}
+                                </select>
+                            </div>
+                            <div id="categoryEditError" class="col-xs-8 col-xs-offset-4 form-error" style="display:none;">
+                                Category is required
+                            </div>
+                        </div>
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="name">Name</label>
+                            <div class="col-xs-8">
+                                <input type="text" size = "27" name="name" id="nameEditCategory" class="ui-corner-all form-fields form-control input-sm" />
+                            </div>
+                        </div>
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="comments">Comments</label>
+                            <div class="col-xs-8">
+                                <textarea cols = "20" rows = "3" name="comments" id="commentsEditCategory" style = "border: 2px inset;" class="ui-corner-all form-fields form-control input-sm"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id = "postEditCategory" role="button" aria-disabled="false">Edit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+                <input type="hidden" name = "action" id = "actionEdit" value = "edit">
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!--The Edit File Dialog-->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -464,9 +521,4 @@
             </form>
         </div>
     </div>
-</div>
-
-</br>
-
-</table>
 </div>

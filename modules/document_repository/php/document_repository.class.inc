@@ -347,6 +347,7 @@ class Document_Repository extends \NDB_Menu_Filter
                 if ($CategoryID == $order) {
                     $fileCategories[$CategoryID]
                         = array(
+                           'CategoryID'   => $CategoryID,
                            'CategoryName' => $this->parseCategory($value),
                            'Comment'      => $value['comments'],
                            'Files'        => array(),
