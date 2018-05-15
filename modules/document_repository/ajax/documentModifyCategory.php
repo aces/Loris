@@ -74,5 +74,8 @@ if ($userSingleton->hasPermission('document_repository_view')
         $msg_data['document']        = $name;
 
         $editNotifier->notify($msg_data);
+    } else if ($action == 'delete') {
+        // delete
+        
     }
 }

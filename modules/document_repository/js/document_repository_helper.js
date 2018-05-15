@@ -123,7 +123,7 @@ function postEditCategory(id) {
 
   $.ajax({
     type: "POST",
-    url: loris.BaseURL + "/document_repository/ajax/documentEditCategoryUpload.php",
+    url: loris.BaseURL + "/document_repository/ajax/documentModifyCategory.php",
     data: data,
     success: function() {
       $('.edit-success').show();
