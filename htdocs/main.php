@@ -175,7 +175,7 @@ try {
         $tpl_data['control_panel'] = $caller->controlPanel;
     }
     if (isset($caller->feedbackPanel)) {
-        if (is_null($user)) {
+        if (!isset($user)) {
             throw new Exception(401);
         }
         if ($user->hasPermission('bvl_feedback')) {
