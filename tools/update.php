@@ -24,9 +24,9 @@ require_once "../php/libraries/NDB_Config.class.inc";
 
 error_reporting(E_ALL);
 if (PHP_MAJOR_VERSION < 7) {
-    die("{$argv[0]} and LORIS require PHP 7 or higher.");
+    die("ERROR: {$argv[0]} and LORIS require PHP 7 or higher.");
 }
-echo'This script will prompt for superuser privileges'
+echo'Note: This script will prompt for superuser privileges'
     . ' as they are needed to e.g. update apt packages.' . PHP_EOL;
 main();
 
@@ -63,37 +63,50 @@ function main() {
 
     $paths = $config->getSetting('paths');
     $loris_root_dir = $paths['base'];
-    $backup_dir = "/tmp/bkp_loris"; // TODO: should this be configurable?
+    $backup_dir = "/tmp/bkp-LORIS"; // TODO: should this be configurable?
 
     $version_filepath = $loris_root_dir . 'VERSION';
     if (!file_exists($version_filepath)) {
-        echo "Could not find VERSION file in $loris_root_dir." . PHP_EOL;
+        echo "ERROR: Could not find VERSION file in $loris_root_dir." . PHP_EOL;
     } else {
-        $backup_dir .= '-v' . trim(file_get_contents($version_filepath));
+        $backup_dir .= '_v' . trim(file_get_contents($version_filepath));
     }
-    $backup_dir .= '_' . date("D-M-j-Y") . '/'; // format: Thu-May-10-2018
+    $backup_dir .= '_' . date("j-M-Y") . '/'; // format: 10-May-2018
     
-    echo "Backing up $loris_root_dir to $backup_dir" . PHP_EOL;
+    echo "[*] Backing up $loris_root_dir to $backup_dir" . PHP_EOL;
     recurse_copy($loris_root_dir, $backup_dir);
     $tarball_path = downloadLatestRelease();
     if (empty($tarball_path)) {
-        die('Could not download the latest LORIS release.');
+        die('ERROR: Could not download the latest LORIS release.');
     }
 $dst_dir = '/tmp/';
+    echo 'Extracting release files...' . PHP_EOL;
     $cmd = "unzip -o " .escapeshellarg($tarball_path) . ' -d ' 
         . escapeshellarg($dst_dir);
-    exec($cmd, $output, $status);
-    if ($status !== 0) {
-        die(bashErrorToString($cmd, $output, $status));
+    doExec($cmd);
+
+    // find the file name for the release just downloaded
+    $release_dir = '';
+    foreach(glob("$dst_dir*") as $filename) {
+        if (strpos($filename, '/aces-Loris-')) {
+            $release_dir = $filename;
+        }
     }
-    // TODO: Retrive name of inflated directory. aces_Loris_commit(?)
-    // TODO: Use rsync to overwrite files in $loris_root
+    if (empty($release_dir)) {
+        die("ERROR: Could not find downloaded files in $dst_dir" . PHP_EOL);
+    }
+    // Use rsync to overwrite files in $loris_root
+    echo '[*] Overwriting old source code files.'  . PHP_EOL;
+    $cmd = 'rsync -r ' . escapeshellarg($release_dir) . ' ' . $backup_dir;
+    doExec($cmd);
 }
 
 function updateRequiredPackages($requirements) : bool {
-    echo 'Updating required packages...' . PHP_EOL;
-    echo 'Adding external PPA for most up-to-date PHP' . PHP_EOL;
+    echo '[*] Updating required packages...' . PHP_EOL;
+    // we need 3rd party PPA to get the latest PHP on Ubuntu
+    echo 'Adding external PPAs...' . PHP_EOL;
     // -y flag required to suppress a message from the author
+    // TODO: check if these already exist before adding
     exec('sudo apt-add-repository ppa:ondrej/php -y');
     exec('sudo apt-add-repository ppa:ondrej/apache2 -y');
 
@@ -109,6 +122,7 @@ function updateRequiredPackages($requirements) : bool {
     echo 'All requirements satisfied and up-to-date.' . PHP_EOL;
     return true;
 }
+
 
 function installMissingRequirements($requirements) : bool
 {
@@ -154,15 +168,7 @@ function installAptPackage($name, $only_upgrade = false) : bool
         $cmd = "sudo apt-get install ";
     }
     $cmd .= escapeshellarg($name);
-    echo "Running command `$cmd`...";
-    exec($cmd, $output, $status);
-    // in Bash a 0 exit status means success
-    if ($status !== 0) {
-        echo bashErrorToString($cmd, $output, $status);
-        return false;
-    }
-    echo ' Done.' . PHP_EOL;
-    return true;
+    return doExec($cmd);
 }
 
 /**
@@ -183,7 +189,7 @@ function downloadLatestRelease($download_path = '/tmp/loris_') : string {
     $src_code_url = $j->{'zipball_url'};
     $download_path .= '.zip';
     if(file_exists($download_path)) {
-        echo "$download_path already exists. Aborting download." . PHP_EOL;
+        echo "$download_path already exists. Not downloading." . PHP_EOL;
         return $download_path;
     }
     $cmd = "wget -qnv -O $download_path $src_code_url";
@@ -250,7 +256,7 @@ function recurse_copy($src,$dst) {
         if (!is_readable($src . '/' . $file)) {
             $out = "WARNING: Insufficient permissions to read $file";
             if (is_dir($src . '/' . $file)) $out .= '/';
-            $out .= '. This file/folder will not be backed up' . PHP_EOL;
+            $out .= '. This file/folder will not be backed up.' . PHP_EOL;
             echo $out;
             continue;
         }
@@ -282,8 +288,20 @@ function readAnswer($possibleAnswers, $defaultAnswer)
     return $answer;
 }
 
+function doExec($cmd) {
+    echo "Executing bash command `$cmd`... ";
+    exec($cmd, $output, $status);
+    if ($status !== 0) {
+        echo bashErrorToString($cmd, $output, $status);
+        return false;
+    }
+    echo 'OK.' . PHP_EOL;
+    return true;
+}
+
 function bashErrorToString($cmd, $output, $status) : string
 {
+    echo PHP_EOL;
     $error = "ERROR: Command `$cmd` failed (error code $status):" . PHP_EOL;
     if (is_iterable($output)){
         foreach($output as $item) {
