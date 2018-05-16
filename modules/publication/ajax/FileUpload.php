@@ -464,14 +464,6 @@ function editProject()
         ? $_REQUEST['leadInvestigator'] : null;
     $leadInvestigatorEmail = isset($_REQUEST['leadInvestigatorEmail'])
         ? $_REQUEST['leadInvestigatorEmail'] : null;
-    $usersWithEditPerm     = isset($_REQUEST['usersWithEditPerm'])
-        ? json_decode($_REQUEST['usersWithEditPerm']) : null;
-    $collaborators         = isset($_REQUEST['collaborators'])
-        ? json_decode($_REQUEST['collaborators']) : null;
-    $keywords = isset($_REQUEST['keywords'])
-        ? json_decode($_REQUEST['keywords']) : null;
-    $voi      = isset($_REQUEST['voiFields'])
-        ? json_decode($_REQUEST['voiFields']) : null;
 
     $pubData = $db->pselectRow(
         'SELECT * FROM publication WHERE PublicationID=:pid',
@@ -496,6 +488,26 @@ function editProject()
         $toUpdate['LeadInvestigatorEmail'] = $leadInvestigatorEmail;
     }
 
+    editEditors($id);
+    editCollaborators($id);
+    editKeywords($id);
+    editVOIs($id);
+    editUploads($id);
+
+    if (!empty($toUpdate)) {
+        $db->update(
+            'publication',
+            $toUpdate,
+            array('PublicationID' => $id)
+        );
+    }
+}
+
+function editEditors($id) {
+    $db = \Database::singleton();
+    $usersWithEditPerm = isset($_REQUEST['usersWithEditPerm'])
+        ? json_decode($_REQUEST['usersWithEditPerm']) : null;
+
     $currentUWEP = $db->pselectCol(
         'SELECT UserID '.
         'FROM publication_users_edit_perm_rel '.
@@ -517,10 +529,19 @@ function editProject()
         foreach ($oldUWEP as $uid) {
             $db->delete(
                 'publication_users_edit_perm_rel',
-                array('UserID' => $uid)
+                array(
+                    'UserID' => $uid,
+                    'PublicationID' => $id
+                    )
             );
         }
     }
+}
+
+function editCollaborators($id) {
+    $db = \Database::singleton();
+    $collaborators         = isset($_REQUEST['collaborators'])
+        ? json_decode($_REQUEST['collaborators']) : null;
 
     $currentCollabs = $db->pselectCol(
         'SELECT Name FROM publication_collaborator pc '.
@@ -548,12 +569,18 @@ function editProject()
             $db->delete(
                 'publication_collaborator_rel',
                 array(
-                 'PublicationCollaboratorID' => $uid,
-                 'PublicationID'             => $id,
+                    'PublicationCollaboratorID' => $uid,
+                    'PublicationID'             => $id,
                 )
             );
         }
     }
+}
+
+function editKeywords($id) {
+    $db = \Database::singleton();
+    $keywords = isset($_REQUEST['keywords'])
+        ? json_decode($_REQUEST['keywords']) : null;
 
     $currentKW = $db->pselectCol(
         'SELECT Label FROM publication_keyword pk '.
@@ -583,12 +610,18 @@ function editProject()
             $db->delete(
                 'publication_keyword_rel',
                 array(
-                 'PublicationKeywordID' => $kid,
-                 'PublicationID'        => $id,
+                    'PublicationKeywordID' => $kid,
+                    'PublicationID'        => $id,
                 )
             );
         }
     }
+}
+
+function editVOIs($id) {
+    $db  = \Database::singleton();
+    $voi = isset($_REQUEST['voiFields'])
+        ? json_decode($_REQUEST['voiFields']) : null;
 
     $fields    = $db->pselectCol(
         'SELECT pt.Name AS field ' .
@@ -626,8 +659,8 @@ function editProject()
                 $db->delete(
                     'publication_test_names_rel',
                     array(
-                     'PublicationID' => $id,
-                     'TestNameID'    => $tnID,
+                        'PublicationID' => $id,
+                        'TestNameID'    => $tnID,
                     )
                 );
             } else {
@@ -638,23 +671,50 @@ function editProject()
                 $db->delete(
                     'publication_parameter_type_rel',
                     array(
-                     'PublicationID'   => $id,
-                     'ParameterTypeID' => $ptID,
+                        'PublicationID'   => $id,
+                        'ParameterTypeID' => $ptID,
                     )
                 );
             }
         }
     }
-
-    if (!empty($toUpdate)) {
-        $db->update(
-            'publication',
-            $toUpdate,
-            array('PublicationID' => $id)
-        );
-    }
 }
 
+function editUploads($id) {
+    $db = \Database::singleton();
+
+    $pubUploads = $db->pselectWithIndexKey(
+        'SELECT * FROM publication_upload WHERE PublicationID=:pid',
+        array('pid' => $id),
+        'PublicationUploadID'
+    );
+
+    $toUpdate = array();
+    foreach ($pubUploads as $puid => $data) {
+        $citationIndex = 'existingUpload_publicationCitation_' . $puid;
+        $versionIndex = 'existingUpload_publicationVersion_' . $puid;
+
+        $cit = isset($_REQUEST[$citationIndex]) ? $_REQUEST[$citationIndex] : null;
+        $ver = isset($_REQUEST[$versionIndex]) ? $_REQUEST[$versionIndex] : null;
+
+        if (htmlspecialchars($cit) !== $data['Citation']) {
+            $toUpdate[$puid]['Citation'] = $cit;
+        }
+        if (htmlspecialchars($ver) !== $data['Version']) {
+            $toUpdate[$puid]['Version'] = $ver;
+        }
+    }
+
+    if (!empty($toUpdate)) {
+        foreach ($toUpdate as $puid => $data) {
+            $db->update(
+                'publication_upload',
+                $data,
+                array('PublicationUploadID' => $puid)
+            );
+        }
+    }
+}
 /**
  * Utility function to return errors from the server
  *
