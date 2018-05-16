@@ -91,11 +91,20 @@ if ($userSingleton->hasPermission('document_repository_view')
     }
 }
 
+/**
+ * Gets array of all subcategories of the parent.
+ *
+ * @param string $parent        The id to search document_repository_categories
+ * @param array  $subcategories The list of subcategories.
+ * @param object $DB            The Database object.
+ *
+ * @return array of all subcategories associated to the parent id.
+ */
 function getSubcategoriesOfParent($parent, $subcategories, $DB)
 {
     // Retrieve children of the parent_id in document_repository_categories.
-    $query = "SELECT id FROM document_repository_categories "
-            ."WHERE parent_id=$parent";
+    $query    = "SELECT id FROM document_repository_categories "
+               ."WHERE parent_id=$parent";
     $children = $DB->pselect($query);
 
     // Flatten array
@@ -113,10 +122,9 @@ function getSubcategoriesOfParent($parent, $subcategories, $DB)
     // Children exist.
     if (!empty($children)) {
         for ($i = 0; $i < count($children); $i++) {
-            $relatives = getSubcategoriesOfParent($children[$i], array(), $DB);
+            $relatives     = getSubcategoriesOfParent($children[$i], array(), $DB);
             $subcategories = array_unique(array_merge($subcategories, $relatives));
         }
     }
-
     return $subcategories;
 }
