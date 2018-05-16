@@ -111,6 +111,62 @@ function postCategory() {
   });
 }
 
+function postEditCategory(id) {
+  var data = {
+    idEdit: id,
+    categoryEdit: $(categoryEditCategory).val(),
+    nameEdit: $(nameEditCategory).val(),
+    commentsEdit: $(commentsEditCategory).val(),
+    action: $(actionEdit).val(),
+    submit: 'yeah!!!!'
+  };
+
+  $.ajax({
+    type: "POST",
+    url: loris.BaseURL + "/document_repository/ajax/documentModifyCategory.php",
+    data: data,
+    success: function() {
+      $('.edit-success').show();
+      $("#editModal").modal('hide');
+      $("#editFileCategory").removeClass("has-error");
+      $("#categoryEditError").hide();
+      setTimeout(function() {
+        location.reload()
+      }, 3000);
+    },
+    error: function() {
+      $("#editFileCategory").addClass("has-error");
+      $("#categoryEditError").show();
+    }
+  });
+}
+
+function postDeleteCategory(id) {
+  var data = {
+    idDelete: id,
+    categoryDelete: $(categoryDeleteCategory).val(),
+    action: $(actionDelete).val(),
+    submit: 'yeah!!!!'
+  };
+
+  $.ajax({
+    type: "POST",
+    url: loris.BaseURL + "/document_repository/ajax/documentModifyCategory.php",
+    data: data,
+    success: function() {
+      $('.edit-success').show();
+      $("#deleteCategoryModal").modal('hide');
+      $("#categoryDeleteError").hide();
+      setTimeout(function() {
+        location.reload()
+      }, 3000);
+    },
+    error: function() {
+      $("#categoryDeleteError").show();
+    }
+  });
+}
+
 function postEdit(id) {
   var data = {
     idEdit: id,
@@ -145,6 +201,71 @@ function postEdit(id) {
   });
 }
 
+function editCategoryModal() {
+  "use strict";
+
+  var id = this.id;
+  $("#editCategoryModal").modal();
+
+  $.ajax({
+    type: "GET",
+    url: loris.BaseURL + "/document_repository/ajax/getCategory.php",
+    data: {id: id},
+    async: false,
+    dataType: "json",
+    success: function(data) {
+      //Pre-populate the form with the existing values
+      selectElement("categoryEditCategory", data.id);
+      selectElement("nameEditCategory", data.category_name);
+      selectElement("commentsEditCategory", data.comments);
+      //Disable user changing the category for now.
+      document.getElementById('categoryEditCategory').disabled = true;
+    }
+  });
+
+  $("#postEditCategory").click(function(e) {
+    e.preventDefault();
+    postEditCategory(id);
+  });
+  $("#cancelEditButton").click(function() {
+    $(".dialog-form-edit").dialog("close");
+  });
+
+  return false;
+}
+
+function deleteCategoryModal() {
+  "use strict";
+
+  var id = this.id;
+  console.log('id is: ' + id);
+  $("#deleteCategoryModal").modal();
+
+  $.ajax({
+    type: "GET",
+    url: loris.BaseURL + "/document_repository/ajax/getCategory.php",
+    data: {id: id},
+    async: false,
+    dataType: "json",
+    success: function(data) {
+      //Pre-populate the form with the existing values
+      selectElement("categoryDeleteCategory", data.id);
+      //Disable user changing the category.
+      document.getElementById('categoryDeleteCategory').disabled = true;
+    }
+  });
+
+  $("#postDeleteCategory").click(function(e) {
+    e.preventDefault();
+    postDeleteCategory(id);
+  });
+  $("#cancelEditButton").click(function() {
+    $(".dialog-form-edit").dialog("close");
+  });
+
+  return false;
+}
+
 function editModal() {
   "use strict";
 
@@ -158,7 +279,6 @@ function editModal() {
     async: false,
     dataType: "json",
     success: function(data) {
-
       //Pre-populate the form with the existing values
       selectElement("categoryEdit", data.File_category);
       selectElement("siteEdit", data.For_site);
@@ -167,7 +287,6 @@ function editModal() {
       selectElement("visitEdit", data.visitLabel);
       selectElement("commentsEdit", data.comments);
       selectElement("versionEdit", data.version);
-
     }
   });
 
@@ -216,6 +335,7 @@ function renderTree() {
         var dirData = {
           name: path[depth - 1],
           id: dirID,
+          categoryID: dir.CategoryID,
           Comment: dir.Comment,
           parentID: parentID,
           indent: function() {
@@ -303,7 +423,6 @@ $(document).ready(function() {
   editCategory();
 
   //Open confirmation dialog on Delete click
-  var id;
   $('.thedeletelink').click(deleteModal);
 
   //Add category modal
@@ -329,6 +448,12 @@ $(document).ready(function() {
   $("#upload").click(deleteModal);
 
   $("#postCategory").click(postCategory);
+
+  //The Edit category function
+  $(".theeditcategory").click(editCategoryModal);
+
+  //The delete category function
+  $(".thedeletecategory").click(deleteCategoryModal);
 
   //The Edit file function
   $(".theeditlink").click(editModal);
