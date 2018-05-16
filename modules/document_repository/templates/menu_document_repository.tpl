@@ -34,7 +34,8 @@
         <td nowrap="nowrap">
             <a href="#" id="{{ categoryID }}" class="theeditcategory">Edit</a>
         </td>
-        <td>
+        <td nowrap="nowrap">
+            <a href="#" id="{{ categoryID }}" class="thedeletecategory">Delete</a>
         </td>
     </tr>
 </script>
@@ -383,6 +384,50 @@
     </div>
 </div>
 
+<!--The Delete Category Dialog-->
+<div class="modal fade" id="deleteCategoryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h3 class="modal-title" id="myModalLabel">Delete Category</h3>
+            </div>
+            <form name = "deleteCategoryForm" id = "deleteCategoryForm" method = "post">
+                <div class="modal-body">
+                    <div class="row">
+                        <div id="deleteCategory" class="col-xs-12 form-group">
+                            <label class="col-xs-4" for="category">Category<font color="red"><sup> *</sup></font></label>
+                            <div class="col-xs-8">
+                                <select name="category" id = "categoryDeleteCategory" class = "form-fields form-control input-sm">
+                                    <option value=""> </option>
+                                    {foreach from = $File_categories item=val key=k}
+                                        {if $val != "Any"}
+                                            <option value={$k}>{$val.CategoryName}</option>
+                                        {/if}
+                                    {/foreach}
+                                </select>
+                            </div>
+                            <div id="categoryDeleteError" class="col-xs-8 col-xs-offset-4 form-error" style="display:none;">
+                                Category is required
+                            </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <label class="col-xs-4" for="name"><h3 style="color: #cd0a0a;">Warning!</h3></label>
+                            <div class="col-xs-8">
+                                <h4>Files associated with the category will be deleted.</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id = "postDeleteCategory" role="button" aria-disabled="false">Delete</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+                <input type="hidden" name = "action" id = "actionDelete" value = "delete">
+            </form>
+        </div>
+    </div>
+</div>
 
 <!--The Edit Category Dialog-->
 <div class="modal fade" id="editCategoryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

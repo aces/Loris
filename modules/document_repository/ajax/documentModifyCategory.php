@@ -75,7 +75,13 @@ if ($userSingleton->hasPermission('document_repository_view')
 
         $editNotifier->notify($msg_data);
     } else if ($action == 'delete') {
-        // delete
-        
+        $id = $_POST['idDelete'];
+        if (empty($id) && $id !== '0') {
+            header("HTTP/1.1 400 Bad Request");
+            exit;
+        }
+
+        $DB->delete('document_repository', array('File_category' => $id));
+        $DB->delete('document_repository_categories', array('id' => $id));
     }
 }
