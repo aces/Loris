@@ -22,7 +22,7 @@ namespace LORIS;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class VisitControler
+class VisitController
 {
     /**
      * The database connection to use
@@ -73,9 +73,9 @@ class VisitControler
      *
      * @param string $visit the name of the visit
      *
-     * @return array the ID of the visit
+     * @return array the ID of the visit  //TODO array of Visit
      */
-    public function getVisitsWithID(string $visit): integer
+    public function getVisitsWithID(string $visit): array
     {
         return array_map(
             function ($row) {
@@ -96,12 +96,12 @@ class VisitControler
         );
     }
     /**
-     * Retruns a list of configured Visits and their association with projects
+     * Returns a list of configured Visits and their association with projects
      * and subprojects
      *
      * @return array The list of visits, projectID and subprojectID
      */
-    public function getVisitsProject(): array
+    public function getVisitsWithProject(): array
     {
         return array_map(
             function ($row) {
