@@ -730,11 +730,11 @@ class Utility
     static function getDirectInstruments()
     {
         $DB            =& Database::singleton();
-        $instruments   = array();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true",
             array()
         );
+        $instruments   = array();
         foreach ($instruments_q as $key) {
             $instruments[$key['Test_name']] =$key['Full_name'];
         }
