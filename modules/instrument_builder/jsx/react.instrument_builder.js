@@ -30,7 +30,7 @@ var LoadPane = React.createClass({
       alert: ''
     });
     if (value) {
-        this.setState({disabled: false});
+      this.setState({disabled: false});
     }
   },
   // Sets the alert to the specified type.
