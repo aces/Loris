@@ -15,19 +15,19 @@ $userSingleton =& User::singleton();
 if (!$userSingleton->hasPermission('document_repository_view')
     && !$userSingleton->hasPermission('document_repository_delete')
 ) {
-    header("HTTP/1.1 403 Forbidden");
+    header('HTTP/1.1 403 Forbidden');
     exit;
 }
 
 set_include_path(
     get_include_path().
-    ":../../project/libraries:../../php/libraries:"
+    ':../../project/libraries:../../php/libraries:'
 );
-require_once "NDB_Client.class.inc";
-require_once "NDB_Config.class.inc";
-require_once "Email.class.inc";
+require_once 'NDB_Client.class.inc';
+require_once 'NDB_Config.class.inc';
+require_once 'Email.class.inc';
 $client = new NDB_Client();
-$client->initialize("../../project/config.xml");
+$client->initialize('../../project/config.xml');
 $factory = NDB_Factory::singleton();
 $baseURL = $factory->settings()->getBaseURL();
 
@@ -37,13 +37,13 @@ $config = NDB_Config::singleton();
 $DB =& Database::singleton();
 
 $editNotifier = new NDB_Notifier(
-    "document_repository",
-    "edit"
+    'document_repository',
+    'edit'
 );
 
 $uploadNotifier = new NDB_Notifier(
-    "document_repository",
-    "upload"
+    'document_repository',
+    'upload'
 );
 
 $action = $_POST['action'];
@@ -70,18 +70,53 @@ if ($userSingleton->hasPermission('document_repository_view')
 
         $DB->update('document_repository_categories', $values, array('id' => $id));
 
-        $msg_data['updatedDocument'] = $baseURL . "/document_repository/";
+        $msg_data['updatedDocument'] = $baseURL . '/document_repository/';
         $msg_data['document']        = $name;
 
         $editNotifier->notify($msg_data);
     } else if ($action == 'delete') {
         $id = $_POST['idDelete'];
         if (empty($id) && $id !== '0') {
-            header("HTTP/1.1 400 Bad Request");
+            header('HTTP/1.1 400 Bad Request');
             exit;
         }
 
-        $DB->delete('document_repository', array('File_category' => $id));
-        $DB->delete('document_repository_categories', array('id' => $id));
+        $subcategories = getSubcategoriesOfParent($id, array(), $DB);
+        array_unshift($subcategories, $id);
+        while (count($subcategories) > 0) {
+            $id = array_pop($subcategories);
+            $DB->delete('document_repository', array('File_category' => $id));
+            $DB->delete('document_repository_categories', array('id' => $id));
+        }
     }
+}
+
+function getSubcategoriesOfParent($parent, $subcategories, $DB)
+{
+    // Retrieve children of the parent_id in document_repository_categories.
+    $query = "SELECT id FROM document_repository_categories "
+            ."WHERE parent_id=$parent";
+    $children = $DB->pselect($query);
+
+    // Flatten array
+    $tmp = array();
+    foreach ($children as $row => $innerArray) {
+        foreach ($innerArray as $innerRow => $value) {
+            $tmp[] = $value;
+        }
+    }
+    $children = $tmp;
+
+    // Add the children to subcategories and filter out duplicates.
+    $subcategories = array_unique(array_merge($subcategories, $children));
+
+    // Children exist.
+    if (!empty($children)) {
+        for ($i = 0; $i < count($children); $i++) {
+            $relatives = getSubcategoriesOfParent($children[$i], array(), $DB);
+            $subcategories = array_unique(array_merge($subcategories, $relatives));
+        }
+    }
+
+    return $subcategories;
 }
