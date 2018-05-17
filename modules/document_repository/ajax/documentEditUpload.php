@@ -20,13 +20,13 @@ if (!$userSingleton->hasPermission('document_repository_view')
 
 set_include_path(
     get_include_path().
-    ":../../project/libraries:../../php/libraries:"
+    ':../../project/libraries:../../php/libraries:'
 );
-require_once "NDB_Client.class.inc";
-require_once "NDB_Config.class.inc";
-require_once "Email.class.inc";
+require_once 'NDB_Client.class.inc';
+require_once 'NDB_Config.class.inc';
+require_once 'Email.class.inc';
 $client = new NDB_Client();
-$client->initialize("../../project/config.xml");
+$client->initialize('../../project/config.xml');
 $factory = NDB_Factory::singleton();
 $baseURL = $factory->settings()->getBaseURL();
 
@@ -36,13 +36,13 @@ $config = NDB_Config::singleton();
 $DB =& Database::singleton();
 
 $editNotifier = new NDB_Notifier(
-    "document_repository",
-    "edit"
+    'document_repository',
+    'edit'
 );
 
 $uploadNotifier = new NDB_Notifier(
-    "document_repository",
-    "upload"
+    'document_repository',
+    'upload'
 );
 
 $action = $_POST['action'];
@@ -58,19 +58,19 @@ if ($userSingleton->hasPermission('document_repository_view')
         $instrument = $_POST['instrument'] !== '' ? $_POST['instrument'] : null;
         $pscid      = $_POST['pscid']      !== '' ? $_POST['pscid'] : null;
         $visit      = $_POST['visit']      !== '' ? $_POST['visit'] : null;
-        $comments   = $_POST['comments']   !== '' ? $_POST['commnets'] : null;
+        $comments   = $_POST['comments']   !== '' ? $_POST['comments'] : null;
         $version    = $_POST['version']    !== '' ? $_POST['version'] : null;
 
-        $fileSize = $_FILES["file"]["size"];
-        $fileName = $_FILES["file"]["name"];
-        $fileType = end((explode(".", $fileName)));
+        $fileSize = $_FILES['file']['size'];
+        $fileName = $_FILES['file']['name'];
+        $fileType = end(explode('.', $fileName));
 
         // __DIR__ is the document_repository ajax directory
         // when this script is executing. Go up a level to the
         // document_repository module directory, and use a
         // user_uploads directory as a base for user uploads
-        $base_path = __DIR__ . "/../user_uploads/";
-        $fileBase  = $puser . "/" . $fileName;
+        $base_path = __DIR__ . '/../user_uploads/';
+        $fileBase  = $puser . '/' . $fileName;
 
         if (!file_exists($base_path . $puser)) {
             mkdir($base_path . $puser, 0777);
@@ -79,7 +79,7 @@ if ($userSingleton->hasPermission('document_repository_view')
 
         $target_path = $base_path  . $fileBase;
 
-        if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {
+        if (move_uploaded_file($_FILES['file']['tmp_name'], $target_path)) {
             $success = $DB->insert(
                 'document_repository',
                 array(
@@ -98,17 +98,17 @@ if ($userSingleton->hasPermission('document_repository_view')
                 )
             );
             $msg_data['newDocument']
-                = $baseURL . "/document_repository/";
+                = $baseURL . '/document_repository/';
             $msg_data['document']    = $fileName;
 
             $uploadNotifier->notify($msg_data);
 
-            $header = "Location:".
-                      " $baseURL/document_repository/?uploadSuccess=true";
+            $header = 'Location: '.
+                      $baseURL.'/document_repository/?uploadSuccess=true';
             header($header);
 
         } else {
-            echo "There was an error uploading the file";
+            echo 'There was an error uploading the file';
         }
     } elseif ($action == 'edit') {
         $id         = $_POST['idEdit'];
@@ -121,7 +121,7 @@ if ($userSingleton->hasPermission('document_repository_view')
         $version    = $_POST['versionEdit'];
 
         if (empty($category) && $category !== '0') {
-            header("HTTP/1.1 400 Bad Request");
+            header('HTTP/1.1 400 Bad Request');
             exit;
         }
 
@@ -137,10 +137,10 @@ if ($userSingleton->hasPermission('document_repository_view')
         $DB->update('document_repository', $values, array('record_id' => $id));
 
         $fileName = $DB->pselectOne(
-            "select File_name from document_repository where record_id=:record_id",
+            'SELECT File_name FROM document_repository WHERE record_id=:record_id',
             array('record_id' => $id)
         );
-        $msg_data['updatedDocument'] = $baseURL . "/document_repository/";
+        $msg_data['updatedDocument'] = $baseURL . '/document_repository/';
         $msg_data['document']        = $fileName;
 
         $editNotifier->notify($msg_data);

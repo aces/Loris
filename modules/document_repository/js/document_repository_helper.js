@@ -1,16 +1,16 @@
 /*global $, document, window, location */
 
 function editCategory() {
-  "use strict";
+  'use strict';
 
   var id,
     value;
   $('.categorycomments').bind('blur', function(event) {
     event.stopImmediatePropagation();
     id = event.target.id;
-    value = $("#" + id).text();
-    id = id.replace("categorycomment", "");
-    $.get(loris.BaseURL + "/document_repository/ajax/categoryEdit.php?id=" + id + "&comments=" + value);
+    value = $('#' + id).text();
+    id = id.replace('categorycomment', '');
+    $.get(loris.BaseURL + '/document_repository/ajax/categoryEdit.php?id=' + id + '&comments=' + value);
   }).keypress(function(e) {
     if (e.which === 13) { // Determine if the user pressed the enter button
       $(this).blur();
@@ -20,12 +20,12 @@ function editCategory() {
 
 //Checks that all fields required for file upload are entered
 function isEmpty(element) {
-  "use strict";
+  'use strict';
 
-  if (element.val() === " ") {
+  if (element.val() === ' ') {
     element.focus();
     element.parent().addClass('has-error');
-    $(".upload-error").show();
+    $('.upload-error').show();
     return true;
   }
   return false;
@@ -33,10 +33,10 @@ function isEmpty(element) {
 
 //Checks that file has been selected for upload
 function isFileEmpty(element) {
-  "use strict";
+  'use strict';
 
   if (element.length === 0) {
-    $(".file-error").show();
+    $('.file-error').show();
     return true;
   }
   return false;
@@ -44,20 +44,20 @@ function isFileEmpty(element) {
 
 //Pre-populates the Edit form with fields already associated with that file
 function selectElement(element, valueToSelect) {
-  "use strict";
+  'use strict';
 
-  $("#" + element).val(valueToSelect);
+  $('#' + element).val(valueToSelect);
 }
 
 function postDelete(id) {
-  "use strict";
+  'use strict';
 
   $.ajax({
-    url: loris.BaseURL + "/document_repository/ajax/documentDelete.php",
-    type: "POST",
+    url: loris.BaseURL + '/document_repository/ajax/documentDelete.php',
+    type: 'POST',
     data: {id: id},
     success: function() {
-      $("#" + id).parent().parent().remove();
+      $('#' + id).parent().parent().remove();
       $('.delete-success').show();
       setTimeout(function() {
         $('.delete-success').hide();
@@ -65,14 +65,14 @@ function postDelete(id) {
     },
     error: function(jqXHR, textStatus, errorThrown) {
       if (jqXHR) {
-        console.log("Error: " + textStatus + " " + errorThrown);
+        console.log('Error: ' + textStatus + ' ' + errorThrown);
       }
     }
   });
 }
 
 function deleteModal() {
-  "use strict";
+  'use strict';
 
   var id = this.id;
   $('#deleteModal').modal();
@@ -84,16 +84,16 @@ function deleteModal() {
 }
 
 function postCategory() {
-  "use strict";
+  'use strict';
 
   $.ajax({
-    url: loris.BaseURL + "/document_repository/ajax/addCategory.php",
-    type: "POST",
+    url: loris.BaseURL + '/document_repository/ajax/addCategory.php',
+    type: 'POST',
     data: $("#addCategoryForm").serialize(),
     success: function() {
-      $("#addCategoryModal").modal('hide');
-      $("#addCategoryCategory").removeClass("has-error");
-      $("#categoryAddError").hide();
+      $('#addCategoryModal').modal('hide');
+      $('#addCategoryCategory').removeClass('has-error');
+      $('#categoryAddError').hide();
       $('.add-success').show();
       setTimeout(function() {
         $('.add-success').hide();
@@ -104,9 +104,65 @@ function postCategory() {
     },
     error: function(jqXHR, textStatus, errorThrown) {
       if (jqXHR.status === 400) {
-        $("#addCategoryCategory").addClass("has-error");
-        $("#categoryAddError").show()
+        $('#addCategoryCategory').addClass('has-error');
+        $('#categoryAddError').show();
       }
+    }
+  });
+}
+
+function postEditCategory(id) {
+  var data = {
+    idEdit: id,
+    categoryEdit: $(categoryEditCategory).val(),
+    nameEdit: $(nameEditCategory).val(),
+    commentsEdit: $(commentsEditCategory).val(),
+    action: $(actionEdit).val(),
+    submit: 'yeah!!!!'
+  };
+
+  $.ajax({
+    type: 'POST',
+    url: loris.BaseURL + '/document_repository/ajax/documentModifyCategory.php',
+    data: data,
+    success: function() {
+      $('.edit-success').show();
+      $('#editModal').modal('hide');
+      $('#editFileCategory').removeClass('has-error');
+      $('#categoryEditError').hide();
+      setTimeout(function() {
+        location.reload()
+      }, 3000);
+    },
+    error: function() {
+      $('#editFileCategory').addClass('has-error');
+      $('#categoryEditError').show();
+    }
+  });
+}
+
+function postDeleteCategory(id) {
+  var data = {
+    idDelete: id,
+    categoryDelete: $(categoryDeleteCategory).val(),
+    action: $(actionDelete).val(),
+    submit: 'yeah!!!!'
+  };
+
+  $.ajax({
+    type: 'POST',
+    url: loris.BaseURL + '/document_repository/ajax/documentModifyCategory.php',
+    data: data,
+    success: function() {
+      $('.edit-success').show();
+      $('#deleteCategoryModal').modal('hide');
+      $('#categoryDeleteError').hide();
+      setTimeout(function() {
+        location.reload()
+      }, 3000);
+    },
+    error: function() {
+      $('#categoryDeleteError').show();
     }
   });
 }
@@ -126,57 +182,123 @@ function postEdit(id) {
   };
 
   $.ajax({
-    type: "POST",
-    url: loris.BaseURL + "/document_repository/ajax/documentEditUpload.php",
+    type: 'POST',
+    url: loris.BaseURL + '/document_repository/ajax/documentEditUpload.php',
     data: data,
     success: function() {
       $('.edit-success').show();
-      $("#editModal").modal('hide');
-      $("#editFileCategory").removeClass("has-error");
-      $("#categoryEditError").hide();
+      $('#editModal').modal('hide');
+      $('#editFileCategory').removeClass('has-error');
+      $('#categoryEditError').hide();
       setTimeout(function() {
         location.reload()
       }, 3000);
     },
     error: function() {
-      $("#editFileCategory").addClass("has-error");
-      $("#categoryEditError").show();
+      $('#editFileCategory').addClass('has-error');
+      $('#categoryEditError').show();
     }
   });
 }
 
-function editModal() {
-  "use strict";
+function editCategoryModal() {
+  'use strict';
 
   var id = this.id;
-  $("#editModal").modal();
+  $('#editCategoryModal').modal();
 
   $.ajax({
-    type: "GET",
-    url: loris.BaseURL + "/document_repository/ajax/getFileData.php",
+    type: 'GET',
+    url: loris.BaseURL + '/document_repository/ajax/getCategory.php',
+    data: {id: id},
+    async: true,
+    dataType: 'json',
+    success: function(data) {
+      //Pre-populate the form with the existing values
+      selectElement('categoryEditCategory', data.id);
+      selectElement('nameEditCategory', data.category_name);
+      selectElement('commentsEditCategory', data.comments);
+      //Disable user changing the category for now.
+      document.getElementById('categoryEditCategory').disabled = true;
+    }
+  });
+
+  $('#postEditCategory').click(function(e) {
+    e.preventDefault();
+    postEditCategory(id);
+  });
+  $('#cancelEditButton').click(function() {
+    $('.dialog-form-edit').dialog('close');
+  });
+
+  return false;
+}
+
+function deleteCategoryModal() {
+  'use strict';
+
+  var id = this.id;
+  console.log('id is: ' + id);
+  $('#deleteCategoryModal').modal();
+
+  $.ajax({
+    type: 'GET',
+    url: loris.BaseURL + '/document_repository/ajax/getCategory.php',
+    data: {id: id},
+    async: true,
+    dataType: 'json',
+    success: function(data) {
+      //Pre-populate the form with the existing values
+      selectElement('categoryDeleteCategory', data.id);
+      //Disable user changing the category.
+      document.getElementById('categoryDeleteCategory').disabled = true;
+    }
+  });
+
+  $('#postDeleteCategory').click(function(e) {
+    e.preventDefault();
+    postDeleteCategory(id);
+  });
+  $('#cancelEditButton').click(function() {
+    $('.dialog-form-edit').dialog('close');
+  });
+
+  return false;
+}
+
+
+function editModal() {
+  'use strict';
+
+  var id = this.id;
+  $('#editModal').modal();
+
+  $.ajax({
+    type: 'GET',
+    url: loris.BaseURL + '/document_repository/ajax/getFileData.php',
     data: {id: id},
     async: false,
-    dataType: "json",
+    dataType: 'json',
     success: function(data) {
 
       //Pre-populate the form with the existing values
-      selectElement("categoryEdit", data.File_category);
-      selectElement("siteEdit", data.For_site);
-      selectElement("instrumentEdit", data.Instrument);
-      selectElement("pscidEdit", data.PSCID);
-      selectElement("visitEdit", data.visitLabel);
-      selectElement("commentsEdit", data.comments);
-      selectElement("versionEdit", data.version);
+      selectElement('categoryEdit', data.File_category);
+      selectElement('siteEdit', data.For_site);
+      selectElement('instrumentEdit', data.Instrument);
+      selectElement('pscidEdit', data.PSCID);
+      selectElement('visitEdit', data.visitLabel);
+      selectElement('commentsEdit', data.comments);
+      selectElement('versionEdit', data.version);
 
     }
   });
 
-  $("#postEdit").click(function(e) {
+  $('#postEdit').click(function(e) {
     e.preventDefault();
     postEdit(id);
   });
-  $("#cancelEditButton").click(function() {
-    $(".dialog-form-edit").dialog("close");
+  $('#cancelEditButton').click(function() {
+    $('.dialog-form-edit').dialog('close');
   });
 
   return false;
@@ -184,29 +306,29 @@ function editModal() {
 
 function uploadForm() {
   var elements = $(this).get(0).elements,
-    category_isEmpty = isEmpty($(elements).filter("[name=category]")),
-    site_isEmpty = isEmpty($(elements).filter("[name=site]")),
-    file_isEmpty = isFileEmpty($("[name=file]").get(0).files);
+    category_isEmpty = isEmpty($(elements).filter('[name=category]')),
+    site_isEmpty = isEmpty($(elements).filter('[name=site]')),
+    file_isEmpty = isFileEmpty($('[name=file]').get(0).files);
   if (category_isEmpty || site_isEmpty || file_isEmpty) {
     return false;
   }
 }
 
 function renderTree() {
-  var fileDir = JSON.parse($("#json_data").html());
-  var filtered = JSON.parse($("#isFiltered").html()).filtered;
+  var fileDir = JSON.parse($('#json_data').html());
+  var filtered = JSON.parse($('#isFiltered').html()).filtered;
 
   for (var i in fileDir) {
     if (fileDir[i]) {
       var dir = fileDir[i];
-      var path = dir.CategoryName.split(">");
+      var path = dir.CategoryName.split('>');
       var depth = path.length;
 
-      var dirID = path[depth - 1].replace(/[^\w]/gi, "_") + "_" + i;
+      var dirID = path[depth - 1].replace(/[^\w]/gi, '_') + '_' + i;
       var parentID = null;
 
       if (depth >= 2) {
-        parentID = path[depth - 2].replace(/[^\w]/gi, "_") + "_" + dir.ParentID;
+        parentID = path[depth - 2].replace(/[^\w]/gi, '_') + '_' + dir.ParentID;
       }
 
       //new table layout
@@ -216,21 +338,24 @@ function renderTree() {
         var dirData = {
           name: path[depth - 1],
           id: dirID,
+          categoryID: dir.CategoryID,
           Comment: dir.Comment,
           parentID: parentID,
+          edit_category: dir.edit_category,
+          delete_category: dir.delete_category,
           indent: function() {
             return (depth - 1) * 60;
           },
-          margin: "margin-left: " + 60*(depth-1) + "px;"
+          margin: 'margin-left: ' + 60*(depth-1) + 'px;'
         }
         var renderDir = Mustache.render(directory, dirData);
 
         if (depth == 1) {
           //new table layout
-          $("#dir-tree").append(renderDir);
+          $('#dir-tree').append(renderDir);
         } else {
           //new table layout
-          $("#" + parentID + "a").after(renderDir);
+          $('#' + parentID + 'a').after(renderDir);
         }
       }
       var files = fileDir[i].Files;
@@ -242,9 +367,9 @@ function renderTree() {
         if (!filtered) {
           files[ii].indent = (depth) * 60;
           files[ii].parentID = dirID;
-          files[ii].margin = "margin-left: " + 60*(depth) + "px;"
+          files[ii].margin = 'margin-left: ' + 60*(depth) + 'px;';
           var renderedFile = Mustache.render(file, files[ii]);
-          $("#" + dirID + "a").after(renderedFile);
+          $('#' + dirID + 'a').after(renderedFile);
         } else {
           files[ii].filtered = true;
           var renderedFile = Mustache.render(file, files[ii]);
@@ -257,38 +382,38 @@ function renderTree() {
 
 function toggleDirectory() {
   var elmID;
-  if ($(this).hasClass("glyphicon-chevron-down")) {
-    $(this).removeClass("glyphicon-chevron-down");
-    $(this).addClass("glyphicon-chevron-right");
-    elmID = $(this).closest('tr').attr("id");
-    $("." + elmID).each(collapseDir);
+  if ($(this).hasClass('glyphicon-chevron-down')) {
+    $(this).removeClass('glyphicon-chevron-down');
+    $(this).addClass('glyphicon-chevron-right');
+    elmID = $(this).closest('tr').attr('id');
+    $('.' + elmID).each(collapseDir);
   } else {
-    $(this).removeClass("glyphicon-chevron-right");
-    $(this).addClass("glyphicon-chevron-down");
-    elmID = $(this).closest('tr').attr("id");
-    $("." + elmID).each(expandDir);
+    $(this).removeClass('glyphicon-chevron-right');
+    $(this).addClass('glyphicon-chevron-down');
+    elmID = $(this).closest('tr').attr('id');
+    $('.' + elmID).each(expandDir);
   }
 }
 
 function collapseDir(key, value) {
   var elmID;
-  if ($(value).hasClass("directoryRow")) {
-    elmID = $(value).attr("id");
-    $("." + elmID).each(collapseDir);
+  if ($(value).hasClass('directoryRow')) {
+    elmID = $(value).attr('id');
+    $('.' + elmID).each(collapseDir);
   }
   $(value).hide();
 }
 function expandDir(key, value) {
   var elmID;
-  if ($(value).hasClass("directoryRow") && $(value).find('span.glyphicon-chevron-down').length != 0) {
-    elmID = $(value).attr("id");
-    $("." + elmID).each(expandDir);
+  if ($(value).hasClass('directoryRow') && $(value).find('span.glyphicon-chevron-down').length != 0) {
+    elmID = $(value).attr('id');
+    $('.' + elmID).each(expandDir);
   }
   $(value).show();
 }
 
 $(document).ready(function() {
-  "use strict";
+  'use strict';
 
   //Hide error and success messages on load
   $('.upload-success').hide();
@@ -315,29 +440,35 @@ $(document).ready(function() {
   //File input wrapper
   //$('.file-wrapper input[type=file]').bind('change', fileInputs);
 
-  $(".dialog-form").dialog({
+  $('.dialog-form').dialog({
     autoOpen: false,
     height: 500,
     width: 666,
     modal: true
   });
 
-  $("#cancelButton").click(function() {
-    $(".dialog-form").dialog("close");
+  $('#cancelButton').click(function() {
+    $('.dialog-form').dialog('close');
   });
 
-  $("#upload").click(deleteModal);
+  $('#upload').click(deleteModal);
 
-  $("#postCategory").click(postCategory);
+  $('#postCategory').click(postCategory);
+
+  //The Edit category function
+  $('.theeditcategory').click(editCategoryModal);
+
+  //The delete category function
+  $('.thedeletecategory').click(deleteCategoryModal);
 
   //The Edit file function
-  $(".theeditlink").click(editModal);
+  $('.theeditlink').click(editModal);
 
   //Check form inputs before upload
-  $("#uploadForm").submit(uploadForm);
+  $('#uploadForm').submit(uploadForm);
 
-  $(".loading").hide();
-  $(".directory").click(toggleDirectory);
+  $('.loading').hide();
+  $('.directory').click(toggleDirectory);
 
-  $('.directory').popover({trigger: "hover"});
+  $('.directory').popover({trigger: 'hover'});
 });

@@ -60,8 +60,8 @@ class Document_Repository extends \NDB_Menu_Filter
             $this->centerIDMap[$row['CenterID']] = $row['Name'];
         }
 
-        $query  = " FROM document_repository v";
-        $query .= " WHERE COALESCE(v.hide_video, false)=false";
+        $query  = ' FROM document_repository v';
+        $query .= ' WHERE COALESCE(v.hide_video, false)=false';
 
         // set the class variables
         $this->columns = array(
@@ -148,7 +148,7 @@ class Document_Repository extends \NDB_Menu_Filter
         $list_of_instruments = \Utility::getAllInstruments();
 
         $list_of_visit_labels = array_merge(
-            array(null => "Any") + \Utility::getVisitList()
+            array(null => 'Any') + \Utility::getVisitList()
         );
         $subproject_options   = \Utility::getSubprojectList();
         $subproject_options   = array(null => 'Any') + $subproject_options;
@@ -159,8 +159,8 @@ class Document_Repository extends \NDB_Menu_Filter
         //$fileNames = $DB->pselect(
         //"Select File_name from document_repository", array());
         $fileTypes = array();
-        $sqlSelect = "SELECT DISTINCT File_type".
-                     " FROM document_repository ORDER BY File_type";
+        $sqlSelect = 'SELECT DISTINCT File_type'.
+                     ' FROM document_repository ORDER BY File_type';
         $fileT     = $DB->pselect($sqlSelect, array());
         foreach ($fileT as $fileType) {
             $fileTypes[$fileType['File_type']] = $fileType['File_type'];
@@ -244,10 +244,10 @@ class Document_Repository extends \NDB_Menu_Filter
             if ($value['parent_id'] != 0) {
                 $depth       += 1;
                 $parent_id    = $value['parent_id'];
-                $query        = "SELECT * FROM document_repository_categories".
-                                " where id=$parent_id";
+                $query        = 'SELECT * FROM document_repository_categories'.
+                                ' where id='.$parent_id;
                 $value        = $DB->pselectRow($query, array());
-                $categoryName = $value['category_name'] . ">" . $categoryName;
+                $categoryName = $value['category_name'] . '>' . $categoryName;
             }
         } while ($value['parent_id'] != 0);
         return $categoryName;
@@ -272,10 +272,10 @@ class Document_Repository extends \NDB_Menu_Filter
         $query        .= $filterdetails['clause'];
         $qparams       = $filterdetails['params'];
         // apply ORDER BY filters
-        $query .= " ORDER BY ";
+        $query .= ' ORDER BY ';
         if (!empty($this->filter['order'])) {
             $query .= $this->filter['order']['field']
-                ." ".$this->filter['order']['fieldOrder'].", ";
+                .' '.$this->filter['order']['fieldOrder'].', ';
         }
         $query .= $this->order_by;
 
@@ -305,6 +305,7 @@ class Document_Repository extends \NDB_Menu_Filter
      */
     function _setDataTable()
     {
+        $user     =& \User::singleton();
         $DB       = \Database::singleton();
         $results  = array();
         $query    = "SELECT * FROM document_repository_categories".
@@ -331,8 +332,8 @@ class Document_Repository extends \NDB_Menu_Filter
             }
             $tree; // contains the newly sorted tree.
         }
-        $query           ="SELECT id,category_name,parent_id,comments".
-                         " FROM document_repository_categories ORDER BY parent_id";
+        $query           = 'SELECT id,category_name,parent_id,comments'.
+                         ' FROM document_repository_categories ORDER BY parent_id';
         $IDCategories    = $DB->pselect($query, array());
         $tmpIDCategories = $IDCategories;
 
@@ -347,11 +348,26 @@ class Document_Repository extends \NDB_Menu_Filter
                 if ($CategoryID == $order) {
                     $fileCategories[$CategoryID]
                         = array(
-                           'CategoryName' => $this->parseCategory($value),
-                           'Comment'      => $value['comments'],
-                           'Files'        => array(),
-                           'ParentID'     => $value['parent_id'],
+                           'CategoryID'      => $CategoryID,
+                           'CategoryName'    => $this->parseCategory($value),
+                           'Comment'         => $value['comments'],
+                           'Files'           => array(),
+                           'ParentID'        => $value['parent_id'],
+                           'edit_category'   => $user->hasPermission(
+                               'document_repository_delete'
+                           ) == true ?
+                               '<a href=\'#\' id=\''.$CategoryID.'\' '
+                               .'class=\'theeditcategory\'>Edit</a>'
+                               : '',
+                           'delete_category' => $user->hasPermission(
+                               'document_repository_delete'
+                           ) == true ?
+                               '<a href=\'#\' id=\''.$CategoryID.'\' '
+                               .'class=\'thedeletecategory\'>Delete</a>'
+                               : '',
                           );
+                    $test = 'hello';
+
                 }
             }
         }
@@ -399,6 +415,7 @@ class Document_Repository extends \NDB_Menu_Filter
         $prepared = $DB->prepare($query['query']);
         $prepared->execute($query['params']);
 
+        $user       =& \User::singleton();
         $site_names = \Utility::getSiteList(true);
         // print out
         $x = 0;
@@ -409,6 +426,17 @@ class Document_Repository extends \NDB_Menu_Filter
             $DisplayItem['File_name'] = utf8_encode($item['File_name']);
             $DisplayItem['File_size'] = $this->formatSize($item['File_size']);
             $DisplayItem['For_site']  = $site_names[$item['For_site']];
+
+            $DisplayItem['edit_file']   = $user->hasPermission(
+                'document_repository_delete'
+            ) == true ?
+                $DisplayItem['record_id']
+                : '';
+            $DisplayItem['delete_file'] = $user->hasPermission(
+                'document_repository_delete'
+            ) == true ?
+                $DisplayItem['record_id']
+                : '';
 
             if (is_array($FileCategory['Files'])) {
                 array_push($FileCategory['Files'], $DisplayItem);
@@ -464,8 +492,8 @@ class Document_Repository extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             [
-             $baseURL . "/css/loris-jquery/jquery-ui-1.10.4.custom.min.css",
-             $baseURL . "/document_repository/css/document_repository.css",
+             $baseURL . '/css/loris-jquery/jquery-ui-1.10.4.custom.min.css',
+             $baseURL . '/document_repository/css/document_repository.css',
             ]
         );
     }
@@ -484,7 +512,7 @@ class Document_Repository extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/document_repository/js/document_repository_helper.js",
+             $baseURL . '/document_repository/js/document_repository_helper.js',
             )
         );
     }

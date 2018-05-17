@@ -15,14 +15,14 @@ $user =& User::singleton();
 if (!$user->hasPermission('document_repository_view')
     && !$user->hasPermission('document_repository_delete')
 ) {
-    header("HTTP/1.1 403 Forbidden");
+    header('HTTP/1.1 403 Forbidden');
     exit;
 }
 
-set_include_path(get_include_path().":../../project/libraries:../../php/libraries:");
-require_once "NDB_Client.class.inc";
+set_include_path(get_include_path().':../../project/libraries:../../php/libraries:');
+require_once 'NDB_Client.class.inc';
 $client = new NDB_Client();
-$client->initialize("../../project/config.xml");
+$client->initialize('../../project/config.xml');
 
 // create Database object
 $DB =& Database::singleton();
@@ -39,8 +39,7 @@ if (get_magic_quotes_gpc()) {
 $user =& User::singleton();
 
 //if user has document repository permission
-if ($user->hasPermission('document_repository_view')
-    || $user->hasPermission('document_repository_delete')
+if ($user->hasPermission('document_repository_delete')
 ) {
     $DB->update(
         'document_repository_categories',
