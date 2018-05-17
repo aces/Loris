@@ -72,9 +72,9 @@ class VisitTest extends TestCase
         );
         $this->_visitController = new \Loris\VisitController($db);
 
-        $v1 = new \Loris\Visit('v1');
-        $v2 = new \Loris\Visit('v2');
-        $v3 = new \Loris\Visit('v3');
+        $v1 = new \Loris\Visit('V1');
+        $v2 = new \Loris\Visit('V2');
+        $v3 = new \Loris\Visit('V3');
 
         $this->_listOfVisit = array($v1, $v2, $v3);
 
