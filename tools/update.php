@@ -27,8 +27,13 @@ $minimum_php = 7; //TODO: Update this value as time passes
 if (PHP_MAJOR_VERSION < $minimum_php) {
     die("ERROR: {$argv[0]} and LORIS require PHP $minimum_php or higher.");
 }
-echo 'Note: This script will prompt for superuser privileges'
+echo 'This script will prompt for superuser privileges,'
     . ' as they are needed to e.g. update apt packages.' . PHP_EOL;
+echo 'You may wish to review code changes tagged with "Caveat For '
+    . 'Existing Projects" as they may include changes to your workflow. '
+    . PHP_EOL
+    . "\tSee: https://github.com/aces/Loris/pulls?q=is%3Apr+label%3A%22Caveat+for+Existing+Projects%22+is%3Amerged"
+    . PHP_EOL . PHP_EOL;
 main();
 
 function main() {
@@ -69,8 +74,8 @@ function main() {
     $release_version = substr($release_version, 1); // remove leading 'v'
 
     // Update source code (if not on a development version)
-    $dev = strpos($preupdate_version, 'dev') !== false; // if 'dev' in VERSION
-    if (!$dev) {
+    echo '[**] Beginning LORIS update process.' . PHP_EOL;
+    if (!isDev($preupdate_version)) {
         echo "[*] Updating LORIS source code "
             . "($preupdate_version --> $release_version" . PHP_EOL;
         if (updateSourceCode($loris_root_dir, $backup_dir)) {
@@ -94,9 +99,9 @@ function main() {
         $release_version
     );
     if ($patches) {
-        echo "Patches to update in $release_patch_directory:" . PHP_EOL;
+        echo "[*] Patches to update in $release_patch_directory:" . PHP_EOL;
         foreach($patches as $filename) {
-            echo "\t* " . basename($filename) . PHP_EOL;
+            echo "\t] " . basename($filename) . PHP_EOL;
         }
     }
     // Get cached data on the patch most recently applied, if they exist
@@ -105,8 +110,7 @@ function main() {
     if (file_exists($last_patch)) {
         $last_patch = trim(file_get_contents($last_patch_path));
     }
-    #    echo 'LORIS source code files successfully updated.' . PHP_EOL;
-    #}
+    applyPatches($patches, $db_config);
     #if (runPackageManagers)
     #    echo 'LORIS source code files successfully updated.' . PHP_EOL;
     #}
@@ -132,7 +136,7 @@ function updateSourceCode($loris_root_dir, $backup_dir) : bool {
     }
     $dst_dir = '/tmp/'; // Parent directory for backup and release download
     echo 'Extracting release files...' . PHP_EOL;
-    $cmd = "unzip -o " .escapeshellarg($tarball_path) . ' -d ' 
+    $cmd = "unzip -o " . escapeshellarg($tarball_path) . ' -d ' 
         . escapeshellarg($dst_dir);
     doExec($cmd);
 
@@ -188,8 +192,9 @@ function patchesSinceLastUpdate($patch_directory, $version_from, $version_to) : 
     $diff_major = $to_versions[MAJOR] - $from_versions[MAJOR];
     $diff_minor = $to_versions[MINOR] - $from_versions[MINOR];
     #$diff_bugfix = $version_to_array[2] - $version_from_array[2];
-    echo "Latest version is ahead by $diff_major MAJOR releases, $diff_minor "
-        ."MINOR releases." . PHP_EOL;
+    echo "Latest version $version_to is ahead of installed $version_from by "
+        . "$diff_major MAJOR release(s), $diff_minor MINOR release(s)." 
+        . PHP_EOL;
 
     // For every major version released between the version that is installed 
     // and the latest version, add the relevant patches if they begin with
@@ -223,6 +228,30 @@ function patchesSinceLastUpdate($patch_directory, $version_from, $version_to) : 
         }
     }
     return $patches;
+}
+
+function applyPatches($patches, $db_config, $report_only = true) : bool
+{
+    // Iterate over all patches and source them into MySQL
+    $A = $db_config['database'];
+    $u = $db_config['username'];
+    $p = $db_config['password'];
+    $h = $db_config['host'];
+    if ($report_only === true) {
+        echo 'Running in Report-Only mode. Commands will be displayed but not '
+            . 'executed.' . PHP_EOL;
+        sleep(1);
+    }
+    echo '[*] Applying SQL patches...' . PHP_EOL;
+    foreach($patches as $patch) {
+        $cmd = "mysql -h $h -u $u -p -A $A < $patch";
+        if ($report_only === false) {
+            if (doExec($cmd) === false) break;
+        } else {
+            echo "\t] $cmd" . PHP_EOL;
+        }
+    }
+    return true;
 }
 
 
@@ -349,6 +378,12 @@ function installed($tool) : bool
     exec("dpkg -s $tool", $output, $status);
     if ($status === 0) return true;
     return false;
+}
+
+function isDev($version_string) : bool
+{
+    // if dev string exists in VERSION file
+    return strpos($version_string, 'dev') !== false;
 }
 
 /** 
