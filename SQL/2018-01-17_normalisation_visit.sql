@@ -30,6 +30,6 @@ EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
 SET @SQL = null;
 
-INSERT INTO visit (SELECT null, Visit_label FROM session WHERE Visit_label NOT IN (SELECT VisitName FROM visit));
+INSERT INTO visit (VisitID, VisitName) (SELECT null, Visit_label FROM session WHERE Visit_label NOT IN (SELECT VisitName FROM visit));
 
 -- add visit from config.xml
