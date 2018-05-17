@@ -39,7 +39,7 @@ class VisitController
     public function __construct(\Database $database)
     {
         if (!$database->isConnected()) {
-            throw new \RuntimeException(VisitController - Database not connected");
+            throw new \RuntimeException("VisitController - Database not connected");
         }
         $this->database = $database;
     }
