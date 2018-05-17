@@ -12,11 +12,11 @@
  */
 
 require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/../../php/libraries/VisitControler.class.inc';
+require_once __DIR__ . '/../../php/libraries/VisitController.class.inc';
 require_once __DIR__ . '/../../php/libraries/Visit.class.inc';
 
 use \LORIS\Visit;
-use \LORIS\VisitControler;
+use \LORIS\VisitController;
 use \PHPUnit\Framework\TestCase;
 
 /**
@@ -47,7 +47,7 @@ class VisitTest extends TestCase
         $this->factory->setConfig($mockconfig);
         $db = $this->factory->setDatabase($mockdb);  
         
-        $this->_visitControler = new \Loris\VisitControler($db);
+        $this->_visitController = new \Loris\VisitController($db);
 */
         //parent::setUp();
         //$db = parent::getConnection();
@@ -70,7 +70,7 @@ class VisitTest extends TestCase
             $this->factory->settings()->dbPassword(),
             $this->factory->settings()->dbHost()
         );
-        $this->_visitControler = new \Loris\VisitControler($db);
+        $this->_visitController = new \Loris\VisitController($db);
 
         $v1 = new \Loris\Visit('v1');
         $v2 = new \Loris\Visit('v2');
@@ -97,13 +97,13 @@ class VisitTest extends TestCase
 
     function testAllVisit()
     {
-        $visits = $this->_visitControler->getAllVisits();
+        $visits = $this->_visitController->getAllVisits();
         $this->assertEquals($this->_listOfVisit, $visits, "the name of the visit does not match value in DB");
     }  
 
     function testVisitsProjects()
     {
-        $visits = $this->_visitControler->getVisitsProject();
+        $visits = $this->_visitController->getVisitsProject();
         $this->assertEquals($this->_listOfVisitProject, $visits, "the project and subproject relation does not match value in DB");
     }
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains the VisitControler class.
+ * This file contains the VisitController class.
  *
  * PHP Version 7
  *
@@ -39,7 +39,7 @@ class VisitController
     public function __construct(\Database $database)
     {
         if (!$database->isConnected()) {
-            throw new \RuntimeException("VisitControler - Database not connected");
+            throw new \RuntimeException(VisitController - Database not connected");
         }
         $this->database = $database;
     }
