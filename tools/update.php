@@ -99,25 +99,19 @@ function main() {
     }
 
     // Print required SQL patches and commands needed to apply them
-    $release_patch_directory = $loris_root_dir . 'SQL/Release_patches/';
     $patches = patchesSinceLastUpdate(
-        $release_patch_directory,
+        $loris_root_dir,
         $preupdate_version, 
         $release_version
     );
     if ($patches) {
-        echo "[*] Patches to update in $release_patch_directory:" . PHP_EOL;
+        echo "[*] Patches to update:" . PHP_EOL;
         foreach($patches as $filename) {
-            echo "\t] " . basename($filename) . PHP_EOL;
+            echo "\t] " . $filename . PHP_EOL;
         }
+        echo '[*] Applying SQL patches...' . PHP_EOL;
+        applyPatches($patches, $db_config);
     }
-    // Get cached data on the patch most recently applied, if they exist
-    $last_patch = '';
-    $last_patch_path = getLorisCachePath() . 'last_patch_applied';
-    if (file_exists($last_patch)) {
-        $last_patch = trim(file_get_contents($last_patch_path));
-    }
-    applyPatches($patches, $db_config);
 }
 
 function updateSourceCode($loris_root_dir, $backup_dir) : bool {
@@ -177,7 +171,7 @@ function updateRequiredPackages($requirements) : bool {
     return true;
 }
 
-function patchesSinceLastUpdate($patch_directory, $version_from, $version_to) : array
+function patchesSinceLastUpdate($loris_root_dir, $version_from, $version_to) : array
 {
     // Semantic versioning: 0 = major, 1 = minor, 2 = bugfix
     define('MAJOR', 0);
@@ -213,7 +207,8 @@ function patchesSinceLastUpdate($patch_directory, $version_from, $version_to) : 
     if ($diff_major > 0) {
         $end = $to_versions[MAJOR];
     } 
-    $all_release_patches = glob($patch_directory . '*.sql');
+    $patch_dir = $loris_root_dir . 'SQL/Release_patches/';
+    $all_release_patches = glob($patch_dir . '*.sql');
     $patches = [];
     if ($diff_major > 0 || $diff_minor > 0) {
         foreach(range($start, $end) as $v) {
@@ -225,6 +220,17 @@ function patchesSinceLastUpdate($patch_directory, $version_from, $version_to) : 
                 }
             }
         }
+    }
+    if (isDev()) {
+        echo "[*] Developer instance detected. Including developer patches..."
+            . PHP_EOL;
+
+        // Add all patches in Archive/$MAJOR.$MINOR. Everything other needed
+        // command will be in the Release patches which are been added above
+        $dev_patch_dir = $loris_root_dir . 'SQL/Archive/' . $to_versions[MAJOR] 
+            . '.' . $to_versions[MINOR] . '/';
+        echo "DEV PATH DIR $dev_patch_dir\n";
+        $patches = array_merge($patches, glob($dev_patch_dir . '*.sql'));
     }
     return $patches;
 }
@@ -241,7 +247,6 @@ function applyPatches($patches, $db_config, $report_only = true) : bool
             . 'displayed but not executed.' . PHP_EOL;
         sleep(1);
     }
-    echo '[*] Applying SQL patches...' . PHP_EOL;
     foreach($patches as $patch) {
         $cmd = "mysql -h $h -u $u -p -A $A < $patch";
         if ($report_only === false) {
@@ -260,7 +265,7 @@ function installMissingRequirements($requirements) : bool
     if (empty($to_install)) {
         return true;
     }
-    echo 'Required package(s) not installed:' . PHP_EOL;
+    echo '[-] Required package(s) not installed:' . PHP_EOL;
     foreach ($to_install as $tool) {
         echo "\t* {$tool}" . PHP_EOL;
     }
@@ -269,10 +274,10 @@ function installMissingRequirements($requirements) : bool
     writeQuestion('Install now?', $answers);
     $answer = readAnswer($answers, $defaultAnswer);
     if ($answer != 'Y') {
-        echo 'Not installing requirements...' . PHP_EOL;
+        echo '[-] Not installing requirements...' . PHP_EOL;
         return false;
     }
-    echo 'Installing requirements...' . PHP_EOL;
+    echo '[*] Installing requirements...' . PHP_EOL;
     return installAptPackages($to_install);
 }
 
@@ -301,7 +306,8 @@ function installAptPackage($name, $only_upgrade = false) : bool
     return doExec($cmd);
 }
 
-function runPackageManagers() : bool {
+function runPackageManagers() : bool 
+{
     $cmd = 'composer install';
     if (!isDev()) $cmd .= ' --no-dev';
     if(doExec($cmd) === false) return false;
@@ -315,7 +321,8 @@ function runPackageManagers() : bool {
 /**
  * @return string JSON data from Github API
  */
-function getLatestReleaseInfo() {
+function getLatestReleaseInfo() : string
+{
     // get latest release based on GithubAPI
     $release_url = 'https://api.github.com/repos/aces/Loris/releases/latest';
     // capture json content using wget in quiet mode, reading from STDIN
@@ -325,7 +332,8 @@ function getLatestReleaseInfo() {
 /**
  * @return string LORIS version from VERSION file. '?' if not found
  */
-function getVersionFromLORISRoot($loris_root_dir) : string {
+function getVersionFromLORISRoot($loris_root_dir) : string
+{
     // Backup source code to e.g. /tmp/bkp-LORIS_v19.x-dev_16-May-2018
     $version_filepath = $loris_root_dir . 'VERSION';
     if (!file_exists($version_filepath)) {
@@ -340,8 +348,9 @@ function getVersionFromLORISRoot($loris_root_dir) : string {
  *
  * @return string, the download path if one exists, otherwise the empty string 
  */
-function downloadLatestRelease($download_path = '/tmp/loris_') : string {
-    echo "Querying for latest release version... ";
+function downloadLatestRelease($download_path = '/tmp/loris_') : string
+{
+    echo "[-] Querying for latest release version... ";
     $j = json_decode(getLatestReleaseInfo());
     echo 'Got ' . $j->{'tag_name'} . PHP_EOL;
     $download_path .= $j->{'tag_name'}; // include
@@ -403,13 +412,14 @@ function isDev() : bool
 /** 
  * @link https://secure.php.net/manual/en/function.copy.php#91010
  */
-function recurse_copy($src,$dst) { 
+function recurse_copy($src,$dst) : void
+{ 
     $blacklist = [
         '.',
         '..',
         '.git', // let git handle this
         'vendor', // let composer handle this
-        'user_uploads', 
+        'user_uploads', // could be very large files. not tracked by git anyway
         'templates_c', // no need to backup compiled files
     ];
     $dir = opendir($src); 
@@ -440,12 +450,12 @@ function recurse_copy($src,$dst) {
     closedir($dir); 
 }
 
-function writeQuestion($question, $answers)
+function writeQuestion($question, $answers) : void
 {
-        echo $question . ' (' . implode('/', $answers) . '): ' . PHP_EOL;
+    echo $question . ' (' . implode('/', $answers) . '): ' . PHP_EOL;
 }
 
-function readAnswer($possibleAnswers, $defaultAnswer)
+function readAnswer($possibleAnswers, $defaultAnswer) : string
 {
     $in = fopen('php://stdin', 'rw+');
     $answer = trim(fgets($in));
@@ -458,23 +468,15 @@ function readAnswer($possibleAnswers, $defaultAnswer)
     return $answer;
 }
 
-function getLorisCachePath() {
-    if (!empty(getenv('XDG_CACHE_HOME'))) {
-        $cache_path = getenv('XDG_CACHE_HOME');
-    } else {
-        $cache_path = getenv('HOME');
-    }
-    return "$cache_path/.loris/";
-}
-
-function doExec($cmd) {
+function doExec($cmd) : bool
+{
     echo "[-] Executing bash command `$cmd`... " . PHP_EOL;
     exec($cmd, $output, $status);
     if ($status !== 0) {
         echo bashErrorToString($cmd, $output, $status);
         return false;
     }
-    echo '[-] OK.' . PHP_EOL;
+    echo '[+] OK.' . PHP_EOL;
     return true;
 }
 
