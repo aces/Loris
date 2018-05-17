@@ -70,11 +70,14 @@ function main() {
     $backup_dir = "/tmp/bkp-LORIS"; // TODO: should this be configurable?
 
     $preupdate_version = getVersionFromLORISRoot($loris_root_dir);
-    $release_version = json_decode(getLatestReleaseInfo())->{'tag_name'};
+    $info = json_decode(getLatestReleaseInfo());
+    $release_version = $info->{'tag_name'};
     $release_version = substr($release_version, 1); // remove leading 'v'
 
     // Update source code (if not on a development version)
     echo '[**] Beginning LORIS update process.' . PHP_EOL;
+    echo '[*] Release notes:' . PHP_EOL;
+    echo $info->{'body'} . PHP_EOL . PHP_EOL;
     if (!isDev($preupdate_version)) {
         echo "[*] Updating LORIS source code "
             . "($preupdate_version --> $release_version" . PHP_EOL;
@@ -82,7 +85,7 @@ function main() {
             echo 'LORIS source code files successfully updated.' . PHP_EOL;
         }
     } else {
-        echo 'WARNING: You are using a development version of LORIS. Not '
+        echo '[*] WARNING: You are using a development version of LORIS. Not '
             . 'downloading source code files as they should be tracked with'
             . ' Git.' . PHP_EOL;
         sleep(3);
@@ -120,11 +123,7 @@ function main() {
 function updateSourceCode($loris_root_dir, $backup_dir) : bool {
     // Backup source code to e.g. /tmp/bkp-LORIS_v19.x-dev_16-May-2018
     $version_filepath = $loris_root_dir . 'VERSION';
-    if (!file_exists($version_filepath)) {
-        echo "ERROR: Could not find VERSION file in $loris_root_dir." . PHP_EOL;
-    } else {
-        $backup_dir .= '_v' . getVersionFromLORISRoot($loris_root_dir);
-    }
+    $backup_dir .= '_v' . getVersionFromLORISRoot($loris_root_dir);
     $backup_dir .= '_' . date("j-M-Y") . '/'; // e.g. 10-May-2018
     echo "[*] Backing up $loris_root_dir to $backup_dir" . PHP_EOL;
     recurse_copy($loris_root_dir, $backup_dir);
@@ -192,8 +191,8 @@ function patchesSinceLastUpdate($patch_directory, $version_from, $version_to) : 
     $diff_major = $to_versions[MAJOR] - $from_versions[MAJOR];
     $diff_minor = $to_versions[MINOR] - $from_versions[MINOR];
     #$diff_bugfix = $version_to_array[2] - $version_from_array[2];
-    echo "Latest version $version_to is ahead of installed $version_from by "
-        . "$diff_major MAJOR release(s), $diff_minor MINOR release(s)." 
+    echo "[*] Latest version $version_to is ahead of installed $version_from by"
+        . " $diff_major MAJOR release(s), $diff_minor MINOR release(s)." 
         . PHP_EOL;
 
     // For every major version released between the version that is installed 
@@ -238,8 +237,8 @@ function applyPatches($patches, $db_config, $report_only = true) : bool
     $p = $db_config['password'];
     $h = $db_config['host'];
     if ($report_only === true) {
-        echo 'Running in Report-Only mode. Commands will be displayed but not '
-            . 'executed.' . PHP_EOL;
+        echo '[*] NOTE: Running in Report-Only mode. Patching commands will be '
+            . ' displayed but not executed.' . PHP_EOL;
         sleep(1);
     }
     echo '[*] Applying SQL patches...' . PHP_EOL;
