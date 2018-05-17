@@ -1,23 +1,5 @@
 <?php
 
-// update LORIS
-//
-// 1. Create a back-up of the DB and of the loris root (?)
-//
-// 2. Update server requirements (e.g. PHP version, other requirements0
-//
-// 3. Clone/download files from LORIS
-//
-// 4. Overwrite LORIS path files (rsync?)
-//
-// 5. Check last patch applied in ~/.loris/
-//
-// 6. Source SQL patches in chronological order
-//
-// 7. Run package managers (composer, npm, ....)
-//
-// 8. Rollback?
-//
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "../php/libraries/Database.class.inc";
 require_once "../php/libraries/NDB_Config.class.inc";
@@ -34,6 +16,7 @@ echo 'You may wish to review code changes tagged with "Caveat For '
     . PHP_EOL
     . "\tSee: https://github.com/aces/Loris/pulls?q=is%3Apr+label%3A%22Caveat+for+Existing+Projects%22+is%3Amerged"
     . PHP_EOL . PHP_EOL;
+sleep(3);
 main();
 
 function main() {
@@ -75,11 +58,11 @@ function main() {
     $release_version = substr($release_version, 1); // remove leading 'v'
 
     // Update source code (if not on a development version)
-    echo '[**] Beginning LORIS update process.' . PHP_EOL;
+    echo '[***] Beginning LORIS update process.' . PHP_EOL;
     echo '[*] Release notes:' . PHP_EOL;
     echo $info->{'body'} . PHP_EOL . PHP_EOL;
     if (!isDev()) {
-        echo "[*] Updating LORIS source code "
+        echo "[**] Updating LORIS source code "
             . "($preupdate_version --> $release_version" . PHP_EOL;
         if (updateSourceCode($loris_root_dir, $backup_dir)) {
             echo 'LORIS source code files successfully updated.' . PHP_EOL;
@@ -88,14 +71,20 @@ function main() {
         echo '[-] WARNING: You are using a development version of LORIS. Not '
             . 'downloading source code files as they should be tracked with'
             . ' Git.' . PHP_EOL;
-        sleep(3);
+        sleep(2);
     }
-            
-    // Update dependencies via e.g. composer and npm
-    echo '[*] Updating dependencies via package managers...' . PHP_EOL;
+
+    // Update apt packages
+    echo '[**] Updating required packages...' . PHP_EOL;
+    if (updateRequiredPackages($loris_requirements)) {
+        echo '[**] Required apt packages up-to-date.' . PHP_EOL;
+    }
+
+    // Update other dependencies via e.g. composer and npm
+    echo '[**] Updating dependencies via package managers...' . PHP_EOL;
     chdir($loris_root_dir); // Composer will fail if not in LORIS root
     if (runPackageManagers()) {
-        echo '[*] Dependencies are all up-to-date' . PHP_EOL;
+        echo '[**] Dependencies up-to-date.' . PHP_EOL;
     }
 
     // Print required SQL patches and commands needed to apply them
@@ -112,6 +101,7 @@ function main() {
         echo '[*] Applying SQL patches...' . PHP_EOL;
         applyPatches($patches, $db_config);
     }
+    echo "[***] Done." . PHP_EOL;
 }
 
 function updateSourceCode($loris_root_dir, $backup_dir) : bool {
@@ -151,15 +141,14 @@ function updateSourceCode($loris_root_dir, $backup_dir) : bool {
 }
 
 function updateRequiredPackages($requirements) : bool {
-    echo '[*] Updating required packages...' . PHP_EOL;
     // we need 3rd party PPA to get the latest PHP on Ubuntu
-    echo 'Adding external PPAs...' . PHP_EOL;
+    echo '[*] Adding external PPAs...' . PHP_EOL;
     // -y flag required to suppress a message from the author
     // TODO: check if these already exist before adding
     exec('sudo apt-add-repository ppa:ondrej/php -y');
     exec('sudo apt-add-repository ppa:ondrej/apache2 -y');
 
-    echo 'Updating apt package list...' . PHP_EOL;
+    echo '[*] Updating apt package list...' . PHP_EOL;
     exec('sudo apt-get update');
     // die unless all required packages are installed and up-to-date
     if (!(installMissingRequirements($requirements))
@@ -185,7 +174,7 @@ function patchesSinceLastUpdate($loris_root_dir, $version_from, $version_to) : a
     $diff_major = $to_versions[MAJOR] - $from_versions[MAJOR];
     $diff_minor = $to_versions[MINOR] - $from_versions[MINOR];
     #$diff_bugfix = $version_to_array[2] - $version_from_array[2];
-    echo "[*] Latest version $version_to is ahead of installed $version_from by"
+    echo "[**] Latest version $version_to is ahead of installed $version_from by"
         . " $diff_major MAJOR release(s), $diff_minor MINOR release(s)." 
         . PHP_EOL;
 
@@ -222,14 +211,13 @@ function patchesSinceLastUpdate($loris_root_dir, $version_from, $version_to) : a
         }
     }
     if (isDev()) {
-        echo "[*] Developer instance detected. Including developer patches..."
+        echo "[+] Developer instance detected. Including developer patches..."
             . PHP_EOL;
 
         // Add all patches in Archive/$MAJOR.$MINOR. Everything other needed
         // command will be in the Release patches which are been added above
         $dev_patch_dir = $loris_root_dir . 'SQL/Archive/' . $to_versions[MAJOR] 
             . '.' . $to_versions[MINOR] . '/';
-        echo "DEV PATH DIR $dev_patch_dir\n";
         $patches = array_merge($patches, glob($dev_patch_dir . '*.sql'));
     }
     return $patches;
@@ -470,7 +458,7 @@ function readAnswer($possibleAnswers, $defaultAnswer) : string
 
 function doExec($cmd) : bool
 {
-    echo "[-] Executing bash command `$cmd`... " . PHP_EOL;
+    echo "[+] Executing bash command `$cmd`... " . PHP_EOL;
     exec($cmd, $output, $status);
     if ($status !== 0) {
         echo bashErrorToString($cmd, $output, $status);
@@ -483,7 +471,7 @@ function doExec($cmd) : bool
 function bashErrorToString($cmd, $output, $status) : string
 {
     echo PHP_EOL;
-    $error = "ERROR: Command `$cmd` failed (error code $status):" . PHP_EOL;
+    $error = "[-] ERROR: Command `$cmd` failed (error code $status):" . PHP_EOL;
     if (is_iterable($output)){
         foreach($output as $item) {
             $error .= $item . PHP_EOL;
