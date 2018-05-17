@@ -78,7 +78,7 @@ var GenomicFileUploadModal = React.createClass({
         }
       } catch (e) {
         console.error("[XHR STATECHANGE] Exception: " + e);
-        bar.innerHTML = 'An error occured';
+        bar.innerHTML = 'An error occurred';
         bar.className = 'progress-bcar progress-bar-danger';
         bar.style.width = "100%";
       }

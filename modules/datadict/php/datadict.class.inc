@@ -27,13 +27,13 @@ class Datadict extends \NDB_Menu_Filter
 {
     var $AjaxModule = true;
     /**
-    * Overloading this method to allow access to site users (their own site
-    * only) and users w/ multisite privs
-    *
-    * @note   overloaded function
-    * @return bool
-    * @access private
-    */
+     * Overloading this method to allow access to site users (their own site
+     * only) and users w/ multisite privs
+     *
+     * @note   overloaded function
+     * @return bool
+     * @access private
+     */
     function _hasAccess()
     {
         // create user object
@@ -42,35 +42,46 @@ class Datadict extends \NDB_Menu_Filter
         return ($user->hasPermission('data_dict_view') ||
                 $user->hasPermission('data_dict_edit'));
     }
+
     /**
-    * Setup variables function
-    *
-    * @note   Setup variables function
-    * @return bool
-    * @access private
-    */
+     * Build data dictionary query function
+     *
+     * @return string $query
+     */
+    function _buildQuery()
+    {
+        $select = " SELECT DISTINCT
+         pt.sourceFrom as source_from,
+         pt.name as name,
+         pt.sourceField as source_field,
+         coalesce(pto.description,pt.description) as description,
+         CASE
+           WHEN COALESCE(pto.description,pt.description) = '' THEN 'Empty'
+           WHEN pto.name IS NOT NULL THEN 'Modified'
+           WHEN pto.name IS NULL THEN 'Unchanged'
+         END as description_status ";
+
+        $joins = " FROM parameter_type pt
+        LEFT JOIN parameter_type_override pto USING (Name)
+        WHERE pt.Queryable=1 ";
+        $query = $select . $joins;
+        return $query;
+    }
+    /**
+     * Setup variables function
+     *
+     * @note   Setup variables function
+     * @return bool
+     * @access private
+     */
     function _setupVariables()
     {
-        // set the class variables
-        $this->columns = array(
-                          'pt.sourceFrom',
-                          'pt.Name',
-                          'pt.sourceField',
-                          'coalesce(pto.description,pt.description)'.
-                                                   ' as description',
-                         );
-
-        $this->validFilters = array(
-                               'pt.sourceFrom',
-                               'pt.Description',
-                              );
-        $this->query        = " FROM parameter_type pt LEFT JOIN 
-                                parameter_type_override pto USING (Name)
-                 		WHERE pt.Queryable=1";
+        $query       = $this->_buildQuery();
+        $this->query = " FROM (" . $query . ") as tmp";
 
         $this->formToFilter = array(
                                'sourceFrom'  => 'pt.sourceFrom',
-                               'Description' => 'pt.Description',
+                               'description' => 'pt.Description',
                               );
 
         $this->searchKeyword = array(
@@ -78,6 +89,23 @@ class Datadict extends \NDB_Menu_Filter
                                 'pt.sourceField',
                                 'pto.description',
                                );
+        // set the class variables
+
+        $this->columns = array(
+                          'source_from',
+                          'name',
+                          'source_field',
+                          'description',
+                          'description_status',
+                         );
+
+        $this->headers = array(
+                          'Source From',
+                          'Name',
+                          'Source Field',
+                          'Description',
+                          'Description Status',
+                         );
         return true;
     }
 
@@ -94,21 +122,20 @@ class Datadict extends \NDB_Menu_Filter
         $instruments = \Utility::getAllInstruments();
         $instruments = array_merge(
             array('' => 'All Instruments'),
-            $instruments
+            $instruments,
+            array("multiple")
         );
         $this->addSelect('sourceFrom', 'Instruments', $instruments);
         $this->addSelect(
-            'Description',
-            'Description',
+            'descriptionStatus',
+            'Description Status',
             array(
-             ''           => 'All',
-             'empty'      => 'Empty',
-             'modified'   => 'Modified',
-             'unmodified' => 'Unmodified',
+             'empty'     => 'Empty',
+             'modified'  => 'Modified',
+             'unchanged' => 'Unchanged',
             )
         );
-        $this->addBasicText('keyword', 'Search keyword');
-
+        $this->addBasicText('keyword', "Search keyword");
         return true;
     }
 
@@ -127,7 +154,6 @@ class Datadict extends \NDB_Menu_Filter
     {
         $query = '';
         if ((!empty($val) || $val === '0') && $key != 'order') {
-
             // special rule for dropdowns where value is numeric
             if (strtolower(substr($key, -8)) == 'centerid'
                 || strtolower(substr($key, -10)) == 'categoryid'
@@ -147,7 +173,20 @@ class Datadict extends \NDB_Menu_Filter
             }
         }
         return $query;
+    }
 
+
+    /**
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return a json encoded string of the headers and data from this table
+     */
+    function toJSON()
+    {
+        $result         = $this->toArray();
+        $result['form'] = $this->form->form;
+        return json_encode($result);
     }
 
     /**
@@ -164,8 +203,7 @@ class Datadict extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/datadict/js/columnFormatter.js",
-             $baseURL . "/datadict/js/datadict_helper.js",
+             $baseURL . "/datadict/js/dataDictIndex.js",
             )
         );
     }

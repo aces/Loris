@@ -113,14 +113,6 @@ class RequestAccount extends \NDB_Form
             $errors['site'] = "Please choose a site!";
         }
 
-        // Is this still required? It seems to be from the old captcha
-        // method?
-        if (isset($_SESSION['tntcon'])
-            && md5($_REQUEST['verif_box']).'a4xn' != $_SESSION['tntcon']
-        ) {
-            $errors[] = 'The verification code is incorrect';
-        }
-
         // I don't think this is required because insert uses prepared statements,
         // but I'm keeping it for now because it doesn't do any harm (unlike the
         // len > 3 check). Little Bobby Tables will just have to sign
@@ -225,7 +217,6 @@ class RequestAccount extends \NDB_Form
             }
         }
 
-        unset($_SESSION['tntcon']);
         // Verify reCAPTCHA
         if (isset($values['g-recaptcha-response']) && isset($reCAPTCHAPrivate)) {
             $recaptcha = new \ReCaptcha\ReCaptcha($reCAPTCHAPrivate);

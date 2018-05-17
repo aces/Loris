@@ -294,7 +294,7 @@ function getUploadFields()
             "comments, " .
             "file_name as fileName, " .
             "hide_file as hideFile, " .
-            "language_id as language" .
+            "language_id as language," .
             "m.id FROM media m LEFT JOIN session s ON m.session_id = s.ID " .
             "WHERE m.id = $idMediaFile",
             []

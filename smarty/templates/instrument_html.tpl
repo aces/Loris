@@ -8,7 +8,7 @@
 	 }
 </style>
 <form method="post" name="test_form" id="test_form" {$form.enctype} {$form.action}>
-<div class="row">
+<div class="form-group">
 	{$form.hidden}
 	{$form.errors.mainError}
 	{assign var="inTable" value="FALSE"}
@@ -19,11 +19,11 @@
 				</table>
 			{/if}
 			{if $element.type eq header}
-				<div class="col-xs-12">
+				<div class="row form-group col-xs-12">
 					{$element.html}
 				</div>
 			{elseif $element.label eq $element.html}
-				<label class="lab col-xs-12">
+				<label class="row form-group col-xs-12">
 					{$element.label}
 				</label>
 			{elseif $element.type eq hidden}
@@ -40,11 +40,11 @@
 						</table>
 					{/if}
 					{if $element.error}
-			    	<div class="row form-group form-inline form-inline has-error">
+			    	<div class="row form-group form-inline has-error">
 			        {else}
-			        <div class="row form-group form-inline form-inline">
+			        <div class="row form-group form-inline">
 			        {/if}
-						<label class="lab col-sm-4 col-xs-12">
+						<label class="col-sm-4 col-xs-12">
 							{if $element.required}
 								<span style="color: #ff0000">*</span>
 							{/if}
@@ -106,11 +106,11 @@
 					</table>
 				{/if}
 				{if $element.error}
-		    	<div class="row form-group form-inline form-inline has-error">
+		    	<div class="row form-group form-inline has-error">
 		        {else}
-		        <div class="row form-group form-inline form-inline">
+		        <div class="row form-group form-inline">
 		        {/if}
-		        	<label class="lab col-sm-4 col-xs-12">
+		        	<label class="col-sm-4 col-xs-12">
 						{if $element.required}
 							<span style="color: #ff0000">*</span>
 						{/if}
@@ -151,11 +151,11 @@
 							</table>
 						{/if}
 						{if $element.error}
-				    	<div class="row form-group form-inline form-inline has-error">
+				    	<div class="row form-group form-inline has-error">
 				        {else}
-				        <div class="row form-group form-inline form-inline">
+				        <div class="row form-group form-inline">
 				        {/if}
-							<label class="lab col-sm-4 col-xs-12">
+							<label class="col-sm-4 col-xs-12">
 								{if $element.required}
 									<span style="color: #ff0000">*</span>
 								{/if}
@@ -221,7 +221,7 @@
 			        {else}
 			        <div class="row form-group form-inline">
 			        {/if}
-			        	<label class="lab col-sm-4 col-xs-12">
+			        	<label class="col-sm-4 col-xs-12">
 							{if $element.required}
 								<span style="color: #ff0000">*</span>
 							{/if}

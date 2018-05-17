@@ -2,7 +2,7 @@
 /**
  * Instrument_manager
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Instrument_Manager
@@ -15,7 +15,7 @@ namespace LORIS\instrument_manager;
 /**
  * Instrument_manager
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Instrument_Manager
@@ -87,29 +87,24 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 array('testname' => $_FILES['install_file']['name'])
             );
             if ($exists <= 0) {
-                $db_config = $config->getSetting('database');
-                exec("php generate_tables_sql_and_testNames.php < $new_file");
-
-                $instrument = \NDB_BVL_Instrument::factory(
-                    $instname,
-                    '',
-                    ''
+                $error_message = exec(
+                    'php generate_tables_sql_and_testNames.php '
+                    . escapeshellarg($new_file)
                 );
-                if (!isset($db_config['quatUser'], $db_config['quatPassword'])) {
+                if (!empty($error_message)
+                    && strpos($error_message, "Instrument") !== false
+                ) {
+                    // See the /project/tables_sql/{file} for debugging the error.
+                    error_log(
+                        "Error uploading the Instrument(s) file: "
+                        .$error_message
+                    );
+                    // Instrument(s)
                     throw new \LorisException(
-                        "SQL needs to be sourced manually at /project/tables_sql/".
-                        $instrument->table.".sql"
+                        "Error uploading the Instrument(s) file:\n".
+                        "$error_message"
                     );
                 }
-                exec(
-                    "mysql".
-                    " -h" . escapeshellarg($db_config['host']).
-                    " -u" . escapeshellarg($db_config['quatUser']).
-                    " -p" . escapeshellarg($db_config['quatPassword']).
-                    " " . escapeshellarg($db_config['database']).
-                    " < " . $this->path . "project/tables_sql/".
-                    $instrument->table.".sql"
-                );
             }
         }
     }
