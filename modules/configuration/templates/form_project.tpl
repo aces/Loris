@@ -13,7 +13,7 @@
 </ul>
 </div>
 
-<div class="col-md-9">
+<div class="col-md-7">
     <div class="tab-content">
     {foreach from=$projects key=ProjectID item=project name=tabContent}
     <div id="project{$ProjectID}" class="tab-pane {if $smarty.foreach.tabContent.first} active{/if}">
@@ -22,18 +22,22 @@
         <form class="form-horizontal" role="form" method="post" id="form{$ProjectID}">
             <fieldset>
                 <input type="hidden" name="ProjectID" value="{$ProjectID}" class="ProjectID">
-                <div class="form-group">
-                    <label class="col-sm-12 col-md-4">Project Name</label>
-                    <div class="col-sm-12 col-md-8">
-                        <input class="form-control projectName" name="Name" value="{$project.Name}">
+		<div class="form-group">
+                    <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'Full descriptive title of the project'}">
+			<label class="col-sm-12 control-label config-name">Project Name</label>
                     </div>
-                </div>
+			<div class="col-sm-12 col-md-9">
+			<input class="form-control projectName" name="Name" value="{$project.Name}">
+			</div>
+		 
+		</div>
                 <div class="form-group">
-
-                    <label class="col-sm-12 col-md-4">Recruitment target </label>
-                    <div class="col-sm-12 col-md-8">
+		    <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'The target number will be used to generate the recruitment progress bar on the dashboard'}">
+                    	<label class="col-sm-12 control-label config-name">Recruitment Target</label>
+                    </div>
+			<div class="col-sm-12 col-md-9">
 			<input class="form-control projectrecruitmentTarget" name="recruitmentTarget" value="{$project.recruitmentTarget}">
-                    </div>
+                    	</div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-4 col-sm-8 submit-area">
