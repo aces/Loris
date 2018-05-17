@@ -78,23 +78,27 @@ function main() {
     echo '[**] Beginning LORIS update process.' . PHP_EOL;
     echo '[*] Release notes:' . PHP_EOL;
     echo $info->{'body'} . PHP_EOL . PHP_EOL;
-    if (!isDev($preupdate_version)) {
+    if (!isDev()) {
         echo "[*] Updating LORIS source code "
             . "($preupdate_version --> $release_version" . PHP_EOL;
         if (updateSourceCode($loris_root_dir, $backup_dir)) {
             echo 'LORIS source code files successfully updated.' . PHP_EOL;
         }
     } else {
-        echo '[*] WARNING: You are using a development version of LORIS. Not '
+        echo '[-] WARNING: You are using a development version of LORIS. Not '
             . 'downloading source code files as they should be tracked with'
             . ' Git.' . PHP_EOL;
         sleep(3);
     }
             
-    // Update apt packages
-    #if (updateRequiredPackages($loris_requirements)) {
-    #    echo 'All requirements satisfied and up-to-date.' . PHP_EOL;
-    #}
+    // Update dependencies via e.g. composer and npm
+    echo '[*] Updating dependencies via package managers...' . PHP_EOL;
+    chdir($loris_root_dir); // Composer will fail if not in LORIS root
+    if (runPackageManagers()) {
+        echo '[*] Dependencies are all up-to-date' . PHP_EOL;
+    }
+
+    // Print required SQL patches and commands needed to apply them
     $release_patch_directory = $loris_root_dir . 'SQL/Release_patches/';
     $patches = patchesSinceLastUpdate(
         $release_patch_directory,
@@ -114,10 +118,6 @@ function main() {
         $last_patch = trim(file_get_contents($last_patch_path));
     }
     applyPatches($patches, $db_config);
-    #if (runPackageManagers)
-    #    echo 'LORIS source code files successfully updated.' . PHP_EOL;
-    #}
-
 }
 
 function updateSourceCode($loris_root_dir, $backup_dir) : bool {
@@ -237,8 +237,8 @@ function applyPatches($patches, $db_config, $report_only = true) : bool
     $p = $db_config['password'];
     $h = $db_config['host'];
     if ($report_only === true) {
-        echo '[*] NOTE: Running in Report-Only mode. Patching commands will be '
-            . ' displayed but not executed.' . PHP_EOL;
+        echo '[-] NOTE: Running in Report-Only mode. Patching commands will be '
+            . 'displayed but not executed.' . PHP_EOL;
         sleep(1);
     }
     echo '[*] Applying SQL patches...' . PHP_EOL;
@@ -299,6 +299,17 @@ function installAptPackage($name, $only_upgrade = false) : bool
     }
     $cmd .= escapeshellarg($name);
     return doExec($cmd);
+}
+
+function runPackageManagers() : bool {
+    $cmd = 'composer install';
+    if (!isDev()) $cmd .= ' --no-dev';
+    if(doExec($cmd) === false) return false;
+    $cmd = 'composer dump-autoload';
+    if(doExec($cmd) === false) return false;
+    $cmd = 'npm install';
+    if(doExec($cmd) === false) return false;
+    return true;
 }
 
 /**
@@ -379,8 +390,12 @@ function installed($tool) : bool
     return false;
 }
 
-function isDev($version_string) : bool
+function isDev() : bool
 {
+
+    $config    = \NDB_Config::singleton();
+    $paths = $config->getSetting('paths');
+    $version_string = getVersionFromLORISRoot($paths['base']);
     // if dev string exists in VERSION file
     return strpos($version_string, 'dev') !== false;
 }
@@ -399,7 +414,7 @@ function recurse_copy($src,$dst) {
     ];
     $dir = opendir($src); 
     if (file_exists($dst)){
-        echo "WARNING: $dst already exists. Not backing up." . PHP_EOL;
+        echo "[-] WARNING: $dst already exists. Not backing up." . PHP_EOL;
         return;
     }
     mkdir($dst); 
@@ -409,7 +424,7 @@ function recurse_copy($src,$dst) {
             if ($file === $item) continue 2;
         }
         if (!is_readable($src . '/' . $file)) {
-            $out = "WARNING: Insufficient permissions to read $file";
+            $out = "[-] WARNING: Insufficient permissions to read $file";
             if (is_dir($src . '/' . $file)) $out .= '/';
             $out .= '. This file/folder will not be backed up.' . PHP_EOL;
             echo $out;
@@ -453,13 +468,13 @@ function getLorisCachePath() {
 }
 
 function doExec($cmd) {
-    echo "Executing bash command `$cmd`... ";
+    echo "[-] Executing bash command `$cmd`... " . PHP_EOL;
     exec($cmd, $output, $status);
     if ($status !== 0) {
         echo bashErrorToString($cmd, $output, $status);
         return false;
     }
-    echo 'OK.' . PHP_EOL;
+    echo '[-] OK.' . PHP_EOL;
     return true;
 }
 
