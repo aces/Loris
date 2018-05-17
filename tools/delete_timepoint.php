@@ -113,8 +113,7 @@ if ($sessionID != null) {
  */
 switch ($action) {
 case 'delete_timepoint':
-    deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $output);
-    break;
+    return deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $output);
 }
 
 /*
@@ -149,14 +148,19 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
 
     // Print each instrument instance
     foreach ($instruments as $instrument) {
-        $result = $DB->pselect(
-            'SELECT CommentID FROM ' . $DB->escape($instrument['Test_name']) . ' WHERE CommentID=:cid',
-            array('cid' => $instrument['CommentID'])
-        );
-        echo "\n{$instrument['Test_name']}\n";
-        echo "-----------------------------------------\n";
-        print_r($result);
-
+        try {
+            $result = $DB->pselect(
+                'SELECT CommentID FROM ' . $DB->escape($instrument['Test_name']) . ' WHERE CommentID=:cid',
+                array('cid' => $instrument['CommentID'])
+            );
+            echo "\n{$instrument['Test_name']}\n";
+            echo "-----------------------------------------\n";
+            print_r($result);
+        } catch (DatabaseException $e) {
+            echo "\nERROR:\n";
+            echo $e->getMessage();
+        }
+        
         // Print from conflicts
         echo "\nConflicts Unresolved\n";
         echo "----------------------\n";
@@ -233,15 +237,21 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
     if ($confirm) {
         // Delete each instrument instance
         foreach ($instruments as $instrument) {
-            $name = implode(" -> ", $instrument);
-            echo "\n-- Deleting Instrument $name.\n";
-            $DB->delete($instrument['Test_name'], array('CommentID' => $instrument['CommentID']));
-
-            // Delete from conflicts
-            $DB->delete('conflicts_unresolved', array('CommentId1' => $instrument['CommentID']));
-            $DB->delete('conflicts_unresolved', array('CommentId2' => $instrument['CommentID']));
-            $DB->delete('conflicts_resolved', array('CommentId1' => $instrument['CommentID']));
-            $DB->delete('conflicts_resolved', array('CommentId2' => $instrument['CommentID']));
+            try {
+                $name = implode(" -> ", $instrument);
+                echo "\n-- Deleting Instrument $name.\n";
+                $DB->delete($instrument['Test_name'], array('CommentID' => $instrument['CommentID']));
+    
+                // Delete from conflicts
+                $DB->delete('conflicts_unresolved', array('CommentId1' => $instrument['CommentID']));
+                $DB->delete('conflicts_unresolved', array('CommentId2' => $instrument['CommentID']));
+                $DB->delete('conflicts_resolved', array('CommentId1' => $instrument['CommentID']));
+                $DB->delete('conflicts_resolved', array('CommentId2' => $instrument['CommentID']));
+            } catch (DatabaseException $e) {
+                echo "\nERROR:\n";
+                echo $e->getMessage();
+            }
+            
         }
         // Delete from flag
         echo "\n-- Deleting from flag.\n";
@@ -273,7 +283,7 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
         // Delete from session
         echo "\n-- Deleting from session.\n";
         $DB->delete('session', array('ID' => $sessionID));
-    } elseif ($printToSQL) {
+    } else {
         // Delete each instrument instance
         foreach ($instruments as $instrument) {
             $name    = implode(" -> ", $instrument);
@@ -317,7 +327,12 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
         $output .= "\n-- Deleting from session.\n";
         _printResultsSQL('session', array('ID' => $sessionID), $output, $DB);
         
-        _exportSQL($output, $CandID, $sessionID);
+        if ($printToSQL) {
+            _exportSQL($output, $CandID, $sessionID);
+        } else {
+            echo $output;
+            return $output;
+        }
     }
 }
 
