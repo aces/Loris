@@ -30,7 +30,7 @@ class Installer
     private $_lastErr;
 
     /**
-     * Get the last error that occured in this install process.
+     * Get the last error that occurred in this install process.
      *
      * @return string
      */
