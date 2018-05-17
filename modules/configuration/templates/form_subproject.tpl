@@ -31,8 +31,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'Use EDC (Expected Date of Confinement) for birthdate estimations if the study involves neonatals'}">
-                        <label class="col-sm-12 control-label config-name">Use <abbr title="Expect Date of Confinement (ie. baby's due date)">EDC</abbr></label>
+                    <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{"Include field for EDC (Expected Date of Confinement) in Candidate Parameters to record subject's due date if applicable"}">
+                        <label class="col-sm-12 control-label config-name">Use EDC</label>
                     </div>
                     <div class="col-sm-12 col-md-7">
                         {html_options options=$useEDCOptions name="useEDC" selected=$subproject.options.useEDC class="form-control subprojectuseEDC"}
