@@ -14,10 +14,10 @@ import {Tabs, TabPane} from 'Tabs';
 var LoadPane = React.createClass({
   getInitialState: function() {
     return {
+      disabled: true,
       // This is used to alert the user if the file was
       // loaded successfully or there was an error with
       // the loading.
-      disabled: true,
       alert: ''
     };
   },
