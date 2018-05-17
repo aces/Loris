@@ -76,9 +76,7 @@ if ($userSingleton->hasPermission('document_repository_view')
             mkdir($base_path . $puser, 0777);
         }
 
-
         $target_path = $base_path  . $fileBase;
-        error_log("Target path is: $target_path");
 
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {
             $success = $DB->insert(
