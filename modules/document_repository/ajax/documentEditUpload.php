@@ -52,7 +52,6 @@ if ($userSingleton->hasPermission('document_repository_view')
     || $userSingleton->hasPermission('document_repository_delete')
 ) {
     if ($action == 'upload') {
-        $puser      = $_POST['user'];
         $category   = $_POST['category'];
         $site       = $_POST['site']       !== '' ? $_POST['site'] : null;
         $instrument = $_POST['instrument'] !== '' ? $_POST['instrument'] : null;
@@ -70,6 +69,7 @@ if ($userSingleton->hasPermission('document_repository_view')
         // document_repository module directory, and use a
         // user_uploads directory as a base for user uploads
         $base_path = __DIR__ . "/../user_uploads/";
+        $puser     = $userSingleton->getUsername();
         $fileBase  = $puser . "/" . $fileName;
 
         if (!file_exists($base_path . $puser)) {
@@ -78,6 +78,7 @@ if ($userSingleton->hasPermission('document_repository_view')
 
 
         $target_path = $base_path  . $fileBase;
+        error_log("Target path is: $target_path");
 
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {
             $success = $DB->insert(
