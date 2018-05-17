@@ -147,7 +147,7 @@ function main() : void
     }
 
     // Print required SQL patches and commands needed to apply them
-    $patches = patchesSinceLastUpdate(
+    $patches = getPatchesFromVersion(
         $loris_root_dir,
         $preupdate_version,
         $release_version
