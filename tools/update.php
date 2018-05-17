@@ -23,27 +23,19 @@ require_once "../php/libraries/Database.class.inc";
 require_once "../php/libraries/NDB_Config.class.inc";
 
 error_reporting(E_ALL);
-if (PHP_MAJOR_VERSION < 7) {
-    die("ERROR: {$argv[0]} and LORIS require PHP 7 or higher.");
+$minimum_php = 7; //TODO: Update this value as time passes
+if (PHP_MAJOR_VERSION < $minimum_php) {
+    die("ERROR: {$argv[0]} and LORIS require PHP $minimum_php or higher.");
 }
-echo'Note: This script will prompt for superuser privileges'
+echo 'Note: This script will prompt for superuser privileges'
     . ' as they are needed to e.g. update apt packages.' . PHP_EOL;
 main();
 
 function main() {
-    // start db connection
-    $config    = \NDB_Config::singleton();
-    $db_config = $config->getSetting('database');
-    $db        = \Database::singleton(
-        $db_config['database'],
-        $db_config['username'],
-        $db_config['password'],
-        $db_config['host']
-    );
     // PHP version required for LORIS. Change this value as needed.
     $version = '7.2'; 
     // all necessary apt packages to get LORIS running
-    //https://github.com/aces/Loris/wiki/Installing-Loris-in-Depth
+    // https://github.com/aces/Loris/wiki/Installing-Loris-in-Depth
     $loris_requirements = [
         'wget',
         'zip',
@@ -59,36 +51,95 @@ function main() {
         "php$version-gd",
         "libapache2-mod-php$version",
     ];
-    updateRequiredPackages($loris_requirements);
-
+    // Create db connection
+    $config    = \NDB_Config::singleton();
+    $db_config = $config->getSetting('database');
+    $db        = \Database::singleton(
+        $db_config['database'],
+        $db_config['username'],
+        $db_config['password'],
+        $db_config['host']
+    );
     $paths = $config->getSetting('paths');
     $loris_root_dir = $paths['base'];
     $backup_dir = "/tmp/bkp-LORIS"; // TODO: should this be configurable?
 
+    $preupdate_version = getVersionFromLORISRoot($loris_root_dir);
+    $release_version = json_decode(getLatestReleaseInfo())->{'tag_name'};
+    $release_version = substr($release_version, 1); // remove leading 'v'
+
+    // Update source code (if not on a development version)
+    $dev = strpos($preupdate_version, 'dev') !== false; // if 'dev' in VERSION
+    if (!$dev) {
+        echo "[*] Updating LORIS source code "
+            . "($preupdate_version --> $release_version" . PHP_EOL;
+        if (updateSourceCode($loris_root_dir, $backup_dir)) {
+            echo 'LORIS source code files successfully updated.' . PHP_EOL;
+        }
+    } else {
+        echo 'WARNING: You are using a development version of LORIS. Not '
+            . 'downloading source code files as they should be tracked with'
+            . ' Git.' . PHP_EOL;
+        sleep(3);
+    }
+            
+    // Update apt packages
+    #if (updateRequiredPackages($loris_requirements)) {
+    #    echo 'All requirements satisfied and up-to-date.' . PHP_EOL;
+    #}
+    $release_patch_directory = $loris_root_dir . 'SQL/Release_patches/';
+    $patches = patchesSinceLastUpdate(
+        $release_patch_directory,
+        $preupdate_version, 
+        $release_version
+    );
+    if ($patches) {
+        echo "Patches to update in $release_patch_directory:" . PHP_EOL;
+        foreach($patches as $filename) {
+            echo "\t* " . basename($filename) . PHP_EOL;
+        }
+    }
+    // Get cached data on the patch most recently applied, if they exist
+    $last_patch = '';
+    $last_patch_path = getLorisCachePath() . 'last_patch_applied';
+    if (file_exists($last_patch)) {
+        $last_patch = trim(file_get_contents($last_patch_path));
+    }
+    #    echo 'LORIS source code files successfully updated.' . PHP_EOL;
+    #}
+    #if (runPackageManagers)
+    #    echo 'LORIS source code files successfully updated.' . PHP_EOL;
+    #}
+
+}
+
+function updateSourceCode($loris_root_dir, $backup_dir) : bool {
+    // Backup source code to e.g. /tmp/bkp-LORIS_v19.x-dev_16-May-2018
     $version_filepath = $loris_root_dir . 'VERSION';
     if (!file_exists($version_filepath)) {
         echo "ERROR: Could not find VERSION file in $loris_root_dir." . PHP_EOL;
     } else {
-        $backup_dir .= '_v' . trim(file_get_contents($version_filepath));
+        $backup_dir .= '_v' . getVersionFromLORISRoot($loris_root_dir);
     }
-    $backup_dir .= '_' . date("j-M-Y") . '/'; // format: 10-May-2018
-    
+    $backup_dir .= '_' . date("j-M-Y") . '/'; // e.g. 10-May-2018
     echo "[*] Backing up $loris_root_dir to $backup_dir" . PHP_EOL;
     recurse_copy($loris_root_dir, $backup_dir);
+
+    // Get the release code from Github
     $tarball_path = downloadLatestRelease();
     if (empty($tarball_path)) {
         die('ERROR: Could not download the latest LORIS release.');
     }
-$dst_dir = '/tmp/';
+    $dst_dir = '/tmp/'; // Parent directory for backup and release download
     echo 'Extracting release files...' . PHP_EOL;
     $cmd = "unzip -o " .escapeshellarg($tarball_path) . ' -d ' 
         . escapeshellarg($dst_dir);
     doExec($cmd);
 
-    // find the file name for the release just downloaded
+    // Find the file name for the release just downloaded
     $release_dir = '';
     foreach(glob("$dst_dir*") as $filename) {
-        if (strpos($filename, '/aces-Loris-')) {
+        if (strpos($filename, '/aces-Loris-') !== false) {
             $release_dir = $filename;
         }
     }
@@ -97,8 +148,9 @@ $dst_dir = '/tmp/';
     }
     // Use rsync to overwrite files in $loris_root
     echo '[*] Overwriting old source code files.'  . PHP_EOL;
-    $cmd = 'rsync -r ' . escapeshellarg($release_dir) . ' ' . $backup_dir;
-    doExec($cmd);
+    $cmd = 'rsync -r ' . escapeshellarg($release_dir) . ' ' . 
+        escapeshellarg($loris_root_dir);
+    return doExec($cmd);
 }
 
 function updateRequiredPackages($requirements) : bool {
@@ -119,8 +171,58 @@ function updateRequiredPackages($requirements) : bool {
             . PHP_EOL
         );
     }
-    echo 'All requirements satisfied and up-to-date.' . PHP_EOL;
     return true;
+}
+
+function patchesSinceLastUpdate($patch_directory, $version_from, $version_to) : array
+{
+    // Semantic versioning: 0 = major, 1 = minor, 2 = bugfix
+    define('MAJOR', 0);
+    define('MINOR', 1);
+    define('BUGFIX', 2);
+    // Convert string representation of version into arrays of ints
+    // TODO: check for dev branches
+    $from_versions = array_map('intval', explode('.', $version_from));
+    $to_versions = array_map('intval', explode('.', $version_to));
+    // Calculate difference between old version and latest
+    $diff_major = $to_versions[MAJOR] - $from_versions[MAJOR];
+    $diff_minor = $to_versions[MINOR] - $from_versions[MINOR];
+    #$diff_bugfix = $version_to_array[2] - $version_from_array[2];
+    echo "Latest version is ahead by $diff_major MAJOR releases, $diff_minor "
+        ."MINOR releases." . PHP_EOL;
+
+    // For every major version released between the version that is installed 
+    // and the latest version, add the relevant patches if they begin with
+    // a number in that range. For example, if upgrading from 17 to 19, the 
+    // array will contain all aptches beginning with "17", "18", or "19".
+    // i.e.:
+    //   [0] => /var/www/loris/SQL/Release_patches/17.0_To_18.0_upgrade_A.sql
+    //   [1] => /var/www/loris/SQL/Release_patches/17.0_To_18.0_upgrade_B.sql
+    //   [2] => /var/www/loris/SQL/Release_patches/18.0_To_19.0_upgrade.sql
+    //   [3] => /var/www/loris/SQL/Release_patches/19.0_To_19.1_upgrade.sql
+    // Range will run once when $start = $end. We want this in the case where 
+    // there is no difference in major versions but there is a change in minor
+    // versions. The below loops will, in this case, match the minor release
+    // patches.
+    $start = $from_versions[MAJOR];
+    $end = $start; // default case. Implies there is a minor release difference
+    if ($diff_major > 0) {
+        $end = $to_versions[MAJOR];
+    } 
+    $all_release_patches = glob($patch_directory . '*.sql');
+    $patches = [];
+    if ($diff_major > 0 || $diff_minor > 0) {
+        foreach(range($start, $end) as $v) {
+            foreach($all_release_patches as $patch) {
+                // strpos must be 0 or else this will match w/ e.g. 16.0_To_17.0
+                // when the server is already on version 17
+                if (strpos(basename($patch), "$v") === 0) {
+                    $patches[] = $patch;
+                }
+            }
+        }
+    }
+    return $patches;
 }
 
 
@@ -172,17 +274,36 @@ function installAptPackage($name, $only_upgrade = false) : bool
 }
 
 /**
+ * @return string JSON data from Github API
+ */
+function getLatestReleaseInfo() {
+    // get latest release based on GithubAPI
+    $release_url = 'https://api.github.com/repos/aces/Loris/releases/latest';
+    // capture json content using wget in quiet mode, reading from STDIN
+    return shell_exec('wget -qnv -O - ' . escapeshellarg($release_url));
+}
+
+/**
+ * @return string LORIS version from VERSION file. '?' if not found
+ */
+function getVersionFromLORISRoot($loris_root_dir) : string {
+    // Backup source code to e.g. /tmp/bkp-LORIS_v19.x-dev_16-May-2018
+    $version_filepath = $loris_root_dir . 'VERSION';
+    if (!file_exists($version_filepath)) {
+        echo "ERROR: Could not find VERSION file in $loris_root_dir." . PHP_EOL;
+        return '?';
+    } 
+    return trim(file_get_contents($version_filepath));
+}
+
+/**
  *
  *
  * @return string, the download path if one exists, otherwise the empty string 
  */
 function downloadLatestRelease($download_path = '/tmp/loris_') : string {
-    // get latest release based on GithubAPI
     echo "Querying for latest release version... ";
-    $release_url = 'https://api.github.com/repos/aces/Loris/releases/latest';
-    // capture json content using wget in quiet mode, reading from STDIN
-    $response = shell_exec('wget -qnv -O - ' . escapeshellarg($release_url));
-    $j = json_decode($response);
+    $j = json_decode(getLatestReleaseInfo());
     echo 'Got ' . $j->{'tag_name'} . PHP_EOL;
     $download_path .= $j->{'tag_name'}; // include
 
@@ -286,6 +407,15 @@ function readAnswer($possibleAnswers, $defaultAnswer)
     }
 
     return $answer;
+}
+
+function getLorisCachePath() {
+    if (!empty(getenv('XDG_CACHE_HOME'))) {
+        $cache_path = getenv('XDG_CACHE_HOME');
+    } else {
+        $cache_path = getenv('HOME');
+    }
+    return "$cache_path/.loris/";
 }
 
 function doExec($cmd) {
