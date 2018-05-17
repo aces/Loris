@@ -130,12 +130,12 @@ function getProjectData()
         $usersWithEditPerm = $userIDs;
 
         $pubData = array(
-                    'title'                 => $result['Title'],
-                    'description'           => $result['Description'],
+                    'title'                 => htmlspecialchars_decode($result['Title']),
+                    'description'           => htmlspecialchars_decode($result['Description']),
                     'leadInvestigator'      => $result['LeadInvestigator'],
                     'leadInvestigatorEmail' => $result['LeadInvestigatorEmail'],
                     'status'                => $result['PublicationStatusID'],
-                    'rejectedReason'        => $result['RejectedReason'],
+                    'rejectedReason'        => htmlspecialchars_decode($result['RejectedReason']),
                     'voi'                   => $result['VOIs'],
                     'keywords'              => $result['Keywords'],
                     'collaborators'         => $result['collaborators'],
@@ -240,6 +240,10 @@ function getFiles($id)
         'SELECT * FROM publication_upload WHERE PublicationID=:pid',
         array('pid' => $id)
     );
+
+    foreach($files as $key => $f) {
+        $files[$key]['Citation'] = htmlspecialchars_decode($f['Citation']);
+    }
 
     return $files;
 }
