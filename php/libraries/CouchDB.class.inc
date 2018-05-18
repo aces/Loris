@@ -70,14 +70,7 @@ class SocketWrapper
      */
     function open()
     {
-        if (strpos($this->host, "%") !== false) { // %COUCH_HOSTNAME%
-            $this->socket = false;
-        }
-        if (!is_numeric($this->port)) { // %COUCH_PORT%
-            $this->socket = false;
-        } else {
-            $this->socket = fsockopen($this->host, $this->port);
-        }
+        $this->socket = fsockopen($this->host, $this->port);
         if ($this->socket === false) {
             throw new \LorisException(
                 "Could not connect to CouchDB server at $this->host:$this->port"
@@ -375,6 +368,8 @@ class CouchDB
      */
     function _getRelativeURL($url, $op = 'GET')
     {
+        $this->validHostAndPort();
+
         $handler = $this->SocketHandler;
         $handler->setHost($this->_host);
         $handler->setPort($this->_port);
@@ -741,6 +736,28 @@ class CouchDB
         $this->bulkDocuments = array();
 
         return $this->_postRelativeURL('_bulk_docs', $docs);
+    }
+
+    /**
+     * Validation of CouchDB Host and Port.
+     * Throws LorisException if (Host or Port) invalid.
+     *
+     * @throws LorisException
+     *
+     * @return void
+     */
+    function validHostAndPort()
+    {
+        $config       = NDB_Config::singleton();
+        $couch_config = $config->getSetting('CouchDB');
+        if (!filter_var(gethostbyname($couch_config['hostname']), FILTER_VALIDATE_IP)
+            || !is_numeric($couch_config['port'])
+        ) {
+            throw new \LorisException(
+                'Could not connect to CouchDB server at '
+                .$couch_config['hostname'].':'.$couch_config['port']
+            );
+        }
     }
 }
 ?>
