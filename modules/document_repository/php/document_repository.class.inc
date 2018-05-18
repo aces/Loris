@@ -407,6 +407,16 @@ class Document_Repository extends \NDB_Menu_Filter
                 =& $this->tpl_data['File_categories'][$item['File_category']];
             $DisplayItem  = $item;
             $DisplayItem['File_name'] = utf8_encode($item['File_name']);
+            $DisplayItem['Data_dir']  = strtr(
+                rawurlencode($DisplayItem['Data_dir']),
+                array(
+                 '%21' => '!',
+                 '%2A' => '*',
+                 '%27' => "'",
+                 '%28' => '(',
+                 '%29' => ')',
+                )
+            );
             $DisplayItem['File_size'] = $this->formatSize($item['File_size']);
             $DisplayItem['For_site']  = $site_names[$item['For_site']];
 

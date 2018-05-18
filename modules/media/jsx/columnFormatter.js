@@ -28,7 +28,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   const hasWritePermission = loris.userHasPermission('media_write');
   if (column === 'File Name' && hasWritePermission === true) {
-    var downloadURL = loris.BaseURL + "/media/ajax/FileDownload.php?File=" + row['File Name'];
+    var downloadURL = loris.BaseURL + "/media/ajax/FileDownload.php?File=" + encodeURIComponent(row['File Name']);
     return (
       <td className= {classes}>
         <a href={downloadURL} target="_blank" download={row['File Name']}>
