@@ -291,7 +291,7 @@ class New_Profile extends \NDB_Form
                 $errors['PSCID'] = 'PSCID does not match the required structure';
             } elseif ($db->pselectOne(
                 "SELECT count(PSCID) FROM candidate WHERE PSCID=:V_PSCID",
-                array('V_PSCID' => $values[PSCID])
+                array('V_PSCID' => $values['PSCID'])
             ) > 0
             ) {
                     $errors['PSCID'] = 'PSCID has already been registered';
