@@ -67,4 +67,14 @@ class Project extends \NDB_Form
             );
         }
     }
+    function getCSSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . "/configuration/css/configuration.css"]
+        );
+    }
 }

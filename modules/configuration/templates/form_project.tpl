@@ -39,14 +39,13 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-offset-4 col-sm-8 submit-area">
+                        <div class="col-sm-offset-3 col-sm-9">
                             <button id="saveproject{$ProjectID}" class="btn btn-primary saveproject">Save</button>
                             <button class="btn btn-default" type="reset">Reset</button>
                             <label class="saveStatus"></label>
                         </div>
                     </div>
-                    <div id="subprojects{$ProjectID}"></div>
-                
+                    <div class="relatedsubprojects" id="subprojects{$ProjectID}"></div>
                 <script>
                     var filterTable = RSubprojectRelations({
                         ProjectID : {$ProjectID},
@@ -82,7 +81,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-sm-offset-4 col-sm-8 submit-area">
+                    <div class="col-sm-offset-3 col-sm-9">
                         <button id="saveprojectnew" class="btn btn-primary saveproject">Save</button>
                         <button class="btn btn-default" type="reset">Reset</button>
                         <label class="saveStatus"></label>
