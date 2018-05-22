@@ -19,6 +19,11 @@ require_once __DIR__ . '/../../php/libraries/Visit.class.inc';
 require_once __DIR__ . "/../../test/integrationtests"
     . "/LorisIntegrationTestWithCandidate.class.inc";
 
+use \LORIS\Visit;
+use \LORIS\VisitController;
+use \PHPUnit\Framework\TestCase;
+
+
 class VisitTest extends LorisIntegrationTest{
 
     private $_visit;
@@ -38,7 +43,7 @@ class VisitTest extends LorisIntegrationTest{
             $database['host'],
             1
         );
-        $this->_visitController = new \Loris\VisitController($db);
+        $this->_visitController = new \Loris\VisitController($this->DB);
 
         $v1 = new \Loris\Visit('V1');
         $v2 = new \Loris\Visit('V2');
@@ -71,7 +76,7 @@ class VisitTest extends LorisIntegrationTest{
 
     function testVisitsProjects()
     {
-        $visits = $this->_visitController->getVisitsProject();
+        $visits = $this->_visitController->getVisitsWithProject();
         $this->assertEquals($this->_listOfVisitProject, $visits, "the project and subproject relation does not match value in DB");
     }
 
@@ -81,7 +86,7 @@ class VisitTest extends LorisIntegrationTest{
      *
      * @return void
      */
-    protected function tearDown()
+    public function tearDown()
     {
         parent::tearDown();
         $this->factory->reset();
