@@ -65,6 +65,7 @@
         </form>
     </div>
     {/foreach}
+    {$subproject = []}
     <div id="subprojectnew" class="tab-pane {if count($subprojects) == 0} active{/if}">
         <h2>New Subproject</h2>
         <br>
@@ -72,27 +73,35 @@
             <fieldset>
                 <input type="hidden" name="subprojectID" value="new" class="subprojectID">
                 <div class="form-group">
-                    <label class="col-sm-12 col-md-4">Subproject Title</label>
-                    <div class="col-sm-12 col-md-8">
-                        <input class="form-control subprojectTitle" name="title" placeholder="Subroject Title goes here" value="">
+                    <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'Full descriptive title of the subproject'}">
+                        <label class="col-sm-12 control-label config-name">Subproject Name</label>
+                    </div>
+                    <div class="col-sm-12 col-md-7">
+                        <input class="form-control subprojectTitle" name="title" placeholder="Please add a subproject title here"value="{$subproject.title}">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-12 col-md-4">Use <abbr title="Expect Date of Confinement (ie. baby's due date)">EDC</abbr></label>
-                    <div class="col-sm-12 col-md-8">
-                        {html_options options=$useEDCOptions name="useEDC" selected="Yes" class="form-control subprojectuseEDC"}
+                    <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{"Include field for EDC (Expected Date of Confinement) in Candidate Parameters to record subject's due date if applicable"}">
+                        <label class="col-sm-12 control-label config-name">Use EDC</label>
+                    </div>
+                    <div class="col-sm-12 col-md-7">
+                        {html_options options=$useEDCOptions name="useEDC" selected=$subproject.options.useEDC class="form-control subprojectuseEDC"}
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-12 col-md-4">Calculate Window Difference for instruments based on:</label>
-                    <div class="col-sm-12 col-md-8">
-                        {html_options options=$WindowDifferenceOptions name="WindowDifference" selected="battery" class="form-control subprojectWindowDifference"}
+                    <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'Choose a method by which Window Difference will be calculated. It will be displayed in days at the head of every instrument form'}">
+                        <label class="col-sm-12 control-label config-name">Calculate Window Difference For Instruments Based On</label>
+                    </div>
+                    <div class="col-sm-12 col-md-7">
+                        {html_options options=$WindowDifferenceOptions name="WindowDifference" selected=$subproject.options.WindowDifference class="form-control subprojectWindowDifference"}
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-12 col-md-4">Recruitment Target:</label>
-                    <div class="col-sm-12 col-md-8">
-                        <input class="form-control subprojectRecruitmentTarget" name="target" placeholder="Please add a recruitment target here" value="">
+                    <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'The target number will be used to generate the recruitment progress bar on the dashboard'}">
+                        <label class="col-sm-12 control-label config-name">Recruitment Target</label>
+                    </div>
+                    <div class="col-sm-12 col-md-7">
+                        <input class="form-control subprojectRecruitmentTarget" name="target" placeholder="Please add a recruitment target here" value="{$subproject.RecruitmentTarget}">
                     </div>
                 </div>
                 <div class="form-group">

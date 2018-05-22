@@ -66,16 +66,19 @@
             <fieldset>
                 <input type="hidden" name="ProjectID" value="new" class="ProjectID">
                 <div class="form-group">
-                    <label class="col-sm-12 col-md-4">Project Name</label>
-                    <div class="col-sm-12 col-md-8">
-                        <input class="form-control projectName" name="Name" placeholder="Project Title goes here" value="">
+                    <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'Full descriptive title of the project'}">
+                        <label class="col-sm-12 control-label config-name">Project Name</label>
+                    </div>
+                    <div class="col-sm-12 col-md-9">
+                        <input class="form-control projectName" name="Name" placeholder="Please add a project title here" value="">
                     </div>
                 </div>
                 <div class="form-group">
-
-                    <label class="col-sm-12 col-md-4">Recruitment Target</label>
-                    <div class="col-sm-12 col-md-8">
-			<input class="form-control projectrecruitmentTarget" name="recruitmentTarget" placeholder="Project recruitment target goes here" value="">
+                    <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'The target number will be used to generate the recruitment progress bar on the dashboard'}">
+                        <label class="col-sm-12 control-label config-name">Recruitment Target</label>
+                    </div>
+                    <div class="col-sm-12 col-md-9">
+			            <input class="form-control projectrecruitmentTarget" name="recruitmentTarget" placeholder="Please add a recruitment target here" value="">
                     </div>
                 </div>
                 <div class="form-group">
