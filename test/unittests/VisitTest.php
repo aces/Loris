@@ -15,60 +15,28 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../php/libraries/VisitController.class.inc';
 require_once __DIR__ . '/../../php/libraries/Visit.class.inc';
 
-use \LORIS\Visit;
-use \LORIS\VisitController;
-use \PHPUnit\Framework\TestCase;
 
-/**
- * Unit test for Candidate class
- *
- * @category Tests
- * @package  Test
- * @author   Mélanie Legault <melanie.legault2@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
-class VisitTest extends TestCase
-{
-    /**
-     * Visit object use in tests
-     *
-     * @var Visit
-     */
+require_once __DIR__ . "/../../test/integrationtests"
+    . "/LorisIntegrationTestWithCandidate.class.inc";
+
+class VisitTest extends LorisIntegrationTest{
+
     private $_visit;
 
-    protected function setUp()
+    public function setUp()
     {
-/*        parent::setUp();
+        // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
-        $this->factory->setTesting(true);
-        $mockdb = $this->getMockBuilder("\Database")->getMock();
-        $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
-        $this->factory->setConfig($mockconfig);
-        $db = $this->factory->setDatabase($mockdb);  
-        
-        $this->_visitController = new \Loris\VisitController($db);
-*/
-        //parent::setUp();
-        //$db = parent::getConnection();
-        //$db = NDB_Factory->database();
-       
-/*        $this->factory = NDB_Factory::singleton();
-
-        $dbname = $this->factory->settings()->dbName();
-        $host   = $this->factory->settings()->dbHost();
-        $user   = $this->factory->settings()->dbUserName();
-        $pwd    = $this->factory->settings()->dbPassword();
-
-        $db =& (\NDB_Factory::singleton($dbname, $user, $pwd, $host))->database(); 
-*/
-
-        $this->factory = NDB_Factory::singleton();
-        $db = $this->database = Database::singleton(
-            $this->factory->settings()->dbName(),
-            $this->factory->settings()->dbUserName(),
-            $this->factory->settings()->dbPassword(),
-            $this->factory->settings()->dbHost()
+        $this->factory->reset();
+        $this->factory->setTesting(false);
+        $this->config = $this->factory->Config(CONFIG_XML);
+        $database = $this->config->getSetting('database');
+        $this->DB  = Database::singleton(
+            $database['database'],
+            $database['username'],
+            $database['password'],
+            $database['host'],
+            1
         );
         $this->_visitController = new \Loris\VisitController($db);
 
