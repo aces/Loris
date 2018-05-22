@@ -73,7 +73,7 @@ main();
 
 /**
  * Updates source code and dependencies for LORIS. Outputs missing patch files
- * based on verion information
+ * based on verion information.
  *
  * @return void
  */
