@@ -89,6 +89,8 @@ class ProjectFormFields extends React.Component {
   constructor() {
     super();
     this.createCollabEmailFields = this.createCollabEmailFields.bind(this);
+    this.fileOverwrite = this.fileOverwrite.bind(this);
+    this.fileDelete = this.fileDelete.bind(this);
     this.createFileFields = this.createFileFields.bind(this);
   }
 
@@ -117,12 +119,47 @@ class ProjectFormFields extends React.Component {
     return collabEmails;
   }
 
+  fileOverwrite() {
+
+  }
+
+  fileDelete(uploadID) {
+    swal({
+      title: "Are you sure?",
+      text: "Are you sure you want to delete this file?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: 'Yes, I am sure!',
+      cancelButtonText: "No, cancel it!"
+      },
+      function(willDelete) {
+      console.log(uploadID);
+        if (willDelete) {
+          let url = loris.BaseURL + '/publication/ajax/FileDelete.php';
+          $.ajax(url, {
+            method: 'DELETE',
+            data: {'uploadID': uploadID},
+            dataType: "json"
+          });
+        }
+    });
+  }
+
   createFileFields() {
     let fileFields = [];
+    // Create download link & edit fields for existing files
     if (this.props.files) {
       this.props.files.forEach(function (f) {
-        let downloadURL = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + f.URL;
-        let link = <a href={downloadURL}>{f.URL}</a>;
+        let downloadURL = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + encodeURIComponent(f.URL);
+        let link = (
+          <span>
+            <a href={downloadURL}>{f.URL}</a>
+            &nbsp;&nbsp;
+            <span className="glyphicon glyphicon-pencil" onClick={this.fileOverwrite}/>
+            &nbsp;&nbsp;
+            <span className="glyphicon glyphicon-remove" onClick={() => this.fileDelete(f.PublicationUploadID)} />
+          </span>
+        );
         let existFileFlag = 'existingUpload_';
         let pubType = existFileFlag + 'publicationType_' + f.PublicationUploadID;
         let pubCit = existFileFlag + 'publicationCitation_' + f.PublicationUploadID;
@@ -134,14 +171,6 @@ class ProjectFormFields extends React.Component {
               label={pubTypeStr}
               text={link}
             />
-            {/*<SelectElement
-              name={pubType}
-              label="Publication Type"
-              onUserInput={this.props.setFormData}
-              value={this.props.formData[pubType]}
-              options={this.props.uploadTypes}
-              required={true}
-            />*/}
             <TextboxElement
               name={pubCit}
               label="Citation"
@@ -158,13 +187,13 @@ class ProjectFormFields extends React.Component {
         );
       }, this);
     }
-
+    // create fields for new files
     for (let i = 0; i <= this.props.numFiles; i++) {
       let fileName = "file_" + i;
       fileFields.push(
         <FileElement
           name={fileName}
-          id="publicationUploadEl"
+          id={"publicationUploadEl_" + i}
           onUserInput={this.props.setFileData}
           label="File to upload"
           value={this.props.formData[fileName]}

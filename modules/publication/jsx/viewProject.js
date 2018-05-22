@@ -286,10 +286,6 @@ class ViewProject extends React.Component {
         </button>
       );
     }
-
-    // TODO: clean this up
-    // make approval status selectable and supply textbox in case
-    // of proposal rejection
     let statusElement;
     let rejectReason;
     if (loris.userHasPermission('publication_approve')) {
