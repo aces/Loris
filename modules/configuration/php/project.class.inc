@@ -67,6 +67,13 @@ class Project extends \NDB_Form
             );
         }
     }
+
+    /**
+     * Include additional CSS files:
+     *  1. configuration
+     *
+     * @return array of CSS to be inserted 
+     */
     function getCSSDependencies()
     {
         $factory = \NDB_Factory::singleton();
