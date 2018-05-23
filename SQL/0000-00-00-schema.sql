@@ -130,6 +130,8 @@ DROP TABLE IF EXISTS `psc`;
 DROP TABLE IF EXISTS `project_rel`;
 DROP TABLE IF EXISTS `subproject`;
 DROP TABLE IF EXISTS `Project`;
+DROP TABLE IF EXISTS `visit_project_subproject_rel`;
+DROP TABLE IF EXISTS `visit`;
 
 -- ********************************
 -- Core tables
@@ -2015,3 +2017,24 @@ CREATE TABLE `feedback_mri_comments` (
   CONSTRAINT `FK_feedback_mri_comments_2` FOREIGN KEY (`PredefinedCommentID`) REFERENCES `feedback_mri_predefined_comments` (`PredefinedCommentID`),
   CONSTRAINT `FK_feedback_mri_comments_3` FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `visit` (
+  `VisitID` int(10) unsigned NOT NULL auto_increment,
+  `VisitName` varchar(100) NOT NULL,
+  CONSTRAINT `visit_PK` PRIMARY KEY (`VisitID`),
+  CONSTRAINT `visit_name_UK` UNIQUE KEY (`VisitName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `visit_project_subproject_rel` (
+  `VisitID` int(10) unsigned NOT NULL,
+  `ProjectID` int(2) NOT NULL,
+  `SubprojectID` int(10) unsigned NOT NULL,
+  CONSTRAINT `visit_project_subprojet_rel_PK` PRIMARY KEY (`VisitID`, `ProjectID`, `SubprojectID`),
+  CONSTRAINT `visit_project_subproject_rel_VisitID_visit_VisitID_FK` FOREIGN KEY (`VisitID`) 
+    REFERENCES `visit`(`VisitID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `visit_project_subproject_ProjectID_visit_ProjectID_FK` FOREIGN KEY (`ProjectID`)
+    REFERENCES `Project`(`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `visit_project_subproject_SubprojectID_visit_SubprojectID_FK` FOREIGN KEY (`SubprojectID`)
+    REFERENCES `subproject`(`SubprojectID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
