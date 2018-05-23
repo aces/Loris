@@ -26,6 +26,11 @@ namespace LORIS\dicom_archive;
 class ViewDetails extends \NDB_Form
 {
     /**
+     * This page tarchiveID
+     */
+    protected $tarchiveID;
+
+    /**
      * Keeps array of protocols from mri_protocol
      */
     var $protocols;
@@ -48,7 +53,8 @@ class ViewDetails extends \NDB_Form
     */
     function setup()
     {
-        $this->DB = \Database::singleton();
+        $this->DB         = \Database::singleton();
+        $this->tarchiveID = $_REQUEST['tarchiveID'] ?? '';
 
         if ((!empty($_REQUEST['tarchiveID'])) && ($this->_hasAccess())) {
             $tarchiveID = $_REQUEST['tarchiveID'];
@@ -312,5 +318,21 @@ class ViewDetails extends \NDB_Form
             )
         );
     }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $label = ucwords(str_replace('_', ' ', $this->name));
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb($label, "/$this->name"),
+            new \LORIS\Breadcrumb(
+                'View Details',
+                "/dicom_archive/viewDetails?tarchiveID=$this->tarchiveID"
+            )
+        );
+    }
 }
-?>

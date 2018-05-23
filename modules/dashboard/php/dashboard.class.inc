@@ -468,5 +468,15 @@ class Dashboard extends \NDB_Form
         );
 
     }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        return new \LORIS\BreadcrumbTrail();
+    }
 }
-?>
+

@@ -49,8 +49,8 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                                   );
     // expect UIs for GWAS Tab
     private $_loadingGWASUI = array(
-                               'Gwas  Browser' => '#bc2 > a:nth-child(3) > div',
-                               'GWAS Filters'  => '#lorisworkspace > div > '.
+                               'Gwas Browser' => '#bc2 > a:nth-child(3) > div',
+                               'GWAS Filters' => '#lorisworkspace > div > '.
                                            'div:nth-child(2) > div >div > form >'.
                                            'div>div>div.form-group.col-sm-8>div> '.
                                            'div.panel-heading',

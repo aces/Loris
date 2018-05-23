@@ -774,5 +774,21 @@ class ViewSession extends \NDB_Form
         );
     }
 
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb('Imaging Browser', '/imaging_browser'),
+            new \LORIS\Breadcrumb(
+                'View Session',
+                "/imaging_browser/viewSession/?sessionID=$this->sessionID"
+            )
+        );
+    }
+
 }
 

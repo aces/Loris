@@ -43,7 +43,6 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
                       'study_title' => $this->Config->getSetting('title'),
                       'baseurl'     => $this->BaseURL,
                       'tabs'        => \NDB_Config::getMenuTabs(),
-                      'crumbs'      => (new \NDB_Breadcrumb($this->PageName))->getBreadcrumb(),
                       'currentyear' => date('Y'),
                       'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
                      );
@@ -181,6 +180,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
                       'cssfiles'  => $this->CSSFiles,
                       'workspace' => $undecorated->getBody(),
                      );
+
+        if ($page instanceOf \NDB_Page) {
+            $tpl_data['breadcrumbs'] = $page->getBreadcrumbs();
+        }
 
         // Assign the console template variable as the very, very last thing.
         $tpl_data['console'] = htmlspecialchars(ob_get_contents());

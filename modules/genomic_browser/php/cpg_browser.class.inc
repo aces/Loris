@@ -543,5 +543,5 @@ class CpG_Browser extends \NDB_Menu_Filter
         );
 
     }
+
 }
-?>

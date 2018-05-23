@@ -185,6 +185,10 @@ try {
     if (isset($caller->page)) {
         $tpl_data['jsfiles']  = $caller->page->getJSDependencies();
         $tpl_data['cssfiles'] = $caller->page->getCSSDependencies();
+
+        if (!$anonymous) {
+            $tpl_data['breadcrumbs'] = $caller->page->getBreadcrumbs();
+        }
     }
     $tpl_data['workspace'] = $workspace;
 } catch(ConfigurationException $e) {
@@ -229,21 +233,6 @@ try {
         $tpl_data['cssfiles'] = $page->getCSSDependencies();
     }
 }
-//--------------------------------------------------
-
-if (!$anonymous) {
-    try {
-        $breadcrumb = new NDB_Breadcrumb($_REQUEST['test_name']);
-        $crumbs     = $breadcrumb->getBreadcrumb();
-
-        $tpl_data['crumbs'] = $crumbs;
-    } catch(Exception $e) {
-        $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
-    }
-}
-
-//--------------------------------------------------
-
 
 // show the back button
 $tpl_data['lastURL'] = $_SESSION['State']->getLastURL();

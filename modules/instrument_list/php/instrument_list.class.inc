@@ -33,8 +33,19 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class Instrument_List extends \NDB_Menu_Filter
 {
-    protected $candidate;
+    /**
+     * The timepoint to which the instrument list belongs to.
+     *
+     * @var \TimePoint
+     */
     protected $timePoint;
+
+    /**
+     * The candidate to which the instrument list belongs to.
+     *
+     * @var \Candidate
+     */
+    protected $candidate;
 
     /**
     * Checking permissions
@@ -356,5 +367,33 @@ class Instrument_List extends \NDB_Menu_Filter
             )
         );
     }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $candid     = $this->candidate->getCandID();
+        $pscid      = $this->candidate->getPSCID();
+        $sessionid  = $this->timePoint->getSessionID();
+        $visitlabel = $this->timePoint->getVisitLabel();
+
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                'Access Profile',
+                '/candidate_list'
+            ),
+            new \LORIS\Breadcrumb(
+                "Candidate Profile $candid / $pscid",
+                "/$candid"
+            ),
+            new \LORIS\Breadcrumb(
+                "TimePoint $visitlabel Details",
+                "/instrument_list/?candID=$candid&sessionID=$sessionid"
+            )
+        );
+    }
+
 }
-?>

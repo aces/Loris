@@ -461,4 +461,3 @@ class SNP_Browser extends \NDB_Menu_Filter
     }
 
 }
-?>
