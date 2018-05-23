@@ -13,7 +13,7 @@
 </ul>
 </div>
 
-<div class="col-md-9">
+<div class="col-md-7">
     <div class="tab-content">
     {foreach from=$subprojects key=subprojectID item=subproject name=tabContent}
     <div id="subproject{$subprojectID}" class="tab-pane {if $smarty.foreach.tabContent.first} active{/if}">
@@ -26,7 +26,7 @@
                     <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'Full descriptive title of the subproject'}">
                         <label class="col-sm-12 control-label">Subproject Name</label>
                     </div>
-                    <div class="col-sm-12 col-md-7">
+                    <div class="col-sm-12 col-md-9">
                         <input class="form-control subprojectTitle" name="title" value="{$subproject.title}">
                     </div>
                 </div>
@@ -34,7 +34,7 @@
                     <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{"Include field for EDC (Expected Date of Confinement) in Candidate Parameters to record subject's due date if applicable"}">
                         <label class="col-sm-12 control-label">Use EDC</label>
                     </div>
-                    <div class="col-sm-12 col-md-7">
+                    <div class="col-sm-12 col-md-9">
                         {html_options options=$useEDCOptions name="useEDC" selected=$subproject.options.useEDC class="form-control subprojectuseEDC"}
                     </div>
                 </div>
@@ -42,7 +42,7 @@
 		            <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'Choose a method by which Window Difference will be calculated. It will be displayed in days at the head of every instrument form'}">
                         <label class="col-sm-12 control-label">Calculate Window Difference For Instruments Based On</label>
                     </div>
-                    <div class="col-sm-12 col-md-7">
+                    <div class="col-sm-12 col-md-9">
                         {html_options options=$WindowDifferenceOptions name="WindowDifference" selected=$subproject.options.WindowDifference class="form-control subprojectWindowDifference"}
                     </div>
                 </div>
@@ -50,7 +50,7 @@
                     <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'The target number will be used to generate the recruitment progress bar on the dashboard'}">
                         <label class="col-sm-12 control-label">Recruitment Target</label>
                     </div>
-                    <div class="col-sm-12 col-md-7">
+                    <div class="col-sm-12 col-md-9">
                         <input class="form-control subprojectRecruitmentTarget" name="target" placeholder="Please add a recruitment target here" value="{$subproject.RecruitmentTarget}">
                     </div>
                 </div>
