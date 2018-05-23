@@ -354,7 +354,9 @@ class NDB_Menu_Filter extends NDB_Menu
             // It was included in the request, so save it.
             $key = $_REQUEST['keyword'];
             // Check if multiple keyword search
-            if (preg_match("/\\s/", $key)) {
+            if ($_REQUEST['test_name'] == 'datadict'
+                && preg_match("/\\s/", $key)
+            ) {
                 $key = explode(" ", $key);
                 foreach ($key as &$k) {
                     $k = '.*'.$k;
@@ -548,7 +550,8 @@ class NDB_Menu_Filter extends NDB_Menu
             $qparams['v_searchkey'] = $this->searchKey['keyword'];
 
             foreach ($this->searchKeyword as $field) {
-                if (isset($qparams['v_searchkey'])
+                if ($_REQUEST['test_name'] == 'datadict'
+                    && isset($qparams['v_searchkey'])
                     && is_array(($qparams['v_searchkey']))
                 ) {
                     $fields[] = " $field REGEXP :v_searchkey";
@@ -581,7 +584,8 @@ class NDB_Menu_Filter extends NDB_Menu
                     }
                     $first = false;
 
-                    if (isset($qparams['v_searchkey'])
+                    if ($_REQUEST['test_name'] == 'datadict'
+                        && isset($qparams['v_searchkey'])
                         && is_array(($qparams['v_searchkey']))
                     ) {
                         // Multiple keyword search
@@ -619,7 +623,10 @@ class NDB_Menu_Filter extends NDB_Menu
             $query = "SELECT COUNT(*) FROM ($query) as tmptable";
         }
         $params =  $wheredetails['params'];
-        if (isset($params['v_searchkey']) && is_array(($params['v_searchkey']))) {
+        if ($_REQUEST['test_name'] == 'datadict'
+            && isset($params['v_searchkey'])
+            && is_array(($params['v_searchkey']))
+        ) {
             // Multiple keyword search
             $params = array('v_searchkey' => implode('|', $params['v_searchkey']));
 
@@ -793,10 +800,8 @@ class NDB_Menu_Filter extends NDB_Menu
 
         $MappedData = array();
 
-        if (is_array($data)) {
-            foreach ($data as $row) {
-                $MappedData[] = array_values($row);
-            }
+        foreach ($data as $row) {
+            $MappedData[] = array_values($row);
         }
 
         return array(
@@ -826,7 +831,6 @@ class NDB_Menu_Filter extends NDB_Menu
         // create DB object
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
-        $result  = '';
 
         $qparams = array();
         // add the base query
@@ -851,7 +855,10 @@ class NDB_Menu_Filter extends NDB_Menu
         // get the list
         $this->_getNumberPages($query);
 
-        if (isset($qparams['v_searchkey']) && is_array(($qparams['v_searchkey']))) {
+        if ($_REQUEST['test_name'] == 'datadict'
+            && isset($qparams['v_searchkey'])
+            && is_array(($qparams['v_searchkey']))
+        ) {
             // Multiple keyword search
             $params = array('v_searchkey' => implode('|', $qparams['v_searchkey']));
             $result = $DB->pselect($query, $params);
