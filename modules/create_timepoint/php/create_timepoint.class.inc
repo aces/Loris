@@ -230,9 +230,9 @@ class Create_Timepoint extends \NDB_Form
     }
 
     /**
-     * Generate a breadcrumb trail for that page.
+     * Generate a breadcrumb trail for this page.
      *
-     * @return \LORIS\BreadcrumbTrail The trail.
+     * @return \LORIS\BreadcrumbTrail
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
@@ -246,11 +246,11 @@ class Create_Timepoint extends \NDB_Form
             ),
             new \LORIS\Breadcrumb(
                 'Candidate Profile ' . $candid . ' / ' . $pscid,
-                '/timepoint_list/?candID=' . $candid
+                '/' . $candid
             ),
             new \LORIS\Breadcrumb(
                 'Create Time Point',
-                $_SERVER['REQUEST_URI']
+                '/create_timepoint/?candID='.$candid.'&identifier='.$candid
             )
         );
     }

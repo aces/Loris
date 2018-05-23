@@ -830,9 +830,9 @@ class NDB_Page implements RequestHandlerInterface
     }
 
     /**
-     * Generate a breadcrumb trail for that page.
+     * Generate a breadcrumb trail for this page.
      *
-     * @return \LORIS\BreadcrumbTrail The trail.
+     * @return \LORIS\BreadcrumbTrail
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {

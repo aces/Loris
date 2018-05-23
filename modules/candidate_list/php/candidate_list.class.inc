@@ -355,9 +355,9 @@ class Candidate_List extends \NDB_Menu_Filter
     }
 
     /**
-     * Generate a breadcrumb trail for that page.
+     * Generate a breadcrumb trail for this page.
      *
-     * @return \LORIS\BreadcrumbTrail The trail.
+     * @return \LORIS\BreadcrumbTrail
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
@@ -366,4 +366,4 @@ class Candidate_List extends \NDB_Menu_Filter
         );
     }
 }
-?>
+

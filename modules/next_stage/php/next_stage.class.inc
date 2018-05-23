@@ -266,9 +266,9 @@ class Next_Stage extends \NDB_Form
     }
 
     /**
-     * Generate a breadcrumb trail for that page.
+     * Generate a breadcrumb trail for this page.
      *
-     * @return \LORIS\BreadcrumbTrail The trail.
+     * @return \LORIS\BreadcrumbTrail
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
@@ -283,7 +283,7 @@ class Next_Stage extends \NDB_Form
             ),
             new \LORIS\Breadcrumb(
                 'Candidate Profile ' . $candid . ' / ' . $pscid,
-                '/timepoint_list/?candID=' . $candid
+                '/' . $candid
             ),
             new \LORIS\Breadcrumb(
                 'TimePoint ' . $this->timepoint->getVisitLabel() . ' Details',
@@ -291,7 +291,8 @@ class Next_Stage extends \NDB_Form
             ),
             new \LORIS\Breadcrumb(
                 'Start Next Stage',
-                $_SERVER['REQUEST_URI']
+                '/next_stage/?candID=' . $candid . '&sessionID=' . $sessionid .
+                '&identifier=' . $sessionid
             )
         );
     }

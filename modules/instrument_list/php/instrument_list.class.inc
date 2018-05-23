@@ -369,14 +369,15 @@ class Instrument_List extends \NDB_Menu_Filter
     }
 
     /**
-     * Generate a breadcrumb trail for that page.
+     * Generate a breadcrumb trail for this page.
      *
-     * @return \LORIS\BreadcrumbTrail The trail.
+     * @return \LORIS\BreadcrumbTrail
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $candid = $this->candidate->getCandID();
-        $pscid  = $this->candidate->getPSCID();
+        $candid    = $this->candidate->getCandID();
+        $pscid     = $this->candidate->getPSCID();
+        $sessionid = $this->timePoint->getSessionID();
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
@@ -385,11 +386,11 @@ class Instrument_List extends \NDB_Menu_Filter
             ),
             new \LORIS\Breadcrumb(
                 'Candidate Profile ' . $candid . ' / ' . $pscid,
-                '/timepoint_list/?candID=' . $candid
+                '/' . $candid
             ),
             new \LORIS\Breadcrumb(
                 'TimePoint ' . $this->timePoint->getVisitLabel() . ' Details',
-                $_SERVER['REQUEST_URI']
+                '/instrument_list/?candID='.$candid.'&sessionID='.$sessionid
             )
         );
     }
