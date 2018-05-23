@@ -76,7 +76,7 @@ class Datadict extends \NDB_Menu_Filter
         $this->searchKeyword = array(
                                 'pt.Name',
                                 'pt.sourceField',
-                                'pto.description',
+                                'pt.description',
                                );
         return true;
     }
