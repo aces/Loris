@@ -353,6 +353,14 @@ class NDB_Menu_Filter extends NDB_Menu
         if (isset($_REQUEST['keyword'])) {
             // It was included in the request, so save it.
             $key = $_REQUEST['keyword'];
+            // Check if multiple keyword search
+            if (preg_match("/\\s/", $key)) {
+                $key = explode(" ", $key);
+                foreach ($key as &$k) {
+                    $k = '.*'.$k;
+                }
+                unset($k);
+            }
             $_SESSION['State']->setProperty('keyword', $key);
         } else {
             // It was not included, so get the keyword from the session
@@ -536,13 +544,18 @@ class NDB_Menu_Filter extends NDB_Menu
         ) {
             $WhereClause .= " AND (";
             $fields       = array();
-            foreach ($this->searchKeyword as $field) {
-                $fields[] = " $field LIKE CONCAT('%', :v_searchkey, '%')";
-            }
-            $WhereClause .= join(" OR ", $fields);
 
             $qparams['v_searchkey'] = $this->searchKey['keyword'];
-            $WhereClause           .= ")";
+
+            foreach ($this->searchKeyword as $field) {
+                if (isset($qparams['v_searchkey']) && is_array(($qparams['v_searchkey']))) {
+                    $fields[] = " $field REGEXP CONCAT(:v_searchkey)";
+                } else {
+                    $fields[] = " $field LIKE CONCAT('%', :v_searchkey, '%')";
+                }
+            }
+            $WhereClause .= join(" OR ", $fields);
+            $WhereClause .= ")";
 
         }
 
@@ -566,7 +579,13 @@ class NDB_Menu_Filter extends NDB_Menu
                     }
                     $first = false;
 
-                    $WhereClause .= "$key LIKE CONCAT(:v_$prepared_key, '%')";
+                    if (isset($qparams['v_searchkey']) && is_array(($qparams['v_searchkey']))) {
+                        // Multiple keyword search
+                        $WhereClause .= "$key REGEXP CONCAT(:v_$prepared_key)";
+                    } else {
+                        // Single keyword search
+                        $WhereClause .= "$key LIKE CONCAT(:v_$prepared_key, '%')";
+                    }
                     $qparams["v_$prepared_key"] = $val;
                 }
             }
@@ -595,8 +614,15 @@ class NDB_Menu_Filter extends NDB_Menu
         } else {
             $query = "SELECT COUNT(*) FROM ($query) as tmptable";
         }
-        $this->TotalItems = $db->pselectOne($query, $wheredetails['params']);
-
+        $params =  $wheredetails['params'];
+        if (isset($params['v_searchkey']) && is_array(($params['v_searchkey']))) {
+            // Multiple keyword search
+            $params = array('v_searchkey' => implode('|', $params['v_searchkey']));
+            $this->TotalItems = $db->pselectOne($query, $params);
+        } else {
+            // Single keyword search
+            $this->TotalItems = $db->pselectOne($query, $wheredetails['params']);
+        }
     }
 
     /**
@@ -761,8 +787,11 @@ class NDB_Menu_Filter extends NDB_Menu
         );
 
         $MappedData = array();
-        foreach ($data as $row) {
-            $MappedData[] = array_values($row);
+
+        if (is_array($data)) {
+            foreach ($data as $row) {
+                $MappedData[] = array_values($row);
+            }
         }
 
         return array(
@@ -792,6 +821,7 @@ class NDB_Menu_Filter extends NDB_Menu
         // create DB object
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
+        $result  = '';
 
         $qparams = array();
         // add the base query
@@ -816,7 +846,14 @@ class NDB_Menu_Filter extends NDB_Menu
         // get the list
         $this->_getNumberPages($query);
 
-        $result = $DB->pselect($query, $qparams);
+        if (isset($qparams['v_searchkey']) && is_array(($qparams['v_searchkey']))) {
+            // Multiple keyword search
+            $params = array('v_searchkey' => implode('|', $qparams['v_searchkey']));
+            $result = $DB->pselect($query, $params);
+        } else {
+            // Single keyword search
+            $result = $DB->pselect($query, $qparams);
+        }
 
         return $result;
     }
