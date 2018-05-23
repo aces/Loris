@@ -548,7 +548,9 @@ class NDB_Menu_Filter extends NDB_Menu
             $qparams['v_searchkey'] = $this->searchKey['keyword'];
 
             foreach ($this->searchKeyword as $field) {
-                if (isset($qparams['v_searchkey']) && is_array(($qparams['v_searchkey']))) {
+                if (isset($qparams['v_searchkey'])
+                    && is_array(($qparams['v_searchkey']))
+                ) {
                     $fields[] = " $field REGEXP :v_searchkey";
                 } else {
                     $fields[] = " $field LIKE CONCAT('%', :v_searchkey, '%')";
@@ -579,7 +581,9 @@ class NDB_Menu_Filter extends NDB_Menu
                     }
                     $first = false;
 
-                    if (isset($qparams['v_searchkey']) && is_array(($qparams['v_searchkey']))) {
+                    if (isset($qparams['v_searchkey'])
+                        && is_array(($qparams['v_searchkey']))
+                    ) {
                         // Multiple keyword search
                         $WhereClause .= "$key REGEXP :v_$prepared_key";
                     } else {
@@ -618,6 +622,7 @@ class NDB_Menu_Filter extends NDB_Menu
         if (isset($params['v_searchkey']) && is_array(($params['v_searchkey']))) {
             // Multiple keyword search
             $params = array('v_searchkey' => implode('|', $params['v_searchkey']));
+
             $this->TotalItems = $db->pselectOne($query, $params);
         } else {
             // Single keyword search
