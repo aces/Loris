@@ -8,9 +8,6 @@ $query      = "SELECT * FROM publication_upload WHERE PublicationUploadID=:upid"
 $uploadData = $db->pselectRow($query, array('upid' => $uploadID));
 
 if (empty($uploadData)) {
-    error_log($uploadID);
-    error_log(print_r($_REQUEST, true));
-
     header("HTTP/1.1 400 Bad Request");
     exit;
 }

@@ -1,4 +1,3 @@
-
 class EmailElement extends React.Component {
   constructor() {
     super();
@@ -89,41 +88,15 @@ class ProjectFormFields extends React.Component {
   constructor() {
     super();
     this.createCollabEmailFields = this.createCollabEmailFields.bind(this);
-    this.fileOverwrite = this.fileOverwrite.bind(this);
-    this.fileDelete = this.fileDelete.bind(this);
+    this.deleteUpload = this.deleteUpload.bind(this);
     this.createFileFields = this.createFileFields.bind(this);
+    this.addCollaborator = this.addCollaborator.bind(this);
+    this.removeCollaborator = this.removeCollaborator.bind(this);
+    this.setCollaboratorEmail = this.setCollaboratorEmail.bind(this);
+    this.toggleEmailNotify = this.toggleEmailNotify.bind(this);
   }
 
-  createCollabEmailFields() {
-    let collabEmails = [];
-    if (this.props.formData.collaborators) {
-      this.props.formData.collaborators.forEach(
-        function(c) {
-          // TODO: make this less stupid
-          let name = 'collabEmail' + c;
-          collabEmails.push(
-            <EmailElement
-              name={name}
-              label={c + (c.slice(-1) === 's' ? "'" : "'s") + " Email"}
-              onUserInput={this.props.setFormData}
-              onUserBlur={this.props.validateEmail}
-              toggleEmailNotify={this.props.toggleEmailNotify}
-              errorMessage={this.props.formErrors[name]}
-              required={false}
-              value={this.props.formData[name]}
-              addressee={c}
-            />
-          );
-        }, this);
-    }
-    return collabEmails;
-  }
-
-  fileOverwrite() {
-
-  }
-
-  fileDelete(uploadID) {
+  deleteUpload(uploadID) {
     swal({
       title: "Are you sure?",
       text: "Are you sure you want to delete this file?",
@@ -133,14 +106,9 @@ class ProjectFormFields extends React.Component {
       cancelButtonText: "No, cancel it!"
       },
       function(willDelete) {
-      console.log(uploadID);
         if (willDelete) {
-          let url = loris.BaseURL + '/publication/ajax/FileDelete.php';
-          $.ajax(url, {
-            method: 'DELETE',
-            data: {'uploadID': uploadID},
-            dataType: "json"
-          });
+          let url = loris.BaseURL + '/publication/ajax/deleteUpload.php?uploadID=' + uploadID;
+          $.ajax(url, {method: 'DELETE'});
         }
     });
   }
@@ -155,9 +123,7 @@ class ProjectFormFields extends React.Component {
           <span>
             <a href={downloadURL}>{f.URL}</a>
             &nbsp;&nbsp;
-            <span className="glyphicon glyphicon-pencil" onClick={this.fileOverwrite}/>
-            &nbsp;&nbsp;
-            <span className="glyphicon glyphicon-remove" onClick={() => this.fileDelete(f.PublicationUploadID)} />
+            <span className="glyphicon glyphicon-remove" onClick={() => this.deleteUpload(f.PublicationUploadID)} />
           </span>
         );
         let existFileFlag = 'existingUpload_';
@@ -233,6 +199,69 @@ class ProjectFormFields extends React.Component {
     return fileFields;
   }
 
+  createCollabEmailFields() {
+    let collabEmails = [];
+    if (this.props.formData.collaborators) {
+      this.props.formData.collaborators.forEach(
+        function(c, i) {
+          // TODO: make this less stupid
+          let name = 'collabEmail_' + c.name;
+          collabEmails.push(
+            <EmailElement
+              name={name}
+              label={c.name + (c.name.slice(-1) === 's' ? "'" : "'s") + " Email"}
+              onUserInput={this.setCollaboratorEmail}
+              onUserBlur={this.props.validateEmail}
+              toggleEmailNotify={this.toggleEmailNotify}
+              errorMessage={this.props.formErrors[name]}
+              required={false}
+              value={this.props.formData.collaborators[i].email}
+              addressee={c.name}
+            />
+          );
+        }, this);
+    }
+    return collabEmails;
+  }
+
+  addCollaborator(formElement, value, pendingValKey) {
+    let collaborators = this.props.formData.collaborators || [];
+    collaborators.push(
+      {
+        name: value,
+        email: null,
+        notify: false
+      }
+      );
+
+    this.props.setFormData('collaborators', collaborators);
+    this.props.setFormData(pendingValKey, null);
+  }
+
+  removeCollaborator(formElement, value) {
+    let collaborators = this.props.formData.collaborators || [];
+    collaborators = collaborators.filter(c => c.name !== value);
+    this.props.setFormData('collaborators', collaborators);
+  }
+
+  setCollaboratorEmail(formElement, value) {
+    let collabName = formElement.split('_')[1];
+    console.log(formElement);
+    let collaborators = this.props.formData.collaborators;
+    let i = collaborators.findIndex(c => c.name === collabName);
+    collaborators[i].email = value;
+    this.props.setFormData('collaborators', collaborators);
+  }
+
+  toggleEmailNotify(e) {
+    let collaborators = this.props.formData.collaborators;
+    let collabName = e.target.value;
+    let i = collaborators.findIndex(c => c.name === collabName);
+    collaborators[i].notify = !collaborators[i].notify;
+
+    this.props.setFormData('collaborators', collaborators);
+  }
+
   render() {
     let collabEmails = this.createCollabEmailFields();
     let fileFields = this.createFileFields();
@@ -240,6 +269,10 @@ class ProjectFormFields extends React.Component {
     let voiHelp = (<div>For help finding variables of interest, consult
       the <a href={loris.BaseURL + '/datadict/'}>Data Dictionary</a>
       </div>);
+    let collabNames = [];
+    if (this.props.formData.collaborators) {
+      collabNames = this.props.formData.collaborators.map(c => c.name);
+    }
     return (
       <div>
         <TextareaElement
@@ -287,11 +320,11 @@ class ProjectFormFields extends React.Component {
           id="collaborators"
           label="Collaborators"
           onUserInput={this.props.setFormData}
-          onUserAdd={this.props.addListItem}
-          onUserRemove={this.props.removeListItem}
+          onUserAdd={this.addCollaborator}
+          onUserRemove={this.removeCollaborator}
           value={this.props.formData.pendingCollab}
           pendingValKey="pendingCollab"
-          items={this.props.formData.collaborators}
+          items={collabNames}
           btnLabel="Add Collaborator"
         />
         {collabEmails}

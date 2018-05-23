@@ -138,7 +138,6 @@ function processFiles($pubID)
 
     foreach ($_FILES as $name => $values) {
         $fileName  = preg_replace('/\s/', '_', $values["name"]);
-        $fileType  = $_FILES["file"]["type"];
         $extension = pathinfo($fileName)['extension'];
         $index     = preg_split('/_/', $name)[1];
 
@@ -493,6 +492,7 @@ function editProject()
     editKeywords($id);
     editVOIs($id);
     editUploads($id);
+    processFiles($id);
 
     if (!empty($toUpdate)) {
         $db->update(

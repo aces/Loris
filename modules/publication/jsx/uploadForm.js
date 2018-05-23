@@ -23,7 +23,6 @@ class PublicationUploadForm extends React.Component {
     this.removeListItem = this.removeListItem.bind(this);
     this.validateEmail = this.validateEmail.bind(this);
     this.setFileData = this.setFileData.bind(this);
-    this.toggleEmailNotify = this.toggleEmailNotify.bind(this);
     this.fetchData = this.fetchData.bind(this);
   }
 
@@ -40,19 +39,6 @@ class PublicationUploadForm extends React.Component {
       delete formErrors[field];
     }
     this.setState({formErrors});
-  }
-
-  toggleEmailNotify(e) {
-    let toNotify = this.state.toNotify;
-    let i = toNotify.indexOf(e.target.value);
-    // if box is checked and toNotify does not include addressee, add them
-    if (e.target.checked && i < 0) {
-      toNotify.push(e.target.value);
-      // otherwise delete them
-    } else if (!e.target.checked && i >= 0) {
-      toNotify.splice(i, 1);
-    }
-    this.setState({toNotify: toNotify})
   }
 
   fetchData() {
