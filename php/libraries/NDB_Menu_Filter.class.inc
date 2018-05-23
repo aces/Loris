@@ -549,7 +549,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
             foreach ($this->searchKeyword as $field) {
                 if (isset($qparams['v_searchkey']) && is_array(($qparams['v_searchkey']))) {
-                    $fields[] = " $field REGEXP CONCAT(:v_searchkey)";
+                    $fields[] = " $field REGEXP :v_searchkey";
                 } else {
                     $fields[] = " $field LIKE CONCAT('%', :v_searchkey, '%')";
                 }
@@ -581,7 +581,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
                     if (isset($qparams['v_searchkey']) && is_array(($qparams['v_searchkey']))) {
                         // Multiple keyword search
-                        $WhereClause .= "$key REGEXP CONCAT(:v_$prepared_key)";
+                        $WhereClause .= "$key REGEXP :v_$prepared_key";
                     } else {
                         // Single keyword search
                         $WhereClause .= "$key LIKE CONCAT(:v_$prepared_key, '%')";
