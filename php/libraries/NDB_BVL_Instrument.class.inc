@@ -990,7 +990,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function freeze()
     {
-        if ($_REQUEST['json'] === 'true') {
+        if (isset($_REQUEST['json']) && $_REQUEST['json'] === 'true') {
             return;
         }
         $this->form->freeze();
