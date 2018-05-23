@@ -14,7 +14,7 @@
 namespace LORIS;
 
 /**
- * A Breadcrumb consist of a label and an hyperlink.
+ * A Breadcrumb consists of a label and an hyperlink.
  *
  * PHP Version 7
  *
@@ -28,14 +28,14 @@ namespace LORIS;
 class Breadcrumb
 {
     /**
-     * The label to display
+     * The label to display to the frontend user
      *
      * @var string
      */
     protected $label;
 
     /**
-     * The hyperlink for that breadcrumb
+     * The hyperlink for this breadcrumb
      *
      * @var string
      */
@@ -54,7 +54,9 @@ class Breadcrumb
     }
 
     /**
-     * Returns a string representation of that object.
+     * Returns a string representation of this object by using json
+     * serialization of its attributes in a object with a text and a query
+     * properties.
      *
      * @return string The string
      */

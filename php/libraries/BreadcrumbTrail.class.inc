@@ -1,6 +1,7 @@
 <?php
 /**
- * This file represent a BreadcrumbTrail object
+ * This file represent a BreadcrumbTrail object that can be print as a string
+ * that containt all its breadcrumbs.
  *
  * PHP Version 7
  *
@@ -14,7 +15,7 @@
 namespace LORIS;
 
 /**
- * A BredcrumbTrail is a list of breadcrumbs to provide to the front-end
+ * A BreadcrumbTrail is a list of breadcrumbs to provide to the front-end
  *
  * @category Breadcrumbs
  * @package  User_Interface
@@ -28,12 +29,12 @@ class BreadcrumbTrail
     /**
      * A list of breadcrumbs.
      *
-     * @var array<Breadcrumb>
+     * @var Breadcrumb[]
      */
     protected $breadcrumbs;
 
     /**
-     * The contructor
+     * The constructor
      *
      * @param Breadcrumb ...$crumbs A list of breadcrumbs
      */
