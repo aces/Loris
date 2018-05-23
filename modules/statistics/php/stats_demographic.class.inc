@@ -25,6 +25,15 @@ namespace LORIS\statistics;
  */
 class Stats_Demographic extends \NDB_Form
 {
+
+    /**
+     * The default params
+     *
+     * @var    array
+     * @access private
+     */
+    var $params = null;
+
     /**
      * Checking user's permission
      *
@@ -226,11 +235,6 @@ class Stats_Demographic extends \NDB_Form
         $this->tpl_data['Projects']    = $projects;
         $this->tpl_data['Subprojects'] = $subprojects;
         $this->tpl_data['Visits']      = $Visits;
-
-        // PREVENT Undefined property Console Output
-        if (!isset($this->params)) {
-            $this->params = null;
-        }
 
         //REGISTERED CANDIDATES ROW
         $result = $DB->pselect(
