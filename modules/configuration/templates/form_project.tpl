@@ -24,7 +24,7 @@
                 <input type="hidden" name="ProjectID" value="{$ProjectID}" class="ProjectID">
                     <div class="form-group">
                         <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'Full descriptive title of the project'}">
-                            <label class="col-sm-12 control-label config-name">Project Name</label>
+                            <label class="col-sm-12 control-label">Project Name</label>
                         </div>
                         <div class="col-sm-12 col-md-9">
                             <input class="form-control projectName" name="Name" value="{$project.Name}">
@@ -32,7 +32,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'The target number will be used to generate the recruitment progress bar on the dashboard'}">
-                            <label class="col-sm-12 control-label config-name">Recruitment Target</label>
+                            <label class="col-sm-12 control-label">Recruitment Target</label>
                         </div>
                         <div class="col-sm-12 col-md-9">
                             <input class="form-control projectrecruitmentTarget" name="recruitmentTarget" value="{$project.recruitmentTarget}">
@@ -66,7 +66,7 @@
                 <input type="hidden" name="ProjectID" value="new" class="ProjectID">
                 <div class="form-group">
                     <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'Full descriptive title of the project'}">
-                        <label class="col-sm-12 control-label config-name">Project Name</label>
+                        <label class="col-sm-12 control-label">Project Name</label>
                     </div>
                     <div class="col-sm-12 col-md-9">
                         <input class="form-control projectName" name="Name" placeholder="Please add a project title here" value="">
@@ -74,7 +74,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'The target number will be used to generate the recruitment progress bar on the dashboard'}">
-                        <label class="col-sm-12 control-label config-name">Recruitment Target</label>
+                        <label class="col-sm-12 control-label">Recruitment Target</label>
                     </div>
                     <div class="col-sm-12 col-md-9">
 			            <input class="form-control projectrecruitmentTarget" name="recruitmentTarget" placeholder="Please add a recruitment target here" value="">

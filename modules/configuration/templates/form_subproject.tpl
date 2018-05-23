@@ -24,7 +24,7 @@
                 <input type="hidden" name="subprojectID" value="{$subprojectID}" class="subprojectID">
                 <div class="form-group">
                     <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'Full descriptive title of the subproject'}">
-                        <label class="col-sm-12 control-label config-name">Subproject Name</label>
+                        <label class="col-sm-12 control-label">Subproject Name</label>
                     </div>
                     <div class="col-sm-12 col-md-7">
                         <input class="form-control subprojectTitle" name="title" value="{$subproject.title}">
@@ -32,7 +32,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{"Include field for EDC (Expected Date of Confinement) in Candidate Parameters to record subject's due date if applicable"}">
-                        <label class="col-sm-12 control-label config-name">Use EDC</label>
+                        <label class="col-sm-12 control-label">Use EDC</label>
                     </div>
                     <div class="col-sm-12 col-md-7">
                         {html_options options=$useEDCOptions name="useEDC" selected=$subproject.options.useEDC class="form-control subprojectuseEDC"}
@@ -40,7 +40,7 @@
                 </div>
                 <div class="form-group">
 		            <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'Choose a method by which Window Difference will be calculated. It will be displayed in days at the head of every instrument form'}">
-                        <label class="col-sm-12 control-label config-name">Calculate Window Difference For Instruments Based On</label>
+                        <label class="col-sm-12 control-label">Calculate Window Difference For Instruments Based On</label>
                     </div>
                     <div class="col-sm-12 col-md-7">
                         {html_options options=$WindowDifferenceOptions name="WindowDifference" selected=$subproject.options.WindowDifference class="form-control subprojectWindowDifference"}
@@ -48,7 +48,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'The target number will be used to generate the recruitment progress bar on the dashboard'}">
-                        <label class="col-sm-12 control-label config-name">Recruitment Target</label>
+                        <label class="col-sm-12 control-label">Recruitment Target</label>
                     </div>
                     <div class="col-sm-12 col-md-7">
                         <input class="form-control subprojectRecruitmentTarget" name="target" placeholder="Please add a recruitment target here" value="{$subproject.RecruitmentTarget}">
@@ -65,7 +65,6 @@
         </form>
     </div>
     {/foreach}
-    {$subproject = []}
     <div id="subprojectnew" class="tab-pane {if count($subprojects) == 0} active{/if}">
         <h2>New Subproject</h2>
         <br>
@@ -74,34 +73,34 @@
                 <input type="hidden" name="subprojectID" value="new" class="subprojectID">
                 <div class="form-group">
                     <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'Full descriptive title of the subproject'}">
-                        <label class="col-sm-12 control-label config-name">Subproject Name</label>
+                        <label class="col-sm-12 control-label">Subproject Name</label>
                     </div>
                     <div class="col-sm-12 col-md-7">
-                        <input class="form-control subprojectTitle" name="title" placeholder="Please add a subproject title here"value="{$subproject.title}">
+                        <input class="form-control subprojectTitle" name="title" placeholder="Please add a subproject title here" value="">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{"Include field for EDC (Expected Date of Confinement) in Candidate Parameters to record subject's due date if applicable"}">
-                        <label class="col-sm-12 control-label config-name">Use EDC</label>
+                        <label class="col-sm-12 control-label">Use EDC</label>
                     </div>
                     <div class="col-sm-12 col-md-7">
-                        {html_options options=$useEDCOptions name="useEDC" selected=$subproject.options.useEDC class="form-control subprojectuseEDC"}
+                        {html_options options=$useEDCOptions name="useEDC" selected="Yes" class="form-control subprojectuseEDC"}
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'Choose a method by which Window Difference will be calculated. It will be displayed in days at the head of every instrument form'}">
-                        <label class="col-sm-12 control-label config-name">Calculate Window Difference For Instruments Based On</label>
+                        <label class="col-sm-12 control-label">Calculate Window Difference For Instruments Based On</label>
                     </div>
                     <div class="col-sm-12 col-md-7">
-                        {html_options options=$WindowDifferenceOptions name="WindowDifference" selected=$subproject.options.WindowDifference class="form-control subprojectWindowDifference"}
+                        {html_options options=$WindowDifferenceOptions name="WindowDifference" selected="battery" class="form-control subprojectWindowDifference"}
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="right" title="{'The target number will be used to generate the recruitment progress bar on the dashboard'}">
-                        <label class="col-sm-12 control-label config-name">Recruitment Target</label>
+                        <label class="col-sm-12 control-label">Recruitment Target</label>
                     </div>
                     <div class="col-sm-12 col-md-7">
-                        <input class="form-control subprojectRecruitmentTarget" name="target" placeholder="Please add a recruitment target here" value="{$subproject.RecruitmentTarget}">
+                        <input class="form-control subprojectRecruitmentTarget" name="target" placeholder="Please add a recruitment target here" value="">
                     </div>
                 </div>
                 <div class="form-group">
