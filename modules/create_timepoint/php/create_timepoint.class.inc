@@ -245,12 +245,12 @@ class Create_Timepoint extends \NDB_Form
                 '/candidate_list'
             ),
             new \LORIS\Breadcrumb(
-                'Candidate Profile ' . $candid . ' / ' . $pscid,
-                '/' . $candid
+                "Candidate Profile $candid / $pscid",
+                "/$candid"
             ),
             new \LORIS\Breadcrumb(
                 'Create Time Point',
-                '/create_timepoint/?candID='.$candid.'&identifier='.$candid
+                "/create_timepoint/?candID=$candid&identifier=$candid"
             )
         );
     }

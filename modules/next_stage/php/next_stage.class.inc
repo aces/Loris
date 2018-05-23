@@ -272,9 +272,10 @@ class Next_Stage extends \NDB_Form
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $candid    = $this->candidate->getCandID();
-        $pscid     = $this->candidate->getPSCID();
-        $sessionid = $this->timepoint->getSessionID();
+        $candid     = $this->candidate->getCandID();
+        $pscid      = $this->candidate->getPSCID();
+        $sessionid  = $this->timepoint->getSessionID();
+        $visitlabel = $this->timepoint->getVisitLabel();
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
@@ -283,16 +284,16 @@ class Next_Stage extends \NDB_Form
             ),
             new \LORIS\Breadcrumb(
                 'Candidate Profile ' . $candid . ' / ' . $pscid,
-                '/' . $candid
+                "/$candid"
             ),
             new \LORIS\Breadcrumb(
-                'TimePoint ' . $this->timepoint->getVisitLabel() . ' Details',
-                '/instrument_list/?candID='. $candid .'&sessionID=' . $sessionid
+                "TimePoint $visitlabel Details",
+                "/instrument_list/?candID=$candid&sessionID=$sessionid"
             ),
             new \LORIS\Breadcrumb(
                 'Start Next Stage',
-                '/next_stage/?candID=' . $candid . '&sessionID=' . $sessionid .
-                '&identifier=' . $sessionid
+                "/next_stage/?candID=$candid&sessionID=$sessionid" .
+                "&identifier=$sessionid"
             )
         );
     }

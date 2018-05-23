@@ -331,7 +331,7 @@ class ViewDetails extends \NDB_Form
             new \LORIS\Breadcrumb($label, "/$this->name"),
             new \LORIS\Breadcrumb(
                 'View Details',
-                '/dicom_archive/viewDetails?tarchiveID=' . $this->tarchiveID
+                "/dicom_archive/viewDetails?tarchiveID=$this->tarchiveID"
             )
         );
     }

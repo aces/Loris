@@ -375,9 +375,10 @@ class Instrument_List extends \NDB_Menu_Filter
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $candid    = $this->candidate->getCandID();
-        $pscid     = $this->candidate->getPSCID();
-        $sessionid = $this->timePoint->getSessionID();
+        $candid     = $this->candidate->getCandID();
+        $pscid      = $this->candidate->getPSCID();
+        $sessionid  = $this->timePoint->getSessionID();
+        $visitlabel = $this->timePoint->getVisitLabel();
 
         return new \LORIS\BreadcrumbTrail(
             new \LORIS\Breadcrumb(
@@ -385,12 +386,12 @@ class Instrument_List extends \NDB_Menu_Filter
                 '/candidate_list'
             ),
             new \LORIS\Breadcrumb(
-                'Candidate Profile ' . $candid . ' / ' . $pscid,
-                '/' . $candid
+                "Candidate Profile $candid / $pscid",
+                "/$candid"
             ),
             new \LORIS\Breadcrumb(
-                'TimePoint ' . $this->timePoint->getVisitLabel() . ' Details',
-                '/instrument_list/?candID='.$candid.'&sessionID='.$sessionid
+                "TimePoint $visitlabel Details",
+                "/instrument_list/?candID=$candid&sessionID=$sessionid"
             )
         );
     }

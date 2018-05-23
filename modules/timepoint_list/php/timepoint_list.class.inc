@@ -318,8 +318,8 @@ class Timepoint_List extends \NDB_Menu
                 '/candidate_list'
             ),
             new \LORIS\Breadcrumb(
-                'Candidate Profile ' . $candid . ' / ' . $pscid,
-                $_SERVER['REQUEST_URI']
+                "Candidate Profile $candid / $pscid",
+                "/$candid"
             )
         );
     }
