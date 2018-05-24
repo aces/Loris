@@ -111,12 +111,17 @@ class Dicoms extends \Loris\API\Candidates\Candidate\Visit
            ts.Modality as Modality,
            ts.SeriesUID as SeriesUID
            FROM tarchive t
+           JOIN session s ON (t.SessionID=t.SessionID)
+           JOIN candidate c ON (s.CandID=c.CandID)
            JOIN tarchive_series ts ON (ts.TarchiveID=t.TarchiveID)
            WHERE t.PatientName LIKE $ID
+           AND c.Active='Y' AND s.Active='Y' 
+           AND c.CandID=:PCandID AND s.Visit_label=:PVL
            GROUP BY t.TarchiveID, ts.SeriesDescription, ts.SeriesNUmber,
            ts.EchoTime, ts.RepetitionTime, ts.InversionTime, ts.SliceThickness,
            ts.Modality, ts.SeriesUID
            ORDER BY Tarname";
+
 
         $rows = $DB->pselect($query, $params);
 

@@ -121,8 +121,14 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
         $partial_path = $db->pselectOne(
             "SELECT ArchiveLocation
                 FROM tarchive t
-                WHERE t.ArchiveLocation LIKE CONCAT('%', :Tname)",
-            array(
+                    JOIN session s ON (t.SessionID=t.SessionID)
+                    JOIN candidate c ON (s.CandID=c.CandID)
+                WHERE c.Active='Y' AND s.Active='Y' 
+                    AND c.CandID=:CID AND s.Visit_label=:VL
+                    AND t.ArchiveLocation LIKE CONCAT('%', :Tname)",
+             array(
+             'CID'   => $this->CandID,
+             'VL'    => $this->VisitLabel,
              'Tname' => $this->Tarname,
             )
         );
