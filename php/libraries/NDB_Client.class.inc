@@ -136,7 +136,6 @@ class NDB_Client
         session_start(
             [
              'cookie_httponly' => true,
-             'cookie_secure'   => true,
             ]
         );
 
@@ -149,7 +148,6 @@ class NDB_Client
             session_start(
                 [
                  'cookie_httponly' => true,
-                 'cookie_secure'   => true,
                 ]
             );
         }
