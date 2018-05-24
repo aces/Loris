@@ -15,7 +15,7 @@ require_once __DIR__ . '/../../Visit.php';
 /**
  * Handles API requests for the candidate's visit DICOM tar file. Extends
  * Visit so that the constructor will validate the candidate
- * and visit_label portion of URL automatically.
+ * and visit_label portion of the URL automatically.
  *
  * @category Main
  * @package  API
@@ -121,14 +121,8 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
         $partial_path = $db->pselectOne(
             "SELECT ArchiveLocation
                 FROM tarchive t
-                    JOIN session s ON (t.SessionID=t.SessionID)
-                    JOIN candidate c ON (s.CandID=c.CandID)
-                WHERE c.Active='Y' AND s.Active='Y' 
-                    AND c.CandID=:CID AND s.Visit_label=:VL
-                    AND t.ArchiveLocation LIKE CONCAT('%', :Tname)",
+                WHERE t.ArchiveLocation LIKE CONCAT('%', :Tname)",
             array(
-             'CID'   => $this->CandID,
-             'VL'    => $this->VisitLabel,
              'Tname' => $this->Tarname,
             )
         );
