@@ -236,7 +236,7 @@
                                     </ul>
 
                                     If this error persists, please
-                                    <a target="mantis" href="{$mantis_url}">
+                                    <a target="issue_tracker" href="{$issue_tracker_url}">
                                         report a bug to your administrator
                                     </a>.
                                 </p>

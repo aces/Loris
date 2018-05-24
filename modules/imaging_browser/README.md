@@ -67,7 +67,7 @@ useProjects - This setting determines whether "project" filtering dropdowns exis
 useEDC - This setting determines whether "EDC" filtering dropdowns exist
         on the menu page.
 
-mantis_url - This setting defines a URL for LORIS to include a link to for bug reporting
+issue_tracker_url - This setting defines a URL for LORIS to include a link to for bug reporting
         on the viewsession page.
 
 ## Interactions with LORIS
