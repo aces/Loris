@@ -13,8 +13,7 @@ class PublicationUploadForm extends React.Component {
       formErrors: {},
       isLoaded: false,
       loadedData: 0,
-      uploadProgress: -1,
-      toNotify: []
+      uploadProgress: -1
     };
 
     this.setFormData = this.setFormData.bind(this);
@@ -158,7 +157,7 @@ class PublicationUploadForm extends React.Component {
         });
         swal("Submission Successful!", "", "success");
       }.bind(this),
-      error: function(jqXHR, textStatus, errorThrown) {
+      error: function(jqXHR, textStatus) {
         console.error(textStatus);
         swal("Something went wrong!", jqXHR.responseText, "error");
       }
@@ -202,8 +201,7 @@ class PublicationUploadForm extends React.Component {
           value={this.state.formData.title}
         />
       ];
-      // if in edit mode, max out form size to better match
-      // creation display
+      // if not in edit mode, shrink form for consistent display
       formClass = "col-md-8 col-lg-7";
     }
 

@@ -37,7 +37,7 @@ function getData()
         array()
     );
 
-    // for selecting variables of interest0
+    // for selecting variables of interest
     $allVOIs = $db->pselect(
         "SELECT pt.Name, pt.SourceFrom FROM parameter_type pt ".
         "JOIN test_names tn ON tn.Test_name=pt.SourceFrom ORDER BY pt.SourceFrom",
@@ -214,8 +214,8 @@ function getCollaborators($id)
 {
     $db = \Database::singleton();
 
-    $collaborators = $db->pselectCol(
-        'SELECT Name FROM publication_collaborator pc '.
+    $collaborators = $db->pselect(
+        'SELECT Name as name, Email as email FROM publication_collaborator pc '.
         'LEFT JOIN publication_collaborator_rel pcr '.
         'ON pc.PublicationCollaboratorID=pcr.PublicationCollaboratorID '.
         'WHERE pcr.PublicationID=:pid',

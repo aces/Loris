@@ -28,7 +28,7 @@ class ViewProject extends React.Component {
     let formObj = new FormData();
     for (let key in formData) {
       if (formData[key] !== "") {
-        var formVal;
+        let formVal;
         if (Array.isArray(formData[key])) {
           formVal = JSON.stringify(formData[key]);
         } else {
@@ -66,6 +66,7 @@ class ViewProject extends React.Component {
           description: data.description,
           leadInvestigator: data.leadInvestigator,
           leadInvestigatorEmail: data.leadInvestigatorEmail,
+          notifyLead: false,
           status: data.status,
           voiFields: data.voi,
           keywords: data.keywords,

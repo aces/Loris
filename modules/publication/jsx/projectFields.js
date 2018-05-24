@@ -54,6 +54,7 @@ class EmailElement extends React.Component {
         <div className="col-sm-2">
         <span>
           <input
+            name={this.props.name + '_notify'}
             type="checkbox"
             onChange={this.props.toggleEmailNotify}
             value={this.props.addressee}
@@ -204,7 +205,6 @@ class ProjectFormFields extends React.Component {
     if (this.props.formData.collaborators) {
       this.props.formData.collaborators.forEach(
         function(c, i) {
-          // TODO: make this less stupid
           let name = 'collabEmail_' + c.name;
           collabEmails.push(
             <EmailElement
@@ -232,7 +232,7 @@ class ProjectFormFields extends React.Component {
         email: null,
         notify: false
       }
-      );
+    );
 
     this.props.setFormData('collaborators', collaborators);
     this.props.setFormData(pendingValKey, null);
@@ -254,12 +254,17 @@ class ProjectFormFields extends React.Component {
   }
 
   toggleEmailNotify(e) {
-    let collaborators = this.props.formData.collaborators;
-    let collabName = e.target.value;
-    let i = collaborators.findIndex(c => c.name === collabName);
-    collaborators[i].notify = !collaborators[i].notify;
-
-    this.props.setFormData('collaborators', collaborators);
+    console.log(e.target.name);
+    if (e.target.name.indexOf('collabEmail') > -1) {
+      let collaborators = this.props.formData.collaborators;
+      let collabName = e.target.value;
+      let i = collaborators.findIndex(c => c.name === collabName);
+      collaborators[i].notify = !collaborators[i].notify;
+      this.props.setFormData('collaborators', collaborators);
+    } else if (e.target.name === 'leadInvestigatorEmail_notify') {
+      let currNotify = this.props.formData.notifyLead === undefined ? false : this.props.formData.notifyLead;
+      this.props.setFormData('notifyLead', !currNotify);
+    }
   }
 
   render() {
@@ -294,7 +299,7 @@ class ProjectFormFields extends React.Component {
           label="Lead Investigator Email"
           onUserInput={this.props.setFormData}
           onUserBlur={this.props.validateEmail}
-          toggleEmailNotify={this.props.toggleEmailNotify}
+          toggleEmailNotify={this.toggleEmailNotify}
           errorMessage={this.props.formErrors.leadInvestigatorEmail}
           required={true}
           value={this.props.formData.leadInvestigatorEmail}

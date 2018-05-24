@@ -183,21 +183,20 @@ function insertCollaborators($pubID)
     }
     $db = Database::singleton();
 
-    $collaborators = json_decode($_REQUEST['collaborators']);
+    $collaborators = json_decode($_REQUEST['collaborators'], true);
     foreach ($collaborators as $c) {
         $cid = $db->pselectOne(
             'SELECT PublicationCollaboratorID '.
             'FROM publication_collaborator '.
             'WHERE Name=:c',
-            array('c' => $c)
+            array('c' => $c['name'])
         );
         // if collaborator does not already exist in table, add them
         if (!$cid) {
-            $collabInsert = array('Name' => $c);
-            // .'s and spaces get converted to underscores when sent to the server
-            $cEnc = preg_replace('/\.|\s/', '_', $c);
-            $collabInsert['Email'] = isset($_REQUEST['collabEmail'.$cEnc])
-                ? $_REQUEST['collabEmail'.$cEnc] : null;
+            $collabInsert = array(
+                'Name'  => $c['name'],
+                'Email' => $c['email'],
+            );
 
             $db->insert(
                 'publication_collaborator',
@@ -207,7 +206,7 @@ function insertCollaborators($pubID)
                 'SELECT PublicationCollaboratorID ' .
                 'FROM publication_collaborator ' .
                 'WHERE Name=:c',
-                array('c' => $c)
+                array('c' => $c['name'])
             );
         }
         $collabRelInsert = array(
@@ -406,17 +405,58 @@ function notifySubmission($pubID)
     $emailData['Date']  = $data['DateProposed'];
     $emailData['URL']   = $url . '/publication/view_project/?id='.$pubID;
 
-    $cc = json_decode($_REQUEST['toNotify']);
-    /*$notify = new NDB_Notifier('publication', 'submission', $emailData);
-    $notify->notify();*/
-    Email::send(
-        $data['LeadInvestigatorEmail'],
-        'publication_submission.tpl',
-        $emailData,
-        '', // reply_to
-        '', // from
-        $cc
+    $sendTo = $_REQUEST['notifyLead'] ? array($data['LeadInvestigatorEmail']) : [];
+    // get collaborators to notify
+    $collaborators = isset($_REQUEST['collaborators'])
+        ? json_decode($_REQUEST['collaborators'], true) : null;
+
+    foreach ($collaborators as $c) {
+        if ($c['notify']) {
+            $sendTo[] = $c['email'];
+        }
+    }
+    if (!empty($sendTo)) {
+        $sendTo = implode(', ', $sendTo);
+        Email::send(
+            $sendTo,
+            'notifier_publication_submission.tpl',
+            $emailData
+        );
+    }
+}
+
+function notifyEdit($pubID) {
+    $db        = \Database::singleton();
+    $config    = \NDB_Config::singleton();
+    $emailData = array();
+
+    $data = $db->pselectRow(
+        "SELECT Title, DateProposed, LeadInvestigatorEmail ".
+        "FROM publication ".
+        "WHERE PublicationID=:pubID",
+        array('pubID' => $pubID)
     );
+    $url  = $config->getSetting('url');
+
+    $emailData['Title'] = $data['Title'];
+    $emailData['URL']   = $url . '/publication/view_project/?id='.$pubID;
+}
+
+function notifyReview($pubID) {
+    $db        = \Database::singleton();
+    $config    = \NDB_Config::singleton();
+    $emailData = array();
+
+    $data = $db->pselectRow(
+        "SELECT Title, DateProposed, LeadInvestigatorEmail ".
+        "FROM publication ".
+        "WHERE PublicationID=:pubID",
+        array('pubID' => $pubID)
+    );
+    $url  = $config->getSetting('url');
+
+    $emailData['Title'] = $data['Title'];
+    $emailData['URL']   = $url . '/publication/view_project/?id='.$pubID;
 }
 
 /**
@@ -541,7 +581,7 @@ function editEditors($id) {
 function editCollaborators($id) {
     $db = \Database::singleton();
     $collaborators         = isset($_REQUEST['collaborators'])
-        ? json_decode($_REQUEST['collaborators']) : null;
+        ? json_decode($_REQUEST['collaborators'], true) : null;
 
     $currentCollabs = $db->pselectCol(
         'SELECT Name FROM publication_collaborator pc '.
@@ -551,9 +591,10 @@ function editCollaborators($id) {
         array('pid' => $id)
     );
 
-    if ($collaborators != $currentCollabs) {
-        $newCollabs = array_diff($collaborators, $currentCollabs);
-        $oldCollabs = array_diff($currentCollabs, $collaborators);
+    $submittedCollabs = array_column($collaborators, 'name');
+    if ($submittedCollabs != $currentCollabs) {
+        $newCollabs = array_diff($submittedCollabs, $currentCollabs);
+        $oldCollabs = array_diff($currentCollabs, $submittedCollabs);
     }
     if (!empty($newCollabs)) {
         insertCollaborators($id);
