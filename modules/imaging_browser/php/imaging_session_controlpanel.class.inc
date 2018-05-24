@@ -115,22 +115,22 @@ class Imaging_Session_ControlPanel
 
         $config =& \NDB_Config::singleton();
 
-        $this->tpl_data['issue_tracker']       = $config->getSetting('issue_tracker_url');
-        $subjectData['issue_tracker']          = $config->getSetting('issue_tracker_url');
-        $subjectData['has_permission']  = $this->_hasAccess();
-        $subjectData['status_options']  = array(
-                                           'Unrated' => '',
-                                           'Pass'    => 'Pass',
-                                           'Fail'    => 'Fail',
-                                          );
-        $subjectData['pending_options'] = array(
-                                           'Y' => 'Yes',
-                                           'N' => 'No',
-                                          );
-        $subjectData['caveat_options']  = array(
-                                           'true'  => 'True',
-                                           'false' => 'False',
-                                          );
+        $this->tpl_data['issue_tracker'] = $config->getSetting('issue_tracker_url');
+        $subjectData['issue_tracker']    = $config->getSetting('issue_tracker_url');
+        $subjectData['has_permission']   = $this->_hasAccess();
+        $subjectData['status_options']   = array(
+                                            'Unrated' => '',
+                                            'Pass'    => 'Pass',
+                                            'Fail'    => 'Fail',
+                                           );
+        $subjectData['pending_options']  = array(
+                                            'Y' => 'Yes',
+                                            'N' => 'No',
+                                           );
+        $subjectData['caveat_options']   = array(
+                                            'true'  => 'True',
+                                            'false' => 'False',
+                                           );
         $query    = "SELECT MRIQCStatus, MRIQCPending,".
                     " MRICaveat FROM session WHERE ID=:sid";
         $qcstatus = $DB->pselectRow(
