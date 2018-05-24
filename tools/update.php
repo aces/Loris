@@ -265,7 +265,13 @@ function getPatchesFromVersion($loris_root, $version_from, $version_to) : array
     // Calculate difference between old version and latest
     $diff_major = $to_versions[MAJOR] - $from_versions[MAJOR];
     $diff_minor = $to_versions[MINOR] - $from_versions[MINOR];
-    // $diff_bugfix = $version_to_array[2] - $version_from_array[2];
+    if ($diff_major < 0) {
+        echo '[-] Your version of LORIS is ahead of the latest release! If you'
+        . ' are not a developer working on the bleeding edge of LORIS, then '
+        . 'something has gone very wrong. No SQL patches will be displayed.'
+        . PHP_EOL;
+        return array();
+    }
     echo "[**] Latest version $version_to is ahead of installed $version_from "
         . "by $diff_major MAJOR release(s), $diff_minor MINOR release(s)."
         . PHP_EOL;
