@@ -126,7 +126,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
                 WHERE c.Active='Y' AND s.Active='Y' 
                     AND c.CandID=:CID AND s.Visit_label=:VL
                     AND t.ArchiveLocation LIKE CONCAT('%', :Tname)",
-             array(
+            array(
              'CID'   => $this->CandID,
              'VL'    => $this->VisitLabel,
              'Tname' => $this->Tarname,
