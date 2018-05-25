@@ -49,7 +49,7 @@ install:
     # Start Selenium and redirect Selenium WebDriver
     # output to /dev/null so that it doesn't flood the
     # screen in the middle of our other tests
-    - DISPLAY=:99.0 java -jar selenium-server-standalone-3.12.0.jar #2>1 > /dev/null &
+    - DISPLAY=:99.0 java -jar selenium-server-standalone-3.12.0.jar 2>1 > /dev/null &
 
 before_script:
 
