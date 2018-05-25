@@ -9,7 +9,7 @@ php:
     - "7.1"
 
 addons:
-    firefox: latest-esr # 52.8.0 via Travis web page, May 2018
+    firefox: 60.0.1 # 52.8.0 via Travis web page, May 2018
     apt:
         packages:
             # Required for newest version of Selenium
@@ -29,6 +29,10 @@ before_install:
     - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.0" ]]; then Dir="router.php" ; fi
     - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.1" ]]; then Dir="htdocs/router.php" ; fi
     - php -S localhost:8000 -t htdocs $Dir 2>1 > /dev/null &
+    - wget https://github.com/mozilla/geckodriver/releases/download/v0.20.1/geckodriver-v0.20.1-linux64.tar.gz
+    - mkdir geckodriver
+    - tar -xzf geckodriver-v0.20.1-linux64.tar.gz -C geckodriver
+    - export PATH=$PATH:$PWD/geckodriver
 install:
     # Install composer modules
     - composer install
@@ -42,7 +46,7 @@ install:
     # Download a Selenium Web Driver release
     - wget "https://selenium-release.storage.googleapis.com/3.12/selenium-server-standalone-3.12.0.jar"
     # Extracting firefox and setting PATH variable...
-    - tar -xjf /tmp/firefox-52.8.0esr.tar.bz2 --directory /tmp
+    - tar -xjf /tmp/firefox-60.0.1.tar.bz2 --directory /tmp
     - export PATH="/tmp/firefox:$PATH"
     - echo "Using firefox version `firefox --version`"
     - echo "Using java version `java -version`"
