@@ -9,7 +9,10 @@ php:
     - "7.1"
 
 addons:
-    firefox: "44.0"
+    firefox: "60.0.1"
+    apt:
+        packages:
+            - oracle-java8-set-default
 
 before_install:
     # Start Xvfb in a desktop screen size,
@@ -36,16 +39,17 @@ install:
     - npm install
 
     # Download a Selenium Web Driver release
-    - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
+    - wget "https://selenium-release.storage.googleapis.com/3.12/selenium-server-standalone-3.12.0.jar"
     # Extracting firefox and setting PATH variable...
-    - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
+    - tar -xjf /tmp/firefox-60.0.1.tar.bz2 --directory /tmp
     - export PATH="/tmp/firefox:$PATH"
     - echo "Using firefox version `firefox --version`"
+    - echo "Using java version `java -version`"
 
     # Start Selenium and redirect Selenium WebDriver
     # output to /dev/null so that it doesn't flood the
     # screen in the middle of our other tests
-    - DISPLAY=:99.0 java -jar selenium-server-standalone-2.52.0.jar  2>1 > /dev/null &
+    - DISPLAY=:99.0 java -jar selenium-server-standalone-3.12.0.jar #2>1 > /dev/null &
 
 before_script:
 
@@ -98,4 +102,4 @@ script:
     - travis_wait npm run lint:javascript
     - travis_wait 60 vendor/bin/phpunit --configuration test/phpunit.xml
 
-dist: precise
+dist: xenial
