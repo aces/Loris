@@ -42,15 +42,11 @@ foreach($mp_idx as $num => $value) {
 // get all column names like "%_range" from mri_protocol table
 $mp_columns = $DB->pselect("SELECT column_name FROM information_schema.columns WHERE table_name='mri_protocol'", array());
 $mp_range_columns = array();
-$mp_nonrange_columns = array();
 foreach($mp_columns as $id => $value) {
     if (substr($value["column_name"], -5) == "range") {
         array_push($mp_range_columns, $value["column_name"]);
-    } else {
-        array_push($mp_nonrange_columns, $value["column_name"]);
     }
 }
-
 
 foreach($idx as $id) {
     $mp_data = $DB->pselect("SELECT * FROM mri_protocol mp WHERE mp.ID=:id", array('id' => $id));
@@ -67,9 +63,6 @@ foreach($idx as $id) {
             $data_to_insert[$col_min] = $col_data[0];
             $data_to_insert[$col_max] = $col_data[0];
         }
-    }
-    foreach($mp_nonrange_columns as $nonrange_col) {
-        $data_to_insert[$nonrange_col] = $mp_data[0][$nonrange_col]; 
     }
     $DB->update("mri_protocol", $data_to_insert, array('ID' => $id));
 }
