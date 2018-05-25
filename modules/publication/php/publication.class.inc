@@ -55,6 +55,10 @@ class Publication extends \NDB_Menu_Filter_Form
             "ON p.PublicationID=pptr.PublicationID ".
             "LEFT JOIN parameter_type pt ".
             "ON pt.ParameterTypeID=pptr.ParameterTypeID " .
+            "LEFT JOIN publication_collaborator_rel pcr ".
+            "ON pcr.PublicationID=p.PublicationID ".
+            "LEFT JOIN publication_collaborator pc ".
+            "ON pcr.PublicationCollaboratorID=pc.PublicationCollaboratorID ".
             "LEFT JOIN publication_keyword_rel pkr ".
             "ON p.PublicationID=pkr.PublicationID ".
             "LEFT JOIN publication_keyword pk ".
@@ -66,8 +70,9 @@ class Publication extends \NDB_Menu_Filter_Form
                           'p.Title',
                           'p.LeadInvestigator',
                           'p.DateProposed',
-                          'ps.Label',
+                          'ps.Label', // Status (Approved, Pending, Rejected, etc.)
                           'p.Description',
+                          'GROUP_CONCAT(pc.Name)', // Collaborators
                           'GROUP_CONCAT(pt.Name)', // Variables of Interest
                           'GROUP_CONCAT(pk.Label)', // Keywords
                           'p.PublicationID',
@@ -80,6 +85,7 @@ class Publication extends \NDB_Menu_Filter_Form
                           'Date Proposed',
                           'Approval Status',
                           'Description',
+                          'Collaborators',
                           'Variables Of Interest',
                           'Keywords',
                           'Publication ID',
@@ -88,6 +94,7 @@ class Publication extends \NDB_Menu_Filter_Form
         $this->validFilters = array(
                                'p.Title',
                                'p.ApprovalStatus',
+                               'pc.Name',
                                'pk.Label',
                                'p.LeadInvestigator',
                                'pt.Name',
@@ -96,6 +103,7 @@ class Publication extends \NDB_Menu_Filter_Form
         $this->formToFilter = array(
                                'titleOrDescription'  => 'p.Title',
                                'approvalStatus'      => 'ps.Label',
+                               'collaborators'       => 'pc.Name',
                                'keywords'            => 'pk.Label',
                                'variablesOfInterest' => 'pt.Name',
                                'leadInvestigator'    => 'p.LeadInvestigator',
@@ -136,6 +144,11 @@ class Publication extends \NDB_Menu_Filter_Form
         $this->addBasicText(
             'leadInvestigator',
             'Lead Investigator'
+        );
+
+        $this->addBasicText(
+            'collaborators',
+            'Collaborators'
         );
 
         $this->addBasicText(
@@ -193,7 +206,15 @@ class Publication extends \NDB_Menu_Filter_Form
      */
     function toJSON()
     {
-        $result         = $this->toArray();
+        $result = $this->toArray();
+        // run values through htmlspecialchars decode to unescape
+        // special chars
+        array_walk_recursive(
+            $result,
+            function (&$r) {
+                $r = htmlspecialchars_decode($r);
+            }
+        );
         $result['form'] = $this->form->form;
 
         return json_encode($result);

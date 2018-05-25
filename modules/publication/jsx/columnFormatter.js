@@ -23,9 +23,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     let pubID = row['Publication ID'];
     let viewURL = loris.BaseURL + '/publication/view_project?id=' + pubID;
 
-    // need to decode html entities that get stored in database
-    cell = decodeHtml(cell);
-
     return (
       <td>
         <a href={viewURL}>
@@ -35,18 +32,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     );
   }
   return <td className={classes}>{cell}</td>;
-}
-/**
- * Hacky trick to unescape text that has been encoded by the database
- *
- * @param {string} html The encoded string
- *
- * @return {string} the decoded string
- */
-function decodeHtml(html) {
-  let txt = document.createElement("textarea");
-  txt.innerHTML = html;
-  return txt.value;
 }
 
 export default formatColumn;

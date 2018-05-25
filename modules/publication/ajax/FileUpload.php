@@ -194,9 +194,9 @@ function insertCollaborators($pubID)
         // if collaborator does not already exist in table, add them
         if (!$cid) {
             $collabInsert = array(
-                'Name'  => $c['name'],
-                'Email' => $c['email'],
-            );
+                             'Name'  => $c['name'],
+                             'Email' => $c['email'],
+                            );
 
             $db->insert(
                 'publication_collaborator',
@@ -433,7 +433,8 @@ function notifySubmission($pubID)
  *
  * @return null
  */
-function notifyEdit($pubID) {
+function notifyEdit($pubID)
+{
     $db        = \Database::singleton();
     $config    = \NDB_Config::singleton();
     $user      = \User::singleton();
@@ -446,7 +447,7 @@ function notifyEdit($pubID) {
         array('pubID' => $pubID)
     );
     $url  = $config->getSetting('url');
-    
+
     $emailData['Title'] = $data['Title'];
     $emailData['User']  = $user->getFullname();
     $emailData['URL']   = $url . '/publication/view_project/?id=' . $pubID;
@@ -479,7 +480,8 @@ function notifyEdit($pubID) {
  *
  * @return null
  */
-function notifyReview($pubID) {
+function notifyReview($pubID)
+{
     $db        = \Database::singleton();
     $config    = \NDB_Config::singleton();
     $emailData = array();
@@ -590,7 +592,7 @@ function editProject()
     editVOIs($id);
     editUploads($id);
     processFiles($id);
-    
+
     // if publication status is changed, send review email
     if (isset($toUpdate['PublicationStatusID'])) {
         notifyReview($id);
@@ -605,11 +607,17 @@ function editProject()
             array('PublicationID' => $id)
         );
     }
-
-    error_log(print_r($_REQUEST, true));
 }
 
-function editEditors($id) {
+/**
+ * Edit users with edit permission
+ *
+ * @param int $id publication ID
+ *
+ * @return null
+ */
+function editEditors($id)
+{
     $db = \Database::singleton();
     $usersWithEditPerm = isset($_REQUEST['usersWithEditPerm'])
         ? json_decode($_REQUEST['usersWithEditPerm']) : null;
@@ -636,20 +644,28 @@ function editEditors($id) {
             $db->delete(
                 'publication_users_edit_perm_rel',
                 array(
-                    'UserID' => $uid,
-                    'PublicationID' => $id
-                    )
+                 'UserID'        => $uid,
+                 'PublicationID' => $id,
+                )
             );
         }
     }
 }
 
-function editCollaborators($id) {
+/**
+ * Edit collaborators
+ *
+ * @param int $id Publication ID
+ *
+ * @return null
+ */
+function editCollaborators($id)
+{
     $db = \Database::singleton();
     $submittedCollaborators = isset($_REQUEST['collaborators'])
         ? json_decode($_REQUEST['collaborators'], true) : null;
 
-    $currentCollabs = $db->pselectCol(
+    $currentCollabs       = $db->pselectCol(
         'SELECT Name FROM publication_collaborator pc '.
         'LEFT JOIN publication_collaborator_rel pcr '.
         'ON pcr.PublicationCollaboratorID=pc.PublicationCollaboratorID '.
@@ -662,7 +678,7 @@ function editCollaborators($id) {
         $newCollabs = array_diff($submittedCollabNames, $currCollabNames);
         $oldCollabs = array_diff($currentCollabs, $submittedCollabNames);
     }
-    
+
     if (!empty($newCollabs)) {
         insertCollaborators($id);
     }
@@ -677,8 +693,8 @@ function editCollaborators($id) {
             $db->delete(
                 'publication_collaborator_rel',
                 array(
-                    'PublicationCollaboratorID' => $cid,
-                    'PublicationID'             => $id,
+                 'PublicationCollaboratorID' => $cid,
+                 'PublicationID'             => $id,
                 )
             );
         }
@@ -694,7 +710,7 @@ function editCollaborators($id) {
 
     $currCollabEmails      = array_column($currentCollabs, 'email');
     $submittedCollabEmails = array_column($submittedCollaborators, 'email');
-    $staleEmails = array();
+    $staleEmails           = array();
     if ($submittedCollabEmails != $currCollabEmails) {
         // only care about updated emails here
         $staleEmails = array_diff($currCollabEmails, $submittedCollabEmails);
@@ -706,8 +722,8 @@ function editCollaborators($id) {
         );
 
         $submittedCollaborators = array_combine(
-          array_column($submittedCollaborators, 'name'),
-          array_column($submittedCollaborators, 'email')
+            array_column($submittedCollaborators, 'name'),
+            array_column($submittedCollaborators, 'email')
         );
         foreach ($staleEmails as $s) {
             $name     = $currentCollabs[$s];
@@ -721,8 +737,16 @@ function editCollaborators($id) {
     }
 }
 
-function editKeywords($id) {
-    $db = \Database::singleton();
+/**
+ * Edit keywords
+ *
+ * @param int $id OK... bear with me... this is the uhh Publication ID
+ *
+ * @return null
+ */
+function editKeywords($id)
+{
+    $db       = \Database::singleton();
     $keywords = isset($_REQUEST['keywords'])
         ? json_decode($_REQUEST['keywords']) : null;
 
@@ -754,15 +778,23 @@ function editKeywords($id) {
             $db->delete(
                 'publication_keyword_rel',
                 array(
-                    'PublicationKeywordID' => $kid,
-                    'PublicationID'        => $id,
+                 'PublicationKeywordID' => $kid,
+                 'PublicationID'        => $id,
                 )
             );
         }
     }
 }
 
-function editVOIs($id) {
+/**
+ * Edit Variables of Interest
+ *
+ * @param int $id oh damn it's the publication ID
+ *
+ * @return null
+ */
+function editVOIs($id)
+{
     $db  = \Database::singleton();
     $voi = isset($_REQUEST['voiFields'])
         ? json_decode($_REQUEST['voiFields']) : null;
@@ -803,8 +835,8 @@ function editVOIs($id) {
                 $db->delete(
                     'publication_test_names_rel',
                     array(
-                        'PublicationID' => $id,
-                        'TestNameID'    => $tnID,
+                     'PublicationID' => $id,
+                     'TestNameID'    => $tnID,
                     )
                 );
             } else {
@@ -815,8 +847,8 @@ function editVOIs($id) {
                 $db->delete(
                     'publication_parameter_type_rel',
                     array(
-                        'PublicationID'   => $id,
-                        'ParameterTypeID' => $ptID,
+                     'PublicationID'   => $id,
+                     'ParameterTypeID' => $ptID,
                     )
                 );
             }
@@ -824,7 +856,15 @@ function editVOIs($id) {
     }
 }
 
-function editUploads($id) {
+/**
+ * Edit file upload fields
+ *
+ * @param int $id publication ID
+ *
+ * @return null
+ */
+function editUploads($id)
+{
     $db = \Database::singleton();
 
     $pubUploads = $db->pselectWithIndexKey(
@@ -836,7 +876,7 @@ function editUploads($id) {
     $toUpdate = array();
     foreach ($pubUploads as $puid => $data) {
         $citationIndex = 'existingUpload_publicationCitation_' . $puid;
-        $versionIndex = 'existingUpload_publicationVersion_' . $puid;
+        $versionIndex  = 'existingUpload_publicationVersion_' . $puid;
 
         $cit = isset($_REQUEST[$citationIndex]) ? $_REQUEST[$citationIndex] : null;
         $ver = isset($_REQUEST[$versionIndex]) ? $_REQUEST[$versionIndex] : null;

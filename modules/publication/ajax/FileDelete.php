@@ -1,8 +1,21 @@
 <?php
+/**
+ * Publication file deletion script
+ *
+ * Deletes a specified file by upload ID (PublicationUploadID)
+ *
+ * PHP Version 7
+ *
+ * @category Loris
+ * @package  Publication
+ * @author   David <dblader.mcin@gmail.com>
+ * @license  Loris license
+ * @link     https://github.com/aces/Loris-Trunk
+ */
 $uploadID = $_REQUEST['uploadID'];
-$db     = \Database::singleton();
-$user   = \User::singleton();
-$config = \NDB_Config::singleton();
+$db       = \Database::singleton();
+$user     = \User::singleton();
+$config   = \NDB_Config::singleton();
 
 $query      = "SELECT * FROM publication_upload WHERE PublicationUploadID=:upid";
 $uploadData = $db->pselectRow($query, array('upid' => $uploadID));

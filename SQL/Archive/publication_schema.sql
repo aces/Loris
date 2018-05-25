@@ -44,6 +44,7 @@ DROP TABLE IF EXISTS publication_keyword_rel;
 CREATE TABLE `publication_keyword_rel` (
   `PublicationID` int(10) unsigned NOT NULL,
   `PublicationKeywordID` int(10) unsigned NOT NULL,
+  CONSTRAINT `UC_publication_keyword_1` UNIQUE (PublicationID, PublicationKeywordID),
   CONSTRAINT `FK_publication_keyword_1` FOREIGN KEY(`PublicationID`) REFERENCES `publication` (`PublicationID`),
   CONSTRAINT `FK_publication_keyword_2` FOREIGN KEY(`PublicationKeywordID`) REFERENCES `publication_keyword` (`PublicationKeywordID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
@@ -62,6 +63,7 @@ DROP TABLE IF EXISTS publication_collaborator_rel;
 CREATE TABLE `publication_collaborator_rel` (
   `PublicationID` int(10) unsigned NOT NULL,
   `PublicationCollaboratorID` int(10) unsigned NOT NULL,
+  CONSTRAINT `UC_publication_collaborator_1` UNIQUE (PublicationID, PublicationCollaboratorID),
   CONSTRAINT `FK_publication_collaborator_1` FOREIGN KEY(`PublicationID`) REFERENCES `publication` (`PublicationID`),
   CONSTRAINT `FK_publication_collaborator_2` FOREIGN KEY(`PublicationCollaboratorID`) REFERENCES `publication_collaborator` (`PublicationCollaboratorID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
@@ -71,6 +73,7 @@ DROP TABLE IF EXISTS publication_parameter_type_rel;
 CREATE TABLE `publication_parameter_type_rel` (
     `PublicationID` int(10) unsigned NOT NULL,
     `ParameterTypeID` int(10) unsigned NOT NULL,
+    CONSTRAINT `UC_publication_parameter_type_1` UNIQUE (PublicationID, ParameterTypeID),
     CONSTRAINT `FK_publication_parameter_type_rel_1` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
     CONSTRAINT `FK_publication_parameter_type_rel_2` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
@@ -90,8 +93,8 @@ CREATE TABLE `publication_upload` (
     `PublicationID` int(10) unsigned NOT NULL,
     `PublicationUploadTypeID` int(2) unsigned NOT NULL,
     `URL` varchar(255) NOT NULL,
-    `Citation` varchar(255),
     `Version` varchar(255),
+    `Citation` text,
     PRIMARY KEY (`PublicationUploadID`),
     CONSTRAINT `UC_publication_upload_1` UNIQUE (URL),
     CONSTRAINT `FK_publication_upload_1` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`)
@@ -129,7 +132,7 @@ DELETE FROM permissions WHERE code='publication_propose';
 DELETE FROM permissions WHERE code='publication_approve';
 INSERT INTO permissions (code, description, categoryID) VALUES ('publication_view', 'Publication - Access to module', 2);
 INSERT INTO permissions (code, description, categoryID) VALUES ('publication_propose', 'Publication - Propose a project', 2);
-INSERT INTO permissions (code, description, categoryID) VALUES ('publication_approve', 'Publication - Approve or reject proposed publicaiton projects', 2);
+INSERT INTO permissions (code, description, categoryID) VALUES ('publication_approve', 'Publication - Approve or reject proposed publication projects', 2);
 INSERT INTO LorisMenuPermissions (MenuID, PermID) VALUES ((SELECT ID FROM LorisMenu WHERE Label='Publications'), (SELECT permID FROM permissions WHERE code='publication_view'));
 INSERT INTO LorisMenuPermissions (MenuID, PermID) VALUES ((SELECT ID FROM LorisMenu WHERE Label='Publications'), (SELECT permID FROM permissions WHERE code='publication_propose'));
 INSERT INTO LorisMenuPermissions (MenuID, PermID) VALUES ((SELECT ID FROM LorisMenu WHERE Label='Publications'), (SELECT permID FROM permissions WHERE code='publication_approve'));
@@ -140,7 +143,7 @@ INSERT INTO user_perm_rel (userID, permID) VALUES(1, (SELECT permID FROM permiss
 DELETE FROM notification_modules where module_name='publication';
 INSERT INTO notification_modules (module_name, operation_type, template_file, description) VALUES ('publication', 'submission', 'notifier_publication_submission.tpl', 'Publication: Submission Received');
 INSERT INTO notification_modules (module_name, operation_type, template_file, description) VALUES ('publication', 'review', 'notifier_publication_review.tpl', 'Publication: Proposal has been reviewed');
-INSERT INTO notification_modules (module_name, operation_type, template_file, description) VALUES ('publication', 'edit', 'notifier_publication_edit.tpl', 'Publication: Proposal has been editted');
+INSERT INTO notification_modules (module_name, operation_type, template_file, description) VALUES ('publication', 'edit', 'notifier_publication_edit.tpl', 'Publication: Proposal has been edited');
 
 INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES ((SELECT id FROM notification_modules WHERE module_name='publication' AND operation_type='submission'), 1);
 INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES ((SELECT id FROM notification_modules WHERE module_name='publication' AND operation_type='review'), 1);

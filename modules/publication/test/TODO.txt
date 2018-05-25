@@ -1,7 +1,7 @@
 TODO 's:
-    - Fix filtering
     - Check for file existence
-    - Organize file download links
-    - Make keywords into non-strict datalist
+    - Make keywords & collaborators into non-strict datalist
     - General cleanup
+    - Fix email validation
     - Filter out rejected proposals for users without approval permission / without relation to proposal
+    - Standardize error messages

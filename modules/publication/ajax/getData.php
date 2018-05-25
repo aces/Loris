@@ -54,7 +54,6 @@ function getData()
     // sets keys and values to be equal
     $allVOIs = array_combine($allVOIs, $allVOIs);
 
-
     $users = $db->pselectColWithIndexKey(
         "SELECT ID, Real_name FROM users ".
         "WHERE Active='Y' AND Pending_approval='N' ".
@@ -115,13 +114,17 @@ function getProjectData()
 
         $usersWithEditPerm = $userIDs;
 
+        $title          = htmlspecialchars_decode($result['Title']);
+        $description    = htmlspecialchars_decode($result['Description']);
+        $rejectedReason = htmlspecialchars_decode($result['RejectedReason']);
+
         $pubData = array(
-                    'title'                 => htmlspecialchars_decode($result['Title']),
-                    'description'           => htmlspecialchars_decode($result['Description']),
+                    'title'                 => $title,
+                    'description'           => $description,
                     'leadInvestigator'      => $result['LeadInvestigator'],
                     'leadInvestigatorEmail' => $result['LeadInvestigatorEmail'],
                     'status'                => $result['PublicationStatusID'],
-                    'rejectedReason'        => htmlspecialchars_decode($result['RejectedReason']),
+                    'rejectedReason'        => $rejectedReason,
                     'voi'                   => $result['VOIs'],
                     'keywords'              => $result['Keywords'],
                     'collaborators'         => $result['collaborators'],
@@ -228,7 +231,7 @@ function getFiles($id)
         array('pid' => $id)
     );
 
-    foreach($files as $key => $f) {
+    foreach ($files as $key => $f) {
         $files[$key]['Citation'] = htmlspecialchars_decode($f['Citation']);
     }
 
@@ -256,6 +259,11 @@ function getStatusOptions()
     return $statusOpts;
 }
 
+/**
+ * Gets different types of uploads
+ *
+ * @return array Array of upload types
+ */
 function getUploadTypes()
 {
     $db = \Database::singleton();
