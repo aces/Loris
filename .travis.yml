@@ -94,6 +94,8 @@ before_script:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
-    - npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
+    - travis_wait npm run lint:php 
+    - travis_wait npm run lint:javascript
+    - travis_wait 60 vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise
