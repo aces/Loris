@@ -381,7 +381,7 @@ function cleanup($pubID)
 }
 
 /**
- * Send out email notifications
+ * Send out email notifications for project submission
  *
  * @param int $pubID publication ID
  *
@@ -405,7 +405,8 @@ function notifySubmission($pubID)
     $emailData['Date']  = $data['DateProposed'];
     $emailData['URL']   = $url . '/publication/view_project/?id='.$pubID;
 
-    $sendTo = $_REQUEST['notifyLead'] ? array($data['LeadInvestigatorEmail']) : [];
+    $sendTo = $_REQUEST['notifyLead'] === 'true'
+        ? array($data['LeadInvestigatorEmail']) : [];
     // get collaborators to notify
     $collaborators = isset($_REQUEST['collaborators'])
         ? json_decode($_REQUEST['collaborators'], true) : null;
@@ -425,9 +426,17 @@ function notifySubmission($pubID)
     }
 }
 
+/**
+ * Send out email notifications for project edits
+ *
+ * @param int $pubID publication ID
+ *
+ * @return null
+ */
 function notifyEdit($pubID) {
     $db        = \Database::singleton();
     $config    = \NDB_Config::singleton();
+    $user      = \User::singleton();
     $emailData = array();
 
     $data = $db->pselectRow(
@@ -437,11 +446,39 @@ function notifyEdit($pubID) {
         array('pubID' => $pubID)
     );
     $url  = $config->getSetting('url');
-
+    
     $emailData['Title'] = $data['Title'];
-    $emailData['URL']   = $url . '/publication/view_project/?id='.$pubID;
+    $emailData['User']  = $user->getFullname();
+    $emailData['URL']   = $url . '/publication/view_project/?id=' . $pubID;
+
+    $sendTo = $_REQUEST['notifyLead'] === 'true'
+        ? array($data['LeadInvestigatorEmail']) : [];
+    // get collaborators to notify
+    $collaborators = isset($_REQUEST['collaborators'])
+        ? json_decode($_REQUEST['collaborators'], true) : null;
+
+    foreach ($collaborators as $c) {
+        if ($c['notify']) {
+            $sendTo[] = $c['email'];
+        }
+    }
+    if (!empty($sendTo)) {
+        $sendTo = implode(', ', $sendTo);
+        Email::send(
+            $sendTo,
+            'notifier_publication_edit.tpl',
+            $emailData
+        );
+    }
 }
 
+/**
+ * Send out email notifications for project review
+ *
+ * @param int $pubID publication ID
+ *
+ * @return null
+ */
 function notifyReview($pubID) {
     $db        = \Database::singleton();
     $config    = \NDB_Config::singleton();
@@ -456,7 +493,27 @@ function notifyReview($pubID) {
     $url  = $config->getSetting('url');
 
     $emailData['Title'] = $data['Title'];
-    $emailData['URL']   = $url . '/publication/view_project/?id='.$pubID;
+    $emailData['URL']   = $url . '/publication/view_project/?id=' . $pubID;
+
+    $sendTo = $_REQUEST['notifyLead'] === 'true'
+        ? array($data['LeadInvestigatorEmail']) : [];
+    // get collaborators to notify
+    $collaborators = isset($_REQUEST['collaborators'])
+        ? json_decode($_REQUEST['collaborators'], true) : null;
+
+    foreach ($collaborators as $c) {
+        if ($c['notify']) {
+            $sendTo[] = $c['email'];
+        }
+    }
+    if (!empty($sendTo)) {
+        $sendTo = implode(', ', $sendTo);
+        Email::send(
+            $sendTo,
+            'notifier_publication_review.tpl',
+            $emailData
+        );
+    }
 }
 
 /**
@@ -533,7 +590,14 @@ function editProject()
     editVOIs($id);
     editUploads($id);
     processFiles($id);
-
+    
+    // if publication status is changed, send review email
+    if (isset($toUpdate['PublicationStatusID'])) {
+        notifyReview($id);
+    } else {
+        // otherwise send edit email
+        notifyEdit($id);
+    }
     if (!empty($toUpdate)) {
         $db->update(
             'publication',
@@ -541,6 +605,8 @@ function editProject()
             array('PublicationID' => $id)
         );
     }
+
+    error_log(print_r($_REQUEST, true));
 }
 
 function editEditors($id) {
@@ -580,7 +646,7 @@ function editEditors($id) {
 
 function editCollaborators($id) {
     $db = \Database::singleton();
-    $collaborators         = isset($_REQUEST['collaborators'])
+    $submittedCollaborators = isset($_REQUEST['collaborators'])
         ? json_decode($_REQUEST['collaborators'], true) : null;
 
     $currentCollabs = $db->pselectCol(
@@ -590,18 +656,19 @@ function editCollaborators($id) {
         'WHERE pcr.PublicationID=:pid',
         array('pid' => $id)
     );
-
-    $submittedCollabs = array_column($collaborators, 'name');
-    if ($submittedCollabs != $currentCollabs) {
-        $newCollabs = array_diff($submittedCollabs, $currentCollabs);
-        $oldCollabs = array_diff($currentCollabs, $submittedCollabs);
+    $currCollabNames      = array_values($currentCollabs);
+    $submittedCollabNames = array_column($submittedCollaborators, 'name');
+    if ($submittedCollabNames != $currCollabNames) {
+        $newCollabs = array_diff($submittedCollabNames, $currCollabNames);
+        $oldCollabs = array_diff($currentCollabs, $submittedCollabNames);
     }
+    
     if (!empty($newCollabs)) {
         insertCollaborators($id);
     }
     if (!empty($oldCollabs)) {
         foreach ($oldCollabs as $name) {
-            $uid = $db->pselectOne(
+            $cid = $db->pselectOne(
                 'SELECT PublicationCollaboratorID '.
                 'FROM publication_collaborator '.
                 'WHERE Name=:n',
@@ -610,9 +677,45 @@ function editCollaborators($id) {
             $db->delete(
                 'publication_collaborator_rel',
                 array(
-                    'PublicationCollaboratorID' => $uid,
+                    'PublicationCollaboratorID' => $cid,
                     'PublicationID'             => $id,
                 )
+            );
+        }
+    }
+    // update emails if any have changed
+    $currentCollabs = $db->pselect(
+        'SELECT Name, Email FROM publication_collaborator pc '.
+        'LEFT JOIN publication_collaborator_rel pcr '.
+        'ON pcr.PublicationCollaboratorID=pc.PublicationCollaboratorID '.
+        'WHERE pcr.PublicationID=:pid',
+        array('pid' => $id)
+    );
+
+    $currCollabEmails      = array_column($currentCollabs, 'email');
+    $submittedCollabEmails = array_column($submittedCollaborators, 'email');
+    $staleEmails = array();
+    if ($submittedCollabEmails != $currCollabEmails) {
+        // only care about updated emails here
+        $staleEmails = array_diff($currCollabEmails, $submittedCollabEmails);
+    }
+    if (!empty($staleEmails)) {
+        $currentCollabs = array_combine(
+            array_column($currentCollabs, 'email'),
+            array_column($currentCollabs, 'name')
+        );
+
+        $submittedCollaborators = array_combine(
+          array_column($submittedCollaborators, 'name'),
+          array_column($submittedCollaborators, 'email')
+        );
+        foreach ($staleEmails as $s) {
+            $name     = $currentCollabs[$s];
+            $newEmail = $submittedCollaborators[$name];
+            $db->update(
+                'publication_collaborator',
+                array('Email' => $newEmail),
+                array('Name' => $name)
             );
         }
     }

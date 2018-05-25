@@ -93,6 +93,7 @@ CREATE TABLE `publication_upload` (
     `Citation` varchar(255),
     `Version` varchar(255),
     PRIMARY KEY (`PublicationUploadID`),
+    CONSTRAINT `UC_publication_upload_1` UNIQUE (URL),
     CONSTRAINT `FK_publication_upload_1` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
 
@@ -138,12 +139,11 @@ INSERT INTO user_perm_rel (userID, permID) VALUES(1, (SELECT permID FROM permiss
 
 DELETE FROM notification_modules where module_name='publication';
 INSERT INTO notification_modules (module_name, operation_type, template_file, description) VALUES ('publication', 'submission', 'notifier_publication_submission.tpl', 'Publication: Submission Received');
-INSERT INTO notification_modules (module_name, operation_type, template_file, description) VALUES ('publication', 'rate', 'notifier_publication_rate.tpl', 'Publication: Proposal has been rated');
+INSERT INTO notification_modules (module_name, operation_type, template_file, description) VALUES ('publication', 'review', 'notifier_publication_review.tpl', 'Publication: Proposal has been reviewed');
 INSERT INTO notification_modules (module_name, operation_type, template_file, description) VALUES ('publication', 'edit', 'notifier_publication_edit.tpl', 'Publication: Proposal has been editted');
 
-
 INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES ((SELECT id FROM notification_modules WHERE module_name='publication' AND operation_type='submission'), 1);
-INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES ((SELECT id FROM notification_modules WHERE module_name='publication' AND operation_type='rate'), 1);
+INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES ((SELECT id FROM notification_modules WHERE module_name='publication' AND operation_type='review'), 1);
 INSERT INTO notification_modules_services_rel (module_id, service_id) VALUES ((SELECT id FROM notification_modules WHERE module_name='publication' AND operation_type='edit'), 1);
 
 DELETE FROM Config WHERE Value='/data/publication_uploads/';

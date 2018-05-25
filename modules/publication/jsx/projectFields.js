@@ -246,7 +246,6 @@ class ProjectFormFields extends React.Component {
 
   setCollaboratorEmail(formElement, value) {
     let collabName = formElement.split('_')[1];
-    console.log(formElement);
     let collaborators = this.props.formData.collaborators;
     let i = collaborators.findIndex(c => c.name === collabName);
     collaborators[i].email = value;
@@ -254,7 +253,6 @@ class ProjectFormFields extends React.Component {
   }
 
   toggleEmailNotify(e) {
-    console.log(e.target.name);
     if (e.target.name.indexOf('collabEmail') > -1) {
       let collaborators = this.props.formData.collaborators;
       let collabName = e.target.value;

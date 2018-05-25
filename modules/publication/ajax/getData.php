@@ -54,31 +54,17 @@ function getData()
     // sets keys and values to be equal
     $allVOIs = array_combine($allVOIs, $allVOIs);
 
-    $uploadTypeRaw = $db->pselect(
-        "SELECT * FROM publication_upload_type",
-        array()
-    );
 
-    $uploadTypes = [];
-
-    foreach ($uploadTypeRaw as $type) {
-        $uploadTypes[$type['PublicationUploadTypeID']] = $type['Label'];
-    }
-
-    $usersRaw = $db->pselect(
+    $users = $db->pselectColWithIndexKey(
         "SELECT ID, Real_name FROM users ".
         "WHERE Active='Y' AND Pending_approval='N' ".
         "ORDER BY Real_name",
-        array()
+        array(),
+        'ID'
     );
 
-    $users = array();
-    foreach ($usersRaw as $u) {
-        $users[$u['ID']] = $u['Real_name'];
-    }
-
     $data['users']          = $users;
-    $data['uploadTypes']    = $uploadTypes;
+    $data['uploadTypes']    = getUploadTypes();
     $data['existingTitles'] = $titles;
     $data['allVOIs']        = $allVOIs;
     return $data;
@@ -143,6 +129,7 @@ function getProjectData()
                     'usersWithEditPerm'     => $usersWithEditPerm,
                     'userCanEdit'           => $userCanEdit,
                     'statusOpts'            => getStatusOptions(),
+                    'uploadTypes'           => getUploadTypes(),
                    );
 
         // if user can edit, retrieve getData() options to allow modifications
@@ -267,4 +254,15 @@ function getStatusOptions()
     }
 
     return $statusOpts;
+}
+
+function getUploadTypes()
+{
+    $db = \Database::singleton();
+
+    return $db->pselectColWithIndexKey(
+        'SELECT PublicationUploadTypeID, Label FROM publication_upload_type',
+        array(),
+        'PublicationUploadTypeID'
+    );
 }

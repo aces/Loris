@@ -109,13 +109,36 @@ class ViewProject extends React.Component {
 
   createFileDownloadLinks() {
     let files = this.state.files;
-    return files.map(function(f) {
+    let toReturn = [];
+    files.forEach(function(f) {
       let download = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + f.URL;
-      return (<span>
-        <a href={download}>{f.URL}</a>
-        ; &nbsp;
-      </span>);
-    });
+      let link = <a href={download}>{f.URL}</a>;
+      let uploadType = this.state.uploadTypes[f.PublicationUploadTypeID];
+      toReturn.push(
+          <StaticElement
+            label={'Download ' + uploadType}
+            text={link}
+          />
+      );
+      if (f.Citation) {
+        toReturn.push(
+          <StaticElement
+            label="Citation"
+            text={f.Citation}
+          />
+        );
+      }
+      if (f.Version) {
+        toReturn.push(
+          <StaticElement
+            label="Version"
+            text={f.Version}
+          />
+        );
+      }
+    }, this);
+
+    return toReturn;
   }
 
   createMenuFilterLinks(stringArr, filterVar) {
@@ -145,10 +168,11 @@ class ViewProject extends React.Component {
     let collabLinks;
     let keywordLinks;
     let voiLinks;
+    let files;
 
     if (this.state.formData.collaborators.length > 0) {
       collabLinks = this.createMenuFilterLinks(
-        this.state.formData.collaborators,
+        this.state.formData.collaborators.map(c => c.name),
         'collaborators'
       );
       collaborators = <StaticElement
@@ -181,8 +205,17 @@ class ViewProject extends React.Component {
         text={voiLinks}
       />;
     }
+
+    if (this.state.files.length > 0) {
+      files = this.createFileDownloadLinks();
+    }
     return (
       <div>
+        <StaticElement
+          name="description"
+          label="Description"
+          text={this.state.formData.description}
+        />
         <StaticElement
           name="leadInvestigator"
           label="Lead Investigator"
@@ -196,16 +229,7 @@ class ViewProject extends React.Component {
         {collaborators}
         {keywords}
         {vois}
-        <StaticElement
-          name="description"
-          label="Description"
-          text={this.state.formData.description}
-        />
-        <StaticElement
-          name="files"
-          label="Download files"
-          text={this.createFileDownloadLinks()}
-        />
+        {files}
       </div>
    );
   }

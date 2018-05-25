@@ -129,7 +129,6 @@ class PublicationUploadForm extends React.Component {
         formObj.append(key, formVal);
       }
     }
-    formObj.append('toNotify', JSON.stringify(this.state.toNotify));
 
     $.ajax({
       type: 'POST',
