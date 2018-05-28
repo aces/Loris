@@ -322,6 +322,9 @@ class ProjectFormFields extends React.Component {
           name="collaborators"
           id="collaborators"
           label="Collaborators"
+          options={this.props.allCollabs}
+          useSearch={true}
+          strictSearch={false}
           onUserInput={this.props.setFormData}
           onUserAdd={this.addCollaborator}
           onUserRemove={this.removeCollaborator}
@@ -335,6 +338,9 @@ class ProjectFormFields extends React.Component {
           name="keywords"
           id="keywords"
           label="Keywords"
+          options={this.props.allKWs}
+          useSearch={true}
+          strictSearch={false}
           onUserInput={this.props.setFormData}
           onUserAdd={this.props.addListItem}
           onUserRemove={this.props.removeListItem}

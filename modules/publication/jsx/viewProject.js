@@ -19,6 +19,22 @@ class ViewProject extends React.Component {
     this.createEditableComponents = this.createEditableComponents.bind(this);
     this.addListItem = this.addListItem.bind(this);
     this.removeListItem = this.removeListItem.bind(this);
+    this.validateEmail = this.validateEmail.bind(this);
+  }
+
+  validateEmail(field, email) {
+    let formErrors = this.state.formErrors;
+
+    // don't supply error if email is blank
+    if (email === '' || email === null || email === undefined) {
+      delete formErrors[field];
+      // if email is invalid, set error, else nullify error
+    } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+      formErrors[field] = 'Invalid email';
+    } else {
+      delete formErrors[field];
+    }
+    this.setState({formErrors});
   }
 
   handleSubmit(e) {
@@ -89,9 +105,12 @@ class ViewProject extends React.Component {
 
         self.setState({
           formData: formData,
+          users: data.users,
           statusOpts: data.statusOpts,
           userCanEdit: data.userCanEdit,
           allVOIs: data.allVOIs,
+          allKWs: data.allKWs,
+          allCollabs: data.allCollabs,
           uploadTypes: data.uploadTypes,
           files: data.files,
           isLoaded: true
@@ -250,6 +269,8 @@ class ViewProject extends React.Component {
           uploadTypes={this.state.uploadTypes}
           users={this.state.users}
           allVOIs={this.state.allVOIs}
+          allKWs={this.state.allKWs}
+          allCollabs={this.state.allCollabs}
           editMode={true}
         />
       </div>
@@ -331,7 +352,7 @@ class ViewProject extends React.Component {
 
       if (status === 'Rejected') {
         rejectReason = <TextboxElement
-          name="rejectReason"
+          name="rejectedReason"
           label="Reason for rejection"
           value={this.state.formData.rejectedReason}
           onUserInput={this.setFormData}

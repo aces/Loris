@@ -48,6 +48,7 @@ class Publication extends \NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
+        $user   = \User::singleton();
         $query  = " FROM publication p ".
             "LEFT JOIN publication_status ps ".
             "ON ps.PublicationStatusID=p.PublicationStatusID ".
@@ -64,6 +65,11 @@ class Publication extends \NDB_Menu_Filter_Form
             "LEFT JOIN publication_keyword pk ".
             "ON pkr.PublicationKeywordID=pk.PublicationKeywordID ";
         $query .= " WHERE 1=1 ";
+
+        if (!$user->hasPermission('publication_approve')) {
+            $query .= " AND ps.Label <> 'Rejected' ";
+        }
+
         $query .= " GROUP BY p.PublicationID ";
 
         $this->columns = array(
@@ -108,6 +114,7 @@ class Publication extends \NDB_Menu_Filter_Form
                                'variablesOfInterest' => 'pt.Name',
                                'leadInvestigator'    => 'p.LeadInvestigator',
                               );
+
         return true;
     }
 

@@ -62,10 +62,24 @@ function getData()
         'ID'
     );
 
+    $kws  = $db->pselectCol(
+        'SELECT Label FROM publication_keyword',
+        array()
+    );
+    $kws = array_combine($kws, $kws);
+
+    $collabs = $db->pselectCol(
+        'SELECT Name FROM publication_collaborator',
+        array()
+    );
+    $collabs = array_combine($collabs, $collabs);
+
     $data['users']          = $users;
     $data['uploadTypes']    = getUploadTypes();
     $data['existingTitles'] = $titles;
     $data['allVOIs']        = $allVOIs;
+    $data['allKWs']         = $kws;
+    $data['allCollabs']     = $collabs;
     return $data;
 }
 
