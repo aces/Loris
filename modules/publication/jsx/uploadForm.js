@@ -32,7 +32,7 @@ class PublicationUploadForm extends React.Component {
     if (email === '' || email === null || email === undefined) {
       delete formErrors[field];
       // if email is invalid, set error, else nullify error
-    } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+    } else if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) === false) {
       formErrors[field] = 'Invalid email';
     } else {
       delete formErrors[field];
@@ -45,7 +45,6 @@ class PublicationUploadForm extends React.Component {
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
-        console.log(data);
         self.setState({
           Data: data,
           isLoaded: true
@@ -135,7 +134,7 @@ class PublicationUploadForm extends React.Component {
         // reset form data
         this.setState({
           formData: {},
-          numFiles: 0,
+          numFiles: 0
         });
         swal("Submission Successful!", "", "success");
       }.bind(this),

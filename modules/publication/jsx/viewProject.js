@@ -29,7 +29,7 @@ class ViewProject extends React.Component {
     if (email === '' || email === null || email === undefined) {
       delete formErrors[field];
       // if email is invalid, set error, else nullify error
-    } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+    } else if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) === false) {
       formErrors[field] = 'Invalid email';
     } else {
       delete formErrors[field];
@@ -76,7 +76,6 @@ class ViewProject extends React.Component {
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
-        console.log(data);
         let formData = {
           title: data.title,
           description: data.description,

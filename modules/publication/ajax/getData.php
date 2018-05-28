@@ -62,7 +62,7 @@ function getData()
         'ID'
     );
 
-    $kws  = $db->pselectCol(
+    $kws = $db->pselectCol(
         'SELECT Label FROM publication_keyword',
         array()
     );

@@ -105,20 +105,20 @@ class ProjectFormFields extends React.Component {
       showCancelButton: true,
       confirmButtonText: 'Yes, I am sure!',
       cancelButtonText: "No, cancel it!"
-      },
+    },
       function(willDelete) {
         if (willDelete) {
           let url = loris.BaseURL + '/publication/ajax/deleteUpload.php?uploadID=' + uploadID;
           $.ajax(url, {method: 'DELETE'});
         }
-    });
+      });
   }
 
   createFileFields() {
     let fileFields = [];
     // Create download link & edit fields for existing files
     if (this.props.files) {
-      this.props.files.forEach(function (f) {
+      this.props.files.forEach(function(f) {
         let downloadURL = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + encodeURIComponent(f.URL);
         let link = (
           <span>

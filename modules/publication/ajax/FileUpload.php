@@ -137,7 +137,7 @@ function processFiles($pubID)
     }
 
     foreach ($_FILES as $name => $values) {
-        $fileName  = preg_replace('/\s/', '_', $values["name"]);
+        $fileName = preg_replace('/\s/', '_', $values["name"]);
         if (file_exists($publicationPath . $fileName)) {
             showError("File $fileName already exists!");
         }
@@ -381,7 +381,7 @@ function cleanup($pubID)
     }
 
     $files = $db->pselectCol(
-      'SELECT URL FROM publication_upload WHERE PublicationID=:PublicationID',
+        'SELECT URL FROM publication_upload WHERE PublicationID=:PublicationID',
         $where
     );
     if (!empty($files)) {
