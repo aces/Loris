@@ -596,6 +596,7 @@ class NDB_Menu_Filter extends NDB_Menu
             $query = "SELECT COUNT(*) FROM ($query) as tmptable";
         }
         $this->TotalItems = $db->pselectOne($query, $wheredetails['params']);
+        
     }
 
     /**
