@@ -734,8 +734,14 @@ class Edit_User extends \NDB_Form
 
         // checking if the account can be rejected (no password hash
         // pending approval)
-        $this->tpl_data['can_reject'] =$this->_canRejectAccount($this->identifier);
 
+        // if new user
+        if ($this->isCreatingNewUser()) {
+            $this->tpl_data['can_reject'] = false;
+        } else {
+            $this->tpl_data['can_reject']
+                = self::canRejectAccount(\User::factory($this->identifier));
+        }
         // get the editor's permissions
 
         $perms    = $editor->getPermissionsVerbose();
@@ -829,31 +835,18 @@ class Edit_User extends \NDB_Form
     }
 
     /**
-     * Query database on UserID to check that password has doesn't
-     * exist and account is still pending approval, to ensure the
-     * users with account activity can't be rejected by setting
-     * their status to pending.
+     * This ensures that users with account activity cannot be rejected
+     * if their approval status is, for some reason, set to pending.
      *
-     * @param string $id identifier of account to verify
+     * @param \User $user The User to verify
      *
-     * @return boolean true is Password_hash is null and
-     * Pending_approval is Yes, false otherwsie
+     * @return boolean true if 'Pending_approval' is Yes and the user never
+     *                      ever logged in.
      */
-    function _canRejectAccount($id)
+    static function canRejectAccount(\User $user)
     {
-        $DB     = \Database::singleton();
-        $fields =  $DB->pselect(
-            "SELECT Password_hash, Pending_approval
-                   FROM users
-                   WHERE UserID=:id",
-            array("id" => $id)
-        );
-        if (is_null($fields[0]['Password_hash'])
-            && $fields[0]['Pending_approval']=="Y"
-        ) {
-            return true;
-        }
-        return false;
+        return $user->getData('Pending_approval') == 'Y'
+            && !$user->hasLoggedIn();
     }
 
     /**
@@ -1127,6 +1120,22 @@ class Edit_User extends \NDB_Form
             list(,$description) = each($permission[0]);
         }
         return $permission;
+    }
+
+    /**
+     * Gathers JS dependencies and merges them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array($baseURL . "/user_accounts/js/rejectUser.js")
+        );
     }
 }
 ?>
