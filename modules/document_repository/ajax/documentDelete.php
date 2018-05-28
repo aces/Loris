@@ -38,19 +38,19 @@ $Notifier = new NDB_Notifier(
 $rid = $_POST['id'];
 
 $fileName = $DB->pselectOne(
-    "Select File_name from document_repository where record_id =:identifier",
+    "SELECT File_name FROM document_repository WHERE record_id =:identifier",
     array(':identifier' => $rid)
 );
 $userName = $DB->pselectOne(
-    "Select uploaded_by from document_repository where record_id =:identifier",
+    "SELECT uploaded_by FROM document_repository WHERE record_id =:identifier",
     array(':identifier' => $rid)
 );
 $dataDir  = $DB->pselectOne(
-    "Select Data_dir from document_repository where record_id =:identifier",
+    "SELECT Data_dir FROM document_repository WHERE record_id =:identifier",
     array(':identifier' => $rid)
 );
 $version  = $DB->pselectOne(
-    "Select version from document_repository where record_id =:identifier",
+    "SELECT version FROM document_repository WHERE record_id =:identifier",
     array(':identifier' => $rid)
 );
 
@@ -73,7 +73,12 @@ if (file_exists($path)) {
 
 $rm_directory = __DIR__ . "/../user_uploads/" . $userName . "/"
                         . str_replace(".", "_", $version);
-
+set_error_handler(
+    function () {
+        // Silence the E_WARNING when files exist in the directory.
+    }
+);
 rmdir($rm_directory);
+restore_error_handler();
 
 ?>
