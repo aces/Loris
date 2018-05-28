@@ -28,11 +28,8 @@ class Stats_Demographic extends \NDB_Form
 
     /**
      * The default params
-     *
-     * @var    array
-     * @access private
      */
-    var $params = null;
+    protected $params = null;
 
     /**
      * Checking user's permission
