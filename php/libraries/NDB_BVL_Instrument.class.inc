@@ -1126,7 +1126,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function _getQuickformDate($databaseValue)
     {
         throw new Exception(
-            "The function _getQuickformDate has been depricated. 
+            "The function _getQuickformDate has been deprecated. 
             Please contact LORIS developer mail list for support."
         );
     }
