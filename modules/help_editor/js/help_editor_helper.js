@@ -1,5 +1,4 @@
 $(document).ready(function(){
-
 $("input[name=preview]").click(function(e) {
     if($('div.help-content').length) {
         $('div.help-content').remove();
@@ -35,7 +34,51 @@ $("input[name=preview]").click(function(e) {
      e.preventDefault();
 
 });
+$("#save-help").click(function(e) {
+    e.preventDefault();
+    var title   = $('input[name="title"]').val(),
+        content = $('textarea[name="content"]').val(),
+        section = $("#section").val(),
+        subsection = $("#subsection").val(),
+        parentID = $("#parentID").val(),
+        helpID = $("#helpID").val(),
+        returnString = $("#return").val();
+
+    $.ajax({
+        type: 'POST',
+        url: loris.BaseURL + '/help_editor/ajax/process.php',
+        data: {
+            title: title ? title : '',
+            content: content ? content : '',
+            section: section ? section : '',
+            subsection: subsection ? subsection : '',
+            parentID: parentID ? parentID : '',
+            helpID: helpID ? helpID : '',
+        },
+        success: function() {
+            swal({
+                title: "Content update successful!",
+                type: "success",
+                showCancelButton: true,
+                confirmButtonText: returnString,
+                cancelButtonText: "Close",
+                closeOnConfirm: false,
+                closeOnCancel: true,
+            },
+            function(){
+                location.href = document.referrer;
+            });
+        },
+        error: function(xhr, errorCode, errorMsg) {
+            console.error(xhr);
+            swal({
+                title: "Content update unsuccessful.",
+                text: errorCode + ": " + xhr.status + " " + errorMsg,
+                type: "error",
+                confirmButtonText: "Try again",
+                closeOnConfirm: true,
+            });
+        }
+    });
 });
-function goBack() {
-    window.history.back();
-}
+});
