@@ -353,16 +353,6 @@ class NDB_Menu_Filter extends NDB_Menu
         if (isset($_REQUEST['keyword'])) {
             // It was included in the request, so save it.
             $key = $_REQUEST['keyword'];
-            // Check if multiple keyword search
-            if ($_REQUEST['test_name'] == 'datadict'
-                && preg_match("/\\s/", $key)
-            ) {
-                $key = explode(" ", $key);
-                foreach ($key as &$k) {
-                    $k = '.*'.$k;
-                }
-                unset($k);
-            }
             $_SESSION['State']->setProperty('keyword', $key);
         } else {
             // It was not included, so get the keyword from the session
@@ -547,20 +537,13 @@ class NDB_Menu_Filter extends NDB_Menu
             $WhereClause .= " AND (";
             $fields       = array();
 
-            $qparams['v_searchkey'] = $this->searchKey['keyword'];
-
             foreach ($this->searchKeyword as $field) {
-                if ($_REQUEST['test_name'] == 'datadict'
-                    && isset($qparams['v_searchkey'])
-                    && is_array(($qparams['v_searchkey']))
-                ) {
-                    $fields[] = " $field REGEXP :v_searchkey";
-                } else {
-                    $fields[] = " $field LIKE CONCAT('%', :v_searchkey, '%')";
-                }
+                $fields[] = " $field LIKE CONCAT('%', :v_searchkey, '%')";
             }
             $WhereClause .= join(" OR ", $fields);
-            $WhereClause .= ")";
+
+            $qparams['v_searchkey'] = $this->searchKey['keyword'];
+            $WhereClause           .= ")";
 
         }
 
@@ -584,16 +567,7 @@ class NDB_Menu_Filter extends NDB_Menu
                     }
                     $first = false;
 
-                    if ($_REQUEST['test_name'] == 'datadict'
-                        && isset($qparams['v_searchkey'])
-                        && is_array(($qparams['v_searchkey']))
-                    ) {
-                        // Multiple keyword search
-                        $WhereClause .= "$key REGEXP :v_$prepared_key";
-                    } else {
-                        // Single keyword search
-                        $WhereClause .= "$key LIKE CONCAT(:v_$prepared_key, '%')";
-                    }
+                    $WhereClause .= "$key LIKE CONCAT(:v_$prepared_key, '%')";
                     $qparams["v_$prepared_key"] = $val;
                 }
             }
@@ -622,19 +596,7 @@ class NDB_Menu_Filter extends NDB_Menu
         } else {
             $query = "SELECT COUNT(*) FROM ($query) as tmptable";
         }
-        $params =  $wheredetails['params'];
-        if ($_REQUEST['test_name'] == 'datadict'
-            && isset($params['v_searchkey'])
-            && is_array(($params['v_searchkey']))
-        ) {
-            // Multiple keyword search
-            $params = array('v_searchkey' => implode('|', $params['v_searchkey']));
-
-            $this->TotalItems = $db->pselectOne($query, $params);
-        } else {
-            // Single keyword search
-            $this->TotalItems = $db->pselectOne($query, $wheredetails['params']);
-        }
+        $this->TotalItems = $db->pselectOne($query, $wheredetails['params']);
     }
 
     /**
@@ -855,17 +817,7 @@ class NDB_Menu_Filter extends NDB_Menu
         // get the list
         $this->_getNumberPages($query);
 
-        if ($_REQUEST['test_name'] == 'datadict'
-            && isset($qparams['v_searchkey'])
-            && is_array(($qparams['v_searchkey']))
-        ) {
-            // Multiple keyword search
-            $params = array('v_searchkey' => implode('|', $qparams['v_searchkey']));
-            $result = $DB->pselect($query, $params);
-        } else {
-            // Single keyword search
-            $result = $DB->pselect($query, $qparams);
-        }
+        $result = $DB->pselect($query, $qparams);
 
         return $result;
     }
