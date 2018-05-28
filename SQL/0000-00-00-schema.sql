@@ -147,15 +147,14 @@ CREATE TABLE `subproject` (
     `SubprojectID` int(10) unsigned NOT NULL auto_increment,
     `title` varchar(255) NOT NULL,
     `useEDC` boolean,
-    `WindowDifference` enum('optimal', 'battery'),
     `RecruitmentTarget` int(10) unsigned,
     PRIMARY KEY (SubprojectID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores Subprojects used in Loris';
 
 
-INSERT INTO subproject (title, useEDC, WindowDifference) VALUES
-  ('Control', false, 'optimal'),
-  ('Experimental', false, 'optimal');
+INSERT INTO subproject (title, useEDC) VALUES
+  ('Control', false),
+  ('Experimental', false);
 
 CREATE TABLE `project_rel` (
   `ProjectID` int(2) NOT NULL,

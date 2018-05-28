@@ -36,7 +36,6 @@ if ($_POST['subprojectID'] === 'new') {
             array(
              "title"             => $_POST['title'],
              "useEDC"            => $_POST['useEDC'],
-             "WindowDifference"  => $_POST['WindowDifference'],
              "RecruitmentTarget" => $recTarget,
             )
         );
@@ -51,7 +50,6 @@ if ($_POST['subprojectID'] === 'new') {
         array(
          "title"             => $_POST['title'],
          "useEDC"            => $_POST['useEDC'],
-         "WindowDifference"  => $_POST['WindowDifference'],
          "RecruitmentTarget" => $recTarget,
         ),
         array("SubprojectID" => $_POST['subprojectID'])

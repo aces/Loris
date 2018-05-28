@@ -35,12 +35,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-12 col-md-4">Calculate Window Difference for instruments based on:</label>
-                    <div class="col-sm-12 col-md-8">
-                        {html_options options=$WindowDifferenceOptions name="WindowDifference" selected=$subproject.options.WindowDifference class="form-control subprojectWindowDifference"}
-                    </div>
-                </div>
-                <div class="form-group">
                     <label class="col-sm-12 col-md-4">Recruitment Target:</label>
                     <div class="col-sm-12 col-md-8">
                         <input class="form-control subprojectRecruitmentTarget" name="target" placeholder="Please add a recruitment target here" value="{$subproject.RecruitmentTarget}">
@@ -73,12 +67,6 @@
                     <label class="col-sm-12 col-md-4">Use <abbr title="Expect Date of Confinement (ie. baby's due date)">EDC</abbr></label>
                     <div class="col-sm-12 col-md-8">
                         {html_options options=$useEDCOptions name="useEDC" selected="Yes" class="form-control subprojectuseEDC"}
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-12 col-md-4">Calculate Window Difference for instruments based on:</label>
-                    <div class="col-sm-12 col-md-8">
-                        {html_options options=$WindowDifferenceOptions name="WindowDifference" selected="battery" class="form-control subprojectWindowDifference"}
                     </div>
                 </div>
                 <div class="form-group">
