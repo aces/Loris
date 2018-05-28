@@ -125,24 +125,27 @@ function processFiles($pubID)
     $publicationPath = $config->getSetting('publication_uploads');
 
     if (!isset($publicationPath)) {
-        throw new LorisException(
+        showError(
             "Error! Publication path is not set in Loris Settings!"
         );
     }
 
     if (!file_exists($publicationPath)) {
-        throw new LorisException(
+        showError(
             "Error! The upload folder '$publicationPath' does not exist!'"
         );
     }
 
     foreach ($_FILES as $name => $values) {
         $fileName  = preg_replace('/\s/', '_', $values["name"]);
+        if (file_exists($publicationPath . $fileName)) {
+            showError("File $fileName already exists!");
+        }
         $extension = pathinfo($fileName)['extension'];
         $index     = preg_split('/_/', $name)[1];
 
         if (!isset($extension)) {
-            throw new LorisException(
+            showError(
                 "Please make sure your file has a valid extension: " .
                 $values['name']
             );
@@ -164,7 +167,7 @@ function processFiles($pubID)
         if (move_uploaded_file($values["tmp_name"], $publicationPath . $fileName)) {
             $db->insert('publication_upload', $pubUploadInsert);
         } else {
-            throw new LorisException("Could not upload the file. Please try again!");
+            showError("Could not upload the file. Please try again!");
         }
     }
 }
@@ -366,8 +369,8 @@ function cleanup($pubID)
 
     $tables = array(
                'publication_users_edit_perm_rel',
-               'publication_upload',
                'publication_parameter_type_rel',
+               'publication_test_names_rel',
                'publication_collaborator_rel',
                'publication_keyword_rel',
                'publication',
@@ -377,7 +380,18 @@ function cleanup($pubID)
         $db->delete($table, $where);
     }
 
-    // TODO: delete uploaded files
+    $files = $db->pselectCol(
+      'SELECT URL FROM publication_upload WHERE PublicationID=:PublicationID',
+        $where
+    );
+    if (!empty($files)) {
+        $conf = \NDB_Config::singleton();
+        $base = $conf->getSetting('publication_uploads');
+        foreach ($files as $f) {
+            unlink($base . $f);
+        }
+        $db->delete('publication_upload', $where);
+    }
 }
 
 /**
@@ -740,7 +754,7 @@ function editCollaborators($id)
 /**
  * Edit keywords
  *
- * @param int $id OK... bear with me... this is the uhh Publication ID
+ * @param int $id if the legends are to be believed, this is the Publication ID...
  *
  * @return null
  */
@@ -789,7 +803,7 @@ function editKeywords($id)
 /**
  * Edit Variables of Interest
  *
- * @param int $id oh damn it's the publication ID
+ * @param int $id Could be a publication ID, probably is, who knows for sure?
  *
  * @return null
  */

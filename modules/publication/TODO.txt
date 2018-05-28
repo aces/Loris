@@ -1,5 +1,4 @@
 TODO 's:
-    - Check for file existence
     - Make keywords & collaborators into non-strict datalist
     - General cleanup
     - Fix email validation

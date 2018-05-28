@@ -110,16 +110,10 @@ class PublicationUploadForm extends React.Component {
     e.preventDefault();
 
     let formData = this.state.formData;
-    // make sure title is unique
-    let existingTitles = this.state.Data.existingTitles;
-    if (existingTitles.indexOf(formData.title) > -1) {
-      swal("Publication title already exists!", "", "error");
-      return;
-    }
 
     let formObj = new FormData();
     for (let key in formData) {
-      if (formData[key] !== "") {
+      if (formData.hasOwnProperty(key) && formData[key] !== "") {
         let formVal;
         if (Array.isArray(formData[key])) {
           formVal = JSON.stringify(formData[key]);
@@ -137,28 +131,17 @@ class PublicationUploadForm extends React.Component {
       cache: false,
       contentType: false,
       processData: false,
-      xhr: function() {
-        let xhr = new window.XMLHttpRequest();
-        xhr.upload.addEventListener("progress", function(evt) {
-          if (evt.lengthComputable) {
-            let percentage = Math.round((evt.loaded / evt.total) * 100);
-            this.setState({uploadProgress: percentage});
-          }
-        }.bind(this), false);
-        return xhr;
-      }.bind(this),
       success: function() {
         // reset form data
         this.setState({
           formData: {},
           numFiles: 0,
-          uploadProgress: -1
         });
         swal("Submission Successful!", "", "success");
       }.bind(this),
-      error: function(jqXHR, textStatus) {
-        console.error(textStatus);
-        swal("Something went wrong!", jqXHR.responseText, "error");
+      error: function(jqXHR) {
+        console.error(jqXHR);
+        swal("Something went wrong!", JSON.parse(jqXHR.responseText).message, "error");
       }
     });
   }

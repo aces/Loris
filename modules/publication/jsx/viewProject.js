@@ -27,7 +27,7 @@ class ViewProject extends React.Component {
     let formData = this.state.formData;
     let formObj = new FormData();
     for (let key in formData) {
-      if (formData[key] !== "") {
+      if (formData.hasOwnProperty(key) && formData[key] !== "") {
         let formVal;
         if (Array.isArray(formData[key])) {
           formVal = JSON.stringify(formData[key]);
@@ -50,7 +50,7 @@ class ViewProject extends React.Component {
       },
       error: function(jqXHR) {
         console.error(jqXHR);
-        swal("Edit failed!", jqXHR.responseText, "error");
+        swal("Edit failed!", JSON.parse(jqXHR.responseText).message, "error");
       }
     });
   }
@@ -94,7 +94,6 @@ class ViewProject extends React.Component {
           allVOIs: data.allVOIs,
           uploadTypes: data.uploadTypes,
           files: data.files,
-          Data: data,
           isLoaded: true
         });
       },
@@ -248,9 +247,9 @@ class ViewProject extends React.Component {
           removeListItem={this.removeListItem}
           validateEmail={this.validateEmail}
           toggleEmailNotify={this.toggleEmailNotify}
-          uploadTypes={this.state.Data.uploadTypes}
-          users={this.state.Data.users}
-          allVOIs={this.state.Data.allVOIs}
+          uploadTypes={this.state.uploadTypes}
+          users={this.state.users}
+          allVOIs={this.state.allVOIs}
           editMode={true}
         />
       </div>

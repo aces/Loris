@@ -233,6 +233,7 @@ function getFiles($id)
 
     foreach ($files as $key => $f) {
         $files[$key]['Citation'] = htmlspecialchars_decode($f['Citation']);
+        $files[$key]['Version']  = htmlspecialchars_decode($f['Version']);
     }
 
     return $files;
