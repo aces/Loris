@@ -278,6 +278,41 @@ class Database
     }
 
     /**
+     * Insert row into the database or update on duplicate key.
+     *
+     * This will attempt to insert a row into the database. If there is a duplicate
+     * value for any unique key, the row where the duplicate is present will be
+     * updated.
+     *
+     * @param string $table the table into which to insert the row
+     * @param array  $set   the values with which to fill the row
+     *
+     * @return none
+     */
+    public function insertOnDuplicateUpdate($table, $set)
+    {
+        return $this->_realinsert($table, $set, true, false, true);
+    }
+
+    /**
+     * Insert row into the database or  update on duplicate key without validating
+     * input.
+     *
+     * This will attempt to insert a row into the database. If there is a duplicate
+     * value for any unique key, the row where the duplicate is present will be
+     * updated. HTML from nay field in the row will *not* be automatically escaped.
+     *
+     * @param string $table the table into which to insert the row
+     * @param array  $set   the values with which to fill the row
+     *
+     * @return none
+     */
+    public function unsafeInsertOnDuplicateUpdate($table, $set)
+    {
+        return $this->_realinsert($table, $set, false, false, true);
+    }
+
+    /**
      * Escapes the HTML from an array that is about to be inserted into the database
      *
      * @param array $set The array to be inserted as a new row
@@ -302,17 +337,31 @@ class Database
      *
      * Inserts a single row into the specified table, containing the values specified
      *
-     * @param string $table      the table into which to insert the row
-     * @param array  $set        the values with which to fill the new row
-     * @param bool   $autoescape determines whether the values to be set should
-     *                           automatically have the html escaped
-     * @param bool   $ignore     determines whether the insert throws and error or
-     *                           is discarded when value exists in DB
+     * @param string $table             the table into which to insert the row
+     * @param array  $set               the values with which to fill the new row
+     * @param bool   $autoescape        determines whether the values to be set 
+                                        should automatically have the html escaped
+     * @param bool   $ignore            determines whether the insert throws and
+     *                                  error or is discarded when value exists in DB
+     * @param bool   $onDuplicateUpdate determines whether the row should be updated
+     *                                  upon unique key duplication
      *
      * @return none
      */
-    private function _realinsert($table, $set, $autoescape = true, $ignore = false)
+    private function _realinsert(
+        $table,
+        $set,
+        $autoescape = true,
+        $ignore = false,
+        $onDuplicateUpdate = false
+    )
     {
+        if ($ignore && $onDuplicateUpdate) {
+            throw new DatabaseException(
+                'The Database::_realinsert() function does not accept both ignore
+                and onDuplicateUpdate parameters.'
+            );
+        }
         if ($autoescape === true) {
             $set = $this->_HTMLEscapeArray($set);
         }
@@ -326,6 +375,13 @@ class Database
 
         $exec_params = array();
         $prepQ      .= $this->_implodeAsPrepared(",", $set, $exec_params);
+
+        if ($onDuplicateUpdate) {
+            $prepQ .= ' ON DUPLICATE KEY UPDATE ';
+            $prepQ .= $this->_implodeAsPrepared(",", $set, $exec_params);
+            $query .= ' ON DUPLICATE KEY UPDATE ';
+            $query .= $this->_implodeWithKeys(', ', $set);
+        }
 
         if (DEBUG) {
             fwrite(STDERR, $query."\n");
@@ -433,6 +489,7 @@ class Database
     {
         return $this->_realupdate($table, $set, $i_where, false);
     }
+
     /**
      * Updates a row
      *
