@@ -295,7 +295,7 @@ class Database
     }
 
     /**
-     * Insert row into the database or  update on duplicate key without validating
+     * Insert row into the database or update on duplicate key without validating
      * input.
      *
      * This will attempt to insert a row into the database. If there is a duplicate
@@ -339,8 +339,8 @@ class Database
      *
      * @param string $table             the table into which to insert the row
      * @param array  $set               the values with which to fill the new row
-     * @param bool   $autoescape        determines whether the values to be set 
-                                        should automatically have the html escaped
+     * @param bool   $autoescape        determines whether the values to be set
+     *                                  should automatically have the html escaped
      * @param bool   $ignore            determines whether the insert throws and
      *                                  error or is discarded when value exists in DB
      * @param bool   $onDuplicateUpdate determines whether the row should be updated
@@ -354,8 +354,7 @@ class Database
         $autoescape = true,
         $ignore = false,
         $onDuplicateUpdate = false
-    )
-    {
+    ) {
         if ($ignore && $onDuplicateUpdate) {
             throw new DatabaseException(
                 'The Database::_realinsert() function does not accept both ignore
