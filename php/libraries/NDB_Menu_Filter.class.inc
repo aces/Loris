@@ -536,7 +536,6 @@ class NDB_Menu_Filter extends NDB_Menu
         ) {
             $WhereClause .= " AND (";
             $fields       = array();
-
             foreach ($this->searchKeyword as $field) {
                 $fields[] = " $field LIKE CONCAT('%', :v_searchkey, '%')";
             }
@@ -761,7 +760,6 @@ class NDB_Menu_Filter extends NDB_Menu
         );
 
         $MappedData = array();
-
         foreach ($data as $row) {
             $MappedData[] = array_values($row);
         }
