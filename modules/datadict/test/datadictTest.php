@@ -33,11 +33,12 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      */
     private $_loadingUI
         =  array(
-            'Data Dictionary' => '#bc2 > a:nth-child(2) > div',
-            'SourceFrom'      => '#dynamictable > thead > tr > th:nth-child(2)',
-            'Name'            => '#dynamictable > thead > tr > th:nth-child(3)',
-            'SourceField'     => '#dynamictable > thead > tr > th:nth-child(4)',
-            'Description'     => '#dynamictable > thead > tr > th:nth-child(5)',
+            'Data Dictionary'    => '#bc2 > a:nth-child(2) > div',
+            'Source From'        => '#dynamictable > thead > tr > th:nth-child(2)',
+            'Name'               => '#dynamictable > thead > tr > th:nth-child(3)',
+            'Source Field'       => '#dynamictable > thead > tr > th:nth-child(4)',
+            'Description'        => '#dynamictable > thead > tr > th:nth-child(5)',
+            'Description Status' => '#dynamictable > thead > tr > th:nth-child(6)',
            );
 
     /**
@@ -109,11 +110,6 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         );
 
         $searchKey[0]->sendKeys("NotRealMAGICNUMBER335");
-        $searchButton = $this->webDriver->findElement(
-            WebDriverBy::Name("filter")
-        );
-        //search exist data
-        $searchButton->click();
 
         $name = $this->webDriver->executescript(
             "return document.querySelector".
@@ -135,11 +131,6 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         );
 
         $searchKey[0]->sendKeys("notrealMAGICNUMBER335");
-        $searchButton = $this->webDriver->findElement(
-            WebDriverBy::Name("filter")
-        );
-        //search exist data
-        $searchButton->click();
 
         $name = $this->webDriver->executescript(
             "return document.querySelector".
@@ -161,18 +152,13 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         );
 
         $searchKey[0]->sendKeys("noExist");
-        $searchButton = $this->webDriver->findElement(
-            WebDriverBy::Name("filter")
-        );
-        //search exist data
-        $searchButton->click();
 
         $res = $this->webDriver->executescript(
             "return document.querySelector".
-                  "('#datatable > div > strong').textContent"
+            "('#lorisworkspace > div > div > div.panel.panel-default >".
+            "div.table-header.panel-heading > div > div').textContent"
         );
-        $this->assertContains("No result found.", $res);
-
+        $this->assertContains("0 rows displayed", $res);
     }
 
     /**
