@@ -71,9 +71,9 @@ function split_commas($table_name) {
         $DB->delete($table_name, array("ID" => $id));
     }
     if ($total_commas == 0) {
-        echo("No commas have been detected. The $table_name table has been unaltered.\n\n");
+        echo("$table_name: No commas have been detected in $table_name. The table has been unaltered.\n\n");
     } else {
-        echo("All $table_name entries are now unique and not comma-separated.\n\n");
+        echo("$table_name: All $table_name entries are now unique and not comma-separated.\n\n");
     }
 }
 
