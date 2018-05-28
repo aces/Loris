@@ -49,6 +49,10 @@ $dataDir  = $DB->pselectOne(
     "Select Data_dir from document_repository where record_id =:identifier",
     array(':identifier' => $rid)
 );
+$version  = $DB->pselectOne(
+    "Select version from document_repository where record_id =:identifier",
+    array(':identifier' => $rid)
+);
 
 $user =& User::singleton();
 
@@ -66,5 +70,10 @@ $path = __DIR__ . "/../user_uploads/$dataDir";
 if (file_exists($path)) {
     unlink($path);
 }
+
+$rm_directory = __DIR__ . "/../user_uploads/" . $userName . "/"
+                        . str_replace(".", "_", $version);
+
+rmdir($rm_directory);
 
 ?>
