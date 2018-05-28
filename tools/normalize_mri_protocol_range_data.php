@@ -64,7 +64,16 @@ foreach($idx as $id) {
             $data_to_insert[$col_max] = $col_data[0];
         }
     }
-    $DB->update("mri_protocol", $data_to_insert, array('ID' => $id));
+    $not_null = 0;
+    foreach ($data_to_insert as $data) {
+        if ($data != null) {
+            $not_null += 1;
+        }
+    }
+    // only update non-null range cols 
+    if ($not_null > 0) {
+        $DB->update("mri_protocol", $data_to_insert, array('ID' => $id));
+    }
 }
 
 echo("Data insertion for new min & max columns is complete.\n");
