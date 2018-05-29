@@ -1,15 +1,12 @@
 <?php
 /**
- * Media downloader.
+ * Publication Downloader
  *
- * This ensures that the file exists and the user is logged in to
- * Loris before trying to return the file to the user.
- *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
- * @package  Media
- * @author   Alex I. <ailea.mcin@gmail.com>
+ * @package  Publication
+ * @author   David <dblader.mcin@gmail.com>
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
@@ -22,16 +19,10 @@ if (!$user->hasPermission('publication_view')) {
 
 // Make sure that the user isn't trying to break out of the $path
 // by using a relative filename.
-$file = basename($_GET['File']);
-// $config   =& NDB_Config::singleton();
-$path     = "/data/publication_uploads/";
+$file     = basename($_GET['File']);
+$config   = NDB_Config::singleton();
+$path     = $config->getSetting('publication_uploads');
 $filePath = $path . $file;
-
-/*$downloadNotifier = new NDB_Notifier(
-    "media",
-    "download",
-    array("file" => $file)
-);*/
 
 if (!file_exists($filePath)) {
     error_log("ERROR: File $filePath does not exist");
