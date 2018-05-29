@@ -319,10 +319,12 @@ Otherwise, the candidate will be automatically created at the one site the user
 using the API is affiliated with.
 
 A response code of 201 Created will be returned on success, 409 Conflict if
-the PSCID already exists, and a 400 Bad Request if any data provided is invalid
-(PSCID format, date format, gender something other than Male|Female, invalid project
-name, Site other than the list of sitenames the user is affiliated with, etc). 
-A successful POST request will return a CandidateObject for the newly created candidate.
+the PSCID already exists, 403 Forbidden when the user is creating a candidate at 
+a site other than the list of sitenames the user is affiliated with, and a 400 
+Bad Request if any data provided is invalid (PSCID format, date format, gender 
+something other than Male|Female, invalid project name, invalid sitename, etc). 
+A successful POST request will return a CandidateObject for the newly created 
+candidate.
 
 PUT / PATCH methods are not supported on /candidate in this
 version of the Loris API.
@@ -395,7 +397,6 @@ The JSON object is of the form:
 
 A PUT of the same format but with only the Meta fields will create the VisitLabel
 for this candidate, in an unstarted stage if the Visit label provided is valid.
-The SiteName is only required for users affiliated with multiple sites.
 
 PATCH is not supported for Visit Labels.
 

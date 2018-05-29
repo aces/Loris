@@ -176,8 +176,7 @@ class Visit extends \Loris\API\Candidates\Candidate
             $this->safeExit(0);
 
         }
-        // When users are at multiple sites, the API requires
-        // siteName as an input to timepoint creation
+        // The API requires siteName as an input to timepoint creation
         $user      = \User::singleton();
         $centerIDs = $user->getCenterIDs();
         $num_sites = count($centerIDs);
@@ -185,29 +184,36 @@ class Visit extends \Loris\API\Candidates\Candidate
             $this->header("HTTP/1.1 401 Unauthorized");
             $this->error("You are not affiliated with any site");
             $this->safeExit(0);
-        } else if ($num_sites > 1) {
-            if (!isset($this->ReceivedJSON['Meta']['Site'])
-            ) {
+        } else {
+            if (!isset($this->ReceivedJSON['Meta']['Site'])) {
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->error(
-                    "Users affiliated with multiple sites " .
-                    "need to specify the name of the site at " .
+                    "Users need to specify the name of the site at " .
                     "which the visit took place."
                 );
                 $this->safeExit(0);
             } else {
                 $siteName = $this->ReceivedJSON['Meta']['Site'];
-                foreach ($centerIDs as $key => $centerID) {
-                    $center = $this->DB->pselectRow(
-                        "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
-                        array('cid' => $centerID)
+                $allSiteNames = $this->DB->pselectColWithIndexKey(
+                    "SELECT CenterID, Name FROM psc ",
+                    array(), "CenterID"
+                );
+                $allUserSiteNames = $this->DB->pselectColWithIndexKey(
+                    "SELECT CenterID, Name FROM psc WHERE CenterID =:cid",
+                    array('cid' => implode(',', $centerIDs)), "CenterID"
+                );
+                if (!in_array($siteName, $allSiteNames)) {
+                    $this->header("HTTP/1.1 400 Bad Request");
+                    $this->error(
+                        "Users need to specify a valid name for the site " .
+                        "at which the visit took place."
                     );
-                    $allUserSites[$centerID] = $center['Name'];
+                    $this->safeExit(0);
                 }
                 //Get the CenterID from the provided SiteName
-                $centerID = array_search($siteName, $allUserSites);
-                if (!in_array($centerID, $centerIDs)) {
-                    $this->header("HTTP/1.1 401 Unauthorized");
+                $centerID = array_search($siteName, $allUserSiteNames);
+                if (!$centerID) {
+                    $this->header("HTTP/1.1 403 Forbidden");
                     $this->error(
                         "You are creating a visit at a site you " .
                         "are not affiliated with."
@@ -222,23 +228,6 @@ class Visit extends \Loris\API\Candidates\Candidate
                 );
                 $this->header("HTTP/1.1 201 Created");
             }
-        } else {
-            $centerID          = $centerIDs[0];
-            $candidateCenterID = \Candidate::singleton($this->CandID)
-                ->getCenterID();
-            if ($centerID != $candidateCenterID) {
-                $this->header("HTTP/1.1 401 Unauthorized");
-                $this->error("You are not affiliated with the candidate's site");
-                $this->safeExit(0);
-            }
-            // need to extract subprojectID
-            $this->createNew(
-                $this->CandID,
-                $subprojectID,
-                $this->VisitLabel,
-                $centerID
-            );
-            $this->header("HTTP/1.1 201 Created");
         }
     }
 
