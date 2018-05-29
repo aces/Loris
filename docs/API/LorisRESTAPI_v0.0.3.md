@@ -314,10 +314,6 @@ project settings.
 PSCID is only required if the generation type in the Loris config is set to
 "prompt".
 
-Site is only required if the user using the API is affiliated with multiple sites.
-Otherwise, the candidate will be automatically created at the one site the user 
-using the API is affiliated with.
-
 A response code of 201 Created will be returned on success, 409 Conflict if
 the PSCID already exists, 403 Forbidden when the user is creating a candidate at 
 a site other than the list of sitenames the user is affiliated with, and a 400 
