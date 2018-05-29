@@ -36,7 +36,9 @@ class Site
     static function &singleton($centerID)
     {
         static $siteList = array();
-        if (!isset($siteList[$centerID])) {
+        if (!isset($siteList[$centerID])
+            || gettype($siteList[$centerID]) != 'object'
+        ) {
             try {
                 $siteList[$centerID] = new Site();
                 $siteList[$centerID]->select($centerID);
