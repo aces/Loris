@@ -115,8 +115,7 @@ class Candidates extends APIBase
             $this->error("There is no Candidate object in the POST data");
             $this->safeExit(0);
         }
-        // When users are at multiple sites, the API requires
-        // siteName as an input to candidate creation
+        // The API requires siteName as an input to candidate creation
         $user         = \User::singleton();
         $centerIDs    = $user->getCenterIDs();
         $allSiteNames = array();
