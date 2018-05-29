@@ -175,16 +175,57 @@ class Datadict extends \NDB_Menu_Filter
         if (isset($_REQUEST['keyword'])) {
             // It was included in the request, so save it.
             $key = $_REQUEST['keyword'];
-            // Check if multiple keyword search
-            if (preg_match("/\\s/", $key)
+            // Check if any quoted keyword
+            if (preg_match_all(
+                '\"[\w\s]+\"|\\\'[\w\s]+\\\'|[\w\s]+',
+                $key,
+                $keywords
+            )
             ) {
-                $key = explode(" ", $key);
-                foreach ($key as &$k) {
+                $keywords = array_filter(
+                    array_map(
+                        function ($item) {
+                            return trim($item, ' ');
+                        },
+                        $keywords[0]
+                    )
+                );
+            }
+            if (is_array($keywords)) {
+                // Quoted keyword(s) exist.
+                $keywords_extra = array();
+                foreach ($keywords as &$keyword) {
+                    if (preg_match('\"[\w\s]+\"', $keyword)) {
+                        // Handle the quoted keyword.
+                        $keyword = '(?i)^' . $keyword . '$';
+                    } else if (preg_match('/\\s/', $keyword)) {
+                        // Handle multiple keywords.
+                        $split_keywords = explode(' ', $keyword);
+                        foreach ($split_keywords as &$split_keyword) {
+                            $split_keyword = '.*'.$split_keyword;
+                        }
+                        unset($split_keyword);
+                        $keywords       = array_diff($keywords, $keyword);
+                        $keywords_extra = array_merge(
+                            $keywords_extra,
+                            $split_keywords
+                        );
+                    }
+                }
+                $keywords = array_merge($keywords, $keywords_extra);
+            } else if (preg_match('/\\s/', $key)
+            ) {
+                // Check if multiple keyword search
+                $keywords = explode(' ', $key);
+                foreach ($keywords as &$k) {
                     $k = '.*'.$k;
                 }
                 unset($k);
+            } else {
+                $keywords = $key;
             }
-            $_SESSION['State']->setProperty('keyword', $key);
+            $_SESSION['State']->setProperty('keyword', $keywords);
+            $key = $keywords;
         } else {
             // It was not included, so get the keyword from the session
             $key = $_SESSION['State']->getProperty('keyword');
