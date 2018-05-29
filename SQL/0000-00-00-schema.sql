@@ -845,6 +845,7 @@ CREATE TABLE `document_repository` (
   `File_name` varchar(255) DEFAULT NULL,
   `File_type` varchar(20) DEFAULT NULL,
   `version` varchar(20) DEFAULT NULL,
+  `uuid` varchar(36) DEFAULT NULL,
   `File_size` bigint(20) unsigned DEFAULT NULL,
   `uploaded_by` varchar(255) DEFAULT NULL,
   `For_site` int(2) DEFAULT NULL,
