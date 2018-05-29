@@ -193,14 +193,16 @@ class Visit extends \Loris\API\Candidates\Candidate
                 );
                 $this->safeExit(0);
             } else {
-                $siteName = $this->ReceivedJSON['Meta']['Site'];
-                $allSiteNames = $this->DB->pselectColWithIndexKey(
+                $siteName         = $this->ReceivedJSON['Meta']['Site'];
+                $allSiteNames     = $this->DB->pselectColWithIndexKey(
                     "SELECT CenterID, Name FROM psc ",
-                    array(), "CenterID"
+                    array(),
+                    "CenterID"
                 );
                 $allUserSiteNames = $this->DB->pselectColWithIndexKey(
                     "SELECT CenterID, Name FROM psc WHERE CenterID =:cid",
-                    array('cid' => implode(',', $centerIDs)), "CenterID"
+                    array('cid' => implode(',', $centerIDs)),
+                    "CenterID"
                 );
                 if (!in_array($siteName, $allSiteNames)) {
                     $this->header("HTTP/1.1 400 Bad Request");
@@ -212,7 +214,7 @@ class Visit extends \Loris\API\Candidates\Candidate
                 }
                 //Get the CenterID from the provided SiteName
                 $centerID = array_search($siteName, $allUserSiteNames);
-                if (!$centerID) {
+                if ($centerID === false) {
                     $this->header("HTTP/1.1 403 Forbidden");
                     $this->error(
                         "You are creating a visit at a site you " .

@@ -117,23 +117,25 @@ class Candidates extends APIBase
         }
         // When users are at multiple sites, the API requires
         // siteName as an input to candidate creation
-        $user               = \User::singleton();
-        $centerIDs          = $user->getCenterIDs();
-        $allSiteNames       = array();
-        $allUserSiteNames   = array();
-        $num_sites          = count($centerIDs);
+        $user         = \User::singleton();
+        $centerIDs    = $user->getCenterIDs();
+        $allSiteNames = array();
+        $allUserSiteNames = array();
+        $num_sites        = count($centerIDs);
         if ($num_sites == 0) {
             $this->header("HTTP/1.1 401 Unauthorized");
             $this->error("You are not affiliated with any site");
             $this->safeExit(0);
         } else {
-            $allSiteNames = $this->DB->pselectColWithIndexKey(
+            $allSiteNames     = $this->DB->pselectColWithIndexKey(
                 "SELECT CenterID, Name FROM psc ",
-                array(), "CenterID"
+                array(),
+                "CenterID"
             );
             $allUserSiteNames = $this->DB->pselectColWithIndexKey(
                 "SELECT CenterID, Name FROM psc WHERE CenterID =:cid",
-                array('cid' => implode(',', $centerIDs)), "CenterID"
+                array('cid' => implode(',', $centerIDs)),
+                "CenterID"
             );
 
             $siteName = $data['Candidate']['Site'];
@@ -145,7 +147,7 @@ class Candidates extends APIBase
             // Get the CenterID from the provided SiteName, and check if the
             // user has permission to create a candidate at this site
             $centerID = array_search($siteName, $allUserSiteNames);
-            if ($centerID) {
+            if ($centerID === false) {
                 $this->header("HTTP/1.1 403 Forbidden");
                 $this->error("You are not affiliated with the candidate's site");
                 $this->safeExit(0);
