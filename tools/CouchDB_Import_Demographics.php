@@ -101,8 +101,17 @@ class CouchDBDemographicsImporter {
     );
 
     function __construct() {
-        $this->SQLDB = \Database::singleton();
-        $this->CouchDB = \NDB_Factory::singleton()->couchDB();
+        $factory       = \NDB_Factory::singleton();
+        $config        = \NDB_Config::singleton();
+        $couchConfig   = $config->getSetting('CouchDB');
+        $this->SQLDB   = $factory->Database();
+        $this->CouchDB = $factory->couchDB(
+            $couchConfig['dbName'],
+            $couchConfig['hostname'],
+            $couchConfig['port'],
+            $couchConfig['admin'],
+            $couchConfig['adminpass']
+        );
     }
 
     function _getSubproject($id) {

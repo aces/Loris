@@ -205,8 +205,6 @@
 
             {/if}
             {if $dynamictabs neq "dynamictabs"}
-            {* Add enough spacing to get below the menu *}
-                <br><br><br>
             <div class="page-content inset">
 
                 {if $console}
@@ -224,7 +222,7 @@
                         <div>
                             {if $error_message != ""}
                                 <p>
-                                    The following errors occured while attempting to display this page:
+                                    The following errors occurred while attempting to display this page:
                                     <ul>
                                         {section name=error loop=$error_message}
                                             <li>

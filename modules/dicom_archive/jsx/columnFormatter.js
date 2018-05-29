@@ -20,6 +20,19 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     row[header] = rowData[index];
   }, this);
 
+  if (column === 'Archive Location') {
+    var downloadURL = '/mri/jiv/get_file.php?file=' + cell;
+    var toRet =
+      <td>
+        <a href={downloadURL}>
+          <span className="glyphicon glyphicon-cloud-download"/>
+          &nbsp;
+          {cell}
+        </a>
+      </td>;
+    return toRet;
+  }
+
   if (column === 'Metadata') {
     var metadataURL = loris.BaseURL +
       "/dicom_archive/viewDetails/?tarchiveID=" + row.TarchiveID;

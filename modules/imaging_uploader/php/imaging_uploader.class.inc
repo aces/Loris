@@ -33,6 +33,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
 
     /**
      * ID of the uploaded file in mri_upload table (if upload successful).
+     * If the file is a reupload of an existing file, then it will be set to
+     * the ID of the original upload.
      */
     var $mri_upload_id;
 
@@ -468,6 +470,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             );
             if (!empty($id)) {
                 $db->update('mri_upload', $values, array('UploadID' => $id));
+                $this->mri_upload_id = $id;
+
                 return true;
             }
         }

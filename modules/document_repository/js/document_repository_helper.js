@@ -239,6 +239,10 @@ function renderTree() {
         //new table layout
         var file = $('#file').html();
         Mustache.parse(file);   // optional, speeds up future uses
+
+        //pass delete permissions info
+        files[ii].hasDeletePerm = loris.userHasPermission('document_repository_delete');
+
         if (!filtered) {
           files[ii].indent = (depth) * 60;
           files[ii].parentID = dirID;

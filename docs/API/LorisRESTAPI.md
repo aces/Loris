@@ -37,7 +37,7 @@ no further authentication is required. Requests will be evaluated as requests fr
 so that standard Loris modules can simply use the API.
 
 If a user is not logged in to Loris (for instance, in a third party app or a CORS application),
-they can be be authenticated using [JSON Web Tokens](https://jwt.io).
+they can be authenticated using [JSON Web Tokens](https://jwt.io).
 
 The client should POST a request to /login with a payload of the form
 
@@ -361,7 +361,7 @@ It will return a 404 Not Found if the visit label does not exist for this candid
 
 Any of the Stages may not be present in the returned result if the stage has not
 started yet or is not enabled for this project (ie. if useScreening is false in
-Loris, or Approval has not occured)
+Loris, or Approval has not occurred)
 
 ### 3.3 Candidate Instruments
 ```
