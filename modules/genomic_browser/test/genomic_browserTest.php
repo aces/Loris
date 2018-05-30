@@ -160,6 +160,8 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
       */
     function testGenomicBrowserFilterEachTab()
     {
+        $this->markTestSkipped("Skipping long test");
+        return;
         // test filter in Profiles Tab
         $this->_testFilter("/genomic_browser/", "PSCID", "MTL001", "1 rows");
         $this->_testFilter("/genomic_browser/", "DCCID", "300001", "1 rows");
