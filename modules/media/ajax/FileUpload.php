@@ -217,6 +217,7 @@ function getUploadFields()
     $sessionData = [];
 
     foreach ($sessionRecords as $record) {
+    
         // Populate sites
         if (!isset($sessionData[$record["PSCID"]]['sites'])) {
             $sessionData[$record["PSCID"]]['sites'] = [];
@@ -346,13 +347,14 @@ function toSelect($options, $item, $item2)
 {
     $selectOptions = [];
 
-    $optionsValue = $item;
+    $optionsVal = $item;
     if (isset($item2)) {
-        $optionsValue = $item2;
+        $optionsVal = $item2;
     }
+
     foreach ($options as $key => $value) {
         if(!is_null($options[$key][$item])) {
-            $selectOptions[$options[$key][$optionsValue]] = $options[$key][$item];
+            $selectOptions[$options[$key][$optionsVal]] = $options[$key][$item];
         }
     }
 
