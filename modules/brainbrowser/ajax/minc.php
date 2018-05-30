@@ -65,6 +65,12 @@ if (strpos($_REQUEST['minc_id'], 'l') !== false) {
 }
 
 if (!empty($minc_file)) {
+    if (preg_match('/nii(\.gz)?/i', $minc_file)) {
+        header('Content-Type: application/nii');
+    } elseif (preg_match('/mnc/', $minc_file)) {
+        header('Content-Type: application/mnc');
+    }
+    header('Content-FileID: ' . $_REQUEST['minc_id']);
     readfile($minc_path);
 } else {
     header("HTTP/1.1 404 Not Found");

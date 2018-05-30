@@ -753,28 +753,22 @@ $(function() {
     for (i = 0; i < minc_ids_arr.length; i += 1) {
 
       request = $.ajax({
-        dataType: "json",
-        url: loris.BaseURL + "/brainbrowser/ajax/getMincName.php",
+        url: loris.BaseURL + "/brainbrowser/ajax/minc.php",
         data: 'minc_id=' + minc_ids_arr[i],
         method: 'GET',
-        success: function (data) {
-          let fileid   = data.fileid;
-          let filename = data.filename;
-          if (filename == null) {
-              let msg = "ERROR: could not load the file.";
-              $("#loading").html(msg);
-              console.error(msg);
-          } else if (filename.endsWith("mnc")) {
+        success: function (response, status, jqXHR) {
+          let type   = jqXHR.getResponseHeader('Content-Type');
+          let fileid = jqXHR.getResponseHeader('Content-FileID');
+          if (type === "application/mnc") {
             minc_volumes.push({
               type: 'minc',
-              header_url: "",
               raw_data_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + fileid,
               template: {
                 element_id: "volume-ui-template4d",
                 viewer_insert_class: "volume-viewer-display"
               }
             });
-          } else if (filename.endsWith("nii")) {
+          } else if (type === "application/nii") {
             minc_volumes.push({
               type: 'nifti1',
               nii_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + fileid,
@@ -792,6 +786,13 @@ $(function() {
               console.warn("\nNot supported file was " + filename);
             console.groupEnd();
             console.log($("#loading").text());
+          }
+        },
+        error: function(jqXHR, status, errorThrown) {
+          if (errorThrown === "Not Found") {
+            let msg = "ERROR: file not found.";
+            $("#loading").html(msg);
+            console.error(msg);
           }
         }
       });
