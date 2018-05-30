@@ -188,36 +188,37 @@ function getUploadFields()
 {
 
     $db =& Database::singleton();
-
-    $instruments = $db->pselect(
-        "SELECT Test_name FROM test_names ORDER BY Test_name",
-        []
-    );
-    $candidates  = $db->pselect(
-        "SELECT CandID, PSCID FROM candidate ORDER BY PSCID",
-        []
-    );
-
-    $instrumentsList = toSelect($instruments, "Test_name", null);
-    $candidatesList  = toSelect($candidates, "PSCID", null);
-    $candIdList      = toSelect($candidates, "CandID", "PSCID");
-    $visitList       = Utility::getVisitList();
-    $siteList        = Utility::getSiteList(false);
+    $user =& User::singleton();
+    
+    $recordsQuery = "SELECT c.PSCID, c.CandID, s.Visit_Label, ".
+                    "f.Test_name ".
+                    "FROM candidate c ".
+				    "LEFT JOIN session s USING(CandID) ".
+        			"LEFT JOIN flag f ON (s.ID=f.SessionID) ";
+	
+    $siteIDs = $user->getCenterIDs();
+    if (!$user->hasPermission('access_all_profiles')) {
+        $recordsQuery .= "WHERE s.CenterID IN(".implode(",",$siteIDs).") ";
+    }
+    $recordsQuery .= "ORDER BY c.PSCID ASC";
+    $sessionRecords = $db->pselect($recordsQuery, []);
+		
+    $instrumentsList = toSelect($sessionRecords, "Test_name", null);
+    $candidatesList  = toSelect($sessionRecords, "PSCID", null);
+    $candIdList      = toSelect($sessionRecords, "CandID", "PSCID");
+    $visitList       = toSelect($sessionRecords, "Visit_Label", null);
+    error_log(print_r($visitList,1));
+    $siteList        = array();
+    foreach ($siteIDs as $siteID) {
+        $site = Site::singleton($siteID);
+        $siteList[$siteID] = $site->getCenterName();
+    }
     $languageList    = Utility::getLanguageList();
-
     // Build array of session data to be used in upload media dropdowns
     $sessionData    = [];
-    $sessionRecords = $db->pselect(
-        "SELECT c.PSCID, s.Visit_label, s.CenterID, f.Test_name " .
-        "FROM candidate c ".
-        "LEFT JOIN session s USING(CandID) ".
-        "LEFT JOIN flag f ON (s.ID=f.SessionID) ".
-        "ORDER BY c.PSCID ASC",
-        []
-    );
 
     foreach ($sessionRecords as $record) {
-
+        error_log(print_r($record,1));
         // Populate sites
         if (!isset($sessionData[$record["PSCID"]]['sites'])) {
             $sessionData[$record["PSCID"]]['sites'] = [];
@@ -351,9 +352,9 @@ function toSelect($options, $item, $item2)
     if (isset($item2)) {
         $optionsValue = $item2;
     }
-
     foreach ($options as $key => $value) {
-        $selectOptions[$options[$key][$optionsValue]] = $options[$key][$item];
+        if(!is_null($options[$key][$item]))
+            $selectOptions[$options[$key][$optionsValue]] = $options[$key][$item];
     }
 
     return $selectOptions;
