@@ -1,7 +1,7 @@
 <?php
 /**
- * This is an AJAX script which returns the file name for a MINC,
- * given a minc_id request parameter
+ * This is an AJAX script which returns the file name for a MINC or NIfTI file,
+ * given a file_id request parameter
  *
  * PHP Version 5
  *
@@ -17,14 +17,14 @@ require_once "Utility.class.inc";
 
 $DB = Database::singleton();
 
-$query = "select File from files where FileID = :MincID";
-$file  = $DB->pselectOne($query, array('MincID' => $_REQUEST['minc_id']));
+$query = "select File from files where FileID = :FileID";
+$file  = $DB->pselectOne($query, array('FileID' => $_REQUEST['file_id']));
 $file  = substr($file, strrpos($file, '/') + 1);
 
 // create a JSON object with the file information
 $result = array(
     'filename' => $file,
-    'fileid'   => $_REQUEST['minc_id']
+    'fileid'   => $_REQUEST['file_id']
 );
 
 echo json_encode($result);

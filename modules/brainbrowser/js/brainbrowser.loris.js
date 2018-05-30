@@ -538,8 +538,8 @@ $(function() {
 
       $.ajax({
           dataType: "json",
-          data: 'minc_id=' + minc_ids_arr[vol_id],
-          url: loris.BaseURL + '/brainbrowser/ajax/getMincName.php',
+          data: 'file_id=' + minc_ids_arr[vol_id],
+          url: loris.BaseURL + '/brainbrowser/ajax/getFileName.php',
           method: 'GET',
           success: function(data) {
               let fileName = $("#filename-" + vol_id);
