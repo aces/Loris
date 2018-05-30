@@ -4,7 +4,7 @@
  * script under htdocs. It's put in a class for testability (even if there
  * aren't currently any tests for it.) and to keep installdb.php neat.
  *
- * PHP Version 5.5+
+ * PHP Version 7
  *
  * @category Installer
  * @package  Installer
@@ -30,7 +30,7 @@ class Installer
     private $_lastErr;
 
     /**
-     * Get the last error that occured in this install process.
+     * Get the last error that occurred in this install process.
      *
      * @return string
      */
@@ -122,10 +122,8 @@ class Installer
     public function checkSystemDependenciesValid()
     {
         // Check PHP version is supported.
-        if (PHP_MAJOR_VERSION <= 4
-            || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 6)
-        ) {
-            $this->_lastErr = "PHP version 5.6 or higher is required to run "
+        if (PHP_MAJOR_VERSION < 7) {
+            $this->_lastErr = "PHP version 7 or higher is required to run "
             . "LORIS. $PHP_RELEASE_VERSION is not supported.";
             return false;
         }
@@ -133,9 +131,9 @@ class Installer
         // Check that some standard PHP packages which are removed in Debian
         // without a special package installed are available.
         if (function_exists('json_encode') == false) {
-            $this->_lastErr = "json functions do not appear to be accessible in your"
-            . " PHP installation. If you're running on Debian or Ubuntu, please"
-            . " ensure you've installed the php-json package.";
+            $this->_lastErr = "JSON functions do not appear to be accessible "
+                . "in your PHP installation. If you're running on Debian or "
+                , "Ubuntu, please install the php-json package.";
             return false;
         }
 
@@ -159,8 +157,8 @@ class Installer
         if (is_writable(__DIR__ . "/../../smarty/templates_c") == false) {
             $this->_lastErr = "Web server can not write to template cache "
             . "directory.\n"
-            . "Please ensure the LORIS/smarty/templaces_c directory is writable by"
-            . " your web server and try again.";
+            . "Please ensure the LORIS/smarty/templaces_c directory is writable"
+            . "by your web server and try again.";
             return false;
         }
         return true;
@@ -404,9 +402,10 @@ class Installer
         }
 
         if (!$DB->hasPrivilege("mysql", "user", "SELECT")) {
-            $this->_lastErr = $values['dbadminuser'] . " does not have privilege to"
-                . " check if a mysql user exists. Please create that user manually"
-                . " then use the `Already created checkbox below.";
+            $this->_lastErr = $values['dbadminuser'] . " does not have "
+                . "privileges to check if a mysql user exists. Please create "
+                . "that user manually then use the `Already created` checkbox "
+                . "below.";
             return false;
         }
         // This script is being run by the web server, so get the host

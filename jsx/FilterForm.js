@@ -127,10 +127,10 @@ class FilterForm extends React.Component {
     }
     if (key) {
       filter[key] = {};
-      if ((typeof (value) === 'string' || typeof (value) === 'object') && value.length === 0) {
+      if (value) {     // all defined/non-null values must have some length, else empty string
+        filter[key].value = Object.keys(value).length > 0 ? value : '';
+      } else {         // null and undefined handled here
         filter[key].value = '';
-      } else if (key && value) {
-        filter[key].value = value;
       }
       filter[key].exactMatch = (type === "SelectElement");
     } else if (filter && key && value === '') {
