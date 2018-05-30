@@ -22,7 +22,7 @@ $file  = $DB->pselectOne($query, array('MincID' => $_REQUEST['minc_id']));
 $file  = substr($file, strrpos($file, '/') + 1);
 
 // create a JSON object with the file information
-$result = array (
+$result = array(
     'filename' => $file,
     'fileid'   => $_REQUEST['minc_id']
 );
