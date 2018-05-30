@@ -190,7 +190,7 @@ function getUploadFields()
     $db =& Database::singleton();
     $user =& User::singleton();
     
-    $recordsQuery = "SELECT c.PSCID, c.CandID, s.Visit_Label, ".
+    $recordsQuery = "SELECT c.PSCID, c.CandID, s.CenterID, s.Visit_label, ".
                     "f.Test_name ".
                     "FROM candidate c ".
 				    "LEFT JOIN session s USING(CandID) ".
@@ -206,8 +206,7 @@ function getUploadFields()
     $instrumentsList = toSelect($sessionRecords, "Test_name", null);
     $candidatesList  = toSelect($sessionRecords, "PSCID", null);
     $candIdList      = toSelect($sessionRecords, "CandID", "PSCID");
-    $visitList       = toSelect($sessionRecords, "Visit_Label", null);
-    error_log(print_r($visitList,1));
+    $visitList       = toSelect($sessionRecords, "Visit_label", null);
     $siteList        = array();
     foreach ($siteIDs as $siteID) {
         $site = Site::singleton($siteID);
@@ -218,7 +217,6 @@ function getUploadFields()
     $sessionData    = [];
 
     foreach ($sessionRecords as $record) {
-        error_log(print_r($record,1));
         // Populate sites
         if (!isset($sessionData[$record["PSCID"]]['sites'])) {
             $sessionData[$record["PSCID"]]['sites'] = [];
