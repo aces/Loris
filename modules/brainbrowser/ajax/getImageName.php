@@ -24,7 +24,7 @@ $file  = substr($file, strrpos($file, '/') + 1);
 // create a JSON object with the file information
 $result = array(
            'filename' => $file,
-           'fileid'   => $_REQUEST['file_id']
+           'fileid'   => $_REQUEST['file_id'],
           );
 
 echo json_encode($result);
