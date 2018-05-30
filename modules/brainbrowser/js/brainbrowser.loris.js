@@ -539,7 +539,7 @@ $(function() {
       $.ajax({
           dataType: "json",
           data: 'file_id=' + minc_ids_arr[vol_id],
-          url: loris.BaseURL + '/brainbrowser/ajax/getFileName.php',
+          url: loris.BaseURL + '/brainbrowser/ajax/getImageName.php',
           method: 'GET',
           success: function(data) {
               let fileName = $("#filename-" + vol_id);
@@ -753,8 +753,8 @@ $(function() {
     for (i = 0; i < minc_ids_arr.length; i += 1) {
 
       request = $.ajax({
-        url: loris.BaseURL + "/brainbrowser/ajax/minc.php",
-        data: 'minc_id=' + minc_ids_arr[i],
+        url: loris.BaseURL + "/brainbrowser/ajax/image.php",
+        data: 'file_id=' + minc_ids_arr[i],
         method: 'GET',
         success: function (response, status, jqXHR) {
           let type   = jqXHR.getResponseHeader('Content-Type');
@@ -762,7 +762,7 @@ $(function() {
           if (type === "application/mnc") {
             minc_volumes.push({
               type: 'minc',
-              raw_data_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + fileid,
+              raw_data_url: loris.BaseURL + "/brainbrowser/ajax/image.php?file_id=" + fileid,
               template: {
                 element_id: "volume-ui-template4d",
                 viewer_insert_class: "volume-viewer-display"
@@ -771,7 +771,7 @@ $(function() {
           } else if (type === "application/nii") {
             minc_volumes.push({
               type: 'nifti1',
-              nii_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + fileid,
+              nii_url: loris.BaseURL + "/brainbrowser/ajax/image.php?file_id=" + fileid,
               template: {
                 element_id: "volume-ui-template4d",
                 viewer_insert_class: "volume-viewer-display"
