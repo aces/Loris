@@ -114,8 +114,14 @@ if ($userSingleton->hasPermission('document_repository_view')
             mkdir($base_path . $puser . '/docs_repo/' . $fileName, 0777);
         }
         // Create uuid directory /base_path/user/docs_repo/fileName/uuid
-        if (!file_exists($base_path . $puser . '/docs_repo/' . $fileName . '/' . $uuid)) {
-            mkdir($base_path . $puser . '/docs_repo/' . $fileName . '/' . $uuid, 0777);
+        if (!file_exists(
+            $base_path . $puser . '/docs_repo/' . $fileName . '/' . $uuid
+        )
+        ) {
+            mkdir(
+                $base_path . $puser . '/docs_repo/' . $fileName . '/' . $uuid,
+                0777
+            );
         }
 
         $target_path = $base_path . $fileBase;
@@ -186,73 +192,6 @@ if ($userSingleton->hasPermission('document_repository_view')
 
         $editNotifier->notify($msg_data);
     }
-}
-
-/**
- * Handles the version inspection process.
- * Generates correct proceeding version in some cases.
- *
- * @param string $version the version to use for uploading file.
- * @param array  $items   the array of existing files (name & version).
- *
- * @return string $version.
- */
-function versionInspectionGenerator($version, $items)
-{
-
-    if (!preg_match('/^(\d+\.)(\d+\.)(\*|\d+)$/', $version)) {
-        $version = '0.0.1';
-    }
-
-    $versions = array();
-    foreach ($items as $item) {
-        if (preg_match('/^(\d+\.)(\d+\.)(\*|\d+)$/', $item['version'])) {
-            $versions[] = $item['version'];
-        }
-    }
-    usort($versions, 'version_compare');
-
-    if (in_array($version, $versions)) {
-        // Version in array.
-        $version = versionUpdate($versions[count($versions)-1], true);
-    } else {
-        // Version not in array.
-        if (empty($versions)) {
-            // No versions exist.
-        } else {
-            // Versions exist.
-            if (version_compare($version, $versions[count($versions)-1], '>')) {
-                // Version number is greater than greatest version existing.
-            } else {
-                // Version number is smaller than greatest version existing.
-                $version = versionUpdate($versions[count($versions)-1], true);
-            }
-        }
-    }
-
-    return $version;
-}
-
-/**
- * Increment or Decrement the version "string" supplied.
- *
- * The $increment "bool" if true will increment the version.
- * and if false will decrement the version.
- *
- * @param string $version   the version to use for uploading file.
- * @param bool   $increment the bool to decide on increment or decrement.
- *
- * @return string $version
- */
-function versionUpdate($version, $increment)
-{
-    $new_version = explode('.', $version);
-    if ($increment) {
-        $new_version[count($new_version)-1]++;
-    } else {
-        $new_version[count($new_version)-1]--;
-    }
-    return implode('.', $new_version);
 }
 
 /**

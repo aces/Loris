@@ -10,18 +10,23 @@
   * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
   * @link     https://github.com/aces/Loris
   */
+
 $user =& User::singleton();
+
 if (!$user->hasPermission('document_repository_delete')) {
     header('HTTP/1.1 403 Forbidden');
     exit;
 }
 
 set_include_path(get_include_path().':../../project/libraries:../../php/libraries:');
+
 require_once 'NDB_Client.class.inc';
 require_once 'NDB_Config.class.inc';
 require_once 'Email.class.inc';
+
 $client = new NDB_Client();
 $client->initialize('../../project/config.xml');
+
 $factory = NDB_Factory::singleton();
 $baseURL = $factory->settings()->getBaseURL();
 
@@ -65,19 +70,23 @@ if ($user->hasPermission('document_repository_delete')) {
     $Notifier->notify($msg_data);
 }
 
-$path = __DIR__ . '/../user_uploads/$dataDir';
+$path = __DIR__ . '/../user_uploads/' . $dataDir;
 
 if (file_exists($path)) {
     unlink($path);
 }
 
-$rm_directory = __DIR__ . '/../user_uploads/' . $userName . '/'
-                        . str_replace('.', '_', $version);
+// Cleanup empty directories
 set_error_handler(
     function () {
         // Silence the E_WARNING when files exist in the directory.
     }
 );
+$rm_directory = __DIR__ . '/../user_uploads/'
+    . substr($dataDir, 0, strlen($dataDir)-(strlen($fileName)+1));
+rmdir($rm_directory);
+$rm_directory = __DIR__ . '/../user_uploads/'
+    . $userName . '/docs_repo/' . $fileName;
 rmdir($rm_directory);
 restore_error_handler();
 
