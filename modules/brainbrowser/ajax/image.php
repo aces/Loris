@@ -62,11 +62,11 @@ if (strpos($_REQUEST['file_id'], 'l') !== false) {
 
 if (!empty($image_file)) {
     if (preg_match('/nii(\.gz)?/i', $image_file)) {
-        header('Content-Type: application/nii');
+        header('Content-Type: application/x-nii');
     } elseif (preg_match('/mnc/', $image_file)) {
-        header('Content-Type: application/mnc');
+        header('Content-Type: application/x-mnc');
     }
-    header('Content-FileID: ' . $_REQUEST['file_id']);
+    header('X-FileID: ' . $_REQUEST['file_id']);
     readfile($image_path);
 } else {
     header("HTTP/1.1 404 Not Found");

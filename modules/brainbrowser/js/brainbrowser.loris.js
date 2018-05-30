@@ -758,8 +758,8 @@ $(function() {
         method: 'GET',
         success: function (response, status, jqXHR) {
           let type   = jqXHR.getResponseHeader('Content-Type');
-          let fileid = jqXHR.getResponseHeader('Content-FileID');
-          if (type === "application/mnc") {
+          let fileid = jqXHR.getResponseHeader('X-FileID');
+          if (type === "application/x-mnc") {
             minc_volumes.push({
               type: 'minc',
               raw_data_url: loris.BaseURL + "/brainbrowser/ajax/image.php?file_id=" + fileid,
@@ -768,7 +768,7 @@ $(function() {
                 viewer_insert_class: "volume-viewer-display"
               }
             });
-          } else if (type === "application/nii") {
+          } else if (type === "application/x-nii") {
             minc_volumes.push({
               type: 'nifti1',
               nii_url: loris.BaseURL + "/brainbrowser/ajax/image.php?file_id=" + fileid,
