@@ -542,7 +542,7 @@ $(function() {
           url: loris.BaseURL + '/brainbrowser/ajax/getMincName.php',
           method: 'GET',
           success: function(data) {
-              var fileName = $("#filename-" + vol_id);
+              let fileName = $("#filename-" + vol_id);
               fileName.html(data.filename);
               fileName.data("title", data.filename);
               fileName.tooltip();
@@ -749,7 +749,7 @@ $(function() {
         minc_ids_arr = [minc_ids];
     }
 
-    var request;
+    let request;
     for (i = 0; i < minc_ids_arr.length; i += 1) {
 
       request = $.ajax({
@@ -758,10 +758,10 @@ $(function() {
         data: 'minc_id=' + minc_ids_arr[i],
         method: 'GET',
         success: function (data) {
-          var fileid   = data.fileid;
-          var filename = data.filename;
+          let fileid   = data.fileid;
+          let filename = data.filename;
           if (filename == null) {
-              var msg = "ERROR: could not load the file.";
+              let msg = "ERROR: could not load the file.";
               $("#loading").html(msg);
               console.error(msg);
           } else if (filename.endsWith("mnc")) {
@@ -784,7 +784,7 @@ $(function() {
               }
             });
           } else {
-            var msg = "WARNING: The volume viewer only supports MINC and" +
+            let msg = "WARNING: The volume viewer only supports MINC and" +
                       " NIfTI file types.";
             $("#loading").html(msg);
             console.group('warning message');
