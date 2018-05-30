@@ -187,22 +187,22 @@ function uploadFile()
 function getUploadFields()
 {
 
-    $db =& Database::singleton();
+    $db   =& Database::singleton();
     $user =& User::singleton();
-    
+
     $recordsQuery = "SELECT c.PSCID, c.CandID, s.CenterID, s.Visit_label, ".
                     "f.Test_name ".
                     "FROM candidate c ".
-				    "LEFT JOIN session s USING(CandID) ".
-        			"LEFT JOIN flag f ON (s.ID=f.SessionID) ";
-	
+                    "LEFT JOIN session s USING(CandID) ".
+                    "LEFT JOIN flag f ON (s.ID=f.SessionID) ";
+
     $siteIDs = $user->getCenterIDs();
     if (!$user->hasPermission('access_all_profiles')) {
-        $recordsQuery .= "WHERE s.CenterID IN(".implode(",",$siteIDs).") ";
+        $recordsQuery .= "WHERE s.CenterID IN(".implode(",", $siteIDs).") ";
     }
-    $recordsQuery .= "ORDER BY c.PSCID ASC";
+    $recordsQuery  .= "ORDER BY c.PSCID ASC";
     $sessionRecords = $db->pselect($recordsQuery, []);
-		
+
     $instrumentsList = toSelect($sessionRecords, "Test_name", null);
     $candidatesList  = toSelect($sessionRecords, "PSCID", null);
     $candIdList      = toSelect($sessionRecords, "CandID", "PSCID");
@@ -212,9 +212,9 @@ function getUploadFields()
         $site = Site::singleton($siteID);
         $siteList[$siteID] = $site->getCenterName();
     }
-    $languageList    = Utility::getLanguageList();
+    $languageList = Utility::getLanguageList();
     // Build array of session data to be used in upload media dropdowns
-    $sessionData    = [];
+    $sessionData = [];
 
     foreach ($sessionRecords as $record) {
         // Populate sites
@@ -351,8 +351,9 @@ function toSelect($options, $item, $item2)
         $optionsValue = $item2;
     }
     foreach ($options as $key => $value) {
-        if(!is_null($options[$key][$item]))
+        if(!is_null($options[$key][$item])) {
             $selectOptions[$options[$key][$optionsValue]] = $options[$key][$item];
+        }
     }
 
     return $selectOptions;
