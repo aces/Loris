@@ -125,7 +125,7 @@ class Datadict extends \NDB_Menu_Filter
             $instruments,
             array("multiple")
         );
-        $this->addSelect('sourceFrom', 'Instruments', $instruments, ['multiple']);
+        $this->addSelect('sourceFrom', 'Instruments', $instruments);
         $this->addSelect(
             'descriptionStatus',
             'Description Status',
