@@ -50,7 +50,7 @@ if (strpos($_REQUEST['file_id'], 'l') !== false) {
         }
     }
 } else {
-    $query     = "select File from files where FileID = :FileID";
+    $query      = "select File from files where FileID = :FileID";
     $image_file = $DB->pselectOne(
         $query,
         array(
@@ -82,8 +82,8 @@ if (!empty($image_file)) {
  */
 function getFileLocation()
 {
-    $config    =& NDB_Config::singleton();
-    $paths     = $config->getSetting('paths');
+    $config     = & NDB_Config::singleton();
+    $paths      = $config->getSetting('paths');
     $image_path = $paths['mincPath'];
     return $image_path;
 }
