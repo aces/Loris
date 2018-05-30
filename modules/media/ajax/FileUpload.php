@@ -194,11 +194,13 @@ function getUploadFields()
                     "f.Test_name ".
                     "FROM candidate c ".
                     "LEFT JOIN session s USING(CandID) ".
-                    "LEFT JOIN flag f ON (s.ID=f.SessionID) ";
+                    "LEFT JOIN flag f ON (s.ID=f.SessionID) ".
+                    "WHERE c.PSCID NOT LIKE 'scanner%' ".
+                    "AND f.Test_name NOT LIKE 'DDE_%' ";
 
     $siteIDs = $user->getCenterIDs();
     if (!$user->hasPermission('access_all_profiles')) {
-        $recordsQuery .= "WHERE s.CenterID IN(".implode(",", $siteIDs).") ";
+        $recordsQuery .= "AND s.CenterID IN(".implode(",", $siteIDs).") ";
     }
     $recordsQuery  .= "ORDER BY c.PSCID ASC";
     $sessionRecords = $db->pselect($recordsQuery, []);
