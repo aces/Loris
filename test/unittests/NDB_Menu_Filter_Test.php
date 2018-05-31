@@ -90,7 +90,7 @@ class NDB_Menu_Filter_Test extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $stub->form = new LorisForm('filter');
+        $stub->form = new LorisForm();
         $stub->form->applyFilter('__ALL__', 'trim');
         $submittedValues = array(
                 'FakeField'        => '      I should be put into filter     ',

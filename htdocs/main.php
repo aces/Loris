@@ -185,6 +185,10 @@ try {
     if (isset($caller->page)) {
         $tpl_data['jsfiles']  = $caller->page->getJSDependencies();
         $tpl_data['cssfiles'] = $caller->page->getCSSDependencies();
+
+        if (!$anonymous) {
+            $tpl_data['breadcrumbs'] = $caller->page->getBreadcrumbs();
+        }
     }
     $tpl_data['workspace'] = $workspace;
 } catch(ConfigurationException $e) {
@@ -224,26 +228,11 @@ try {
 } finally {
     // Set dependencies if they are not set
     if (!isset($tpl_data['jsfiles']) || !isset($tpl_data['cssfiles'])) {
-        $page = (new NDB_Page(new Module(""), '', '', '', ''));
+        $page = (new NDB_Page(new Module('', ''), '', '', '', ''));
         $tpl_data['jsfiles']  = $page->getJSDependencies();
         $tpl_data['cssfiles'] = $page->getCSSDependencies();
     }
 }
-//--------------------------------------------------
-
-if (!$anonymous) {
-    try {
-        $breadcrumb = new NDB_Breadcrumb;
-        $crumbs     = $breadcrumb->getBreadcrumb();
-
-        $tpl_data['crumbs'] = $crumbs;
-    } catch(Exception $e) {
-        $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
-    }
-}
-
-//--------------------------------------------------
-
 
 // show the back button
 $tpl_data['lastURL'] = $_SESSION['State']->getLastURL();

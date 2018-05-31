@@ -78,7 +78,7 @@ class ViewSession extends \NDB_Form
     /**
      * Sets up main parameters
      *
-     * @return NULL
+     * @return void
      */
     function setup()
     {
@@ -131,6 +131,7 @@ class ViewSession extends \NDB_Form
 
         }
     }
+
     /**
      * Sets files values
      *
@@ -739,23 +740,20 @@ class ViewSession extends \NDB_Form
     /**
      * Get js Dependencies
      *
-     * @return string
+     * @return array
      */
     function getJSDependencies()
     {
         $depends = parent::getJSDependencies();
-        if ($this->page === 'viewSession') {
-            $factory = \NDB_Factory::singleton();
-            $baseurl = $factory->settings()->getBaseURL();
-            $depends = array_merge(
-                $depends,
-                array(
-                 $baseurl . "/imaging_browser/js/jiv_and_imaging_browser.js",
-                 $baseurl . "/imaging_browser/js/ImagePanel.js",
-                )
-            );
-
-        }
+        $factory = \NDB_Factory::singleton();
+        $baseurl = $factory->settings()->getBaseURL();
+        $depends = array_merge(
+            $depends,
+            array(
+             $baseurl . "/imaging_browser/js/jiv_and_imaging_browser.js",
+             $baseurl . "/imaging_browser/js/ImagePanel.js",
+            )
+        );
         return $depends;
     }
 
@@ -773,6 +771,22 @@ class ViewSession extends \NDB_Form
         return array_merge(
             $deps,
             [$baseURL . "/imaging_browser/css/imaging_browser.css"]
+        );
+    }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb('Imaging Browser', '/imaging_browser'),
+            new \LORIS\Breadcrumb(
+                'View Session',
+                "/imaging_browser/viewSession/?sessionID=$this->sessionID"
+            )
         );
     }
 

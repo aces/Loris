@@ -16,7 +16,6 @@ namespace LORIS\Router;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Psr\Http\Server\RequestHandlerInterface;
-use \LORIS\Http\StringStream;
 
 /**
  * Handles the root of a LORIS install. It will mostly delegate to
@@ -97,7 +96,6 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $request = $request->withURI($suburi);
             return $mr->handle($request);
         }
-
         // Legacy from .htaccess. A CandID goes to the timepoint_list
         // FIXME: This should all be one candidates module, not a bunch
         // of hacks in the base router.
@@ -133,9 +131,10 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             }
         }
 
-        // FIXME: Use 404 from smarty template.
-        return (new \Zend\Diactoros\Response())
-            ->withStatus(404)
-            ->withBody(new StringStream("Not Found"));
+        return (new \LORIS\Middleware\PageDecorationMiddleware(
+            $this->user
+        ))->process(
+            $request,
+            new NoopResponder(new \LORIS\Http\Error($request, 404)));
     }
 }

@@ -27,9 +27,9 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
 {
     /**
      * UI elements and locations
-     * breadcrumb - 'Mri  Violations'
+     * breadcrumb - 'Mri Violations'
      */
-    private $_loadingUI = array('Mri  Violations' => '#bc2 > a:nth-child(2) > div');
+    private $_loadingUI = array('Mri Violations' => '#bc2 > a:nth-child(2) > div');
     /**
      * Insert testing data
      *
@@ -269,7 +269,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $text  = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
         );
-            $this->assertEquals(" Mri  Protocol  Violations", $text);
+            $this->assertEquals("Mri Protocol Violations", $text);
     }
 
     /**
@@ -290,7 +290,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $text  = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
         );
-            $this->assertEquals(" Mri  Protocol  Check  Violations", $text);
+            $this->assertEquals("Mri Protocol Check Violations", $text);
     }
 
     /**

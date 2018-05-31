@@ -49,8 +49,8 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                                   );
     // expect UIs for GWAS Tab
     private $_loadingGWASUI = array(
-                               'Gwas  Browser' => '#bc2 > a:nth-child(3) > div',
-                               'GWAS Filters'  => '#lorisworkspace > div > '.
+                               'Gwas Browser' => '#bc2 > a:nth-child(3) > div',
+                               'GWAS Filters' => '#lorisworkspace > div > '.
                                            'div:nth-child(2) > div >div > form >'.
                                            'div>div>div.form-group.col-sm-8>div> '.
                                            'div.panel-heading',
@@ -160,6 +160,8 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
       */
     function testGenomicBrowserFilterEachTab()
     {
+        $this->markTestSkipped("Skipping long test");
+        return;
         // test filter in Profiles Tab
         $this->_testFilter("/genomic_browser/", "PSCID", "MTL001", "1 rows");
         $this->_testFilter("/genomic_browser/", "DCCID", "300001", "1 rows");

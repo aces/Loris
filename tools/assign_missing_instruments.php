@@ -11,12 +11,12 @@
  *     confirm mode -> Actually assigns the instruments found missing in the
  *                     database.
  *
- * Usage: php assign_missing_instrument.php [Visit_label] [confirm]
+ * Usage: php assign_missing_instruments.php [Visit_label] [confirm]
  *
- * Example: php assign_missing_instrument.php 18month
+ * Example: php assign_missing_instruments.php 18month
  * (Will use regular mode and print the missing instruments)
  *
- * Example: php assign_missing_instrument.php 18month confirm
+ * Example: php assign_missing_instruments.php 18month confirm
  * (Will use confirm mode and assign the missing instruments)
  *
  * Note:  As per ... only timepoints in the 'Visit' stage are examined.

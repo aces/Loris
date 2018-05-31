@@ -29,9 +29,11 @@ html, body {
 	font-family: verdana, sans-serif;
 	font-size: 90%;
 }
+
 #page {
     min-height: 100%;
     position: relative;
+    padding-top: 50px;
 }
 
 
@@ -685,24 +687,18 @@ tr.directentry {
     color: #FFFFFF;
     padding: 9.5px;
 }
-.help-content pre#help-wrapper {
-    white-space: pre-wrap;
-    word-break: normal;
-    background: #064785;
-}
 #help-seperator {
    margin-top: 50px;
     background: #064785;
 }
 #helpclose {
-   position: absolute;
-   right:    0;
-   top:   20px;
-   margin-right : 5px;
+   float: right;
+   margin: 10px;
+   margin-left: 0px;
 }
 #helpedit {
-   position: absolute;
-   right:    0;4, 45, 84
+   float: right;
+   margin: 10px;
 }
 .help-content h3 {
     color: #FFFFFF;

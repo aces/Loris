@@ -189,7 +189,10 @@ class NDB_BVL_Instrument extends NDB_Page
         ) {
             include_once 'NDB_BVL_Instrument_LINST.class.inc';
             $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST(
-                new Module($instrument),
+                // The module directory we use for instruments is arbitrary,
+                // since it isn't a real module, but it's required for the page
+                // constructor.
+                new Module($instrument, $base ."project/"),
                 $page,
                 $commentID,
                 $commentID,
@@ -207,7 +210,7 @@ class NDB_BVL_Instrument extends NDB_Page
             }
             // Now go ahead and instantiate it
             $obj = new $class(
-                new Module($instrument),
+                new Module($instrument, $base ."project/"),
                 $page,
                 $commentID,
                 $commentID,
@@ -361,10 +364,9 @@ class NDB_BVL_Instrument extends NDB_Page
 
 
     /**
-     * Method to display the form - usually not overridden as it
-     * includes all the base code that any instrument will require.
+     * Method to display the form for an instrument
      *
-     * @return void
+     * @return string
      * @access public
      */
     function display()
@@ -493,7 +495,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * Attempts to validate the form (using the defined rules) and
      * saves the validated data into the database
      *
-     * @return false if failure to save data
+     * @return bool false if failure to save data
      * @access public
      */
     function save()
@@ -805,13 +807,11 @@ class NDB_BVL_Instrument extends NDB_Page
         if (strrpos($this->testName, '_proband') === false) {
             $this->addScoreColumn(
                 'Candidate_Age',
-                'Candidate Age (Months)',
-                'Please enter date of administration and press Save'
+                'Candidate Age (Months)'
             );
             $this->addScoreColumn(
                 'Window_Difference',
-                'Window Difference (+/- Days)',
-                'Please enter date of administration and press Save'
+                'Window Difference (+/- Days)'
             );
         }
         $examiners = $this->_getExaminerNames();
@@ -1139,8 +1139,8 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param array $elements The value of all the elements on the current page
      *                        to validate.
      *
-     * @return associative array of errors (fieldname => errormessage) or true
-     *         if no errors.
+     * @return array|true associative array of errors (fieldname => errormessage)
+     *         or true if no errors.
      */
     function XINValidate($elements)
     {
@@ -1210,7 +1210,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param string $group   Empty if a non-grouped element is registering the rule.
      *                        Otherwise, name of the group registering the rule.
      *
-     * @return none
+     * @return void
      */
     function XINRegisterRule($elname, $rules, $message="", $group="")
     {

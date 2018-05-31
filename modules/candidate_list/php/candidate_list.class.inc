@@ -46,7 +46,7 @@ class Candidate_List extends \NDB_Menu_Filter
      * Sets up all the class variables needed for the candidate_list menu
      * filter
      *
-     * @return true on success
+     * @return void
      */
     function _setupVariables()
     {
@@ -198,7 +198,7 @@ class Candidate_List extends \NDB_Menu_Filter
     /**
      * Create the form for the candidate_list menu page
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -353,5 +353,17 @@ class Candidate_List extends \NDB_Menu_Filter
             )
         );
     }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb('Access Profile', "/$this->name")
+        );
+    }
 }
-?>
+

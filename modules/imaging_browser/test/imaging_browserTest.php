@@ -60,7 +60,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     {
         // Without permissions
         $this->setupPermissions(array(''));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
@@ -84,7 +83,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     {
         // With permission imaging_browser_phantom_ownsite
         $this->setupPermissions(array('imaging_browser_phantom_ownsite'));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
@@ -103,7 +101,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     {
         // With permission imaging_browser_view_allsites
         $this->setupPermissions(array('imaging_browser_view_allsites'));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
@@ -122,7 +119,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     {
         // With permission imaging_browser_phantom_allsites
         $this->setupPermissions(array('imaging_browser_phantom_allsites'));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
@@ -242,29 +238,27 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     {
         // With permission imaging_browser_view_site
         $this->setupPermissions(array('imaging_browser_phantom_ownsite'));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
-                $bodyText       = $this->webDriver->findElement(
-                    WebDriverBy::cssSelector("body")
-                )->getText();
-                $SiteFilterText = $this->webDriver->findElement(
-                    WebDriverBy::Name("SiteID")
-                )->getText();
-                $this->assertContains("All User Sites", $SiteFilterText);
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $SiteFilterText = $this->webDriver->findElement(
+            WebDriverBy::Name("SiteID")
+        )->getText();
+        $this->assertContains("All User Sites", $SiteFilterText);
 
-                // With permission imaging_browser_view_allsites
-                $this->setupPermissions(array('imaging_browser_view_allsites'));
-                $this->webDriver->navigate()->refresh();
-                $this->safeGet(
-                    $this->url . "/imaging_browser/"
-                );
+        // With permission imaging_browser_view_allsites
+        $this->setupPermissions(array('imaging_browser_view_allsites'));
+        $this->safeGet(
+            $this->url . "/imaging_browser/"
+        );
 
-                $SiteFilterText = $this->webDriver->findElement(
-                    WebDriverBy::Name("SiteID")
-                )->getText();
-                $this->assertContains("All", $SiteFilterText);
+        $SiteFilterText     = $this->webDriver->findElement(
+            WebDriverBy::Name("SiteID")
+        )->getText();
+        $this->assertContains("All", $SiteFilterText);
     }
 
     /**

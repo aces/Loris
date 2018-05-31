@@ -267,7 +267,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $text = $this->webDriver->executescript(
             "return document.querySelector('#bc2>a:nth-child(3)>div').textContent"
         );
-        $this->assertEquals(' View Session', $text);
+        $this->assertEquals('View Session', $text);
 
     }
 }

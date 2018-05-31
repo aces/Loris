@@ -46,8 +46,7 @@ class Datadict extends \NDB_Menu_Filter
     * Setup variables function
     *
     * @note   Setup variables function
-    * @return bool
-    * @access private
+    * @return void
     */
     function _setupVariables()
     {
@@ -84,7 +83,7 @@ class Datadict extends \NDB_Menu_Filter
     /**
     * Set Filter Form
     *
-    * @return none
+    * @return void
     */
     function setup()
     {
@@ -170,6 +169,15 @@ class Datadict extends \NDB_Menu_Filter
         );
     }
 
-
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb('Data Dictionary', "/$this->name")
+        );
+    }
 }
-?>
