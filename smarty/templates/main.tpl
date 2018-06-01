@@ -484,7 +484,7 @@
                     </ul>
                 </center>
                 <div align="center" colspan="1">
-                    Powered by LORIS version {$version} &copy; {$currentyear}. All rights reserved.
+                    Powered by LORIS &copy; {$currentyear}. All rights reserved.
                 </div>
       		<div align="center" colspan="1">
                     Created by <a href="http://mcin-cnim.ca/" target="_blank">
