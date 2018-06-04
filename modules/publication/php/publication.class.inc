@@ -66,10 +66,6 @@ class Publication extends \NDB_Menu_Filter_Form
             "ON pkr.PublicationKeywordID=pk.PublicationKeywordID ";
         $query .= " WHERE 1=1 ";
 
-        if (!$user->hasPermission('publication_approve')) {
-            $query .= " AND ps.Label <> 'Rejected' ";
-        }
-
         $query .= " GROUP BY p.PublicationID ";
 
         $this->columns = array(
