@@ -463,9 +463,9 @@ function notifyEdit($pubID)
     );
     $url  = $config->getSetting('url');
 
-    $emailData['Title'] = $data['Title'];
-    $emailData['User']  = $user->getFullname();
-    $emailData['URL']   = $url . '/publication/view_project/?id=' . $pubID;
+    $emailData['Title']       = $data['Title'];
+    $emailData['User']        = $user->getFullname();
+    $emailData['URL']         = $url . '/publication/view_project/?id=' . $pubID;
     $emailData['ProjectName'] = $config->getSetting('prefix');
 
     $sendTo = $_REQUEST['notifyLead'] === 'true'
@@ -510,8 +510,8 @@ function notifyReview($pubID)
     );
     $url  = $config->getSetting('url');
 
-    $emailData['Title'] = $data['Title'];
-    $emailData['URL']   = $url . '/publication/view_project/?id=' . $pubID;
+    $emailData['Title']       = $data['Title'];
+    $emailData['URL']         = $url . '/publication/view_project/?id=' . $pubID;
     $emailData['ProjectName'] = $config->getSetting('prefix');
 
     $sendTo = $_REQUEST['notifyLead'] === 'true'
