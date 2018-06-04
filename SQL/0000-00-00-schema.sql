@@ -1496,6 +1496,8 @@ INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceF
   ('Visit_label','varchar(255)','Visit_label',null,null,'visit_label','session',null,1,null),
   ('candidate_dob','date','Candidate_Dob',null,null,'DoB','candidate',null,1,null);
 
+INSERT INTO parameter_type (Name, Type) Values ("DeepQC", "double");
+
 CREATE TABLE `parameter_type_category` (
   `ParameterTypeCategoryID` int(11) unsigned NOT NULL auto_increment,
   `Name` varchar(255) default NULL,
