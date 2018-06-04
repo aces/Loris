@@ -415,9 +415,10 @@ function notifySubmission($pubID)
     );
     $url  = $config->getSetting('url');
 
-    $emailData['Title'] = $data['Title'];
-    $emailData['Date']  = $data['DateProposed'];
-    $emailData['URL']   = $url . '/publication/view_project/?id='.$pubID;
+    $emailData['Title']       = $data['Title'];
+    $emailData['Date']        = $data['DateProposed'];
+    $emailData['URL']         = $url . '/publication/view_project/?id='.$pubID;
+    $emailData['ProjectName'] = $config->getSetting('prefix');
 
     $sendTo = $_REQUEST['notifyLead'] === 'true'
         ? array($data['LeadInvestigatorEmail']) : [];
@@ -465,6 +466,7 @@ function notifyEdit($pubID)
     $emailData['Title'] = $data['Title'];
     $emailData['User']  = $user->getFullname();
     $emailData['URL']   = $url . '/publication/view_project/?id=' . $pubID;
+    $emailData['ProjectName'] = $config->getSetting('prefix');
 
     $sendTo = $_REQUEST['notifyLead'] === 'true'
         ? array($data['LeadInvestigatorEmail']) : [];
@@ -510,6 +512,7 @@ function notifyReview($pubID)
 
     $emailData['Title'] = $data['Title'];
     $emailData['URL']   = $url . '/publication/view_project/?id=' . $pubID;
+    $emailData['ProjectName'] = $config->getSetting('prefix');
 
     $sendTo = $_REQUEST['notifyLead'] === 'true'
         ? array($data['LeadInvestigatorEmail']) : [];
