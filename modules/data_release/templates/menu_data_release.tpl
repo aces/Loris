@@ -87,7 +87,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" id = "uploadButton" role="button" aria-disabled="false">Add Permission</button>
+                    <button class="btn btn-primary" id = "addButton" role="button" aria-disabled="false">Add Permission</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 </div>
             </form>
@@ -142,7 +142,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" id = "uploadButton" role="button" aria-disabled="false">Manage Permissions</button>
+                    <button class="btn btn-primary" id = "manageButton" role="button" aria-disabled="false">Manage Permissions</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 </div>
             </form>
