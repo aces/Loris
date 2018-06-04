@@ -260,7 +260,7 @@ class ProjectFormFields extends React.Component {
       collaborators[i].notify = !collaborators[i].notify;
       this.props.setFormData('collaborators', collaborators);
     } else if (e.target.name === 'leadInvestigatorEmail_notify') {
-      let currNotify = this.props.formData.notifyLead === undefined ? false : this.props.formData.notifyLead;
+      let currNotify = this.props.formData.notifyLead || false;
       this.props.setFormData('notifyLead', !currNotify);
     }
   }
