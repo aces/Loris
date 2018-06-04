@@ -186,16 +186,6 @@ CREATE TABLE `psc` (
 
 INSERT INTO `psc` (Name, Alias, Study_site) VALUES ('Data Coordinating Center','DCC', 'Y');
 
-CREATE TABLE `language` (
-  `language_id` integer unsigned NOT NULL AUTO_INCREMENT,
-  `language_code` varchar(255) NOT NULL,
-  `language_label` varchar(255) NOT NULL,
-  PRIMARY KEY (`language_id`),
-  UNIQUE KEY (`language_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO language (language_code, language_label) VALUES ('en-CA', 'English');
-
 CREATE TABLE `users` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `UserID` varchar(255) NOT NULL default '',
@@ -223,11 +213,8 @@ CREATE TABLE `users` (
   `Password_expiry` date NOT NULL default '1990-04-01',
   `Pending_approval` enum('Y','N') default 'Y',
   `Doc_Repo_Notifications` enum('Y','N') default 'N',
-  `language_preference` integer unsigned default NULL,
   PRIMARY KEY  (`ID`),
-  UNIQUE KEY `Email` (`Email`),
-  UNIQUE KEY `UserID` (`UserID`),
-  CONSTRAINT `FK_users_2` FOREIGN KEY (`language_preference`) REFERENCES `language` (`language_id`)
+  UNIQUE KEY `Email` (`Email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -532,26 +519,26 @@ CREATE TABLE `tarchive_files` (
 
 
 CREATE TABLE `ImagingFileTypes` (
- `type` varchar(12) NOT NULL PRIMARY KEY,
- `description` varchar(255) DEFAULT NULL
+ `type` varchar(255) NOT NULL PRIMARY KEY
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `ImagingFileTypes` (type, description) VALUES
-  ('mnc',      'MINC file'),
-  ('obj',      'MNI BIC imaging format for a surface'),
-  ('xfm',      'MNI BIC linear transformation matrix file'),
-  ('vertstat', 'MNI BIC imaging format for a field on a surface (e.g. cortical thickness)'),
-  ('xml',      'XML file'),
-  ('txt',      'text file'),
-  ('nii',      'NIfTI file'),
-  ('nrrd',     'NRRD file format (used by DTIPrep)'),
-  ('grid_0',   'MNI BIC non-linear field for non-linear transformation');
+INSERT INTO `ImagingFileTypes` VALUES
+  ('mnc'),
+  ('obj'),
+  ('xfm'),
+  ('xfmmnc'),
+  ('imp'),
+  ('vertstat'),
+  ('xml'),
+  ('txt'),
+  ('nii'),
+  ('nii.gz'),
+  ('nrrd'),;
 
 CREATE TABLE `mri_processing_protocol` (
   `ProcessProtocolID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `ProtocolFile` varchar(255) NOT NULL DEFAULT '',
-  `FileType` varchar(12) DEFAULT NULL,
   `Tool` varchar(255) NOT NULL DEFAULT '',
   `InsertTime` int(10) unsigned NOT NULL DEFAULT '0',
   `md5sum` varchar(32) DEFAULT NULL,
@@ -619,7 +606,6 @@ CREATE TABLE `files` (
   `CoordinateSpace` varchar(255) default NULL,
   `OutputType` varchar(255) NOT NULL default '',
   `AcquisitionProtocolID` int(10) unsigned default NULL,
-  `FileType` varchar(12) default NULL,
   `PendingStaging` tinyint(1) NOT NULL default '0',
   `InsertedByUserID` varchar(255) NOT NULL default '',
   `InsertTime` int(10) unsigned NOT NULL default '0',
@@ -1344,7 +1330,6 @@ CREATE TABLE `media` (
   UNIQUE KEY `file_name` (`file_name`),
   FOREIGN KEY (`session_id`) REFERENCES `session` (`ID`),
   FOREIGN KEY (`instrument`) REFERENCES `test_names` (`Test_name`),
-  CONSTRAINT `FK_media_language` FOREIGN KEY (`language_id`) REFERENCES `language` (`language_id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
@@ -1411,7 +1396,6 @@ CREATE TABLE `issues_history` (
   `addedBy` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`issueHistoryID`),
   KEY `fk_issues_comments_1` (`issueID`),
-  CONSTRAINT `fk_issues_comments_1` FOREIGN KEY (`issueID`) REFERENCES `issues` (`issueID`) ON DELETE CASCADE ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `issues_comments` (
@@ -1422,7 +1406,6 @@ CREATE TABLE `issues_comments` (
   `issueComment` text NOT NULL,
   PRIMARY KEY (`issueCommentID`),
   KEY `fk_issue_comments_1` (`issueID`),
-  CONSTRAINT `fk_issue_comments_1` FOREIGN KEY (`issueID`) REFERENCES `issues` (`issueID`) ON DELETE CASCADE ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `issues_comments_history` (
@@ -1433,7 +1416,6 @@ CREATE TABLE `issues_comments_history` (
   `editedBy` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`issueCommentHistoryID`),
   KEY `fk_issues_comments_history` (`issueCommentID`),
-  CONSTRAINT `fk_issues_comments_history` FOREIGN KEY (`issueCommentID`) REFERENCES `issues_comments` (`issueCommentID`) ON DELETE CASCADE ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `issues_watching` (
@@ -1441,7 +1423,6 @@ CREATE TABLE `issues_watching` (
   `issueID` int(11) unsigned NOT NULL,
   PRIMARY KEY (`userID`,`issueID`),
   KEY `fk_issues_watching_2` (`issueID`),
-  CONSTRAINT `fk_issues_watching_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
@@ -1780,8 +1761,6 @@ CREATE TABLE `genomic_cpg` (
   `beta_value` decimal(4,3) DEFAULT NULL,
   PRIMARY KEY (`sample_label`,`cpg_name`),
   KEY `cpg_name` (`cpg_name`),
-  CONSTRAINT `genomic_cpg_ibfk_1` FOREIGN KEY (`sample_label`) REFERENCES `genomic_sample_candidate_rel` (`sample_label`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `genomic_cpg_ibfk_2` FOREIGN KEY (`cpg_name`) REFERENCES `genomic_cpg_annotation` (`cpg_name`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
