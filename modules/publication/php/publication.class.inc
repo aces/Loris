@@ -33,11 +33,18 @@ class Publication extends \NDB_Menu_Filter_Form
      */
     function _hasAccess()
     {
-        // create user object
         $user = \User::singleton();
+        $db   = \Database::singleton();
+
+        $nProjects = $db->pselectOne(
+            'SELECT COUNT(*) FROM publication_users_edit_perm_rel '.
+            'WHERE UserID=:uid',
+            array('uid' => $user->getId())
+        );
         return ($user->hasPermission('publication_view')
             || $user->hasPermission('publication_propose')
             || $user->hasPermission('publication_approve')
+            || $nProjects > 0
         );
     }
 
@@ -63,8 +70,18 @@ class Publication extends \NDB_Menu_Filter_Form
             "LEFT JOIN publication_keyword_rel pkr ".
             "ON p.PublicationID=pkr.PublicationID ".
             "LEFT JOIN publication_keyword pk ".
-            "ON pkr.PublicationKeywordID=pk.PublicationKeywordID ";
+            "ON pkr.PublicationKeywordID=pk.PublicationKeywordID ".
+            "LEFT JOIN publication_users_edit_perm_rel puepr ".
+            "ON puepr.PublicationID=p.PublicationID ";
+        ;
         $query .= " WHERE 1=1 ";
+        // allow user access to module if they have edit access to any project proposal
+        // but only those that they do have access to
+        if (!($user->hasPermission('publication_view')
+            || $user->hasPermission('publication_propose')
+            || $user->hasPermission('publication_approve'))) {
+            $query .= " AND puepr.UserID={$user->getId()} ";
+        }
 
         $query .= " GROUP BY p.PublicationID ";
 

@@ -134,7 +134,7 @@ function getProjectData()
 
         $userCanEdit = (
             $user->getId() === $result['UserID'] ||
-            in_array($user->getId(), array_column($userIDs, 'ID'))
+            in_array($user->getId(), $userIDs)
         );
 
         $usersWithEditPerm = $userIDs;

@@ -104,11 +104,18 @@ class View_Project extends \NDB_Form
      */
     function _hasAccess()
     {
-        // create user object
         $user = \User::singleton();
+        $db   = \Database::singleton();
+
+        $nProjects = $db->pselectOne(
+            'SELECT COUNT(*) FROM publication_users_edit_perm_rel '.
+            'WHERE UserID=:uid',
+            array('uid' => $user->getId())
+        );
         return ($user->hasPermission('publication_view')
             || $user->hasPermission('publication_propose')
             || $user->hasPermission('publication_approve')
+            || $nProjects > 0
         );
     }
 
