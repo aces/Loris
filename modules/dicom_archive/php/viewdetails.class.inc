@@ -228,7 +228,7 @@ class ViewDetails extends \NDB_Form
      * @param string $seriesRange series parameter to be compared
      * @param string $protocolMin minimum value of protocol's parameter
      *        to be compared with
-     * @param string $protocolMax minimum value of protocol's parameter
+     * @param string $protocolMax maximum value of protocol's parameter
      *         to be compared with
      *
      * @return bool true if series parameter is in range with

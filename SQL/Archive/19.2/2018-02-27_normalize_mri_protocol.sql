@@ -1,4 +1,4 @@
--- This patch adds min & max columns for every field in `mri_protocol` which presently can hold range values. 
+-- This patch adds min & max columns for every field in `mri_protocol` & `mri_protocol_checks` which presently can hold range values.
 ALTER TABLE
 	`mri_protocol`
 		ADD COLUMN `TR_min` DECIMAL(10,4) DEFAULT NULL AFTER `Scan_type`,
@@ -26,3 +26,9 @@ ALTER TABLE
 		DROP `FOV_x_range`,
 		DROP `FOV_y_range`,
 		DROP `FOV_z_range`;
+
+ALTER TABLE
+  `mri_protocol_checks`
+    ADD COLUMN `ValidMin` int(4) DEFAULT NULL AFTER `Header`,
+    ADD COLUMN `ValidMax` int(4) DEFAULT NULL AFTER `ValidMin`;
+
