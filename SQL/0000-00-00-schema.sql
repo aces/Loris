@@ -1333,7 +1333,6 @@ CREATE TABLE `media` (
   UNIQUE KEY `file_name` (`file_name`),
   FOREIGN KEY (`session_id`) REFERENCES `session` (`ID`),
   FOREIGN KEY (`instrument`) REFERENCES `test_names` (`Test_name`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
 -- issues tables
@@ -1345,7 +1344,6 @@ CREATE TABLE `issues_categories` (
   `categoryName` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`categoryID`),
   UNIQUE KEY `categoryName` (`categoryName`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO issues_categories (categoryName) VALUES
   ('Behavioural Battery'),
