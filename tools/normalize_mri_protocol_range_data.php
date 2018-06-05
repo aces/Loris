@@ -45,6 +45,8 @@ function split_ranges($table_name, $printToSQL, $output) {
     foreach($mp_columns as $id => $value) {
         if (substr($value["column_name"], -5) == "range") {
             array_push($mp_range_columns, $value["column_name"]);
+        } else if (substr($value["column_name"], -5) == "Range") {
+            array_push($mp_range_columns, $value["column_name"]);
         }
     }
 
@@ -52,10 +54,17 @@ function split_ranges($table_name, $printToSQL, $output) {
         $mp_data = $DB->pselect("SELECT * FROM $table_name mp WHERE mp.ID=:id", array('id' => $id));
         $data_to_insert = array();
         foreach($mp_range_columns as $range_col) {
-            $col_data = explode("-", $mp_data[0][$range_col]);
-            $col_name = str_replace('range', '', $range_col);
-            $col_min = $col_name . "min";
-            $col_max = $col_name . "max";
+            if (substr($range_col,0, 5) == "Valid") {
+                $col_data = explode("-", $mp_data[0][$range_col]);
+                $col_name = str_replace('Range', '', $range_col);
+                $col_min = $col_name . "min";
+                $col_max = $col_name . "max";
+            } else {
+                $col_data = explode("-", $mp_data[0][$range_col]);
+                $col_name = str_replace('range', '', $range_col);
+                $col_min = $col_name . "min";
+                $col_max = $col_name . "max";
+            }
             if (sizeof($col_data) > 1) {
                 $data_to_insert[$col_min] = $col_data[0];
                 $data_to_insert[$col_max] = $col_data[1];
@@ -76,7 +85,7 @@ function split_ranges($table_name, $printToSQL, $output) {
         }
     }
 
-    echo("Data insertion for new min & max columns is complete.\n");
+    echo("$table_name: Data insertion for new min & max columns is complete.\n");
 
     foreach($mp_range_columns as $range_column) {
         $output .= "ALTER TABLE $table_name DROP $range_column;\n";
@@ -85,7 +94,7 @@ function split_ranges($table_name, $printToSQL, $output) {
     if ($printToSQL) {
         _exportSQL($output);
     } else {
-        echo("Please execute the following SQL statements to delete the original range columns.\n");
+        echo("Please execute the following SQL statements to delete the original range columns.\n\n");
         echo("$output\n");
     }
 }
