@@ -54,10 +54,6 @@ $dataDir  = $DB->pselectOne(
     'SELECT Data_dir FROM document_repository WHERE record_id =:identifier',
     array(':identifier' => $rid)
 );
-$version  = $DB->pselectOne(
-    'SELECT version FROM document_repository WHERE record_id =:identifier',
-    array(':identifier' => $rid)
-);
 
 $user =& User::singleton();
 
