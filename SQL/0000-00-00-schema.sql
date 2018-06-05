@@ -214,7 +214,6 @@ CREATE TABLE `users` (
   `Pending_approval` enum('Y','N') default 'Y',
   `Doc_Repo_Notifications` enum('Y','N') default 'N',
   PRIMARY KEY  (`ID`),
-  UNIQUE KEY `Email` (`Email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
