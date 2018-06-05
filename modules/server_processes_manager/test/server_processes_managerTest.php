@@ -101,7 +101,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
       * @return void
       */
     function testFilters()
-    {    
+    {
         $this->safeGet($this->url . "/server_processes_manager/");
         $this->_testFilter("/server_processes_manager/", "pid", "317", "1 rows");
         $this->_testFilter("/server_processes_manager/", "type", "mri_upload", "51");
@@ -131,7 +131,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('#filter').click()"
         );
-//        sleep(1);
+        //        sleep(1);
         $this->webDriver->getPageSource();
         $text = $this->webDriver->executescript(
             "return document.querySelector('#datatable > div >".
