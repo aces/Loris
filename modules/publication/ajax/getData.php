@@ -37,22 +37,33 @@ function getData()
         array()
     );
 
-    // for selecting variables of interest
-    $allVOIs = $db->pselect(
+    // for selecting behavioral variables of interest
+    $bvlVOIs = $db->pselect(
         "SELECT pt.Name, pt.SourceFrom FROM parameter_type pt ".
         "JOIN test_names tn ON tn.Test_name=pt.SourceFrom ORDER BY pt.SourceFrom",
         array()
     );
 
     // merge variables and test names into one array
-    $allVOIs = array_merge(
-        array_column($allVOIs, 'Name'),
-        array_unique(array_column($allVOIs, 'SourceFrom'))
+    $bvlVOIs = array_merge(
+        array_column($bvlVOIs, 'Name'),
+        array_unique(array_column($bvlVOIs, 'SourceFrom'))
     );
-    sort($allVOIs);
+    sort($bvlVOIs);
 
     // sets keys and values to be equal
-    $allVOIs = array_combine($allVOIs, $allVOIs);
+    $allVOIs['Behavioral'] = array_combine($bvlVOIs, $bvlVOIs);
+
+    // imaging VoIs -- filter out non-human readable DICOM tags
+    $imgVOIs = $db->pselectCol(
+        "SELECT DISTINCT Name FROM parameter_type ".
+        "WHERE SourceFrom='parameter_file' AND Name NOT LIKE 'dicom_0x%'",
+        array()
+    );
+
+    sort($imgVOIs);
+
+    $allVOIs['Imaging'] = array_combine($imgVOIs, $imgVOIs);
 
     $users = $db->pselectColWithIndexKey(
         "SELECT ID, Real_name FROM users ".

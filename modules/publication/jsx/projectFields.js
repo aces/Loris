@@ -276,6 +276,24 @@ class ProjectFormFields extends React.Component {
     if (this.props.formData.collaborators) {
       collabNames = this.props.formData.collaborators.map(c => c.name);
     }
+
+    let voiTypeOptions = {
+      All: 'All',
+      Behavioral: 'Behavioral',
+      Imaging: 'Imaging'
+    };
+
+    const allVOIs = this.props.allVOIs;
+    let voiOptions = {};
+    let type = this.props.formData.voiType;
+    if (type && type !== 'All') {
+      voiOptions = this.props.allVOIs[type];
+    } else {
+      // maintain behavioral VoIs by creating an object copy
+      const bvlCopy = Object.assign({}, allVOIs.Behavioral);
+      voiOptions = Object.assign(bvlCopy, allVOIs.Imaging);
+    }
+
     return (
       <div>
         <TextareaElement
@@ -349,6 +367,14 @@ class ProjectFormFields extends React.Component {
           items={this.props.formData.keywords}
           btnLabel="Add Keyword"
         />
+        <SelectElement
+          name="voiType"
+          label="Type of Variables of Interest"
+          options={voiTypeOptions}
+          onUserInput={this.props.setFormData}
+          value={this.props.formData.voiType}
+          emptyOption={false}
+        />
         <TagsElement
           name="voiFields"
           id="voiFields"
@@ -360,7 +386,7 @@ class ProjectFormFields extends React.Component {
           onUserRemove={this.props.removeListItem}
           required={false}
           value={this.props.formData.pendingItemVF}
-          options={this.props.allVOIs}
+          options={voiOptions}
           pendingValKey="pendingItemVF"
           items={this.props.formData.voiFields}
           btnLabel="Add Variable of Interest"
