@@ -25,15 +25,17 @@ set_include_path(
 require_once "NDB_Client.class.inc";
 require_once "NDB_Config.class.inc";
 require_once "Email.class.inc";
+
 $client = new NDB_Client();
 $client->initialize("../../project/config.xml");
+
 $factory = NDB_Factory::singleton();
 $baseURL = $factory->settings()->getBaseURL();
 
-$config = NDB_Config::singleton();
-
-// create Database object
-$DB =& Database::singleton();
+// Setup Database object.
+$config    =& \NDB_Config::singleton();
+$db_config = $config->getSetting('database');
+$db        =& \Database::singleton();
 
 $editNotifier = new NDB_Notifier(
     "document_repository",
@@ -58,26 +60,61 @@ if ($userSingleton->hasPermission('document_repository_view')
         $instrument = $_POST['instrument'] !== '' ? $_POST['instrument'] : null;
         $pscid      = $_POST['pscid']      !== '' ? $_POST['pscid'] : null;
         $visit      = $_POST['visit']      !== '' ? $_POST['visit'] : null;
-        $comments   = $_POST['comments']   !== '' ? $_POST['commnets'] : null;
+        $comments   = $_POST['comments']   !== '' ? $_POST['comments'] : null;
         $version    = $_POST['version']    !== '' ? $_POST['version'] : null;
+        $uuid       = uuid4();
 
         $fileSize = $_FILES["file"]["size"];
         $fileName = $_FILES["file"]["name"];
-        $fileType = end((explode(".", $fileName)));
+        $fileType = '';
+        // Handle retrieving the file type.
+        if (preg_match('/\./', $fileName)) {
+            $pos = strrpos($fileName, '.', -1);
+            if ($pos+1 != strlen($fileName)) {
+                $fileType = substr(
+                    $fileName,
+                    strrpos($fileName, '.', -1)+1
+                );
+            }
+        }
+        $sql_statement = $db->prepare(
+            'SELECT File_name, version FROM document_repository '
+            .'WHERE File_name=? AND uploaded_by=?'
+        );
+        $sql_statement->bindParam(1, $fileName, PDO::PARAM_STR);
+        $sql_statement->bindParam(2, $puser, PDO::PARAM_STR);
+        $sql_statement->execute();
+        $sql_result = $sql_statement->fetchAll(PDO::FETCH_ASSOC);
 
         // __DIR__ is the document_repository ajax directory
         // when this script is executing. Go up a level to the
         // document_repository module directory, and use a
         // user_uploads directory as a base for user uploads
-        $base_path = __DIR__ . "/../user_uploads/";
-        $fileBase  = $puser . "/" . $fileName;
+        $base_path = realpath(__DIR__ . '/..') . '/user_uploads/';
+        $fileBase  = $puser . '/'
+            . $fileName
+            . '/' . $uuid
+            . '/' . $fileName;
 
+        // Create user directory /base_path/user
         if (!file_exists($base_path . $puser)) {
-            mkdir($base_path . $puser, 0777);
+            mkdir($base_path . $puser, 0770);
         }
-
-
-        $target_path = $base_path  . $fileBase;
+        // Create filename directory /base_path/user/fileName
+        if (!file_exists($base_path . $puser . '/' . $fileName)) {
+            mkdir($base_path . $puser . '/' . $fileName, 0770);
+        }
+        // Create uuid directory /base_path/user/fileName/uuid
+        if (!file_exists(
+            $base_path . $puser . '/' . $fileName . '/' . $uuid
+        )
+        ) {
+            mkdir(
+                $base_path . $puser . '/' . $fileName . '/' . $uuid,
+                0770
+            );
+        }
+        $target_path = $base_path . $fileBase;
 
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_path)) {
             $success = $DB->insert(
@@ -95,10 +132,10 @@ if ($userSingleton->hasPermission('document_repository_view')
                  'PSCID'         => $pscid,
                  'visitLabel'    => $visit,
                  'File_type'     => $fileType,
+                 'UUID'          => $uuid,
                 )
             );
-            $msg_data['newDocument']
-                = $baseURL . "/document_repository/";
+            $msg_data['newDocument'] = $baseURL . "/document_repository/";
             $msg_data['document']    = $fileName;
 
             $uploadNotifier->notify($msg_data);
@@ -110,7 +147,7 @@ if ($userSingleton->hasPermission('document_repository_view')
         } else {
             echo "There was an error uploading the file";
         }
-    } elseif ($action == 'edit') {
+    } else if ($action == 'edit') {
         $id         = $_POST['idEdit'];
         $category   = $_POST['categoryEdit'];
         $instrument = $_POST['instrumentEdit'];
@@ -145,6 +182,23 @@ if ($userSingleton->hasPermission('document_repository_view')
 
         $editNotifier->notify($msg_data);
     }
+}
+
+/**
+ * Create a UUID v4 string.
+ *
+ * Source from comments:
+ * http://php.net/manual/en/function.com-create-guid.php
+ * Maybe move to Utilities class.
+ *
+ * @return String $version
+ */
+function uuid4()
+{
+    $data    = openssl_random_pseudo_bytes(16);
+    $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
+    $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
+    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 }
 
 ?>

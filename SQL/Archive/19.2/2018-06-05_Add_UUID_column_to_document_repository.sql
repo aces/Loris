@@ -1,0 +1,1 @@
+ALTER TABLE document_repository ADD `UUID` varchar(36) DEFAULT '';

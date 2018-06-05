@@ -864,6 +864,7 @@ CREATE TABLE `document_repository` (
   `EARLI` tinyint(1) DEFAULT '0',
   `hide_video` tinyint(1) DEFAULT '0',
   `File_category` int(3) unsigned DEFAULT NULL,
+  `UUID` varchar(36) DEFAULT '',
   PRIMARY KEY (`record_id`),
   KEY `fk_document_repository_1_idx` (`File_category`),
   CONSTRAINT `fk_document_repository_1` FOREIGN KEY (`File_category`) REFERENCES `document_repository_categories` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION

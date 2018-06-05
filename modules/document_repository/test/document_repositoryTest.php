@@ -65,6 +65,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
              'EARLI'         => '0',
              'hide_video'    => '0',
              'File_category' => '9999999',
+             'UUID'          => 'dc987d5c-6e5d-11e8-adc0-fa7ae01bbebc',
             )
         );
 
