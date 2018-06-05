@@ -214,6 +214,8 @@ CREATE TABLE `users` (
   `Pending_approval` enum('Y','N') default 'Y',
   `Doc_Repo_Notifications` enum('Y','N') default 'N',
   PRIMARY KEY  (`ID`),
+  UNIQUE KEY `Email` (`Email`),
+  UNIQUE KEY `UserID` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -523,17 +525,6 @@ CREATE TABLE `ImagingFileTypes` (
 
 
 INSERT INTO `ImagingFileTypes` VALUES
-  ('mnc'),
-  ('obj'),
-  ('xfm'),
-  ('xfmmnc'),
-  ('imp'),
-  ('vertstat'),
-  ('xml'),
-  ('txt'),
-  ('nii'),
-  ('nii.gz'),
-  ('nrrd');
 
 CREATE TABLE `mri_processing_protocol` (
   `ProcessProtocolID` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -1343,7 +1334,6 @@ CREATE TABLE `issues_categories` (
   `categoryName` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`categoryID`),
   UNIQUE KEY `categoryName` (`categoryName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 INSERT INTO issues_categories (categoryName) VALUES
