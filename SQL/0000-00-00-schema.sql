@@ -525,6 +525,17 @@ CREATE TABLE `ImagingFileTypes` (
 
 
 INSERT INTO `ImagingFileTypes` VALUES
+      ('mnc'),
+      ('obj'),
+      ('xfm'),
+      ('xfmmnc'),
+      ('imp'),
+      ('vertstat'),
+      ('xml'),
+      ('txt'),
+      ('nii'),
+      ('nii.gz'),
+      ('nrrd');
 
 CREATE TABLE `mri_processing_protocol` (
   `ProcessProtocolID` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -1322,7 +1333,6 @@ CREATE TABLE `media` (
   UNIQUE KEY `file_name` (`file_name`),
   FOREIGN KEY (`session_id`) REFERENCES `session` (`ID`),
   FOREIGN KEY (`instrument`) REFERENCES `test_names` (`Test_name`)
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
 -- issues tables
