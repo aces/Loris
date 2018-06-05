@@ -349,10 +349,7 @@ function toSelect($options, $item, $item2)
 {
     $selectOptions = [];
 
-    $optionsVal = $item;
-    if (isset($item2)) {
-        $optionsVal = $item2;
-    }
+    $optionsVal = $item2 ?? $item;
 
     foreach ($options as $key => $value) {
         if (!is_null($options[$key][$item])) {
