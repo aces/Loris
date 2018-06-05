@@ -9,7 +9,7 @@
  * @category Loris
  * @package  Publication
  * @author   David <dblader.mcin@gmail.com>
- * @license  Loris license
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
 if (isset($_REQUEST['action'])) {

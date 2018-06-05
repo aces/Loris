@@ -9,7 +9,7 @@
  * @category Loris
  * @package  Publication
  * @author   David <dblader.mcin@gmail.com>
- * @license  Loris license
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
 $uploadID = $_REQUEST['uploadID'];
@@ -17,7 +17,9 @@ $db       = \Database::singleton();
 $user     = \User::singleton();
 $config   = \NDB_Config::singleton();
 
-$query      = "SELECT * FROM publication_upload WHERE PublicationUploadID=:upid";
+$query      = "SELECT PublicationID, URL ".
+    "FROM publication_upload ".
+    "WHERE PublicationUploadID=:upid";
 $uploadData = $db->pselectRow($query, array('upid' => $uploadID));
 
 if (empty($uploadData)) {
