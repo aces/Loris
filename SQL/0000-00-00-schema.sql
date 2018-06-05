@@ -534,11 +534,12 @@ INSERT INTO `ImagingFileTypes` VALUES
   ('txt'),
   ('nii'),
   ('nii.gz'),
-  ('nrrd'),;
+  ('nrrd');
 
 CREATE TABLE `mri_processing_protocol` (
   `ProcessProtocolID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `ProtocolFile` varchar(255) NOT NULL DEFAULT '',
+  `FileType` varchar(255) DEFAULT NULL,
   `Tool` varchar(255) NOT NULL DEFAULT '',
   `InsertTime` int(10) unsigned NOT NULL DEFAULT '0',
   `md5sum` varchar(32) DEFAULT NULL,
@@ -606,6 +607,7 @@ CREATE TABLE `files` (
   `CoordinateSpace` varchar(255) default NULL,
   `OutputType` varchar(255) NOT NULL default '',
   `AcquisitionProtocolID` int(10) unsigned default NULL,
+  `FileType` varchar(255) default NULL,
   `PendingStaging` tinyint(1) NOT NULL default '0',
   `InsertedByUserID` varchar(255) NOT NULL default '',
   `InsertTime` int(10) unsigned NOT NULL default '0',
@@ -1325,11 +1327,10 @@ CREATE TABLE `media` (
   `uploaded_by` varchar(255) DEFAULT NULL,
   `hide_file` tinyint(1) DEFAULT '0',
   `date_uploaded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `language_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `file_name` (`file_name`),
   FOREIGN KEY (`session_id`) REFERENCES `session` (`ID`),
-  FOREIGN KEY (`instrument`) REFERENCES `test_names` (`Test_name`),
+  FOREIGN KEY (`instrument`) REFERENCES `test_names` (`Test_name`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
@@ -1396,6 +1397,7 @@ CREATE TABLE `issues_history` (
   `addedBy` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`issueHistoryID`),
   KEY `fk_issues_comments_1` (`issueID`),
+  CONSTRAINT `fk_issues_comments_1` FOREIGN KEY (`issueID`) REFERENCES `issues` (`issueID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `issues_comments` (
@@ -1406,6 +1408,7 @@ CREATE TABLE `issues_comments` (
   `issueComment` text NOT NULL,
   PRIMARY KEY (`issueCommentID`),
   KEY `fk_issue_comments_1` (`issueID`),
+  CONSTRAINT `fk_issue_comments_1` FOREIGN KEY (`issueID`) REFERENCES `issues` (`issueID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `issues_comments_history` (
@@ -1416,6 +1419,7 @@ CREATE TABLE `issues_comments_history` (
   `editedBy` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`issueCommentHistoryID`),
   KEY `fk_issues_comments_history` (`issueCommentID`),
+  CONSTRAINT `fk_issues_comments_history` FOREIGN KEY (`issueCommentID`) REFERENCES `issues_comments` (`issueCommentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `issues_watching` (
@@ -1423,6 +1427,7 @@ CREATE TABLE `issues_watching` (
   `issueID` int(11) unsigned NOT NULL,
   PRIMARY KEY (`userID`,`issueID`),
   KEY `fk_issues_watching_2` (`issueID`),
+  CONSTRAINT `fk_issues_watching_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
@@ -1527,7 +1532,7 @@ CREATE TABLE `parameter_session` (
   KEY `session_type` (`SessionID`,`ParameterTypeID`),
   KEY `parameter_value` (`ParameterTypeID`,`Value`(64)),
   CONSTRAINT `FK_parameter_session_2` FOREIGN KEY (`ParameterTypeID`) REFERENCES `parameter_type` (`ParameterTypeID`),
-  CONSTRAINT `FK_parameter_session_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_parameter_session_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `parameter_type_override` (
@@ -1761,6 +1766,8 @@ CREATE TABLE `genomic_cpg` (
   `beta_value` decimal(4,3) DEFAULT NULL,
   PRIMARY KEY (`sample_label`,`cpg_name`),
   KEY `cpg_name` (`cpg_name`),
+  CONSTRAINT `genomic_cpg_ibfk_1` FOREIGN KEY (`sample_label`) REFERENCES `genomic_sample_candidate_rel` (`sample_label`),
+  CONSTRAINT `genomic_cpg_ibfk_2` FOREIGN KEY (`cpg_name`) REFERENCES `genomic_cpg_annotation` (`cpg_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
