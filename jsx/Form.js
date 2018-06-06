@@ -924,6 +924,78 @@ DateElement.defaultProps = {
 };
 
 /**
+ * Time Component
+ * React wrapper for a <input type="time"> element.
+ */
+class TimeElement extends React.Component {
+  constructor() {
+    super();
+
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(e) {
+    this.props.onUserInput(this.props.name, e.target.value);
+  }
+
+  render() {
+    var disabled = this.props.disabled ? 'disabled' : null;
+    var required = this.props.required ? 'required' : null;
+    var requiredHTML = null;
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    return (
+      <div className="row form-group">
+        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+        <div className="col-sm-9">
+          <input
+            type="time"
+            className="form-control"
+            name={this.props.name}
+            id={this.props.id}
+            onChange={this.handleChange}
+            value={this.props.value || ""}
+            required={required}
+            disabled={disabled}
+            pattern="([0-1][0-9]|2[0-4]|[1-9]):([0-5][0-9])(:([0-5][0-9]))?"
+            title="Input must be in one of the following formats: HH:MM or HH:MM:SS"
+          />
+        </div>
+      </div>
+    );
+  }
+}
+
+TimeElement.propTypes = {
+  name: React.PropTypes.string.isRequired,
+  label: React.PropTypes.string,
+  value: React.PropTypes.string,
+  id: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  onUserInput: React.PropTypes.func
+};
+
+TimeElement.defaultProps = {
+  name: '',
+  label: '',
+  value: '',
+  id: '',
+  disabled: false,
+  required: false,
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  }
+};
+
+/**
  * Numeric Component
  * React wrapper for a <input type="number"> element.
  */
@@ -1283,6 +1355,9 @@ class LorisElement extends React.Component {
       case 'date':
         elementHtml = (<DateElement {...elementProps} />);
         break;
+      case 'time':
+        elementHtml = (<TimeElement {...elementProps} />);
+        break;
       case 'numeric':
         elementHtml = (<NumericElement {...elementProps} />);
         break;
@@ -1316,6 +1391,7 @@ window.SearchableDropdown = SearchableDropdown;
 window.TextareaElement = TextareaElement;
 window.TextboxElement = TextboxElement;
 window.DateElement = DateElement;
+window.TimeElement = TimeElement;
 window.NumericElement = NumericElement;
 window.FileElement = FileElement;
 window.StaticElement = StaticElement;
@@ -1331,6 +1407,7 @@ export default {
   TextareaElement,
   TextboxElement,
   DateElement,
+  TimeElement,
   NumericElement,
   FileElement,
   StaticElement,
