@@ -25,6 +25,15 @@ that you submitted in the previous proposal should now appear as suggestions, th
 8. Propose a project under another account, and try accessing it given that you
  have the "Publication - Access to module" permission. You should be able to view
  a static version of the project proposal and be able to download the uploaded files.
-9. Grant yourself the 
-n. Test email notifications. There are three emails that can be sent out. One for
-project submission, one for project editing.
+9. Grant yourself the "Publication - Approve or reject proposed publication projects"
+permission. You should now have an additional "Status" dropdown option. If selecting
+"Rejected," make sure that a textbox appears beneath the dropdown prompting for "Reason
+ for rejection." Fill this out and save. Sign back into an account associated with
+ the project proposal, but without the "Publication - Approve or reject proposed 
+ publication projects" permission and check to see that the reason for rejection is 
+ displayed statically. Test selecting other statuses as well.
+10. Test email notifications. There are three emails that can be sent out. One for
+project submission, one for project editing, and one for project reviewing. Emails
+will only be sent if you check the box next to the email fields saying "Send email
+notification?" Make sure your mail server is enabled on your VM before you file a bug
+report.
