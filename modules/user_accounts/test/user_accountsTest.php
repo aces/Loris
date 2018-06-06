@@ -251,7 +251,8 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $this->safeClick(WebDriverBy::Name('fire_away'));
         $value = $this->DB->pselectrow(
             "SELECT * FROM users WHERE UserID=:user_id",
-            array('user_id' => $userId));
+            array('user_id' => $userId)
+        );
             $this->assertContains(
                 $value[$fieldName],
                 $newValue
