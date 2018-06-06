@@ -21,7 +21,7 @@
                 </span>
             </div>
             <div class="panel-body" id="panel-body">
-                <form method="post" action="{$baseurl}/issue_tracker/?submenu=my_issue_tracker">
+                <form method="post" action="{$baseurl}/issue_tracker/my_issue_tracker/">
                     <div class="row">
                         <div class="form-group col-sm-4">
                             <label class="col-sm-12 col-md-4">
@@ -163,7 +163,7 @@
                                    name="reset"
                                    value="Clear Form"
                                    class="btn btn-sm btn-primary col-xs-12"
-                                   onclick="location.href='{$baseurl}/issue_tracker/?reset=true&submenu=my_issue_tracker'"/></div>
+                                   onclick="location.href='{$baseurl}/issue_tracker/my_issue_tracker/?reset=true'"/></div>
                     </div>
                 </form>
             </div>
@@ -178,10 +178,10 @@
                 <li class="statsTab"><a class="statsTabLink" id="onLoad" href="{$baseurl}/issue_tracker/">All Active
                         Issues</a></li>
                 <li class="statsTab"><a class="statsTabLink"
-                                        href="{$baseurl}/issue_tracker/?submenu=resolved_issue_tracker">Closed
+                                        href="{$baseurl}/issue_tracker/resolved_issue_tracker/">Closed
                         Issues</a></li>
                 <li class="statsTab active"><a class="statsTabLink"
-                                        href="{$baseurl}/issue_tracker/?submenu=my_issue_tracker">My Issues</a></li>
+                                        href="{$baseurl}/issue_tracker/my_issue_tracker/">My Issues</a></li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active">
@@ -197,7 +197,7 @@
                             <script>
                                 loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
                                 var table = RDynamicDataTable({
-                                    "DataURL": "{$baseurl}/issue_tracker/?submenu=my_issue_tracker&format=json",
+                                    "DataURL": "{$baseurl}/issue_tracker/my_issue_tracker/?format=json",
                                     "getFormattedCell": formatColumn
                                 });
                                 ReactDOM.render(table, document.getElementById("datatable"));

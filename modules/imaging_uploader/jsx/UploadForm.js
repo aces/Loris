@@ -187,31 +187,25 @@ class UploadForm extends React.Component {
         return xhr;
       }.bind(this),
       success: function(data) {
-        const errMessage = "The following errors occured while " +
-          "attempting to display this page:";
-        // Last remaining part of the old module.
-        // Need to update to use proper AJAX request/response
-        if (data.indexOf(errMessage) > -1) {
-          data = data.replace('history.back()', 'location.reload()');
-          document.open();
-          document.write(data);
-          document.close();
-        } else {
-          // If no error is shown, assume "success" and redirect to main page
-          swal({
-            title: "Upload Successful!",
-            type: "success"
-          }, function() {
-            window.location.assign(loris.BaseURL + "/imaging_uploader/");
-          });
-        }
+        swal({
+          title: "Upload Successful!",
+          type: "success"
+        }, function() {
+          window.location.assign(loris.BaseURL + "/imaging_uploader/");
+        });
       },
       error: function(err) {
+        const errMessage = "The following errors occured while " +
+          "attempting to display this page:";
+        let responseText = err.responseText;
+        if (responseText.indexOf(errMessage) > -1) {
+          responseText = responseText.replace('history.back()', 'location.reload()');
+          document.open();
+          document.write(responseText);
+          document.close();
+        }
         console.error(err);
-        this.setState({
-          uploadProgress: -1
-        });
-      }.bind(this)
+      }
     });
   }
 
@@ -229,6 +223,8 @@ class UploadForm extends React.Component {
       (this.state.uploadProgress > -1) ? "btn btn-primary hide" : undefined
     );
 
+    const notes = "File name must be of type .tgz or tar.gz or .zip. " +
+      "Uploads cannot exceed " + this.props.maxUploadSize;
     return (
       <div className="row">
         <div className="col-md-7">
@@ -242,7 +238,7 @@ class UploadForm extends React.Component {
           >
             <StaticElement
               label="Notes"
-              text="File name should be of type .tgz or tar.gz or .zip"
+              text={notes}
             />
             <div className="row">
               <div className="col-sm-9 col-sm-offset-3">

@@ -937,5 +937,51 @@ class Candidate
         return $arrays;
     }
 
+    /**
+     * Gets the participant_status options from participant_status_options table
+     *
+     * @return array Options array suitable for use in QuickForm select
+     *               element
+     */
+    static function getParticipantStatusOptions()
+    {
+        $DB           =& Database::singleton();
+        $options      = $DB->pselect(
+            "SELECT ID,Description
+            FROM participant_status_options
+            WHERE parentID IS NULL",
+            array()
+        );
+        $option_array = array();
+        foreach ($options as $option) {
+            $option_array[$option['ID']] = $option['Description'];
+        }
+        return $option_array;
+    }
+
+    /**
+     * Gets the participant_status options suboptions from participant_status_options
+     *
+     * @param int $parentID parent ID of the participant status option
+     *
+     * @return array Options array suitable for use in QuickForm select
+     *               element
+     */
+    static function getParticipantStatusSubOptions($parentID)
+    {
+        $DB           =& Database::singleton();
+        $options      = $DB->pselect(
+            "SELECT ID,Description 
+            FROM participant_status_options 
+            WHERE parentID=:pid",
+            array('pid' => $parentID)
+        );
+        $option_array = array();
+        foreach ($options as $option) {
+            $option_array[$option['ID']] = $option['Description'];
+        }
+        return $option_array;
+    }
+
 }
 ?>

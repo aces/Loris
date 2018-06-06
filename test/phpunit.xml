@@ -28,7 +28,6 @@
             <directory>../modules/dicom_archive/test/</directory>
             <directory>../modules/document_repository/test/</directory>
             <directory>../modules/examiner/test/</directory>
-            <directory>../modules/final_radiological_review/test/</directory>
             <directory>../modules/genomic_browser/test/</directory>
             <directory>../modules/help_editor/test/</directory>
             <directory>../modules/imaging_browser/test/</directory>
@@ -49,7 +48,9 @@
             <directory>../modules/user_accounts/test/</directory>
             <directory>../modules/media/test/</directory>
             <directory>../modules/issue_tracker/test/</directory>
+            <directory>../modules/server_processes_manager/test/</directory>
             <directory>../test/test_instrument/</directory>
+            <directory>../modules/bvl_feedback/test/</directory>
         </testsuite>
 
     </testsuites>

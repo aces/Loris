@@ -20,7 +20,7 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
 
-$cdb       = CouchDB::singleton();
+$cdb       = \NDB_Factory::singleton()->couchDB();
 $category  = $_REQUEST['category'];
 $fieldName = $_REQUEST['field'];
 $value     = $_REQUEST['value'];
@@ -35,5 +35,13 @@ $results = $cdb->queryView(
      "endkey"   => "[\"$category\", \"$fieldName\", {}]",
     )
 );
+
+$sessionResults = array_map(
+    function ($element) {
+        return $element['value'];
+    },
+    $results
+);
+
 print json_encode($sessionResults);
 ?>

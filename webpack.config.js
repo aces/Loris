@@ -1,7 +1,8 @@
 var webpack = require('webpack');
 var path = require('path');
+var fs = require('fs');
 
-var config = {
+var config = [{
   entry: {
     './htdocs/js/components/DynamicDataTable.js': './jsx/DynamicDataTable.js',
     './htdocs/js/components/PaginationLinks.js': './jsx/PaginationLinks.js',
@@ -18,6 +19,7 @@ var config = {
     './modules/bvl_feedback/js/react.behavioural_feedback_panel.js': './modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
     './modules/data_team_helper/js/behavioural_qc_module.js': './modules/data_team_helper/jsx/behavioural_qc_module.js',
     './modules/candidate_list/js/columnFormatter.js': './modules/candidate_list/jsx/columnFormatter.js',
+    './modules/candidate_list/js/onLoad.js': './modules/candidate_list/jsx/onLoad.js',
     './modules/datadict/js/columnFormatter.js': './modules/datadict/jsx/columnFormatter.js',
     './modules/dataquery/js/react.app.js': './modules/dataquery/jsx/react.app.js',
     './modules/dataquery/js/react.fieldselector.js': './modules/dataquery/jsx/react.fieldselector.js',
@@ -47,7 +49,8 @@ var config = {
     './modules/help_editor/js/columnFormatter.js': './modules/help_editor/jsx/columnFormatter.js',
     './modules/brainbrowser/js/Brainbrowser.js': './modules/brainbrowser/jsx/Brainbrowser.js',
     './modules/data_integrity_flag/js/index.js': './modules/data_integrity_flag/jsx/index.js',
-    './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js'
+    './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js',
+    './modules/acknowledgements/js/columnFormatter.js': './modules/acknowledgements/jsx/columnFormatter.js'
   },
   output: {
     path: './',
@@ -83,8 +86,17 @@ var config = {
   externals: {
     react: 'React'
   },
+  node: {
+    fs: "empty"
+  },
   devtool: 'source-map',
   plugins: [new webpack.optimize.UglifyJsPlugin({mangle: false})]
-};
+}];
+
+// Support project overrides
+if (fs.existsSync('./project/webpack-project.config.js')) {
+  var projConfig = require('./project/webpack-project.config.js');
+  config.push(projConfig);
+}
 
 module.exports = config;
