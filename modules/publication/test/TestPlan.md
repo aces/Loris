@@ -37,3 +37,4 @@ project submission, one for project editing, and one for project reviewing. Emai
 will only be sent if you check the box next to the email fields saying "Send email
 notification?" Make sure your mail server is enabled on your VM before you file a bug
 report.
+11. Test file download and file deletion.
