@@ -167,13 +167,7 @@ class Help_Editor extends \NDB_Menu_Filter
     function toJSON()
     {
         $result = $this->toArray();
-        $result['hiddenHeaders'] = [
-                                    'Seriesuid',
-                                    'Site',
-                                    'TarchiveID',
-                                    'SessionID',
-                                   ];
-        
+        $result['hiddenHeaders'] = ['HelpID', 'ParentID', 'ParentTopicID']; 
         $result['form']          = $this->form->form;
 
         return json_encode($result);
