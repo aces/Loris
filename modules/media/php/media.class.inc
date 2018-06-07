@@ -209,7 +209,7 @@ class Media extends \NDB_Menu_Filter
         if ($this->hasWritePermission) {
             array_push($this->headers, 'Edit Metadata');
         }
-        
+
         return true;
     }
 
