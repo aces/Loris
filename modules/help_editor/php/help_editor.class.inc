@@ -173,6 +173,7 @@ class Help_Editor extends \NDB_Menu_Filter
                                     'TarchiveID',
                                     'SessionID',
                                    ];
+        
         $result['form']          = $this->form->form;
 
         return json_encode($result);
@@ -191,7 +192,7 @@ class Help_Editor extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/help_editor/js/help_editor_helper.js",
+             $baseURL . "/help_editor/js/help_editor.js",
              $baseURL . "/help_editor/js/columnFormatter.js",
             )
         );
