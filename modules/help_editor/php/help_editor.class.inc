@@ -158,7 +158,25 @@ class Help_Editor extends \NDB_Menu_Filter
         }
         return true;
     }
+	/**
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return a json encoded string of the headers and data from this table
+     */
+    function toJSON()
+    {
+        $result = $this->toArray();
+        $result['hiddenHeaders'] = [
+                                    'Seriesuid',
+                                    'Site',
+                                    'TarchiveID',
+                                    'SessionID',
+                                   ];
+        $result['form']          = $this->form->form;
 
+        return json_encode($result);
+    }
     /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu
