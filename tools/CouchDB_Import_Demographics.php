@@ -2,6 +2,7 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'generic_includes.php';
 require_once 'CouchDB.class.inc';
+require_once 'Database.class.inc';
 class CouchDBDemographicsImporter {
     var $SQLDB; // reference to the database handler, store here instead
                 // of using Database::singleton in case it's a mock.
@@ -188,17 +189,14 @@ class CouchDBDemographicsImporter {
           foreach($consents as $consentID=>$consent) {
             $consentName    = $consent['Name'];
             $consentFields  = ",
-                                cc" . $this->SQLDB->escape($consentID) . ".Status AS 
-                                  " . $this->SQLDB->escape($consentName) . ", 
-                                cc" . $this->SQLDB->escape($consentID) . ".DateGiven AS 
-                                  " . $this->SQLDB->escape($consentName . "_date") . ", 
-                                cc" . $this->SQLDB->escape($consentID) . ".DateWithdrawn AS 
-                                  " . $this->SQLDB->escape($consentName . "_withdrawal");
+                                cc" . $this->SQLDB->escape($consentID) . ".Status AS " . $consentName . ", 
+                                cc" . $this->SQLDB->escape($consentID) . ".DateGiven AS " . $consentName . "_date, 
+                                cc" . $this->SQLDB->escape($consentID) . ".DateWithdrawn AS " . $consentName . "_withdrawal";
             $fieldsInQuery .= $consentFields;
             $tablesToJoin  .= "
                                 LEFT JOIN candidate_consent_rel cc" . $this->SQLDB->escape($consentID) . " ON 
                                   (cc" . $this->SQLDB->escape($consentID) . ".CandidateID=c.CandID) AND 
-                                  cc" . $this->SQLDB->escape($consentID) . ".ConsentID=(SELECT ConsentID FROM consent WHERE Name=" . $this->SQLDB->escape($consentName) . ") ";
+                                  cc" . $this->SQLDB->escape($consentID) . ".ConsentID=(SELECT ConsentID FROM consent WHERE Name='" . $consentName . "') ";
             $groupBy     .= ",
                             cc" . $this->SQLDB->escape($consentID) . ".Status,
                             cc" . $this->SQLDB->escape($consentID) . ".DateGiven,
