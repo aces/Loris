@@ -12,21 +12,10 @@
  */
 namespace LORIS\examiner;
 
-/**
- * Examiner module menu filter form
- *
- * PHP Version 5
- *
- * @category Clinical
- * @package  Loris
- * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris
- */
-
 class Examiner extends \NDB_Menu_Filter_Form
 {
-    var $useCertification;
+    public $skipTemplate = true;
+    var $useCertification = false;
 
     /**
      * Checks if the user has access to examiner menu filter
@@ -47,13 +36,14 @@ class Examiner extends \NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
+        $this->_resetFilters();
+
+        // setExaminerSettings
         $config        = \NDB_Config::singleton();
         $certification = $config->getSetting('Certification');
 
         if (isset($certification['EnableCertification'])) {
             $this->useCertification = $certification['EnableCertification'];
-        } else {
-            $this->useCertification = false;
         }
 
         $user      = \User::singleton();
@@ -70,7 +60,6 @@ class Examiner extends \NDB_Menu_Filter_Form
                             LEFT JOIN test_names tn ON (tn.ID = c.testID) 
                         WHERE 1=1 ";
         } else {
-
               $query = "
                         FROM examiners e 
                             LEFT JOIN examiners_psc_rel epr ON 
@@ -112,17 +101,6 @@ class Examiner extends \NDB_Menu_Filter_Form
                                'radiologist' => 'COALESCE(e.radiologist, 0)',
                               );
 
-        // If certification is turned on, update the class variables to include
-        // certification information
-        if ($this->useCertification == '1') {
-
-            $this->tpl_data['hiddenHeaders'] = json_encode(['ID']);
-
-        } else {
-
-            $this->tpl_data['hiddenHeaders'] = json_encode(['ID', 'Certification']);
-
-        }
         return true;
     }
 
@@ -142,18 +120,13 @@ class Examiner extends \NDB_Menu_Filter_Form
         if ($user->hasPermission('examiner_multisite')) {
             // get the list of study sites - to be replaced by the Site object
             $sites = \Utility::getSiteList();
-            if (is_array($sites)) {
-                $sites = array('' => '') + $sites;
-            }
         } else {
             // allow only to view own site data
             $sites = $user->getStudySites();
-            $sites = array('' => 'All User Sites') + $sites;
         }
 
         // Radiologist options
         $radiologist = array(
-                        null => 'All',
                         '1'  => 'Yes',
                         '0'  => 'No',
                        );
@@ -322,6 +295,20 @@ class Examiner extends \NDB_Menu_Filter_Form
     }
 
     /**
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return a json encoded string of the headers and data from this table
+     */
+    function toJSON()
+    {   
+        $result         = $this->toArray();
+        $result['form'] = $this->form->form;
+        
+        return json_encode($result);
+    }
+
+    /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu
      *
@@ -336,6 +323,7 @@ class Examiner extends \NDB_Menu_Filter_Form
             $deps,
             array(
              $baseURL . "/examiner/js/columnFormatter.js",
+             $baseURL . "/examiner/js/examiner.js",
             )
         );
     }

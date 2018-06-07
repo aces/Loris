@@ -45,7 +45,7 @@ var config = [{
     './modules/reliability/js/columnFormatter.js': './modules/reliability/jsx/columnFormatter.js',
     './modules/conflict_resolver/js/resolved_conflicts_columnFormatter.js': './modules/conflict_resolver/jsx/resolved_conflicts_columnFormatter.js',
     './modules/conflict_resolver/js/unresolved_columnFormatter.js': './modules/conflict_resolver/jsx/unresolved_columnFormatter.js',
-    './modules/examiner/js/columnFormatter.js': './modules/examiner/jsx/columnFormatter.js',
+    './modules/examiner/js/examiner.js': './modules/examiner/jsx/examiner.js',
     './modules/help_editor/js/help_editor.js': './modules/help_editor/jsx/help_editor.js',
     './modules/brainbrowser/js/Brainbrowser.js': './modules/brainbrowser/jsx/Brainbrowser.js',
     './modules/data_integrity_flag/js/index.js': './modules/data_integrity_flag/jsx/index.js',
