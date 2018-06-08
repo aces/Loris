@@ -15,8 +15,8 @@ $user =& User::singleton();
 
 if (!($user->hasPermission('publication_view')
     || $user->hasPermission('publication_propose')
-    || $user->hasPermission('publication_approve')))
-{
+    || $user->hasPermission('publication_approve'))
+) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }

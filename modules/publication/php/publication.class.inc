@@ -55,8 +55,8 @@ class Publication extends \NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        $user   = \User::singleton();
-        $query  = " FROM publication p ".
+        $user  = \User::singleton();
+        $query = " FROM publication p ".
             "LEFT JOIN publication_status ps ".
             "ON ps.PublicationStatusID=p.PublicationStatusID ".
             "LEFT JOIN publication_parameter_type_rel pptr ".
@@ -75,11 +75,13 @@ class Publication extends \NDB_Menu_Filter_Form
             "ON puepr.PublicationID=p.PublicationID ";
         ;
         $query .= " WHERE 1=1 ";
-        // allow user access to module if they have edit access to any project proposal
+        // allow user access to module if they have edit
+        // access to any project proposal
         // but only those that they do have access to
         if (!($user->hasPermission('publication_view')
             || $user->hasPermission('publication_propose')
-            || $user->hasPermission('publication_approve'))) {
+            || $user->hasPermission('publication_approve'))
+        ) {
             $query .= " AND puepr.UserID={$user->getId()} ";
         }
 
