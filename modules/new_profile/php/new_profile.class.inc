@@ -299,10 +299,10 @@ class New_Profile extends \NDB_Form
         }
 
         // validate site entered
-        $site = $values['psc'];
+        $psc = $values['psc'];
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);
-        if ($num_sites > 1 && (empty($site) || !$user->hasCenter($site))) {
+        if ($num_sites > 1 && (empty($psc) || !$user->hasCenter($psc))) {
             $errors['psc'] = "Site must be selected from the available dropdown.";
         }
 
