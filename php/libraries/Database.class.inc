@@ -287,7 +287,7 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the row
      *
-     * @return none
+     * @return void
      */
     public function insertOnDuplicateUpdate($table, $set)
     {
@@ -305,7 +305,7 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the row
      *
-     * @return none
+     * @return void
      */
     public function unsafeInsertOnDuplicateUpdate($table, $set)
     {
