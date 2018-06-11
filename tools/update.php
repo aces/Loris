@@ -51,8 +51,6 @@
  */
 
 require_once __DIR__ . "/../vendor/autoload.php";
-require_once "../php/libraries/Database.class.inc";
-require_once "../php/libraries/NDB_Config.class.inc";
 
 error_reporting(E_ALL);
 $minimum_php = 7; //TODO: Update this value as time passes
@@ -64,9 +62,8 @@ echo 'This script will prompt for superuser privileges,'
 echo 'You may wish to review code changes tagged with "Caveat For '
     . 'Existing Projects" as they may include changes to your workflow. '
     . PHP_EOL
-    // @codingStandardsIgnoreStart
-    . "\tSee: https://github.com/aces/Loris/pulls?q=is%3Apr+label%3A%22Caveat+for+Existing+Projects%22+is%3Amerged"
-    // @codingStandardsIgnoreEnd
+    . "\t" . 'See: https://github.com/aces/Loris/pulls?'
+    . 'q=is%3Apr+label%3A%22Caveat+for+Existing+Projects%22+is%3Amerged';
     . PHP_EOL . PHP_EOL;
 sleep(3);
 main();
