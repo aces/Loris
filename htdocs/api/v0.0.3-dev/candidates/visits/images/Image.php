@@ -96,7 +96,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
         }
         $this->Header("Content-Type: $contentType");
         $this->Header('Content-Length: '.filesize($fullDir));
-        $this->Header('Content-Disposition: filename='.$this->Filename);
+        $this->Header('Content-Disposition: attachment; filename='.$this->Filename);
 
         while (!feof($fp)) {
             print fread($fp, 1024);
