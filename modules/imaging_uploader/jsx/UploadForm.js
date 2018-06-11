@@ -196,11 +196,13 @@ class UploadForm extends React.Component {
       },
       error: (error, textStatus, errorThrown) => {
             let errors = (error.responseJSON||{}).errors || 'Submission error!'; 
-            const renderedErrorList = errors.map(err => `<li>${err}</li>`);
-            const renderedErrors = `<ul>${renderedErrorList.join('')}</ul>`;
+            const renderedErrorList = errors.map(err =>
+            `<li style="padding: 8px 35px 8px 0;">${err}</li>`);
+            const renderedErrors = `<ul style="text-align:left; font-size:15px;">
+                 ${renderedErrorList.join('')}</ul>`;
             console.error(error, textStatus, errorThrown);
             swal({
-              title: "Errors with Field Values",
+              title: "Submission error!",
               text: renderedErrors,
               html: true,
               type: "error"
