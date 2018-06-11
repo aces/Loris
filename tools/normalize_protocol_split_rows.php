@@ -50,7 +50,7 @@ function split_commas($table_name) {
     foreach ($rows as $row) {
         $num_commas = 0;
         foreach($row as $key => $value) {
-            if ($key == "ID") {
+            if ($key == "ID" || $key == "LogID") {
                 $id = $row[$key];
             }
             $row[$key] = explode(",", $value);
@@ -63,12 +63,19 @@ function split_commas($table_name) {
             continue;
         }
         $all_combinations = cartesian($row);
-        foreach ($all_combinations as $combination) {
-            unset($combination["ID"]);
-            $DB->insert($table_name, $combination);
+        if ($table_name == "mri_violations_log") {
+            foreach ($all_combinations as $combination) {
+                unset($combination["LogID"]);
+                $DB->insert($table_name, $combination);
+            }
+            $DB->delete($table_name, array("LogID" => $id));
+        } else {
+            foreach ($all_combinations as $combination) {
+                unset($combination["ID"]);
+                $DB->insert($table_name, $combination);
+            }
+            $DB->delete($table_name, array("ID" => $id));
         }
-        // remove the row for the original ID
-        $DB->delete($table_name, array("ID" => $id));
     }
     if ($total_commas == 0) {
         echo("$table_name: No commas have been detected in $table_name. The table has been unaltered.\n\n");
@@ -77,7 +84,7 @@ function split_commas($table_name) {
     }
 }
 
-$tables_to_normalize = array("mri_protocol", "mri_protocol_checks");
+$tables_to_normalize = array("mri_protocol", "mri_protocol_checks", "mri_violations_log");
 foreach ($tables_to_normalize as $table) {
     split_commas($table);
 }
