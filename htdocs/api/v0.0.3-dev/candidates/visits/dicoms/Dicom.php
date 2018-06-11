@@ -73,7 +73,9 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
         if ($fp !== false) {
             $this->Header("Content-Type: application/x-tar");
             $this->Header('Content-Length: '.filesize($fullDir));
-            $this->Header('Content-Disposition: attachment; filename='.$this->Tarname);
+            $this->Header(
+                'Content-Disposition: attachment; filename='.$this->Tarname
+            );
             fpassthru($fp);
             fclose($fp);
             $this->safeExit(0);
