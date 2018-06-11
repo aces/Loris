@@ -280,7 +280,7 @@ class Datadict extends \NDB_Menu_Filter
                 } elseif ($val=='unmodified') {
                     $query .= ' AND pto.name IS NULL';
                 } else {
-                    $query .= ' AND $key LIKE \'' . $val . '%\' ';
+                    $query .= ' AND '.$key.' LIKE \'' . $val . '%\' ';
                 }
             }
         }
