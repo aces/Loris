@@ -44,7 +44,7 @@ if ($userSingleton->hasPermission('document_repository_view')
     || $userSingleton->hasPermission('document_repository_delete')
 ) {
     if ($action == 'upload') {
-        $category   = $_POST['category'];
+        $category   = $_POST['category']; // required
         $site       = $_POST['site']       !== '' ? $_POST['site'] : null;
         $instrument = $_POST['instrument'] !== '' ? $_POST['instrument'] : null;
         $pscid      = $_POST['pscid']      !== '' ? $_POST['pscid'] : null;
@@ -52,9 +52,8 @@ if ($userSingleton->hasPermission('document_repository_view')
         $comments   = $_POST['comments']   !== '' ? $_POST['comments'] : null;
         $version    = $_POST['version']    !== '' ? $_POST['version'] : null;
 
-        $fileSize = $_FILES["file"]["size"];
-        $fileName = $_FILES["file"]["name"];
-
+        $fileSize = $_FILES['file']['size'];
+        $fileName = $_FILES['file']['name'];
         $fileType = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
 
         $uploadPath = "$base/modules/document_repository/user_uploads/$name/";
