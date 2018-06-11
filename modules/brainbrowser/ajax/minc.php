@@ -35,7 +35,7 @@ if (strpos($_REQUEST['minc_id'], 'l') !== false) {
         $query = "SELECT MincFile FROM MRICandidateErrors WHERE ID = :LogID";
         break;
     default:
-        header("HTTP/1.1 400 Bad Request");
+        http_response_code(400);
         exit();
     }
 
@@ -64,11 +64,21 @@ if (strpos($_REQUEST['minc_id'], 'l') !== false) {
     $minc_path = getMincLocation() . $minc_file;
 }
 
-if (!empty($minc_file)) {
-    readfile($minc_path);
+if (!is_readable($minc_path)) {
+    if (!file_exists($minc_path)) {
+        error_log("ERROR: $minc_path exists in the DB but not in the file system");
+        http_response_code(500);
+        exit();
+    } else {
+        error_log(
+            "$minc_path was requested but is not readable. " .
+            'Possible permission error'
+        );
+        http_response_code(403);
+        exit();
+    }
 } else {
-    header("HTTP/1.1 404 Not Found");
-    exit();
+    readfile($minc_path);
 }
 
 
@@ -82,7 +92,11 @@ function getMincLocation()
 {
     $config    =& NDB_Config::singleton();
     $paths     = $config->getSetting('paths');
-    $minc_path = $paths['mincPath'];
+    $minc_path = $paths['mincPath'] ?? '';
+    if (empty($minc_path)) {
+        http_response_code(500);
+        exit();
+    }
     return $minc_path;
 }
 
