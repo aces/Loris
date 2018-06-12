@@ -59,7 +59,7 @@ if ($userSingleton->hasPermission('document_repository_view')
         $uploadPath = "$base/modules/document_repository/user_uploads/$name/";
         $fullPath  = $uploadPath . $fileName;
 
-        if (!is_writable($uploadPath)) {
+        if (!is_writable($f)) {
             if (file_exists($uploadPath)) {
                 http_response_code(403);
                 error_log("Could not write to $uploadPath. Check permissions");
@@ -84,8 +84,8 @@ if ($userSingleton->hasPermission('document_repository_view')
                  'version'       => $version,
                  'File_name'     => $fileName,
                  'File_size'     => $fileSize,
-                 'Data_dir'      => $fileBase,
-                 'uploaded_by'   => $puser,
+                 'Data_dir'      => $uploadPath,
+                 'uploaded_by'   => $name,
                  'Instrument'    => $instrument,
                  'PSCID'         => $pscid,
                  'visitLabel'    => $visit,
