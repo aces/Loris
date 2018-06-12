@@ -31,7 +31,7 @@ $filePath = $path . $file;
 if (!file_exists($filePath)) {
     error_log("ERROR: File $filePath does not exist");
     header("HTTP/1.1 404 Not Found");
-    exit(5);
+    exit(1);
 }
 
 // Output file in downloadable format
