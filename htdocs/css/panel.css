@@ -85,7 +85,7 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
 }
 
 .navmenu{
-    width: 30%;
+    width: 35%;
     position: fixed;
     z-index: 1040;
     top: 0;
@@ -93,10 +93,10 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
 }
 
 .panel-wrapper{
-  margin-right: -30%;
+  margin-right: -35%;
   margin-top: 50px;
   right: 0px;
-  width: 30%;
+  width: 35%;
   background: #F5F5F5;
   position: fixed;
   height: 100%;
@@ -110,16 +110,16 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
 }
 
 .bvl_panel{
-    padding-right: 30%;
+    padding-right: 35%;
     transition: all 0.4s ease 0s;
 }
 
 .active_panel_footer{
-    padding-right: 30%;
+    padding-right: 35%;
 }
 
 .active_panel{
-    right: 30%;
+    right: 35%;
 }
 
 .inactive_panel_page{
@@ -155,7 +155,7 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
 
 
     .active_panel{
-        right: 30%;
+        right: 35%;
     }
 
 }
