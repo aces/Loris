@@ -76,7 +76,7 @@ $release_version = $info->{'tag_name'};
 $release_version = substr($release_version, 1); // remove leading 'v'
 
 // Check that the backup directory argument is present and valid
-$backup_dir     = $argv[1] ?? '';
+$backup_dir = $argv[1] ?? '';
 if (!is_dir($backup_dir)) {
     echo 'ERROR: Argument suppled for backup directory is not a valid '
         . 'directory.' . PHP_EOL;
@@ -95,7 +95,7 @@ if (!in_array('--confirm', $argv)) {
         . PHP_EOL
         . 'Please run this script with the --confirm flag '
         . 'if you wish to update your environment and source code to be '
-        . "compatiable with version $release_version." 
+        . "compatiable with version $release_version."
         . PHP_EOL;
     die(usageString());
 }
@@ -117,20 +117,20 @@ $version = '7.2';
 // Below are all the apt packages required for LORIS to run.
 //      See: https://github.com/aces/Loris/wiki/Installing-Loris-in-Depth
 $loris_requirements = [
-    'wget',
-    'zip',
-    'unzip',
-    'php-json',
-    'python-software-properties',
-    'software-properties-common',
-    "php$version",
-    "php$version-mysql",
-    "php$version-xml",
-    "php$version-json",
-    "php$version-mbstring",
-    "php$version-gd",
-    "libapache2-mod-php$version",
-];
+                       'wget',
+                       'zip',
+                       'unzip',
+                       'php-json',
+                       'python-software-properties',
+                       'software-properties-common',
+                       "php$version",
+                       "php$version-mysql",
+                       "php$version-xml",
+                       "php$version-json",
+                       "php$version-mbstring",
+                       "php$version-gd",
+                       "libapache2-mod-php$version",
+                      ];
 
 // Update source code (if not on a development version)
 echo '[***] Beginning LORIS update process.' . PHP_EOL;
@@ -341,10 +341,9 @@ function getPatchesFromVersion($loris_root, $version_from, $version_to) : array
  * called with $report_only = true so patches are never applied. This can be
  * changed in the future if this functionality is required.
  *
- * @param array      $patches     Patch files to be applied
- * @param dictionary $db_config   DB config info. Needed for credentials
- * @param bool       $report_only Whether to only display patches or to also
- *                          apply them. Always true (for now).
+ * @param array      $patches       Patch files to be applied
+ * @param dictionary $db_config     DB config info. Needed for credentials
+ * @param bool       $apply_patches If true, MySQL commands will be run
  *
  * @return bool Always true (for now). False if patches fail to be applied.
  */
@@ -362,13 +361,13 @@ function applyPatches($patches, $db_config, $apply_patches = false) : bool
     }
     while (count($patches) > 0) {
         $patch = array_shift($patches);
-        $cmd = "mysql -h $h -u $u -p -A $A < $patch";
+        $cmd   = "mysql -h $h -u $u -p -A $A < $patch";
         if ($apply_patches === true) {
             if (doExec($cmd) === false) {
                 if (count($patches)) {
-                    echo "[!] Aborting the following queued commands:" 
+                    echo "[!] Aborting the following queued commands:"
                         . PHP_EOL;
-                    foreach($patches as $patch_not_applied) {
+                    foreach ($patches as $patch_not_applied) {
                         echo "\t] mysql -h $h -u $u -p -A $A "
                             . "< $patch_not_applied" . PHP_EOL;
                     }
@@ -734,11 +733,12 @@ function bashErrorToString($cmd, $output, $status) : string
  *
  * @return string Usage information
  */
-function usageString() : string {
+function usageString() : string
+{
     $flags = [
-        '<backup-directory>',
-        '--confirm',
-        '[--apply-patches]',
-    ];
+              '<backup-directory>',
+              '--confirm',
+              '[--apply-patches]',
+             ];
     return 'Usage: php update.php ' . implode($flags, ' ') . PHP_EOL;
 }
