@@ -113,9 +113,8 @@ if ($userSingleton->hasPermission('document_repository_view')
 
         // $category is a string representation of a number.
         // only proceed if its int value is greater than or equal to 0
-        if ((int)$category < 0) {
-            http_response_code(403);
-            header("HTTP/1.1 400 Bad Request");
+        if (intval($category) < 0) {
+            http_response_code(400);
             exit;
         }
 
