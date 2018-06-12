@@ -57,108 +57,126 @@ $minimum_php = 7; //TODO: Update this value as time passes
 if (PHP_MAJOR_VERSION < $minimum_php) {
     die("ERROR: {$argv[0]} and LORIS require PHP $minimum_php or higher.");
 }
+
+/* Create db connection and get version info. */
+$config    = \NDB_Config::singleton();
+$db_config = $config->getSetting('database');
+$db        = \Database::singleton(
+    $db_config['database'],
+    $db_config['username'],
+    $db_config['password'],
+    $db_config['host']
+);
+$paths     = $config->getSetting('paths');
+$loris_root_dir = $paths['base'];
+
+$preupdate_version = getVersionFromLORISRoot($loris_root_dir);
+$info            = json_decode(getLatestReleaseInfo());
+$release_version = $info->{'tag_name'};
+$release_version = substr($release_version, 1); // remove leading 'v'
+
+// Check that the backup directory argument is present and valid
+$backup_dir     = $argv[1] ?? '';
+if (!is_dir($backup_dir)) {
+    echo 'ERROR: Argument suppled for backup directory is not a valid '
+        . 'directory.' . PHP_EOL;
+    die(usageString());
+}
+// Only apply SQL patches if user explicitly requests it
+$apply_patches = false;
+if (in_array('--apply-patches', $argv)) {
+    $apply_patches = true;
+}
+// Require a confirm flag so this script is not accidentally run
+if (!in_array('--confirm', $argv)) {
+    $info = json_decode(getLatestReleaseInfo());
+    echo "Your LORIS version is $preupdate_version. The current LORIS version "
+        . "is $release_version. "
+        . PHP_EOL
+        . 'Please run this script with the --confirm flag '
+        . 'if you wish to update your environment and source code to be '
+        . "compatiable with version $release_version." 
+        . PHP_EOL;
+    die(usageString());
+}
+// Display some info and wait so the user can read it.
 echo 'This script will prompt for superuser privileges,'
     . ' as they are needed to e.g. update apt packages.' . PHP_EOL;
 echo 'You may wish to review code changes tagged with "Caveat For '
     . 'Existing Projects" as they may include changes to your workflow. '
     . PHP_EOL
     . "\t" . 'See: https://github.com/aces/Loris/pulls?'
-    . 'q=is%3Apr+label%3A%22Caveat+for+Existing+Projects%22+is%3Amerged';
+    . 'q=is%3Apr+label%3A%22Caveat+for+Existing+Projects%22+is%3Amerged'
     . PHP_EOL . PHP_EOL;
 sleep(3);
-main();
 
-/**
- * Updates source code and dependencies for LORIS. Outputs missing patch files
- * based on verion information.
- *
- * @return void
- */
-function main() : void
-{
-    // PHP version required for LORIS. Change this value as needed.
-    $version = '7.2';
-    // all necessary apt packages to get LORIS running
-    // https://github.com/aces/Loris/wiki/Installing-Loris-in-Depth
-    $loris_requirements = [
-                           'wget',
-                           'zip',
-                           'unzip',
-                           'php-json',
-                           'python-software-properties',
-                           'software-properties-common',
-                           "php$version",
-                           "php$version-mysql",
-                           "php$version-xml",
-                           "php$version-json",
-                           "php$version-mbstring",
-                           "php$version-gd",
-                           "libapache2-mod-php$version",
-                          ];
-    // Create db connection
-    $config    = \NDB_Config::singleton();
-    $db_config = $config->getSetting('database');
-    $db        = \Database::singleton(
-        $db_config['database'],
-        $db_config['username'],
-        $db_config['password'],
-        $db_config['host']
-    );
-    $paths     = $config->getSetting('paths');
-    $loris_root_dir = $paths['base'];
-    $backup_dir     = "/tmp/bkp-LORIS"; // TODO: should this be configurable?
+/* BEGIN UPDATE PROCESS */
 
-    $preupdate_version = getVersionFromLORISRoot($loris_root_dir);
-    $info            = json_decode(getLatestReleaseInfo());
-    $release_version = $info->{'tag_name'};
-    $release_version = substr($release_version, 1); // remove leading 'v'
+// PHP version required for LORIS. TODO: Change this value as needed.
+$version = '7.2';
+// Below are all the apt packages required for LORIS to run.
+//      See: https://github.com/aces/Loris/wiki/Installing-Loris-in-Depth
+$loris_requirements = [
+    'wget',
+    'zip',
+    'unzip',
+    'php-json',
+    'python-software-properties',
+    'software-properties-common',
+    "php$version",
+    "php$version-mysql",
+    "php$version-xml",
+    "php$version-json",
+    "php$version-mbstring",
+    "php$version-gd",
+    "libapache2-mod-php$version",
+];
 
-    // Update source code (if not on a development version)
-    echo '[***] Beginning LORIS update process.' . PHP_EOL;
-    echo '[*] Release notes:' . PHP_EOL;
-    echo $info->{'body'} . PHP_EOL . PHP_EOL;
-    if (!isDev()) {
-        echo "[**] Updating LORIS source code "
-            . "($preupdate_version --> $release_version" . PHP_EOL;
-        if (updateSourceCode($loris_root_dir, $backup_dir)) {
-            echo 'LORIS source code files successfully updated.' . PHP_EOL;
-        }
-    } else {
-        echo '[-] WARNING: You are using a development version of LORIS. Not '
-            . 'downloading source code files as they should be tracked with'
-            . ' Git.' . PHP_EOL;
-        sleep(2);
+// Update source code (if not on a development version)
+echo '[***] Beginning LORIS update process.' . PHP_EOL;
+echo '[*] Release notes:' . PHP_EOL;
+echo $info->{'body'} . PHP_EOL . PHP_EOL;
+if (!isDev()) {
+    echo "[**] Updating LORIS source code "
+        . "($preupdate_version --> $release_version" . PHP_EOL;
+    if (updateSourceCode($loris_root_dir, $backup_dir)) {
+        echo 'LORIS source code files successfully updated.' . PHP_EOL;
     }
-
-    // Update apt packages
-    echo '[**] Updating required packages...' . PHP_EOL;
-    if (updateRequiredPackages($loris_requirements)) {
-        echo '[**] Required apt packages up-to-date.' . PHP_EOL;
-    }
-
-    // Update other dependencies via e.g. composer and npm
-    echo '[**] Updating dependencies via package managers...' . PHP_EOL;
-    chdir($loris_root_dir); // Composer will fail if not in LORIS root
-    if (runPackageManagers()) {
-        echo '[**] Dependencies up-to-date.' . PHP_EOL;
-    }
-
-    // Print required SQL patches and commands needed to apply them
-    $patches = getPatchesFromVersion(
-        $loris_root_dir,
-        $preupdate_version,
-        $release_version
-    );
-    if ($patches) {
-        echo "[*] Patches to update:" . PHP_EOL;
-        foreach ($patches as $filename) {
-            echo "\t] " . $filename . PHP_EOL;
-        }
-        echo '[*] Applying SQL patches...' . PHP_EOL;
-        applyPatches($patches, $db_config);
-    }
-    echo "[***] Done." . PHP_EOL;
+} else {
+    echo '[-] WARNING: You are using a development version of LORIS. Not '
+        . 'downloading source code files as they should be tracked with'
+        . ' Git.' . PHP_EOL;
+    sleep(2);
 }
+
+// Update apt packages
+echo '[**] Updating required packages...' . PHP_EOL;
+if (updateRequiredPackages($loris_requirements)) {
+    echo '[**] Required apt packages up-to-date.' . PHP_EOL;
+}
+
+// Update other dependencies via e.g. composer and npm
+echo '[**] Updating dependencies via package managers...' . PHP_EOL;
+chdir($loris_root_dir); // Composer will fail if not in LORIS root
+if (runPackageManagers()) {
+    echo '[**] Dependencies up-to-date.' . PHP_EOL;
+}
+
+// Print required SQL patches and commands needed to apply them
+$patches = getPatchesFromVersion(
+    $loris_root_dir,
+    $preupdate_version,
+    $release_version
+);
+if ($patches) {
+    echo "[*] Patches to update:" . PHP_EOL;
+    foreach ($patches as $filename) {
+        echo "\t] " . $filename . PHP_EOL;
+    }
+    echo '[*] Applying SQL patches...' . PHP_EOL;
+    applyPatches($patches, $db_config);
+}
+echo "[***] Done." . PHP_EOL;
 
 /**
  * Creates a backup of LORIS root.  Downloads and extracts new files from
@@ -699,4 +717,18 @@ function bashErrorToString($cmd, $output, $status) : string
         }
     }
     return $error;
+}
+
+/**
+ * Returns a string displaying the proper usage of this script
+ *
+ * @return string Usage information
+ */
+function usageString() : string {
+    $flags = [
+        '<backup-directory>',
+        '--confirm',
+        '[--apply-patches]',
+    ];
+    return 'Usage: php update.php ' . implode($flags, ' ') . PHP_EOL;
 }
