@@ -360,10 +360,20 @@ function applyPatches($patches, $db_config, $apply_patches = false) : bool
             . 'displayed but not executed.' . PHP_EOL;
         sleep(1);
     }
-    foreach ($patches as $patch) {
+    while (count($patches) > 0) {
+        $patch = array_shift($patches);
         $cmd = "mysql -h $h -u $u -p -A $A < $patch";
         if ($apply_patches === true) {
             if (doExec($cmd) === false) {
+                if (count($patches)) {
+                    echo "[!] Aborting the following queued commands:" 
+                        . PHP_EOL;
+                    foreach($patches as $patch_not_applied) {
+                        echo "\t] mysql -h $h -u $u -p -A $A "
+                            . "< $patch_not_applied" . PHP_EOL;
+                    }
+                }
+                echo PHP_EOL;
                 break;
             }
         } else {
@@ -710,7 +720,7 @@ function doExec($cmd) : bool
 function bashErrorToString($cmd, $output, $status) : string
 {
     echo PHP_EOL;
-    $error = "[-] ERROR: Command `$cmd` failed (error code $status):" . PHP_EOL;
+    $error = "[-] ERROR: Command `$cmd` failed (error code $status)" . PHP_EOL;
     if (is_iterable($output)) {
         foreach ($output as $item) {
             $error .= $item . PHP_EOL;
