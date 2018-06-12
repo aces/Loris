@@ -59,18 +59,21 @@ if ($userSingleton->hasPermission('document_repository_view')
         $uploadPath = "$base/modules/document_repository/user_uploads/$name/";
         $fullPath  = $uploadPath . $fileName;
 
-        if (!is_writable($f)) {
-            if (file_exists($uploadPath)) {
+        if (!is_writable($fullPath)) {
+            if (file_exists($fullPath)) {
                 http_response_code(403);
-                error_log("Could not write to $uploadPath. Check permissions");
+                error_log("Could not write to $fullPath. Check permissions");
                 exit;
             }
-            error_log('Creating document repository upload folder for ' .
-                'user ' . $name);
-            mkdir($uploadPath, 0770);
+            error_log(
+                'Creating document repository upload folder for ' .
+                'user ' . $name
+            );
+            mkdir($fullPath, 0770);
         }
 
-        if (!move_uploaded_file($_FILES['file']['tmp_name'], $fullPath)) {
+        if (!move_uploaded_file($_FILES['file']['tmp_name'], 
+            $fullPath . $fileName)) {
             error_log('File upload failed for unknown reasons.');
             http_response_code(500);
             echo('ERROR: Could not upload file. Contact your administrator');
@@ -84,7 +87,7 @@ if ($userSingleton->hasPermission('document_repository_view')
                  'version'       => $version,
                  'File_name'     => $fileName,
                  'File_size'     => $fileSize,
-                 'Data_dir'      => $uploadPath,
+                 'Data_dir'      => $name . $fileName,
                  'uploaded_by'   => $name,
                  'Instrument'    => $instrument,
                  'PSCID'         => $pscid,
