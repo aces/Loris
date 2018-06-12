@@ -81,8 +81,8 @@ class Create_Timepoint extends \NDB_Form
         );
 
         $this->tpl_data['success'] = true;
-        $this->tpl_data['candID'] = htmlentities(
-            $this->identifier, 
+        $this->tpl_data['candID']  = htmlentities(
+            $this->identifier,
             ENT_QUOTES,
             'UTF-8'
         );
