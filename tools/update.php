@@ -174,7 +174,7 @@ if ($patches) {
         echo "\t] " . $filename . PHP_EOL;
     }
     echo '[*] Applying SQL patches...' . PHP_EOL;
-    applyPatches($patches, $db_config);
+    applyPatches($patches, $db_config, $apply_patches);
 }
 echo "[***] Done." . PHP_EOL;
 
@@ -348,21 +348,21 @@ function getPatchesFromVersion($loris_root, $version_from, $version_to) : array
  *
  * @return bool Always true (for now). False if patches fail to be applied.
  */
-function applyPatches($patches, $db_config, $report_only = true) : bool
+function applyPatches($patches, $db_config, $apply_patches = false) : bool
 {
     // Iterate over all patches and source them into MySQL
     $A = $db_config['database'];
     $u = $db_config['username'];
     $p = $db_config['password'];
     $h = $db_config['host'];
-    if ($report_only === true) {
+    if ($apply_patches === false) {
         echo '[-] NOTE: Running in Report-Only mode. Patching commands will be '
             . 'displayed but not executed.' . PHP_EOL;
         sleep(1);
     }
     foreach ($patches as $patch) {
         $cmd = "mysql -h $h -u $u -p -A $A < $patch";
-        if ($report_only === false) {
+        if ($apply_patches === true) {
             if (doExec($cmd) === false) {
                 break;
             }
