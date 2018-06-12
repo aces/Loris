@@ -32,7 +32,7 @@ Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/S
  * Composer : should be run with --no-dev option
 
 <b>Important:</b>
- * If you are upgrading your LORIS, you'll also want to upgrade to both PHP 7 and MySQL 5.7, since these dependency versions were not supported in the last release. 
+ * If you are upgrading your LORIS, you'll also want to upgrade to both PHP >= 7.1.3 and MySQL 5.7, since these dependency versions were not supported in the last release. 
  * Composer should be run with --no-dev option unless you are an active LORIS developer. 
 
 Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
