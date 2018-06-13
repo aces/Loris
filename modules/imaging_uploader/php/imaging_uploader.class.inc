@@ -251,7 +251,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $temp_file = $file->fileInfo['tmp_name'];
         $temp_dir  = $this->tempdir();
         $db        = \Database::singleton();
-        $errors = array();
+        $errors    = array();
         $config    = \NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
             'imaging_modules'
@@ -263,8 +263,10 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $isPhantom = $args['values']['IsPhantom'];
 
         if (empty($isPhantom)) {
-            array_push($errors,
-                       "Make sure 'Are these Phantom Scans' is filled out.");
+            array_push(
+                $errors,
+                "Make sure 'Are these Phantom Scans' is filled out."
+            );
         }
         ///////////////////////////////////////////////////////////////////////
         /////////Validate the advanced Options only if it's not a Phantom//////
@@ -277,9 +279,10 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             $pscid       = trim($args['values']['pSCID']);
             $visit_label = trim($args['values']['visitLabel']);
             if ((empty($candid)) || (empty($pscid)) || (empty($visit_label))) {
-                array_push($errors,
-                           "Make sure the Cand ID, PSCID and Visit Label are ".
-                           "filled out.");
+                array_push(
+                    $errors,
+                    "Make sure the Cand ID, PSCID and Visit Label are filled out."
+                );
             }
             ///////////////////////////////////////////////////////////////////////
             ///////////    Make sure the file name matches the format   ///////////
@@ -292,10 +295,12 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             if ((!preg_match("/^{$pcv}\.(zip|tgz|tar.gz)/", $file_name))
                 && (!preg_match("/^{$pcvu}.*(\.(zip|tgz|tar.gz))/", $file_name))
             ) {
-                    array_push($errors,
-                               "File name must match " . $pcv .
-                               " or begin with " . "\"". $pcvu . "\"" .
-                               ", and have the extension of .tgz, tar.gz or .zip.");
+                array_push(
+                    $errors,
+                    "File name must match " . $pcv .
+                    " or begin with " . "\"". $pcvu . "\"" .
+                    ", and have the extension of .tgz, tar.gz or .zip."
+                );
             }
 
             ///////////////////////////////////////////////////////////////////////
@@ -322,26 +327,36 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 );
 
                 if (sizeOf($candidate) == 0) {
-                    array_push($errors,
-                               "The candidate associated with that CandID".
-                               " does not exist in the database.");
+                    array_push(
+                        $errors,
+                        "The candidate associated with that CandID".
+                        " does not exist in the database."
+                    );
                 } else {
                     if (!$candidate['candid_with_pscid']) {
-                        array_push($errors,
-                                   "The CandID and the PSCID do not match.");
+                        array_push(
+                            $errors,
+                            "The CandID and the PSCID do not match."
+                        );
                     }
                     if (!$candidate['visit_label']) {
-                        array_push($errors,
-                                   "The candidate associated with that CandID".
-                                   " and PSCID does not have that Visit Label.");
+                        array_push(
+                            $errors,
+                            "The candidate associated with that CandID".
+                            " and PSCID does not have that Visit Label."
+                        );
                     }
                     if ($candidate['candidate_active'] == 'N') {
-                        array_push($errors,
-                                   "The candidate is not active in the database.");
+                        array_push(
+                            $errors,
+                            "The candidate is not active in the database."
+                        );
                     }
                     if ($candidate['session_active'] == 'N') {
-                        array_push($errors,
-                                   "The session is not active in the database.");
+                        array_push(
+                            $errors,
+                            "The session is not active in the database."
+                        );
                     }
                 }
             }
@@ -351,9 +366,11 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         //////////////.gz, .zip or .tgz////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
         if (!$this->isCompressed($temp_file)) {
-            array_push($errors,
-                       "The file $temp_file is not of type".
-                       " .tgz, .tar.gz or .zip.");
+            array_push(
+                $errors,
+                "The file $temp_file is not of type".
+                " .tgz, .tar.gz or .zip."
+            );
         }
 
         if (count($errors) > 0) {
