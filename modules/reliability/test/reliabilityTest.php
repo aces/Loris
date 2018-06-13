@@ -41,9 +41,6 @@ class ReliabilityTestIntegrationTest extends LorisIntegrationTest
     public function setUp()
     {
         parent::setUp();
-         $window = new WebDriverWindow($this->webDriver);
-         $size   = new WebDriverDimension(1280, 720);
-         $window->setSize($size);
         $this->DB->insert(
             "psc",
             array(

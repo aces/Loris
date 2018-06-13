@@ -35,9 +35,6 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
     public function setUp()
     {
         parent::setUp();
-         $window = new WebDriverWindow($this->webDriver);
-         $size   = new WebDriverDimension(1024, 768);
-         $window->setSize($size);
          $this->DB->insert(
              "psc",
              array(

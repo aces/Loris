@@ -35,8 +35,6 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     {
         parent::setUp();
         $md5String = md5("TestTestTest");
-        $window    = new WebDriverWindow($this->webDriver);
-        $window->maximize();
         $this->DB->insert(
             "help",
             array(
