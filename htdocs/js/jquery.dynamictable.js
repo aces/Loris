@@ -145,7 +145,7 @@
       "style=\"overflow-x: auto\"></div>");
 
     var headers = document.createElement("div");
-    $(headers).addClass("frozenHeader");
+    $(headers).addClass("frozenHeader table-scroll");
     $(headers).html("<table style=\"margin-bottom: 0px\"><thead>" +
         $(table).find("thead").html() +
         "</thead><table>"
