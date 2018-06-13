@@ -132,7 +132,7 @@ class Candidates extends APIBase
                 "CenterID"
             );
             $allUserSiteNames = $this->DB->pselectColWithIndexKey(
-                "SELECT CenterID, Name FROM psc WHERE CenterID =:cid",
+                "SELECT CenterID, Name FROM psc WHERE FIND_IN_SET(CenterID, :cid)",
                 array('cid' => implode(',', $centerIDs)),
                 "CenterID"
             );
@@ -146,6 +146,7 @@ class Candidates extends APIBase
             // Get the CenterID from the provided SiteName, and check if the
             // user has permission to create a candidate at this site
             $centerID = array_search($siteName, $allUserSiteNames);
+
             if ($centerID === false) {
                 $this->header("HTTP/1.1 403 Forbidden");
                 $this->error("You are not affiliated with the candidate's site");
