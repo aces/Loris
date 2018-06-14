@@ -229,7 +229,7 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
                 WebDriverBy::ID("tab-upload")
             )->click();
         }
-
+        sleep(2);
         foreach ($uis as $ui ) {
             $location = $ui['selector'];
             $text     = $this->webDriver->executescript(
