@@ -208,9 +208,9 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
       */
     function testLoadingUIS()
     {
+        $this->_testPageUIs("/imaging_uploader/#upload", $this->_loadingUploadUI);
         $this->_testPageUIs("/imaging_uploader/", $this->_loadingBrowseUI);
         // click upload tab
-        $this->_testPageUIs("/imaging_uploader/#upload", $this->_loadingUploadUI);
     }
     /**
       * This function could test UI elements in each Tabs.
