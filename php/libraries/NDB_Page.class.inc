@@ -620,7 +620,9 @@ class NDB_Page implements RequestHandlerInterface
     ) : ResponseInterface {
         $user = $request->getAttribute("user");
         if ($this->_hasAccess() !== true) {
-            throw new PermissionDenied();
+            return (new \LORIS\Middleware\PageDecorationMiddleware($user))
+                ->process($request, new \LORIS\Http\StringStream("Permission Denied"))
+                ->withStatus(403);
         }
 
         // The NDB_Page object itself is sometimes required by middleware,
