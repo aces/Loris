@@ -252,12 +252,20 @@ class New_Profile extends \NDB_Form
         if ($values['dob1'] != $values['dob2']) {
             $errors['dob1'] = 'Date of Birth fields must match.';
         }
-        if ($config->getSetting('useEDC') == "true" && is_array($values['edc1'])) {
-            if (strlen(implode($values['edc1'])) > 2
+
+        if ($config->getSetting('useEDC') == "true") {
+            if (empty($values['edc1'])) {
+                $errors['edc1'] = 'Expected Date of Confinement field is required';
+            } else if (strlen(implode($values['edc1'])) > 2
                 && !\Utility::_checkDate($values['edc1'])
             ) {
                 $errors['edc1'] = 'EDC is not a valid date';
             }
+
+            if (empty($values['edc2'])) {
+                $errors['edc2'] = 'Confirm EDC field is required';
+            }
+
             if ($values['edc1'] != $values['edc2']) {
                 $errors['edc1'] = 'Estimated Due date fields must match.';
             }
@@ -315,4 +323,3 @@ class New_Profile extends \NDB_Form
     }
 
 }
-?>
