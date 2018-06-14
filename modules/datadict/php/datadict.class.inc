@@ -72,9 +72,7 @@ class Datadict extends \NDB_Menu_Filter
     /**
      * Setup variables function
      *
-     * @note   Setup variables function
      * @return void
-     * @access private
      */
     function _setupVariables()
     {

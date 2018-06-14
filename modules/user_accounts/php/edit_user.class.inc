@@ -509,7 +509,7 @@ class Edit_User extends \NDB_Form
         }
         $this->tpl_data['success'] = true;
         if ($this->isCreatingNewUser()) {
-            $baseURL  = $config->getSetting('url');
+            $baseURL        = $config->getSetting('url');
             $this->redirect = $baseURL
                 . "/user_accounts/edit_user/"
                 . $values['UserID'];
@@ -518,8 +518,8 @@ class Edit_User extends \NDB_Form
 
     /**
      * The edit_user page overrides the default handler in order to handle URLs for
-     * both editing users, and creating them. It extracts the identifier if appropriate
-     * and handles the redirection if needed.
+     * both editing users, and creating them. It extracts the identifier if
+     * appropriate and handles the redirection if needed.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
