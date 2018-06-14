@@ -16,8 +16,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }, this);
   var url;
   if (column === 'Username') {
-    url = loris.BaseURL + "/user_accounts/edit_user/?identifier=" +
-      row.Username;
+    url = loris.BaseURL + "/user_accounts/edit_user/" + row.Username;
     return (<td><a href ={url}>{cell}</a></td>);
   }
 
