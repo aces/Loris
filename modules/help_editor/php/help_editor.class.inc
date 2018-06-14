@@ -156,7 +156,6 @@ class Help_Editor extends \NDB_Menu_Filter
             }
             $x++;
         }
-        setCookie("LastUrl", "?test_name=help_editor");
         return true;
     }
 

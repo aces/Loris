@@ -302,7 +302,8 @@ The body of the POST request should be a candidate key with a JSON object of the
         "PSCID"   : PSCID,
         "EDC"     : "YYYY-MM-DD",
         "DoB"     : "YYYY-MM-DD",
-        "Gender"  : "Male|Female"
+        "Gender"  : "Male|Female",
+        "Site"    : SiteName,
     }
 }
 ```
@@ -313,12 +314,13 @@ project settings.
 PSCID is only required if the generation type in the Loris config is set to
 "prompt".
 
-The candidate will be created at the site of the user using the API's site.
 A response code of 201 Created will be returned on success, 409 Conflict if
-the PSCID already exists, and a 400 Bad Request if any data provided is invalid
-(PSCID format, date format, gender something other than Male|Female, invalid project
-name, etc). A successful POST request will return the CandID for the newly
-created candidate.
+the PSCID already exists, 403 Forbidden when the user is creating a candidate at 
+a site other than the list of sitenames the user is affiliated with, and a 400 
+Bad Request if any data provided is invalid (PSCID format, date format, gender 
+something other than Male|Female, invalid project name, invalid sitename, etc). 
+A successful POST request will return a CandidateObject for the newly created 
+candidate.
 
 PUT / PATCH methods are not supported on /candidate in this
 version of the Loris API.
@@ -369,7 +371,8 @@ The JSON object is of the form:
     "Meta" : {
         "CandID" : CandID,
         "Visit"  : VisitLabel,
-        "Battery" : "NameOfSubproject"
+        "Site"   : SiteName,
+        "Battery": "NameOfSubproject"
     },
     "Stages" : {
         "Screening" :  {
@@ -398,7 +401,7 @@ It will return a 404 Not Found if the visit label does not exist for this candid
 
 Any of the Stages may not be present in the returned result if the stage has not
 started yet or is not enabled for this project (ie. if useScreening is false in
-Loris, or Approval has not occured)
+Loris, or Approval has not occurred)
 
 ### 3.3 Candidate Instruments
 ```
@@ -504,7 +507,7 @@ The format of the JSON object for these URLS is:
 # 4.0 Imaging Data
 
 The imaging data mostly lives in the `/candidates/$CandID/$Visit` portion of the REST API
-namespaces, but is defined in a separate section of this document for clarity purposes.
+namespace, but is defined in a separate section of this document for clarity purposes.
 
 ## 4.1 Candidate Images
 ```

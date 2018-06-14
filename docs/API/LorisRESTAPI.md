@@ -361,7 +361,7 @@ It will return a 404 Not Found if the visit label does not exist for this candid
 
 Any of the Stages may not be present in the returned result if the stage has not
 started yet or is not enabled for this project (ie. if useScreening is false in
-Loris, or Approval has not occured)
+Loris, or Approval has not occurred)
 
 ### 3.3 Candidate Instruments
 ```
@@ -467,7 +467,7 @@ The format of the JSON object for these URLS is:
 # 4.0 Imaging Data
 
 The imaging data mostly lives in the `/candidates/$CandID/$Visit` portion of the REST API
-namespaces, but is defined in a separate section of this document for clarity purposes.
+namespace, but is defined in a separate section of this document for clarity purposes.
 
 ## 4.1 Candidate Images
 ```

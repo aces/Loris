@@ -222,7 +222,7 @@
                         <div>
                             {if $error_message != ""}
                                 <p>
-                                    The following errors occured while attempting to display this page:
+                                    The following errors occurred while attempting to display this page:
                                     <ul>
                                         {section name=error loop=$error_message}
                                             <li>
