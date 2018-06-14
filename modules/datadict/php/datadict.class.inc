@@ -49,7 +49,7 @@ class Datadict extends \NDB_Menu_Filter
     * @note   Setup variables function
     * @return void
     */
-    function _setupVariables()
+    function _buildQuery()
     {
         $select = " SELECT DISTINCT
          pt.sourceFrom as source_from,
@@ -68,6 +68,7 @@ class Datadict extends \NDB_Menu_Filter
         $query = $select . $joins;
         return $query;
     }
+
     /**
      * Setup variables function
      *
