@@ -56,16 +56,17 @@ class Instrument_List extends \NDB_Menu_Filter
     {
         // create user object
         $user =& \User::singleton();
-
+        $candidate =& \Candidate::singleton($_REQUEST['candID']);
+        $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
         // check user permissions
         return ($user->hasPermission('access_all_profiles')
                 || (in_array(
-                    $this->candidate->getData('CenterID'),
+                    $candidate->getData('CenterID'),
                     $user->getData('CenterIDs')
                 )
                    )
                 || (in_array(
-                    $this->timePoint->getData('CenterID'),
+                    $timePoint->getData('CenterID'),
                     $user->getData('CenterIDs')
                 )
                    )
