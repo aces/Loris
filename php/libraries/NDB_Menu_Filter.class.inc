@@ -183,7 +183,7 @@ class NDB_Menu_Filter extends NDB_Menu
      * 'filters' must be an array of valid filters for your menu.
      *
      * @note   overloaded function
-     * @return void
+     * @return bool
      * @access private
      */
     function _setupVariables()
