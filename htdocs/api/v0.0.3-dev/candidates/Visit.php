@@ -251,7 +251,7 @@ class Visit extends \Loris\API\Candidates\Candidate
     function createNew($CandID, $subprojectID, $VL, $CID)
     {
         try {
-            \TimePoint::isValidVisitLabel($CandID, $subprojectID, $VL, $CID);
+            \TimePoint::isValidVisitLabel($CandID, $subprojectID, $VL);
         } catch (\LorisException $e) {
             $this->header("HTTP/1.1 400 Bad Request");
             $this->error($e->getMessage());

@@ -49,7 +49,7 @@ class Datadict extends \NDB_Menu_Filter
     * @note   Setup variables function
     * @return void
     */
-    function _setupVariables()
+    function _buildQuery()
     {
         $select = " SELECT DISTINCT
          pt.sourceFrom as source_from,
@@ -68,6 +68,7 @@ class Datadict extends \NDB_Menu_Filter
         $query = $select . $joins;
         return $query;
     }
+
     /**
      * Function _setupVariables
      *
@@ -180,9 +181,9 @@ class Datadict extends \NDB_Menu_Filter
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
-     * @return a json encoded string of the headers and data from this table
+     * @return string a json encoded string of the headers and data from this table
      */
-    function toJSON()
+    function toJSON() : string
     {
         $result         = $this->toArray();
         $result['form'] = $this->form->form;
