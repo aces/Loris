@@ -69,11 +69,10 @@ class Datadict extends \NDB_Menu_Filter
         return $query;
     }
     /**
-     * Setup variables function
+     * Function _setupVariables
      *
      * @note   Setup variables function
      * @return bool
-     * @access private
      */
     function _setupVariables()
     {
