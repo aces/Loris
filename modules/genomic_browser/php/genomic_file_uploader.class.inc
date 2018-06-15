@@ -102,7 +102,6 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
                                   'Caveat',
                                  );
 
-        return true;
     }
 
     /**

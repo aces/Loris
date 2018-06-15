@@ -191,7 +191,6 @@ class Candidate_List extends \NDB_Menu_Filter
             )
         );
 
-        return true;
     }
 
 

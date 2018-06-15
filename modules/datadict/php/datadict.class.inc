@@ -73,7 +73,7 @@ class Datadict extends \NDB_Menu_Filter
      * Setup variables function
      *
      * @note   Setup variables function
-     * @return bool
+     * @return void
      * @access private
      */
     function _setupVariables()
@@ -108,7 +108,6 @@ class Datadict extends \NDB_Menu_Filter
                           'Description',
                           'Description Status',
                          );
-        return true;
     }
 
     /**

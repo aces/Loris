@@ -188,7 +188,6 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function _setupVariables()
     {
-        return true;
     }
 
     /**

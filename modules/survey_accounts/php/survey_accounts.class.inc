@@ -81,7 +81,6 @@ class Survey_Accounts extends \NDB_Menu_Filter
                                'key'        => 'p.OneTimePassword',
                                'Instrument' => 'p.Test_name',
                               );
-        return true;
     }
 
 
