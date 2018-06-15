@@ -1,0 +1,20 @@
+.form-horizontal
+.control-label {
+    text-align: left;
+}
+.instrument-header {
+    padding-left: 0px;
+}
+
+.date-header {
+    margin-left: 0px;
+}
+.comments-header {
+    margin-left: 0px;
+}
+.reset-button {
+    height: 0px;
+}
+.text-danger {
+    padding-left: 50px;
+}
