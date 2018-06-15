@@ -46,7 +46,7 @@ class Candidate_List extends \NDB_Menu_Filter
      * Sets up all the class variables needed for the candidate_list menu
      * filter
      *
-     * @return void 
+     * @return void
      */
     function _setupVariables()
     {
