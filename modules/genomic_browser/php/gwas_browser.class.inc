@@ -109,7 +109,6 @@ class GWAS_Browser extends \NDB_Menu_Filter
                                'Pvalue'       => 'GWAS.Pvalue',
                               );
 
-        return true;
     }
 
     /**
