@@ -117,12 +117,13 @@ $version = '7.2';
 // Below are all the apt packages required for LORIS to run.
 //      See: https://github.com/aces/Loris/wiki/Installing-Loris-in-Depth
 $loris_requirements = [
-                       'wget',
-                       'zip',
-                       'unzip',
-                       'php-json',
-                       'python-software-properties',
-                       'software-properties-common',
+                       "wget",
+                       "zip",
+                       "unzip",
+                       "php-json",
+                       "python-software-properties",
+                       "software-properties-common",
+                       "php-ast",
                        "php$version",
                        "php$version-mysql",
                        "php$version-xml",
@@ -281,7 +282,7 @@ function getPatchesFromVersion($loris_root, $version_from, $version_to) : array
     $diff_major = $to_versions[MAJOR] - $from_versions[MAJOR];
     $diff_minor = $to_versions[MINOR] - $from_versions[MINOR];
     if ($diff_major < 0) {
-        echo '[-] Your version of LORIS is ahead of the latest release! If you'
+        echo '[!] Your version of LORIS is ahead of the latest release. If you'
         . ' are not a developer working on the bleeding edge of LORIS, then '
         . 'something has gone very wrong. No SQL patches will be displayed.'
         . PHP_EOL;
