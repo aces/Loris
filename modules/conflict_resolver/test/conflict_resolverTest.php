@@ -113,7 +113,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet(
             $this->url
-            . "/conflict_resolver/?submenu=resolved_conflicts"
+            . "/conflict_resolver/resolved_conflicts/"
         );
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -147,7 +147,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $this->setupPermissions(array("conflict_resolver"));
          $this->safeGet(
              $this->url
-             . "/conflict_resolver/?submenu=resolved_conflicts"
+             . "/conflict_resolver/resolved_conflicts/"
          );
          $bodyText = $this->webDriver->findElement(
              WebDriverBy::cssSelector("body")
