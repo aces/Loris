@@ -24,7 +24,7 @@ return [
 		"PhanUndeclaredMethod",
 		"PhanUndeclaredVariable",
 		"PhanUndeclaredVariableDim",
-		"PhanUndeclaredTypeReturnType",
+        "PhanUndeclaredTypeReturnType",
         "PhanTypeMismatchDimFetch",
         "PhanTypeArraySuspiciousNullable",
 		"PhanUndeclaredClassMethod",

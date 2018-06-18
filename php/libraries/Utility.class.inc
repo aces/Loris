@@ -128,7 +128,7 @@ class Utility
      *                            table
      * @param boolean $DCC        Whether the DCC should be included or not
      *
-     * @return Associative array of the form CenterID => Site Name.
+     * @return array of the form CenterID => Site Name.
      *         Note that even though CenterID is numeric, the array
      *         should be interpreted as an associative array since the keys
      *         refer to the centerID, not the array index.
@@ -376,7 +376,7 @@ class Utility
      *                            the parameters into. If not specified,
      *                            a new array will be created
      *
-     * @return An array with the two parameters recursively merged
+     * @return array with the two parameters recursively merged
      */
     static function arrayMergeRecursiveOverwriting(
         $array1,
@@ -516,8 +516,7 @@ class Utility
     /**
      * Get a list of instruments installed in Loris.
      *
-     * @return Associative array of the form Test_name => Full Description
-     * @note   Arguably, this should be a static function in NDB_BVL_Instrument
+     * @return array of the form Test_name => Full Description
      */
     static function getAllInstruments()
     {
@@ -540,8 +539,7 @@ class Utility
     /**
      * Get a list of DDE instruments installed in Loris.
      *
-     * @return Associative array of the form Test_name => Full Description
-     * @note   Arguably, this should be a static function in NDB_BVL_Instrument
+     * @return array of the form Test_name => Full Description
      */
     static function getAllDDEInstruments()
     {
@@ -573,7 +571,7 @@ class Utility
      * This should return an array in a format suitable for addSelect() from
      * NDB_Page
      *
-     * @return associative array of test_names in a Test_Name => "Full Name"
+     * @return array of test_names in a Test_Name => "Full Name"
      */
     static function getDirectInstruments()
     {
@@ -784,7 +782,7 @@ class Utility
      *
      * @param integer $projectID Limit visit labels to labels used by this project
      *
-     * @return An associated array of study visits in the format array('VL' => 'VL')
+     * @return array of study visits in the format array('VL' => 'VL')
      *         where VL is the visit label
      *
      * @note       THIS FUNCTION USES STRING CONCATENATION TO GENERATE AN
