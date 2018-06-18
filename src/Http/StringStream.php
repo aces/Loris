@@ -275,7 +275,7 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
      * A StringStream can act as a handler, which resolves to a response with
      * itself as a body.
      *
-     * This is primarily to allow it to be used content by middleware.
+     * This is primarily to allow it to be used as content by middleware.
      *
      * @param ServerRequestInterface $request The PSR15 Request being handled
      *
