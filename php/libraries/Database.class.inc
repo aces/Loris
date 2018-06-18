@@ -300,7 +300,7 @@ class Database
      *
      * This will attempt to insert a row into the database. If there is a duplicate
      * value for any unique key, the row where the duplicate is present will be
-     * updated. HTML from nay field in the row will *not* be automatically escaped.
+     * updated. HTML from any field in the row will *not* be automatically escaped.
      *
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the row
