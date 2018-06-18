@@ -297,8 +297,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             ) {
                 array_push(
                     $errors,
-                    "File name must match " . $pcv .
-                    " or begin with " . "\"". $pcvu . "\"" .
+                    "File name must match <strong>" . $pcv . "</strong>" .
+                    " or begin with <strong>" . "\"". $pcvu . "\"" . "</strong>" .
                     ", and have the extension of .tgz, tar.gz or .zip."
                 );
             }
@@ -329,33 +329,43 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 if (sizeOf($candidate) == 0) {
                     array_push(
                         $errors,
-                        "The candidate associated with that CandID".
-                        " does not exist in the database."
+                        "The CandID <strong>" . $candid .
+                        "</strong> does not exist in the database."
                     );
                 } else {
                     if (!$candidate['candid_with_pscid']) {
                         array_push(
                             $errors,
-                            "The CandID and the PSCID do not match."
+                            "The PSCID <strong>" . $pscid . "</strong>" .
+                            " does not exist for the candidate" .
+                            " associated with CandID <strong>" . $candid .
+                            "</strong> in the database."
                         );
                     }
                     if (!$candidate['visit_label']) {
                         array_push(
                             $errors,
-                            "The candidate associated with that CandID".
-                            " and PSCID does not have that Visit Label."
+                            "The Visit Label <strong>" . $visit_label .
+                            "</strong> does not exist for the" .
+                            " candidate associated with CandID <strong>" .
+                            $candid . "</strong> in the database."
                         );
                     }
                     if ($candidate['candidate_active'] == 'N') {
                         array_push(
                             $errors,
-                            "The candidate is not active in the database."
+                            "The candidate associated with CandID <strong>" .
+                            $candid . "</strong> and PSCID <strong>" .
+                            $pscid . "</strong> is not active in the database."
                         );
                     }
                     if ($candidate['session_active'] == 'N') {
                         array_push(
                             $errors,
-                            "The session is not active in the database."
+                            "The session associated with CandID <strong>" .
+                            $candid . "</strong> and Visit Label <strong>" .
+                            $visit_label . "</strong> is not active in".
+                            " the database."
                         );
                     }
                 }
