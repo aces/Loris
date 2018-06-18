@@ -122,7 +122,6 @@ class FilterForm extends React.Component {
    */
   setFilter(type, key, value) {
     let filter = {};
-    
     if (this.props.filter) {
       filter = JSON.parse(JSON.stringify(this.props.filter));
     }
