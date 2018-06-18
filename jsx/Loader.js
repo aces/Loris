@@ -13,11 +13,15 @@ class Loader extends React.Component {
 
   render() {
     return (
-      <div className="loader-container">
-        <div className="loader"/>
-      </div>
+        <div
+          className="loader"
+          style={{width: this.props.size, height: this.props.size}}
+        />
     );
   }
 }
+
+Loader.propTypes = {size: React.PropTypes.int}
+Loader.defaultProps = {size: 120}
 
 export default Loader;

@@ -456,21 +456,12 @@ a.btn.btn-primary {
 
 /* Loader customizations */
 
-.loader-container {
-    height: 80vh;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .loader {
+    margin: auto;
     border: 8px solid #FFFFFF; /* White */
     border-top: 8px solid #3498db; /* Blue */
     border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    animation: spin 1s linear infinite;
+    animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
