@@ -91,3 +91,4 @@ LORIS requires Apache's mod_rewrite module to rewrite its URLs. Enable this modu
 
 # Community
 Please feel free to subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) to ask any LORIS-related questions.
+

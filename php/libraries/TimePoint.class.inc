@@ -547,7 +547,7 @@ class TimePoint
     /**
      * Gets the current stage status
      *
-     * @return status of current stage or null
+     * @return ?string status of current stage or null
      */
     function getCurrentStatus()
     {
@@ -562,7 +562,7 @@ class TimePoint
     /**
      * Gets the date of the current stage.
      *
-     * @return date or false on failure.
+     * @return string of the form "YYYY-MM-DD"
      */
     function getCurrentDate()
     {
