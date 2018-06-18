@@ -122,6 +122,7 @@ class FilterForm extends React.Component {
    */
   setFilter(type, key, value) {
     let filter = {};
+    
     if (this.props.filter) {
       filter = JSON.parse(JSON.stringify(this.props.filter));
     }
@@ -133,7 +134,8 @@ class FilterForm extends React.Component {
         filter[key].value = '';
       }
       filter[key].exactMatch = (type === "SelectElement");
-    } else if (filter && key && value === '') {
+    }
+    if (filter && key && value === '') {
       delete filter[key];
     }
     return filter;
