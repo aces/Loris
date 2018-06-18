@@ -70,6 +70,9 @@ useEDC - This setting determines whether "EDC" filtering dropdowns exist
 mantis_url - This setting defines a URL for LORIS to include a link to for bug reporting
         on the "View Session" page.
 
+For downloading large DICOM files, it may be necessary to increase the
+ value of the `memory_limit` configuration option within `php.ini`.
+
 ## Interactions with LORIS
 
 - The "Selected" set by the imaging QC specialist is used by the dataquery
