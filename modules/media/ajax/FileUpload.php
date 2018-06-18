@@ -198,11 +198,21 @@ function getUploadFields()
                     "WHERE c.PSCID NOT LIKE 'scanner%' ".
                     "AND f.Test_name NOT LIKE 'DDE_%' ";
 
-    $siteIDs = $user->getCenterIDs();
+    $siteList  = Utility::getSiteList(false);
+    $userSites = $user->getCenterIDs();
+
     if (!$user->hasPermission('access_all_profiles')) {
+
         $recordsQuery  .= "AND FIND_IN_SET(s.CenterID, :CID) ";
-        $qparams['CID'] = implode(",", $siteIDs);
+        $qparams['CID'] = implode(",", $userSites);
+
+        foreach ($siteList as $siteIDKey => $siteID) {
+            if (!in_array($siteIDKey, $userSites)) {
+                unset($siteList[$siteIDKey]);
+            }
+        }
     }
+
     $recordsQuery  .= "ORDER BY c.PSCID ASC";
     $sessionRecords = $db->pselect($recordsQuery, $qparams);
 
@@ -210,12 +220,7 @@ function getUploadFields()
     $candidatesList  = toSelect($sessionRecords, "PSCID", null);
     $candIdList      = toSelect($sessionRecords, "CandID", "PSCID");
     $visitList       = toSelect($sessionRecords, "Visit_label", null);
-    $siteList        = array();
-    foreach ($siteIDs as $siteID) {
-        $site = Site::singleton($siteID);
-        $siteList[$siteID] = $site->getCenterName();
-    }
-    $languageList = Utility::getLanguageList();
+    $languageList    = Utility::getLanguageList();
     // Build array of session data to be used in upload media dropdowns
     $sessionData = [];
 
