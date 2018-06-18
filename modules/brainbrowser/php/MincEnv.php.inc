@@ -27,7 +27,7 @@
 
 require_once "NDB_Config.class.inc";
 
-$config =& NDB_Config::singleton();
+$config    =& NDB_Config::singleton();
 $minc_path = $config->getSetting("MINCToolsPath");
 
 putenv("PATH=" . $minc_path . "bin:" . $minc_path . "pipeline:" . getenv("PATH"));
