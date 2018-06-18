@@ -59,6 +59,15 @@ if ($userSingleton->hasPermission('document_repository_view')
         $uploadPath = "$base/modules/document_repository/user_uploads/$name/";
         $fullPath  = $uploadPath . $fileName;
 
+        // $category is a string representation of an ID, and so should be at
+        // least equal to zero.
+        if (intval($category) < 0) {
+            http_response_code(400);
+            exit;
+        }
+
+        // Check to see if $fullPath is writable. If not, throw an error. If it
+        // doesn't exist, create an uploads folder for the logged-in user.
         if (!is_writable($fullPath)) {
             if (file_exists($fullPath)) {
                 http_response_code(403);
@@ -72,8 +81,12 @@ if ($userSingleton->hasPermission('document_repository_view')
             mkdir($fullPath, 0770);
         }
 
-        if (!move_uploaded_file($_FILES['file']['tmp_name'], 
-            $fullPath . $fileName)) {
+        // Copy the uploaded file to the user's upload folder if possible.
+        // Insert a record of the file into the document_repository table
+        if (!move_uploaded_file(
+            $_FILES['file']['tmp_name'],
+            $fullPath . $fileName
+        )) {
             error_log('File upload failed for unknown reasons.');
             http_response_code(500);
             echo('ERROR: Could not upload file. Contact your administrator');
@@ -87,7 +100,7 @@ if ($userSingleton->hasPermission('document_repository_view')
                  'version'       => $version,
                  'File_name'     => $fileName,
                  'File_size'     => $fileSize,
-                 'Data_dir'      => $name . $fileName,
+                 'Data_dir'      => "$name/$fileName", // e.g. 'admin/file.png'
                  'uploaded_by'   => $name,
                  'Instrument'    => $instrument,
                  'PSCID'         => $pscid,
@@ -114,8 +127,8 @@ if ($userSingleton->hasPermission('document_repository_view')
         $comments   = $_POST['commentsEdit'];
         $version    = $_POST['versionEdit'];
 
-        // $category is a string representation of a number.
-        // only proceed if its int value is greater than or equal to 0
+        // $category is a string representation of an ID, and so should be at
+        // least equal to zero
         if (intval($category) < 0) {
             http_response_code(400);
             exit;
