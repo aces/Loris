@@ -187,8 +187,8 @@ function uploadFile()
 function getUploadFields()
 {
 
-    $db           =& Database::singleton();
-    $user         =& User::singleton();
+    $db           =& \NDB_Factory::singleton()->database();
+    $user         =& \User::singleton();
     $qparams      = array();
     $recordsQuery = "SELECT c.PSCID, c.CandID, s.CenterID, s.Visit_label, ".
                     "f.Test_name ".
@@ -198,7 +198,7 @@ function getUploadFields()
                     "WHERE c.PSCID NOT LIKE 'scanner%' ".
                     "AND f.Test_name NOT LIKE 'DDE_%' ";
 
-    $siteList  = Utility::getSiteList(false);
+    $siteList  = \Utility::getSiteList(false);
     $userSites = $user->getCenterIDs();
 
     if (!$user->hasPermission('access_all_profiles')) {
@@ -220,7 +220,7 @@ function getUploadFields()
     $candidatesList  = toSelect($sessionRecords, "PSCID", null);
     $candIdList      = toSelect($sessionRecords, "CandID", "PSCID");
     $visitList       = toSelect($sessionRecords, "Visit_label", null);
-    $languageList    = Utility::getLanguageList();
+    $languageList    = \Utility::getLanguageList();
     // Build array of session data to be used in upload media dropdowns
     $sessionData = [];
 
