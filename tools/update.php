@@ -53,9 +53,13 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 
 error_reporting(E_ALL);
-$minimum_php = 7; //TODO: Update this value as time passes
-if (PHP_MAJOR_VERSION < $minimum_php) {
-    die("ERROR: {$argv[0]} and LORIS require PHP $minimum_php or higher.");
+$required_major_php = 7; //TODO: Update these values as time passes
+$required_minor_php = 2;
+// PHP version required for LORIS.
+$php_version = "$required_major_php.$required_minor_php";
+if (PHP_MAJOR_VERSION < $required_major_php
+    || PHP_MINOR_VERSION < $required_minor_php) {
+    die("ERROR: {$argv[0]} and LORIS require PHP v$php_version or higher.");
 }
 
 /* Create db connection and get version info. */
@@ -112,8 +116,6 @@ sleep(3);
 
 /* BEGIN UPDATE PROCESS */
 
-// PHP version required for LORIS. TODO: Change this value as needed.
-$version = '7.2';
 // Below are all the apt packages required for LORIS to run.
 //      See: https://github.com/aces/Loris/wiki/Installing-Loris-in-Depth
 $loris_requirements = [
@@ -124,13 +126,13 @@ $loris_requirements = [
                        "python-software-properties",
                        "software-properties-common",
                        "php-ast",
-                       "php$version",
-                       "php$version-mysql",
-                       "php$version-xml",
-                       "php$version-json",
-                       "php$version-mbstring",
-                       "php$version-gd",
-                       "libapache2-mod-php$version",
+                       "php$php_version",
+                       "php$php_version-mysql",
+                       "php$php_version-xml",
+                       "php$php_version-json",
+                       "php$php_version-mbstring",
+                       "php$php_version-gd",
+                       "libapache2-mod-php$php_version",
                       ];
 
 // Update source code (if not on a development version)
