@@ -47,11 +47,13 @@ class ImagingUploader extends React.Component {
   }
 
   updateFilter(filter) {
+
     this.setState({filter});
+    console.log(filter);
   }
 
   resetFilters() {
-    this.refs.imagingUploaderFilter.clearFilter();
+    this.imagingUploaderFilter.clearFilter();
   }
 
   render() {
@@ -71,6 +73,10 @@ class ImagingUploader extends React.Component {
       {id: "upload", label: "Upload"}
     ];
 
+    const filterRef = function(f) {
+      this.imagingUploaderFilter = f;
+    }.bind(this);
+
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
@@ -80,7 +86,7 @@ class ImagingUploader extends React.Component {
                 Module="imaging_uploader"
                 name="imaging_filter"
                 id="imaging_filter"
-                ref="imagingUploaderFilter"
+                ref={filterRef}
                 onUpdate={this.updateFilter}
                 filter={this.state.filter}
               >
