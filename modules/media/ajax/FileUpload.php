@@ -33,7 +33,7 @@ if (isset($_GET['action'])) {
  */
 function editFile()
 {
-    $db   =& \Database::singleton();
+    $db   =& Database::singleton();
     $user =& User::singleton();
     if (!$user->hasPermission('media_write')) {
         header("HTTP/1.1 403 Forbidden");
@@ -187,8 +187,8 @@ function uploadFile()
 function getUploadFields()
 {
 
-    $db           =& \NDB_Factory::singleton()->database();
-    $user         =& \User::singleton();
+    $db           = \NDB_Factory::singleton()->database();
+    $user         = \User::singleton();
     $qparams      = array();
     $recordsQuery = "SELECT c.PSCID, c.CandID, s.CenterID, s.Visit_label, ".
                     "f.Test_name ".
