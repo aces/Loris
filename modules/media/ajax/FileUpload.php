@@ -187,9 +187,9 @@ function uploadFile()
 function getUploadFields()
 {
 
-    $db   =& Database::singleton();
-    $user =& User::singleton();
-
+    $db           =& Database::singleton();
+    $user         =& User::singleton();
+    $qparams      = array();
     $recordsQuery = "SELECT c.PSCID, c.CandID, s.CenterID, s.Visit_label, ".
                     "f.Test_name ".
                     "FROM candidate c ".
@@ -200,10 +200,11 @@ function getUploadFields()
 
     $siteIDs = $user->getCenterIDs();
     if (!$user->hasPermission('access_all_profiles')) {
-        $recordsQuery .= "AND s.CenterID IN(".implode(",", $siteIDs).") ";
+        $recordsQuery  .= "AND FIND_IN_SET(s.CenterID, :CID) ";
+        $qparams['CID'] = implode(",", $siteIDs);
     }
     $recordsQuery  .= "ORDER BY c.PSCID ASC";
-    $sessionRecords = $db->pselect($recordsQuery, []);
+    $sessionRecords = $db->pselect($recordsQuery, $qparams);
 
     $instrumentsList = toSelect($sessionRecords, "Test_name", null);
     $candidatesList  = toSelect($sessionRecords, "PSCID", null);
