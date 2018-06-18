@@ -1031,7 +1031,7 @@ class Edit_User extends \NDB_Form
                 || $values['examiner_pending'] !== '')
             ) {
                 $errors['examiner_sites'] = "Please select at least one examiner 
-                site or reset the 'Examiner status' fields blow (i.e. 
+                site or reset the 'Examiner status' fields below (i.e. 
                 'Radiologist' and 'Pending Approval') to nothing.";
             }
         }
