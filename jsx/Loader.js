@@ -21,7 +21,7 @@ class Loader extends React.Component {
   }
 }
 
-Loader.propTypes = {size: React.PropTypes.int}
-Loader.defaultProps = {size: 120}
+Loader.propTypes = {size: React.PropTypes.int};
+Loader.defaultProps = {size: 120};
 
 export default Loader;
