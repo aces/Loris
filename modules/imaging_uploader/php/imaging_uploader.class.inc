@@ -281,7 +281,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             if ((empty($candid)) || (empty($pscid)) || (empty($visit_label))) {
                 array_push(
                     $errors,
-                    "Make sure the Cand ID, PSCID and Visit Label are filled out."
+                    "Make sure the CandID, PSCID and Visit Label are filled out."
                 );
             }
             ///////////////////////////////////////////////////////////////////////
@@ -336,19 +336,19 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                     if (!$candidate['candid_with_pscid']) {
                         array_push(
                             $errors,
-                            "The PSCID <strong>" . $pscid . "</strong>" .
-                            " does not exist for the candidate" .
-                            " associated with CandID <strong>" . $candid .
-                            "</strong> in the database."
+                            "Invalid PSCID <strong>" . $pscid . "</strong>" .
+                            " for CandID <strong>" . $candid . "</strong>" .
+                            ". Check that you entered the correct" .
+                            " PSCID and CandID."
                         );
                     }
                     if (!$candidate['visit_label']) {
                         array_push(
                             $errors,
-                            "The Visit Label <strong>" . $visit_label .
-                            "</strong> does not exist for the" .
-                            " candidate associated with CandID <strong>" .
-                            $candid . "</strong> in the database."
+                            "Invalid Visit Label <strong>" . $visit_label .
+                            "</strong> for CandID <strong>" . $candid .
+                            "</strong>. Check that you entered the correct" .
+                            " Visit Label and CandID."
                         );
                     }
                     if ($candidate['candidate_active'] == 'N') {
