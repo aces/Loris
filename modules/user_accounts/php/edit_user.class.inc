@@ -11,6 +11,8 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\user_accounts;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
 
 /**
  * Implements the user account page
@@ -30,7 +32,7 @@ class Edit_User extends \NDB_Form
      */
     function isCreatingNewUser()
     {
-        return $this->page == 'edit_user' && $this->identifier == '';
+        return $this->identifier == '';
     }
 
     /**
@@ -507,12 +509,36 @@ class Edit_User extends \NDB_Form
         }
         $this->tpl_data['success'] = true;
         if ($this->isCreatingNewUser()) {
-            $baseURL  = $config->getSetting('url');
-            $redirect = $baseURL
-                . "/user_accounts/edit_user/?identifier="
+            $baseURL        = $config->getSetting('url');
+            $this->redirect = $baseURL
+                . "/user_accounts/edit_user/"
                 . $values['UserID'];
-            header('Location: '. $redirect);
         }
+    }
+
+    /**
+     * The edit_user page overrides the default handler in order to handle URLs for
+     * both editing users, and creating them. It extracts the identifier if
+     * appropriate and handles the redirection if needed.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR15 response
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $matches = [];
+        preg_match('#.*/edit_user/(.*)#', $request->getUri()->getPath(), $matches);
+        if (!empty($matches[1])) {
+            $this->identifier = $matches[1];
+        }
+        $response = parent::handle($request);
+        if (!empty($this->redirect)) {
+            return $response
+                ->withStatus(303)
+                ->withHeader("Location", $this->redirect);
+        }
+        return $response;
     }
 
     /**
@@ -525,8 +551,6 @@ class Edit_User extends \NDB_Form
     function setup()
     {
         parent::setup();
-
-        $this->redirect = "test_name=$this->name";
 
         ///get the value for additional_user_info flag
         $config = \NDB_Config::singleton();
@@ -1059,7 +1083,7 @@ class Edit_User extends \NDB_Form
             array('UID' => $this->identifier)
         );
 
-        if (!is_null($passwords['Password_hash'])) {
+        if (!is_null($passwords['Password_hash'] ?? null)) {
             return !password_verify($newPassword, $passwords['Password_hash']);
         }
 

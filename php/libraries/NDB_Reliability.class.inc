@@ -214,7 +214,7 @@ class NDB_Reliability extends NDB_Form
      * @param string $message The message if this rule fails
      * @param string $group   The group that should display the error
      *
-     * @return none
+     * @return void
      */
     function XINRegisterRule($elname, $rules, $message="", $group="")
     {
@@ -312,7 +312,7 @@ class NDB_Reliability extends NDB_Form
      * @param string $rule_message The error message to display if a rule is
      *                             violated.
      *
-     * @return none
+     * @return void
      */
     function addLargeTextAreaElement(
         $field,
@@ -401,7 +401,7 @@ class NDB_Reliability extends NDB_Form
      * @param array $formDateValue Date in the array format returned
      *                             by QuickForm
      *
-     * @return MySQL formatted string
+     * @return string MySQL formatted date string
      */
     function _getDatabaseDate($formDateValue)
     {
