@@ -38,7 +38,7 @@ class FilterForm extends Component {
     this.queryString = QueryString.get();
   }
 
-  componentDidMount() {
+  componentWillReceiveProps() {
     let filter = {};
     let queryString = this.queryString;
 
@@ -178,15 +178,9 @@ class FilterForm extends Component {
     }
 
     return (
-      <Panel
-        id={this.props.id}
-        height={this.props.height}
-        title={this.props.title}
-      >
-        <FormElement {...this.props}>
-          {formChildren}
-        </FormElement>
-      </Panel>
+      <FormElement {...this.props}>
+        {formChildren}
+      </FormElement>
     );
   }
 }

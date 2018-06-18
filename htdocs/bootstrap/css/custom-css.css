@@ -133,17 +133,8 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 /*
  *	Making the table header font colour white
  */
-table th {
-    color: #064785;
-    background-color: #E4EBF2;
-}
-
-.table > thead > tr > th > a {
-    color: #064785;
-}
-
-.table > thead:first-child > tr:first-child > th {
-    border-top: 1px solid #C3D5DB;
+.table>thead>tr>th>a {
+    color: #ffffff;
 }
 
 /*
@@ -686,7 +677,6 @@ a.btn.btn-primary:hover {
 }
 
 /* Loader customizations */
-
 .loader {
     position: relative;
     top: 50%;
