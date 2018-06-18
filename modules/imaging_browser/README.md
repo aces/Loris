@@ -67,8 +67,11 @@ useProjects - This setting determines whether "project" filtering dropdowns exis
 useEDC - This setting determines whether "EDC" filtering dropdowns exist
         on the menu page.
 
-mantis_url - This setting defines a URL for LORIS to include a link to for bug reporting
-        on the "View Session" page.
+mantis_url - This setting defines a URL for LORIS to include a link to "mantis" for 
+        bug reporting on the "View Session" page.
+
+For downloading large DICOM files, it may be necessary to increase the
+ value of the `memory_limit` configuration option within `php.ini`.
 
 ## Interactions with LORIS
 
