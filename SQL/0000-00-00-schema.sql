@@ -73,7 +73,6 @@ DROP TABLE IF EXISTS `examiners_psc_rel`;
 DROP TABLE IF EXISTS `examiners`;
 
 DROP TABLE IF EXISTS `participant_status_history`;
-DROP TABLE IF EXISTS `consent_info_history`;
 DROP TABLE IF EXISTS `family`;
 DROP TABLE IF EXISTS `participant_emails`;
 DROP TABLE IF EXISTS `participant_accounts`;
@@ -1084,9 +1083,6 @@ CREATE TABLE `participant_status` (
   `participant_suboptions` int(10) unsigned DEFAULT NULL,
   `reason_specify` text,
   `reason_specify_status` enum('dnk','not_applicable','refusal','not_answered') DEFAULT NULL,
-  `study_consent` enum('yes','no','not_answered') DEFAULT NULL,
-  `study_consent_date` date DEFAULT NULL,
-  `study_consent_withdrawal` date DEFAULT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `CandID` (`CandID`),
   UNIQUE KEY `ID` (`ID`),
@@ -1126,18 +1122,6 @@ CREATE TABLE `participant_status_history` (
   `reason_specify` varchar(255) DEFAULT NULL,
   `reason_specify_status` enum('not_answered') DEFAULT NULL,
   `participant_subOptions` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  UNIQUE KEY `ID` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `consent_info_history` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `CandID` int(6) NOT NULL DEFAULT '0',
-  `entry_staff` varchar(255) DEFAULT NULL,
-  `data_entry_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `study_consent` enum('yes','no','not_answered') DEFAULT NULL,
-  `study_consent_date` date DEFAULT NULL,
-  `study_consent_withdrawal` date DEFAULT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

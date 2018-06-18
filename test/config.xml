@@ -114,15 +114,6 @@
             </CertificationInstruments>
         </Certification>
 
-        <!-- Consent module allows addition of consent information in the candidate information page-->
-         <ConsentModule>
-            <useConsent>false</useConsent>
-            <Consent>
-                <name>study_consent</name>
-                <label>Consent to Study</label>
-            </Consent>
-        </ConsentModule>
-
     </study>
     <!-- end of study definition -->
 

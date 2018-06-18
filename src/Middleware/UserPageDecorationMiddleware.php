@@ -108,8 +108,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
                                         'useFamilyID'
                                     ),
                                     'useConsent'  => $this->Config->getSetting(
-                                        'ConsentModule'
-                                    )['useConsent'],
+                                        'useConsent'
+                                    ),
                                    );
         $tpl_data['jsonParams']  = json_encode(
             array(

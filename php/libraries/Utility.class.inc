@@ -90,7 +90,24 @@ class Utility
 
         return $age;
     }
+    /**
+     * Returns list of consents in the database
+     *
+     * @return array An associative array of consents, with their names and labels.
+     *               The keys of the arrays are the IDs of the consents
+     */
+    static function getConsentList()
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
 
+        $query = "SELECT ConsentID, Name, Label FROM consent";
+        $key   = "ConsentID";
+
+        $result = $DB->pselectWithIndexKey($query, array(), $key);
+
+        return $result;
+    }
     /**
      * Returns a list of sites in the database
      *
