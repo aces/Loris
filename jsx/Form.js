@@ -341,6 +341,7 @@ class SearchableDropdown extends Component {
             className="form-control"
             disabled={disabled}
             placeholder={this.props.placeHolder}
+            autoFocus={this.props.autoFocus}
             onChange={this.handleChange}
             onBlur={this.handleBlur}
             required={required}
@@ -373,6 +374,7 @@ SearchableDropdown.propTypes = {
   sortByValue: React.PropTypes.bool,
   errorMessage: React.PropTypes.string,
   placeHolder: React.PropTypes.string,
+  autoFocus: React.PropTypes.bool,
   onUserInput: React.PropTypes.func
 };
 
@@ -389,6 +391,7 @@ SearchableDropdown.defaultProps = {
   sortByValue: true,
   errorMessage: '',
   placeHolder: '',
+  autoFocus: false,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -432,6 +435,7 @@ class SelectElement extends Component {
     let emptyOptionHTML = null;
     let requiredHTML = null;
     let elementClass = 'row form-group';
+    let label = null;
 
     // Add required asterisk
     if (required) {
@@ -444,7 +448,7 @@ class SelectElement extends Component {
     }
 
     // Add error message
-    if (this.props.hasError || (this.props.required && this.props.value === '')) {
+    if (this.props.errorMessage || (this.props.required && this.props.value === "")) {
       errorMessage = <span>{this.props.errorMessage}</span>;
       elementClass = 'row form-group has-error';
     }
@@ -473,13 +477,19 @@ class SelectElement extends Component {
     // Default to empty string for regular select and to empty array for 'multiple' select
     const value = this.props.value || (multiple ? [] : '');
 
-    return (
-      <div className={elementClass}>
+    if (this.props.label) {
+      label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+      );
+    }
+
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={this.props.inputClass}>
           <select
             name={this.props.name}
             multiple={multiple}
@@ -510,12 +520,12 @@ SelectElement.propTypes = {
   ]),
   id: React.PropTypes.string,
   class: React.PropTypes.string,
+  inputClass: React.PropTypes.string,
   multiple: React.PropTypes.bool,
   disabled: React.PropTypes.bool,
   required: React.PropTypes.bool,
   sortByValue: React.PropTypes.bool,
   emptyOption: React.PropTypes.bool,
-  hasError: React.PropTypes.bool,
   errorMessage: React.PropTypes.string,
   onUserInput: React.PropTypes.func
 };
@@ -527,13 +537,13 @@ SelectElement.defaultProps = {
   value: undefined,
   id: null,
   class: '',
+  inputClass: 'col-sm-9',
   multiple: false,
   disabled: false,
   required: false,
   sortByValue: true,
   emptyOption: true,
-  hasError: false,
-  errorMessage: 'The field is required!',
+  errorMessage: '',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -904,6 +914,7 @@ class TextboxElement extends Component {
     let errorMessage = null;
     let requiredHTML = null;
     let elementClass = 'row form-group';
+    let label = null;
 
     // Add required asterix
     if (required) {
@@ -916,13 +927,19 @@ class TextboxElement extends Component {
       elementClass = 'row form-group has-error';
     }
 
-    return (
-      <div className={elementClass}>
+    if (this.props.label) {
+      label = (
         <label className="col-sm-3 control-label" htmlFor={this.props.id}>
           {this.props.label}
           {requiredHTML}
         </label>
-        <div className="col-sm-9">
+      );
+    }
+
+    return (
+      <div className={elementClass}>
+        {label}
+        <div className={this.props.inputClass}>
           <input
             type="text"
             className="form-control"
@@ -961,6 +978,7 @@ TextboxElement.defaultProps = {
   disabled: false,
   required: false,
   errorMessage: '',
+  inputClass: 'col-sm-9',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -1018,36 +1036,23 @@ class DateElement extends Component {
   render() {
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
+    let errorMessage = null;
     let requiredHTML = null;
+    let elementClass = 'row form-group';
 
     // Add required asterix
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
     }
 
-    // Check if props minYear and maxYear are valid values if supplied
-    let minYear = this.props.minYear;
-    let maxYear = this.props.maxYear;
-    if (this.props.minYear === '' || this.props.minYear === null) {
-      minYear = '1000';
-    }
-    if (this.props.maxYear === '' || this.props.maxYear === null) {
-      maxYear = '9999';
-    }
-
-    // Handle date format
-    let format = this.props.dateFormat;
-    let inputType = 'date';
-    let minFullDate = minYear + '-01-01';
-    let maxFullDate = maxYear + '-12-31';
-    if (!format.match(/d/i)) {
-      inputType = 'month';
-      minFullDate = minYear + '-01';
-      maxFullDate = maxYear + '-12';
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
     }
 
     return (
-      <div className="row form-group">
+      <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
@@ -1065,6 +1070,7 @@ class DateElement extends Component {
             required={required}
             disabled={disabled}
           />
+          {errorMessage}
         </div>
       </div>
     );
@@ -1072,6 +1078,7 @@ class DateElement extends Component {
 }
 
 DateElement.propTypes = {
+<<<<<<< 27ae8a8d4f5abc8ad574234df61684695ccb3827
   name: PropTypes.string.isRequired,
   label: PropTypes.string,
   value: PropTypes.string,
@@ -1082,6 +1089,18 @@ DateElement.propTypes = {
   disabled: PropTypes.bool,
   required: PropTypes.bool,
   onUserInput: PropTypes.func,
+=======
+  name: React.PropTypes.string.isRequired,
+  label: React.PropTypes.string,
+  value: React.PropTypes.string,
+  id: React.PropTypes.string,
+  maxYear: React.PropTypes.string,
+  minYear: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  errorMessage: React.PropTypes.func,
+  onUserInput: React.PropTypes.func
+>>>>>>> [media] Remove unused code (#3705)
 };
 
 DateElement.defaultProps = {
@@ -1094,6 +1113,7 @@ DateElement.defaultProps = {
   dateFormat: 'YMd',
   disabled: false,
   required: false,
+  errorMessage: '',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -1117,15 +1137,23 @@ class TimeElement extends Component {
   render() {
     let disabled = this.props.disabled ? 'disabled' : null;
     let required = this.props.required ? 'required' : null;
+    let errorMessage = null;
     let requiredHTML = null;
+    let elementClass = 'row form-group';
 
     // Add required asterix
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
     }
 
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
     return (
-      <div className="row form-group">
+      <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
           {this.props.label}
           {requiredHTML}
@@ -1143,6 +1171,7 @@ class TimeElement extends Component {
             pattern="([0-1][0-9]|2[0-4]|[1-9]):([0-5][0-9])(:([0-5][0-9]))?"
             title="Input must be in one of the following formats: HH:MM or HH:MM:SS"
           />
+          {errorMessage}
         </div>
       </div>
     );
@@ -1150,13 +1179,14 @@ class TimeElement extends Component {
 }
 
 TimeElement.propTypes = {
-  name: PropTypes.string.isRequired,
-  label: PropTypes.string,
-  value: PropTypes.string,
-  id: PropTypes.string,
-  disabled: PropTypes.bool,
-  required: PropTypes.bool,
-  onUserInput: PropTypes.func,
+  name: React.PropTypes.string.isRequired,
+  label: React.PropTypes.string,
+  value: React.PropTypes.string,
+  id: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  errorMessage: React.PropTypes.string,
+  onUserInput: React.PropTypes.func
 };
 
 TimeElement.defaultProps = {
@@ -1166,6 +1196,7 @@ TimeElement.defaultProps = {
   id: '',
   disabled: false,
   required: false,
+  errorMessage: '',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   },
@@ -1399,10 +1430,10 @@ class StaticElement extends Component {
   render() {
     return (
       <div className="row form-group">
-        <label className="col-sm-3 control-label">
+        <label className="col-lg-3 control-label">
           {this.props.label}
         </label>
-        <div className="col-sm-9">
+        <div className="col-lg-9">
           <p className="form-control-static">{this.props.text}</p>
         </div>
       </div>
@@ -1435,10 +1466,10 @@ class LinkElement extends Component {
   render() {
     return (
       <div className="row form-group">
-        <label className="col-sm-3 control-label">
+        <label className="col-lg-3 control-label">
           {this.props.label}
         </label>
-        <div className="col-sm-9">
+        <div className="col-lg-9">
           <p className="form-control-static"><a href={this.props.href}>{this.props.text}</a></p>
         </div>
       </div>
