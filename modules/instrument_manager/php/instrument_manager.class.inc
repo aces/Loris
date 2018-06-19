@@ -44,112 +44,129 @@ class Instrument_Manager extends \NDB_Menu_Filter
     {
         $config        = \NDB_Config::singleton();
         $this->path    = $config->getSetting("base");
-        $this->headers = array(
+        $this->headers = [
                           'Instrument',
                           'Instrument_Type',
                           'Table_Installed',
                           'Table_Valid',
                           'Pages_Valid',
-                         );
+                         ];
         $this->query   = " FROM test_names t";
-        $this->columns = array(
+        $this->columns = [
                           't.Test_name as Instrument',
                           "'x' as Instrument_Type",
                           "'x' as Table_Installed",
                           "'x' as Table_Valid",
                           "'x' as Pages_Valid",
-                         );
-        $this->validFilters = array('');
-        $this->formToFilter = array();
-
-        $writable = true;
-        if (!is_writable($this->path . "project/instruments")
-            || !is_writable($this->path . "project/tables_sql")
-        ) {
-            $writable = false;
-        } else {
-            $writable = true;
+                         ];
+        $this->validFilters = [];
+        $this->formToFilter = [];
+        
+        // Check to see whether the quatUser is configured.
+        // If this user is not configured, the instrument cannot be
+        // automatically installed as the table will not be able to be
+        // created.
+        $quat_user_is_configured = $this->isQuatUserConfigured();
+        if(!$quat_user_is_configured) {
+            $this->tpl_data['can_install'] = false;
+            $this->tpl_data['feedback'] = "Instrument installation is not "
+                . "possible given the current server configuration. You can "
+                . "upload files but they will have to be installed by your "
+                . "LORIS administrator.";
         }
+
+        // Ensure we can write to folders in project/. If not, the upload
+        // form will not be created on the front-end. Warnings will explain to 
+        // to the user that installation is not possible.
+        $writable = is_writable($this->path . "project/instruments")
+            && is_writable($this->path . "project/tables_sql");
         $this->tpl_data['writable'] = $writable;
+        if (!$writable) {
+            $this->tpl_data['feedback'] = "Instrument installation has been "
+                . "disabled by your administrator.";
+        }
+        // Process POST request (installation of an instrument).
         if ($writable && isset($_POST['install'])
             && $_POST['install'] == 'Install Instrument'
         ) {
-            $db       = \Database::singleton();
             $instname = basename($_FILES['install_file']['name'], '.linst');
-
-            $new_file = $this->path . "project/instruments/" .
-                        $_FILES['install_file']['name'];
-            move_uploaded_file($_FILES['install_file']['tmp_name'], $new_file);
-            chmod($new_file, 0644);
-            chdir($this->path . "/tools");
+            // Don't upload the instrument if a version already exists in the
+            // database.
+            $db       = \Database::singleton();
             $sqlSelectOne = "SELECT count(*)".
                             " FROM test_names WHERE Test_name=:testname";
-            $exists       = $db->pselectOne(
+            $instrument_exists       = $db->pselectOne(
                 $sqlSelectOne,
                 array('testname' => $_FILES['install_file']['name'])
             );
-            if ($exists <= 0) {
-                $db_config = $config->getSetting('database');
-                exec(
-                    'php generate_tables_sql_and_testNames.php < '
-                    . escapeshellarg($new_file)
-                );
+            if ($instrument_exists) {
+                $this->tpl_data['feedback'] = "Instrument '$instname' already "
+                    . "exists in the database!";
+                http_response_code(409);
+            }
 
-                $instrument = \NDB_BVL_Instrument::factory(
-                    $instname,
-                    '',
-                    ''
-                );
-                // The quatUser is a MySQL user with CREATE table permissions.
-                // If this user is not configured, the instrument cannot be
-                // automatically installed as the table will not be able to be
-                // created.
-                // `empty` is used instead of `isset` as blank values in the
-                // config file are still considered set.
-                if (empty($db_config['quatUser'])
-                    || empty($db_config['quatPassword'])
-                ) {
-                    // TODO: Provide cleaner feedback when the module is
-                    //  reactified.
-                    echo "Could not install instrument. Please contact your "
-                        . "LORIS administrator.";
-                    throw new \LorisException(
-                        "The installation of $instrument->table.sql failed as "
-                        . "there is no quatUser set in project/config.xml. "
-                        . "The patch at /project/tables_sql/$instrument->table"
-                        . ".sql must be sourced manually."
-                    );
-                }
-                // Install the instrument by directly sourcing the SQL file
-                // generated by `generate_tables_sql_and_testNames.php.
-                // If installation is successful, exec will complete
-                // silently. Otherwise, it will return the exit code and error
-                // messsage from MySQL. This will be stored in $result and
-                // logged via LorisException.
-                exec(
-                    "mysql".
-                    " -h" . escapeshellarg($db_config['host']).
-                    " -u" . escapeshellarg($db_config['quatUser']).
-                    " -p" . escapeshellarg($db_config['quatPassword']).
-                    " " . escapeshellarg($db_config['database']).
-                    " < " . $this->path . "project/tables_sql/".
-                    escapeshellarg($instrument->table . '.sql'),
+            $file_path = $this->path . "project/instruments/" .
+                        $_FILES['install_file']['name'];
+            if (file_exists($file_path)) {
+                $this->tpl_data['feedback'] = "'$instname' has already been"
+                    . "uploaded. Please contact your administrator to install "
+                    . "the instrument.";
+                http_response_code(409);
+            }
+
+            move_uploaded_file($_FILES['install_file']['tmp_name'], $file_path);
+            chmod($file_path, 0644);
+            // Scripts in tools/ often make relative imports, so we must change
+            // our effective directory in order to use them below.
+            chdir($this->path . "/tools");
+            
+            // Use tools/ script to generate an SQL patch file based on the 
+            // structure of the uploaded .linst file.
+            // If no quatUser is configured, automatic installation is not 
+            // possible, so this is the last step.
+            $db_config = $config->getSetting('database');
+            exec(
+                'php generate_tables_sql_and_testNames.php < '
+                . escapeshellarg($file_path)
+            );
+            if (!$quat_user_is_configured) {
+                http_response_code(201);
+                return;
+            }
+
+            // Install the instrument by directly sourcing the SQL file
+            // generated by `generate_tables_sql_and_testNames.php`.
+            // If installation is successful, exec will complete
+            // silently. Otherwise, it will return the exit code and error
+            // messsage from MySQL. This will be stored in $result and
+            // logged via LorisException.
+            $instrument = \NDB_BVL_Instrument::factory(
+                $instname,
+                '',
+                ''
+            );
+            exec(
+                "mysql".
+                " -h" . escapeshellarg($db_config['host']).
+                " -u" . escapeshellarg($db_config['quatUser']).
+                " -p" . escapeshellarg($db_config['quatPassword']).
+                " " . escapeshellarg($db_config['database']).
+                " < " . $this->path . "project/tables_sql/".
+                escapeshellarg($instrument->table . '.sql'),
                     $output, // $output and $status are set automatically
-                    $status  //     by exec and so need not be declared above.
+                    $status  // by exec and so need not be declared above.
                 );
-                // In MSQL, an exit code of 0 is a success and 1 means failure
-                if ($status) {
-                    // TODO: Provide cleaner feedback when the module is
-                    //  reactified.
-                    echo "Could not install instrument. Please contact your "
-                        . "LORIS administrator.";
-                    throw new \LorisException(
-                        "The installation of $instrument->table.sql failed. "
-                        . "Either the instrument already exists or LORIS "
-                        . "could not connect to the database using the "
-                        . "credentials supplied in project/config.xml."
-                    );
-                }
+            // In MSQL, an exit code of 0 is a success and 1 means failure
+            if ($status) {
+                // TODO: Provide cleaner feedback when the module is
+                //  reactified.
+                echo "Could not install instrument. Please contact your "
+                    . "LORIS administrator.";
+                throw new \LorisException(
+                    "The installation of $instrument->table.sql failed. "
+                    . "LORIS could not connect to the database using the "
+                    . "credentials supplied in project/config.xml."
+                );
 
             }
         }
@@ -421,5 +438,21 @@ class Instrument_Manager extends \NDB_Menu_Filter
             }
         }
         return 'Appears Valid';
+    }
+
+    /** Return whether the quatUser is properly configured.
+     * The quatUser is a MySQL user with CREATE table permissions. 
+     * `empty` is used instead of `isset` as blank values in the config file 
+     * are still considered set.
+     *
+     * @return bool True if a value for quatUser and quatPassword exist
+     */
+    function isQuatUserConfigured() : bool {
+        $db       = \Database::singleton();
+        $config   = \NDB_Config::singleton();
+        $db_config = $config->getSetting('database');
+
+        return !empty($db_config['quatUser']) 
+            && !empty($db_config['quatPassword']);
     }
 }
