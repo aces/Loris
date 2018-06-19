@@ -47,9 +47,7 @@ class ImagingUploader extends React.Component {
   }
 
   updateFilter(filter) {
-
     this.setState({filter});
-    console.log(filter);
   }
 
   resetFilters() {
