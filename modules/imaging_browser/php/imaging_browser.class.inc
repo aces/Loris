@@ -84,6 +84,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
             $this->acqpid = "AND AcquisitionProtocolID IN (".
                     implode(",", array_keys($scan_id_types)) .")";
             $isFirst      = true;
+            $acqpif       = '';
             foreach ($scan_id_types as $key => $value) {
                 if ($isFirst) {
                     $acqpif = "IF(FIND_IN_SET({$key},GROUP_CONCAT(

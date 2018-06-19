@@ -133,7 +133,7 @@ class Installer
         if (function_exists('json_encode') == false) {
             $this->_lastErr = "JSON functions do not appear to be accessible "
                 . "in your PHP installation. If you're running on Debian or "
-                , "Ubuntu, please install the php-json package.";
+                . "Ubuntu, please install the php-json package.";
             return false;
         }
 

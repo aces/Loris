@@ -837,7 +837,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * override getExaminerNames() can still easily get the config
      * settings and don't need to parse the config file themselves.
      *
-     * @return three element array.
+     * @return array
      */
     function _getCertificationConfig()
     {
@@ -1243,7 +1243,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param elements $elements Array of values submitted on current page.
      * @param array    $rules    Array of rules that have been registered.
      *
-     * @return associative array of errors (fieldname => error message)
+     * @return array of errors (fieldname => error message)
      */
     function XINRunElementRules($elname, $elements, $rules)
     {
@@ -1371,7 +1371,7 @@ class NDB_BVL_Instrument extends NDB_Page
      *
      * @param string $field The field to get from this instrument
      *
-     * @return The value of the field, or false if it's empty.
+     * @return string|false The value of the field, or false if it's empty.
      */
     function getFieldValue($field)
     {
@@ -1935,7 +1935,7 @@ class NDB_BVL_Instrument extends NDB_Page
      *
      * @param array $scoreCols list of scoring fields to null
      *
-     * @return none
+     * @return void
      */
     function _nullScores($scoreCols)
     {
@@ -2040,7 +2040,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param array $Date_taken (optional) The date that the age is to
      *                          be calculated based on.
      *
-     * @return The age of the candidate in an array containing years, months
+     * @return array The age of the candidate in an array containing years, months
      *         and days.
      */
     function getCandidateAge($Date_taken = false)
@@ -2071,7 +2071,7 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Get the candidates PSCID.
      *
-     * @return The candidate's PSCID.
+     * @return string The candidate's PSCID.
      */
     function getPSCID()
     {
