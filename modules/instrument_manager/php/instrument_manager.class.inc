@@ -90,28 +90,40 @@ class Instrument_Manager extends \NDB_Menu_Filter
             && $_POST['install'] == 'Install Instrument'
         ) {
             $instname = basename($_FILES['install_file']['name'], '.linst');
-            // Don't upload the instrument if a version already exists in the
-            // database.
+            // Check the test_names table for the existence of $instname. 
+            // If it is there, tell the user the instrument is already in the 
+            // test battery.
+            // Note that if a user manually deletes entries from the test_names
+            // table and tries to install an instrument with the same name, it
+            // will fail as the instrument table itself will still exist.
+            // This edge-case is logged below.
             $db       = \Database::singleton();
             $sqlSelectOne = "SELECT count(*)".
                             " FROM test_names WHERE Test_name=:testname";
-            $instrument_exists       = $db->pselectOne(
+            $count_result       = $db->pselectOne(
                 $sqlSelectOne,
-                array('testname' => $_FILES['install_file']['name'])
+                array('testname' => $instname)
             );
-            if ($instrument_exists) {
+            if (intval($count_result) > 0) {
                 $this->tpl_data['feedback'] = "Instrument '$instname' already "
-                    . "exists in the database!";
+                    . "exists in the test battery!";
                 http_response_code(409);
+                return;
             }
 
+            // Don't update the file if it already exists on the back-end. 
+            // Instead, inform users that an administrator must install it on
+            // their behalf.
+            // This should only happen for users on a system where installation
+            // is disabled, as the above error will return before this one.
             $file_path = $this->path . "project/instruments/" .
                         $_FILES['install_file']['name'];
             if (file_exists($file_path)) {
-                $this->tpl_data['feedback'] = "'$instname' has already been"
-                    . "uploaded. Please contact your administrator to install "
-                    . "the instrument.";
+                $this->tpl_data['feedback'] = "'$instname.linst' has already "
+                    . "been uploaded. Please contact your administrator to "
+                    . "install the instrument.";
                 http_response_code(409);
+                return;
             }
 
             move_uploaded_file($_FILES['install_file']['tmp_name'], $file_path);
@@ -158,16 +170,16 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 );
             // In MSQL, an exit code of 0 is a success and 1 means failure
             if ($status) {
-                // TODO: Provide cleaner feedback when the module is
-                //  reactified.
-                echo "Could not install instrument. Please contact your "
-                    . "LORIS administrator.";
-                throw new \LorisException(
+                $this->tpl_data['feedback'] = "The installation of "
+                    . "$instrument->table.sql failed. "
+                    . "Please contact your administrator.";
+                error_log(
                     "The installation of $instrument->table.sql failed. "
+                    . "Either: the instrument table exists (but is not in the "
+                    . "test_names table), or "
                     . "LORIS could not connect to the database using the "
                     . "credentials supplied in project/config.xml."
                 );
-
             }
         }
     }
