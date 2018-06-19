@@ -123,6 +123,9 @@ class UserPermissions
         ) {
             return true;
         }
+        if (!isset($this->permissions[$code])) {
+            throw new ConfigurationException("Invalid permission code $code");
+        }
         return false;
     }
 
