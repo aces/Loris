@@ -133,7 +133,8 @@ class FilterForm extends React.Component {
         filter[key].value = '';
       }
       filter[key].exactMatch = (type === "SelectElement");
-    } else if (filter && key && value === '') {
+    }
+    if (filter && key && value === '') {
       delete filter[key];
     }
     return filter;
