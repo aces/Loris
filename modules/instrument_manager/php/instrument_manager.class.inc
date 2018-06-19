@@ -109,7 +109,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 if (empty($db_config['quatUser'])
                     || empty($db_config['quatPassword'])
                 ) {
-                    // TODO: Provide cleaner feedback when the module is 
+                    // TODO: Provide cleaner feedback when the module is
                     //  reactified.
                     echo "Could not install instrument. Please contact your "
                         . "LORIS administrator.";
@@ -139,7 +139,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 );
                 // In MSQL, an exit code of 0 is a success and 1 means failure
                 if ($status) {
-                    // TODO: Provide cleaner feedback when the module is 
+                    // TODO: Provide cleaner feedback when the module is
                     //  reactified.
                     echo "Could not install instrument. Please contact your "
                         . "LORIS administrator.";
