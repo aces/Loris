@@ -288,7 +288,6 @@ class Edit_User extends \NDB_Form
                 )
             );
 
-
             // START EXAMINER UPDATE
             // If examiner not in table add him,
             // otherwise update the radiologist field and get the current sites
