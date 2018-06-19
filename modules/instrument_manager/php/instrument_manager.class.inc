@@ -106,7 +106,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 // created.
                 // `empty` is used instead of `isset` as blank values in the
                 // config file are still considered set.
-                if (empty($db_config['quatUser']) || empty($db_config['quatPassword'])) {
+                if (empty($db_config['quatUser'])
+                    || empty($db_config['quatPassword'])
+                ) {
                     throw new \LorisException(
                         "The installation of $instrument->table.sql failed as "
                         . "there is no quatUser set in project/config.xml. "
@@ -128,8 +130,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
                     " " . escapeshellarg($db_config['database']).
                     " < " . $this->path . "project/tables_sql/".
                     escapeshellarg($instrument->table . '.sql'),
-                    $output,
-                    $status
+                    $output, // $output and $status are set automatically
+                    $status  //     by exec and so need not be declared above.
                 );
                 // In MSQL, an exit code of 0 is a success and 1 means failure
                 if ($status) {
