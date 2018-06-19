@@ -59,9 +59,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                           "'x' as Table_Valid",
                           "'x' as Pages_Valid",
                          ];
-        $this->validFilters = [
-            '',
-        ];
+        $this->validFilters = [''];
         $this->formToFilter = [];
 
         // Check to see whether the quatUser is configured.
