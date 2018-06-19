@@ -136,7 +136,6 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
         $this->validFilters = [];
         $this->formToFilter = [];
 
-        return true;
     }
 
     /**

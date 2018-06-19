@@ -188,7 +188,6 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function _setupVariables()
     {
-        return true;
     }
 
     /**
@@ -217,7 +216,7 @@ class NDB_Menu_Filter extends NDB_Menu
      *                             ]
      *                      to retrieve the values from.
      *
-     * @return An array of filters in the same form as the $values parameter
+     * @return array of filters in the same form as the $values parameter
      *         that can be saved for future use.
      */
     function _setFilters($values)

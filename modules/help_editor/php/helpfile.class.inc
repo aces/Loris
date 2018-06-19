@@ -81,7 +81,7 @@ class HelpFile
      *
      * @return int  New help file's ID
      */
-    function insert($set)
+    static public function insert($set)
     {
         // create DB object
         $DB =& \Database::singleton();

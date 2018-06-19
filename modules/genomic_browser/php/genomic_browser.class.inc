@@ -182,7 +182,6 @@ class Genomic_Browser extends \NDB_Menu_Filter
 
         $this->formToFilter = $ftf;
 
-        return true;
     }
 
     /**
