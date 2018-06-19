@@ -61,22 +61,22 @@ class Instrument_Manager extends \NDB_Menu_Filter
                          ];
         $this->validFilters = [];
         $this->formToFilter = [];
-        
+
         // Check to see whether the quatUser is configured.
         // If this user is not configured, the instrument cannot be
         // automatically installed as the table will not be able to be
         // created.
         $quat_user_is_configured = $this->isQuatUserConfigured();
-        if(!$quat_user_is_configured) {
+        if (!$quat_user_is_configured) {
             $this->tpl_data['can_install'] = false;
-            $this->tpl_data['feedback'] = "Instrument installation is not "
+            $this->tpl_data['feedback']    = "Instrument installation is not "
                 . "possible given the current server configuration. You can "
                 . "upload files but they will have to be installed by your "
                 . "LORIS administrator.";
         }
 
         // Ensure we can write to folders in project/. If not, the upload
-        // form will not be created on the front-end. Warnings will explain to 
+        // form will not be created on the front-end. Warnings will explain to
         // to the user that installation is not possible.
         $writable = is_writable($this->path . "project/instruments")
             && is_writable($this->path . "project/tables_sql");
@@ -90,17 +90,17 @@ class Instrument_Manager extends \NDB_Menu_Filter
             && $_POST['install'] == 'Install Instrument'
         ) {
             $instname = basename($_FILES['install_file']['name'], '.linst');
-            // Check the test_names table for the existence of $instname. 
-            // If it is there, tell the user the instrument is already in the 
+            // Check the test_names table for the existence of $instname.
+            // If it is there, tell the user the instrument is already in the
             // test battery.
             // Note that if a user manually deletes entries from the test_names
             // table and tries to install an instrument with the same name, it
             // will fail as the instrument table itself will still exist.
             // This edge-case is logged below.
-            $db       = \Database::singleton();
+            $db           = \Database::singleton();
             $sqlSelectOne = "SELECT count(*)".
                             " FROM test_names WHERE Test_name=:testname";
-            $count_result       = $db->pselectOne(
+            $count_result = $db->pselectOne(
                 $sqlSelectOne,
                 array('testname' => $instname)
             );
@@ -111,7 +111,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 return;
             }
 
-            // Don't update the file if it already exists on the back-end. 
+            // Don't update the file if it already exists on the back-end.
             // Instead, inform users that an administrator must install it on
             // their behalf.
             // This should only happen for users on a system where installation
@@ -131,10 +131,10 @@ class Instrument_Manager extends \NDB_Menu_Filter
             // Scripts in tools/ often make relative imports, so we must change
             // our effective directory in order to use them below.
             chdir($this->path . "/tools");
-            
-            // Use tools/ script to generate an SQL patch file based on the 
+
+            // Use tools/ script to generate an SQL patch file based on the
             // structure of the uploaded .linst file.
-            // If no quatUser is configured, automatic installation is not 
+            // If no quatUser is configured, automatic installation is not
             // possible, so this is the last step.
             $db_config = $config->getSetting('database');
             exec(
@@ -165,9 +165,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 " " . escapeshellarg($db_config['database']).
                 " < " . $this->path . "project/tables_sql/".
                 escapeshellarg($instrument->table . '.sql'),
-                    $output, // $output and $status are set automatically
-                    $status  // by exec and so need not be declared above.
-                );
+                $output, // $output and $status are set automatically
+                $status  // by exec and so need not be declared above.
+            );
             // In MSQL, an exit code of 0 is a success and 1 means failure
             if ($status) {
                 $this->tpl_data['feedback'] = "The installation of "
@@ -452,19 +452,21 @@ class Instrument_Manager extends \NDB_Menu_Filter
         return 'Appears Valid';
     }
 
-    /** Return whether the quatUser is properly configured.
-     * The quatUser is a MySQL user with CREATE table permissions. 
-     * `empty` is used instead of `isset` as blank values in the config file 
+    /**
+     * Return whether the quatUser is properly configured.
+     * The quatUser is a MySQL user with CREATE table permissions.
+     * `empty` is used instead of `isset` as blank values in the config file
      * are still considered set.
      *
      * @return bool True if a value for quatUser and quatPassword exist
      */
-    function isQuatUserConfigured() : bool {
-        $db       = \Database::singleton();
-        $config   = \NDB_Config::singleton();
+    function isQuatUserConfigured() : bool
+    {
+        $db        = \Database::singleton();
+        $config    = \NDB_Config::singleton();
         $db_config = $config->getSetting('database');
 
-        return !empty($db_config['quatUser']) 
+        return !empty($db_config['quatUser'])
             && !empty($db_config['quatPassword']);
     }
 }
