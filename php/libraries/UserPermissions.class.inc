@@ -114,9 +114,6 @@ class UserPermissions
      */
     function hasPermission($code)
     {
-        if (!isset($this->permissions[$code])) {
-            throw new ConfigurationException("Invalid permission code $code");
-        }
         if ($this->permissions[$code] === true) {
             return true;
         }
