@@ -2,7 +2,6 @@
 
 ## Purpose
 
-are sent to participants in a study. It is used to generate a survey
 The Reliability module enables studies to track cross-site and long-term
  reliability of clinician-scored assessments.  For multi-site studies 
 requiring inter-rater agreement in instrument scoring, this tool provides
