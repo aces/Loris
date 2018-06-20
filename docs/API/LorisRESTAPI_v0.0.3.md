@@ -1,6 +1,6 @@
 # Loris API - v0.0.3-dev
 
-## 1.0 Overview
+# 1.0 Overview
 
 This document specifies the Loris REST API.
 
@@ -30,7 +30,7 @@ do not require ETags.
 
 DELETE is not supported on any resource defined in this API.
 
-# 1.1 Authentication
+## 1.1 Authentication
 
 If a user is logged in to Loris and can be authenticated using the standard session mechanism,
 no further authentication is required. Requests will be evaluated as requests from that user,
@@ -325,7 +325,7 @@ candidate.
 PUT / PATCH methods are not supported on /candidate in this
 version of the Loris API.
 
-# 3.1 Specific Candidate
+## 3.1 Specific Candidate
 
 If a GET request for a candidate is issued such as
 
@@ -354,7 +354,7 @@ It will return a 200 OK on success, a 404 if the candidate does not exist, and
 a 400 Bad Request if the CandID is invalid (not a 6 digit integer). The same is
 true of all of the API hierarchy under /candidates/$CandID.
 
-### 3.2 Getting Candidate visit data
+## 3.2 Getting Candidate visit data
 
 A GET request of the form:
 
@@ -403,7 +403,7 @@ Any of the Stages may not be present in the returned result if the stage has not
 started yet or is not enabled for this project (ie. if useScreening is false in
 Loris, or Approval has not occurred)
 
-### 3.3 Candidate Instruments
+## 3.3 Candidate Instruments
 ```
 GET /candidates/$CandID/$VisitLabel/instruments
 ```
@@ -426,7 +426,7 @@ SHOULD all be retrievable through the `project` portion of the API.
 
 PUT / PATCH / POST are not currently supported for candidate instruments.
 
-### 3.3 The Candidate Instrument Data
+### 3.3.1 The Candidate Instrument Data
 
 ```
 GET /candidates/$CandID/$VisitLabel/instruments/$InstrumentName[/dde]
@@ -471,7 +471,7 @@ of PATCH requests SHOULD be used rather than a single PUT request for a client w
 
 A 200 OK will be returned on success, and a 404 Not Found if $InstrumentName is not a valid instrument installed in this Loris instance.
 
-### 3.3.1 Instrument flags
+### 3.3.2 Instrument Flags
 ```
 GET /candidates/$CandID/$VisitLabel/instruments/$InstrumentName[/dde]/flags
 PUT /candidates/$CandID/$VisitLabel/instruments/$InstrumentName[/dde]/flags
@@ -566,7 +566,7 @@ Returns raw file with the appropriate MimeType headers for each Filename retriev
 Only `GET` is currently supported, but future versions of this API may include `PUT`
 support to insert new (or processed) data into LORIS.
 
-## 4.3.1 Image Level QC Data
+### 4.3.1 Image Level QC Data
 ```
 GET /candidates/$CandID/$VisitLabel/images/$Filename/qc
 PUT /candidates/$CandID/$VisitLabel/images/$Filename/qc
@@ -641,7 +641,7 @@ GET /candidates/$CandID/$VisitLabel/images/$Filename/format/thumbnail
 This will return a JPEG image that can be used as a thumbnail to represent this
 imaging acquisition statically (such as in the LORIS imaging browser.)
 
-### 4.5 Image Headers
+## 4.5 Image Headers
 The LORIS API allows you to extract headers from the images in a RESTful manner.
 The following methods are defined:
 
