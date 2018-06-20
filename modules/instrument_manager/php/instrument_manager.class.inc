@@ -117,7 +117,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
             // Instead, inform users that an administrator must install it on
             // their behalf.
             // This should only happen for users on a system where automatic
-            // installation is disabled (ie. has no quatUser), as the above 
+            // installation is disabled (ie. has no quatUser), as the above
             // error will return before this one.
             $file_path = $this->path . "project/instruments/" .
                         $_FILES['install_file']['name'];
