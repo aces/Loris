@@ -203,7 +203,16 @@ class UploadForm extends React.Component {
         }.bind(this), false);
         return xhr;
       }.bind(this),
-      success: function(data) {
+      success: (data) => {
+        let errorMessage = this.state.errorMessage;
+        let hasError = this.state.hasError;
+        for (let i in errorMessage) {
+            errorMessage[i] = "";
+            hasError[i] = false;
+        }
+        this.setState({errorMessage: errorMessage, hasError: hasError});
+        console.log(hasError);
+        console.log(errorMessage);
         swal({
           title: "Upload Successful!",
           type: "success"
@@ -233,7 +242,7 @@ class UploadForm extends React.Component {
        
         swal({
           title: "Submission error!",
-          text: "renderedErrors",
+          text: "Please fix the errors on the Upload form",
           html: true,
           type: "error"
         });
