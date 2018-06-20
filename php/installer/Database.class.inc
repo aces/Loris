@@ -14,8 +14,8 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-//namespace LORIS\Installer;
-//use \PDO;
+namespace LORIS\Installer;
+use \PDO;
 
 /**
  * The Installer Database class is like the LORIS database class, except it
@@ -114,7 +114,7 @@ class Database
                 $password
             );
             return true;
-        } catch (Exception $ex) {
+        } catch (\PDOException $ex) {
             return false;
         }
     }

@@ -51,7 +51,7 @@ require_once __DIR__ . "/../php/installer/Installer.class.inc";
 // smarty to use when it gets autoloaded.
 require_once __DIR__ . "/../php/installer/Database.class.inc";
 require_once __DIR__ . "/../php/installer/NDB_Config.class.inc";
-//use \LORIS\Installer\Database as Database;
+use \LORIS\Installer\Database as Database;
 
 $installer = new Installer("../project");
 
@@ -104,17 +104,25 @@ case 'validaterootaccount':
                 break;
             }
         }
-        if ($installer->sourceSchema($_POST) === false) {
-            $tpl_data['error'] = $installer->getLastError();
-            $tpl_data['Page']  = "";
-            break;
+        try {
+            if ($installer->sourceSchema($_POST) === false) {
+                $tpl_data['error'] = $installer->getLastError();
+                $tpl_data['Page']  = "";
+                break;
+            }
+        } catch (Exception $e) {
+
         }
     }
     if (!isset($_POST['use_existing_configs'])) {
-        if ($installer->updateBaseConfig($_POST) === false) {
-            $tpl_data['error'] = $installer->getLastError();
-            $tpl_data['Page']  = "";
-            break;
+        try {
+            if ($installer->updateBaseConfig($_POST) === false) {
+                $tpl_data['error'] = $installer->getLastError();
+                $tpl_data['Page']  = "";
+                break;
+            }
+        } catch (Exception $e) {
+
         }
     }
     if (!Database::canLogIn(
