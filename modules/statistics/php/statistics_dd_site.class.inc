@@ -59,8 +59,8 @@ class Statistics_DD_Site extends statistics_site
     function notexcluded($var)
     {
         $config            =& \NDB_Config::singleton();
-        $excluded_measures  = $config->getSetting('excludedMeasures');
-        
+        $excluded_measures = $config->getSetting('excludedMeasures');
+
         return !in_array($var, $excluded_measures);
     }
 
