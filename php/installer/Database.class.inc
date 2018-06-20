@@ -5,7 +5,7 @@
  * connect using the connection info from there, so this class does the
  * minimal amount that's necessary to bootstrap the installation.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Installer
  * @package  Installer
@@ -13,8 +13,9 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-namespace LORIS\Installer;
-use \PDO;
+
+//namespace LORIS\Installer;
+//use \PDO;
 
 /**
  * The Installer Database class is like the LORIS database class, except it
