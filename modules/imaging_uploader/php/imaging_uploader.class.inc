@@ -251,7 +251,14 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $temp_file = $file->fileInfo['tmp_name'];
         $temp_dir  = $this->tempdir();
         $db        = \Database::singleton();
-        $errors    = array();
+        $file_name_error = "";
+        $errors    = array(
+                         'IsPhantom'  => array(),
+                         'candID'     => array(),
+                         'pSCID'      => array(),
+                         'visitLabel' => array(),
+                         'mri_file'   => array()
+                     );
         $config    = \NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
             'imaging_modules'
@@ -261,13 +268,13 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $file_name = $file->fileInfo['name'];
         $file_path = $temp_dir. "/". $file_name;
         $isPhantom = $args['values']['IsPhantom'];
-
-        if (empty($isPhantom)) {
-            array_push(
-                $errors,
-                "Make sure 'Are these Phantom Scans' is filled out."
-            );
-        }
+        
+        //if (empty($isPhantom)) {
+            //array_push(
+                //$errors['IsPhantom'],
+                //"Make sure 'Are these Phantom Scans' is filled out."
+            //);
+        //}
         ///////////////////////////////////////////////////////////////////////
         /////////Validate the advanced Options only if it's not a Phantom//////
         ///////////////////////////////////////////////////////////////////////
@@ -278,12 +285,12 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             $candid      = trim($args['values']['candID']);
             $pscid       = trim($args['values']['pSCID']);
             $visit_label = trim($args['values']['visitLabel']);
-            if ((empty($candid)) || (empty($pscid)) || (empty($visit_label))) {
-                array_push(
-                    $errors,
-                    "Make sure the CandID, PSCID and Visit Label are filled out."
-                );
-            }
+            //if ((empty($candid)) || (empty($pscid)) || (empty($visit_label))) {
+                //array_push(
+                    //$errors[$candid],
+                    //"Make sure the CandID, PSCID and Visit Label are filled out."
+                //);
+            //}
             ///////////////////////////////////////////////////////////////////////
             ///////////    Make sure the file name matches the format   ///////////
             ///////////         $pscid_$candid_$visit_label             ///////////
@@ -295,12 +302,10 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             if ((!preg_match("/^{$pcv}\.(zip|tgz|tar.gz)/", $file_name))
                 && (!preg_match("/^{$pcvu}.*(\.(zip|tgz|tar.gz))/", $file_name))
             ) {
-                array_push(
-                    $errors,
-                    "File name must match <strong>" . $pcv . "</strong>" .
-                    " or begin with <strong>" . "\"". $pcvu . "\"" . "</strong>" .
-                    ", and have the extension of .tgz, tar.gz or .zip."
-                );
+                     $file_name_error =                     
+                     "File name must match " . $pcv .
+                     " or begin with " . "\"". $pcvu . "\"" .
+                     ", and have the extension of .tgz, tar.gz or .zip.";
             }
 
             ///////////////////////////////////////////////////////////////////////
@@ -328,43 +333,38 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
 
                 if (sizeOf($candidate) == 0) {
                     array_push(
-                        $errors,
-                        "The CandID <strong>" . $candid .
-                        "</strong> does not exist in the database."
-                    );
+                        $errors["candID"],
+                        "The CandID " . $candid .
+                        " does not exist in the database.");
                 } else {
                     if (!$candidate['candid_with_pscid']) {
-                        array_push(
-                            $errors,
-                            "Invalid PSCID <strong>" . $pscid . "</strong>" .
-                            " for CandID <strong>" . $candid . "</strong>" .
+                         array_push($errors["pSCID"],
+                             "Invalid PSCID " . $pscid .
+                            " for CandID " . $candid .
                             ". Check that you entered the correct" .
-                            " PSCID and CandID."
-                        );
+                            " PSCID and CandID.");
                     }
                     if (!$candidate['visit_label']) {
-                        array_push(
-                            $errors,
-                            "Invalid Visit Label <strong>" . $visit_label .
-                            "</strong> for CandID <strong>" . $candid .
-                            "</strong>. Check that you entered the correct" .
-                            " Visit Label and CandID."
-                        );
+                            array_push($errors["visitLabel"],
+                            "Invalid Visit Label " . $visit_label .
+                            " for CandID " . $candid .
+                            ". Check that you entered the correct" .
+                            " Visit Label and CandID.");
                     }
                     if ($candidate['candidate_active'] == 'N') {
                         array_push(
-                            $errors,
-                            "The candidate associated with CandID <strong>" .
-                            $candid . "</strong> and PSCID <strong>" .
-                            $pscid . "</strong> is not active in the database."
+                            $errors["pSCID"],
+                            "The candidate associated with CandID " .
+                            $candid . " and PSCID " .
+                            $pscid . " is not active in the database."
                         );
                     }
                     if ($candidate['session_active'] == 'N') {
                         array_push(
-                            $errors,
-                            "The session associated with CandID <strong>" .
-                            $candid . "</strong> and Visit Label <strong>" .
-                            $visit_label . "</strong> is not active in".
+                            $errors["visitLabel"],
+                            "The session associated with CandID " .
+                            $candid . " and Visit Label " .
+                            $visit_label . " is not active in".
                             " the database."
                         );
                     }
@@ -377,13 +377,24 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         if (!$this->isCompressed($temp_file)) {
             array_push(
-                $errors,
+                $errors["mri_file"],
                 "The file $temp_file is not of type".
                 " .tgz, .tar.gz or .zip."
             );
         }
-
-        if (count($errors) > 0) {
+        
+        $validation_errors = false;
+        foreach ($errors as $error) {
+            if (count($error) != 0) {
+               $validation_errors = true;
+            }
+        }
+        if ($validation_errors) {
+            http_response_code(400);
+            header('Content-Type: application/json; charset=UTF-8');
+            exit(json_encode(['errors' => $errors]));
+        } else if (strlen($file_name_error) != 0) {
+            array_push($errors["mri_file"], $file_name_error);
             http_response_code(400);
             header('Content-Type: application/json; charset=UTF-8');
             exit(json_encode(['errors' => $errors]));
