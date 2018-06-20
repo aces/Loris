@@ -48,13 +48,8 @@ class EditExaminer extends \NDB_Form
         $userCenter   = $user->getCenterIDs();
 
         $certification = $config->getSetting('Certification');
-        if (isset($certification['EnableCertification'])) {
-            $useCertification = $certification['EnableCertification'];
-        } else {
-            $useCertification = false;
-        }
 
-        if ($useCertification) {
+        if ($certification['EnableCertification'] ?? false) {
             $cids      = $DB->pselect(
                 "SELECT epr.centerID 
                  FROM examiners e 
