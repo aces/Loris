@@ -63,6 +63,9 @@ class Statistics_DD_Site extends statistics_site
         $excluded_measures = array($statisticsConfig['excludedMeasures']);
 
         $key = array_search($var, $excluded_measures);
+        if ($key === false) {
+            return true;
+        }
         foreach ($excluded_measures as $key=>$val) {
             if (in_array($var, $val) || $var == $val) {
                 return false;
