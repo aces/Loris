@@ -19,7 +19,7 @@
       {foreach from=$AllVisits item=visit name=VisitLoop}
       <td>
          {foreach from=$data[item].incompletes[$visit] item=Candidate name=CandLoop}
-            <a href="{$baseurl}/{$Candidate.test_url}/?candID={$Candidate.CandID}&sessionID={$Candidate.SessionID}&commentID={$Candidate.CommentID}">{$Candidate.PSCID}</a>
+            <a href="{$baseurl}/instruments/{$Candidate.test_url}/?candID={$Candidate.CandID}&sessionID={$Candidate.SessionID}&commentID={$Candidate.CommentID}">{$Candidate.PSCID}</a>
             <br>
          {/foreach}
       </td>
