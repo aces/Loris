@@ -302,7 +302,9 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             ////////////////////////////////////////////////////////////////
             if ((!empty($candid)) && (!empty($pscid)) && (!empty($visit_label))) {
                 $candidate = $db->pselectRow(
-                    "SELECT c2.candid AS candid_with_pscid, s.visit_label,
+                    "SELECT c.candid AS candid,
+                     c2.candid AS candid_with_pscid,
+                     s.visit_label,
                      c2.active AS candidate_active,
                      s.active AS session_active
                      FROM candidate c
@@ -318,7 +320,9 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                     ]
                 );
 
-                if (sizeOf($candidate) == 0) {
+                if (sizeOf($candidate) == 0 || (sizeOf($candidate) !== 0
+                    && $candidate["candid"] !== $candid)
+                ) {
                     array_push(
                         $errors["candID"],
                         "The CandID " . $candid .
@@ -376,8 +380,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             ) {
                      $file_name_error
                          = "File name must match " . $pcv .
-                     " or begin with " . "\"". $pcvu . "\"" .
-                     ", and have the extension of .tgz, tar.gz or .zip.";
+                     " or begin with " . "\"". $pcvu . "\"";
             }
         }
         ///////////////////////////////////////////////////////////////////////
@@ -387,7 +390,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         if (!$this->isCompressed($temp_file)) {
             array_push(
                 $errors["mri_file"],
-                "The file $temp_file is not of type".
+                "The file $file_name is not of type".
                 " .tgz, .tar.gz or .zip."
             );
         }
