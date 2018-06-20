@@ -106,7 +106,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     }
 
      /**
-     * Sets up the smarty menu filter items for the imaging uploader
+     * Sets up the menu filter items for the imaging uploader
      *
      * @return none
      */
@@ -134,9 +134,17 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         ) { //catch file overload error...
             $upload_max_size = ini_get('upload_max_filesize');
             $error_message   = "Please make sure files are not larger than " .
-                 $upload_max_size . "Please refresh this page to return ".
-                "to the Imaging Uploader module";
-            $tpl_data['error_message'][] =  $error_message;
+                                $upload_max_size;
+            http_response_code(400);
+            $errors = array(
+                        'IsPhantom'  => array(),
+                        'candID'     => array(),
+                        'pSCID'      => array(),
+                        'visitLabel' => array(),
+                        'mri_file'   => array($error_message)
+                     );
+            header('Content-Type: application/json; charset=UTF-8');
+            exit(json_encode(['errors' => $errors]));
         }
         return true;
     }
@@ -229,21 +237,25 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
 
         return true;
     }
+
     /**
-     * Validates the file to be uploaded by ensuring that:
+     * If file is not a Phantom Scan, validates advanced options by ensuring that: 
+     *  - The CandID exists in the database
+     *  - The PSCID is valid for the CandID
+     *  - The Visit Label is valid for the CandID
+     *  - The candidate that was input is active in the database
+     *  - The session that was input is active in the database
+     *  - Once CandID, PSCID, and Visit Label are validated, checks if file has
+     *       proper naming convention: PSCID_CandID_VisitLabel
+     * In all cases, validates the file to be uploaded by ensuring that:
      *  - The uploaded file is compressed and is of type:
      *       .gz, .zip or .tgz
-     *  - The fields   CandID, PSCID  and VisitLabel are filled out
-     *  - The PSCID, CandID and VisitLabel that were input exist in the database
-     *  - The candidate that was input is active in the database
-     *  - The session is active in the database
      *  - The uploaded file is copied to a newly created temporary folder
      *
      * @param FILE  $file The uploaded file
      * @param Array $args The list of arguments
      *
-     * @return Array  Returns an array of errors or
-     * boolean if it's true
+     * @return true on success, throws error otherwise
      */
     function isValid($file, $args)
     {
@@ -251,7 +263,6 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $temp_file = $file->fileInfo['tmp_name'];
         $temp_dir  = $this->tempdir();
         $db        = \Database::singleton();
-        $file_name_error = "";
         $errors    = array(
                          'IsPhantom'  => array(),
                          'candID'     => array(),
@@ -259,6 +270,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                          'visitLabel' => array(),
                          'mri_file'   => array()
                      );
+        $file_name_error = "";
         $config    = \NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
             'imaging_modules'
@@ -269,28 +281,13 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $file_path = $temp_dir. "/". $file_name;
         $isPhantom = $args['values']['IsPhantom'];
         
-        //if (empty($isPhantom)) {
-            //array_push(
-                //$errors['IsPhantom'],
-                //"Make sure 'Are these Phantom Scans' is filled out."
-            //);
-        //}
         ///////////////////////////////////////////////////////////////////////
         /////////Validate the advanced Options only if it's not a Phantom//////
         ///////////////////////////////////////////////////////////////////////
         if ($args['values']['IsPhantom']=='N') {
-            ///////////////////////////////////////////////////////////////////////
-            ////////////// make sure the advanced options are filled out///////////
-            ///////////////////////////////////////////////////////////////////////
             $candid      = trim($args['values']['candID']);
             $pscid       = trim($args['values']['pSCID']);
             $visit_label = trim($args['values']['visitLabel']);
-            //if ((empty($candid)) || (empty($pscid)) || (empty($visit_label))) {
-                //array_push(
-                    //$errors[$candid],
-                    //"Make sure the CandID, PSCID and Visit Label are filled out."
-                //);
-            //}
             ///////////////////////////////////////////////////////////////////////
             ///////////    Make sure the file name matches the format   ///////////
             ///////////         $pscid_$candid_$visit_label             ///////////
