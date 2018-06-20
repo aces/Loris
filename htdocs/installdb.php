@@ -159,14 +159,10 @@ case 'createmysqlaccount':
             break;
         }
     }
-    try {
-        if ($installer->resetFrontEndAdmin($_POST) === false) {
-            $tpl_data['error'] = $installer->getLastError();
-            $tpl_data['Page']  = "MySQLUserPrompt";
-            break;
-        }
-    } catch (Exception $e) {
-
+    if ($installer->resetFrontEndAdmin($_POST) === false) {
+        $tpl_data['error'] = $installer->getLastError();
+        $tpl_data['Page']  = "MySQLUserPrompt";
+        break;
     }
 
     if ($installer->configWritable()) {
