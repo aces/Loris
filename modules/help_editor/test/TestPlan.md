@@ -34,10 +34,9 @@
     [Manual Testing]
 18. Check filter expansion.
     [Manual Testing]
-19. Test Reset Button - In the Help Editor , add content and click on Reset. Make sure the none of the recent changes were
+19. Test Reset Button - In the Help Editor, add content and click on Reset. Make sure that none of the recent changes were
     saved and the page reloads with the default content.
     [Manual Testing]
-20. Test Preview Button - In the Help Editor, update title , content and click on the Preview button. Make sure
-    the recent changes are visible in the help side panel. Continue updating the content and click review button should
-    show the latest help content in the side panel.
+20. Test Preview Button - In the Help Editor, update title and content, and click on the Preview button. Make sure
+    the recent changes are visible in the Help side panel. Continue updating the content and clicking the 'Preview' button. The latest help content should show in the side panel.
     [Manual Testing]
