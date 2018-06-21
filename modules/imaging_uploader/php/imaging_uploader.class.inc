@@ -106,7 +106,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     }
 
      /**
-     * Sets up the smarty menu filter items for the imaging uploader
+     * Sets up the menu filter items for the imaging uploader
      *
      * @return none
      */
@@ -134,9 +134,17 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         ) { //catch file overload error...
             $upload_max_size = ini_get('upload_max_filesize');
             $error_message   = "Please make sure files are not larger than " .
-                 $upload_max_size . "Please refresh this page to return ".
-                "to the Imaging Uploader module";
-            $tpl_data['error_message'][] =  $error_message;
+                                $upload_max_size;
+            http_response_code(400);
+            $errors = array(
+                       'IsPhantom'  => array(),
+                       'candID'     => array(),
+                       'pSCID'      => array(),
+                       'visitLabel' => array(),
+                       'mri_file'   => array($error_message),
+                      );
+            header('Content-Type: application/json; charset=UTF-8');
+            exit(json_encode(['errors' => $errors]));
         }
         return true;
     }
@@ -188,7 +196,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
        *
        * @param array $values the array of values from the form
        *
-       * @return true on success, false othewise
+       * @return true on success, false otherwise
        */
     function _saveFile($values)
     {
@@ -227,30 +235,27 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         //proccesses them (including verify, move, and import steps)
         $file->processFiles();
 
-        //display error messages
-        if (!empty($file->errorLog)) {
-            while (list($fileType,$fileErrors)=each($file->errorLog)) {
-                foreach ($fileErrors AS $error) {
-                    throw new \LorisException(" $fileType: $error ");
-                }
-            }
-            return false;
-        }
         return true;
     }
+
     /**
-     * Validates the file to be uploaded by ensuring that:
+     * If file is not Phantom, validates advanced options by ensuring that:
+     *  - The CandID exists in the database
+     *  - The PSCID is valid for the CandID
+     *  - The Visit Label is valid for the CandID
+     *  - The candidate that was input is active in the database
+     *  - The session that was input is active in the database
+     *  - Once CandID, PSCID, and Visit Label are validated, checks if file has
+     *       proper naming convention: PSCID_CandID_VisitLabel
+     * In all cases, validates the file to be uploaded by ensuring that:
      *  - The uploaded file is compressed and is of type:
      *       .gz, .zip or .tgz
-     *  - The fields   CandID, PSCID  and VisitLabel are filled out
-     *  - The inputted PSCID,  CandID and VisitLabel exist in the database
      *  - The uploaded file is copied to a newly created temporary folder
      *
      * @param FILE  $file The uploaded file
      * @param Array $args The list of arguments
      *
-     * @return Array  Returns an array of errors or
-     * boolean if it's true
+     * @return true on success, throws error otherwise
      */
     function isValid($file, $args)
     {
@@ -258,8 +263,19 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $temp_file = $file->fileInfo['tmp_name'];
         $temp_dir  = $this->tempdir();
         $db        = \Database::singleton();
-        $errors    = array();
-        $config    = \NDB_Config::singleton();
+
+        // creates associative array to store error messages for each form element
+        $errors = array(
+                   'IsPhantom'  => array(),
+                   'candID'     => array(),
+                   'pSCID'      => array(),
+                   'visitLabel' => array(),
+                   'mri_file'   => array(),
+                  );
+        // creates empty string variable to store error message for wrong file name
+        $file_name_error = "";
+
+        $config = \NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
             'imaging_modules'
         );
@@ -268,66 +284,103 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $file_name = $file->fileInfo['name'];
         $file_path = $temp_dir. "/". $file_name;
         $isPhantom = $args['values']['IsPhantom'];
-        if (empty($isPhantom)) {
-            $errors[] ="Make sure 'Are these Phantom Scans' is filled out.
-            Please refresh this page to return to the Imaging Uploader module";
-        }
         ///////////////////////////////////////////////////////////////////////
         /////////Validate the advanced Options only if it's not a Phantom//////
         ///////////////////////////////////////////////////////////////////////
         if ($args['values']['IsPhantom']=='N') {
-            ///////////////////////////////////////////////////////////////////////
-            ////////////// make sure the advanced options are filled out///////////
-            ///////////////////////////////////////////////////////////////////////
             $candid      = trim($args['values']['candID']);
             $pscid       = trim($args['values']['pSCID']);
             $visit_label = trim($args['values']['visitLabel']);
-            if ((empty($candid)) || (empty($pscid)) || (empty($visit_label))) {
-                $errors[] ="Make sure the Cand ID, PSCID and Visit Label are ".
-                "filled out. Please refresh this page to return to the Imaging
-                Uploader module.";
-            }
 
+            ////////////////////////////////////////////////////////////////
+            //////     checks if candid exists                        //////
+            //////     checks if pscid is valid for candid            //////
+            //////     checks if visit_label is valid for candid      //////
+            //////     checks if candidate is active                  //////
+            //////     checks if session is active                    //////
+            //////     stores error messages in associative array     //////
+            ////////////////////////////////////////////////////////////////
+            if ((!empty($candid)) && (!empty($pscid)) && (!empty($visit_label))) {
+                $candidate = $db->pselectRow(
+                    "SELECT c.candid AS candid,
+                     c2.candid AS candid_with_pscid,
+                     s.visit_label,
+                     c2.active AS candidate_active,
+                     s.active AS session_active
+                     FROM candidate c
+                     LEFT JOIN candidate c2
+                     ON (c.candid=c2.candid AND c2.pscid = :pid)
+                     LEFT JOIN session s
+                     ON (s.candid=c.candid and s.visit_label = :vlabel)
+                     WHERE c.candid = :cid",
+                    [
+                     ':cid'    => $candid,
+                     ':pid'    => $pscid,
+                     ':vlabel' => $visit_label,
+                    ]
+                );
+
+                if (sizeOf($candidate) == 0 || (sizeOf($candidate) !== 0
+                    && $candidate["candid"] !== $candid)
+                ) {
+                    array_push(
+                        $errors["candID"],
+                        "The CandID " . $candid .
+                        " does not exist in the database."
+                    );
+                } else {
+                    if (!$candidate['candid_with_pscid']) {
+                         array_push(
+                             $errors["pSCID"],
+                             "Invalid PSCID " . $pscid .
+                             " for CandID " . $candid .
+                             ". Check that you entered the correct" .
+                             " PSCID and CandID."
+                         );
+                    }
+                    if (!$candidate['visit_label']) {
+                            array_push(
+                                $errors["visitLabel"],
+                                "Invalid Visit Label " . $visit_label .
+                                " for CandID " . $candid .
+                                ". Check that you entered the correct" .
+                                " Visit Label and CandID."
+                            );
+                    }
+                    if ($candidate['candidate_active'] == 'N') {
+                        array_push(
+                            $errors["pSCID"],
+                            "The candidate associated with CandID " .
+                            $candid . " and PSCID " .
+                            $pscid . " is not active in the database."
+                        );
+                    }
+                    if ($candidate['session_active'] == 'N') {
+                        array_push(
+                            $errors["visitLabel"],
+                            "The session associated with CandID " .
+                            $candid . " and Visit Label " .
+                            $visit_label . " is not active in".
+                            " the database."
+                        );
+                    }
+                }
+            }
             ///////////////////////////////////////////////////////////////////////
             ///////////    Make sure the file name matches the format   ///////////
             ///////////         $pscid_$candid_$visit_label             ///////////
             ///////////              OR starts with                     ///////////
             ///////////         $pscid_$candid_$visit_label_            ///////////
+            ///////////    Stores error message in string variable      ///////////
             ///////////////////////////////////////////////////////////////////////
             $pcv  = $pscid . "_" . $candid . "_" . $visit_label;
             $pcvu = $pcv . "_";
             if ((!preg_match("/^{$pcv}\.(zip|tgz|tar.gz)/", $file_name))
                 && (!preg_match("/^{$pcvu}.*(\.(zip|tgz|tar.gz))/", $file_name))
             ) {
-                    $errors[] = "File name must match " . $pcv .
-                    " or begin with " . "\"". $pcvu . "\"" .
-                    ", and have the extension of .tgz, tar.gz or .zip";
-            }
-
-            ///////////////////////////////////////////////////////////////////////
-            //////check to see if candid/pscid and visit-label exist///////////////
-            ///////////////////////////////////////////////////////////////////////
-            if ((!empty($candid)) && (!empty($pscid)) && (!empty($visit_label))) {
-                $result = $db->pselectOne(
-                    "SELECT COUNT(*) FROM session s
-                     JOIN candidate c ON (c.candid=s.candid)
-                     WHERE s.Visit_label = :vlabel
-                     AND c.pscid = :pid AND c.candid = :cid",
-                    [
-                     ':cid'    => $candid,
-                     ':vlabel' => $visit_label,
-                     ':pid'    => $pscid,
-                    ]
-                );
-
-                if ($result == 0) {
-                    $errors[] = "Make sure you enter the CandID: $candid,".
-                                " PSCID: $pscid and the corresponding".
-                                " Visit-label: $visit_label. Candidate and".
-                                " corresponding visit label must already be" .
-                                " created in the database. Please refresh this".
-                                " page to return to the Imaging Uploader module";
-                }
+                     $file_name_error
+                         = "File name must match " . $pcv .
+                     " or begin with " . "\"". $pcvu . "\"";
             }
         }
         ///////////////////////////////////////////////////////////////////////
@@ -335,13 +388,32 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         //////////////.gz, .zip or .tgz////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
         if (!$this->isCompressed($temp_file)) {
-            $errors[] = "The file $temp_file is not of type".
-                        " .tgz, .tar.gz or .zip. Please refresh this
-                        page to return to the Imaging Uploader module";
+            array_push(
+                $errors["mri_file"],
+                "The file $file_name is not of type".
+                " .tgz, .tar.gz or .zip."
+            );
         }
-
-        if (count($errors) > 0) {
-            return $errors;
+        // Loops through associative array of error messages
+        // If there are error messages, array is passed to front end
+        // If there are no error messages but the file name is wrong,
+        // file name error is added to array and array is passed to front end
+        // This way, file name error is thrown after other fields are validated
+        $associative_array_errors = false;
+        foreach ($errors as $error) {
+            if (count($error) != 0) {
+                $associative_array_errors = true;
+            }
+        }
+        if ($associative_array_errors) {
+            http_response_code(400);
+            header('Content-Type: application/json; charset=UTF-8');
+            exit(json_encode(['errors' => $errors]));
+        } else if (strlen($file_name_error) != 0) {
+            array_push($errors["mri_file"], $file_name_error);
+            http_response_code(400);
+            header('Content-Type: application/json; charset=UTF-8');
+            exit(json_encode(['errors' => $errors]));
         }
         ///////////////////////////////////////////////////////////////////////
         /////////copy the temporary file to a temporary directory//////////////
