@@ -19,5 +19,5 @@ if (!$logged_in) {
     echo "Login failed!\n";
 }
 
-// Get candidate info -- proof of concept for now
-var_dump($api->lorisGet('candidates/'));
+// Do basic testing of responses
+echo $api->lorisGET('candidates/');

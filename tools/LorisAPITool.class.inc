@@ -26,7 +26,7 @@ class LorisAPITool {
         String $url,
         Bool $verbose = false
     ) {
-        $this->loris_base_url = $url;
+        $this->loris_base_url = $this->validate($url);
         $this->verbose = $verbose;
     }
 
@@ -36,7 +36,7 @@ class LorisAPITool {
      */
     function login($loris_username = '', $loris_password = '') : String {
         if (empty($loris_username) || empty($loris_password)) {
-            return '';
+            throw new Exception("Username or password is empty!");
         }
         $endpoint = "login/";
         $post_body = [
@@ -44,7 +44,11 @@ class LorisAPITool {
             "password" => $loris_password,
         ];
 
-        $json = json_decode($this->lorisPost($endpoint, $post_body));
+        $response = $this->lorisPost($endpoint, $post_body);
+        if (empty($response)) {
+            return '';
+        }
+        $json = json_decode($response);
 
         // If no JWT token returned, login failed.
         if (!array_key_exists('token', $json)) {
@@ -55,32 +59,16 @@ class LorisAPITool {
     }
 
     /** Generic curl GET request.  Builds the cURL handler and sets the options.
+     * For now, GET requests with data attached are not supported.
      *
      * @param string $url The resource to POST to.
      * @param array $headers Option HTTP Headers to add
      *
      * @return $string The HTTP response to the POST request.
      */
-    function doGet(String $url, $headers = []) : String {
-        /* Build curl and set options */
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        // Follow redirects.
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        // Verbose debugging. 
-        if ($this->verbose) {
-        curl_setopt($ch, CURLOPT_VERBOSE, true);
-        }
-        // Capture response isntead of printing it
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // Attach optional headers if present
-        if ($headers) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        }
-
-        $response = curl_exec($ch);
-        curl_close($ch);
-        return $response;
+    function doGET(String $url, $headers = []) : String {
+        // Set GET as the method with an empty body.
+        return $this->doCurl($url, 'GET', '', $headers);
     }
 
 
@@ -92,19 +80,31 @@ class LorisAPITool {
      *
      * @return $string The HTTP response to the POST request.
      */
-    function doPost(String $url, $post_body, $headers = []) : String {
-        // change as needed
+    function doPOST(String $url, $post_body, $headers = []) : String {
+        return $this->doCurl($url, 'POST', $post_body, $headers);
+    }
 
+    function doCurl(String $url, String $method, $post_body, $headers = []) : String {
         /* Build curl and set options */
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
-        // POST mode, activate!
-        curl_setopt($ch, CURLOPT_POST, 1);
+        // Alter curl structure based on HTTP method
+        if ($method === 'POST') {
+            /* POST body */
+            if (empty($post_body)) {
+                throw new Exception("Method selected is POST but body is empty!");
+            }
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
+            curl_setopt($ch, CURLOPT_POST, 1);
+        } else if ($method === 'HEAD') { // TODO: This isn't actually implemented yet
+            curl_setopt($ch, CURLOPT_NOBODY, true); // read: 'no body'
+            curl_setopt($ch, CURLOPT_HEADER, true);
+        }
         // Follow redirects
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         // Verbose debugging. Uncomment if desired.
         if ($this->verbose) {
-        curl_setopt($ch, CURLOPT_VERBOSE, true);
+            curl_setopt($ch, CURLOPT_VERBOSE, true);
         }
         // Capture response isntead of printing it
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -113,9 +113,6 @@ class LorisAPITool {
         if ($headers) {
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         }
-        /* POST body */
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
-
 
         $response = curl_exec($ch);
         curl_close($ch);
@@ -133,7 +130,7 @@ class LorisAPITool {
      *
      * @return string The HTTP response given by doPost.
      */
-    function lorisPost(
+    function lorisPOST(
         String $endpoint, 
         Array $post_body, 
         Array $headers = []
@@ -142,7 +139,7 @@ class LorisAPITool {
         if ($this->loggedIn()) {
             $headers[] = "Authorization: Bearer $this->auth_token";
         }
-        return $this->doPost($full_url, json_encode($post_body), $headers);
+        return $this->doPOST($full_url, json_encode($post_body), $headers);
     }
 
     /** A wrapper for doGet that takes away some of the clutter when making a 
@@ -155,12 +152,15 @@ class LorisAPITool {
      *
      * @return string The HTTP response given by doPost.
      */
-    function lorisGet(String $endpoint, Array $headers = []) : String {
+    function lorisGET(
+        String $endpoint, 
+        Array $headers = []
+    ) : String {
         $full_url = $this->prefix() . $endpoint;
         if ($this->loggedIn()) {
             $headers[] = "Authorization: Bearer $this->auth_token";
         }
-        return $this->doGet($full_url, $headers);
+        return $this->doGET($full_url, $headers);
     }
 
     /** Return API prefix. Avoids the need to type this out everytime we make an API
@@ -172,5 +172,13 @@ class LorisAPITool {
 
     function loggedIn() : Bool {
         return !empty($this->auth_token);
+    }
+
+    function validate(String $url) {
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            throw new Exception("Invalid URL in constructor");
+        }
+        return $url;
+        
     }
 }
