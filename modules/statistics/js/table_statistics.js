@@ -16,12 +16,12 @@ $('#showVL').click(
         }
     }
 );
-
-$(document).ready(
-    function(){
-        $("#bigtable").DynamicTable({ "freezeColumn" : "tpcol" });
-    }
-);
+//freezecolumn not sufficient for complex tables
+//$(document).ready(
+//    function(){
+//        $("#bigtable").DynamicTable({ "freezeColumn" : "tpcol" });
+//    }
+//);
 
 
 function updateDemographicInstrument() {

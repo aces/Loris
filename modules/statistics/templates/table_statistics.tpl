@@ -44,7 +44,8 @@
 </div>
 
 <br>
-<table id="bigtable" class="data table table-primary table-bordered">
+<table id="bigtable" class="data table table-primary table-bordered dynamictable">
+    <thead>
     <tr>
         <th rowspan="1" id="tpcol">Subproject</th>
         {assign var='colspan' value=count($Subcategories)}
@@ -68,6 +69,8 @@
             <th>{$category}</th>
         {/foreach}
     </tr>
+    </thead>
+    <tbody>
     <tr>
         {foreach item=center from=$Centers}
         {* Calculation for the colspan is:
@@ -239,4 +242,5 @@
             {/if}
         {/foreach}
     </tr>
+    </tbody>
 </table>
