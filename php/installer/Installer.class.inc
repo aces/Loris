@@ -12,6 +12,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+use \LORIS\Installer\Database as Database;
 
 /**
  * The Installer class handles all the logic used by the installdb.php
@@ -185,21 +186,30 @@ class Installer
             return false;
         }
         $DB = Database::singleton();
-        if ($DB->connectAndCreate(
-            $values['dbname'],
-            $values['dbadminuser'],
-            $values['dbadminpassword'],
-            $values['dbhost']
-        ) == false
-        ) {
+        try {
+            if ($DB->connectAndCreate(
+                $values['dbname'],
+                $values['dbadminuser'],
+                $values['dbadminpassword'],
+                $values['dbhost']
+            ) == false
+            ) {
+                if (!empty($DB->lastErr)) {
+                    $this->_lastErr = $DB->lastErr;
+                } else {
+                    $this->_lastErr = "Could not connect to MySQL server "
+                        . "and create database with credentials provided.";
+                }
+                return false;
+            }
+        } catch (Exception $e) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
                 $this->_lastErr = "Could not connect to MySQL server "
-                . "and create database with credentials provided.";
+                    . "and create database with credentials provided.";
             }
             return false;
-
         }
         return true;
     }
@@ -214,21 +224,32 @@ class Installer
     function sourceSchema($values)
     {
         $DB = Database::singleton();
-        if ($DB->connect(
-            $values['dbname'],
-            $values['dbadminuser'],
-            $values['dbadminpassword'],
-            $values['dbhost']
-        ) == false
-        ) {
+
+        try {
+            if ($DB->connect(
+                $values['dbname'],
+                $values['dbadminuser'],
+                $values['dbadminpassword'],
+                $values['dbhost']
+            ) == false
+            ) {
+                if (!empty($DB->lastErr)) {
+                    $this->_lastErr = $DB->lastErr;
+                } else {
+                    $this->_lastErr = "Could not connect to MySQL server "
+                        ."with credentials provided.";
+                }
+                return false;
+
+            }
+        } catch (Exception $e) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
                 $this->_lastErr = "Could not connect to MySQL server "
-                ."with credentials provided.";
+                    ."with credentials provided.";
             }
             return false;
-
         }
 
         if ($this->_sourceSchemaFile($DB, "00-schema.sql") == false) {

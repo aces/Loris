@@ -51,7 +51,7 @@ require_once __DIR__ . "/../php/installer/Installer.class.inc";
 // smarty to use when it gets autoloaded.
 require_once __DIR__ . "/../php/installer/Database.class.inc";
 require_once __DIR__ . "/../php/installer/NDB_Config.class.inc";
-//use \LORIS\Installer\Database as Database;
+use \LORIS\Installer\Database as Database;
 
 $installer = new Installer("../project");
 
