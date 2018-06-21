@@ -8,6 +8,7 @@
  * Users of the class will be able to sequence API calls quickly and write unit
  * tests.
  *
+ * @category Main
  * @author John Saigle <john.saigle@mcgill.ca>
  */
 
@@ -45,7 +46,7 @@ class LorisAPITool {
             "password" => $loris_password,
         ];
 
-        $json = json_decode($this->doLorisPost($endpoint, $post_body));
+        $json = json_decode($this->lorisPost($endpoint, $post_body));
 
         // If no JWT token returned, login failed.
         if (!array_key_exists('token', $json)) {
@@ -134,7 +135,7 @@ class LorisAPITool {
      *
      * @return string The HTTP response given by doPost.
      */
-    function doLorisPost(
+    function lorisPost(
         String $endpoint, 
         Array $post_body, 
         Array $headers = []
@@ -156,7 +157,7 @@ class LorisAPITool {
      *
      * @return string The HTTP response given by doPost.
      */
-    function doLorisGet(String $endpoint, Array $headers = []) : String {
+    function lorisGet(String $endpoint, Array $headers = []) : String {
         $full_url = $this->prefix() . $endpoint;
         if ($this->loggedIn()) {
             $headers[] = "Authorization: Bearer $this->auth_token";

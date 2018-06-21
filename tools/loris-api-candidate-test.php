@@ -20,4 +20,4 @@ if (!$logged_in) {
 }
 
 // Get candidate info -- proof of concept for now
-var_dump($api->doLorisGet('candidates/'));
+var_dump($api->lorisGet('candidates/'));
