@@ -221,7 +221,7 @@ Will return a JSON object of the form:
 
 Where V1, V2, ... are the visits that may exist for this project
 
-### 2.1.3 Single project candidates  
+### 2.1.4 Single project candidates  
 ```
 GET /projects/$ProjectName/candidates/
 ```
