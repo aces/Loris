@@ -18,17 +18,15 @@ error_reporting(E_ALL);
 class LorisAPITool {
     /* Target information. Change as needed. */
     public $loris_base_url;
-    public $loris_api_version;
+    private $api_version = "v0.0.3-dev";
     private $auth_token;
     private $verbose;
 
     function __construct(
         String $url,
-        String $api_version = 'v0.0.3-dev',
         Bool $verbose = false
     ) {
         $this->loris_base_url = $url;
-        $this->api_version = $api_version;
         $this->verbose = $verbose;
     }
 
