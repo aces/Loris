@@ -20,7 +20,20 @@ if (!function_exists('json_encode')) {
 }
 
 $loris_username = "John";
-$loris_password = "";
+$password_path = "{$_SERVER['HOME']}/.loris/credentials";
+if (file_exists($password_path)) {
+    $loris_password = trim(file_get_contents($password_path));
+}
+
+if (empty($loris_username) || empty($loris_password)) {
+    die(
+        "] Oops! You forgot to add your LORIS credentials." 
+        . PHP_EOL
+        . "Please consider creating the file $password_path containing your "
+        . "password so that it is not included in the source code."
+        . PHP_EOL
+    );
+}
 
 /* Try logging in */
 $endpoint = "login";
@@ -29,9 +42,6 @@ $post_body = [
     "password" => $loris_password,
 ];
 
-if (empty($loris_username) || empty($loris_password)) {
-    die(echoo("] Oops! You forgot to add your LORIS credentials to the code."));
-}
 
 echoo("] Response:");
 echoo(doLorisPost($endpoint, $post_body));
