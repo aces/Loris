@@ -44,10 +44,16 @@ $post_body = [
 
 
 echoo("] Response:");
-echoo(doLorisPost($endpoint, $post_body));
+$j = json_decode(doLorisPost($endpoint, $post_body));
 
 
-/** Generic curl post
+/** Generic curl POST request.  Builds the cURL handler and sets the options 
+ * corresponding to a POST request.
+ *
+ * @param string $url The resource to POST to.
+ * @param mixed $post_body An array or string for the POST request body.
+ *
+ * @return $string The HTTP response to the POST request.
  */
 function doPost(String $url, $post_body) : String {
     // change as needed
@@ -71,6 +77,17 @@ function doPost(String $url, $post_body) : String {
     return $response;
 }
 
+/** A wrapper for doPost that takes away some of the clutter when making a 
+ * request to LORIS.  Specfically this function will append the necessary url
+ * and versioned API prefix as well as JSON encode the POST body passed to it.
+ * For debugging purposes it will echo the endpoint it is POSTing to as well as
+ * the POST body.
+ *
+ * @param string $endpoint The URL to POST data to.
+ * @param array $post_body The key-value pairs of the post body.
+ *
+ * @return string The HTTP response given by doPost.
+ */
 function doLorisPost(String $endpoint, Array $post_body) : String {
     $loris_url = "https://nihpd-stg.loris.ca";
     $api_version = "v0.0.3-dev";
