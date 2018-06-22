@@ -13,9 +13,10 @@
  */
 namespace LORIS\tests\api;
 
-// TODO: Delete this later
+// TODO :: Delete this later
 error_reporting(E_ALL);
 
+// TODO :: This should be LorisIntegrationTestApiHttpClientan and implement HttpClient interface.
 class HttpClient {
 
     /* Target information. Change as needed. */
@@ -37,7 +38,7 @@ class HttpClient {
      *
      * @return string JWT authorization when successful. Empty string otherwise.
      */
-    function login($loris_username = '', $loris_password = '') : String {
+    function getAuthorizationToken($loris_username = '', $loris_password = '') : String {
         if (empty($loris_username) || empty($loris_password)) {
             throw new \Exception("Username or password is empty!");
         }
@@ -49,16 +50,24 @@ class HttpClient {
 
         $response = $this->lorisPost($endpoint, $post_body);
         if (empty($response)) {
-            return '';
+            throw new \Exception("No token returned; empty response body");
         }
+
         $json = json_decode($response);
 
         // If no JWT token returned, login failed.
         if (!array_key_exists('token', $json)) {
-            return '';
+            throw new \Exception("No token returned");
         }
-        $this->auth_token = $json->token;
+
         return $json->token;
+    }
+
+    public function withAuthorizationToken(string $token)
+    {
+        $new = clone $this;
+        $new->auth_token = $token;
+        return $new;
     }
 
     /** Generic curl GET request.  Builds the cURL handler and sets the options.
@@ -88,6 +97,7 @@ class HttpClient {
     }
 
     function doCurl(String $url, String $method, $post_body, $headers = []) : String {
+
         /* Build curl and set options */
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -118,6 +128,7 @@ class HttpClient {
         }
 
         $response = curl_exec($ch);
+
         curl_close($ch);
         return $response;
     }

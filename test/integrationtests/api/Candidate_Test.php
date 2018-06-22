@@ -8,14 +8,39 @@ use \PHPUnit\Framework\TestCase;
 class Canditate_Test extends TestCase
 {
     private $httpclient;
+    private $factory;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->factory  = \NDB_Factory::singleton();
+ 
+        $config   = $this->factory->Config(CONFIG_XML);
+        $dbconfig = $config->getSetting('database');
+
+        $database = \Database::singleton(
+            $dbconfig['database'],
+            $dbconfig['username'],
+            $dbconfig['password'],
+            $dbconfig['host'],
+            1
+        );
+        $this->factory->setDatabase($database);
+
+        $httpclient = new \LORIS\tests\api\HttpClient(
+            $this->factory->settings()->getBaseURL()
+        );
+        
+        $api_credentials = $config->getSetting('api');
+        $token = $httpclient->getAuthorizationToken(
+            $api_credentials['username'],
+            $api_credentials['password']
+        );
+ 
+        $this->httpclient = $httpclient->withAuthorizationToken($token);
+    }
 
     public function setUp() {
-        // Add login step
-        $baseurl = (\NDB_Factory::singleton())->settings()->getBaseURL();
-       echo $baseurl . PHP_EOL; 
-        $this->httpclient = new \LORIS\tests\api\HttpClient(
-            $baseurl
-        );
     }
 
     public function testCandidatesGetStatusCode() {
@@ -23,19 +48,14 @@ class Canditate_Test extends TestCase
     }
 }
 
-$url = "https://nihpd-stg.loris.ca";
-$api = new \LORIS\tests\api\HttpClient($url);
 /* Login to LORIS and get JWT authentication token. */
 // Note: I have created the below file on my system so it is not included in the
 // source code. Please do the same or else create your own password-protection
 // mechanism.
-$logged_in = $api->login("John", '!Demo40aa');
-if (!$logged_in) {
-    echo "Login failed!\n";
-}
 
 // Do basic testing
 
+/*
 $responses[] = $api->lorisGET('candidates/');
 $responses[] = $api->lorisGET('candidates/105657');
 $responses[] = $api->lorisGET('candidates/182999/V1');
@@ -63,3 +83,4 @@ function checkForErrors($responses, $key = '') : Array {
     }
     return $failures;
 }
+*/
