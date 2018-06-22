@@ -108,7 +108,7 @@ class Client {
         }
         // Follow redirects
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_VERBOSE, false);
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
         // Capture response isntead of printing it
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -117,7 +117,7 @@ class Client {
             curl_setopt($ch, CURLOPT_HTTPHEADER, array_reduce(
                 array_keys($headers),
                 function ($carry, $item) use ($headers) {
-                    $carry[$item] = implode(';', $headers[$item]);
+                    $carry[] = $item . ': ' . implode(';', $headers[$item]);
                     return $carry;
                 },
                 array()

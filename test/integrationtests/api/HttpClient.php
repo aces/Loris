@@ -15,7 +15,8 @@ namespace LORIS\tests\api;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
-use \LORIS\Http\Client as Client;
+use \LORIS\Http\Client;
+use \Psr\Http\Message\ResponseInterface;
 use \Zend\Diactoros\Uri;
 use \Zend\Diactoros\Request;
 
@@ -45,22 +46,13 @@ class HttpClient extends Client {
             throw new \Exception("Username or password is empty!");
         }
 
-        $endpoint = (string) $this->loris_base_url . "/login";
-        $request  = (new Request())
-            ->withUri(new Uri($endpoint))
-            ->withMethod('POST')
-            ->withAddedHeader('Content-Type', 'application/json')
-            ->withAddedHeader('Accept', 'application/json');
- 
         $post_body = [
             "username" => $loris_username,
             "password" => $loris_password,
         ];
+         
+        $response = $this->lorisPOST('login/', $post_body);
 
-        $request->getBody()->write(json_encode($post_body));
-        $response = $this->sendRequest($request);
-
-        //$response = $this->lorisPost($endpoint, $post_body);
         if (empty($response)) {
             throw new \Exception("No token returned; empty response body");
         }
@@ -97,12 +89,23 @@ class HttpClient extends Client {
         String $endpoint, 
         Array $post_body, 
         Array $headers = []
-    ) : String {
-        $full_url = $this->prefix() . $endpoint;
+    ) : ResponseInterface {
+        $full_url = new Uri((string) $this->loris_base_url . $endpoint);
+        $request  = (new Request())
+            ->withUri(new Uri((string) $this->loris_base_url . $endpoint))
+            ->withMethod('POST')
+            ->withAddedHeader('Content-Type', 'application/json')
+            ->withAddedHeader('Accept', 'application/json');
+
+        $request->getBody()->write(json_encode($post_body));
+
         if ($this->loggedIn()) {
-            $headers[] = "Authorization: Bearer $this->auth_token";
+            $request = $request->withAddedHeader(
+                'Authorization',
+                "Bearer $this->auth_token"
+            );
         }
-        return $this->doPOST($full_url, json_encode($post_body), $headers);
+        return $this->sendRequest($request);
     }
 
     /** A wrapper for doGet that takes away some of the clutter when making a 
@@ -115,22 +118,21 @@ class HttpClient extends Client {
      *
      * @return string The HTTP response given by doPost.
      */
-    function lorisGET(
-        String $endpoint, 
-        Array $headers = []
-    ) : String {
-        $full_url = $this->prefix() . $endpoint;
-        if ($this->loggedIn()) {
-            $headers[] = "Authorization: Bearer $this->auth_token";
-        }
-        return $this->doGET($full_url, $headers);
-    }
+    function lorisGET(string $endpoint, array $headers = []): ResponseInterface
+    {
+        $full_url = new Uri((string) $this->loris_base_url . $endpoint);
+        $request  = (new Request())
+            ->withUri(new Uri((string) $this->loris_base_url . $endpoint))
+            ->withMethod('GET')
+            ->withAddedHeader('Accept', 'application/json');
 
-    /** Return API prefix. Avoids the need to type this out everytime we make an API
-     * call.
-     */
-    function prefix() : String {
-        return $this->loris_base_url . '/api/' . $this->api_version . '/';
+        if ($this->loggedIn()) {
+            $request = $request->withAddedHeader(
+                'Authorization',
+                "Bearer $this->auth_token"
+            );
+        }
+        return $this->sendRequest($request);
     }
 
     function loggedIn() : Bool {

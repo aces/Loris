@@ -5,6 +5,7 @@ require_once('HttpClient.php');
 
 use \PHPUnit\Framework\TestCase;
 use \Zend\Diactoros\Uri;
+use \Zend\Diactoros\Request;
 
 class Canditate_Test extends TestCase
 {
@@ -48,7 +49,8 @@ class Canditate_Test extends TestCase
     }
 
     public function testCandidatesGetStatusCode() {
-        // Do test
+        $response = $this->httpclient->lorisGET('candidates/');
+        $this->assertEquals(200, $response->getStatusCode());
     }
 }
 
