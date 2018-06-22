@@ -13,24 +13,26 @@
  */
 namespace LORIS\tests\api;
 
+require_once __DIR__ . '/../../../vendor/autoload.php';
+
+use \LORIS\Http\Client as Client;
+use \Zend\Diactoros\Uri;
+use \Zend\Diactoros\Request;
+
 // TODO :: Delete this later
 error_reporting(E_ALL);
 
-// TODO :: This should be LorisIntegrationTestApiHttpClientan and implement HttpClient interface.
-class HttpClient {
+class HttpClient extends Client {
 
     /* Target information. Change as needed. */
     public $loris_base_url;
-
-    private $api_version = "v0.0.3-dev";
     private $auth_token;
-    private $verbose;
 
     function __construct(
-        String $url,
+        Uri $url,
         Bool $verbose = false
     ) {
-        $this->loris_base_url = $this->validate($url);
+        $this->loris_base_url = $url;
         $this->verbose = $verbose;
     }
 
@@ -42,18 +44,28 @@ class HttpClient {
         if (empty($loris_username) || empty($loris_password)) {
             throw new \Exception("Username or password is empty!");
         }
-        $endpoint = "login/";
+
+        $endpoint = (string) $this->loris_base_url . "/login";
+        $request  = (new Request())
+            ->withUri(new Uri($endpoint))
+            ->withMethod('POST')
+            ->withAddedHeader('Content-Type', 'application/json')
+            ->withAddedHeader('Accept', 'application/json');
+ 
         $post_body = [
             "username" => $loris_username,
             "password" => $loris_password,
         ];
 
-        $response = $this->lorisPost($endpoint, $post_body);
+        $request->getBody()->write(json_encode($post_body));
+        $response = $this->sendRequest($request);
+
+        //$response = $this->lorisPost($endpoint, $post_body);
         if (empty($response)) {
             throw new \Exception("No token returned; empty response body");
         }
 
-        $json = json_decode($response);
+        $json = json_decode($response->getBody());
 
         // If no JWT token returned, login failed.
         if (!array_key_exists('token', $json)) {
@@ -68,69 +80,6 @@ class HttpClient {
         $new = clone $this;
         $new->auth_token = $token;
         return $new;
-    }
-
-    /** Generic curl GET request.  Builds the cURL handler and sets the options.
-     * For now, GET requests with data attached are not supported.
-     *
-     * @param string $url The resource to POST to.
-     * @param array $headers Option HTTP Headers to add
-     *
-     * @return $string The HTTP response to the POST request.
-     */
-    function doGET(String $url, $headers = []) : String {
-        // Set GET as the method with an empty body.
-        return $this->doCurl($url, 'GET', '', $headers);
-    }
-
-
-    /** Generic curl POST request.  Builds the cURL handler and sets the options 
-     * corresponding to a POST request.
-     *
-     * @param string $url The resource to POST to.
-     * @param mixed $post_body An array or string for the POST request body.
-     *
-     * @return $string The HTTP response to the POST request.
-     */
-    function doPOST(String $url, $post_body, $headers = []) : String {
-        return $this->doCurl($url, 'POST', $post_body, $headers);
-    }
-
-    function doCurl(String $url, String $method, $post_body, $headers = []) : String {
-
-        /* Build curl and set options */
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        // Alter curl structure based on HTTP method
-        if ($method === 'POST') {
-            /* POST body */
-            if (empty($post_body)) {
-                throw new \Exception("Method selected is POST but body is empty!");
-            }
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
-            curl_setopt($ch, CURLOPT_POST, 1);
-        } else if ($method === 'HEAD') { // TODO: This isn't actually implemented yet
-            curl_setopt($ch, CURLOPT_NOBODY, true); // read: 'no body'
-            curl_setopt($ch, CURLOPT_HEADER, true);
-        }
-        // Follow redirects
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        // Verbose debugging. Uncomment if desired.
-        if ($this->verbose) {
-            curl_setopt($ch, CURLOPT_VERBOSE, true);
-        }
-        // Capture response isntead of printing it
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        // Attach optional headers if present
-        if ($headers) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        }
-
-        $response = curl_exec($ch);
-
-        curl_close($ch);
-        return $response;
     }
 
     /** A wrapper for doPost that takes away some of the clutter when making a 
@@ -186,13 +135,5 @@ class HttpClient {
 
     function loggedIn() : Bool {
         return !empty($this->auth_token);
-    }
-
-    function validate(String $url) {
-        if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            throw new \Exception("Invalid URL in constructor");
-        }
-        return $url;
-        
     }
 }

@@ -4,6 +4,7 @@ namespace LORIS\integrationtests;
 require_once('HttpClient.php');
 
 use \PHPUnit\Framework\TestCase;
+use \Zend\Diactoros\Uri;
 
 class Canditate_Test extends TestCase
 {
@@ -28,7 +29,7 @@ class Canditate_Test extends TestCase
         $this->factory->setDatabase($database);
 
         $httpclient = new \LORIS\tests\api\HttpClient(
-            $this->factory->settings()->getBaseURL()
+            new Uri($this->factory->settings()->getBaseURL() . '/api/v0.0.3-dev/')
         );
         
         $api_credentials = $config->getSetting('api');
@@ -41,6 +42,9 @@ class Canditate_Test extends TestCase
     }
 
     public function setUp() {
+    }
+
+    public function tearDown() {
     }
 
     public function testCandidatesGetStatusCode() {
