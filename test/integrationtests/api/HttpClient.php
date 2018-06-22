@@ -11,13 +11,16 @@
  * @category Main
  * @author John Saigle <john.saigle@mcgill.ca>
  */
+namespace LORIS\tests\api;
 
 // TODO: Delete this later
 error_reporting(E_ALL);
 
-class LorisAPITool {
+class HttpClient {
+
     /* Target information. Change as needed. */
     public $loris_base_url;
+
     private $api_version = "v0.0.3-dev";
     private $auth_token;
     private $verbose;
@@ -36,7 +39,7 @@ class LorisAPITool {
      */
     function login($loris_username = '', $loris_password = '') : String {
         if (empty($loris_username) || empty($loris_password)) {
-            throw new Exception("Username or password is empty!");
+            throw new \Exception("Username or password is empty!");
         }
         $endpoint = "login/";
         $post_body = [
@@ -92,7 +95,7 @@ class LorisAPITool {
         if ($method === 'POST') {
             /* POST body */
             if (empty($post_body)) {
-                throw new Exception("Method selected is POST but body is empty!");
+                throw new \Exception("Method selected is POST but body is empty!");
             }
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
             curl_setopt($ch, CURLOPT_POST, 1);
@@ -176,7 +179,7 @@ class LorisAPITool {
 
     function validate(String $url) {
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            throw new Exception("Invalid URL in constructor");
+            throw new \Exception("Invalid URL in constructor");
         }
         return $url;
         

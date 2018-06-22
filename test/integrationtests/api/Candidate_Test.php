@@ -1,20 +1,22 @@
 <?php
+namespace LORIS\integrationtests;
 
-include('LorisAPITool.class.inc');
+require_once('HttpClient.php');
+
+//use \PHPUnit\Framework\TestCase;
+
+class Canditate_Test //extends TestCase
+{
+
+}
 
 $url = "https://nihpd-stg.loris.ca";
-$api = new LorisAPITool($url);
+$api = new \LORIS\tests\api\HttpClient($url);
 /* Login to LORIS and get JWT authentication token. */
 // Note: I have created the below file on my system so it is not included in the
 // source code. Please do the same or else create your own password-protection
 // mechanism.
-$logged_in = $api->login("John", 
-    trim(
-        file_get_contents(
-            "{$_SERVER['HOME']}/.loris/credentials"
-        )
-    )
-);
+$logged_in = $api->login("John", '!Demo40aa');
 if (!$logged_in) {
     echo "Login failed!\n";
 }
