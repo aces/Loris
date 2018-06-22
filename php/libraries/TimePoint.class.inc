@@ -281,10 +281,7 @@ class TimePoint
                     $visitLabelSetting['labelSet']['item']
                 );
                 foreach ($items as $item) {
-                    error_log(print_r($item, true));
-                    error_log(print_r($visitLabel, true));
-                    if ($item['#'] == $visitLabel) { $isValid = true;
-                    }
+                    if ($item['#'] == $visitLabel) $isValid = true;
                 }
             }
         }
