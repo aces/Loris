@@ -7,8 +7,15 @@ use \PHPUnit\Framework\TestCase;
 
 class Canditate_Test extends TestCase
 {
+    private $httpclient;
+
     public function setUp() {
         // Add login step
+        $baseurl = (\NDB_Factory::singleton())->settings()->getBaseURL();
+       echo $baseurl . PHP_EOL; 
+        $this->httpclient = new \LORIS\tests\api\HttpClient(
+            $baseurl
+        );
     }
 
     public function testCandidatesGetStatusCode() {
