@@ -272,6 +272,28 @@ class TimePoint
             );
         }
 
+        $config =& \NDB_Config::singleton();
+        $visitLabelSettings = $config->getSetting('visitLabel');
+        $isValid            = false;
+        foreach (\Utility::toArray($visitLabelSettings) as $visitLabelSetting) {
+            if ($visitLabelSetting['@']['subprojectID'] == $subprojectID) {
+                $items = \Utility::toArray(
+                    $visitLabelSetting['labelSet']['item']
+                );
+                foreach ($items as $item) {
+                    error_log(print_r($item, true));
+                    error_log(print_r($visitLabel, true));
+                    if ($item['#'] == $visitLabel) { $isValid = true;
+                    }
+                }
+            }
+        }
+        if (!$isValid) {
+            throw new \LorisException(
+                'This visit label is not valid for this subproject.'
+            );
+        }
+
         $candidate =& \Candidate::singleton($candid);
 
         $timePointArray = $candidate->getListOfVisitLabels();
