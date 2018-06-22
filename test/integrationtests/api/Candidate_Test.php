@@ -3,11 +3,17 @@ namespace LORIS\integrationtests;
 
 require_once('HttpClient.php');
 
-//use \PHPUnit\Framework\TestCase;
+use \PHPUnit\Framework\TestCase;
 
-class Canditate_Test //extends TestCase
+class Canditate_Test extends TestCase
 {
+    public function setUp() {
+        // Add login step
+    }
 
+    public function testCandidatesGetStatusCode() {
+        // Do test
+    }
 }
 
 $url = "https://nihpd-stg.loris.ca";

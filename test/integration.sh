@@ -74,6 +74,7 @@ if [ ! -z "$module" ]; then
 else
  # Run all integration tests
  ../vendor/bin/phpunit --configuration phpunit.xml --testsuite 'LorisCoreIntegrationTests'
+ ../vendor/bin/phpunit --configuration phpunit.xml --testsuite 'LorisApiIntegrationTests'
  ../vendor/bin/phpunit --configuration phpunit.xml --testsuite 'LorisModuleIntegrationTests'
 fi
 
