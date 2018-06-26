@@ -19,6 +19,8 @@ database="LorisTest"
 username="SQLTestUser"
 password="TestPassword"
 url="http://localhost:8000"
+apiusername='UnitTester';
+apipassword='4test4';
 
 # Custom DB variables specified by optional commandline arguments
 while getopts ":m:h:D:u:p:l:" opt; do
@@ -46,6 +48,8 @@ sed -i \
     -e "s/%USERNAME%/$username/g" \
     -e "s/%PASSWORD%/$password/g" \
     -e "s/%DATABASE%/$database/g" \
+    -e "s/%APIUSERNAME%/$database/g" \
+    -e "s/%APIPASSWORD%/$database/g" \
     config.xml
 export LORIS_DB_CONFIG=$(pwd)/config.xml
 

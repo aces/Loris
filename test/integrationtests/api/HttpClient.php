@@ -90,7 +90,6 @@ class HttpClient extends Client {
         Array $post_body, 
         Array $headers = []
     ) : ResponseInterface {
-        $full_url = new Uri((string) $this->loris_base_url . $endpoint);
         $request  = (new Request())
             ->withUri(new Uri((string) $this->loris_base_url . $endpoint))
             ->withMethod('POST')
