@@ -98,7 +98,7 @@ class HttpClient extends Client {
 
         $request->getBody()->write(json_encode($post_body));
 
-        if ($this->loggedIn()) {
+        if ($this->isLoggedIn()) {
             $request = $request->withAddedHeader(
                 'Authorization',
                 "Bearer $this->auth_token"
@@ -125,7 +125,7 @@ class HttpClient extends Client {
             ->withMethod('GET')
             ->withAddedHeader('Accept', 'application/json');
 
-        if ($this->loggedIn()) {
+        if ($this->isLoggedIn()) {
             $request = $request->withAddedHeader(
                 'Authorization',
                 "Bearer $this->auth_token"
@@ -134,7 +134,7 @@ class HttpClient extends Client {
         return $this->sendRequest($request);
     }
 
-    function loggedIn() : Bool {
+    function isLoggedIn() : Bool {
         return !empty($this->auth_token);
     }
 }
