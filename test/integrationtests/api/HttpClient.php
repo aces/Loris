@@ -25,6 +25,10 @@ class HttpClient extends Client {
     public $loris_base_url;
     private $auth_token;
 
+    /** Create an HTTPClient.  The $url passed to this constructor should 
+     * include both a URL to a LORIS instance as well as the API prefix.
+     * E.g. $url = "https://demo.loris.ca/api/v0.0.x/"
+     */
     function __construct(Uri $url) : Void {
         $this->loris_base_url = $url;
     }
@@ -59,6 +63,11 @@ class HttpClient extends Client {
         return $json->token;
     }
 
+    /** Helper function to create a new instance of this class with the 
+     * auth_token variable initialized.  This allows authenticated requests and
+     * allows the user to forget about managing their session as requests will
+     * be sent with session information by default.
+     */
     public function withAuthorizationToken(string $token)
     {
         $new = clone $this;
