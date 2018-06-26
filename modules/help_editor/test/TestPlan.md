@@ -26,17 +26,17 @@
     [Automation Testing]
 13. Test links to topics, both parent and subtopic.
     [Manual Testing]
-15. Ensure permission for Edit Help is working properly.
+14. Ensure permission for Edit Help is working properly.
     [Manual Testing]
-16. Sort all header columns.
+15. Sort all header columns.
     [Manual Testing]
-17. Check multiple pages links.
+16. Check multiple pages links.
     [Manual Testing]
-18. Check filter expansion.
+17. Check filter expansion.
     [Manual Testing]
-19. Test Reset Button - In the Help Editor, add content and click on Reset. Make sure that none of the recent changes were
+18. Test Reset Button - In the Help Editor, add content and click on Reset. Make sure that none of the recent changes were
     saved and the page reloads with the default content.
     [Manual Testing]
-20. Test Preview Button - In the Help Editor, update title and content, and click on the Preview button. Make sure
+19. Test Preview Button - In the Help Editor, update title and content, and click on the Preview button. Make sure
     the recent changes are visible in the Help side panel. Continue updating the content and clicking the 'Preview' button. The latest help content should show in the side panel.
     [Manual Testing]
