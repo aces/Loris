@@ -475,7 +475,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         if (!$credentials_set) {
             return false;
         }
-        // Check if supplied credentials are valid by making a DB connection. 
+        // Check if supplied credentials are valid by making a DB connection.
         // If the credentials are invalid, an error message will be logged to
         // the backend.
         return $db->connect(
