@@ -1,16 +1,15 @@
 <?php
 /**
- * This class provides an easy-to-use wrapper around the PHP cURL functions for
- * use with the LORIS API.  It allows users to quickly login and create requests
- * without knowing the internals of cURL.  Other benefits include:
- *      - Submitting the API prefix with every request
- *      - Automatically JSON-encoding POST bodies
- *      - Including the auth token automatically.
- * Users of the class will be able to sequence API calls quickly and write unit
- * tests.
+ * File contains the implementation of Client for HTTP exchanges.
+ * PHP Version 7
  *
- * @category Main
+ * @category PSR7
+ * @package  Http
  * @author   John Saigle <john.saigle@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ *
+ * @see https://www.php-fig.org/psr/psr-7/
  */
 namespace LORIS\tests\api;
 
@@ -21,16 +20,30 @@ use \Psr\Http\Message\ResponseInterface;
 use \Zend\Diactoros\Uri;
 use \Zend\Diactoros\Request;
 
+/**
+ * This class provides an easy-to-use wrapper around the PSR7-compliant Client
+ * class.  It provides syntactic sugar for developers who wish to work with the
+ * LORIS API.  HttpClient allows a developer to create an API client that will
+ * handle session authentication and processing for requests to and from LORIS.
+ *
+ * @category PSR7
+ * @package  API
+ * @author   John Saigle <john.saigle@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+
 class HttpClient extends Client
 {
-    /* Target information. Change as needed. */
     public $loris_base_url;
-    private $auth_token;
+    private $_auth_token;
 
     /**
  * Create an HTTPClient.  The $url passed to this constructor should
      * include both a URL to a LORIS instance as well as the API prefix.
      * E.g. $url = "https://demo.loris.ca/api/v0.0.x/"
+     *
+     * @param Uri $url A valid URI to a LORIS instance
      */
     function __construct(Uri $url)
     {
@@ -38,12 +51,18 @@ class HttpClient extends Client
     }
 
     /**
- * Login to LORIS.
+     * Login to LORIS.
+     *
+     * @param string $loris_username Front-end username
+     * @param string $loris_password Front-end password matching $loris_username
      *
      * @return string JWT authorization when successful. Empty string otherwise.
      */
-    function getAuthorizationToken($loris_username = '', $loris_password = '') : String
-    {
+    function getAuthorizationToken(
+        $loris_username = '',
+        $loris_password = ''
+    ) : String {
+
         if (empty($loris_username) || empty($loris_password)) {
             throw new \Exception("Username or password is empty!");
         }
@@ -70,25 +89,30 @@ class HttpClient extends Client
     }
 
     /**
- * Helper function to create a new instance of this class with the
+    * Helper function to create a new instance of this class with the
      * auth_token variable initialized.  This allows authenticated requests and
      * allows the user to forget about managing their session as requests will
      * be sent with session information by default.
+     *
+     * @param string $token A JWT token encapsulating a valid LORIS session
+     *
+     * @return HttpClient A cloned object with _auth_token set
      */
     public function withAuthorizationToken(string $token)
     {
         $new = clone $this;
-        $new->auth_token = $token;
+        $new->_auth_token = $token;
         return $new;
     }
 
     /**
- * A wrapper for doPOST that takes away some of the clutter when making a
+     * A wrapper for doPOST that takes away some of the clutter when making a
      * request to LORIS.  Specfically this function will append the necessary url
      * and versioned API prefix as well as JSON encode the POST body passed to it.
      *
      * @param string $endpoint  The URL to POST data to.
      * @param array  $post_body The key-value pairs of the post body.
+     * @param array  $headers   Misc HTTP headers
      *
      * @return string The HTTP response given by doPost.
      */
@@ -141,8 +165,14 @@ class HttpClient extends Client
         return $this->sendRequest($request);
     }
 
+    /**
+ * Whether the HTTPClient object has a valid session, represented by
+     * auth_token
+     *
+     * @return bool Whether auth_token is set
+     */
     function loggedIn() : Bool
     {
-        return !empty($this->auth_token);
+        return !empty($this->_auth_token);
     }
 }
