@@ -456,12 +456,13 @@ class Instrument_Manager extends \NDB_Menu_Filter
     }
 
     /**
-     * Return whether the quatUser is properly configured.
+     * Return whether the quatUser is properly configured, ie. credentials are
+     * set and are valid.
      * The quatUser is a MySQL user with CREATE table permissions.
      * `empty` is used instead of `isset` as blank values in the config file
      * are still considered set.
      *
-     * @return bool True if a value for quatUser and quatPassword exist
+     * @return bool True if a quatUser is configured properly. False if not.
      */
     function isQuatUserConfigured() : bool
     {
@@ -469,7 +470,20 @@ class Instrument_Manager extends \NDB_Menu_Filter
         $config    = \NDB_Config::singleton();
         $db_config = $config->getSetting('database');
 
-        return !empty($db_config['quatUser'])
+        $credentials_set = !empty($db_config['quatUser'])
             && !empty($db_config['quatPassword']);
+        if (!$credentials_set) {
+            return false;
+        }
+        // Check if supplied credentials are valid by making a DB connection. 
+        // If the credentials are invalid, an error message will be logged to
+        // the backend.
+        return $db->connect(
+            $db_config['database'],
+            $db_config['quatUser'],
+            $db_config['quatPassword'],
+            $db_config['host'],
+            false
+        );
     }
 }
