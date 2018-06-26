@@ -169,7 +169,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 " < " . $this->path . "project/tables_sql/".
                 escapeshellarg($instrument->table . '.sql'),
                 $output, // $output and $status are created automatically
-                $status  // by `exea`c and so need not be declared above.
+                $status  // by `exec` and so need not be declared above.
             );
             // In MSQL, an exit code of 0 is a success and 1 means failure
             if ($status) {
