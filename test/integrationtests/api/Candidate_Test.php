@@ -1,9 +1,9 @@
 <?php
 namespace LORIS\integrationtests;
 
-require_once('ApiCase.php');
+require_once('ApiTestCase.php');
 
-class Canditate_Test extends ApiCase
+class Canditate_Test extends ApiTestCase
 {
     public function __construct()
     {

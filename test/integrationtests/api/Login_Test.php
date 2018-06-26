@@ -1,9 +1,9 @@
 <?php
 namespace LORIS\integrationtests;
 
-require_once('ApiCase.php');
+require_once('ApiTestCase.php');
 
-class Login_Test extends ApiCase
+class Login_Test extends ApiTestCase
 {
     public function setUp() 
     {

@@ -7,7 +7,7 @@ require_once('HttpClient.php');
 use \PHPUnit\Framework\TestCase;
 use \Zend\Diactoros\Uri;
 
-class ApiCase extends TestCase
+class ApiTestCase extends TestCase
 {
     protected $httpclient;
     protected $factory;
