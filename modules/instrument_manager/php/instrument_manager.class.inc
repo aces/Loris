@@ -181,7 +181,8 @@ class Instrument_Manager extends \NDB_Menu_Filter
                     . "Either: the instrument table exists (but is not in the "
                     . "test_names table), or "
                     . "LORIS could not connect to the database using the "
-                    . "credentials supplied in project/config.xml. $output"
+                    . "credentials supplied in project/config.xml. "
+                    . print_r($object)
                 );
             }
         }
