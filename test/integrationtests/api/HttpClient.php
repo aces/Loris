@@ -20,21 +20,13 @@ use \Psr\Http\Message\ResponseInterface;
 use \Zend\Diactoros\Uri;
 use \Zend\Diactoros\Request;
 
-// TODO :: Delete this later
-error_reporting(E_ALL);
-
 class HttpClient extends Client {
-
     /* Target information. Change as needed. */
     public $loris_base_url;
     private $auth_token;
 
-    function __construct(
-        Uri $url,
-        Bool $verbose = false
-    ) {
+    function __construct(Uri $url) : Void {
         $this->loris_base_url = $url;
-        $this->verbose = $verbose;
     }
 
     /** Login to LORIS.
@@ -74,11 +66,9 @@ class HttpClient extends Client {
         return $new;
     }
 
-    /** A wrapper for doPost that takes away some of the clutter when making a 
+    /** A wrapper for doPOST that takes away some of the clutter when making a 
      * request to LORIS.  Specfically this function will append the necessary url
      * and versioned API prefix as well as JSON encode the POST body passed to it.
-     * For debugging purposes it will echo the endpoint it is POSTing to as well as
-     * the POST body.
      *
      * @param string $endpoint The URL to POST data to.
      * @param array $post_body The key-value pairs of the post body. 
@@ -107,10 +97,9 @@ class HttpClient extends Client {
         return $this->sendRequest($request);
     }
 
-    /** A wrapper for doGet that takes away some of the clutter when making a 
+    /** A wrapper for doGET that takes away some of the clutter when making a 
      * request to LORIS.  Specfically this function will append the necessary url
      * and versioned API prefix.
-     * For debugging purposes it will echo the endpoint it is requesting
      *
      * @param string $endpoint The URL to POST data to.
      * @param array $headers Option HTTP Headers
@@ -121,7 +110,7 @@ class HttpClient extends Client {
     {
         $full_url = new Uri((string) $this->loris_base_url . $endpoint);
         $request  = (new Request())
-            ->withUri(new Uri((string) $this->loris_base_url . $endpoint))
+            ->withUri($full_url)
             ->withMethod('GET')
             ->withAddedHeader('Accept', 'application/json');
 
