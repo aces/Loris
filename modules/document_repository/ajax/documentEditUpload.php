@@ -72,9 +72,9 @@ if ($userSingleton->hasPermission('document_repository_view')
         // user_uploads directory as a base for user uploads
         $base_path = __DIR__ . "/../user_uploads/";
         $puser     = $userSingleton->getUsername();
-        // user name plus category name make a new path to avoid file overwritten 
-        $puser     = $puser . "/" . $category;
-        $fileBase  = $puser . "/" . $fileName;
+        // user name plus category name make a new path to avoid file overwritten
+        $puser    = $puser . "/" . $category;
+        $fileBase = $puser . "/" . $fileName;
 
         if (!file_exists($base_path . $puser)) {
             mkdir($base_path . $puser, 0777);
