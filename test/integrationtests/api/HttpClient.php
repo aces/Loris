@@ -29,7 +29,7 @@ class HttpClient extends Client {
      * include both a URL to a LORIS instance as well as the API prefix.
      * E.g. $url = "https://demo.loris.ca/api/v0.0.x/"
      */
-    function __construct(Uri $url) : Void {
+    function __construct(Uri $url) {
         $this->loris_base_url = $url;
     }
 
