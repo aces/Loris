@@ -142,8 +142,14 @@ class Database
      * @return bool True if DB conneciton established. False otherwise.
      * @access public
      */
-    function connect($database, $username, $password, $host, $trackChanges = true) : bool
-    {
+    function connect(
+        $database,
+        $username,
+        $password,
+        $host,
+        $trackChanges = true
+    ) : bool {
+
         $this->_trackChanges = $trackChanges;
         $this->_databaseName = $database;
 
