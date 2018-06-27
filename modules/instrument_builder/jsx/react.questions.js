@@ -608,8 +608,8 @@ var AddElement = React.createClass({
     if (selected === 'date') {
       let min = this.state.Options.MinDate;
       let max = this.state.Options.MaxDate;
-      let minYear = parseInt(min,10);
-      let maxYear = parseInt(max,10);
+      let minYear = parseInt(min, 10);
+      let maxYear = parseInt(max, 10);
       let minDate = Date.parse(min);
       let maxDate = Date.parse(max);
       if ((isNaN(minDate) && min !== '') || (isNaN(maxDate) && max !== '')) {
@@ -630,7 +630,7 @@ var AddElement = React.createClass({
           error: temp
         });
         hasError = true;
-      } 
+      }
       if (minYear > 9999 || minYear < 1900 || maxYear > 9999 || maxYear < 1900) {
         let temp = (this.state.error) ? this.state.error : {};
 
