@@ -187,21 +187,12 @@ class Installer
         }
         $DB = Database::singleton();
         try {
-            if ($DB->connectAndCreate(
+            $DB->connectAndCreate(
                 $values['dbname'],
                 $values['dbadminuser'],
                 $values['dbadminpassword'],
                 $values['dbhost']
-            ) == false
-            ) {
-                if (!empty($DB->lastErr)) {
-                    $this->_lastErr = $DB->lastErr;
-                } else {
-                    $this->_lastErr = "Could not connect to MySQL server "
-                        . "and create database with credentials provided.";
-                }
-                return false;
-            }
+            );
         } catch (Exception $e) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
@@ -226,22 +217,12 @@ class Installer
         $DB = Database::singleton();
 
         try {
-            if ($DB->connect(
+            $DB->connect(
                 $values['dbname'],
                 $values['dbadminuser'],
                 $values['dbadminpassword'],
                 $values['dbhost']
-            ) == false
-            ) {
-                if (!empty($DB->lastErr)) {
-                    $this->_lastErr = $DB->lastErr;
-                } else {
-                    $this->_lastErr = "Could not connect to MySQL server "
-                        ."with credentials provided.";
-                }
-                return false;
-
-            }
+            );
         } catch (Exception $e) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
