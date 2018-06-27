@@ -283,6 +283,7 @@ class TimePoint
                 foreach ($items as $item) {
                     if ($item['#'] == $visitLabel) {
                         $isValid = true;
+                        break;
                     }
                 }
             }
