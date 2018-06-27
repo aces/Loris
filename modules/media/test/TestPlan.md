@@ -80,7 +80,7 @@ In order to use the media module the user might need one or both of the followin
     - Verify that the database field updated accordingly
   4. Repeat **Step 3** for _Comments_ field.
   5. Select YES in **Hide File** dropdown in order to delete/hide the file
-    - Click 👉 **Update File** and go back to **Browse** tab under ```$LORISURL/media/```. The file should no longer be displayed in the data table.
+    - Click 👉 **Update File** and go back to **Browse** tab under ```$LORISURL/media/```. The file should no longer be displayed in the data table(not for superuser).
     - _Note: only a person with direct database access could revert the hide file action._
 
 **Test filters**
