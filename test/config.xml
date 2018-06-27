@@ -29,6 +29,7 @@
     <api>
         <username>%APIUSERNAME%</username>
         <password>%APIPASSWORD%</password>
+        <url>%APIURL%</url>
     </api>
 
     <CouchDB>

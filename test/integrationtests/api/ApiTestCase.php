@@ -30,7 +30,9 @@ class ApiTestCase extends TestCase
         $this->factory->setDatabase($database);
 
         $this->httpclient = new \LORIS\tests\api\HttpClient(
-            new Uri($this->factory->settings()->getBaseURL() . '/api/v0.0.3-dev/')
+            new Uri(
+                $this->factory->settings()->getAPIURL() . '/api/v0.0.3-dev/'
+            )
         );
     }
 
