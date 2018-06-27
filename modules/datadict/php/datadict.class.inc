@@ -56,7 +56,7 @@ class Datadict extends \NDB_Menu_Filter
                           'pt.sourceFrom',
                           'pt.Name',
                           'pt.sourceField',
-                          'coalesce(pto.description,pt.description)'.
+                          'COALESCE(pto.description,pt.description)'.
                           ' as description',
                          );
 
@@ -64,9 +64,9 @@ class Datadict extends \NDB_Menu_Filter
                                'pt.sourceFrom',
                                'pt.Description',
                               );
-        $this->query        = ' FROM parameter_type pt LEFT JOIN 
+        $this->query        = " FROM parameter_type pt LEFT JOIN 
                                 parameter_type_override pto USING (Name)
-                 		        WHERE pt.Queryable=1';
+                 		        WHERE pt.Queryable=1";
 
         $this->formToFilter = array(
                                'sourceFrom'  => 'pt.sourceFrom',
@@ -76,7 +76,7 @@ class Datadict extends \NDB_Menu_Filter
         $this->searchKeyword = array(
                                 'pt.Name',
                                 'pt.sourceField',
-                                'coalesce(pto.description,pt.description)',
+                                'COALESCE(pto.description,pt.description)',
                                );
         return true;
     }
@@ -271,16 +271,16 @@ class Datadict extends \NDB_Menu_Filter
                 || strtolower(substr($key, -10)) == 'categoryid'
                 || strtolower(substr($key, -6)) == 'gender'
             ) {
-                $query .= ' AND ' . $key . ' = \'' . $val . '\' ';
+                $query .= " AND $key = '$val' ";
             } else {
                 if ($val == 'empty') {
-                    $query .= ' AND COALESCE(pto.description,pt.description) = \'\'';
+                    $query .= " AND COALESCE(pto.description,pt.description) = ''";
                 } elseif ($val=='modified') {
-                    $query .= ' AND pto.name IS NOT NULL';
+                    $query .= " AND pto.name IS NOT NULL";
                 } elseif ($val=='unmodified') {
-                    $query .= ' AND pto.name IS NULL';
+                    $query .= " AND pto.name IS NULL";
                 } else {
-                    $query .= ' AND '.$key.' LIKE \'' . $val . '%\' ';
+                    $query .= " AND $key LIKE '$val%' ";
                 }
             }
         }
