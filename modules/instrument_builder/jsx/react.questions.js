@@ -608,10 +608,10 @@ var AddElement = React.createClass({
     if (selected === 'date') {
       let min = this.state.Options.MinDate;
       let max = this.state.Options.MaxDate;
-
+      let minYear = parseInt(min);
+      let maxYear = parseInt(max);
       let minDate = Date.parse(min);
       let maxDate = Date.parse(max);
-
       if ((isNaN(minDate) && min !== '') || (isNaN(maxDate) && max !== '')) {
         let temp = (this.state.error) ? this.state.error : {};
 
@@ -626,6 +626,25 @@ var AddElement = React.createClass({
         let temp = (this.state.error) ? this.state.error : {};
 
         temp.dateOption = "End year append befor start year";
+        this.setState({
+          error: temp
+        });
+        hasError = true;
+      }
+      if (minDate > maxDate && min !== '' && max !== '') {
+        let temp = (this.state.error) ? this.state.error : {};
+
+        temp.dateOption = "End year append befor start year";
+        this.setState({
+          error: temp
+        });
+        hasError = true;
+      }
+        
+      if (minYear > 9999 || minYear < 1900  || maxYear > 9999 || maxYear < 1900) {
+        let temp = (this.state.error) ? this.state.error : {};
+
+        temp.dateOption = "The year should be 4 digits number";
         this.setState({
           error: temp
         });
