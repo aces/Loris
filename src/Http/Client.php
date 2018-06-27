@@ -16,7 +16,8 @@ namespace LORIS\http;
 use \Psr\Http\Message\RequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \Zend\Diactoros\Response;
-use \Zend\Diactoros\Stream;
+// phan has an issue with the line below. Is it used? It is needed?
+//use \Zend\Diactoros\Stream;
 
 /**
  * This class provides an easy-to-use wrapper around the PHP cURL functions for
@@ -63,9 +64,6 @@ class Client
      * @param RequestInterface $request Request object. See link above.
      *
      * @return ResponseInterface
-     *
-     * @throws \Psr\Http\Client\ClientException
-     *              If an error happens during processing the request.
      */
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
@@ -91,7 +89,7 @@ class Client
      * @param string $url     The resource to POST to.
      * @param array  $headers Misc additional HTTP headers
      *
-     * @return $string The HTTP response to the POST request.
+     * @return ResponseInterface The HTTP response to the POST request.
      */
     function doGET(String $url, $headers = []) : ResponseInterface
     {
@@ -108,7 +106,7 @@ class Client
      * @param mixed  $post_body An array or string for the POST request body.
      * @param array  $headers   Misc additional HTTP headers
      *
-     * @return $string The HTTP response to the POST request.
+     * @return ResponseInterface The HTTP response to the POST request.
      */
     function doPOST(String $url, $post_body, $headers = []) : ResponseInterface
     {
@@ -125,13 +123,13 @@ class Client
      * @param mixed  $post_body An array or string for the request body.
      * @param array  $headers   Misc additional HTTP headers
      *
-     * @return $string The HTTP response to the request.
+     * @return ResponseInterface The HTTP response to the request.
      */
     function doCurl(
         String $url,
         String $method,
         $post_body,
-        $headers = []
+        Array $headers = []
     ) : ResponseInterface {
 
         /* Build curl and set options */

@@ -114,7 +114,7 @@ class HttpClient extends Client
      * @param array  $post_body The key-value pairs of the post body.
      * @param array  $headers   Misc HTTP headers
      *
-     * @return string The HTTP response given by doPost.
+     * @return ResponseInterface The HTTP response given by doPost.
      */
     function lorisPOST(
         String $endpoint,
@@ -146,7 +146,7 @@ class HttpClient extends Client
      * @param string $endpoint The URL to POST data to.
      * @param array  $headers  Option HTTP Headers
      *
-     * @return string The HTTP response given by doPost.
+     * @return ResponseInterface The HTTP response given by doPost.
      */
     function lorisGET(string $endpoint, array $headers = []): ResponseInterface
     {
