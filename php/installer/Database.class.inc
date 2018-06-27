@@ -64,8 +64,14 @@ class Database
         $stmt    = $this->PDO->query("SHOW GRANTS");
         $results = $stmt->fetchAll(PDO::FETCH_COLUMN);
         $stmt->closeCursor();
+        if ($database == '*') {
+            $database = '\*';
+        }
+        if ($table == '*') {
+            $table = '\*';
+        }
         $pattern = "/GRANT .*(ALL|${privilege}).* ON" .
-            " `?([*]|\\${database})`?[.]`?([*]|\\${table})`?/";
+            " `?([*]|${database})`?[.]`?([*]|${table})`?/";
 
         // Test all privileges return from SHOW GRANTS against the pattern
         return array_reduce(
