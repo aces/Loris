@@ -65,14 +65,14 @@ class Database
         $results = $stmt->fetchAll(PDO::FETCH_COLUMN);
         $stmt->closeCursor();
         $pattern = "/GRANT .*(ALL|${privilege}).* ON" .
-            " `?([*]|${database})`?[.]`?([*]|${table})`?/";
+            " `?([*]|\\${database})`?[.]`?([*]|\\${table})`?/";
 
-        // Test all privileges return from SHOW GRANTS agains the pattern
+        // Test all privileges return from SHOW GRANTS against the pattern
         return array_reduce(
             $results,
             function ($carry, $privilege) use ($pattern) {
                 // Return true if a previous iteration returned true or the
-                // current priviledges matches the pattern.
+                // current privileges matches the pattern.
                 return $carry || (preg_match($pattern, $privilege) === 1);
             },
             false
@@ -150,6 +150,7 @@ class Database
                 $username,
                 $password
             );
+
             $this->PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 
             if (!$this->hasPrivilege("*", "*", "CREATE")) {
@@ -163,7 +164,6 @@ class Database
                 }
                 return false;
             }
-
             $this->PDO->exec("CREATE DATABASE $database");
             $this->PDO->exec("USE $database");
             return true;
