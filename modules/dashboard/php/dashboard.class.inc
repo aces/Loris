@@ -284,7 +284,8 @@ class Dashboard extends \NDB_Form
                         array('cid' => $bvl_feedback[$i]['CommentID'])
                     );
                     if (!empty($instrument)) {
-                        $bvl_feedback[$i]['URL'] = '/instruments/' . $instrument . '/?candID='
+                        $bvl_feedback[$i]['URL'] = '/instruments/'
+                            . $instrument . '/?candID='
                             . $bvl_feedback[$i]['CandID'] . '&sessionID='
                             . $bvl_feedback[$i]['SessionID'] . '&commentID='
                             . $bvl_feedback[$i]['CommentID'];
