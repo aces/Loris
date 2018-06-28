@@ -129,11 +129,11 @@ class Dashboard extends \NDB_Form
             if ($user->hasPermission('access_all_profiles')) {
                 $this->tpl_data['conflicts']      = $DB->pselectOne(
                     "SELECT COUNT(*) FROM conflicts_unresolved cu
-                    LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) 
+                     LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) 
                      LEFT JOIN session s ON (flag.SessionID=s.ID)
-			LEFT JOIN candidate c ON (s.CandID=c.CandID)
-                      WHERE s.CenterID <> 1
-			AND s.Active='Y' AND c.Active='Y'",
+			         LEFT JOIN candidate c ON (s.CandID=c.CandID)
+                     WHERE s.CenterID <> 1
+			         AND s.Active='Y' AND c.Active='Y'",
                     array()
                 );
                 $this->tpl_data['conflicts_site'] = 'Sites: all';
@@ -143,8 +143,8 @@ class Dashboard extends \NDB_Form
                      LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) 
                      LEFT JOIN session s ON (flag.SessionID=s.ID)
 		             LEFT JOIN candidate c ON (c.CandID=s.CandID)
-                     LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
-                     WHERE FIND_IN_SET(psc.CenterID, :siteID) 
+		             LEFT JOIN Project p ON (c.ProjectID=p.ProjectID ) 
+                     WHERE FIND_IN_SET(c.CenterID, :siteID) 
 			            AND s.Active='Y' AND c.Active='Y'",
                     array('siteID' => implode(',', $siteID))
                 );
