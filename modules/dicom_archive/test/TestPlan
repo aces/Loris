@@ -26,7 +26,7 @@
     respectively, for the given patient
     [Manual Testing]
 9-  Make sure that the value of 'Patient ID' column is 'INVALID-HIDDEN' if the patient-name does not match the 
-    regex in the config.xml
+    regex in the Configuration module under the 'Imaging Modules' submenu 
     [Manual Testing]
 10- Click on 'View Images' to acess the Imaging-Browser for the given subject if 'View all-sites Imaging Browser 
     pages' or 'View own-site Imaging Browser pages' permission is set
