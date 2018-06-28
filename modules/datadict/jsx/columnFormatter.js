@@ -13,7 +13,7 @@ function formatDataDictColumn(column, cell, rowData, rowHeaders) {
     return null;
   }
   const hasEditPermission = loris.userHasPermission('data_dict_edit');
-  if (column === 'Description' && hasEditPermission === true) {
+  if (column === 'Description' && hasEditPermission) {
     var updateDict = function(name) {
       return function(e) {
         e.stopPropagation();
