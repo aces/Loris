@@ -131,6 +131,8 @@ DROP TABLE IF EXISTS `psc`;
 DROP TABLE IF EXISTS `project_rel`;
 DROP TABLE IF EXISTS `subproject`;
 DROP TABLE IF EXISTS `Project`;
+DROP TABLE IF EXISTS `option_label`;
+DROP TABLE IF EXISTS `option`;
 
 -- ********************************
 -- Core tables
@@ -2016,3 +2018,20 @@ CREATE TABLE `feedback_mri_comments` (
   CONSTRAINT `FK_feedback_mri_comments_2` FOREIGN KEY (`PredefinedCommentID`) REFERENCES `feedback_mri_predefined_comments` (`PredefinedCommentID`),
   CONSTRAINT `FK_feedback_mri_comments_3` FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `option` (
+    `OptionID` INT() NOT NULL AUTO_INCREMENT,
+    `Name` VARCHAR(25) NOT NULL,
+    PRIMARY KEY (`OptionID`),
+    UNIQUE KEY (`Name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `option_label` (
+    `OptionID` INT() NOT NULL,
+    `LanguageID` INT() NOT NULL,
+    `Label` varchar(45) NOT NULL,
+    PRIMARY KEY (`OptionID`, `LanguageID`),
+    CONSTRAINT `FK_option_label_LanguageID` FOREIGN KEY (`LanguageID`) REFERENCES `language` (`language_id`),
+    CONSTRAINT `FK_option_label_OptionID` FOREIGN KEY (`OptionID`) REFERENCES `option` (`OptionID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
