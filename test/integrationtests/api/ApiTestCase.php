@@ -2,8 +2,8 @@
 namespace LORIS\integrationtests;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
-require_once('HttpClient.php');
-
+//require_once(__DIR__.'/../../../test/integrationtests/api/HttpClient.php');
+use \LORIS\tests\api\HttpClient;
 use \PHPUnit\Framework\TestCase;
 use \Zend\Diactoros\Uri;
 
@@ -28,7 +28,8 @@ class ApiTestCase extends TestCase
             false
         );
         $this->factory->setDatabase($database);
-
+print_r($this->factory->settings()->getAPIURL());
+print_r("dddddddddd")
         $this->httpclient = new \LORIS\tests\api\HttpClient(
             new Uri(
                 $this->factory->settings()->getAPIURL() . '/api/v0.0.3-dev/'
