@@ -59,8 +59,8 @@ class HttpClient extends Client
      * @return string JWT authorization when successful. Empty string otherwise.
      */
     function getAuthorizationToken(
-        $loris_username = 'travis',
-        $loris_password = '$Demo4022'
+        $loris_username = '',
+        $loris_password = ''
     ) : String {
 
         if (empty($loris_username) || empty($loris_password)) {
