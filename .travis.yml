@@ -22,7 +22,7 @@ before_install:
     - mkdir -p project project/libraries
     - phpenv config-rm xdebug.ini
     - pecl install -f ast-0.1.6
-    - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
+    - php -S localhost:8000 -t htdocs 2>1 > /dev/null &
 
 install:
     # Install composer modules
