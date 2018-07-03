@@ -2020,18 +2020,19 @@ CREATE TABLE `feedback_mri_comments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `enumeration` (
-    `EnumerationID` INT(11) NOT NULL AUTO_INCREMENT,
+    `EnumerationID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `Name` VARCHAR(25) NOT NULL,
     PRIMARY KEY (`enumerationID`),
     UNIQUE KEY (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `enumeration_label` (
-    `enumerationID` INT(11) NOT NULL,
-    `LanguageID` INT(10) NOT NULL,
+    `enumerationID` INT(11) UNSIGNED NOT NULL,
+    `LanguageID` INT(10) UNSIGNED NOT NULL,
     `Label` varchar(45) NOT NULL,
     PRIMARY KEY (`EnumerationID`, `LanguageID`),
-    CONSTRAINT `FK_option_label_LanguageID` FOREIGN KEY (`LanguageID`) REFERENCES `language` (`language_id`),
-    CONSTRAINT `FK_option_label_enumerationID` FOREIGN KEY (`enumerationID`) REFERENCES `enumeration` (`enumerationID`)
+    CONSTRAINT `FK_enum_label_LanguageID` FOREIGN KEY (`LanguageID`) REFERENCES `language` (`language_id`),
+    CONSTRAINT `FK_enum_label_enumerationID` FOREIGN KEY (`enumerationID`) REFERENCES `enumeration` (`enumerationID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
