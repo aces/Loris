@@ -22,7 +22,7 @@
 11. Add two files with the same name but with different contents in two different categories. Verify that, when 
    downloaded, their contents are different.
    [Manual Testing]
-12. Edit a file in the repository: check that “Last modified on” date is updated.
+12. Edit a file in the repository: check that “Date Uploaded” date is updated.
     [Manual Testing]
 13. Upload a file using another user and then update it. Check that “Last updated by” field is updated.
     [Manual Testing]
@@ -38,7 +38,7 @@
        - Addition of a category.
     Also check that the www address contained in the notification email is correct.
     [Manual Testing]
-18. Check that the following settings are in /etc/php5/apache2/php.ini:
+18. To upload large files, check that the following settings are in php.ini (default: /etc/php/{php_version}/apache2/php.ini):
       session.gc_maxlifetime 10800
       max_execution_time  10800
       upload_max_filesize 1020M
