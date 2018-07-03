@@ -11,7 +11,7 @@
      - Input the right 'Gender'
      - Input the right 'Acquisition Date'
      - Input the right 'Series UID'
-    Check the results in the table.
+    Check the results in the table
     [Automation Testing]
 4-  Click on 'Clear Filters' to make sure the previously entered data can be erased
     [Automation Testing]
