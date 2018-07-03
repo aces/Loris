@@ -32,7 +32,7 @@ print_r($this->factory->settings()->getAPIURL());
 print_r("dddddddddd");
         $this->httpclient = new \LORIS\tests\api\HttpClient(
             new Uri(
-                $this->factory->settings()->getAPIURL()
+                $this->factory->settings()->getAPIURL()."/"
             )
         );
     }
