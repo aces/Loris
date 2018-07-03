@@ -13,7 +13,9 @@ RewriteRule ^([a-zA-Z0-9_-]+)reliability([a-zA-Z0-9_-]*) main.php?test_name=$1re
 
 # Everything else gets rewritten to be handled by index.php, unless it's a file that's served
 # directly from apache
-RewriteCond "%{REQUEST_FILENAME}" "!-f"
+RewriteCond "%{REQUEST_FILENAME}" "!-f" [OR]
+# Redirect homepage URLs to also use index.php
+RewriteCond "%{REQUEST_FILENAME}" "(\/main\.php)$"
 RewriteRule ^(.*)$ index.php?lorispath=$1 [QSA,L]
 </IfModule>
 
