@@ -75,7 +75,8 @@ class HttpClient extends Client
         $response = $this->lorisPOST('Login.php?PrintLogin=true', $post_body);
 
         if ($response->getStatusCode() != 200) {
-            throw new \Exception((string) $response->getBody());
+var_dump($response->getBody());
+            throw new \Exception('Login failed');
         }
 
         $json = json_decode($response->getBody());
