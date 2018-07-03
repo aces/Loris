@@ -12,8 +12,8 @@ class Canditate_Test extends ApiTestCase
         $config   = $this->factory->Config(CONFIG_XML);
 
         $token = $this->httpclient->getAuthorizationToken(
-            'UnitTester',
-            '4test4'
+            'admin',
+            'testpassword'
         );
  
         $this->httpclient = $this->httpclient->withAuthorizationToken($token);
