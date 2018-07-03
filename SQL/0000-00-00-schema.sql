@@ -131,6 +131,8 @@ DROP TABLE IF EXISTS `psc`;
 DROP TABLE IF EXISTS `project_rel`;
 DROP TABLE IF EXISTS `subproject`;
 DROP TABLE IF EXISTS `Project`;
+DROP TABLE IF EXISTS `enumeration_label`;
+DROP TABLE IF EXISTS `enumeration`;
 
 -- ********************************
 -- Core tables
@@ -2016,3 +2018,21 @@ CREATE TABLE `feedback_mri_comments` (
   CONSTRAINT `FK_feedback_mri_comments_2` FOREIGN KEY (`PredefinedCommentID`) REFERENCES `feedback_mri_predefined_comments` (`PredefinedCommentID`),
   CONSTRAINT `FK_feedback_mri_comments_3` FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `enumeration` (
+    `EnumerationID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `Name` VARCHAR(25) NOT NULL,
+    PRIMARY KEY (`enumerationID`),
+    UNIQUE KEY (`Name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `enumeration_label` (
+    `enumerationID` INT(11) UNSIGNED NOT NULL,
+    `LanguageID` INT(10) UNSIGNED NOT NULL,
+    `Label` varchar(45) NOT NULL,
+    PRIMARY KEY (`EnumerationID`, `LanguageID`),
+    CONSTRAINT `FK_enum_label_LanguageID` FOREIGN KEY (`LanguageID`) REFERENCES `language` (`language_id`),
+    CONSTRAINT `FK_enum_label_enumerationID` FOREIGN KEY (`enumerationID`) REFERENCES `enumeration` (`enumerationID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
