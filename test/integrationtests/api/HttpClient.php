@@ -74,8 +74,8 @@ class HttpClient extends Client
 
         $response = $this->lorisPOST('login/', $post_body);
 
-        if (empty($response)) {
-            throw new \Exception("No token returned; empty response body");
+        if ($response->getCode() != 200) {
+            throw new \Exception((string) $response->getBody());
         }
 
         $json = json_decode($response->getBody());

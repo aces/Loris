@@ -48,8 +48,8 @@ sed -i \
     -e "s/%USERNAME%/$username/g" \
     -e "s/%PASSWORD%/$password/g" \
     -e "s/%DATABASE%/$database/g" \
-    -e "s/%APIUSERNAME%/$database/g" \
-    -e "s/%APIPASSWORD%/$database/g" \
+    -e "s/%APIUSERNAME%/$apiusername/g" \
+    -e "s/%APIPASSWORD%/$apipassword/g" \
     config.xml
 export LORIS_DB_CONFIG=$(pwd)/config.xml
 
