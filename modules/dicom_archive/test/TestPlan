@@ -26,7 +26,7 @@
     respectively, for the given DICOM study
     [Manual Testing]
 9-  Make sure that the value of 'Patient ID' column is 'INVALID-HIDDEN' if the PatientID does not match the 
-    regex in the Configuration module under the 'Imaging Modules' submenu. Repeat the same operation for
+    regex set in the Configuration module under the 'Imaging Modules' submenu. Repeat the same operation for
     'Patient Name'
     [Manual Testing]
 10- Click on 'View Images' to acess the Imaging-Browser for the given subject if 'View all-sites Imaging Browser 
