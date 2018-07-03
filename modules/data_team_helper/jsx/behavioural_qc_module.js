@@ -203,7 +203,7 @@ var BehaviouralFeedbackRow = React.createClass({
 
     if (row.Feedback_level === 'instrument') {
       bvlLink = this.props.BaseURL + "/instruments/" + row.Test_name +
-            "?candID=" + row.CandID +
+            "/?candID=" + row.CandID +
             "&sessionID=" + row.SessionID +
             "&commentID=" + row.CommentID;
       bvlLevel = "Instrument : " + row.Full_name;
