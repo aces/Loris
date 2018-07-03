@@ -6,7 +6,6 @@ cache:
         - vendor
 php:
     - "7.1"
-    - "7.2"
 
 addons:
     firefox: "44.0"
@@ -23,7 +22,7 @@ before_install:
     - mkdir -p project project/libraries
     - phpenv config-rm xdebug.ini
     - pecl install -f ast-0.1.6
-    - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
+    - php -S localhost:8000 -t htdocs/api/v0.0.3-dev 2>1 > /dev/null &
 
 install:
     # Install composer modules
@@ -68,8 +67,8 @@ before_script:
     - mysql LorisTest -u root -e "GRANT UPDATE,INSERT,SELECT,DELETE,DROP,CREATE TEMPORARY TABLES ON LorisTest.* TO 'SQLTestUser'@'localhost' IDENTIFIED BY 'TestPassword' WITH GRANT OPTION"
     - cp docs/config/config.xml project/config.xml
     - cp docs/config/config.xml test/config.xml
-    - sed -i -e "s/%HOSTNAME%/127.0.0.1/g" -e "s/%USERNAME%/SQLTestUser/g" -e "s/%PASSWORD%/TestPassword/g" -e "s/%DATABASE%/LorisTest/g" project/config.xml
-    - sed -i -e "s/%HOSTNAME%/127.0.0.1/g" -e "s/%USERNAME%/SQLTestUser/g" -e "s/%PASSWORD%/TestPassword/g" -e "s/%DATABASE%/LorisTest/g" test/config.xml
+    - sed -i -e "s/%HOSTNAME%/127.0.0.1/g" -e "s/%USERNAME%/SQLTestUser/g" -e "s/%PASSWORD%/TestPassword/g" -e "s/%DATABASE%/LorisTest/g" -e "s/%APIUSERNAME%/travis/g" -e 's/%APIPASSWORD%/$Demo4022/g' -e 's|%APIURL%|http://localhost:8000|g' project/config.xml
+    - sed -i -e "s/%HOSTNAME%/127.0.0.1/g" -e "s/%USERNAME%/SQLTestUser/g" -e "s/%PASSWORD%/TestPassword/g" -e "s/%DATABASE%/LorisTest/g" -e "s/%APIUSERNAME%/travis/g" -e 's/%APIPASSWORD%/$Demo4022/g' -e 's|%APIURL%|http://localhost:8000|g' test/config.xml
     - mysql LorisTest -e "INSERT INTO users (UserID, Password, Real_name, First_name, Last_name, Degree, Position_title, Institution, Department, Address, City, State, Zip_code, Country, Fax, Email, Privilege, PSCPI, DBAccess, Active, Password_hash, Password_expiry, Pending_approval, Doc_Repo_Notifications, Phone) VALUES('travis', NULL, 'unix account', 'unix', 'account', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'unixtest@mail.com', 0, 'N', '', 'Y', '$2y$10$6JvNxHFCugACdUPvCpm3zeSLCEwSKsUyBbfv0/tWKAa8Ga8MmeZIG', '2019-12-06', 'N', 'N', NULL)"
     - mysql LorisTest -e "INSERT INTO user_psc_rel VALUES ((SELECT ID FROM users WHERE UserID='travis'), 1)"
     # Set the admin account password to a known value for testing. This needs to be done
@@ -94,6 +93,6 @@ before_script:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
-    - vendor/bin/phan && npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
+    - vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise
