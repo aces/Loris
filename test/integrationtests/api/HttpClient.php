@@ -72,9 +72,10 @@ class HttpClient extends Client
                       "password" => $loris_password,
                      ];
 
+var_dump((\NDB_Factory::singleton())->settings()->getBaseURL());
         $response = $this->lorisPOST('login/', $post_body);
 
-        if ($response->getCode() != 200) {
+        if ($response->getStatusCode() != 200) {
             throw new \Exception((string) $response->getBody());
         }
 
