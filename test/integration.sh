@@ -19,6 +19,8 @@ database="LorisTest"
 username="SQLTestUser"
 password="TestPassword"
 url="http://localhost:8000"
+apiusername='UnitTester';
+apipassword='4test4';
 
 # Custom DB variables specified by optional commandline arguments
 while getopts ":m:h:D:u:p:l:" opt; do
@@ -46,6 +48,8 @@ sed -i \
     -e "s/%USERNAME%/$username/g" \
     -e "s/%PASSWORD%/$password/g" \
     -e "s/%DATABASE%/$database/g" \
+    -e "s/%APIUSERNAME%/$apiusername/g" \
+    -e "s/%APIPASSWORD%/$apipassword/g" \
     config.xml
 export LORIS_DB_CONFIG=$(pwd)/config.xml
 
@@ -74,6 +78,7 @@ if [ ! -z "$module" ]; then
 else
  # Run all integration tests
  ../vendor/bin/phpunit --configuration phpunit.xml --testsuite 'LorisCoreIntegrationTests'
+ ../vendor/bin/phpunit --configuration phpunit.xml --testsuite 'LorisApiIntegrationTests'
  ../vendor/bin/phpunit --configuration phpunit.xml --testsuite 'LorisModuleIntegrationTests'
 fi
 
