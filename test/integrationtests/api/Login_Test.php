@@ -5,6 +5,8 @@ require_once('ApiTestCase.php');
 
 class Login_Test extends ApiTestCase
 {
+    protected $endpoint = 'Login.php?PrintLogin=true';
+ 
     public function setUp() 
     {
     }
@@ -21,7 +23,7 @@ class Login_Test extends ApiTestCase
             'password' => $api_credentials['password']
         );
         
-        $response = $this->httpclient->lorisPOST('login/', $post_body);
+        $response = $this->httpclient->lorisPOST($this->endpoint, $post_body);
         $this->assertEquals(200, $response->getStatusCode());
         
         $json = json_decode($response->getBody());
@@ -34,7 +36,7 @@ class Login_Test extends ApiTestCase
         $post_body = array(
         );
 
-        $response = $this->httpclient->lorisPOST('login/', $post_body);
+        $response = $this->httpclient->lorisPOST($this->endpoint, $post_body);
         $this->assertEquals(400, $response->getStatusCode());
 
         // Missing username key in request body
@@ -43,7 +45,7 @@ class Login_Test extends ApiTestCase
             'password' => 'bar'
         );
 
-        $response = $this->httpclient->lorisPOST('login/', $post_body);
+        $response = $this->httpclient->lorisPOST($this->endpoint, $post_body);
         $this->assertEquals(400, $response->getStatusCode());
 
         // Missing password key in request body
@@ -52,7 +54,7 @@ class Login_Test extends ApiTestCase
             'missing_password_key' => 'bar'
         );
 
-        $response = $this->httpclient->lorisPOST('login/', $post_body);
+        $response = $this->httpclient->lorisPOST($this->endpoint, $post_body);
         $this->assertEquals(400, $response->getStatusCode());
     }
 
@@ -64,7 +66,7 @@ class Login_Test extends ApiTestCase
             'password' => 'wrong password'
         );
 
-        $response = $this->httpclient->lorisPOST('login/', $post_body);
+        $response = $this->httpclient->lorisPOST($this->endpoint, $post_body);
         $this->assertEquals(401, $response->getStatusCode());
     }
 }

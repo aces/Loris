@@ -3,7 +3,7 @@ namespace LORIS\integrationtests;
 
 require_once('ApiTestCase.php');
 
-class Canditate_Test extends ApiTestCase
+class Project_Test extends ApiTestCase
 {
     public function __construct()
     {
@@ -26,13 +26,15 @@ class Canditate_Test extends ApiTestCase
     public function tearDown() {
     }
 
-    public function testCandidatesGet() {
-        $response = $this->httpclient->lorisGET('Candidates.php?PrintCandidates=true');
+    public function testProjectsGet() {
+        $response = $this->httpclient->lorisGET('Projects.php?PrintProjects=true');
         $this->assertEquals(200, $response->getStatusCode());
-    }
 
-    public function testCandidatesCandIdGet() {
-        $response = $this->httpclient->lorisGET('Candidates.php?PrintCandidates=true&CandID=105657');
-        $this->assertEquals(200, $response->getStatusCode());
+        $projects = json_decode($response->getBody(), true)['Projects'] ?? null;
+        $this->assertNotEmpty($projects);
+        $project_name = get_object_vars($projects)[0];
+        $first_projects = $projects[$project_name];
+        
     }
 }
+
