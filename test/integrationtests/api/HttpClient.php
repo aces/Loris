@@ -72,7 +72,7 @@ class HttpClient extends Client
                       "password" => $loris_password,
                      ];
 
-        $response = $this->lorisPOST('login/', $post_body);
+        $response = $this->lorisPOST('Login.php?PrintLogin=true', $post_body);
 
         if (empty($response)) {
             throw new \Exception("No token returned; empty response body");
