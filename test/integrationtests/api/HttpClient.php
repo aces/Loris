@@ -72,8 +72,8 @@ class HttpClient extends Client
                       "password" => $loris_password,
                      ];
 
-        $response = $this->lorisPOST('Login.php?PrintLogin=true', $post_body);
-
+       // $response = $this->lorisPOST('Login.php?PrintLogin=true', $post_body);
+    $response    ={"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvd2FuZ3NoZW4tZGV2LmxvcmlzLmNhIiwiYXVkIjoiaHR0cHM6XC9cL3dhbmdzaGVuLWRldi5sb3Jpcy5jYSIsImlhdCI6MTUzMDU4MjUzOCwibmJmIjoxNTMwNTgyNTM4LCJleHAiOjE1MzA2Njg5MzgsInVzZXIiOiJhZG1pbiJ9.6X7Cv5Ke5fKVG6D-QRCATbkKJI9A1KfOpnmtlJ94nXM"};
         if (empty($response)) {
             throw new \Exception("No token returned; empty response body");
         }
