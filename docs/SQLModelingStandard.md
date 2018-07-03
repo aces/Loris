@@ -115,19 +115,19 @@ infrastructure will be re-designed to follow this guideline.*
 
 ### ENUM replacement
 
-- A **base lookup table** (`option`) exist to store all possible values for 
+- A **base lookup table** (`enumeration`) exist to store all possible values for 
   every enum requirement.
 - When an ENUM type field is needed, create a **second level** lookup table 
-  (i.e., `yes_no_option` for `yes` and `no` values) with a single attribute
-  referencing the **primary key** attribute of the `option` table. That second 
-  level table will only store the `OptionID` of the required values. In the 
+  (i.e., `yes_no_enum` for `yes` and `no` values) with a single attribute
+  referencing the **primary key** attribute of the `enumeration` table. That second 
+  level table will only store the `EnumerationID` of the required values. In the 
   table that require an ENUM type attribute, make a **foreign key** constraint 
   referencing that **second level table**. This will only permit value 
   reference in the second level table. You may first check if an existing 
   second level table already as the proper options.
-- The **name** of these **second level table** should end in `_option`.
+- The **name** of these **second level table** should end in `_enum`.
 - **Multiple table** could reference the **same second level table** 
-  (i.e., `yes_no_option`) as required.
+  (i.e., `yes_no_enum`) as required.
 - If you later have to **modify an existing list** of optional value (second 
   level table), you may add (remove) the primary key of the option to the 
   second level table. **Be carefull**, it is possible that **other tables 
@@ -135,17 +135,17 @@ infrastructure will be re-designed to follow this guideline.*
   new** second level table with the now desired options and modify the 
   reference of the restricted attribute to point to the newly created second 
   level table.
-- Add **additionnal optional values** in the `option` table as required. 
+- Add **additionnal optional values** in the `enumeration` table as required. 
   **Before** doing this, you should **check** if it already exist.
 
-- The `option` table should only contain the name (used inside the code) of 
-  the value. The **label** (`Label` attribute of `option_label`table) should
+- The `enumeration` table should only contain the name (used inside the code) of 
+  the value. The **label** (`Label` attribute of `enumeration_label`table) should
   be **displayed on the screen**. This label can exist in multiple language.
   **Always create** an entry for the **en-CA** (English Canada) language 
-  in the `option_label` table. You may **add translation** to other language 
+  in the `enumeration_label` table. You may **add translation** to other language 
   **as desired**.
 
-  ![option example](image/optionExample.png)
+  ![enumeration example](image/enumExample.png)
 ### Other parameters
 - Tables should be normalised to **3rd normal form**  unless there is a strong
   justification to do otherwise.
