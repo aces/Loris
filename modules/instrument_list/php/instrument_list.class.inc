@@ -57,11 +57,11 @@ class Instrument_List extends \NDB_Menu_Filter
         // create user object
         $user =& \User::singleton();
         if (isset($_REQUEST['sessionID'])) {
-        //These variable are only for checking the permissions.
-        $TimePoint = & \TimePoint::singleton($_REQUEST['sessionID']);
-        $candID    = $TimePoint->getCandID();
-        $Candidate =& \Candidate::singleton($candID);
-        return ($user->hasPermission('access_all_profiles')
+            //These variable are only for checking the permissions.
+            $TimePoint = & \TimePoint::singleton($_REQUEST['sessionID']);
+            $candID    = $TimePoint->getCandID();
+            $Candidate =& \Candidate::singleton($candID);
+            return ($user->hasPermission('access_all_profiles')
                 || (in_array(
                     $Candidate->getData('CenterID'),
                     $user->getData('CenterIDs')
@@ -72,7 +72,7 @@ class Instrument_List extends \NDB_Menu_Filter
                     $user->getData('CenterIDs')
                 )
                    )
-        );
+            );
         }
         // check user permissions
         return ($user->hasPermission('access_all_profiles'));
