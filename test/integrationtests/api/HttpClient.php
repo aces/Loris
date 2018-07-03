@@ -79,7 +79,7 @@ class HttpClient extends Client
       print_r($response->getBody());
 print_r("00000000000000");
         $json = json_decode($response->getBody());
-        print_r($response->getBody());
+        print_r($json);
         // If no JWT token returned, login failed.
        // if (is_null($json) || !array_key_exists('token', $json)) {
        //     throw new \Exception("No token returned");
