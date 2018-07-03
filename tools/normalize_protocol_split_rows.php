@@ -68,12 +68,14 @@ function split_commas($table_name) {
                 unset($combination["LogID"]);
                 $DB->insert($table_name, $combination);
             }
+            // remove the row for the original LogID
             $DB->delete($table_name, array("LogID" => $id));
         } else {
             foreach ($all_combinations as $combination) {
                 unset($combination["ID"]);
                 $DB->insert($table_name, $combination);
             }
+            // remove the row for the original ID
             $DB->delete($table_name, array("ID" => $id));
         }
     }
