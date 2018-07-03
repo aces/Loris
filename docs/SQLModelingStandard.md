@@ -121,7 +121,7 @@ infrastructure will be re-designed to follow this guideline.*
   (i.e., `yes_no_option` for `yes` and `no` values) with a single attribute
   referencing the **primary key** attribute of the `option` table. That second 
   level table will only store the `OptionID` of the required values. In the 
-  table that require an ENUM type attribute, make a **foreing key** constraint 
+  table that require an ENUM type attribute, make a **foreign key** constraint 
   referencing that **second level table**. This will only permit value 
   reference in the second level table. You may first check if an existing 
   second level table already as the proper options.
