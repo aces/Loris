@@ -1,4 +1,4 @@
-Instrument builder Test Plan
+# Instrument Builder Test Plan
 
 1.  Create Instrument
     1.a Add Header
