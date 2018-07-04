@@ -82,8 +82,10 @@ class Instrument_Manager extends \NDB_Menu_Filter
             && is_writable($this->path . "project/tables_sql");
         $this->tpl_data['writable'] = $writable;
         if (!$writable) {
-            $this->tpl_data['feedback'] = "Instrument installation has been "
-                . "disabled by your administrator.";
+            $this->tpl_data['feedback'] = "Automatic installation of "
+                . "instruments is not possible given the current server "
+                . "configuration. Please contact your administrator if you "
+                . "require this functionality.";
         }
         // Process POST request (installation of an instrument).
         if ($writable && isset($_POST['install'])
