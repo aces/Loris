@@ -44,23 +44,23 @@ class Instrument_Manager extends \NDB_Menu_Filter
     {
         $config        = \NDB_Config::singleton();
         $this->path    = $config->getSetting("base");
-        $this->headers = [
+        $this->headers = array(
                           'Instrument',
                           'Instrument_Type',
                           'Table_Installed',
                           'Table_Valid',
                           'Pages_Valid',
-                         ];
+                         );
         $this->query   = " FROM test_names t";
-        $this->columns = [
+        $this->columns = array(
                           't.Test_name as Instrument',
                           "'x' as Instrument_Type",
                           "'x' as Table_Installed",
                           "'x' as Table_Valid",
                           "'x' as Pages_Valid",
-                         ];
-        $this->validFilters = [''];
-        $this->formToFilter = [];
+                         );
+        $this->validFilters = array('');
+        $this->formToFilter = array();
 
         // Check to see whether the quatUser is configured.
         // If this user is not configured, the instrument cannot be
