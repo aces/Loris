@@ -171,7 +171,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 $output, // $output and $status are created automatically
                 $status  // by `exec` and so need not be declared above.
             );
-            // In MSQL, an exit code of 0 is a success and 1 means failure
+            // An exit code of 0 is a success and 1 means failure
             if ($status) {
                 $this->tpl_data['feedback'] = "The installation of "
                     . "$instrument->table.sql failed. "
@@ -181,7 +181,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
                     . "Either: the instrument table exists (but is not in the "
                     . "test_names table), or "
                     . "LORIS could not connect to the database using the "
-                    . "credentials supplied in project/config.xml. "
+                    . "credentials supplied in the config file."
                     . print_r($object)
                 );
             }
