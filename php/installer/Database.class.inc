@@ -120,7 +120,9 @@ class Database
                 $password
             );
             return true;
-        } catch (Exception $ex) {
+        } catch (PDOException $ex) {
+            return false;
+        } catch (\Exception $e) {
             return false;
         }
     }
