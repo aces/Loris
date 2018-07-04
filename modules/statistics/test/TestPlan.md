@@ -8,8 +8,8 @@
 1. Click on the Demographic Statistics tab. For the general statistics table, compare the data in the table to that in the database to ensure that it is being queried correctly.
 2. Check the general statistics filters. Try filtering by both site and project separately. Check that the filters only apply to the general statistics table.
 3. In the breakdown table, try filtering by each of the different instruments. Does each filter appear to be working? Check that it only applies to the breakdown table.
-4. For the gender breakdown, compare the data in the table to that in the database to ensure that it is being queried correctly.
-5. For the gender breakdown, check to see if the % Male is being calculated properly by looking at the data that's in the table.
+4. For the sex breakdown, compare the data in the table to that in the database to ensure that it is being queried correctly.
+5. For the sex breakdown, check to see if the % Male is being calculated properly by looking at the data that's in the table.
 
 ### Behavioural Statistics
 1. Click on the Behavioural Statistics tab. Try using the project filter Data Entry Statistics table. Does it work? Does it change what appears in the top table only (perhaps it should be made clearer that it only applies to the top table)?
