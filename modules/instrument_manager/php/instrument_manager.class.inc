@@ -542,7 +542,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
      *
      * @return bool True if $column_name matches a default. False otherwise.
      */
-    function filterDefaultColumns($column_name): String 
+    function filterDefaultColumns($column_name): Bool
     {
         $defaults = array(
             'CommentID',
