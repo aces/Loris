@@ -932,7 +932,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 )
             );
         } else {
-            $timepoint->getCandID();$results = $db->pselect(
+            $results = $db->pselect(
                 "SELECT e.examinerID, e.full_name
                      FROM examiners e
                          JOIN examiners_psc_rel epr
