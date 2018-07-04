@@ -66,7 +66,7 @@ class EditExaminer extends \NDB_Form
             // considering that certification changes affect all sites
             $permitted   = $user->hasPermission('examiner_view')
                 || $user->hasPermission('examiner_multisite');
-            $sameCenters // lol phpcs
+            $sameCenters 
                 = empty(array_diff($centerIDs, $user->getData('CenterIDs')));
             return $permitted && $sameCenters;
         }
