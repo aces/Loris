@@ -338,15 +338,15 @@ class Instrument_Manager extends \NDB_Menu_Filter
      * checks whether all of the fields defined in the .linst file are present
      * in the SQL schema and vice-versa.  If the table is found to be consistent
      * it is considered valid and a String confirming this will be returned and
-     * eventually output in the front-end table.  Otherwise an error will be 
+     * eventually output in the front-end table.  Otherwise an error will be
      * returned and displayed to the user.
      *
+     * @param string $instname the value of instname
+     *
+     * @return bool
+     *
      * @see Example linst file: docs/instruments/test_all_fields.linst
-    *
-    * @param string $instname the value of instname
-    *
-    * @return bool
-    */
+     */
     function checkTable($instname)
     {
         $factory  = \NDB_Factory::singleton();
@@ -428,19 +428,19 @@ class Instrument_Manager extends \NDB_Menu_Filter
                 break;
             }
         }
-        // For every value in the `Field` column in the SQL schema, ensure a 
-        // matching value exists in the linst file.  This is done to check 
+        // For every value in the `Field` column in the SQL schema, ensure a
+        // matching value exists in the linst file.  This is done to check
         // whether a question has been deleted from the linst file but is still
         // present in the back-end.
         $sqlSelect = "SELECT COLUMN_NAME".
             " FROM information_schema.columns".
             " WHERE TABLE_SCHEMA=:dbname".
             " AND TABLE_NAME=:tablename";
-        $result      = $db->pselect(
+        $result    = $db->pselect(
             $sqlSelect,
             array(
-                'dbname'     => $factory->settings()->dbName(),
-                'tablename'  => $instname,
+             'dbname'    => $factory->settings()->dbName(),
+             'tablename' => $instname,
             )
         );
         // Get all fields present in DB but absent in linst file.
@@ -452,7 +452,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
         }
         $diff = array_diff($columns_in_database, $linst_field_names);
         // Filter the difference by checking whether it contains values that are
-        // added/populated automatically by LORIS, and therefore need not and 
+        // added/populated automatically by LORIS, and therefore need not and
         // should not be present in .linst forms.
         $diff = array_filter($diff, array($this, "filterDefaultColumns"));
         if (!empty($diff)) {
@@ -535,7 +535,7 @@ class Instrument_Manager extends \NDB_Menu_Filter
     /** This function checks whether the column_name parameter exists in a list
      * of default column names.  These defaults represent values that are 
      * automatically created and populated by LORIS upon creating or uploading
-     * a linst form.  
+     * a linst form.
      * This function is used by array_filter above to do table validation.
      *
      * @param string $column_name A column name in an instrument table.
@@ -545,12 +545,12 @@ class Instrument_Manager extends \NDB_Menu_Filter
     function filterDefaultColumns($column_name): Bool
     {
         $defaults = array(
-            'CommentID',
-            'UserID',
-            'Testdate',
-            'Data_entry_completion_status'
-        );
-        // Negate in_array because we DON'T want default values, and so we 
+                     'CommentID',
+                     'UserID',
+                     'Testdate',
+                     'Data_entry_completion_status',
+                    );
+        // Negate in_array because we DON'T want default values, and so we
         // should return false on a match.
         return !in_array($column_name, $defaults);
     }
