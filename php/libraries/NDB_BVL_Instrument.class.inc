@@ -2545,8 +2545,8 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $visitlabel = $this->getVisitLabel()
-        $sessionid  = $this->getSessionID()
+        $visitlabel = $this->getVisitLabel();
+        $sessionid  = $this->getSessionID();
         $timepoint  = \TimePoint::singleton($sessionid);
         $candid     = $timepoint->getCandID();
         $pscid      = $this->getPSCID();
