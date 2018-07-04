@@ -139,7 +139,7 @@ class Database
      * @param boolean $trackChanges whether to use the trackChanges mechanism on
      *                              this connection (defaults to true)
      *
-     * @return bool True if DB conneciton established. False otherwise.
+     * @return bool True if DB connection established. False otherwise.
      * @access public
      */
     function connect(
