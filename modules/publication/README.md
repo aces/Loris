@@ -15,9 +15,9 @@ other LORIS users to help with editing and maintaining their project proposals.
 
 The publication module is intended to view and manage research project proposals.
 Users who are proposing a project are able to specify which specific variables of 
-interest they are interested in studying. However, gathering and releasing this 
+interest that are relevant to their research. However, gathering and releasing this 
 data remains within the scope of the DQT and Data Release modules respectively.
-Realizing and implementing the proposals are also outside the scope, this module 
+Realizing and implementing the proposals are also outside the scope; this module 
 is intended solely for tracking the status and metadata of the proposals, as well as 
 storing the resulting publication media.
 
