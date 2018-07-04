@@ -932,7 +932,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 )
             );
         } else {
-            $results = $db->pselect(
+            $timepoint->getCandID();$results = $db->pselect(
                 "SELECT e.examinerID, e.full_name
                      FROM examiners e
                          JOIN examiners_psc_rel epr
@@ -2536,6 +2536,39 @@ class NDB_BVL_Instrument extends NDB_Page
     function validate($values)
     {
         return $this->determineDataEntryAllowed();
+    }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $visitlabel = $this->getVisitLabel()
+        $sessionid  = $this->getSessionID()
+        $timepoint  = \TimePoint::singleton($sessionid);
+        $candid     = $timepoint->getCandID();
+        $pscid      = $this->getPSCID();
+
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                'Access Profile',
+                '/candidate_list'
+            ),
+            new \LORIS\Breadcrumb(
+                "Candidate Profile $candid / $pscid",
+                "/$candid"
+            ),
+            new \LORIS\Breadcrumb(
+                "TimePoint $visitlabel Details",
+                "/instrument_list/?candID=$candid&sessionID=$sessionid"
+            ),
+            new \LORIS\Breadcrumb(
+                $this->name,
+                ''
+            )
+        );
     }
 }
 
