@@ -180,7 +180,11 @@ class Database
         } catch (PDOException $e) {
             // This exception will not be included in the error log as it will
             // likely include credentials.
-            error_log("Bad credentials or couldn't connect to database host.");
+            throw new DatabaseException(
+                "Could not establish a PDO object using the following values: "
+                . "username: `$username`, dbname: `$database`, host: `$host` "
+                . "and the supplied password."
+            );
             return false;
         }
         $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
