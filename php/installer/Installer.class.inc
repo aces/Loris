@@ -295,21 +295,21 @@ class Installer
     function updateBaseConfig($values)
     {
         $DB = Database::singleton();
-        if ($DB->connect(
-            $values['dbname'],
-            $values['dbadminuser'],
-            $values['dbadminpassword'],
-            $values['dbhost']
-        ) == false
-        ) {
+        try {
+            $DB->connect(
+                $values['dbname'],
+                $values['dbadminuser'],
+                $values['dbadminpassword'],
+                $values['dbhost']
+            );
+        } catch (Exception $e) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
                 $this->_lastErr = "Could not connect to MySQL server "
-                . "with credentials provided.";
+                    . "with credentials provided.";
             }
             return false;
-
         }
 
         // get the LORIS base path, based on what we know about where
