@@ -35,8 +35,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     {
         parent::setUp();
 
-        $this->createSubproject(1, "subprojet 1");
-        $this->createSubproject(2, "subprojet 2");
     }
 
     /**
@@ -48,8 +46,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     {
         parent::tearDown();
 
-        $this->deleteSubproject("subprojet 1");
-        $this->deleteSubproject("subprojet 2");
     }
 
     /**
@@ -78,27 +74,11 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepoint()
     {
-        $this->_createTimepoint('900000', 'subprojet 1', 'V1');
+        $this->_createTimepoint('900000', 'Stale', 'V1');
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("New time point successfully registered", $bodyText);
-
-    }
-    /**
-     * Tests that, create a timepoint and input a error format visit label
-     * get Error message
-     *
-     * @return void
-     */
-    function testCreateTimepointErrorVisitLabel()
-    {
-        $this->_createTimepoint('900000', 'subprojet 2', 'V9999');
-        $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains(
-            "This visit label does not match the required structure.",
-            $bodyText
-        );
 
     }
 
@@ -117,7 +97,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             $this->url . "/create_timepoint/?candID=" . $canID .
             "&identifier=" .$canID
         );
-
         $select  = $this->safeFindElement(WebDriverBy::Name("subprojectID"));
         $element = new WebDriverSelect($select);
         $element->selectByVisibleText($subproject);
