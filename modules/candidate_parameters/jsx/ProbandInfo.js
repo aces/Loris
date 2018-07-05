@@ -246,7 +246,7 @@ var ProbandInfo = React.createClass(
       }
 
       if (dob1 > today) {
-        alert("Consent to study date cannot be later than today!");
+        alert("Proband date of birth cannot be later than today!");
         return;
       }
 

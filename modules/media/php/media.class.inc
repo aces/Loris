@@ -103,6 +103,13 @@ class Media extends \NDB_Menu_Filter
             $fileTypeList[$filetype['file_type']] = $filetype['file_type'];
         }
 
+        //Language selector
+        $languages    = \Utility::getLanguageList();
+        $languageList = [];
+        foreach ($languages as $language) {
+            $languageList[$language] = $language;
+        }
+
         // Form Elements
         $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
         $this->addBasicText('fileName', 'File Name');
@@ -111,6 +118,7 @@ class Media extends \NDB_Menu_Filter
         $this->addSelect('site', 'For Site', $siteList);
         $this->addBasicText('uploadedBy', 'Uploaded By');
         $this->addSelect('instrument', 'Instrument', $instrumentList);
+        $this->addSelect('language', 'Language', $languageList);
 
         // Add hidden files filter is user is admin
         if ($this->hasHidePermission) {
@@ -141,8 +149,10 @@ class Media extends \NDB_Menu_Filter
     {
         $user =& \User::singleton();
         // the base query
-        $query  = " FROM media m LEFT JOIN session s ON m.session_id = s.ID".
-        " LEFT JOIN candidate c ON c.CandID=s.CandID";
+        $query  = " FROM media m 
+                    LEFT JOIN session s ON m.session_id = s.ID 
+                    LEFT JOIN candidate c ON c.CandID=s.CandID 
+                    LEFT JOIN language l USING (language_id) ";
         $query .= " WHERE 1=1 ";
 
         // set the class variables
@@ -151,6 +161,7 @@ class Media extends \NDB_Menu_Filter
                'm.file_name',
                '(SELECT PSCID from candidate WHERE CandID=s.CandID) as pscid',
                's.Visit_label as visit_label',
+               'l.language_label',
                '(SELECT Full_name FROM test_names WHERE Test_name=m.instrument)',
                '(SELECT name FROM psc WHERE CenterID=s.CenterID) as site',
                'm.uploaded_by',
@@ -181,6 +192,7 @@ class Media extends \NDB_Menu_Filter
                            'File Name',
                            'PSCID',
                            'Visit Label',
+                           'Language',
                            'Instrument',
                            'Site',
                            'Uploaded By',
@@ -198,20 +210,6 @@ class Media extends \NDB_Menu_Filter
             array_push($this->headers, 'Edit Metadata');
         }
 
-        $this->validFilters = [
-                               'c.PSCID',
-                               'm.instrument',
-                               's.Visit_label',
-                               's.CenterID',
-                               'm.hide_file',
-                              ];
-        $this->formToFilter = [
-                               'pscid'       => 'c.PSCID',
-                               'instrument'  => 'm.instrument',
-                               'visit_label' => 's.Visit_label',
-                               'for_site'    => 's.CenterID',
-                               'hide_file'   => 'm.hide_file',
-                              ];
         return true;
     }
 

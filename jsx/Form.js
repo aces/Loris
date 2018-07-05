@@ -1,5 +1,6 @@
-/* exported FormElement, SelectElement, TextareaElement, TextboxElement, DateElement,
-NumericElement, FileElement, StaticElement, LinkElement, ButtonElement, LorisElement
+/* exported FormElement, SelectElement, TagsElement, SearchableDropdown, TextareaElement,
+TextboxElement, DateElement, NumericElement, FileElement, StaticElement, LinkElement,
+ButtonElement, LorisElement
 */
 
 /**
@@ -21,41 +22,14 @@ NumericElement, FileElement, StaticElement, LinkElement, ButtonElement, LorisEle
  * Note that if both are passed `this.props.formElements` is displayed first.
  *
  */
-var FormElement = React.createClass({
+class FormElement extends React.Component {
+  constructor() {
+    super();
+    this.getFormElements = this.getFormElements.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
 
-  propTypes: {
-    name: React.PropTypes.string.isRequired,
-    id: React.PropTypes.string,
-    method: React.PropTypes.oneOf(['POST', 'GET']),
-    action: React.PropTypes.string,
-    class: React.PropTypes.string,
-    columns: React.PropTypes.number,
-    formElements: React.PropTypes.shape({
-      elementName: React.PropTypes.shape({
-        name: React.PropTypes.string,
-        type: React.PropTypes.string
-      })
-    }),
-    onSubmit: React.PropTypes.func,
-    onUserInput: React.PropTypes.func
-  },
-
-  getDefaultProps: function() {
-    return {
-      name: null,
-      id: null,
-      method: 'POST',
-      action: undefined,
-      class: 'form-horizontal',
-      columns: 1,
-      fileUpload: false,
-      formElements: {},
-      onSubmit: function() {
-        console.warn('onSubmit() callback is not set!');
-      }
-    };
-  },
-  getFormElements: function() {
+  getFormElements() {
     const formElementsHTML = [];
     const columns = this.props.columns;
     const maxColumnSize = 12;
@@ -83,7 +57,7 @@ var FormElement = React.createClass({
     React.Children.forEach(this.props.children, function(child, key) {
       // If child is plain HTML, insert it as full size.
       // Useful for inserting <hr> to split form sections
-      var elementClass = "col-xs-12 col-sm-12 col-md-12";
+      let elementClass = "col-xs-12 col-sm-12 col-md-12";
 
       // If child is form element use appropriate size
       if (React.isValidElement(child) && typeof child.type === "function") {
@@ -95,23 +69,25 @@ var FormElement = React.createClass({
     });
 
     return formElementsHTML;
-  },
-  handleSubmit: function(e) {
+  }
+
+  handleSubmit(e) {
     // Override default submit if property is set
     if (this.props.onSubmit) {
       e.preventDefault();
       this.props.onSubmit(e);
     }
-  },
-  render: function() {
-    var encType = this.props.fileUpload ? 'multipart/form-data' : null;
+  }
+
+  render() {
+    let encType = this.props.fileUpload ? 'multipart/form-data' : null;
 
     // Generate form elements
-    var formElements = this.getFormElements();
+    let formElements = this.getFormElements();
 
     // Flexbox is set to ensure that columns of different heights
     // are displayed proportionally on the screen
-    var rowStyles = {
+    let rowStyles = {
       display: "flex",
       flexWrap: "wrap"
     };
@@ -132,61 +108,215 @@ var FormElement = React.createClass({
       </form>
     );
   }
-});
+}
+
+FormElement.propTypes = {
+  name: React.PropTypes.string.isRequired,
+  id: React.PropTypes.string,
+  method: React.PropTypes.oneOf(['POST', 'GET']),
+  action: React.PropTypes.string,
+  class: React.PropTypes.string,
+  columns: React.PropTypes.number,
+  formElements: React.PropTypes.shape({
+    elementName: React.PropTypes.shape({
+      name: React.PropTypes.string,
+      type: React.PropTypes.string
+    })
+  }),
+  onSubmit: React.PropTypes.func,
+  onUserInput: React.PropTypes.func
+};
+
+FormElement.defaultProps = {
+  name: null,
+  id: null,
+  method: 'POST',
+  action: undefined,
+  class: 'form-horizontal',
+  columns: 1,
+  fileUpload: false,
+  formElements: {},
+  onSubmit: function() {
+    console.warn('onSubmit() callback is not set!');
+  }
+};
+
+/**
+ * Search Component
+ * React wrapper for a searchable dropdown
+ */
+class SearchableDropdown extends React.Component {
+  constructor() {
+    super();
+    this.getKeyFromValue = this.getKeyFromValue.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+    this.getTextInputValue = this.getTextInputValue.bind(this);
+  }
+
+  getKeyFromValue(value) {
+    let options = this.props.options;
+    return Object.keys(options).find(function(o) {
+      return options[o] === value;
+    });
+  }
+
+  handleChange(e) {
+    let value = this.getKeyFromValue(e.target.value);
+    // if not in strict mode and key value is not defined (i.e., not in options)
+    // set value equal to e.target.value
+    if (!this.props.strictSearch && value === undefined) {
+      value = e.target.value;
+    }
+    this.props.onUserInput(this.props.name, value);
+  }
+
+  handleBlur(e) {
+    // null out entry if not present in options in strict mode
+    if (this.props.strictSearch) {
+      let value = e.target.value;
+      let options = this.props.options;
+      if (Object.values(options).indexOf(value) === -1) {
+        // empty string out both the hidden value as well as the input text
+        document.querySelector(`input[name="${this.props.name + '_input'}"]`).value = '';
+        this.props.onUserInput(this.props.name, '');
+      }
+    }
+  }
+
+  getTextInputValue() {
+    return document.querySelector(`input[name="${this.props.name + '_input'}"]`).value;
+  }
+
+  render() {
+    let required = this.props.required ? 'required' : null;
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let options = this.props.options;
+    let strictMessage = 'Entry must be included in provided list of options.';
+    let errorMessage = null;
+    let requiredHTML = null;
+    let elementClass = 'row form-group';
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    // Add error message
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    } else if (this.props.required && this.props.value === "") {
+      let msg = 'This field is required!';
+      msg += (this.props.strictSearch ? ' ' + strictMessage : '');
+      errorMessage = <span>{msg}</span>;
+      elementClass = 'row form-group has-error';
+    } else if (this.props.strictSearch && this.props.value === "") {
+      errorMessage = <span>{strictMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
+    // determine value to place into text input
+    let value;
+    // use value in options if valid
+    if (this.props.value !== undefined) {
+      if (Object.keys(options).indexOf(this.props.value) > -1) {
+        value = options[this.props.value];
+        // else, use input text value
+      } else {
+        value = this.getTextInputValue();
+      }
+    }
+
+    return (
+      <div className={elementClass}>
+        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+        <div className="col-sm-9">
+          <input
+            type="text"
+            name={this.props.name + '_input'}
+            value={value}
+            id={this.props.id}
+            list={this.props.name + '_list'}
+            className="form-control"
+            disabled={disabled}
+            placeholder={this.props.placeHolder}
+            onChange={this.handleChange}
+            onBlur={this.handleBlur}
+          />
+          <datalist id={this.props.name + '_list'}>
+            {Object.keys(options).map(function(option) {
+              return (
+                <option value={options[option]} key={option}/>
+              );
+            })}
+          </datalist>
+          {errorMessage}
+        </div>
+      </div>
+    );
+  }
+}
+
+SearchableDropdown.propTypes = {
+  name: React.PropTypes.string.isRequired,
+  options: React.PropTypes.object.isRequired,
+  id: React.PropTypes.string,
+  // strictSearch, if set to true, will require that only options
+  // provided in the options prop can be submitted
+  strictSearch: React.PropTypes.bool,
+  label: React.PropTypes.string,
+  value: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.array
+  ]),
+  class: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  errorMessage: React.PropTypes.string,
+  placeHolder: React.PropTypes.string,
+  onUserInput: React.PropTypes.func
+};
+
+SearchableDropdown.defaultProps = {
+  name: '',
+  options: {},
+  strictSearch: true,
+  label: '',
+  value: undefined,
+  id: null,
+  class: '',
+  disabled: false,
+  required: false,
+  errorMessage: '',
+  placeHolder: '',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  }
+};
 
 /**
  * Select Component
  * React wrapper for a simple or 'multiple' <select> element.
  */
-var SelectElement = React.createClass({
+class SelectElement extends React.Component {
+  constructor() {
+    super();
+    this.handleChange = this.handleChange.bind(this);
+  }
 
-  propTypes: {
-    name: React.PropTypes.string.isRequired,
-    options: React.PropTypes.object.isRequired,
-    label: React.PropTypes.string,
-    value: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.array
-    ]),
-    id: React.PropTypes.string,
-    class: React.PropTypes.string,
-    multiple: React.PropTypes.bool,
-    disabled: React.PropTypes.bool,
-    required: React.PropTypes.bool,
-    emptyOption: React.PropTypes.bool,
-    hasError: React.PropTypes.bool,
-    errorMessage: React.PropTypes.string,
-    onUserInput: React.PropTypes.func
-  },
-
-  getDefaultProps: function() {
-    return {
-      name: '',
-      options: {},
-      label: '',
-      value: undefined,
-      id: '',
-      class: '',
-      multiple: false,
-      disabled: false,
-      required: false,
-      emptyOption: true,
-      hasError: false,
-      errorMessage: 'The field is required!',
-      onUserInput: function() {
-        console.warn('onUserInput() callback is not set');
-      }
-    };
-  },
-
-  handleChange: function(e) {
-    var value = e.target.value;
-    var options = e.target.options;
+  handleChange(e) {
+    let value = e.target.value;
+    let options = e.target.options;
+    const numOfOptions = options.length;
 
     // Multiple values
-    if (this.props.multiple && options.length > 1) {
+    if (this.props.multiple && numOfOptions > 1) {
       value = [];
-      for (var i = 0, l = options.length; i < l; i++) {
+      for (let i = 0, l = numOfOptions; i < l; i++) {
         if (options[i].selected) {
           value.push(options[i].value);
         }
@@ -194,16 +324,17 @@ var SelectElement = React.createClass({
     }
 
     this.props.onUserInput(this.props.name, value);
-  },
-  render: function() {
-    var multiple = this.props.multiple ? 'multiple' : null;
-    var required = this.props.required ? 'required' : null;
-    var disabled = this.props.disabled ? 'disabled' : null;
-    var options = this.props.options;
-    var errorMessage = null;
-    var emptyOptionHTML = null;
-    var requiredHTML = null;
-    var elementClass = 'row form-group';
+  }
+
+  render() {
+    let multiple = this.props.multiple ? 'multiple' : null;
+    let required = this.props.required ? 'required' : null;
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let options = this.props.options;
+    let errorMessage = null;
+    let emptyOptionHTML = null;
+    let requiredHTML = null;
+    let elementClass = 'row form-group';
 
     // Add required asterix
     if (required) {
@@ -235,7 +366,7 @@ var SelectElement = React.createClass({
             name={this.props.name}
             multiple={multiple}
             className="form-control"
-            id={this.props.label}
+            id={this.props.id}
             value={value}
             onChange={this.handleChange}
             required={required}
@@ -253,48 +384,328 @@ var SelectElement = React.createClass({
       </div>
     );
   }
-});
+}
+
+SelectElement.propTypes = {
+  name: React.PropTypes.string.isRequired,
+  options: React.PropTypes.object.isRequired,
+  label: React.PropTypes.string,
+  value: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.array
+  ]),
+  id: React.PropTypes.string,
+  class: React.PropTypes.string,
+  multiple: React.PropTypes.bool,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  emptyOption: React.PropTypes.bool,
+  hasError: React.PropTypes.bool,
+  errorMessage: React.PropTypes.string,
+  onUserInput: React.PropTypes.func
+};
+
+SelectElement.defaultProps = {
+  name: '',
+  options: {},
+  label: '',
+  value: undefined,
+  id: null,
+  class: '',
+  multiple: false,
+  disabled: false,
+  required: false,
+  emptyOption: true,
+  hasError: false,
+  errorMessage: 'The field is required!',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  }
+};
+
+/**
+ * Tags Component
+ * Allows for multiple values to be entered for a single field
+ *
+ * Comes in 3 flavors:
+ * 1: If options are passed and useSearch = true
+ *    input field is rendered as a searchable dropdown
+ * 2: If only options are passed, input is rendered as
+ *    a normal dropdown select
+ * 3: Without options, input is a normal, free text input
+ */
+
+class TagsElement extends React.Component {
+  constructor() {
+    super();
+    this.handleChange = this.handleChange.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.handleAdd = this.handleAdd.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
+    this.getKeyFromValue = this.getKeyFromValue.bind(this);
+    this.canAddItem = this.canAddItem.bind(this);
+  }
+
+  // pendingValKey is the placeholder variable for temporarily storing
+  // typed or selected items before adding them to the Tags
+  handleChange(e) {
+    this.props.onUserInput(this.props.pendingValKey, e.target.value);
+  }
+  // also add tags if enter key is hit within input field
+  handleKeyPress(e) {
+    if (e.keyCode === 13 || e.which === 13) {
+      e.preventDefault();
+      this.handleAdd();
+    }
+  }
+
+  // send pendingValKey as an argument in order to null out entered item
+  handleAdd() {
+    let options = this.props.options;
+    let value = this.props.value;
+    // if using a datalist (search), set value to be the key in options
+    if (this.props.useSearch && Object.values(options).indexOf(value) > -1) {
+      value = this.getKeyFromValue(value);
+    }
+    if (this.canAddItem(value)) {
+      this.props.onUserAdd(this.props.name, value, this.props.pendingValKey);
+    }
+  }
+
+  handleRemove(e) {
+    let value = e.target.getAttribute('data-item');
+    this.props.onUserRemove(this.props.name, value);
+  }
+
+  getKeyFromValue(value) {
+    let options = this.props.options;
+    return Object.keys(options).find(function(o) {
+      return options[o] === value;
+    });
+  }
+
+  // helper function to detect if item should be added to Tags
+  canAddItem(value) {
+    let result = true;
+    // reject empty values
+    if (!value) {
+      result = false;
+      // reject if allowDupl is false and item is already in array
+    } else if (!this.props.allowDupl && this.props.items.indexOf(value) > -1) {
+      result = false;
+      // reject if using a strict datalist and value is not in options
+    } else if (this.props.useSearch &&
+      this.props.strictSearch &&
+      Object.keys(this.props.options).indexOf(value) === -1
+    ) {
+      result = false;
+    }
+
+    return result;
+  }
+
+  render() {
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let requiredHTML = null;
+    let emptyOptionHTML = null;
+    let errorMessage = null;
+    let elementClass = "row form-group";
+    // Add required asterix
+    if (this.props.required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    // Add empty option
+    if (this.props.emptyOption) {
+      emptyOptionHTML = <option></option>;
+    }
+
+    if (this.props.errorMessage) {
+      errorMessage = <span>{this.props.errorMessage}</span>;
+      elementClass = 'row form-group has-error';
+    }
+
+    let input;
+    let options = this.props.options;
+    // if options are given and useSearch is specified
+    if (Object.keys(options).length > 0 && this.props.useSearch) {
+      input = (
+        <div>
+          <input
+            type="text"
+            name={this.props.name}
+            id={this.props.id}
+            list={this.props.id + '_list'}
+            className="form-control"
+            value={this.props.value || ""}
+            disabled={disabled}
+            onChange={this.handleChange}
+            onKeyPress={this.handleKeyPress}
+          />
+          <datalist id={this.props.id + '_list'}>
+            {Object.keys(options).map(function(option) {
+              return (
+                <option value={options[option]} key={option}>{options[option]}</option>
+              );
+            })}
+          </datalist>
+        </div>
+      );
+      // if options are present but useSearch is false, use normal dropdown
+    } else if (Object.keys(options).length > 0) {
+      input = <select
+        name={this.props.name}
+        className="form-control"
+        id={this.props.id}
+        value={this.props.value}
+        disabled={disabled}
+        onChange={this.handleChange}
+        onKeyPress={this.handleKeyPress}
+      >
+        {emptyOptionHTML}
+        {Object.keys(options).map(function(option) {
+          return (
+            <option value={option} key={option}>{options[option]}</option>
+          );
+        })}
+      </select>;
+      // else, use a text input by default
+    } else {
+      input = <input
+        type="text"
+        name={this.props.name}
+        id={this.props.id}
+        className="form-control"
+        value={this.props.value || ""}
+        disabled={disabled}
+        onChange={this.handleChange}
+        onKeyPress={this.handleKeyPress}
+      />;
+    }
+
+    // iterate through added Tags items and render them
+    // with deletion button
+    let items = this.props.items.map(function(item) {
+      let itmTxt;
+      // in event that the passed item is a key of options,
+      // render option value
+      if (Object.keys(options).length > 0 && options[item] !== undefined) {
+        itmTxt = options[item];
+        // otherwise just render item as is
+      } else {
+        itmTxt = item;
+      }
+      return (
+          <button
+            className="btn btn-info btn-inline"
+            type="button"
+            onClick={this.handleRemove}
+            data-item={item}
+          >
+            {itmTxt}
+            &nbsp;
+            <span
+              className="glyphicon glyphicon-remove"
+              data-item={item}
+            />
+          </button>
+      );
+    }, this);
+    return (
+      <div className={elementClass}>
+        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+        <div className="col-sm-9">
+          {items}
+          {input}
+          {errorMessage}
+          <button
+            className="btn btn-success btn-add-tag"
+            id={this.props.id + 'Add'}
+            type="button"
+            onClick={this.handleAdd}
+            >
+            <span className="glyphicon glyphicon-plus"/>
+            {this.props.btnLabel}
+          </button>
+        </div>
+      </div>
+    );
+  }
+}
+
+TagsElement.propTypes = {
+  name: React.PropTypes.string.isRequired,
+  id: React.PropTypes.string.isRequired,
+  pendingValKey: React.PropTypes.string.isRequired,
+  options: React.PropTypes.object,
+  items: React.PropTypes.array,
+  label: React.PropTypes.string,
+  value: React.PropTypes.string,
+  class: React.PropTypes.string,
+  multiple: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  disabled: React.PropTypes.bool,
+  emptyOption: React.PropTypes.bool,
+  errorMessage: React.PropTypes.string,
+  btnLabel: React.PropTypes.string,
+  allowDupl: React.PropTypes.bool,
+  useSearch: React.PropTypes.bool,
+  strictSearch: React.PropTypes.bool,
+  onUserInput: React.PropTypes.func,
+  onUserAdd: React.PropTypes.func,
+  onUserRemove: React.PropTypes.func
+};
+
+TagsElement.defaultProps = {
+  name: '',
+  options: {},
+  items: [],
+  label: '',
+  value: undefined,
+  id: null,
+  class: '',
+  required: false,
+  disabled: false,
+  emptyOption: true,
+  hasError: false,
+  allowDupl: false,
+  useSearch: false,
+  strictSearch: false, // only accept items specified in options
+  errorMessage: '',
+  pendingValKey: '',
+  btnLabel: 'Add Tag',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+  onUserAdd: function() {
+    console.warn('onUserAdd() callback is not set');
+  },
+  onUserRemove: function() {
+    console.warn('onUserRemove() callback is not set');
+  }
+};
 
 /**
  * Textarea Component
  * React wrapper for a <textarea> element.
  */
-var TextareaElement = React.createClass({
+class TextareaElement extends React.Component {
+  constructor() {
+    super();
+    this.handleChange = this.handleChange.bind(this);
+  }
 
-  propTypes: {
-    name: React.PropTypes.string.isRequired,
-    label: React.PropTypes.string,
-    value: React.PropTypes.string,
-    id: React.PropTypes.string,
-    disabled: React.PropTypes.bool,
-    required: React.PropTypes.bool,
-    rows: React.PropTypes.number,
-    cols: React.PropTypes.number,
-    onUserInput: React.PropTypes.func
-  },
-
-  getDefaultProps: function() {
-    return {
-      name: '',
-      label: '',
-      value: '',
-      id: null,
-      disabled: false,
-      required: false,
-      rows: 4,
-      cols: 25,
-      onUserInput: function() {
-        console.warn('onUserInput() callback is not set');
-      }
-    };
-  },
-  handleChange: function(e) {
+  handleChange(e) {
     this.props.onUserInput(this.props.name, e.target.value);
-  },
-  render: function() {
-    var disabled = this.props.disabled ? 'disabled' : null;
-    var required = this.props.required ? 'required' : null;
-    var requiredHTML = null;
+  }
+
+  render() {
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let required = this.props.required ? 'required' : null;
+    let requiredHTML = null;
 
     // Add required asterix
     if (required) {
@@ -324,52 +735,59 @@ var TextareaElement = React.createClass({
       </div>
     );
   }
-});
+}
+
+TextareaElement.propTypes = {
+  name: React.PropTypes.string.isRequired,
+  label: React.PropTypes.string,
+  value: React.PropTypes.string,
+  id: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  rows: React.PropTypes.number,
+  cols: React.PropTypes.number,
+  onUserInput: React.PropTypes.func
+};
+
+TextareaElement.defaultProps = {
+  name: '',
+  label: '',
+  value: '',
+  id: null,
+  disabled: false,
+  required: false,
+  rows: 4,
+  cols: 25,
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  }
+};
 
 /**
  * Textbox Component
  * React wrapper for a <input type="text"> element.
  */
-var TextboxElement = React.createClass({
-  propTypes: {
-    name: React.PropTypes.string.isRequired,
-    label: React.PropTypes.string,
-    value: React.PropTypes.string,
-    id: React.PropTypes.string,
-    disabled: React.PropTypes.bool,
-    required: React.PropTypes.bool,
-    errorMessage: React.PropTypes.string,
-    onUserInput: React.PropTypes.func,
-    onUserBlur: React.PropTypes.func
-  },
-  getDefaultProps: function() {
-    return {
-      name: '',
-      label: '',
-      value: '',
-      id: null,
-      disabled: false,
-      required: false,
-      errorMessage: '',
-      onUserInput: function() {
-        console.warn('onUserInput() callback is not set');
-      },
-      onUserBlur: function() {
-      }
-    };
-  },
-  handleChange: function(e) {
+class TextboxElement extends React.Component {
+  constructor() {
+    super();
+    this.handleChange = this.handleChange.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+  }
+
+  handleChange(e) {
     this.props.onUserInput(this.props.name, e.target.value);
-  },
-  handleBlur: function(e) {
+  }
+
+  handleBlur(e) {
     this.props.onUserBlur(this.props.name, e.target.value);
-  },
-  render: function() {
-    var disabled = this.props.disabled ? 'disabled' : null;
-    var required = this.props.required ? 'required' : null;
-    var errorMessage = null;
-    var requiredHTML = null;
-    var elementClass = 'row form-group';
+  }
+
+  render() {
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let required = this.props.required ? 'required' : null;
+    let errorMessage = null;
+    let requiredHTML = null;
+    let elementClass = 'row form-group';
 
     // Add required asterix
     if (required) {
@@ -405,44 +823,53 @@ var TextboxElement = React.createClass({
       </div>
     );
   }
-});
+}
+
+TextboxElement.propTypes = {
+  name: React.PropTypes.string.isRequired,
+  label: React.PropTypes.string,
+  value: React.PropTypes.string,
+  id: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  errorMessage: React.PropTypes.string,
+  onUserInput: React.PropTypes.func,
+  onUserBlur: React.PropTypes.func
+};
+
+TextboxElement.defaultProps = {
+  name: '',
+  label: '',
+  value: '',
+  id: null,
+  disabled: false,
+  required: false,
+  errorMessage: '',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  },
+  onUserBlur: function() {
+  }
+};
 
 /**
  * Date Component
  * React wrapper for a <input type="date"> element.
  */
-var DateElement = React.createClass({
+class DateElement extends React.Component {
+  constructor() {
+    super();
+    this.handleChange = this.handleChange.bind(this);
+  }
 
-  propTypes: {
-    name: React.PropTypes.string.isRequired,
-    label: React.PropTypes.string,
-    value: React.PropTypes.string,
-    id: React.PropTypes.string,
-    disabled: React.PropTypes.bool,
-    required: React.PropTypes.bool,
-    onUserInput: React.PropTypes.func
-  },
-
-  getDefaultProps: function() {
-    return {
-      name: '',
-      label: '',
-      value: '',
-      id: null,
-      disabled: false,
-      required: false,
-      onUserInput: function() {
-        console.warn('onUserInput() callback is not set');
-      }
-    };
-  },
-  handleChange: function(e) {
+  handleChange(e) {
     this.props.onUserInput(this.props.name, e.target.value);
-  },
-  render: function() {
-    var disabled = this.props.disabled ? 'disabled' : null;
-    var required = this.props.required ? 'required' : null;
-    var requiredHTML = null;
+  }
+
+  render() {
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let required = this.props.required ? 'required' : null;
+    let requiredHTML = null;
 
     // Add required asterix
     if (required) {
@@ -460,7 +887,7 @@ var DateElement = React.createClass({
             type="date"
             className="form-control"
             name={this.props.name}
-            id={this.props.label}
+            id={this.props.id}
             min={this.props.minYear}
             max={this.props.maxYear}
             onChange={this.handleChange}
@@ -472,46 +899,120 @@ var DateElement = React.createClass({
       </div>
     );
   }
-});
+}
+
+DateElement.propTypes = {
+  name: React.PropTypes.string.isRequired,
+  label: React.PropTypes.string,
+  value: React.PropTypes.string,
+  id: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  onUserInput: React.PropTypes.func
+};
+
+DateElement.defaultProps = {
+  name: '',
+  label: '',
+  value: '',
+  id: null,
+  disabled: false,
+  required: false,
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  }
+};
+
+/**
+ * Time Component
+ * React wrapper for a <input type="time"> element.
+ */
+class TimeElement extends React.Component {
+  constructor() {
+    super();
+
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(e) {
+    this.props.onUserInput(this.props.name, e.target.value);
+  }
+
+  render() {
+    var disabled = this.props.disabled ? 'disabled' : null;
+    var required = this.props.required ? 'required' : null;
+    var requiredHTML = null;
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    return (
+      <div className="row form-group">
+        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+        <div className="col-sm-9">
+          <input
+            type="time"
+            className="form-control"
+            name={this.props.name}
+            id={this.props.id}
+            onChange={this.handleChange}
+            value={this.props.value || ""}
+            required={required}
+            disabled={disabled}
+            pattern="([0-1][0-9]|2[0-4]|[1-9]):([0-5][0-9])(:([0-5][0-9]))?"
+            title="Input must be in one of the following formats: HH:MM or HH:MM:SS"
+          />
+        </div>
+      </div>
+    );
+  }
+}
+
+TimeElement.propTypes = {
+  name: React.PropTypes.string.isRequired,
+  label: React.PropTypes.string,
+  value: React.PropTypes.string,
+  id: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  onUserInput: React.PropTypes.func
+};
+
+TimeElement.defaultProps = {
+  name: '',
+  label: '',
+  value: '',
+  id: '',
+  disabled: false,
+  required: false,
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  }
+};
 
 /**
  * Numeric Component
  * React wrapper for a <input type="number"> element.
  */
-var NumericElement = React.createClass({
-  propTypes: {
-    name: React.PropTypes.string.isRequired,
-    min: React.PropTypes.number.isRequired,
-    max: React.PropTypes.number.isRequired,
-    label: React.PropTypes.string,
-    value: React.PropTypes.string,
-    id: React.PropTypes.string,
-    disabled: React.PropTypes.bool,
-    required: React.PropTypes.bool,
-    onUserInput: React.PropTypes.func
-  },
-  getDefaultProps: function() {
-    return {
-      name: '',
-      min: null,
-      max: null,
-      label: '',
-      value: '',
-      id: null,
-      required: false,
-      disabled: false,
-      onUserInput: function() {
-        console.warn('onUserInput() callback is not set');
-      }
-    };
-  },
-  handleChange: function(e) {
+class NumericElement extends React.Component {
+  constructor() {
+    super();
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(e) {
     this.props.onUserInput(this.props.name, e.target.value);
-  },
-  render: function() {
-    var disabled = this.props.disabled ? 'disabled' : null;
-    var required = this.props.required ? 'required' : null;
-    var requiredHTML = null;
+  }
+
+  render() {
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let required = this.props.required ? 'required' : null;
+    let requiredHTML = null;
 
     return (
       <div className="row form-group">
@@ -536,49 +1037,51 @@ var NumericElement = React.createClass({
       </div>
     );
   }
-});
+}
+
+NumericElement.propTypes = {
+  name: React.PropTypes.string.isRequired,
+  min: React.PropTypes.number.isRequired,
+  max: React.PropTypes.number.isRequired,
+  label: React.PropTypes.string,
+  value: React.PropTypes.string,
+  id: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  onUserInput: React.PropTypes.func
+};
+
+NumericElement.defaultProps = {
+  name: '',
+  min: null,
+  max: null,
+  label: '',
+  value: '',
+  id: null,
+  required: false,
+  disabled: false,
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  }
+};
 
 /**
  * File Component
  * React wrapper for a simple or 'multiple' <select> element.
  */
-var FileElement = React.createClass({
-  propTypes: {
-    name: React.PropTypes.string.isRequired,
-    label: React.PropTypes.string,
-    value: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.object
-    ]),
-    id: React.PropTypes.string,
-    disabled: React.PropTypes.bool,
-    required: React.PropTypes.bool,
-    hasError: React.PropTypes.bool,
-    errorMessage: React.PropTypes.string,
-    onUserInput: React.PropTypes.func
-  },
-  getDefaultProps: function() {
-    return {
-      name: '',
-      label: 'File to Upload',
-      value: '',
-      id: null,
-      disabled: false,
-      required: false,
-      hasError: false,
-      errorMessage: 'The field is required!',
-      onUserInput: function() {
-        console.warn('onUserInput() callback is not set');
-      }
-    };
-  },
-  handleChange: function(e) {
+class FileElement extends React.Component {
+  constructor() {
+    super();
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(e) {
     // Send current file to parent component
     const file = e.target.files[0] ? e.target.files[0] : '';
     this.props.onUserInput(this.props.name, file);
-  },
+  }
 
-  render: function() {
+  render() {
     const required = this.props.required ? 'required' : null;
     const fileName = this.props.value ? this.props.value.name : undefined;
     let requiredHTML = null;
@@ -667,7 +1170,36 @@ var FileElement = React.createClass({
       </div>
     );
   }
-});
+}
+
+FileElement.propTypes = {
+  name: React.PropTypes.string.isRequired,
+  label: React.PropTypes.string,
+  value: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.object
+  ]),
+  id: React.PropTypes.string,
+  disabled: React.PropTypes.bool,
+  required: React.PropTypes.bool,
+  hasError: React.PropTypes.bool,
+  errorMessage: React.PropTypes.string,
+  onUserInput: React.PropTypes.func
+};
+
+FileElement.defaultProps = {
+  name: '',
+  label: 'File to Upload',
+  value: '',
+  id: null,
+  disabled: false,
+  required: false,
+  hasError: false,
+  errorMessage: 'The field is required!',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  }
+};
 
 /**
  * Static element component.
@@ -677,32 +1209,16 @@ var FileElement = React.createClass({
  * Example usage:
  *
  * ```
- * var myText = (<span>This is my <b>text</b></span>);
+ * let myText = (<span>This is my <b>text</b></span>);
  * <StaticElement
  *    text={myText}
  *    label={note}
  * />
  * ```
  */
-var StaticElement = React.createClass({
+class StaticElement extends React.Component {
 
-  mixins: [React.addons.PureRenderMixin],
-  propTypes: {
-    label: React.PropTypes.string,
-    text: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.element
-    ])
-  },
-
-  getDefaultProps: function() {
-    return {
-      label: '',
-      text: null
-    };
-  },
-
-  render: function() {
+  render() {
     return (
       <div className="row form-group">
         <label className="col-sm-3 control-label">
@@ -714,33 +1230,28 @@ var StaticElement = React.createClass({
       </div>
     );
   }
-});
+}
+
+StaticElement.propTypes = {
+  label: React.PropTypes.string,
+  text: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.element
+  ])
+};
+
+StaticElement.defaultProps = {
+  label: '',
+  text: null
+};
 
 /**
  * Link element component.
  * Used to link plain/formated text to an href destination as part of a form
  */
-var LinkElement = React.createClass({
+class LinkElement extends React.Component {
 
-  mixins: [React.addons.PureRenderMixin],
-  propTypes: {
-    label: React.PropTypes.string,
-    text: React.PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.element
-    ]),
-    href: React.PropTypes.string
-  },
-
-  getDefaultProps: function() {
-    return {
-      label: '',
-      text: null,
-      href: null
-    };
-  },
-
-  render: function() {
+  render() {
     return (
       <div className="row form-group">
         <label className="col-sm-3 control-label">
@@ -752,33 +1263,38 @@ var LinkElement = React.createClass({
       </div>
     );
   }
-});
+}
+
+LinkElement.propTypes = {
+  label: React.PropTypes.string,
+  text: React.PropTypes.oneOfType([
+    React.PropTypes.string,
+    React.PropTypes.element
+  ]),
+  href: React.PropTypes.string
+};
+
+LinkElement.defaultProps = {
+  label: '',
+  text: null,
+  href: null
+};
 
 /**
  * Button component
  * React wrapper for <button> element, typically used to submit forms
  */
-var ButtonElement = React.createClass({
-  propTypes: {
-    label: React.PropTypes.string,
-    type: React.PropTypes.string,
-    onUserInput: React.PropTypes.func
-  },
-  getDefaultProps: function() {
-    return {
-      label: 'Submit',
-      type: 'submit',
-      buttonClass: 'btn btn-primary',
-      columnSize: 'col-sm-9 col-sm-offset-3',
-      onUserInput: function() {
-        console.warn('onUserInput() callback is not set');
-      }
-    };
-  },
-  handleClick: function(e) {
+class ButtonElement extends React.Component {
+  constructor() {
+    super();
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick(e) {
     this.props.onUserInput(e);
-  },
-  render: function() {
+  }
+
+  render() {
     return (
       <div className="row form-group">
         <div className={this.props.columnSize}>
@@ -793,29 +1309,54 @@ var ButtonElement = React.createClass({
       </div>
     );
   }
-});
+}
+
+ButtonElement.propTypes = {
+  label: React.PropTypes.string,
+  type: React.PropTypes.string,
+  onUserInput: React.PropTypes.func
+};
+
+ButtonElement.defaultProps = {
+  label: 'Submit',
+  type: 'submit',
+  buttonClass: 'btn btn-primary',
+  columnSize: 'col-sm-9 col-sm-offset-3',
+  onUserInput: function() {
+    console.warn('onUserInput() callback is not set');
+  }
+};
 
 /**
  * Generic form element.
  */
-var LorisElement = React.createClass({
+class LorisElement extends React.Component {
 
-  render: function() {
-    var elementProps = this.props.element;
+  render() {
+    let elementProps = this.props.element;
     elementProps.ref = elementProps.name;
     elementProps.onUserInput = this.props.onUserInput;
 
-    var elementHtml = <div></div>;
+    let elementHtml = <div></div>;
 
     switch (elementProps.type) {
       case 'text':
         elementHtml = (<TextboxElement {...elementProps} />);
         break;
+      case 'tags':
+        elementHtml = (<TagsElement {...elementProps} />);
+        break;
       case 'select':
         elementHtml = (<SelectElement {...elementProps} />);
         break;
+      case 'search':
+        elementHtml = (<SearchableDropdown {...elementProps}/>);
+        break;
       case 'date':
         elementHtml = (<DateElement {...elementProps} />);
+        break;
+      case 'time':
+        elementHtml = (<TimeElement {...elementProps} />);
         break;
       case 'numeric':
         elementHtml = (<NumericElement {...elementProps} />);
@@ -841,13 +1382,16 @@ var LorisElement = React.createClass({
 
     return elementHtml;
   }
-});
+}
 
 window.FormElement = FormElement;
 window.SelectElement = SelectElement;
+window.TagsElement = TagsElement;
+window.SearchableDropdown = SearchableDropdown;
 window.TextareaElement = TextareaElement;
 window.TextboxElement = TextboxElement;
 window.DateElement = DateElement;
+window.TimeElement = TimeElement;
 window.NumericElement = NumericElement;
 window.FileElement = FileElement;
 window.StaticElement = StaticElement;
@@ -858,9 +1402,12 @@ window.LorisElement = LorisElement;
 export default {
   FormElement,
   SelectElement,
+  TagsElement,
+  SearchableDropdown,
   TextareaElement,
   TextboxElement,
   DateElement,
+  TimeElement,
   NumericElement,
   FileElement,
   StaticElement,

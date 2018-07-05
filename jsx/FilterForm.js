@@ -125,15 +125,17 @@ class FilterForm extends React.Component {
     if (this.props.filter) {
       filter = JSON.parse(JSON.stringify(this.props.filter));
     }
-
-    if (key && value) {
+    if (key) {
       filter[key] = {};
-      filter[key].value = value;
+      if (value) {     // all defined/non-null values must have some length, else empty string
+        filter[key].value = Object.keys(value).length > 0 ? value : '';
+      } else {         // null and undefined handled here
+        filter[key].value = '';
+      }
       filter[key].exactMatch = (type === "SelectElement");
     } else if (filter && key && value === '') {
       delete filter[key];
     }
-
     return filter;
   }
 
@@ -145,8 +147,10 @@ class FilterForm extends React.Component {
    * @param {string} fieldValue - the value of the form element
    */
   onElementUpdate(type, fieldName, fieldValue) {
-    // Make sure both key/value are string before sending them to querystring
-    if (typeof fieldName !== "string" || typeof fieldValue !== "string") {
+    // Make sure key is of string type and value is of string or object type
+    // before sending them to querystring
+    if (typeof fieldName !== 'string' ||
+        (typeof fieldValue !== 'string' && typeof fieldValue !== 'object')) {
       return;
     }
 

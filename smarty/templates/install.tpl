@@ -56,7 +56,7 @@
                We also need to set the username and password for the default
                <em>LORIS</em> admin account. This is the account that you will
                use to login to the LORIS frontend. Here's another password that
-               you can user for that account if you don't have something else
+               you can use for that account if you don't have something else
                in mind: <code>{$SamplePassword2}</code>.
             </p>
             <fieldset>
