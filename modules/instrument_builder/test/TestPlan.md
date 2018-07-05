@@ -1,10 +1,11 @@
-Instrument builder Test Plan
+# Instrument Builder Test Plan
 
 1.  Create Instrument
     1.a Add Header
     1.b Add Label
     1.c Add Scored Field
       1.c.1 Validate that this requires both QuestionName and QuestionText
+      1.c.2 Validate that a second score field with the same name can not be added.
     1.d Add Textbox
       1.d.1 Validate that this requires both QuestionName and QuestionText
     1.e Add Textarea
@@ -28,14 +29,8 @@ Instrument builder Test Plan
       1.i.2 Validate adding range
     1.j Add Blank Line
     1.k Add Page break
-2.  Edit DatabaseName and Question in the table directly and check if it sticks
-3.  Preview Instrument
-4.  Add Rules
-5.  Save Rules file
-6.  Validate Instrument (Does not save if there is a same QuestionName twice)
-7.  Save Instrument file
-8.  Re-load existing instrument
-    8.a  Add questions
-    8.b Save instrument file and ensure new changes are reflected in the file
-9. Install and test instrument and rules implemented
-10. Test functionality on mutiple broswers.
+2.  Save instrument file
+3.  Validate not_answered option is added for Textarea, Dropdown, Multiselect and Date.
+4.  Re-load existing instrument
+    4.a Add questions
+    4.b Save instrument file and ensure new changes are reflected in the file
