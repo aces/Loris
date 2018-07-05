@@ -63,6 +63,28 @@ function uploadPublication()
     $leadInvestEmail = isset($_REQUEST['leadInvestigatorEmail'])
         ? $_REQUEST['leadInvestigatorEmail'] : null;
 
+    // check if lead investigator already exists in collaborator table
+    // use ID if exists, else insert
+    $leadInvID = $db->pselectOne(
+        'SELECT PublicationCollaboratorID '.
+        'FROM publication_collaborator '.
+        'WHERE Name = :n AND Email = :e',
+        array(
+            'n' => $leadInvest,
+            'e' => $leadInvestEmail,
+        )
+    );
+    if (empty($leadInvID)) {
+        $db->insert(
+            'publication_collaborator',
+            array(
+                'Name'  => $leadInvest,
+                'Email' => $leadInvestEmail,
+            )
+        );
+
+        $leadInvID = $db->getLastInsertId();
+    }
     if (!isset($desc) || !isset($leadInvest) || !isset($leadInvestEmail)) {
         showError('A mandatory field is missing!');
     }
@@ -74,19 +96,13 @@ function uploadPublication()
                'UserID'                => $uid,
                'Title'                 => $titleRaw,
                'Description'           => $desc,
-               'LeadInvestigator'      => $leadInvest,
-               'LeadInvestigatorEmail' => $leadInvestEmail,
+               'LeadInvestigatorID'    => $leadInvID,
                'DateProposed'          => $today,
               );
 
     $db->insert('publication', $fields);
+    $pubID = $db->getLastInsertId();
 
-    $pubID = $db->pselectOne(
-        'SELECT PublicationID ' .
-        'FROM publication ' .
-        'WHERE Title=:t',
-        array('t' => $titleProc)
-    );
     try {
         // process files
         processFiles($pubID);
@@ -174,6 +190,7 @@ function processFiles($pubID)
 
 /**
  * Insert new collaborators into collaborator table and/or put them in rel table
+ * Does NOT include insert for lead investigator
  *
  * @param int $pubID the publication ID
  *
@@ -280,12 +297,7 @@ function insertKeywords($pubID)
                 'publication_keyword',
                 $kwInsert
             );
-            $kwID = $db->pselectOne(
-                'SELECT PublicationKeywordID ' .
-                'FROM publication_keyword ' .
-                'WHERE Label=:kw',
-                array('kw' => $kw)
-            );
+            $kwID = $db->getLastInsertId();
         }
         // add it pub_kw_rel table
         // get publication ID
@@ -408,8 +420,10 @@ function notifySubmission($pubID)
     $emailData = array();
 
     $data = $db->pselectRow(
-        "SELECT Title, DateProposed, LeadInvestigatorEmail ".
-        "FROM publication ".
+        "SELECT Title, DateProposed, pc.Email as LeadInvestigatorEmail " .
+        "FROM publication p " .
+        "LEFT JOIN publication_collaborator pc ".
+        "ON p.LeadInvestigatorID=pc.PublicationCollaboratorID " .
         "WHERE PublicationID=:pubID",
         array('pubID' => $pubID)
     );
@@ -456,8 +470,10 @@ function notifyEdit($pubID)
     $emailData = array();
 
     $data = $db->pselectRow(
-        "SELECT Title, DateProposed, LeadInvestigatorEmail ".
-        "FROM publication ".
+        "SELECT Title, DateProposed, pc.Email as LeadInvestigatorEmail " .
+        "FROM publication p " .
+        "LEFT JOIN publication_collaborator pc ".
+        "ON p.LeadInvestigatorID=pc.PublicationCollaboratorID " .
         "WHERE PublicationID=:pubID",
         array('pubID' => $pubID)
     );
@@ -503,8 +519,10 @@ function notifyReview($pubID)
     $emailData = array();
 
     $data = $db->pselectRow(
-        "SELECT Title, DateProposed, LeadInvestigatorEmail ".
-        "FROM publication ".
+        "SELECT Title, DateProposed, pc.Email as LeadInvestigatorEmail " .
+        "FROM publication p " .
+        "LEFT JOIN publication_collaborator pc ".
+        "ON p.LeadInvestigatorID=pc.PublicationCollaboratorID " .
         "WHERE PublicationID=:pubID",
         array('pubID' => $pubID)
     );
@@ -581,12 +599,18 @@ function editProject()
         ? $_REQUEST['leadInvestigatorEmail'] : null;
 
     $pubData = $db->pselectRow(
-        'SELECT * FROM publication WHERE PublicationID=:pid',
+        'SELECT p.*, pc.Name as LeadInvestigator, ' .
+        'pc.Email as LeadInvestigatorEmail ' .
+        'FROM publication p ' .
+        'LEFT JOIN publication_collaborator pc '.
+        'ON p.LeadInvestigatorID=pc.PublicationCollaboratorID '.
+        'WHERE PublicationID=:pid',
         array('pid' => $id)
     );
 
     // build array of changed values
-    $toUpdate = array();
+    $toUpdate        = array();
+    $leadInvToUpdate = array();
     if ($pubData['PublicationStatusID'] !== $statusID) {
         $toUpdate['PublicationStatusID'] = $statusID;
     }
@@ -597,10 +621,10 @@ function editProject()
         $toUpdate['Description'] = $description;
     }
     if ($pubData['LeadInvestigator'] !== $leadInvestigator) {
-        $toUpdate['LeadInvestigator'] = $leadInvestigator;
+        $leadInvToUpdate['Name'] = $leadInvestigator;
     }
     if ($pubData['LeadInvestigatorEmail'] !== $leadInvestigatorEmail) {
-        $toUpdate['LeadInvestigatorEmail'] = $leadInvestigatorEmail;
+        $leadInvToUpdate['Email'] = $leadInvestigatorEmail;
     }
 
     editEditors($id);
@@ -609,7 +633,7 @@ function editProject()
     editVOIs($id);
     editUploads($id);
     processFiles($id);
-
+    error_log(print_r($pubData, true));
     // if publication status is changed, send review email
     if (isset($toUpdate['PublicationStatusID'])) {
         notifyReview($id);
@@ -622,6 +646,13 @@ function editProject()
             'publication',
             $toUpdate,
             array('PublicationID' => $id)
+        );
+    }
+    if (!empty($leadInvToUpdate)) {
+        $db->update(
+            'publication_collaborator',
+            $leadInvToUpdate,
+            array('PublicationCollaboratorID' => $pubData['LeadInvestigatorID'])
         );
     }
 }

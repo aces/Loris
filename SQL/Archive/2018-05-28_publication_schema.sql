@@ -15,19 +15,19 @@ DROP TABLE IF EXISTS publication;
 CREATE TABLE `publication` (
     `PublicationID` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `PublicationStatusID` int(2) unsigned NOT NULL default 1,
+    `LeadInvestigatorID` int(10) unsigned NOT NULL,
     `UserID` int(10) unsigned NOT NULL,
     `RatedBy` int(10) unsigned,
     `DateProposed` date NOT NULL,
     `DateRated` date default NULL,
     `Title` varchar(255) NOT NULL,
-    `LeadInvestigator` varchar(255) NOT NULL,
-    `LeadInvestigatorEmail` varchar(255) NOT NULL,
     `RejectedReason` varchar(255) default NULL,
     `Description` text NOT NULL,
     PRIMARY KEY(`PublicationID`),
     CONSTRAINT `FK_publication_1` FOREIGN KEY(`UserID`) REFERENCES `users` (`ID`),
     CONSTRAINT `FK_publication_2` FOREIGN KEY(`RatedBy`) REFERENCES `users` (`ID`),
-    CONSTRAINT `FK_publication_3` FOREIGN KEY(`PublicationStatusID`) REFERENCES `publication_status` (`PublicationStatusID`)
+    CONSTRAINT `FK_publication_3` FOREIGN KEY(`PublicationStatusID`) REFERENCES `publication_status` (`PublicationStatusID`),
+    CONSTRAINT `FK_publication_4` FOREIGN KEY(`LeadInvestigatorID`) REFERENCES `publication_collaborator` (`PublicationCollaboratorID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8mb4';
 
 -- Separate table for Keywords

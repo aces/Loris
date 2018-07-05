@@ -67,6 +67,8 @@ class Publication extends \NDB_Menu_Filter_Form
             "ON pcr.PublicationID=p.PublicationID ".
             "LEFT JOIN publication_collaborator pc ".
             "ON pcr.PublicationCollaboratorID=pc.PublicationCollaboratorID ".
+            "LEFT JOIN publication_collaborator pcli ".
+            "ON pcli.PublicationCollaboratorID=p.LeadInvestigatorID ".
             "LEFT JOIN publication_keyword_rel pkr ".
             "ON p.PublicationID=pkr.PublicationID ".
             "LEFT JOIN publication_keyword pk ".
@@ -89,7 +91,7 @@ class Publication extends \NDB_Menu_Filter_Form
 
         $this->columns = array(
                           'p.Title',
-                          'p.LeadInvestigator',
+                          'pcli.Name as LeadInvestigator',
                           'p.DateProposed',
                           'ps.Label', // Status (Approved, Pending, Rejected, etc.)
                           'p.Description',
@@ -117,7 +119,7 @@ class Publication extends \NDB_Menu_Filter_Form
                                'p.ApprovalStatus',
                                'pc.Name',
                                'pk.Label',
-                               'p.LeadInvestigator',
+                               'pcli.Name',
                                'pt.Name',
                               );
 
@@ -127,7 +129,7 @@ class Publication extends \NDB_Menu_Filter_Form
                                'collaborators'       => 'pc.Name',
                                'keywords'            => 'pk.Label',
                                'variablesOfInterest' => 'pt.Name',
-                               'leadInvestigator'    => 'p.LeadInvestigator',
+                               'leadInvestigator'    => 'pcli.Name',
                               );
 
         return true;

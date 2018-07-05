@@ -63,6 +63,7 @@ function getData()
 
     sort($imgVOIs);
 
+    // sets keys and values to be equal
     $allVOIs['Imaging'] = array_combine($imgVOIs, $imgVOIs);
 
     $users = $db->pselectColWithIndexKey(
@@ -106,9 +107,11 @@ function getProjectData()
     $db = \Database::singleton();
 
     $query  = 'SELECT Title, Description, DateProposed, '.
-        'LeadInvestigator, LeadInvestigatorEmail, '.
+        'pc.Name as LeadInvestigator, pc.Email as LeadInvestigatorEmail, '.
         'PublicationStatusID, UserID, RejectedReason  '.
         'FROM publication p '.
+        'LEFT JOIN publication_collaborator pc '.
+        'ON p.LeadInvestigatorID = pc.PublicationCollaboratorID '.
         'WHERE p.PublicationID=:pid ';
     $result = $db->pselectRow(
         $query,
