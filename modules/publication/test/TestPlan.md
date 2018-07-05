@@ -3,7 +3,7 @@
 schema into your DB sandbox and make sure no errors arise.
 2. Before granting your (non-super / admin) user account any of the 
 permissions for publication module, make sure you are unable to access the 
-module from either the LorisMenu or directly via the URL
+module from either the LorisMenu or directly via the URL.
 3. Using an admin account, grant your non-admin account the 
 "Publication - Access to module" permission. Then using that non-admin account
 make sure that the module is accessible via either the LorisMenu or directly 
