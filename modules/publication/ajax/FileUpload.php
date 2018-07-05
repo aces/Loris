@@ -70,16 +70,16 @@ function uploadPublication()
         'FROM publication_collaborator '.
         'WHERE Name = :n AND Email = :e',
         array(
-            'n' => $leadInvest,
-            'e' => $leadInvestEmail,
+         'n' => $leadInvest,
+         'e' => $leadInvestEmail,
         )
     );
     if (empty($leadInvID)) {
         $db->insert(
             'publication_collaborator',
             array(
-                'Name'  => $leadInvest,
-                'Email' => $leadInvestEmail,
+             'Name'  => $leadInvest,
+             'Email' => $leadInvestEmail,
             )
         );
 
@@ -93,11 +93,11 @@ function uploadPublication()
     $today = date('Y-m-d');
     // insert the titleRaw to avoid double escaping
     $fields = array(
-               'UserID'                => $uid,
-               'Title'                 => $titleRaw,
-               'Description'           => $desc,
-               'LeadInvestigatorID'    => $leadInvID,
-               'DateProposed'          => $today,
+               'UserID'             => $uid,
+               'Title'              => $titleRaw,
+               'Description'        => $desc,
+               'LeadInvestigatorID' => $leadInvID,
+               'DateProposed'       => $today,
               );
 
     $db->insert('publication', $fields);
