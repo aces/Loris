@@ -225,6 +225,8 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
      */
     function testNewProfilePSCIDSequential()
     {
+        $this->DB->run('SET foreign_key_checks =0');
+        $this->resetStudySite();
         $this->changeStudySite();
         $this->webDriver->get($this->url . "/new_profile/");
 
@@ -241,9 +243,14 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
         $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
+            WebDriverBy::Xpath("//*[@id='lorisworkspace']/p")
         )->getText();
-        $this->assertContains("PSCID: BBQ0000", $bodyText);
+       // print_r(strpos($bodyText,"BBQ"));
+        $start = strpos($bodyText,"BBQ");
+       // print_r($start);
+        $end = (int)$start + 3;
+        $BBQ1 = substr($bodyText,(int)$start,$end);
+        $this->assertContains("PSCID: BBQ", $bodyText);
 
         $this->webDriver->get($this->url . "/new_profile/");
 
@@ -261,11 +268,13 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("PSCID: BBQ0001", $bodyText);
-
-        $this->deleteCandidate("BBQ0000");
-        $this->deleteCandidate("BBQ0001");
+        $BBQ2 = substr($bodyText,(int)$start,$end);
+        $this->assertContains("PSCID: BBQ", $bodyText);
+        //todo delete the test data        
+        $this->deleteCandidate($BBQ1);
+        $this->deleteCandidate($BBQ2);
         $this->resetStudySite();
+        $this->DB->run('SET foreign_key_checks =1');
     }
 }
 ?>
