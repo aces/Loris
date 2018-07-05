@@ -633,7 +633,6 @@ function editProject()
     editVOIs($id);
     editUploads($id);
     processFiles($id);
-    error_log(print_r($pubData, true));
     // if publication status is changed, send review email
     if (isset($toUpdate['PublicationStatusID'])) {
         notifyReview($id);
