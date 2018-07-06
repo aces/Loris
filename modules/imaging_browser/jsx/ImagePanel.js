@@ -54,6 +54,15 @@ var ImagePanelHeader = React.createClass({
                   {this.props.Filename}
                 </h3>
                 {QCStatusLabel}
+                <ImageQCCommentsButton
+                  FileID={this.props.FileID}
+                  BaseURL={this.props.BaseURL}
+                />
+                <LongitudinalViewButton
+                  FileID={this.props.FileID}
+                  BaseURL={this.props.BaseURL}
+                  OtherTimepoints={this.props.OtherTimepoints}
+                />
                 {arrow}
                 {headerButton}
             </div>
@@ -264,10 +273,10 @@ var ImageQCDropdown = React.createClass({
             );
     }
     return (
-            <span className="col-xs-4">
+            <p>
                 {label}
                 {dropdown}
-            </span>
+            </p>
         );
   }
 });
@@ -371,7 +380,7 @@ var ImagePanelQCPanel = React.createClass({
   mixins: [React.addons.PureRenderMixin],
   render: function() {
     return (
-            <div className="form-group">
+            <div>
                 <ImagePanelQCStatusSelector
                     FileID={this.props.FileID}
                     HasQCPerm={this.props.HasQCPerm}
@@ -403,13 +412,15 @@ var DownloadButton = React.createClass({
       margin: 6
     };
     return (
-            <a href={this.props.BaseURL + "/mri/jiv/get_file.php?file=" +
-                  this.props.FileName}
-               className="btn btn-default" style={style}>
-                <span className="glyphicon glyphicon-download-alt"></span>
-                <span className="hidden-xs">{this.props.Label}</span>
-            </a>
-        );
+      <div className="row">
+        <a href={this.props.BaseURL + "/mri/jiv/get_file.php?file=" +
+              this.props.FileName}
+           className="btn btn-default" style={style}>
+            <span className="glyphicon glyphicon-download-alt"></span>
+            <span className="hidden-xs">{this.props.Label}</span>
+        </a>
+       </div>
+    );
   }
 });
 
@@ -474,9 +485,6 @@ var ImageDownloadButtons = React.createClass({
   render: function() {
     return (
             <div className="row mri-second-row-panel col-xs-12">
-                <ImageQCCommentsButton FileID={this.props.FileID}
-                    BaseURL={this.props.BaseURL}
-                />
                 <DownloadButton FileName={this.props.Fullname}
                     Label="Download Minc"
                     BaseURL={this.props.BaseURL}
@@ -492,10 +500,6 @@ var ImageDownloadButtons = React.createClass({
                 <DownloadButton FileName={this.props.NrrdFile}
                     BaseURL={this.props.BaseURL}
                     Label="Download NRRD"
-                />
-                <LongitudinalViewButton FileID={this.props.FileID}
-                    BaseURL={this.props.BaseURL}
-                    OtherTimepoints={this.props.OtherTimepoints}
                 />
             </div>
         );
@@ -513,27 +517,23 @@ var ImagePanelBody = React.createClass({
     return (
                 <div className="panel-body">
                     <div className="row">
-                        <div className="col-xs-12 imaging_browser_pic">
+                        <div className="col-xs-8 imaging_browser_pic">
                             <a href="#noID" onClick={this.openWindowHandler}>
                                 <img className="img-responsive"
                                   src={this.props.Checkpic} />
                             </a>
                         </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-xs-12 mri-right-panel">
-                            <ImagePanelQCPanel
-                                FileID={this.props.FileID}
-                                FileNew={this.props.FileNew}
-                                HasQCPerm={this.props.HasQCPerm}
-                                QCStatus={this.props.QCStatus}
-                                Caveat={this.props.Caveat}
-                                Selected={this.props.Selected}
-                                SeriesUID={this.props.SeriesUID}
-                            />
-                         </div>
-                    </div>
-                    <ImageDownloadButtons
+                        <div className="col-xs-4 mri-right-panel">
+                          <ImagePanelQCPanel
+                            FileID={this.props.FileID}
+                            FileNew={this.props.FileNew}
+                            HasQCPerm={this.props.HasQCPerm}
+                            QCStatus={this.props.QCStatus}
+                            Caveat={this.props.Caveat}
+                            Selected={this.props.Selected}
+                            SeriesUID={this.props.SeriesUID}
+                          />
+                          <ImageDownloadButtons
                             BaseURL={this.props.BaseURL}
                             FileID={this.props.FileID}
                             Fullname={this.props.Fullname}
@@ -541,7 +541,9 @@ var ImagePanelBody = React.createClass({
                             XMLReport={this.props.XMLReport}
                             NrrdFile={this.props.NrrdFile}
                             OtherTimepoints={this.props.OtherTimepoints}
-                    />
+                          />
+                        </div>
+                    </div>
                 </div>
         );
   }
@@ -567,9 +569,10 @@ var ImagePanel = React.createClass({
   render: function() {
     return (
       <div className="col-xs-12">
-            <div className="col-md-12 col-lg-6">
+            <div className="col-md-12 col-lg-12">
                 <div className="panel panel-default">
                 <ImagePanelHeader
+                    BaseURL={this.props.BaseURL}
                     FileID={this.props.FileID}
                     Filename={this.props.Filename}
                     QCStatus={this.props.QCStatus}
@@ -577,6 +580,7 @@ var ImagePanel = React.createClass({
                     onToggleHeaders={this.toggleHeaders}
                     Expanded={!this.state.BodyCollapsed}
                     HeadersExpanded={!this.state.HeadersCollapsed}
+                    OtherTimepoints={this.props.OtherTimepoints}
                 />
                 {this.state.BodyCollapsed ? '' :
                     <ImagePanelBody
@@ -606,7 +610,7 @@ var ImagePanel = React.createClass({
                 </div>
             </div>
 
-            <div className="col-md-12 col-lg-6">
+            <div className="col-md-12 col-lg-12">
             {!this.state.HeadersCollapsed && !this.state.BodyCollapsed ? <ImagePanelHeadersTable
                 HeaderInfo={this.props.HeaderInfo}
                 SNR={this.props.SNR}
