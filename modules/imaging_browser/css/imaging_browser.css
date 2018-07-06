@@ -3,6 +3,13 @@
     border: 0;
 }
 
+.image-panel {
+    margin: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding-top: 4px;
+}
+
 /******* Control Panel *******/
 
 .div-cpanel {
