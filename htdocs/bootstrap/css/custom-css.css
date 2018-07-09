@@ -31,19 +31,19 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 
 
 .navbar-default a {
-  -webkit-transition: background-color 0.2s ease-in;
-  transition: background-color 0.2s ease-in;
+    -webkit-transition: background-color 0.2s ease-in;
+    transition: background-color 0.2s ease-in;
 }
 
 /* Show submenu when hovering on menu item */
 .dropdown:hover .dropdown-menu {
-  display: block;
+    display: block;
 }
 
 /* Loris logo */
 .navbar-default .navbar-brand:hover,
 .navbar-default .navbar-brand:focus {
-  background-color: #042d54;
+    background-color: #042d54;
 }
 
 /* Menu items */
@@ -51,13 +51,13 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 .navbar-default .navbar-nav>li>a:hover,
 .navbar-default .navbar-nav>li>a:focus,
 .navbar-default .navbar-nav>li>a:active{
-  background-color: #042d54;
+    background-color: #042d54;
 }
 
 /* Submenu items*/
 .navbar-nav>li>.dropdown-menu>li>a:hover,
 .navbar-nav>li>.dropdown-menu>li>a:focus{
-  background-color: #042d54;
+    background-color: #042d54;
 }
 
 
@@ -82,37 +82,37 @@ table th{
     height: 80px;
 }
 .table-scroll {
-    overflow-x:auto;
-    padding-bottom:1px;
+    overflow-x: auto;
+    padding-bottom: 1px;
 }
 .table-scroll-static {
-    overflow-x:auto;
-    margin-left:7em;
-    padding-bottom:1px;
+    overflow-x: auto;
+    margin-left: 7em;
+    padding-bottom: 1px;
 }
 .scrollable {
     margin-right: 50px;
-    margin-left:50px;
+    margin-left: 50px;
 }
 .scrollableStat {
     margin-right: 50px;
-    margin-left:10em;
+    margin-left: 10em;
 }
 .static-col {
-    position:absolute;
-    width:7em;
-    left:0;
-    top:auto;
+    position: absolute;
+    width: 7em;
+    left: 0;
+    top: auto;
     word-wrap: break-word;
     border-right: 0 none black;
-    border-top-width:3px; /*only relevant for first row*/
+    border-top-width: 3px; /*only relevant for first row*/
 }
 .colm-static{
     left: 3em;
     background: white;
 }
 .frozenHeader{
-  position   : absolute;
+  position: absolute;
   overflow-x : auto;
 }
 .headerColm {
@@ -132,7 +132,7 @@ table th{
 	position: relative;
     margin-top: -100px; /* negative value of footer height */
     height: 100px;
-    clear:both;
+    clear: both;
 }
 html, body {
 	height: 100%;
@@ -142,7 +142,7 @@ html, body {
 }
 
 #page {
-	overflow:auto;
+	overflow: auto;
     padding-bottom: 100px; /* must be same height as the footer */
  }
 
@@ -153,7 +153,7 @@ html, body {
     border: 3px solid #b94a48;
 }
 .has-error, .form-error {
-color: #b94a48;
+    color: #b94a48;
 }
 .has-warning .form-control {
     border: 3px solid #c09853;
@@ -166,7 +166,7 @@ color: #b94a48;
  *  CSS for Loris footer
  */
 .LorisFooter {
-    bottom:0;
+    bottom: 0;
     clear: both;
     width: 100%;
     font-size: 0.9em;
@@ -245,89 +245,89 @@ div.navbar div.container div.navbar-brand {
  */
 
 .btn-breadcrumb {
-  width: 100%;
-  background-color: #064785;
-  border-radius: 4px;
-  margin-bottom: 20px;
+    width: 100%;
+    background-color: #064785;
+    border-radius: 4px;
+    margin-bottom: 20px;
 }
 
 /*
  * Breadcrumbs from http://bootsnipp.com/snippets/featured/triangle-breadcrumbs-arrows
  */
 .btn-breadcrumb .btn:not(:last-child):after {
-  content: " ";
-  display: block;
-  width: 0;
-  height: 0;
-  border-top: 17px solid transparent;
-  border-bottom: 17px solid transparent;
-  border-left: 10px solid white;
-  position: absolute;
-  top: 50%;
-  margin-top: -17px;
-  left: 100%;
-  z-index: 3;
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 17px solid transparent;
+    border-bottom: 17px solid transparent;
+    border-left: 10px solid white;
+    position: absolute;
+    top: 50%;
+    margin-top: -17px;
+    left: 100%;
+    z-index: 3;
 }
 .btn-breadcrumb .btn:not(:last-child):before {
-  content: " ";
-  display: block;
-  width: 0;
-  height: 0;
-  border-top: 17px solid transparent;
-  border-bottom: 17px solid transparent;
-  border-left: 10px solid rgb(173, 173, 173);
-  position: absolute;
-  top: 50%;
-  margin-top: -17px;
-  margin-left: 2px;
-  left: 100%;
-  z-index: 3;
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 17px solid transparent;
+    border-bottom: 17px solid transparent;
+    border-left: 10px solid rgb(173, 173, 173);
+    position: absolute;
+    top: 50%;
+    margin-top: -17px;
+    margin-left: 2px;
+    left: 100%;
+    z-index: 3;
 }
 
 /** Ellipsis styling **/
 .ellipsis > .dropdown-toggle {
-  border: none;
-  padding: 0;
-  background: inherit;
+    border: none;
+    padding: 0;
+    background: inherit;
 }
 .ellipsis:hover .dropdown-menu {
-display: block;
+    display: block;
 }
 
 /** The Spacing **/
 .btn-breadcrumb .btn {
-  padding:6px 12px 6px 24px;
+    padding: 6px 12px 6px 24px;
 }
 .btn-breadcrumb .btn:first-child {
-  padding:6px 6px 6px 10px;
+    padding: 6px 6px 6px 10px;
 }
 .btn-breadcrumb .btn:last-child {
-  padding:6px 18px 6px 24px;
+    padding: 6px 18px 6px 24px;
 }
 
 /** Primary button **/
 .btn-breadcrumb .btn.btn-primary:not(:last-child):after {
-  border-left: 10px solid #064785;
-  -webkit-transition: border-color 0.2s ease-in; /* Safari */
-  transition: border-color 0.2s ease-in;
+    border-left: 10px solid #064785;
+    -webkit-transition: border-color 0.2s ease-in; /* Safari */
+    transition: border-color 0.2s ease-in;
 }
 .btn-breadcrumb .btn.btn-primary:not(:last-child):before {
-  border-left: 10px solid #042d54;
-  -webkit-transition: border-color 0.2s ease-in; /* Safari */
-  transition: border-color 0.2s ease-in;
+    border-left: 10px solid #042d54;
+    -webkit-transition: border-color 0.2s ease-in; /* Safari */
+    transition: border-color 0.2s ease-in;
 }
 .btn-breadcrumb .btn.btn-primary:hover:not(:last-child):after {
-  border-left: 10px solid #042d54;
+    border-left: 10px solid #042d54;
 }
 .btn-breadcrumb .btn.btn-primary:hover:not(:last-child):before {
-  border-left: 10px solid #042d54;
+    border-left: 10px solid #042d54;
 }
 
 a.btn.btn-primary {
-  color: #fff;
-  border-color: transparent;
-  -webkit-transition: background-color 0.2s ease-in; /* Safari */
-  transition: background-color 0.2s ease-in;
+    color: #fff;
+    border-color: transparent;
+    -webkit-transition: background-color 0.2s ease-in; /* Safari */
+    transition: background-color 0.2s ease-in;
 }
 
 /* The responsive part */
@@ -404,7 +404,7 @@ a.btn.btn-primary {
     color: black;
 }
 .pagination-table {
-  margin: 0;
+    margin: 0;
 }
 
 .left.carousel-control {
@@ -419,28 +419,28 @@ a.btn.btn-primary {
  *  CSS for Select Dropdown
  */
 .dropdownSearch {
-  padding: 10px;
+    padding: 10px;
 }
 
 
 /* Style login navbar and logo */
 .navbar {
-  border-radius: 0;
+    border-radius: 0;
 }
 
 .navbar-brand {
-  height: auto;
+    height: auto;
 }
 
 .navbar-brand .study-logo {
-  width: 64px;
-  height: 57px;
-  margin-bottom: 10px;
+    width: 64px;
+    height: 57px;
+    margin-bottom: 10px;
 }
 
 /* Sweetalert customizations */
 
 /* Break long strings to fit them in the popup */
 .sweet-alert p {
-  word-wrap: break-word;
+    word-wrap: break-word;
 }

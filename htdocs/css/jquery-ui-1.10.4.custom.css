@@ -7,10 +7,10 @@
 /* Layout helpers
 ----------------------------------*/
 .ui-helper-hidden {
-	display: none;
+    display: none;
 }
 .ui-helper-hidden-accessible {
-	border: 0;
+    border: 0;
 	clip: rect(0 0 0 0);
 	height: 1px;
 	margin: -1px;
@@ -48,7 +48,7 @@
 	left: 0;
 	position: absolute;
 	opacity: 0;
-	filter:Alpha(Opacity=0);
+	filter: Alpha(Opacity=0);
 }
 
 .ui-front {
@@ -905,18 +905,18 @@ body .ui-tooltip {
 .ui-widget-content .ui-priority-secondary,
 .ui-widget-header .ui-priority-secondary {
 	opacity: .7;
-	filter:Alpha(Opacity=70);
+	filter: Alpha(Opacity=70);
 	font-weight: normal;
 }
 .ui-state-disabled,
 .ui-widget-content .ui-state-disabled,
 .ui-widget-header .ui-state-disabled {
 	opacity: .35;
-	filter:Alpha(Opacity=35);
+	filter: Alpha(Opacity=35);
 	background-image: none;
 }
 .ui-state-disabled .ui-icon {
-	filter:Alpha(Opacity=35); /* For IE8 - See #6059 */
+	filter: Alpha(Opacity=35); /* For IE8 - See #6059 */
 }
 
 /* Icons
