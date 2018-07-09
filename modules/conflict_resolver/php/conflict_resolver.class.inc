@@ -236,7 +236,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
             LEFT JOIN session ON (flag.SessionID=session.ID)
             LEFT JOIN candidate ON (candidate.CandID=session.CandID)
             LEFT JOIN Project ON (candidate.ProjectID=Project.ProjectID )
-            WHERE 1=1 AND candidate.Active ='Y'";
+            WHERE candidate.Active ='Y'";
 
         $user = \User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {
