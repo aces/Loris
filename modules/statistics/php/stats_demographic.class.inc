@@ -80,7 +80,7 @@ class Stats_Demographic extends \NDB_Form
         $dropdownSelected,
         $centers,
         $data,
-        $subsection="",
+        $subsection='',
         $disclamer='',
         $projectID=null
     ) {
@@ -91,7 +91,7 @@ class Stats_Demographic extends \NDB_Form
         $tpl_data['test_name']  = htmlspecialchars($_REQUEST['test_name']);
         $tpl_data['Subsection'] = $subsection;
         $tpl_data['Visits']     = $visits;
-        $smarty = new \Smarty_neurodb("statistics");
+        $smarty = new \Smarty_neurodb('statistics');
         $tpl_data['SectionHeader'] = $sectionHeader;
         $tpl_data['TableHeader']   = $tableHeader;
         $tpl_data['Disclamer']     = $disclamer;
@@ -133,7 +133,7 @@ class Stats_Demographic extends \NDB_Form
 
         }
         $smarty->assign($tpl_data);
-        $html = $smarty->fetch("table_statistics.tpl");
+        $html = $smarty->fetch('table_statistics.tpl');
         return $html;
 
     }
@@ -148,7 +148,7 @@ class Stats_Demographic extends \NDB_Form
         parent::setup();
         $db          = \Database::singleton();
         $config      = \NDB_Config::singleton();
-        $useProjects = $config->getSetting("useProjects");
+        $useProjects = $config->getSetting('useProjects');
         $this->tpl_data['useProjects'] = $useProjects;
         //This boolean is for optional use by project if the demographics table
         // queries any information from the mri_parameter_form table
@@ -184,7 +184,7 @@ class Stats_Demographic extends \NDB_Form
         $subprojList     = '';
         $subprojectQuery = '';
         $visits          = \Utility::getExistingVisitLabels($demographicProject);
-        $project         = $demographicProject != '' ? null : $demographicProject;
+        $project         = empty($demographicProject) ? null : $demographicProject;
         $subprojects     = \Utility::getSubprojectsForProject($project);
 
         if (!empty($subprojects)) {
@@ -213,7 +213,7 @@ class Stats_Demographic extends \NDB_Form
             array()
         );
 
-        $sites[null] ="All sites";
+        $sites[null] ='All sites';
 
         if (!empty($centers)) {
             foreach ($centers as $row) {
@@ -431,17 +431,17 @@ class Stats_Demographic extends \NDB_Form
                 $this->params
             );
             $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
-                "Breakdown of Registered Candidates",
-                "Data Entry Completion Status for ".
+                'Breakdown of Registered Candidates',
+                'Data Entry Completion Status for '.
                     $instrumentList[$demographicInstrument],
                 $subcategories,
                 $visits,
-                "DemographicInstrument",
+                'DemographicInstrument',
                 $instDropdown,
                 $demographicInstrument,
                 $centers,
                 $result,
-                "demographics",
+                'demographics',
                 '',
                 $demographicProject
             );
@@ -467,16 +467,16 @@ class Stats_Demographic extends \NDB_Form
                 array()
             );
             $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
-                "Breakdown of Registered Candidates",
-                "Breakdown by Sex",
+                'Breakdown of Registered Candidates',
+                'Breakdown by Sex',
                 $subcategories,
                 $visits,
-                "DemographicInstrument",
+                'DemographicInstrument',
                 $instDropdown,
                 '',
                 $centers,
                 $result,
-                "demographics",
+                'demographics',
                 '',
                 $demographicProject
             );
@@ -497,8 +497,8 @@ class Stats_Demographic extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/statistics/js/table_statistics.js",
-             $baseURL . "/statistics/js/form_stats_demographic.js",
+             $baseURL . '/statistics/js/table_statistics.js',
+             $baseURL . '/statistics/js/form_stats_demographic.js',
             )
         );
     }
@@ -514,7 +514,7 @@ class Stats_Demographic extends \NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/statistics/css/statistics.css")
+            array($baseURL . '/statistics/css/statistics.css')
         );
     }
 
