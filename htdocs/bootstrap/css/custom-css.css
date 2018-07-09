@@ -104,7 +104,7 @@ table th{
     left:0;
     top:auto;
     word-wrap: break-word;
-    border-right: 0px none black;
+    border-right: 0 none black;
     border-top-width:3px; /*only relevant for first row*/
 }
 .colm-static{
@@ -118,8 +118,8 @@ table th{
 .headerColm {
   background: #1c70b6;
   padding: 8px;
-  border-bottom-width: 2px;
   border: 1px solid #ddd;
+  border-bottom-width: 2px;
   text-align: left;
   color: white;
   font-weight: bold;
@@ -150,15 +150,13 @@ html, body {
  *	CSS for intrument forms
  */
 .has-error .form-control {
-    border: 3px solid;
-    border-color: #b94a48;
+    border: 3px solid #b94a48;
 }
 .has-error, .form-error {
 color: #b94a48;
 }
 .has-warning .form-control {
-	border: 3px solid;
-	border-color: #c09853;
+    border: 3px solid #c09853;
 }
 .warning {
 	color: #c09853;
@@ -289,7 +287,7 @@ div.navbar div.container div.navbar-brand {
 /** Ellipsis styling **/
 .ellipsis > .dropdown-toggle {
   border: none;
-  padding: 0px;
+  padding: 0;
   background: inherit;
 }
 .ellipsis:hover .dropdown-menu {
@@ -390,7 +388,7 @@ a.btn.btn-primary {
 }
 
 .downloadCSV {
-    margin: 20px 0px;
+    margin: 20px 0;
 }
 .perPage {
     width: 75px;
@@ -400,13 +398,13 @@ a.btn.btn-primary {
     background-color: #DCDCDC;
 }
 #dynamictable {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 .rowsPerPage {
     color: black;
 }
 .pagination-table {
-  margin: 0px;
+  margin: 0;
 }
 
 .left.carousel-control {
@@ -445,4 +443,18 @@ a.btn.btn-primary {
 /* Break long strings to fit them in the popup */
 .sweet-alert p {
   word-wrap: break-word;
+}
+/* Loader customizations */
+
+.loader {
+    margin: auto;
+    border: 8px solid #FFFFFF; /* White */
+    border-top: 8px solid #3498db; /* Blue */
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }

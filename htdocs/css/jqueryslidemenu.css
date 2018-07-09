@@ -1,5 +1,5 @@
 .Account{
-float:right;
+    float:right;
 }
 .site{
     padding-top:8px;
@@ -9,9 +9,8 @@ float:right;
 }
 
 .jqueryslidemenu{
-font:Verdana-sans-serif;
-
-z-index:10;
+    font-family: Verdana-sans-serif, serif;
+    z-index:10;
 }
 
 .jqueryslidemenu ul{
@@ -30,7 +29,7 @@ display: inline;
 float: left;
 background: #064785;
 z-index:10;
-font-size:10;
+font-size:10px;
 }
 
 /*Top level menu link items style*/

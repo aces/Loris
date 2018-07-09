@@ -46,19 +46,19 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
 .navbar{
     background-color: #064785;
     border-width: 0 0 1px;
-    border-radius: 0px;
+    border-radius: 0;
 }
 
 .navbar-toggle{
-	margin-top: 0px;
-	margin-bottom: 0px;
-	margin-right: 0px;
-	border: 0px;
-	border-radius: 0px;
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-right: 0;
+	border: 0;
+	border-radius: 0;
 }
 
 .panel-heading a:after {
-    font-family:'Glyphicons Halflings';
+    font-family: 'Glyphicons Halflings', serif;
     content:"\e114";
     float: right;
     color: #FFF;
@@ -74,14 +74,11 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
 }
 
 .navbar{
-    margin-bottom:0px;
+    margin-bottom:0;
 }
 
 .panel-group{
-    margin-top:10px;
-    margin-bottom:10px;
-    margin-left:5px;
-    margin-right:5px;
+    margin: 10px 5px;
 }
 
 .navmenu{
@@ -95,14 +92,13 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
 .panel-wrapper{
   margin-right: -500px;
   margin-top: 50px;
-  right: 0px;
+  right: 0;
   width: 500px;
   background: #F5F5F5;
   position: fixed;
   height: 100%;
-  border-left-style: solid;
-  border-left-width: 2px;
   border-color: #064785;
+  border-left: 2px solid;
   overflow-y: scroll;
   z-index: 1000;
   transition: all 0.4s ease 0s;
@@ -123,7 +119,7 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
 }
 
 .inactive_panel_page{
-    padding-right: 0px;
+    padding-right: 0;
 }
 
 .bvl_table_icons {
@@ -134,8 +130,7 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
 
 .feedback_entries_body{
     border-style: solid;
-    border-style-top: none;
-
+    border-top-style: none;
 }
 
 .feedback_entries{

@@ -2,28 +2,28 @@
   font-family: 'PT Sans';
   font-weight: 400;
   font-style: normal;
-  src: url('/fonts/PT-Sans-regular/PT-Sans-regular.eot');
-  src: url('/fonts/PT-Sans-regular/PT-Sans-regular.eot?#iefix') format('embedded-opentype'),
+  src: url('../fonts/PT-Sans-regular/PT-Sans-regular.eot');
+  src: url('../fonts/PT-Sans-regular/PT-Sans-regular.eot?#iefix') format('embedded-opentype'),
   local('PT Sans'),
   local('PT-Sans-regular'),
-  url('/fonts/PT-Sans-regular/PT-Sans-regular.woff2') format('woff2'),
-  url('/fonts/PT-Sans-regular/PT-Sans-regular.woff') format('woff'),
-  url('/fonts/PT-Sans-regular/PT-Sans-regular.ttf') format('truetype'),
-  url('/fonts/PT-Sans-regular/PT-Sans-regular.svg#PTSans') format('svg');
+  url('../fonts/PT-Sans-regular/PT-Sans-regular.woff2') format('woff2'),
+  url('../fonts/PT-Sans-regular/PT-Sans-regular.woff') format('woff'),
+  url('../fonts/PT-Sans-regular/PT-Sans-regular.ttf') format('truetype'),
+  url('../fonts/PT-Sans-regular/PT-Sans-regular.svg#PTSans') format('svg');
 }
 
 @font-face {
   font-family: 'PT Sans';
   font-weight: 700;
   font-style: normal;
-  src: url('/fonts/PT-Sans-700/PT-Sans-700.eot');
-  src: url('/fonts/PT-Sans-700/PT-Sans-700.eot?#iefix') format('embedded-opentype'),
+  src: url('../fonts/PT-Sans-700/PT-Sans-700.eot');
+  src: url('../fonts/PT-Sans-700/PT-Sans-700.eot?#iefix') format('embedded-opentype'),
   local('PT Sans Bold'),
   local('PT-Sans-700'),
-  url('/fonts/PT-Sans-700/PT-Sans-700.woff2') format('woff2'),
-  url('/fonts/PT-Sans-700/PT-Sans-700.woff') format('woff'),
-  url('/fonts/PT-Sans-700/PT-Sans-700.ttf') format('truetype'),
-  url('/fonts/PT-Sans-700/PT-Sans-700.svg#PTSans') format('svg');
+  url('../fonts/PT-Sans-700/PT-Sans-700.woff2') format('woff2'),
+  url('../fonts/PT-Sans-700/PT-Sans-700.woff') format('woff'),
+  url('../fonts/PT-Sans-700/PT-Sans-700.ttf') format('truetype'),
+  url('../fonts/PT-Sans-700/PT-Sans-700.svg#PTSans') format('svg');
 }
 
 /* Stylesheet for login, reset password and request account pages */
