@@ -108,11 +108,3 @@
 	archive, answer 'Yes'. Check that this reupload fails with error code 4 (and not 2). 
 	Related to Redmine#14093 and PR#3555.
 	[Manual Testing]
-20. Upload a valid, anonymized `.tar.gz` DICOM archive but with a PSCID that does not match the one in the archive 
-    (CandID and visit label should be correct though). Check that an appropriate message is written in the Console 
-    Output.
-    [Automation Testing]
-21. Upload a valid, anonymized `.tar.gz` DICOM archive but with a visit label that does not match the one in the 
-    archive (CandID and PSCID should be correct though). Check that an appropriate message is written in the Console 
-    Output.
-    [Automation Testing]
