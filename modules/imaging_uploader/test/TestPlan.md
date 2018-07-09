@@ -63,7 +63,7 @@
 11. Upload a new, valid, anonymized `.tar.gz` DICOM archive with the correct CandID, PSCID and visit label. Verify that the 
     file appears in the table after loading is complete. 
     [Manual Testing]
-12. In the Admin/Configuration module, make sure the 'ImagingUploader Auto launch' option is set to 'No'. 
+12. In the Study section of the Admin/Configuration module, make sure the 'ImagingUploader Auto launch' option is set to 'No'. 
     Click on the show-data button and check the contents of the upload table after the successful upload done in 8. Ensure that
     the Progress column entry for that UploadID displays 'Not Started'. 
     Launch the imaging insertion scripts from a terminal window. Make sure the Progress column entry for that UploadID displays
@@ -75,14 +75,14 @@
     - if the Number Of MincInserted column contains something, then it will be a clickable number (link) that takes you to 
       the MRI Browser page with all the valid scans loaded in the result table (with view imaging browser pages permission).
     - check that the Number Of MincCreated >= Number Of MincInserted. If there is difference between the number in
-      the Number Of MincCreated and Number Of MincInserted columns, then check that the Number Of MincInserted column has a 
+      the Number Of MincCreated and Number Of MincInserted columns, then check that the Number Of MincCreated column has a 
       clickable link that takes the user to the MRI violations page, displaying the violated scans of this upload.
     [Manual Testing]      
 13. Go to the Candidate Profile page and search for the CandID of the candidate to which the scan belongs. Make sure 
     that column scan done is set to yes. Click on the 'Yes' link and verify that it takes you to the Imaging Browser
     page with all the valid scans for this candidate loaded in the result table.
     [Manual Testing]
-14. Go in the profile details for the candidate found in step 11 and go into the visit table. Check that the MR Scan 
+14. Go in the profile details for the candidate found in step 13 and go into the visit table. Check that the MR Scan 
     done column is set to 'Yes' for the visit at which the scan was done. Click on the Yes link and make sure you 
     are taken to the Imaging Browser page with the valid scans performed for that candidate at that visit loaded 
     in the result table.
@@ -95,9 +95,11 @@
 17. In the Admin/Configuration module, set the 'ImagingUploader Auto launch' option to 'Yes'.
     Repeat steps 11-16 to verify that the insertion scripts work with the Auto Launch option.
     [Manual Testing]
-18. Upload a valid, anonymized `.tar.gz` DICOM archive but with a CandID that does not match the one in the archive 
-    (PSCID and visit label should be correct though). Check that an appropriate message is written in the Console 
-    Output.
+18. Upload a valid, anonymized `.tar.gz` DICOM archive but with a patient name (PSCID, CandID, Visit label) that does not
+    match the one stored in the DICOM files of the archive (for example, patient name DICOM header = `MTL0001_111111_V01`
+    but `.tar.gz` name being `MTL0002_222222_V01` which corresponds to another valid candidate).
+    Check that an appropriate message is written in the Console Output (i.e. "`The PatientName read from the DICOM header
+    does not start with MTL0002_222222_V01 from the mri_upload table`").
     [Manual Testing]
 19. First, set the config setting 'ImagingUploader auto launch' to 'Yes'. Then, edit your prod file (in
 	<LORIS MRI code dir>/dicom-archive/.loris-mri) and comment out the definition of the @db array. Once these operations
