@@ -1141,7 +1141,7 @@ CREATE TABLE `family` (
 
 CREATE TABLE `examiners` (
   `examinerID` int(10) unsigned NOT NULL auto_increment,
-  `full_name` varchar(255) default NULL,
+  `full_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin default NULL,
   `radiologist` tinyint(1) default 0 NOT NULL,
   `userID` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY  (`examinerID`),
