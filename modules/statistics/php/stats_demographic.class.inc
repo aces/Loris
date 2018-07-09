@@ -164,7 +164,7 @@ class Stats_Demographic extends \NDB_Form
             $projects[$key] = $value;
         }
 
-        $demographicProject = $_REQUEST['DemographicProject'] ?? null;
+        $demographicProject = $_REQUEST['DemographicProject'] ?? '';
         $paramProject       = '';
 
         if (!empty($demographicProject)) {
