@@ -32,7 +32,7 @@ class Stats_Demographic extends \NDB_Form
      */
     function _hasAccess()
     {
-        $user =& \User::singleton();
+        $user = \User::singleton();
         //TODO: Create a permission specific to statistics
         return $user->hasPermission('data_entry');
     }
@@ -84,6 +84,8 @@ class Stats_Demographic extends \NDB_Form
         $disclamer='',
         $projectID=null
     ) {
+        // This line replaces the empty $projectID string with null
+        // `$projectID ?? null` would retain empty strings.
         $projectID = empty($projectID) ? null : $projectID;
         $tpl_data  = array();
         $tpl_data['test_name']  = htmlspecialchars($_REQUEST['test_name']);
@@ -144,7 +146,7 @@ class Stats_Demographic extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $db          =& \Database::singleton();
+        $db          = \Database::singleton();
         $config      = \NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         $this->tpl_data['useProjects'] = $useProjects;
@@ -192,11 +194,11 @@ class Stats_Demographic extends \NDB_Form
 
         //SITES
         $demographicSite = $_REQUEST['DemographicSite'] ?? '';
-        $demographicSite = htmlspecialchars($demographicSite);
         $paramSite       = '';
 
         if (!empty($demographicSite)) {
             $paramSite           = 'AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
+            $demographicSite     = htmlspecialchars($demographicSite);
             $this->params['sid'] = $demographicSite;
         }
 
@@ -386,13 +388,13 @@ class Stats_Demographic extends \NDB_Form
         $instrumentList = \Utility::getAllInstruments();
         $this->tpl_data['all_instruments'] = $instrumentList;
         $demographicInstrument = $_REQUEST['DemographicInstrument'] ?? '';
-        $demographicInstrument = htmlspecialchars($demographicInstrument);
         if (!empty($demographicInstrument)) {
-            $subcategories = array(
-                              'Complete',
-                              'Incomplete',
-                             );
-            $result        = $db->pselect(
+            $demographicInstrument = htmlspecialchars($demographicInstrument);
+            $subcategories         = array(
+                                      'Complete',
+                                      'Incomplete',
+                                     );
+            $result = $db->pselect(
                 "SELECT count(*) as val,
                         f.Data_entry as Subcat,
                         c.CenterID as CenterID,
