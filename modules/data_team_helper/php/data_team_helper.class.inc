@@ -398,15 +398,8 @@ class Data_Team_Helper extends \NDB_Form
         }
         //filter for sites
         if ($site!='All Sites') {
-            if ($site == 'All User Sites') {
-                $user           = \User::singleton();
-                $siteID         = $user->getCenterIDs();
-                $where         .= " AND FIND_IN_SET(psc.CenterID, :CID)";
-                $qparams['CID'] = implode(',', $siteID);
-            } else {
                 $where         .= " AND s.CenterID = :CID";
                 $qparams['CID'] = $site;
-            }
         }
         //filter for candidate
         if (($project !=null)&&($project!='All Projects')) {
@@ -540,6 +533,7 @@ class Data_Team_Helper extends \NDB_Form
             $where        .= " AND s.candID = :CI";
             $qparams['CI'] = $candidate;
         }
+        //filter for site
         if ($site!='All Sites') {
             if ($site == 'All User Sites') {
                 $user           = \User::singleton();
