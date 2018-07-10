@@ -70,9 +70,10 @@ class Instrument_Manager extends \NDB_Menu_Filter
         if (!$quat_user_is_configured) {
             $this->tpl_data['can_install'] = false;
             $this->tpl_data['feedback']    = "Instrument installation is not "
-                . "possible given the current server configuration. You can "
-                . "upload files but they will have to be installed by your "
-                . "LORIS administrator.";
+                . "possible given the current server configuration; the "
+                . "LORIS 'quatUser' is not configured properly. File upload is "
+                . "still possible but instruments will need to be installed "
+                . "manually.";
         }
 
         // Ensure we can write to folders in project/. If not, the upload
