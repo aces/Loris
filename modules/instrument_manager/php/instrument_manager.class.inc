@@ -341,13 +341,13 @@ class Instrument_Manager extends \NDB_Menu_Filter
      * eventually output in the front-end table.  Otherwise an error will be
      * returned and displayed to the user.
      *
-     * @param string $instname the value of instname
+     * @param string $instname The instrument's name.
      *
-     * @return bool
+     * @return string A messsage representing the status of the table entry.
      *
      * @see Example linst file: docs/instruments/test_all_fields.linst
      */
-    function checkTable($instname)
+    function checkTable($instname): String
     {
         $factory  = \NDB_Factory::singleton();
         $filename = $this->path . "project/instruments/$instname.linst";
