@@ -64,6 +64,12 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
         }
         $tpl_data['candID']      = $candID ?? '';
 
+        $timepoint = $request->getAttribute('TimePoint');
+        if (!empty($timepoint)) {
+            $tpl_data['timePoint'] = $timepoint->getData();
+            $tpl_data['sessionID'] = $timepoint->getSessionID();
+        }
+
         // Stuff that probably shouldn't be here, but exists because it was in
         // main.php
 
