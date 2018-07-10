@@ -29,7 +29,6 @@ body {
 	font-size: 70%;
 }
 
-
 th, td, input, textarea, select {
     font-family: verdana, sans-serif;
     font-weight: normal;
@@ -58,7 +57,6 @@ a:hover {
 	color: #666;
 	text-decoration: underline;
 }
-
 
 /* control panel */
 td.ControlPanelItem {
@@ -95,7 +93,6 @@ h3 {
 th {
 	font-weight: bold;
 }
-
 th.banner {
 	background: #08245b;
 	color: #fff;
@@ -203,7 +200,6 @@ td.tabox {
     color: #FFFF00;
 }
 
-
 /* fancy table for mri_browser and dicom archive visit list */
 table.fancytable {
     margin: 1em 1em 1em 0;
@@ -261,17 +257,13 @@ table.fancytableleft caption {
 
 
 /* form elements */
-
-.button
-{
+.button {
     font-size: 11px;
     font-family: Verdana,sans-serif;
     color: white;
     background-color: #08245b;
     border: 1px ridge #FFFFFF;
 }
-
-
 
 input.text {
     font-family: TrebuchetMS, serif;
@@ -292,12 +284,10 @@ td.red {
 }
 
 td.green {
-	background: #789A99;
+    background: #789A99;
     color: black;
     padding: 3px;
     text-align: left;
     vertical-align: top;
     border-bottom: 1px solid #CCCCCC;
 }
-
-

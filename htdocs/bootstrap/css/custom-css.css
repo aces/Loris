@@ -28,8 +28,6 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 .navbar-nav>li>.dropdown-menu>li>a {
     color: white;
 }
-
-
 .navbar-default a {
     -webkit-transition: background-color 0.2s ease-in;
     transition: background-color 0.2s ease-in;
@@ -59,8 +57,6 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 .navbar-nav>li>.dropdown-menu>li>a:focus{
     background-color: #042d54;
 }
-
-
 
 /*
  *	Making the table header font colour white
@@ -112,17 +108,17 @@ table th{
     background: white;
 }
 .frozenHeader{
-  position: absolute;
-  overflow-x : auto;
+    position: absolute;
+    overflow-x : auto;
 }
 .headerColm {
-  background: #1c70b6;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-bottom-width: 2px;
-  text-align: left;
-  color: white;
-  font-weight: bold;
+    background: #1c70b6;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-bottom-width: 2px;
+    text-align: left;
+    color: white;
+    font-weight: bold;
 }
 
 /*
@@ -142,7 +138,7 @@ html, body {
 }
 
 #page {
-	overflow: auto;
+    overflow: auto;
     padding-bottom: 100px; /* must be same height as the footer */
  }
 
@@ -233,7 +229,7 @@ div.navbar div.container div.navbar-brand {
 }
 
 /*
- *      CSS for alert div
+ * CSS for alert div
  */
 .no-result-found-panel {
     color: #FFFFFF;
@@ -331,7 +327,6 @@ a.btn.btn-primary {
 }
 
 /* The responsive part */
-
 .btn-breadcrumb > * > div {
     /* With less: .text-overflow(); */
     white-space: nowrap;
@@ -421,7 +416,6 @@ a.btn.btn-primary {
 .dropdownSearch {
     padding: 10px;
 }
-
 
 /* Style login navbar and logo */
 .navbar {
