@@ -82,6 +82,21 @@ class ModuleRouter extends PrefixRouter
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        $gets = $request->getQueryParams();
+        if (!empty($gets['candID'])) {
+            $request = $request->withAttribute(
+                'Candidate',
+                (\NDB_Factory::singleton())->candidate($gets['candID'])
+            );
+        }
+
+        if (!empty($gets['sessionID'])) {
+            $request = $request->withAttribute(
+                'TimePoint',
+                \TimePoint::singleton($gets['sessionID'])
+            );
+        }
+
         if ($this->module->isPublicModule() !== true) {
             // Add the authentication middleware for the current user (which was
             // added to the requset by the base router), and handle the request.
