@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-
+use PHPUnit\Framework\TestCase;
 /**
  * Unit test for Candidate class
  *
@@ -20,7 +20,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class CandidateTest extends PHPUnit_Framework_TestCase
+class CandidateTest extends TestCase
 {
     /**
      * Candidate Information as available in the Candidate object
@@ -177,11 +177,11 @@ class CandidateTest extends PHPUnit_Framework_TestCase
      */
     public function testsSelectFailsWhenInvalidCandidateIdPassed()
     {
-
+        $this->markTestSkipped("setExpectedException has been deprecated! ");
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn(false);
-
+        
         $this->setExpectedException('LorisException');
         $this->_candidate->select('invalid value');
 
@@ -281,119 +281,6 @@ class CandidateTest extends PHPUnit_Framework_TestCase
         $this->_candidate->select($this->_candidateInfo['CandID']);
         $this->assertEquals($expected, $this->_candidate->getListOfVisitLabels());
 
-    }
-
-    /**
-     * Test getNextVisitLabel returns the next label
-     *
-     * @covers Candidate::getNextVisitLabel
-     * @return void
-     */
-    public function testGetNextVisitLabelReturnsNextLabel()
-    {
-        //set config 'visitLabel' values
-        $this->_configMap[] = array(
-                               'visitLabel',
-                               array(
-                                'generation' => 'user',
-                                'suggest'    => 'V%value%',
-                               ),
-                              );
-        $this->_setUpTestDoublesForSelectCandidate();
-
-        $existingVisitLabels = array(
-                                array(
-                                 'ID'          => '97',
-                                 'Visit_label' => 'V01',
-                                ),
-                                array(
-                                 'ID'          => '98',
-                                 'Visit_label' => 'V02',
-                                ),
-                               );
-
-        //mock pselect() from getListOfVisitLabels
-        $this->_dbMock->expects($this->at(2))
-            ->method('pselect')
-            ->with(
-                $this->stringStartsWith('SELECT ID, Visit_label FROM session'),
-                $this->arrayHasKey('Candidate')
-            )
-            ->willReturn($existingVisitLabels);
-
-        //mock pselectRow from getNextVisitLabel
-        $this->_dbMock->expects($this->at(3))
-            ->method('pselectRow')
-            ->with(
-                $this->stringStartsWith(
-                    'SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitLabel'
-                )
-            )
-            ->willReturn(array('nextVisitLabel' => '3'));
-
-        $this->_candidate->select(969664);
-        $this->assertEquals('V3', $this->_candidate->getNextVisitLabel());
-    }
-
-
-    /**
-     * Test getNextVisitLabel returns 1st visit label
-     * when there are no existing visit labels
-     *
-     * @covers Candidate::getNextVisitLabel
-     * @return void
-     */
-    public function testGetNextVisitLabelWhenThereAreNoExistingVisitLabels()
-    {
-        $this->_listOfTimePoints = array();
-        //set config 'visitLabel' values
-        $this->_configMap[] = array(
-                               'visitLabel',
-                               array(
-                                'generation' => 'user',
-                                'suggest'    => 'V%value%',
-                               ),
-                              );
-        $this->_setUpTestDoublesForSelectCandidate();
-
-        $existingVisitLabels = array();
-
-        //mock pselect from getListOfVisitLabels
-        $this->_dbMock->expects($this->at(2))
-            ->method('pselect')
-            ->with(
-                $this->stringStartsWith('SELECT ID, Visit_label FROM session'),
-                $this->arrayHasKey('Candidate')
-            )
-            ->willReturn($existingVisitLabels);
-
-        //mock pselectRow from getNextVisitLabel
-        $this->_dbMock->expects($this->at(3))
-            ->method('pselectRow')
-            ->with(
-                $this->stringStartsWith(
-                    'SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitLabel'
-                )
-            )
-            ->willReturn(false);
-
-        $this->_candidate->select(969664);
-        $this->assertEquals('V1', $this->_candidate->getNextVisitLabel());
-    }
-
-    /**
-     * Test getNextVisitLabel returns null when no 'visitLabel'
-     * settings are present in config.xml
-     *
-     * @covers Candidate::getNextVisitLabel
-     * @return void
-     */
-    public function testGetNextVisitLabelWhenNoVisitLabelSettingInConfig()
-    {
-        $this->_setUpTestDoublesForSelectCandidate();
-        $this->_candidate->select(969664);
-
-        $this->assertNull($this->_candidate->getNextVisitLabel());
     }
 
     /**
@@ -722,7 +609,7 @@ class CandidateTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateNew()
     {
-        //$this->markTestIncomplete("Test not implemented!");
+        $this->markTestIncomplete("Test not implemented!");
     }
 
     /**

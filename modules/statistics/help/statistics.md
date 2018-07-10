@@ -21,12 +21,6 @@ For each site, follow the “Please Click Here” link in blue text to display �
 
 The "Double Data Entry Statistics" table below displays similar breakdowns, but for Double Data entry form completion.
 
-## Reliability Statistics
-
-The Reliability Statistics tab currently sorts each instrument by visit label and shows the number of flagged, completed, and reliable cases, in addition to expressing reliability and completion in terms of percentages. "Total Flagged" cases refer to the number of candidates with levels consistently falling below a given threshold, and thus automatically flagged for reliability review. The "Total Complete" column contains the number of candidates for whom a reliability review has been completed. The "Total Reliable" column adds to the information in "Total Complete", but includes only those candidates whose information is now reliable. The Reliability Statistics Table also includes "Percent Complete" and "Percent Reliable" columns.
-
-Users can filter table data by selecting a Site or Project from the drop-down menus and clicking "Submit Query".
-
 ## Imaging Statistics
 
 The “General Statistics with QC Status” section tabulates the number of scans that have been inserted for each scan modality (dti, fMRI, t1, t2), and their QC status. Users will see the total number of scans that have been inserted for each project, the number of scans for each QC status (Passed, Failed, Not QCed), as well as total numbers for each QC Status across projects.

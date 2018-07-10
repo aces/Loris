@@ -54,7 +54,7 @@ class Instruments extends Visit
     /**
      * Handles a GET request for this API call.
      *
-     * @return none, but populates $this->JSON
+     * @return void (but populates $this->JSON)
      */
     public function handleGET()
     {

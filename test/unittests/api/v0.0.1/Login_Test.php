@@ -40,6 +40,13 @@ class Login_Test extends BaseTestCase
 
     }
 
+    /**
+     * PhanParamTooMany is incorrectly being triggered by the mockBuilders because
+     * it uses reflection. Phan thinks it takes 0 parameters for the constructor,
+     * but doing so would cause all the tests to fail.
+     *
+     * @phan-file-suppress PhanParamTooMany
+     */
     function testValidPasswordReturnsToken() {
         $Login= $this->getMockBuilder('\SinglePointLogin')->getMock();
         $Login->method("passwordAuthenticate")->will($this->returnValue(true));

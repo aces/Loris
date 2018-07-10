@@ -58,13 +58,12 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
         if ($requestDelegationCascade) {
             $this->handleRequest();
         }
-
     }
 
     /**
      * Handles a GET request
      *
-     * @return none, but send the file content to stdout
+     * @return void but send the file content to stdout
      */
     public function handleGET()
     {
@@ -80,7 +79,7 @@ class Dicom extends \Loris\API\Candidates\Candidate\Visit
             fclose($fp);
             $this->safeExit(0);
         } else {
-            $this->header("HTTP/1.1 500 Internal Server Error", true, 500);
+            $this->header("HTTP/1.1 500 Internal Server Error");
             $this->error("Could not load Tarfile");
             $this->safeExit(1);
         }

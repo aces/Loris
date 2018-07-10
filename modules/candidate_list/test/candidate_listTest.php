@@ -65,21 +65,23 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             'Latest Visit Status' => '#dynamictable > thead > tr > th:nth-child(13)',
             'Feedback'            => '#dynamictable > thead > tr > th:nth-child(14)',
            );
+
     /**
      * Backs up the useEDC config value and sets the value to a known
      * value (true) for testing.
      *
-     * @return none
+     * @return void
      */
     function setUp()
     {
         parent::setUp();
         $this->setupConfigSetting("useEDC", "true");
     }
+
     /**
      * Restore the values backed up in the setUp function
      *
-     * @return none
+     * @return void
      */
     function tearDown()
     {
@@ -191,7 +193,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     /**
      * Performs various searches by PSCID (and PSCID only).
      *
-     * @return void.
+     * @return void
      */
     function testFilterByPscid()
     {
@@ -231,7 +233,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
     /**
      * Performs various searches by DCCID (and DCCID only).
      *
-     * @return void.
+     * @return void
      */
     function testFilterByDccId()
     {
@@ -268,7 +270,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      * @param array  $criteria        criteria for the search.
      * @param string $expectedResults the candidates that should be returned.
      *
-     * @return void.
+     * @return void
      */
     private function _assertSearchBy(array $criteria, $expectedResults)
     {
@@ -286,7 +288,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
                 $selectElement->selectByVisibleText($elementValue);
                 break;
             default:
-                throw Exception(
+                throw new Exception(
                     'Element type ' . $element->getTagName() . ' not supported'
                 );
             }
@@ -337,25 +339,4 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             $this->assertContains($key, $text);
         }
     }
-    /**
-      * Testing link of PSCID
-      *
-      * @return void
-      */
-    function testPSCIDLink()
-    {
-        $this->safeGet($this->url . "/candidate_list/");
-        //find PSCID link and click
-        $this->webDriver->executescript(
-            "document.querySelectorAll('#dynamictable > tbody > tr >".
-            " td.dynamictableFrozenColumn > a')[0].click()"
-        );
-        sleep(1);
-        //make sure that breadcrumb contains DCCID
-        $text = $this->webDriver->executescript(
-            "return document.querySelector('#bc2 > a:nth-child(3)>div').textContent"
-        );
-        $this->assertContains('Candidate Profile ', $text);
-    }
 }
-?>

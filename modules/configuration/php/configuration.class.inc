@@ -42,7 +42,7 @@ class Configuration extends \NDB_Form
      /**
      * Loads the main configuration module page.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

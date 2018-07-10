@@ -30,7 +30,7 @@ class Data_Team_Helper extends \NDB_Form
      * Class that returns the data team helper.
      *
      * @return bool|object
-     * @throws ConfigurationException
+     * @throws \ConfigurationException
      */
     function _hasAccess()
     {
@@ -42,7 +42,7 @@ class Data_Team_Helper extends \NDB_Form
     /**
      * Sets up main parameters
      *
-     * @return NULL
+     * @return void
      */
     function setup()
     {
@@ -173,7 +173,7 @@ class Data_Team_Helper extends \NDB_Form
      * Returns the default site value.
      *
      * @return string
-     * @throws DatabaseException
+     * @throws \DatabaseException
      */
     function getDefaultSite()
     {
@@ -203,7 +203,7 @@ class Data_Team_Helper extends \NDB_Form
      *
      * @return   Array containing a list of feedbacks for
      * the appropriate feedback level.
-     * @throws   DatabaseException
+     * @throws   \DatabaseException
      * @internal param unknown_type $field_name
      */
     function getFeedbacks($test_name = null,
@@ -296,10 +296,10 @@ class Data_Team_Helper extends \NDB_Form
      * AddWhere
      * Constructs the query....
      *
-     * @param unknown_type $Column the value of cloumn
-     * @param unknown_type $Filter the value fo filter
+     * @param string $Column the value of cloumn
+     * @param string $Filter the value fo filter
      *
-     * @return unknown
+     * @return string
      */
     function addWhere($Column, $Filter)
     {
@@ -567,13 +567,13 @@ class Data_Team_Helper extends \NDB_Form
     /**
      * GetInstrumentCount function
      *
-     * @param unknown_type $test_name   the value of test name
-     * @param string       $visit_label the value of visit label
-     * @param string       $candidate   the value of candidate
-     * @param int|string   $site        the id or default value of the site
-     * @param int|null     $project     the id of the project or can be null
+     * @param string     $test_name   the value of test name
+     * @param string     $visit_label the value of visit label
+     * @param string     $candidate   the value of candidate
+     * @param int|string $site        the id or default value of the site
+     * @param ?int       $project     the id of the project or can be null
      *
-     * @return unknown
+     * @return int
      */
     function getInstrumentCount($test_name,
         $visit_label=null,
@@ -638,13 +638,13 @@ class Data_Team_Helper extends \NDB_Form
     /**
      * GetCompleteInstrumentCount function
      *
-     * @param unknown_type $test_name   the value of test name
-     * @param string       $visit_label the value of visit label
-     * @param string       $candidate   the value of candidate
-     * @param int|string   $site        the id or default value of the site
-     * @param int|null     $project     the id of the project or can be null
+     * @param string     $test_name   the value of test name
+     * @param string     $visit_label the value of visit label
+     * @param string     $candidate   the value of candidate
+     * @param int|string $site        the id or default value of the site
+     * @param ?int       $project     the id of the project or can be null
      *
-     * @return unknown
+     * @return int
      */
     function getCompleteInstrumentCount($test_name,
         $visit_label=null,
@@ -713,13 +713,13 @@ class Data_Team_Helper extends \NDB_Form
      *
      * Returns the percent completed for the given instrument
      *
-     * @param unknown_type $instrument  the value of instrument
-     * @param null         $visit_label the value of visit lable
-     * @param null         $candidate   the value of candidate
-     * @param int|string   $site        the value of the site
-     * @param int|null     $project     the id of the project or can be null
+     * @param int        $instrument  the value of instrument
+     * @param string     $visit_label the value of visit lable
+     * @param string     $candidate   the value of candidate
+     * @param int|string $site        the value of the site
+     * @param ?int       $project     the id of the project or can be null
      *
-     * @return unknown
+     * @return int
      */
     function _getPercentCompleted($instrument,
         $visit_label=null,
@@ -761,7 +761,7 @@ class Data_Team_Helper extends \NDB_Form
      * @param string|null $subprojectID the value of subproject ID
      *
      * @return mixed|Non
-     * @throws DatabaseException
+     * @throws \DatabaseException
      */
     function getTestNameusingMappedName($full_name, $subprojectID = null)
     {
@@ -791,7 +791,7 @@ class Data_Team_Helper extends \NDB_Form
      * @param string $visit_label the value of visit label
      *
      * @return   unknown
-     * @throws   DatabaseException
+     * @throws   \DatabaseException
      * @internal param unknown_type $visit
      */
     static function getVisitInstruments($visit_label)

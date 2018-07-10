@@ -32,9 +32,9 @@ class NDB_BVL_Instrument_Instrument_Preview
      * @param string $commentID The CommentID being loaded
      * @param string $page      The page being loaded
      *
-     * @return none
+     * @return void
      */
-    function setup($commentID, $page)
+    function setup($commentID=null, $page=null)
     {
         $this->commentID = $commentID;
         $this->page      = $page;
@@ -69,7 +69,7 @@ class NDB_BVL_Instrument_Instrument_Preview
     /**
      * Overwrites the save function to not save data since this is only a preview.
      *
-     * @return none
+     * @return bool
      */
     function save()
     {
@@ -92,7 +92,7 @@ class NDB_BVL_Instrument_Instrument_Preview
                 }
             }
         }
-        return;
+        return false;
     }
 
     /**
@@ -101,7 +101,7 @@ class NDB_BVL_Instrument_Instrument_Preview
      * @param array $values Unused, but required so that function as same signature
      *                      as base class
      *
-     * @return none
+     * @return void
      */
     function _save($values)
     {
@@ -113,7 +113,7 @@ class NDB_BVL_Instrument_Instrument_Preview
      *
      * @param string $status ignored
      *
-     * @return none
+     * @return void
      */
     function _setDataEntryCompletionStatus($status)
     {

@@ -65,7 +65,7 @@ class InstrumentForm extends \Loris\API\APIBase
     /**
      * Handles a GET request to this URL
      *
-     * @return none, but populates JSON class variable
+     * @return void but populates JSON class variable
      */
     function handleGET()
     {

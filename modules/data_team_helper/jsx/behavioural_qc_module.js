@@ -114,8 +114,9 @@ var IncompleteCandidatesRow = React.createClass({
     return (
       <tr key={row.id} onClick={this.handleClick}>
         <td>
-          <a href={this.props.BaseURL + "/" + row.candid + "/" +
-          row.SessionID + "/"}
+          <a href={this.props.BaseURL + "/instruments_list/?candID=" +
+              row.candid +
+              "&sessionID=" + row.SessionID}
           >
             {row.visit_label}
           </a>
@@ -126,13 +127,15 @@ var IncompleteCandidatesRow = React.createClass({
           </a>
         </td>
           <td>
-              <a href={this.props.BaseURL + "/" + row.CandID + "/"}>
+              <a href={this.props.BaseURL + "/" + row.candid + "/"}>
                   {row.PSCID}
               </a>
           </td>
         <td>
-          <a href={this.props.BaseURL + "/" + row.candid + "/" + row.SessionID +
-          "/" + row.test_name + "/?commentID=" + row.commentid} ref="incomplete"
+          <a href={this.props.BaseURL + "/instruments/" + row.test_name +
+              "/?candID=" + row.candid +
+              "&sessionID=" + row.SessionID +
+              "&commentID=" + row.commentid} ref="incomplete"
           >
             {row.Full_name}
           </a>
@@ -193,14 +196,16 @@ var BehaviouralFeedbackRow = React.createClass({
     var bvlLevel;
 
     if (row.Feedback_level === 'visit') {
-      bvlLink = this.props.BaseURL + "/" + row.CandID + "/" +
-        row.SessionID + "/";
+      bvlLink = this.props.BaseURL + "/instrument_list/?candID=" + row.CandID +
+            "&sessionID=" + row.SessionID;
       bvlLevel = "Visit : " + row.Visit_label;
     }
 
     if (row.Feedback_level === 'instrument') {
-      bvlLink = this.props.BaseURL + "/" + row.CandID + "/" +
-        row.SessionID + "/" + row.Test_name + "/?commentID=" + row.CommentID;
+      bvlLink = this.props.BaseURL + "/instruments/" + row.Test_name +
+            "/?candID=" + row.CandID +
+            "&sessionID=" + row.SessionID +
+            "&commentID=" + row.CommentID;
       bvlLevel = "Instrument : " + row.Full_name;
     }
 
