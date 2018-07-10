@@ -245,11 +245,11 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::Xpath("//*[@id='lorisworkspace']/p")
         )->getText();
-       // print_r(strpos($bodyText,"BBQ"));
-        $start = strpos($bodyText,"BBQ");
-       // print_r($start);
-        $end = (int)$start + 3;
-        $BBQ1 = substr($bodyText,(int)$start,$end);
+        // print_r(strpos($bodyText,"BBQ"));
+        $start = strpos($bodyText, "BBQ");
+        // print_r($start);
+        $end  = (int)$start + 3;
+        $BBQ1 = substr($bodyText, (int)$start, $end);
         $this->assertContains("PSCID: BBQ", $bodyText);
 
         $this->webDriver->get($this->url . "/new_profile/");
@@ -268,9 +268,9 @@ class NewProfileTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $BBQ2 = substr($bodyText,(int)$start,$end);
+        $BBQ2     = substr($bodyText, (int)$start, $end);
         $this->assertContains("PSCID: BBQ", $bodyText);
-        //todo delete the test data        
+        //todo delete the test data
         $this->deleteCandidate($BBQ1);
         $this->deleteCandidate($BBQ2);
         $this->resetStudySite();
