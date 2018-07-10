@@ -53,25 +53,25 @@ class Help_Editor extends \NDB_Menu_Filter
                  " AND helpChild.topic IS NOT NULL";
 
         // set the class variables
-        $contentColumn  = "helpChild.content as Content";
-        $this->columns  = array(
-                           'helpChild.helpID as helpID',
-                           'helpChild.topic as Topic',
-                           'helpChild.parentID as Parent_ID',
-                           'helpParent.parentID as ParentTopic_ID',
-                           'helpParent.topic as Parent_Topic',
-                           $contentColumn,
-                          );
-        $this->query    = $query;
-        $this->order_by = 'helpChild.helpID';
-        $this->headers  = array(
-                           'HelpID',
-                           'Topic',
-                           'ParentID',
-                           'ParentTopicID',
-                           'Parent_Topic',
-                           'Content',
-                          );
+        $contentColumn      = "helpChild.content as Content";
+        $this->columns      = array(
+                               'helpChild.helpID as helpID',
+                               'helpChild.topic as Topic',
+                               'helpChild.parentID as Parent_ID',
+                               'helpParent.parentID as ParentTopic_ID',
+                               'helpParent.topic as Parent_Topic',
+                               $contentColumn,
+                              );
+        $this->query        = $query;
+        $this->order_by     = 'helpChild.helpID';
+        $this->headers      = array(
+                               'HelpID',
+                               'Topic',
+                               'ParentID',
+                               'ParentTopicID',
+                               'Parent_Topic',
+                               'Content',
+                              );
         $this->validFilters = array('helpChild.topic');
 
         $this->formToFilter  = array('topic' => 'helpChild.topic');
@@ -97,7 +97,7 @@ class Help_Editor extends \NDB_Menu_Filter
         $this->addBasicText('topic', 'Help topic:');
         $this->addBasicText('keyword', 'Search keyword');
     }
-	/**
+    /**
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
@@ -106,7 +106,11 @@ class Help_Editor extends \NDB_Menu_Filter
     function toJSON()
     {
         $result = $this->toArray();
-        $result['hiddenHeaders'] = ['HelpID', 'ParentID', 'ParentTopicID']; 
+        $result['hiddenHeaders'] = [
+                                    'HelpID',
+                                    'ParentID',
+                                    'ParentTopicID',
+                                   ];
         $result['form']          = $this->form->form;
 
         return json_encode($result);
