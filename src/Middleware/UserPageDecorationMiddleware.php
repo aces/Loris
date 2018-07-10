@@ -64,6 +64,11 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
         }
         $tpl_data['candID']      = $candID ?? '';
 
+        $timepoint = $request->getAttribute("TimePoint");
+        if (!empty($timepoint)) {
+            $tpl_data['timePoint'] = $timepoint->getData();
+        }
+
         // Stuff that probably shouldn't be here, but exists because it was in
         // main.php
 
@@ -198,7 +203,6 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
 
         $smarty = new \Smarty_neurodb;
         $smarty->assign($tpl_data);
-
         return $undecorated->withBody(new \LORIS\Http\StringStream($smarty->fetch("main.tpl")));
     }
 }
