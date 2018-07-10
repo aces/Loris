@@ -125,7 +125,7 @@ table th{
  *	CSS for the footer
  */
 #footer {
-	position: relative;
+    position: relative;
     margin-top: -100px; /* negative value of footer height */
     height: 100px;
     clear: both;
@@ -143,7 +143,7 @@ html, body {
  }
 
 /*
- *	CSS for intrument forms
+ *	CSS for instrument forms
  */
 .has-error .form-control {
     border: 3px solid #b94a48;
