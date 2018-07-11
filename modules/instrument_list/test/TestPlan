@@ -1,5 +1,4 @@
-iit Visit can only be set after Data Entry (and DDE if applicable) is complete and conflicts are resolved
-iiiiiiiiiiiiiiiiiiiiiii
+Instrument List Test Plan
 
 1. Verify that update of current stage status requires (data_entry and the proper CenterID) OR if current stage is Approval, then only permission bvl_feedback is necessary to update current stage status. Verify that in order to access the module, the user must either have the 'access_all_profiles' permission, or be at the same site as the visit, or at the same site as one of the candidate's other visits.
 2. Verify that instrument in list directs to corresponding instrument page
