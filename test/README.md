@@ -85,3 +85,18 @@ You must specify a remote host for XDebug to connect to via the `XDEBUG_REMOTE_H
 - By default npm will output some irrelevant info when a script returns a non-zero error code, as described [here](https://github.com/npm/npm/issues/8821). To prevent this pass `-s` or `--silent` to `npm run`, e.g. `npm run -s tests:unit`.
 
 - Running the entire integration test suite with XDebug enabled sometimes results in a segmentation fault. This appears to be an issue with XDebug itself.
+
+## Quick install for Developer in Ubuntu
+```
+ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+ sudo apt-get update
+ sudo apt-get -y install docker-ce
+ sudo apt-get install docker-engine
+ sudo docker run hello-world
+ sudo apt install docker-compose
+ sudo docker-compose build
+ sudo apt install npm
+ sudo composer install
+ sudo npm run tests:integration
+```
