@@ -634,7 +634,7 @@ var AddElement = React.createClass({
       if (minYear > 9999 || minYear < 1900 || maxYear > 9999 || maxYear < 1900) {
         let temp = (this.state.error) ? this.state.error : {};
 
-        temp.dateOption = "The year should be 4 digits number";
+        temp.dateOption = "The year must have exactly 4 digits. Please choose an integer number between 1900 and 9999.";
         this.setState({
           error: temp
         });
