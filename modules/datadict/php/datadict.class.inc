@@ -119,12 +119,7 @@ class Datadict extends \NDB_Menu_Filter
 
         // list of feedback statuses
         $instruments = \Utility::getAllInstruments();
-        $instruments = array_merge(
-            array('' => 'All Instruments'),
-            $instruments,
-            array("multiple")
-        );
-        $this->addSelect('sourceFrom', 'Instruments', $instruments);
+        $this->addSelect('sourceFrom', 'Instruments', $instruments, array('multiple'));
         $this->addSelect(
             'descriptionStatus',
             'Description Status',
