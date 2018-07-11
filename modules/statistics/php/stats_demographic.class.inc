@@ -381,11 +381,11 @@ class Stats_Demographic extends \NDB_Form
         }
 
         //START BIG TABLE
+        $instrumentList = \Utility::getAllInstruments();
         $instDropdown   = array_merge(
             array( '' => 'Recruit Breakdown by Sex'),
-            \Utility::getAllInstruments()
+            $instrumentList
         );
-        $instrumentList = \Utility::getAllInstruments();
         $this->tpl_data['all_instruments'] = $instrumentList;
         $demographicInstrument = $_REQUEST['DemographicInstrument'] ?? '';
         if (!empty($demographicInstrument)) {
