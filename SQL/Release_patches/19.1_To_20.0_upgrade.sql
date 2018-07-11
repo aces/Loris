@@ -166,3 +166,14 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO Config (ConfigID, Value) SELECT ID, 0 FROM ConfigSettings cs WHERE cs.Name="ComputeDeepQC";
 INSERT IGNORE INTO LorisMenuPermissions (MenuID, PermID)
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='examiner_view' AND m.Label='Examiner';
+
+-- Adding the language table (required for the Media module)
+CREATE TABLE `language` (
+  `language_id` integer unsigned NOT NULL AUTO_INCREMENT,
+  `language_code` varchar(255) NOT NULL,
+  `language_label` varchar(255) NOT NULL,
+  PRIMARY KEY (`language_id`),
+  UNIQUE KEY (`language_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO language (language_code, language_label) VALUES ('en-CA', 'English');
