@@ -272,15 +272,20 @@ class Dashboard extends \NDB_Form
                 } else {
                     $bvl_feedback[$i]['new'] = 0;
                 }
-                if ($bvl_feedback[$i]['Feedback_level'] == 'profile') {
+                if ($bvl_feedback[$i]['Feedback_level'] === 'profile') {
                     $bvl_feedback[$i]['URL'] = '/' . $bvl_feedback[$i]['CandID'];
-                } else if ($bvl_feedback[$i]['Feedback_level'] == 'instrument') {
+                } else if ($bvl_feedback[$i]['Feedback_level'] === 'visit') {
+                    $bvl_feedback[$i]['URL'] = '/instrument_list/?candID= '
+                        . $bvl_feedback[$i]['CandID'] . '&sessionID='
+                        . $bvl_feedback[$i]['SessionID'];
+                } else if ($bvl_feedback[$i]['Feedback_level'] === 'instrument') {
                     $instrument = $DB->pselectOne(
                         "SELECT Test_name from flag WHERE CommentID=:cid",
                         array('cid' => $bvl_feedback[$i]['CommentID'])
                     );
                     if (!empty($instrument)) {
-                        $bvl_feedback[$i]['URL'] = '/' . $instrument . '/?candID='
+                        $bvl_feedback[$i]['URL'] = '/instruments/'
+                            . $instrument . '/?candID='
                             . $bvl_feedback[$i]['CandID'] . '&sessionID='
                             . $bvl_feedback[$i]['SessionID'] . '&commentID='
                             . $bvl_feedback[$i]['CommentID'];

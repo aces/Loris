@@ -321,5 +321,4 @@ class New_Profile extends \NDB_Form
 
         return $errors;
     }
-
 }

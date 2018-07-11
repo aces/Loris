@@ -111,7 +111,6 @@ class Instrument_List extends \NDB_Menu_Filter
             // FIXME: Make VisitLabel not sessionID
             $this->timePoint = \TimePoint::singleton($gets['sessionID']);
         }
-        $this->setup();
         return parent::process($request, $handler);
     }
 

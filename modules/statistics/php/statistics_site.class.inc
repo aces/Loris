@@ -23,7 +23,7 @@ namespace LORIS\statistics;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Statistics_Site extends \NDB_Form
+class Statistics_Site extends \NDB_Menu
 {
 
     var $instruments    = array();
@@ -63,6 +63,7 @@ class Statistics_Site extends \NDB_Form
             $this->query_vars['pid'] = $projectID;
         }
     }
+
     /**
      * SetInstrumentName function
      *

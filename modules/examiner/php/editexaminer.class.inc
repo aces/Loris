@@ -436,5 +436,21 @@ class EditExaminer extends \NDB_Form
 
         return $instruments;
     }
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $label = ucwords(str_replace('_', ' ', $this->name));
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb($label, "/$this->name"),
+            new \LORIS\Breadcrumb(
+                'Edit Examiner',
+                "/examiner/editExaminer/?identifier=$this->identifier"
+            )
+        );
+    }
 }
 ?>
