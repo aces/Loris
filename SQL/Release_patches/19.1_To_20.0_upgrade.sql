@@ -61,7 +61,9 @@ UPDATE
 SET
     `Visible` = FALSE
 WHERE
-    `Name` = 'mantis_url';-- Insert into ConfigSettings scan_type_exclude
+    `Name` = 'mantis_url';
+
+-- Insert into ConfigSettings scan_type_exclude
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple,
 DataType, Parent, Label, OrderNumber) SELECT 'excluded_series_description', 'Series description to be excluded from insertion into the database (typically localizers and scouts)', 1, 1, 'text', ID, 'Series description to exclude from imaging insertion', 18 FROM ConfigSettings WHERE Name="imaging_pipeline";
 
@@ -117,7 +119,7 @@ CREATE TABLE `candidate_consent_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE parameter_session DROP FOREIGN KEY `FK_parameter_session_1`;
-ALTER TABLE parameter_session ADD CONSTRAINT `FK_parameter_session_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+ALTER TABLE parameter_session ADD CONSTRAINT `FK_parameter_session_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- Removing the config setting if_site of the imaging pipeline section as discussed during a LORIS imaging meeting
 DELETE FROM Config WHERE ConfigID=(
@@ -161,5 +163,6 @@ UPDATE ConfigSettings
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'ComputeDeepQC', 'Determines whether a call is made from LORIS-MRI to the DeepQC app for automatic QC prediction', 1, 0, 'boolean', ID, 'Compute automatic QC', 18 FROM ConfigSettings WHERE Name="imaging_pipeline";
 
 -- default imaging_pipeline settings
-INSERT INTO Config (ConfigID, Value) SELECT ID, 0 FROM ConfigSettings cs WHERE cs.Name="ComputeDeepQC";INSERT INTO LorisMenuPermissions (MenuID, PermID)
+INSERT INTO Config (ConfigID, Value) SELECT ID, 0 FROM ConfigSettings cs WHERE cs.Name="ComputeDeepQC";
+INSERT IGNORE INTO LorisMenuPermissions (MenuID, PermID)
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='examiner_view' AND m.Label='Examiner';
