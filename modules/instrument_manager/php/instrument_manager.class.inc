@@ -71,7 +71,9 @@ class Instrument_Manager extends \NDB_Menu_Filter
             $writable = true;
         }
         $this->tpl_data['writable'] = $writable;
-        if ($writable && $_POST['install'] == 'Install Instrument') {
+        if ($writable && isset($_POST['install'])
+            && $_POST['install'] == 'Install Instrument'
+        ) {
             $db       = \Database::singleton();
             $instname = basename($_FILES['install_file']['name'], '.linst');
 

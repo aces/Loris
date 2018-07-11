@@ -45,21 +45,21 @@ class MriUploadServerProcess extends AbstractServerProcess
     /**
      * ID of the MRI upload request in the mri_upload table.
      *
-     * @var
+     * @var int
      */
     private $_mriUploadId;
 
     /**
      * Location of the MRI file uploaded.
      *
-     * @var
+     * @var string
      */
     private $_sourceLocation;
 
     /**
      * Root of the MRI files directory.
      *
-     * @var
+     * @var string
      */
     private $_mriCodePath;
 

@@ -10,6 +10,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
 /**
  * Base Form class that is overwritten by specific form pages
  *
@@ -71,11 +73,11 @@ class NDB_Form extends NDB_Page
                 $module = \Module::factory($name);
             }
         } catch(\LorisModuleMissingException $e) {
-            $module = new Module($name);
+            $module = new Module($name, "");
         }
 
         // create a form instance
-        $obj = new $class($module, $name, $page, $identifier, '', 'test_form');
+        $obj = new $class($module, $page, $identifier, '', 'test_form');
 
         $obj->registerDefaultFilter();
 
@@ -128,7 +130,7 @@ class NDB_Form extends NDB_Page
     function save()
     {
         if ($this->form->validate()) {
-            $this->form->process(array(&$this, "_save"), false);
+            $this->form->process(array(&$this, "_save"));
         }
     }
 
@@ -172,6 +174,24 @@ class NDB_Form extends NDB_Page
     function _process($values)
     {
         return true;
+    }
+
+    /**
+     * A form extends the basic page handler to call save() on a POST request.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The PSR15 response to the request.
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $this->setup();
+        if ($request->getMethod() === "POST") {
+            $this->save();
+        }
+
+        return (new \Zend\Diactoros\Response())
+            ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
     }
 }
 ?>

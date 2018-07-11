@@ -41,7 +41,7 @@ class Edit_Help_Content extends \NDB_Form
      /**
       * Returns default help content of the page
       *
-      * @return default array
+      * @return array
       */
     function _getDefaults()
     {
@@ -114,7 +114,7 @@ class Edit_Help_Content extends \NDB_Form
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

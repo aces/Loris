@@ -169,7 +169,7 @@ foreach ($instruments AS $instrument) {
             //for HTML_QuickForm versions of standard HTML Form Elements...
         default:
             //continue; // jump straight to validity for debugging
-            if (preg_match("/^Examiner/", $bits[1])) {
+            if (isset($bits[1]) && preg_match("/^Examiner/", $bits[1])) {
                 // Treat examiner specially, since it's a select box but we need
                 // to treat it as a varchar. derive_timepoint_variables will derive
                 // the name from the examiner id

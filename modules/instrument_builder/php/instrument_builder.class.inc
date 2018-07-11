@@ -35,7 +35,7 @@ class Instrument_Builder extends \NDB_Form
      * Tests that, when loading the Instrument builder module, some
      * text appears in the body.
      *
-     * @return void
+     * @return bool
      */
     function _hasAccess()
     {

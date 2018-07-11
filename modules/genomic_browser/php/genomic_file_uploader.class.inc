@@ -48,8 +48,7 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
     /**
      * Function _setupVariables
      *
-     * @note   overloaded function
-     * @return bool
+     * @return void
     */
     function _setupVariables()
     {
@@ -103,7 +102,6 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
                                   'Caveat',
                                  );
 
-        return true;
     }
 
     /**
@@ -111,7 +109,7 @@ class Genomic_File_Uploader extends \NDB_Menu_Filter
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

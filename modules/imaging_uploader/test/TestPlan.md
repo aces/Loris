@@ -13,25 +13,58 @@
    [Manual Testing]      
 5. Ensure that the 'Upload' tab has the CandID, PSCID, and Visit Label greyed out upon loading. These greyed out fields remain
    as such if the 'Phantom Scans' is set to Yes, and become fillable and required fields if 'Phantom Scans' is set to No.  
-   [Manual Testing]      
-6. Try uploading an invalid file (a .jpg or .txt) with syntactically correct CandID, PSCID and visit labels. Make sure
-   an appropriate message is displayed in the Console Output at the top of the page.
    [Manual Testing]
-7. Execute step 6 again, but with a .tgz and .zip file.
+6. Test validation errors for 'CandID', 'PSCID', and 'Visit Label' in the 'Upload' tab and make sure that the appropriate
+   error messages are displayed under the relevant form elements.
+
+   Set Phantom Scans to 'No' and try to upload a valid `.zip` file for each scenario below:
+   - A `CandID` that does not exist in the `candidate` table (e.g. try appending letters to an existing `CandID`)
+   - A `PSCID` that is invalid for a specific `CandID` in the `candidate` table
+   - A `Visit_label` that is invalid for a specific `CandID` in the `session` table
+   - A candidate that has `Active` set to 'N' in the `candidate` table
+   - A session that has `Active` set to 'N' in the `session` table
+   - You should also consider scenarios where there are a combination of these errors or no error at all
+
+   _e.g. SQL command to set candidate associated with CandID X as inactive:_
+
+   `UPDATE candidate SET Active = 'N' WHERE CandID = X;`
+
+   _e.g. SQL command to set session associated with CandID X and Visit Label Y as inactive:_
+
+   `UPDATE session SET Active = 'N' WHERE CandID = X AND Visit_label = 'Y';`
+
    [Manual Testing]
-8. Upload a scan which was already uploaded and which has either 'Not Started' or 'Failure' status in the Progress column. 
+
+7. Test validations for 'File to Upload' in the 'Upload' tab and make sure that the appropriate
+   error messages are displayed under the 'File to Upload' element.
+
+   Set Phantom Scans to 'Yes' and try to upload a file for each scenario below:
+   - A file that is not of type `.tgz` or `tar.gz` or `.zip` (e.g. a `.jpg` or `.txt`)
+   - A file that exceeds the max upload size
+
+   Set Phantom Scans to 'No' and try to upload a file for each scenario below:
+   - A file that is not of type `.tgz` or `tar.gz` or `.zip` (e.g. a `.jpg` or `.txt`)
+   - A file that exceeds the max upload size
+   - A file that that does not match the `PSCID_CandID_VisitLabel` convention
+      (once the PSCID, CandID, and Visit Label fields of the form have been validated)
+
+   [Manual Testing]
+
+8. Once all the values in the form have been validated, ensure that you can upload a `.zip` file and a `.tgz` file
+   [Manual Testing]
+9. Upload a scan which was already uploaded and which has either 'Not Started' or 'Failure' status in the Progress column. 
    Make sure you get the Warning message 'Are you sure? A file with this name already exists! Would you like to override 
    existing file?'. Ensure the correct behavior of the two possible actions by the user: 'Yes, I am sure!' or 'No, cancel it!'.  
    [Manual Testing]      
-9. Upload a scan which was already uploaded and which was processed with 'Success' status in the Progress column. 
+10. Upload a scan which was already uploaded and which was processed with 'Success' status in the Progress column. 
    Make sure you can not re-upload the file, and get the Error message 'File already exists! A file with this name has already 
    successfully passed the MRI pipeline!'. 
    [Manual Testing]      
-10. Upload a new, valid, anonymized .tar.gz DICOM archive with the correct CandID, PSCID and visit label. Verify that the 
+11. Upload a new, valid, anonymized `.tar.gz` DICOM archive with the correct CandID, PSCID and visit label. Verify that the 
     file appears in the table after loading is complete. 
     [Manual Testing]
-11. In the Admin/Configuration module, make sure the 'ImagingUploader Auto launch' option is set to 'No'. 
-    Click on the show-data button and check the contents of the upload table after the successful upload done in 6. Ensure that
+12. In the Study section of the Admin/Configuration module, make sure the 'ImagingUploader Auto launch' option is set to 'No'. 
+    Click on the show-data button and check the contents of the upload table after the successful upload done in 8. Ensure that
     the Progress column entry for that UploadID displays 'Not Started'. 
     Launch the imaging insertion scripts from a terminal window. Make sure the Progress column entry for that UploadID displays
     'In Progress ...' during the insertion process, and either 'Success' or 'Failure' at the end of the insertion process.
@@ -42,42 +75,36 @@
     - if the Number Of MincInserted column contains something, then it will be a clickable number (link) that takes you to 
       the MRI Browser page with all the valid scans loaded in the result table (with view imaging browser pages permission).
     - check that the Number Of MincCreated >= Number Of MincInserted. If there is difference between the number in
-      the Number Of MincCreated and Number Of MincInserted columns, then check that the Number Of MincInserted column has a 
+      the Number Of MincCreated and Number Of MincInserted columns, then check that the Number Of MincCreated column has a 
       clickable link that takes the user to the MRI violations page, displaying the violated scans of this upload.
     [Manual Testing]      
-12. Go to the Candidate Profile page and search for the CandID of the candidate to which the scan belongs. Make sure 
+13. Go to the Candidate Profile page and search for the CandID of the candidate to which the scan belongs. Make sure 
     that column scan done is set to yes. Click on the 'Yes' link and verify that it takes you to the Imaging Browser
     page with all the valid scans for this candidate loaded in the result table.
     [Manual Testing]
-13. Go in the profile details for the candidate found in step 10 and go into the visit table. Check that the MR Scan 
+14. Go in the profile details for the candidate found in step 13 and go into the visit table. Check that the MR Scan 
     done column is set to 'Yes' for the visit at which the scan was done. Click on the Yes link and make sure you 
     are taken to the Imaging Browser page with the valid scans performed for that candidate at that visit loaded 
     in the result table.
     [Manual Testing]
-14. Go the the Imaging Uploader page and search for the upload done in step 10 using (in turn) the CandID, PSCID and
-    visit label. Verify that the upload done in step 10 is shown in the table each time. 
+15. Go the the Imaging Uploader page and search for the upload done in step 11 using (in turn) the CandID, PSCID and
+    visit label. Verify that the upload done in step 11 is shown in the table each time. 
     [Manual Testing]
-15. Repeat steps 10-14 but with a .tgz and .zip file.
+16. Repeat steps 11-15 but with a `.tgz` and `.zip` file.
     [Manual Testing]
-16. In the Admin/Configuration module, set the 'ImagingUploader Auto launch' option to 'Yes'.
-    Repeat steps 10-15 to verify that the insertion scripts work with the Auto Launch option.
+17. In the Admin/Configuration module, set the 'ImagingUploader Auto launch' option to 'Yes'.
+    Repeat steps 11-16 to verify that the insertion scripts work with the Auto Launch option.
     [Manual Testing]
-17. Upload a valid, anonymized .tar.gz DICOM archive but with a CandID that does not match the one in the archive 
-    (PSCID and visit label should be correct though). Check that an appropriate message is written in the Console 
-    Output.
+18. Upload a valid, anonymized `.tar.gz` DICOM archive but with a patient name (PSCID, CandID, Visit label) that does not
+    match the one stored in the DICOM files of the archive (for example, patient name DICOM header = `MTL0001_111111_V01`
+    but `.tar.gz` name being `MTL0002_222222_V01` which corresponds to another valid candidate).
+    Check that an appropriate message is written in the Console Output (i.e. "`The PatientName read from the DICOM header
+    does not start with MTL0002_222222_V01 from the mri_upload table`").
     [Manual Testing]
-18. First, set the config setting 'ImagingUploader auto launch' to 'Yes'. Then, edit your prod file (in
+19. First, set the config setting 'ImagingUploader auto launch' to 'Yes'. Then, edit your prod file (in
 	<LORIS MRI code dir>/dicom-archive/.loris-mri) and comment out the definition of the @db array. Once these operations
 	are done, upload any valid scan: check in the server processes manager that this fails with an error code of 4.
 	Now try to upload the scan again. When the system asks you if you want to overwrite the existing 
 	archive, answer 'Yes'. Check that this reupload fails with error code 4 (and not 2). 
 	Related to Redmine#14093 and PR#3555.
 	[Manual Testing]
-19. Upload a valid, anonymized .tar.gz DICOM archive but with a PSCID that does not match the one in the archive 
-    (CandID and visit label should be correct though). Check that an appropriate message is written in the Console 
-    Output.
-    [Automation Testing]
-20. Upload a valid, anonymized .tar.gz DICOM archive but with a visit label that does not match the one in the 
-    archive (CandID and PSCID should be correct though). Check that an appropriate message is written in the Console 
-    Output.
-    [Automation Testing]
