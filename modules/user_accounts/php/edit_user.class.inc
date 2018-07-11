@@ -204,7 +204,11 @@ class Edit_User extends \NDB_Form
         $permIDs = array();
         // store the permission IDs
         if (!empty($values['permID'])) {
-            $permIDs = array_keys($values['permID']);
+            // An editor can only grant permission that he is granted of.
+            $permIDs = array_intersect(
+                array_keys($values['permID']),
+                $editor->getPermissionIDs()
+            );
         }
         unset($values['permID']);
         // store whether to send an email or not
@@ -485,6 +489,7 @@ class Edit_User extends \NDB_Form
                     }
                 }
             }
+
             if (!empty($permIDs)) {
                 $user->addPermissions($permIDs);
             }
