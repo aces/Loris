@@ -6,10 +6,10 @@ Instrument List Test Plan
 4. Verify that the flags' values (Data Entry, Administration, Feedback, Double Data Entry Status) for each instrument in the list are showing up appropriately
 5. Verify that `Double Data Entry` is available if it is enabled for that instrument, no link if not enabled
 6. Verify that the meta data for the candidate/visit is correct - eg DoB, Gender, Visit Label, Visit Status, etc
-7. Verify that BVL QC flags are working and only available if the user has the `Behavioural QC` permission
+7. Verify that BVL QC flags (`BVL QC Type` and `BVL QC Status`) are working and only available if the user has the `Behavioural QC` permission
 8. Verify that `Stage` can only be set after Data Entry (and DDE if applicable) is complete, and conflicts are resolved
 9. Verify that if the current `Stage` is `Not Started`, `Start Next Stage` is available (provided that it's a valid Timepoint)
-10. Verify that 'Send to DCC' is only available after Visit is marked as Pass/Failure/Withdrawal, and that user has `Send to DCC` permission
+10. Verify that `Send to DCC` is only available after Visit is marked as Pass/Failure/Withdrawal, and if the user has the `Send to DCC` permission
 11. Verify that `Reverse Send from DCC` permission is necessary to unsend to DCC
 12. Verify that breadcrumbs work
 13. Verify that values are correct for Visit Window
