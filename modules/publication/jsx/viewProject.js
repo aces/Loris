@@ -66,7 +66,7 @@ class ViewProject extends React.Component {
       },
       error: function(jqXHR) {
         console.error(jqXHR);
-        swal("Edit failed!", JSON.parse(jqXHR.responseText).message, "error");
+        swal("Edit failed!", "Something went wrong!", "error");
       }
     });
   }

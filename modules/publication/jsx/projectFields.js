@@ -108,7 +108,7 @@ class ProjectFormFields extends React.Component {
     },
       function(willDelete) {
         if (willDelete) {
-          let url = loris.BaseURL + '/publication/ajax/deleteUpload.php?uploadID=' + uploadID;
+          let url = loris.BaseURL + '/publication/ajax/FileDelete.php?uploadID=' + uploadID;
           $.ajax(url, {method: 'DELETE'});
         }
       });
