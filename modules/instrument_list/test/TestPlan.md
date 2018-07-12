@@ -12,4 +12,4 @@ Instrument List Test Plan
 10. Verify that `Send to DCC` is only available after Visit is marked as Pass/Failure/Withdrawal, and if the user has the `Send to DCC` permission
 11. Verify that `Reverse Send from DCC` permission is necessary to unsend to DCC
 12. Verify that breadcrumbs work
-13. Verify that values are correct for Visit Window
+13. Verify that values are correct for `Within Optimal` visit window and `Within Permitted` visit window. The optimal and permitted visit window values can be found in the `Visit_Windows` table of the database.  
