@@ -67,7 +67,7 @@ class EditExaminer extends \NDB_Form
             $permitted = $user->hasPermission('examiner_view')
                 && empty(array_diff($centerIDs, $user->getData('CenterIDs')));
             $permittedAllSites
-                = $user->hasPermission('examiner_multisite');
+                       = $user->hasPermission('examiner_multisite');
             return $permitted || $permittedAllSites;
         }
         return false;
