@@ -64,10 +64,10 @@ class EditExaminer extends \NDB_Form
 
             // Access is only granted if user sites are a superset of examiner sites
             // considering that certification changes affect all sites
-            $permitted = $user->hasPermission('examiner_view')
+            $permitted         = $user->hasPermission('examiner_view')
                 && empty(array_diff($centerIDs, $user->getData('CenterIDs')));
             $permittedAllSites
-                       = $user->hasPermission('examiner_multisite');
+                = $user->hasPermission('examiner_multisite');
             return $permitted || $permittedAllSites;
         }
         return false;
