@@ -135,6 +135,7 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $this->user
         ))->process(
             $request,
-            new NoopResponder(new \LORIS\Http\Error($request, 404)));
+            new NoopResponder(new \LORIS\Http\Error($request, 404))
+        );
     }
 }

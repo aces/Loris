@@ -280,9 +280,9 @@ class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerI
      * @param ServerRequestInterface $request The PSR15 Request being handled
      *
      * @return ResponseInterface A response whose body consists of this string
-
      */
-    public function handle(ServerRequestInterface $request) : ResponseInterface {
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
             return (new \Zend\Diactoros\Response())
                         ->withBody($this);
     }

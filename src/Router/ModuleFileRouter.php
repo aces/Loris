@@ -57,9 +57,9 @@ class ModuleFileRouter implements RequestHandlerInterface
      */
     public function __construct(\Module $module, string $moduledir, string $subdir, string $contenttype)
     {
-        $this->module    = $module;
-        $this->moduledir = $moduledir;
-        $this->subdir    = $subdir;
+        $this->module      = $module;
+        $this->moduledir   = $moduledir;
+        $this->subdir      = $subdir;
         $this->contenttype = $contenttype;
     }
 
@@ -93,7 +93,8 @@ class ModuleFileRouter implements RequestHandlerInterface
         return (new \LORIS\Http\Error(
             $request,
             404,
-            $fullpath . ": File not found"))
+            $fullpath . ": File not found"
+        ))
             ->withHeader("Content-Type", "text/html");
     }
 }
