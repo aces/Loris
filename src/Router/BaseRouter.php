@@ -82,7 +82,9 @@ class BaseRouter extends PrefixRouter implements RequestHandlerInterface
             $components = preg_split("/\/+?/", $path);
             $modulename = $components[0];
         }
-        if (is_dir($this->moduledir . "/" . $modulename)) {
+        if (is_dir($this->moduledir . "/" . $modulename)
+            || is_dir($this->projectdir . "/modules/" . $modulename)
+        ) {
             $uri    = $request->getURI();
             $suburi = $this->stripPrefix($modulename, $uri);
             $module = \Module::factory($modulename);
