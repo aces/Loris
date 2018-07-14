@@ -55,8 +55,12 @@ class ModuleFileRouter implements RequestHandlerInterface
      *                           module lives.
      * @param string  $subdir    The subdirectory of moduledir to serve.
      */
-    public function __construct(\Module $module, string $moduledir, string $subdir, string $contenttype)
-    {
+    public function __construct(
+        \Module $module,
+        string $moduledir,
+        string $subdir,
+        string $contenttype
+    ) {
         $this->module      = $module;
         $this->moduledir   = $moduledir;
         $this->subdir      = $subdir;

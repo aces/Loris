@@ -12,8 +12,12 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface
     protected $Config;
     protected $BaseURL;
 
-    public function __construct(string $baseurl, \NDB_Config $config, array $JS, array $CSS)
-    {
+    public function __construct(
+        string $baseurl,
+        \NDB_Config $config,
+        array $JS,
+        array $CSS
+    ) {
         $this->JSFiles  = $JS;
         $this->CSSFiles = $CSS;
         $this->Config   = $config;
@@ -28,8 +32,10 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface
      *
      * @return ResponseInterface The response with the page content
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
-    {
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ) : ResponseInterface {
         // Basic page outline variables
         $tpl_data = array(
                      'study_title' => $this->Config->getSetting('title'),
@@ -66,6 +72,8 @@ class AnonymousPageDecorationMiddleware implements MiddlewareInterface
         $smarty = new \Smarty_neurodb;
         $smarty->assign($tpl_data);
 
-        return $undecorated->withBody(new \LORIS\Http\StringStream($smarty->fetch("public_layout.tpl")));
+        return $undecorated->withBody(
+            new \LORIS\Http\StringStream($smarty->fetch("public_layout.tpl"))
+        );
     }
 }

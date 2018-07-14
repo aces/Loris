@@ -26,11 +26,19 @@ class PageDecorationMiddleware implements MiddlewareInterface
      *
      * @return ResponseInterface The response with the page content
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
-    {
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ) : ResponseInterface {
         $baseURL = $request->getAttribute("baseurl");
         $config  = \NDB_Config::singleton();
-        $page    = $request->getAttribute("pageclass") ?? new \NDB_Page(new \Module("", ""), "", "", "", "");
+        $page    = $request->getAttribute("pageclass") ?? new \NDB_Page(
+            new \Module("", ""),
+            "",
+            "",
+            "",
+            ""
+        );
         if ($this->user instanceof \LORIS\AnonymousUser) {
             return (new \LORIS\Middleware\AnonymousPageDecorationMiddleware(
                 $baseURL ?? "",

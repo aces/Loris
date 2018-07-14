@@ -13,8 +13,14 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
     protected $BaseURL;
     protected $PageName;
 
-    public function __construct(\User $user, string $baseurl, string $pagename, \NDB_Config $config, array $JS, array $CSS)
-    {
+    public function __construct(
+        \User $user,
+        string $baseurl,
+        string $pagename,
+        \NDB_Config $config,
+        array $JS,
+        array $CSS
+    ) {
         $this->JSFiles  = $JS;
         $this->CSSFiles = $CSS;
         $this->Config   = $config;
@@ -30,10 +36,13 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
      * @param ServerRequestInterface  $request The incoming request
      * @param RequestHandlerInterface $handler The handler to decorate
      *
-     * @return ResponseInterface a PSR15 response of handler, after adding decorations.
+     * @return ResponseInterface a PSR15 response of handler, after
+     *                             adding decorations.
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
-    {
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ) : ResponseInterface {
         ob_start();
         // Set the page template variables
         // $user is set by the page base router
@@ -48,7 +57,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                       'baseurl'     => $this->BaseURL,
                       'tabs'        => \NDB_Config::getMenuTabs(),
                       'currentyear' => date('Y'),
-                      'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
+                      'sandbox'     => ($this->Config->getSetting("sandbox")==='1'),
                      );
 
         $get = $request->getQueryParams();
@@ -73,8 +82,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // I don't think anyone uses this. It's not really supported
         $tpl_data['css'] = $this->Config->getSetting('css');
 
-        // This should be moved out of the middleware and into the modules that need it,
-        // but is currently required for backwards compatibility.
+        // This should be moved out of the middleware and into the modules
+        // that need it, but is currently required for backwards compatibility.
         $page = $request->getAttribute("pageclass");
         if (method_exists($page, 'getControlPanel')) {
             $tpl_data['control_panel'] = $page->getControlPanel();
@@ -96,13 +105,17 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         // This shouldn't exist. (And if it does, it shouldn't reference
         // mantis..)
-        $tpl_data['issue_tracker_url'] = $this->Config->getSetting('issue_tracker_url');
+        $tpl_data['issue_tracker_url'] = $this->Config->getSetting(
+            'issue_tracker_url'
+        );
 
         // We're back in the territory of stuff that belongs here..
 
         // Variables that get passed along to the LorisHelper javascript object.
         $tpl_data['studyParams'] = array(
-                                    'useEDC'      => $this->Config->getSetting('useEDC'),
+                                    'useEDC'      => $this->Config->getSetting(
+                                        'useEDC'
+                                    ),
                                     'useProband'  => $this->Config->getSetting(
                                         'useProband'
                                     ),
@@ -201,6 +214,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $smarty = new \Smarty_neurodb;
         $smarty->assign($tpl_data);
 
-        return $undecorated->withBody(new \LORIS\Http\StringStream($smarty->fetch("main.tpl")));
+        return $undecorated->withBody(
+            new \LORIS\Http\StringStream($smarty->fetch("main.tpl"))
+        );
     }
 }
