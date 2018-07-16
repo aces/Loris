@@ -254,6 +254,7 @@ class Edit_User extends \NDB_Form
         }
         unset($values['CenterIDs']);
         // END multi-site UPDATE
+
         // EXAMINER UPDATE
         if ($editor->hasPermission('examiner_multisite')) {
             // get all fields that are related to examiners
@@ -288,18 +289,14 @@ class Edit_User extends \NDB_Form
             );
 
             // START EXAMINER UPDATE
-            // If examiner not in table add him,
-            // otherwise update the radiologist field and get the current sites
             if (!empty($ex_radiologist)
                 && !empty($ex_pending)
                 && !empty($ex_curr_sites)
                 && empty($examinerID)
             ) {
+                // If examiner not in table and radiologist, pending and current
+                // sites fields set add the examiner to the examiner table
                 $ex_radiologist = $ex_radiologist === 'Y' ? 1 : 0;
-                $values         = \Utility::nullifyEmpty(
-                    $values,
-                    'examiner_radiologist'
-                );
                 $DB->insert(
                     'examiners',
                     array(
@@ -322,11 +319,10 @@ class Edit_User extends \NDB_Form
                 && empty($ex_pending)
                 && empty($ex_curr_sites)))
             ) {
+                // If examiner already exists in the examiner table AND
+                // radiologist, pending and current sites fields all set or
+                // unset update the examiner table with new values
                 $ex_radiologist = $ex_radiologist === 'Y' ? 1 : 0;
-                $values         = \Utility::nullifyEmpty(
-                    $values,
-                    'examiner_radiologist'
-                );
                 $DB->update(
                     'examiners',
                     array(
@@ -346,69 +342,67 @@ class Edit_User extends \NDB_Form
                             WHERE examinerID=:eid",
                     array("eid" => $examinerID)
                 );
+            }
+            //get sites where user is already an examiner at for compare
+            foreach ($prev_sites as $row => $center) {
+                array_push($ex_prev_sites, $center['centerID']);
+            }
 
-                //get sites where user is already an examiner at for compare
-                foreach ($prev_sites as $row => $center) {
-                    array_push($ex_prev_sites, $center['centerID']);
-                }
+            foreach ($ex_curr_sites as $k => $v) {
 
-                foreach ($ex_curr_sites as $k => $v) {
+                //Check if examiner already in db for site
+                $result = $DB->pselectRow(
+                    "SELECT epr.centerID
+                           FROM examiners_psc_rel epr 
+                           WHERE epr.examinerID=:eid AND epr.centerID=:cid",
+                    array(
+                     "eid" => $examinerID,
+                     "cid" => $v,
+                    )
+                );
 
-                    //Check if examiner already in db for site
-                    $result = $DB->pselectRow(
-                        "SELECT epr.centerID
-                               FROM examiners_psc_rel epr 
-                               WHERE epr.examinerID=:eid AND epr.centerID=:cid",
+                // examiner was not previously added, add and set to active
+                if (empty($result)) {
+                    $DB->insert(
+                        'examiners_psc_rel',
                         array(
-                         "eid" => $examinerID,
-                         "cid" => $v,
+                         'examinerID'       => $examinerID,
+                         'centerID'         => $v,
+                         'active'           => 'Y',
+                         'pending_approval' => $ex_pending,
                         )
                     );
-
-                    // examiner was not previously added, add and set to active
-                    if (empty($result)) {
-                        $DB->insert(
-                            'examiners_psc_rel',
-                            array(
-                             'examinerID'       => $examinerID,
-                             'centerID'         => $v,
-                             'active'           => 'Y',
-                             'pending_approval' => $ex_pending,
-                            )
-                        );
-                    } else {
-                        $DB->update(
-                            'examiners_psc_rel',
-                            array(
-                             'active'           => 'Y',
-                             'pending_approval' => $ex_pending,
-                            ),
-                            array(
-                             'examinerID' => $examinerID,
-                             'centerID'   => $v,
-                            )
-                        );
-                    }
-                    unset($values[$k]);
-                }
-
-                //de-activate examiner if sites where no longer checked
-                $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
-                foreach ($ex_inactive as $cid) {
+                } else {
                     $DB->update(
                         'examiners_psc_rel',
-                        array("active" => 'N'),
+                        array(
+                         'active'           => 'Y',
+                         'pending_approval' => $ex_pending,
+                        ),
                         array(
                          'examinerID' => $examinerID,
-                         'centerID'   => $cid,
+                         'centerID'   => $v,
                         )
                     );
                 }
+                unset($values[$k]);
+            }
+
+            //de-activate examiner if sites where no longer checked
+            $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
+            foreach ($ex_inactive as $cid) {
+                $DB->update(
+                    'examiners_psc_rel',
+                    array("active" => 'N'),
+                    array(
+                     'examinerID' => $examinerID,
+                     'centerID'   => $cid,
+                    )
+                );
             }
         }
         unset($values['examiner_radiologist']);
         unset($values['examiner_pending']);
-
         //END EXAMINER UPDATE
 
         // make the set
