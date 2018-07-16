@@ -308,7 +308,7 @@ class Edit_User extends \NDB_Form
                      'userID'      => $uid,
                     )
                 );
-                $examinerID = $examinerID = $DB->pselectOne(
+                $examinerID = $DB->pselectOne(
                     "SELECT examinerID
                             FROM examiners
                             WHERE full_name=:fullName",
