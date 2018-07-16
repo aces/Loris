@@ -296,7 +296,10 @@ class Edit_User extends \NDB_Form
                 && empty($examinerID)
             ) {
                 $ex_radiologist = $ex_radiologist === 'Y' ? 1 : 0;
-                $values         = \Utility::nullifyEmpty($values, 'examiner_radiologist');
+                $values         = \Utility::nullifyEmpty(
+                    $values,
+                    'examiner_radiologist'
+                );
                 $DB->insert(
                     'examiners',
                     array(
@@ -320,7 +323,10 @@ class Edit_User extends \NDB_Form
                 && empty($ex_curr_sites)))
             ) {
                 $ex_radiologist = $ex_radiologist === 'Y' ? 1 : 0;
-                $values         = \Utility::nullifyEmpty($values, 'examiner_radiologist');
+                $values         = \Utility::nullifyEmpty(
+                    $values,
+                    'examiner_radiologist'
+                );
                 $DB->update(
                     'examiners',
                     array(
