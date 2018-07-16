@@ -296,13 +296,13 @@ class Edit_User extends \NDB_Form
                 && empty($examinerID)
             ) {
                 $ex_radiologist = $ex_radiologist === 'Y' ? 1 : 0;
-                $values = \Utility::nullifyEmpty($values, 'examiner_radiologist');
+                $values         = \Utility::nullifyEmpty($values, 'examiner_radiologist');
                 $DB->insert(
                     'examiners',
                     array(
-                        'full_name'   => $values['Real_name'],
-                        'radiologist' => $ex_radiologist,
-                        'userID'      => $uid,
+                     'full_name'   => $values['Real_name'],
+                     'radiologist' => $ex_radiologist,
+                     'userID'      => $uid,
                     )
                 );
                 $examinerID = $examinerID = $DB->pselectOne(
@@ -312,24 +312,23 @@ class Edit_User extends \NDB_Form
                     array('fullName' => $values['Real_name'])
                 );
             } elseif (!empty($examinerID)
-                      && ((!empty($ex_radiologist)
-                          && !empty($ex_pending)
-                          && !empty($ex_curr_sites)
-                         ) || (empty($ex_radiologist)
-                          && empty($ex_pending)
-                          && empty($ex_curr_sites)
-                         ))
+                && ((!empty($ex_radiologist)
+                && !empty($ex_pending)
+                && !empty($ex_curr_sites))
+                || (empty($ex_radiologist)
+                && empty($ex_pending)
+                && empty($ex_curr_sites)))
             ) {
                 $ex_radiologist = $ex_radiologist === 'Y' ? 1 : 0;
-                $values = \Utility::nullifyEmpty($values, 'examiner_radiologist');
+                $values         = \Utility::nullifyEmpty($values, 'examiner_radiologist');
                 $DB->update(
                     'examiners',
                     array(
-                        'radiologist' => $ex_radiologist,
-                        'userID'      => $uid,
+                     'radiologist' => $ex_radiologist,
+                     'userID'      => $uid,
                     ),
                     array(
-                        "full_name" => $values['Real_name'],
+                     "full_name" => $values['Real_name'],
                     )
                 );
                 $examinerID = $examinerID[0]['examinerID'];
@@ -355,8 +354,8 @@ class Edit_User extends \NDB_Form
                                FROM examiners_psc_rel epr 
                                WHERE epr.examinerID=:eid AND epr.centerID=:cid",
                         array(
-                            "eid" => $examinerID,
-                            "cid" => $v,
+                         "eid" => $examinerID,
+                         "cid" => $v,
                         )
                     );
 
@@ -365,22 +364,22 @@ class Edit_User extends \NDB_Form
                         $DB->insert(
                             'examiners_psc_rel',
                             array(
-                                'examinerID'       => $examinerID,
-                                'centerID'         => $v,
-                                'active'           => 'Y',
-                                'pending_approval' => $ex_pending,
+                             'examinerID'       => $examinerID,
+                             'centerID'         => $v,
+                             'active'           => 'Y',
+                             'pending_approval' => $ex_pending,
                             )
                         );
                     } else {
                         $DB->update(
                             'examiners_psc_rel',
                             array(
-                                'active'           => 'Y',
-                                'pending_approval' => $ex_pending,
+                             'active'           => 'Y',
+                             'pending_approval' => $ex_pending,
                             ),
                             array(
-                                'examinerID' => $examinerID,
-                                'centerID'   => $v,
+                             'examinerID' => $examinerID,
+                             'centerID'   => $v,
                             )
                         );
                     }
@@ -394,8 +393,8 @@ class Edit_User extends \NDB_Form
                         'examiners_psc_rel',
                         array("active" => 'N'),
                         array(
-                            'examinerID' => $examinerID,
-                            'centerID'   => $cid,
+                         'examinerID' => $examinerID,
+                         'centerID'   => $cid,
                         )
                     );
                 }
