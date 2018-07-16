@@ -311,9 +311,9 @@ var StaticDataTable = React.createClass({
 
       if (exactMatch) {
         result = (searchString === searchKey);
+      } else {
+        result = (searchString.indexOf(searchKey) > -1);
       }
-
-      result = (searchString.indexOf(searchKey) > -1);
     }
 
     // Handle array inputs for multiselects

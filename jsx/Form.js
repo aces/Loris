@@ -246,6 +246,7 @@ class SearchableDropdown extends React.Component {
             placeholder={this.props.placeHolder}
             onChange={this.handleChange}
             onBlur={this.handleBlur}
+            required={required}
           />
           <datalist id={this.props.name + '_list'}>
             {Object.keys(options).map(function(option) {
