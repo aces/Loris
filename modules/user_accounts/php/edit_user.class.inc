@@ -278,9 +278,6 @@ class Edit_User extends \NDB_Form
                 }
             }
 
-            //modify examiner radiologist to be in the binary format 0-1
-            $ex_radiologist = $ex_radiologist === 'Y' ? 1 : 0;
-
             $examinerID = $DB->pselect(
                 "SELECT e.examinerID
              FROM examiners e
@@ -293,33 +290,49 @@ class Edit_User extends \NDB_Form
             // START EXAMINER UPDATE
             // If examiner not in table add him,
             // otherwise update the radiologist field and get the current sites
-            $values = \Utility::nullifyEmpty($values, 'examiner_radiologist');
-            if (empty($examinerID)) {
-
+            if (!empty($ex_radiologist)
+                && !empty($ex_pending)
+                && !empty($ex_curr_sites)
+                && empty($examinerID)
+            ) {
+                print_r("radio, pending, curr site not empty + examiner empty");
+                $ex_radiologist = $ex_radiologist === 'Y' ? 1 : 0;
+                $values = \Utility::nullifyEmpty($values, 'examiner_radiologist');
                 $DB->insert(
                     'examiners',
                     array(
-                     'full_name'   => $values['Real_name'],
-                     'radiologist' => $ex_radiologist,
-                     'userID'      => $uid,
+                        'full_name'   => $values['Real_name'],
+                        'radiologist' => $ex_radiologist,
+                        'userID'      => $uid,
                     )
                 );
                 $examinerID = $examinerID = $DB->pselectOne(
                     "SELECT examinerID
-                 FROM examiners
-                 WHERE full_name=:fullName",
+                            FROM examiners
+                            WHERE full_name=:fullName",
                     array('fullName' => $values['Real_name'])
                 );
-            } else {
-
+            } elseif (!empty($examinerID)
+                      && ((!empty($ex_radiologist)
+                          && !empty($ex_pending)
+                          && !empty($ex_curr_sites)
+                         ) || (empty($ex_radiologist)
+                          && empty($ex_pending)
+                          && empty($ex_curr_sites)
+                         ))
+            ) {
+                print_r('other situation');
+                print_r($ex_radiologist);
+                $ex_radiologist = $ex_radiologist === 'Y' ? 1 : 0;
+                $values = \Utility::nullifyEmpty($values, 'examiner_radiologist');
                 $DB->update(
                     'examiners',
                     array(
-                     'radiologist' => $ex_radiologist,
-                     'userID'      => $uid,
+                        'radiologist' => $ex_radiologist,
+                        'userID'      => $uid,
                     ),
                     array(
-                     "full_name" => $values['Real_name'],
+                        "full_name" => $values['Real_name'],
                     )
                 );
                 $examinerID = $examinerID[0]['examinerID'];
@@ -327,8 +340,8 @@ class Edit_User extends \NDB_Form
                 //get existing sites for examiner
                 $prev_sites = $DB->pselect(
                     "SELECT centerID
-             FROM examiners_psc_rel epr
-             WHERE examinerID=:eid",
+                            FROM examiners_psc_rel epr
+                            WHERE examinerID=:eid",
                     array("eid" => $examinerID)
                 );
 
@@ -336,59 +349,59 @@ class Edit_User extends \NDB_Form
                 foreach ($prev_sites as $row => $center) {
                     array_push($ex_prev_sites, $center['centerID']);
                 }
-            }
 
-            foreach ($ex_curr_sites as $k => $v) {
+                foreach ($ex_curr_sites as $k => $v) {
 
-                //Check if examiner already in db for site
-                $result = $DB->pselectRow(
-                    "SELECT epr.centerID
-                     FROM examiners_psc_rel epr 
-                     WHERE epr.examinerID=:eid AND epr.centerID=:cid",
-                    array(
-                     "eid" => $examinerID,
-                     "cid" => $v,
-                    )
-                );
-
-                // examiner was not previously added, add and set to active
-                if (empty($result)) {
-                    $DB->insert(
-                        'examiners_psc_rel',
+                    //Check if examiner already in db for site
+                    $result = $DB->pselectRow(
+                        "SELECT epr.centerID
+                               FROM examiners_psc_rel epr 
+                               WHERE epr.examinerID=:eid AND epr.centerID=:cid",
                         array(
-                         'examinerID'       => $examinerID,
-                         'centerID'         => $v,
-                         'active'           => 'Y',
-                         'pending_approval' => $ex_pending,
+                            "eid" => $examinerID,
+                            "cid" => $v,
                         )
                     );
-                } else {
+
+                    // examiner was not previously added, add and set to active
+                    if (empty($result)) {
+                        $DB->insert(
+                            'examiners_psc_rel',
+                            array(
+                                'examinerID'       => $examinerID,
+                                'centerID'         => $v,
+                                'active'           => 'Y',
+                                'pending_approval' => $ex_pending,
+                            )
+                        );
+                    } else {
+                        $DB->update(
+                            'examiners_psc_rel',
+                            array(
+                                'active'           => 'Y',
+                                'pending_approval' => $ex_pending,
+                            ),
+                            array(
+                                'examinerID' => $examinerID,
+                                'centerID'   => $v,
+                            )
+                        );
+                    }
+                    unset($values[$k]);
+                }
+
+                //de-activate examiner if sites where no longer checked
+                $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
+                foreach ($ex_inactive as $cid) {
                     $DB->update(
                         'examiners_psc_rel',
+                        array("active" => 'N'),
                         array(
-                         'active'           => 'Y',
-                         'pending_approval' => $ex_pending,
-                        ),
-                        array(
-                         'examinerID' => $examinerID,
-                         'centerID'   => $v,
+                            'examinerID' => $examinerID,
+                            'centerID'   => $cid,
                         )
                     );
                 }
-                unset($values[$k]);
-            }
-
-            //de-activate examiner if sites where no longer checked
-            $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
-            foreach ($ex_inactive as $cid) {
-                $DB->update(
-                    'examiners_psc_rel',
-                    array("active" => 'N'),
-                    array(
-                     'examinerID' => $examinerID,
-                     'centerID'   => $cid,
-                    )
-                );
             }
         }
         unset($values['examiner_radiologist']);
