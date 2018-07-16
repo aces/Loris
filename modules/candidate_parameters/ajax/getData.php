@@ -151,7 +151,7 @@ function getProbandInfoFields()
     );
 
     $fields = $db->pselect(
-        "SELECT ParameterTypeID, Value FROM parameter_candidate WHERE CandID=:cid",
+        "SELECT CONCAT('PTID', ParameterTypeID) AS ParameterTypeID, Value FROM parameter_candidate WHERE CandID=:cid",
         array('cid' => $candID)
     );
 
