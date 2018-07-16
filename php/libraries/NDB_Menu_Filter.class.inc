@@ -188,14 +188,13 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function _setupVariables()
     {
-        return true;
     }
 
     /**
      * This method will reset any saved filters that are associated with
      * the session back to its default state.
      *
-     * @return none
+     * @return void
      */
     function _resetFilters()
     {
@@ -217,7 +216,7 @@ class NDB_Menu_Filter extends NDB_Menu
      *                             ]
      *                      to retrieve the values from.
      *
-     * @return An array of filters in the same form as the $values parameter
+     * @return array of filters in the same form as the $values parameter
      *         that can be saved for future use.
      */
     function _setFilters($values)
@@ -257,8 +256,8 @@ class NDB_Menu_Filter extends NDB_Menu
      *                          'fieldOrder' => "ASC|DESC"
      *                      ]
      *
-     * @return none, modifies both $_SESSION and $this->filter as
-     *         a side-effect.
+     * @return void (modifies both $_SESSION and $this->filter as
+     *         a side-effect.)
      */
     function _setFilterSortOrder($order)
     {
@@ -283,7 +282,7 @@ class NDB_Menu_Filter extends NDB_Menu
      *
      * @param string $keyword The keyword to search through columns for.
      *
-     * @return none, but side-effect modifies $this->searchKey
+     * @return void (but side-effect modifies $this->searchKey)
      */
     function _setSearchKeyword($keyword)
     {
@@ -304,14 +303,14 @@ class NDB_Menu_Filter extends NDB_Menu
      * The end result should be that $this->filter and $this->having are setup
      * properly so that the query can be constructed by $this->_getList()
      *
-     * @return none
+     * @return void
      */
     function _setupFilters()
     {
         // 1. Reset filters
         if (isset($_REQUEST['reset'])) {
             // erase filter data from the session
-            $this->_resetFilters(true);
+            $this->_resetFilters();
         }
 
         // 2. After resetting filters (if applicable), set the new
@@ -408,7 +407,7 @@ class NDB_Menu_Filter extends NDB_Menu
     /**
     * Gets the base query
     *
-    * @return $query
+    * @return string ($query)
     */
     function _getBaseQuery()
     {
@@ -429,7 +428,7 @@ class NDB_Menu_Filter extends NDB_Menu
     * @param string $field        filter field
     * @param string $val          filter value
     *
-    * @return $query
+    * @return string ($query)
     */
     function _addValidFilters($prepared_key, $field, $val)
     {
@@ -596,7 +595,7 @@ class NDB_Menu_Filter extends NDB_Menu
             $query = "SELECT COUNT(*) FROM ($query) as tmptable";
         }
         $this->TotalItems = $db->pselectOne($query, $wheredetails['params']);
-
+        return $this->TotalItems;
     }
 
     /**
@@ -689,22 +688,20 @@ class NDB_Menu_Filter extends NDB_Menu
     /**
      * Displays the menu page
      *
-     * @return void
+     * @return string
      * @access public
      */
     function display()
     {
-        if (isset($_REQUEST['format'])) {
-            switch($_REQUEST['format']) {
-            case 'json':
-                       header('Content-Type: application/json');
-                return $this->toJSON();
-            }
+        switch($this->format) {
+        case 'json':
+            return $this->toJSON();
         }
         if ($this->skipTemplate) {
             return "";
         }
         // Set the csvFile links
+        /*
         $uri    = ltrim($_SERVER['REQUEST_URI'], "/");
         $suffix = strpos($uri, '?') ? '&format=csv' : '?&format=csv';
         $this->setTemplateVar('csvURL', $uri . $suffix);
@@ -714,6 +711,7 @@ class NDB_Menu_Filter extends NDB_Menu
             . ($_REQUEST['subtest'] ?? $_REQUEST['submenu'] ?? '')
             . date('-Y_m_d')
         );
+         */
 
         // dump the html for the menu
         $smarty = new Smarty_neurodb($this->Module->getName());
@@ -747,7 +745,7 @@ class NDB_Menu_Filter extends NDB_Menu
      *
      * Suitable for serializing to JSON, CSV, etc..
      *
-     * @return associative array
+     * @return array
      */
     function toArray()
     {
@@ -775,7 +773,7 @@ class NDB_Menu_Filter extends NDB_Menu
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
-     * @return a json encoded string of the headers and data from this table
+     * @return string a json encoded string of the headers and data from this table
      */
     function toJSON()
     {

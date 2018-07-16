@@ -100,7 +100,7 @@ class Images extends \Loris\API\APIBase
     /**
      * Handles a candidates GET request
      *
-     * @return none, but populates $this->JSON
+     * @return void but populates $this->JSON
      */
     public function handleGET()
     {

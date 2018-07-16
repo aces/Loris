@@ -33,7 +33,7 @@
     <h3>Links</h3>
     <ul>
         {foreach from=$subject.links item=link}
-            <li><a href="{$baseurl}/{$subject.candid}/{$subject.sessionID}/{$link.BEName}/?commentID={$link.CommentID}">{$link.FEName}</a></li>
+            <li><a href="{$baseurl}/instruments/{$link.BEName}/?commentID={$link.CommentID}&sessionID={$subject.sessionID}&candID={$subject.candid}">{$link.FEName}</a></li>
         {/foreach}
         {foreach from=$subject.tarchiveIDLoc key=tarchive item=tarchiveLoc}
             <li><a href="{$baseurl}/dicom_archive/viewDetails/?tarchiveID={$tarchive}&backURL={$backURL|escape:"url"}">DICOM Archive {$tarchive}</a></li>
@@ -43,7 +43,7 @@
             </li>
         {/foreach}
         {if $mantis}
-            <li><a target="mantis" href="{$mantis}">Report a Bug (Mantis)</a></li>
+            <li><a target="mantis" href="{$issue_tracker_url}">Report a Bug (Mantis)</a></li>
         {/if}
     </ul>
 

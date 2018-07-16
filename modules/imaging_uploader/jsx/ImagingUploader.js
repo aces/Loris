@@ -18,6 +18,7 @@ class ImagingUploader extends React.Component {
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
+    this.resetFilters = this.resetFilters.bind(this);
   }
 
   componentDidMount() {
@@ -49,6 +50,10 @@ class ImagingUploader extends React.Component {
     this.setState({filter});
   }
 
+  resetFilters() {
+    this.imagingUploaderFilter.clearFilter();
+  }
+
   render() {
     if (!this.state.isLoaded) {
       return (
@@ -66,6 +71,10 @@ class ImagingUploader extends React.Component {
       {id: "upload", label: "Upload"}
     ];
 
+    const filterRef = function(f) {
+      this.imagingUploaderFilter = f;
+    }.bind(this);
+
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
@@ -75,13 +84,14 @@ class ImagingUploader extends React.Component {
                 Module="imaging_uploader"
                 name="imaging_filter"
                 id="imaging_filter"
+                ref={filterRef}
                 onUpdate={this.updateFilter}
                 filter={this.state.filter}
               >
                 <TextboxElement {... this.state.Data.form.candID} />
                 <TextboxElement {... this.state.Data.form.pSCID} />
                 <SelectElement {... this.state.Data.form.visitLabel} />
-                <ButtonElement type="reset" label="Clear Filters" />
+                <ButtonElement type="reset" label="Clear Filters" onUserInput={this.resetFilters}/>
               </FilterForm>
             </div>
             <div className="col-md-7">

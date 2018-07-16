@@ -11,7 +11,7 @@
      - Input the right 'Gender'
      - Input the right 'Acquisition Date'
      - Input the right 'Series UID'
-    Check the results in the table.
+    Check the results in the table
     [Automation Testing]
 4-  Click on 'Clear Filters' to make sure the previously entered data can be erased
     [Automation Testing]
@@ -20,15 +20,18 @@
 6-  Under 'View Details' Check to make sure all the specific parameters are Populated
     [Manual Testing]
 7-  Under 'View Details' Click on 'Acquisition ID' to view the violated scans (if there are any) if permission 
-'Violated Scans: View all-sites Violated Scans' is granted
+    'Violated Scans: View all-sites Violated Scans' is granted
     [Manual Testing]
-8-  Under 'View Details' Click on 'Show/Hide Files' to view a list of all Dicom Files for the given patient
+8-  Under 'View Details' Click on 'Show/Hide Series' and 'Show/Hide Files' to view a list of all DICOM Series/Files,
+    respectively, for the given DICOM study
     [Manual Testing]
-9- Under 'View Details' Click on 'Show/Hide metadata' to view the details of the metadata file
+9-  Make sure that the value of 'Patient ID' column is 'INVALID-HIDDEN' if the PatientID does not match the 
+    regex set in the Configuration module under the 'Imaging Modules' submenu. Repeat the same operation for
+    'Patient Name'
     [Manual Testing]
-10- Make sure that the value of 'Patient ID' column is 'INVALID-HIDDEN' if the patient-name does not match the 
-regex in the config.xml
+10- Click on 'View Images' to acess the Imaging-Browser for the given subject if 'View all-sites Imaging Browser 
+    pages' or 'View own-site Imaging Browser pages' permission is set
     [Manual Testing]
-11- Click on 'View Images' to acess the Imaging-Browser for the given subject if 'View all-sites Imaging Browser 
-pages' or 'View own-site Imaging Browser pages' permission is set
+11- Ensure that clicking on any row in the 'Archive Location' column triggers a download of the corresponding 
+    archived DICOM study
     [Manual Testing]

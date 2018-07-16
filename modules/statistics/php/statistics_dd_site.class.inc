@@ -59,16 +59,9 @@ class Statistics_DD_Site extends statistics_site
     function notexcluded($var)
     {
         $config            =& \NDB_Config::singleton();
-        $statisticsConfig  = $config->getSetting('statistics');
-        $excluded_measures = array($statisticsConfig['excludedMeasures']);
+        $excluded_measures = $config->getSetting('excludedMeasures');
 
-        $key = array_search($var, $excluded_measures);
-        foreach ($excluded_measures as $key=>$val) {
-            if (in_array($var, $val) || $var == $val) {
-                return false;
-            }
-        }
-        return true;
+        return !in_array($var, $excluded_measures);
     }
 
     /**
@@ -76,7 +69,7 @@ class Statistics_DD_Site extends statistics_site
      *
      * @return void
      */
-    function __construct()
+    function _setInstrumentName()
     {
         $this->instruments = \Utility::getAllInstruments();
         foreach ($this->instruments as $k=>$v) {
@@ -130,7 +123,7 @@ class Statistics_DD_Site extends statistics_site
      * @param string $projectID  the value of projectID
      * @param string $instrument the value of instrument
      *
-     * @return string
+     * @return array
      */
     function _getResults($centerID, $projectID, $instrument)
     {
@@ -150,23 +143,7 @@ class Statistics_DD_Site extends statistics_site
                 AND i.CommentID LIKE 'DDE%' ORDER BY c.PSCID",
             $this->query_vars
         );
-            return $result;
-    }
-
-    /**
-     * Include additional CSS files:
-     *
-     * @return array of javascript to be inserted
-     */
-    function getCSSDependencies()
-    {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            array($baseURL . "/statistics/css/statistics.css")
-        );
+        return $result;
     }
 }
 

@@ -11,7 +11,9 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-
+use \Psr\Http\Server\RequestHandlerInterface;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
 /**
  * The Module class encapsulates all details of a module which are not specific
  * to a certain page.
@@ -22,7 +24,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Module
+class Module extends \LORIS\Router\PrefixRouter implements RequestHandlerInterface
 {
     protected $name;
     protected $dir;
@@ -73,6 +75,9 @@ class Module
                     $fpath = $mpath . "/php/"
                     . strtolower(substr($class, strlen("LORIS\\$name\\")))
                     . ".class.inc";
+                    if (!file_exists($fpath)) {
+                        throw new \NotFound($name);
+                    }
                     include $fpath;
                 }
             }
@@ -82,20 +87,44 @@ class Module
         // namespacing
         //require_once $mpath . "/php/Module.class.inc";
         $className = "\LORIS\\$name\Module";
-        $cls       = new $className($name);
-        $cls->dir  = $mpath;
-
+        $cls       = new $className($name, $mpath);
         return $cls;
     }
 
     /**
      * Creates a new module instance
      *
-     * @param string $name The name of the module
+     * @param string $name      The name of the module
+     * @param string $moduledir The directory on the filesystem containing the module
      */
-    public function __construct($name)
+    public function __construct($name, $moduledir)
     {
+        parent::__construct(
+            new \ArrayIterator(
+                [
+                 "/css/"    => new \LORIS\Router\ModuleFileRouter(
+                     $this,
+                     $moduledir,
+                     "css",
+                     "text/css"
+                 ),
+                 "/js/"     => new \LORIS\Router\ModuleFileRouter(
+                     $this,
+                     $moduledir,
+                     "js",
+                     "application/javascript"
+                 ),
+                 "/static/" => new \LORIS\Router\ModuleFileRouter(
+                     $this,
+                     $moduledir,
+                     "static",
+                     ""
+                 ),
+                ]
+            )
+        );
         $this->name = $name;
+        $this->dir  = $moduledir;
     }
 
     /**
@@ -112,14 +141,33 @@ class Module
      * Returns true if this module should be publicly available to people who
      * are not logged in to LORIS.
      *
-     * @return false: not that this is not currently possible because main.php
-     *         checks that the user is logged in before it calls NDB_Caller.
+     * @return bool (false: not that this is not currently possible because main.php
+     *         checks that the user is logged in before it calls NDB_Caller.)
      */
     public function isPublicModule()
     {
         return false;
     }
 
+    /**
+     * Return true if the given user should have access to this module.
+     *
+     * By default, this will assume that anonymous users do not have access
+     * to non-public modules, but otherwise everyone has access to anything.
+     *
+     * @param User $user The user to check access for.
+     *
+     * @return bool True if the user has access
+     */
+    public function hasAccess(User $user)
+    {
+        if ($this->isPublicModule() !== true) {
+            if ($user instanceof \LORIS\AnonymousUser) {
+                return false;
+            }
+        }
+        return true;
+    }
     /**
      * Loads a page within this module and calls all necessary setup.
      *
@@ -134,26 +182,17 @@ class Module
         $page = str_replace("-", "", $page);
 
         $className = "\LORIS\\" . $this->name . "\\$page";
+        if (!class_exists($className)) {
+            throw new \NotFound($className);
+        }
 
         $identifier = $_REQUEST['identifier'] ?? '';
         $commentID  = $_REQUEST['commentID'] ?? '';
         $cls        = new $className($this, $page, $identifier, $commentID, $page);
-        // Smarty needs the Module as a reference to autoload the right
-        // templates. Every type of page uses this.
-        $cls->Module = $this;
 
         // Hacks so that existing display() functions load the right template
         // for different page types.
         $cls->menu = $page;
-        if (!$cls->_hasAccess()) {
-            throw new \LorisException("You do not have access to this page.", 403);
-        }
-        $cls->setup();
-
-        // Handles form submission
-        if (method_exists($cls, 'save')) {
-            $cls->save();
-        }
 
         return $cls;
     }
@@ -172,5 +211,74 @@ class Module
                 return file_get_contents($helpFile);
         }
         return "No help available for $page ($helpFile)";
+    }
+
+    /**
+     * The default handler for a module routes to a page of the first component of
+     * the URL's name, or the same name as the module if serving the root of the
+     * module.
+     *
+     * Modules extend PrefixRouter, so that the parent handler knows that the
+     * css, static, and js routes should be routed through the file system to
+     * retrieve the files before trying to load any specific pages.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface the outgoing PSR7 response
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $resp = parent::handle($request);
+        if ($resp->getStatusCode() != 404) {
+            return $resp;
+        }
+
+        $pagename = $this->getName();
+        $path     = trim($request->getURI()->getPath(), "/");
+        if (!empty($path)) {
+            // There is a subpage
+            $pagename = explode("@", $path)[0];
+        }
+
+        try {
+            $page = $this->loadPage($pagename);
+            // FIXME: Hack required for breadcrumbs. This should be removed,
+            // but some tests depend on it.
+            if ($this->getName() === $pagename) {
+                $_REQUEST['test_name'] = $pagename;
+            } else {
+                $_REQUEST['subtest'] = $pagename;
+            }
+
+            if ($page->_hasAccess() !== true) {
+                return (new \LORIS\Middleware\PageDecorationMiddleware(
+                    $request->getAttribute("user") ?? new \LORIS\AnonymousUser()
+                ))->process(
+                    $request,
+                    new \LORIS\Router\NoopResponder(
+                        new \LORIS\Http\Error(
+                            $request,
+                            403,
+                            "You do not have access to this page."
+                        )
+                    )
+                );
+            }
+        } catch (\NotFound $e) {
+            return (new \LORIS\Middleware\PageDecorationMiddleware(
+                $request->getAttribute("user") ?? new \LORIS\AnonymousUser()
+            ))->process(
+                $request,
+                new \LORIS\Router\NoopResponder(
+                    new \LORIS\Http\Error(
+                        $request,
+                        404,
+                        "File not found: " . $request->getURI()->__toString()
+                    )
+                )
+            );
+        }
+
+        return $page->process($request, $page);
     }
 }

@@ -229,22 +229,22 @@ class NDB_Factory
      *
      * @param string $database The couchDB database name
      * @param string $host     The couchDB host name
-     * @param string $port     The couchDB port number
+     * @param int    $port     The couchDB port number
      * @param string $user     The couchDB user name
      * @param string $password The couchDB password
      *
      * @return CouchDB CouchDB singleton
      */
     function couchDB(
-        string $database = null,
-        string $host = null,
-        string $port = null,
-        string $user = null,
-        string $password = null
+        string $database = "",
+        string $host = "",
+        int $port = 0,
+        string $user = "",
+        string $password = ""
     ) {
         if (empty($database)
             && empty($host)
-            && empty($port)
+            && ($port === 0)
             && empty($user)
             && empty($password)
         ) {

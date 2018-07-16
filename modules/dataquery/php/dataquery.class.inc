@@ -41,7 +41,7 @@ class Dataquery extends \NDB_Form
     /**
      * Sets up the smarty template variables for the dataquery page.
      *
-     * @return unknown
+     * @return void
      */
     function setup()
     {
