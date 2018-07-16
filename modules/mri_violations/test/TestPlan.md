@@ -10,13 +10,13 @@ MRI Violations Module Test Plan:
     Problem : 'Could not identify scan type', 'Visit Label does not exist',  
     'Protocol Violation', 'CandID and PSCID do not match' and 'CandID 
     does not exist').
-    Ensure that the link under the 'Problem' column bring you to:
+    Ensure that the link under the 'Problem' column brings you to:
      - the 'MRI Protocol Check Violations' page listing all violations when 
      the link is 'Protocol Violation' (check that correct scan information 
-     are set in the filters of that page)
+     is set in the filters of that page)
      - the 'MRI Protocol Violations' page listing all protocol violations 
      with the MRI protocol parameters showing as a first table (check that 
-     correct scan information are set in the filters of that page) 
+     correct scan information is set in the filters of that page) 
     [Manual Testing]
 4.  MRI Protocol Violations page check Selection Filter results for each of 
     DCCID, PSCID, PatientName, SeriesUID, Time Run, Series Description
@@ -44,10 +44,11 @@ MRI Violations Module Test Plan:
     column, should go to DICOM Archive for the patient if permission 'Across 
     all sites view DICOM Archive module and pages' is granted
     [Manual Testing]
-12. Upload scan that violates protocol and ensure it shows up in the module
+12. Upload scan that violates the `mri_protocol` table and ensure it shows up in the module 
+    as 'Could not identify scan type'
     [Manual Testing]
-13. Upload scan that violates protocol checks and ensure it shows up in the 
-    module
+13. Upload scan that violates the `mri_protocol_checks` table and ensure it shows up in the 
+    module as 'Protocol Violation'
     [Manual Testing]
 14. Resolve issues with each of the different types of resolutions, and ensure 
     that they show up in the resolved tab, and are no longer in the unresolved
