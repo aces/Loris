@@ -1,8 +1,6 @@
-Please add some information beneath all of these headers. Then, **delete this sentence**.
-
 ### Brief summary of changes
 
-This Pull Request...
+
 
 ### This resolves issue...
 
