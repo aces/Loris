@@ -43,6 +43,8 @@ class UploadForm extends React.Component {
 
     const form = JSON.parse(JSON.stringify(this.state.form));
     const formData = Object.assign({}, this.state.formData);
+    const pscToCandID = this.props.pscToCandID;
+    const candToPSCID = this.props.candToPSCID;
 
     if (field === 'IsPhantom') {
       if (value === 'N') {
@@ -59,8 +61,13 @@ class UploadForm extends React.Component {
       }
     }
 
-    formData[field] = value;
+    if (field === 'candID' || field === 'pSCID') {
+      const otherName = field === 'candID' ? 'pSCID' : 'candID';
+      const otherMap = field === 'candID' ? candToPSCID : pscToCandID;
+      formData[otherName] = otherMap[value];
+    }
 
+    formData[field] = value;
     this.setState({
       form: form,
       formData: formData
@@ -70,16 +77,35 @@ class UploadForm extends React.Component {
   submitForm() {
     // Validate required fields
     const data = this.state.formData;
+    const fileName = data.mri_file.name;
+
     if (!data.mri_file || !data.IsPhantom) {
       return;
     }
 
-    if (data.IsPhantom === 'N' && (!data.candID || !data.pSCID || !data.visitLabel)) {
-      return;
+    if (data.IsPhantom === 'N') {
+      if (!data.candID || !data.pSCID || !data.visitLabel) {
+        return;
+      }
+      // Make sure file follows PSCID_CandID_VL[_*].zip|.tgz|.tar.gz format
+      const pcv = data.pSCID + '_' + data.candID + '_' + data.visitLabel;
+      const pcvu = pcv + '_';
+      const properName = new RegExp("^" + pcv + ".(zip|tgz|tar.gz)");
+      const properNameExt = new RegExp("^" + pcvu + ".*(.(zip|tgz|tar.gz))");
+      if (!fileName.match(properName) && !fileName.match(properNameExt)) {
+        swal({
+          title: "File improperly named!",
+          text: "File name must match " + pcv +
+          ' or begin with "' + pcvu +
+          '", and have the extension of .tgz, tar.gz or .zip',
+          type: "error",
+          confirmButtonText: "OK"
+        });
+        return;
+      }
     }
 
     // Checks if a file with a given fileName has already been uploaded
-    const fileName = data.mri_file.name;
     const mriFile = this.props.mriList.find(
       mriFile => mriFile.fileName.indexOf(fileName) > -1
     );

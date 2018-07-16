@@ -43,6 +43,9 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      */
     var $uploaded_file_path;
 
+    var $IDs = array();
+
+
     /**
      * The _has_access returns true
      * if the user has the specific permission
@@ -112,17 +115,29 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      */
     function setup()
     {
+
         parent::setup();
-        $phantomOtions = [
-                          'N' => 'No',
-                          'Y' => 'Yes',
-                         ];
-        $visitlabels   = \Utility::getExistingVisitLabels();
+        $phantomOptions = [
+                           'N' => 'No',
+                           'Y' => 'Yes',
+                          ];
+        $visitlabels    = \Utility::getExistingVisitLabels();
+
+        $this->IDs = $this->getCandidateIDs();
+        $pscids    = array();
+        $candids   = array();
+        foreach ($this->IDs as $ID) {
+            $p = $ID['PSCID'];
+            $c = $ID['CandID'];
+
+            $pscids[$p]  = $p;
+            $candids[$c] = $c;
+        }
 
         // Fields used for selection filter and upload form
-        $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOtions);
-        $this->addBasicText('candID', 'CandID');
-        $this->addBasicText('pSCID', 'PSCID');
+        $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOptions);
+        $this->addSelect('pSCID', 'PSCID', $pscids);
+        $this->addSelect('candID', 'CandID', $candids);
         $this->addSelect('visitLabel', 'Visit Label', $visitlabels);
         $this->addFile('mri_file', 'File to Upload');
 
@@ -666,13 +681,47 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      */
     function toJSON()
     {
+        $pscToCandID = array();
+        $candToPSCID = array();
+
+        foreach ($this->IDs as $ID) {
+            $p = $ID['PSCID'];
+            $c = $ID['CandID'];
+
+            $pscToCandID[$p] = $c;
+            $candToPSCID[$c] = $p;
+        }
+
         $result            = $this->toArray();
         $result['form']    = $this->form->form;
         $result['mriList'] = $this->_getFileList($result['Data']);
+        $result['candToPSCID'] = $candToPSCID;
+        $result['pscToCandID'] = $pscToCandID;
 
         $result['maxUploadSize'] = \Utility::getMaxUploadSize();
 
         return json_encode($result);
+    }
+
+    /**
+     * Returns candidate PSCID / CandID array
+     *
+     * @return array $IDs database return of candidate IDs
+     */
+    function getCandidateIDs()
+    {
+        $db   = \Database::singleton();
+        $user = \User::singleton();
+        $IDs  = $db->pselect(
+            "SELECT PSCID, CandID ".
+            "FROM candidate ".
+            "WHERE FIND_IN_SET(CenterID, :cids) ".
+            "AND Entity_type='Human' " .
+            "ORDER BY PSCID",
+            array('cids' => implode(',', $user->getCenterIDs()))
+        );
+
+        return $IDs;
     }
 }
 ?>
