@@ -1,3 +1,21 @@
-This pull request `[DESCRIBE WHAT THIS PULL REQUEST IS TRYING TO ACCOMPLISH HERE]`. It `[DESCRIBE HOW IT ACCOMPLISHES THE GOAL HERE]`.
+Please add some information beneath all of these headers. Then, **delete this sentence**.
 
-See also: `[PROVIDE REFERENCES TO OTHER TICKETS, PULL REQUESTS, OR MAILING LIST THREADS HERE. OPTIONAL.]`
+### Brief summary of changes
+
+This Pull Request...
+
+### This resolves issue...
+
+- [] Redmine? #
+
+- [] Github? #
+
+### This PR improves LORIS by...
+
+
+
+### To test this change...
+
+- [] 
+
+# If this sentence shows up it means I didn't read the instructions!
