@@ -8,7 +8,7 @@ MRI Violations Module Test Plan:
     [Manual Testing]
 3.  Filter for scans that violate MRI Protocol violation (For each type of 
     Problem : 'Could not identify scan type', 'Visit Label does not exist',  
-    'Protocol Violation', 'CandID and PSCID doe not match' and 'CandID 
+    'Protocol Violation', 'CandID and PSCID do not match' and 'CandID 
     does not exist').
     Ensure that the link under the 'Problem' column bring you to:
      - the 'MRI Protocol Check Violations' page listing all violations when 
