@@ -457,6 +457,9 @@ a.btn.btn-primary {
 /* Loader customizations */
 
 .loader {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
     margin: auto;
     border: 8px solid #FFFFFF; /* White */
     border-top: 8px solid #3498db; /* Blue */
