@@ -1,4 +1,4 @@
-#Instrument List Test Plan
+# Instrument List Test Plan
 
 1. Verify that in order to access the module, the user must either have the `Across all sites access candidate profiles` permission, or be at the same site as the visit, or at the same site as one of the candidate's other visits.
 2. Verify that in order to update the current `Stage` status, the user requires `Data entry` permissions, and must be at the proper site. Exception: if the current `Stage` status is `Approval`, then only the `Behavioural QC` permission is necessary to update the `Stage` status.
