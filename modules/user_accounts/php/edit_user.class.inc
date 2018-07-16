@@ -295,7 +295,6 @@ class Edit_User extends \NDB_Form
                 && !empty($ex_curr_sites)
                 && empty($examinerID)
             ) {
-                print_r("radio, pending, curr site not empty + examiner empty");
                 $ex_radiologist = $ex_radiologist === 'Y' ? 1 : 0;
                 $values = \Utility::nullifyEmpty($values, 'examiner_radiologist');
                 $DB->insert(
@@ -321,8 +320,6 @@ class Edit_User extends \NDB_Form
                           && empty($ex_curr_sites)
                          ))
             ) {
-                print_r('other situation');
-                print_r($ex_radiologist);
                 $ex_radiologist = $ex_radiologist === 'Y' ? 1 : 0;
                 $values = \Utility::nullifyEmpty($values, 'examiner_radiologist');
                 $DB->update(
