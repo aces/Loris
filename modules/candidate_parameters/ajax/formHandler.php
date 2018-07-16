@@ -155,19 +155,19 @@ function editProbandInfoFields($db, $user)
                 $ptid = substr($field, 4);
 
                 $updateValues = [
-                    'ParameterTypeID' => $ptid,
-                    'CandID'          => $candID,
-                    'Value'           => $_POST[$field],
-                    'InsertTime'      => time(),
-                ];
+                                 'ParameterTypeID' => $ptid,
+                                 'CandID'          => $candID,
+                                 'Value'           => $_POST[$field],
+                                 'InsertTime'      => time(),
+                                ];
 
                 $result = $db->pselectOne(
                     'SELECT * from parameter_candidate 
                     WHERE CandID=:cid 
                     AND ParameterTypeID=:ptid',
                     [
-                        'cid'  => $candID,
-                        'ptid' => $ptid,
+                     'cid'  => $candID,
+                     'ptid' => $ptid,
                     ]
                 );
 
@@ -178,8 +178,8 @@ function editProbandInfoFields($db, $user)
                         'parameter_candidate',
                         $updateValues,
                         [
-                            'CandID'          => $candID,
-                            'ParameterTypeID' => $ptid,
+                         'CandID'          => $candID,
+                         'ParameterTypeID' => $ptid,
                         ]
                     );
                 }
