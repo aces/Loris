@@ -139,6 +139,15 @@ class Candidate
                     $params[$row['Description']] = $row['Value'];
                 }
             }
+            // Sanitize values coming from the parameter_candidate table before
+            // injecting them into the HTML table.
+            $params = array_map(
+                function ($string) {
+                    return htmlentities($string, ENT_QUOTES, 'UTF-8');
+                }, 
+                $params
+            );
+
             $this->candidateInfo['DisplayParameters'] = $params;
         }
 
