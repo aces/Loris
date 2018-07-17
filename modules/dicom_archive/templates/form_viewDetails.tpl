@@ -3,7 +3,7 @@
   <tr>
     <th>Acquisition ID</th>
     <td>
-      <a href="{$baseurl}/mri_violations/?PatientName={$archive.PatientName}&filter=true" class="dicom_archive"
+      <a class="dicom_archive" style="cursor: pointer"
          data-patientname="{$archive.PatientName}">
          {$archive.DicomArchiveID}
       </a>
