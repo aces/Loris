@@ -263,11 +263,11 @@ function updateRequiredPackages($requirements) : bool
  * Returns a list of SQL patch files to apply based on LORIS version
  * differences.
  *
- * @param string $loris_root   The directory where LORIS is installed
- * @param string $version_from Pre-update LORIS version
- * @param string $version_to   Post-update LORIS version
+ * @param string $loris_root   The directory where LORIS is installed.
+ * @param string $version_from Pre-update LORIS version.
+ * @param string $version_to   Post-update LORIS version.
  *
- * @return array Patch files to be applied
+ * @return array Patch files to be applied. Empty if up-to-date.
  */
 function getPatchesFromVersion($loris_root, $version_from, $version_to) : array
 {
@@ -282,16 +282,32 @@ function getPatchesFromVersion($loris_root, $version_from, $version_to) : array
     // Calculate difference between old version and latest
     $diff_major = $to_versions[MAJOR] - $from_versions[MAJOR];
     $diff_minor = $to_versions[MINOR] - $from_versions[MINOR];
+    // Display output based on version differences. Actual patching occurs 
+    // below.
     if ($diff_major < 0) {
-        echo '[!] Your version of LORIS is ahead of the latest release. If you'
-        . ' are not a developer working on the bleeding edge of LORIS, then '
+        echo '[!] Your version of LORIS is ahead of the latest release. If you '
+        . 'are not a developer working on the bleeding edge of LORIS, then '
         . 'something has gone very wrong. No SQL patches will be displayed.'
         . PHP_EOL;
         return array();
+    } else if ($diff_major === 0) {
+        // Check for difference in minor releases.
+        if ($diff_minor > 0) {
+            echo "[**] Latest version $version_to is ahead of installed "
+                . "$version_from by $diff_minor MINOR release(s)."
+                . PHP_EOL;
+        } else {
+            // If major and minor differences are 0, then LORIS is up-to-date.
+            echo "[**] $version_to = $version_from. Patches will not be "
+                . "applied."
+                . PHP_EOL;
+            return array(); 
+        }
+    } else {
+        echo "[**] Latest version $version_to is ahead of installed "
+            . "$version_from by $diff_major MAJOR release(s)"
+            . PHP_EOL;
     }
-    echo "[**] Latest version $version_to is ahead of installed $version_from "
-        . "by $diff_major MAJOR release(s), $diff_minor MINOR release(s)."
-        . PHP_EOL;
 
     // For every major version released between the version that is installed
     // and the latest version, add the relevant patches if they begin with
