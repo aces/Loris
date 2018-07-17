@@ -326,11 +326,11 @@ class Edit_User extends \NDB_Form
                 $DB->update(
                     'examiners',
                     array(
-                        'radiologist' => $ex_radiologist,
-                        'userID' => $uid,
+                     'radiologist' => $ex_radiologist,
+                     'userID' => $uid,
                     ),
                     array(
-                        "full_name" => $values['Real_name'],
+                     "full_name" => $values['Real_name'],
                     )
                 );
                 $examinerID = $examinerID[0]['examinerID'];
@@ -342,7 +342,7 @@ class Edit_User extends \NDB_Form
                             WHERE examinerID=:eid",
                     array("eid" => $examinerID)
                 );
-                
+
                 //get sites where user is already an examiner at for compare
                 foreach ($prev_sites as $row => $center) {
                     array_push($ex_prev_sites, $center['centerID']);
