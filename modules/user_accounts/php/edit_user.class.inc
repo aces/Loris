@@ -327,7 +327,7 @@ class Edit_User extends \NDB_Form
                     'examiners',
                     array(
                      'radiologist' => $ex_radiologist,
-                     'userID' => $uid,
+                     'userID'      => $uid,
                     ),
                     array(
                      "full_name" => $values['Real_name'],
