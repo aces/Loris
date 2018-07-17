@@ -58,7 +58,8 @@ $required_minor_php = 2;
 // PHP version required for LORIS.
 $php_version = "$required_major_php.$required_minor_php";
 if (PHP_MAJOR_VERSION < $required_major_php
-    || PHP_MINOR_VERSION < $required_minor_php) {
+    || PHP_MINOR_VERSION < $required_minor_php
+) {
     die("[-] ERROR: {$argv[0]} and LORIS require PHP v$php_version or higher.");
 }
 
@@ -282,7 +283,7 @@ function getPatchesFromVersion($loris_root, $version_from, $version_to) : array
     // Calculate difference between old version and latest
     $diff_major = $to_versions[MAJOR] - $from_versions[MAJOR];
     $diff_minor = $to_versions[MINOR] - $from_versions[MINOR];
-    // Display output based on version differences. Actual patching occurs 
+    // Display output based on version differences. Actual patching occurs
     // below.
     if ($diff_major < 0) {
         echo '[!] Your version of LORIS is ahead of the latest release. If you '
@@ -301,7 +302,7 @@ function getPatchesFromVersion($loris_root, $version_from, $version_to) : array
             echo "[**] $version_to = $version_from. Patches will not be "
                 . "applied."
                 . PHP_EOL;
-            return array(); 
+            return array();
         }
     } else {
         echo "[**] Latest version $version_to is ahead of installed "
@@ -346,7 +347,7 @@ function getPatchesFromVersion($loris_root, $version_from, $version_to) : array
             . PHP_EOL;
 
         // TODO: Uncomment below and test after LORIS 20.0-release.  After this
-        // release we will enforece a standard where new patches go into a 
+        // release we will enforece a standard where new patches go into a
         // directory called New_patches instead of Archive. Makes sense, right?
         // Add all patches in New_patches/. Everything other needed
         // command will be in the Release patches which are been added above
@@ -523,7 +524,7 @@ function getVersionFromLORISRoot($loris_root_dir) : string
     // Backup source code to e.g. /tmp/bkp-LORIS_v19.x-dev_16-May-2018
     $version_filepath = $loris_root_dir . 'VERSION';
     if (!file_exists($version_filepath)) {
-        echo "[-] ERROR: Could not find VERSION file in $loris_root_dir." 
+        echo "[-] ERROR: Could not find VERSION file in $loris_root_dir."
             . PHP_EOL;
         return '?';
     }
