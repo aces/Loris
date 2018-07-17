@@ -371,7 +371,6 @@ function applyPatches($patches, $db_config, $apply_patches = false) : bool
     // Iterate over all patches and source them into MySQL
     $A = $db_config['database'];
     $u = $db_config['username'];
-    $p = $db_config['password'];
     $h = $db_config['host'];
     if ($apply_patches === false) {
         echo '[-] NOTE: Running in Report-Only mode. Patching commands will be '
