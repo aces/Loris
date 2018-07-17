@@ -49,7 +49,7 @@ var ProbandInfo = React.createClass(
       );
     },
     setFormData: function(formElement, value) {
-      var formData =  JSON.parse(JSON.stringify(this.state.formData));
+      var formData = JSON.parse(JSON.stringify(this.state.formData));
       formData[formElement] = value;
       this.setState(
         {
@@ -99,69 +99,68 @@ var ProbandInfo = React.createClass(
       if (this.state.formData.ProbandDoB !== null) {
         dob2Required = true;
       }
+      var extraParameterFields = [];
+      var extraParameters = this.state.Data.extra_parameters;
+      for (var key2 in extraParameters) {
+        if (extraParameters.hasOwnProperty(key2)) {
+          var paramTypeID = extraParameters[key2].ParameterTypeID;
+          var name = paramTypeID;
+          var value = this.state.formData[paramTypeID];
 
-        var extraParameterFields = [];
-        var extraParameters = this.state.Data.extra_parameters;
-        for (var key2 in extraParameters) {
-            if (extraParameters.hasOwnProperty(key2)) {
-                var paramTypeID = extraParameters[key2].ParameterTypeID;
-                var name = paramTypeID;
-                var value = this.state.formData[paramTypeID];
-
-                switch (extraParameters[key2].Type.substring(0, 3)) {
-                    case "enu":
-                        var types = extraParameters[key2].Type.substring(5);
-                        types = types.slice(0, -1);
-                        types = types.replace(/'/g, '');
-                        types = types.split(',');
-                        var selectOptions = {};
-                        for (var key3 in types) {
-                            if (types.hasOwnProperty(key3)) {
-                                selectOptions[types[key3]] = types[key3];
-                            }
-                        }
-
-                        extraParameterFields.push(
-                            <SelectElement
-                                label={extraParameters[key2].Description}
-                                name={name}
-                                options={selectOptions}
-                                value={value}
-                                onUserInput={this.setFormData}
-                                ref={name}
-                                disabled={disabled}
-                                key={key2}
-                            />
-                        );
-                        break;
-                    case "dat":
-                        extraParameterFields.push(
-                            <DateElement
-                                label={extraParameters[key2].Description}
-                                name={name}
-                                value={value}
-                                onUserInput={this.setFormData}
-                                ref={name}
-                                disabled={disabled}
-                                key={key2}
-                            />
-                        );
-                        break;
-                    default:
-                        extraParameterFields.push(
-                            <TextareaElement
-                                label={extraParameters[key2].Description}
-                                name={name}
-                                value={value}
-                                onUserInput={this.setFormData}
-                                ref={name}
-                                disabled={disabled}
-                                key={key2}
-                            />
-                        );
+          switch (extraParameters[key2].Type.substring(0, 3)) {
+            case "enu":
+              var types = extraParameters[key2].Type.substring(5);
+              types = types.slice(0, -1);
+              types = types.replace(/'/g, '');
+              types = types.split(',');
+              var selectOptions = {};
+              for (var key3 in types) {
+                if (types.hasOwnProperty(key3)) {
+                  selectOptions[types[key3]] = types[key3];
                 }
-            }
+              }
+
+              extraParameterFields.push(
+                <SelectElement
+                    label={extraParameters[key2].Description}
+                    name={name}
+                    options={selectOptions}
+                    value={value}
+                    onUserInput={this.setFormData}
+                    ref={name}
+                    disabled={disabled}
+                    key={key2}
+                />
+            );
+              break;
+            case "dat":
+              extraParameterFields.push(
+                <DateElement
+                    label={extraParameters[key2].Description}
+                    name={name}
+                    value={value}
+                    onUserInput={this.setFormData}
+                    ref={name}
+                    disabled={disabled}
+                    key={key2}
+                />
+            );
+              break;
+            default:
+              extraParameterFields.push(
+                <TextareaElement
+                    label={extraParameters[key2].Description}
+                    name={name}
+                    value={value}
+                    onUserInput={this.setFormData}
+                    ref={name}
+                    disabled={disabled}
+                    key={key2}
+                />
+            );
+          }
         }
+      }
 
       var alertMessage = "";
       var alertClass = "alert text-center hide";
