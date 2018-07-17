@@ -59,7 +59,7 @@ $required_minor_php = 2;
 $php_version = "$required_major_php.$required_minor_php";
 if (PHP_MAJOR_VERSION < $required_major_php
     || PHP_MINOR_VERSION < $required_minor_php) {
-    die("ERROR: {$argv[0]} and LORIS require PHP v$php_version or higher.");
+    die("[-] ERROR: {$argv[0]} and LORIS require PHP v$php_version or higher.");
 }
 
 /* Create db connection and get version info. */
@@ -82,7 +82,7 @@ $release_version = substr($release_version, 1); // remove leading 'v'
 // Check that the backup directory argument is present and valid
 $backup_dir = $argv[1] ?? '';
 if (!is_dir($backup_dir)) {
-    echo 'ERROR: Argument suppled for backup directory is not a valid '
+    echo '[-] ERROR: Argument suppled for backup directory is not a valid '
         . 'directory.' . PHP_EOL;
     die(usageString());
 }
@@ -188,9 +188,8 @@ echo "[***] Done." . PHP_EOL;
  *
  * @param string $loris_root_dir The directory where LORIS is installed
  * @param string $backup_dir     The directory prefix where backups are stored.
- *                      Always '/tmp/loris_' for now
  *
- * @return bool True if rsync executes successfully, false otherwise
+ * @return bool True if rsync executes successfully, false otherwise.
  */
 function updateSourceCode($loris_root_dir, $backup_dir) : bool
 {
@@ -204,9 +203,9 @@ function updateSourceCode($loris_root_dir, $backup_dir) : bool
     // Get the release code from Github
     $tarball_path = downloadLatestRelease();
     if (empty($tarball_path)) {
-        die('ERROR: Could not download the latest LORIS release.');
+        die('[-] ERROR: Could not download the latest LORIS release.');
     }
-    $dst_dir = '/tmp/'; // Parent directory for backup and release download
+    $dst_dir = '/tmp/'; // Parent directory for source code download
     echo 'Extracting release files...' . PHP_EOL;
     $cmd = "unzip -o " . escapeshellarg($tarball_path) . ' -d '
         . escapeshellarg($dst_dir);
@@ -220,7 +219,7 @@ function updateSourceCode($loris_root_dir, $backup_dir) : bool
         }
     }
     if (empty($release_dir)) {
-        die("ERROR: Could not find downloaded files in $dst_dir" . PHP_EOL);
+        die("[-] ERROR: Could not find downloaded files in $dst_dir" . PHP_EOL);
     }
     // Use rsync to overwrite files in $loris_root
     echo '[*] Overwriting old source code files.'  . PHP_EOL;
@@ -330,25 +329,26 @@ function getPatchesFromVersion($loris_root, $version_from, $version_to) : array
         echo "[+] Developer instance detected. Including developer patches..."
             . PHP_EOL;
 
-        // Add all patches in Archive/$MAJOR.$MINOR. Everything other needed
+        // TODO: Uncomment below and test after LORIS 20.0-release.  After this
+        // release we will enforece a standard where new patches go into a 
+        // directory called New_patches instead of Archive. Makes sense, right?
+        // Add all patches in New_patches/. Everything other needed
         // command will be in the Release patches which are been added above
-        $dev_patch_dir = $loris_root . 'SQL/Archive/' . $to_versions[MAJOR]
-            . '.' . $to_versions[MINOR] . '/';
-        $patches       = array_merge($patches, glob($dev_patch_dir . '*.sql'));
+        //$dev_patch_dir = $loris_root . 'SQL/New_patches/' . $to_versions[MAJOR]
+        //    . '.' . $to_versions[MINOR] . '/';
+        //$patches       = array_merge($patches, glob($dev_patch_dir . '*.sql'));
     }
     return $patches;
 }
 
 /**
- * Apply a list of SQL patch files using exec.  Currently this function is only
- * called with $report_only = true so patches are never applied. This can be
- * changed in the future if this functionality is required.
+ * Apply a list of SQL patch files using exec.
  *
  * @param array      $patches       Patch files to be applied
  * @param dictionary $db_config     DB config info. Needed for credentials
  * @param bool       $apply_patches If true, MySQL commands will be run
  *
- * @return bool Always true (for now). False if patches fail to be applied.
+ * @return bool Whether patches should be automaticaly applied.
  */
 function applyPatches($patches, $db_config, $apply_patches = false) : bool
 {
@@ -508,7 +508,8 @@ function getVersionFromLORISRoot($loris_root_dir) : string
     // Backup source code to e.g. /tmp/bkp-LORIS_v19.x-dev_16-May-2018
     $version_filepath = $loris_root_dir . 'VERSION';
     if (!file_exists($version_filepath)) {
-        echo "ERROR: Could not find VERSION file in $loris_root_dir." . PHP_EOL;
+        echo "[-] ERROR: Could not find VERSION file in $loris_root_dir." 
+            . PHP_EOL;
         return '?';
     }
     return trim(file_get_contents($version_filepath));
