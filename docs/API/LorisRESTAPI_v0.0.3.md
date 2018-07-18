@@ -736,3 +736,78 @@ The JSON object is of the form:
     "Value" : string
 }
 ```
+
+# 5.0 DICOM Data
+
+Like the imaging data, the DICOM data mostly lives in the `/candidates/$CandID/$Visit` 
+portion of the REST API namespace, but is defined in a separate section of this 
+document for clarity purposes.
+
+## 5.1 Candidate DICOMs
+```
+GET /candidates/$CandID/$Visit/dicoms
+```
+
+A GET request to `/candidates/$CandID/$Visit/dicoms` will return a JSON object of
+all the raw DICOM data which have been acquired for that visit. It will return an 
+object of the form:
+
+```js
+{
+    "Meta" : {
+        "CandID" : $CandID,
+        "Visit" : $VisitLabel,
+    },
+    "DicomTars" : 
+        [{
+        "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-abc123.tar",
+        "SeriesInfo" :
+            [{
+            "SeriesDescription" : "MPRAGE_ipat2",
+            "SeriesNumber" : "2",
+            "EchoTime" : "2.98",
+            "RepetitionTime" : "2300",
+            "InversionTime" : "900",
+            "SliceThickness" : "1",
+            "Modality" : "MR",
+            "SeriesUID" : "1.2.3.4.1107",
+            },
+            {
+            "SeriesDescription" : "BOLD Resting State",
+            "SeriesNumber" : "5",
+            "EchoTime" : "30",
+            "RepetitionTime" : "2100",
+            "InversionTime" : NULL,
+            "SliceThickness" : "3.5",
+            "Modality" : "MR",
+            "SeriesUID" : "3.4.5.6.1507",
+            }],
+        "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-def456.tar",
+        "SeriesInfo" :
+            [{
+            "SeriesDescription" : "MPRAGE_ipat2",
+            "SeriesNumber" : "2",
+            "EchoTime" : "2.98",
+            "RepetitionTime" : "2300",
+            "InversionTime" : "900",
+            "SliceThickness" : "1",
+            "Modality" : "MR",
+            "SeriesUID" : "1.7.8.9.1296",
+            }],
+    }],    
+}
+```
+
+The `Modality` header in the SeriesInfo is either `MR` or `PT` for MRI or PET 
+scans, respectively.
+
+## 5.2 Tar Level Data
+```
+GET /candidates/$CandID/$VisitLabel/dicoms/$Tarname
+```
+
+Returns/Downloads a `tar` file which contains a `.meta` and a `.log` text 
+files, and a `.tar.gz` of the raw DICOM data as acquired during the candidate
+scanning session, and as retrieved from `/candidates/$CandID/$Visit/dicoms`.
+
+Only `GET` is currently supported.
