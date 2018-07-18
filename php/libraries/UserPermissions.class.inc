@@ -114,16 +114,15 @@ class UserPermissions
      */
     function hasPermission($code)
     {
+        if (isset($this->permissions['superuser'])
+            && $this->permissions['superuser'] == true
+        ) {
+            return true;
+        }
         if (!isset($this->permissions[$code])) {
             throw new ConfigurationException("Invalid permission code $code");
         }
         if ($this->permissions[$code] === true) {
-            return true;
-        }
-
-        if (isset($this->permissions['superuser'])
-            && $this->permissions['superuser'] == true
-        ) {
             return true;
         }
         return false;
