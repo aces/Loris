@@ -347,8 +347,8 @@ class SelectElement extends React.Component {
     }
 
     // Add error message
-    if (this.props.hasError || (this.props.required && this.props.value === "")) {
-      errorMessage = <span>{this.props.errorMessage}</span>;
+    if (this.props.errorMessage || (this.props.required && this.props.value === "")) {
+      errorMessage = <span>{this.props.errorMessage || 'The field is required!'}</span>;
       elementClass = 'row form-group has-error';
     }
 
@@ -400,7 +400,6 @@ SelectElement.propTypes = {
   disabled: React.PropTypes.bool,
   required: React.PropTypes.bool,
   emptyOption: React.PropTypes.bool,
-  hasError: React.PropTypes.bool,
   errorMessage: React.PropTypes.string,
   onUserInput: React.PropTypes.func
 };
@@ -416,8 +415,7 @@ SelectElement.defaultProps = {
   disabled: false,
   required: false,
   emptyOption: true,
-  hasError: false,
-  errorMessage: 'The field is required!',
+  errorMessage: '',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
   }
