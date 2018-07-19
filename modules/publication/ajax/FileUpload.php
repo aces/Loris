@@ -120,7 +120,7 @@ function uploadPublication()
         showError($e->getMessage());
     }
 
-    notifySubmission($pubID);
+    notify($pubID, 'submission');
 }
 
 /**
@@ -409,14 +409,26 @@ function cleanup($pubID)
 /**
  * Send out email notifications for project submission
  *
- * @param int $pubID publication ID
+ * @param int    $pubID publication ID
+ * @param string $type  The notification type i.e., submission|edit|review
  *
  * @return null
  */
-function notifySubmission($pubID)
+function notify($pubID, $type)
 {
+    $acceptedTypes = array(
+                      'submission',
+                      'edit',
+                      'review',
+                     );
+
+    if (!in_array($type, $acceptedTypes)) {
+        throw new LorisException("Unexpected notification type: $type");
+    }
+
     $db        = \Database::singleton();
     $config    = \NDB_Config::singleton();
+    $user      = \User::singleton();
     $emailData = array();
 
     $data = $db->pselectRow(
@@ -431,6 +443,7 @@ function notifySubmission($pubID)
 
     $emailData['Title']       = $data['Title'];
     $emailData['Date']        = $data['DateProposed'];
+    $emailData['User']        = $user->getFullname();
     $emailData['URL']         = $url . '/publication/view_project/?id='.$pubID;
     $emailData['ProjectName'] = $config->getSetting('prefix');
 
@@ -449,105 +462,7 @@ function notifySubmission($pubID)
         $sendTo = implode(', ', $sendTo);
         Email::send(
             $sendTo,
-            'notifier_publication_submission.tpl',
-            $emailData
-        );
-    }
-}
-
-/**
- * Send out email notifications for project edits
- *
- * @param int $pubID publication ID
- *
- * @return null
- */
-function notifyEdit($pubID)
-{
-    $db        = \Database::singleton();
-    $config    = \NDB_Config::singleton();
-    $user      = \User::singleton();
-    $emailData = array();
-
-    $data = $db->pselectRow(
-        "SELECT Title, DateProposed, pc.Email as LeadInvestigatorEmail " .
-        "FROM publication p " .
-        "LEFT JOIN publication_collaborator pc ".
-        "ON p.LeadInvestigatorID=pc.PublicationCollaboratorID " .
-        "WHERE PublicationID=:pubID",
-        array('pubID' => $pubID)
-    );
-    $url  = $config->getSetting('url');
-
-    $emailData['Title']       = $data['Title'];
-    $emailData['User']        = $user->getFullname();
-    $emailData['URL']         = $url . '/publication/view_project/?id=' . $pubID;
-    $emailData['ProjectName'] = $config->getSetting('prefix');
-
-    $sendTo = $_REQUEST['notifyLead'] === 'true'
-        ? array($data['LeadInvestigatorEmail']) : [];
-    // get collaborators to notify
-    $collaborators = isset($_REQUEST['collaborators'])
-        ? json_decode($_REQUEST['collaborators'], true) : null;
-
-    foreach ($collaborators as $c) {
-        if ($c['notify']) {
-            $sendTo[] = $c['email'];
-        }
-    }
-    if (!empty($sendTo)) {
-        $sendTo = implode(', ', $sendTo);
-        Email::send(
-            $sendTo,
-            'notifier_publication_edit.tpl',
-            $emailData
-        );
-    }
-}
-
-/**
- * Send out email notifications for project review
- *
- * @param int $pubID publication ID
- *
- * @return null
- */
-function notifyReview($pubID)
-{
-    $db        = \Database::singleton();
-    $config    = \NDB_Config::singleton();
-    $emailData = array();
-
-    $data = $db->pselectRow(
-        "SELECT Title, DateProposed, pc.Email as LeadInvestigatorEmail " .
-        "FROM publication p " .
-        "LEFT JOIN publication_collaborator pc ".
-        "ON p.LeadInvestigatorID=pc.PublicationCollaboratorID " .
-        "WHERE PublicationID=:pubID",
-        array('pubID' => $pubID)
-    );
-    $url  = $config->getSetting('url');
-
-    $emailData['Title']       = $data['Title'];
-    $emailData['URL']         = $url . '/publication/view_project/?id=' . $pubID;
-    $emailData['ProjectName'] = $config->getSetting('prefix');
-
-    $sendTo = $_REQUEST['notifyLead'] === 'true'
-        ? array($data['LeadInvestigatorEmail']) : [];
-    // get collaborators to notify
-    $collaborators = isset($_REQUEST['collaborators'])
-        ? json_decode($_REQUEST['collaborators'], true) : null;
-
-    foreach ($collaborators as $c) {
-        if ($c['notify']) {
-            $sendTo[] = $c['email'];
-        }
-    }
-    if (!empty($sendTo)) {
-        $sendTo = implode(', ', $sendTo);
-        Email::send(
-            $sendTo,
-            'notifier_publication_review.tpl',
+            "notifier_publication_$type.tpl",
             $emailData
         );
     }
@@ -635,10 +550,10 @@ function editProject()
     processFiles($id);
     // if publication status is changed, send review email
     if (isset($toUpdate['PublicationStatusID'])) {
-        notifyReview($id);
+        notify($id, 'review');
     } else {
         // otherwise send edit email
-        notifyEdit($id);
+        notify($id, 'edit');
     }
     if (!empty($toUpdate)) {
         $db->update(
