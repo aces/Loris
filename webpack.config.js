@@ -18,6 +18,7 @@ const config = [{
     './modules/configuration/js/SubprojectRelations.js': './modules/configuration/jsx/SubprojectRelations.js',
     './modules/conflict_resolver/js/conflictResolverIndex.js': './modules/conflict_resolver/jsx/conflictResolverIndex.js',
     './modules/conflict_resolver/js/resolvedConflictsIndex.js': './modules/conflict_resolver/jsx/resolvedConflictsIndex.js',
+    './modules/battery_manager/js/batteryManagerIndex.js': './modules/battery_manager/jsx/batteryManagerIndex.js',
     './modules/bvl_feedback/js/react.behavioural_feedback_panel.js': './modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
     './modules/behavioural_qc/js/behavioural_qc_module.js': './modules/behavioural_qc/jsx/behavioural_qc_module.js',
     './modules/candidate_list/js/openProfileForm.js': './modules/candidate_list/jsx/openProfileForm.js',

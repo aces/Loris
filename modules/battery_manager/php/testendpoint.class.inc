@@ -1,0 +1,262 @@
+<?php
+/**
+ * This file contains the Test Endpoint.
+ *
+ * PHP Version 7
+ *
+ * @category Module
+ * @package  Battery_Manager
+ * @author   Henri Rabalais <henri.rabalais@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+namespace LORIS\battery_manager;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
+use \Psr\Http\Message\ResponseInterface;
+
+/**
+ * Main class for managing Test Instances
+ *
+ * Handles requests for retrieving and saving Test Instances.
+ * Allows users to add, activate, and deactivate entries in the test battery.
+ *
+ * PHP Version 7
+ *
+ * @category Module
+ * @package  Battery_Manager
+ * @author   Henri Rabalais <henri.rabalais@mcin.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+class TestEndpoint implements RequestHandlerInterface
+{
+
+    /**
+     * Returns true if user has access to this endpoint.
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
+    function _hasAccess(\User $user) : bool
+    {
+        return true;
+    }
+
+    /**
+     * This function passes the request to the handler. This is necessary since
+     * the Endpoint bypass the Module class.
+     *
+     * XXX: This function should be extracted to a parent class.
+     *
+     * @param ServerRequestInterface  $request The PSR7 request.
+     * @param RequestHandlerInterface $handler The request handler.
+     *
+     * @return ResponseInterface The outgoing PSR7 response.
+     */
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ) : ResponseInterface {
+        return $handler->handle($request);
+    }
+
+    /**
+     * This acts as an Ajax enpoint that handles all action requests from the
+     * Battery Manager Module.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR7 response
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $this->db   = \Database::singleton();
+        $this->user = $request->getAttribute('user');
+        $method     = $request->getMethod();
+
+        switch($method) {
+        case 'GET':
+            return $this->_getInstances();
+        case 'POST':
+            return $this->_postInstance($request);
+        case 'PATCH':
+            return $this->_patchInstance($request);
+        }
+    }
+
+    /**
+     * Gets the data source for battery manager tests.
+     *
+     * @return \LORIS\Data\Provisioner
+     */
+    private function _getDataProvisioner() : \LORIS\Data\Provisioner
+    {
+        $provisioner = new TestProvisioner();
+
+        if ($this->user->hasPermission('access_all_profiles') == false) {
+            $provisioner = $provisioner->filter(
+                new \LORIS\Data\Filters\UserSiteMatch()
+            );
+        }
+        return $provisioner;
+    }
+
+    /**
+     * Updates the status of the given test from Active to Deactive or
+     * viceversa.
+     *
+     * @param ServerRequestInterface $request Test to be saved
+     *
+     * @return ResponseInterface response
+     */
+    private function _patchInstance(ServerRequestInterface $request)
+    {
+        $testArray = json_decode($request->getBody()->getContents(), true);
+        $test      = new Test($testArray);
+
+        // validate instance;
+        $errors = $this->_validateInstance($test);
+        if (!empty($errors)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                implode(' ', $errors)
+            );
+        }
+
+        $testArray = $test->toSQL();
+        try {
+            $this->db->update(
+                'test_battery',
+                $testArray,
+                array('ID' => $testArray['ID'])
+            );
+            return new \LORIS\Http\Response\JSON\OK(
+                ['message'=>'Availability Updated Successfully']
+            );
+        } catch (\DatabaseException $e) {
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                'Could not update entry in the Test Battery'
+            );
+        }
+    }
+
+    /**
+     * Adds a new test to the test_battery in the database.
+     *
+     * @param ServerRequestInterface $request Test to be posted
+     *
+     * @return ResponseInterface response
+     */
+    private function _postInstance(ServerRequestInterface $request)
+    {
+        $testArray = json_decode($request->getBody()->getContents(), true);
+        $test      = new Test($testArray);
+
+        if (!$this->user->hasPermission('battery_manager_edit')) {
+            return new \LORIS\Http\Response\JSON\Forbidden('Edit Permission Denied');
+        }
+
+        // validate instance
+        $errors = $this->_validateInstance($test);
+        if (!empty($errors)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                implode(' ', $errors)
+            );
+        }
+
+        // check if instance is duplicate
+        if ($this->_isDuplicate($test)) {
+            return new \LORIS\Http\Response\JSON\Conflict(
+                'This Test already exists in the database'
+            );
+        }
+
+        $test->row['active'] = 'Y';
+        $testArray           = $test->toSQL();
+
+        try {
+            $this->db->insert('test_battery', $testArray);
+            return new \LORIS\Http\Response\JSON\OK(
+                ['message'=>'Test Submission Successful']
+            );
+        } catch (\DatabaseException $e) {
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                'Could not add entry to the Test Battery'
+            );
+        }
+    }
+
+    /**
+     * Checks if the entry is an exact duplicate of a previous entry.
+     *
+     * @param Test $test Test to be checked.
+     *
+     * @return bool
+     */
+    private function _isDuplicate(Test $test) : bool
+    {
+        // Build SQL query based on values entered by user
+        $query = "SELECT Test_name as testName,
+                         AgeMinDays as ageMinDays,
+                         AgeMaxDays as ageMaxDays,
+                         Stage as stage,
+                         SubprojectID as subproject,
+                         Visit_label as visitLabel,
+                         CenterID as centerId,
+                         firstVisit,
+                         instr_order as instrumentOrder
+                  FROM test_battery";
+        // Select duplicate entry from Test Battery
+        $entries = $this->db->pselect($query, array());
+
+        foreach ($entries as $entry) {
+            if ($test->row === $entry) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Converts the results of this menu filter to a JSON format.
+     *
+     * @return ResponseInterface The outgoing PSR7 with a string of json
+     *                           encoded tests as the body.
+     */
+    private function _getInstances() : ResponseInterface
+    {
+        $instances = (new \LORIS\Data\Table())
+            ->withDataFrom($this->_getDataProvisioner($this->user))
+            ->toArray($this->user);
+        return new \LORIS\Http\Response\JSON\OK($instances);
+    }
+
+    /**
+     * Validates the Test Instance and collects in errors in an array.
+     *
+     * @param Test $test The Test instance to be validated
+     *
+     * @return array $errors An array string errors.
+     */
+    private function _validateInstance(Test $test) : array
+    {
+        $errors = [];
+        if (!isset($test->row['testName'])) {
+            $errors[] = 'Test Name is a required field.';
+        }
+        if (!isset($test->row['ageMinDays'])) {
+            $errors[] = 'Minimum age is a required field.';
+        }
+        if (!isset($test->row['ageMaxDays'])) {
+            $errors[] = 'Maximum age is a required field.';
+        }
+        if (!isset($test->row['stage'])) {
+            $errors[] = 'Stage is a required field.';
+        }
+
+        return $errors;
+    }
+}
+

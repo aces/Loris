@@ -57,5 +57,7 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (55,'publication_approve','Publication - Approve or reject proposed publication projects',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (56,'data_release_view','Data Release: View releases',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (57,'candidate_dob_edit','Edit dates of birth',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (58,'battery_manager_view','View Battery Manager',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `categoryID`) VALUES (59,'battery_manager_edit','Add, activate, and deactivate entries in Test Battery',2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;

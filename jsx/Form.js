@@ -1225,7 +1225,7 @@ class NumericElement extends Component {
             id={this.props.id}
             min={this.props.min}
             max={this.props.max}
-            value={this.props.value}
+            value={this.props.value || ''}
             disabled={disabled}
             required={required}
             onChange={this.handleChange}
