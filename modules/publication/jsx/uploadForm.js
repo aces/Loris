@@ -148,7 +148,13 @@ class PublicationUploadForm extends React.Component {
       }.bind(this),
       error: function(jqXHR) {
         console.error(jqXHR);
-        swal("Something went wrong!", '', "error");
+        let resp = "";
+        try {
+          resp = JSON.parse(jqXHR.responseText).message;
+        } catch(e) {
+          console.error(e);
+        }
+        swal("Something went wrong!", resp, "error");
       }
     });
   }
