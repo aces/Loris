@@ -55,14 +55,18 @@ class Publication extends \NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        $user  = \User::singleton();
-        $query = " FROM publication p ".
+        $user   = \User::singleton();
+        $query  = " FROM publication p ".
             "LEFT JOIN publication_status ps ".
             "ON ps.PublicationStatusID=p.PublicationStatusID ".
             "LEFT JOIN publication_parameter_type_rel pptr ".
             "ON p.PublicationID=pptr.PublicationID ".
             "LEFT JOIN parameter_type pt ".
             "ON pt.ParameterTypeID=pptr.ParameterTypeID " .
+            "LEFT JOIN publication_test_names_rel ptnr ".
+            "ON p.PublicationID=ptnr.PublicationID ".
+            "LEFT JOIN test_names tn ".
+            "ON ptnr.TestNameID=tn.ID " .
             "LEFT JOIN publication_collaborator_rel pcr ".
             "ON pcr.PublicationID=p.PublicationID ".
             "LEFT JOIN publication_collaborator pc ".
@@ -75,7 +79,6 @@ class Publication extends \NDB_Menu_Filter_Form
             "ON pkr.PublicationKeywordID=pk.PublicationKeywordID ".
             "LEFT JOIN publication_users_edit_perm_rel puepr ".
             "ON puepr.PublicationID=p.PublicationID ";
-        ;
         $query .= " WHERE 1=1 ";
         // allow user access to module if they have edit
         // access to any project proposal
@@ -96,7 +99,8 @@ class Publication extends \NDB_Menu_Filter_Form
                           'ps.Label', // Status (Approved, Pending, Rejected, etc.)
                           'p.Description',
                           'GROUP_CONCAT(pc.Name)', // Collaborators
-                          'GROUP_CONCAT(pt.Name)', // Variables of Interest
+                          // vv Variables of Interest vv
+                          'GROUP_CONCAT(DISTINCT pt.Name, tn.Test_name)',
                           'GROUP_CONCAT(pk.Label)', // Keywords
                           'p.PublicationID',
                          );
@@ -180,7 +184,7 @@ class Publication extends \NDB_Menu_Filter_Form
             'Keywords'
         );
         $this->addBasicText(
-            'voi',
+            'variablesOfInterest',
             'Variables of Interest'
         );
 
