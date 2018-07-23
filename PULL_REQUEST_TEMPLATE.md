@@ -8,10 +8,6 @@
 
 - [] Github? #
 
-### This PR improves LORIS by...
-
-
-
 ### To test this change...
 
 - [] 
