@@ -28,17 +28,17 @@ There are three main permissions for the publication module:
 
 - `publication_view`: grants the user access to viewing the module and pending 
 or approved project proposals, as well as downloading publication media which may 
-be included in the proposals
+be included in the proposals.
 - `publication_propose`: grants the user access to proposing their research projects
-and uploading relevant publication media
+and uploading relevant publication media.
 - `publication_approve`: grants the user access to reviewing (accepting or rejecting)
 project proposals.
 
 ## Configurations
 
 - `publication_uploads`: This configuration determines the directory where file uploads
- get stored. By default, this directory will be `/data/publication_uploads/` but is not 
- automatically created.
+ get stored. By default, this directory will be `/data/publication_uploads/` but
+  it is not automatically created.
 
 ## Interactions with LORIS
 
