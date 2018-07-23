@@ -218,8 +218,8 @@ class Edit_User extends \NDB_Form
             );
         }
         // Keep old permissions if the editor is not allowed to edit them.
-        if (!is_null($newPermissions) &&
-            !is_null($editorPermissions)
+        if (!is_null($newPermissions)
+            && !is_null($editorPermissions)
         ) {
             foreach ($current_permissionids as $perm) {
                 if (!in_array($perm, $newPermissions)
