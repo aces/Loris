@@ -151,7 +151,7 @@ class PublicationUploadForm extends React.Component {
         let resp = "";
         try {
           resp = JSON.parse(jqXHR.responseText).message;
-        } catch(e) {
+        } catch (e) {
           console.error(e);
         }
         swal("Something went wrong!", resp, "error");

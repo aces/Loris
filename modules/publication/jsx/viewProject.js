@@ -69,7 +69,7 @@ class ViewProject extends React.Component {
         let resp = "Something went wrong!";
         try {
           resp = JSON.parse(jqXHR.responseText).message;
-        } catch(e) {
+        } catch (e) {
           console.error(e);
         }
         swal("Edit failed!", resp, "error");
