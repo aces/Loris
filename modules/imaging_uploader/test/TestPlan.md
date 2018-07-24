@@ -9,7 +9,8 @@
 4. Ensure that the Browse tab allows searching based on CandID, PSCID, and/or Visit Label. Ensure that the Visit Label 
    is a dropdown menu containing all the possible visit labels (taken from the Visit_label column in the session table 
    for any Active candidate), and ensure that the CandID and PSCID automatically filter the list of entries in Imaging 
-   Uploader table on the 'fly', as fields are being filled out. Ensure that 'Clear Filters' button works.  
+   Uploader table on the 'fly', as fields are being filled out. Make sure that this works no matter the page of the 
+   result table you are currently on. Ensure that 'Clear Filters' button works.  
    [Manual Testing]      
 5. Ensure that the 'Upload' tab has the CandID, PSCID, and Visit Label greyed out upon loading. These greyed out fields remain
    as such if the 'Phantom Scans' is set to Yes, and become fillable and required fields if 'Phantom Scans' is set to No.  
