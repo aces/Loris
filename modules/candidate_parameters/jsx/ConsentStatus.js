@@ -15,7 +15,7 @@ var ConsentStatus = React.createClass(
       };
     },
     componentDidMount: function() {
-        this.fetchData();
+      this.fetchData();
     },
     fetchData: function() {
       var that = this;
