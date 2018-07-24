@@ -116,7 +116,6 @@ function uploadPublication()
         insertKeywords($pubID);
         // INSERT INTO publication_parameter_type_rel
         insertVOIs($pubID);
-        // INSERT INTO publication_users_edit_perm_rel
     } catch (Exception $e) {
         cleanup($pubID);
         showError($e->getMessage(), $e->getCode());
@@ -331,6 +330,7 @@ function insertKeywords($pubID)
  */
 function insertVOIs($pubID)
 {
+
     if (empty($_REQUEST['voiFields'])) {
         return;
     }
@@ -393,7 +393,6 @@ function cleanup($pubID)
                'publication_test_names_rel',
                'publication_collaborator_rel',
                'publication_keyword_rel',
-               'publication',
               );
 
     foreach ($tables as $table) {
@@ -412,6 +411,7 @@ function cleanup($pubID)
         }
         $db->delete('publication_upload', $where);
     }
+    $db->delete('publication', $where);
 }
 
 /**
@@ -890,7 +890,7 @@ function showError($message, $code = 500)
     case 403:
         $resp = "403 Forbidden";
         break;
-    case 500:
+    default:
         $resp = '500 Internal Server Error';
         break;
     }

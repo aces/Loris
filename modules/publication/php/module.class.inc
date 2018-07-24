@@ -8,7 +8,7 @@
  * @category   Behavioural
  * @package    Main
  * @subpackage Behavioural
- * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @author     Loris Team <loris.mni@bic.mni.mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
@@ -19,7 +19,7 @@ namespace LORIS\publication;
  *
  * @category Behavioural
  * @package  Main
- * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
