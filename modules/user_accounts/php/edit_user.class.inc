@@ -211,7 +211,7 @@ class Edit_User extends \NDB_Form
         $permIDs           = array();
         // store the permission IDs
         if (!empty($values['permID'])) {
-            // An editor can only grant permissions that they have already been 
+            // An editor can only grant permissions that they have already been
             // granted.
             $permIDs = array_intersect(
                 $newPermissions,
