@@ -33,11 +33,15 @@ if (version_compare(phpversion(),'4.3.0','<'))
  * HELP SCREEN
  * display and stop processing if action=help
  */
-if (empty($argv[1]) || $argv[1] == 'help' || !in_array($argv[2], array('all','one')) || ($argv[2]=='one' && (empty($argv[3]) || empty($argv[4])))) {
+if (empty($argv[1]) || $argv[1] == 'help' ||
+    ($argv[2] && !in_array($argv[2], array('all','one'))) ||
+    ($argv[2]=='one' && (empty($argv[3]) || empty($argv[4])))
+    ) {
     fwrite(STDERR, "Usage: \n\n");
     fwrite(STDERR, "score_instrument.php help - displays this msg\n");
     fwrite(STDERR, "score_instrument.php <test_name> one <candID> <sessionID>\n");
     fwrite(STDERR, "score_instrument.php <test_name> all \n");
+    fwrite(STDERR, "score_instrument.php all \n");
     return;
 }
 
