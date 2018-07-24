@@ -32,14 +32,16 @@ function uploadPublication()
 {
     $db   = Database::singleton();
     $user = \User::singleton();
-    if (!$user->hasPermission('publication_propose')) {
-        header("HTTP/1.1 403 Forbidden");
+    if (!$user->hasPermission('publication_propose')
+        || !$user->hasPermission('publication_view')
+    ) {
+        showError("You do not have permission to propose a project", 403);
         exit;
     }
 
     $titleRaw = isset($_REQUEST['title']) ? $_REQUEST['title'] : null;
     if (!$titleRaw) {
-        showError('Title is empty');
+        showError('Title is empty', 400);
     }
     // title that gets inserted is run through htmlspecialchars()
     // so need to query based on Processed title
@@ -54,7 +56,7 @@ function uploadPublication()
     );
 
     if ($exists) {
-        showError('Submitted title already exists');
+        showError('Submitted title already exists', 400);
     }
     $desc            = isset($_REQUEST['description'])
         ? $_REQUEST['description'] : null;
@@ -86,7 +88,7 @@ function uploadPublication()
         $leadInvID = $db->getLastInsertId();
     }
     if (!isset($desc) || !isset($leadInvest) || !isset($leadInvestEmail)) {
-        showError('A mandatory field is missing!');
+        showError('A mandatory field is missing!', 400);
     }
     // INSERT INTO publication ...
     $uid   = $user->getId();
@@ -117,7 +119,7 @@ function uploadPublication()
         // INSERT INTO publication_users_edit_perm_rel
     } catch (Exception $e) {
         cleanup($pubID);
-        showError($e->getMessage());
+        showError($e->getMessage(), $e->getCode());
     }
 
     notify($pubID, 'submission');
@@ -141,29 +143,32 @@ function processFiles($pubID)
     $publicationPath = $config->getSetting('publication_uploads');
 
     if (!isset($publicationPath)) {
-        showError(
-            "Error! Publication path is not set in Loris Settings!"
+        throw new LorisException(
+            "Error! Publication path is not set in Loris Settings!",
+            500
         );
     }
 
     if (!file_exists($publicationPath)) {
-        showError(
-            "Error! The upload folder '$publicationPath' does not exist!'"
+        throw new LorisException(
+            "Error! The upload folder '$publicationPath' does not exist!",
+            500
         );
     }
 
     foreach ($_FILES as $name => $values) {
         $fileName = preg_replace('/\s/', '_', $values["name"]);
         if (file_exists($publicationPath . $fileName)) {
-            showError("File $fileName already exists!");
+            throw new LorisException("File $fileName already exists!", 400);
         }
         $extension = pathinfo($fileName)['extension'];
         $index     = preg_split('/_/', $name)[1];
 
         if (!isset($extension)) {
-            showError(
+            throw new LorisException(
                 "Please make sure your file has a valid extension: " .
-                $values['name']
+                $values['name'],
+                400
             );
         }
         $pubTypeID       = isset($_REQUEST['publicationType_'.$index]) ?
@@ -183,7 +188,10 @@ function processFiles($pubID)
         if (move_uploaded_file($values["tmp_name"], $publicationPath . $fileName)) {
             $db->insert('publication_upload', $pubUploadInsert);
         } else {
-            showError("Could not upload the file. Please try again!");
+            throw new LorisException(
+                "Could not upload the file. Please try again!",
+                500
+            );
         }
     }
 }
@@ -865,15 +873,28 @@ function editUploads($id)
  * Utility function to return errors from the server
  *
  * @param string $message error message to display
+ * @param int    $code    HTTP response code
  *
  * @return void
  */
-function showError($message)
+function showError($message, $code = 500)
 {
     if (!isset($message)) {
         $message = 'An unknown error occurred!';
     }
-    header('HTTP/1.1 500 Internal Server Error');
+    $resp = '';
+    switch ($code) {
+    case 400:
+        $resp = "400 Bad Request";
+        break;
+    case 403:
+        $resp = "403 Forbidden";
+        break;
+    case 500:
+        $resp = '500 Internal Server Error';
+        break;
+    }
+    header("HTTP/1.1 $resp");
     header('Content-Type: application/json; charset=UTF-8');
     die(json_encode(['message' => $message]));
 }
