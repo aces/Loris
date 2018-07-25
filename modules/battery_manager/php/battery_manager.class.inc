@@ -188,7 +188,7 @@ class Battery_Manager extends \NDB_Menu_Filter
 
         // Add Edit field if user has permissions
         if ($this->hasWritePermission) {
-            array_push($this->headers, 'Deactivate');
+            array_push($this->headers, 'Change Status');
         }
 
         return true;

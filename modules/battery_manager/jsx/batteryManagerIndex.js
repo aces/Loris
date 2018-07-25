@@ -27,6 +27,7 @@ class BatteryManagerIndex extends React.Component {
     this.resetFilters = this.resetFilters.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
     this.deactivateEntry = this.deactivateEntry.bind(this);
+    this.activateEntry = this.activateEntry.bind(this);
   }
 
   componentDidMount() {
@@ -149,19 +150,26 @@ class BatteryManagerIndex extends React.Component {
      // create array of classes to be added to td tag
     var classes = [];
     classes = classes.join(" ");
+    
+     // button styling for change status column
+    //const greenButton = { color: 'green' };
+    //const redbutton = { color: 'red' };
 
      // create deactivate button if entry is active
-    if (column === 'Deactivate') {
+    if (column === 'Change Status') {
+      let entryID = row['Change Status'];
+      var idObj = new FormData();
+      idObj.append("ID", entryID);
       if (row.Active === 'Y') {
-        let entryID = row.Deactivate;
-        var idObj = new FormData();
-        idObj.append("ID", entryID);
          // pass id of row to deactivate function
         return <td className={classes}><button onClick={() => {
           this.deactivateEntry(idObj);
         }}>Deactivate</button></td>;
+      } else if (row.Active === 'N') {
+        return <td className={classes}><button onClick={() => {
+          this.activateEntry(idObj);
+        }}>Activate</button></td>;
       }
-      return <td className={classes}></td>;
     }
 
     return <td className={classes}>{cell}</td>;
@@ -201,6 +209,41 @@ class BatteryManagerIndex extends React.Component {
                     });
     }.bind(this));
   }
+
+ /*
+  * Display popup so user can confirm activation of row
+  * Refresh page if entry in Test Battery is successfully activated
+  */
+  activateEntry(idObj) {
+    swal({
+      title: "Are you sure you want to activate this entry?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: "Cancel",
+      closeOnConfirm: false
+    }, function() {
+      $.ajax({
+        type: 'POST',
+        url: this.props.activate,
+        data: idObj,
+        cache: false,
+        contentType: false,
+        processData: false
+      })
+                    .done(function(data) {
+                      swal({
+                        title: "Activated!",
+                        type: "success"
+                      }, function() {
+                        location.reload();
+                      });
+                    })
+                    .error(function(data) {
+                      swal("Could not activate entry", "", "error");
+                    });
+    }.bind(this));
+  }
 }
 
 $(function() {
@@ -209,6 +252,7 @@ $(function() {
       <BatteryManagerIndex
         DataURL={`${loris.BaseURL}/battery_manager/?format=json`}
         deactivate={`${loris.BaseURL}/battery_manager/ajax/update_entry.php?action=deactivate`}
+        activate={`${loris.BaseURL}/battery_manager/ajax/update_entry.php?action=activate`}
       />
     </div>
   );
