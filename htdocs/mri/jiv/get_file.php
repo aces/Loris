@@ -66,7 +66,6 @@ if ($imagePath === '/' || $DownloadPath === '/'
 // Now get the file and do file validation.
 // Resolve the filename before doing anything.
 $File = Utility::resolvePath($_GET['file']);
-
 // Extra sanity checks, just in case something went wrong with path resolution.
 // File validation
 if (strpos($File, ".") === false) {
@@ -154,6 +153,7 @@ case 'DICOMTAR':
     $FullPath         = $tarchivePath . '/' . $File;
     $MimeType         = 'application/x-tar';
     $DownloadFilename = basename($File);
+    $saveAs = $_GET['saveAs'];
     break;
 default:
     $FullPath         = $DownloadPath . '/' . $File;
@@ -170,8 +170,14 @@ if (!file_exists($FullPath)) {
 
 header("Content-type: $MimeType");
 if (!empty($DownloadFilename)) {
+   
+   if ($FileExt === 'DICOMTAR' && !empty($saveAs)) {
+        header("Content-Disposition: attachment; filename=$saveAs");
+    
+    } else {
 
-    header("Content-Disposition: attachment; filename=$DownloadFilename");
+        header("Content-Disposition: attachment; filename=$DownloadFilename");
+    }
 }
 $fp = fopen($FullPath, 'r');
 fpassthru($fp);
