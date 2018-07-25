@@ -52,7 +52,7 @@ function checkForDuplicate()
         }
         $i++;
     }
- 
+
     // Select duplicate entry from Test Battery
     $entry = $db->pselectRow(
         $query,
