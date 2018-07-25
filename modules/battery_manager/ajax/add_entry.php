@@ -105,16 +105,27 @@ function addEntry()
 function getFormData()
 {
 
+     $instrument = isset($_POST['instrument']) ? $_POST['instrument'] : null;
+     $ageMinDays = isset($_POST['ageMinDays']) ? $_POST['ageMinDays'] : null;
+     $ageMaxDays = isset($_POST['ageMaxDays']) ? $_POST['ageMaxDays'] : null;
+     $stage      = isset($_POST['stage']) ? $_POST['stage'] : null;
+     $subproject = isset($_POST['subproject']) ? $_POST['subproject'] : null;
+     $visitLabel = isset($_POST['visitLabel']) ? $_POST['visitLabel'] : null;
+     $forSite    = isset($_POST['forSite']) ? $_POST['forSite'] : null;
+     $firstVisit = isset($_POST['firstVisit']) ? $_POST['firstVisit'] : null;
+     $order      = $_POST['instrumentOrder'];
+     $instrOrder = isset($_POST['instrumentOrder']) ? $order : null;
+
      $form_data = array(
-                   'Test_name'    => isset($_POST['instrument']) ? $_POST['instrument'] : null,
-                   'AgeMinDays'   => isset($_POST['ageMinDays']) ? $_POST['ageMinDays'] : null,
-                   'AgeMaxDays'   => isset($_POST['ageMaxDays']) ? $_POST['ageMaxDays'] : null,
-                   'Stage'        => isset($_POST['stage']) ? $_POST['stage'] : null,
-                   'SubprojectID' => isset($_POST['subproject']) ? $_POST['subproject'] : null,
-                   'Visit_label'  => isset($_POST['visitLabel']) ? $_POST['visitLabel'] : null,
-                   'CenterID'     => isset($_POST['forSite']) ? $_POST['forSite'] : null,
-                   'firstVisit'   => isset($_POST['firstVisit']) ? $_POST['firstVisit'] : null,
-                   'instr_order'  => isset($_POST['instrumentOrder']) ? $_POST['instrumentOrder'] : null,
+                   'Test_name'    => $instrument,
+                   'AgeMinDays'   => $ageMinDays,
+                   'AgeMaxDays'   => $ageMaxDays,
+                   'Stage'        => $stage,
+                   'SubprojectID' => $subproject,
+                   'Visit_label'  => $visitLabel,
+                   'CenterID'     => $forSite,
+                   'firstVisit'   => $firstVisit,
+                   'instr_order'  => $order,
                   );
 
      return $form_data;
