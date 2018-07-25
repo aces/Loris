@@ -58,7 +58,7 @@ class Instrument_List extends \NDB_Menu_Filter
         $user =& \User::singleton();
         if (isset($_REQUEST['sessionID'])) {
             //These variable are only for checking the permissions.
-            $TimePoint = & \TimePoint::singleton($_REQUEST['sessionID']);
+            $TimePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
             $candID    = $TimePoint->getCandID();
             $Candidate =& \Candidate::singleton($candID);
             return ($user->hasPermission('access_all_profiles')
@@ -75,7 +75,7 @@ class Instrument_List extends \NDB_Menu_Filter
             );
         }
         // check user permissions
-        return ($user->hasPermission('access_all_profiles'));
+        return false;
     }
 
     /**
