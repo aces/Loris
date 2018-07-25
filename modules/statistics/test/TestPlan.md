@@ -6,13 +6,13 @@
 
 ### Demographic Statistics
 1. Click on the Demographic Statistics tab. For the general statistics table, compare the data in the table to that in the database to ensure that it is being queried correctly.
-2. Check the general statistics filters. Try filtering by both site and project separately. Check that the filters only apply to the general statistics table.
+2. Check the general statistics filters. Try filtering by both site and project separately. Check that the site filter only applies to the general statistics table and that the project filter applies to both tables.
 3. In the breakdown table, try filtering by each of the different instruments. Does each filter appear to be working? Check that it only applies to the breakdown table.
 4. For the sex breakdown, compare the data in the table to that in the database to ensure that it is being queried correctly.
 5. For the sex breakdown, check to see if the % Male is being calculated properly by looking at the data that's in the table.
 
 ### Behavioural Statistics
-1. Click on the Behavioural Statistics tab. Try using the project filter Data Entry Statistics table. Does it work? Does it change what appears in the top table only (perhaps it should be made clearer that it only applies to the top table)?
+1. Click on the Behavioural Statistics tab. Try using the project filter Data Entry Statistics table. Does it work? Does it change what appears in both the top table and bottom table?
 2. For both tables, check that the % Completion makes sense in relation to the values in the table.
 3. For both tables, check that the data in the table matches what is stored in the database.
 4. Check that the `View Details` links work in the Data Entry Statistics table.
@@ -25,7 +25,7 @@
 11. On the incomplete double data entry page, check that the candidate links take you to the appropriate data entry page for that candidate
 12. Returning to the behavioral statistics tab, check that the "Click here for breakdown per participant for" link below the Double Data Entry Statistics table works.
 13. Verify that this link takes you to page with double data entry statistics for all sites
-14. Returning to the behavioural statistics page, verify that if you do not have the access_all_profiles permission you should not be able to click through to forms for candidates from other sites.
+14. Returning to the behavioural statistics page, verify that if you do not have the `access_all_profiles` permission you should not be able to click through to forms for candidates from other sites.
 15. Check the the breadcrumbs from Completion stats page back to BVL stats tab within Statistics appear and allow you to use the `Back` button to previous pages (future feature).
 
 ### Imaging Statistics
