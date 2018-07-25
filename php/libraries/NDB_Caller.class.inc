@@ -251,7 +251,6 @@ class NDB_Caller
             $phpfile   = $base . "project/instruments/"
                                . "NDB_BVL_Instrument_$test_name.class.inc";
             $linstfile = $base."project/instruments/$test_name.linst";
-
             if ($this->existsAndRequire($phpfile)
                 || $test_name=='instrument_preview'
             ) {
@@ -542,6 +541,14 @@ class NDB_Caller
         );
 
         $this->instrument = $instrument;
+        $success = $instrument->save();
+        if ($redirectToOnSuccess !== null && $success !== false) {
+            header("Location: $redirectToOnSuccess");
+            return "";
+        }
+        // create an instrument status object
+        $status  = new NDB_BVL_InstrumentStatus;
+        $success = $status->select($commentID);
 
         $this->page = $instrument;
         $html       = $instrument->display();
