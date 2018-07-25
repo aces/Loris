@@ -204,29 +204,29 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         );
         // Enter something that does not even make sense in the PSCID field
         // Verify that no candidates are returned
-//        $this->_assertSearchBy(
-//            array('PSCID' => 'PSCID that does not exist'),
-//            null
-//        );
+        $this->_assertSearchBy(
+            array('PSCID' => 'PSCID that does not exist'),
+            null
+        );
         // Search using a PSCID that does not exist
         // Verify that no candidates are returned
-//        $this->_assertSearchBy(
-//            array('PSCID' => 'TST0003'),
-//            null
-//        );
+        $this->_assertSearchBy(
+            array('PSCID' => 'TST0003'),
+            null
+        );
         // Search for candidate with PSCID tst0001
         // Verify that candidate TST0001 is returned (checks that searches
         // are case-insensitive)
-//        $this->_assertSearchBy(
-//            array('PSCID' => 'tst0001'),
-//            'TST0001'
-//        );
+        $this->_assertSearchBy(
+            array('PSCID' => 'tst0001'),
+            'TST0001'
+        );
         // Search for PSCID that contains string t0
         // Verify that candidate TST0001 is returned
-//        $this->_assertSearchBy(
-//            array('PSCID' => 't0'),
-//            'TST0001'
-//        );
+        $this->_assertSearchBy(
+            array('PSCID' => 't0'),
+            'TST0001'
+        );
     }
     /**
      * Performs various searches by DCCID (and DCCID only).
@@ -244,22 +244,22 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         );
         // Search using a valid DCCID that does not exist
         // Verify that no candidates are returned
-//        $this->_assertSearchBy(
-//            array('DCCID' => '666666'),
-//            null
-//        );
+        $this->_assertSearchBy(
+            array('DCCID' => '666666'),
+            null
+        );
         // Search using a valid DCCID substring that does not exist
         // Verify that no candidates are returned
-//        $this->_assertSearchBy(
-//            array('DCCID' => '800'),
-//            null
-//        );
+        $this->_assertSearchBy(
+            array('DCCID' => '800'),
+            null
+        );
         // Search for candidate with a DCCID substring that exists
         // Verify that candidate TST0001 is returned
-//        $this->_assertSearchBy(
-//            array('DCCID' => '300001'),
-//            '300001'
-//        );
+        $this->_assertSearchBy(
+            array('DCCID' => '300001'),
+            '300001'
+        );
     }
     /**
      * Performs a candidate search using the specified criteria and verifies

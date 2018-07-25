@@ -115,10 +115,10 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     function testFilterWithData()
     {
         $this->_testFilter("full_name", self::$testData['full_name']);
-//        $this->_testFilter("citation_name", self::$testData['citation_name']);
-//        $this->_testFilter("start_date", self::$testData['start_date']);
-//        $this->_testFilter("end_date", self::$testData['end_date']);
-//        $this->_testFilter("present", self::$testData['present']);
+        $this->_testFilter("citation_name", self::$testData['citation_name']);
+        $this->_testFilter("start_date", self::$testData['start_date']);
+        $this->_testFilter("end_date", self::$testData['end_date']);
+        $this->_testFilter("present", self::$testData['present']);
 
     }
     /**
