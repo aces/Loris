@@ -31,7 +31,7 @@ if (isset($_GET['action'])) {
  */
 function checkForDuplicate()
 {
-    $db =& Database::singleton();
+    $db =& \Database::singleton();
 
     // Retrieve values entered by user
     $form_data = getFormData();
@@ -76,7 +76,7 @@ function checkForDuplicate()
  */
 function addEntry()
 {
-    $db   =& Database::singleton();
+    $db   =& \Database::singleton();
     $user =& User::singleton();
     if (!$user->hasPermission('battery_manager_edit')) {
         header("HTTP/1.1 403 Forbidden");
@@ -104,28 +104,16 @@ function addEntry()
  */
 function getFormData()
 {
-
-     $instrument = isset($_POST['instrument']) ? $_POST['instrument'] : null;
-     $ageMinDays = isset($_POST['ageMinDays']) ? $_POST['ageMinDays'] : null;
-     $ageMaxDays = isset($_POST['ageMaxDays']) ? $_POST['ageMaxDays'] : null;
-     $stage      = isset($_POST['stage']) ? $_POST['stage'] : null;
-     $subproject = isset($_POST['subproject']) ? $_POST['subproject'] : null;
-     $visitLabel = isset($_POST['visitLabel']) ? $_POST['visitLabel'] : null;
-     $forSite    = isset($_POST['forSite']) ? $_POST['forSite'] : null;
-     $firstVisit = isset($_POST['firstVisit']) ? $_POST['firstVisit'] : null;
-     $order      = $_POST['instrumentOrder'];
-     $instrOrder = isset($_POST['instrumentOrder']) ? $order : null;
-
      $form_data = array(
-                   'Test_name'    => $instrument,
-                   'AgeMinDays'   => $ageMinDays,
-                   'AgeMaxDays'   => $ageMaxDays,
-                   'Stage'        => $stage,
-                   'SubprojectID' => $subproject,
-                   'Visit_label'  => $visitLabel,
-                   'CenterID'     => $forSite,
-                   'firstVisit'   => $firstVisit,
-                   'instr_order'  => $order,
+                   'Test_name'    => $_POST['instrument'] ?? null,
+                   'AgeMinDays'   => $_POST['ageMinDays'] ?? null,
+                   'AgeMaxDays'   => $_POST['ageMaxDays'] ?? null,
+                   'Stage'        => $_POST['stage'] ?? null,
+                   'SubprojectID' => $_POST['subproject'] ?? null,
+                   'Visit_label'  => $_POST['visitLabel'] ?? null,
+                   'CenterID'     => $_POST['forSite'] ?? null,
+                   'firstVisit'   => $_POST['firstVisit'] ?? null,
+                   'instr_order'  => $_POST['instrumentOrder'] ?? null,
                   );
 
      return $form_data;
