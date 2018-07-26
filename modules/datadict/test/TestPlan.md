@@ -1,6 +1,5 @@
-                                            Data Dictionary - Test Plan
-                                            ===========================
-                                            
+# Data Dictionary - Test Plan  
+
 1. Check that you have access to the Data Dictionary if the user has one or more of these permissions: 
    data_dict, data_dict_edit or superuser.[Automation Testing]
 2. Check that the instruments combo box contains all the instrument names.[Automation Testing]
