@@ -153,7 +153,7 @@ case 'DICOMTAR':
     $FullPath         = $tarchivePath . '/' . $File;
     $MimeType         = 'application/x-tar';
     $DownloadFilename = basename($File);
-    $saveAs = $_GET['saveAs'];
+    $saveAs           = $_GET['saveAs'];
     break;
 default:
     $FullPath         = $DownloadPath . '/' . $File;
@@ -170,10 +170,10 @@ if (!file_exists($FullPath)) {
 
 header("Content-type: $MimeType");
 if (!empty($DownloadFilename)) {
-   
-   if ($FileExt === 'DICOMTAR' && !empty($saveAs)) {
+
+    if ($FileExt === 'DICOMTAR' && !empty($saveAs)) {
         header("Content-Disposition: attachment; filename=$saveAs");
-    
+
     } else {
 
         header("Content-Disposition: attachment; filename=$DownloadFilename");
