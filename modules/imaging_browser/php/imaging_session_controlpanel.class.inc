@@ -105,7 +105,7 @@ class Imaging_Session_ControlPanel
             $params['PCandID'] = $timePoint->getCandID();
             $params['PVL']     = $timePoint->getVisitLabel();
         }
-        
+
         // To enable DICOM download: Add pair: tarchiveID, ArchiveLocation
         $qresult = $DB->pselect(
             "SELECT t.TarchiveID, t.ArchiveLocation, 
@@ -113,18 +113,18 @@ class Imaging_Session_ControlPanel
                 t.PatientName
             FROM tarchive t INNER JOIN mri_upload mu ON t.PatientName=mu.PatientName 
             WHERE t.sessionID=mu.sessionID AND t.PatientName LIKE $ID",
-            $params); 
-        
+            $params
+        );
+
         $tarIDToTarLoc =array();
         foreach ($qresult as $v) {
             $tarchiveID = $v['TarchiveID'];
-            $tarIDToTarLoc[$tarchiveID]['ArchiveLocation'] = $v['ArchiveLocation'];
-            $tarIDToTarLoc[$tarchiveID]['originalFileName'] =
-            $v['originalFileName'];
-            $tarIDToTarLoc[$tarchiveID]['PatientName'] = $v['PatientName'];
+            $tarIDToTarLoc[$tarchiveID]['ArchiveLocation']  = $v['ArchiveLocation'];
+            $tarIDToTarLoc[$tarchiveID]['originalFileName'] = $v['originalFileName'];
+            $tarIDToTarLoc[$tarchiveID]['PatientName']      = $v['PatientName'];
         }
         $subjectData['tarchiveIDLoc'] = $tarIDToTarLoc;
-        
+
         $config =& \NDB_Config::singleton();
 
         //if table is not in database return false to not display in the template
@@ -173,7 +173,6 @@ class Imaging_Session_ControlPanel
         $NavBar = new MRINavigation($this->sessionID);
         $subjectData['nextTimepoint']['URL'] = $NavBar->nextLink();
         $subjectData['prevTimepoint']['URL'] = $NavBar->prevLink();
-        error_log(print_r($_GET));
         return $subjectData;
     }
     /**
