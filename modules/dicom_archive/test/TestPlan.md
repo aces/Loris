@@ -1,8 +1,10 @@
-1.  Access the 'Dicom Archive' under 'Imaging' Tab and check to see if the user has permission
+# DICOM Archive - Test Plan
+
+1.  Access the 'DICOM Archive' under 'Imaging' Tab and check to see if the user has permission
     [Automation Testing]
 2.  Click on 'Selection Filter' to show and hide the Filter options
     [Manual Testing]
-3.  Choose a parameter from the 'Selection Filter' that applies:
+3.  Choose a parameter from the 'Selection Filter' that applies: [Automation Testing]
      - Select the right 'Site'
      - Input the right 'Patient ID'
      - Input the right 'Patient Name'
@@ -11,8 +13,7 @@
      - Input the right 'Gender'
      - Input the right 'Acquisition Date'
      - Input the right 'Series UID'
-    Check the results in the table
-    [Automation Testing]
+     - Check the results in the table
 4.  Click on 'Clear Filters' to make sure the previously entered data can be erased
     [Automation Testing]
 5.  Click on 'View Details' under Metadata to view the Details of MRI Scan
