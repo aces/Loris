@@ -11,7 +11,7 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-$user =& User::singleton();
+$user = \User::singleton();
 
 if (!($user->hasPermission('publication_view')
     || $user->hasPermission('publication_propose')

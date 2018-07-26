@@ -26,9 +26,9 @@ if (isset($_REQUEST['action'])) {
 /**
  * Function for new publications
  *
- * @return null
+ * @return void
  */
-function uploadPublication()
+function uploadPublication() : void
 {
     $db   = Database::singleton();
     $user = \User::singleton();
@@ -87,7 +87,7 @@ function uploadPublication()
 
         $leadInvID = $db->getLastInsertId();
     }
-    if (!isset($desc) || !isset($leadInvest) || !isset($leadInvestEmail)) {
+    if (!isset($desc, $leadInvest, $leadInvestEmail)) {
         showError('A mandatory field is missing!', 400);
     }
     // INSERT INTO publication ...
@@ -129,9 +129,9 @@ function uploadPublication()
  *
  * @param int $pubID ID of Publication in publication table
  *
- * @return null
+ * @return void
  */
-function processFiles($pubID)
+function processFiles($pubID) : void
 {
     if (empty($_FILES)) {
         return;
@@ -158,7 +158,7 @@ function processFiles($pubID)
     foreach ($_FILES as $name => $values) {
         $fileName = preg_replace('/\s/', '_', $values["name"]);
         if (file_exists($publicationPath . $fileName)) {
-            throw new LorisException("File $fileName already exists!", 400);
+            throw new LorisException("File $fileName already exists!", 409);
         }
         $extension = pathinfo($fileName)['extension'];
         $index     = preg_split('/_/', $name)[1];
@@ -179,7 +179,7 @@ function processFiles($pubID)
         $pubUploadInsert = array(
                             'PublicationID'           => $pubID,
                             'PublicationUploadTypeID' => $pubTypeID,
-                            'URL'                     => $fileName,
+                            'URL'                     => basename($fileName),
                             'Citation'                => $pubCitation,
                             'Version'                 => $pubVersion,
                            );
@@ -201,9 +201,9 @@ function processFiles($pubID)
  *
  * @param int $pubID the publication ID
  *
- * @return null
+ * @return void
  */
-function insertCollaborators($pubID)
+function insertCollaborators($pubID) : void
 {
     if (!$_REQUEST['collaborators']) {
         return;
@@ -252,9 +252,9 @@ function insertCollaborators($pubID)
  *
  * @param int $pubID publication ID
  *
- * @return null
+ * @return void
  */
-function insertEditors($pubID)
+function insertEditors($pubID) : void
 {
     if (empty($_REQUEST['usersWithEditPerm'])) {
         return;
@@ -280,9 +280,9 @@ function insertEditors($pubID)
  *
  * @param int $pubID publication ID
  *
- * @return null
+ * @return void
  */
-function insertKeywords($pubID)
+function insertKeywords($pubID) : void
 {
     if (empty($_REQUEST['keywords'])) {
         return;
@@ -326,9 +326,9 @@ function insertKeywords($pubID)
  *
  * @param int $pubID publication ID
  *
- * @return null
+ * @return void
  */
-function insertVOIs($pubID)
+function insertVOIs($pubID) : void
 {
 
     if (empty($_REQUEST['voiFields'])) {
@@ -380,9 +380,9 @@ function insertVOIs($pubID)
  *
  * @param int $pubID publication ID
  *
- * @return null
+ * @return void
  */
-function cleanup($pubID)
+function cleanup($pubID) : void
 {
     $db    = Database::singleton();
     $where = array('PublicationID' => $pubID);
@@ -420,9 +420,9 @@ function cleanup($pubID)
  * @param int    $pubID publication ID
  * @param string $type  The notification type i.e., submission|edit|review
  *
- * @return null
+ * @return void
  */
-function notify($pubID, $type)
+function notify($pubID, $type) : void
 {
     $acceptedTypes = array(
                       'submission',
@@ -479,9 +479,9 @@ function notify($pubID, $type)
 /**
  * Edits fields for an existing publication project
  *
- * @return null
+ * @return void
  */
-function editProject()
+function editProject() : void
 {
     $db = \Database::singleton();
     $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
@@ -584,9 +584,9 @@ function editProject()
  *
  * @param int $id publication ID
  *
- * @return null
+ * @return void
  */
-function editEditors($id)
+function editEditors($id) : void
 {
     $db = \Database::singleton();
     $usersWithEditPerm = isset($_REQUEST['usersWithEditPerm'])
@@ -627,9 +627,9 @@ function editEditors($id)
  *
  * @param int $id Publication ID
  *
- * @return null
+ * @return void
  */
-function editCollaborators($id)
+function editCollaborators($id) : void
 {
     $db = \Database::singleton();
     $submittedCollaborators = isset($_REQUEST['collaborators'])
@@ -712,9 +712,9 @@ function editCollaborators($id)
  *
  * @param int $id if the legends are to be believed, this is the Publication ID...
  *
- * @return null
+ * @return void
  */
-function editKeywords($id)
+function editKeywords($id) : void
 {
     $db       = \Database::singleton();
     $keywords = isset($_REQUEST['keywords'])
@@ -761,9 +761,9 @@ function editKeywords($id)
  *
  * @param int $id Could be a publication ID, probably is, who knows for sure?
  *
- * @return null
+ * @return void
  */
-function editVOIs($id)
+function editVOIs($id) : void
 {
     $db  = \Database::singleton();
     $voi = isset($_REQUEST['voiFields'])
@@ -831,9 +831,9 @@ function editVOIs($id)
  *
  * @param int $id publication ID
  *
- * @return null
+ * @return void
  */
-function editUploads($id)
+function editUploads($id) : void
 {
     $db = \Database::singleton();
 
@@ -877,7 +877,7 @@ function editUploads($id)
  *
  * @return void
  */
-function showError($message, $code = 500)
+function showError($message, $code = 500) : void
 {
     if (!isset($message)) {
         $message = 'An unknown error occurred!';

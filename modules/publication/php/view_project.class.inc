@@ -13,7 +13,7 @@
 namespace LORIS\publication;
 
 /**
- * Creates the form for NDB_Form_media
+ * Let's you view a project proposal's details
  *
  * @category Loris
  * @package  Publications
@@ -26,6 +26,31 @@ class View_Project extends \NDB_Form
     public $skipTemplate = true;
 
     /**
+     * Check user permissions
+     *
+     * @return bool
+     */
+    function _hasAccess() : bool
+    {
+        $user  = \User::singleton();
+        $db    = \Database::singleton();
+        $pubID = $_GET['id'];
+
+        $nProjects = $db->pselectOne(
+            'SELECT COUNT(*) FROM publication_users_edit_perm_rel '.
+            'WHERE UserID=:uid AND PublicationID=:pid',
+            array(
+             'uid' => $user->getId(),
+             'pid' => $pubID,
+            )
+        );
+        return ($user->hasPermission('publication_view')
+            || $user->hasPermission('publication_propose')
+            || $user->hasPermission('publication_approve')
+            || $nProjects > 0
+        );
+    }
+    /**
      * Entry point for /publications/view_project
      * Checks if project id is provided and otherwise
      * redirects to /publications/ page
@@ -36,9 +61,9 @@ class View_Project extends \NDB_Form
      * @param string $commentID  The CommentID to load the data for
      * @param string $formname   The name to give this form
      *
-     * @return none
+     * @return void
      */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function _setupPage($name, $page, $identifier, $commentID, $formname) : void
     {
         parent::_setupPage($name, $page, $identifier, $commentID, $formname);
 
@@ -68,7 +93,7 @@ class View_Project extends \NDB_Form
      *
      * @return array of javascript to be inserted
      */
-    function getCSSDependencies()
+    function getCSSDependencies() : array
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
@@ -85,7 +110,7 @@ class View_Project extends \NDB_Form
      *
      * @return array of javascript to be inserted
      */
-    function getJSDependencies()
+    function getJSDependencies() : array
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
@@ -93,29 +118,6 @@ class View_Project extends \NDB_Form
         return array_merge(
             $deps,
             array($baseURL . "/publication/js/viewProjectIndex.js")
-        );
-    }
-
-    /**
-     * Check user permissions
-     *
-     * @return bool
-     * @throws ConfigurationException
-     */
-    function _hasAccess()
-    {
-        $user = \User::singleton();
-        $db   = \Database::singleton();
-
-        $nProjects = $db->pselectOne(
-            'SELECT COUNT(*) FROM publication_users_edit_perm_rel '.
-            'WHERE UserID=:uid',
-            array('uid' => $user->getId())
-        );
-        return ($user->hasPermission('publication_view')
-            || $user->hasPermission('publication_propose')
-            || $user->hasPermission('publication_approve')
-            || $nProjects > 0
         );
     }
 

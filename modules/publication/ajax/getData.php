@@ -27,7 +27,7 @@ if (isset($_REQUEST['action'])) {
  *
  * @return array Array of general publication data
  */
-function getData()
+function getData() : array
 {
     $db = Database::singleton();
 
@@ -100,7 +100,7 @@ function getData()
  *
  * @return array Array of data for a specific project
  */
-function getProjectData()
+function getProjectData() : array
 {
     $id = $_REQUEST['id'];
 
@@ -178,7 +178,7 @@ function getProjectData()
  *
  * @return array Array of VoIs
  */
-function getVOIs($id)
+function getVOIs($id) : array
 {
     $db        = \Database::singleton();
     $fields    = $db->pselectCol(
@@ -207,7 +207,7 @@ function getVOIs($id)
  *
  * @return array Array of keywords
  */
-function getKeywords($id)
+function getKeywords($id) : array
 {
     $db  = \Database::singleton();
     $kws = $db->pselectCol(
@@ -228,7 +228,7 @@ function getKeywords($id)
  *
  * @return array Array of collaborators
  */
-function getCollaborators($id)
+function getCollaborators($id) : array
 {
     $db = \Database::singleton();
 
@@ -250,7 +250,7 @@ function getCollaborators($id)
  *
  * @return array Array of file (meta) data
  */
-function getFiles($id)
+function getFiles($id) : array
 {
     $db = \Database::singleton();
 
@@ -272,7 +272,7 @@ function getFiles($id)
  *
  * @return array Array of status options
  */
-function getStatusOptions()
+function getStatusOptions() : array
 {
     $db        = \Database::singleton();
     $rawStatus = $db->pselect(
@@ -293,7 +293,7 @@ function getStatusOptions()
  *
  * @return array Array of upload types
  */
-function getUploadTypes()
+function getUploadTypes() : array
 {
     $db = \Database::singleton();
 

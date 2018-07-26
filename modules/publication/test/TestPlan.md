@@ -14,7 +14,7 @@ does not grant you access to the project proposal page.
 and ensure that the project proposal page is now accessible.
 5. Fill out all the fields in the form and try to submit. Make sure you have
 a corresponding directory to the directory specified in Config if you are 
-attempting a file upload.
+attempting a file upload. Try submitting without filling in required fields.
 6. Login under one of the accounts you specified under the 
 "Users with Edit Permission" and access the project page and make edits to 
 the proposal.
@@ -37,4 +37,6 @@ project submission, one for project editing, and one for project reviewing. Emai
 will only be sent if you check the box next to the email fields saying "Send email
 notification?" Make sure your mail server is enabled on your VM before you file a bug
 report.
-11. Test file download and file deletion.
+11. Test file download and file deletion. Only users that are affiliated 
+with the proposal can delete. File download should only be allowed for
+users with proposal affiliation or view permission can download.

@@ -26,12 +26,14 @@ class Publication extends \NDB_Menu_Filter_Form
     public $AjaxModule   = true;
     public $skipTemplate = true;
     /**
-     * The _has_access returns true
-     * if the user has the specific permission
+     * Has access returns true if the user has
+     * any of the publication module permissions
+     * OR has an affiliation to at least one of the
+     * proposed projects
      *
      * @return boolean
      */
-    function _hasAccess()
+    function _hasAccess() : bool
     {
         $user = \User::singleton();
         $db   = \Database::singleton();
@@ -53,10 +55,10 @@ class Publication extends \NDB_Menu_Filter_Form
      *
      * @return boolean
      */
-    function _setupVariables()
+    function _setupVariables() : bool
     {
-        $user   = \User::singleton();
-        $query  = " FROM publication p ".
+        $user  = \User::singleton();
+        $query = " FROM publication p ".
             "LEFT JOIN publication_status ps ".
             "ON ps.PublicationStatusID=p.PublicationStatusID ".
             "LEFT JOIN publication_parameter_type_rel pptr ".
@@ -71,6 +73,8 @@ class Publication extends \NDB_Menu_Filter_Form
             "ON pcr.PublicationID=p.PublicationID ".
             "LEFT JOIN publication_collaborator pc ".
             "ON pcr.PublicationCollaboratorID=pc.PublicationCollaboratorID ".
+            // make separate join for getting LeadInvestigator from collaborator
+            // table (pcli)
             "LEFT JOIN publication_collaborator pcli ".
             "ON pcli.PublicationCollaboratorID=p.LeadInvestigatorID ".
             "LEFT JOIN publication_keyword_rel pkr ".
@@ -98,10 +102,10 @@ class Publication extends \NDB_Menu_Filter_Form
                           'p.DateProposed',
                           'ps.Label', // Status (Approved, Pending, Rejected, etc.)
                           'p.Description',
-                          'GROUP_CONCAT(pc.Name)', // Collaborators
+                          'GROUP_CONCAT(DISTINCT pc.Name)', // Collaborators
                           // vv Variables of Interest vv
                           'GROUP_CONCAT(DISTINCT pt.Name, tn.Test_name)',
-                          'GROUP_CONCAT(pk.Label)', // Keywords
+                          'GROUP_CONCAT(DISTINCT pk.Label)', // Keywords
                           'p.PublicationID',
                          );
 
@@ -123,7 +127,7 @@ class Publication extends \NDB_Menu_Filter_Form
                                'p.ApprovalStatus',
                                'pc.Name',
                                'pk.Label',
-                               'pcli.Name',
+                               'pcli.Name', // Lead Investigator's name
                                'pt.Name',
                               );
 
@@ -144,7 +148,7 @@ class Publication extends \NDB_Menu_Filter_Form
      *
      * @return bool
      */
-    function setup()
+    function setup() : bool
     {
         parent::setup();
 
@@ -169,11 +173,13 @@ class Publication extends \NDB_Menu_Filter_Form
             $statusOptions
         );
 
+        // filters by name
         $this->addBasicText(
             'leadInvestigator',
             'Lead Investigator'
         );
 
+        //also filters by name
         $this->addBasicText(
             'collaborators',
             'Collaborators'
@@ -198,7 +204,7 @@ class Publication extends \NDB_Menu_Filter_Form
      *
      * @return array of javascript to be inserted
      */
-    function getJSDependencies()
+    function getJSDependencies() : array
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
@@ -215,7 +221,7 @@ class Publication extends \NDB_Menu_Filter_Form
      *
      * @return array of css to be inserted
      */
-    function getCSSDependencies()
+    function getCSSDependencies() : array
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
@@ -230,9 +236,9 @@ class Publication extends \NDB_Menu_Filter_Form
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
-     * @return a json encoded string of the headers and data from this table
+     * @return string json encoded string of the headers and data from this table
      */
-    function toJSON()
+    function toJSON() : string
     {
         $result = $this->toArray();
         // run values through htmlspecialchars decode to unescape
