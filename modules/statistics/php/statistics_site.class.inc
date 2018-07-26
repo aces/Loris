@@ -44,7 +44,7 @@ class Statistics_Site extends \NDB_Menu
         $accessAllProfiles = $user->hasPermission('access_all_profiles') &&
             $user->hasPermission('data_entry');
         return $user->hasCenterPermission('data_entry', $centerID) ||
-            $accessAlProfiles;
+            $accessAllProfiles;
 
     }
 
