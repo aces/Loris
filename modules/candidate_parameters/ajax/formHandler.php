@@ -136,12 +136,13 @@ function editProbandInfoFields($db, $user)
         header("HTTP/1.1 403 Forbidden");
         exit;
     }
-
-    $candID = $_POST['candID'];
+    //Sanitizing the post data
+    $sanitize = array_map('htmlentities', $_POST);
+    $candID   = $sanitize['candID'];
 
     // Process posted data
-    $gender = isset($_POST['ProbandGender']) ? $_POST['ProbandGender'] : null;
-    $dob    = isset($_POST['ProbandDoB']) ? $_POST['ProbandDoB'] : null;
+    $gender = isset($sanitize['ProbandGender']) ? $sanitize['ProbandGender'] : null;
+    $dob    = isset($sanitize['ProbandDoB']) ? $sanitize['ProbandDoB'] : null;
 
     $updateValues = [
                      'ProbandGender' => $gender,
@@ -149,8 +150,8 @@ function editProbandInfoFields($db, $user)
                     ];
 
     $db->update('candidate', $updateValues, ['CandID' => $candID]);
-    foreach (array_keys($_POST) as $field) {
-        if (!empty($_POST[$field])) {
+    foreach (array_keys($sanitize) as $field) {
+        if (!empty($sanitize[$field])) {
             if (substr($field, 0, 4) === 'PTID') {
                 $ptid = substr($field, 4);
 
@@ -162,7 +163,7 @@ function editProbandInfoFields($db, $user)
                                 ];
 
                 $result = $db->pselectOne(
-                    'SELECT * from parameter_candidate 
+                    'SELECT CandID from parameter_candidate 
                     WHERE CandID=:cid 
                     AND ParameterTypeID=:ptid',
                     [
