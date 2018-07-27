@@ -806,6 +806,8 @@ class Database
         if (is_array($result) && count($result)) {
             $valueArray = array_values($result);
             $result     = $valueArray[0];
+        } else {
+            return null;
         }
         return $result;
     }
