@@ -218,18 +218,19 @@ class Edit_User extends \NDB_Form
                 $editorPermissions
             );
         }
+        
+        //If arrays are null set them to empty to avoid warnings below
+        $newPermissions = $newPermissions ?? array();
+        $editorPermissions = $editorPermissions ?? array();
         // Keep old permissions if the editor is not allowed to edit them.
-        if (!is_null($newPermissions)
-            && !is_null($editorPermissions)
-        ) {
-            foreach ($current_permissionids as $perm) {
-                if (!in_array($perm, $newPermissions)
-                    && !in_array($perm, $editorPermissions)
-                ) {
-                    $permIDs[] = $perm;
-                }
+        foreach ($current_permissionids as $perm) {
+            if (!in_array($perm, $newPermissions)
+                && !in_array($perm, $editorPermissions)
+            ) {
+                $permIDs[] = $perm;
             }
         }
+        unset($values['permID']);
         unset($values['permID']);
         // store whether to send an email or not
         if (!empty($values['SendEmail'])) {
