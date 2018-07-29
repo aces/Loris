@@ -13,7 +13,7 @@
  * @link     https://www.github.com/aces/Loris
  */
 
-require_once 'generic_includes.php';
+require_once __DIR__ . '/../generic_includes.php';
 require_once 'Database.class.inc';
 require_once 'Utility.class.inc';
 
@@ -81,5 +81,3 @@ $tables_to_normalize = array("mri_protocol", "mri_protocol_checks");
 foreach ($tables_to_normalize as $table) {
     split_commas($table);
 }
-
-?>

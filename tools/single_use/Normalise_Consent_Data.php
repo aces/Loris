@@ -316,8 +316,7 @@ foreach ($existingColumns as $column) {
     $columnName = $column['Column_name'];
     $output .= "ALTER TABLE participant_status DROP COLUMN " . $columnName . ";\n";
 }
-$filename = __DIR__ . "/../../SQL/Cleanup_patches/delete_old_consent_tables.sql";
+$filename = __DIR__ . "/../../SQL/Archive/20.0/cleanup/delete_old_consent_tables.sql";
 $fp       = fopen($filename, "w");
 fwrite($fp, $output);
 fclose($fp);
-?>
