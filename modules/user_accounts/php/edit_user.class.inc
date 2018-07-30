@@ -206,8 +206,8 @@ class Edit_User extends \NDB_Form
         // 2) Certain old permissions that the editor is not permitted to alter
         // In addition, old permissions should be removed if the editor has
         // removed them and the editor has permissions to remove them.
-        $newPermissions    = array_keys($values['permID']);
-        $editorPermissions = $editor->getPermissionIDs();
+        $newPermissions    = array_keys($values['permID']) ?? array();
+        $editorPermissions = $editor->getPermissionIDs() ?? array();
         $permIDs           = array();
         // store the permission IDs
         if (!empty($values['permID'])) {
@@ -219,9 +219,6 @@ class Edit_User extends \NDB_Form
             );
         }
 
-        //If arrays are null set them to empty to avoid warnings below
-        $newPermissions    = $newPermissions ?? array();
-        $editorPermissions = $editorPermissions ?? array();
         // Keep old permissions if the editor is not allowed to edit them.
         foreach ($current_permissionids as $perm) {
             if (!in_array($perm, $newPermissions)
@@ -230,7 +227,6 @@ class Edit_User extends \NDB_Form
                 $permIDs[] = $perm;
             }
         }
-        unset($values['permID']);
         unset($values['permID']);
         // store whether to send an email or not
         if (!empty($values['SendEmail'])) {
