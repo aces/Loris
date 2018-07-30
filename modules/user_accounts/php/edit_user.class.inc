@@ -218,9 +218,9 @@ class Edit_User extends \NDB_Form
                 $editorPermissions
             );
         }
-        
+
         //If arrays are null set them to empty to avoid warnings below
-        $newPermissions = $newPermissions ?? array();
+        $newPermissions    = $newPermissions ?? array();
         $editorPermissions = $editorPermissions ?? array();
         // Keep old permissions if the editor is not allowed to edit them.
         foreach ($current_permissionids as $perm) {
