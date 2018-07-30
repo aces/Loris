@@ -33,8 +33,8 @@
 ### Imaging Statistics
 1. Click on the Imaging Statistics tab. Try using the Site and Project filters. Does it change the data? Double check that the data represented is consistent with the data in the database.
 2. For the 1st table, check that the Total column adds up correctly.
-3. Check that "Select All", as well as different combinations of scan types adjust the table accordingly.
-4. Check that the data in the "Breakdown by Scan Type" table is accurate.
-5. Check that "Show/Hide" visit labels works.
+3. Check that `Select All`, as well as different combinations of scan types adjust the table accordingly.
+4. Check that the data in the `Breakdown by Scan Type` table is accurate.
+5. Check that `Show/Hide` visit labels works.
 6. Check that changing the breakdown adjusts the table accurately.
 7. Verify site and grand totals.
