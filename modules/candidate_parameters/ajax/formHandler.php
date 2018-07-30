@@ -141,8 +141,8 @@ function editProbandInfoFields($db, $user)
     $candID   = $sanitize['candID'];
 
     // Process posted data
-    $gender = isset($sanitize['ProbandGender']) ? $sanitize['ProbandGender'] : null;
-    $dob    = isset($sanitize['ProbandDoB']) ? $sanitize['ProbandDoB'] : null;
+    $gender = $sanitize['ProbandGender'] ?? null;
+    $dob    = $sanitize['ProbandDoB'] ?? null;
 
     $updateValues = [
                      'ProbandGender' => $gender,
