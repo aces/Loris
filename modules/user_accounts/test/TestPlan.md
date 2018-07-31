@@ -61,23 +61,24 @@ When creating or editing a user: (subtest: edit_user)
     without saving any changes to the user profile.
     
 ### Testing permissions:
+*Log in as a simple user (non-admin) and ensure the following. Define `editee` as the user being edited and `editor` as the logged in user making the changes.*
 
-26. r
-1. r
-1. r
-1. r
+26. Editor can only see and manipulate permissions for editee if and only if editor has the permissions in question
+1. When page is saved with any set of selected permissions, on reload all selected permissions are kept and all unselected permissions are removed.
+1. If editee has permissions that editor does not have, said permissions are not impacted by manipulating the editees's visible permissions (requires admin login i na side window to be able to view all permissions for editee as editor will only be able to view permissions they own)
+29. r
 
 On the My Preferences page:
 ==========================
 
-28. Check that all users (even those with NO permissions) have access to the My Preferences page.
-27. Change the user’s password.  Check that the password rules are enforced.
-28. Check that if password and confirmed password do not match you get an error.
-29. Check that saving fails if any field is left blank (except password).
-30. Check that if you do not enter an email address that is syntactically valid you get an error.
-31. Modify any field on the page and save, and go to the User Account page. Check that the modifications are
+30. Check that all users (even those with NO permissions) have access to the My Preferences page.
+1. Change the user’s password.  Check that the password rules are enforced.
+1. Check that if password and confirmed password do not match you get an error.
+1. Check that saving fails if any field is left blank (except password).
+1. Check that if you do not enter an email address that is syntactically valid you get an error.
+1. Modify any field on the page and save, and go to the User Account page. Check that the modifications are
     displayed when looking at the modified user account.  
-32. Verify that all notification checkboxes match what the project has enabled in the `notification_modules_services_rel`. See WIKI for more details https://github.com/aces/Loris/wiki/Notification-system.
-33. Verify that checkboxes available respect the permission restrictions set in the `notification_modules_perm_rel`. See WIKI for more details https://github.com/aces/Loris/wiki/Notification-system.
-34. Verify that the notifications are sent when the trigger event occurs. (NB the user triggering the event will not get the email, only other registered users are notified)
-35. Clicking on the 'User Account' breadcrumb takes you to the User Account page without saving any changes. If you do not have access to the user account module, the system should tell you so.
+1. Verify that all notification checkboxes match what the project has enabled in the `notification_modules_services_rel`. See WIKI for more details https://github.com/aces/Loris/wiki/Notification-system.
+1. Verify that checkboxes available respect the permission restrictions set in the `notification_modules_perm_rel`. See WIKI for more details https://github.com/aces/Loris/wiki/Notification-system.
+1. Verify that the notifications are sent when the trigger event occurs. (NB the user triggering the event will not get the email, only other registered users are notified)
+39. Clicking on the 'User Account' breadcrumb takes you to the User Account page without saving any changes. If you do not have access to the user account module, the system should tell you so.
