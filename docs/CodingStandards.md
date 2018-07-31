@@ -17,7 +17,7 @@ gg=G
 ```
 
 # PHP
-- Ensure formatting meets Loris style guidelines by running phpcs with the LorisCS.xml
+Ensure formatting meets Loris style guidelines by running phpcs with the LorisCS.xml
   configuration file which accompanies these guidelines. You can run the tool
   with the command 
   ```bash
@@ -42,13 +42,14 @@ gg=G
 - Javascript should go into `modules/js/`
 - Any newly written Javascript should pass ESLint with default options.
 
-# SQL:
-- Prepared statements (`$db->pselect()` rather than `$db->select()`) MUST be used for any statements which involve user input. 
-- You must never use string concatenation (such as the example below) to create an SQL statement as this is a serious security risk. 
+# SQL
+* Prepared statements MUST be used for any statements which involve user input. 
+* You must never use string concatenation (such as the example below) to create an SQL statement as this is a serious security risk. i.e. 
+**Don't do the following:**:
 ```mysql
 "SELECT abc FROM table WHERE field1='" + $_REQUEST['val'] + '"';
 ```
-- ANSI join syntax:
+ANSI join syntax:
 ```mysql
 "table1 t1 JOIN table2 t2 ON(conditions)"
 ```
