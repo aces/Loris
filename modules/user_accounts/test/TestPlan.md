@@ -1,4 +1,4 @@
-`User Account` module - Test plan
+User Account module - Test plan
 ===============================
 
 1. Make sure you do not have access to the `User Accounts` page if you do not have at least one of these permissions:
@@ -17,7 +17,7 @@
 5. The `All` option in the site filter should displays users from all sites, even if they are different from the active user.
 6. Ensure adding a new user with the same name as an existing user fails.
 
-When creating or editing a user: (subtest: `edit_user`)
+When creating or editing a user: (subtest: edit_user)
 ========================================================
 
 7. Ensure password strength rules are enforced.
@@ -37,9 +37,9 @@ When creating or editing a user: (subtest: `edit_user`)
     for this new password. Check that after logging in, the user is immediately asked to update his/her password.
 12. Check that if creating a new user an email is sent to him/her (requires email server). Also check that when a new
     user is logging in for the first time he/she is asked to change his/her password.
-12a. Check that when creating a new user, leading and trailing spaces in the username are stripped.
-12b. Check that you can create a new user with name 00 (double zero).
-12c. Check that you can delete one of the additional fields (organization, fax, etc...) that was previously set and that the save is performed.
+    1. Check that when creating a new user, leading and trailing spaces in the username are stripped.
+    2. Check that you can create a new user with name 00 (double zero).
+    3. Check that you can delete one of the additional fields (organization, fax, etc...) that was previously set and that the save is performed.
 13. Check that if generating a new password for a user an email is sent to that user containing the new password (requires
     email server).
 14. Check that when editing a user account it is not possible to set the password to its actual value (i.e. it needs to change).
@@ -59,11 +59,18 @@ When creating or editing a user: (subtest: `edit_user`)
     changes. 
 25. When editing an existing user: Clicking on the 'User Account' breadcrumb takes you to the User Account page
     without saving any changes to the user profile.
+    
+### Testing permissions:
+
+26. r
+1. r
+1. r
+1. r
 
 On the My Preferences page:
 ==========================
 
-26. Check that all users (even those with NO permissions) have access to the My Preferences page.
+28. Check that all users (even those with NO permissions) have access to the My Preferences page.
 27. Change the user’s password.  Check that the password rules are enforced.
 28. Check that if password and confirmed password do not match you get an error.
 29. Check that saving fails if any field is left blank (except password).
