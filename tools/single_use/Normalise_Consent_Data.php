@@ -239,7 +239,25 @@ print_r($dataArray);
 
 // Populate candidate_consent_rel
 foreach ($dataArray as $consentValues) {
-    $db->insert('candidate_consent_rel', $consentValues);
+    $candidateID    = $consentValues['CandidateID'];
+    $consentID      = $consentValues['ConsentID'];
+    $query          = "SELECT CandidateID, ConsentID FROM candidate_consent_rel
+                       WHERE CandidateID=:cid AND ConsentID=:conid";
+    $duplicateEntry = $db->pselect(
+                          $query,
+                          array(
+                             'cid'   => $candidateID,
+                             'conid' => $consentID,
+                          )
+                      );
+    if(!empty($duplicateEntry)) {
+        print_r("This is a single use script.
+The data which you are trying to import already exists in
+`candidate_consent_rel` table, and cannot be overridden.\n\n");
+        die();
+    } else {
+        $db->insert('candidate_consent_rel', $consentValues);
+    }
 }
 echo "\nConsent data insert complete.\n";
 
