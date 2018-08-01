@@ -14,7 +14,7 @@ You should base your pull requests on one of the following branches depending on
 #### Bug Fixes
    - Branch: `bugfix`
    - Label: ![](https://via.placeholder.com/15/cc9966/000000?text=+) **[branch] bugfix**
-   - Content: Generally these changes do not require SQL scripts and are concise with the sole objective to correct on single problem in the code.
+   - Content: Generally these changes do not require SQL scripts and are concise with the sole objective to correct a single problem in the code.
 
 #### Minor Changes and Small Features
    - Branch: `minor`
