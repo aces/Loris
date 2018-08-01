@@ -104,7 +104,9 @@ class Publication extends \NDB_Menu_Filter_Form
                           'p.Description',
                           'GROUP_CONCAT(DISTINCT pc.Name)', // Collaborators
                           // vv Variables of Interest vv
-                          'GROUP_CONCAT(DISTINCT pt.Name, tn.Test_name)',
+                          'GROUP_CONCAT(
+                            DISTINCT IFNULL(pt.Name, ""), IFNULL(tn.Test_name,"")
+                          )',
                           'GROUP_CONCAT(DISTINCT pk.Label)', // Keywords
                           'p.PublicationID',
                          );
