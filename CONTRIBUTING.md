@@ -11,19 +11,19 @@ You can also learn about our code review process by perusing our [Code Review Ch
 
 You should base your pull requests on one of the following branches depending on the kind of change you are making:
 
- - **Bug Fixes**
+#### Bug Fixes
    - Branch: `bugfix`
-   - Label: _[branch] bugfix_
+   - Label: ![](https://via.placeholder.com/15/cc9966/000000?text=+) **[branch] bugfix**
    - Content: Generally these changes do not require SQL scripts and are concise with the sole objective to correct on single problem in the code.
 
- - **Minor Changes** and **Small Features**
+#### Minor Changes and Small Features
    - Branch: `minor`
-   - Label: _[branch] minor_
+   - Label: ![](https://via.placeholder.com/15/996633/000000?text=+) **[branch] minor**
    - Content: Features affecting self-contained components such as modules. Additions to Libraries, API or modules that do not change and function signatures. 
 
- - **Major Changes**, **Non Backwards-Compatible Changes** and **Large Features**
+#### Major Changes, Non Backwards-Compatible Changes and Large Features
    - Branch: `major`
-   - Label: _[branch] major_
+   - Label: ![](https://via.placeholder.com/15/4d3319/000000?text=+) **[branch] major**
    - Content: Any change modifying a function signature in a library class. Features require extensive LORIS-wide testing. New complex systems and features spanning across multiple modules and libraries. Deprecated functions clean-up.
 
 For more information about making well-organized pull requests, please read our in-depth Wiki page, ["Contributing to the Code"](https://github.com/aces/Loris/wiki/Contributing-to-the-Code).
