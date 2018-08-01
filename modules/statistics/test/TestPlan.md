@@ -9,14 +9,14 @@
 2. Check the general statistics filters. Try filtering by both site and project separately. Check that the site filter only applies to the general statistics table and that the project filter applies to both tables.
 3. In the breakdown table, try filtering by each of the different instruments. Does each filter appear to be working? Check that it only applies to the breakdown table.
 4. For the sex breakdown:
-  - compare the data in the table to that in the database to ensure that it is being queried correctly.
-  - check to see if the % Male is being calculated properly by looking at the data that's in the table.
+   - compare the data in the table to that in the database to ensure that it is being queried correctly.
+   - check to see if the % Male is being calculated properly by looking at the data that's in the table.
 
 ### Behavioural Statistics
 1. Click on the Behavioural Statistics tab. Try using the project filter Data Entry Statistics table. Does it work? Does it change what appears in both the top table and bottom table?
 2. For both tables:
-  - check that the % Completion makes sense in relation to the values in the table.
-  - check that the data in the table matches what is stored in the database.
+   - check that the % Completion makes sense in relation to the values in the table.
+   - check that the data in the table matches what is stored in the database.
 3. Check that the `View Details` links work in the Data Entry Statistics table.
 4. After following this link, check that the incomplete candidates are correct in comparison to the incomplete forms in the database.
 5. In the incomplete forms table, check that the candidate links take you to the appropriate candidate instrument forms.
