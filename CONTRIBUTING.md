@@ -31,20 +31,20 @@ For more information about making well-organized pull requests, please read our 
 
 ## Some Things To Keep In Mind
 
-* If your changes require any table modifications, don't forget to modify the
-  `SQL/0000*.sql` file(s) with your changes for new installs, and also
-  include a patch for existing projects to apply to get your changes of which
-  should be placed in the corresponding `SQL/New_patches/` directory. 
-* For SQL patches that are _optional_ (e.g. those that perform some cleanup), place them in `SQL/Cleanup_patches/`.
+* If your changes require any table modifications:
+    1. Modify the `SQL/0000*.sql` file(s) with your changes. These patches are applied during the LORIS install.
+    2. Include a patch to be used by existing projects. These should go in the `SQL/New_patches/` directory. 
+    3. For SQL patches that are _optional_ (e.g. those that perform some cleanup), place them in `SQL/Cleanup_patches/`.
 * Include a test for any new module in the `modules/MODULENAME/test/`
   directory. You can look at other modules for examples of how to write tests.
-  If you have questions, feel free to mail the mailing list.
 * Add your new automated tests to TravisCI in the `.travis.yml`. 
 * Make sure you run PHP codesniffer using the standards file in
   `docs/LorisCS.xml` before sending any pull request, otherwise the automated tests will fail.
 * Try and make all changes backwards-compatible with existing installations. 
 * If you must change something in a non-backwards-compatible way - or if it would affect the data or custom code of a study - document this in your pull request description and
-  tag it with ![](https://via.placeholder.com/15/d4c5f9/000000?text=+) **Caveat for Existing Projects**. This helps us to document our release notes. If you're unsure about whether this situation applies to your changes, just ask. 
+  tag it with ![](https://via.placeholder.com/15/d4c5f9/000000?text=+) **Caveat for Existing Projects**. This helps us to document our release notes. 
+  
+If you're unsure about any of the above, feel free to ask us for clarification via the mailing list. 
 
 ## Getting Started
 
