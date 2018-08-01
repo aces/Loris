@@ -65,11 +65,11 @@ When creating or editing a user: (subtest: edit_user)
 
 26. Editor can only see and manipulate permissions for editee if and only if editor has the permissions in question
 1. When page is saved with any set of selected permissions, on reload all selected permissions are kept and all unselected permissions are removed.
-1. If editee has permissions that editor does not have, said permissions are not impacted by manipulating the editees's visible permissions (requires admin user login in a side window to be able to view all permissions for editee as editor will only be able to view permissions they own)
+1. If editee has permissions that editor does not have, said permissions are not impacted by manipulating the editee's visible permissions (requires admin user login in a side window to be able to view all permissions for editee as editor will only be able to view permissions they own)
 29. See security testing below
 
 ##### Security testing:
- - Try manipulating the POST request from the browser and to add a permission to the editee. Make sure that the editee gets the permission if it is within the set of permissions of the editor Make sure the editee does not get the permission if it is not within the set of permissions of the editor. [See this PR](https://github.com/aces/Loris/pull/3818#issuecomment-408882440) for more details.
+ - Try manipulating the POST request from the browser to add a permission to the editee. Make sure that the editee gets the permission if it is within the set of permissions of the editor Make sure the editee does not get the permission if it is not within the set of permissions of the editor. [See this PR](https://github.com/aces/Loris/pull/3818#issuecomment-408882440) for more details.
 
 On the My Preferences page:
 ==========================
