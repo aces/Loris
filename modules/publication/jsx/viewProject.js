@@ -338,6 +338,7 @@ class ViewProject extends React.Component {
     }
     let statusElement;
     let rejectReason;
+    let reviewBtn;
     if (loris.userHasPermission('publication_approve')) {
       // if user has publication_approve permission, this means that status
       // in formData reflects the ID, not the description
@@ -364,6 +365,10 @@ class ViewProject extends React.Component {
           required={true}
         />;
       }
+
+      // Set review button only if user does not have edit permission
+      // to avoid having 2 submit buttons
+      reviewBtn = this.state.userCanEdit ? undefined : <ButtonElement label="Submit" />;
     } else {
       let statusID = this.state.formData.status;
       let status = this.state.statusOpts[statusID];
@@ -413,6 +418,7 @@ class ViewProject extends React.Component {
             {statusElement}
             {rejectReason}
             {formElements}
+            {reviewBtn}
           </FormElement>
         </div>
       </div>
