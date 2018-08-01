@@ -21,6 +21,8 @@ if (isset($_GET['action'])) {
         echo checkForDuplicate();
     } else if ($action == "add") {
         addEntry();
+    } else if ($action == "edit") {
+        echo editEntry();
     }
 }
 
@@ -44,7 +46,7 @@ function checkForDuplicate()
         if ($i > 0) {
             $connector = "AND ";
         }
-        if (isset($value)) {
+        if (isset($value) || $value !== null) {
             $query .= $connector . $key . " = :" . $key . " ";
         } else {
             $query .= $connector . $key . " IS NULL ";
@@ -58,11 +60,18 @@ function checkForDuplicate()
         $query,
         $form_data
     );
-
-    // Return JSON representation of duplicate entry if it exists, null otherwise
-    if ($entry) {
+    
+   
+   // Return JSON representation of duplicate entry if it exists, null otherwise
+    //if ($entry) {
+    //$entry = true;
+    if ($entry) { 
+        //console.log($entry);
+        //return json_encode($entry);
+        //return json_encode($entry);
         return json_encode($entry);
     } else {
+        //return $query;
         return null;
     }
 }
@@ -98,6 +107,42 @@ function addEntry()
 }
 
 /**
+ * Handle updates in the test battery
+ *
+ * @throws DatabaseException
+ *
+ * @return void
+ */
+function editEntry()
+{
+    $db   =& \Database::singleton();
+    $user =& User::singleton();
+    if (!$user->hasPermission('battery_manager_edit')) {
+        header("HTTP/1.1 403 Forbidden");
+        exit;
+    }
+
+    $entryID = $_POST['id'];
+
+    // Retrieve values entered by user
+    $form_data = getFormData();
+
+    foreach ($form_data as $key => $value) {
+        if ($value === "null") {
+            $form_data[$key] = null;
+        }
+    }
+    // Update entry to Test Battery
+    try {
+          $db->update('test_battery', $form_data, ['ID' => $entryID]);
+    } catch (DatabaseException $e) {
+        showError("Could not update entry "+$entryID+" to the test battery. Please try again!");
+    }
+    return json_encode($form_data);
+}
+
+
+/**
  * Retrieve values entered by user
  *
  * @return array
@@ -115,6 +160,15 @@ function getFormData()
                    'firstVisit'   => $_POST['firstVisit'] ?? null,
                    'instr_order'  => $_POST['instrumentOrder'] ?? null,
                   );
+
+     /*if (isset($_POST['ID'])) {
+         $form_data['ID'] = $_POST['ID'];
+     }*/
+     
+
+     if (isset($_POST['active'])) {
+         $form_data['Active'] = $_POST['active']; 
+     }
 
      return $form_data;
 }

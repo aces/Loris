@@ -1,29 +1,36 @@
+/* exported RBatteryManagerEditForm */
+
 /**
- * Battery Manager Add Form
+ * Battery Manager Edit Form
  *
- * Module component rendering Add tab
+ * Fetches data corresponding to a given entry from Loris backend and
+ * displays a form where user can update values in the entry
  *
  * @author Victoria Foing
  *
- */
-class BatteryManagerAddForm extends React.Component {
+ * @version 1.0.0
+ *
+ * */
+class BatteryManagerEditForm extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       Data: {},
       formData: {},
+      //uploadResult: null,
       isLoaded: false,
       loadedData: 0
     };
 
     // Bind component instance to custom methods
     this.setFormData = this.setFormData.bind(this);
-    this.handleAdd = this.handleAdd.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
     this.isDuplicate = this.isDuplicate.bind(this);
     this.giveOptions = this.giveOptions.bind(this);
     this.activateEntry = this.activateEntry.bind(this);
-    this.addEntry = this.addEntry.bind(this);
+    this.editEntry = this.editEntry.bind(this);
+     
   }
 
   componentDidMount() {
@@ -31,13 +38,29 @@ class BatteryManagerAddForm extends React.Component {
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
+        var formData = {
+          id: data.batteryData.ID,
+          instrument: data.batteryData.Test_name,
+          ageMinDays: data.batteryData.AgeMinDays,
+          ageMaxDays: data.batteryData.AgeMaxDays,
+          stage: data.batteryData.Stage,
+          subproject: data.batteryData.SubprojectID,
+          visitLabel: data.batteryData.Visit_label,
+          forSite: data.batteryData.CenterID,
+          firstVisit: data.batteryData.firstVisit,
+          instrumentOrder: data.batteryData.instr_order,
+          active: data.batteryData.Active
+        };
+        console.log(data);
         self.setState({
           Data: data,
-          isLoaded: true
+          isLoaded: true,
+          batteryData: data.batteryData,
+          formData: formData
         });
       },
-      error: function(data, errorCode, errorMsg) {
-        console.error(data, errorCode, errorMsg);
+      error: function(error, errorCode, errorMsg) {
+        console.error(error, errorCode, errorMsg);
         self.setState({
           error: 'An error occurred when loading the form!'
         });
@@ -46,7 +69,7 @@ class BatteryManagerAddForm extends React.Component {
   }
 
   render() {
-    // Data loading error
+    //Data loading error
     if (this.state.error !== undefined) {
       return (
         <div className="alert alert-danger text-center">
@@ -69,58 +92,79 @@ class BatteryManagerAddForm extends React.Component {
       );
     }
 
+    var alertMessage = "";
+    var alertClass = "alert text-center hide";
+    var backURL = loris.BaseURL.concat('/battery_manager/');
+
+    if (this.state.uploadResult) {
+      if (this.state.uploadResult === "success") {
+        alertClass = "alert alert-success text-center";
+        alertMessage = "Update Successful!";
+      } else if (this.state.uploadResult === "error") {
+        alertClass = "alert alert-danger text-center";
+        alertMessage = "Failed to update the file";
+      }
+    }
+
     // Inform users about duplicate entries
     var helpText = (
       <span>
-        You cannot add an entry if it has a duplicate entry in the test battery.<br/>
+        You cannot edit an entry to have the same values as another entry in the test battery.<br/>
         If the duplicate entry is inactive, you will be given the option to activate it.
       </span>
     );
 
     return (
-      <div className="row">
-        <div className="col-md-8 col-lg-7">
-          <FormElement
-            name="batteryAdd"
-            fileUpload={true}
-            onSubmit={this.handleAdd}
-            ref="form"
-          >
-            <h3>Add entry to Test Battery</h3><br/>
-            <StaticElement
-              label="Note"
-              text={helpText}
-            />
-            <SelectElement
-              name="instrument"
-              label="Instrument"
-              options={this.state.Data.instruments}
-              onUserInput={this.setFormData}
-              ref="instrument"
-              required={true}
-              value={this.state.formData.instrument}
-            />
-            <NumericElement
-              name="ageMinDays"
-              label="Minimum age"
-              onUserInput={this.setFormData}
-              ref="ageMinDays"
-              required={true}
-              min="0"
-              max="99999"
-              value={this.state.formData.ageMinDays}
-            />
-            <NumericElement
-              name="ageMaxDays"
-              label="Maximum age"
-              onUserInput={this.setFormData}
-              ref="ageMaxDays"
-              required={true}
-              min="0"
-              max="99999"
-              value={this.state.formData.ageMaxDays}
-            />
-            <SelectElement
+      <div>
+        <div className={alertClass} role="alert" ref="alert-message">
+          {alertMessage}
+        </div>
+        {
+          this.state.uploadResult === "success" ?
+          <a className="btn btn-primary" href={backURL}>Back to media</a> :
+          null
+        }
+        <FormElement
+          name="batteryEdit"
+          onSubmit={this.handleEdit}
+          ref="form"
+        >
+          <h3>Edit entry in Test Battery</h3><br/>
+          <StaticElement
+            label="Note"
+            text={helpText}
+          />
+          <SelectElement
+            name="instrument"
+            label="Instrument"
+            options={this.state.Data.instruments}
+            onUserInput={this.setFormData}
+            ref="instrument"
+            required={true}
+            //disabled={true}
+            value={this.state.formData.instrument}
+          />
+          <NumericElement
+            name="ageMinDays"
+            label="Minimum age"
+            onUserInput={this.setFormData}
+            ref="ageMinDays"
+            required={true}
+            min="0"
+            max="99999"
+            value={this.state.formData.ageMinDays}
+          />
+          <NumericElement
+            name="ageMaxDays"
+            label="Maximum age"
+            onUserInput={this.setFormData}
+            ref="ageMaxDays"
+            required={true}
+            min="0"
+            max="99999"
+            value={this.state.formData.ageMaxDays}
+          />
+          <SelectElement
               name="stage"
               label="Stage"
               options={this.state.Data.stages}
@@ -149,12 +193,10 @@ class BatteryManagerAddForm extends React.Component {
               required={false}
               value={this.state.formData.visitLabel}
             />
-            <SearchableDropdown
+            <SelectElement
               name="forSite"
               label="Site"
-              placeHolder="Search for site"
               options={this.state.Data.sites}
-              strictSearch={true}
               onUserInput={this.setFormData}
               ref="forSite"
               required={false}
@@ -179,35 +221,81 @@ class BatteryManagerAddForm extends React.Component {
               max="127"
               value={this.state.formData.instrumentOrder}
             />
-            <ButtonElement label="Add entry"/>
-          </FormElement>
-        </div>
+            <SelectElement
+              name="active"
+              label="Active"
+              emptyOption={false}
+              options={this.state.Data.active}
+              onUserInput={this.setFormData}
+              ref="active"
+              value={this.state.formData.active}
+            />
+          <ButtonElement label="Edit entry"/>
+        </FormElement>
       </div>
     );
   }
 
-/** *******************************************************************************
- *                      ******     Helper methods     *******
- *********************************************************************************/
-
   /**
-   * Handle form submission
-   * Check if entry the user is trying to add already exists in the table
+   * Handles form submission
+   * Check if edited entry already exists in the tables
    *
-   * @param {object} e - Form submission event
+   * @param {event} e - Form submission event
    */
-  handleAdd(e) {
+  handleEdit(e) {
     e.preventDefault();
 
-    let formData = this.state.formData;
+    var self = this;
+    var formData = this.state.formData;
+
+    //$('#mediaEditEl').hide();
+    //$("#file-progress").removeClass('hide');
+
+    /*$.ajax({
+      type: 'POST',
+      url: self.props.action,
+      data: JSON.stringify(myFormData),
+      cache: false,
+      contentType: false,
+      processData: false,
+      xhr: function() {
+        var xhr = new window.XMLHttpRequest();
+        xhr.upload.addEventListener("progress", function(evt) {
+          if (evt.lengthComputable) {
+            var progressbar = $("#progressbar");
+            var progresslabel = $("#progresslabel");
+            var percent = Math.round((evt.loaded / evt.total) * 100);
+            $(progressbar).width(percent + "%");
+            $(progresslabel).html(percent + "%");
+            progressbar.attr('aria-valuenow', percent);
+          }
+        }, false);
+        return xhr;
+      },
+      success: function(data) {
+        $("#file-progress").addClass('hide');
+        self.setState({
+          uploadResult: "success"
+        });
+        self.showAlertMessage();
+      },
+      error: function(err) {
+        console.error(err);
+        self.setState({
+          uploadResult: "error"
+        });
+        self.showAlertMessage();
+      }
+
+    });*/
 
     let formObj = new FormData();
     for (let key in formData) {
-      if (formData[key] !== "") {
+      if (formData[key] !== null) {
         console.log(key+": "+formData[key]);
         formObj.append(key, formData[key]);
-      } else if (formData[key] === null) {
-        console.log(key+" has no value");
+      } else {
+        console.log(key+" has null value");
       }
     }
      // Check if entry the user is trying to add already exists in the table
@@ -233,22 +321,23 @@ class BatteryManagerAddForm extends React.Component {
       }
     });
   }
-
+  
   /**
    * Give options depending on duplicate entry:
    * If there is an inactive duplicate entry, give option to activate it
    * If there is an active duplicate entry, give no options
-   * If there is no duplicate entry, add entry
+   * If there is no duplicate entry, edit entry
    *
    * @param {string} duplicateEntry returned by server
    */
   giveOptions(duplicateEntry) {
-        // if duplicate entry exists, convert to JSON
     console.log(duplicateEntry);
+        // if duplicate entry exists, convert to JSON
     if (Object.keys(duplicateEntry).length > 0) {
       let duplicateEntryJSON = JSON.parse(duplicateEntry);
+      console.log(duplicateEntryJSON);
           // create object with ID of duplicate entry
-      let entryID =	duplicateEntryJSON.ID;
+      let entryID =     duplicateEntryJSON.ID;
       var idObj = new FormData();
       idObj.append("ID", entryID);
           // if duplicate entry is not active, trigger activate popup
@@ -275,7 +364,7 @@ class BatteryManagerAddForm extends React.Component {
       }
         // if no duplicate entry exists, proceed with add entry
     } else {
-      this.addEntry();
+      this.editEntry();
     }
   }
 
@@ -299,7 +388,6 @@ class BatteryManagerAddForm extends React.Component {
           type: "success"
         }, function() {
           // return to browse tab upon success
-          console.log(data);
           window.location.assign(loris.BaseURL + "/battery_manager/");
           console.log(data);
         });
@@ -310,43 +398,47 @@ class BatteryManagerAddForm extends React.Component {
   }
 
   /**
-   * Add entry to the test battery
+   * Edit entry in the test battery
    */
-  addEntry() {
+  editEntry() {
     // create object with form data
     let formData = this.state.formData;
     let formObj = new FormData();
     for (let key in formData) {
-      if (formData[key] !== "") {
+      //if (formData[key] !== "") {
+        console.log(key+" (edit) : "+formData[key]);
         formObj.append(key, formData[key]);
-      }
+      //}
     }
 
     $.ajax({
       type: 'POST',
-      url: this.props.add,
+      url: this.props.edit,
       data: formObj,
       cache: false,
       contentType: false,
       processData: false,
-      success: function() {
+      success: function(data) {
+        console.log(data);
         this.setState({
           formData: {} // reset form data after successful entry
         });
         swal({
-          title: "Entry Successful!",
+          title: "Edit Successful!",
           type: "success"
         }, function() {
                  // return to browse tab upon success
+          console.log(data);
           window.location.assign(loris.BaseURL + "/battery_manager/");
         });
       }.bind(this),
       error: function(err) {
         console.error(err);
-        swal("Could not insert", "", "error");
+        swal("Could not edit", "", "error");
       }
     });
   }
+
 
   /**
    * Set the form data based on state values of child elements/componenets
@@ -357,18 +449,48 @@ class BatteryManagerAddForm extends React.Component {
   setFormData(formElement, value) {
     var formData = this.state.formData;
     formData[formElement] = value;
+    /*if (value === "") {
+      console.log(value);
+      formData[formElement] = null;
+    } else {
+      formData[formElement] = value;
+    }*/
 
     this.setState({
       formData: formData
     });
   }
+
+  /**
+   * Display a success/error alert message after form submission
+   */
+  /*showAlertMessage() {
+    var self = this;
+
+    if (this.refs["alert-message"] === null) {
+      return;
+    }
+
+    var alertMsg = this.refs["alert-message"];
+    $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function() {
+      self.setState({
+        uploadResult: null
+      });
+    });
+  }*/
+
 }
 
-BatteryManagerAddForm.propTypes = {
+BatteryManagerEditForm.propTypes = {
   DataURL: React.PropTypes.string.isRequired,
-  add: React.PropTypes.string.isRequired,
   activate: React.PropTypes.string.isRequired,
-  checkForDuplicate: React.PropTypes.string.isRequired
+  checkForDuplicate: React.PropTypes.string.isRequired,
+  edit: React.PropTypes.string.isRequired
 };
 
-export default BatteryManagerAddForm;
+//var RBatteryManagerEditForm = React.createFactory(BatteryManagerEditForm);
+
+//window.BatteryManagerEditForm = BatteryManagerEditForm;
+//window.RBatteryManagerEditForm = RBatteryManagerEditForm;
+
+export default BatteryManagerEditForm;

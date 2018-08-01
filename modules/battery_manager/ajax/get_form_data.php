@@ -1,8 +1,8 @@
 <?php
 /**
- * Battery Manager adder
+ * Battery Manager get data
  *
- * Gets data to populate dropdowns in Add tab
+ * Gets data to populate dropdowns in Add tab and Edit page
  *
  * PHP Version 7
  *
@@ -18,8 +18,45 @@
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
     if ($action === "getFormData") {
-        echo getFormData();
+       if (isset($_GET['ID'])) {
+        $entryID = $_GET['ID'];
+        echo getAllData($entryID);
+       } else {
+        echo json_encode(getFormData(null));
+       }
     }
+}
+
+function getAllData($entryID)
+{
+ $allData  = getFormData($entryID);
+ $allData['batteryData'] = getEntryData($entryID);
+ //echo json_encode($allData);
+ return json_encode($allData);
+}
+
+function getEntryData($entryID)
+{
+ $db = \Database::singleton();
+
+ $query = " SELECT * FROM test_battery WHERE id = :id ";
+ $entry = $db->pselectRow($query, array( 'id' => $entryID));
+
+ /*$entryData = [
+               'id' => $entry['id'],
+               'instrument' => $entry['Test_name'],
+               'ageMinDays' => $entry['AgeMinDays'],
+               'ageMaxDays' => $entry['AgeMaxDays'],
+               'stage' => $entry['Stage'],
+               'subproject' => $entry['SubprojectID'],
+               'visitLabel' => $entry['Visit_label'],
+               'forSite' => $entry['CenterID'],
+               'firstVisit' => $entry['firstVisit'],
+               'instrumentOrder' => $entry['instr_order'],
+               'active' => $entry['active']
+              ];
+ */
+ return $entry;
 }
 
 /**
@@ -27,7 +64,7 @@ if (isset($_GET['action'])) {
  *
  * @return array
  */
-function getFormData()
+function getFormData($entryID)
 {
     $formData = [
                  'instruments' => Utility::getAllInstruments(),
@@ -37,8 +74,12 @@ function getFormData()
                  'sites'       => Utility::getSiteList(false),
                  'firstVisits' => getYesNoList(),
                 ];
-
-    return json_encode($formData);
+  
+    if (isset($entryID)) {
+        $formData['active'] = getYesNoList();
+    }
+  
+    return $formData;
 }
 
 /**

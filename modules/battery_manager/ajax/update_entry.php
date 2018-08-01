@@ -17,9 +17,9 @@
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
     if ($action == "activate") {
-        updateEntry('Y');
+        echo updateEntry('Y');
     } else if ($action == "deactivate") {
-        updateEntry('N');
+        echo updateEntry('N');
     }
 }
 
@@ -47,12 +47,14 @@ function updateEntry($value)
     );
 
     $new_entry = $DB->pselectRow(
-        " SELECT * FROM test_battery WHERE ID = :batteryID ",
-        array("batteryID" => $_POST["ID"])
+        " SELECT * FROM test_battery WHERE ID = :batteryID AND Active = :active",
+        array("batteryID" => $_POST["ID"], "active" => $value)
     );
 
     if (empty($new_entry)) {
+        echo "empty";
         throw new Exception("Updated entry but could not fetch it");
     }
+    return json_encode($new_entry);
 }
 ?>

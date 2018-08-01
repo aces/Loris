@@ -166,7 +166,8 @@ class Battery_Manager extends \NDB_Menu_Filter
                'b.firstVisit as first_visit',
                'b.instr_order as instrumentOrder',
                'b.Active as active',
-               'b.id',
+               'b.id as changeStatus',
+               'b.id as edit',
               ];
 
         $this->query = $query;
@@ -189,6 +190,7 @@ class Battery_Manager extends \NDB_Menu_Filter
         // Add Edit field if user has permissions
         if ($this->hasWritePermission) {
             array_push($this->headers, 'Change Status');
+            array_push($this->headers, 'Edit Metadata');
         }
 
         return true;

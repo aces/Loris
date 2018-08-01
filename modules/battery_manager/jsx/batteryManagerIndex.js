@@ -171,6 +171,12 @@ class BatteryManagerIndex extends React.Component {
         }}>Activate</button></td>;
       }
     }
+    
+    if (column === 'Edit Metadata') {
+      let entryID = row['Edit Metadata'];
+      var editURL = loris.BaseURL + "/battery_manager/edit/?id=" + entryID;
+       return <td className={classes}><a href={editURL}>Edit</a></td>;
+    }
 
     return <td className={classes}>{cell}</td>;
   }
@@ -244,6 +250,41 @@ class BatteryManagerIndex extends React.Component {
                     });
     }.bind(this));
   }
+
+   /*
+  * Navigate to edit page
+  */
+  activateEntry(idObj) {
+    swal({
+      title: "Are you sure you want to activate this entry?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: "Cancel",
+      closeOnConfirm: false
+    }, function() {
+      $.ajax({
+        type: 'POST',
+        url: this.props.activate,
+        data: idObj,
+        cache: false,
+        contentType: false,
+        processData: false
+      })
+                    .done(function(data) {
+                      swal({
+                        title: "Activated!",
+                        type: "success"
+                      }, function() {
+                        location.reload();
+                      });
+                    })
+                    .error(function(data) {
+                      swal("Could not activate entry", "", "error");
+                    });
+    }.bind(this));
+  }
+
 }
 
 $(function() {
@@ -253,6 +294,7 @@ $(function() {
         DataURL={`${loris.BaseURL}/battery_manager/?format=json`}
         deactivate={`${loris.BaseURL}/battery_manager/ajax/update_entry.php?action=deactivate`}
         activate={`${loris.BaseURL}/battery_manager/ajax/update_entry.php?action=activate`}
+        edit={`${loris.BaseURL}/battery_manager/ajax/add_entry.php?action=edit`}
       />
     </div>
   );
