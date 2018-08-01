@@ -104,6 +104,8 @@ class Publication extends \NDB_Menu_Filter_Form
                           'p.Description',
                           'GROUP_CONCAT(DISTINCT pc.Name)', // Collaborators
                           // vv Variables of Interest vv
+                          // need to use IFNULL since GROUP_CONCAT seems to fail
+                          // if first column has no entries
                           'GROUP_CONCAT(
                             DISTINCT IFNULL(pt.Name, ""), IFNULL(tn.Test_name,"")
                           )',
