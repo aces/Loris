@@ -167,8 +167,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                     );
                 } catch (\Exception $e) {
                     $errors = array(
-                        'mri_file' => $e->getMessage()
-                    );
+                               'mri_file' => $e->getMessage()
+                              );
                     http_response_code(500);
                     header('Content-Type: application/json; charset=UTF-8');
                     exit(json_encode(['errors' => $errors]));
