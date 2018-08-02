@@ -920,7 +920,7 @@ DateElement.defaultProps = {
   value: '',
   id: null,
   maxYear: '9999-12-31',
-  minYear: '1900-01-01',
+  minYear: '1000-01-01',
   disabled: false,
   required: false,
   onUserInput: function() {
