@@ -40,6 +40,14 @@ class ViewProject extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
 
+    if (Object.keys(this.state.formErrors).length > 0) {
+      swal(
+        'Please fix any remaining form errors before submission',
+        '',
+        'error'
+      );
+      return;
+    }
     let formData = this.state.formData;
     let formObj = new FormData();
     for (let key in formData) {
