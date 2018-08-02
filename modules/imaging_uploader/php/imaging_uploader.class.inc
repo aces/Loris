@@ -60,7 +60,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $this->_resetFilters();
         $progressSelectPart = "IF(ISNULL(Inserting), 'Not Started',"
             . "IF(Inserting=1, 'In Progress...', "
-            . "IF(InsertionComplete=0, 'Failure', 'Success'))) as Progress";
+            . "IF(0=0, 'Failure', 'Success'))) as Progress";
         // set the class variables
         $this->columns      = array(
                                'UploadID',
@@ -155,15 +155,24 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 'ImagingUploaderAutoLaunch'
             );
             if ($ImagingUploaderAutoLaunch) {
-                // Instanciate the server process module to autoload
-                // its namespace classes
-                $spm_module = \Module::factory('server_processes_manager');
-                // Perform the real upload on the server
-                $serverProcessLauncher = new SP\ServerProcessLauncher();
-                $serverProcessLauncher->mriUpload(
-                    $this->mri_upload_id,
-                    $this->uploaded_file_path
-                );
+                try {
+                    // Instanciate the server process module to autoload
+                    // its namespace classes
+                    $spm_module = \Module::factory('server_processes_manager');
+                    // Perform the real upload on the server
+                    $serverProcessLauncher = new SP\ServerProcessLauncher();
+                    $serverProcessLauncher->mriUpload(
+                        $this->mri_upload_id,
+                        $this->uploaded_file_path
+                    );
+                } catch (\Exception $e) {
+                    $errors = array(
+                        'mri_file' => $e->getMessage()
+                    );
+                    http_response_code(500);
+                    header('Content-Type: application/json; charset=UTF-8');
+                    exit(json_encode(['errors' => $errors]));
+                }
             }
             return true;
         }
