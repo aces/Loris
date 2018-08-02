@@ -75,14 +75,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
         // I don't think anyone uses this. It's not really supported
         $tpl_data['css'] = $this->Config->getSetting('css');
 
-
-        // This should be moved out of the middleware and into the modules that need it,
-        // but is currently required for backwards compatibility.
         $page = $request->getAttribute("pageclass");
-        if (method_exists($page, 'getControlPanel')) {
-            $tpl_data['control_panel'] = $page->getControlPanel();
-        }
-
         if (method_exists($page, 'getFeedbackPanel')
             && $user->hasPermission('bvl_feedback')
             && $candID !== null
@@ -176,6 +169,15 @@ class UserPageDecorationMiddleware implements MiddlewareInterface {
         // calls setup which modifies the $page->FormAction value (ie in the imaging
         // browser)
         $undecorated = $handler->handle($request);
+
+        // This should be moved out of the middleware and into the modules that need it,
+        // but is currently required for backwards compatibility.
+        // This should also come after the above call to handle() in order for updated data
+        // on the controlPanel to be properly displayed.
+        if (method_exists($page, 'getControlPanel')) {
+            $tpl_data['control_panel'] = $page->getControlPanel();
+        }
+
         // This seems to only be used in imaging_browser, it can probably be
         // moved to properly use OOP.
         $tpl_data['FormAction'] = $page->FormAction ?? '';
