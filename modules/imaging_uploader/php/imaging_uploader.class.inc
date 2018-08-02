@@ -60,7 +60,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $this->_resetFilters();
         $progressSelectPart = "IF(ISNULL(Inserting), 'Not Started',"
             . "IF(Inserting=1, 'In Progress...', "
-            . "IF(0=0, 'Failure', 'Success'))) as Progress";
+            . "IF(InsertionComplete=0, 'Failure', 'Success'))) as Progress";
         // set the class variables
         $this->columns      = array(
                                'UploadID',
