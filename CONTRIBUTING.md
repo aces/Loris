@@ -3,7 +3,7 @@
 We'd love to have you contribute to Loris. The first thing you should do
 before contributing is probably sign up for the [LORIS developers' mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev).
 
-Your next step before issuing a pull request is to review our [Coding Standards](https://github.com/aces/Loris/blob/minor/docs/CodingStandards). If you are doing front-end development you should also check out our [React guidelines](https://github.com/johnsaigle/Loris/blob/180631-Contributing/LORIS_react.README.md).
+Your next step before issuing a pull request is to review our [Coding Standards](./docs/CodingStandards.md). If you are doing front-end development you should also check out our [React guidelines](https://github.com/johnsaigle/Loris/blob/180631-Contributing/LORIS_react.README.md).
 
 You can also learn about our code review process by perusing our [Code Review Checklist](https://github.com/aces/Loris/wiki/Code-Review-Checklist) in the [LORIS Wiki](https://github.com/aces/Loris/wiki). These will be some of the factors we'll consider when reviewing your code.
 
