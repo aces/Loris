@@ -156,10 +156,19 @@ if (empty($configValue)) {
     array_push($errors, "useConsent's Config value missing from Config table.
                Run SQL/New_patches/2018-03-01_normalise_consent.sql");
 }
+// Check new consent tables exist
 if (!$db->tableExists('consent') || !$db->tableExists('candidate_consent_rel') || !$db->tableExists('candidate_consent_history')) {
     array_push($errors, "New, normalized consent tables do not exist.
                Run SQL/New_patches/2018-03-01_normalise_consent.sql");
 }
+// Check rel and history tables are empty
+$consentRelResult     = $db->pselect("SELECT * FROM candidate_consent_rel", array());
+$consentHistoryResult = $db->pselect("SELECT * FROM candidate_consent_history", array());
+
+if(!empty($consentRelResult) || !empty($consentHistoryResult)) {
+    array_push($errors, "This is a single use script. New tables candidate_consent_rel and candidate_consent_history need to be empty. Delete entries in order to proceed.\n\n");
+}
+
 //////////////////
 // THROW ERRORS //
 //////////////////
