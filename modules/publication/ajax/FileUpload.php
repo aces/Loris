@@ -502,9 +502,12 @@ function editProject() : void
         $uid     = $user->getId();
         if ($uid !== $creatorUser
             && !in_array($uid, $editors)
+            && !$user->hasPermission('publication_approve')
         ) {
-            header("HTTP/1.1 403 Forbidden");
-            exit;
+            showError(
+                "You do not have edit or approval access for this project!",
+                403
+            );
         }
     } else {
         showError('No Publication ID provided');
