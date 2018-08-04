@@ -311,19 +311,11 @@ class Edit_User extends \NDB_Form
                             WHERE full_name=:fullName",
                     array('fullName' => $values['Real_name'])
                 );
-//            } elseif (!empty($examinerID)
-//                && ((!empty($ex_radiologist)
-//                && !empty($ex_pending)
-//                && !empty($ex_curr_sites))
-//                || (empty($ex_radiologist)
-//                && empty($ex_pending)
-//                && empty($ex_curr_sites)))
-//            ) {
-                } elseif (!empty($examinerID)
-                  && ((!empty($ex_radiologist)
-                  && !empty($ex_pending)
-                  && !empty($ex_curr_sites))
-                  || empty($ex_curr_sites))
+            } elseif (!empty($examinerID)
+                && ((!empty($ex_radiologist)
+                && !empty($ex_pending)
+                && !empty($ex_curr_sites))
+                || empty($ex_curr_sites))
             ) {
                 // If examiner already exists in the examiner table AND
                 // radiologist, pending and current sites fields all set or
