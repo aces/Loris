@@ -54,7 +54,18 @@ function getEntryData($entryID)
 {
     $db = \Database::singleton();
 
-    $query = " SELECT * FROM test_battery WHERE id = :id ";
+    $query = " SELECT
+               ID,
+               Test_name,
+               AgeMinDays,
+               AgeMaxDays,
+               Active,
+               Stage,
+               SubprojectID,
+               Visit_label,
+               CenterID,
+               firstVisit,
+               instr_order FROM test_battery WHERE id = :id ";
     $entry = $db->pselectRow($query, array( 'id' => $entryID));
 
     /*$entryData = [

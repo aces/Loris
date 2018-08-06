@@ -1,6 +1,6 @@
 <?php
 /**
- * Battery Manager adder
+ * Battery Manager entry adder
  *
  * Checks Test Battery for duplicates and handles insertions into Test Battery
  *
@@ -29,7 +29,7 @@ if (isset($_GET['action'])) {
 /**
  * Return duplicate of entry if it exists and null otherwise
  *
- * @return Object or null
+ * @return json object or null
  */
 function checkForDuplicate()
 {
@@ -39,7 +39,18 @@ function checkForDuplicate()
     $form_data = getFormData();
 
     // Build SQL query based on values entered by user
-    $query     = " SELECT * FROM test_battery ";
+    $query     = " SELECT
+                   ID,
+                   Test_name,
+                   AgeMinDays,
+                   AgeMaxDays,
+                   Active,
+                   Stage,
+                   SubprojectID,
+                   Visit_label,
+                   CenterID,
+                   firstVisit,
+                   instr_order FROM test_battery ";
     $i         = 0;
     $connector = "WHERE ";
     foreach ($form_data as $key => $value) {
@@ -171,5 +182,4 @@ function showError($message)
     }
     header('HTTP/1.1 500 Internal Server Error');
     header('Content-Type: application/json; charset=UTF-8');
-    die(json_encode(['message' => $message]));
 }
