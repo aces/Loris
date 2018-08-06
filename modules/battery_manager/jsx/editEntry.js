@@ -331,7 +331,9 @@ class BatteryManagerEditForm extends React.Component {
    * @param {string} duplicateEntry returned by server
    */
   giveOptions(duplicateEntry) {
+    var formData = this.state.formData;
     console.log(duplicateEntry);
+    console.log(JSON.stringify(formData));
         // if duplicate entry exists, convert to JSON
     if (Object.keys(duplicateEntry).length > 0) {
       let duplicateEntryJSON = JSON.parse(duplicateEntry);
@@ -340,29 +342,68 @@ class BatteryManagerEditForm extends React.Component {
       let entryID =     duplicateEntryJSON.ID;
       var idObj = new FormData();
       idObj.append("ID", entryID);
-          // if duplicate entry is not active, trigger activate popup
-      if (duplicateEntryJSON.Active === 'N') {
-        swal({
-          title: "Deactivated entry!",
-          text: "A deactivated entry with these values already exists!\n Would you like to reactivate this entry?",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonText: 'Yes',
-          cancelButtonText: "Cancel",
-          closeOnConfirm: false
-        }, function() {
-                  // if user confirms activate popup, call activate function with ID
-          this.activateEntry(idObj);
-        }.bind(this));
-          // else if duplicate entry is active, trigger error popup
-      } else if (duplicateEntryJSON.Active === 'Y') {
+      // check if form data and duplicate entry have the same active status
+      if (duplicateEntryJSON.Active === formData.active) {
+        let errorMessage = "The changes you made are identical to another entry in the table.";
+        // check if no changes were made to selected entry and update message
+        if (duplicateEntryJSON.ID === formData.id) {
+            errorMessage = "You did not make any changes to the current entry.";
+        }
         swal({
           title: "Duplicate entry!",
-          text: "This entry already exists in the database",
+          text: errorMessage,
           type: "error"
         });
       }
-        // if no duplicate entry exists, proceed with add entry
+      else {
+          // if duplicate entry is not active, trigger activate popup
+          if (duplicateEntryJSON.Active === 'N') {
+              if (formData.active === 'Y') {
+                let warningMessage = "The changes you made are identical to another entry in the table, with the exception of the Active status.\n " +
+                                     "Would you like to activate the other entry?\n Note: No changes will be made to the current entry.";
+                if (duplicateEntryJSON.ID === formData.id) {
+                    warningMessage = "You did not make any changes to the current entry except for the Active status.\n " +
+                                     "Would you like to activate this entry?";
+                }
+                swal({
+            		title: "Activate entry?",
+            		text: warningMessage,
+          		type: "warning",
+          		showCancelButton: true,
+          		confirmButtonText: 'Yes',
+          		cancelButtonText: "Cancel",
+          		closeOnConfirm: false
+       	    	}, function() {
+                  // if user confirms activate popup, call activate function with ID
+                	this.activateEntry(idObj);
+            	}.bind(this));
+              }
+          }
+          // else if duplicate entry is active, trigger error popup
+          else if (duplicateEntryJSON.Active === 'Y') {
+              if (formData.active === 'N') {
+                let warningMessage = "The changes you made are identical to another entry in the table, with the exception of the Active status.\n " +
+                                     "Would you like to deactivate the other entry?\n Note: No changes will be made to the current entry.";
+                if (duplicateEntryJSON.ID === formData.id) {
+                    warningMessage = "You did not make any changes to the current entry except for the Active status.\n " +
+                                     "Would you like to deactivate this entry?";
+                }  
+                swal({
+                        title: "Deactivate entry?",
+                        text: warningMessage,
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes',
+                        cancelButtonText: "Cancel",
+                        closeOnConfirm: false
+                }, function() {
+                  // if user confirms activate popup, call activate function with ID
+                        this.deactivateEntry(idObj);
+                }.bind(this));
+              }
+          } 
+      }
+        // if no duplicate entry exists, proceed with edit entry
     } else {
       this.editEntry();
     }
@@ -394,6 +435,35 @@ class BatteryManagerEditForm extends React.Component {
       })
       .error(function(data) {
         swal("Could not activate entry", "", "error");
+      });
+  }
+
+  /**
+   * Deactivate duplicate entry in the test battery
+   *
+   * @param {object} idObj containing id of entry
+   */
+  deactivateEntry(idObj) {
+    $.ajax({
+      type: 'POST',
+      url: this.props.deactivate,
+      data: idObj,
+      cache: false,
+      contentType: false,
+      processData: false
+    })
+      .done(function(data) {
+        swal({
+          title: "Deactivated!",
+          type: "success"
+        }, function() {
+          // return to browse tab upon success
+          window.location.assign(loris.BaseURL + "/battery_manager/");
+          console.log(data);
+        });
+      })
+      .error(function(data) {
+        swal("Could not deactivate entry", "", "error");
       });
   }
 
@@ -484,6 +554,7 @@ class BatteryManagerEditForm extends React.Component {
 BatteryManagerEditForm.propTypes = {
   DataURL: React.PropTypes.string.isRequired,
   activate: React.PropTypes.string.isRequired,
+  deactivate: React.PropTypes.string.isRequired,
   checkForDuplicate: React.PropTypes.string.isRequired,
   edit: React.PropTypes.string.isRequired
 };

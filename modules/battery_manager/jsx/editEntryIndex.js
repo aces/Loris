@@ -18,6 +18,7 @@ $(function() {
             DataURL={`${loris.BaseURL}/battery_manager/ajax/get_form_data.php?action=getFormData&ID=${args.id}`}
             checkForDuplicate={`${loris.BaseURL}/battery_manager/ajax/add_entry.php?action=checkForDuplicate`}
             activate={`${loris.BaseURL}/battery_manager/ajax/update_entry.php?action=activate`}
+            deactivate={`${loris.BaseURL}/battery_manager/ajax/update_entry.php?action=deactivate`}
             edit={`${loris.BaseURL}/battery_manager/ajax/add_entry.php?action=edit`}
           />
         </div>

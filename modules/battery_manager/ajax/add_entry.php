@@ -53,6 +53,7 @@ function checkForDuplicate()
                    instr_order FROM test_battery ";
     $i         = 0;
     $connector = "WHERE ";
+    unset($form_data["Active"]);
     foreach ($form_data as $key => $value) {
         if ($i > 0) {
             $connector = "AND ";
