@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains code for editing context help section
+ * This file sets up the Edit Help Content page and form.
  *
  * PHP Version 7
  *
@@ -25,7 +25,6 @@ namespace LORIS\help_editor;
 
 class Edit_Help_Content extends \NDB_Form
 {
-    var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
      /**
      * Determine if user has permission to access this page
      *
@@ -36,7 +35,7 @@ class Edit_Help_Content extends \NDB_Form
         // create user object
         $user = \User::singleton();
 
-            // check user permissions
+        // check user permissions
         return $user->hasPermission('context_help');
     }
      /**
@@ -50,14 +49,16 @@ class Edit_Help_Content extends \NDB_Form
         //Get the default values
 
         // Sanitize user input
-        $safeHelpID     = htmlspecialchars($_REQUEST['helpID']);
         $safeSection    = $_REQUEST['section'] ?
             htmlspecialchars($_REQUEST['section']) : '';
         $safeSubsection = $_REQUEST['subsection'] ?
             htmlspecialchars($_REQUEST['subsection']) : '';
 
         if (isset($_REQUEST['helpID'])) {
-            $helpID = $safeHelpID;
+            $helpID = htmlspecialchars($_REQUEST['helpID']);
+        }
+        if (isset($_GET['parentID'])) {
+            $parentID = htmlspecialchars($_GET['parentID']);
         }
         if (!empty($_REQUEST['section'])) {
             $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
@@ -65,10 +66,13 @@ class Edit_Help_Content extends \NDB_Form
         if (!empty($_REQUEST['section'])
             && $_REQUEST['subsection'] != 'undefined'
         ) {
-            $helpID = HelpFile::hashToID(md5($_REQUEST['subsection']));
+            $helpID   = HelpFile::hashToID(md5($_REQUEST['subsection']));
+            $parentID = HelpFile::hashToID(md5($_GET['section']));
         }
         $this->tpl_data['section']    = $safeSection;
         $this->tpl_data['subsection'] = $safeSubsection;
+        $this->tpl_data['helpID']     = $helpID ? $helpID : '';
+        $this->tpl_data['parentID']   = $parentID ? $parentID : '';
 
         if (!empty($helpID)) {
             $help_file = HelpFile::factory($helpID);
@@ -82,6 +86,8 @@ class Edit_Help_Content extends \NDB_Form
             }
 
         }
+        // let escaped html display as intended in form
+        $defaults['content'] = htmlspecialchars_decode($defaults['content']);
         // case where no help content exists
         if (empty($defaults['title'])) {
             if (!empty($_REQUEST['section'])) {
@@ -97,121 +103,10 @@ class Edit_Help_Content extends \NDB_Form
             $defaults['content'] = 'Under Construction';
         }
 
-        if (isset($_COOKIE["LastUrl"]) ) {
-            $this->tpl_data['url'] = $_COOKIE["LastUrl"];
+        if (isset($_SERVER['HTTP_REFERER']) ) {
+            $this->tpl_data['url'] = $_SERVER['HTTP_REFERER'];
         }
         return $defaults;
-    }
-     /**
-      * Process function
-      *
-      * @param string $values the value
-      *
-      * @return void
-      */
-    function _process($values)
-    {
-        $DB = \Database::singleton();
-        //Get the default values
-
-        // Sanitize user input
-        $safeHelpID     = htmlspecialchars($_REQUEST['helpID']);
-        $safeParentID   = htmlspecialchars($_REQUEST['parentID']);
-        $safeSection    = htmlspecialchars($_REQUEST['section']);
-        $safeSubsection = htmlspecialchars($_REQUEST['subsection']);
-        if (isset($_REQUEST['helpID'])) {
-            $helpID = $safeHelpID;
-        }
-        if (isset($_REQUEST['parentID'])) {
-            $parentID = $safeParentID;
-        }
-
-        if (!empty($_REQUEST['section'])) {
-            $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
-        }
-        if (!empty($_REQUEST['section'])
-            && $_REQUEST['subsection'] != 'undefined'
-        ) {
-            $helpID   = HelpFile::hashToID(md5($_REQUEST['subsection']));
-            $parentID = HelpFile::hashToID(md5($_REQUEST['section']));
-        }
-        if (!empty($helpID)
-            && isset($values['title'])
-            && isset($values['content'])
-        ) {
-            $help_file = HelpFile::factory($helpID);
-            // update the help file
-            $success = $help_file->update(
-                array(
-                 'topic'   => $values['title'],
-                 'content' => $values['content'],
-                 'updated' => date(
-                     'Y-m-d h:i:s',
-                     time()
-                 ),
-                )
-            );
-        } else {
-            //content does not exist insert the help file
-            if (!empty($_REQUEST['section'])
-                && $_REQUEST['subsection'] != 'undefined'
-                && empty($parentID)
-            ) {
-                //create parent help section first
-                $parentID = HelpFile::insert(
-                    array(
-                     'hash'    => md5($_REQUEST['section']),
-                     'topic'   => "",
-                     'content' => "Under construction",
-                     'created' => date(
-                         'Y-m-d h:i:s',
-                         time()
-                     ),
-                    )
-                );
-                 // check errors
-
-            }
-            if (!empty($_REQUEST['section'])
-                && $_REQUEST['subsection'] != 'undefined'
-                && !empty($parentID)
-            ) {
-
-                // insert the help file
-                $helpID = HelpFile::insert(
-                    array(
-                     'parentID' => $parentID,
-                     'hash'     => md5($_REQUEST['subsection']),
-                     'topic'    => $values['title'],
-                     'content'  => $values['content'],
-                     'created'  => date(
-                         'Y-m-d h:i:s',
-                         time()
-                     ),
-                    )
-                );
-
-            } else if (!empty($_REQUEST['section'])
-                && $_REQUEST['subsection'] == 'undefined'
-            ) {
-                //default case
-                $helpID = HelpFile::insert(
-                    array(
-                     'hash'    => md5($_REQUEST['section']),
-                     'topic'   => $values['title'],
-                     'content' => $values['content'],
-                     'created' => date(
-                         'Y-m-d h:i:s',
-                         time()
-                     ),
-                    )
-                );
-
-            }
-
-        }
-        $this->tpl_data['success'] =  true;
-
     }
 
     /**

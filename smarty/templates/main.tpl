@@ -205,8 +205,6 @@
 
             {/if}
             {if $dynamictabs neq "dynamictabs"}
-            {* Add enough spacing to get below the menu *}
-                <br><br><br>
             <div class="page-content inset">
 
                 {if $console}
@@ -224,7 +222,7 @@
                         <div>
                             {if $error_message != ""}
                                 <p>
-                                    The following errors occured while attempting to display this page:
+                                    The following errors occurred while attempting to display this page:
                                     <ul>
                                         {section name=error loop=$error_message}
                                             <li>
@@ -484,7 +482,7 @@
                     </ul>
                 </center>
                 <div align="center" colspan="1">
-                    Powered by LORIS version {$version} &copy; {$currentyear}. All rights reserved.
+                    Powered by LORIS &copy; {$currentyear}. All rights reserved.
                 </div>
       		<div align="center" colspan="1">
                     Created by <a href="http://mcin-cnim.ca/" target="_blank">

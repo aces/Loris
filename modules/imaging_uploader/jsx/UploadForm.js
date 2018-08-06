@@ -195,7 +195,7 @@ class UploadForm extends React.Component {
         });
       },
       error: function(err) {
-        const errMessage = "The following errors occured while " +
+        const errMessage = "The following errors occurred while " +
           "attempting to display this page:";
         let responseText = err.responseText;
         if (responseText.indexOf(errMessage) > -1) {

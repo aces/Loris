@@ -29,7 +29,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     //$location: css selector for react items
     static $patientID   = "#dicom_filter>div>div:nth-child(1)>div>div>input";
     static $PatientName = "#dicom_filter>div>div:nth-child(2)>div>div>input";
-    static $site        = "#Site";
+    static $site        = "select.form-control";
     static $Gender      = "#dicom_filter>div>div:nth-child(4)>div>div>input";
     static $dateOfBirth = "#dicom_filter>div>div:nth-child(5)>div>div>input";
     static $Acquisition = "#dicom_filter>div>div:nth-child(6)>div>div>input";

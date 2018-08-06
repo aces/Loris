@@ -20,7 +20,7 @@ var config = [{
     './modules/data_team_helper/js/behavioural_qc_module.js': './modules/data_team_helper/jsx/behavioural_qc_module.js',
     './modules/candidate_list/js/columnFormatter.js': './modules/candidate_list/jsx/columnFormatter.js',
     './modules/candidate_list/js/onLoad.js': './modules/candidate_list/jsx/onLoad.js',
-    './modules/datadict/js/columnFormatter.js': './modules/datadict/jsx/columnFormatter.js',
+    './modules/datadict/js/dataDictIndex.js': './modules/datadict/jsx/dataDictIndex.js',
     './modules/dataquery/js/react.app.js': './modules/dataquery/jsx/react.app.js',
     './modules/dataquery/js/react.fieldselector.js': './modules/dataquery/jsx/react.fieldselector.js',
     './modules/dataquery/js/react.filterBuilder.js': './modules/dataquery/jsx/react.filterBuilder.js',
@@ -49,7 +49,8 @@ var config = [{
     './modules/help_editor/js/columnFormatter.js': './modules/help_editor/jsx/columnFormatter.js',
     './modules/brainbrowser/js/Brainbrowser.js': './modules/brainbrowser/jsx/Brainbrowser.js',
     './modules/data_integrity_flag/js/index.js': './modules/data_integrity_flag/jsx/index.js',
-    './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js'
+    './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js',
+    './modules/acknowledgements/js/columnFormatter.js': './modules/acknowledgements/jsx/columnFormatter.js'
   },
   output: {
     path: './',

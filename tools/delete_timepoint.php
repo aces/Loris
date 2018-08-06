@@ -21,22 +21,6 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once __DIR__ . "/generic_includes.php";
 
-/**
- * This script deletes the specified candidate timepoint.
- *
- * Delete all timepoint rows for a given candidate
- * echo "Usage: php delete_timepoint.php delete_timepoint CandID PSCID SessionID [confirm] [tosql]";
- * echo "Example: php delete_timepoint.php delete_timepoint 965327 dcc0007 482";
- * echo "Example: php delete_timepoint.php delete_timepoint 965327 dcc0007 482 confirm";
- * echo "Example: php delete_timepoint.php delete_timepoint 965327 dcc0007 482 tosql";
- *
- * @category Main
- * @package  Loris
- * @author   Various <example@example.com>
- * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
- */
-
 // Possible script actions
 $actions = array('delete_timepoint');
 
@@ -107,15 +91,29 @@ if ($sessionID != null) {
             "in the database or is set to Active='N' state.\n\n";
         die();
     }
+    // Check for existence of imaging data
+    $filesExist = $DB->pselectOne(
+        "SELECT COUNT(*) FROM files WHERE SessionID=:sid",
+        array(
+            'sid' => $sessionID
+        )
+    );
+    $numFiles = (int)$filesExist;
+    if ($numFiles > 0) {
+        echo "Session ID $sessionID for candidate $CandID has imaging data and files ".
+            "in the database, and should not be deleted. Look at `files` and `tarchive` ".
+            "tables before deleting timepoint.\n\n";
+        die();
+    }
 }
+
 
 /*
  * The switch to execute actions
  */
 switch ($action) {
 case 'delete_timepoint':
-    deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $output);
-    break;
+    return deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $output);
 }
 
 /*
@@ -135,7 +133,11 @@ function showHelp()
 
     die();
 }
-
+/*
+ * All tables with entries to be deleted here are only those with FOREIGN KEY relations to `session`.
+ * All other tables with FOREIGN KEY relations to these tables (second-level relations) should
+ * have actions on delete specified in the database schema
+ */
 function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $output)
 {
     echo "\n#########################################################################\n";
@@ -146,14 +148,19 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
 
     // Print each instrument instance
     foreach ($instruments as $instrument) {
-        $result = $DB->pselect(
-            'SELECT CommentID FROM ' . $DB->escape($instrument['Test_name']) . ' WHERE CommentID=:cid',
-            array('cid' => $instrument['CommentID'])
-        );
-        echo "\n{$instrument['Test_name']}\n";
-        echo "-----------------------------------------\n";
-        print_r($result);
-
+        try {
+            $result = $DB->pselect(
+                'SELECT CommentID FROM ' . $DB->escape($instrument['Test_name']) . ' WHERE CommentID=:cid',
+                array('cid' => $instrument['CommentID'])
+            );
+            echo "\n{$instrument['Test_name']}\n";
+            echo "-----------------------------------------\n";
+            print_r($result);
+        } catch (DatabaseException $e) {
+            echo "\nERROR:\n";
+            echo $e->getMessage();
+        }
+        
         // Print from conflicts
         echo "\nConflicts Unresolved\n";
         echo "----------------------\n";
@@ -180,6 +187,24 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
     echo "\nMedia\n";
     echo "-------\n";
     $result = $DB->pselect('SELECT * FROM media WHERE session_id=:sid', array('sid' => $sessionID));
+    print_r($result);
+
+   // Print from issues
+    echo "\nIssues\n";
+    echo "-------\n";
+    $result = $DB->pselect('SELECT * FROM issues WHERE sessionID=:sid', array('sid' => $sessionID));
+    print_r($result);
+
+   // Print from mri_acquisition_dates
+    echo "\nMRI Acquisition Dates\n";
+    echo "-------\n";
+    $result = $DB->pselect('SELECT * FROM mri_acquisition_dates WHERE SessionID=:sid', array('sid' => $sessionID));
+    print_r($result);
+
+   // Print from mri_upload
+    echo "\nMRI Upload\n";
+    echo "-------\n";
+    $result = $DB->pselect('SELECT * FROM mri_upload WHERE SessionID=:sid', array('sid' => $sessionID));
     print_r($result);
 
     // Print from session
@@ -212,15 +237,21 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
     if ($confirm) {
         // Delete each instrument instance
         foreach ($instruments as $instrument) {
-            $name = implode(" -> ", $instrument);
-            echo "\n-- Deleting Instrument $name.\n";
-            $DB->delete($instrument['Test_name'], array('CommentID' => $instrument['CommentID']));
-
-            // Delete from conflicts
-            $DB->delete('conflicts_unresolved', array('CommentId1' => $instrument['CommentID']));
-            $DB->delete('conflicts_unresolved', array('CommentId2' => $instrument['CommentID']));
-            $DB->delete('conflicts_resolved', array('CommentId1' => $instrument['CommentID']));
-            $DB->delete('conflicts_resolved', array('CommentId2' => $instrument['CommentID']));
+            try {
+                $name = implode(" -> ", $instrument);
+                echo "\n-- Deleting Instrument $name.\n";
+                $DB->delete($instrument['Test_name'], array('CommentID' => $instrument['CommentID']));
+    
+                // Delete from conflicts
+                $DB->delete('conflicts_unresolved', array('CommentId1' => $instrument['CommentID']));
+                $DB->delete('conflicts_unresolved', array('CommentId2' => $instrument['CommentID']));
+                $DB->delete('conflicts_resolved', array('CommentId1' => $instrument['CommentID']));
+                $DB->delete('conflicts_resolved', array('CommentId2' => $instrument['CommentID']));
+            } catch (DatabaseException $e) {
+                echo "\nERROR:\n";
+                echo $e->getMessage();
+            }
+            
         }
         // Delete from flag
         echo "\n-- Deleting from flag.\n";
@@ -229,6 +260,18 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
         //Delete from media
         echo "\n-- Deleting from media.\n";
         $DB->delete('media', array('session_id' => $sessionID));
+
+        //Delete from issues
+        echo "\n-- Deleting from issues.\n";
+        $DB->delete('issues', array('sessionID' => $sessionID));
+
+        // Delete from mri_acquisition_dates
+        echo "\n-- Deleting from mri acquisition dates.\n";
+        $DB->delete('mri_acquisition_dates', array('SessionID' => $sessionID));
+
+        // Delete from mri_upload
+        echo "\n-- Deleting from mri upload.\n";
+        $DB->delete('mri_upload', array('SessionID' => $sessionID));
 
         // Delete from feedback
         echo "\n-- Deleting from feedback.\n";
@@ -240,7 +283,7 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
         // Delete from session
         echo "\n-- Deleting from session.\n";
         $DB->delete('session', array('ID' => $sessionID));
-    } elseif ($printToSQL) {
+    } else {
         // Delete each instrument instance
         foreach ($instruments as $instrument) {
             $name    = implode(" -> ", $instrument);
@@ -261,6 +304,18 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
         $output .= "\n-- Deleting from media.\n";
         _printResultsSQL('media', array('session_id' => $sessionID), $output, $DB);
 
+        // Delete from issues
+        $output .= "\n-- Deleting from issues.\n";
+        _printResultsSQL('issues', array('sessionID' => $sessionID), $output, $DB);
+
+        // Delete from mri_acquisition_dates
+        $output .= "\n-- Deleting from MRI acquisition dates.\n";
+        _printResultsSQL('mri_acquisition_dates', array('SessionID' => $sessionID), $output, $DB);
+
+        // Delete from mri_upload
+        $output .= "\n-- Deleting from MRI upload.\n";
+        _printResultsSQL('mri_upload', array('SessionID' => $sessionID), $output, $DB);
+
         // Delete from feedback
         $output .= "\n-- Deleting from feedback.\n";
         foreach ($feedbackIDs as $id) {
@@ -272,7 +327,12 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
         $output .= "\n-- Deleting from session.\n";
         _printResultsSQL('session', array('ID' => $sessionID), $output, $DB);
         
-        _exportSQL($output, $CandID, $sessionID);
+        if ($printToSQL) {
+            _exportSQL($output, $CandID, $sessionID);
+        } else {
+            echo $output;
+            return $output;
+        }
     }
 }
 
