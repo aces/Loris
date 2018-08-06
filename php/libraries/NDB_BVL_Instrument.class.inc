@@ -169,6 +169,8 @@ class NDB_BVL_Instrument extends NDB_Page
 
         // Ensure 'page' is a string.
         $page = $page ?? '';
+        // Ensure 'commentID' is a string.
+        $commentID = $commentID ?? '';
 
         // Make sure the instrument class has been included/required!
         $factory = NDB_Factory::singleton();
