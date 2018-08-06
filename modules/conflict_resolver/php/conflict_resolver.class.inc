@@ -172,8 +172,6 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
                 }
             }
         }
-
-        $this->tpl_data['success'] = true;
     }
 
     /**
@@ -193,11 +191,6 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
         $useProjects = $config->getSetting('useProjects');
         if ($useProjects === 'false') {
             $useProjects = false;
-            $this->tpl_data['useProjects'] ='false';
-        } else {
-            // add 1 to colspan in menu_resolved_conflicts.tpl if using project
-            // to account for "Projects" header
-            $this->tpl_data['useProjects'] ='true';
         }
 
         // set the class variables
@@ -275,14 +268,6 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
              'Hash',
              'Site',
             )
-        );
-        $this->tpl_data['hiddenHeaders'] = json_encode(
-            [
-             'Value1',
-             'Value2',
-             'Hash',
-             'Site',
-            ]
         );
         return true;
     }

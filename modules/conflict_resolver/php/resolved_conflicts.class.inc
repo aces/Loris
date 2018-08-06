@@ -123,15 +123,6 @@ class Resolved_Conflicts extends \NDB_Menu_Filter
              'Site',
             )
         );
-        $this->tpl_data['hiddenHeaders'] = json_encode(
-            [
-             'New Value',
-             'Old Value2',
-             'CenterID',
-             'Site',
-            ]
-        );
-
         return true;
     }
 
