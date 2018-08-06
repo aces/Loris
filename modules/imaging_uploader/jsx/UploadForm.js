@@ -240,8 +240,8 @@ class UploadForm extends React.Component {
             }
           }
         }
-          swal(swalObj);
-          this.setState({uploadProgress: -1, errorMessage: errorMessage, hasError: hasError});
+        swal(swalObj);
+        this.setState({uploadProgress: -1, errorMessage: errorMessage, hasError: hasError});
       }
     });
   }
