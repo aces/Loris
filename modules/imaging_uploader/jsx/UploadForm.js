@@ -219,10 +219,11 @@ class UploadForm extends React.Component {
       // - Updates errorMessage and hasError so relevant errors are displayed on form
       // - Returns to Upload tab
       error: (error, textStatus, errorThrown) => {
-        swal({
-          title: "Submission error!",
-          type: "error"
-        });
+        let swalObj = {
+          title: 'Submission error!',
+          type: 'error'
+        };
+
         let errorMessage = this.state.errorMessage;
         let hasError = this.state.hasError;
         errorMessage = (error.responseJSON || {}).errors || 'Submission error!';
@@ -234,9 +235,13 @@ class UploadForm extends React.Component {
             } else {
               hasError[i] = false;
             }
+            if (i === 'general') {
+              swalObj.text = errorMessage[i];
+            }
           }
         }
-        this.setState({uploadProgress: -1, errorMessage: errorMessage, hasError: hasError});
+          swal(swalObj);
+          this.setState({uploadProgress: -1, errorMessage: errorMessage, hasError: hasError});
       }
     });
   }

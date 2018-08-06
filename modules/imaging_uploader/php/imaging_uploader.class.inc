@@ -156,7 +156,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             );
             if ($ImagingUploaderAutoLaunch) {
                 try {
-                    // Instanciate the server process module to autoload
+                    // Instantiate the server process module to autoload
                     // its namespace classes
                     $spm_module = \Module::factory('server_processes_manager');
                     // Perform the real upload on the server
@@ -167,7 +167,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                     );
                 } catch (\Exception $e) {
                     $errors = array(
-                               'mri_file' => $e->getMessage(),
+                               'general' => $e->getMessage(),
                               );
                     http_response_code(500);
                     header('Content-Type: application/json; charset=UTF-8');
@@ -254,6 +254,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                    'pSCID'      => array(),
                    'visitLabel' => array(),
                    'mri_file'   => array(),
+                   'general'    => array(),
                   );
         // creates empty string variable to store error message for wrong file name
         $file_name_error = "";
