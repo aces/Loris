@@ -147,7 +147,6 @@ h1, h2, h3, h4 {
     font-weight: 700;
 }
 
-
 .panel-center {
     max-width: 450px;
     margin: 0 auto;
@@ -164,9 +163,17 @@ h1, h2, h3, h4 {
 
 /* Tablets and bigger */
 @media (min-width: 768px) {
-    .header { height: 140px; }
-    .header .loris-logo img { height: 130px; }
-    .header .github-logo { padding-right: 20px; }
+    .header {
+        height: 140px;
+    }
+
+    .header .loris-logo img {
+        height: 130px;
+    }
+
+    .header .github-logo {
+        padding-right: 20px;
+    }
 
     .main-content {
         display: flex;
@@ -176,5 +183,7 @@ h1, h2, h3, h4 {
 
 /* Small desktops and bigger */
 @media (min-width: 991px) {
-    .header .loris-logo { margin-right: 40px; }
+    .header .loris-logo {
+        margin-right: 40px;
+    }
 }

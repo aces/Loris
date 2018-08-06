@@ -3,7 +3,6 @@
  *	to overwrite bootstraps css file
  */
 
-
 /*******************************
 Loris color palette v.0.1
 
@@ -15,19 +14,20 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 
 ****************************************/
 
-
 /*
  *	Styling for the navbar dropdowns
  */
-.navbar-nav>li>.dropdown-menu {
+.navbar-nav > li > .dropdown-menu {
     margin-top: 0;
     border-top-right-radius: 0;
     border-top-left-radius: 0;
     background-color: #064785;
 }
-.navbar-nav>li>.dropdown-menu>li>a {
+
+.navbar-nav > li > .dropdown-menu > li > a {
     color: white;
 }
+
 .navbar-default a {
     -webkit-transition: background-color 0.2s ease-in;
     transition: background-color 0.2s ease-in;
@@ -45,55 +45,62 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 }
 
 /* Menu items */
-.navbar-default .navbar-nav>li:hover,
-.navbar-default .navbar-nav>li>a:hover,
-.navbar-default .navbar-nav>li>a:focus,
-.navbar-default .navbar-nav>li>a:active{
+.navbar-default .navbar-nav > li:hover,
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus,
+.navbar-default .navbar-nav > li > a:active {
     background-color: #042d54;
 }
 
 /* Submenu items*/
-.navbar-nav>li>.dropdown-menu>li>a:hover,
-.navbar-nav>li>.dropdown-menu>li>a:focus{
+.navbar-nav > li > .dropdown-menu > li > a:hover,
+.navbar-nav > li > .dropdown-menu > li > a:focus {
     background-color: #042d54;
 }
 
 /*
  *	Making the table header font colour white
  */
-table th{
+table th {
     color: white;
 }
-.table>thead>tr>th>a {
+
+.table > thead > tr > th > a {
     color: #ffffff;
 }
 
 /*
  *	CSS for the tables
  */
-.static-col.pis{
+.static-col.pis {
     padding-bottom: 71px;
 }
+
 .pis {
     height: 80px;
 }
+
 .table-scroll {
     overflow-x: auto;
     padding-bottom: 1px;
 }
+
 .table-scroll-static {
     overflow-x: auto;
     margin-left: 7em;
     padding-bottom: 1px;
 }
+
 .scrollable {
     margin-right: 50px;
     margin-left: 50px;
 }
+
 .scrollableStat {
     margin-right: 50px;
     margin-left: 10em;
 }
+
 .static-col {
     position: absolute;
     width: 7em;
@@ -103,14 +110,17 @@ table th{
     border-right: 0 none black;
     border-top-width: 3px; /*only relevant for first row*/
 }
-.colm-static{
+
+.colm-static {
     left: 3em;
     background: white;
 }
-.frozenHeader{
+
+.frozenHeader {
     position: absolute;
-    overflow-x : auto;
+    overflow-x: auto;
 }
+
 .headerColm {
     background: #1c70b6;
     padding: 8px;
@@ -130,17 +140,19 @@ table th{
     height: 100px;
     clear: both;
 }
+
 html, body {
-	height: 100%;
+    height: 100%;
 }
+
 #wrap {
-	min-height: 100%;
+    min-height: 100%;
 }
 
 #page {
     overflow: auto;
     padding-bottom: 100px; /* must be same height as the footer */
- }
+}
 
 /*
  *	CSS for instrument forms
@@ -148,14 +160,17 @@ html, body {
 .has-error .form-control {
     border: 3px solid #b94a48;
 }
+
 .has-error, .form-error {
     color: #b94a48;
 }
+
 .has-warning .form-control {
     border: 3px solid #c09853;
 }
+
 .warning {
-	color: #c09853;
+    color: #c09853;
 }
 
 /*
@@ -170,14 +185,17 @@ html, body {
     text-align: center;
     vertical-align: bottom;
 }
+
 ul#navlist {
     margin-left: 0;
     padding-left: 0;
 }
+
 #navlist li {
-	display: inline;
-	list-style-type: none;
+    display: inline;
+    list-style-type: none;
 }
+
 /*
  *  Styling for modals
  */
@@ -187,10 +205,12 @@ ul#navlist {
     border-top-right-radius: 6px;
     border-top-left-radius: 6px;
 }
+
 .close {
     color: white;
     opacity: 1;
 }
+
 .btn-file input[type=file] {
     position: absolute;
     top: 0;
@@ -220,12 +240,21 @@ div.navbar div.container div.navbar-brand {
 }
 
 @-webkit-keyframes spin2 {
-    from { -webkit-transform: rotate(0deg);}
-    to { -webkit-transform: rotate(360deg);}
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+    }
 }
+
 @keyframes spin {
-    from { transform: scale(1) rotate(0deg);}
-    to { transform: scale(1) rotate(360deg);}
+    from {
+        transform: scale(1) rotate(0deg);
+    }
+    to {
+        transform: scale(1) rotate(360deg);
+    }
 }
 
 /*
@@ -264,6 +293,7 @@ div.navbar div.container div.navbar-brand {
     left: 100%;
     z-index: 3;
 }
+
 .btn-breadcrumb .btn:not(:last-child):before {
     content: " ";
     display: block;
@@ -286,6 +316,7 @@ div.navbar div.container div.navbar-brand {
     padding: 0;
     background: inherit;
 }
+
 .ellipsis:hover .dropdown-menu {
     display: block;
 }
@@ -294,9 +325,11 @@ div.navbar div.container div.navbar-brand {
 .btn-breadcrumb .btn {
     padding: 6px 12px 6px 24px;
 }
+
 .btn-breadcrumb .btn:first-child {
     padding: 6px 6px 6px 10px;
 }
+
 .btn-breadcrumb .btn:last-child {
     padding: 6px 18px 6px 24px;
 }
@@ -307,14 +340,17 @@ div.navbar div.container div.navbar-brand {
     -webkit-transition: border-color 0.2s ease-in; /* Safari */
     transition: border-color 0.2s ease-in;
 }
+
 .btn-breadcrumb .btn.btn-primary:not(:last-child):before {
     border-left: 10px solid #042d54;
     -webkit-transition: border-color 0.2s ease-in; /* Safari */
     transition: border-color 0.2s ease-in;
 }
+
 .btn-breadcrumb .btn.btn-primary:hover:not(:last-child):after {
     border-left: 10px solid #042d54;
 }
+
 .btn-breadcrumb .btn.btn-primary:hover:not(:last-child):before {
     border-left: 10px solid #042d54;
 }
@@ -339,16 +375,18 @@ a.btn.btn-primary {
     .btn-breadcrumb > * div {
         max-width: 60px;
     }
+
     #bc2 > a:last-child > div {
         max-width: 100%
     }
 }
 
 /* For tablets */
-@media (min-width: 768px) and (max-width:991px) {
+@media (min-width: 768px) and (max-width: 991px) {
     .btn-breadcrumb > * div {
         max-width: 100px;
     }
+
     #bc2 > a:last-child > div {
         max-width: 100%
     }
@@ -359,6 +397,7 @@ a.btn.btn-primary {
     .btn-breadcrumb > * div {
         max-width: 170px;
     }
+
     #bc2 > a:last-child > div {
         max-width: 100%
     }
@@ -369,6 +408,7 @@ a.btn.btn-primary {
     .btn-breadcrumb > * div:not(:last-child) {
         max-width: 170px;
     }
+
     .btn-breadcrumb > * div:last-child {
         width: 100%;
     }
@@ -378,26 +418,31 @@ a.btn.btn-primary {
  *  CSS for static table
  *  Styling for the staticTable component
  */
-.panel>.table-header {
+.panel > .table-header {
     background-color: #DCDCDC;
 }
 
 .downloadCSV {
     margin: 20px 0;
 }
+
 .perPage {
     width: 75px;
     color: black;
 }
+
 .table-footer {
     background-color: #DCDCDC;
 }
+
 #dynamictable {
     margin-bottom: 0;
 }
+
 .rowsPerPage {
     color: black;
 }
+
 .pagination-table {
     margin: 0;
 }
