@@ -13,14 +13,14 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     return null;
   }
   // Create the mapping between rowHeaders and rowData in a row object.
-  var row = {};
+  let row = {};
 
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
-  var value1;
-  var value2;
-  var hash;
+  let value1;
+  let value2;
+  let hash;
 
   if (column === 'Correct Answer') {
     value1 = row.Value1;

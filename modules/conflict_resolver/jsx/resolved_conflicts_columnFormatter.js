@@ -13,17 +13,17 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     return null;
   }
   // Create the mapping between rowHeaders and rowData in a row object.
-  var row = {};
+  let row = {};
 
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
 
   if (column === 'Correct Answer') {
-    var correctAnswer = '';
-    var newValue = row['New Value'];
-    var oldValue1 = row['Correct Answer'];
-    var oldValue2 = row.OldValue2;
+    let correctAnswer = '';
+    let newValue = row['New Value'];
+    let oldValue1 = row['Correct Answer'];
+    let oldValue2 = row.OldValue2;
 
     if (newValue === '1' && oldValue1 !== null) {
       correctAnswer = oldValue1;

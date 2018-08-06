@@ -14,7 +14,7 @@ import formatColumn from './columnFormatter';
  * @description This function is responsible for updating
  * the UnresolvedConflictsPane state from the parent.
  */
-var updateState = function(filter) {
+let updateState = function(filter) {
   this.setState({filter});
 };
 
@@ -262,7 +262,7 @@ window.onload = function() {
   ReactDOM.render(conflictResolver, document.getElementById('conflictResolver'));
 
   // Prevent tab switching
-  var refresh = setInterval(function() {
+  let refresh = setInterval(function() {
     if (document.getElementById('tab-ResolvedConflicts')) {
       $('#tab-ResolvedConflicts').click(function(event) {
         event.preventDefault();
