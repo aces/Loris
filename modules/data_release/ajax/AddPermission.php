@@ -3,6 +3,8 @@
 /**
  * Add permissions through Ajax, how crazy.
  *
+ * @todo use the 'addpermissionSuccess' flag for front-end enhancements
+ *
  * PHP Version 7
  *
  *  @category Loris
