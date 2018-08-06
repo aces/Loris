@@ -48,7 +48,10 @@ function updateEntry($value)
 
     $new_entry = $DB->pselectRow(
         " SELECT * FROM test_battery WHERE ID = :batteryID AND Active = :active",
-        array("batteryID" => $_POST["ID"], "active" => $value)
+        array(
+            "batteryID" => $_POST["ID"],
+            "active" => $value
+        )
     );
 
     if (empty($new_entry)) {

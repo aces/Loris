@@ -18,31 +18,46 @@
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
     if ($action === "getFormData") {
-       if (isset($_GET['ID'])) {
-        $entryID = $_GET['ID'];
-        echo getAllData($entryID);
-       } else {
-        echo json_encode(getFormData(null));
-       }
+        if (isset($_GET['ID'])) {
+            $entryID = $_GET['ID'];
+            echo getAllData($entryID);
+        } else {
+            echo json_encode(getFormData(null));
+        }
     }
 }
 
+/**
+ * Get both form data and battery data in json form
+ *
+ * @param $entryID the id of the form
+ *
+ * @return json object
+ */
 function getAllData($entryID)
 {
- $allData  = getFormData($entryID);
- $allData['batteryData'] = getEntryData($entryID);
- //echo json_encode($allData);
- return json_encode($allData);
+    $allData                = getFormData($entryID);
+    $allData['batteryData'] = getEntryData($entryID);
+
+    return json_encode($allData);
 }
+
+/**
+ * Get data from the test_battery
+ *
+ * @param $entryID the id of the form
+ *
+ * @return array
+ */
 
 function getEntryData($entryID)
 {
- $db = \Database::singleton();
+    $db = \Database::singleton();
 
- $query = " SELECT * FROM test_battery WHERE id = :id ";
- $entry = $db->pselectRow($query, array( 'id' => $entryID));
+    $query = " SELECT * FROM test_battery WHERE id = :id ";
+    $entry = $db->pselectRow($query, array( 'id' => $entryID));
 
- /*$entryData = [
+    /*$entryData = [
                'id' => $entry['id'],
                'instrument' => $entry['Test_name'],
                'ageMinDays' => $entry['AgeMinDays'],
@@ -55,14 +70,16 @@ function getEntryData($entryID)
                'instrumentOrder' => $entry['instr_order'],
                'active' => $entry['active']
               ];
- */
- return $entry;
+    */
+    return $entry;
 }
 
 /**
  * Return object of fields and their values from database
  *
- * @return array
+ * @param   $entryID the id of the form
+ *
+ * @return  array
  */
 function getFormData($entryID)
 {
@@ -73,12 +90,10 @@ function getFormData($entryID)
                  'visits'      => Utility::getVisitList(),
                  'sites'       => Utility::getSiteList(false),
                  'firstVisits' => getYesNoList(),
-                ];
-  
+                ]; 
     if (isset($entryID)) {
         $formData['active'] = getYesNoList();
     }
-  
     return $formData;
 }
 

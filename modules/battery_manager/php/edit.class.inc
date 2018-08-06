@@ -27,7 +27,8 @@ class Edit extends \NDB_Form
 
     /**
      * Entry point for /battery_manager/edit/
-     * Checks if entry id is provided and otherwise redirects to /battery_manager/ page
+     * Checks if entry id is provided and otherwise redirects to
+     * /battery_manager/ page
      *
      * @return none
      */

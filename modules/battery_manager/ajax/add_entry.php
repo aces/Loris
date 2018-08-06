@@ -60,18 +60,10 @@ function checkForDuplicate()
         $query,
         $form_data
     );
-    
-   
-   // Return JSON representation of duplicate entry if it exists, null otherwise
-    //if ($entry) {
-    //$entry = true;
-    if ($entry) { 
-        //console.log($entry);
-        //return json_encode($entry);
-        //return json_encode($entry);
+    // Return JSON representation of duplicate entry if it exists, null otherwise
+    if ($entry) {
         return json_encode($entry);
     } else {
-        //return $query;
         return null;
     }
 }
@@ -141,7 +133,6 @@ function editEntry()
     return json_encode($form_data);
 }
 
-
 /**
  * Retrieve values entered by user
  *
@@ -149,7 +140,7 @@ function editEntry()
  */
 function getFormData()
 {
-     $form_data = array(
+    $form_data = array(
                    'Test_name'    => $_POST['instrument'] ?? null,
                    'AgeMinDays'   => $_POST['ageMinDays'] ?? null,
                    'AgeMaxDays'   => $_POST['ageMaxDays'] ?? null,
@@ -159,18 +150,11 @@ function getFormData()
                    'CenterID'     => $_POST['forSite'] ?? null,
                    'firstVisit'   => $_POST['firstVisit'] ?? null,
                    'instr_order'  => $_POST['instrumentOrder'] ?? null,
-                  );
-
-     /*if (isset($_POST['ID'])) {
-         $form_data['ID'] = $_POST['ID'];
-     }*/
-     
-
-     if (isset($_POST['active'])) {
-         $form_data['Active'] = $_POST['active']; 
-     }
-
-     return $form_data;
+    );
+    if (isset($_POST['active'])) {
+        $form_data['Active'] = $_POST['active'];
+    }
+    return $form_data;
 }
 
 /**
