@@ -254,6 +254,7 @@ class Edit_User extends \NDB_Form
         }
         unset($values['CenterIDs']);
         // END multi-site UPDATE
+
         // EXAMINER UPDATE
         if ($editor->hasPermission('examiner_multisite')) {
             // get all fields that are related to examiners
@@ -278,9 +279,6 @@ class Edit_User extends \NDB_Form
                 }
             }
 
-            //modify examiner radiologist to be in the binary format 0-1
-            $ex_radiologist = $ex_radiologist === 'Y' ? 1 : 0;
-
             $examinerID = $DB->pselect(
                 "SELECT e.examinerID
              FROM examiners e
@@ -291,11 +289,14 @@ class Edit_User extends \NDB_Form
             );
 
             // START EXAMINER UPDATE
-            // If examiner not in table add him,
-            // otherwise update the radiologist field and get the current sites
-            $values = \Utility::nullifyEmpty($values, 'examiner_radiologist');
-            if (empty($examinerID)) {
-
+            if (!empty($ex_radiologist)
+                && !empty($ex_pending)
+                && !empty($ex_curr_sites)
+                && empty($examinerID)
+            ) {
+                // If examiner not in table and radiologist, pending and current
+                // sites fields set add the examiner to the examiner table
+                $ex_radiologist = $ex_radiologist === 'Y' ? 1 : 0;
                 $DB->insert(
                     'examiners',
                     array(
@@ -304,14 +305,22 @@ class Edit_User extends \NDB_Form
                      'userID'      => $uid,
                     )
                 );
-                $examinerID = $examinerID = $DB->pselectOne(
+                $examinerID = $DB->pselectOne(
                     "SELECT examinerID
-                 FROM examiners
-                 WHERE full_name=:fullName",
+                            FROM examiners
+                            WHERE full_name=:fullName",
                     array('fullName' => $values['Real_name'])
                 );
-            } else {
-
+            } elseif (!empty($examinerID)
+                && ((!empty($ex_radiologist)
+                && !empty($ex_pending)
+                && !empty($ex_curr_sites))
+                || empty($ex_curr_sites))
+            ) {
+                // If examiner already exists in the examiner table AND
+                // radiologist, pending and current sites fields all set or
+                // unset update the examiner table with new values
+                $ex_radiologist = $ex_radiologist === 'Y' ? 1 : 0;
                 $DB->update(
                     'examiners',
                     array(
@@ -327,8 +336,8 @@ class Edit_User extends \NDB_Form
                 //get existing sites for examiner
                 $prev_sites = $DB->pselect(
                     "SELECT centerID
-             FROM examiners_psc_rel epr
-             WHERE examinerID=:eid",
+                            FROM examiners_psc_rel epr
+                            WHERE examinerID=:eid",
                     array("eid" => $examinerID)
                 );
 
@@ -337,14 +346,13 @@ class Edit_User extends \NDB_Form
                     array_push($ex_prev_sites, $center['centerID']);
                 }
             }
-
             foreach ($ex_curr_sites as $k => $v) {
 
                 //Check if examiner already in db for site
                 $result = $DB->pselectRow(
                     "SELECT epr.centerID
-                     FROM examiners_psc_rel epr 
-                     WHERE epr.examinerID=:eid AND epr.centerID=:cid",
+                           FROM examiners_psc_rel epr 
+                           WHERE epr.examinerID=:eid AND epr.centerID=:cid",
                     array(
                      "eid" => $examinerID,
                      "cid" => $v,
@@ -393,7 +401,6 @@ class Edit_User extends \NDB_Form
         }
         unset($values['examiner_radiologist']);
         unset($values['examiner_pending']);
-
         //END EXAMINER UPDATE
 
         // make the set
