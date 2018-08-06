@@ -41,11 +41,45 @@ class Module extends \Module
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $resp = parent::handle($request);
-        if ($resp->getStatusCode() != 404) {
-            return $resp;
+        try {
+            $resp = parent::handle($request);
+            // hasAccess from the parent returns a 403
+            if ($resp->getStatusCode() != 404) {
+                return $resp;
+            }
+        } catch (\LorisException $e) {
+            // Calling hasAccess from the loader would have failed with
+            // an exception saying it needs a timepoint/candidate if loading
+            // the instrument_list page, which we set below.
         }
+
+        // Falling back to instrument_list, ensure that the CandID
+        // and SessionID are valid, and if so attach the models to
+        // the request.
         $page = $this->loadPage("instrument_list");
+
+        $gets = $request->getQueryParams();
+
+        $attribute = $request->getAttribute("CandID");
+        if ($attribute !== null) {
+            $candidate = \Candidate::singleton($attribute);
+        } else {
+            $candidate = \Candidate::singleton($gets['candID'] ?? '');
+        }
+        $request = $request->withAttribute("Candidate", $candidate);
+
+        $attribute = $request->getAttribute("timePoint");
+        if ($attribute === null) {
+            $request = $request->withAttribute(
+                "timePoint",
+                \TimePoint::singleton($gets['sessionID'])
+            );
+        }
+
+        // We need to set the internal page properties for hasAccess to succeed.
+        $page->setCandidate($candidate);
+        $page->setTimePoint($request->getAttribute("timePoint"));
+
         return $page->process($request, $page);
 
     }
