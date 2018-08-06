@@ -28,6 +28,24 @@ You should base your pull requests on one of the following branches depending on
 
 For more information about making well-organized pull requests, please read our in-depth Wiki page, ["Contributing to the Code"](https://github.com/aces/Loris/wiki/Contributing-to-the-Code).
 
+## Pull Request Title and Description
+
+To make it easier for reiewers to locate pull requests with wich they have expertise, we request that new pull requests follow a few conventions.
+
+#### Title
+
+The title should begin with square brackets enclosing the name of the module that you are changing followed by a brief description.
+
+e.g. This is a well-formed title.
+> [Imaging Uploader / Server Process Manager] Fix invalid upload state
+
+If you are instead editing the `Core` libraries or the `tools` directory, etc., you can supply these values in place of a module name.
+
+There should be plenty of other examples in the list of pull requests in the main code repository.
+
+#### Description
+
+When opening a pull request on Github you will see a pull request template. Please fill out each heading with detailed information on your code changes, suggested testing instructions, and links to open Github issues and/or Redmine tickets (if applicable).
 
 ## Some Things To Keep In Mind
 
