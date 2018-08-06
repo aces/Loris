@@ -1284,7 +1284,6 @@ LinkElement.defaultProps = {
  * Button component
  * React wrapper for <button> element, typically used to submit forms
  */
-
 class ButtonElement extends React.Component {
   constructor() {
     super();

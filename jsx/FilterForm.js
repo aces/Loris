@@ -175,6 +175,7 @@ class FilterForm extends React.Component {
         formElements[fieldName].value = this.queryString[queryFieldName];
       }.bind(this));
     }
+
     return (
       <Panel
         id={this.props.id}

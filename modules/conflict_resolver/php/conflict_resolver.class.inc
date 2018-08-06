@@ -79,11 +79,12 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
                 if (!empty($row)) {
                     // insert into conflicts_resolved
                     $user1         = $DB->pselectOne(
-                        'SELECT UserID FROM flag WHERE CommentID=:CID',
+                        "SELECT UserID FROM flag WHERE CommentID=:CID",
+
                         array('CID' => $row['CommentId1'])
                     );
                     $user2         = $DB->pselectOne(
-                        'SELECT UserID FROM flag WHERE CommentID=:CID',
+                        "SELECT UserID FROM flag WHERE CommentID=:CID",
                         array('CID' => $row['CommentId2'])
                     );
                     $resolutionLog = array(
