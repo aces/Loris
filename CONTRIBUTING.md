@@ -19,7 +19,7 @@ You should base your pull requests on one of the following branches depending on
 #### Minor Changes and Small Features
    - Branch: `minor`
    - Label: ![](https://via.placeholder.com/15/996633/000000?text=+) **[branch] minor**
-   - Content: Features affecting self-contained components such as modules. Additions to Libraries, API or modules that do not change and function signatures. 
+   - Content: Features affecting self-contained components such as modules. Additions to Libraries, API, or modules that do not change any function signatures. 
 
 #### Major Changes, Non Backwards-Compatible Changes and Large Features
    - Branch: `major`
