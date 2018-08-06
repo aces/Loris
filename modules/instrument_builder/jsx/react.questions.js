@@ -75,6 +75,12 @@ var LorisElement = React.createClass({
  *	This is the React class for the question text input
  */
 var QuestionText = React.createClass({
+    // Set default label for questionText input element
+  getDefaultProps: function() {
+    return {
+      inputLabel: 'Question Text'
+    };
+  },
     // Keep track of the current input
   onChange: function(e) {
     this.props.updateState({Description: e.target.value});
@@ -90,7 +96,7 @@ var QuestionText = React.createClass({
     }
     return (
       <div className={errorClass}>
-        <label className="col-sm-2 control-label">Question Text: </label>
+        <label className="col-sm-2 control-label">{this.props.inputLabel}: </label>
         <div className="col-sm-6">
           <input className="form-control col-xs-12"
             type="text" id="questionText"
@@ -791,8 +797,10 @@ var AddElement = React.createClass({
     switch (this.state.selected.id) {
       case 'header':
       case 'label':
-      case 'page-break':
         questionInput = <QuestionText updateState={this.updateState} element={this.state}/>;
+        break;
+      case 'page-break':
+        questionInput = <QuestionText updateState={this.updateState} element={this.state} inputLabel={'Page Name'}/>;
         break;
       case 'score':
       case 'textbox':

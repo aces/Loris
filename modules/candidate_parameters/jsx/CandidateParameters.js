@@ -46,7 +46,7 @@ class CandidateParameters extends React.Component {
     return (
       <div>
         <a className="btn btn-sm btn-primary"
-           href={loris.BaseURL + '/timepoint_list/?candID=' + this.props.candID}
+           href={loris.BaseURL + '/' + this.props.candID}
            style={{marginBottom: '20px'}}
         >
           Return to timepoint list

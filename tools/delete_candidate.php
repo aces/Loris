@@ -139,7 +139,7 @@ function showHelp()
  * All other tables with FOREIGN KEY relations to these tables (second-level relations) should
  * have actions on delete specified in the database schema
  */
-function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, $output)
+function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, &$output)
 {
 
     //Find candidate...
@@ -159,12 +159,26 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, $output)
     if (is_null($sessions) || empty($sessions)) {
         echo "There are no corresponding sessions for CandID: $CandID \n";
     } else {
+        $subOutputType = "";
+        if ($outputType == "tosql") {
+            $subOutputType = "";
+        } else {
+            $subOutputType = $outputType;
+        }
         foreach ($sessions as $sid) {
             $out = shell_exec(
                 "php ".__DIR__."/delete_timepoint.php delete_timepoint".
-                " $CandID $PSCID $sid $outputType"
+                " $CandID $PSCID $sid $subOutputType"
             );
-            echo $out;
+            //echo $out;
+            $match = Array();
+            $nbDelete = preg_match_all("/(DELETE FROM .*;)/", $out, $match);
+            if ($nbDelete > 0) {
+                for ($i=0; $i < $nbDelete; $i++) {
+                    $output .= $match[0][$i];
+                    $output .= "\n";
+                }
+            }
         }
     }
 

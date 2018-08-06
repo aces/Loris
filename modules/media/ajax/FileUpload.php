@@ -16,7 +16,7 @@
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
     if ($action == "getData") {
-        echo json_encode(getUploadFields());
+        viewData();
     } else if ($action == "upload") {
         uploadFile();
     } else if ($action == "edit") {
@@ -179,6 +179,21 @@ function uploadFile()
 }
 
 /**
+ * Handles the media view data process
+ *
+ * @return void
+ */
+function viewData()
+{
+    $user =& User::singleton();
+    if (!$user->hasPermission('media_read')) {
+        header("HTTP/1.1 403 Forbidden");
+        exit;
+    }
+    echo json_encode(getUploadFields());
+}
+
+/**
  * Returns a list of fields from database
  *
  * @return array
@@ -294,7 +309,7 @@ function getUploadFields()
             "comments, " .
             "file_name as fileName, " .
             "hide_file as hideFile, " .
-            "language_id as language" .
+            "language_id as language," .
             "m.id FROM media m LEFT JOIN session s ON m.session_id = s.ID " .
             "WHERE m.id = $idMediaFile",
             []

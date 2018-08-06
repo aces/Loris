@@ -139,7 +139,7 @@ class Database
      * @param boolean $trackChanges whether to use the trackChanges mechanism on
      *                              this connection (defaults to true)
      *
-     * @return none
+     * @return void
      * @access public
      */
     function connect($database, $username, $password, $host, $trackChanges = true)
@@ -171,6 +171,7 @@ class Database
             $password
         );
         $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        $this->_PDO->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
         $this->_preparedStoreHistory = $this->_PDO->prepare(
             "INSERT INTO history (tbl, col, new, old,"
@@ -236,7 +237,7 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
      *
-     * @return none
+     * @return void
      */
     public function insert($table, $set)
     {
@@ -253,7 +254,7 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
      *
-     * @return none
+     * @return void
      */
     public function unsafeinsert($table, $set)
     {
@@ -269,7 +270,7 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
      *
-     * @return none
+     * @return void
      */
     public function insertIgnore($table, $set)
     {
@@ -309,7 +310,7 @@ class Database
      * @param bool   $ignore     determines whether the insert throws and error or
      *                           is discarded when value exists in DB
      *
-     * @return none
+     * @return void
      */
     private function _realinsert($table, $set, $autoescape = true, $ignore = false)
     {
@@ -374,7 +375,7 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
      *
-     * @return none
+     * @return void
      * @access public
      */
     function replace($table, $set)
@@ -409,7 +410,7 @@ class Database
      * @param array  $set     the values with which to fill the new row
      * @param array  $i_where the selection filter, joined as a boolean and
      *
-     * @return none
+     * @return void
      */
     public function update($table, $set, $i_where)
     {
@@ -427,7 +428,7 @@ class Database
      * @param array  $set     the values with which to fill the new row
      * @param array  $i_where the selection filter, joined as a boolean and
      *
-     * @return none
+     * @return void
      */
     public function unsafeupdate($table, $set, $i_where)
     {
@@ -444,7 +445,7 @@ class Database
      * @param bool   $autoescape determines whether the values to be set should
      *                           automatically have the html escaped
      *
-     * @return none
+     * @return void
      * @access public
      */
     private function _realupdate($table, $set, $i_where, $autoescape = true)
@@ -509,7 +510,7 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $where the selection filter, joined as a boolean and
      *
-     * @return none
+     * @return void
      * @access public
      */
     function delete($table, $where)
@@ -549,114 +550,12 @@ class Database
     }
 
     /**
-     * Selects data from the database
-     *
-     * Selects any amount of data from the database and stores the
-     * result into the $result array (accepted by reference - it will
-     * be overwritten so make sure it's empty or garbage before
-     * passing it in...)
-     *
-     * @param string $query  the SQL string which defines the SELECT query.
-     * @param array  $result an array into which the results of the select
-     *                       will be stored - this array gets overwritten completely
-     *
-     * @return     none
-     * @access     public
-     * @deprecated Use pselect wrappers instead
-     */
-    function select($query, &$result)
-    {
-        error_log(
-            "LORIS's Database::select() wrappers are deprecated and will be "
-            . "removed in a future version of LORIS. Please use prepared statements "
-            . " in the Database::pselect() variety instead."
-        );
-        $result = array();
-
-        if (strpos(strtoupper($query), 'SELECT') !== 0
-            && strpos(strtoupper($query), 'SHOW') !== 0
-            && strpos(strtoupper($query), 'DESCRIBE') !== 0
-        ) {
-            throw new DatabaseException(
-                "Only SELECT statements can be run with Database::select().",
-                $query
-            );
-        }
-
-        try {
-            $this->_printQuery($query);
-            $stmt = $this->_PDO->query($query);
-            if ($stmt) {
-                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            } else {
-                // This will be caught directly below
-                throw new Exception("Error");
-            }
-            return $result;
-        } catch(Exception $e) {
-            throw new DatabaseException("Invalid SELECT statement", $query);
-        }
-    }
-
-    /**
-     * Selects a single row from the database
-     *
-     * Selects a single row from the database and stores the
-     * result into the $result array (accepted by reference - it will
-     * be overwritten so make sure it's empty or garbage before
-     * passing it in...)
-     *
-     * *** This should not be used as it does not support prepared statements.
-     * *** It is left here for legacy reasons/instruments
-     *
-     * @param string $query  the SQL string which defines the SELECT query.
-     * @param array  $result an array into which the results of the select will
-     *                       be stored - this array gets overwritten completely
-     *
-     * @return     none
-     * @access     public
-     * @deprecated Use pselect wrappers instead
-     */
-    function selectRow($query, &$result)
-    {
-        $this->select($query, $result);
-        if (is_array($result) && isset($result[0])) {
-            $result = $result[0];
-        }
-    }
-
-    /**
-     * Selects a single value from the database
-     *
-     * Selects a single value from the database and directly return the value.
-     *
-     * *** This should not be used as it does not support prepared statements.
-     * *** It is left here for legacy reasons/instruments
-     *
-     * @param string $query The SQL string which defines the SELECT query.
-     *
-     * @return     string
-     * @access     public
-     * @deprecated Use pselect wrappers instead
-     */
-    function selectOne($query)
-    {
-        $result = null;
-        $this->selectRow($query, $result);
-        if (is_array($result) && count($result)) {
-            $valueArray = array_values($result);
-            $result     = $valueArray[0];
-        }
-        return $result;
-    }
-
-    /**
      * Runs a custom query that can't be handled by other database wrappers.
      *
      * @param string $query The SQL query to run
      *
-     * @return None As a side-effect updates affected and lastInsertID
-     *              if applicable
+     * @return void (As a side-effect updates affected and lastInsertID
+     *              if applicable.)
      */
     function run($query)
     {
@@ -953,11 +852,11 @@ class Database
     {
         $result = $this->pselectRow($query, $params);
         if (is_array($result) && count($result)) {
-            $valueArray = array_values($result);
-            $result     = $valueArray[0];
+            $result = array_values($result)[0];
         }
         return $result;
     }
+
     /**
      * Implodes a hash including the keys (unlike php's implode)
      *
@@ -968,8 +867,7 @@ class Database
      * @param array  $dataArray The array with keys to implode
      * @param string $clause    The type of clause set_|where_
      *
-     * @return string the string containing the imploded array
-     * @access private
+     * @return string
      */
     function _implodeWithKeys($glue, $dataArray, $clause = 'set_')
     {
@@ -1033,7 +931,7 @@ class Database
      *
      * @param string $value An unsafe string
      *
-     * @return The value appropriately quoted/escaped
+     * @return string The value appropriately quoted/escaped
      */
     function quote($value)
     {
@@ -1048,11 +946,11 @@ class Database
      *
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
-     * @param array  $where the selection filter, joined as a boolean and
-     * @param char   $type  The type of change being tracked (*I*nsert,
+     * @param string $where the selection filter, joined as a boolean and
+     * @param string $type  The type of change being tracked (*I*nsert,
      *                      *U*pdate or *D*elete)
      *
-     * @return none As a side-effect populates history table
+     * @return void As a side-effect populates history table
      */
     protected function trackChanges($table, $set, $where, $type='U')
     {
@@ -1211,7 +1109,7 @@ class Database
      * @param array  $rowData   An array of data to be inserted into
      *                          the fake table.
      *
-     * @return none
+     * @return void
      */
     function setFakeTableData($tableName, $rowData)
     {

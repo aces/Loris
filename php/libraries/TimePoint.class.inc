@@ -102,7 +102,7 @@ class TimePoint
      *
      * @param integer $sessionID The $sessionID to load.
      *
-     * @return none, but side-effect loads current object.
+     * @return void (but side-effect loads current object.)
      */
     function select($sessionID)
     {
@@ -190,7 +190,7 @@ class TimePoint
      * @param string  $nextVisitLabel The visit label of the timepoint being created
      * @param string  $psc            The centre of the timepoint
      *
-     * @return A new TimePoint instance.
+     * @return void
      */
     static function createNew($candID, $SubprojectID,
         $nextVisitLabel = null, $psc = null
@@ -263,15 +263,6 @@ class TimePoint
      */
     static function isValidVisitLabel($candid, $subprojectID, $visitLabel)
     {
-        $config =& \NDB_Config::singleton();
-        $visitLabelSettings = $config->getSetting('visitLabel');
-        foreach (\Utility::toArray($visitLabelSettings) as $setting) {
-            if ($setting['@']['subprojectID'] == $subprojectID) {
-                $visitLabelSettings =$setting;
-                break;
-            }
-        }
-
         // This can happen if the user quickly clicks "Create Time Point" before the
         // page has loaded and the Visit Label dropdown hasn't been selected yet.
         // The page will create "V1" when this is the case without this check.
@@ -279,15 +270,6 @@ class TimePoint
             throw new \LorisException(
                 'A visit label is required.'
             );
-        }
-
-        // make sure the user entered a valid visit label
-        if ($visitLabelSettings['generation'] == 'user') {
-            if (!preg_match($visitLabelSettings['regex'], $visitLabel)) {
-                throw new \LorisException(
-                    'This visit label does not match the required structure.'
-                );
-            }
         }
 
         $candidate =& \Candidate::singleton($candid);
@@ -334,7 +316,7 @@ class TimePoint
      * @param string $var   The variable to set for this timepoint.
      * @param string $value The value to set $var to.
      *
-     * @return none, side-effect modifies session table.
+     * @return void (side-effect modifies session table.)
      */
     function setData($var, $value = null)
     {
@@ -565,7 +547,7 @@ class TimePoint
     /**
      * Gets the current stage status
      *
-     * @return status of current stage or null
+     * @return ?string status of current stage or null
      */
     function getCurrentStatus()
     {
@@ -580,7 +562,7 @@ class TimePoint
     /**
      * Gets the date of the current stage.
      *
-     * @return date or false on failure.
+     * @return string of the form "YYYY-MM-DD"
      */
     function getCurrentDate()
     {
@@ -727,7 +709,7 @@ class TimePoint
      *
      * @deprecated
      *
-     * @return none
+     * @return void
      */
     function startNextStage()
     {
@@ -745,7 +727,7 @@ class TimePoint
      *                      valid options are those in session.Current_stage
      *                      enum
      *
-     * @return none, but as a side-effect modifies database.
+     * @return void (but as a side-effect modifies database.)
      */
     function startStage($stage)
     {
@@ -804,7 +786,7 @@ class TimePoint
      * @param string $status The status to set the BVL QC to.
      *                       Valid options are Complete or null.
      *
-     * @return none
+     * @return void
      */
     function setBVLQCStatus($status)
     {

@@ -18,7 +18,10 @@ the status of imaging pipeline scripts.
 The DICOM Archive shows DICOM tar metadata. It does not provide a
 way to visualize scans or view metadata of other data formats. It
 provides a frontend to the `tarchive_*` tables in LORIS, but does
-not directly inspect files on the filesystem.
+not directly inspect files on the filesystem. However, DICOM 
+files can be downloaded through the frontend and inspected on a 
+user's system.
+
 
 ## Permissions
 
@@ -26,6 +29,8 @@ The permission `dicom_archive_view_allsites` is required to access
 the DICOM Archive module.
 
 ## Configurations
+
+#### Database Configurations
 
 The `patientNameRegex`, `LegoPhantomRegex`, and `LivingPhantomRegex`
 configuration variables provide regular expressions to ensure that
@@ -40,6 +45,12 @@ Patient ID column.
 The `showTransferStatus` configuration option is obsolete and should
 not be used, but determines if a first "Transfer Status" column
 appears in the menu table.
+
+#### Install Configurations
+
+For downloading large DICOM files, it may be necessary to increase the 
+ value of the `memory_limit` configuration option within `php.ini`.
+ 
 
 ## Interactions with LORIS
 

@@ -43,7 +43,7 @@ class Project extends \NDB_Form
     /**
     * Loads the project page.
     *
-    * @return none
+    * @return void
     */
     function setup()
     {
@@ -66,5 +66,22 @@ class Project extends \NDB_Form
                 "Projects are not used in this study."
             );
         }
+    }
+
+    /**
+     * Include additional CSS files:
+     *  1. configuration
+     *
+     * @return array of CSS to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . "/configuration/css/configuration.css"]
+        );
     }
 }

@@ -1,51 +1,58 @@
-## Media Module
+# Media
 
-### 📄 Overview
+## Purpose
 
-Media module allows users to **upload**, **search** and **edit** media files associated with a specific candidate timepoint in Loris.
-Any kind of data associated with a candidate timepoint can be uploaded through this module: PDFs, videos, recordings, scripts, log files, etc. Files can optionally be associated to a specific instrument form within a given candidate timepoint.
+Media module allows users to **upload**, **search** and **edit** media files 
+associated with a specific candidate timepoint in Loris. Any kind of data 
+associated with a candidate timepoint can be uploaded through this module: 
+PDFs, videos, recordings, scripts, log files, etc. Files can optionally be 
+associated with a specific instrument from within a given candidate timepoint.
 
+## Intended Users
 
->Note: Currently editing functionality only allows editing of certain metadata fields, such as `Comments` and `Date of Administration`.
+The Media module is used by data entry staff to upload candidate and timepoint 
+specific media. The module can also be used by data-monitoring staff ensuring the 
+integrity of the data for each candidate.
 
-### 🔒 Permissions
+## Scope
 
-In order to use the media module the user needs one or both of the following permissions:
+The Media module provides a tool for uploading files to the server and tracking 
+them, once uploaded. Data uploaded must be specific to a candidate and timepoint, 
+and, optionally, an instrument. The *Edit* functionality only allows modification of 
+the date of upload and of comments linked to the upload. The *Delete* functionality 
+only hides the file from the front-end; it does not remove its database entry nor 
+the file on the server.
 
-1. **media_read** - gives user a read-only access to media module (file browsing only)
-2. **media_write** - gives user a write access to media module (upload/delete files and edit metadata)
+Out of scope: media that is not affiliated with a candidate does not belong in Media.
 
->**Note**: superusers have both of the aforementioned permissions by default! 💪
+## Permissions
 
-### :file_folder: Upload path
+In order to use the media module the user needs one or both of the following 
+permissions:
 
-By default, all files are uploaded under `/data/uploads/`.
-*(Note this directory is not created by the Loris install script and should be manually created by the admin.)*
+- `media_read`: gives user a read-only access to media module 
+(file browsing only)
+- `media_write`: gives user a write access to media module 
+(upload/delete files and edit metadata)
 
-The upload path is configurable in `Paths` section of `Configuration` module.
+Media files are displayed if and only if the files were uploaded to a site within 
+the logged in user's own site affiliations.
 
->**Important** 
->
->The upload path must be readable and writable by your web server; either the web server `user` or `group` must have read and write permissions.
->The default group for your web server process is listed below
->```
->Ubuntu: $GROUP$ = www-data
->CentOS: $GROUP$ = apache
->```
->
->To find the `user` of your web server, run `ps aux | grep 'apache' | egrep -v 'grep|Ss' | awk '{ print $1 }' | sort | uniq`
->To find the `group` of your web server, run `ps aux | grep 'apache' | egrep -v 'grep|Ss' | awk '{ print $1 }' | sort | uniq | groups`
+## Configurations
 
->To see if your web server's user or group owns the upload path, run `ls -ld /data/uploads | awk '{ print "user:" $3 ", group:" $4 }'`
+The following configuration is necessary for the media module to function
 
->If neither owns the folder, you should run `sudo chown <unix-user>:<web-server-group> /data/uploads`
->Then, run `chmod 775 /data/uploads`
+- `mediaPath`: determine where files will be uploaded on the server. Files are 
+uploaded directly into the directory specified (no subdirectories are created). 
 
-### 💯 Features
+Creation of the upload directory is not done by the install script automatically and 
+permissions for access to the directory must be set-up manually, either the web 
+server `user` or `group` must have read and write permissions.
 
-1. **Browse** a list of uploaded files and related information
-2. **Edit** metadata about media files (except timepoint related data such as PSCID, Visit Label and Instrument)
-3. **Upload** new files associated to a specific timepoint
-  - PSCID, Visit Label and Site are required fields for all uploaded files
-  - File name should always start with [PSCID]\_[Visit Label]\_[Instrument] corresponding to the selection in the upload form
-4. **Delete** files. Deleting a file hides it from the frontend, but preserves a copy in the database
+## Interactions with LORIS
+
+Media module depends on a session to be already created before any files can be 
+uploaded for it.
+
+Uploaded files are displayed in the browse tab. Each entry has a link to download 
+the file itself and a link to the timepoint the file was uploaded for.

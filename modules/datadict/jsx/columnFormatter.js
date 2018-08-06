@@ -5,9 +5,14 @@
  * @param {string} column - column name
  * @param {string} cell - cell content
  * @param {arrray} rowData - array of cell contents for a specific row
+ * @param {arrray} rowHeaders - array of table headers (column names)
  * @return {*} a formated table cell for a given column
  */
-function formatDataDictColumn(column, cell, rowData) {
+function formatDataDictColumn(column, cell, rowData, rowHeaders) {
+  if (loris.hiddenHeaders.indexOf(column) > -1) {
+    return null;
+  }
+
   if (column === 'Description') {
     var updateDict = function(name) {
       return function(e) {

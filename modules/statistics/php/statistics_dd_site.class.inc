@@ -130,7 +130,7 @@ class Statistics_DD_Site extends statistics_site
      * @param string $projectID  the value of projectID
      * @param string $instrument the value of instrument
      *
-     * @return string
+     * @return array
      */
     function _getResults($centerID, $projectID, $instrument)
     {
@@ -150,7 +150,7 @@ class Statistics_DD_Site extends statistics_site
                 AND i.CommentID LIKE 'DDE%' ORDER BY c.PSCID",
             $this->query_vars
         );
-            return $result;
+        return $result;
     }
 
     /**
