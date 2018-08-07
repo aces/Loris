@@ -106,7 +106,7 @@ class HelpFile
         $DB =& \Database::singleton();
 
         // update the help file
-        $success = $DB->unsafeupdate('help', $set, array('helpID' => $this->helpID));
+        $success = $DB->update('help', $set, array('helpID' => $this->helpID));
 
         return true;
     }
