@@ -155,7 +155,7 @@ class Battery_Manager extends \NDB_Menu_Filter
 
         // set the class variables
         $this->columns
-            = [
+            = array(
                't.Full_name',
                'b.AgeMinDays',
                'b.AgeMaxDays',
@@ -168,13 +168,13 @@ class Battery_Manager extends \NDB_Menu_Filter
                'b.Active as active',
                'b.id as changeStatus',
                'b.id as edit',
-              ];
+              );
 
         $this->query = $query;
 
         $this->group_by = '';
         $this->order_by = 'Full_name';
-        $this->headers  = [
+        $this->headers  = array(
                            'Instrument',
                            'Minimum Age',
                            'Maximum Age',
@@ -185,7 +185,7 @@ class Battery_Manager extends \NDB_Menu_Filter
                            'First Visit',
                            'Instrument Order',
                            'Active',
-                          ];
+                          );
 
         // Add Edit field if user has permissions
         if ($this->hasWritePermission) {
@@ -222,7 +222,9 @@ class Battery_Manager extends \NDB_Menu_Filter
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/battery_manager/css/battery_manager.css"]
+            array(
+             $baseURL . "/battery_manager/css/battery_manager.css",
+            )
         );
     }
 

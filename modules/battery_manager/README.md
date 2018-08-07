@@ -7,7 +7,7 @@ in the Test Battery.
 
 ## Intended Users
 
-The Battery Manager module is used by study administrators
+The Battery Manager module is used by study administrators.
 
 ## Scope
 
@@ -27,6 +27,6 @@ In order to use the Battery Manager module the user needs one or both of the fol
 permissions:
 
 - `battery_manager_view`: gives user a read-only access to Battery Manager module 
-(browsing the Test Battery)
+(browsing the Test Battery).
 - `battery_manager_edit`: gives user a edit access to Battery Manager module 
-(add/activate/deactivate entries in Test Battery)
+(add/activate/deactivate entries in Test Battery).

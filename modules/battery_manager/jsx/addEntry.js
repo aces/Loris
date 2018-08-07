@@ -82,7 +82,6 @@ class BatteryManagerAddForm extends React.Component {
         <div className="col-md-8 col-lg-7">
           <FormElement
             name="batteryAdd"
-            fileUpload={true}
             onSubmit={this.handleAdd}
             ref="form"
           >
@@ -91,20 +90,19 @@ class BatteryManagerAddForm extends React.Component {
               label="Note"
               text={helpText}
             />
-            <SelectElement
+            <SearchableDropdown
               name="instrument"
               label="Instrument"
+              placeHolder="Search for instrument"
               options={this.state.Data.instruments}
               onUserInput={this.setFormData}
-              ref="instrument"
               required={true}
               value={this.state.formData.instrument}
             />
             <NumericElement
               name="ageMinDays"
-              label="Minimum age"
+              label="Minimum age (days)"
               onUserInput={this.setFormData}
-              ref="ageMinDays"
               required={true}
               min="0"
               max="99999"
@@ -112,9 +110,8 @@ class BatteryManagerAddForm extends React.Component {
             />
             <NumericElement
               name="ageMaxDays"
-              label="Maximum age"
+              label="Maximum age (days)"
               onUserInput={this.setFormData}
-              ref="ageMaxDays"
               required={true}
               min="0"
               max="99999"
@@ -125,8 +122,6 @@ class BatteryManagerAddForm extends React.Component {
               label="Stage"
               options={this.state.Data.stages}
               onUserInput={this.setFormData}
-              ref="stage"
-              hasError={false}
               required={true}
               value={this.state.formData.stage}
             />
@@ -135,8 +130,6 @@ class BatteryManagerAddForm extends React.Component {
               label="Subproject"
               options={this.state.Data.subprojects}
               onUserInput={this.setFormData}
-              ref="subproject"
-              hasError={false}
               required={false}
               value={this.state.formData.subproject}
             />
@@ -145,7 +138,6 @@ class BatteryManagerAddForm extends React.Component {
               label="Visit Label"
               options={this.state.Data.visits}
               onUserInput={this.setFormData}
-              ref="visitLabel"
               required={false}
               value={this.state.formData.visitLabel}
             />
@@ -156,7 +148,6 @@ class BatteryManagerAddForm extends React.Component {
               options={this.state.Data.sites}
               strictSearch={true}
               onUserInput={this.setFormData}
-              ref="forSite"
               required={false}
               value={this.state.formData.forSite}
             />
@@ -165,7 +156,6 @@ class BatteryManagerAddForm extends React.Component {
               label="First Visit"
               options={this.state.Data.firstVisits}
               onUserInput={this.setFormData}
-              ref="firstVisit"
               required={false}
               value={this.state.formData.firstVisit}
             />
@@ -173,10 +163,9 @@ class BatteryManagerAddForm extends React.Component {
               name="instrumentOrder"
               label="Instrument Order"
               onUserInput={this.setFormData}
-              ref="instrumentOrder"
               required={false}
               min="0"
-              max="127"
+              max="127" // max value allowed by default column type of instr_order
               value={this.state.formData.instrumentOrder}
             />
             <ButtonElement label="Add entry"/>
@@ -247,10 +236,6 @@ class BatteryManagerAddForm extends React.Component {
     console.log(duplicateEntry);
     if (Object.keys(duplicateEntry).length > 0) {
       let duplicateEntryJSON = JSON.parse(duplicateEntry);
-          // create object with ID of duplicate entry
-      let entryID =	duplicateEntryJSON.ID;
-      var idObj = new FormData();
-      idObj.append("ID", entryID);
           // if duplicate entry is not active, trigger activate popup
       if (duplicateEntryJSON.Active === 'N') {
         swal({
@@ -262,6 +247,10 @@ class BatteryManagerAddForm extends React.Component {
           cancelButtonText: "Cancel",
           closeOnConfirm: false
         }, function() {
+                    // create object with ID of duplicate entry
+          let entryID = duplicateEntryJSON.ID;
+          let idObj = new FormData();
+          idObj.append("ID", entryID);
                   // if user confirms activate popup, call activate function with ID
           this.activateEntry(idObj);
         }.bind(this));
