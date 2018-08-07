@@ -32,7 +32,7 @@
     Should change the size of the three displayed volumes.
 10. Check that scrolling on top of the brain canvas zooms in and out.    
     Check that the "Reset view" resets the view of the canvas. 
-    Check that the keyborad key 'r' also resets the view of the canvas. 
+    Check that the keyboard key 'r' also resets the view of the canvas. 
 11. Test `View slices` buttons (Sagittal, Coronal and Axial).
     Should give a screenshot of all slices within the selected orientation.    
 12. Load BrainBrowser using the `Add panel` checkbox (on the left of the pic) and the “3D only” button (left panel).
