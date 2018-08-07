@@ -28,7 +28,7 @@ It does not concern itself with data collection or analysis,
 which are the responsibility of the instruments themselves, nor does
 it concern itself with the creation of instruments which is the
 responsibility of the `instrument_builder` module or PHP programmer. 
-The test battery is also managed seperately directly from the database.
+The test battery is also managed separately directly from the database.
 
 ## Permissions
 
