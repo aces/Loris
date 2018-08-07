@@ -16,10 +16,10 @@ $(function() {
         <div className="col-md-9 col-lg-7">
           <BatteryManagerEditForm
             DataURL={`${loris.BaseURL}/battery_manager/ajax/get_form_data.php?action=getFormData&ID=${args.id}`}
-            checkForDuplicate={`${loris.BaseURL}/battery_manager/ajax/add_entry.php?action=checkForDuplicate`}
-            activate={`${loris.BaseURL}/battery_manager/ajax/update_entry.php?action=activate`}
-            deactivate={`${loris.BaseURL}/battery_manager/ajax/update_entry.php?action=deactivate`}
-            edit={`${loris.BaseURL}/battery_manager/ajax/add_entry.php?action=edit`}
+            checkForDuplicate={`${loris.BaseURL}/battery_manager/ajax/add_or_edit_entry.php?action=checkForDuplicate`}
+            activate={`${loris.BaseURL}/battery_manager/ajax/change_active_status.php?action=activate`}
+            deactivate={`${loris.BaseURL}/battery_manager/ajax/change_active_status.php?action=deactivate`}
+            edit={`${loris.BaseURL}/battery_manager/ajax/add_or_edit_entry.php?action=edit`}
           />
         </div>
       </div>

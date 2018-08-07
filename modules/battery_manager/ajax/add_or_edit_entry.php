@@ -1,8 +1,8 @@
 <?php
 /**
- * Battery Manager entry adder
+ * Battery Manager entry adder and editer
  *
- * Checks Test Battery for duplicates and handles insertions into Test Battery
+ * Checks Test Battery for duplicates and handles insertions and updates in the Test Battery
  *
  * PHP Version 7
  *
@@ -37,7 +37,7 @@ function checkForDuplicate()
 
     // Retrieve values entered by user
     $form_data = getFormData();
-
+    
     // Build SQL query based on values entered by user
     $query     = " SELECT
                    ID,
@@ -53,7 +53,7 @@ function checkForDuplicate()
                    instr_order FROM test_battery ";
     $i         = 0;
     $connector = "WHERE ";
-    unset($form_data["Active"]);
+    // Iterate through values entered by user 
     foreach ($form_data as $key => $value) {
         if ($i > 0) {
             $connector = "AND ";
@@ -62,6 +62,7 @@ function checkForDuplicate()
             $query .= $connector . $key . " = :" . $key . " ";
         } else {
             $query .= $connector . $key . " IS NULL ";
+            // Remove null parameters
             unset($form_data[$key]);
         }
         $i++;
@@ -72,6 +73,7 @@ function checkForDuplicate()
         $query,
         $form_data
     );
+
     // Return JSON representation of duplicate entry if it exists, null otherwise
     if ($entry) {
         return json_encode($entry);
@@ -102,12 +104,18 @@ function addEntry()
     // Make sure new entry is active
     $form_data['Active'] = 'Y';
 
-    // Add entry to Test Battery
-    try {
-        $db->insert('test_battery', $form_data);
-    } catch (DatabaseException $e) {
-        showError("Could not add entry to the test battery. Please try again!");
-    }
+    // Check for duplicates on the back-end
+    if (checkForDuplicate() !== null) {
+        header('HTTP/1.1 400 Bad Request');
+        exit("There exists a duplicate entry in the Test Battery.");
+    } else {
+    	// Add entry to Test Battery
+    	try {
+        	$db->insert('test_battery', $form_data);
+    	} catch (DatabaseException $e) {
+        	showError("Could not add entry to the test battery. Please try again!");
+    	}
+    }	
 }
 
 /**
@@ -125,24 +133,28 @@ function editEntry()
         header("HTTP/1.1 403 Forbidden");
         exit;
     }
-
+    
+    // Get ID of edited entry
     $entryID = $_POST['id'];
 
     // Retrieve values entered by user
     $form_data = getFormData();
 
-    foreach ($form_data as $key => $value) {
-        if ($value === "null") {
-            $form_data[$key] = null;
-        }
+    // Get active status of edited entry
+    $form_data['Active'] = $_POST['active'];
+
+    // Check for duplicates on the back-end
+    if (checkForDuplicate() !== null) {
+	header('HTTP/1.1 400 Bad Request');
+	exit("There exists a duplicate entry in the Test Battery.");
+    } else {
+   	// Update entry to Test Battery
+    	try {
+        	$db->update('test_battery', $form_data, ['ID' => $entryID]);
+    	} catch (DatabaseException $e) {
+        	showError("Could not update entry "+$entryID+" in the Test Battery. Please try again!");
+    	}
     }
-    // Update entry to Test Battery
-    try {
-          $db->update('test_battery', $form_data, ['ID' => $entryID]);
-    } catch (DatabaseException $e) {
-        showError("Could not update entry "+$entryID+" to the test battery. Please try again!");
-    }
-    return json_encode($form_data);
 }
 
 /**
@@ -163,9 +175,14 @@ function getFormData()
                    'firstVisit'   => $_POST['firstVisit'] ?? null,
                    'instr_order'  => $_POST['instrumentOrder'] ?? null,
     );
-    if (isset($_POST['active'])) {
-        $form_data['Active'] = $_POST['active'];
+
+    // Convert null strings to nulls
+    foreach ($form_data as $key => $value) {
+        if ($value === "null") {
+            $form_data[$key] = null;
+        }
     }
+
     return $form_data;
 }
 

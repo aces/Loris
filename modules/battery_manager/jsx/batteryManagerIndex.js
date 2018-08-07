@@ -88,9 +88,9 @@ class BatteryManagerIndex extends React.Component {
         <TabPane TabId={tabList[1].id}>
           <BatteryManagerAddForm
             DataURL={`${loris.BaseURL}/battery_manager/ajax/get_form_data.php?action=getFormData`}
-            checkForDuplicate={`${loris.BaseURL}/battery_manager/ajax/add_entry.php?action=checkForDuplicate`}
-            activate={`${loris.BaseURL}/battery_manager/ajax/update_entry.php?action=activate`}
-            add={`${loris.BaseURL}/battery_manager/ajax/add_entry.php?action=add`}
+            checkForDuplicate={`${loris.BaseURL}/battery_manager/ajax/add_or_edit_entry.php?action=checkForDuplicate`}
+            activate={`${loris.BaseURL}/battery_manager/ajax/change_active_status.php?action=activate`}
+            add={`${loris.BaseURL}/battery_manager/ajax/add_or_edit_entry.php?action=add`}
           />
         </TabPane>
       );
@@ -292,9 +292,9 @@ $(function() {
     <div className="page-battery-manager">
       <BatteryManagerIndex
         DataURL={`${loris.BaseURL}/battery_manager/?format=json`}
-        deactivate={`${loris.BaseURL}/battery_manager/ajax/update_entry.php?action=deactivate`}
-        activate={`${loris.BaseURL}/battery_manager/ajax/update_entry.php?action=activate`}
-        edit={`${loris.BaseURL}/battery_manager/ajax/add_entry.php?action=edit`}
+        deactivate={`${loris.BaseURL}/battery_manager/ajax/change_active_status.php?action=deactivate`}
+        activate={`${loris.BaseURL}/battery_manager/ajax/change_active_status.php?action=activate`}
+        edit={`${loris.BaseURL}/battery_manager/ajax/add_or_edit_entry.php?action=edit`}
       />
     </div>
   );

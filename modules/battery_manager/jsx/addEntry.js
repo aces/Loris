@@ -332,7 +332,7 @@ class BatteryManagerAddForm extends React.Component {
       }.bind(this),
       error: function(err) {
         console.error(err);
-        swal("Could not insert", "", "error");
+        swal("Could not insert!", err.responseText, "error");
       }
     });
   }

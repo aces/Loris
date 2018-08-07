@@ -504,7 +504,7 @@ class BatteryManagerEditForm extends React.Component {
       }.bind(this),
       error: function(err) {
         console.error(err);
-        swal("Could not edit", "", "error");
+        swal("Could not edit!", err.responseText, "error");
       }
     });
   }

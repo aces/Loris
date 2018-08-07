@@ -68,7 +68,9 @@ class Edit extends \NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/battery_manager/css/battery_manager.css"]
+            array(
+                  $baseURL . "/battery_manager/css/battery_manager.css",
+            )
         );
     }
 
@@ -85,7 +87,9 @@ class Edit extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/battery_manager/js/editEntryIndex.js"]
+            array(
+                  $baseURL . "/battery_manager/js/editEntryIndex.js",
+            )
         );
     }
 
