@@ -659,9 +659,9 @@ class NDB_Menu_Filter extends NDB_Menu
      *
      * @param int $count Page offset
      *
-     * @note Can be overloaded
+     * @return bool
+     * @note   Can be overloaded
      *
-     * @return void
      * @access private
      */
     function _setDataTableRows($count)
@@ -691,6 +691,7 @@ class NDB_Menu_Filter extends NDB_Menu
      *
      * @return void
      * @access public
+     * @throws SmartyException
      */
     function display()
     {
@@ -729,7 +730,7 @@ class NDB_Menu_Filter extends NDB_Menu
      * string. This script should ensure that only files relative to module's path
      * specified are accessible.
      *
-     * @return string  csv formated string
+     * @return string  csv formatted string
      */
     function getCSVData()
     {
