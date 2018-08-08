@@ -91,7 +91,7 @@ class StaticDataTable extends Component {
         this.state.SortOrder !== prevState.SortOrder)
     ) {
       let index = this.getSortedRows();
-      this.props.onSort(index, this.props.Data, this.props.Headers);
+      this.props.onSort(index, this.props.data, this.props.Headers);
     }
   }
 
@@ -165,7 +165,7 @@ class StaticDataTable extends Component {
         Object.keys(this.props.Filter).length :
         0
     );
-    let tableData = this.props.Data;
+    let tableData = this.props.data;
     let headersData = this.props.Headers;
 
     if (this.props.Filter.keyword) {
@@ -216,8 +216,8 @@ class StaticDataTable extends Component {
   getSortedRows() {
     const index = [];
 
-    for (let i = 0; i < this.props.Data.length; i += 1) {
-      let val = this.props.Data[i][this.state.SortColumn] || undefined;
+    for (let i = 0; i < this.props.data.length; i += 1) {
+      let val = this.props.data[i][this.state.SortColumn] || undefined;
       // If SortColumn is equal to default No. column, set value to be
       // index + 1
       if (this.state.SortColumn === -1) {
@@ -317,12 +317,12 @@ class StaticDataTable extends Component {
     // Handle string inputs
     if (typeof filterData === 'string') {
       searchKey = filterData.toLowerCase();
-      searchString = data.toLowerCase();
+      searchString = typeof data === 'string' ? data.toLowerCase() : String(data);
 
       if (exactMatch) {
         result = (searchString === searchKey);
       } else {
-        result = (searchString.indexOf(searchKey) > -1);
+        result = (searchString.indexOf(searchKey) > -1) && searchKey != '';
       }
     }
 
@@ -341,7 +341,7 @@ class StaticDataTable extends Component {
     return result;
   }
   render() {
-    if (this.props.Data === null || this.props.Data.length === 0) {
+    if (this.props.data === null || this.props.data.length === 0) {
       return (
         <div className='alert alert-info no-result-found-panel'>
           <strong>No result found.</strong>
@@ -390,7 +390,7 @@ class StaticDataTable extends Component {
 
     // Push rows to data table
     for (let i = 0;
-         (i < this.props.Data.length) && (rows.length < rowsPerPage);
+         (i < this.props.data.length) && (rows.length < rowsPerPage);
          i++
     ) {
       curRow = [];
@@ -406,13 +406,13 @@ class StaticDataTable extends Component {
         let data = 'Unknown';
 
         // Set column data
-        if (this.props.Data[index[i].RowIdx]) {
-          data = this.props.Data[index[i].RowIdx][j];
+        if (this.props.data[index[i].RowIdx]) {
+          data = this.props.data[index[i].RowIdx][j];
         }
 
         if (this.hasFilterKeyword(this.props.Headers[j], data)) {
           filterMatchCount++;
-          filteredData.push(this.props.Data[index[i].RowIdx]);
+          filteredData.push(this.props.data[index[i].RowIdx]);
         }
 
         if (useKeyword === true) {
@@ -431,7 +431,7 @@ class StaticDataTable extends Component {
           data = this.props.getFormattedCell(
             this.props.Headers[j],
             data,
-            this.props.Data[index[i].RowIdx],
+            this.props.data[index[i].RowIdx],
             this.props.Headers
           );
           if (data !== null) {
@@ -477,47 +477,28 @@ class StaticDataTable extends Component {
     );
 
     // Include only filtered data if filters were applied
-    let csvData = this.props.Data;
+    let csvData = this.props.data;
     if (this.props.Filter && filteredData.length > 0) {
       csvData = filteredData;
     }
-
-    let header = this.state.Hide.rowsPerPage === true ? '' : (
-      <div className="table-header panel-heading">
-        <div className="row">
-          <div className="col-xs-12">
-            {rows.length} rows displayed of {filteredRows}.
-            (Maximum rows per page: {RowsPerPageDropdown})
-            <div className="pull-right">
-              <PaginationLinks
-                Total={filteredRows}
-                onChangePage={this.changePage}
-                RowsPerPage={rowsPerPage}
-                Active={this.state.PageNumber}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
 
     let footer = this.state.Hide.downloadCSV === true ? '' : (
       <div className="panel-footer table-footer">
         <div className="row">
           <div className="col-xs-12">
-            <div className="col-xs-12 footerText">
+            <div className="col-xs-8 footerText">
               {rows.length} rows displayed of {filteredRows}.
               (Maximum rows per page: {RowsPerPageDropdown})
             </div>
-            <div className="col-xs-6">
+            <div className="col-xs-3">
               <button
-                className="btn btn-primary downloadCSV"
+                className="btn btn-primary"
                 onClick={this.downloadCSV.bind(null, csvData)}
               >
                 Download Table as CSV
               </button>
             </div>
-            <div className="pull-right">
+            <div className="col-xs-1 pull-right">
               <PaginationLinks
                 Total={filteredRows}
                 onChangePage={this.changePage}
@@ -532,10 +513,9 @@ class StaticDataTable extends Component {
 
     return (
       <div className="panel panel-default">
-        {header}
-        <table className="table table-hover table-primary table-bordered" id="dynamictable">
+        <table className="table table-hover table-primary" id="dynamictable">
           <thead>
-            <tr className="info">{headers}</tr>
+            <tr>{headers}</tr>
           </thead>
           <tbody>
             {rows}
@@ -547,9 +527,9 @@ class StaticDataTable extends Component {
   }
 }
 StaticDataTable.propTypes = {
-  Headers: PropTypes.array.isRequired,
-  Data: PropTypes.array.isRequired,
-  RowNumLabel: PropTypes.string,
+  Headers: React.PropTypes.array.isRequired,
+  data: React.PropTypes.array.isRequired,
+  RowNumLabel: React.PropTypes.string,
   // Function of which returns a JSX element for a table cell, takes
   // parameters of the form: func(ColumnName, CellData, EntireRowData)
   getFormattedCell: PropTypes.func,
@@ -559,7 +539,7 @@ StaticDataTable.propTypes = {
 };
 StaticDataTable.defaultProps = {
   Headers: [],
-  Data: {},
+  data: {},
   RowNumLabel: 'No.',
   Filter: {},
   Hide: {

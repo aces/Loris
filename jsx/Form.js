@@ -410,6 +410,8 @@ class SelectElement extends Component {
   handleChange(e) {
     let value = e.target.value;
     let options = e.target.options;
+    const id = e.target.id;
+    const type = e.target.localName;
     const numOfOptions = options.length;
 
     // Multiple values
@@ -422,7 +424,8 @@ class SelectElement extends Component {
       }
     }
 
-    this.props.onUserInput(this.props.name, value, e.target.id, 'select');
+    //TODO: use this concept elsewhere in the code.
+    this.props.onUserInput(this.props.name, value, id, type);
   }
 
   render() {

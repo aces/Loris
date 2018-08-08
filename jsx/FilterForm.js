@@ -38,7 +38,7 @@ class FilterForm extends Component {
     this.queryString = QueryString.get();
   }
 
-  componentWillReceiveProps() {
+  componentDidMount() {
     let filter = {};
     let queryString = this.queryString;
 
@@ -52,7 +52,7 @@ class FilterForm extends Component {
     });
 
     // Update parent component
-    this.props.onUpdate(filter);
+    //this.props.onUpdate(filter);
   }
 
   /**
