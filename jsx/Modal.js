@@ -9,6 +9,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 
+import swal from 'sweetalert2';
+
 /**
  * Modal Component.
  * React wrapper for a Modal Window. Allows to dynamically toggle a Modal
@@ -150,6 +152,8 @@ class Modal extends Component {
         </div>
       </div>
     );
+
+    return modal;
   }
 }
 
