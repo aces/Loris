@@ -47,6 +47,8 @@ class NDB_Form extends NDB_Page
      */
     var $_GUIDelimiter = "&nbsp;\n";
 
+    protected $_csrfToken;
+
     /**
      * Generates a new form instance and runs the appropriate method
      *
@@ -132,6 +134,37 @@ class NDB_Form extends NDB_Page
         if ($this->form->validate()) {
             $this->form->process(array(&$this, "_save"));
         }
+    }
+
+    function setup()
+    {
+        parent::setup();
+        $this::_setCSRFToken();
+        $token = $this->_csrfToken;
+        error_log("Token is $token");
+        $this->addHidden(
+            '_csrfToken',
+            $token
+        );
+    }
+
+    function _setCSRFToken()
+    {
+        $this->_csrfToken = $this::getRandomToken(64);
+    }
+
+    function getRandomToken($length){
+        $token = '';
+        $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $codeAlphabet.= "abcdefghijklmnopqrstuvwxyz";
+        $codeAlphabet.= "0123456789";
+        $max = strlen($codeAlphabet);
+
+        for ($i = 0; $i < $length; $i++) {
+            $token .= $codeAlphabet[random_int(0, $max-1)];
+        }
+
+        return $token;
     }
 
 

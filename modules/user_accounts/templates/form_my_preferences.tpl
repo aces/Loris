@@ -70,6 +70,9 @@
             {$form.language_preference.html}
         </div>
     </div>
+    <div class="row form-group">
+        <input type="hidden" id="_csrfToken" value="{$form._csrfToken.value}">
+    </div>
     <br><br>
     <h3>Notifications</h3>
     <table class="table table-instrument" >
