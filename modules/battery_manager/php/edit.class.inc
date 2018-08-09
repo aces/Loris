@@ -13,7 +13,7 @@
 namespace LORIS\battery_manager;
 
 /**
- * Creates the form for NDB_Form_battery_manager
+ * Creates the Edit form for NDB_Form_battery_manager
  *
  * @category Loris
  * @package  Battery_Manager
@@ -40,7 +40,9 @@ class Edit extends \NDB_Form
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
 
+        // Get ID of entry that was selected for editing
         $entryID = $_GET['id'];
+
         // Check if entry exists, if not redirect to /battery_manager/ page
         if (isset($entryID)) {
             $result = $db->pselectRow(
@@ -69,7 +71,7 @@ class Edit extends \NDB_Form
         return array_merge(
             $deps,
             array(
-                  $baseURL . "/battery_manager/css/battery_manager.css",
+             $baseURL . "/battery_manager/css/battery_manager.css",
             )
         );
     }
@@ -88,7 +90,7 @@ class Edit extends \NDB_Form
         return array_merge(
             $deps,
             array(
-                  $baseURL . "/battery_manager/js/editEntryIndex.js",
+             $baseURL . "/battery_manager/js/editEntryIndex.js",
             )
         );
     }

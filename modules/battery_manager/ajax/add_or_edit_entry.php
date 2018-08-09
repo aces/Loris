@@ -2,7 +2,8 @@
 /**
  * Battery Manager entry adder and editer
  *
- * Checks Test Battery for duplicates and handles insertions and updates in the Test Battery
+ * Checks Test Battery for duplicates
+ * Handles insertions and updates in the Test Battery
  *
  * PHP Version 7
  *
@@ -22,7 +23,7 @@ if (isset($_GET['action'])) {
     } else if ($action == "add") {
         addEntry();
     } else if ($action == "edit") {
-        echo editEntry();
+        editEntry();
     }
 }
 
@@ -37,7 +38,7 @@ function checkForDuplicate()
 
     // Retrieve values entered by user
     $form_data = getFormData();
-    
+
     // Build SQL query based on values entered by user
     $query     = " SELECT
                    ID,
@@ -53,7 +54,7 @@ function checkForDuplicate()
                    instr_order FROM test_battery ";
     $i         = 0;
     $connector = "WHERE ";
-    // Iterate through values entered by user 
+    // Iterate through values entered by user
     foreach ($form_data as $key => $value) {
         if ($i > 0) {
             $connector = "AND ";
@@ -109,13 +110,13 @@ function addEntry()
         header('HTTP/1.1 400 Bad Request');
         exit("There exists a duplicate entry in the Test Battery.");
     } else {
-    	// Add entry to Test Battery
-    	try {
-        	$db->insert('test_battery', $form_data);
-    	} catch (DatabaseException $e) {
-        	showError("Could not add entry to the test battery. Please try again!");
-    	}
-    }	
+        // Add entry to Test Battery
+        try {
+            $db->insert('test_battery', $form_data);
+        } catch (DatabaseException $e) {
+            showError("Could not add entry to the Test Battery. Please try again!");
+        }
+    }
 }
 
 /**
@@ -133,7 +134,7 @@ function editEntry()
         header("HTTP/1.1 403 Forbidden");
         exit;
     }
-    
+
     // Get ID of edited entry
     $entryID = $_POST['id'];
 
@@ -145,15 +146,18 @@ function editEntry()
 
     // Check for duplicates on the back-end
     if (checkForDuplicate() !== null) {
-	header('HTTP/1.1 400 Bad Request');
-	exit("There exists a duplicate entry in the Test Battery.");
+        header('HTTP/1.1 400 Bad Request');
+        exit("There exists a duplicate entry in the Test Battery.");
     } else {
-   	// Update entry to Test Battery
-    	try {
-        	$db->update('test_battery', $form_data, ['ID' => $entryID]);
-    	} catch (DatabaseException $e) {
-        	showError("Could not update entry "+$entryID+" in the Test Battery. Please try again!");
-    	}
+        // Update entry in Test Battery
+        try {
+            $db->update('test_battery', $form_data, ['ID' => $entryID]);
+        } catch (DatabaseException $e) {
+            showError(
+                "Could not update entry "+$entryID+" in the Test Battery."
+                ." Please try again!"
+            );
+        }
     }
 }
 
@@ -165,16 +169,16 @@ function editEntry()
 function getFormData()
 {
     $form_data = array(
-                   'Test_name'    => $_POST['instrument'] ?? null,
-                   'AgeMinDays'   => $_POST['ageMinDays'] ?? null,
-                   'AgeMaxDays'   => $_POST['ageMaxDays'] ?? null,
-                   'Stage'        => $_POST['stage'] ?? null,
-                   'SubprojectID' => $_POST['subproject'] ?? null,
-                   'Visit_label'  => $_POST['visitLabel'] ?? null,
-                   'CenterID'     => $_POST['forSite'] ?? null,
-                   'firstVisit'   => $_POST['firstVisit'] ?? null,
-                   'instr_order'  => $_POST['instrumentOrder'] ?? null,
-    );
+                  'Test_name'    => $_POST['instrument'] ?? null,
+                  'AgeMinDays'   => $_POST['ageMinDays'] ?? null,
+                  'AgeMaxDays'   => $_POST['ageMaxDays'] ?? null,
+                  'Stage'        => $_POST['stage'] ?? null,
+                  'SubprojectID' => $_POST['subproject'] ?? null,
+                  'Visit_label'  => $_POST['visitLabel'] ?? null,
+                  'CenterID'     => $_POST['forSite'] ?? null,
+                  'firstVisit'   => $_POST['firstVisit'] ?? null,
+                  'instr_order'  => $_POST['instrumentOrder'] ?? null,
+                 );
 
     // Convert null strings to nulls
     foreach ($form_data as $key => $value) {

@@ -1,5 +1,3 @@
-/* exported RBatteryManagerEditForm */
-
 /**
  * Battery Manager Edit Form
  *
@@ -18,7 +16,6 @@ class BatteryManagerEditForm extends React.Component {
     this.state = {
       Data: {},
       formData: {},
-      //uploadResult: null,
       isLoaded: false,
       loadedData: 0
     };
@@ -29,6 +26,7 @@ class BatteryManagerEditForm extends React.Component {
     this.isDuplicate = this.isDuplicate.bind(this);
     this.giveOptions = this.giveOptions.bind(this);
     this.activateEntry = this.activateEntry.bind(this);
+    this.deactivateEntry = this.deactivateEntry.bind(this);
     this.editEntry = this.editEntry.bind(this);
      
   }
@@ -38,6 +36,7 @@ class BatteryManagerEditForm extends React.Component {
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
+        // Populate form with current values of entry
         var formData = {
           id: data.batteryData.ID,
           instrument: data.batteryData.Test_name,
@@ -51,7 +50,6 @@ class BatteryManagerEditForm extends React.Component {
           instrumentOrder: data.batteryData.instr_order,
           active: data.batteryData.Active
         };
-        console.log(data);
         self.setState({
           Data: data,
           isLoaded: true,
@@ -92,38 +90,21 @@ class BatteryManagerEditForm extends React.Component {
       );
     }
 
-    var alertMessage = "";
-    var alertClass = "alert text-center hide";
     var backURL = loris.BaseURL.concat('/battery_manager/');
-
-    if (this.state.uploadResult) {
-      if (this.state.uploadResult === "success") {
-        alertClass = "alert alert-success text-center";
-        alertMessage = "Update Successful!";
-      } else if (this.state.uploadResult === "error") {
-        alertClass = "alert alert-danger text-center";
-        alertMessage = "Failed to update the file";
-      }
-    }
 
     // Inform users about duplicate entries
     var helpText = (
       <span>
-        You cannot edit an entry to have the same values as another entry in the test battery.<br/>
-        If the duplicate entry is inactive, you will be given the option to activate it.
+        You can activate or deactivate an entry by changing the Active value in the form.<br/><br/>
+        You cannot edit an entry to have the same values as another entry.<br/>
+        If the edited entry has the same values but a different Active value as another entry,<br/>
+        you can activate or deactivate the other entry based on the change you made.<br/>
+        In this case, the entry that was originally selected for editing will not be edited.<br/>
       </span>
     );
 
     return (
       <div>
-        <div className={alertClass} role="alert" ref="alert-message">
-          {alertMessage}
-        </div>
-        {
-          this.state.uploadResult === "success" ?
-          <a className="btn btn-primary" href={backURL}>Back to media</a> :
-          null
-        }
         <FormElement
           name="batteryEdit"
           onSubmit={this.handleEdit}
@@ -141,7 +122,6 @@ class BatteryManagerEditForm extends React.Component {
             onUserInput={this.setFormData}
             ref="instrument"
             required={true}
-            //disabled={true}
             value={this.state.formData.instrument}
           />
           <NumericElement
@@ -248,54 +228,10 @@ class BatteryManagerEditForm extends React.Component {
     var self = this;
     var formData = this.state.formData;
 
-    //$('#mediaEditEl').hide();
-    //$("#file-progress").removeClass('hide');
-
-    /*$.ajax({
-      type: 'POST',
-      url: self.props.action,
-      data: JSON.stringify(myFormData),
-      cache: false,
-      contentType: false,
-      processData: false,
-      xhr: function() {
-        var xhr = new window.XMLHttpRequest();
-        xhr.upload.addEventListener("progress", function(evt) {
-          if (evt.lengthComputable) {
-            var progressbar = $("#progressbar");
-            var progresslabel = $("#progresslabel");
-            var percent = Math.round((evt.loaded / evt.total) * 100);
-            $(progressbar).width(percent + "%");
-            $(progresslabel).html(percent + "%");
-            progressbar.attr('aria-valuenow', percent);
-          }
-        }, false);
-        return xhr;
-      },
-      success: function(data) {
-        $("#file-progress").addClass('hide');
-        self.setState({
-          uploadResult: "success"
-        });
-        self.showAlertMessage();
-      },
-      error: function(err) {
-        console.error(err);
-        self.setState({
-          uploadResult: "error"
-        });
-        self.showAlertMessage();
-      }
-
-    });*/
-
     let formObj = new FormData();
     for (let key in formData) {
       if (formData[key] !== null) {
-        console.log(key+": "+formData[key]);
         formObj.append(key, formData[key]);
-      } else {
-        console.log(key+" has null value");
       }
     }
      // Check if entry the user is trying to add already exists in the table
@@ -324,31 +260,33 @@ class BatteryManagerEditForm extends React.Component {
   
   /**
    * Give options depending on duplicate entry:
-   * If there is an inactive duplicate entry, give option to activate it
-   * If there is an active duplicate entry, give no options
-   * If there is no duplicate entry, edit entry
+   * If there are no changes in the form, give no options
+   * If the entry is changed so that it has the same values and Active value as another entry, give no options
+   * If only the Active value has been changed, give option to activate or deactivate the current entry depending on the change made
+   * If the entry is changed so that it has the same values as another entry but a different Active value,
+   * give option to activate or deactivate the other entry depending on the change made
+   * If there is no duplicate entry, proceed to edit entry
    *
    * @param {string} duplicateEntry returned by server
    */
   giveOptions(duplicateEntry) {
-    var formData = this.state.formData;
-    console.log(duplicateEntry);
-    console.log(JSON.stringify(formData));
-        // if duplicate entry exists, convert to JSON
+    let editedEntry = this.state.formData;
+    // If duplicate entry exists, convert to JSON
     if (Object.keys(duplicateEntry).length > 0) {
       let duplicateEntryJSON = JSON.parse(duplicateEntry);
-      console.log(duplicateEntryJSON);
-          // create object with ID of duplicate entry
+          // Create object with ID of duplicate entry
       let entryID =     duplicateEntryJSON.ID;
-      var idObj = new FormData();
+      let idObj = new FormData();
       idObj.append("ID", entryID);
-      // check if form data and duplicate entry have the same active status
-      if (duplicateEntryJSON.Active === formData.active) {
+      // Check if edited entry and duplicate entry have the same active status
+      if (editedEntry.active === duplicateEntryJSON.Active) {
+        // Initialize warning message to notify user about duplicate entry
         let errorMessage = "The changes you made are identical to another entry in the table.";
-        // check if no changes were made to selected entry and update message
-        if (duplicateEntryJSON.ID === formData.id) {
+        // Check if edited entry and duplicate entry are actually the same entry and update warning message
+        if (editedEntry.id === duplicateEntryJSON.ID) {
             errorMessage = "You did not make any changes to the current entry.";
         }
+        // Give no options
         swal({
           title: "Duplicate entry!",
           text: errorMessage,
@@ -356,15 +294,18 @@ class BatteryManagerEditForm extends React.Component {
         });
       }
       else {
-          // if duplicate entry is not active, trigger activate popup
+          // If duplicate entry is not active and edited entry is active, trigger activate popup
           if (duplicateEntryJSON.Active === 'N') {
-              if (formData.active === 'Y') {
+              if (editedEntry.active === 'Y') {
+                // Initialize warning message to notify user about inactive duplicate entry
                 let warningMessage = "The changes you made are identical to another entry in the table, with the exception of the Active status.\n " +
                                      "Would you like to activate the other entry?\n Note: No changes will be made to the current entry.";
-                if (duplicateEntryJSON.ID === formData.id) {
+                // Check if edited entry and duplicate entry are actually the same entry and update warning message
+                if (editedEntry.id === duplicateEntryJSON.ID) {
                     warningMessage = "You did not make any changes to the current entry except for the Active status.\n " +
                                      "Would you like to activate this entry?";
                 }
+                // Give option to activate duplicate entry
                 swal({
             		title: "Activate entry?",
             		text: warningMessage,
@@ -374,20 +315,23 @@ class BatteryManagerEditForm extends React.Component {
           		cancelButtonText: "Cancel",
           		closeOnConfirm: false
        	    	}, function() {
-                  // if user confirms activate popup, call activate function with ID
+                  // If user confirms activate popup, call activate function with ID
                 	this.activateEntry(idObj);
             	}.bind(this));
               }
           }
-          // else if duplicate entry is active, trigger error popup
+          // Else if duplicate entry is active and edited entry is not active, trigger deactivate popup
           else if (duplicateEntryJSON.Active === 'Y') {
-              if (formData.active === 'N') {
+              if (editedEntry.active === 'N') {
+                // Initialize warning message to notify user about active duplicate entry
                 let warningMessage = "The changes you made are identical to another entry in the table, with the exception of the Active status.\n " +
                                      "Would you like to deactivate the other entry?\n Note: No changes will be made to the current entry.";
-                if (duplicateEntryJSON.ID === formData.id) {
+                // Check if edited entry and duplicate entry are actually the same entry and update warning message
+                if (editedEntry.id === duplicateEntryJSON.ID) {
                     warningMessage = "You did not make any changes to the current entry except for the Active status.\n " +
                                      "Would you like to deactivate this entry?";
                 }  
+                // Give option to deactivate duplicate entry
                 swal({
                         title: "Deactivate entry?",
                         text: warningMessage,
@@ -397,13 +341,13 @@ class BatteryManagerEditForm extends React.Component {
                         cancelButtonText: "Cancel",
                         closeOnConfirm: false
                 }, function() {
-                  // if user confirms activate popup, call activate function with ID
+                  // If user confirms deactivate popup, call deactivate function with ID
                         this.deactivateEntry(idObj);
                 }.bind(this));
               }
           } 
       }
-        // if no duplicate entry exists, proceed with edit entry
+        // If no duplicate entry exists, proceed with edit entry
     } else {
       this.editEntry();
     }
@@ -430,7 +374,6 @@ class BatteryManagerEditForm extends React.Component {
         }, function() {
           // return to browse tab upon success
           window.location.assign(loris.BaseURL + "/battery_manager/");
-          console.log(data);
         });
       })
       .error(function(data) {
@@ -459,7 +402,6 @@ class BatteryManagerEditForm extends React.Component {
         }, function() {
           // return to browse tab upon success
           window.location.assign(loris.BaseURL + "/battery_manager/");
-          console.log(data);
         });
       })
       .error(function(data) {
@@ -475,10 +417,7 @@ class BatteryManagerEditForm extends React.Component {
     let formData = this.state.formData;
     let formObj = new FormData();
     for (let key in formData) {
-      //if (formData[key] !== "") {
-        console.log(key+" (edit) : "+formData[key]);
         formObj.append(key, formData[key]);
-      //}
     }
 
     $.ajax({
@@ -489,7 +428,6 @@ class BatteryManagerEditForm extends React.Component {
       contentType: false,
       processData: false,
       success: function(data) {
-        console.log(data);
         this.setState({
           formData: {} // reset form data after successful entry
         });
@@ -498,7 +436,6 @@ class BatteryManagerEditForm extends React.Component {
           type: "success"
         }, function() {
                  // return to browse tab upon success
-          console.log(data);
           window.location.assign(loris.BaseURL + "/battery_manager/");
         });
       }.bind(this),
@@ -512,42 +449,24 @@ class BatteryManagerEditForm extends React.Component {
 
   /**
    * Set the form data based on state values of child elements/componenets
+   * If there is no value, set the form element to null
    *
    * @param {string} formElement - name of the selected element
    * @param {string} value - selected value for corresponding form element
    */
   setFormData(formElement, value) {
     var formData = this.state.formData;
-    formData[formElement] = value;
-    /*if (value === "") {
-      console.log(value);
+
+    if (value === "") {
       formData[formElement] = null;
     } else {
       formData[formElement] = value;
-    }*/
+    }
 
     this.setState({
       formData: formData
     });
   }
-
-  /**
-   * Display a success/error alert message after form submission
-   */
-  /*showAlertMessage() {
-    var self = this;
-
-    if (this.refs["alert-message"] === null) {
-      return;
-    }
-
-    var alertMsg = this.refs["alert-message"];
-    $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function() {
-      self.setState({
-        uploadResult: null
-      });
-    });
-  }*/
 
 }
 
@@ -558,10 +477,5 @@ BatteryManagerEditForm.propTypes = {
   checkForDuplicate: React.PropTypes.string.isRequired,
   edit: React.PropTypes.string.isRequired
 };
-
-//var RBatteryManagerEditForm = React.createFactory(BatteryManagerEditForm);
-
-//window.BatteryManagerEditForm = BatteryManagerEditForm;
-//window.RBatteryManagerEditForm = RBatteryManagerEditForm;
 
 export default BatteryManagerEditForm;

@@ -47,8 +47,8 @@ In order to use the Battery Manager module the user might need one or both of th
   3. The **Change Status** column should be in the data table.
   4. The **Edit Metadata** column should be in the data table.
   5. Clicking on Add tab should hide the data table and display a form with the following fields:
-     Instrument, Minimum age (days), Maximum age(days), Stage, Subproject, Visit Label, Site, First Visit,
-     and Instrument Order.
+     `Instrument`, `Minimum age (days)`, `Maximum age(days)`, `Stage`, `Subproject`, `Visit Label`, `Site`, `First Visit`,
+     and `Instrument Order`.
 
 ### Add tab
 

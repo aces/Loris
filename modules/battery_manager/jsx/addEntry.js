@@ -193,10 +193,7 @@ class BatteryManagerAddForm extends React.Component {
     let formObj = new FormData();
     for (let key in formData) {
       if (formData[key] !== "") {
-        console.log(key+": "+formData[key]);
         formObj.append(key, formData[key]);
-      } else if (formData[key] === null) {
-        console.log(key+" has no value");
       }
     }
      // Check if entry the user is trying to add already exists in the table
@@ -233,7 +230,6 @@ class BatteryManagerAddForm extends React.Component {
    */
   giveOptions(duplicateEntry) {
         // if duplicate entry exists, convert to JSON
-    console.log(duplicateEntry);
     if (Object.keys(duplicateEntry).length > 0) {
       let duplicateEntryJSON = JSON.parse(duplicateEntry);
           // if duplicate entry is not active, trigger activate popup
@@ -288,9 +284,7 @@ class BatteryManagerAddForm extends React.Component {
           type: "success"
         }, function() {
           // return to browse tab upon success
-          console.log(data);
           window.location.assign(loris.BaseURL + "/battery_manager/");
-          console.log(data);
         });
       })
       .error(function(data) {

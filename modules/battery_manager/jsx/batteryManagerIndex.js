@@ -14,8 +14,6 @@ class BatteryManagerIndex extends React.Component {
   constructor(props) {
     super(props);
 
-    loris.hiddenHeaders = [];
-
     this.state = {
       isLoaded: false,
       filter: {}
@@ -36,8 +34,6 @@ class BatteryManagerIndex extends React.Component {
 
   /**
    * Retrieve data from the provided URL and save it in state
-   * Additionally add hiddenHeaders to global loris variable
-   * for easy access by formatColumn
    */
   fetchData() {
     $.ajax(this.props.DataURL, {
@@ -76,18 +72,19 @@ class BatteryManagerIndex extends React.Component {
       );
     }
 
-    let addTab;
+    // Create tab list and add Browse tab to it
     let tabList = [
       {id: "browse", label: "Browse"}
     ];
 
     // Include Add tab if user has permission to edit test battery
+    let addTab;
     if (loris.userHasPermission('battery_manager_edit')) {
       tabList.push({id: "add", label: "Add"});
       addTab = (
         <TabPane TabId={tabList[1].id}>
           <BatteryManagerAddForm
-            DataURL={`${loris.BaseURL}/battery_manager/ajax/get_form_data.php?action=getFormData`}
+            DataURL={`${loris.BaseURL}/battery_manager/ajax/get_form_data.php?form=add`}
             checkForDuplicate={`${loris.BaseURL}/battery_manager/ajax/add_or_edit_entry.php?action=checkForDuplicate`}
             activate={`${loris.BaseURL}/battery_manager/ajax/change_active_status.php?action=activate`}
             add={`${loris.BaseURL}/battery_manager/ajax/add_or_edit_entry.php?action=add`}
@@ -128,7 +125,8 @@ class BatteryManagerIndex extends React.Component {
  *********************************************************************************/
   /**
    * Modify behaviour of specified column cells in the Data Table component
-   * Create Deactivate button in Deactivate column if the entry is Active
+   * Create Deactivate button in Change Status column if the entry is Active
+   * Create Activate button in Change Status column if the entry is not Active
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {array} rowData - array of cell contents for a specific row
@@ -136,10 +134,6 @@ class BatteryManagerIndex extends React.Component {
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
-     // If a column if set as hidden, don't display it
-    if (loris.hiddenHeaders.indexOf(column) > -1) {
-      return null;
-    }
 
      // Create the mapping between rowHeaders and rowData in a row object.
     var row = {};
@@ -151,30 +145,30 @@ class BatteryManagerIndex extends React.Component {
     var classes = [];
     classes = classes.join(" ");
     
-     // button styling for change status column
-    //const greenButton = { color: 'green' };
-    //const redbutton = { color: 'red' };
 
-     // create deactivate button if entry is active
+     // Create Change Status column with Active and Deactivate buttons
     if (column === 'Change Status') {
       let entryID = row['Change Status'];
       var idObj = new FormData();
       idObj.append("ID", entryID);
       if (row.Active === 'Y') {
-         // pass id of row to deactivate function
+         // Pass ID of row to deactivate function
         return <td className={classes}><button onClick={() => {
           this.deactivateEntry(idObj);
         }}>Deactivate</button></td>;
       } else if (row.Active === 'N') {
+        // Pass ID of row to activate function
         return <td className={classes}><button onClick={() => {
           this.activateEntry(idObj);
         }}>Activate</button></td>;
       }
     }
     
+    // Create Edit Metadata column with Edit link that allows user to edit entry
     if (column === 'Edit Metadata') {
       let entryID = row['Edit Metadata'];
       var editURL = loris.BaseURL + "/battery_manager/edit/?id=" + entryID;
+       // Pass ID of row to edit page
        return <td className={classes}><a href={editURL}>Edit</a></td>;
     }
 
@@ -250,41 +244,6 @@ class BatteryManagerIndex extends React.Component {
                     });
     }.bind(this));
   }
-
-   /*
-  * Navigate to edit page
-  */
-  activateEntry(idObj) {
-    swal({
-      title: "Are you sure you want to activate this entry?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: 'Yes',
-      cancelButtonText: "Cancel",
-      closeOnConfirm: false
-    }, function() {
-      $.ajax({
-        type: 'POST',
-        url: this.props.activate,
-        data: idObj,
-        cache: false,
-        contentType: false,
-        processData: false
-      })
-                    .done(function(data) {
-                      swal({
-                        title: "Activated!",
-                        type: "success"
-                      }, function() {
-                        location.reload();
-                      });
-                    })
-                    .error(function(data) {
-                      swal("Could not activate entry", "", "error");
-                    });
-    }.bind(this));
-  }
-
 }
 
 $(function() {

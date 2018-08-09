@@ -1,6 +1,6 @@
 <?php
 /**
- * Battery Manager updater
+ * Battery Manager status changer
  *
  * Used by Battery Manager module to activate or deactivate entries in Test Battery
  *
@@ -16,10 +16,10 @@
 // Determine whether entry should be activated or deactivated
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
-    if ($action == "activate") {
-        echo updateEntry('Y');
-    } else if ($action == "deactivate") {
-        echo updateEntry('N');
+    if ($action === "activate") {
+        echo changeStatus('Y');
+    } else if ($action === "deactivate") {
+        echo changeStatus('N');
     }
 }
 
@@ -33,7 +33,7 @@ if (isset($_GET['action'])) {
  *
  * @return void
  */
-function updateEntry($value)
+function changeStatus($value)
 {
 
     $DB = Database::singleton();
@@ -49,8 +49,8 @@ function updateEntry($value)
     $new_entry = $DB->pselectRow(
         " SELECT * FROM test_battery WHERE ID = :batteryID AND Active = :active",
         array(
-            "batteryID" => $_POST["ID"],
-            "active" => $value
+         "batteryID" => $_POST["ID"],
+         "active"    => $value,
         )
     );
 

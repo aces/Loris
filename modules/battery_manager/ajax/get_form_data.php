@@ -13,86 +13,55 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-
-
-if (isset($_GET['action'])) {
-    $action = $_GET['action'];
-    if ($action === "getFormData") {
-        if (isset($_GET['ID'])) {
-            $entryID = $_GET['ID'];
-            echo getAllData($entryID);
-        } else {
-            echo json_encode(getFormData(null));
-        }
+if (isset($_GET['form'])) {
+    $form = $_GET['form'];
+    if ($form === "add") {
+        echo getAddFormData();
+    } else if ($form === "edit") {
+        echo getEditFormData();
     }
 }
 
 /**
- * Get both form data and battery data in json form
- *
- * @param $entryID the id of the form
+ * Get form data for Add form
  *
  * @return json object
  */
-function getAllData($entryID)
+function getAddFormData()
 {
-    $allData                = getFormData($entryID);
-    $allData['batteryData'] = getEntryData($entryID);
-
-    return json_encode($allData);
+    $addFormData = getFormData();
+    return json_encode($addFormData);
 }
 
 /**
- * Get data from the test_battery
+ * Get form data for Edit form
+ * Add form element for Active status
+ * Add entry data in json form
  *
- * @param $entryID the id of the form
- *
- * @return array
+ * @return json object
  */
-
-function getEntryData($entryID)
+function getEditFormData()
 {
-    $db = \Database::singleton();
+    $editFormData = getFormData();
 
-    $query = " SELECT
-               ID,
-               Test_name,
-               AgeMinDays,
-               AgeMaxDays,
-               Active,
-               Stage,
-               SubprojectID,
-               Visit_label,
-               CenterID,
-               firstVisit,
-               instr_order FROM test_battery WHERE id = :id ";
-    $entry = $db->pselectRow($query, array( 'id' => $entryID));
+    // Add for element for Active status
+    $editFormData['active'] = getYesNoList();
 
-    /*$entryData = [
-               'id' => $entry['id'],
-               'instrument' => $entry['Test_name'],
-               'ageMinDays' => $entry['AgeMinDays'],
-               'ageMaxDays' => $entry['AgeMaxDays'],
-               'stage' => $entry['Stage'],
-               'subproject' => $entry['SubprojectID'],
-               'visitLabel' => $entry['Visit_label'],
-               'forSite' => $entry['CenterID'],
-               'firstVisit' => $entry['firstVisit'],
-               'instrumentOrder' => $entry['instr_order'],
-               'active' => $entry['active']
-              ];
-    */
-    return $entry;
+    // Add entry data using entry ID
+    if (isset($_GET['ID'])) {
+        $entryID = $_GET['ID'];
+        $editFormData['batteryData'] = getEntryData($entryID);
+    }
+
+    return json_encode($editFormData);
 }
 
 /**
  * Return object of fields and their values from database
  *
- * @param   $entryID the id of the form
- *
- * @return  array
+ * @return array
  */
-function getFormData($entryID)
+function getFormData()
 {
     $formData = [
                  'instruments' => Utility::getAllInstruments(),
@@ -101,10 +70,8 @@ function getFormData($entryID)
                  'visits'      => Utility::getVisitList(),
                  'sites'       => Utility::getSiteList(false),
                  'firstVisits' => getYesNoList(),
-                ]; 
-    if (isset($entryID)) {
-        $formData['active'] = getYesNoList();
-    }
+                ];
+
     return $formData;
 }
 
@@ -138,4 +105,33 @@ function getYesNoList()
                   'N' => 'No',
                  );
     return $yesNoList;
+}
+
+/**
+ * Get entry data from the test_battery
+ *
+ * @param string $entryID the id of the entry
+ *
+ * @return array
+ */
+function getEntryData($entryID)
+{
+    $db = \Database::singleton();
+
+    $query = " SELECT
+               ID,
+               Test_name,
+               AgeMinDays,
+               AgeMaxDays,
+               Active,
+               Stage,
+               SubprojectID,
+               Visit_label,
+               CenterID,
+               firstVisit,
+               instr_order FROM test_battery WHERE id = :id ";
+    // Get values of entry using entry ID
+    $entry = $db->pselectRow($query, array( 'id' => $entryID));
+
+    return $entry;
 }

@@ -73,7 +73,7 @@ class Battery_Manager extends \NDB_Menu_Filter
 
         $active = $this->getYesNoList();
 
-        // Form Elements
+        // Filter Form Elements
         $this->addSelect('instrument', 'Instrument', $instruments);
         $this->addBasicText('minimumAge', 'Minimum age');
         $this->addBasicText('maximumAge', 'Maximum age');
@@ -84,8 +84,6 @@ class Battery_Manager extends \NDB_Menu_Filter
         $this->addSelect('firstVisit', 'First Visit', $firstVisit);
         $this->addBasicText('instrumentOrder', 'Instrument Order');
         $this->addSelect('active', 'Active', $active);
-
-        $this->tpl_data["hasWritePermission"] = $this->hasWritePermission;
 
         return true;
     }
