@@ -75,8 +75,8 @@ class Battery_Manager extends \NDB_Menu_Filter
 
         // Filter Form Elements
         $this->addSelect('instrument', 'Instrument', $instruments);
-        $this->addBasicText('minimumAge', 'Minimum age');
-        $this->addBasicText('maximumAge', 'Maximum age');
+        $this->addBasicText('minimumAge', 'Minimum age (days)');
+        $this->addBasicText('maximumAge', 'Maximum age (days)');
         $this->addSelect('stage', 'Stage', $stages);
         $this->addSelect('subproject', 'Subproject', $subprojects);
         $this->addSelect('visitLabel', 'Visit Label', $visits);;

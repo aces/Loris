@@ -28,7 +28,6 @@ class BatteryManagerEditForm extends React.Component {
     this.activateEntry = this.activateEntry.bind(this);
     this.deactivateEntry = this.deactivateEntry.bind(this);
     this.editEntry = this.editEntry.bind(this);
-     
   }
 
   componentDidMount() {
@@ -67,7 +66,7 @@ class BatteryManagerEditForm extends React.Component {
   }
 
   render() {
-    //Data loading error
+    // Data loading error
     if (this.state.error !== undefined) {
       return (
         <div className="alert alert-danger text-center">
@@ -89,8 +88,6 @@ class BatteryManagerEditForm extends React.Component {
         </button>
       );
     }
-
-    var backURL = loris.BaseURL.concat('/battery_manager/');
 
     // Inform users about duplicate entries
     var helpText = (
@@ -126,7 +123,7 @@ class BatteryManagerEditForm extends React.Component {
           />
           <NumericElement
             name="ageMinDays"
-            label="Minimum age"
+            label="Minimum age (days)"
             onUserInput={this.setFormData}
             ref="ageMinDays"
             required={true}
@@ -136,7 +133,7 @@ class BatteryManagerEditForm extends React.Component {
           />
           <NumericElement
             name="ageMaxDays"
-            label="Maximum age"
+            label="Maximum age (days)"
             onUserInput={this.setFormData}
             ref="ageMaxDays"
             required={true}
@@ -225,7 +222,6 @@ class BatteryManagerEditForm extends React.Component {
   handleEdit(e) {
     e.preventDefault();
 
-    var self = this;
     var formData = this.state.formData;
 
     let formObj = new FormData();
@@ -257,7 +253,7 @@ class BatteryManagerEditForm extends React.Component {
       }
     });
   }
-  
+
   /**
    * Give options depending on duplicate entry:
    * If there are no changes in the form, give no options
@@ -275,7 +271,7 @@ class BatteryManagerEditForm extends React.Component {
     if (Object.keys(duplicateEntry).length > 0) {
       let duplicateEntryJSON = JSON.parse(duplicateEntry);
           // Create object with ID of duplicate entry
-      let entryID =     duplicateEntryJSON.ID;
+      let entryID = duplicateEntryJSON.ID;
       let idObj = new FormData();
       idObj.append("ID", entryID);
       // Check if edited entry and duplicate entry have the same active status
@@ -284,7 +280,7 @@ class BatteryManagerEditForm extends React.Component {
         let errorMessage = "The changes you made are identical to another entry in the table.";
         // Check if edited entry and duplicate entry are actually the same entry and update warning message
         if (editedEntry.id === duplicateEntryJSON.ID) {
-            errorMessage = "You did not make any changes to the current entry.";
+          errorMessage = "You did not make any changes to the current entry.";
         }
         // Give no options
         swal({
@@ -292,60 +288,52 @@ class BatteryManagerEditForm extends React.Component {
           text: errorMessage,
           type: "error"
         });
-      }
-      else {
-          // If duplicate entry is not active and edited entry is active, trigger activate popup
-          if (duplicateEntryJSON.Active === 'N') {
-              if (editedEntry.active === 'Y') {
+          // If edited entry is active and duplicate entry is not active, trigger activate popup
+      } else if (editedEntry.active === 'Y' && duplicateEntryJSON.Active === 'N') {
                 // Initialize warning message to notify user about inactive duplicate entry
-                let warningMessage = "The changes you made are identical to another entry in the table, with the exception of the Active status.\n " +
+        let warningMessage = "The changes you made are identical to another entry in the table, with the exception of the Active status.\n " +
                                      "Would you like to activate the other entry?\n Note: No changes will be made to the current entry.";
                 // Check if edited entry and duplicate entry are actually the same entry and update warning message
-                if (editedEntry.id === duplicateEntryJSON.ID) {
-                    warningMessage = "You did not make any changes to the current entry except for the Active status.\n " +
+        if (editedEntry.id === duplicateEntryJSON.ID) {
+          warningMessage = "You did not make any changes to the current entry except for the Active status.\n " +
                                      "Would you like to activate this entry?";
-                }
+        }
                 // Give option to activate duplicate entry
-                swal({
-            		title: "Activate entry?",
-            		text: warningMessage,
-          		type: "warning",
-          		showCancelButton: true,
-          		confirmButtonText: 'Yes',
-          		cancelButtonText: "Cancel",
-          		closeOnConfirm: false
-       	    	}, function() {
+        swal({
+          title: "Activate entry?",
+          text: warningMessage,
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: 'Yes',
+          cancelButtonText: "Cancel",
+          closeOnConfirm: false
+        }, function() {
                   // If user confirms activate popup, call activate function with ID
-                	this.activateEntry(idObj);
-            	}.bind(this));
-              }
-          }
-          // Else if duplicate entry is active and edited entry is not active, trigger deactivate popup
-          else if (duplicateEntryJSON.Active === 'Y') {
-              if (editedEntry.active === 'N') {
+          this.activateEntry(idObj);
+        }.bind(this));
+          // Else if edited entry is not active and duplicate entry is active, trigger deactivate popup
+      } else if (editedEntry.active === 'N' && duplicateEntryJSON.Active === 'Y') {
                 // Initialize warning message to notify user about active duplicate entry
-                let warningMessage = "The changes you made are identical to another entry in the table, with the exception of the Active status.\n " +
+        let warningMessage = "The changes you made are identical to another entry in the table, with the exception of the Active status.\n " +
                                      "Would you like to deactivate the other entry?\n Note: No changes will be made to the current entry.";
                 // Check if edited entry and duplicate entry are actually the same entry and update warning message
-                if (editedEntry.id === duplicateEntryJSON.ID) {
-                    warningMessage = "You did not make any changes to the current entry except for the Active status.\n " +
+        if (editedEntry.id === duplicateEntryJSON.ID) {
+          warningMessage = "You did not make any changes to the current entry except for the Active status.\n " +
                                      "Would you like to deactivate this entry?";
-                }  
+        }
                 // Give option to deactivate duplicate entry
-                swal({
-                        title: "Deactivate entry?",
-                        text: warningMessage,
-                        type: "warning",
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes',
-                        cancelButtonText: "Cancel",
-                        closeOnConfirm: false
-                }, function() {
+        swal({
+          title: "Deactivate entry?",
+          text: warningMessage,
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: 'Yes',
+          cancelButtonText: "Cancel",
+          closeOnConfirm: false
+        }, function() {
                   // If user confirms deactivate popup, call deactivate function with ID
-                        this.deactivateEntry(idObj);
-                }.bind(this));
-              }
-          } 
+          this.deactivateEntry(idObj);
+        }.bind(this));
       }
         // If no duplicate entry exists, proceed with edit entry
     } else {
@@ -417,7 +405,9 @@ class BatteryManagerEditForm extends React.Component {
     let formData = this.state.formData;
     let formObj = new FormData();
     for (let key in formData) {
+      if (formData.hasOwnProperty(key)) {
         formObj.append(key, formData[key]);
+      }
     }
 
     $.ajax({
@@ -445,7 +435,6 @@ class BatteryManagerEditForm extends React.Component {
       }
     });
   }
-
 
   /**
    * Set the form data based on state values of child elements/componenets

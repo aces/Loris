@@ -134,7 +134,6 @@ class BatteryManagerIndex extends React.Component {
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
-
      // Create the mapping between rowHeaders and rowData in a row object.
     var row = {};
     rowHeaders.forEach(function(header, index) {
@@ -144,7 +143,6 @@ class BatteryManagerIndex extends React.Component {
      // create array of classes to be added to td tag
     var classes = [];
     classes = classes.join(" ");
-    
 
      // Create Change Status column with Active and Deactivate buttons
     if (column === 'Change Status') {
@@ -163,13 +161,13 @@ class BatteryManagerIndex extends React.Component {
         }}>Activate</button></td>;
       }
     }
-    
+
     // Create Edit Metadata column with Edit link that allows user to edit entry
     if (column === 'Edit Metadata') {
       let entryID = row['Edit Metadata'];
       var editURL = loris.BaseURL + "/battery_manager/edit/?id=" + entryID;
        // Pass ID of row to edit page
-       return <td className={classes}><a href={editURL}>Edit</a></td>;
+      return <td className={classes}><a href={editURL}>Edit</a></td>;
     }
 
     return <td className={classes}>{cell}</td>;

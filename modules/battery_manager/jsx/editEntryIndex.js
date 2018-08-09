@@ -1,4 +1,4 @@
-/* global ReactDOM
+/** global ReactDOM
  *
  * Battery Manager Edit Form
  *
