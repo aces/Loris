@@ -109,7 +109,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/dicom_archive/");
         //testing data from RBdata.sql
-       // $this-> _filter('patientID', "ibis", self::$patientID, "ibis");
+        // $this-> _filter('patientID', "ibis", self::$patientID, "ibis");
         $this-> _filter(
             'patientName',
             "MTL022_300022_V1",
@@ -253,7 +253,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     function testLinksViewImages()
     {
         $this->markTestSkipped(
-          'Imaging is not set'
+            'Imaging is not set'
         );
         $this->safeGet($this->url . "/dicom_archive/");
         $location = "#dynamictable > tbody > tr:nth-child(1) > td:nth-child(10) > a";
