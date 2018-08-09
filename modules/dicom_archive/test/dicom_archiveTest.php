@@ -124,7 +124,12 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
             self::$dateOfBirth,
             "1 rows displayed of 1"
         );
-        $this-> _filter('acquisition', '2009-06-09', self::$Acquisition, "1 rows displayed of 1");
+        $this-> _filter(
+            'acquisition',
+            '2009-06-09',
+            self::$Acquisition,
+            "1 rows displayed of 1"
+        );
         $this-> _filter(
             'archiveLocation',
             "2009/DCM_2009-06-09_ImagingUpload-14-14-qM69wJ.tar",
