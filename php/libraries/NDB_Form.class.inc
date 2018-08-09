@@ -156,7 +156,7 @@ class NDB_Form extends NDB_Page
 
 
     /**
- * Use a JWT token encoding username information and lasting for one day.
+     * Use a JWT token encoding username information and lasting for one day.
      * This is encrypted on the server using a secret key. Then this token
      * will be included as a hidden element on any given form. If this token
      * is not submitted back to the sever, or if its content is not
