@@ -134,26 +134,39 @@ class NDB_Form extends NDB_Page
         }
     }
 
+    /**
+     * Saves the form
+     *
+     * Add a hidden CSRF token to every form.  This prevents requests
+     * being forged by other domains by piggy-backing on a user's active
+     * session.
+     *
+     * @return void
+     * @access public
+     */
     function setup()
     {
-        // Add a hidden CSRF token to every form.  This prevents requests 
-        // being forged by other domains by piggy-backing on a user's active
-        // session.
         $this->addHidden(
             // Double underscores are used here as fields with double underscores
             // are automatically unset in the _save function below.
             '__csrfToken',
-            $this::getCSRFToken()
+            $this::_getCSRFToken()
         );
     }
 
-    function getCSRFToken(): string {
-        // Use a JWT token encoding username information and lasting for one day.
-        // This is encrypted on the server using a secret key. Then this token
-        // will be included as a hidden element on any given form. If this token
-        // is not submitted back to the sever, or if its content is not 
-        // well-formed and accurate, the form will be rejected. This is a way of
-        // preventing cross-site request forgery vulnerabilities.
+
+    /**
+ * Use a JWT token encoding username information and lasting for one day.
+     * This is encrypted on the server using a secret key. Then this token
+     * will be included as a hidden element on any given form. If this token
+     * is not submitted back to the sever, or if its content is not
+     * well-formed and accurate, the form will be rejected. This is a way of
+     * preventing cross-site request forgery vulnerabilities.
+     *
+     * @return string A JWT token to be hidden in a form.
+     */
+    private function _getCSRFToken(): string
+    {
 
         // This code taken from htdocs/api/v0.0.3-dev/Login.php.
         $factory = \NDB_Factory::singleton();
@@ -164,14 +177,14 @@ class NDB_Form extends NDB_Page
 
         // As of now this token only incorporates information about the user
         // and the time it was issued.  This contrasts another approach
-        // to mitigating CSRF attacks by attaching a different token to each 
+        // to mitigating CSRF attacks by attaching a different token to each
         // form specifically (i.e. encoding form information into the token).
         //
         // However, the use of JWT means that the token cannot be replicated unless
         // an attacker knows the secret key (at which point they could just
         // login via the API anyway which would mean CSRF is the least of our
         // concerns). Therefore we can use one token encoding user information
-        // that expires after one day and we should be safe. 
+        // that expires after one day and we should be safe.
         $token = array(
             // JWT related tokens to for the JWT library to validate
                   "iss"  => $baseURL,
@@ -183,12 +196,12 @@ class NDB_Form extends NDB_Page
                   "exp"  => time() + 86400,
             // Additional payload data
                   "user" => $_SESSION['State']->getUsername(),
-              );
+                 );
 
-        // Note: the code for checking JWT key strength is not present here 
-        // (in contrast to Login.php).  As explained above, an attacker 
-        // attempting to take advantage of a weak JWT key has a juicier target 
-        // than CSRF vulnerabilties. 
+        // Note: the code for checking JWT key strength is not present here
+        // (in contrast to Login.php).  As explained above, an attacker
+        // attempting to take advantage of a weak JWT key has a juicier target
+        // than CSRF vulnerabilties.
         $key = $config->getSetting("JWTKey");
         return \Firebase\JWT\JWT::encode($token, $key, "HS256");
     }
@@ -208,24 +221,26 @@ class NDB_Form extends NDB_Page
         // Validate CSRF token, if one is present.  In the future they should be
         // included with every state-changing request (usually POST requests
         // but LORIS does not always conform to this).  For now this will check
-        // only that when a CSRF token is sent that it is well-formed and 
-        // accurate but will not enforce failure if one is not present.  
-        // TODO Once CSRF tokens are enforced universally across LORIS, any 
+        // only that when a CSRF token is sent that it is well-formed and
+        // accurate but will not enforce failure if one is not present.
+        // TODO Once CSRF tokens are enforced universally across LORIS, any
         // state-changing request wihtout a valid CSRF token should be rejected.
-        
+
         $token = $values['__csrfToken'] ?? null;
         if (!is_null($token)) {
             $authenticRequest = false;
-            $factory = \NDB_Factory::singleton();
-            $config  = $factory->config();
+            $factory          = \NDB_Factory::singleton();
+            $config           = $factory->config();
             $key = $config->getSetting("JWTKey");
 
             // Decode token and exit if it is invalid.
             try {
                 $decoded = \Firebase\JWT\JWT::decode($token, $key, array("HS256"));
             } catch (Exception $e) {
-                error_log("ERROR: Could not decode JWT CSRF token! Possible CSRF
-                    attack. $e");
+                error_log(
+                    "ERROR: Could not decode JWT CSRF token! Possible CSRF
+                    attack. $e"
+                );
                 // Do not do any further processing of the request if given a
                 // bad token.
                 die("Malformed CSRF token. Exiting.");
@@ -234,7 +249,7 @@ class NDB_Form extends NDB_Page
             // This is the recommended way to get values from the JWT token
             // according to the Firebase documentation.
             $decodedArray = (array) $decoded;
-            $realUser = $_SESSION['State']->getUsername();
+            $realUser     = $_SESSION['State']->getUsername();
             error_log($realUser);
             $authenticRequest = ($decodedArray['user'] === $realUser);
 
@@ -243,7 +258,7 @@ class NDB_Form extends NDB_Page
             }
         }
 
-        // Unset boilerplate variables even with a bad CSRF token just to be 
+        // Unset boilerplate variables even with a bad CSRF token just to be
         // safe.
         unset(
             $values['test_name'],
@@ -259,7 +274,7 @@ class NDB_Form extends NDB_Page
             }
         }
 
-        // TODO The code should be refactored so that $authenticRequest is 
+        // TODO The code should be refactored so that $authenticRequest is
         // always set.  This is just a provisional measure until CSRF validation
         // is implemented everywhere in LORIS.
         if (isset($authenticRequest) && !$authenticRequest) {
