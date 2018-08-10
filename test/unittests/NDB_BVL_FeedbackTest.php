@@ -51,7 +51,7 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
      * Returns test data set.
      * Populates table feedback_bvl_type.
      *
-     * @return PHPUnit_Extensions_Database_DataSet_IDataSet
+     * @return \PHPUnit\DbUnit\DataSet\IDataSet
      */
     protected function getDataSet()
     {

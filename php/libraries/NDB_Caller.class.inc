@@ -251,21 +251,40 @@ class NDB_Caller
             $phpfile   = $base . "project/instruments/"
                                . "NDB_BVL_Instrument_$test_name.class.inc";
             $linstfile = $base."project/instruments/$test_name.linst";
-
             if ($this->existsAndRequire($phpfile)
                 || $test_name=='instrument_preview'
             ) {
-                $html = $this->loadInstrument(
-                    $test_name,
-                    $subtest,
-                    $CommentID,
-                    $nextpage
-                );
-
+                if ($this->DataEntry === 'Direct') {
+                    $html = $this->loadInstrumentDirect(
+                        $test_name,
+                        $subtest,
+                        $CommentID,
+                        $nextpage
+                    );
+                } else {
+                    $html = $this->loadInstrument(
+                        $test_name,
+                        $subtest,
+                        $CommentID,
+                        $nextpage
+                    );
+                }
                 $this->type = 'instrument';
                 return $html;
             } else if (file_exists($linstfile)) {
-                $html = $this->loadInstrument($test_name, $subtest, $CommentID);
+                if ($this->DataEntry === 'Direct') {
+                    $html = $this->loadInstrumentDirect(
+                        $test_name,
+                        $subtest,
+                        $CommentID
+                    );
+                } else {
+                    $html = $this->loadInstrument(
+                        $test_name,
+                        $subtest,
+                        $CommentID
+                    );
+                }
 
                 $this->type = 'instrument';
                 return $html;
@@ -398,7 +417,7 @@ class NDB_Caller
     }
 
     /**
-    * Renders html for a quickform Instrument
+    * Renders html for an Instrument
     *
     * @param string $instrumentName      Name of the instrument to load
     * @param string $page                Page (subtest) of the instrument
@@ -486,6 +505,58 @@ class NDB_Caller
     }
 
     /**
+     * Renders html for a direct data entry Instrument
+     *
+     * @param string $instrumentName      Name of the instrument to load
+     * @param string $page                Page (subtest) of the instrument
+     * @param string $commentID           CommentID of the instrument to load
+     * @param string $redirectToOnSuccess URL to redirect to if the page is loaded
+     *                                    successfully.
+     *
+     * @return string HTML of the page to render.
+     */
+    function loadInstrumentDirect(
+        $instrumentName,
+        $page,
+        $commentID,
+        $redirectToOnSuccess=null
+    ) {
+        if ($page === 'finalpage') {
+            $instrument = NDB_BVL_Instrument::factory(
+                $instrumentName,
+                $commentID,
+                $page
+            );
+
+            $this->instrument = $instrument;
+            header("Location: $redirectToOnSuccess");
+            return "";
+        }
+
+        // make an instance of the instrument's object
+        $instrument = NDB_BVL_Instrument::factory(
+            $instrumentName,
+            $commentID,
+            $page
+        );
+
+        $this->instrument = $instrument;
+        $success          = $instrument->save();
+        if ($redirectToOnSuccess !== null && $success !== false) {
+            header("Location: $redirectToOnSuccess");
+            return "";
+        }
+        // create an instrument status object
+        $status  = new NDB_BVL_InstrumentStatus;
+        $success = $status->select($commentID);
+
+        $this->page = $instrument;
+        $html       = $instrument->display();
+
+        return $html;
+    }
+
+    /**
      * Checks if a library exists, and requires it if it does.
      *
      * @param string $library name of class to be included.
@@ -508,7 +579,7 @@ class NDB_Caller
      * @param string $type "normal" or "direct", the type of data entry
      *                     being performed.
      *
-     * @return none
+     * @return void
      */
     function setDataEntryType($type)
     {

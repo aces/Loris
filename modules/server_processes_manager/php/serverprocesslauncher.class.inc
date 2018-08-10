@@ -37,17 +37,6 @@ class ServerProcessLauncher
     private $_databaseProvider;
 
     /**
-     * Builds a new ServerProcessesLauncher
-     *
-     * @param mixed $databaseProvider entity used to access the database
-     */
-    public function __construct(
-        IDatabaseProvider $databaseProvider = null
-    ) {
-        $this->setDatabaseProvider($databaseProvider);
-    }
-
-    /**
       * Accessor for field $_databaseProvider
       *
       * @return IDatabaseProvider value of field $_databaseProvider
@@ -81,7 +70,7 @@ class ServerProcessLauncher
      * @param AbstractServerProcess $process the process that was just started
      *
      * @return void
-     * @throws InvalidArgumentException if the process is null or if either the
+     * @throws \InvalidArgumentException if the process is null or if either the
      *                                  PID or the process start time is null.
      */
     private function _saveProcess(AbstractServerProcess $process)

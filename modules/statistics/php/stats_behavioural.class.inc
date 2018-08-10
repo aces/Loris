@@ -1,8 +1,8 @@
 <?php
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -13,9 +13,9 @@
 namespace LORIS\statistics;
 
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -108,8 +108,10 @@ class Stats_Behavioural extends \NDB_Form
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
             $this->params['pid'] = htmlspecialchars($_REQUEST['BehaviouralProject']);
         } else {
-            $Param_Project = '';
+            $currentProject = '';
+            $Param_Project  = '';
         }
+
         $subprojects = \Utility::getSubprojectsForProject($currentProject);
 
         $this->tpl_data['Subprojects'] = $subprojects;
@@ -125,6 +127,11 @@ class Stats_Behavioural extends \NDB_Form
 
         $Visits = \Utility::getExistingVisitLabels($currentProject);
         $this->tpl_data['Visits'] = $Visits;
+
+        // PREVENT Undefined property Console Output
+        if (!isset($this->params)) {
+            $this->params = null;
+        }
 
         //---- BEHAVIORAL STATS -----
         $result = $DB->pselect(

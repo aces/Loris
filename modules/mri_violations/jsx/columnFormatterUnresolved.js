@@ -52,7 +52,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     hashName = "resolvable[" + row.Hash + "]";
     return (
              <td>
-                <select name= {hashName} className="form-control input-sm" >
+                <select name= {hashName} className="form-control input-sm" id="resolution-status">
                      <option value="unresolved" >Unresolved</option>
                      <option value="reran" >Reran</option>
                      <option value="emailed" >Emailed site/pending</option>

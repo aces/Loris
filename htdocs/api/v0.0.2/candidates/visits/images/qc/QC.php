@@ -57,7 +57,7 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
     /**
      * Handles a GET request
      *
-     * @return none, but populates $this->JSON
+     * @return void (but populates $this->JSON)
      */
     public function handleGET()
     {
@@ -97,7 +97,7 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
     /**
      * Handles a PUT request for QC data
      *
-     * @return none
+     * @return void
      */
     public function handlePUT()
     {
@@ -188,7 +188,7 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
      * @param string $qcval  The Pass/Fail status
      * @param string $selval The value to set the selected field to.
      *
-     * @return none
+     * @return void
      */
     private function _saveFileQC($qcval, $selval)
     {

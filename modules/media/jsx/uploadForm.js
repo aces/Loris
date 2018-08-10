@@ -118,10 +118,12 @@ class MediaUploadForm extends React.Component {
               required={true}
               value={this.state.formData.visitLabel}
             />
-            <SelectElement
+            <SearchableDropdown
               name="forSite"
               label="Site"
+              placeHolder="Search for site"
               options={this.state.Data.sites}
+              strictSearch={true}
               onUserInput={this.setFormData}
               ref="forSite"
               required={true}

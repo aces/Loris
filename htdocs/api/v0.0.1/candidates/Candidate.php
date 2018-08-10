@@ -68,9 +68,9 @@ class Candidate extends \Loris\API\APIBase
     }
 
     /**
-     * Handle a GET request
+     * Handle a GET request and populates $this->JSON as a side-effect
      *
-     * @return none, but populates $this->JSON
+     * @return void
      */
     public function handleGET()
     {
