@@ -39,7 +39,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     /**
      * Insert testing data into the database
      *
-     * @return none
+     * @return void
      */
     function setUp()
     {
@@ -48,7 +48,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     /**
      * Delete testing data from database
      *
-     * @return none
+     * @return void
      */
     function tearDown()
     {
@@ -105,7 +105,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testdicomArchivFilterClearBtn()
+    function testdicomArchiveFilterClearBtn()
     {
         $this->safeGet($this->url . "/dicom_archive/");
         //testing data from RBdata.sql
@@ -267,7 +267,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $text = $this->webDriver->executescript(
             "return document.querySelector('#bc2>a:nth-child(3)>div').textContent"
         );
-        $this->assertEquals(' View Session', $text);
+        $this->assertEquals('View Session', $text);
 
     }
 }

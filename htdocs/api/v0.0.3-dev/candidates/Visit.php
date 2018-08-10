@@ -87,7 +87,7 @@ class Visit extends \Loris\API\Candidates\Candidate
     /**
      * Handles a GET request
      *
-     * @return none, but populates $this->JSON
+     * @return void but populates $this->JSON
      */
     public function handleGET()
     {
@@ -143,7 +143,7 @@ class Visit extends \Loris\API\Candidates\Candidate
     /**
      * Handles a PUT request for a visit
      *
-     * @return none
+     * @return void
      */
     public function handlePUT()
     {
@@ -246,12 +246,12 @@ class Visit extends \Loris\API\Candidates\Candidate
      *                              be created
      * @param integer $CID          The ID of the center of the visit
      *
-     * @return none
+     * @return void
      */
     function createNew($CandID, $subprojectID, $VL, $CID)
     {
         try {
-            \TimePoint::isValidVisitLabel($CandID, $subprojectID, $VL, $CID);
+            \TimePoint::isValidVisitLabel($CandID, $subprojectID, $VL);
         } catch (\LorisException $e) {
             $this->header("HTTP/1.1 400 Bad Request");
             $this->error($e->getMessage());

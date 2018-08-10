@@ -92,7 +92,7 @@ abstract class APIBase
      * Handles a request by delegating to the appropriate
      * handle method
      *
-     * @return none
+     * @return void
      */
     function handleRequest()
     {
@@ -120,10 +120,10 @@ abstract class APIBase
     }
 
     /**
-     * Determine calculate the ETag for this resource and abort
+     * Determine the ETag for this resource and abort
      * early if the client already has it.
      *
-     * @return None
+     * @return void
      */
     function handleETag()
     {
@@ -150,7 +150,7 @@ abstract class APIBase
     /**
      * Handle a GET request
      *
-     * @return none
+     * @return void
      */
     function handleGET()
     {
@@ -160,7 +160,7 @@ abstract class APIBase
     /**
      * Handle a PUT request
      *
-     * @return none
+     * @return void
      */
     function handlePUT()
     {
@@ -171,7 +171,7 @@ abstract class APIBase
     /**
      * Handle a POST request
      *
-     * @return none
+     * @return void
      */
     function handlePOST()
     {
@@ -182,7 +182,7 @@ abstract class APIBase
     /**
      * Handle a PATCH request
      *
-     * @return none
+     * @return void
      */
     function handlePATCH()
     {
@@ -193,13 +193,13 @@ abstract class APIBase
     /**
      * Handle a OPTIONS request
      *
-     * @return none
+     * @return void
      */
     function handleOPTIONS()
     {
         $this->Header(
             "Access-Control-Allow-Methods: ".
-            join($this->AllowedMethods, ",")
+            join(",", $this->AllowedMethods)
         );
         $this->safeExit(0);
     }
@@ -219,7 +219,7 @@ abstract class APIBase
      *
      * @param string $msg The error message to display
      *
-     * @return none
+     * @return void
      */
     function error($msg)
     {
@@ -232,7 +232,7 @@ abstract class APIBase
      *
      * @param string $head The header to send to the client
      *
-     * @return none
+     * @return void
      */
     function header($head)
     {
@@ -248,7 +248,7 @@ abstract class APIBase
      *
      * @param integer $code The program exit code
      *
-     * @return none, but exits the running program
+     * @return void but exits the running program
      */
     function safeExit($code)
     {

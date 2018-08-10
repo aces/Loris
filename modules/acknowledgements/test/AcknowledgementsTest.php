@@ -53,7 +53,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      * Insert testing data into the database
      * author: Wang Shen
      *
-     * @return none
+     * @return void
      */
     function setUp()
     {
@@ -68,7 +68,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      * Delete testing data from database
      * author: Wang Shen
      *
-     * @return none
+     * @return void
      */
     function tearDown()
     {

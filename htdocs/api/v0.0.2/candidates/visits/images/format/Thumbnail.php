@@ -54,7 +54,7 @@ class Thumbnail extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
     /**
      * Handles a GET request
      *
-     * @return none, but populates $this->JSON
+     * @return void (but populates $this->JSON)
      */
     public function handleGET()
     {
@@ -66,7 +66,7 @@ class Thumbnail extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
             fclose($fp);
             $this->safeExit(0);
         } else {
-            $this->header("HTTP/1.1 500 Internal Server Error", true, 500);
+            $this->header("HTTP/1.1 500 Internal Server Error");
             $this->error("Could not load thumbnail file");
             $this->safeExit(1);
         }

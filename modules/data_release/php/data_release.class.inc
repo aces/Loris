@@ -29,7 +29,7 @@ class Data_Release extends \NDB_Menu_Filter
     /**
      * Setup variables
      *
-     * @return None
+     * @return void
      */
     function _setupVariables()
     {
@@ -101,7 +101,6 @@ class Data_Release extends \NDB_Menu_Filter
         $this->tpl_data['userids']          = $userids;
         $this->tpl_data['data_release_ids'] = $data_release_ids;
 
-        return true;
     }
 
 }

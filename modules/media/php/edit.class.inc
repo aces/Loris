@@ -29,7 +29,7 @@ class Edit extends \NDB_Form
      * Entry point for /media/edit/
      * Checks if file id is provided and otherwise redirects to /media/ page
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -93,7 +93,7 @@ class Edit extends \NDB_Form
      * Check user permissions
      *
      * @return bool
-     * @throws ConfigurationException
+     * @throws \ConfigurationException
      */
     function _hasAccess()
     {

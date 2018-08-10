@@ -45,7 +45,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
      * Set up the variables required by NDB_Menu_Filter class for constructing
      * a query
      *
-     * @return null
+     * @return void
      */
     function _setupVariables()
     {
@@ -54,121 +54,36 @@ class Dicom_Archive extends \NDB_Menu_Filter
 
         $this->skipTemplate = true;
 
-        $this->_setDicomArchiveSettings();
-
-        $this->query = " FROM tarchive t
-            LEFT JOIN session s ON (s.ID=t.SessionID)
-            LEFT JOIN candidate c ON (c.CandID=s.CandID) WHERE 1=1";
-
-        $colsFirst = array();
-
-        $TransferStatus = $this->_getTransferStatusFromQuery();
-        $arrayTransfer  = array($TransferStatus . " as Transfer_Status");
-
-        $colsFirst = array_merge($colsFirst, $arrayTransfer);
-
-        $colsLast = array(
-                     't.PatientID as Patient_ID',
-                     't.PatientName as Patient_Name',
-                     't.PatientGender as Gender',
-                     't.PatientDoB as Date_of_birth',
-                     't.DateAcquired as Acquisition',
-                     't.ArchiveLocation as Archive_Location',
-                     "'View Details' as Metadata",
-                     "'View Images' as MRI_Browser",
-                     // For constructing links, not in headers array
-                     "(SELECT GROUP_CONCAT(SeriesUID) FROM tarchive_series e WHERE ".
-                     "e.TarchiveID=t.TarchiveID GROUP BY e.TarchiveID) as SeriesUID",
-                     's.CenterID as site',
-                     't.TarchiveID as TarchiveID',
-                     's.ID as SessionID',
-                    );
-
-        $this->columns = array_merge($colsFirst, $colsLast);
-
-        $this->order_by = 't.DateAcquired';
-
-        $this->headers = [];
-
-        if ($this->dicomArchiveSettings['showTransferStatus'] == 'true') {
-            array_push($this->headers, 'Transfer_Status');
-        }
-
-        $this->headers = array_merge(
-            $this->headers,
-            [
-             'Patient_ID',
-             'Patient_Name',
-             'Gender',
-             'Date_of_birth',
-             'Acquisition',
-             'Archive_Location',
-             'Metadata',
-             'MRI_Browser',
-             'Seriesuid',
-             'Site',
-             'TarchiveID',
-             'SessionID',
-            ]
-        );
-
-        // Set header as hidden from the data table
-        $this->tpl_data['hiddenHeaders'] = json_encode(
-            [
-             'Seriesuid',
-             'Site',
-             'TarchiveID',
-             'SessionID',
-            ]
-        );
-
-        $this->validFilters = array(
-                               'c.CenterID',
-                               't.PatientID',
-                               't.PatientGender',
-                               't.DateAcquired',
-                               't.PatientName',
-                               't.PatientDoB',
-                               't.ArchiveLocation',
-                              );
-
-        $this->formToFilter = array(
-                               'SiteID'      => 'c.CenterID',
-                               'PatientID'   => 't.PatientID',
-                               'Gender'      => 't.PatientGender',
-                               'Acquisition' => 't.DateAcquired',
-                               'PatientName' => 't.PatientName',
-                               'DoB'         => 't.PatientDoB',
-                               'Location'    => 't.ArchiveLocation',
-                              );
+        $this->columns = [];
 
     }
 
     /**
-     * Override default behaviour, since the page is loaded from mediaIndex.js
+     * Gets the data source for this menu filter.
      *
-     * @return void
-     * @access public
+     * @return \LORIS\Data\Provisioner
      */
-    function display()
+    function getDataProvisioner() : \LORIS\Data\Provisioner
     {
-        $content = null;
-        $format  = $_REQUEST['format'] ?? '';
+        $provisioner = new DicomArchiveRowProvisioner();
 
-        if ($format == 'json') {
-            $content = $this->toJSON();
+        $user = \User::singleton();
+
+        if ($user->hasPermission("access_all_profiles") == false) {
+            $provisioner = $provisioner->filter(
+                new \LORIS\Data\Filters\UserSiteMatch()
+            );
         }
-
-        return $content;
+        $provisioner = $provisioner->map(new DICOMArchiveAnonymizer());
+        return $provisioner;
     }
-
     /**
      * Create a form to filter media by various criteria
      *
-     * @return bool
-     * @throws ConfigurationException
-     * @throws DatabaseException
-     * @throws Exception
+     * @return void
+     * @throws \ConfigurationException
+     * @throws \DatabaseException
+     * @throws \Exception
      */
     function _setFilterForm()
     {
@@ -179,64 +94,55 @@ class Dicom_Archive extends \NDB_Menu_Filter
         $this->addBasicDate('dateOfBirth', 'Date of Birth');
         $this->addBasicDate('acquisition', 'Acquisition Date');
         $this->addBasicText('archiveLocation', 'Archive Location');
-        $this->addBasicText('seriesuid', 'Series UI');
+        $this->addBasicText('seriesuid', 'Series UID');
     }
 
-    /**
-    * Sets transfer status according to the data in the
-    * config file.
-    *
-    * @return null
-    */
-    function _setDicomArchiveSettings()
-    {
-        $config =& \NDB_Config::singleton();
-        $this->dicomArchiveSettings = $config->getSetting('imaging_modules');
-    }
-
-    /**
-    * Retrieves Transfer status.
-    * Queued if pending, date of sending if sent,
-    * else not transferred
-    *
-    * @return string $query with a status string
-    */
-    function _getTransferStatusFromQuery()
-    {
-        if ($this->dicomArchiveSettings['showTransferStatus'] == 'true') {
-            $query = "IF(
-                t.PendingTransfer, 
-                'Queued', 
-                IF (
-                    t.DateSent, 
-                    CONCAT('Sent ', t.DateSent), 
-                    'Not transferred'
-                )
-            )";
-        } else {
-            $query = "CONCAT(t.PendingTransfer, ' ', t.DateSent)";
-        }
-        return $query;
-    }
 
     /**
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
-     * @return a json encoded string of the headers and data from this table
+     * @return string a json encoded string of the headers and data from this table
      */
     function toJSON()
     {
-        $result = $this->toArray();
-        $result['hiddenHeaders'] = [
-                                    'Seriesuid',
-                                    'Site',
-                                    'TarchiveID',
-                                    'SessionID',
-                                   ];
-        $result['form']          = $this->form->form;
-
-        return json_encode($result);
+        $table = (new \LORIS\Data\Table())
+            ->withDataFrom($this->getDataProvisioner());
+        $arr   = array_map(
+            function ($row) {
+                return array_values($row);
+            },
+            json_decode($table->toJSON(\User::singleton()), true)
+        );
+        return json_encode(
+            [
+             'Headers'       => [
+                                 'Patient ID',
+                                 'Patient Name',
+                                 'Gender',
+                                 'Date Of Birth',
+                                 'Acquisition',
+                                 'Archive Location',
+                                 'Metadata',
+                                 'MRI Browser',
+                                 'Seriesuid',
+                                 'Site',
+                                 'TarchiveID',
+                                 'SessionID',
+                                ],
+             'Data'          => $arr,
+             /* FIXME: These lines are really stupid, but left over from a
+              * previous incarnation of this module and the js front-end
+              * requires them to be returned in the JSON response. */
+             'hiddenHeaders' => [
+                                 'Seriesuid',
+                                 'Site',
+                                 'TarchiveID',
+                                 'SessionID',
+                                ],
+             'form'          => $this->form->form,
+            ]
+        );
     }
 
     /**
@@ -248,51 +154,14 @@ class Dicom_Archive extends \NDB_Menu_Filter
      */
     function toArray()
     {
-        $unanonymized = parent::toArray();
-        $retVal       = array(
-                         'Headers' => $unanonymized['Headers'],
-                        );
-        $data         = array();
-
-        foreach ($unanonymized['Data'] as &$row) {
-            $val = $row[2];
-            if (!preg_match($this->dicomArchiveSettings['patientNameRegex'], $val)
-                && !preg_match($this->dicomArchiveSettings['LegoPhantomRegex'], $val)
-                && !preg_match(
-                    $this->dicomArchiveSettings['LivingPhantomRegex'],
-                    $val
-                )
-            ) {
-                $row[2] = "INVALID - HIDDEN";
-            }
-
-            $val = $row[1];
-            if (! preg_match($this->dicomArchiveSettings['patientIDRegex'], $val)) {
-                $row[1] = 'INVALID - HIDDEN';
-            }
-
-            // remove Transfer_Status column if showTransferStatus is false
-            if ($this->dicomArchiveSettings['showTransferStatus'] == 'false') {
-                array_shift($row);
-            }
-
-            $data[] = $row;
-        }
-
-        $this->_setFilterForm();
-
-        return array(
-                'Headers' => $unanonymized['Headers'],
-                'Data'    => $data,
-               );
-
+        return json_decode($this->toJSON());
     }
 
     /**
      * Overrides base getJSDependencies() to add support for dicom specific
      * React column formatters.
      *
-     * @return an array of extra JS files that this page depends on
+     * @return array of extra JS files that this page depends on
      */
     function getJSDependencies()
     {
