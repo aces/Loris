@@ -136,12 +136,13 @@ function editProbandInfoFields($db, $user)
         header("HTTP/1.1 403 Forbidden");
         exit;
     }
-
-    $candID = $_POST['candID'];
+    //Sanitizing the post data
+    $sanitize = array_map('htmlentities', $_POST);
+    $candID   = $sanitize['candID'];
 
     // Process posted data
-    $gender = isset($_POST['ProbandGender']) ? $_POST['ProbandGender'] : null;
-    $dob    = isset($_POST['ProbandDoB']) ? $_POST['ProbandDoB'] : null;
+    $gender = $sanitize['ProbandGender'] ?? null;
+    $dob    = $sanitize['ProbandDoB'] ?? null;
 
     $updateValues = [
                      'ProbandGender' => $gender,
@@ -149,6 +150,44 @@ function editProbandInfoFields($db, $user)
                     ];
 
     $db->update('candidate', $updateValues, ['CandID' => $candID]);
+    foreach (array_keys($sanitize) as $field) {
+        if (!empty($sanitize[$field])) {
+            if (substr($field, 0, 4) === 'PTID') {
+                $ptid = substr($field, 4);
+
+                $updateValues = [
+                                 'ParameterTypeID' => $ptid,
+                                 'CandID'          => $candID,
+                                 'Value'           => $_POST[$field],
+                                 'InsertTime'      => time(),
+                                ];
+
+                $result = $db->pselectOne(
+                    'SELECT CandID from parameter_candidate 
+                    WHERE CandID=:cid 
+                    AND ParameterTypeID=:ptid',
+                    [
+                     'cid'  => $candID,
+                     'ptid' => $ptid,
+                    ]
+                );
+
+                if (empty($result)) {
+                    $db->insert('parameter_candidate', $updateValues);
+                } else {
+                    $db->update(
+                        'parameter_candidate',
+                        $updateValues,
+                        [
+                         'CandID'          => $candID,
+                         'ParameterTypeID' => $ptid,
+                        ]
+                    );
+                }
+            }
+        }
+    }
+
 }
 
 /**

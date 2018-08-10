@@ -139,11 +139,17 @@ class Database
      * @param boolean $trackChanges whether to use the trackChanges mechanism on
      *                              this connection (defaults to true)
      *
-     * @return void
+     * @return bool True if DB connection established. False otherwise.
      * @access public
      */
-    function connect($database, $username, $password, $host, $trackChanges = true)
-    {
+    function connect(
+        $database,
+        $username,
+        $password,
+        $host,
+        $trackChanges = true
+    ) : bool {
+
         $this->_trackChanges = $trackChanges;
         $this->_databaseName = $database;
 
@@ -165,11 +171,22 @@ class Database
 
         }
 
-        $this->_PDO = new PDO(
-            "mysql:host=$host;dbname=$database;charset=UTF8",
-            $username,
-            $password
-        );
+        try {
+            $this->_PDO = new PDO(
+                "mysql:host=$host;dbname=$database;charset=UTF8",
+                $username,
+                $password
+            );
+        } catch (PDOException $e) {
+            // This exception will not be included in the error log as it will
+            // likely include credentials.
+            throw new DatabaseException(
+                "Could not establish a PDO object using the following values: "
+                . "username: `$username`, dbname: `$database`, host: `$host` "
+                . "and the supplied password."
+            );
+            return false;
+        }
         $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
         $this->_PDO->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
@@ -207,6 +224,7 @@ class Database
               :type
             )"
         );
+        return true;
     }
 
     /**

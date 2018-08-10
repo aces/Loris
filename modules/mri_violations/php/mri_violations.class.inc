@@ -441,5 +441,21 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             )
         );
     }
+
+    /**
+     * Include additional CSS files
+     *
+     * @return array of CSS to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            array($baseURL . "/mri_violations/css/mri_violations.css")
+        );
+    }
 }
 ?>

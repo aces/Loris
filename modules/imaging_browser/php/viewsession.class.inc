@@ -454,6 +454,9 @@ class ViewSession extends \NDB_Form
                     $insertSet['CandID']      = $candid;
                     $insertSet['Visit_label'] = $visit_label;
                     $insertSet['CheckID']     = null;
+                    $insertSet['Scan_type']   = $file->getParameter(
+                        'AcquisitionProtocolID'
+                    );
                     $insertSet['Severity']    = 'warning';
                     $insertSet['Header']      = 'Manual Caveat Set by '
                         . $user->getUsername();

@@ -2,7 +2,7 @@
 /**
  * Examiner module: Form used to update examiner certification status
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Loris
@@ -15,7 +15,7 @@ namespace LORIS\examiner;
 /**
  * Examiner module: Form used to update examiner certification status
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Loris
@@ -48,13 +48,8 @@ class EditExaminer extends \NDB_Form
         $userCenter   = $user->getCenterIDs();
 
         $certification = $config->getSetting('Certification');
-        if (isset($certification['EnableCertification'])) {
-            $useCertification = $certification['EnableCertification'];
-        } else {
-            $useCertification = false;
-        }
 
-        if ($useCertification) {
+        if ($certification['EnableCertification'] ?? false) {
             $cids      = $DB->pselect(
                 "SELECT epr.centerID 
                  FROM examiners e 
@@ -69,9 +64,11 @@ class EditExaminer extends \NDB_Form
 
             // Access is only granted if user sites are a superset of examiner sites
             // considering that certification changes affect all sites
-            return $user->hasPermission('examiner_view')
-                && (($user->hasPermission('examiner_multisite')
-                || empty(array_diff($centerIDs, $user->getData('CenterIDs')))));
+            $permitted         = $user->hasPermission('examiner_view')
+                && empty(array_diff($centerIDs, $user->getData('CenterIDs')));
+            $permittedAllSites
+                = $user->hasPermission('examiner_multisite');
+            return $permitted || $permittedAllSites;
         }
         return false;
     }
@@ -435,6 +432,22 @@ class EditExaminer extends \NDB_Form
         }
 
         return $instruments;
+    }
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $label = ucwords(str_replace('_', ' ', $this->name));
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb($label, "/$this->name"),
+            new \LORIS\Breadcrumb(
+                'Edit Examiner',
+                "/examiner/editExaminer/?identifier=$this->identifier"
+            )
+        );
     }
 }
 ?>

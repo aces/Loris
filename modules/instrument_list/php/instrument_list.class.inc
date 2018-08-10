@@ -56,20 +56,26 @@ class Instrument_List extends \NDB_Menu_Filter
     {
         // create user object
         $user =& \User::singleton();
-
+        if (isset($_REQUEST['sessionID'])) {
+            //These variable are only for checking the permissions.
+            $TimePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
+            $candID    = $TimePoint->getCandID();
+            $Candidate =& \Candidate::singleton($candID);
+            return ($user->hasPermission('access_all_profiles')
+                || (in_array(
+                    $Candidate->getData('CenterID'),
+                    $user->getData('CenterIDs')
+                )
+                   )
+                || (in_array(
+                    $TimePoint->getData('CenterID'),
+                    $user->getData('CenterIDs')
+                )
+                   )
+            );
+        }
         // check user permissions
-        return ($user->hasPermission('access_all_profiles')
-                || (in_array(
-                    $this->candidate->getData('CenterID'),
-                    $user->getData('CenterIDs')
-                )
-                   )
-                || (in_array(
-                    $this->timePoint->getData('CenterID'),
-                    $user->getData('CenterIDs')
-                )
-                   )
-        );
+        return false;
     }
 
     /**
@@ -111,7 +117,17 @@ class Instrument_List extends \NDB_Menu_Filter
             // FIXME: Make VisitLabel not sessionID
             $this->timePoint = \TimePoint::singleton($gets['sessionID']);
         }
-        $this->setup();
+
+        $request = $request->withAttribute(
+            'Candidate',
+            $this->candidate
+        );
+
+        $request = $request->withAttribute(
+            'TimePoint',
+            $this->timePoint
+        );
+
         return parent::process($request, $handler);
     }
 

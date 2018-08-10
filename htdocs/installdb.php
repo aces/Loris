@@ -30,7 +30,7 @@
  *       writable, print the content that should go there and ask
  *       the user to manually create the file.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -224,4 +224,3 @@ $smarty->assign($tpl_data);
 $smarty->display('install.tpl');
 
 //ob_end_flush();
-?>

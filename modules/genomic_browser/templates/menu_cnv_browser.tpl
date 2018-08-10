@@ -10,7 +10,7 @@
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/snp_browser/">SNP</a></li>
         <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>CNV</strong></a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/cpg_browser/">Methylation</a></li>
-        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/genomic_file_uploade/">Files</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/genomic_file_uploader/">Files</a></li>
       </ul>
       <br>
     </div>
