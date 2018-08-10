@@ -26,6 +26,11 @@ namespace LORIS\dicom_archive;
 class ViewDetails extends \NDB_Form
 {
     /**
+     * This page tarchiveID
+     */
+    protected $tarchiveID;
+
+    /**
      * Keeps array of protocols from mri_protocol
      */
     var $protocols;
@@ -44,11 +49,12 @@ class ViewDetails extends \NDB_Form
     /**
     * Sets up main parameters
     *
-    * @return NULL
+    * @return void
     */
     function setup()
     {
-        $this->DB = \Database::singleton();
+        $this->DB         = \Database::singleton();
+        $this->tarchiveID = $_REQUEST['tarchiveID'] ?? '';
 
         if ((!empty($_REQUEST['tarchiveID'])) && ($this->_hasAccess())) {
             $tarchiveID = $_REQUEST['tarchiveID'];
@@ -182,7 +188,7 @@ class ViewDetails extends \NDB_Form
                 slice_thickness_range FROM mri_protocol";
             $this->protocols = $this->DB->pselect($query, array());
             return true;
-        } catch(LorisException $e) {
+        } catch(\LorisException $e) {
             return false;
         }
     }
@@ -274,7 +280,7 @@ class ViewDetails extends \NDB_Form
             $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
             $array = $this->DB->pselectRow($query, array('ID' => $id));
             return $array['Scan_type'];
-        } catch (LorisException $e) {
+        } catch (\LorisException $e) {
             return "Unknown";
         }
     }
@@ -298,7 +304,7 @@ class ViewDetails extends \NDB_Form
     /**
      * Overrides base getJSDependencies() to add additional JS files
      *
-     * @return an array of extra JS files that this page depends on
+     * @return array of extra JS files that this page depends on
      */
     function getJSDependencies()
     {
@@ -312,5 +318,21 @@ class ViewDetails extends \NDB_Form
             )
         );
     }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $label = ucwords(str_replace('_', ' ', $this->name));
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb($label, "/$this->name"),
+            new \LORIS\Breadcrumb(
+                'View Details',
+                "/dicom_archive/viewDetails?tarchiveID=$this->tarchiveID"
+            )
+        );
+    }
 }
-?>

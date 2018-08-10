@@ -3,8 +3,8 @@ namespace Loris\Tests\API;
 require_once __DIR__ . '/../../../../vendor/autoload.php';
 require_once __DIR__ . '/../../../../htdocs/api/v0.0.1/Candidates.php';
 require_once __DIR__ . '/NDB_BVL_Instrument_test.php';
-
-class BaseTestCase extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+class BaseTestCase extends TestCase
 {
     var $Candidate;
     function setUp() {

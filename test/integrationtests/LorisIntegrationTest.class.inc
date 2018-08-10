@@ -14,7 +14,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-
+use PHPUnit\Framework\TestCase;
 /**
  * Implementation of LorisIntegrationTest helper class.
  *
@@ -24,7 +24,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
+abstract class LorisIntegrationTest extends TestCase
 {
     /**
      * A reference to the Selenium WebDriver object for the test
@@ -43,7 +43,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      * instantiting the config and database objects, creating a user
      * to user for the tests, and logging in.
      *
-     * @return none
+     * @return void
      */
     public function setUp()
     {
@@ -111,7 +111,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
 
         $this->login("UnitTester", "4test4");
 
-        if (extension_loaded('xdebug')) {
+        if (extension_loaded('xdebug') && function_exists("xdebug_start_code_coverage")) {
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
         }
 
@@ -124,7 +124,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      * @param string $username The username to log in as
      * @param string $password The (plain text) password to login as.
      *
-     * @return none, side-effect logs in active webDriver
+     * @return void but side-effect logs in active webDriver
      */
     protected function login($username, $password)
     {
@@ -160,7 +160,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      * its permissions. user_login_history also must be purged as it contains a
      * foreign key to users
      *
-     * @return none
+     * @return void
      */
     public function tearDown()
     {
@@ -190,7 +190,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      *
      * @throws LorisException
      *
-     * @return none
+     * @return void
      */
     function setupConfigSetting($configName, $value)
     {
@@ -235,7 +235,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      *
      * @throws LorisException
      *
-     * @return none
+     * @return void
      */
     function restoreConfigSetting($configName)
     {
@@ -260,7 +260,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      *
      * @param array $permissions List of permissions codes to add TestUser
      *
-     * @return none
+     * @return void
      */
     function setupPermissions($permissions)
     {
@@ -284,7 +284,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      * Helper function to reset user permissions. The function works by adding
      * all permissions to the TestUser.
      *
-     * @return none
+     * @return void
      */
     function resetPermissions()
     {
@@ -296,7 +296,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     /**
      * Helper function to change the users Study Site
      *
-     * @return none
+     * @return void
      */
     function changeStudySite()
     {
@@ -307,7 +307,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     /**
      * Helper function to reset the users Study Site
      *
-     * @return none
+     * @return void
      */
     function resetStudySite()
     {
@@ -320,7 +320,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      *
      * @param string $title Name of the subproject
      *
-     * @return none
+     * @return void
      */
     function createSubproject($SubprojectID,$title)
     {
@@ -340,7 +340,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      *
      * @param string $title Name of the subproject
      *
-     * @return none
+     * @return void
      */
     function deleteSubproject($title)
     {
@@ -390,7 +390,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      *
      * @param string $pscid The PSCID of teh candiate to delete
      *
-     * @return none
+     * @return void
      */
     function deleteCandidate($pscid)
     {
@@ -502,12 +502,12 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      * @throws ElementNotVisibleException if $allowJavascriptClick is false and the
      *                                    element cannot be clicked on because it is
      *                                    not visible.
-     * @throws StaleElementReferenceExceptoin if $allowJavascriptClick is false and
+     * @throws StaleElementReferenceException if $allowJavascriptClick is false and
      *                                        the element cannot be clicked on
      *                                        because the DOM was updated since the
      *                                        element was found.
      *
-     * @return void.
+     * @return void
      */
     function safeClick(WebDriverBy $by, $waitPeriod=15, $allowJavascriptClick=true)
     {
@@ -518,7 +518,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             $clickException = null;
         } catch(ElementNotVisibleException $e) {
             $clickException = $e;
-        } catch(StaleElementReferenceExceptoin $e) {
+        } catch(StaleElementReferenceException $e) {
             $clickException = $e;
         }
 

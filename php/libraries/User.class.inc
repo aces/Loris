@@ -41,7 +41,7 @@ class User extends UserPermissions
      * @return User
      * @access public
      */
-    static function &factory($username)
+    static function &factory($username) : User
     {
         $obj = new User;
 
@@ -49,7 +49,10 @@ class User extends UserPermissions
         $obj->userInfo['UserID'] = $username;
 
         // get the user's permissions
-        $obj->select($username);
+        if ($obj->select($username) === false) {
+            $obj = new \LORIS\AnonymousUser();
+            return $obj;
+        };
 
         // create DB object
         $DB =& Database::singleton();
@@ -427,8 +430,16 @@ class User extends UserPermissions
         $values = array(),
         $operators = array()
     ) {
+        // FIXME: This should be cleaned up to more cleanly separate
+        // concerns. The "values" and "operators" are the same at
+        // every call site, and some of them are only required because
+        // the function is static despite working with instance data.
+        // (ie the second value/operator pair is always the UserID of
+        // the user whose password is being checked, the third is their
+        // email, and the first is the "Confirm" password which has
+        // nothing to do with whether the password is strong or not..)
         $CharTypes = 0;
-        // less than 6 characters
+        // less than 8 characters
         if (strlen($password) < 8) {
             return false;
         }
@@ -453,18 +464,27 @@ class User extends UserPermissions
 
         // compare password to values
         foreach ($values as $key => $value) {
-            $function = create_function(
-                '$a, $b',
-                'return $a ' . $operators[$key] . ' $b;'
-            );
-            // if the comparison fails
-            if (!$function($password, $value)) {
-                return false;
+            switch ($operators[$key]) {
+            case '==':
+                // They must be equal, so the whole thing is false
+                // if they're not.
+                if ($password != $value) {
+                    return false;
+                }
+                break;
+            case '!=':
+                if ($password == $value) {
+                    return false;
+                }
+                break;
+            default:
+                throw new \LorisException("Invalid operator in isPasswordStrong");
             }
         }
 
         return true;
     }
+
     /**
      * Check if user belongs to DCC
      *
@@ -536,6 +556,26 @@ class User extends UserPermissions
         }
         return $this->hasPermission($code)
             && $this->hasCenter($center_id);
+    }
+
+    /**
+     * Determines if the user has ever logged in successfully
+     *
+     * @return bool
+     */
+    public function hasLoggedIn(): bool
+    {
+        $count = (\NDB_Factory::singleton()->database())->pselectOne(
+            "SELECT
+               COUNT(1)
+             FROM user_login_history
+             WHERE
+               UserID = :v_userid AND
+               Success = 'Y'
+            ",
+            array('v_userid' => $this->userInfo['UserID'])
+        );
+        return $count > 0;
     }
 }
 ?>

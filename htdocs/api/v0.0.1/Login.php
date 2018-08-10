@@ -57,7 +57,7 @@ class Login extends APIBase
     /**
      * Handle a POST request
      *
-     * @return none
+     * @return void
      */
     function handlePOST()
     {
@@ -149,11 +149,11 @@ class Login extends APIBase
      * Since this isn't a real resource, it just returns the
      * empty string.
      *
-     * @return empty string
+     * @return string
      */
     function calculateETag()
     {
-        return;
+        return "";
     }
 
     /**

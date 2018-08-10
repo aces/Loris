@@ -12,6 +12,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+use \LORIS\Installer\Database as Database;
 
 /**
  * The Installer class handles all the logic used by the installdb.php
@@ -133,7 +134,7 @@ class Installer
         if (function_exists('json_encode') == false) {
             $this->_lastErr = "JSON functions do not appear to be accessible "
                 . "in your PHP installation. If you're running on Debian or "
-                , "Ubuntu, please install the php-json package.";
+                . "Ubuntu, please install the php-json package.";
             return false;
         }
 
@@ -185,21 +186,21 @@ class Installer
             return false;
         }
         $DB = Database::singleton();
-        if ($DB->connectAndCreate(
-            $values['dbname'],
-            $values['dbadminuser'],
-            $values['dbadminpassword'],
-            $values['dbhost']
-        ) == false
-        ) {
+        try {
+            $DB->connectAndCreate(
+                $values['dbname'],
+                $values['dbadminuser'],
+                $values['dbadminpassword'],
+                $values['dbhost']
+            );
+        } catch (Exception $e) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
                 $this->_lastErr = "Could not connect to MySQL server "
-                . "and create database with credentials provided.";
+                    . "and create database with credentials provided.";
             }
             return false;
-
         }
         return true;
     }
@@ -214,21 +215,22 @@ class Installer
     function sourceSchema($values)
     {
         $DB = Database::singleton();
-        if ($DB->connect(
-            $values['dbname'],
-            $values['dbadminuser'],
-            $values['dbadminpassword'],
-            $values['dbhost']
-        ) == false
-        ) {
+
+        try {
+            $DB->connect(
+                $values['dbname'],
+                $values['dbadminuser'],
+                $values['dbadminpassword'],
+                $values['dbhost']
+            );
+        } catch (Exception $e) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
                 $this->_lastErr = "Could not connect to MySQL server "
-                ."with credentials provided.";
+                    ."with credentials provided.";
             }
             return false;
-
         }
 
         if ($this->_sourceSchemaFile($DB, "00-schema.sql") == false) {
@@ -271,8 +273,13 @@ class Installer
         // This is apparently the most reliable way to figure out if
         // the requery is over http or https.. $_SERVER[REQUEST_SCHEME]
         // is not reliable.
-        $RequestScheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on'
-                            ? 'https' : 'http';
+        $RequestScheme = 'http';
+        if ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+            || (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
+            && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+        ) {
+               $RequestScheme = 'https';
+        }
 
         return $RequestScheme . '://' . $_SERVER['HTTP_HOST']
             . preg_replace("#/installdb.php#", "", $_SERVER['REQUEST_URI']);
@@ -288,21 +295,21 @@ class Installer
     function updateBaseConfig($values)
     {
         $DB = Database::singleton();
-        if ($DB->connect(
-            $values['dbname'],
-            $values['dbadminuser'],
-            $values['dbadminpassword'],
-            $values['dbhost']
-        ) == false
-        ) {
+        try {
+            $DB->connect(
+                $values['dbname'],
+                $values['dbadminuser'],
+                $values['dbadminpassword'],
+                $values['dbhost']
+            );
+        } catch (Exception $e) {
             if (!empty($DB->lastErr)) {
                 $this->_lastErr = $DB->lastErr;
             } else {
                 $this->_lastErr = "Could not connect to MySQL server "
-                . "with credentials provided.";
+                    . "with credentials provided.";
             }
             return false;
-
         }
 
         // get the LORIS base path, based on what we know about where

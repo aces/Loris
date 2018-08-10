@@ -51,7 +51,7 @@ class ServerProcessesMonitor
     /**
       * Accessor for field $databaseProvider.
       *
-      * @return value of field $databaseProvider.
+      * @return string (value of field $databaseProvider)
       */
     public function getDatabaseProvider()
     {
@@ -80,7 +80,7 @@ class ServerProcessesMonitor
      *                             then all types are considered.
      *
      * @return an associative array of the current state of the processes.
-     * @throws DatabaseException if connection to the database cannot be
+     * @throws \DatabaseException if connection to the database cannot be
      *                           established.
      */
     public function getProcessesState(
