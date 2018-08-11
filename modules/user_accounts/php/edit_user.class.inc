@@ -201,10 +201,33 @@ class Edit_User extends \NDB_Form
         }
         ////Get the current permissions/////
         $current_permissionids = $user->getPermissionIDs();
-        $permIDs = array();
+        // All permissions are wiped on update.  $permIDs will contain ALL the
+        // user's permissions after an update.  Therefore its structure can be
+        // defined as:
+        // 1) The new permissions granted by the editor, AND
+        // 2) Certain old permissions that the editor is not permitted to alter
+        // In addition, old permissions should be removed if the editor has
+        // removed them and the editor has permissions to remove them.
+        $newPermissions    = array_keys($values['permID']) ?? array();
+        $editorPermissions = $editor->getPermissionIDs() ?? array();
+        $permIDs           = array();
         // store the permission IDs
         if (!empty($values['permID'])) {
-            $permIDs = array_keys($values['permID']);
+            // An editor can only grant permissions that they have already been
+            // granted.
+            $permIDs = array_intersect(
+                $newPermissions,
+                $editorPermissions
+            );
+        }
+
+        // Keep old permissions if the editor is not allowed to edit them.
+        foreach ($current_permissionids as $perm) {
+            if (!in_array($perm, $newPermissions)
+                && !in_array($perm, $editorPermissions)
+            ) {
+                $permIDs[] = $perm;
+            }
         }
         unset($values['permID']);
         // store whether to send an email or not
@@ -492,6 +515,7 @@ class Edit_User extends \NDB_Form
                     }
                 }
             }
+
             if (!empty($permIDs)) {
                 $user->addPermissions($permIDs);
             }
