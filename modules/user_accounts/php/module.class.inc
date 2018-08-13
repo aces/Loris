@@ -13,6 +13,8 @@
  */
 
 namespace LORIS\user_accounts;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
 /**
  * Class module implements the basic LORIS module functionality
  *
@@ -24,4 +26,20 @@ namespace LORIS\user_accounts;
  */
 class Module extends \Module
 {
+    /**
+     * The edit_user page overrides the default handler in order to delegate
+     * edit_user/$identifeir to the edit_user page.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR15 response
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        if (strpos($request->getUri()->getPath(), "/edit_user/") === 0) {
+            $page = $this->loadPage("edit_user");
+            return $page->process($request, $page);
+        }
+        return parent::handle($request);
+    }
 }

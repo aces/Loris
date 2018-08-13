@@ -93,7 +93,7 @@ class NDB_Config
      *
      * @param string $configFile the neurodb config.xml config file
      *
-     * @return void, but as side-effect loads $this->_settings
+     * @return void (but as side-effect loads $this->_settings)
      *
      * @throws Exception
      */
@@ -243,7 +243,7 @@ class NDB_Config
      * that to get site specific settings and override study defaults,
      * building the _siteSettings property
      *
-     * @return none, but modifies $this->siteSettings
+     * @return void (but modifies $this->siteSettings)
      */
     function mergeSettings()
     {
@@ -455,7 +455,7 @@ class NDB_Config
     *
     * @param integer $ProjectID The ProjectID we want settings for
     *
-    * @return an array of settings for this project.
+    * @return array of settings for this project.
     */
     function getProjectSettings($ProjectID)
     {
@@ -488,7 +488,7 @@ class NDB_Config
      * @param integer $subprojectID The subprojectID we want the settings
      *                              for
      *
-     * @return associative array of settings for this subprojectID
+     * @return array of settings for this subprojectID
      */
     function getSubprojectSettings($subprojectID)
     {
@@ -620,7 +620,7 @@ class NDB_Config
      *
      * @param string $type The type of links to show
      *
-     * @return associative array of Label => URL
+     * @return array of Label => URL
      */
     function getExternalLinks($type)
     {

@@ -35,7 +35,7 @@ class Candidate_Parameters extends \NDB_Form
      * Check user permissions
      *
      * @return bool
-     * @throws ConfigurationException
+     * @throws \ConfigurationException
      */
     function _hasAccess()
     {
@@ -52,12 +52,11 @@ class Candidate_Parameters extends \NDB_Form
     /**
      * Override default behaviour, since the page is loaded from index.js
      *
-     * @return void
-     * @access public
+     * @return string
      */
     function display()
     {
-        return null;
+        return "";
     }
 
     /**

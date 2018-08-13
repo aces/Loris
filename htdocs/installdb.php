@@ -30,7 +30,7 @@
  *       writable, print the content that should go there and ask
  *       the user to manually create the file.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -51,6 +51,7 @@ require_once __DIR__ . "/../php/installer/Installer.class.inc";
 // smarty to use when it gets autoloaded.
 require_once __DIR__ . "/../php/installer/Database.class.inc";
 require_once __DIR__ . "/../php/installer/NDB_Config.class.inc";
+use \LORIS\Installer\Database as Database;
 
 $installer = new Installer("../project");
 
@@ -195,7 +196,7 @@ ob_end_clean();
  *
  * @param string $name The request parameter to add to a smarty variable
  *
- * @return none
+ * @return void
  */
 function tplvar($name)
 {
@@ -223,4 +224,3 @@ $smarty->assign($tpl_data);
 $smarty->display('install.tpl');
 
 //ob_end_flush();
-?>

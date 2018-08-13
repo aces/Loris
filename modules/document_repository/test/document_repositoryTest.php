@@ -33,7 +33,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
      * Does basic setting up of Loris variables for this test,after testing
      * a test data, remove the testing data from database.
      *
-     * @return none
+     * @return void
      */
     public function setUp()
     {
@@ -72,7 +72,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
     /**
      * Deleting test data
      *
-     * @return none
+     * @return void
      */
     public function tearDown()
     {

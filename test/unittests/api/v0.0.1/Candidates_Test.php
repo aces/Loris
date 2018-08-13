@@ -1,8 +1,15 @@
 <?php
 require_once __DIR__ . '/../../../../vendor/autoload.php';
 require_once __DIR__ . '/../../../../htdocs/api/v0.0.1/Candidates.php';
-
-class Candidates_Test extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+/**
+ * PhanParamTooMany is incorrectly being triggered by the mockBuilders because
+ * it uses reflection. Phan thinks it takes 0 parameters for the constructor,
+ * but doing so would cause all the tests to fail.
+ *
+ * @phan-file-suppress PhanParamTooMany
+ */
+class Candidates_Test extends TestCase
 {
     /**
      */

@@ -54,7 +54,7 @@ class Raw extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
     /**
      * Handles a GET request
      *
-     * @return none, but populates $this->JSON
+     * @return void but populates $this->JSON
      */
     public function handleGET()
     {
@@ -68,7 +68,7 @@ class Raw extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
             $this->safeExit(0);
         }
 
-        $this->header("HTTP/1.1 500 Internal Server Error", true, 500);
+        $this->header("HTTP/1.1 500 Internal Server Error");
         $this->error("Minc Tools not installed on server");
     }
 

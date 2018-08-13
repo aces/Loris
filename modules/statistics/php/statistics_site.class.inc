@@ -23,7 +23,7 @@ namespace LORIS\statistics;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class Statistics_Site extends \NDB_Form
+class Statistics_Site extends \NDB_Menu
 {
 
     var $instruments    = array();
@@ -41,7 +41,11 @@ class Statistics_Site extends \NDB_Form
         $user     =& \User::singleton();
         $centerID = htmlspecialchars($_REQUEST['CenterID']);
         //TODO: Create a permission specific to statistics
-        return $user->hasCenterPermission('data_entry', $centerID);
+        $accessAllProfiles = $user->hasPermission('access_all_profiles') &&
+            $user->hasPermission('data_entry');
+        return $user->hasCenterPermission('data_entry', $centerID) ||
+            $accessAllProfiles;
+
     }
 
     /**
@@ -63,6 +67,7 @@ class Statistics_Site extends \NDB_Form
             $this->query_vars['pid'] = $projectID;
         }
     }
+
     /**
      * SetInstrumentName function
      *
@@ -122,7 +127,7 @@ class Statistics_Site extends \NDB_Form
      * @param string $projectID  the value of projectID
      * @param string $instrument the value of instrument
      *
-     * @return void
+     * @return array
      */
     function _getResults($centerID, $projectID, $instrument)
     {

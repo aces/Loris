@@ -43,7 +43,7 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
     /**
      * Set up the class and smarty variables to use for the menu filter
      *
-     * @return none
+     * @return void
      */
     function _setupVariables()
     {
@@ -97,7 +97,7 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -147,7 +147,7 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
      *
      * @param integer $count The offset that this page is starting at
      *
-     * @return none but as a side-effect populates $this->tpl_data['items']
+     * @return void (but as a side-effect populates $this->tpl_data['items'])
      */
     function _setDataTableRows($count)
     {

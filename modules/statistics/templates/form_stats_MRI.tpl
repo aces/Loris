@@ -22,7 +22,6 @@
     <br><br>
     <button onClick="updateMRITab()" class="btn btn-primary btn-small">Submit Query</button>
     <br><br>
-    <div class="table-responsive">
         <table id="scandata" class="table table-primary table-bordered dynamictable">
             <thead>
             <tr class="info">
@@ -86,7 +85,6 @@
             {/foreach}
             </tbody>
         </table>
-    </div>
     {if $mri_table_exists}
         {$MRI_Done_Table}
     {else}

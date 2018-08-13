@@ -31,7 +31,6 @@ Each survey must be created as a LORIS instrument, and the
 set to "true" in order for the survey to show the instrument in the
 dropdown for the list of available surveys in the `add_survey` page.
 
-
 ## Interactions with LORIS
 
 The module validates that surveys have not already been sent to a

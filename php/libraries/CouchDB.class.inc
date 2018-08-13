@@ -42,7 +42,7 @@ class SocketWrapper
      *
      * @param string $host The hostname
      *
-     * @return none
+     * @return void
      */
     function setHost($host)
     {
@@ -55,7 +55,7 @@ class SocketWrapper
      *
      * @param integer $port The port number
      *
-     * @return none
+     * @return void
      */
     function setPort($port)
     {
@@ -66,7 +66,7 @@ class SocketWrapper
      * Opens the socket and stores a reference to the socket handler for other
      * I/O functions. setHost and setPort must be called before this.
      *
-     * @return none
+     * @return void
      */
     function open()
     {
@@ -81,7 +81,7 @@ class SocketWrapper
     /**
      * Closes the previously opened socket.
      *
-     * @return none
+     * @return void
      */
     function close()
     {
@@ -129,7 +129,7 @@ class SocketWrapper
      *
      * @param string $str The string to write to the socket
      *
-     * @return none
+     * @return void
      */
     function write($str)
     {
@@ -228,7 +228,7 @@ class CouchDB
      *
      * @param string $database The couchDB database name
      * @param string $host     The couchDB host name
-     * @param string $port     The couchDB port number
+     * @param int    $port     The couchDB port number
      * @param string $user     The couchDB user name
      * @param string $password The couchDB password
      *
@@ -238,17 +238,17 @@ class CouchDB
      * @return CouchDB A Loris CouchDB wrapper object
      */
     static function &getInstance(
-        string $database = null,
-        string $host = null,
-        string $port = null,
-        string $user = null,
-        string $password = null
+        string $database = "",
+        string $host = "",
+        int    $port = 0,
+        string $user = "",
+        string $password = ""
     ) {
 
         if (empty(self::$_instances[$database])) {
             if (empty($database)
                 && empty($host)
-                && empty($port)
+                && ($port === 0)
                 && empty($user)
                 && empty($password)
             ) {
@@ -368,6 +368,8 @@ class CouchDB
      */
     function _getRelativeURL($url, $op = 'GET')
     {
+        $this->validHostAndPort();
+
         $handler = $this->SocketHandler;
         $handler->setHost($this->_host);
         $handler->setPort($this->_port);
@@ -710,7 +712,7 @@ class CouchDB
      * current revision, but the PUT requests will be queued until commited
      * with commitBulkTransaction();
      *
-     * @return none
+     * @return void
      */
     function beginBulkTransaction()
     {
@@ -734,6 +736,28 @@ class CouchDB
         $this->bulkDocuments = array();
 
         return $this->_postRelativeURL('_bulk_docs', $docs);
+    }
+
+    /**
+     * Validation of CouchDB Host and Port.
+     * Throws LorisException if (Host or Port) invalid.
+     *
+     * @throws LorisException
+     *
+     * @return void
+     */
+    function validHostAndPort()
+    {
+        $config       = NDB_Config::singleton();
+        $couch_config = $config->getSetting('CouchDB');
+        if (!filter_var(gethostbyname($couch_config['hostname']), FILTER_VALIDATE_IP)
+            || !is_numeric($couch_config['port'])
+        ) {
+            throw new \LorisException(
+                'Could not connect to CouchDB server at '
+                .$couch_config['hostname'].':'.$couch_config['port']
+            );
+        }
     }
 }
 ?>

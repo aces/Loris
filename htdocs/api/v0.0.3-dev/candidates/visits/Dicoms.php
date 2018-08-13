@@ -56,7 +56,7 @@ class Dicoms extends \Loris\API\Candidates\Candidate\Visit
     /**
      * Handles a GET request
      *
-     * @return none, but populates $this->JSON
+     * @return void but populates $this->JSON
      */
     public function handleGET()
     {
@@ -92,8 +92,9 @@ class Dicoms extends \Loris\API\Candidates\Candidate\Visit
             ]
         );
         if ($cand_info['Entity_type'] == 'Scanner') {
-            $ID            = ":PVL";
-            $params['PVL'] = $this->VisitLabel;
+            $ID = ":PVL";
+            $params['PCandID'] = $this->CandID;
+            $params['PVL']     = $this->VisitLabel;
         } else {
             $ID = "LOWER(CONCAT(:PPSCID, '_', :PCandID, '_', :PVL, '%'))";
             $params['PPSCID']  = $cand_info['PSCID'];

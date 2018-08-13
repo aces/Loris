@@ -25,6 +25,12 @@ namespace LORIS\statistics;
  */
 class Stats_Demographic extends \NDB_Form
 {
+
+    /**
+     * The default params
+     */
+    protected $params = null;
+
     /**
      * Checking user's permission
      *

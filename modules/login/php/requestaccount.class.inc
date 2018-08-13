@@ -38,7 +38,7 @@ class RequestAccount extends \NDB_Form
     /**
      * Sets up the form elements on the page.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -138,7 +138,7 @@ class RequestAccount extends \NDB_Form
      *
      * @param array $values The values that were submitted to the page.
      *
-     * @return none
+     * @return void
      */
     function _process($values)
     {

@@ -43,7 +43,7 @@ class Project extends \NDB_Form
     /**
     * Loads the project page.
     *
-    * @return none
+    * @return void
     */
     function setup()
     {

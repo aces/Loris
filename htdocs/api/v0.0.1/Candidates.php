@@ -67,7 +67,7 @@ class Candidates extends APIBase
     /**
      * Handles a candidates GET request
      *
-     * @return none, but populates $this->JSON
+     * @return void (but populates $this->JSON as a side-effect)
      */
     public function handleGET()
     {
@@ -99,7 +99,7 @@ class Candidates extends APIBase
      * Handles a candidates POST request to validate data and if everything
      * is valid, create the candidate
      *
-     * @return none, but populates $this->JSON and writes to DB
+     * @return void (but populates $this->JSON and writes to DB)
      */
     public function handlePOST()
     {
@@ -144,7 +144,8 @@ class Candidates extends APIBase
      *                       the field, or a string representing the format
      *                       expected of the data.
      *
-     * @return none, but will generate an error and exit if the value is invalid.
+     * @return void (but will generate an error and exit if the value is
+     *              invalid.)
      */
     protected function verifyField($data, $field, $values)
     {
@@ -173,7 +174,7 @@ class Candidates extends APIBase
      * @param string $gender Gender of the candidate to be created
      * @param string $PSCID  PSCID of the candidate to be created
      *
-     * @return none
+     * @return void
      */
     public function createNew($DoB, $edc, $gender, $PSCID)
     {

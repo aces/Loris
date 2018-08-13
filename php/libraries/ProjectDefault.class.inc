@@ -65,15 +65,15 @@ class ProjectDefault extends Project
     /**
      * Get the project's recruitment target.
      *
-     * @return integer The sum of all subprojects recruitment target
+     * @return int The sum of all subprojects recruitment target
      */
-    public function getRecruitmentTarget()
+    public function getRecruitmentTarget() : int
     {
         if (empty($this->recruitmentTarget)) {
             $total = array_reduce(
                 $this->getSubprojects(),
                 function ($carry, $item) {
-                    return $carry + $item->recruitmentTarget;
+                    return (int )($carry + $item->recruitmentTarget);
                 },
                 0
             );
@@ -81,7 +81,7 @@ class ProjectDefault extends Project
             // database.
             $this->recruitmentTarget = $total;
         }
-        return $this->recruitmentTarget;
+        return (int) $this->recruitmentTarget;
     }
 
     /**
