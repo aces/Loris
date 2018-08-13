@@ -34,7 +34,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
      * Set up the variables required by NDB_Menu_Filter class for constructing
      * a query
      *
-     * @return null
+     * @return void
      */
     function _setupVariables()
     {
@@ -151,7 +151,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
     /**
      * Sets up the smarty menu filter items
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -284,8 +284,6 @@ WHERE Parent IS NOT NULL ORDER BY Label",
         $this->addBasicDate('minDate', 'Created After', $dateOptions);
         $this->addBasicDate('maxDate', 'Created Before', $dateOptions);
         $this->addCheckbox('watching', 'Watching', array('value' => '1'));
-
-        $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
     }
 
 
@@ -297,7 +295,7 @@ WHERE Parent IS NOT NULL ORDER BY Label",
      * @param string $field        filter field
      * @param string $val          filter value
      *
-     * @return null
+     * @return string
      */
     function _addValidFilters($prepared_key, $field, $val)
     {
@@ -341,7 +339,7 @@ WHERE Parent IS NOT NULL ORDER BY Label",
      *         will be used for the Navigation Links in  the viewSession
      *         page.
      *
-     * @return associative array
+     * @return array
      */
     function toArray()
     {

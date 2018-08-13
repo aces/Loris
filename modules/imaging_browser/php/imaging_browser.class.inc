@@ -50,7 +50,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
      * Set up the variables required by NDB_Menu_Filter class for constructing
      * a query
      *
-     * @return null
+     * @return void
      */
     function _setupVariables()
     {
@@ -84,6 +84,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
             $this->acqpid = "AND AcquisitionProtocolID IN (".
                     implode(",", array_keys($scan_id_types)) .")";
             $isFirst      = true;
+            $acqpif       = '';
             foreach ($scan_id_types as $key => $value) {
                 if ($isFirst) {
                     $acqpif = "IF(FIND_IN_SET({$key},GROUP_CONCAT(
@@ -290,7 +291,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
     /**
      * Setup $this->tpl_data for use by Smarty
      *
-     * @return null
+     * @return void
      */
     function setup()
     {
@@ -422,7 +423,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
      * @param string $field        filter field
      * @param string $val          filter value
      *
-     * @return null
+     * @return string the new query
      */
     function _addValidFilters($prepared_key, $field, $val)
     {
@@ -473,7 +474,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
      *         will be used for the Navigation Links in  the viewSession
      *         page.
      *
-     * @return associative array
+     * @return array
      */
     function toArray()
     {

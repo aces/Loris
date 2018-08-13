@@ -57,7 +57,7 @@ class PasswordExpiry extends \NDB_Form
      * hasn't been set in SinglePointLogin (which means it shouldn't be on
      * the password expiry page.)
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -146,7 +146,7 @@ class PasswordExpiry extends \NDB_Form
      *
      * @param array $values The values that were submitted to the page.
      *
-     * @return none
+     * @return void
      */
     function _process($values)
     {

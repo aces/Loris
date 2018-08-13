@@ -139,11 +139,17 @@ class Database
      * @param boolean $trackChanges whether to use the trackChanges mechanism on
      *                              this connection (defaults to true)
      *
-     * @return none
+     * @return bool True if DB connection established. False otherwise.
      * @access public
      */
-    function connect($database, $username, $password, $host, $trackChanges = true)
-    {
+    function connect(
+        $database,
+        $username,
+        $password,
+        $host,
+        $trackChanges = true
+    ) : bool {
+
         $this->_trackChanges = $trackChanges;
         $this->_databaseName = $database;
 
@@ -165,12 +171,24 @@ class Database
 
         }
 
-        $this->_PDO = new PDO(
-            "mysql:host=$host;dbname=$database;charset=UTF8",
-            $username,
-            $password
-        );
+        try {
+            $this->_PDO = new PDO(
+                "mysql:host=$host;dbname=$database;charset=UTF8",
+                $username,
+                $password
+            );
+        } catch (PDOException $e) {
+            // This exception will not be included in the error log as it will
+            // likely include credentials.
+            throw new DatabaseException(
+                "Could not establish a PDO object using the following values: "
+                . "username: `$username`, dbname: `$database`, host: `$host` "
+                . "and the supplied password."
+            );
+            return false;
+        }
         $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        $this->_PDO->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
         $this->_preparedStoreHistory = $this->_PDO->prepare(
             "INSERT INTO history (tbl, col, new, old,"
@@ -206,6 +224,7 @@ class Database
               :type
             )"
         );
+        return true;
     }
 
     /**
@@ -236,7 +255,7 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
      *
-     * @return none
+     * @return void
      */
     public function insert($table, $set)
     {
@@ -253,7 +272,7 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
      *
-     * @return none
+     * @return void
      */
     public function unsafeinsert($table, $set)
     {
@@ -269,7 +288,7 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
      *
-     * @return none
+     * @return void
      */
     public function insertIgnore($table, $set)
     {
@@ -309,7 +328,7 @@ class Database
      * @param bool   $ignore     determines whether the insert throws and error or
      *                           is discarded when value exists in DB
      *
-     * @return none
+     * @return void
      */
     private function _realinsert($table, $set, $autoescape = true, $ignore = false)
     {
@@ -374,7 +393,7 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
      *
-     * @return none
+     * @return void
      * @access public
      */
     function replace($table, $set)
@@ -409,7 +428,7 @@ class Database
      * @param array  $set     the values with which to fill the new row
      * @param array  $i_where the selection filter, joined as a boolean and
      *
-     * @return none
+     * @return void
      */
     public function update($table, $set, $i_where)
     {
@@ -427,7 +446,7 @@ class Database
      * @param array  $set     the values with which to fill the new row
      * @param array  $i_where the selection filter, joined as a boolean and
      *
-     * @return none
+     * @return void
      */
     public function unsafeupdate($table, $set, $i_where)
     {
@@ -444,7 +463,7 @@ class Database
      * @param bool   $autoescape determines whether the values to be set should
      *                           automatically have the html escaped
      *
-     * @return none
+     * @return void
      * @access public
      */
     private function _realupdate($table, $set, $i_where, $autoescape = true)
@@ -509,7 +528,7 @@ class Database
      * @param string $table the table into which to insert the row
      * @param array  $where the selection filter, joined as a boolean and
      *
-     * @return none
+     * @return void
      * @access public
      */
     function delete($table, $where)
@@ -549,114 +568,12 @@ class Database
     }
 
     /**
-     * Selects data from the database
-     *
-     * Selects any amount of data from the database and stores the
-     * result into the $result array (accepted by reference - it will
-     * be overwritten so make sure it's empty or garbage before
-     * passing it in...)
-     *
-     * @param string $query  the SQL string which defines the SELECT query.
-     * @param array  $result an array into which the results of the select
-     *                       will be stored - this array gets overwritten completely
-     *
-     * @return     none
-     * @access     public
-     * @deprecated Use pselect wrappers instead
-     */
-    function select($query, &$result)
-    {
-        error_log(
-            "LORIS's Database::select() wrappers are deprecated and will be "
-            . "removed in a future version of LORIS. Please use prepared statements "
-            . " in the Database::pselect() variety instead."
-        );
-        $result = array();
-
-        if (strpos(strtoupper($query), 'SELECT') !== 0
-            && strpos(strtoupper($query), 'SHOW') !== 0
-            && strpos(strtoupper($query), 'DESCRIBE') !== 0
-        ) {
-            throw new DatabaseException(
-                "Only SELECT statements can be run with Database::select().",
-                $query
-            );
-        }
-
-        try {
-            $this->_printQuery($query);
-            $stmt = $this->_PDO->query($query);
-            if ($stmt) {
-                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            } else {
-                // This will be caught directly below
-                throw new Exception("Error");
-            }
-            return $result;
-        } catch(Exception $e) {
-            throw new DatabaseException("Invalid SELECT statement", $query);
-        }
-    }
-
-    /**
-     * Selects a single row from the database
-     *
-     * Selects a single row from the database and stores the
-     * result into the $result array (accepted by reference - it will
-     * be overwritten so make sure it's empty or garbage before
-     * passing it in...)
-     *
-     * *** This should not be used as it does not support prepared statements.
-     * *** It is left here for legacy reasons/instruments
-     *
-     * @param string $query  the SQL string which defines the SELECT query.
-     * @param array  $result an array into which the results of the select will
-     *                       be stored - this array gets overwritten completely
-     *
-     * @return     none
-     * @access     public
-     * @deprecated Use pselect wrappers instead
-     */
-    function selectRow($query, &$result)
-    {
-        $this->select($query, $result);
-        if (is_array($result) && isset($result[0])) {
-            $result = $result[0];
-        }
-    }
-
-    /**
-     * Selects a single value from the database
-     *
-     * Selects a single value from the database and directly return the value.
-     *
-     * *** This should not be used as it does not support prepared statements.
-     * *** It is left here for legacy reasons/instruments
-     *
-     * @param string $query The SQL string which defines the SELECT query.
-     *
-     * @return     string
-     * @access     public
-     * @deprecated Use pselect wrappers instead
-     */
-    function selectOne($query)
-    {
-        $result = null;
-        $this->selectRow($query, $result);
-        if (is_array($result) && count($result)) {
-            $valueArray = array_values($result);
-            $result     = $valueArray[0];
-        }
-        return $result;
-    }
-
-    /**
      * Runs a custom query that can't be handled by other database wrappers.
      *
      * @param string $query The SQL query to run
      *
-     * @return None As a side-effect updates affected and lastInsertID
-     *              if applicable
+     * @return void (As a side-effect updates affected and lastInsertID
+     *              if applicable.)
      */
     function run($query)
     {
@@ -740,6 +657,77 @@ class Database
     }
 
     /**
+     * Runs an SQL select statement as a prepared query and re-indexes
+     * the results using the given unique non-nullable key.
+     *
+     * @param string $query     The SQL SELECT query to be run
+     * @param array  $params    Values to use for binding to the prepared statement
+     * @param string $uniqueKey Key to use when re-indexing, this key must be a
+     *                          single column, must be unique and must not be
+     *                          nullable
+     *
+     * @throws LorisException     If the supplied key is empty or null
+     * @throws DatabaseException  If the key is not part of the query itself
+     * @throws DatabaseException  If the key is not unique within the resulting set
+     *
+     * @return array An array of arrays containing the data. The outermost array is
+     *                  associative and uses the supplied $uniqueKey parameter as
+     *                  a key for each of the sub-arrays with the format
+     *                  rowPrimaryKey=>rowValuesArray. Each nested array represents
+     *                  a row from the returned by the query. Each element in the
+     *                  nested array is an associative array representing the row in
+     *                  the format ColumnName => Value
+     */
+    function pselectWithIndexKey($query, $params, $uniqueKey)
+    {
+        if (is_null($uniqueKey) || empty($uniqueKey)) {
+            throw new LorisException(
+                "The pselectWithIndexKey() function expects the uniqueKey parameter 
+                to not be null or empty. If re-indexing on the primary key is 
+                not necessary please use the pselect() function instead."
+            );
+        }
+
+        $result = $this->pselect($query, $params);
+
+        if (empty($result)) {
+            return $result;
+        }
+
+        $filteredResult = array();
+        // re-order the return array
+        foreach ($result as $row) {
+            // Check first that the row contains the primary key supplied
+            if (!array_key_exists($uniqueKey, $row)) {
+                throw new DatabaseException(
+                    "The query supplied to pselectWithIndexKey() does not contain 
+                    the unique key to re-index on. Make sure to supply the 
+                    appropriate key in the SELECT statement to match the supplied 
+                    parameter of this function",
+                    $query
+                );
+            }
+
+            // Check that the primary key is indeed unique to avoid overriding data
+            // in the result array
+            if (isset($filteredResult[$row[$uniqueKey]])) {
+                throw new DatabaseException(
+                    "The uniqueKey supplied to pselectWithIndexKey() does not appear
+                     to be unique or is nullable. This function expects the key to 
+                     be both UNIQUE and NOT NULL.",
+                    $query
+                );
+            }
+
+            // If you get here, we just need to build the new array
+            $filteredResult[$row[$uniqueKey]] = $row;
+            unset($filteredResult[$row[$uniqueKey]][$uniqueKey]);
+        }
+
+        return $filteredResult;
+    }
+
+    /**
      * Runs a query as a prepared statement and returns the first row as an
      * associative array. Automatically adds a limit clause to the query being
      * run for efficiency.
@@ -760,15 +748,17 @@ class Database
     }
 
     /**
-     * Runs a query as a prepared statement and returns the values of the first
-     * column in the select statement. If multiple columns are given, only the first
-     * will be returned.
+     * Runs a query as a prepared statement and returns the values of the
+     * column given in the select statement. If multiple columns are given, an error
+     * is thrown.
      *
      * @param string $query  The SQL SELECT query to be run
      * @param array  $params Values to use for binding to prepared statement
      *
+     * @throws DatabaseException if the query selected more than one column
+     *
      * @return array Associative array of form rowID=>value containing all values
-     *               for the first element of the select statement
+     *               for the only column of the select statement
      */
     function pselectCol($query, $params)
     {
@@ -792,6 +782,82 @@ class Database
     }
 
     /**
+     * Runs an SQL select statement as a prepared query and re-indexes
+     * the results using the given unique non-nullable key in the same
+     * format as the pselectCol() function.
+     *
+     * @param string $query     The SQL SELECT query to be run
+     * @param array  $params    Values to use for binding to the prepared statement
+     * @param string $uniqueKey Key to use when re-indexing, this key must be a
+     *                          single column, must be unique and must not be
+     *                          nullable
+     *
+     * @throws LorisException     If the supplied key is empty or null
+     * @throws DatabaseException  If the key is not part of the query itself or
+     *                            if there are not exactly 2 columns selected
+     * @throws DatabaseException  If the key is not unique within the resulting set
+     *
+     * @return array Associative array of form uniqueKey=>value containing all
+     *               value for the non-uniqueKey element of the select statement
+     */
+    function pselectColWithIndexKey($query, $params, $uniqueKey)
+    {
+        if (is_null($uniqueKey) || empty($uniqueKey)) {
+            throw new LorisException(
+                "The pselectColWithIndexKey() function expects the uniqueKey
+                 parameter to not be null or empty. If re-indexing on the primary 
+                 key is not necessary please use the pselectCol() function instead."
+            );
+        }
+
+        $result = $this->pselect($query, $params);
+
+        if (empty($result)) {
+            return $result;
+        }
+
+        $filteredResult = array();
+        // re-order the return array
+        foreach ($result as $row) {
+            $colNumber = count($row);
+            // Check first that the row contains the primary key supplied
+            if (!array_key_exists($uniqueKey, $row) || $colNumber !== 2) {
+                throw new DatabaseException(
+                    "The query supplied to pselectColWithIndexKey() should only 
+                    contain the unique key and one other column in the SELECT 
+                    clause. Make sure to supply the appropriate key in the SELECT 
+                    statement to match the supplied parameter of this function.",
+                    $query
+                );
+            }
+
+            // Check that the primary key is indeed unique to avoid overriding data
+            // in the result array
+            if (isset($filteredResult[$row[$uniqueKey]])) {
+                throw new DatabaseException(
+                    "The uniqueKey supplied to pselectColWithIndexKey() does not 
+                    appear to be unique or is nullable. This function expects the 
+                    key to be both UNIQUE and NOT NULL.",
+                    $query
+                );
+            }
+
+            // Store the value of the key for this specific row then unset that
+            // value from the $row array so that the only element remaining is
+            // the column desired and its value for this row
+            $uniqueKeyValue = $row[$uniqueKey];
+            unset($row[$uniqueKey]);
+
+            // Note: reset() rewinds array's internal pointer to the first element
+            // and returns the value of the first array element, in this case the
+            // desired column value
+            $filteredResult[$uniqueKeyValue] = reset($row);
+        }
+
+        return $filteredResult;
+    }
+
+    /**
      * Runs a query as a prepared statement and returns the value of the first
      * column of the first row
      *
@@ -804,22 +870,22 @@ class Database
     {
         $result = $this->pselectRow($query, $params);
         if (is_array($result) && count($result)) {
-            $valueArray = array_values($result);
-            $result     = $valueArray[0];
+            $result = array_values($result)[0];
         }
         return $result;
     }
+
     /**
      * Implodes a hash including the keys (unlike php's implode)
      *
      * Sets each hash element into the format key='value', and then
      * implodes the resultant array with the specified glue
      *
-     * @param string $glue      The glue to pass to php's implode function
-     * @param array  $dataArray The array with keys to implode
+     * @param string               $glue      The glue to pass to php's implode
+     *                                        function
+     * @param array<string,string> $dataArray The array with keys to implode
      *
-     * @return string the string containing the imploded array
-     * @access private
+     * @return string
      */
     function _implodeWithKeys($glue, $dataArray)
     {
@@ -878,7 +944,7 @@ class Database
      *
      * @param string $value An unsafe string
      *
-     * @return The value appropriately quoted/escaped
+     * @return string The value appropriately quoted/escaped
      */
     function quote($value)
     {
@@ -893,11 +959,11 @@ class Database
      *
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
-     * @param array  $where the selection filter, joined as a boolean and
-     * @param char   $type  The type of change being tracked (*I*nsert,
+     * @param string $where the selection filter, joined as a boolean and
+     * @param string $type  The type of change being tracked (*I*nsert,
      *                      *U*pdate or *D*elete)
      *
-     * @return none As a side-effect populates history table
+     * @return void As a side-effect populates history table
      */
     protected function trackChanges($table, $set, $where, $type='U')
     {
@@ -1056,7 +1122,7 @@ class Database
      * @param array  $rowData   An array of data to be inserted into
      *                          the fake table.
      *
-     * @return none
+     * @return void
      */
     function setFakeTableData($tableName, $rowData)
     {

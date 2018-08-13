@@ -4,7 +4,7 @@ class LorisLoginTest extends LorisIntegrationTest
 {
     function testLoginFailure()
     {
-       $this->webDriver->get($this->url . '/main.php?logout=true');
+       $this->webDriver->get($this->url . '/?logout=true');
 
        $username = $this->webDriver->findElement(WebDriverBy::Name("username"));
        $this->assertEquals('', $username->getAttribute("value"));
@@ -28,7 +28,7 @@ class LorisLoginTest extends LorisIntegrationTest
 
     function testLoginSuccess()
     {
-       $this->webDriver->get($this->url . '/main.php?logout=true');
+       $this->webDriver->get($this->url . '/?logout=true');
        $username = $this->webDriver->findElement(WebDriverBy::Name("username"));
        $this->assertEquals('', $username->getAttribute("value"));
 

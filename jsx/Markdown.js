@@ -18,16 +18,23 @@
  * @version 0.0.1
  *
  */
-var Markdown = React.createClass({
-  propTypes: {
-    content: React.PropTypes.string.isRequired
-  },
-  render: function() {
+class Markdown extends React.Component {
+
+  htmlSpecialCharsDecode(text) {
+    return text
+      .replace(/&amp;/g, "&")
+      .replace(/&quot;/g, "\"");
+  }
+
+  render() {
     // Fix stupid-style newlines to be just \n.
-    var fixedNewlines = this.props.content.replace("\r\n", "\n");
+    var fixedNewLines = this.props.content.replace(/\r\n/g, "\n");
+
+    // Fix excaped html
+    fixedNewLines = this.htmlSpecialCharsDecode(fixedNewLines);
 
     // 2 newlines in a row mean it's a paragraph breaker.
-    var paragraphs = fixedNewlines.split("\n\n");
+    var paragraphs = fixedNewLines.split("\n\n");
     var headersRe = /^(#+)\s+(.+)$/;
 
     // Do a non-greedy match on text surrounded by ** or __ separately,
@@ -35,27 +42,27 @@ var Markdown = React.createClass({
     // start and want the callback to reference the same index
     var boldRe1 = /(\*\*)(.+?)(\*\*)/g;
     var boldRe2 = /(__)(.+?)(__)/g;
-    var boldCallback = function(match, start, content, end, offset, val) {
+    function boldCallback(match, start, content, end, offset, val) {
       return "<b>" + content + "</b>";
-    };
+    }
 
     var italRe1 = /(\*)(.+?)(\*)/g;
     var italRe2 = /(_)(.+?)(_)/g;
-    var italCallback = function(match, start, content, end, offset, val) {
+    function italCallback(match, start, content, end, offset, val) {
       return "<i>" + content + "</i>";
-    };
+    }
 
     var linkRe = /\[(.+?)\]\((.+?)\)/g;
-    var linkCallback = function(match, text, link, offset, val) {
+    function linkCallback(match, text, link, offset, val) {
       return '<a href="' + link + '">' + text + '</a>';
-    };
+    }
     // This needs to be declared outside of the loop to keep eslint
     // happy. It's just the callback for the regex.
     var hlevel = 1;
-    var headerCallback = function(match, headerLevel, headerContent, offset, val) {
+    function headerCallback(match, headerLevel, headerContent, offset, val) {
       hlevel = headerLevel.length;
       return headerContent;
-    };
+    }
     for (let i = 0; i < paragraphs.length; i++) {
       // For now, assume that there's an empty line between
       // any headers. It's not true of strict markdown, but
@@ -106,7 +113,11 @@ var Markdown = React.createClass({
     }
     return <div>{paragraphs}</div>;
   }
-});
+}
+
+Markdown.propTypes = {
+  content: React.PropTypes.string.isRequired
+};
 
 var RMarkdown = React.createFactory(Markdown);
 

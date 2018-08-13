@@ -5,8 +5,8 @@ cache:
     directories:
         - vendor
 php:
-    - "7.0"
     - "7.1"
+    - "7.2"
 
 addons:
     firefox: "44.0"
@@ -22,9 +22,9 @@ before_install:
     - nvm install node
     - mkdir -p project project/libraries
     - phpenv config-rm xdebug.ini
-    - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.0" ]]; then Dir="router.php" ; fi
-    - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.1" ]]; then Dir="htdocs/router.php" ; fi
-    - php -S localhost:8000 -t htdocs $Dir 2>1 > /dev/null &
+    - pecl install -f ast-0.1.6
+    - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
+
 install:
     # Install composer modules
     - composer install
@@ -94,6 +94,6 @@ before_script:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
-    - npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
+    - vendor/bin/phan && npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise

@@ -29,7 +29,12 @@
  */
 class BVL_Feedback_Panel
 {
-    var $_feedbackThread = '';
+    /**
+     * The feedback thread that this panel is for
+     *
+     * @var NDB_BVL_Feedback
+     */
+    var $_feedbackThread;
 
     /**
      * Creates the feedback thread for the given combination of candID,
@@ -78,13 +83,13 @@ class BVL_Feedback_Panel
         $this->tpl_data['thread_list']    = $this->_feedbackThread->getThreadList();
         $this->tpl_data['feedback_level'] = $this->_feedbackThread->_feedbackLevel;
         $this->tpl_data['feedback_types']
-            = $this->_feedbackThread->getFeedbackTypes();
+            = NDB_BVL_Feedback::getFeedbackTypes();
         $this->tpl_data['feedbacktypes']  = NDB_BVL_Feedback::getFeedbackTypes();
 
         $summary = $this->_feedbackThread->getSummaryOfThreads();
         $this->tpl_data['thread_summary_headers'] = json_encode($summary);
 
-        $field_names = Utility::getSourcefields($_REQUEST['test_name']);
+        $field_names = Utility::getSourcefields($_REQUEST['test_name'] ?? '');
         $Fields['Across All Fields'] = 'Across All Fields';
         foreach ($field_names as $field_name) {
             $Fields[$field_name['SourceField']] = $field_name['SourceField'];

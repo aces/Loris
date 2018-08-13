@@ -41,7 +41,7 @@ class Login extends \NDB_Page
      * The constructor for login creates some basic tpl variables that are
      * used in the login template.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -69,7 +69,7 @@ class Login extends \NDB_Page
 
         try {
             $this->tpl_data['study_logo'] = $config->getSetting('studylogo');
-        } catch(ConfigurationException $e) {
+        } catch(\ConfigurationException $e) {
             $this->tpl_data['study_logo'] = '';
         }
 

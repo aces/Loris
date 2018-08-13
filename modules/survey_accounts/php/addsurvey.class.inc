@@ -42,7 +42,7 @@ class AddSurvey extends \NDB_Form
     /**
      * Return default values for QuickForm elements on this page
      *
-     * @return associative array of FieldName => Default Value mapping
+     * @return array (associative) of FieldName => Default Value mapping
      */
     function _getDefaults()
     {
@@ -157,7 +157,7 @@ class AddSurvey extends \NDB_Form
      *
      * @param array $values The values submitted on the page
      *
-     * @return none, but as a side-effect inserts into database
+     * @return void (but as a side-effect inserts into database)
      */
     function _process($values)
     {
@@ -244,7 +244,7 @@ class AddSurvey extends \NDB_Form
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

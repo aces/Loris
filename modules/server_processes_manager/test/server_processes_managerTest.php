@@ -34,18 +34,18 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      */
     private $_loadingUI
         =  array(
-            'Server  Processes  Manager' => '#bc2 > a:nth-child(2) > div',
+            'Server Processes Manager' => '#bc2 > a:nth-child(2) > div',
             //table headers
-            'No.'                        => '#dynamictable > thead > tr',
-            'Pid'                        => '#dynamictable > thead > tr',
-            'Type'                       => '#dynamictable > thead > tr',
-            'Stdout File'                => '#dynamictable > thead > tr',
-            'Stderr File'                => '#dynamictable > thead > tr',
-            'Exit Code File'             => '#dynamictable > thead > tr',
-            'Exit Code'                  => '#dynamictable > thead > tr',
-            'Userid'                     => '#dynamictable > thead > tr',
-            'Start Time'                 => '#dynamictable > thead > tr',
-            'End Time'                   => '#dynamictable > thead > tr',
+            'No.'                      => '#dynamictable > thead > tr',
+            'Pid'                      => '#dynamictable > thead > tr',
+            'Type'                     => '#dynamictable > thead > tr',
+            'Stdout File'              => '#dynamictable > thead > tr',
+            'Stderr File'              => '#dynamictable > thead > tr',
+            'Exit Code File'           => '#dynamictable > thead > tr',
+            'Exit Code'                => '#dynamictable > thead > tr',
+            'Userid'                   => '#dynamictable > thead > tr',
+            'Start Time'               => '#dynamictable > thead > tr',
+            'End Time'                 => '#dynamictable > thead > tr',
            );
     /**
      * Tests that the page does not load if the user does not have correct
@@ -102,6 +102,8 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
       */
     function testFilters()
     {
+        $this->markTestSkipped("Skipping long test");
+        return;
         $this->_testFilter("/server_processes_manager/", "pid", "317", "1 rows");
         $this->_testFilter("/server_processes_manager/", "type", "mri_upload", "51");
         $this->_testFilter(

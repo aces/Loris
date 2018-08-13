@@ -71,7 +71,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
     /**
      * Handles a GET request
      *
-     * @return none, but populates $this->JSON
+     * @return void but populates $this->JSON
      */
     public function handleGET()
     {
@@ -80,7 +80,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
 
         $fp = fopen($fullDir, "r");
         if ($fp === false) {
-            $this->header("HTTP/1.1 500 Internal Server Error", true, 500);
+            $this->header("HTTP/1.1 500 Internal Server Error");
             error_log("Could not open $fullDir to send to client");
             $this->safeExit(1);
         }
@@ -96,12 +96,12 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
         }
         $this->Header("Content-Type: $contentType");
         $this->Header('Content-Length: '.filesize($fullDir));
-        $this->Header('Content-Disposition: filename='.$this->Filename);
+        $this->Header('Content-Disposition: attachment; filename='.$this->Filename);
 
         while (!feof($fp)) {
             print fread($fp, 1024);
         }
-        $this->safeExit();
+        $this->safeExit(0);
     }
 
     /**

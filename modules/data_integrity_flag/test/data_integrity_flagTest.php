@@ -29,15 +29,9 @@ require_once __DIR__ .
 class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
 {
     /**
-     * Tests that, when loading the data_integrity_flag module, some
-     * text appears in the body.
-     *
-     * @return void
-     */
-    /**
      * Insert testing data into the database
      *
-     * @return none
+     * @return void
      */
     function setUp()
     {
@@ -60,10 +54,11 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
             )
         );
     }
+
     /**
      * Delete testing data from database
      *
-     * @return none
+     * @return void
      */
     function tearDown()
     {
@@ -73,10 +68,11 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
             array('dataflag_id' => '9999999')
         );
     }
+
     /**
      * Testing load this page
      *
-     * @return none
+     * @return void
      */
     function testDataIntegrityFlagDoespageLoad()
     {
@@ -86,10 +82,11 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertContains("Data Integrity Flag", $bodyText);
     }
+
     /**
      * Testing filter with Instrument
      *
-     * @return none
+     * @return void
      */
     function testDataIntegrityFlagFilterInstrument()
     {
@@ -106,7 +103,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
     /**
      * Logining this page without permissions "data_integrity_flag"
      *
-     * @return none
+     * @return void
      */
     function testDataIntegrityFlagWithoutPermissions()
     {
@@ -125,7 +122,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
     /**
      * Testing filter with user
      *
-     * @return none
+     * @return void
      */
     function testDataIntegrityFlagFilterUser()
     {
@@ -141,7 +138,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
     /**
      * Logining this page with permissions "data_integrity_flag"
      *
-     * @return none
+     * @return void
      */
     function testDataIntegrityFlagWithPermissions()
     {
@@ -160,7 +157,7 @@ class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
     /**
      * Testing filter with visit label
      *
-     * @return none
+     * @return void
      */
     function testDataIntegrityFlagFilterVisitlabel()
     {
