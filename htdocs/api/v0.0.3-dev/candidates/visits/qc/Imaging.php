@@ -60,7 +60,7 @@ class Imaging extends \Loris\API\Candidates\Candidate\Visit
     /**
      * Handles a GET request
      *
-     * @return none, but populates $this->JSON
+     * @return void but populates $this->JSON
      */
     public function handleGET()
     {
@@ -106,7 +106,7 @@ class Imaging extends \Loris\API\Candidates\Candidate\Visit
      * Handle a PUT request by validating the metadata matches the URL
      * and updating the database
      *
-     * @return none
+     * @return void
      */
     public function handlePUT()
     {

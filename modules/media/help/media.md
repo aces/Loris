@@ -28,8 +28,8 @@ users will select the file they wish to upload by clicking the “Browse” butt
 selecting the file from their computer. To begin the upload, users must click 
 “Upload File”. 
 
-_Note that a file to be uploaded should follow the naming convention listed at the 
-top of the Upload page: [PSCID]\_[VisitLabel]\_[Instrument]_
+Note that a file to be uploaded should follow the naming convention listed at the 
+top of the Upload page: [PSCID]\_[VisitLabel]\_[Instrument]
 
 ## Editing a Media File
 

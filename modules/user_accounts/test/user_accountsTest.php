@@ -116,6 +116,8 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function testUserAccountEdits()
     {
+        $this->markTestSkipped("Skipping excessively slow test");
+        return;
         $this->_verifyUserModification(
             'user_accounts',
             'UnitTester',
@@ -271,7 +273,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                              'user_accounts/my_preferences'
      * @param string $userId ID of the user whose page should be accessed.
      *
-     * @return void.
+     * @return void
      */
     function _accessUser($page, $userId)
     {
@@ -292,7 +294,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      * @param string $testData        the testing data
      * @param string $expectedResults the result that should be returned.
      *
-     * @return void.
+     * @return void
      */
     private function _assertSearchBy($elementName,$testData,$expectedResults)
     {

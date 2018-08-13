@@ -46,10 +46,10 @@
 24. Try editing the Comments field and saving.
 
 ### Consent Status Tab
-25. Check that the consent status tab only shows up if `<useConsent>true</useConsent>` in the config.xml.
+25. Check that the consent status tab only shows up if _useConsent_ is set to true in the configuration module.
 26. Tab should render with only one consent type.
 27. Add a new consent type following [the guide](https://github.com/aces/Loris/wiki/Candidate-Information-Page) on the LORIS Wiki. Does it show up in this tab when you refresh the page?
-28. Does the consent info shown in this table match what is stored in the participant_status table?
+28. Does the consent info shown in this tab match what is stored in the `consent` table?
 29. Check that there is a set of form inputs for each type of consent. Does your new type of consent you just added appear here, with form inputs?
 30. Try updating the consent information. Do not fill out all required fields. Ensure that an error appears when you try to save.
 31. For each of the date fields, try entering only one part of the date (eg. the year). Make sure there is an error when you try to save.

@@ -46,7 +46,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
      *
      * @param array $values The values submitted from the form
      *
-     * @return none
+     * @return bool
      */
     function _process($values)
     {
@@ -179,7 +179,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
      * Sets up the class variables required to render the query for the
      * conflict resolver
      *
-     * @return none
+     * @return void
      */
     function _setupVariables()
     {
@@ -236,7 +236,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
             LEFT JOIN session ON (flag.SessionID=session.ID)
             LEFT JOIN candidate ON (candidate.CandID=session.CandID)
             LEFT JOIN Project ON (candidate.ProjectID=Project.ProjectID )
-            WHERE 1=1";
+            WHERE session.Active='Y' AND candidate.Active ='Y'";
 
         $user = \User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {
@@ -318,7 +318,7 @@ class Conflict_Resolver extends \NDB_Menu_Filter_Form
     /**
      * Sets up the smarty menu filter items for the conflict resolver
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

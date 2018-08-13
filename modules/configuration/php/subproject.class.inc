@@ -41,7 +41,7 @@ class Subproject extends \NDB_Form
     /**
      * Loads the subproject management submodule
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

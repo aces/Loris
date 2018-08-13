@@ -41,7 +41,7 @@ class Survey_Accounts extends \NDB_Menu_Filter
      * Setup internal class variables which are required by NDB_Meny_Filter
      * for generating the query which the table data is based on
      *
-     * @return none
+     * @return void
      */
     function _setupVariables()
     {
@@ -81,7 +81,6 @@ class Survey_Accounts extends \NDB_Menu_Filter
                                'key'        => 'p.OneTimePassword',
                                'Instrument' => 'p.Test_name',
                               );
-        return true;
     }
 
 
@@ -90,7 +89,7 @@ class Survey_Accounts extends \NDB_Menu_Filter
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

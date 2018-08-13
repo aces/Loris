@@ -1,35 +1,14 @@
 #### Consent Status Tab - Additional Consents
  
 It is possible to have multiple consent types in the Consent Status tab. 
-In order to add consents, first make sure the useConsent option is set 
-to `true`, second follow the instructions below.
+In order to add consents, first make sure that the _useConsent_ option in the Configurations module is set 
+to `true`. Secondly, follow the instructions below:
  
-1. Populate the config file with additional Consent tagsets. For example, 
+1. Populate the `consent` table with additional consents. For example, 
 for consent to draw blood:
 
-    ```xml
-    <ConsentModule>
-        <useConsent>true</useConsent>
-        <Consent>
-            <name>study_consent</name>
-            <label>Consent to Study</label>
-        </Consent>
-        <Consent>
-            <name>draw_blood_consent</name>
-            <label>Consent to draw blood</label>
-        </Consent>
-    </ConsentModule>
-    ```
-2. Alter both `participant_status` and `consent_info_history` table schemas, 
-adding 3 columns for each new consent type, to store consent status, date and 
-withdrawal date. For example:
     ```sql
-    ALTER TABLE participant_status ADD COLUMN draw_blood_consent enum('yes','no','not_answered');
-    ALTER TABLE participant_status ADD COLUMN draw_blood_consent_date date;
-    ALTER TABLE participant_status ADD COLUMN draw_blood_consent_withdrawal date;
-    ALTER TABLE consent_info_history ADD COLUMN draw_blood_consent enum('yes','no','not_answered');
-    ALTER TABLE consent_info_history ADD COLUMN draw_blood_consent_date date;
-    ALTER TABLE consent_info_history ADD COLUMN draw_blood_consent_withdrawal date;
+    INSERT INTO consent (Name, Label) VALUES ('draw_blood_consent', 'Consent to Draw Blood');
     ```
 
 #### Candidate Information Tab - Additional Parameters

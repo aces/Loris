@@ -25,7 +25,7 @@
 	<tbody>
 	   	<tr{if $instruments[group][instrument].isDirectEntry} class="directentry"{/if}>
 	    	<td>
-                <a href="{$baseurl}/{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].commentID}&sessionID={$sessionID}&candID={$candID}">
+                <a href="{$baseurl}/instruments/{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].commentID}&sessionID={$sessionID}&candID={$candID}">
 	            {$instruments[group][instrument].fullName}</a></td>
 	    	<td>{$instruments[group][instrument].dataEntryStatus}</td>
 	    	<td>{$instruments[group][instrument].administrationStatus}</td>
@@ -34,7 +34,7 @@
 	        </td>
 			<td>
 				{if $instruments[group][instrument].isDdeEnabled }
-				    	<a href="{$baseurl}/{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].ddeCommentID}&sessionID={$sessionID}&candID={$candID}">Double Data Entry</a>
+				    	<a href="{$baseurl}/instruments/{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].ddeCommentID}&sessionID={$sessionID}&candID={$candID}">Double Data Entry</a>
 			   {/if}&nbsp;
 			</td>
 			<td>{if $instruments[group][instrument].isDdeEnabled }{$instruments[group][instrument].ddeDataEntryStatus}{/if}&nbsp;</td>

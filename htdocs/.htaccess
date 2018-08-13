@@ -1,39 +1,21 @@
 <IfModule mod_rewrite.c>
  RewriteEngine on
 
- RewriteRule ^([a-zA-Z_-]+)/api/([a-zA-Z0-9_.-/]+)$ module-api.php
+# FIXME: The /module/$name/ajax directory needs to be replaced with real NDB_Pages that
+# remove the page decoration middlewares, but for now we need to keep this helper script.
+RewriteRule ^([a-zA-Z_-]+)/ajax/([a-zA-Z0-9_.-]+)$ AjaxHelper.php?Module=$1&script=$2 [QSA,END]
 
- # Bootstrap is not a Loris module, don't rewrite it.
- RewriteRule ^bootstrap/(.*) bootstrap/$1 [L]
- # Excel Dumps aren't a Loris module, don't rewrite it.
- RewriteRule ^dataDumps/(.*) dataDumps/$1 [L]
+# Instruments and reliability still use main.php, for now
+RewriteRule ^instruments/([a-zA-Z0-9_-]+)/$ main.php?test_name=$1 [QSA,END]
+RewriteRule ^instruments/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_.-]+)/$ main.php?test_name=$1&subtest=$2 [QSA,END]
 
- # Redirect /CandID/ to visit label list
- RewriteRule ^([0-9]{6,6})/$ main.php?test_name=timepoint_list&candID=$1
- # Want to redirect /CandID/Visit_label/ to instrument list, but
- # because of the main.php URL structure it needs to be the sessionID instead
- # of Visit_label
- RewriteRule ^([0-9]{6,6})/([0-9]+)/$ main.php?test_name=instrument_list&candID=$1&sessionID=$2
+RewriteRule ^([a-zA-Z0-9_-]+)reliability([a-zA-Z0-9_-]*) main.php?test_name=$1reliability$2 [QSA,END]
 
-# Redirect /CandID/Visit/Instrument/(subtest/) to the instrument
- RewriteRule ^([0-9]{6,6})/([0-9]+)/([a-zA-Z0-9_]+)/$ main.php?test_name=$3&candID=$1&sessionID=$2 [QSA]
- RewriteRule ^([0-9]{6,6})/([0-9]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/$ main.php?test_name=$3&candID=$1&sessionID=$2&subtest=$4 [QSA]
-
- # Rewrite /foo/ to appropriate module
- # Includes /foo/css/cssfile.css
- #          /foo/js/javascriptfile.js
- #          /foo/ajax/AjaxScript.php
- # To use the appropriate helper script as well.
- RewriteRule ^([a-zA-Z0-9_-]+)/$ main.php?test_name=$1 [QSA]
- RewriteRule ^([a-zA-Z_-]+)/css/([a-zA-Z0-9_.-]+)$ GetCSS.php?Module=$1&file=$2
- RewriteRule ^([a-zA-Z_-]+)/js/([a-zA-Z0-9_.-]+)$ GetJS.php?Module=$1&file=$2
- RewriteRule ^([a-zA-Z_-]+)/static/([a-zA-Z0-9_.-/]+)$ GetStatic.php?Module=$1&file=$2
- RewriteRule ^([a-zA-Z_-]+)/ajax/([a-zA-Z0-9_.-]+)$ AjaxHelper.php?Module=$1&script=$2 [QSA]
- RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_.-]+)/$ main.php?test_name=$1&subtest=$2 [QSA]
-
- # Add trailing slash to all directories
- RewriteCond %{REQUEST_FILENAME} !-f
- RewriteRule ^(.*[^/])$ /$1/ [L,R=307]
-
+# Everything else gets rewritten to be handled by index.php, unless it's a file that's served
+# directly from apache
+RewriteCond "%{REQUEST_FILENAME}" "!-f" [OR]
+# Redirect homepage URLs to also use index.php
+RewriteCond "%{REQUEST_FILENAME}" "(\/main\.php)$"
+RewriteRule ^(.*)$ index.php?lorispath=$1 [QSA,L]
 </IfModule>
 

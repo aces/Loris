@@ -60,28 +60,12 @@
         </HeaderTable>
         <!-- defines how visit labels are assigned -->
         <visitLabel subprojectID="1">
-            <!-- generation can have either 'user' or 'sequence' to denote user entered or a pre-defined sequence -->
-            <!-- if 'user', the frontend will display a textbox for the user to enter date which is
-                 enforced against the regex. If 'sequence', a dropdown will be displayed
-                 based on the options in the labelSet tag -->
-            <generation>user</generation>
-            <regex>/^[A-Z0-9]{2}$/i</regex>
-            <length>2</length>
-            <suggest>V%value%</suggest> <!-- %value% will be substituted for the next unique number -->
             <labelSet>
                 <item value="V01">V01</item>
                 <item value="V02">V02</item>
             </labelSet>
         </visitLabel>
         <visitLabel subprojectID="2">
-            <!-- generation can have either 'user' or 'sequence' to denote user entered or a pre-defined sequence -->
-            <!-- if 'user', the frontend will display a textbox for the user to enter date which is
-                 enforced against the regex. If 'sequence', a dropdown will be displayed
-                 based on the options in the labelSet tag -->
-            <generation>user</generation>
-            <regex>/^[A-Z0-9]{2}$/i</regex>
-            <length>2</length>
-            <suggest>V%value%</suggest> <!-- %value% will be substituted for the next unique number -->
             <labelSet>
                 <item value="V01">V01</item>
                 <item value="V02">V02</item>
@@ -133,15 +117,6 @@
                 <!--test value=InstrumentName>InstrumentName</test-->
             </CertificationInstruments>
         </Certification>
-
-        <!-- Consent module allows addition of consent information in the candidate information page-->
-         <ConsentModule>
-            <useConsent>false</useConsent>
-            <Consent>
-                <name>study_consent</name>
-                <label>Consent to Study</label>
-            </Consent>
-        </ConsentModule>
 
     </study>
     <!-- end of study definition -->

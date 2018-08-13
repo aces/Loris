@@ -141,7 +141,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
             )
         );
         $this->safeGet(
-            $this->url . "/timepoint_list/?candID=" .  self::$_TST0001_CANDID
+            $this->url . "/" .  self::$_TST0001_CANDID . "/"
         );
         $this->_validateSessionTableContents(array(self::$_TST0001_SESSION));
         $this->DB->delete('session', array('ID' => '999997'));

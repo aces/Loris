@@ -94,7 +94,7 @@ foreach ($instruments as $instrument) {
 	    $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, f.Validity, i.* from candidate c, session s, flag f, $Test_name i left outer join examiners e on i.Examiner = e.examinerID where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.Entity_type != 'Scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND s.Active='Y' order by s.Visit_label, c.PSCID";
         }
     }
-	$instrument_table = $DB->pselect($query, array());
+    $instrument_table = $DB->pselect($query, array());
     MapSubprojectID($instrument_table);
 	writeExcel($Test_name, $instrument_table, $dataDir);
 

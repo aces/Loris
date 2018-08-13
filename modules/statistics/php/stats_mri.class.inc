@@ -139,7 +139,7 @@ class Stats_MRI extends \NDB_Form
     /**
      * Sets up the template for the MRI tab
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

@@ -132,8 +132,9 @@ class FilterForm extends React.Component {
       } else {         // null and undefined handled here
         filter[key].value = '';
       }
-      filter[key].exactMatch = (type === "SelectElement");
-    } else if (filter && key && value === '') {
+      filter[key].exactMatch = (type === "SelectElement" || type === "select");
+    }
+    if (filter && key && value === '') {
       delete filter[key];
     }
     return filter;
@@ -171,7 +172,7 @@ class FilterForm extends React.Component {
     if (formElements) {
       Object.keys(formElements).forEach(function(fieldName) {
         let queryFieldName = (fieldName === 'candID') ? 'candidateID' : fieldName;
-        formElements[fieldName].onUserInput = this.onElementUpdate.bind(null, fieldName);
+        formElements[fieldName].onUserInput = this.onElementUpdate.bind(null, formElements[fieldName].type);
         formElements[fieldName].value = this.queryString[queryFieldName];
       }.bind(this));
     }
