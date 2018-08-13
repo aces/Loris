@@ -453,3 +453,13 @@ a.btn.btn-primary {
 .sweet-alert p {
   word-wrap: break-word;
 }
+
+.label-success:after {
+    content: "🌈🦄🌈";
+    padding-left: 5px;
+}
+
+.label-success:before{
+    content: "🌈🦄🌈";
+    padding-right: 5px;
+}
