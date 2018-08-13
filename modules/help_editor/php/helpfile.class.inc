@@ -87,7 +87,7 @@ class HelpFile
         $DB =& \Database::singleton();
 
         // insert a help file
-        $success = $DB->unsafeinsert('help', $set);
+        $success = $DB->insert('help', $set);
         // return the help ID
         return $DB->lastInsertID;
     }
