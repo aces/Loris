@@ -41,15 +41,23 @@ class Dataquery extends \NDB_Form
     /**
      * Sets up the smarty template variables for the dataquery page.
      *
-     * @return unknown
+     * @return void
      */
     function setup()
     {
         parent::setup();
 
-        $user     = \User::singleton();
-        $username = $user->getUsername();
-        $couch    = \NDB_Factory::singleton()->couchDB();
+        $user        = \User::singleton();
+        $username    = $user->getUsername();
+        $config      = \NDB_Config::singleton();
+        $couchConfig = $config->getSetting('CouchDB');
+        $couch       = \NDB_Factory::singleton()->couchDB(
+            $couchConfig['dbName'],
+            $couchConfig['hostname'],
+            $couchConfig['port'],
+            $couchConfig['admin'],
+            $couchConfig['adminpass']
+        );
 
         $update = $couch->queryView(
             "DQG-2.0",

@@ -1,5 +1,6 @@
 $(document).ready(function() {
     "use strict";
+    $('div').tooltip();
     $(".saveproject").click(function(e) {
         var form = $(e.currentTarget).closest('form');
 

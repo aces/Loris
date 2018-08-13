@@ -14,6 +14,7 @@ import {Tabs, TabPane} from 'Tabs';
 var LoadPane = React.createClass({
   getInitialState: function() {
     return {
+      disabled: true,
       // This is used to alert the user if the file was
       // loaded successfully or there was an error with
       // the loading.
@@ -25,8 +26,12 @@ var LoadPane = React.createClass({
     var value = e.target.files[0];
     this.setState({
       file: value,
+      disabled: true,
       alert: ''
     });
+    if (value) {
+      this.setState({disabled: false});
+    }
   },
   // Sets the alert to the specified type.
   setAlert: function(type, message) {
@@ -99,6 +104,7 @@ var LoadPane = React.createClass({
             className="btn btn-primary spacingTop"
             type="button" id="load"
             value="Load Instrument"
+            disabled={this.state.disabled}
             onClick={this.loadFile}
           />
         </div>

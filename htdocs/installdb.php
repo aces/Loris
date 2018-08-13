@@ -30,7 +30,7 @@
  *       writable, print the content that should go there and ask
  *       the user to manually create the file.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -51,12 +51,13 @@ require_once __DIR__ . "/../php/installer/Installer.class.inc";
 // smarty to use when it gets autoloaded.
 require_once __DIR__ . "/../php/installer/Database.class.inc";
 require_once __DIR__ . "/../php/installer/NDB_Config.class.inc";
+use \LORIS\Installer\Database as Database;
 
 $installer = new Installer("../project");
 
 // Check the dependencies of this script.
-if ($installer->CheckPreconditionsValid() === false) {
-    $err = $installer->GetLastError();
+if ($installer->checkPreconditionsValid() === false) {
+    $err = $installer->getLastError();
     if ($err == "") {
         $err = "Unknown error checking LORIS install preconditions. Sorry.";
     }
@@ -65,8 +66,8 @@ if ($installer->CheckPreconditionsValid() === false) {
 }
 
 // Check the dependencies of LORIS
-if ($installer->CheckSystemDependenciesValid() == false) {
-    $err = $installer->GetLastError();
+if ($installer->checkSystemDependenciesValid() == false) {
+    $err = $installer->getLastError();
     if ($err == "") {
         $err = "Unknown error checking system dependencies.";
     }
@@ -74,7 +75,7 @@ if ($installer->CheckSystemDependenciesValid() == false) {
     exit(3);
 }
 
-require_once __DIR__ . "/../vendor/autoload.php";
+require_once __DIR__ . '/../vendor/autoload.php';
 
 ini_set('default_charset', 'utf-8');
 // Create an output buffer to capture console output, separately from the
@@ -95,49 +96,79 @@ case 'validaterootaccount':
     // This will connect to MySQL, check the permissions of the
     // account provided, check that the database doesn't already
     // exist, and create the database.
-    if ($installer->CreateMySQLDB($_POST) === false) {
-        $tpl_data['error'] = $installer->GetLastError();
-        $tpl_data['Page']  = "";
+    if (!isset($_POST['use_existing_tables'])) {
+        if (!isset($_POST['use_existing_database'])) {
+            if ($installer->createMySQLDB($_POST) === false) {
+                $tpl_data['error'] = $installer->getLastError();
+                $tpl_data['Page']  = "";
+                break;
+            }
+        }
+        if ($installer->sourceSchema($_POST) === false) {
+            $tpl_data['error'] = $installer->getLastError();
+            $tpl_data['Page']  = "";
+            break;
+        }
+    }
+    if (!isset($_POST['use_existing_configs'])) {
+        if ($installer->updateBaseConfig($_POST) === false) {
+            $tpl_data['error'] = $installer->getLastError();
+            $tpl_data['Page']  = "";
+            break;
+        }
+    }
+    if (!Database::canLogIn(
+        $_POST['dbhost'],
+        $_POST['dbname'],
+        $_POST['dbadminuser'],
+        $_POST['dbadminpassword']
+    )) {
+        $tpl_data['error'] = 'The specified user does not exist or '.
+            'is using an incorrect password or the database does not exist';
+        $tpl_data['Page']  = '';
         break;
     }
-    if ($installer->SourceSchema($_POST) === false) {
-        $tpl_data['error'] = $installer->GetLastError();
-        $tpl_data['Page']  = "";
-        break;
-    }
-    if ($installer->UpdateBaseConfig($_POST) === false) {
-        $tpl_data['error'] = $installer->GetLastError();
-        $tpl_data['Page']  = "";
-        break;
-    }
-
-    $tpl_data['Page'] = "MySQLUserPrompt";
+    $tpl_data['Page'] = 'MySQLUserPrompt';
     break;
 case 'createmysqlaccount':
-    if ($installer->CreateMySQLAccount($_POST) === false) {
-        $tpl_data['error'] = $installer->GetLastError();
-        $tpl_data['Page']  = "MySQLUserPrompt";
-        break;
-    }
-
-    if ($installer->ResetFrontEndAdmin($_POST) === false) {
-        $tpl_data['error'] = $installer->GetLastError();
-        $tpl_data['Page']  = "MySQLUserPrompt";
-        break;
-    }
-
-    if ($installer->ConfigWritable()) {
-        if ($installer->WriteConfig($_POST) === false) {
-            $tpl_data['error'] = $installer->GetLastError();
+    if (isset($_POST["lorismysql_already_created"])) {
+        //Verify that it is, indeed, the case.
+        if (!Database::canLogIn(
+            $_POST["dbhost"],
+            $_POST["dbname"],
+            $_POST["lorismysqluser"],
+            $_POST["lorismysqlpassword"]
+        )) {
+            $tpl_data["error"] = "The specified user does not exist or ".
+                "is using an incorrect password or the database does not exist";
+            $tpl_data["Page"]  = "MySQLUserPrompt";
+            break;
+        }
+    } else {
+        if ($installer->createMySQLAccount($_POST) === false) {
+            $tpl_data['error'] = $installer->getLastError();
             $tpl_data['Page']  = "MySQLUserPrompt";
             break;
         }
-        $tpl_data['configfile'] = $installer->GetBaseDir() . "/project/config.xml";
+    }
+    if ($installer->resetFrontEndAdmin($_POST) === false) {
+        $tpl_data['error'] = $installer->getLastError();
+        $tpl_data['Page']  = "MySQLUserPrompt";
+        break;
+    }
+
+    if ($installer->configWritable()) {
+        if ($installer->writeConfig($_POST) === false) {
+            $tpl_data['error'] = $installer->getLastError();
+            $tpl_data['Page']  = "MySQLUserPrompt";
+            break;
+        }
+        $tpl_data['configfile'] = $installer->getBaseDir() . "project/config.xml";
     } else {
-        $tpl_data['configlocation'] = $installer->GetBaseDir()
-                 . "/project/config.xml";
+        $tpl_data['configlocation'] = $installer->getBaseDir()
+                 . "project/config.xml";
         $tpl_data['configcontent']  = htmlspecialchars(
-            $installer->GetConfigContent($_POST)
+            $installer->getConfigContent($_POST)
         );
     }
     $tpl_data['Page'] = "Done";
@@ -147,11 +178,13 @@ $tpl_data['console'] = htmlspecialchars(ob_get_contents());
 
 // Set up some special smarty variables that are required on different
 // pages
-if ($tpl_data['Page'] == 'MySQLUserPrompt') {
-    $tpl_data['SamplePassword']  = User::newPassword(16);
-    $tpl_data['SamplePassword2'] = User::newPassword(16);
-} else if ($tpl_data['Page'] == "Done") {
-    $tpl_data['lorisurl'] = $installer->getBaseURL();
+if (isset($tpl_data['Page'])) {
+    if ($tpl_data['Page'] == 'MySQLUserPrompt') {
+        $tpl_data['SamplePassword']  = User::newPassword(16);
+        $tpl_data['SamplePassword2'] = User::newPassword(16);
+    } else if ($tpl_data['Page'] == 'Done') {
+        $tpl_data['lorisurl'] = $installer->getBaseURL();
+    }
 }
 // end ob_start that captures console output. The Smarty hook
 // needs to be able to write to the client.
@@ -163,7 +196,7 @@ ob_end_clean();
  *
  * @param string $name The request parameter to add to a smarty variable
  *
- * @return none
+ * @return void
  */
 function tplvar($name)
 {
@@ -174,17 +207,20 @@ function tplvar($name)
         $tpl_data[$name] = '';
     }
 }
-tplvar("dbhost");
-tplvar("dbadminuser");
-tplvar("dbadminpassword");
-tplvar("dbname");
-tplvar("lorismysqluser");
-tplvar("lorismysqlpassword");
-tplvar("frontenduser");
-tplvar("frontendpassword");
+tplvar('dbhost');
+tplvar('dbadminuser');
+tplvar('dbadminpassword');
+tplvar('dbname');
+tplvar('lorismysqluser');
+tplvar('lorismysqlpassword');
+tplvar('frontenduser');
+tplvar('frontendpassword');
+tplvar('use_existing_database');
+tplvar('use_existing_tables');
+tplvar('use_existing_configs');
+tplvar('lorismysql_already_created');
 $smarty = new Smarty_NeuroDB;
 $smarty->assign($tpl_data);
 $smarty->display('install.tpl');
 
 //ob_end_flush();
-?>

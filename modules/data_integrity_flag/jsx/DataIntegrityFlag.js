@@ -26,6 +26,7 @@ class DataIntegrityFlag extends React.Component {
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
+    this.resetFilters = this.resetFilters.bind(this);
   }
 
   componentDidMount() {
@@ -53,6 +54,10 @@ class DataIntegrityFlag extends React.Component {
     this.setState({filter});
   }
 
+  resetFilters() {
+    this.filter.clearFilter();
+  }
+
   render() {
     // Waiting for async data to load
     if (!this.state.isLoaded) {
@@ -71,6 +76,10 @@ class DataIntegrityFlag extends React.Component {
       {id: "setflag", label: "Update"}
     ];
 
+    const filterRef = function(f) {
+      this.filter = f;
+    }.bind(this);
+
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
@@ -78,6 +87,7 @@ class DataIntegrityFlag extends React.Component {
             Module={this.props.Module}
             name="data_integrity_filter"
             id="data_integrity_filter"
+            ref={filterRef}
             columns={2}
             onUpdate={this.updateFilter}
             filter={this.state.filter}
@@ -105,6 +115,7 @@ class DataIntegrityFlag extends React.Component {
             <ButtonElement
               label="Clear Filters"
               type="reset"
+              onUserInput={this.resetFilters}
             />
           </FilterForm>
           <StaticDataTable

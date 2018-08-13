@@ -54,12 +54,14 @@ imaging_browser_qc
 
 The imaging browser has the following configurations that affect its usage
 
+#### Database Configurations
+
 tblScanTypes - This setting determines which scan types are considered "NEW" for
         QC purposes. It also determines which modalities are displayed on the
         main imaging browser menu page.
 
 ImagingBrowserLinkedInstruments - This setting defines which instruments to 
-        include a link to on the viewsession page.
+        include a link to on the "View Session" page.
 
 useProjects - This setting determines whether "project" filtering dropdowns exist
         on the menu page.
@@ -67,8 +69,13 @@ useProjects - This setting determines whether "project" filtering dropdowns exis
 useEDC - This setting determines whether "EDC" filtering dropdowns exist
         on the menu page.
 
-mantis_url - This setting defines a URL for LORIS to include a link to for bug reporting
-        on the viewsession page.
+issue_tracker_url - This setting defines a URL for LORIS to include a link to the 
+        bug reporting system on the "View Session" page.
+
+#### Install Configurations
+
+For downloading large DICOM files, it may be necessary to increase the
+ value of the `memory_limit` configuration option within `php.ini`.
 
 ## Interactions with LORIS
 
@@ -78,7 +85,10 @@ mantis_url - This setting defines a URL for LORIS to include a link to for bug r
   `$LORIS/tools/CouchDB_Import_MRI.php` alongside all other CouchDB
   import scripts, but should logically be considered part of this module.)
 - The imaging browser module includes links to BrainBrowser to visualize data.
-- The control panel on the viewsession page includes links to the instruments
+- The control panel on the "View Session" page includes links to instruments
+  named "mri_parameter_form" and "radiologyreview" if they exist for the
+  currently viewed session.
+- The control panel on the "View Session" page includes links to the instruments
   as configured by the study.
-- The control panel on the viewsession page includes links to the DICOM Archive
-  for any DICOM tars associated with the given session.
+- The control panel on the "View Session" page includes links to the DICOM Archive 
+  and download capabilities for any DICOM tars associated with the given session.

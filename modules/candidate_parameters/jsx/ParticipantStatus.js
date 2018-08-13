@@ -11,6 +11,9 @@ var ParticipantStatus = React.createClass(
       };
     },
     componentDidMount: function() {
+      this.fetchData();
+    },
+    fetchData: function() {
       var that = this;
       $.ajax(
                 this.props.dataURL,
@@ -226,7 +229,11 @@ var ParticipantStatus = React.createClass(
       var self = this;
       var formData = new FormData();
       for (var key in myFormData) {
-        if (myFormData[key] !== "") {
+        if (myFormData.hasOwnProperty(key) &&
+          myFormData[key] !== "" &&
+          myFormData[key] !== null &&
+          myFormData[key] !== undefined
+        ) {
           formData.append(key, myFormData[key]);
         }
       }
@@ -248,6 +255,7 @@ var ParticipantStatus = React.createClass(
               }
                   );
             self.showAlertMessage();
+            self.fetchData();
           },
           error: function(err) {
             if (err.responseText !== "") {
