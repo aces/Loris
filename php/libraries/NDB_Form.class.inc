@@ -146,64 +146,62 @@ class NDB_Form extends NDB_Page
      */
     function setup()
     {
+        $this::_setCSRFToken();
         $this->addHidden(
             // Double underscores are used here as fields with double underscores
             // are automatically unset in the _save function below.
             '__csrfToken',
-            $this::_getCSRFToken()
+            $_COOKIE['__csrfToken']
         );
     }
 
-
-    /**
-     * Use a JWT token encoding username information and lasting for one day.
-     * This is encrypted on the server using a secret key. Then this token
-     * will be included as a hidden element on any given form. If this token
-     * is not submitted back to the sever, or if its content is not
-     * well-formed and accurate, the form will be rejected. This is a way of
-     * preventing cross-site request forgery vulnerabilities.
-     *
-     * @return string A JWT token to be hidden in a form.
-     */
-    private function _getCSRFToken(): string
+    private function _setCSRFToken()
     {
+        // Create db connection
+        $db =& \Database::singleton();
 
-        // This code taken from htdocs/api/v0.0.3-dev/Login.php.
-        $factory = \NDB_Factory::singleton();
-        $config  = $factory->config();
+        // Generate random string to use as CSRF token
+        $success = true;
+        $csrfToken = $this::generateRandomString(64);
+        try {
+            $db->insert(
+                'csrf_tokens',
+                array(
+                    'Token' => $csrfToken,
+                    'CreatedAt' => date("Y-m-d H:i:s"), // today in MySQL format
+                    'PhpSessionID' => session_id()
+                )
+            );
+        } catch (DatabaseException $e) {
+            throw new LorisException('Could not insert CSRF token into '
+                . 'database. ' 
+                . $e
+            );
+            http_response_code(500);
+        }
 
-        $www     = $config->getSetting("www");
-        $baseURL = $www['url'];
+        // This should have the Secure flag but is likely to break our automated
+        // test environment.  When we resolve that issue, that flag should be
+        // added here.
+        setcookie(
+            '__csrfToken',
+            $csrfToken
+        );
+    }
 
-        // As of now this token only incorporates information about the user
-        // and the time it was issued.  This contrasts another approach
-        // to mitigating CSRF attacks by attaching a different token to each
-        // form specifically (i.e. encoding form information into the token).
-        //
-        // However, the use of JWT means that the token cannot be replicated unless
-        // an attacker knows the secret key (at which point they could just
-        // login via the API anyway which would mean CSRF is the least of our
-        // concerns). Therefore we can use one token encoding user information
-        // that expires after one day and we should be safe.
-        $token = array(
-            // JWT related tokens to for the JWT library to validate
-                  "iss"  => $baseURL,
-                  "aud"  => $baseURL,
-            // Issued at
-                  "iat"  => time(),
-                  "nbf"  => time(),
-            // Expire in 1 day
-                  "exp"  => time() + 86400,
-            // Additional payload data
-                  "user" => $_SESSION['State']->getUsername(),
-                 );
+    function generateRandomString(int $length): string
+    {
+        $string = '';
+        $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $codeAlphabet.= "abcdefghijklmnopqrstuvwxyz";
+        $codeAlphabet.= "0123456789";
+        $max = strlen($codeAlphabet);
 
-        // Note: the code for checking JWT key strength is not present here
-        // (in contrast to Login.php).  As explained above, an attacker
-        // attempting to take advantage of a weak JWT key has a juicier target
-        // than CSRF vulnerabilties.
-        $key = $config->getSetting("JWTKey");
-        return \Firebase\JWT\JWT::encode($token, $key, "HS256");
+        for ($i = 0; $i < $length; $i++) {
+            $string .= $codeAlphabet[random_int(0, $max-1)];
+        }
+
+        return $string;
     }
 
 
@@ -225,36 +223,50 @@ class NDB_Form extends NDB_Page
         // accurate but will not enforce failure if one is not present.
         // TODO Once CSRF tokens are enforced universally across LORIS, any
         // state-changing request wihtout a valid CSRF token should be rejected.
+        // TODO This only validates CSRF tokens present in POST bodies 
+        // A different approach is neded for AJAX (i.e. headers)
 
         $token = $values['__csrfToken'] ?? null;
         if (!is_null($token)) {
-            $authenticRequest = false;
-            $factory          = \NDB_Factory::singleton();
-            $config           = $factory->config();
-            $key = $config->getSetting("JWTKey");
-
-            // Decode token and exit if it is invalid.
-            try {
-                $decoded = \Firebase\JWT\JWT::decode($token, $key, array("HS256"));
-            } catch (Exception $e) {
+            $validCSRFToken = true;
+            $db =& \Database::singleton();
+            $results = $db->pselect(
+                'SELECT PhpSessionID,CreatedAt '
+                . 'FROM csrf_tokens '
+                . 'WHERE Token =:token',
+                array(
+                    'token' => $token
+                )
+            );
+            if (empty($results)) {
                 error_log(
-                    "ERROR: Could not decode JWT CSRF token! Possible CSRF
-                    attack. $e"
+                    'Submitted CSRF token does not exist in the database.'
                 );
-                // Do not do any further processing of the request if given a
-                // bad token.
-                die("Malformed CSRF token. Exiting.");
-            }
-
-            // This is the recommended way to get values from the JWT token
-            // according to the Firebase documentation.
-            $decodedArray = (array) $decoded;
-            $realUser     = $_SESSION['State']->getUsername();
-            error_log($realUser);
-            $authenticRequest = ($decodedArray['user'] === $realUser);
-
-            if (!$authenticRequest) {
-                error_log("ERROR: Bad CSRF token! Possible hacking attempt. $e");
+                $validCSRFToken = false;
+            } else {
+                $storedSessionID = $results[0]['PhpSessionID'];
+                $timeOfTokenCreation = $results[0]['CreatedAt'];
+                var_dump($storedSessionID);
+                var_dump($timeOfTokenCreation);
+                var_dump(session_id());
+                // Session ID stored in the DB does not match the current session.
+                // Should not occur organically, i.e. this case is likely a case of
+                // someone attempting to replay a token meant for another user's 
+                // session.
+                print_r($results);
+                if ($storedSessionID !== session_id()) {
+                    error_log('ERROR: Submitted CSRF token was issued from a '
+                        . 'session that does not match the value in the database. '
+                        . 'Possible hacking attempt.');
+                    $validCSRFToken = false;
+                }
+                // Check if the CSRF token was created in the last day.  If not, it
+                // is expired and the request is rejected.
+                if (strtotime("now") > $timeOfTokenCreation + strtotime("+1 day")) {
+                    error_log('Submitted CSRF token is expired (more than one day 
+                        old.');
+                    $validCSRFToken = false;
+                }
             }
         }
 
@@ -277,7 +289,8 @@ class NDB_Form extends NDB_Page
         // TODO The code should be refactored so that $authenticRequest is
         // always set.  This is just a provisional measure until CSRF validation
         // is implemented everywhere in LORIS.
-        if (isset($authenticRequest) && !$authenticRequest) {
+        if (isset($validCSRFToken) && !$validCSRFToken) {
+            http_response_code(400);
             die("Malformed CSRF token. Exiting.");
         }
         $this->_process($values);
