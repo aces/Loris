@@ -93,7 +93,6 @@ class Timepoint_List extends \NDB_Menu
             $gets         = $request->getQueryParams();
             $this->candID = $gets['candID'];
         }
-        $this->setup();
         return parent::process($request, $handler);
     }
 

@@ -94,7 +94,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
         $this->addBasicDate('dateOfBirth', 'Date of Birth');
         $this->addBasicDate('acquisition', 'Acquisition Date');
         $this->addBasicText('archiveLocation', 'Archive Location');
-        $this->addBasicText('seriesuid', 'Series UI');
+        $this->addBasicText('seriesuid', 'Series UID');
     }
 
 

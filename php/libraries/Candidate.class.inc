@@ -135,10 +135,17 @@ class Candidate
                      'PTName'    => $parameter_type,
                     )
                 );
+                // Sanitize values coming from the parameter_candidate table
+                // before injecting them into the HTML table.
                 if (!empty($row['Value'])) {
-                    $params[$row['Description']] = $row['Value'];
+                    $params[$row['Description']] = htmlentities(
+                        $row['Value'],
+                        ENT_QUOTES,
+                        'UTF-8'
+                    );
                 }
             }
+
             $this->candidateInfo['DisplayParameters'] = $params;
         }
 

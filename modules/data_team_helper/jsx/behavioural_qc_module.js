@@ -112,7 +112,7 @@ var IncompleteCandidatesRow = React.createClass({
   render: function() {
     var row = this.props.row;
     return (
-      <tr key={row.id} onClick={this.handleClick}>
+      <tr key={row.id} >
         <td>
           <a href={this.props.BaseURL + "/instruments_list/?candID=" +
               row.candid +
@@ -136,7 +136,7 @@ var IncompleteCandidatesRow = React.createClass({
               "/?candID=" + row.candid +
               "&sessionID=" + row.SessionID +
               "&commentID=" + row.commentid} ref="incomplete"
-          >
+              onClick={this.handleClick} >
             {row.Full_name}
           </a>
         </td>
@@ -203,7 +203,7 @@ var BehaviouralFeedbackRow = React.createClass({
 
     if (row.Feedback_level === 'instrument') {
       bvlLink = this.props.BaseURL + "/instruments/" + row.Test_name +
-            "?candID=" + row.CandID +
+            "/?candID=" + row.CandID +
             "&sessionID=" + row.SessionID +
             "&commentID=" + row.CommentID;
       bvlLevel = "Instrument : " + row.Full_name;
@@ -215,7 +215,7 @@ var BehaviouralFeedbackRow = React.createClass({
     }
 
     return (
-      <tr key={row.FeedbackID} onClick={this.handleClick}>
+      <tr key={row.FeedbackID} >
         <td>
           <a href={this.props.BaseURL + "/" + row.CandID + "/"}>
             {row.CandID}

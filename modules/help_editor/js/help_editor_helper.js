@@ -12,14 +12,23 @@ $("input[name=preview]").click(function(e) {
         button  = document.createTextNode("Close"),
         wrap    = document.createElement("div");
 
+     // add leading zeros to date format
+     // Date.getMonth() returns the months 0 to 11, so add 1
+     var month  = ('0'+(myDate.getMonth()+1)).slice(-2);
+         date   = ('0'+myDate.getDate()).slice(-2);
+         hour   = ('0'+myDate.getHours()).slice(-2);
+         minute = ('0'+myDate.getMinutes()).slice(-2);
+         second = ('0'+myDate.getSeconds()).slice(-2);
+
+     var dateString = myDate.getFullYear() + "-" + month + "-" + date + " " +
+                      hour + ":" + minute + ":" + second;
+
      wrap.setAttribute("id", "help-wrapper");
      wrap.innerHTML  = "<h3>" + title + "</h3>";
      markdownContent = document.createElement("div");
      ReactDOM.render(RMarkdown({content: content}), markdownContent);
      wrap.appendChild(markdownContent);
-     wrap.innerHTML  =  wrap.innerHTML + "<hr>Last updated: " + myDate.getFullYear() + "-" +
-                      (myDate.getMonth() +1) + "-" + myDate.getDate() + " " +
-                      myDate.getHours() + ":" + myDate.getMinutes() + ":" + myDate.getSeconds();
+     wrap.innerHTML  =  wrap.innerHTML + "<hr>Last updated: " + dateString;
      btn.appendChild(button);
      btn.className="btn btn-default";
      btn.setAttribute("id","helpclose");

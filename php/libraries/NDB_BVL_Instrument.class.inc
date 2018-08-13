@@ -169,6 +169,8 @@ class NDB_BVL_Instrument extends NDB_Page
 
         // Ensure 'page' is a string.
         $page = $page ?? '';
+        // Ensure 'commentID' is a string.
+        $commentID = $commentID ?? '';
 
         // Make sure the instrument class has been included/required!
         $factory = NDB_Factory::singleton();
@@ -2537,83 +2539,38 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         return $this->determineDataEntryAllowed();
     }
-}
 
-/**
- * Checks that the Date_taken element is a valid date
- *
- * @param array $dateElement The date element in QuickForm array format.
- *
- * @return True if the date is invalid, false if it's valid.
- */
-function _checkDateTaken($dateElement)
-{
-    // if all three elements are empty,
-    // return true b/c it'll save the NULL in date field
-    if (empty($dateElement['M'])
-        && empty($dateElement['d'])
-        && empty($dateElement['Y'])
-    ) {
-        return true;
-    } elseif (empty($dateElement['M'])
-        || empty($dateElement['d'])
-        || empty($dateElement['Y'])
-    ) {
-        // otherwise, if any of the three elements are empty,
-        // return false b/c date entry has been attempted
-        return false;
-    } else {
-        // else, check the date
-        $checked = checkdate(
-            $dateElement['M'],
-            $dateElement['d'],
-            $dateElement['Y']
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $visitlabel = $this->getVisitLabel();
+        $sessionid  = $this->getSessionID();
+        $timepoint  = \TimePoint::singleton($sessionid);
+        $candid     = $timepoint->getCandID();
+        $pscid      = $this->getPSCID();
+
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                'Access Profile',
+                '/candidate_list'
+            ),
+            new \LORIS\Breadcrumb(
+                "Candidate Profile $candid / $pscid",
+                "/$candid"
+            ),
+            new \LORIS\Breadcrumb(
+                "TimePoint $visitlabel Details",
+                "/instrument_list/?candID=$candid&sessionID=$sessionid"
+            ),
+            new \LORIS\Breadcrumb(
+                $this->name,
+                ''
+            )
         );
-        if (version_compare(phpversion(), '5.3.0', '>=')) {
-            if ($checked === false) {
-                return false;
-            }
-            $formatted = date_create();
-            $formatted->setDate(
-                $dateElement['Y'],
-                $dateElement['M'],
-                $dateElement['d']
-            );
-
-            $now  = date_create();
-            $diff = date_diff($formatted, $now);
-            return ($diff->format("%r") === '');
-        } else {
-            return $checked;
-        }
     }
 }
 
-/**
- * QuickForm rule to check that a date is valid.
- * This is used by create timepoint and start timepoint pages,
- * so it probably shouldn't be in the instrument class.
- *
- * @param array $dateElement The date element in QuickForm array format.
- *
- * @return True if the date is invalid, false if it's valid.
- */
-function _checkDate($dateElement)
-{
-    if (empty($dateElement['M'])
-        && empty($dateElement['d'])
-        && empty($dateElement['Y'])
-    ) {
-        // if all three elements are empty, return true b/c it'll
-        // save the NULL in date field
-        return true;
-    } elseif (empty($dateElement['M'])
-        || empty($dateElement['d'])
-        || empty($dateElement['Y'])
-    ) {
-        // otherwise, if any of the three elements are empty, return
-        // false b/c date entry has been attempted
-        return false;
-    }
-    return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
-}

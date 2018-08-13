@@ -15,6 +15,10 @@
  * @see https://www.php-fig.org/psr/psr-7/
  */
 namespace LORIS\Http;
+use \Psr\Http\Server\RequestHandlerInterface;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+
 
 /**
  * A StringStream provides a simple wrapper over a string to convert
@@ -26,7 +30,7 @@ namespace LORIS\Http;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class StringStream implements \Psr\Http\Message\StreamInterface
+class StringStream implements \Psr\Http\Message\StreamInterface, RequestHandlerInterface
 {
     protected $stream;
     protected $size;
@@ -265,5 +269,21 @@ class StringStream implements \Psr\Http\Message\StreamInterface
             return $metadata;
         }
         return $metadata[$key];
+    }
+
+    /**
+     * A StringStream can act as a handler, which resolves to a response with
+     * itself as a body.
+     *
+     * This is primarily to allow it to be used as content by middleware.
+     *
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @return ResponseInterface A response whose body consists of this string
+
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface {
+            return (new \Zend\Diactoros\Response())
+                        ->withBody($this);
     }
 }

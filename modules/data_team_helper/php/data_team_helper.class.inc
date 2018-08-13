@@ -61,6 +61,7 @@ class Data_Team_Helper extends \NDB_Form
         $this->tpl_data['visit_label'] = $sanitize['visit_label'] ?? null;
         $this->tpl_data['FieldName']   = $sanitize['FieldName'] ?? null;
         $this->tpl_data['project']     = $sanitize['project'] ?? null;
+        $this->tpl_data['site']        = $sanitize['site'] ?? null;
         if (isset($sanitize['PSCID']) && !empty($sanitize['PSCID'])) {
             $this->tpl_data['PSCID'] = $sanitize['PSCID'];
         } elseif (isset($sanitize['candidate']) && !empty($sanitize['candidate'])) {
