@@ -69,7 +69,9 @@ class Database
 
     /**
      * Singleton design pattern implementation - creates the object
-     * and also connects to the database if necessary
+     * and also connects to the database if necessary.
+     * NOTE There is no return type declaration for this function as it returns
+     * the type `Database` which is not supported by PHPs built in return types.
      *
      * @param string  $database     the database to select
      * @param string  $username     the username with which to log into
@@ -89,7 +91,7 @@ class Database
         string $password     = null,
         string $host         = null,
         bool   $trackChanges = true
-    ): object {
+    ) {
 
         static $connections = array();
 
