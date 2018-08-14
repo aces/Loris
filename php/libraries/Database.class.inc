@@ -11,6 +11,8 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 define("DEBUG", false);
+// Require strict typing
+declare(strict_types=1);
 
 /**
  * Database abstraction layer presents a unified interface to database
@@ -77,17 +79,18 @@ class Database
      * @param boolean $trackChanges boolean determining if changes should be
      *                              logged to the history table
      *
-     * @return Database
+     * @return object Database
      * @throws DatabaseException
      * @access public
      */
     static function &singleton(
-        $database=null,
-        $username=null,
-        $password=null,
-        $host=null,
-        $trackChanges=true
-    ) {
+        string $database     = null,
+        string $username     = null,
+        string $password     = null,
+        string $host         = null,
+        bool   $trackChanges = true
+    ): object 
+    {
         static $connections = array();
 
         // if no arguments, try to get the first connection or choke
@@ -143,13 +146,13 @@ class Database
      * @access public
      */
     function connect(
-        $database,
-        $username,
-        $password,
-        $host,
-        $trackChanges = true
-    ) : bool {
-
+        string $database,
+        string $username,
+        string $password,
+        string $host,
+        bool   $trackChanges = true
+    ) : bool 
+    {
         $this->_trackChanges = $trackChanges;
         $this->_databaseName = $database;
 
@@ -233,7 +236,7 @@ class Database
      * @return boolean
      * @access public
      */
-    function isConnected()
+    function isConnected(): bool
     {
         try {
             if (!$this->_PDO) {
@@ -257,9 +260,9 @@ class Database
      *
      * @return void
      */
-    public function insert($table, $set)
+    public function insert(string $table, array $set): void
     {
-        return $this->_realinsert($table, $set, true);
+        $this->_realinsert($table, $set, true);
     }
 
     /**
@@ -274,9 +277,9 @@ class Database
      *
      * @return void
      */
-    public function unsafeinsert($table, $set)
+    public function unsafeinsert(string $table, array $set): void
     {
-        return $this->_realinsert($table, $set, false);
+        $this->_realinsert($table, $set, false);
     }
 
     /**
@@ -290,10 +293,10 @@ class Database
      *
      * @return void
      */
-    public function insertIgnore($table, $set)
+    public function insertIgnore(string $table, array $set): void
     {
         $ignore = true;
-        return $this->_realinsert($table, $set, true, $ignore);
+        $this->_realinsert($table, $set, true, $ignore);
     }
 
     /**
@@ -310,7 +313,7 @@ class Database
      *
      * @return array A copy of $set with the HTML characters escaped
      */
-    private function _HTMLEscapeArray($set)
+    private function _HTMLEscapeArray(array $set): array
     {
         $retVal = array();
         foreach ($set as $key => $val) {
@@ -342,7 +345,12 @@ class Database
      *
      * @return void
      */
-    private function _realinsert($table, $set, $autoescape = true, $ignore = false)
+    private function _realinsert(
+        string $table,
+        array  $set,
+        bool   $autoescape = true,
+        bool   $ignore = false
+    ): void
     {
         if ($autoescape === true) {
             $set = $this->_HTMLEscapeArray($set);
@@ -391,7 +399,7 @@ class Database
      *
      * @return string ID of the last inserted row
      */
-    public function getLastInsertId()
+    public function getLastInsertId(): string
     {
         return $this->lastInsertID;
     }
@@ -408,7 +416,7 @@ class Database
      * @return void
      * @access public
      */
-    function replace($table, $set)
+    function replace(string $table, array $set): void
     {
         $query  = "REPLACE INTO $table SET ";
         $query .= $this->_implodeWithKeys(', ', $set);
@@ -442,9 +450,9 @@ class Database
      *
      * @return void
      */
-    public function update($table, $set, $i_where)
+    public function update(string $table, array $set, array $i_where): void
     {
-        return $this->_realupdate($table, $set, $i_where, true);
+        $this->_realupdate($table, $set, $i_where, true);
     }
 
     /**
@@ -460,9 +468,13 @@ class Database
      *
      * @return void
      */
-    public function unsafeupdate($table, $set, $i_where)
+    public function unsafeupdate(
+        string $table, 
+        array $set, 
+        array $i_where
+    ): void
     {
-        return $this->_realupdate($table, $set, $i_where, false);
+        $this->_realupdate($table, $set, $i_where, false);
     }
     /**
      * Updates a row
@@ -475,10 +487,16 @@ class Database
      * @param bool   $autoescape determines whether the values to be set should
      *                           automatically have the html escaped
      *
-     * @return void
+     * @return bool Always true. An exception should be thrown if something goes
+     *              wrong.
      * @access public
      */
-    private function _realupdate($table, $set, $i_where, $autoescape = true)
+    private function _realupdate(
+        string $table, 
+        array $set, 
+        string $i_where, 
+        bool $autoescape = true
+    ): bool
     {
         if ($autoescape === true) {
             $set = $this->_HTMLEscapeArray($set);
@@ -543,7 +561,7 @@ class Database
      * @return void
      * @access public
      */
-    function delete($table, $where)
+    function delete(string $table, array $where): void
     {
         $query  = "DELETE FROM $table WHERE ";
         $where  = $this->_implodeWithKeys(' AND ', $where);
@@ -587,7 +605,7 @@ class Database
      * @return void (As a side-effect updates affected and lastInsertID
      *              if applicable.)
      */
-    function run($query)
+    function run(string $query): void
     {
         $this->_printQuery($query);
         $result = $this->_PDO->exec($query);
@@ -634,7 +652,11 @@ class Database
      * @return array An array of rows in the format ColName => Value after
      *               executing the statement.
      */
-    function execute($prepared, $params, $options = array())
+    function execute(
+        object $prepared, 
+        array $params, 
+        array $options = array()
+    ): array
     {
         $execRun = $prepared->execute($params);
         if ($execRun === false) {
@@ -667,7 +689,7 @@ class Database
      *               row returned by the query, and each element is an associative
      *               array representing the row in the format ColumnName => Value
      */
-    function pselect($query, $params)
+    function pselect(string $query, array $params): array
     {
         $this->_printQuery($query, $params);
         $stmt   = $this->prepare($query);
@@ -697,7 +719,11 @@ class Database
      *                  nested array is an associative array representing the row in
      *                  the format ColumnName => Value
      */
-    function pselectWithIndexKey($query, $params, $uniqueKey)
+    function pselectWithIndexKey(
+        string $query, 
+        array $params, 
+        string $uniqueKey
+    ): array
     {
         if (is_null($uniqueKey) || empty($uniqueKey)) {
             throw new LorisException(
@@ -781,7 +807,7 @@ class Database
      * @return array Associative array of form rowID=>value containing all values
      *               for the only column of the select statement
      */
-    function pselectCol($query, $params)
+    function pselectCol(string $query, array $params): array
     {
         $unprocessed = $this->pselect($query, $params);
 
@@ -821,7 +847,11 @@ class Database
      * @return array Associative array of form uniqueKey=>value containing all
      *               value for the non-uniqueKey element of the select statement
      */
-    function pselectColWithIndexKey($query, $params, $uniqueKey)
+    function pselectColWithIndexKey(
+        string $query, 
+        array $params, 
+        string $uniqueKey
+    ): array
     {
         if (is_null($uniqueKey) || empty($uniqueKey)) {
             throw new LorisException(
@@ -885,9 +915,9 @@ class Database
      * @param string $query  The SQL statement to run
      * @param array  $params Values to use for binding in the prepared statement
      *
-     * @return mixed The value returned by the query.
+     * @return array The value returned by the query.
      */
-    function pselectOne($query, $params)
+    function pselectOne(string $query, array $params): array
     {
         $result = $this->pselectRow($query, $params);
         if (is_array($result) && count($result)) {
@@ -908,7 +938,7 @@ class Database
      *
      * @return string
      */
-    function _implodeWithKeys($glue, $dataArray)
+    function _implodeWithKeys(string $glue, array $dataArray): string 
     {
         $output = array();
         if (!is_array($dataArray) || count($dataArray)==0) {
@@ -942,8 +972,12 @@ class Database
      *                appropriate variable names generated for data binding.
      */
     private function _implodeAsPrepared(
-        $glue, $dataArray, &$exec_vals = null, $prefix=''
-    ) {
+        string $glue, 
+        array $dataArray, 
+        array &$exec_vals = null, 
+        string $prefix = ''
+    ): string
+    {
         if (!is_array($dataArray) || count($dataArray)==0) {
             return '';
         }
@@ -967,7 +1001,7 @@ class Database
      *
      * @return string The value appropriately quoted/escaped
      */
-    function quote($value)
+    function quote(string $value): string
     {
         return $this->_PDO->quote($value);
     }
@@ -986,7 +1020,12 @@ class Database
      *
      * @return void As a side-effect populates history table
      */
-    protected function trackChanges($table, $set, $where, $type='U')
+    protected function trackChanges(
+        string $table, 
+        array $set, 
+        string $where, 
+        string $type = 'U'
+    ): void
     {
         // Tracking changes on the history table would result in an
         // infinite loop
@@ -1104,10 +1143,10 @@ class Database
      *                       They will be replaced in the print statement so that the
      *                       user knows what parameters were used.
      *
-     * @return null As a side-effect, prints to the screen if config option is
+     * @return void As a side-effect, prints to the screen if config option is
      *              enabled
      */
-    function _printQuery($query, $params=null)
+    function _printQuery(string $query, array $params = array()): void
     {
         if (!$this->_showQueries) {
             return;
@@ -1125,7 +1164,7 @@ class Database
      *
      * @return integer The number of rows affected
      */
-    function getAffected()
+    function getAffected(): int
     {
         return $this->affected;
     }
@@ -1145,7 +1184,7 @@ class Database
      *
      * @return void
      */
-    function setFakeTableData($tableName, $rowData)
+    function setFakeTableData(string $tableName, array $rowData): void
     {
         $originalTableQuery = $this->_PDO->query("SHOW CREATE TABLE $tableName");
 
@@ -1188,7 +1227,7 @@ class Database
      *
      * @return boolean true if the table exists
      */
-    function tableExists($test_name)
+    function tableExists(string $test_name): bool
     {
         $config   =& NDB_Config::singleton();
         $database = $config->getSetting('database');
@@ -1219,7 +1258,7 @@ class Database
      *
      * @return boolean true if the table has a the given column
      */
-    function columnExists($test_name,$column)
+    function columnExists(string $test_name, string $column): bool
     {
         $config   =& NDB_Config::singleton();
         $database = $config->getSetting('database');
@@ -1250,7 +1289,7 @@ class Database
      *
      * @return string surrounded by backticks and with special characters escaped.
      */
-    function escape($tableName)
+    function escape(string $tableName): string
     {
         //with help from
         // http://php.net/manual/en/function.mysql-real-escape-string.php
@@ -1291,7 +1330,7 @@ class Database
      * @return bool `true`, if in transaction
      * @throws DatabaseException
      */
-    public function inTransaction()
+    public function inTransaction(): bool
     {
         return $this->_PDO->inTransaction();
     }
@@ -1302,7 +1341,7 @@ class Database
      * @return bool `true`, on success
      * @throws DatabaseException
      */
-    public function beginTransaction()
+    public function beginTransaction(): bool
     {
         if ($this->inTransaction()) {
             throw new DatabaseException(
@@ -1326,7 +1365,7 @@ class Database
      * @return bool `true`, on success
      * @throws DatabaseException
      */
-    public function rollBack()
+    public function rollBack(): bool
     {
         if (!$this->inTransaction()) {
             throw new DatabaseException(
@@ -1348,7 +1387,7 @@ class Database
      * @return bool `true`, on success
      * @throws DatabaseException
      */
-    public function commit()
+    public function commit(): bool
     {
         if (!$this->inTransaction()) {
             throw new DatabaseException(
