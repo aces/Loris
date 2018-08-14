@@ -10,8 +10,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-// Require strict typing
-declare(strict_types=1);
 define("DEBUG", false);
 
 /**
