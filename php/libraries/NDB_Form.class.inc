@@ -265,7 +265,6 @@ class NDB_Form extends NDB_Page
                 // Should not occur organically, i.e. this case is likely a case of
                 // someone attempting to replay a token meant for another user's
                 // session.
-                print_r($results);
                 if ($storedSessionID !== session_id()) {
                     error_log(
                         'ERROR: Submitted CSRF token was issued from a '
@@ -281,14 +280,16 @@ class NDB_Form extends NDB_Page
                         'Submitted CSRF token is expired (more than one day 
                         old.'
                     );
-                    // Delete old tokens if they are encountered.
-                    $db->delete(
-                        'csrf_tokens',
-                        array('Token' => $token)
-                    );
 
                     $validCSRFToken = false;
                 }
+
+                // Regardless of whether the token is valid or not, we no longer
+                // need it to be stored in the Database.
+                $db->delete(
+                    'csrf_tokens',
+                    array('Token' => $token)
+                );
             }
         }
 
