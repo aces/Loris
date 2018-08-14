@@ -285,9 +285,7 @@ class NDB_Form extends NDB_Page
                     // Delete old tokens if they are encountered.
                     $db->delete(
                         'csrf_tokens',
-                        array(
-                            'Token' => $token
-                        )
+                        array('Token' => $token)
                     );
 
                     $validCSRFToken = false;
