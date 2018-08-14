@@ -345,14 +345,14 @@ class Database
      * @param bool   $ignore     determines whether the insert throws and error or
      *                           is discarded when value exists in DB
      *
-     * @return void
+     * @return bool
      */
     private function _realinsert(
         string $table,
         array  $set,
         bool   $autoescape = true,
         bool   $ignore = false
-    ): void {
+    ): bool {
 
         if ($autoescape === true) {
             $set = $this->_HTMLEscapeArray($set);
@@ -370,7 +370,7 @@ class Database
 
         if (DEBUG) {
             fwrite(STDERR, $query."\n");
-            return;
+            return true;
         }
 
         // There is no where clause for an insert, so add a fake
@@ -526,7 +526,7 @@ class Database
 
         if (DEBUG) {
             fwrite(STDERR, $query.$where."\n");
-            return;
+            return true;
         }
 
         if (preg_match("/=NULL/", $where)) {
@@ -667,7 +667,7 @@ class Database
         }
 
         if (!empty($options['nofetch']) && $options['nofetch'] == true) {
-            return;
+            return array();
         }
 
         $rows = $prepared->fetchAll(PDO::FETCH_ASSOC);
@@ -912,14 +912,20 @@ class Database
 
     /**
      * Runs a query as a prepared statement and returns the value of the first
-     * column of the first row
+     * column of the first row.
+     *
+     * FIXME This function does not have have a return type declaration because
+     * the function pselectRow will sometimes return a string and sometimes
+     * return an array. This behaviour should be made consistent (i.e. perhaps
+     * returning an array of a single element) so that we can properly enforce
+     * types.
      *
      * @param string $query  The SQL statement to run
      * @param array  $params Values to use for binding in the prepared statement
      *
-     * @return array The value returned by the query.
+     * @return mixed The value returned by the query.
      */
-    function pselectOne(string $query, array $params): array
+    function pselectOne(string $query, array $params)
     {
         $result = $this->pselectRow($query, $params);
         if (is_array($result) && count($result)) {
