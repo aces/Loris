@@ -73,11 +73,11 @@ class Database
      * NOTE There is no return type declaration for this function as it returns
      * the type `Database` which is not supported by PHPs built in return types.
      *
-     * @param string  $database     the database to select
-     * @param string  $username     the username with which to log into
+     * @param string|null  $database     the database to select
+     * @param string|null  $username     the username with which to log into
      *                              the database server
-     * @param string  $password     the password that matches the username
-     * @param string  $host         the name of the database server
+     * @param string|null  $password     the password that matches the username
+     * @param string|null  $host         the name of the database server
      * @param boolean $trackChanges boolean determining if changes should be
      *                              logged to the history table
      *
@@ -972,7 +972,7 @@ class Database
      *                          (ie " AND ")
      * @param array  $dataArray The array representing the WHERE condition to be
      *                          glued together into a string
-     * @param array  $exec_vals The values which are being bound to the query. Used
+     * @param array|null  $exec_vals The values which are being bound to the query. Used
      *                          to generate the prepared variable name.
      * @param string $prefix    A prefix to apply to prepared variable names.
      *
