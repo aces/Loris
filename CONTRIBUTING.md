@@ -67,9 +67,9 @@ in the main code repository.
 
 #### Description
 
-When opening a pull request on Github you will see a pull request
+When opening a pull request on GitHub you will see a pull request
 template. Please fill out each heading with detailed information on your
-code changes, suggested testing instructions, and links to open Github
+code changes, suggested testing instructions, and links to open GitHub
 issues and/or Redmine tickets (if applicable).
 
 ## Some Things To Keep In Mind
