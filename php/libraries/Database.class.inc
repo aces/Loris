@@ -73,12 +73,12 @@ class Database
      * NOTE There is no return type declaration for this function as it returns
      * the type `Database` which is not supported by PHPs built in return types.
      *
-     * @param string|null  $database     the database to select
-     * @param string|null  $username     the username with which to log into
-     *                              the database server
-     * @param string|null  $password     the password that matches the username
-     * @param string|null  $host         the name of the database server
-     * @param boolean $trackChanges boolean determining if changes should be
+     * @param string|null $database     the database to select
+     * @param string|null $username     the username with which to log into
+     *                                      the database server
+     * @param string|null $password     the password that matches the username
+     * @param string|null $host         the name of the database server
+     * @param boolean     $trackChanges boolean determining if changes should be
      *                              logged to the history table
      *
      * @return object Database
@@ -968,16 +968,19 @@ class Database
      * Helper function to generate the string for the WHERE part of an update
      * or delete query. Generates the string in a prepared statement format.
      *
-     * @param string $glue      The glue used to combine parts of the dataArray
-     *                          (ie " AND ")
-     * @param array  $dataArray The array representing the WHERE condition to be
-     *                          glued together into a string
-     * @param array|null  $exec_vals The values which are being bound to the query. Used
-     *                          to generate the prepared variable name.
-     * @param string $prefix    A prefix to apply to prepared variable names.
+     * @param string     $glue      The glue used to combine parts of the
+     *                          dataArray (ie " AND ")
+     * @param array      $dataArray The array representing the WHERE condition
+     *                          to be glued together into a string
+     * @param array|null $exec_vals The values which are being bound to the
+     *                          query. Used to generate the prepared variable
+     *                          name.
+     * @param string     $prefix    A prefix to apply to prepared variable
+     *                          names.
      *
-     * @return string A string that can be used to generate a prepared statement with
-     *                appropriate variable names generated for data binding.
+     * @return string A string that can be used to generate a prepared statement
+     *                with appropriate variable names generated for data
+     *                binding.
      */
     private function _implodeAsPrepared(
         string $glue,
