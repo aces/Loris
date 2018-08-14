@@ -166,7 +166,6 @@ class NDB_Form extends NDB_Page
         $db =& \Database::singleton();
 
         // Generate random string to use as CSRF token
-        $success   = true;
         $csrfToken = $this::generateRandomString(64);
         try {
             $db->insert(
