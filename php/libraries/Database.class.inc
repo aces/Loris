@@ -10,9 +10,9 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-define("DEBUG", false);
 // Require strict typing
 declare(strict_types=1);
+define("DEBUG", false);
 
 /**
  * Database abstraction layer presents a unified interface to database
