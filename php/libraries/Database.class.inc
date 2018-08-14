@@ -653,7 +653,7 @@ class Database
      *               executing the statement.
      */
     function execute(
-        object $prepared,
+        $prepared,
         array $params,
         array $options = array()
     ): array {
