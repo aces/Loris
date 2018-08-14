@@ -282,6 +282,14 @@ class NDB_Form extends NDB_Page
                         'Submitted CSRF token is expired (more than one day 
                         old.'
                     );
+                    // Delete old tokens if they are encountered.
+                    $db->delete(
+                        'csrf_tokens',
+                        array(
+                            'Token' => $token
+                        )
+                    );
+
                     $validCSRFToken = false;
                 }
             }
