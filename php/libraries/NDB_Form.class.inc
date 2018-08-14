@@ -158,7 +158,7 @@ class NDB_Form extends NDB_Page
      * are checked against form submissions to assure that the request
      * was not forged from another domain.
      *
-     * @return none
+     * @return void
      */
     private function _setCSRFToken(): void
     {
