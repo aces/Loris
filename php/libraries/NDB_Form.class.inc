@@ -135,8 +135,6 @@ class NDB_Form extends NDB_Page
     }
 
     /**
-     * Saves the form
-     *
      * Add a hidden CSRF token to every form.  This prevents requests
      * being forged by other domains by piggy-backing on a user's active
      * session.
@@ -224,7 +222,9 @@ class NDB_Form extends NDB_Page
 
 
     /**
-     * Preprocesses the array of values to be saved into the database
+     * Preprocesses the array of values to be saved into the database.  Also
+     * checks the valdity of CSRF tokens.  Further processing of data is aborted
+     * if CSRF token is invalid.
      *
      * @param array $values the array of values ready to be passed to
      *                      a Database::replace call as the set array
@@ -262,9 +262,6 @@ class NDB_Form extends NDB_Page
             } else {
                 $storedSessionID     = $results[0]['PhpSessionID'];
                 $timeOfTokenCreation = $results[0]['CreatedAt'];
-                var_dump($storedSessionID);
-                var_dump($timeOfTokenCreation);
-                var_dump(session_id());
                 // Session ID stored in the DB does not match the current session.
                 // Should not occur organically, i.e. this case is likely a case of
                 // someone attempting to replay a token meant for another user's
@@ -306,7 +303,7 @@ class NDB_Form extends NDB_Page
             }
         }
 
-        // TODO The code should be refactored so that $authenticRequest is
+        // TODO The code should be refactored so that $validCSRFToken is
         // always set.  This is just a provisional measure until CSRF validation
         // is implemented everywhere in LORIS.
         if (isset($validCSRFToken) && !$validCSRFToken) {
