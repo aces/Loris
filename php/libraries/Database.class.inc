@@ -496,7 +496,7 @@ class Database
     private function _realupdate(
         string $table,
         array $set,
-        string $i_where,
+        array $i_where,
         bool $autoescape = true
     ): bool {
 
