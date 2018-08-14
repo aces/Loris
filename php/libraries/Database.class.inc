@@ -89,8 +89,8 @@ class Database
         string $password     = null,
         string $host         = null,
         bool   $trackChanges = true
-    ): object 
-    {
+    ): object {
+
         static $connections = array();
 
         // if no arguments, try to get the first connection or choke
@@ -151,8 +151,8 @@ class Database
         string $password,
         string $host,
         bool   $trackChanges = true
-    ) : bool 
-    {
+    ) : bool {
+
         $this->_trackChanges = $trackChanges;
         $this->_databaseName = $database;
 
@@ -350,8 +350,8 @@ class Database
         array  $set,
         bool   $autoescape = true,
         bool   $ignore = false
-    ): void
-    {
+    ): void {
+
         if ($autoescape === true) {
             $set = $this->_HTMLEscapeArray($set);
         }
@@ -469,11 +469,11 @@ class Database
      * @return void
      */
     public function unsafeupdate(
-        string $table, 
-        array $set, 
+        string $table,
+        array $set,
         array $i_where
-    ): void
-    {
+    ): void {
+
         $this->_realupdate($table, $set, $i_where, false);
     }
     /**
@@ -492,12 +492,12 @@ class Database
      * @access public
      */
     private function _realupdate(
-        string $table, 
-        array $set, 
-        string $i_where, 
+        string $table,
+        array $set,
+        string $i_where,
         bool $autoescape = true
-    ): bool
-    {
+    ): bool {
+
         if ($autoescape === true) {
             $set = $this->_HTMLEscapeArray($set);
         }
@@ -653,11 +653,11 @@ class Database
      *               executing the statement.
      */
     function execute(
-        object $prepared, 
-        array $params, 
+        object $prepared,
+        array $params,
         array $options = array()
-    ): array
-    {
+    ): array {
+
         $execRun = $prepared->execute($params);
         if ($execRun === false) {
             $err = $prepared->errorInfo();
@@ -720,11 +720,11 @@ class Database
      *                  the format ColumnName => Value
      */
     function pselectWithIndexKey(
-        string $query, 
-        array $params, 
+        string $query,
+        array $params,
         string $uniqueKey
-    ): array
-    {
+    ): array {
+
         if (is_null($uniqueKey) || empty($uniqueKey)) {
             throw new LorisException(
                 "The pselectWithIndexKey() function expects the uniqueKey parameter 
@@ -848,11 +848,11 @@ class Database
      *               value for the non-uniqueKey element of the select statement
      */
     function pselectColWithIndexKey(
-        string $query, 
-        array $params, 
+        string $query,
+        array $params,
         string $uniqueKey
-    ): array
-    {
+    ): array {
+
         if (is_null($uniqueKey) || empty($uniqueKey)) {
             throw new LorisException(
                 "The pselectColWithIndexKey() function expects the uniqueKey
@@ -938,7 +938,7 @@ class Database
      *
      * @return string
      */
-    function _implodeWithKeys(string $glue, array $dataArray): string 
+    function _implodeWithKeys(string $glue, array $dataArray): string
     {
         $output = array();
         if (!is_array($dataArray) || count($dataArray)==0) {
@@ -972,12 +972,12 @@ class Database
      *                appropriate variable names generated for data binding.
      */
     private function _implodeAsPrepared(
-        string $glue, 
-        array $dataArray, 
-        array &$exec_vals = null, 
+        string $glue,
+        array $dataArray,
+        array &$exec_vals = null,
         string $prefix = ''
-    ): string
-    {
+    ): string {
+
         if (!is_array($dataArray) || count($dataArray)==0) {
             return '';
         }
@@ -1021,12 +1021,12 @@ class Database
      * @return void As a side-effect populates history table
      */
     protected function trackChanges(
-        string $table, 
-        array $set, 
-        string $where, 
+        string $table,
+        array $set,
+        string $where,
         string $type = 'U'
-    ): void
-    {
+    ): void {
+
         // Tracking changes on the history table would result in an
         // infinite loop
         if (!$this->_trackChanges || $table == 'history') {
