@@ -1,5 +1,3 @@
-# Loris API - v0.0.3-dev
-
 # 1.0 Overview
 
 This document specifies the Loris REST API.
