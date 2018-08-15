@@ -73,8 +73,10 @@ class GenericDownloader implements FileDownloader
     function sanitizePath(string $userPath): void
     {
         if (strpos($userPath, '..') !== false) {
-            error_log('WARNING: A relative path was supplied in the context of '
-                . 'downloading a file.');
+            error_log(
+                'WARNING: A relative path was supplied in the context of '
+                . 'downloading a file.'
+            );
         }
         //Resolve path (remove '..' and other relative file path structures.
         $realUserPath = realpath($userPath);

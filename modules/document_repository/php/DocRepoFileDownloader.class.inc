@@ -3,9 +3,11 @@
 require_once '../tools/generic_includes.php';
 require_once '../php/libraries/GenericDownloader.class.inc';
 
-class DocRepoFileDownloader extends GenericDownloader {
+class DocRepoFileDownloader extends GenericDownloader
+{
 
-    public function isFileInDatabase(string $dataDirectory) {
+    public function isFileInDatabase(string $dataDirectory)
+    {
         // Ensure file exists in the document_repository table before serving
         $db     =& Database::singleton();
         $record = $db->pselectOne(

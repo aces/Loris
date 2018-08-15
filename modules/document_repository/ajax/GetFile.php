@@ -24,13 +24,13 @@ require_once '../tools/generic_includes.php';
 
 // Initialize downloader.
 require_once __DIR__ . '/../php/DocRepoFileDownloader.class.inc';
-$db =& \Database::singleton();
-$config = NDB_Config::singleton();
-$paths  = $config->getSetting('paths');
+$db        =& \Database::singleton();
+$config    = NDB_Config::singleton();
+$paths     = $config->getSetting('paths');
 $lorisRoot = $paths['base'];
 
 $downloadBasePath = $lorisRoot . 'modules/document_repository/user_uploads/';
-$downloader = new DocRepoFileDownloader($downloadBasePath);
+$downloader       = new DocRepoFileDownloader($downloadBasePath);
 
 // Format: username/filename.ext
 $partialPath = $_GET['File'];
