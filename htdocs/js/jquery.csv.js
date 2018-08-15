@@ -17,7 +17,7 @@ jQuery.extend({
       let out = [];
       for (let i = 0, l = arr.length; i < l; i++) {
         let hasMatch = arr[i].match(quote);
-        var j;
+        let j;
         if (hasMatch) {
           for (j = i; j < l; j++) {
             if (arr[j].charAt(arr[j].length - 1) === hasMatch[0]) {
