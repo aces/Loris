@@ -146,7 +146,7 @@ class Database
      * @access public
      */
     function connect(
-        string $database,
+        $database,
         string $username,
         string $password,
         string $host,
