@@ -72,7 +72,7 @@ class NDB_BVL_InstrumentStatus_ControlPanel extends NDB_BVL_InstrumentStatus
             $instrument =& NDB_BVL_Instrument::factory(
                 $_REQUEST['test_name'],
                 $_REQUEST['commentID'],
-                $this->tpl_data['subtest']
+                $this->tpl_data['subtest'] ?? ''
             );
 
             $this->_instrument =& $instrument;

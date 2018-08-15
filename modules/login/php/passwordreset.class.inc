@@ -39,7 +39,7 @@ class PasswordReset extends \NDB_Form
      * CommonPageSetup sets up the common form elements which
      * are on the page, regardless of HTTP request method.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -55,7 +55,7 @@ class PasswordReset extends \NDB_Form
      *
      * @param array $values The values that were submitted to the page.
      *
-     * @return none
+     * @return void
      */
     function _process($values)
     {

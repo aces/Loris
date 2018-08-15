@@ -87,14 +87,14 @@ class Statistics_Mri_Site extends Statistics_Site
      * @param string $projectID the value of projectID
      * @param string $issue     the value of issue
      *
-     * @return void
+     * @return array
      */
     function _getResults($centerID, $projectID, $issue)
     {
         $this->_checkCriteria($centerID, $projectID);
         $DB =& \Database::singleton();
 
-        $scan_types = $DB->pselect("SELECT Scan_type from mri_scan_type");
+        $scan_types = $DB->pselect("SELECT Scan_type from mri_scan_type", array());
         $where      = "WHERE (";
         $counter    = 1;
         foreach ($scan_types as $index=>$scan) {

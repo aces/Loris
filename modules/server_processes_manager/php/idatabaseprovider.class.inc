@@ -28,7 +28,7 @@ interface IDatabaseProvider
     /**
       * Gets a database object used to access the database.
       *
-      * @return a database object used to access the database.
+      * @return \Database object used to access the database.
       */
     function getDatabase();
 }

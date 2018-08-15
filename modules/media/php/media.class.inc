@@ -38,7 +38,7 @@ class Media extends \NDB_Menu_Filter
      * Check user permissions
      *
      * @return bool
-     * @throws ConfigurationException
+     * @throws \ConfigurationException
      */
     function _hasAccess()
     {
@@ -57,7 +57,7 @@ class Media extends \NDB_Menu_Filter
     /**
      * Create a form to filter media by various criteria
      *
-     * @return bool
+     * @return void
      */
     function setup()
     {
@@ -142,8 +142,8 @@ class Media extends \NDB_Menu_Filter
     /**
      * Build a list of media to display in Data Table
      *
-     * @return bool
-     * @throws DatabaseException
+     * @return void
+     * @throws \DatabaseException
      */
     function _setupVariables()
     {
@@ -210,22 +210,6 @@ class Media extends \NDB_Menu_Filter
             array_push($this->headers, 'Edit Metadata');
         }
 
-        $this->validFilters = [
-                               'c.PSCID',
-                               'm.instrument',
-                               's.Visit_label',
-                               's.CenterID',
-                               'm.hide_file',
-                               'l.language_id',
-                              ];
-        $this->formToFilter = [
-                               'pscid'       => 'c.PSCID',
-                               'instrument'  => 'm.instrument',
-                               'visit_label' => 's.Visit_label',
-                               'for_site'    => 's.CenterID',
-                               'hide_file'   => 'm.hide_file',
-                               'language'    => 'l.language_id',
-                              ];
         return true;
     }
 
@@ -233,7 +217,7 @@ class Media extends \NDB_Menu_Filter
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
-     * @return a json encoded string of the headers and data from this table
+     * @return string a json encoded string of the headers and data from this table
      */
     function toJSON()
     {

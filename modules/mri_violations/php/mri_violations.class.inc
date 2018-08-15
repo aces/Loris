@@ -43,9 +43,9 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
     /**
      * Process function
      *
-     * @param string $values the value of values
+     * @param array $values the values being processed
      *
-     * @return boolean true if the user is permitted to see violated scans
+     * @return bool true if the user is permitted to see violated scans
      */
     function _process($values)
     {
@@ -154,7 +154,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
      * Set up the class and smarty variables to use for the menu filter to
      * generate the proper query for the menu filter
      *
-     * @return none
+     * @return void
      */
     function _setupVariables()
     {
@@ -339,7 +339,6 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
                               );
 
         $this->EqualityFilters[] = 'v.Site';
-        return true;
     }
 
     /**
@@ -347,7 +346,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -440,6 +439,22 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
             array(
              $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
             )
+        );
+    }
+
+    /**
+     * Include additional CSS files
+     *
+     * @return array of CSS to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            array($baseURL . "/mri_violations/css/mri_violations.css")
         );
     }
 }

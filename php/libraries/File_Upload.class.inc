@@ -612,7 +612,7 @@ class File_Upload
     *
     * @param boolean $mode The desired mode.
     *
-    * @return boolean true
+    * @return void
     * @see    File_Upload::moveFile()
     */
     function setFileVerify($mode)

@@ -32,7 +32,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
     /**
      * Insert testing data into the database
      *
-     * @return none
+     * @return void
      */
     function setUp()
     {
@@ -71,7 +71,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
     /**
      * Delete testing data from database
      *
-     * @return none
+     * @return void
      */
     function tearDown()
     {

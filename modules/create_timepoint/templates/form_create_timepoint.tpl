@@ -1,6 +1,6 @@
 {if $success}
 
-<p>New time point successfully registered. <a href="?test_name=timepoint_list&candID={$candID}">Click here to continue.</a></p>
+<p>New time point successfully registered. <a href="/{$candID}">Click here to continue.</a></p>
 
 {else}
 

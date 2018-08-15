@@ -10,6 +10,7 @@ if(!class_exists('\NDB_BVL_Instrument_test')) {
         }
 
         function save() {
+            return true;
         }
 
         function _hasAccess() {

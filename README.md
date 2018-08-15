@@ -17,7 +17,7 @@ Deploy and log in with username <i>admin</i> and the password that's set up duri
 | minor  | [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=minor)](https://travis-ci.org/aces/Loris)
 | bugfix | [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=bugfix)](https://travis-ci.org/aces/Loris)
 
-This Readme covers installation of the LORIS <b>v18.0.0</b> release on <b>Ubuntu</b>.
+This Readme covers installation of the LORIS <b>v20.*</b> release on <b>Ubuntu</b>.
 ([CentOS Readme also available](https://github.com/aces/Loris/blob/master/README.CentOS6.md)).
 
 Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information not included in this Readme. The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki. 
@@ -27,12 +27,12 @@ Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/S
  * LINUX (supported on Ubuntu 14+ and [CentOS 6.5](https://github.com/aces/Loris/blob/master/README.CentOS6.md))
  * Apache2
  * MySQL 5.7 
- * PHP <b>7</b>  
+ * PHP <b>7.2</b>  
  * Package manager (for LINUX distributions)
  * Composer : should be run with --no-dev option
 
 <b>Important:</b>
- * If you are upgrading your LORIS, you'll also want to upgrade to both PHP 7 and MySQL 5.7, since these dependency versions were not supported in the last release. 
+ * If you are upgrading your LORIS, you'll also want to upgrade to both PHP 7.2 and MySQL 5.7.
  * Composer should be run with --no-dev option unless you are an active LORIS developer. 
 
 Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
@@ -91,3 +91,4 @@ LORIS requires Apache's mod_rewrite module to rewrite its URLs. Enable this modu
 
 # Community
 Please feel free to subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) to ask any LORIS-related questions.
+

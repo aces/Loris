@@ -352,8 +352,7 @@ class FeedbackMRI
 
         // build the output array and keep overall section at the end of the array
         $commentNames = array();
-        $overallType;
-        $overallName = array();
+        $overallName  = array();
         if (is_array($result)) {
             foreach ($result as $row) {
                 $CommentName = $row['CommentName'];
@@ -473,12 +472,11 @@ class FeedbackMRI
         // build the where depending on object and subject type
         if ($this->objectType == 'volume') {
             // per-volume
-            $where .= "FileID='$this->fileID'";
+            return "FileID='$this->fileID'";
         } else {
             // per-visit
-            $where .= "SessionID='$this->sessionID'";
+            return "SessionID='$this->sessionID'";
         }
-        return $where;
     }
 
     /**
