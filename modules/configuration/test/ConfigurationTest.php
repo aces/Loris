@@ -65,7 +65,9 @@ class ConfigurationTest extends LorisIntegrationTest
     public function testConfigurationPageLoads()
     {
         $this->safeGet($this->url . "/configuration/");
-
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $bodyText = $this->webDriver->executescript(
             "return document.querySelector".
             "('#bc2 > a:nth-child(2) > div').textContent"
