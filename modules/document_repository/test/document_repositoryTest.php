@@ -124,9 +124,10 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
     function testDocumentRepositoryDoespageLoad()
     {
         $this->safeGet($this->url . "/document_repository/");
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
+        $bodyText = $this->webDriver->executescript(
+            "return document.querySelector".
+            "('#bc2 > a:nth-child(2) > div').textContent"
+        );
         $this->assertRegexp("/Document Repository/", $bodyText);
     }
     /**
