@@ -77,10 +77,11 @@ issues and/or Redmine tickets (if applicable).
 * If your changes require any table modifications:
     1. Review our [SQL standard](./docs/SQLModelingStandard.md).
     2. Modify the `SQL/0000*.sql` file(s) with your changes. These patches
-    are applied during the LORIS install.  3. Include a patch to be
-    used by existing projects. These should go in the `SQL/New_patches/`
-    directory.  4. For SQL patches that are _optional_ (e.g. those that
-    perform some cleanup), place them in `SQL/Cleanup_patches/`.
+    are applied during the LORIS install.  
+    3. Include a patch to be used by existing projects. These should go in the 
+    `SQL/New_patches/` directory.
+    4. For SQL patches that are _optional_ (e.g. those that perform some 
+            cleanup), place them in `SQL/Cleanup_patches/`.
 * Include a test for any new module in the `modules/MODULENAME/test/`
   directory. You can look at other modules for examples of how to
   write tests.
