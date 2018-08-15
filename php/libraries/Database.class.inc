@@ -689,7 +689,7 @@ class Database
      *               row returned by the query, and each element is an associative
      *               array representing the row in the format ColumnName => Value
      */
-    function pselect(string $query, array $params): array
+    function pselect(string $query, array $params)
     {
         $this->_printQuery($query, $params);
         $stmt   = $this->prepare($query);
@@ -723,7 +723,7 @@ class Database
         string $query,
         array $params,
         string $uniqueKey
-    ): array {
+    ) {
 
         if (is_null($uniqueKey) || empty($uniqueKey)) {
             throw new LorisException(
@@ -807,7 +807,7 @@ class Database
      * @return array Associative array of form rowID=>value containing all values
      *               for the only column of the select statement
      */
-    function pselectCol(string $query, array $params): array
+    function pselectCol(string $query, array $params)
     {
         $unprocessed = $this->pselect($query, $params);
 
@@ -851,7 +851,7 @@ class Database
         string $query,
         array $params,
         string $uniqueKey
-    ): array {
+    ) {
 
         if (is_null($uniqueKey) || empty($uniqueKey)) {
             throw new LorisException(
@@ -921,7 +921,7 @@ class Database
      * @param string $query  The SQL statement to run
      * @param array  $params Values to use for binding in the prepared statement
      *
-     * @return mixed The value returned by the query.
+     * @return mixed The value returned by the query: array, string, or false.
      */
     function pselectOne(string $query, array $params)
     {
