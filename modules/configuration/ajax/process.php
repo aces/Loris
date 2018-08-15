@@ -27,14 +27,15 @@ if (!$user->hasPermission('config')) {
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
-$DB =& Database::singleton();
+$factory = NDB_Factory::singleton();
+$DB      = $factory->database();
 foreach ($_POST as $key => $value) {
     if (is_numeric($key)) { //update
         if ($value == "") {
             $DB->delete('Config', array('ID' => $key));
         } else {
             // if no duplicate value then do updating
-            if (duplicateExistsInDropdown($key, $value)) {
+            if (duplicateNotExistsInDropdown($key, $value)) {
                 $DB->update(
                     'Config',
                     array('Value' => $value),
@@ -78,7 +79,8 @@ foreach ($_POST as $key => $value) {
  */
 function countDuplicate($key,$value)
 {
-       $DB     =& Database::singleton();
+    $factory   = NDB_Factory::singleton();
+    $DB        = $factory->database();
        $result = $DB->pselectOne(
            "SELECT COUNT(*) FROM Config WHERE ConfigID =:ConfigID AND Value =:Value",
            array(
@@ -96,9 +98,10 @@ function countDuplicate($key,$value)
  *
  * @return boolean return true if there is no Duplicate value
  */
-function duplicateExistsInDropdown($id,$value)
+function duplicateNotExistsInDropdown($id,$value)
 {
-       $DB =& Database::singleton();
+    $factory = NDB_Factory::singleton();
+    $DB      = $factory->database();
        // ConfigID can be found in the Config table by searching new id.
        $ConfigID = $DB->pselectOne(
            "SELECT ConfigID FROM Config WHERE ID =:ID",
