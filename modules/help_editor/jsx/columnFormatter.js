@@ -13,22 +13,22 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     return null;
   }
   // Create the mapping between rowHeaders and rowData in a row object.
-  var row = {};
-  var url;
+  let row = {};
+  let url;
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
 
   if (column === 'Topic') {
-    url = loris.BaseURL + "/help_editor/edit_help_content/?helpID=" +
-           row.HelpID + "&parentID=" + row.ParentID;
+    url = loris.BaseURL + '/help_editor/edit_help_content/?helpID=' +
+           row.HelpID + '&parentID=' + row.ParentID;
     return <td>
                 <a href ={url}>{cell}</a>
              </td>;
   }
   if (column === 'Parent Topic') {
-    url = loris.BaseURL + "/help_editor/edit_help_content/?helpID=" +
-           row.ParentID + "&parentID=" + row.ParentTopicID;
+    url = loris.BaseURL + '/help_editor/edit_help_content/?helpID=' +
+           row.ParentID + '&parentID=' + row.ParentTopicID;
     return <td>
                 <a href ={url}>{cell}</a>
              </td>;

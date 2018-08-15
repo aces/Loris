@@ -15,12 +15,11 @@
  * Used for navigation on all Loris pages.
  */
 class Breadcrumbs extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
-      displayCount: 0
+      displayCount: 0,
     };
 
     this.checkScreenSize = this.checkScreenSize.bind(this);
@@ -28,13 +27,15 @@ class Breadcrumbs extends React.Component {
 
   componentWillMount() {
     this.checkScreenSize();
-    if (typeof window !== 'undefined')
-      window.addEventListener('resize', this.checkScreenSize);
+    if (typeof window !== 'undefined') {
+window.addEventListener('resize', this.checkScreenSize);
+}
   }
 
   componentWillUnmount() {
-    if (typeof window !== 'undefined')
-      window.removeEventListener('resize', this.checkScreenSize);
+    if (typeof window !== 'undefined') {
+window.removeEventListener('resize', this.checkScreenSize);
+}
   }
 
   checkScreenSize() {
@@ -56,7 +57,7 @@ class Breadcrumbs extends React.Component {
     }
 
     this.setState({
-      displayCount: displayCount
+      displayCount: displayCount,
     });
   }
 
@@ -118,10 +119,9 @@ class Breadcrumbs extends React.Component {
       </div>
     );
   }
-
 }
 
-var RBreadcrumbs = React.createFactory(Breadcrumbs);
+let RBreadcrumbs = React.createFactory(Breadcrumbs);
 
 window.Breadcrumbs = Breadcrumbs;
 window.RBreadcrumbs = RBreadcrumbs;

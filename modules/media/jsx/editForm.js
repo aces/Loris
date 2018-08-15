@@ -19,7 +19,7 @@ class MediaEditForm extends React.Component {
       formData: {},
       uploadResult: null,
       isLoaded: false,
-      loadedData: 0
+      loadedData: 0,
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -28,31 +28,31 @@ class MediaEditForm extends React.Component {
   }
 
   componentDidMount() {
-    var self = this;
+    let self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
-        var formData = {
+        let formData = {
           idMediaFile: data.mediaData.id,
           forSite: data.mediaData.forSite,
           dateTaken: data.mediaData.dateTaken,
           comments: data.mediaData.comments,
-          hideFile: data.mediaData.hideFile
+          hideFile: data.mediaData.hideFile,
         };
 
         self.setState({
           Data: data,
           isLoaded: true,
           mediaData: data.mediaData,
-          formData: formData
+          formData: formData,
         });
       },
       error: function(error, errorCode, errorMsg) {
         console.error(error, errorCode, errorMsg);
         self.setState({
-          error: 'An error occurred when loading the form!'
+          error: 'An error occurred when loading the form!',
         });
-      }
+      },
     });
   }
 
@@ -80,17 +80,17 @@ class MediaEditForm extends React.Component {
       );
     }
 
-    var alertMessage = "";
-    var alertClass = "alert text-center hide";
-    var backURL = loris.BaseURL.concat('/media/');
+    let alertMessage = '';
+    let alertClass = 'alert text-center hide';
+    let backURL = loris.BaseURL.concat('/media/');
 
     if (this.state.uploadResult) {
-      if (this.state.uploadResult === "success") {
-        alertClass = "alert alert-success text-center";
-        alertMessage = "Update Successful!";
-      } else if (this.state.uploadResult === "error") {
-        alertClass = "alert alert-danger text-center";
-        alertMessage = "Failed to update the file";
+      if (this.state.uploadResult === 'success') {
+        alertClass = 'alert alert-success text-center';
+        alertMessage = 'Update Successful!';
+      } else if (this.state.uploadResult === 'error') {
+        alertClass = 'alert alert-danger text-center';
+        alertMessage = 'Failed to update the file';
       }
     }
 
@@ -100,7 +100,7 @@ class MediaEditForm extends React.Component {
           {alertMessage}
         </div>
         {
-          this.state.uploadResult === "success" ?
+          this.state.uploadResult === 'success' ?
           <a className="btn btn-primary" href={backURL}>Back to media</a> :
           null
         }
@@ -179,7 +179,7 @@ class MediaEditForm extends React.Component {
             name="hideFile"
             label="Hide File"
             emptyOption={false}
-            options={["No", "Yes"]}
+            options={['No', 'Yes']}
             onUserInput={this.setFormData}
             ref="hideFile"
             value={this.state.formData.hideFile}
@@ -197,11 +197,11 @@ class MediaEditForm extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    var self = this;
-    var myFormData = this.state.formData;
+    let self = this;
+    let myFormData = this.state.formData;
 
     $('#mediaEditEl').hide();
-    $("#file-progress").removeClass('hide');
+    $('#file-progress').removeClass('hide');
 
     $.ajax({
       type: 'POST',
@@ -211,33 +211,33 @@ class MediaEditForm extends React.Component {
       contentType: false,
       processData: false,
       xhr: function() {
-        var xhr = new window.XMLHttpRequest();
-        xhr.upload.addEventListener("progress", function(evt) {
+        let xhr = new window.XMLHttpRequest();
+        xhr.upload.addEventListener('progress', function(evt) {
           if (evt.lengthComputable) {
-            var progressbar = $("#progressbar");
-            var progresslabel = $("#progresslabel");
-            var percent = Math.round((evt.loaded / evt.total) * 100);
-            $(progressbar).width(percent + "%");
-            $(progresslabel).html(percent + "%");
+            let progressbar = $('#progressbar');
+            let progresslabel = $('#progresslabel');
+            let percent = Math.round((evt.loaded / evt.total) * 100);
+            $(progressbar).width(percent + '%');
+            $(progresslabel).html(percent + '%');
             progressbar.attr('aria-valuenow', percent);
           }
         }, false);
         return xhr;
       },
       success: function(data) {
-        $("#file-progress").addClass('hide');
+        $('#file-progress').addClass('hide');
         self.setState({
-          uploadResult: "success"
+          uploadResult: 'success',
         });
         self.showAlertMessage();
       },
       error: function(err) {
         console.error(err);
         self.setState({
-          uploadResult: "error"
+          uploadResult: 'error',
         });
         self.showAlertMessage();
-      }
+      },
 
     });
   }
@@ -249,16 +249,16 @@ class MediaEditForm extends React.Component {
    * @param {string} value - selected value for corresponding form element
    */
   setFormData(formElement, value) {
-    var formData = this.state.formData;
+    let formData = this.state.formData;
 
-    if (value === "") {
+    if (value === '') {
       formData[formElement] = null;
     } else {
       formData[formElement] = value;
     }
 
     this.setState({
-      formData: formData
+      formData: formData,
     });
   }
 
@@ -266,28 +266,27 @@ class MediaEditForm extends React.Component {
    * Display a success/error alert message after form submission
    */
   showAlertMessage() {
-    var self = this;
+    let self = this;
 
-    if (this.refs["alert-message"] === null) {
+    if (this.refs['alert-message'] === null) {
       return;
     }
 
-    var alertMsg = this.refs["alert-message"];
+    let alertMsg = this.refs['alert-message'];
     $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function() {
       self.setState({
-        uploadResult: null
+        uploadResult: null,
       });
     });
   }
-
 }
 
 MediaEditForm.propTypes = {
   DataURL: React.PropTypes.string.isRequired,
-  action: React.PropTypes.string.isRequired
+  action: React.PropTypes.string.isRequired,
 };
 
-var RMediaEditForm = React.createFactory(MediaEditForm);
+let RMediaEditForm = React.createFactory(MediaEditForm);
 
 window.MediaEditForm = MediaEditForm;
 window.RMediaEditForm = RMediaEditForm;

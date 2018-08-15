@@ -15,5 +15,5 @@ $(function() {
     </div>
   );
 
-  ReactDOM.render(issueTracker, document.getElementById("lorisworkspace"));
+  ReactDOM.render(issueTracker, document.getElementById('lorisworkspace'));
 });

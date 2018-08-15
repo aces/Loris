@@ -17,5 +17,5 @@ $(function() {
     </div>
   );
 
-  ReactDOM.render(mediaEditForm, document.getElementById("lorisworkspace"));
+  ReactDOM.render(mediaEditForm, document.getElementById('lorisworkspace'));
 });

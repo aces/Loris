@@ -13,14 +13,13 @@ import FilterForm from 'FilterForm';
   *
   * */
 class DataIntegrityFlag extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
       isLoaded: false,
       filter: {},
-      formData: {}
+      formData: {},
     };
 
     // Bind component instance to custom methods
@@ -39,11 +38,11 @@ class DataIntegrityFlag extends React.Component {
    * for easy access by columnFormatter.
    */
   fetchData() {
-    $.getJSON(this.props.DataURL, data => {
+    $.getJSON(this.props.DataURL, (data) => {
       loris.flagStatusList = data.flagStatusList;
       this.setState({
         Data: data,
-        isLoaded: true
+        isLoaded: true,
       });
     }).error(function(error) {
       console.error(error);
@@ -72,8 +71,8 @@ class DataIntegrityFlag extends React.Component {
     }
 
     const tabList = [
-      {id: "browse", label: "Browse"},
-      {id: "setflag", label: "Update"}
+      {id: 'browse', label: 'Browse'},
+      {id: 'setflag', label: 'Update'},
     ];
 
     const filterRef = function(f) {

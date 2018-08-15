@@ -7,16 +7,16 @@
 
 jQuery.extend({
   csv: function(delim, quote, lined) {
-    delim = typeof delim === "string" ? new RegExp("[" + (delim || ",") + "]") : typeof delim === "undefined" ? "," : delim;
-    quote = typeof quote === "string" ? new RegExp("^[" + (quote || '"') + "]") : typeof quote === "undefined" ? '"' : quote;
-    lined = typeof lined === "string" ? new RegExp("[" + (lined || "\r\n") + "]+") : typeof lined === "undefined" ? "\r\n" : lined;
+    delim = typeof delim === 'string' ? new RegExp('[' + (delim || ',') + ']') : typeof delim === 'undefined' ? ',' : delim;
+    quote = typeof quote === 'string' ? new RegExp('^[' + (quote || '"') + ']') : typeof quote === 'undefined' ? '"' : quote;
+    lined = typeof lined === 'string' ? new RegExp('[' + (lined || '\r\n') + ']+') : typeof lined === 'undefined' ? '\r\n' : lined;
 
     function splitline(v) {
       // Split the line using the delimitor
-      var arr = v.split(delim);
-      var out = [];
-      for (var i = 0, l = arr.length; i < l; i++) {
-        var hasMatch = arr[i].match(quote);
+      let arr = v.split(delim);
+      let out = [];
+      for (let i = 0, l = arr.length; i < l; i++) {
+        let hasMatch = arr[i].match(quote);
         var j;
         if (hasMatch) {
           for (j = i; j < l; j++) {
@@ -24,7 +24,7 @@ jQuery.extend({
               break;
             }
           }
-          var s = arr.slice(i, j + 1).join(delim);
+          let s = arr.slice(i, j + 1).join(delim);
           out.push(s.substr(1, s.length - 2));
           i = j;
         } else {
@@ -35,12 +35,12 @@ jQuery.extend({
     }
 
     return function(text) {
-      var lines = text.split(lined);
-      for (var i = 0, l = lines.length; i < l; i++) {
+      let lines = text.split(lined);
+      for (let i = 0, l = lines.length; i < l; i++) {
         lines[i] = splitline(lines[i]);
       }
       return lines;
     };
-  }
+  },
 });
 

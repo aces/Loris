@@ -15,14 +15,13 @@ import formatDataDictColumn from './columnFormatter';
  *
  * */
 class DataDictIndex extends React.Component {
-
   constructor(props) {
     loris.hiddenHeaders = ['DescriptionStatus'];
     super(props);
 
     this.state = {
       isLoaded: false,
-      filter: {}
+      filter: {},
     };
 
     // Bind component instance to custom methods
@@ -42,18 +41,18 @@ class DataDictIndex extends React.Component {
    */
   fetchData() {
     $.ajax(this.props.DataURL, {
-      method: "GET",
+      method: 'GET',
       dataType: 'json',
       success: function(data) {
         loris.hiddenHeaders = data.hiddenHeaders ? data.hiddenHeaders : [];
         this.setState({
           Data: data,
-          isLoaded: true
+          isLoaded: true,
         });
       }.bind(this),
       error: function(error) {
         console.error(error);
-      }
+      },
     });
   }
 
@@ -112,6 +111,6 @@ $(function() {
             <DataDictIndex DataURL={`${loris.BaseURL}/datadict/?format=json`} />
         </div>
     );
-  ReactDOM.render(dataDictIndex, document.getElementById("lorisworkspace"));
+  ReactDOM.render(dataDictIndex, document.getElementById('lorisworkspace'));
 });
 

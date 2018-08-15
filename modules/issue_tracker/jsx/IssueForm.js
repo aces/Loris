@@ -10,7 +10,6 @@ import CommentList from './CommentList';
  * @author Caitrin Armstrong
  * */
 class IssueForm extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -21,7 +20,7 @@ class IssueForm extends React.Component {
       errorMessage: null,
       isLoaded: false,
       isNewIssue: false,
-      issueID: 0
+      issueID: 0,
     };
 
     // Bind component instance to custom methods
@@ -75,19 +74,19 @@ class IssueForm extends React.Component {
     let isWatching = this.state.issueData.watching;
 
     if (this.state.isNewIssue) {
-      headerText = "Create New Issue";
-      lastUpdateValue = "Never!";
-      lastUpdatedByValue = "No-one!";
-      dateCreated = "Sometime Soon!";
-      submitButtonValue = "Submit Issue";
-      commentLabel = "Description";
+      headerText = 'Create New Issue';
+      lastUpdateValue = 'Never!';
+      lastUpdatedByValue = 'No-one!';
+      dateCreated = 'Sometime Soon!';
+      submitButtonValue = 'Submit Issue';
+      commentLabel = 'Description';
     } else {
-      headerText = "Edit Issue #" + this.state.issueData.issueID;
+      headerText = 'Edit Issue #' + this.state.issueData.issueID;
       lastUpdateValue = this.state.issueData.lastUpdate;
       lastUpdatedByValue = this.state.issueData.lastUpdatedBy;
       dateCreated = this.state.issueData.dateCreated;
-      submitButtonValue = "Update Issue";
-      commentLabel = "New Comment";
+      submitButtonValue = 'Update Issue';
+      commentLabel = 'New Comment';
     }
 
     const commentHistory = this.state.isNewIssue || (
@@ -102,7 +101,7 @@ class IssueForm extends React.Component {
           <div className="col-md-6">
             <StaticElement
               name="lastUpdate"
-              label={"Last Update: "}
+              label={'Last Update: '}
               ref="lastUpdate"
               text={lastUpdateValue}
             />
@@ -110,7 +109,7 @@ class IssueForm extends React.Component {
           <div className="col-md-6">
             <StaticElement
               name="lastUpdatedBy"
-              label={"Last Updated By: "}
+              label={'Last Updated By: '}
               ref="lastUpdatedBy"
               text={lastUpdatedByValue}
             />
@@ -118,7 +117,7 @@ class IssueForm extends React.Component {
           <div className="col-md-6">
             <StaticElement
               name="dateCreated"
-              label={"Date Created: "}
+              label={'Date Created: '}
               ref="dateCreated"
               text={dateCreated}
             />
@@ -126,7 +125,7 @@ class IssueForm extends React.Component {
           <div className="col-md-6">
             <StaticElement
               name="reporter"
-              label={"Reporter: "}
+              label={'Reporter: '}
               ref="reporter"
               text={this.state.issueData.reporter}
             />
@@ -288,15 +287,15 @@ class IssueForm extends React.Component {
           isLoaded: true,
           issueData: data.issueData,
           formData: data.issueData,
-          isNewIssue: !data.issueData.issueID
+          isNewIssue: !data.issueData.issueID,
         });
       }.bind(this),
       error: function(err) {
         this.setState({
-          error: "An error occurred when loading the form!\n Error: " +
-          err.status + " (" + err.statusText + ")"
+          error: 'An error occurred when loading the form!\n Error: ' +
+          err.status + ' (' + err.statusText + ')',
         });
-      }.bind(this)
+      }.bind(this),
     });
   }
 
@@ -310,7 +309,7 @@ class IssueForm extends React.Component {
 
     // Prevent new issue submissions while one is already in progress
     if (this.state.submissionResult && this.state.isNewIssue) return;
-    this.setState({submissionResult: "pending"});
+    this.setState({submissionResult: 'pending'});
 
     const myFormData = this.state.formData;
     const formRefs = this.refs;
@@ -322,7 +321,7 @@ class IssueForm extends React.Component {
     }
 
     for (let key in myFormData) {
-      if (myFormData[key] !== "") {
+      if (myFormData[key] !== '') {
         formData.append(key, myFormData[key]);
       }
     }
@@ -340,17 +339,17 @@ class IssueForm extends React.Component {
         let message = this.state.isNewIssue ? 'You will be redirected to main page in 2 seconds!' : '';
         this.showAlertMessage(msgType, message);
         this.setState({
-          submissionResult: "success",
-          issueID: data.issueID
+          submissionResult: 'success',
+          issueID: data.issueID,
         });
       }.bind(this),
       error: function(err) {
         console.error(err);
-        this.setState({submissionResult: "error"});
+        this.setState({submissionResult: 'error'});
         let msgType = 'error';
-        let message = "Failed to submit issue :(";
+        let message = 'Failed to submit issue :(';
         this.showAlertMessage(msgType, message);
-      }.bind(this)
+      }.bind(this),
     });
   }
 
@@ -366,7 +365,7 @@ class IssueForm extends React.Component {
     formDataUpdate[formElement] = value;
 
     this.setState({
-      formData: formDataUpdate
+      formData: formDataUpdate,
     });
   }
 
@@ -382,7 +381,7 @@ class IssueForm extends React.Component {
     let isValidForm = true;
     const requiredFields = {
       title: null,
-      assignee: null
+      assignee: null,
     };
 
     Object.keys(requiredFields).map(function(field) {
@@ -413,18 +412,18 @@ class IssueForm extends React.Component {
       this.setState({submissionResult: null});
     };
 
-    if (msgType === "success" && this.state.isNewIssue) {
+    if (msgType === 'success' && this.state.isNewIssue) {
       title = 'Issue created!';
       timer = 2000;
       confirmation = false;
       callback = function() {
         this.setState({
           formData: {},
-          submissionResult: null
+          submissionResult: null,
         });
         window.location.assign('/issue_tracker');
       };
-    } else if (msgType === "error") {
+    } else if (msgType === 'error') {
       type = 'error';
       title = 'Error!';
     }
@@ -436,14 +435,14 @@ class IssueForm extends React.Component {
       timer: timer,
       allowOutsideClick: false,
       allowEscapeKey: false,
-      showConfirmButton: confirmation
+      showConfirmButton: confirmation,
     }, callback.bind(this));
   }
 }
 
 IssueForm.propTypes = {
   DataURL: React.PropTypes.string.isRequired,
-  action: React.PropTypes.string.isRequired
+  action: React.PropTypes.string.isRequired,
 };
 
 export default IssueForm;

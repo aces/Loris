@@ -3,31 +3,31 @@ import {Tabs, TabPane} from 'Tabs';
 /* exported RInstrumentBuilderApp */
 
 /**
- *	This file contains the React classes for instrument builder
- * 	module.
+ * This file contains the React classes for instrument builder
+ * module.
  */
 
 /**
- *	This is the React class for loading in a previously
- *	made instrument.
+ * This is the React class for loading in a previously
+ * made instrument.
  */
-var LoadPane = React.createClass({
+let LoadPane = React.createClass({
   getInitialState: function() {
     return {
       disabled: true,
       // This is used to alert the user if the file was
       // loaded successfully or there was an error with
       // the loading.
-      alert: ''
+      alert: '',
     };
   },
   // Indicates to the state which file has been choosen
   chooseFile: function(e) {
-    var value = e.target.files[0];
+    let value = e.target.files[0];
     this.setState({
       file: value,
       disabled: true,
-      alert: ''
+      alert: '',
     });
     if (value) {
       this.setState({disabled: false});
@@ -37,28 +37,28 @@ var LoadPane = React.createClass({
   setAlert: function(type, message) {
     this.setState({
       alert: type,
-      alertMessage: message
+      alertMessage: message,
     });
   },
   // Reset the alert to empty.
   resetAlert: function() {
     this.setState({
       alert: '',
-      alertMessage: ''
+      alertMessage: '',
     });
   },
   // Loads the specified file into builder tab.
   loadFile: function() {
     // Declare the success and error callbacks
-    var callback = {
+    let callback = {
       success: this.props.loadCallback,
-      error: this.setAlert
+      error: this.setAlert,
     };
     Instrument.load(this.state.file, callback);
   },
   // Render the HTML
   render: function() {
-    var alert = '';
+    let alert = '';
     // Set up declared alerts, if there is any.
     switch (this.state.alert) {
       case 'success':
@@ -110,17 +110,17 @@ var LoadPane = React.createClass({
         </div>
       </TabPane>
     );
-  }
+  },
 });
 
 /**
- *	This is the React class for saving the instrument
+ * This is the React class for saving the instrument
  */
-var SavePane = React.createClass({
+let SavePane = React.createClass({
   getInitialState: function() {
     return {
       fileName: '',
-      instrumentName: ''
+      instrumentName: '',
     };
   },
   // Used to set the state when a file is loaded
@@ -128,26 +128,26 @@ var SavePane = React.createClass({
   loadState: function(newState) {
     this.setState({
       fileName: newState.fileName,
-      instrumentName: newState.instrumentName
+      instrumentName: newState.instrumentName,
     });
   },
   // Keep track of the file name, saving it in the state
   onChangeFile: function(e) {
-    var value = e.target.value;
+    let value = e.target.value;
     this.setState({
-      fileName: value
+      fileName: value,
     });
   },
   // Keep track of the instrument name, saving it in the state
   onChangeInst: function(e) {
-    var value = e.target.value;
+    let value = e.target.value;
     this.setState({
-      instrumentName: value
+      instrumentName: value,
     });
   },
   // Render the HTML
   render: function() {
-    var value = this.state.fileName;
+    let value = this.state.fileName;
     return (
       <TabPane Title="Save Instrument" {...this.props}>
         <div className="form-group">
@@ -182,22 +182,22 @@ var SavePane = React.createClass({
         </div>
       </TabPane>
     );
-  }
+  },
 });
 
 /**
- *  This is the React class displaying the questions
- *  in the table.
+ * This is the React class displaying the questions
+ * in the table.
  */
-var DisplayElements = React.createClass({
+let DisplayElements = React.createClass({
   // Used for the drag and drop rows
   getPlaceholder: function() {
     if (!this.placeholder) {
-      var tr = document.createElement('tr');
-      tr.className = "placeholder";
-      var td = document.createElement('td');
+      let tr = document.createElement('tr');
+      tr.className = 'placeholder';
+      let td = document.createElement('td');
       td.colSpan = 2;
-      td.appendChild(document.createTextNode("Drop here"));
+      td.appendChild(document.createTextNode('Drop here'));
       tr.appendChild(td);
       this.placeholder = tr;
     }
@@ -216,42 +216,42 @@ var DisplayElements = React.createClass({
     this.dragged = this.getTableRow(e.currentTarget);
     e.dataTransfer.effectAllowed = 'move';
     // Firefox requires dataTransfer data to be set
-    e.dataTransfer.setData("text/html", e.currentTarget);
+    e.dataTransfer.setData('text/html', e.currentTarget);
   },
   // Used for the drag and drop rows
   dragEnd: function(e) {
-    this.dragged.style.display = "table-row";
+    this.dragged.style.display = 'table-row';
     this.dragged.parentNode.removeChild(this.getPlaceholder());
 
     // Update data
-    var data = this.props.elements;
-    var from = Number(this.dragged.dataset.id);
-    var to = Number(this.over.dataset.id);
+    let data = this.props.elements;
+    let from = Number(this.dragged.dataset.id);
+    let to = Number(this.over.dataset.id);
     if (from < to) to--;
-    if (this.nodePlacement === "after") to++;
+    if (this.nodePlacement === 'after') to++;
     data.splice(to, 0, data.splice(from, 1)[0]);
     this.setState({
-      data: data
+      data: data,
     });
   },
   // Used for the drag and drop rows
   dragOver: function(e) {
     e.preventDefault();
-    var targetRow = this.getTableRow(e.target);
+    let targetRow = this.getTableRow(e.target);
 
-    this.dragged.style.display = "none";
-    if (targetRow.className === "placeholder") return;
+    this.dragged.style.display = 'none';
+    if (targetRow.className === 'placeholder') return;
     this.over = targetRow;
     // Inside the dragOver method
-    var relY = e.pageY - $(this.over).offset().top;
-    var height = this.over.offsetHeight / 2;
-    var parent = targetRow.parentNode;
+    let relY = e.pageY - $(this.over).offset().top;
+    let height = this.over.offsetHeight / 2;
+    let parent = targetRow.parentNode;
 
     if (relY >= height) {
-      this.nodePlacement = "after";
+      this.nodePlacement = 'after';
       parent.insertBefore(this.getPlaceholder(), targetRow.nextElementSibling);
     } else { // relY < height
-      this.nodePlacement = "before";
+      this.nodePlacement = 'before';
       parent.insertBefore(this.getPlaceholder(), targetRow);
     }
   },
@@ -307,7 +307,7 @@ var DisplayElements = React.createClass({
 
     // Set fixed layout to force column widths to be based on first row
     let tableStyles = {
-      tableLayout: 'fixed'
+      tableLayout: 'fixed',
     };
 
     return (
@@ -324,22 +324,22 @@ var DisplayElements = React.createClass({
         </tbody>
       </table>
     );
-  }
+  },
 });
 
 /**
- *	This is the React class for building the instrument
+ * This is the React class for building the instrument
  */
-var BuildPane = React.createClass({
+let BuildPane = React.createClass({
   getInitialState: function() {
     return {
       // Keep track of the page groups
       Elements: [{
-        Type: "ElementGroup",
-        GroupType: "Page",
-        Description: "Top",
+        Type: 'ElementGroup',
+        GroupType: 'Page',
+        Description: 'Top',
         // Keep track of the elements on the page
-        Elements: []
+        Elements: [],
       }],
       // Keep track if elements are being edited to ensure
       // that drag and drop is not usable if any are being
@@ -349,7 +349,7 @@ var BuildPane = React.createClass({
       currentPage: 0,
       // Keep track of elements DB names to ensure no doubles
       // are added
-      elementDBNames: {}
+      elementDBNames: {},
     };
   },
   // Load in a group of elements, replacing any that
@@ -359,12 +359,12 @@ var BuildPane = React.createClass({
     let elContent = elements[this.state.currentPage].Elements;
     let elNames = {};
     elContent.forEach(function(el) {
-      elNames[el.Name] = "";
+      elNames[el.Name] = '';
     });
 
     this.setState({
       Elements: elements,
-      elementDBNames: elNames
+      elementDBNames: elNames,
     });
   },
   // Set the element editing flag to true to render the element
@@ -383,7 +383,7 @@ var BuildPane = React.createClass({
       return {
         Elements: temp,
         amountEditing: edit,
-        elementDBNames: dbNames
+        elementDBNames: dbNames,
       };
     });
   },
@@ -398,7 +398,7 @@ var BuildPane = React.createClass({
       delete dbNames[temp[state.currentPage].Elements[elementIndex].Name];
       temp[state.currentPage].Elements.splice(elementIndex, 1);
       return {
-        Elements: temp
+        Elements: temp,
       };
     });
   },
@@ -424,7 +424,7 @@ var BuildPane = React.createClass({
       return {
         Elements: temp,
         amountEditing: edit,
-        elementDBNames: dbNa
+        elementDBNames: dbNa,
       };
     });
     return true;
@@ -448,7 +448,7 @@ var BuildPane = React.createClass({
       temp[state.currentPage].Elements.push(element);
       return {
         Elements: temp,
-        elementDBNames: dbNa
+        elementDBNames: dbNa,
       };
     });
     return true;
@@ -463,21 +463,21 @@ var BuildPane = React.createClass({
       // change the current page to the new one
       let page = state.currentPage + 1;
       temp.push({
-        Type: "ElementGroup",
-        GroupType: "Page",
+        Type: 'ElementGroup',
+        GroupType: 'Page',
         Description: pageName,
-        Elements: []
+        Elements: [],
       });
       return {
         Elements: temp,
-        currentPage: page
+        currentPage: page,
       };
     });
   },
   // Change to a page
   selectPage: function(index) {
     this.setState({
-      currentPage: index
+      currentPage: index,
     });
   },
   // Render the HTML
@@ -520,13 +520,13 @@ var BuildPane = React.createClass({
         </div>
       </TabPane>
     );
-  }
+  },
 });
 
 /**
  * This is the React class for the instrument builder
  */
-var InstrumentBuilderApp = React.createClass({
+let InstrumentBuilderApp = React.createClass({
   // Save the instrument
   saveInstrument: function() {
     // Call to external function, passing it the save information and the elements
@@ -544,7 +544,7 @@ var InstrumentBuilderApp = React.createClass({
   },
   // Render the HTML
   render: function() {
-    var tabs = [];
+    let tabs = [];
     tabs.push(
       <LoadPane
         TabId="Load"
@@ -569,19 +569,19 @@ var InstrumentBuilderApp = React.createClass({
       />
     );
 
-    var tabList = [
+    let tabList = [
       {
-        id: "Load",
-        label: "Load"
+        id: 'Load',
+        label: 'Load',
       },
       {
-        id: "Build",
-        label: "Build"
+        id: 'Build',
+        label: 'Build',
       },
       {
-        id: "Save",
-        label: "Save"
-      }
+        id: 'Save',
+        label: 'Save',
+      },
     ];
 
     return (
@@ -591,10 +591,10 @@ var InstrumentBuilderApp = React.createClass({
         </Tabs>
       </div>
     );
-  }
+  },
 });
 
-var RInstrumentBuilderApp = React.createFactory(InstrumentBuilderApp);
+let RInstrumentBuilderApp = React.createFactory(InstrumentBuilderApp);
 
 window.RInstrumentBuilderApp = RInstrumentBuilderApp;
 

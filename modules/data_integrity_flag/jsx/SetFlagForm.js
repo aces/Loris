@@ -8,12 +8,11 @@
  *
  * */
 class SetFlagForm extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
-      formData: {}
+      formData: {},
     };
 
     // Bind component instance to custom methods
@@ -49,8 +48,8 @@ class SetFlagForm extends React.Component {
       processData: false,
       success: function(data) {
         swal({
-          title: "Success!",
-          type: "success"
+          title: 'Success!',
+          type: 'success',
         });
         this.props.updateData();
         this.setState({formData: {}});
@@ -58,11 +57,11 @@ class SetFlagForm extends React.Component {
       error: function(err) {
         console.error(err);
         swal({
-          title: "Error!",
-          type: "error",
-          content: err.statusText
+          title: 'Error!',
+          type: 'error',
+          content: err.statusText,
         });
-      }
+      },
     });
   }
 
