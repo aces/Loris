@@ -82,7 +82,7 @@ class GenericDownloader implements FileDownloader
         // Validate that the path supplied by the user begins with the same base
         // path as the proper directory of the file.
         // If not, it is almost certainly a hacking attempt.
-        if (realpath($fullPath) === false
+        if ($realUserPath === false
             || strpos($realUserPath, $this->realBasePath) !== 0
         ) {
             error_log("ERROR: Likely path traversal attempt in file download.");

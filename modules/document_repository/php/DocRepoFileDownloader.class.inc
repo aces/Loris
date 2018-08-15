@@ -12,8 +12,9 @@ class DocRepoFileDownloader extends GenericDownloader {
         $record = $db->pselectOne(
             "SELECT record_id FROM document_repository WHERE "
             . "Data_dir=:dd",
-            array('dd' => $file)
+            array('dd' => $id)
         );
+        error_log("Record is $record");
         return $record;
     }
 
