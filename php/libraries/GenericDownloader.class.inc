@@ -5,23 +5,19 @@ require_once '../php/libraries/FileDownloader.class.inc';
 class GenericDownloader implements FileDownloader
 {
 
-    // The name of the table in the database where more information about a file
-    // can be found.
-    protected $tableName;
     protected $realBasePath;
 
-    function __construct(string $basePath, string $tableName = '')
+    function __construct(string $basePath)
     {
         $this->realBasePath = realpath($basePath);
         // Ensure there is a trailing forward slash.
         $this->realBasePath = rtrim($this->realBasePath, '/') . '/';
-        $this->tableName    = $tableName;
     }
 
     /**
      * The full path should be supplied here.
      */
-    public function downloadFile(string $userPath)
+    public function downloadFile(string $userPath): void
     {
         // Ensure that every following test is conducted on a sanitized
         // (non-malicious) file path.
