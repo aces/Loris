@@ -23,15 +23,21 @@ $configFile = __DIR__."/../project/config.xml";
 $client     = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize($configFile);
-$DB = Database::singleton();
+$DB     = Database::singleton();
+$config = NDB_Config::singleton();
 
-//allow instruments to find libraries
-require_once 'Utility.class.inc';
-
-// require all relevant OO class libraries
-require_once "Database.class.inc";
-require_once "NDB_Config.class.inc";
-require_once "NDB_BVL_Instrument.class.inc";
-require_once "Candidate.class.inc";
-
-?>
+/**
+ * Helper function that writes a string supplied in the parameters to a filepath
+ * specified in the parameters using the indicated mode. This function should be
+ * used as a standard in the tools PHP scripts.
+ *
+ * @param string $filePath Desired path for the generated file (including extension)
+ * @param string $output   String to be written to the file specified in $filePath
+ * @param string $mode     Creation mode of the file
+ */
+function writeToFile(string $filePath, string $output, string $mode = "w")
+{
+    $fp =fopen($filePath, $mode);
+    fwrite($fp, $output);
+    fclose($fp);
+}
