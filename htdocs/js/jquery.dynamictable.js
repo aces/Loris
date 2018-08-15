@@ -33,7 +33,7 @@
     let scrolling = false;
     let step = 100;
     let scrollAmount = 0;
-    var scrollContent = function(direction, elem) {
+    let scrollContent = function(direction, elem) {
       $(elem).animate({
         scrollLeft: $(elem).scrollLeft() + scrollAmount,
       }, 1, function() {

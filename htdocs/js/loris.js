@@ -1,6 +1,6 @@
 /* exported LorisHelper */
 
-var LorisHelper = function(configParams, userPerms, studyParams) {
+let LorisHelper = function(configParams, userPerms, studyParams) {
   'use strict';
   let lorisObj = configParams;
 

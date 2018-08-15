@@ -13,7 +13,7 @@
  * @return {{}} - QueryString helper object
  *
  */
-var QueryString = {
+let QueryString = {
   /**
    * Build and return an object containig querystring key/value pairs
    * based on current values inside the browser's querystring.
