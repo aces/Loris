@@ -68,11 +68,7 @@ class ConfigurationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $bodyText = $this->webDriver->executescript(
-            "return document.querySelector".
-            "('#bc2 > a:nth-child(2) > div').textContent"
-        );
-        $this->assertRegexp("/Configuration/", $bodyText);
+        $this->assertRegexp("/Please enter the various configuration variables/", $bodyText);
     }
     /**
      * Tests that configuration loads with the permission
