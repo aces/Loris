@@ -592,7 +592,7 @@ class DashboardTest extends LorisIntegrationTest
         $bodyText = $link->findElement(WebDriverBy::cssSelector(".huge"))->getText();
         $this->assertContains($value, $bodyText);
         $this->safeClick(WebDriverBy::cssSelector($className));
-        $this->webDriver->wait(3, 500)->until(
+        $this->webDriver->wait(3, 2000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
                 WebDriverBy::Id('lorisworkspace')
             )
