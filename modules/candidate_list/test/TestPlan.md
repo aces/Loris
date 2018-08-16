@@ -15,7 +15,7 @@
    [ ] Project
    [ ] Scan done
    [ ] Participant Status
-   [ ] Gender
+   [ ] Biological Sex
    [ ] Number of visits
    [ ] Date of birth
    [ ] Latest Visit Status

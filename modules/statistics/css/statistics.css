@@ -77,11 +77,10 @@ table.fancytable th:hover, table.listColorCoded th:hover {
     background-color: #FFFFCC !important;
 }
 
-.gender_male {
+.sex_male{
     background-color: #CCFFFF !important;
 }
-
-.gender_female {
+.sex_female{
     background-color: #FFCCE5 !important;
 }
 

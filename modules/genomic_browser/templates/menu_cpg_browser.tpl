@@ -54,10 +54,10 @@
                     <div class="row">
                       <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-2">
-                          {$form.gender.label}
+                          {$form.sex.label}
                         </label>
                         <div class="col-sm-12 col-md-2">
-                          {$form.gender.html}
+                          {$form.sex.html}
                         </div>
                         <label class="col-sm-15 col-md-2">
                           {$form.dob.label}

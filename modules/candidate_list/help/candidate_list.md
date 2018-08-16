@@ -18,7 +18,7 @@ For example, searching with "531" under "DCCID" will retrieve the profile of can
 
 ## Option 3: Advanced Filter Options
 
-More detailed filter options can be accessed by clicking on the "Advanced" button. Users will select from a number of drop-down select boxes including Site, Project, Subproject, Gender etc., and then click "Show Data" to view a list of candidates. To return to "Basic" selection filters please select "Basic".
+More detailed filter options can be accessed by clicking on the "Advanced" button. Users will select from a number of drop-down select boxes including Site, Project, Subproject, biological sexetc., and then click "Show Data" to view a list of candidates. To return to "Basic" selection filters please select "Basic".
 
 To view a specific candidate's dataset, click on the candidate's PSCID found in blue text under the "PSCID" column. At the top of the table, column headings will appear underlined and show a click icon when the user hovers over the heading title. Data can be sorted in ascending order according to a given column by clicking on the column heading (i.e. DCCID, Site, PSCID etc.), and by clicking again, in descending order. In both standard and mobile view, the selection filter can be hidden by selecting the upward arrow icon, allowing easier viewing of the data. Once in this view, users can click on the downward arrow icon to display the features of the selection filter once again. This feature applies to all pages that include a Selection Filter.
 

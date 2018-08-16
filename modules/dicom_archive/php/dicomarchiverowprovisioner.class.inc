@@ -39,7 +39,7 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
         parent::__construct(
             "SELECT t.PatientID as `Patient ID`,
             t.PatientName as `Patient Name`,
-            t.PatientGender as Gender,
+            t.PatientSex as Sex,
             t.PatientDoB as `Date of birth`,
             t.DateAcquired as Acquisition,
             t.ArchiveLocation as Archive_Location,
