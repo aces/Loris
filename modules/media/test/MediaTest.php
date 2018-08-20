@@ -91,6 +91,9 @@ class MediaTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/media/");
         sleep(1);
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
         foreach ($this->_loadingBrowseUI as $key => $value) {
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
@@ -105,7 +108,7 @@ class MediaTest extends LorisIntegrationTest
       */
     function testBrowseFilter()
     {
-        $this->_testFilter("/media/", "pSCID", "MTL010", "1 rows");
+        $this->_testFilter("/media/", "PSCID", "MTL010", "1 rows");
         $this->_testFilter("/media/", "fileName", "MTL010", "1 rows");
         $this->_testFilter(
             "/media/",
@@ -148,6 +151,9 @@ class MediaTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/media/");
         sleep(1);
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
         // click the file Name link
         $this->webDriver->executescript(
             "document.querySelector('#dynamictable > tbody > tr:nth-child(1)".
