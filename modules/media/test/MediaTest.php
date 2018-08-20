@@ -37,18 +37,18 @@ class MediaTest extends LorisIntegrationTest
             //Browse UIs
             'Browse'        => '#tab-browse',
             //Browse table header
-            'No.'           => '#dynamictable > thead:nth-child(1) > tr:nth-child(1)',
-            'File Name'     => '#dynamictable > thead:nth-child(1) > tr:nth-child(1)',
-            'PSCID'         => '#dynamictable > thead:nth-child(1) > tr:nth-child(1)',
-            'Visit Label'   => '#dynamictable > thead:nth-child(1) > tr:nth-child(1)',
-            'Instrument'    => '#dynamictable > thead:nth-child(1) > tr:nth-child(1)',
-            'Language'      => '#dynamictable > thead:nth-child(1) > tr:nth-child(1)',
-            'Site'          => '#dynamictable > thead:nth-child(1) > tr:nth-child(1)',
-            'Uploaded By'   => '#dynamictable > thead:nth-child(1) > tr:nth-child(1)',
-            'Date Taken'    => '#dynamictable > thead:nth-child(1) > tr:nth-child(1)',
-            'Comments'      => '#dynamictable > thead:nth-child(1) > tr:nth-child(1)',
-            'Date Uploaded' => '#dynamictable > thead:nth-child(1) > tr:nth-child(1)',
-            'Comments'      => '#dynamictable > thead:nth-child(1) > tr:nth-child(1)',
+            'No.'           => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
+            'File Name'     => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
+            'PSCID'         => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
+            'Visit Label'   => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
+            'Instrument'    => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
+            'Language'      => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
+            'Site'          => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
+            'Uploaded By'   => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
+            'Date Taken'    => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
+            'Comments'      => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
+            'Date Uploaded' => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
+            'Comments'      => '#dynamictable >thead:nth-child(1) >tr:nth-child(1)',
            );
     /**
      * Tests that the page does not load if the user does not have correct
