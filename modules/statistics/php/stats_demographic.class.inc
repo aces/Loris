@@ -465,8 +465,8 @@ class Stats_Demographic extends \NDB_Form
                 FROM session s
                 JOIN candidate c ON (s.CandID=c.CandID)
                 WHERE s.active='Y' AND s.CenterID <> '1'
-                AND s.Current_stage IN ('Visit', 'Screening', 'Approval')
-                $subprojectQuery
+                AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')
+                $subprojectQuery)
                 AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
                 AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat",
