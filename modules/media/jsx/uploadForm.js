@@ -21,7 +21,7 @@ class MediaUploadForm extends React.Component {
       errorMessage: null,
       isLoaded: false,
       loadedData: 0,
-      uploadProgress: -1
+      uploadProgress: -1,
     };
 
     this.getValidFileName = this.getValidFileName.bind(this);
@@ -33,21 +33,21 @@ class MediaUploadForm extends React.Component {
   }
 
   componentDidMount() {
-    var self = this;
+    let self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
         self.setState({
           Data: data,
-          isLoaded: true
+          isLoaded: true,
         });
       },
       error: function(data, errorCode, errorMsg) {
         console.error(data, errorCode, errorMsg);
         self.setState({
-          error: 'An error occurred when loading the form!'
+          error: 'An error occurred when loading the form!',
         });
-      }
+      },
     });
   }
 
@@ -75,7 +75,7 @@ class MediaUploadForm extends React.Component {
       );
     }
 
-    var helpText = (
+    let helpText = (
       <span>
         File name must begin with <b>[PSCID]_[Visit Label]_[Instrument]</b><br/>
         For example, for candidate <i>ABC123</i>, visit <i>V1</i> for
@@ -196,8 +196,8 @@ class MediaUploadForm extends React.Component {
    * @return {string} - Generated valid filename for the current selection
    */
   getValidFileName(pscid, visitLabel, instrument) {
-    var fileName = pscid + "_" + visitLabel;
-    if (instrument) fileName += "_" + instrument;
+    let fileName = pscid + '_' + visitLabel;
+    if (instrument) fileName += '_' + instrument;
 
     return fileName;
   }
@@ -226,9 +226,9 @@ class MediaUploadForm extends React.Component {
     );
     if (!this.isValidFileName(requiredFileName, fileName)) {
       swal(
-        "Invalid file name!",
-        "File name should begin with: " + requiredFileName,
-        "error"
+        'Invalid file name!',
+        'File name should begin with: ' + requiredFileName,
+        'error'
       );
       return;
     }
@@ -237,17 +237,17 @@ class MediaUploadForm extends React.Component {
     let isDuplicate = mediaFiles.indexOf(fileName);
     if (isDuplicate >= 0) {
       swal({
-        title: "Are you sure?",
-        text: "A file with this name already exists!\n Would you like to override existing file?",
-        type: "warning",
+        title: 'Are you sure?',
+        text: 'A file with this name already exists!\n Would you like to override existing file?',
+        type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
-        cancelButtonText: "No, cancel it!"
+        cancelButtonText: 'No, cancel it!',
       }, function(isConfirm) {
         if (isConfirm) {
           this.uploadFile();
         } else {
-          swal("Cancelled", "Your imaginary file is safe :)", "error");
+          swal('Cancelled', 'Your imaginary file is safe :)', 'error');
         }
       }.bind(this));
     } else {
@@ -263,7 +263,7 @@ class MediaUploadForm extends React.Component {
     let formData = this.state.formData;
     let formObj = new FormData();
     for (let key in formData) {
-      if (formData[key] !== "") {
+      if (formData[key] !== '') {
         formObj.append(key, formData[key]);
       }
     }
@@ -277,7 +277,7 @@ class MediaUploadForm extends React.Component {
       processData: false,
       xhr: function() {
         let xhr = new window.XMLHttpRequest();
-        xhr.upload.addEventListener("progress", function(evt) {
+        xhr.upload.addEventListener('progress', function(evt) {
           if (evt.lengthComputable) {
             let percentage = Math.round((evt.loaded / evt.total) * 100);
             this.setState({uploadProgress: percentage});
@@ -297,19 +297,19 @@ class MediaUploadForm extends React.Component {
         this.setState({
           mediaFiles: mediaFiles,
           formData: {}, // reset form data after successful file upload
-          uploadProgress: -1
+          uploadProgress: -1,
         });
-        swal("Upload Successful!", "", "success");
+        swal('Upload Successful!', '', 'success');
       }.bind(this),
       error: function(err) {
         console.error(err);
-        let msg = err.responseJSON ? err.responseJSON.message : "Upload error!";
+        let msg = err.responseJSON ? err.responseJSON.message : 'Upload error!';
         this.setState({
           errorMessage: msg,
-          uploadProgress: -1
+          uploadProgress: -1,
         });
-        swal(msg, "", "error");
-      }.bind(this)
+        swal(msg, '', 'error');
+      }.bind(this),
     });
   }
 
@@ -337,12 +337,12 @@ class MediaUploadForm extends React.Component {
    * @return {boolean} - true if all required fields are filled, false otherwise
    */
   isValidForm(formRefs, formData) {
-    var isValidForm = true;
+    let isValidForm = true;
 
-    var requiredFields = {
+    let requiredFields = {
       pscid: null,
       visitLabel: null,
-      file: null
+      file: null,
     };
 
     Object.keys(requiredFields).map(function(field) {
@@ -369,7 +369,7 @@ class MediaUploadForm extends React.Component {
     let visitLabel = this.state.formData.visitLabel;
     let pscid = this.state.formData.pscid;
 
-    if (formElement === "pscid" && value !== "") {
+    if (formElement === 'pscid' && value !== '') {
       this.state.Data.visits = this.state.Data.sessionData[value].visits;
       this.state.Data.sites = this.state.Data.sessionData[value].sites;
       if (visitLabel) {
@@ -381,23 +381,23 @@ class MediaUploadForm extends React.Component {
       }
     }
 
-    if (formElement === "visitLabel" && value !== "" && pscid) {
+    if (formElement === 'visitLabel' && value !== '' && pscid) {
       this.state.Data.instruments =
         this.state.Data.sessionData[pscid].instruments[value];
     }
 
-    var formData = this.state.formData;
+    let formData = this.state.formData;
     formData[formElement] = value;
 
     this.setState({
-      formData: formData
+      formData: formData,
     });
   }
 }
 
 MediaUploadForm.propTypes = {
   DataURL: React.PropTypes.string.isRequired,
-  action: React.PropTypes.string.isRequired
+  action: React.PropTypes.string.isRequired,
 };
 
 export default MediaUploadForm;

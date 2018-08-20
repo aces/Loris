@@ -13,7 +13,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   // Create the mapping between rowHeaders and rowData in a row object.
-  var row = {};
+  let row = {};
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
@@ -21,7 +21,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   let reactElement = null;
   switch (column) {
     case 'PSCID': {
-      const url = loris.BaseURL + "/" + rowData[1] + "/";
+      const url = loris.BaseURL + '/' + rowData[1] + '/';
       reactElement = (
         <td><a href={url}>{cell}</a></td>
       );

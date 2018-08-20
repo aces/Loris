@@ -6,13 +6,12 @@ import UploadForm from './UploadForm';
 import formatColumn from './columnFormatter';
 
 class ImagingUploader extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
       isLoaded: false,
-      filter: {}
+      filter: {},
     };
 
     // Bind component instance to custom methods
@@ -32,17 +31,17 @@ class ImagingUploader extends React.Component {
    */
   fetchData() {
     $.ajax(this.props.DataURL, {
-      method: "GET",
+      method: 'GET',
       dataType: 'json',
       success: function(data) {
         this.setState({
           Data: data,
-          isLoaded: true
+          isLoaded: true,
         });
       }.bind(this),
       error: function(error) {
         console.error(error);
-      }
+      },
     });
   }
 
@@ -67,8 +66,8 @@ class ImagingUploader extends React.Component {
     }
 
     const tabList = [
-      {id: "browse", label: "Browse"},
-      {id: "upload", label: "Upload"}
+      {id: 'browse', label: 'Browse'},
+      {id: 'upload', label: 'Upload'},
     ];
 
     const filterRef = function(f) {

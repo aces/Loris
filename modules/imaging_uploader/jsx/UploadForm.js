@@ -12,7 +12,6 @@ import ProgressBar from 'ProgressBar';
  *
  */
 class UploadForm extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -23,7 +22,7 @@ class UploadForm extends React.Component {
       form: form,
       hasError: {},
       errorMessage: {},
-      uploadProgress: -1
+      uploadProgress: -1,
     };
 
     this.onFormChange = this.onFormChange.bind(this);
@@ -59,7 +58,7 @@ class UploadForm extends React.Component {
 
     this.setState({
       form: form,
-      formData: formData
+      formData: formData,
     });
   }
 
@@ -88,7 +87,7 @@ class UploadForm extends React.Component {
     // Checks if a file with a given fileName has already been uploaded
     const fileName = data.mri_file.name;
     const mriFile = this.props.mriList.find(
-      mriFile => mriFile.fileName.indexOf(fileName) > -1
+      (mriFile) => mriFile.fileName.indexOf(fileName) > -1
     );
 
     // New File
@@ -98,60 +97,60 @@ class UploadForm extends React.Component {
     }
 
     // File uploaded and completed mri pipeline
-    if (mriFile.status === "Success") {
+    if (mriFile.status === 'Success') {
       swal({
-        title: "File already exists!",
-        text: "A file with this name has already successfully passed the MRI pipeline!\n",
-        type: "error",
-        confirmButtonText: 'OK'
+        title: 'File already exists!',
+        text: 'A file with this name has already successfully passed the MRI pipeline!\n',
+        type: 'error',
+        confirmButtonText: 'OK',
       });
       return;
     }
 
     // File in the middle of insertion pipeline
-    if (mriFile.status === "In Progress...") {
+    if (mriFile.status === 'In Progress...') {
       swal({
-        title: "File is currently processing!",
-        text: "A file with this name is currently going through the MRI pipeline!\n",
-        type: "error",
-        confirmButtonText: 'OK'
+        title: 'File is currently processing!',
+        text: 'A file with this name is currently going through the MRI pipeline!\n',
+        type: 'error',
+        confirmButtonText: 'OK',
       });
       return;
     }
 
     // File uploaded but failed during mri pipeline
-    if (mriFile.status === "Failure") {
+    if (mriFile.status === 'Failure') {
       swal({
-        title: "Are you sure?",
-        text: "A file with this name already exists!\n Would you like to override existing file?",
-        type: "warning",
+        title: 'Are you sure?',
+        text: 'A file with this name already exists!\n Would you like to override existing file?',
+        type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
-        cancelButtonText: "No, cancel it!"
+        cancelButtonText: 'No, cancel it!',
       }, function(isConfirm) {
         if (isConfirm) {
           this.uploadFile(true);
         } else {
-          swal("Cancelled", "Your imaginary file is safe :)", "error");
+          swal('Cancelled', 'Your imaginary file is safe :)', 'error');
         }
       }.bind(this));
     }
 
     // Pipeline has not been triggered yet
-    if (mriFile.status === "Not Started") {
+    if (mriFile.status === 'Not Started') {
       swal({
-        title: "Are you sure?",
-        text: "A file with this name has been uploaded but has not yet started the MRI pipeline." +
-          "\n Would you like to override the existing file?",
-        type: "warning",
+        title: 'Are you sure?',
+        text: 'A file with this name has been uploaded but has not yet started the MRI pipeline.' +
+          '\n Would you like to override the existing file?',
+        type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
-        cancelButtonText: 'No, cancel it!'
+        cancelButtonText: 'No, cancel it!',
       }, function(isConfirm) {
         if (isConfirm) {
           this.uploadFile(true);
         } else {
-          swal("Cancelled", "Your upload has been cancelled.", "error");
+          swal('Cancelled', 'Your upload has been cancelled.', 'error');
         }
       }.bind(this));
     }
@@ -167,25 +166,25 @@ class UploadForm extends React.Component {
     const formData = this.state.formData;
     let formObj = new FormData();
     for (let key in formData) {
-      if (formData[key] !== "") {
+      if (formData[key] !== '') {
         formObj.append(key, formData[key]);
       }
     }
-    formObj.append("fire_away", "Upload");
+    formObj.append('fire_away', 'Upload');
     if (overwriteFile) {
-      formObj.append("overwrite", true);
+      formObj.append('overwrite', true);
     }
 
     $.ajax({
       type: 'POST',
-      url: loris.BaseURL + "/imaging_uploader/",
+      url: loris.BaseURL + '/imaging_uploader/',
       data: formObj,
       cache: false,
       contentType: false,
       processData: false,
       xhr: function() {
         const xhr = new window.XMLHttpRequest();
-        xhr.upload.addEventListener("progress", function(evt) {
+        xhr.upload.addEventListener('progress', function(evt) {
           if (evt.lengthComputable) {
             const percentage = Math.round((evt.loaded / evt.total) * 100);
             this.setState({uploadProgress: percentage});
@@ -197,21 +196,21 @@ class UploadForm extends React.Component {
       // - Resets errorMessage and hasError so no errors are displayed on form
       // - Displays pop up window with success message
       // - Returns to Browse tab
-      success: data => {
+      success: (data) => {
         let errorMessage = this.state.errorMessage;
         let hasError = this.state.hasError;
         for (let i in errorMessage) {
           if (errorMessage.hasOwnProperty(i)) {
-            errorMessage[i] = "";
+            errorMessage[i] = '';
             hasError[i] = false;
           }
         }
         this.setState({errorMessage: errorMessage, hasError: hasError});
         swal({
-          title: "Upload Successful!",
-          type: "success"
+          title: 'Upload Successful!',
+          type: 'success',
         }, function() {
-          window.location.assign(loris.BaseURL + "/imaging_uploader/");
+          window.location.assign(loris.BaseURL + '/imaging_uploader/');
         });
       },
       // Upon errors in upload:
@@ -220,8 +219,8 @@ class UploadForm extends React.Component {
       // - Returns to Upload tab
       error: (error, textStatus, errorThrown) => {
         swal({
-          title: "Submission error!",
-          type: "error"
+          title: 'Submission error!',
+          type: 'error',
         });
         let errorMessage = this.state.errorMessage;
         let hasError = this.state.hasError;
@@ -237,7 +236,7 @@ class UploadForm extends React.Component {
           }
         }
         this.setState({uploadProgress: -1, errorMessage: errorMessage, hasError: hasError});
-      }
+      },
     });
   }
 
@@ -252,7 +251,7 @@ class UploadForm extends React.Component {
 
     // Hide button when progress bar is shown
     const btnClass = (
-      (this.state.uploadProgress > -1) ? "btn btn-primary hide" : undefined
+      (this.state.uploadProgress > -1) ? 'btn btn-primary hide' : undefined
     );
 
     const notes = (

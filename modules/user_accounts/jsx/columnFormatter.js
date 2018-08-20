@@ -10,13 +10,13 @@
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
   // Create the mapping between rowHeaders and rowData in a row object.
-  var row = {};
+  let row = {};
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
-  var url;
+  let url;
   if (column === 'Username') {
-    url = loris.BaseURL + "/user_accounts/edit_user/" + row.Username;
+    url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;
     return (<td><a href ={url}>{cell}</a></td>);
   }
 

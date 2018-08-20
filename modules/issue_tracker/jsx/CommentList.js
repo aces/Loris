@@ -3,7 +3,6 @@
  * with comments.
  */
 class CommentList extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -19,11 +18,11 @@ class CommentList extends React.Component {
 
   render() {
     const btnCommentsLabel = (this.state.collapsed ?
-      "Show Comment History" :
-      "Hide Comment History");
+      'Show Comment History' :
+      'Hide Comment History');
 
     const changes = this.props.commentHistory.reduce(function(carry, item) {
-      let label = item.dateAdded.concat(" - ", item.addedBy);
+      let label = item.dateAdded.concat(' - ', item.addedBy);
       if (!carry[label]) {
         carry[label] = {};
       }

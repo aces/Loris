@@ -24,7 +24,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   // Default cell style
   const cellStyle = {
-    whiteSpace: 'nowrap'
+    whiteSpace: 'nowrap',
   };
 
   if (column === 'Progress') {
@@ -56,7 +56,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'Tarchive Info') {
-    if (!cell || cell === "0") {
+    if (!cell || cell === '0') {
       return (<td></td>);
     }
 
@@ -107,7 +107,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
    */
   function handleClick(dccid, e) {
     loris.loadFilteredMenuClickHandler('imaging_browser/', {
-      DCCID: dccid
+      DCCID: dccid,
     })(e);
   }
 
@@ -119,7 +119,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
      */
   function openViolatedScans(patientName, e) {
     loris.loadFilteredMenuClickHandler('mri_violations/', {
-      PatientName: patientName
+      PatientName: patientName,
     })(e);
   }
 

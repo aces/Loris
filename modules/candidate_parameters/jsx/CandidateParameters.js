@@ -6,7 +6,6 @@ import ConsentStatus from './ConsentStatus';
 import {Tabs, TabPane} from 'Tabs';
 
 class CandidateParameters extends React.Component {
-
   getTabPanes(tabList) {
     const actionURL = `${loris.BaseURL}/candidate_parameters/ajax/formHandler.php`;
     const dataURL = `${loris.BaseURL}/candidate_parameters/ajax/getData.php?candID=${this.props.candID}`;
@@ -27,20 +26,20 @@ class CandidateParameters extends React.Component {
 
   render() {
     let tabList = [
-      {id: "candidateInfo", label: "Candidate Information", component: CandidateInfo},
-      {id: "participantStatus", label: "Participant Status", component: ParticipantStatus}
+      {id: 'candidateInfo', label: 'Candidate Information', component: CandidateInfo},
+      {id: 'participantStatus', label: 'Participant Status', component: ParticipantStatus},
     ];
 
-    if (loris.config('useProband') === "true") {
-      tabList.push({id: "probandInfo", label: "Proband Information", component: ProbandInfo});
+    if (loris.config('useProband') === 'true') {
+      tabList.push({id: 'probandInfo', label: 'Proband Information', component: ProbandInfo});
     }
 
-    if (loris.config('useFamilyID') === "true") {
-      tabList.push({id: "familyInfo", label: "Family Information", component: FamilyInfo});
+    if (loris.config('useFamilyID') === 'true') {
+      tabList.push({id: 'familyInfo', label: 'Family Information', component: FamilyInfo});
     }
 
-    if (loris.config('useConsent') === "true") {
-      tabList.push({id: "consentStatus", label: "Consent Status", component: ConsentStatus});
+    if (loris.config('useConsent') === 'true') {
+      tabList.push({id: 'consentStatus', label: 'Consent Status', component: ConsentStatus});
     }
 
     return (

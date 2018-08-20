@@ -5,7 +5,7 @@ import DataIntegrityFlag from './DataIntegrityFlag';
  * Renders data_integrity_flag on page load
  */
 $(function() {
-  const dataURL = loris.BaseURL + "/data_integrity_flag/?format=json";
+  const dataURL = loris.BaseURL + '/data_integrity_flag/?format=json';
   const dataIntegrity = (
     <div id="page-data-integrity">
       <DataIntegrityFlag
@@ -14,5 +14,5 @@ $(function() {
       />
     </div>
   );
-  ReactDOM.render(dataIntegrity, document.getElementById("lorisworkspace"));
+  ReactDOM.render(dataIntegrity, document.getElementById('lorisworkspace'));
 });

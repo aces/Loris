@@ -1,24 +1,24 @@
-var ProbandInfo = React.createClass(
+let ProbandInfo = React.createClass(
   {
     getInitialState: function() {
       return {
         genderOptions: {
-          Male: "Male",
-          Female: "Female"
+          Male: 'Male',
+          Female: 'Female',
         },
         Data: [],
         formData: {},
         updateResult: null,
         errorMessage: null,
         isLoaded: false,
-        loadedData: 0
+        loadedData: 0,
       };
     },
     componentDidMount: function() {
       this.fetchData();
     },
     fetchData: function() {
-      var that = this;
+      let that = this;
       $.ajax(
         this.props.dataURL,
         {
@@ -27,7 +27,7 @@ var ProbandInfo = React.createClass(
             const formData = {
               ProbandGender: data.ProbandGender,
               ProbandDoB: data.ProbandDoB,
-              ProbandDoB2: data.ProbandDoB
+              ProbandDoB2: data.ProbandDoB,
             };
 
             // Add parameter values to formData
@@ -37,26 +37,26 @@ var ProbandInfo = React.createClass(
               {
                 formData: formData,
                 Data: data,
-                isLoaded: true
+                isLoaded: true,
               }
             );
           },
           error: function(data, errorCode, errorMsg) {
             that.setState(
               {
-                error: 'An error occurred when loading the form!'
+                error: 'An error occurred when loading the form!',
               }
             );
-          }
+          },
         }
       );
     },
     setFormData: function(formElement, value) {
-      var formData = JSON.parse(JSON.stringify(this.state.formData));
+      let formData = JSON.parse(JSON.stringify(this.state.formData));
       formData[formElement] = value;
       this.setState(
         {
-          formData: formData
+          formData: formData,
         }
       );
     },
@@ -87,37 +87,37 @@ var ProbandInfo = React.createClass(
         );
       }
 
-      var disabled = true;
-      var updateButton = null;
+      let disabled = true;
+      let updateButton = null;
       if (loris.userHasPermission('candidate_parameter_edit')) {
         disabled = false;
         updateButton = <ButtonElement label ="Update" />;
       }
 
-      var dobRequired = false;
-      var dob2Required = false;
+      let dobRequired = false;
+      let dob2Required = false;
       if (this.state.formData.ProbandGender !== null) {
         dobRequired = true;
       }
       if (this.state.formData.ProbandDoB !== null) {
         dob2Required = true;
       }
-      var extraParameterFields = [];
-      var extraParameters = this.state.Data.extra_parameters;
-      for (var key2 in extraParameters) {
+      let extraParameterFields = [];
+      let extraParameters = this.state.Data.extra_parameters;
+      for (let key2 in extraParameters) {
         if (extraParameters.hasOwnProperty(key2)) {
-          var paramTypeID = extraParameters[key2].ParameterTypeID;
-          var name = paramTypeID;
-          var value = this.state.formData[paramTypeID];
+          let paramTypeID = extraParameters[key2].ParameterTypeID;
+          let name = paramTypeID;
+          let value = this.state.formData[paramTypeID];
 
           switch (extraParameters[key2].Type.substring(0, 3)) {
-            case "enu":
-              var types = extraParameters[key2].Type.substring(5);
+            case 'enu':
+              let types = extraParameters[key2].Type.substring(5);
               types = types.slice(0, -1);
               types = types.replace(/'/g, '');
               types = types.split(',');
-              var selectOptions = {};
-              for (var key3 in types) {
+              let selectOptions = {};
+              for (let key3 in types) {
                 if (types.hasOwnProperty(key3)) {
                   selectOptions[types[key3]] = types[key3];
                 }
@@ -136,7 +136,7 @@ var ProbandInfo = React.createClass(
                 />
             );
               break;
-            case "dat":
+            case 'dat':
               extraParameterFields.push(
                 <DateElement
                     label={extraParameters[key2].Description}
@@ -165,16 +165,16 @@ var ProbandInfo = React.createClass(
         }
       }
 
-      var alertMessage = "";
-      var alertClass = "alert text-center hide";
+      let alertMessage = '';
+      let alertClass = 'alert text-center hide';
       if (this.state.updateResult) {
-        if (this.state.updateResult === "success") {
-          alertClass = "alert alert-success text-center";
-          alertMessage = "Update Successful!";
-        } else if (this.state.updateResult === "error") {
-          var errorMessage = this.state.errorMessage;
-          alertClass = "alert alert-danger text-center";
-          alertMessage = errorMessage ? errorMessage : "Failed to update!";
+        if (this.state.updateResult === 'success') {
+          alertClass = 'alert alert-success text-center';
+          alertMessage = 'Update Successful!';
+        } else if (this.state.updateResult === 'error') {
+          let errorMessage = this.state.errorMessage;
+          alertClass = 'alert alert-danger text-center';
+          alertMessage = errorMessage ? errorMessage : 'Failed to update!';
         }
       }
 
@@ -242,11 +242,11 @@ var ProbandInfo = React.createClass(
      */
     handleSubmit: function(e) {
       e.preventDefault();
-      var myFormData = this.state.formData;
-      var today = new Date();
-      var dd = today.getDate();
-      var mm = today.getMonth() + 1; // January is 0!
-      var yyyy = today.getFullYear();
+      let myFormData = this.state.formData;
+      let today = new Date();
+      let dd = today.getDate();
+      let mm = today.getMonth() + 1; // January is 0!
+      let yyyy = today.getFullYear();
       if (dd < 10) {
         dd = '0' + dd;
       }
@@ -254,25 +254,25 @@ var ProbandInfo = React.createClass(
         mm = '0' + mm;
       }
       today = yyyy + '-' + mm + '-' + dd;
-      var dob1 = myFormData.ProbandDoB ?
+      let dob1 = myFormData.ProbandDoB ?
         myFormData.ProbandDoB : null;
-      var dob2 = myFormData.ProbandDoB2 ?
+      let dob2 = myFormData.ProbandDoB2 ?
         myFormData.ProbandDoB2 : null;
       if (dob1 !== dob2) {
-        alert("DOB do not match!");
+        alert('DOB do not match!');
         return;
       }
 
       if (dob1 > today) {
-        alert("Proband date of birth cannot be later than today!");
+        alert('Proband date of birth cannot be later than today!');
         return;
       }
 
       // Set form data
-      var self = this;
-      var formData = new FormData();
-      for (var key in myFormData) {
-        if (myFormData[key] !== "") {
+      let self = this;
+      let formData = new FormData();
+      for (let key in myFormData) {
+        if (myFormData[key] !== '') {
           formData.append(key, myFormData[key]);
         }
       }
@@ -290,24 +290,24 @@ var ProbandInfo = React.createClass(
           success: function(data) {
             self.setState(
               {
-                updateResult: "success"
+                updateResult: 'success',
               }
             );
             self.showAlertMessage();
             self.fetchData();
           },
           error: function(err) {
-            if (err.responseText !== "") {
-              var errorMessage = JSON.parse(err.responseText).message;
+            if (err.responseText !== '') {
+              let errorMessage = JSON.parse(err.responseText).message;
               self.setState(
                 {
-                  updateResult: "error",
-                  errorMessage: errorMessage
+                  updateResult: 'error',
+                  errorMessage: errorMessage,
                 }
               );
               self.showAlertMessage();
             }
-          }
+          },
         }
       );
     },
@@ -315,23 +315,23 @@ var ProbandInfo = React.createClass(
      * Display a success/error alert message after form submission
      */
     showAlertMessage: function() {
-      var self = this;
-      if (this.refs["alert-message"] === null) {
+      let self = this;
+      if (this.refs['alert-message'] === null) {
         return;
       }
 
-      var alertMsg = this.refs["alert-message"];
+      let alertMsg = this.refs['alert-message'];
       $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
         500,
         function() {
           self.setState(
             {
-              updateResult: null
+              updateResult: null,
             }
           );
         }
       );
-    }
+    },
 
   }
 );

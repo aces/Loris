@@ -10,10 +10,10 @@ $(function() {
     <div className="page-imaging-uploader">
       <ImagingUploader
         Module="imaging_uploader"
-        DataURL={loris.BaseURL + "/imaging_uploader/?format=json"}
+        DataURL={loris.BaseURL + '/imaging_uploader/?format=json'}
       />
     </div>
   );
 
-  ReactDOM.render(imagingUploader, document.getElementById("lorisworkspace"));
+  ReactDOM.render(imagingUploader, document.getElementById('lorisworkspace'));
 });

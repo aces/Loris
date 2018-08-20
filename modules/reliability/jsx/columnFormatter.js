@@ -16,13 +16,13 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   // Create the mapping between rowHeaders and rowData in a row object.
-  var row = {};
+  let row = {};
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
 
-  if (column === "PSCID") {
-    if (row["Current Stage"] === "Recycling Bin") {
+  if (column === 'PSCID') {
+    if (row['Current Stage'] === 'Recycling Bin') {
       return (
         <td>{cell}
           <span className="text-danger">(Recycling Bin)</span>
@@ -30,18 +30,18 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       );
     }
 
-    if (row.Invalid === "yes") {
+    if (row.Invalid === 'yes') {
       return (<td>{cell} <span className="text-danger">(Invalid)</span></td>);
     }
 
-    if (row["Manual Swap"] === "yes") {
+    if (row['Manual Swap'] === 'yes') {
       return (<td>{cell} <span className="text-danger">(Manual)</span></td>);
     }
 
-    var testName = '/' + row.Instrument + '_reliability';
-    var commentID = row.CommentID;
-    var siteID = row.SiteID;
-    var url = loris.BaseURL + testName +
+    let testName = '/' + row.Instrument + '_reliability';
+    let commentID = row.CommentID;
+    let siteID = row.SiteID;
+    let url = loris.BaseURL + testName +
       '?identifier=' + commentID + '&reliability_center_id=' + siteID;
 
     return (
@@ -52,11 +52,11 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'Reliable') {
-    var reliable = row.Reliable;
+    let reliable = row.Reliable;
 
-    if (reliable === "Yes") {
+    if (reliable === 'Yes') {
       return <td className="bg-success">Yes</td>;
-    } else if (reliable === "No") {
+    } else if (reliable === 'No') {
       return <td className="bg-danger">No</td>;
     }
   }

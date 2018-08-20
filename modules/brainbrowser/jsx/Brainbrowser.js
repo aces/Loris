@@ -9,11 +9,11 @@
  * @version 1.0.0
  *
  * */
-var BrainBrowser = React.createClass({
+let BrainBrowser = React.createClass({
 
   getInitialState: function() {
     return {
-      defaultPanelSize: 300
+      defaultPanelSize: 300,
     };
   },
 
@@ -48,7 +48,7 @@ var BrainBrowser = React.createClass({
   },
 
   render: function() {
-    var options = {
+    let options = {
       100: '100 Pixels',
       200: '200 Pixels',
       256: '256 Pixels',
@@ -59,7 +59,7 @@ var BrainBrowser = React.createClass({
       700: '700 Pixels',
       800: '800 Pixels',
       900: '900 Pixels',
-      1000: '1000 Pixels'
+      1000: '1000 Pixels',
     };
 
     return (
@@ -85,11 +85,11 @@ var BrainBrowser = React.createClass({
         <div id="loading" className="loading-message">Loading...</div>
       </div>
     );
-  }
+  },
 
 });
 
-var RBrainBrowser = React.createFactory(BrainBrowser);
+let RBrainBrowser = React.createFactory(BrainBrowser);
 
 window.BrainBrowser = BrainBrowser;
 window.RBrainBrowser = RBrainBrowser;

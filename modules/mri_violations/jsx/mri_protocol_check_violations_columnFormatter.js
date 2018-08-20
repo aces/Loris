@@ -13,13 +13,13 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     return null;
   }
   // Create the mapping between rowHeaders and rowData in a row object.
-  var row = {};
+  let row = {};
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
 
   if (column === 'PatientName') {
-    var url = loris.BaseURL + "/dicom_archive/viewDetails/?tarchiveID=" +
+    let url = loris.BaseURL + '/dicom_archive/viewDetails/?tarchiveID=' +
         row.TarchiveID;
     return (
         <td>

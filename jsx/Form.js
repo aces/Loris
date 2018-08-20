@@ -34,7 +34,7 @@ class FormElement extends React.Component {
     const columns = this.props.columns;
     const maxColumnSize = 12;
     const colSize = Math.floor(maxColumnSize / columns);
-    const colClass = "col-xs-12 col-sm-" + colSize + " col-md-" + colSize;
+    const colClass = 'col-xs-12 col-sm-' + colSize + ' col-md-' + colSize;
 
     // Render elements from JSON
     const filter = this.props.formElements;
@@ -57,10 +57,10 @@ class FormElement extends React.Component {
     React.Children.forEach(this.props.children, function(child, key) {
       // If child is plain HTML, insert it as full size.
       // Useful for inserting <hr> to split form sections
-      let elementClass = "col-xs-12 col-sm-12 col-md-12";
+      let elementClass = 'col-xs-12 col-sm-12 col-md-12';
 
       // If child is form element use appropriate size
-      if (React.isValidElement(child) && typeof child.type === "function") {
+      if (React.isValidElement(child) && typeof child.type === 'function') {
         elementClass = colClass;
       }
       formElementsHTML.push(
@@ -88,8 +88,8 @@ class FormElement extends React.Component {
     // Flexbox is set to ensure that columns of different heights
     // are displayed proportionally on the screen
     let rowStyles = {
-      display: "flex",
-      flexWrap: "wrap"
+      display: 'flex',
+      flexWrap: 'wrap',
     };
 
     return (
@@ -120,11 +120,11 @@ FormElement.propTypes = {
   formElements: React.PropTypes.shape({
     elementName: React.PropTypes.shape({
       name: React.PropTypes.string,
-      type: React.PropTypes.string
-    })
+      type: React.PropTypes.string,
+    }),
   }),
   onSubmit: React.PropTypes.func,
-  onUserInput: React.PropTypes.func
+  onUserInput: React.PropTypes.func,
 };
 
 FormElement.defaultProps = {
@@ -138,7 +138,7 @@ FormElement.defaultProps = {
   formElements: {},
   onSubmit: function() {
     console.warn('onSubmit() callback is not set!');
-  }
+  },
 };
 
 /**
@@ -206,12 +206,12 @@ class SearchableDropdown extends React.Component {
     if (this.props.errorMessage) {
       errorMessage = <span>{this.props.errorMessage}</span>;
       elementClass = 'row form-group has-error';
-    } else if (this.props.required && this.props.value === "") {
+    } else if (this.props.required && this.props.value === '') {
       let msg = 'This field is required!';
       msg += (this.props.strictSearch ? ' ' + strictMessage : '');
       errorMessage = <span>{msg}</span>;
       elementClass = 'row form-group has-error';
-    } else if (this.props.strictSearch && this.props.value === "") {
+    } else if (this.props.strictSearch && this.props.value === '') {
       errorMessage = <span>{strictMessage}</span>;
       elementClass = 'row form-group has-error';
     }
@@ -272,14 +272,14 @@ SearchableDropdown.propTypes = {
   label: React.PropTypes.string,
   value: React.PropTypes.oneOfType([
     React.PropTypes.string,
-    React.PropTypes.array
+    React.PropTypes.array,
   ]),
   class: React.PropTypes.string,
   disabled: React.PropTypes.bool,
   required: React.PropTypes.bool,
   errorMessage: React.PropTypes.string,
   placeHolder: React.PropTypes.string,
-  onUserInput: React.PropTypes.func
+  onUserInput: React.PropTypes.func,
 };
 
 SearchableDropdown.defaultProps = {
@@ -296,7 +296,7 @@ SearchableDropdown.defaultProps = {
   placeHolder: '',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
-  }
+  },
 };
 
 /**
@@ -348,13 +348,13 @@ class SelectElement extends React.Component {
     }
 
     // Add error message
-    if (this.props.hasError || (this.props.required && this.props.value === "")) {
+    if (this.props.hasError || (this.props.required && this.props.value === '')) {
       errorMessage = <span>{this.props.errorMessage}</span>;
       elementClass = 'row form-group has-error';
     }
 
     // Default to empty string for regular select and to empty array for 'multiple' select
-    const value = this.props.value || (multiple ? [] : "");
+    const value = this.props.value || (multiple ? [] : '');
 
     return (
       <div className={elementClass}>
@@ -393,7 +393,7 @@ SelectElement.propTypes = {
   label: React.PropTypes.string,
   value: React.PropTypes.oneOfType([
     React.PropTypes.string,
-    React.PropTypes.array
+    React.PropTypes.array,
   ]),
   id: React.PropTypes.string,
   class: React.PropTypes.string,
@@ -403,7 +403,7 @@ SelectElement.propTypes = {
   emptyOption: React.PropTypes.bool,
   hasError: React.PropTypes.bool,
   errorMessage: React.PropTypes.string,
-  onUserInput: React.PropTypes.func
+  onUserInput: React.PropTypes.func,
 };
 
 SelectElement.defaultProps = {
@@ -421,7 +421,7 @@ SelectElement.defaultProps = {
   errorMessage: 'The field is required!',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
-  }
+  },
 };
 
 /**
@@ -510,7 +510,7 @@ class TagsElement extends React.Component {
     let requiredHTML = null;
     let emptyOptionHTML = null;
     let errorMessage = null;
-    let elementClass = "row form-group";
+    let elementClass = 'row form-group';
     // Add required asterix
     if (this.props.required) {
       requiredHTML = <span className="text-danger">*</span>;
@@ -538,7 +538,7 @@ class TagsElement extends React.Component {
             id={this.props.id}
             list={this.props.id + '_list'}
             className="form-control"
-            value={this.props.value || ""}
+            value={this.props.value || ''}
             disabled={disabled}
             onChange={this.handleChange}
             onKeyPress={this.handleKeyPress}
@@ -577,7 +577,7 @@ class TagsElement extends React.Component {
         name={this.props.name}
         id={this.props.id}
         className="form-control"
-        value={this.props.value || ""}
+        value={this.props.value || ''}
         disabled={disabled}
         onChange={this.handleChange}
         onKeyPress={this.handleKeyPress}
@@ -657,7 +657,7 @@ TagsElement.propTypes = {
   strictSearch: React.PropTypes.bool,
   onUserInput: React.PropTypes.func,
   onUserAdd: React.PropTypes.func,
-  onUserRemove: React.PropTypes.func
+  onUserRemove: React.PropTypes.func,
 };
 
 TagsElement.defaultProps = {
@@ -686,7 +686,7 @@ TagsElement.defaultProps = {
   },
   onUserRemove: function() {
     console.warn('onUserRemove() callback is not set');
-  }
+  },
 };
 
 /**
@@ -726,7 +726,7 @@ class TextareaElement extends React.Component {
             className="form-control"
             name={this.props.name}
             id={this.props.id}
-            value={this.props.value || ""}
+            value={this.props.value || ''}
             required={required}
             disabled={disabled}
             onChange={this.handleChange}
@@ -747,7 +747,7 @@ TextareaElement.propTypes = {
   required: React.PropTypes.bool,
   rows: React.PropTypes.number,
   cols: React.PropTypes.number,
-  onUserInput: React.PropTypes.func
+  onUserInput: React.PropTypes.func,
 };
 
 TextareaElement.defaultProps = {
@@ -761,7 +761,7 @@ TextareaElement.defaultProps = {
   cols: 25,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
-  }
+  },
 };
 
 /**
@@ -813,7 +813,7 @@ class TextboxElement extends React.Component {
             className="form-control"
             name={this.props.name}
             id={this.props.id}
-            value={this.props.value || ""}
+            value={this.props.value || ''}
             required={required}
             disabled={disabled}
             onChange={this.handleChange}
@@ -835,7 +835,7 @@ TextboxElement.propTypes = {
   required: React.PropTypes.bool,
   errorMessage: React.PropTypes.string,
   onUserInput: React.PropTypes.func,
-  onUserBlur: React.PropTypes.func
+  onUserBlur: React.PropTypes.func,
 };
 
 TextboxElement.defaultProps = {
@@ -850,7 +850,7 @@ TextboxElement.defaultProps = {
     console.warn('onUserInput() callback is not set');
   },
   onUserBlur: function() {
-  }
+  },
 };
 
 /**
@@ -892,7 +892,7 @@ class DateElement extends React.Component {
             min={this.props.minYear}
             max={this.props.maxYear}
             onChange={this.handleChange}
-            value={this.props.value || ""}
+            value={this.props.value || ''}
             required={required}
             disabled={disabled}
           />
@@ -911,7 +911,7 @@ DateElement.propTypes = {
   minYear: React.PropTypes.string,
   disabled: React.PropTypes.bool,
   required: React.PropTypes.bool,
-  onUserInput: React.PropTypes.func
+  onUserInput: React.PropTypes.func,
 };
 
 DateElement.defaultProps = {
@@ -925,7 +925,7 @@ DateElement.defaultProps = {
   required: false,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
-  }
+  },
 };
 
 /**
@@ -944,9 +944,9 @@ class TimeElement extends React.Component {
   }
 
   render() {
-    var disabled = this.props.disabled ? 'disabled' : null;
-    var required = this.props.required ? 'required' : null;
-    var requiredHTML = null;
+    let disabled = this.props.disabled ? 'disabled' : null;
+    let required = this.props.required ? 'required' : null;
+    let requiredHTML = null;
 
     // Add required asterix
     if (required) {
@@ -966,7 +966,7 @@ class TimeElement extends React.Component {
             name={this.props.name}
             id={this.props.id}
             onChange={this.handleChange}
-            value={this.props.value || ""}
+            value={this.props.value || ''}
             required={required}
             disabled={disabled}
             pattern="([0-1][0-9]|2[0-4]|[1-9]):([0-5][0-9])(:([0-5][0-9]))?"
@@ -985,7 +985,7 @@ TimeElement.propTypes = {
   id: React.PropTypes.string,
   disabled: React.PropTypes.bool,
   required: React.PropTypes.bool,
-  onUserInput: React.PropTypes.func
+  onUserInput: React.PropTypes.func,
 };
 
 TimeElement.defaultProps = {
@@ -997,7 +997,7 @@ TimeElement.defaultProps = {
   required: false,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
-  }
+  },
 };
 
 /**
@@ -1053,7 +1053,7 @@ NumericElement.propTypes = {
   id: React.PropTypes.string,
   disabled: React.PropTypes.bool,
   required: React.PropTypes.bool,
-  onUserInput: React.PropTypes.func
+  onUserInput: React.PropTypes.func,
 };
 
 NumericElement.defaultProps = {
@@ -1067,7 +1067,7 @@ NumericElement.defaultProps = {
   disabled: false,
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
-  }
+  },
 };
 
 /**
@@ -1102,13 +1102,13 @@ class FileElement extends React.Component {
       display: 'table',
       tableLayout: 'fixed',
       width: '100%',
-      whiteSpace: 'nowrap'
+      whiteSpace: 'nowrap',
     };
 
     const truncateEllipsisChild = {
       display: 'table-cell',
       overflow: 'hidden',
-      textOverflow: 'ellipsis'
+      textOverflow: 'ellipsis',
     };
 
     // Add error message
@@ -1120,14 +1120,14 @@ class FileElement extends React.Component {
     // Need to manually reset file value, because HTML API
     // does not allow setting value to anything than empty string.
     // Hence can't use value attribute in the input element.
-    const fileHTML = document.querySelector(".fileUpload");
+    const fileHTML = document.querySelector('.fileUpload');
     if (fileHTML && !fileName) {
-      fileHTML.value = "";
+      fileHTML.value = '';
     }
 
     if (this.props.disabled) {
       // add padding to align video title on disabled field
-      truncateEllipsis.paddingTop = "7px";
+      truncateEllipsis.paddingTop = '7px';
       return (
         <div className={elementClass}>
           <label className="col-sm-3 control-label">
@@ -1182,14 +1182,14 @@ FileElement.propTypes = {
   label: React.PropTypes.string,
   value: React.PropTypes.oneOfType([
     React.PropTypes.string,
-    React.PropTypes.object
+    React.PropTypes.object,
   ]),
   id: React.PropTypes.string,
   disabled: React.PropTypes.bool,
   required: React.PropTypes.bool,
   hasError: React.PropTypes.bool,
   errorMessage: React.PropTypes.string,
-  onUserInput: React.PropTypes.func
+  onUserInput: React.PropTypes.func,
 };
 
 FileElement.defaultProps = {
@@ -1203,7 +1203,7 @@ FileElement.defaultProps = {
   errorMessage: 'The field is required!',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
-  }
+  },
 };
 
 /**
@@ -1222,7 +1222,6 @@ FileElement.defaultProps = {
  * ```
  */
 class StaticElement extends React.Component {
-
   render() {
     return (
       <div className="row form-group">
@@ -1241,13 +1240,13 @@ StaticElement.propTypes = {
   label: React.PropTypes.string,
   text: React.PropTypes.oneOfType([
     React.PropTypes.string,
-    React.PropTypes.element
-  ])
+    React.PropTypes.element,
+  ]),
 };
 
 StaticElement.defaultProps = {
   label: '',
-  text: null
+  text: null,
 };
 
 /**
@@ -1255,7 +1254,6 @@ StaticElement.defaultProps = {
  * Used to link plain/formated text to an href destination as part of a form
  */
 class LinkElement extends React.Component {
-
   render() {
     return (
       <div className="row form-group">
@@ -1274,15 +1272,15 @@ LinkElement.propTypes = {
   label: React.PropTypes.string,
   text: React.PropTypes.oneOfType([
     React.PropTypes.string,
-    React.PropTypes.element
+    React.PropTypes.element,
   ]),
-  href: React.PropTypes.string
+  href: React.PropTypes.string,
 };
 
 LinkElement.defaultProps = {
   label: '',
   text: null,
-  href: null
+  href: null,
 };
 
 /**
@@ -1319,7 +1317,7 @@ class ButtonElement extends React.Component {
 ButtonElement.propTypes = {
   label: React.PropTypes.string,
   type: React.PropTypes.string,
-  onUserInput: React.PropTypes.func
+  onUserInput: React.PropTypes.func,
 };
 
 ButtonElement.defaultProps = {
@@ -1329,14 +1327,13 @@ ButtonElement.defaultProps = {
   columnSize: 'col-sm-9 col-sm-offset-3',
   onUserInput: function() {
     console.warn('onUserInput() callback is not set');
-  }
+  },
 };
 
 /**
  * Generic form element.
  */
 class LorisElement extends React.Component {
-
   render() {
     let elementProps = this.props.element;
     elementProps.ref = elementProps.name;
@@ -1380,7 +1377,7 @@ class LorisElement extends React.Component {
         break;
       default:
         console.warn(
-          "Element of type " + elementProps.type + " is not currently implemented!"
+          'Element of type ' + elementProps.type + ' is not currently implemented!'
         );
         break;
     }
@@ -1418,5 +1415,5 @@ export default {
   StaticElement,
   LinkElement,
   ButtonElement,
-  LorisElement
+  LorisElement,
 };

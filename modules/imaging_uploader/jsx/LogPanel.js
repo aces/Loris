@@ -14,13 +14,12 @@ import Panel from 'Panel';
  *
  */
 class LogPanel extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
-      logText: "<select a row in the table below to view the upload logs>",
-      logType: "summary"
+      logText: '<select a row in the table below to view the upload logs>',
+      logType: 'summary',
     };
 
     this.initHelper = this.initHelper.bind(this);
@@ -50,7 +49,7 @@ class LogPanel extends React.Component {
         uploadProgress.setUploadRow(null);
         uploadProgress.setProgressFromServer(null);
         this.setState({
-          logText: '<select a row in the table below to view the upload logs>'
+          logText: '<select a row in the table below to view the upload logs>',
         });
         return;
       }
@@ -70,7 +69,7 @@ class LogPanel extends React.Component {
    * @param {string} logType - summary or details
    */
   monitorProgress(logType) {
-    const summary = (logType === "summary");
+    const summary = (logType === 'summary');
     const uploadProgress = this.uploadProgress;
     const uploadId = uploadProgress.getUploadId();
 
@@ -79,9 +78,9 @@ class LogPanel extends React.Component {
       return;
     }
 
-    $.post(loris.BaseURL + "/imaging_uploader/ajax/getUploadSummary.php", {
+    $.post(loris.BaseURL + '/imaging_uploader/ajax/getUploadSummary.php', {
       uploadId: uploadId,
-      summary: summary
+      summary: summary,
     }, function(data) {
       uploadProgress.setProgressFromServer(data);
       this.setState({logText: uploadProgress.getProgressText()});
@@ -90,7 +89,7 @@ class LogPanel extends React.Component {
       this.setServerPolling(
         uploadProgress.getPipelineStatus() === UploadProgress.PIPELINE_STATUS_RUNNING
       );
-    }.bind(this));  // post call
+    }.bind(this)); // post call
   }
 
   /**
@@ -113,7 +112,7 @@ class LogPanel extends React.Component {
         this.setServerPolling.dotUpdateInterval = setInterval(function() {
           uploadProgress.updateDots();
           this.setState({
-            logText: uploadProgress.getProgressText()
+            logText: uploadProgress.getProgressText(),
           });
         }, 3000);
       }
@@ -122,7 +121,7 @@ class LogPanel extends React.Component {
         this.setServerPolling.animatedCharInterval = setInterval(function() {
           uploadProgress.updateAnimatedCharIndex();
           this.setState({
-            logText: uploadProgress.getProgressText()
+            logText: uploadProgress.getProgressText(),
           });
         }, 250);
       }
@@ -155,7 +154,7 @@ class LogPanel extends React.Component {
   render() {
     const logTypes = {
       summary: 'Summary',
-      detailed: 'Detailed'
+      detailed: 'Detailed',
     };
 
     return (
