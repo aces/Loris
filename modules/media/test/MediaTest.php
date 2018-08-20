@@ -93,6 +93,7 @@ class MediaTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
+        sleep(2);
         print_r($bodyText);
         foreach ($this->_loadingBrowseUI as $key => $value) {
             $text = $this->webDriver->executescript(
