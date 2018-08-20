@@ -194,7 +194,7 @@ class Stats_Demographic extends \NDB_Form
         $subprojects     = \Utility::getSubprojectsForProject($project);
 
         if (!empty($subprojects)) {
-            $subprojList     = '"'.implode('","', $subprojects).'"';
+            $subprojList     = implode(',', array_keys($subprojects));
             $subprojectQuery = "AND s.SubprojectID IN ($subprojList)";
         }
 
