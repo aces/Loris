@@ -100,23 +100,7 @@ class Statistics_Test extends LorisIntegrationTest
         )->getText();
         $this->assertContains("Data Entry Statistics", $bodyText);
     }
-    /**
-     * Tests that, when loading the Reliability Statistics Tab in Statistics
-     * module, some text appears in the body.
-     *
-     * @return void
-     */
-    function testReliabilityStatisticsTab()
-    {
-        $this->safeGet(
-            $this->url .
-            "/statistics/stats_reliability/?dynamictabs=dynamictabs"
-        );
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector(".statsH2")
-        )->getText();
-        $this->assertContains("Reliability Statistics", $bodyText);
-    }
+
     /**
      * Tests that, when loading the Demographic Statistics Tab
      * in Statistics module, some text appears in the body.

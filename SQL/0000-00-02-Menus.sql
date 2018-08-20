@@ -51,7 +51,6 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
 
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
-    ('Reliability', 'reliability/', (SELECT ID FROM LorisMenu as L WHERE Label='Clinical'), 1),
     ('Conflict Resolver', 'conflict_resolver/', (SELECT ID FROM LorisMenu as L WHERE Label='Clinical'), 2),
     ('Examiner', 'examiner/', (SELECT ID FROM LorisMenu as L WHERE Label='Clinical'), 3),
     ('Training', 'training/', (SELECT ID FROM LorisMenu as L WHERE Label='Clinical'), 4),
@@ -101,14 +100,6 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_entry' AND m.Label='Access Profile';
 INSERT INTO LorisMenuPermissions (MenuID, PermID)
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='access_all_profiles' AND m.Label='Access Profile';
-
-
-INSERT INTO LorisMenuPermissions (MenuID, PermID)
-    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='user_accounts' AND m.Label='Reliability';
-INSERT INTO LorisMenuPermissions (MenuID, PermID)
-    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='reliability_edit_all' AND m.Label='Reliability';
-INSERT INTO LorisMenuPermissions (MenuID, PermID)
-    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='access_all_profiles' AND m.Label='Reliability';
 
 
 INSERT INTO LorisMenuPermissions (MenuID, PermID)
