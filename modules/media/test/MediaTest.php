@@ -90,10 +90,10 @@ class MediaTest extends LorisIntegrationTest
     function testPageBrowseUIs()
     {
         $this->safeGet($this->url . "/media/");
-        sleep(1);
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
+        sleep(1);
         foreach ($this->_loadingBrowseUI as $key => $value) {
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
@@ -108,7 +108,7 @@ class MediaTest extends LorisIntegrationTest
       */
     function testBrowseFilter()
     {
-        $this->_testFilter("/media/", "PSCID", "MTL010", "1 rows");
+        $this->_testFilter("/media/", "pSCID", "MTL010", "1 rows");
         $this->_testFilter("/media/", "fileName", "MTL010", "1 rows");
         $this->_testFilter(
             "/media/",
@@ -187,7 +187,7 @@ class MediaTest extends LorisIntegrationTest
         );
         $this->webDriver->executescript(
             "document.querySelector('#media_filter_form > div >".
-            " div:nth-child(9) > div > div > button').click()"
+            " div:nth-child(11) > div > div > button').click()"
         );
 
         $this->assertContains($expectDataRows, $text);
