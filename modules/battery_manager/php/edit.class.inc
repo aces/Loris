@@ -58,25 +58,6 @@ class Edit extends \NDB_Form
     }
 
     /**
-     * Include additional CSS files:
-     *  1. battery_manager.css
-     *
-     * @return array of javascript to be inserted
-     */
-    function getCSSDependencies()
-    {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            array(
-             $baseURL . "/battery_manager/css/battery_manager.css",
-            )
-        );
-    }
-
-    /**
      * Include additional JS files:
      *  1. editEntry.js - reactified form to update test_battery
      *
