@@ -73,8 +73,8 @@ class Configuration extends \NDB_Form
         $this->tpl_data['lookup_center']   = array(
                                               ''            => '',
                                               'PatientID'   => 'PatientID',
-                                              'PatientName' => 'PatientName'
-                                            );
+                                              'PatientName' => 'PatientName',
+                                             );
     }
 
     /**
