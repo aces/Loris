@@ -71,10 +71,10 @@ class Configuration extends \NDB_Form
         $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
         $this->tpl_data['scan_types']      = $scan_types;
         $this->tpl_data['lookup_center']   = array(
-            ''            => '',
-            'PatientID'   => 'PatientID',
-            'PatientName' => 'PatientName'
-        );
+                                              ''            => '',
+                                              'PatientID'   => 'PatientID',
+                                              'PatientName' => 'PatientName'
+                                            );
     }
 
     /**
