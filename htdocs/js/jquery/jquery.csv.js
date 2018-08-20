@@ -17,7 +17,7 @@ jQuery.extend({
                 out = [], q;
             for (var i=0, l=arr.length; i<l; i++) {
                 if (q = arr[i].match(quote)) {
-                    for (j=i; j<l; j++) {
+                    for (let j=i; j<l; j++) {
                         if (arr[j].charAt(arr[j].length-1) == q[0]) { break; }
                     }
                     var s = arr.slice(i,j+1).join(delim);

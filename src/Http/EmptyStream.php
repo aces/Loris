@@ -57,10 +57,11 @@ class EmptyStream implements \Psr\Http\Message\StreamInterface
     /**
      * Stub to implements PSR7 StreamInterface. No-op
      *
-     * @return void
+     * @return null
      */
     public function detach()
     {
+        return null;
     }
 
     /**
@@ -141,11 +142,11 @@ class EmptyStream implements \Psr\Http\Message\StreamInterface
      *
      * @param string $string The string to write to the stream
      *
-     * @return void
+     * @return int The number of bytes written (always 0)
      */
-    public function write($string)
+    public function write($string) : int
     {
-        return;
+        return 0;
     }
 
     /**

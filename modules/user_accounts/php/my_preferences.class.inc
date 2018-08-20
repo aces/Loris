@@ -40,7 +40,7 @@ class My_Preferences extends \NDB_Form
     /**
      * Computes the initial values this page will be filled with.
      *
-     * @return the default values for the initial state of this page.
+     * @return array the default values for the initial state of this page.
      */
     function _getDefaults()
     {
@@ -244,8 +244,6 @@ class My_Preferences extends \NDB_Form
     {
         parent::setup();
 
-        $DB =& \Database::singleton();
-
         $this->identifier = $_SESSION['State']->getUsername();
 
         $user =& \User::singleton($this->identifier);
@@ -317,14 +315,7 @@ class My_Preferences extends \NDB_Form
         $this->form->addElement('password', '__Confirm', 'Confirm Password');
 
         // language preference
-        $languagesDB = $DB->pselect(
-            "SELECT language_id, language_label
-             FROM language",
-            array()
-        );
-        foreach ($languagesDB as $language) {
-            $languages[$language['language_id']] = $language['language_label'];
-        }
+        $languages = \Utility::getLanguageList();
         $this->addSelect('language_preference', 'Language preference', $languages);
 
         // Notification headers

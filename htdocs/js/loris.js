@@ -1,8 +1,8 @@
 /* exported LorisHelper */
 
-var LorisHelper = function(configParams, userPerms, studyParams) {
-  "use strict";
-  var lorisObj = configParams;
+let LorisHelper = function(configParams, userPerms, studyParams) {
+  'use strict';
+  let lorisObj = configParams;
 
     // Filters will only get applied on a POST, so
     // on click we need to fake a form which posts
@@ -11,19 +11,19 @@ var LorisHelper = function(configParams, userPerms, studyParams) {
   lorisObj.loadFilteredMenuClickHandler = function(module, filters) {
     return function(e) {
       e.preventDefault();
-      var form = $('<form />', {
-        action: configParams.BaseURL + "/" + module,
-        method: "post"
+      let form = $('<form />', {
+        action: configParams.BaseURL + '/' + module,
+        method: 'post',
       });
-      var values = filters;
-      filters.reset = "true";
-      filters.filter = "Show Data";
+      let values = filters;
+      filters.reset = 'true';
+      filters.filter = 'Show Data';
 
       $.each(values, function(name, value) {
-        $("<input />", {
+        $('<input />', {
           type: 'hidden',
           name: name,
-          value: value
+          value: value,
         }).appendTo(form);
       });
 
@@ -31,13 +31,13 @@ var LorisHelper = function(configParams, userPerms, studyParams) {
     };
   };
   lorisObj.getCookie = function(cName) {
-    "use strict";
-    var cookies = document.cookie.split("; ");
-    var i;
-    var cookie;
+    'use strict';
+    let cookies = document.cookie.split('; ');
+    let i;
+    let cookie;
 
     for (i = 0; i < cookies.length; i += 1) {
-      cookie = cookies[i].split("=");
+      cookie = cookies[i].split('=');
       if (cookie[0] === cName) {
         return cookie[1];
       }
@@ -45,9 +45,9 @@ var LorisHelper = function(configParams, userPerms, studyParams) {
     return undefined;
   };
   lorisObj.userHasPermission = function(permname) {
-    "use strict";
+    'use strict';
     if (userPerms.indexOf(permname) >= 0 ||
-      userPerms.indexOf("superuser") >= 0
+      userPerms.indexOf('superuser') >= 0
     ) {
       return true;
     }
@@ -55,10 +55,10 @@ var LorisHelper = function(configParams, userPerms, studyParams) {
   };
 
   lorisObj.debounce = function(fn, delay) {
-    var timer = null;
+    let timer = null;
     return function() {
-      var context = this;
-      var args = arguments;
+      let context = this;
+      let args = arguments;
       clearTimeout(timer);
       timer = setTimeout(function() {
         fn.apply(context, args);
@@ -68,7 +68,7 @@ var LorisHelper = function(configParams, userPerms, studyParams) {
 
     // Returns config settings from whitelist passed in main.php (study options)
   lorisObj.config = function(param) {
-    "use strict";
+    'use strict';
     return studyParams[param];
   };
   return lorisObj;

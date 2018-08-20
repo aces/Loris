@@ -15,5 +15,5 @@ $(function() {
     </div>
   );
 
-  ReactDOM.render(candidateParameters, document.getElementById("lorisworkspace"));
+  ReactDOM.render(candidateParameters, document.getElementById('lorisworkspace'));
 });

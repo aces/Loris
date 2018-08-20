@@ -41,7 +41,7 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Reference to the HTML QuickForm
      *
-     * @var LorisForm
+     * @var \LorisForm
      */
     var $form;
 
@@ -101,7 +101,7 @@ class NDB_Page implements RequestHandlerInterface
         $this->Module = $module;
         $this->name   = $module->getName(); // for legacy purposes.
 
-        $this->form       = new LorisForm($formname);
+        $this->form       = new LorisForm();
         $this->page       = $page;
         $this->identifier = $identifier;
         $this->commentID  = $commentID;
@@ -419,7 +419,7 @@ class NDB_Page implements RequestHandlerInterface
      */
     function addGroupRule($group, $arg1, $type='', $format=null)
     {
-        $this->form->addGroupRule($group, $arg1, $type, $format);
+        $this->form->addGroupRule($group, $arg1, $type);
     }
 
     /**
@@ -447,7 +447,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $options Extra options to pass to QuickForm
      * @param array  $attr    Extra HTML attributes to add to the element
      *
-     * @return HTML_QuickForm select element
+     * @return array representing select element
      */
     function createSelect(
         $field,
@@ -463,7 +463,7 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $labelString The label to attach to the element
      *
-     * @return HTML_QuickForm Label element
+     * @return array representing label element
      */
     function createLabel(
         $labelString
@@ -482,7 +482,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $label   The label to attach to the element
      * @param array  $attribs Extra HTML attributes to add to the element
      *
-     * @return HTML_QuickForm Text element
+     * @return array representing text element
      */
     function createText(
         $field,
@@ -499,7 +499,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $field The field name for the TextArea
      * @param string $label The label to attach to this TextArea
      *
-     * @return HTML_QuickForm textarea element
+     * @return array representing textarea element
      */
     function createTextArea($field, $label=null)
     {
@@ -520,7 +520,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $attr        List of HTML attributes to add to the date
      *                            group.
      *
-     * @return HTML_QuickForm date element
+     * @return array representing date element
      */
     function createDate(
         $field,
@@ -548,7 +548,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $options Options to pass to HTML_QuickForm
      * @param string $closer  ?????
      *
-     * @return QuickForm_Element representing checkbox
+     * @return array representing checkbox
      */
     function createCheckbox($field, $label, $options=null, $closer='</label>')
     {
@@ -568,7 +568,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $label   The label to attach to this radio button
      * @param string $options Options to pass to LorisForm
      *
-     * @return QuickForm_Element representing radio button
+     * @return array representing radio button
      */
     function createRadio($field, $label, $options=null)
     {
@@ -588,7 +588,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $label The label to attach to the form element
      * @param array  $attr  List of HTML attributes to add to the element
      *
-     * @return QuickForm_Element Form element
+     * @return array representing form element
      */
     function createPassword(
         $field,
@@ -618,10 +618,14 @@ class NDB_Page implements RequestHandlerInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
-        $baseURL = $request->getAttribute("baseurl");
-        $config  = NDB_Config::singleton();
-
         $user = $request->getAttribute("user");
+        if ($this->_hasAccess() !== true) {
+            return (new \LORIS\Middleware\PageDecorationMiddleware($user))
+                ->process(
+                    $request,
+                    new \LORIS\Http\StringStream("Permission Denied")
+                )->withStatus(403);
+        }
 
         // The NDB_Page object itself is sometimes required by middleware,
         // but since the PSR15 Middleware interface is fixed, it needs to be
@@ -639,30 +643,12 @@ class NDB_Page implements RequestHandlerInterface
         $get = $request->getQueryParams();
         if (isset($get['format'])) {
             $this->format = $get['format'];
-            // Do not add the decoration middleware for json format requests. See
-            // FIXME above.
-            return $handler->handle($request);
+            return $handler->handle($request)
+                ->withHeader("Content-Type", "application/json");
         }
-
-        if ($user instanceOf \LORIS\AnonymousUser) {
-            return (new \LORIS\Middleware\AnonymousPageDecorationMiddleware(
-                $baseURL,
-                $config,
-                $this->getJSDependencies(),
-                $this->getCSSDependencies()
-            )
-            )->process($request, $handler);
-        }
-
-        return (new \LORIS\Middleware\UserPageDecorationMiddleware(
-            $user,
-            $baseURL,
-            $this->name,
-            $config,
-            $this->getJSDependencies(),
-            $this->getCSSDependencies()
-        )
-        )->process($request, $handler);
+        return (new \LORIS\Middleware\PageDecorationMiddleware($user))
+            ->process($request, $handler)
+            ->withHeader("Content-Type", "text/html");
     }
 
     /**
@@ -684,7 +670,7 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * Displays the form
      *
-     * @return a string of the content to be inserted into the template
+     * @return string of the content to be inserted into the template
      */
     function display()
     {
@@ -845,6 +831,28 @@ class NDB_Page implements RequestHandlerInterface
     function _hasAccess()
     {
         return true;
+    }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $label    = ucwords(str_replace('_', ' ', $this->name));
+        $sublabel = ucwords(str_replace('_', ' ', $this->page));
+
+        if ($label == $sublabel) {
+            return new \LORIS\BreadcrumbTrail(
+                new \LORIS\Breadcrumb($label, "/$this->name")
+            );
+        }
+
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb($label, "/$this->name"),
+            new \LORIS\Breadcrumb($sublabel, "/$this->name/$this->page")
+        );
     }
 }
 ?>

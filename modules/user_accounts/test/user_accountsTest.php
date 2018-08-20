@@ -116,6 +116,8 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function testUserAccountEdits()
     {
+        $this->markTestSkipped("Skipping excessively slow test");
+        return;
         $this->_verifyUserModification(
             'user_accounts',
             'UnitTester',

@@ -3,9 +3,9 @@
  InstrumentConflictsPanel
  */
 
-var PagedRowHeader = React.createClass({
+let PagedRowHeader = React.createClass({
   propType: {
-    headerRow: React.PropTypes.array.isRequired
+    headerRow: React.PropTypes.array.isRequired,
   },
   render: function() {
     return (
@@ -17,28 +17,28 @@ var PagedRowHeader = React.createClass({
       </tr>
       </thead>
     );
-  }
+  },
 });
 
-var PagedTable = React.createClass({
+let PagedTable = React.createClass({
   propTypes: {
     tableHeaders: React.PropTypes.array,
-    tableRows: React.PropTypes.array
+    tableRows: React.PropTypes.array,
   },
   getInitialState: function() {
     return {
       pageSize: 10,
-      currentPage: 1
+      currentPage: 1,
     };
   },
   componentWillReceiveProps: function(nextProps) {
     this.setState({
-      currentPage: 1
+      currentPage: 1,
     });
   },
   getPage: function() {
-    var start = this.state.pageSize * (this.state.currentPage - 1);
-    var end = start + this.state.pageSize;
+    let start = this.state.pageSize * (this.state.currentPage - 1);
+    let end = start + this.state.pageSize;
 
     return {
       currentPage: this.state.currentPage,
@@ -48,11 +48,11 @@ var PagedTable = React.createClass({
         return function() {
           this.handlePageChange(pageNum);
         }.bind(this);
-      }.bind(this)
+      }.bind(this),
     };
   },
   getNumPages: function() {
-    var numPages = Math.floor(
+    let numPages = Math.floor(
       this.props.tableRows.length / this.state.pageSize
     );
     if (this.props.tableRows.length % this.state.pageSize > 0) {
@@ -64,15 +64,15 @@ var PagedTable = React.createClass({
     this.setState({currentPage: pageNum});
   },
   render: function() {
-    var tableContents = "There is no data to display";
-    var page = this.getPage();
-    var rowsToMap = page.tableRows;
-    var childrenToMap = this.props.children;
+    let tableContents = 'There is no data to display';
+    let page = this.getPage();
+    let rowsToMap = page.tableRows;
+    let childrenToMap = this.props.children;
 
-    var currentPageRows = rowsToMap.map(function(row) {
-      var mapped = React.Children.map(childrenToMap, function(child) {
+    let currentPageRows = rowsToMap.map(function(row) {
+      let mapped = React.Children.map(childrenToMap, function(child) {
         return React.cloneElement(child, {
-          row: row
+          row: row,
         });
       });
       return mapped;
@@ -95,61 +95,64 @@ var PagedTable = React.createClass({
         <nav><BVLPager page={page}/></nav>
       </div>
     );
-  }
+  },
 });
 
-var IncompleteCandidatesRow = React.createClass({
+let IncompleteCandidatesRow = React.createClass({
   handleClick: function(event) {
     event.preventDefault();
-    var link = this.refs.incomplete;
-    window.open(link, "Incomplete Candidate");
+    let link = this.refs.incomplete;
+    window.open(link, 'Incomplete Candidate');
   },
   propTypes: {
     row: React.PropTypes.object.isRequired,
-    BaseURL: React.PropTypes.string.isRequired
+    BaseURL: React.PropTypes.string.isRequired,
 
   },
   render: function() {
-    var row = this.props.row;
+    let row = this.props.row;
     return (
-      <tr key={row.id} onClick={this.handleClick}>
+      <tr key={row.id} >
         <td>
-          <a href={this.props.BaseURL + "/" + row.candid + "/" +
-          row.SessionID + "/"}
+          <a href={this.props.BaseURL + '/instruments_list/?candID=' +
+              row.candid +
+              '&sessionID=' + row.SessionID}
           >
             {row.visit_label}
           </a>
         </td>
         <td>
-          <a href={this.props.BaseURL + "/" + row.candid + "/"}>
+          <a href={this.props.BaseURL + '/' + row.candid + '/'}>
             {row.candid}
           </a>
         </td>
           <td>
-              <a href={this.props.BaseURL + "/" + row.CandID + "/"}>
+              <a href={this.props.BaseURL + '/' + row.candid + '/'}>
                   {row.PSCID}
               </a>
           </td>
         <td>
-          <a href={this.props.BaseURL + "/" + row.candid + "/" + row.SessionID +
-          "/" + row.test_name + "/?commentID=" + row.commentid} ref="incomplete"
-          >
+          <a href={this.props.BaseURL + '/instruments/' + row.test_name +
+              '/?candID=' + row.candid +
+              '&sessionID=' + row.SessionID +
+              '&commentID=' + row.commentid} ref="incomplete"
+              onClick={this.handleClick} >
             {row.Full_name}
           </a>
         </td>
       </tr>
     );
-  }
+  },
 });
 
-var InstrumentConflictsRow = React.createClass({
+let InstrumentConflictsRow = React.createClass({
   proptypes: {
     row: React.PropTypes.object.isRequired,
-    BaseURL: React.PropTypes.string.isRequired
+    BaseURL: React.PropTypes.string.isRequired,
   },
   render: function() {
-    var row = this.props.row;
-    var baseURL = this.props.BaseURL;
+    let row = this.props.row;
+    let baseURL = this.props.BaseURL;
     return (
       <tr
         key={row.CandID + row.visit_label + row.test_name_display +
@@ -158,14 +161,14 @@ var InstrumentConflictsRow = React.createClass({
       >
         <td>{row.visit_label}</td>
         <td>
-          <a href={baseURL + "/" + row.CandID + "/"}>{row.CandID}</a>
+          <a href={baseURL + '/' + row.CandID + '/'}>{row.CandID}</a>
         </td>
           <td>
-              <a href={baseURL + "/" + row.CandID + "/"}>{row.PSCID}</a>
+              <a href={baseURL + '/' + row.CandID + '/'}>{row.PSCID}</a>
           </td>
         <td>
           <a href="#" onClick={loris.loadFilteredMenuClickHandler(
-                 "conflict_resolver/",
+                 'conflict_resolver/',
                   {CandID: row.CandID,
                   Instrument: row.TableName,
                   Question: row.FieldName}
@@ -174,50 +177,52 @@ var InstrumentConflictsRow = React.createClass({
         <td>{row.FieldName}</td>
       </tr>
     );
-  }
+  },
 });
 
-var BehaviouralFeedbackRow = React.createClass({
+let BehaviouralFeedbackRow = React.createClass({
   handleClick: function(event) {
     event.preventDefault();
-    var link = this.refs.feedback.href;
-    window.open(link, "Behavioural Feedback");
+    let link = this.refs.feedback.href;
+    window.open(link, 'Behavioural Feedback');
   },
   propTypes: {
     row: React.PropTypes.object.isRequired,
-    BaseURL: React.PropTypes.string.isRequired
+    BaseURL: React.PropTypes.string.isRequired,
   },
   render: function() {
-    var row = this.props.row;
-    var bvlLink;
-    var bvlLevel;
+    let row = this.props.row;
+    let bvlLink;
+    let bvlLevel;
 
     if (row.Feedback_level === 'visit') {
-      bvlLink = this.props.BaseURL + "/" + row.CandID + "/" +
-        row.SessionID + "/";
-      bvlLevel = "Visit : " + row.Visit_label;
+      bvlLink = this.props.BaseURL + '/instrument_list/?candID=' + row.CandID +
+            '&sessionID=' + row.SessionID;
+      bvlLevel = 'Visit : ' + row.Visit_label;
     }
 
     if (row.Feedback_level === 'instrument') {
-      bvlLink = this.props.BaseURL + "/" + row.CandID + "/" +
-        row.SessionID + "/" + row.Test_name + "/?commentID=" + row.CommentID;
-      bvlLevel = "Instrument : " + row.Full_name;
+      bvlLink = this.props.BaseURL + '/instruments/' + row.Test_name +
+            '/?candID=' + row.CandID +
+            '&sessionID=' + row.SessionID +
+            '&commentID=' + row.CommentID;
+      bvlLevel = 'Instrument : ' + row.Full_name;
     }
 
     if (row.Feedback_level === 'profile') {
-      bvlLink = this.props.BaseURl + "/" + row.CandID + "/";
-      bvlLevel = "Profile";
+      bvlLink = this.props.BaseURl + '/' + row.CandID + '/';
+      bvlLevel = 'Profile';
     }
 
     return (
-      <tr key={row.FeedbackID} onClick={this.handleClick}>
+      <tr key={row.FeedbackID} >
         <td>
-          <a href={this.props.BaseURL + "/" + row.CandID + "/"}>
+          <a href={this.props.BaseURL + '/' + row.CandID + '/'}>
             {row.CandID}
           </a>
         </td>
           <td>
-              <a href={this.props.BaseURL + "/" + row.CandID + "/"}>
+              <a href={this.props.BaseURL + '/' + row.CandID + '/'}>
                   {row.PSCID}
               </a>
           </td>
@@ -231,13 +236,13 @@ var BehaviouralFeedbackRow = React.createClass({
         </td>
       </tr>
     );
-  }
+  },
 });
 
-var DefaultPanel = React.createClass({
+let DefaultPanel = React.createClass({
   displayName: 'CandidatesPanelTable',
   propTypes: {
-    title: React.PropTypes.string
+    title: React.PropTypes.string,
   },
   render: function() {
     return (
@@ -248,13 +253,13 @@ var DefaultPanel = React.createClass({
         </div>
       </div>
     );
-  }
+  },
 });
 
-var IncompleteCandidates = React.createClass({
+let IncompleteCandidates = React.createClass({
   render: function() {
     // The actual row is passed as a child inside PagedTable
-    var row = {};
+    let row = {};
     return (
       <DefaultPanel title={this.props.title}>
         <PagedTable
@@ -265,13 +270,13 @@ var IncompleteCandidates = React.createClass({
         </PagedTable>
       </DefaultPanel>
     );
-  }
+  },
 });
 
-var InstrumentConflicts = React.createClass({
+let InstrumentConflicts = React.createClass({
   render: function() {
     // The actual row is passed as a child inside PagedTable
-    var row = {};
+    let row = {};
     return (
       <DefaultPanel title={this.props.title}>
         <PagedTable
@@ -282,13 +287,13 @@ var InstrumentConflicts = React.createClass({
         </PagedTable>
       </DefaultPanel>
     );
-  }
+  },
 });
 
-var BehaviouralFeedback = React.createClass({
+let BehaviouralFeedback = React.createClass({
   render: function() {
     // The actual row is passed as a child inside PagedTable
-    var row = {};
+    let row = {};
     return (
       <DefaultPanel title={this.props.title}>
         <PagedTable
@@ -299,13 +304,13 @@ var BehaviouralFeedback = React.createClass({
         </PagedTable>
       </DefaultPanel>
     );
-  }
+  },
 });
 
-var BVLPager = React.createClass({
+let BVLPager = React.createClass({
   render: function() {
-    var page = this.props.page;
-    var pageLinks = [];
+    let page = this.props.page;
+    let pageLinks = [];
 
     if (page.currentPage > 1) {
       pageLinks.push(
@@ -370,18 +375,18 @@ var BVLPager = React.createClass({
     return (
       <ul className="pagination pagination-sm">{pageLinks}</ul>
     );
-  }
+  },
 });
 
-var dataTeamGraphics = React.createClass({
+let dataTeamGraphics = React.createClass({
   componentDidMount: function() {
     c3.generate({
       bindto: '#completedChart',
       data: {
         columns: [
-          ['data', this.props.percentCompleted]
+          ['data', this.props.percentCompleted],
         ],
-        type: 'gauge'
+        type: 'gauge',
       },
       color: {
         // the three color levels for the percentage values.
@@ -389,29 +394,29 @@ var dataTeamGraphics = React.createClass({
         threshold: {
           // unit: 'value', // percentage is default
           // max: 200, // 100 is default
-          values: [30, 60, 90, 100]
-        }
-      }
+          values: [30, 60, 90, 100],
+        },
+      },
     });
   },
   render: function() {
-    var pscidStatus = (
-      this.props.pscid ? ("Candidate " + this.props.pscid) : "All Candidates"
+    let pscidStatus = (
+      this.props.pscid ? ('Candidate ' + this.props.pscid) : 'All Candidates'
     );
-    var visitStatus = (
-      this.props.visit ? ("On " + this.props.visit) : "Across All Visits"
+    let visitStatus = (
+      this.props.visit ? ('On ' + this.props.visit) : 'Across All Visits'
     );
-    var instrumentStatus = (
-      this.props.instrument ? ("On Instrument " + this.props.instrument) :
-        "Across All Instruments"
+    let instrumentStatus = (
+      this.props.instrument ? ('On Instrument ' + this.props.instrument) :
+        'Across All Instruments'
     );
-    var siteStatus = (
+    let siteStatus = (
       this.props.site ? (this.props.site) :
-        "Across All Sites"
+        'Across All Sites'
       );
-    var projectStatus = (
+    let projectStatus = (
       this.props.project ? (this.props.project) :
-        "Across All Projects"
+        'Across All Projects'
       );
 
     return (
@@ -426,13 +431,13 @@ var dataTeamGraphics = React.createClass({
         </div>
       </div>
     );
-  }
+  },
 });
 
-var GraphicsPanel = React.createFactory(dataTeamGraphics);
-var BehaviouralFeedbackTab = React.createFactory(BehaviouralFeedback);
-var IncompleteCandidatesPanel = React.createFactory(IncompleteCandidates);
-var InstrumentConflictsPanel = React.createFactory(InstrumentConflicts);
+let GraphicsPanel = React.createFactory(dataTeamGraphics);
+let BehaviouralFeedbackTab = React.createFactory(BehaviouralFeedback);
+let IncompleteCandidatesPanel = React.createFactory(IncompleteCandidates);
+let InstrumentConflictsPanel = React.createFactory(InstrumentConflicts);
 
 window.GraphicsPanel = GraphicsPanel;
 window.BehaviouralFeedbackTab = BehaviouralFeedbackTab;
@@ -443,6 +448,6 @@ export default {
   GraphicsPanel,
   BehaviouralFeedbackTab,
   IncompleteCandidatesPanel,
-  InstrumentConflictsPanel
+  InstrumentConflictsPanel,
 };
 

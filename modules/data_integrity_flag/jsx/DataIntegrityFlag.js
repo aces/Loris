@@ -13,19 +13,19 @@ import FilterForm from 'FilterForm';
   *
   * */
 class DataIntegrityFlag extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
       isLoaded: false,
       filter: {},
-      formData: {}
+      formData: {},
     };
 
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
+    this.resetFilters = this.resetFilters.bind(this);
   }
 
   componentDidMount() {
@@ -38,11 +38,11 @@ class DataIntegrityFlag extends React.Component {
    * for easy access by columnFormatter.
    */
   fetchData() {
-    $.getJSON(this.props.DataURL, data => {
+    $.getJSON(this.props.DataURL, (data) => {
       loris.flagStatusList = data.flagStatusList;
       this.setState({
         Data: data,
-        isLoaded: true
+        isLoaded: true,
       });
     }).error(function(error) {
       console.error(error);
@@ -51,6 +51,10 @@ class DataIntegrityFlag extends React.Component {
 
   updateFilter(filter) {
     this.setState({filter});
+  }
+
+  resetFilters() {
+    this.filter.clearFilter();
   }
 
   render() {
@@ -67,9 +71,13 @@ class DataIntegrityFlag extends React.Component {
     }
 
     const tabList = [
-      {id: "browse", label: "Browse"},
-      {id: "setflag", label: "Update"}
+      {id: 'browse', label: 'Browse'},
+      {id: 'setflag', label: 'Update'},
     ];
+
+    const filterRef = function(f) {
+      this.filter = f;
+    }.bind(this);
 
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
@@ -78,6 +86,7 @@ class DataIntegrityFlag extends React.Component {
             Module={this.props.Module}
             name="data_integrity_filter"
             id="data_integrity_filter"
+            ref={filterRef}
             columns={2}
             onUpdate={this.updateFilter}
             filter={this.state.filter}
@@ -105,6 +114,7 @@ class DataIntegrityFlag extends React.Component {
             <ButtonElement
               label="Clear Filters"
               type="reset"
+              onUserInput={this.resetFilters}
             />
           </FilterForm>
           <StaticDataTable

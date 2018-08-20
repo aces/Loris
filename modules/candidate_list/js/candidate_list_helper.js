@@ -30,4 +30,9 @@ $(function(){
             changeMonth: true,
             changeYear: true
         });
+        $('input[name=edc]').datepicker({
+            dateFormat: 'yy-mm-dd',
+            changeMonth: true,
+            changeYear: true
+        });
 });

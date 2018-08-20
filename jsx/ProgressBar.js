@@ -13,7 +13,7 @@ class ProgressBar extends React.Component {
       display: (this.props.value < 0 ? 'none' : 'block'),
       backgroundColor: '#d3d3d3',
       height: '30px',
-      position: 'relative'
+      position: 'relative',
     };
 
     const labelStyle = {
@@ -25,7 +25,7 @@ class ProgressBar extends React.Component {
       color: '#fff',
       textAlign: 'center',
       lineHeight: '30px',
-      fontWeight: '600'
+      fontWeight: '600',
     };
 
     return (
@@ -46,10 +46,10 @@ class ProgressBar extends React.Component {
 }
 
 ProgressBar.propTypes = {
-  value: React.PropTypes.number
+  value: React.PropTypes.number,
 };
 ProgressBar.defaultProps = {
-  value: 0
+  value: 0,
 };
 
 export default ProgressBar;

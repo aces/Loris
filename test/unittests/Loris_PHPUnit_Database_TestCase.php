@@ -32,7 +32,7 @@ abstract class Loris_PHPUnit_Database_TestCase extends TestCase
      *
      * Only instantiate _pdo once for test clean-up/fixture load
      *
-     * @var PDO
+     * @var \PDO
      */
     static private $_pdo = null;
 
@@ -40,7 +40,7 @@ abstract class Loris_PHPUnit_Database_TestCase extends TestCase
      * Note: only instantiate PHPUnit_Extensions_Database_DB_IDatabaseConnection
      * once per test
      *
-     * @var PHPUnit_Extensions_Database_DB_IDatabaseConnection
+     * @var \PHPUnit\DbUnit\Database\Connection
      */
     private $_conn = null;
 
@@ -87,7 +87,7 @@ abstract class Loris_PHPUnit_Database_TestCase extends TestCase
      * Get database connection which will be used by PHPUnit
      * for clean-up and fixture loading into the test DB.
      *
-     * @return PHPUnit_Extensions_Database_DB_DefaultDatabaseConnection
+     * @return \PHPUnit_Extensions_Database_DB_DefaultDatabaseConnection
      */
     final public function getConnection()
     {

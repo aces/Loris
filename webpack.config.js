@@ -1,12 +1,12 @@
-var webpack = require('webpack');
-var path = require('path');
-var fs = require('fs');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const path = require('path');
+const fs = require('fs');
 
-var config = [{
+const config = [{
   entry: {
     './htdocs/js/components/DynamicDataTable.js': './jsx/DynamicDataTable.js',
-    './htdocs/js/components/PaginationLinks.js': './jsx/PaginationLinks.js',
-    './htdocs/js/components/StaticDataTable.js': './jsx/StaticDataTable.js',
+    './htdocs/js/components/PaginationLinks.js': ['./jsx/PaginationLinks.js'],
+    './htdocs/js/components/StaticDataTable.js': ['./jsx/StaticDataTable.js'],
     './htdocs/js/components/Breadcrumbs.js': './jsx/Breadcrumbs.js',
     './htdocs/js/components/Form.js': './jsx/Form.js',
     './htdocs/js/components/Markdown.js': './jsx/Markdown.js',
@@ -20,7 +20,7 @@ var config = [{
     './modules/data_team_helper/js/behavioural_qc_module.js': './modules/data_team_helper/jsx/behavioural_qc_module.js',
     './modules/candidate_list/js/columnFormatter.js': './modules/candidate_list/jsx/columnFormatter.js',
     './modules/candidate_list/js/onLoad.js': './modules/candidate_list/jsx/onLoad.js',
-    './modules/datadict/js/columnFormatter.js': './modules/datadict/jsx/columnFormatter.js',
+    './modules/datadict/js/dataDictIndex.js': './modules/datadict/jsx/dataDictIndex.js',
     './modules/dataquery/js/react.app.js': './modules/dataquery/jsx/react.app.js',
     './modules/dataquery/js/react.fieldselector.js': './modules/dataquery/jsx/react.fieldselector.js',
     './modules/dataquery/js/react.filterBuilder.js': './modules/dataquery/jsx/react.filterBuilder.js',
@@ -49,52 +49,75 @@ var config = [{
     './modules/help_editor/js/columnFormatter.js': './modules/help_editor/jsx/columnFormatter.js',
     './modules/brainbrowser/js/Brainbrowser.js': './modules/brainbrowser/jsx/Brainbrowser.js',
     './modules/data_integrity_flag/js/index.js': './modules/data_integrity_flag/jsx/index.js',
-    './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js'
+    './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js',
+    './modules/acknowledgements/js/columnFormatter.js': './modules/acknowledgements/jsx/columnFormatter.js',
   },
   output: {
-    path: './',
-    filename: '[name]'
+    path: __dirname + '/',
+    filename: '[name]',
   },
   module: {
-    loaders: [
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: ['babel-loader'],
+      },
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
-      }
-    ]
+        use: ['babel-loader', 'eslint-loader'],
+      },
+      {
+        test: /\.json$/,
+        loader: 'json',
+      },
+    ],
   },
   resolve: {
-    root: path.resolve(__dirname),
     alias: {
-      util: 'htdocs/js/util',
-      jsx: 'jsx',
-      Breadcrumbs: 'jsx/Breadcrumbs',
-      DynamicDataTable: 'jsx/DynamicDataTable',
-      FilterForm: 'jsx/FilterForm',
-      Form: 'jsx/Form',
-      Markdown: 'jsx/Markdown',
-      PaginationLinks: 'jsx/PaginationLinks',
-      Panel: 'jsx/Panel',
-      ProgressBar: 'jsx/ProgressBar',
-      StaticDataTable: 'jsx/StaticDataTable',
-      Tabs: 'jsx/Tabs'
+      util: path.resolve(__dirname, './htdocs/js/util'),
+      jsx: path.resolve(__dirname, './jsx'),
+      Breadcrumbs: path.resolve(__dirname, './jsx/Breadcrumbs'),
+      DynamicDataTable: path.resolve(__dirname, './jsx/DynamicDataTable'),
+      FilterForm: path.resolve(__dirname, './jsx/FilterForm'),
+      Form: path.resolve(__dirname, './jsx/Form'),
+      Markdown: path.resolve(__dirname, './jsx/Markdown'),
+      PaginationLinks: path.resolve(__dirname, './jsx/PaginationLinks'),
+      Panel: path.resolve(__dirname, './jsx/Panel'),
+      ProgressBar: path.resolve(__dirname, './jsx/ProgressBar'),
+      StaticDataTable: path.resolve(__dirname, './jsx/StaticDataTable'),
+      Tabs: path.resolve(__dirname, './jsx/Tabs'),
     },
-    extensions: ['', '.js', '.jsx']
+    extensions: ['*', '.js', '.jsx', '.json'],
   },
   externals: {
-    react: 'React'
+    react: 'React',
   },
   node: {
-    fs: "empty"
+    fs: 'empty',
   },
   devtool: 'source-map',
-  plugins: [new webpack.optimize.UglifyJsPlugin({mangle: false})]
+  plugins: [],
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        uglifyOptions: {
+          compress: false,
+          ecma: 6,
+          mangle: false,
+        },
+        sourceMap: true,
+      }),
+    ],
+  },
 }];
 
 // Support project overrides
 if (fs.existsSync('./project/webpack-project.config.js')) {
-  var projConfig = require('./project/webpack-project.config.js');
+  const projConfig = require('./project/webpack-project.config.js');
   config.push(projConfig);
 }
 

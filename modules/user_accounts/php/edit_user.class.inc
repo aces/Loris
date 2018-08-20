@@ -11,6 +11,8 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\user_accounts;
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
 
 /**
  * Implements the user account page
@@ -30,7 +32,7 @@ class Edit_User extends \NDB_Form
      */
     function isCreatingNewUser()
     {
-        return $this->page == 'edit_user' && $this->identifier == '';
+        return $this->identifier == '';
     }
 
     /**
@@ -72,7 +74,7 @@ class Edit_User extends \NDB_Form
     /**
      * Computes the initial values this page will be filled with.
      *
-     * @return the default values for the initial state of this page.
+     * @return array the default values for the initial state of this page.
      */
     function _getDefaults()
     {
@@ -199,10 +201,33 @@ class Edit_User extends \NDB_Form
         }
         ////Get the current permissions/////
         $current_permissionids = $user->getPermissionIDs();
-        $permIDs = array();
+        // All permissions are wiped on update.  $permIDs will contain ALL the
+        // user's permissions after an update.  Therefore its structure can be
+        // defined as:
+        // 1) The new permissions granted by the editor, AND
+        // 2) Certain old permissions that the editor is not permitted to alter
+        // In addition, old permissions should be removed if the editor has
+        // removed them and the editor has permissions to remove them.
+        $newPermissions    = array_keys($values['permID']) ?? array();
+        $editorPermissions = $editor->getPermissionIDs() ?? array();
+        $permIDs           = array();
         // store the permission IDs
         if (!empty($values['permID'])) {
-            $permIDs = array_keys($values['permID']);
+            // An editor can only grant permissions that they have already been
+            // granted.
+            $permIDs = array_intersect(
+                $newPermissions,
+                $editorPermissions
+            );
+        }
+
+        // Keep old permissions if the editor is not allowed to edit them.
+        foreach ($current_permissionids as $perm) {
+            if (!in_array($perm, $newPermissions)
+                && !in_array($perm, $editorPermissions)
+            ) {
+                $permIDs[] = $perm;
+            }
         }
         unset($values['permID']);
         // store whether to send an email or not
@@ -252,46 +277,49 @@ class Edit_User extends \NDB_Form
         }
         unset($values['CenterIDs']);
         // END multi-site UPDATE
+
         // EXAMINER UPDATE
-        // get all fields that are related to examiners
-        $ex_curr_sites  = array();
-        $ex_prev_sites  = array();
-        $ex_radiologist = 'N';
-        $ex_pending     = 'Y';
-        foreach ($values as $k => $v) {
-            //examiner fields
-            if (preg_match("/^ex_[0-9]+$/", $k)) {
-                //get centerID
-                $parse_key = explode('_', $k);
-                $cid       = $parse_key[1];
-                $ex_curr_sites[$k] = $cid;
+        if ($editor->hasPermission('examiner_multisite')) {
+            // get all fields that are related to examiners
+            $ex_curr_sites  = array();
+            $ex_prev_sites  = array();
+            $ex_radiologist = 'N';
+            $ex_pending     = 'Y';
+
+            foreach ($values as $k => $v) {
+                //examiner fields
+                if (preg_match("/^ex_[0-9]+$/", $k)) {
+                    //get centerID
+                    $parse_key = explode('_', $k);
+                    $cid       = $parse_key[1];
+                    $ex_curr_sites[$k] = $cid;
+                }
+                if ($k === 'examiner_radiologist') {
+                    $ex_radiologist = $v;
+                }
+                if ($k === 'examiner_pending') {
+                    $ex_pending = $v;
+                }
             }
-            if ($k === 'examiner_radiologist') {
-                $ex_radiologist = $v;
-            }
-            if ($k === 'examiner_pending') {
-                $ex_pending = $v;
-            }
-        }
-        // first check if an update is needed then actually do it
-        if (!empty($ex_radiologist)
-            && !empty($ex_pending)
-            && !empty($ex_curr_sites)
-        ) {
-            //modify examiner radiologist to be in the binary format 0-1
-            $ex_radiologist = $ex_radiologist === 'Y' ? 1:0;
-            $examinerID     = $DB->pselectOne(
+
+            $examinerID = $DB->pselect(
                 "SELECT e.examinerID
-                 FROM examiners e
-                 WHERE e.full_name=:fn",
+             FROM examiners e
+             WHERE e.full_name=:fn",
                 array(
                  "fn" => $values['Real_name'],
                 )
             );
-            // If examiner not in table add him,
-            // otherwise update the radiologist field and get the current sites
-            $values = \Utility::nullifyEmpty($values, 'examiner_radiologist');
-            if (empty($examinerID)) {
+
+            // START EXAMINER UPDATE
+            if (!empty($ex_radiologist)
+                && !empty($ex_pending)
+                && !empty($ex_curr_sites)
+                && empty($examinerID)
+            ) {
+                // If examiner not in table and radiologist, pending and current
+                // sites fields set add the examiner to the examiner table
+                $ex_radiologist = $ex_radiologist === 'Y' ? 1 : 0;
                 $DB->insert(
                     'examiners',
                     array(
@@ -302,11 +330,20 @@ class Edit_User extends \NDB_Form
                 );
                 $examinerID = $DB->pselectOne(
                     "SELECT examinerID
-                     FROM examiners
-                     WHERE full_name=:fullName",
+                            FROM examiners
+                            WHERE full_name=:fullName",
                     array('fullName' => $values['Real_name'])
                 );
-            } else {
+            } elseif (!empty($examinerID)
+                && ((!empty($ex_radiologist)
+                && !empty($ex_pending)
+                && !empty($ex_curr_sites))
+                || empty($ex_curr_sites))
+            ) {
+                // If examiner already exists in the examiner table AND
+                // radiologist, pending and current sites fields all set or
+                // unset update the examiner table with new values
+                $ex_radiologist = $ex_radiologist === 'Y' ? 1 : 0;
                 $DB->update(
                     'examiners',
                     array(
@@ -317,26 +354,34 @@ class Edit_User extends \NDB_Form
                      "full_name" => $values['Real_name'],
                     )
                 );
+                $examinerID = $examinerID[0]['examinerID'];
+
                 //get existing sites for examiner
-                $ex_prev_sites = $DB->pselectCol(
+                $prev_sites = $DB->pselect(
                     "SELECT centerID
-                 FROM examiners_psc_rel epr
-                 WHERE examinerID=:eid",
+                            FROM examiners_psc_rel epr
+                            WHERE examinerID=:eid",
                     array("eid" => $examinerID)
                 );
-            }
 
+                //get sites where user is already an examiner at for compare
+                foreach ($prev_sites as $row => $center) {
+                    array_push($ex_prev_sites, $center['centerID']);
+                }
+            }
             foreach ($ex_curr_sites as $k => $v) {
+
                 //Check if examiner already in db for site
                 $result = $DB->pselectRow(
                     "SELECT epr.centerID
-                         FROM examiners_psc_rel epr 
-                         WHERE epr.examinerID=:eid AND epr.centerID=:cid",
+                           FROM examiners_psc_rel epr 
+                           WHERE epr.examinerID=:eid AND epr.centerID=:cid",
                     array(
                      "eid" => $examinerID,
                      "cid" => $v,
                     )
                 );
+
                 // examiner was not previously added, add and set to active
                 if (empty($result)) {
                     $DB->insert(
@@ -363,6 +408,7 @@ class Edit_User extends \NDB_Form
                 }
                 unset($values[$k]);
             }
+
             //de-activate examiner if sites where no longer checked
             $ex_inactive = array_diff($ex_prev_sites, $ex_curr_sites);
             foreach ($ex_inactive as $cid) {
@@ -379,6 +425,7 @@ class Edit_User extends \NDB_Form
         unset($values['examiner_radiologist']);
         unset($values['examiner_pending']);
         //END EXAMINER UPDATE
+
         // make the set
         foreach ($values as $key => $value) {
             if (!empty($value)) {
@@ -468,6 +515,7 @@ class Edit_User extends \NDB_Form
                     }
                 }
             }
+
             if (!empty($permIDs)) {
                 $user->addPermissions($permIDs);
             }
@@ -488,12 +536,36 @@ class Edit_User extends \NDB_Form
         }
         $this->tpl_data['success'] = true;
         if ($this->isCreatingNewUser()) {
-            $baseURL  = $config->getSetting('url');
-            $redirect = $baseURL
-                . "/user_accounts/edit_user/?identifier="
+            $baseURL        = $config->getSetting('url');
+            $this->redirect = $baseURL
+                . "/user_accounts/edit_user/"
                 . $values['UserID'];
-            header('Location: '. $redirect);
         }
+    }
+
+    /**
+     * The edit_user page overrides the default handler in order to handle URLs for
+     * both editing users, and creating them. It extracts the identifier if
+     * appropriate and handles the redirection if needed.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The outgoing PSR15 response
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $matches = [];
+        preg_match('#.*/edit_user/(.*)#', $request->getUri()->getPath(), $matches);
+        if (!empty($matches[1])) {
+            $this->identifier = $matches[1];
+        }
+        $response = parent::handle($request);
+        if (!empty($this->redirect)) {
+            return $response
+                ->withStatus(303)
+                ->withHeader("Location", $this->redirect);
+        }
+        return $response;
     }
 
     /**
@@ -506,8 +578,6 @@ class Edit_User extends \NDB_Form
     function setup()
     {
         parent::setup();
-
-        $this->redirect = "test_name=$this->name";
 
         ///get the value for additional_user_info flag
         $config = \NDB_Config::singleton();
@@ -715,8 +785,14 @@ class Edit_User extends \NDB_Form
 
         // checking if the account can be rejected (no password hash
         // pending approval)
-        $this->tpl_data['can_reject'] =$this->_canRejectAccount($this->identifier);
 
+        // if new user
+        if ($this->isCreatingNewUser()) {
+            $this->tpl_data['can_reject'] = false;
+        } else {
+            $this->tpl_data['can_reject']
+                = self::canRejectAccount(\User::factory($this->identifier));
+        }
         // get the editor's permissions
 
         $perms    = $editor->getPermissionsVerbose();
@@ -810,31 +886,18 @@ class Edit_User extends \NDB_Form
     }
 
     /**
-     * Query database on UserID to check that password has doesn't
-     * exist and account is still pending approval, to ensure the
-     * users with account activity can't be rejected by setting
-     * their status to pending.
+     * This ensures that users with account activity cannot be rejected
+     * if their approval status is, for some reason, set to pending.
      *
-     * @param string $id identifier of account to verify
+     * @param \User $user The User to verify
      *
-     * @return boolean true is Password_hash is null and
-     * Pending_approval is Yes, false otherwsie
+     * @return boolean true if 'Pending_approval' is Yes and the user never
+     *                      ever logged in.
      */
-    function _canRejectAccount($id)
+    static function canRejectAccount(\User $user)
     {
-        $DB     = \Database::singleton();
-        $fields =  $DB->pselect(
-            "SELECT Password_hash, Pending_approval
-                   FROM users
-                   WHERE UserID=:id",
-            array("id" => $id)
-        );
-        if (is_null($fields[0]['Password_hash'])
-            && $fields[0]['Pending_approval']=="Y"
-        ) {
-            return true;
-        }
-        return false;
+        return $user->getData('Pending_approval') == 'Y'
+            && !$user->hasLoggedIn();
     }
 
     /**
@@ -846,6 +909,7 @@ class Edit_User extends \NDB_Form
      */
     function _validateEditUser($values)
     {
+        $editor = \User::singleton();
         // create DB object
         $DB     = \Database::singleton();
         $errors = array();
@@ -995,28 +1059,32 @@ class Edit_User extends \NDB_Form
         //======================================
         //        Validate Examiner Status
         //======================================
-        $matched =false;
-        foreach ($values as $k=>$v) {
-            if (preg_match("/^ex_[0-9]+$/", $k)) {
-                $matched =true;
-                if ($values['examiner_radiologist'] == '') {
-                    $errors['examiner_group'] = "Please specify if examiner is a " .
-                        "radiologist";
+        if ($editor->hasPermission('examiner_multisite')) {
+            $matched = false;
+            foreach ($values as $k => $v) {
+                if (preg_match("/^ex_[0-9]+$/", $k)) {
+                    $matched = true;
+                    if ($values['examiner_radiologist'] == '') {
+                        $errors['examiner_group'] = "Please specify if examiner " .
+                            "is a radiologist";
 
-                }
-                if ($values['examiner_radiologist'] !== ''
-                    && $values['examiner_pending'] == ''
-                ) {
-                    $errors['examiner_group'] = "Please set pending approval Yes ".
-                        "or No";
+                    }
+                    if ($values['examiner_radiologist'] !== ''
+                        && $values['examiner_pending'] == ''
+                    ) {
+                        $errors['examiner_group'] = "Please set pending " .
+                            "approval Yes or No";
+                    }
                 }
             }
-        }
-        if (!$matched
-            && ($values['examiner_radiologist'] !== ''
-            || $values['examiner_pending'] !== '')
-        ) {
-            $errors['examiner_sites'] = "Please select at least one examiner site.";
+            if (!$matched
+                && (($values['examiner_radiologist'] !== ''
+                || $values['examiner_pending'] !== ''))
+            ) {
+                $errors['examiner_sites'] = "Please select at least one examiner
+                site or clear the 'Examiner status' fields below (i.e.
+                'Radiologist' and 'Pending Approval').";
+            }
         }
         return $errors;
     }
@@ -1043,7 +1111,7 @@ class Edit_User extends \NDB_Form
             array('UID' => $this->identifier)
         );
 
-        if (!is_null($passwords['Password_hash'])) {
+        if (!is_null($passwords['Password_hash'] ?? null)) {
             return !password_verify($newPassword, $passwords['Password_hash']);
         }
 
@@ -1104,6 +1172,22 @@ class Edit_User extends \NDB_Form
             list(,$description) = each($permission[0]);
         }
         return $permission;
+    }
+
+    /**
+     * Gathers JS dependencies and merges them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array($baseURL . "/user_accounts/js/rejectUser.js")
+        );
     }
 }
 ?>

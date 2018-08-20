@@ -58,7 +58,6 @@ class Reliability extends \NDB_Menu_Filter
         }
         return false;
     }
-//@codingStandardsIgnoreEnd
     /**
      * GetSiteID Load
      *
@@ -78,9 +77,8 @@ class Reliability extends \NDB_Menu_Filter
     /**
      * _SetupVariables function
      *
-     * @return string
+     * @return void
      */
-//@codingStandardsIgnoreStart
     function _setupVariables()
     {
         $user =& \User::singleton();
@@ -188,7 +186,7 @@ class Reliability extends \NDB_Menu_Filter
                                'ProjectID'             => 'candidate.ProjectID',
                                     // 'Lock_record' => 'session.Lock_record'
                               );
-        return true;
+        return;
     }
 
     /**
@@ -722,7 +720,7 @@ class Reliability extends \NDB_Menu_Filter
     /**
      * Override toJSON to append a calculated field to the default JSON object
      *
-     * @return a json encoded string of the headers and data from this table
+     * @return string a json encoded string of the headers and data from this table
      */
     function toJSON()
     {
@@ -731,7 +729,6 @@ class Reliability extends \NDB_Menu_Filter
         $cohort    = \Utility::getSubprojectList();
 
         foreach ($tableData['Data'] as $key => $record) {
-
             // Calculate and set `Reliable` column
             $instrumentThreshold = isset($record[9], $threshold[$record[9]]) ?
                 $threshold[$record[9]] :
@@ -739,7 +736,7 @@ class Reliability extends \NDB_Menu_Filter
             $instrumentScore     = $record[10];
 
             // Map cohort id to a string value
-            $record[3] = $cohort[$record[3]];
+            $record[3] = $cohort[$record[3]] ?? 'Unknown';
 
             if ($instrumentScore == null) {
                 $isReliable = "";

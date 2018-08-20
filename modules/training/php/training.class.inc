@@ -115,20 +115,22 @@ class Training extends \NDB_Form
         // Get the instruments requiring certification from the config
         $certificationConfig      = $config->getSetting("Certification");
         $certificationInstruments = $certificationConfig['CertificationInstruments'];
-        $certificationInstruments['test']
-            = \Utility::toArray($certificationInstruments['test']);
         $instruments = array();
 
-        foreach ($certificationInstruments['test'] as $certificationInstrument) {
-            $test_key = $certificationInstrument['@']['value'];
-            $testID   = $DB->pselectOne(
-                "SELECT ID
-                 FROM test_names
-                 WHERE Test_name
-                 LIKE CONCAT('%', :testkey, '%')",
-                array('testkey' => $test_key)
-            );
-            $instruments[$testID] = $certificationInstrument['#'];
+        if (isset($certificationInstruments['test'])) {
+            $certificationInstruments['test']
+                = \Utility::toArray($certificationInstruments['test']);
+            foreach ($certificationInstruments['test'] as $certificationInstrument) {
+                $test_key = $certificationInstrument['@']['value'];
+                $testID   = $DB->pselectOne(
+                    "SELECT ID
+                           FROM test_names
+                           WHERE Test_name
+                           LIKE CONCAT('%', :tk, '%')",
+                    array('tk' => $test_key)
+                );
+                $instruments[$testID] = $certificationInstrument['#'];
+            }
         }
 
         return $instruments;

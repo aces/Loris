@@ -6,18 +6,18 @@ import UploadForm from './UploadForm';
 import formatColumn from './columnFormatter';
 
 class ImagingUploader extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
       isLoaded: false,
-      filter: {}
+      filter: {},
     };
 
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
+    this.resetFilters = this.resetFilters.bind(this);
   }
 
   componentDidMount() {
@@ -31,22 +31,26 @@ class ImagingUploader extends React.Component {
    */
   fetchData() {
     $.ajax(this.props.DataURL, {
-      method: "GET",
+      method: 'GET',
       dataType: 'json',
       success: function(data) {
         this.setState({
           Data: data,
-          isLoaded: true
+          isLoaded: true,
         });
       }.bind(this),
       error: function(error) {
         console.error(error);
-      }
+      },
     });
   }
 
   updateFilter(filter) {
     this.setState({filter});
+  }
+
+  resetFilters() {
+    this.imagingUploaderFilter.clearFilter();
   }
 
   render() {
@@ -62,9 +66,13 @@ class ImagingUploader extends React.Component {
     }
 
     const tabList = [
-      {id: "browse", label: "Browse"},
-      {id: "upload", label: "Upload"}
+      {id: 'browse', label: 'Browse'},
+      {id: 'upload', label: 'Upload'},
     ];
+
+    const filterRef = function(f) {
+      this.imagingUploaderFilter = f;
+    }.bind(this);
 
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
@@ -75,13 +83,14 @@ class ImagingUploader extends React.Component {
                 Module="imaging_uploader"
                 name="imaging_filter"
                 id="imaging_filter"
+                ref={filterRef}
                 onUpdate={this.updateFilter}
                 filter={this.state.filter}
               >
                 <TextboxElement {... this.state.Data.form.candID} />
                 <TextboxElement {... this.state.Data.form.pSCID} />
                 <SelectElement {... this.state.Data.form.visitLabel} />
-                <ButtonElement type="reset" label="Clear Filters" />
+                <ButtonElement type="reset" label="Clear Filters" onUserInput={this.resetFilters}/>
               </FilterForm>
             </div>
             <div className="col-md-7">

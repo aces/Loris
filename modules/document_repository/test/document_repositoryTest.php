@@ -127,7 +127,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Document Repository", $bodyText);
+        $this->assertRegexp("/Upload File/", $bodyText);
     }
     /**
      * Tests creating a category and a sub-category.

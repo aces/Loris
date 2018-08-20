@@ -21,8 +21,16 @@ $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
 header("Content-Type: application/json");
 
-$cdb   = \NDB_Factory::singleton()->couchDB();
-$docID = urlencode($_REQUEST['DocID']);
+$config      = \NDB_Config::singleton();
+$couchConfig = $config->getSetting('CouchDB');
+$cdb         = \NDB_Factory::singleton()->couchDB(
+    $couchConfig['dbName'],
+    $couchConfig['hostname'],
+    $couchConfig['port'],
+    $couchConfig['admin'],
+    $couchConfig['adminpass']
+);
+$docID       = urlencode($_REQUEST['DocID']);
 
 $results = $cdb->getDoc(
     $docID

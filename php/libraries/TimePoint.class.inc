@@ -263,15 +263,6 @@ class TimePoint
      */
     static function isValidVisitLabel($candid, $subprojectID, $visitLabel)
     {
-        $config =& \NDB_Config::singleton();
-        $visitLabelSettings = $config->getSetting('visitLabel');
-        foreach (\Utility::toArray($visitLabelSettings) as $setting) {
-            if ($setting['@']['subprojectID'] == $subprojectID) {
-                $visitLabelSettings =$setting;
-                break;
-            }
-        }
-
         // This can happen if the user quickly clicks "Create Time Point" before the
         // page has loaded and the Visit Label dropdown hasn't been selected yet.
         // The page will create "V1" when this is the case without this check.
@@ -281,13 +272,26 @@ class TimePoint
             );
         }
 
-        // make sure the user entered a valid visit label
-        if ($visitLabelSettings['generation'] == 'user') {
-            if (!preg_match($visitLabelSettings['regex'], $visitLabel)) {
-                throw new \LorisException(
-                    'This visit label does not match the required structure.'
+        $config =& \NDB_Config::singleton();
+        $visitLabelSettings = $config->getSetting('visitLabel');
+        $isValid            = false;
+        foreach (\Utility::toArray($visitLabelSettings) as $visitLabelSetting) {
+            if ($visitLabelSetting['@']['subprojectID'] == $subprojectID) {
+                $items = \Utility::toArray(
+                    $visitLabelSetting['labelSet']['item']
                 );
+                foreach ($items as $item) {
+                    if ($item['@']['value'] == $visitLabel) {
+                        $isValid = true;
+                        break;
+                    }
+                }
             }
+        }
+        if (!$isValid) {
+            throw new \LorisException(
+                'This visit label is not valid for this subproject.'
+            );
         }
 
         $candidate =& \Candidate::singleton($candid);
@@ -565,7 +569,7 @@ class TimePoint
     /**
      * Gets the current stage status
      *
-     * @return status of current stage or null
+     * @return ?string status of current stage or null
      */
     function getCurrentStatus()
     {
@@ -580,7 +584,7 @@ class TimePoint
     /**
      * Gets the date of the current stage.
      *
-     * @return date or false on failure.
+     * @return string of the form "YYYY-MM-DD"
      */
     function getCurrentDate()
     {

@@ -18,44 +18,50 @@
  * @version 0.0.1
  *
  */
-var Markdown = React.createClass({
-  propTypes: {
-    content: React.PropTypes.string.isRequired
-  },
-  render: function() {
+class Markdown extends React.Component {
+  htmlSpecialCharsDecode(text) {
+    return text
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"');
+  }
+
+  render() {
     // Fix stupid-style newlines to be just \n.
-    var fixedNewlines = this.props.content.replace("\r\n", "\n");
+    let fixedNewLines = this.props.content.replace(/\r\n/g, '\n');
+
+    // Fix excaped html
+    fixedNewLines = this.htmlSpecialCharsDecode(fixedNewLines);
 
     // 2 newlines in a row mean it's a paragraph breaker.
-    var paragraphs = fixedNewlines.split("\n\n");
-    var headersRe = /^(#+)\s+(.+)$/;
+    let paragraphs = fixedNewLines.split('\n\n');
+    let headersRe = /^(#+)\s+(.+)$/;
 
     // Do a non-greedy match on text surrounded by ** or __ separately,
     // because we need to be sure that the end tag is the same as the
     // start and want the callback to reference the same index
-    var boldRe1 = /(\*\*)(.+?)(\*\*)/g;
-    var boldRe2 = /(__)(.+?)(__)/g;
-    var boldCallback = function(match, start, content, end, offset, val) {
-      return "<b>" + content + "</b>";
-    };
+    let boldRe1 = /(\*\*)(.+?)(\*\*)/g;
+    let boldRe2 = /(__)(.+?)(__)/g;
+    function boldCallback(match, start, content, end, offset, val) {
+      return '<b>' + content + '</b>';
+    }
 
-    var italRe1 = /(\*)(.+?)(\*)/g;
-    var italRe2 = /(_)(.+?)(_)/g;
-    var italCallback = function(match, start, content, end, offset, val) {
-      return "<i>" + content + "</i>";
-    };
+    let italRe1 = /(\*)(.+?)(\*)/g;
+    let italRe2 = /(_)(.+?)(_)/g;
+    function italCallback(match, start, content, end, offset, val) {
+      return '<i>' + content + '</i>';
+    }
 
-    var linkRe = /\[(.+?)\]\((.+?)\)/g;
-    var linkCallback = function(match, text, link, offset, val) {
+    let linkRe = /\[(.+?)\]\((.+?)\)/g;
+    function linkCallback(match, text, link, offset, val) {
       return '<a href="' + link + '">' + text + '</a>';
-    };
+    }
     // This needs to be declared outside of the loop to keep eslint
     // happy. It's just the callback for the regex.
-    var hlevel = 1;
-    var headerCallback = function(match, headerLevel, headerContent, offset, val) {
+    let hlevel = 1;
+    function headerCallback(match, headerLevel, headerContent, offset, val) {
       hlevel = headerLevel.length;
       return headerContent;
-    };
+    }
     for (let i = 0; i < paragraphs.length; i++) {
       // For now, assume that there's an empty line between
       // any headers. It's not true of strict markdown, but
@@ -91,7 +97,7 @@ var Markdown = React.createClass({
             paragraphs[i] = <h1>{paragraphs[i]}</h1>;
         }
       } else {
-        var paramd = paragraphs[i];
+        let paramd = paragraphs[i];
         // Do bold before italics, because otherwise italics will catch
         // the inner * of the bold.
         paramd = paramd.replace(boldRe1, boldCallback);
@@ -106,9 +112,13 @@ var Markdown = React.createClass({
     }
     return <div>{paragraphs}</div>;
   }
-});
+}
 
-var RMarkdown = React.createFactory(Markdown);
+Markdown.propTypes = {
+  content: React.PropTypes.string.isRequired,
+};
+
+let RMarkdown = React.createFactory(Markdown);
 
 window.Markdown = Markdown;
 window.RMarkdown = RMarkdown;

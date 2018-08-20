@@ -11,6 +11,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
 
 /**
  * Menu_Filter_Form Class
@@ -45,7 +47,7 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
             || !empty($_REQUEST['fire_away'])
         ) {
             if ($this->form->validate()) {
-                $this->form->process(array(&$this, "_save"), false);
+                $this->form->process(array(&$this, "_save"));
             }
         }
     }
@@ -86,12 +88,29 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
      *
      * @param array $values form values
      *
-     * @return void
-     * @access private
+     * @return bool true if successful
      */
     function _process($values)
     {
         return true;
     }
+
+    /**
+     * An NDB_Menu_Filter_Form, like an NDB_Form extends the basic page
+     * handler to call save() on a POST request.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The PSR15 response to the request.
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $this->setup();
+        if ($request->getMethod() === "POST") {
+            $this->save();
+        }
+        return parent::handle($request);
+    }
+
 }
 ?>

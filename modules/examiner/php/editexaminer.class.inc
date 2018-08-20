@@ -2,7 +2,7 @@
 /**
  * Examiner module: Form used to update examiner certification status
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Loris
@@ -15,7 +15,7 @@ namespace LORIS\examiner;
 /**
  * Examiner module: Form used to update examiner certification status
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Behavioural
  * @package  Loris
@@ -48,13 +48,8 @@ class EditExaminer extends \NDB_Form
         $userCenter   = $user->getCenterIDs();
 
         $certification = $config->getSetting('Certification');
-        if (isset($certification['EnableCertification'])) {
-            $useCertification = $certification['EnableCertification'];
-        } else {
-            $useCertification = false;
-        }
 
-        if ($useCertification) {
+        if ($certification['EnableCertification'] ?? false) {
             $cids      = $DB->pselect(
                 "SELECT epr.centerID 
                  FROM examiners e 
@@ -69,9 +64,11 @@ class EditExaminer extends \NDB_Form
 
             // Access is only granted if user sites are a superset of examiner sites
             // considering that certification changes affect all sites
-            return $user->hasPermission('examiner_view')
-                && (($user->hasPermission('examiner_multisite')
-                || empty(array_diff($centerIDs, $user->getData('CenterIDs')))));
+            $permitted         = $user->hasPermission('examiner_view')
+                && empty(array_diff($centerIDs, $user->getData('CenterIDs')));
+            $permittedAllSites
+                = $user->hasPermission('examiner_multisite');
+            return $permitted || $permittedAllSites;
         }
         return false;
     }
@@ -142,16 +139,20 @@ class EditExaminer extends \NDB_Form
              // if certification for new instrument for the examiner
             if (empty($certID) && !empty($certStatus)) {
                 // insert a new certification entry
+                $data = array(
+                         'examinerID' => $examinerID,
+                         'testID'     => $testID,
+                         'pass'       => $certStatus,
+                         'comment'    => $comment,
+                        );
+                if ($date_cert != "") {
+                    $data['date_cert'] = $date_cert;
+                }
                 $DB->insert(
                     'certification',
-                    array(
-                     'examinerID' => $examinerID,
-                     'date_cert'  => $date_cert,
-                     'testID'     => $testID,
-                     'pass'       => $certStatus,
-                     'comment'    => $comment,
-                    )
+                    $data
                 );
+
                 $certID = $DB->pselectOne(
                     "SELECT certID 
                      FROM certification
@@ -162,19 +163,23 @@ class EditExaminer extends \NDB_Form
                     )
                 );
                 // Add a new entry to the certification history table
+                $data = array(
+                         'col'         => 'pass',
+                         'new'         => $certStatus,
+                         'primaryVals' => $certID,
+                         'testID'      => $testID,
+                         'visit_label' => $visit_label,
+                         'changeDate'  => date("Y-m-d H:i:s"),
+                         'userID'      => $_SESSION['State']->getUsername(),
+                         'type'        => 'I',
+                        );
+                if ($date_cert != "") {
+                    $data['new_date'] = $date_cert;
+                }
+
                 $DB->insert(
                     'certification_history',
-                    array(
-                     'col'         => 'pass',
-                     'new'         => $certStatus,
-                     'new_date'    => $date_cert,
-                     'primaryVals' => $certID,
-                     'testID'      => $testID,
-                     'visit_label' => $visit_label,
-                     'changeDate'  => date("Y-m-d H:i:s"),
-                     'userID'      => $_SESSION['State']->getUsername(),
-                     'type'        => 'I',
-                    )
+                    $data
                 );
             } else { // update to a test certification for the examiner
 
@@ -210,13 +215,16 @@ class EditExaminer extends \NDB_Form
                     || $oldCertification['date_cert'] != $date_cert
                 ) {
                     // Update the certification entry
+                    $data = array(
+                             'pass'    => $certStatus,
+                             'comment' => $comment,
+                            );
+                    if ($date_cert != "") {
+                        $data['date_cert'] = $date_cert;
+                    }
                     $DB->update(
                         'certification',
-                        array(
-                         'date_cert' => $date_cert,
-                         'pass'      => $certStatus,
-                         'comment'   => $comment,
-                        ),
+                        $data,
                         array(
                          'examinerID' => $examinerID,
                          'testID'     => $testID,
@@ -225,21 +233,26 @@ class EditExaminer extends \NDB_Form
 
                     // Add a new entry to the certification history table
                     if ($oldDate != $date_cert || $oldVal != $certStatus) {
+                        $data = array(
+                                 'col'         => 'pass',
+                                 'old'         => $oldVal,
+                                 'new'         => $certStatus,
+                                 'primaryVals' => $certID,
+                                 'testID'      => $testID,
+                                 'visit_label' => $visit_label,
+                                 'changeDate'  => date("Y-m-d H:i:s"),
+                                 'userID'      => $_SESSION['State']->getUsername(),
+                                 'type'        => 'U',
+                                );
+                        if ($oldDate != "") {
+                            $data['old_date'] = $oldDate;
+                        }
+                        if ($date_cert != "") {
+                            $data['new_date'] = $date_cert;
+                        }
                         $DB->insert(
                             'certification_history',
-                            array(
-                             'col'         => 'pass',
-                             'old'         => $oldVal,
-                             'old_date'    => $oldDate,
-                             'new'         => $certStatus,
-                             'new_date'    => $date_cert,
-                             'primaryVals' => $certID,
-                             'testID'      => $testID,
-                             'visit_label' => $visit_label,
-                             'changeDate'  => date("Y-m-d H:i:s"),
-                             'userID'      => $_SESSION['State']->getUsername(),
-                             'type'        => 'U',
-                            )
+                            $data
                         );
                     }
                 }
@@ -353,6 +366,7 @@ class EditExaminer extends \NDB_Form
      */
     function _validateEditExaminer($values)
     {
+        $DB     = \Database::singleton();
         $errors = array();
 
         // check that there is both a status and a date (neither can be null)
@@ -360,8 +374,8 @@ class EditExaminer extends \NDB_Form
             if (empty($certificationStatus)
                 || empty($values['date_cert'][$instrumentID])
             ) {
-                if (!(empty($certificationStatus)
-                    && empty($values['date_cert'][$instrumentID]))
+                if (($certificationStatus == "certified")
+                    && empty($values['date_cert'][$instrumentID])
                 ) {
                     $errors['certStatus[' . $instrumentID .']'] = 'Both certification
                         status and date must be filled out';
@@ -369,6 +383,20 @@ class EditExaminer extends \NDB_Form
             }
         }
 
+        // check if previously recorded certification are all present
+        // (can not delete, only change status)
+        $rows = $DB->pselect(
+            "SELECT c.testID
+              FROM certification c
+              WHERE c.examinerID=:EID",
+            array('EID' => $this->identifier)
+        );
+        foreach ($rows as $row) {
+            if ($values['certStatus'][$row['testID']] == "") {
+                $errors['certStatus['.$row['testID'].']']
+                    = 'You can not delete a status';
+            }
+        }
         return $errors;
     }
 
@@ -404,6 +432,22 @@ class EditExaminer extends \NDB_Form
         }
 
         return $instruments;
+    }
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $label = ucwords(str_replace('_', ' ', $this->name));
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb($label, "/$this->name"),
+            new \LORIS\Breadcrumb(
+                'Edit Examiner',
+                "/examiner/editExaminer/?identifier=$this->identifier"
+            )
+        );
     }
 }
 ?>
