@@ -42,14 +42,14 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      * @param string $commentID The CommentID being loaded
      * @param string $page      The page being loaded
      *
-     * @return none
+     * @return void
      */
     function setup($commentID = null, $page = null)
     {
         $this->commentID = $commentID;
         $this->page      = $page;
 
-        $this->form = new \LorisForm('test_form');
+        $this->form = new \LorisForm();
     }
     /**
      * Adds metadata fields (such as Examiner and Date_taken) to the
@@ -79,13 +79,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         if (strrpos($this->testName, '_proband') === false) {
             $this->addScoreColumn(
                 'Candidate_Age',
-                'Candidate Age (Months)',
-                'Please enter date of administration and press Save'
+                'Candidate Age (Months)'
             );
             $this->addScoreColumn(
                 'Window_Difference',
-                'Window Difference (+/- Days)',
-                'Please enter date of administration and press Save'
+                'Window Difference (+/- Days)'
             );
         }
         $examiners = $this->_getExaminerNames();
@@ -146,7 +144,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      * @param array $elements The value of all the elements on the current page
      *                        to validate.
      *
-     * @return associative array of errors (fieldname => errormessage) or true
+     * @return array associative array of errors (fieldname => errormessage) or true
      *         if no errors.
      */
     function XINValidate($elements)
@@ -340,13 +338,22 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             if ($comparevalue == 'NEVER_REQUIRED' && $operator == '==') {
                 return true;
             }
-            $compareFunction = create_function(
-                '$a, $b',
-                "return \$a $operator \$b;"
-            );
-
-            if (!($compareFunction($comparevalue, $userval)) ) {
-                return false;
+            switch ($operator) {
+            case '==':
+                if ($comparevalue != $userval) {
+                    return false;
+                }
+                break;
+            case '!=':
+                if ($comparevalue == $userval) {
+                    return false;
+                }
+                break;
+            default:
+                throw new \LorisException(
+                    "Unsupported operator ($operator) for XIN Rule."
+                     . " If this used to work, please file a bug report."
+                );
             }
         }
         // Nothing that was compared failed
@@ -365,7 +372,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     * @param string $group   Empty if a non-grouped element is registering the rule.
     *                        Otherwise, name of the group registering the rule.
     *
-    * @return none
+    * @return void
     */
     function XINRegisterRule($elname, $rules, $message="", $group="")
     {
@@ -407,7 +414,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      *                          when no file has yet been saved to the
      *                          instruments/ directory
      *
-     * @return none, but as a side effect displays the Instrument page
+     * @return void (but as a side effect displays the Instrument page)
      */
     function loadInstrumentFile($filename, $base64 = false)
     {
@@ -761,7 +768,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      *                         data URL, so we shouldn't check that the file exists
      *                         on the filesystem. (Used by preview)
      *
-     * @return null Registers all instrument rules as a side-effect.
+     * @return void but registers all instrument rules as a side-effect.
      */
     function loadInstrumentRules($filename, $base64 = false)
     {
@@ -778,7 +785,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 if (isset($this->LinstQuestions[$question])) {
                     $q =& $this->LinstQuestions[$question];
 
-                    if ($q['UserRules'] !== true) {
+                    if (($q['UserRules'] ?? false) !== true) {
                         // Unregister the rules that were added by the wrapper
                         // for the group, because otherwise that'll override the
                         // user specified rules from the .rules file

@@ -23,22 +23,22 @@
 
         <title>
             {$study_title}
-            {if $crumbs != ""}
-                {section name=crumb loop=$crumbs}
-                    - {$crumbs[crumb].text}
-                {/section}
-            {/if}
         </title>
         <script type="text/javascript">
           $(document).ready(function() {
-            {if $crumbs != "" && empty($error_message)}
-              var crumbs = {$crumbs|@json_encode},
-                      baseurl = "{$baseurl}",
-                      breadcrumbs = RBreadcrumbs({
-                        breadcrumbs: crumbs,
-                        baseURL: baseurl
-                      });
-              ReactDOM.render(breadcrumbs, document.getElementById("breadcrumbs"));
+            {if $breadcrumbs != "" && empty($error_message)}
+              const breadcrumbs = [{$breadcrumbs}];
+
+              ReactDOM.render(
+                RBreadcrumbs({
+                  breadcrumbs: breadcrumbs,
+                  baseURL: loris.BaseURL
+                }),
+                document.getElementById("breadcrumbs")
+              );
+              document.title = document.title.concat(breadcrumbs.reduce(function (carry, item) {
+                return carry.concat(' - ', item.text);
+              }, ''));
             {/if}
 
             // Initialize bootstrap tooltip for site affiliations
@@ -163,7 +163,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="{$baseurl}/main.php?logout=true">
+                                    <a href="{$baseurl}/?logout=true">
                                         Log Out
                                     </a>
                                 </li>
@@ -216,7 +216,7 @@
                     </div>
 
                 {/if}
-                {if $crumbs != "" && empty($error_message)}
+                {if $breadcrumbs != "" && empty($error_message)}
                     <div id="breadcrumbs"></div>
                 {/if}
                         <div>
@@ -234,7 +234,7 @@
                                     </ul>
 
                                     If this error persists, please
-                                    <a target="mantis" href="{$mantis_url}">
+                                    <a target="issue_tracker_url" href="{$issue_tracker_url}">
                                         report a bug to your administrator
                                     </a>.
                                 </p>
@@ -243,13 +243,6 @@
                                         Please click here to go back
                                     </a>.
                                 </p>
-                            {elseif $test_name == ""}
-                                <h1 style="align:center" class="text-primary">
-                                    Welcome to the LORIS Database!
-                                </h1>
-                                <div style="max-width:700px">
-                                    This database provides an on-line mechanism to store both MRI and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help icon at the top right. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun.
-                                </div>
                             {else}
                                 {if $candID != ""}
                                     <!-- table with candidate profile info -->

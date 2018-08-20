@@ -210,7 +210,7 @@ save it. The format is as follows:
 
 `Options.RequireResponse`: If true, there MUST be some way for the user to specify
               that the question is not answered, regardless of other rules. If false,
-              the not answered option is supressed.
+              the not answered option is suppressed.
               Default: true
 
 

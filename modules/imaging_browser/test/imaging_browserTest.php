@@ -33,7 +33,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
      * to user for the tests, and logging in, and creating a candidate
      * with a session
      *
-     * @return none
+     * @return void
      */
     public function setUp()
     {
@@ -386,7 +386,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     {
         // Without permissions
         $this->setupPermissions(array(''));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
@@ -405,7 +404,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     {
         // With permission imaging_browser_phantom_ownsite
         $this->setupPermissions(array('imaging_browser_phantom_ownsite'));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
@@ -419,7 +417,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     {
         // With permission imaging_browser_view_allsites
         $this->setupPermissions(array('imaging_browser_view_allsites'));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
@@ -432,7 +429,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     {
         // With permission imaging_browser_phantom_allsites
         $this->setupPermissions(array('imaging_browser_phantom_allsites'));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
@@ -557,7 +553,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     {
         // With permission imaging_browser_view_site
         $this->setupPermissions(array('imaging_browser_phantom_ownsite'));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
@@ -571,7 +566,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
         // With permission imaging_browser_view_allsites
         $this->setupPermissions(array('imaging_browser_view_allsites'));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );

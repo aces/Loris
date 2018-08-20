@@ -52,8 +52,9 @@ class Candidate
      *                        a candidate in the candidate table
      *
      * @return Candidate the Candidate object
+     * @static
      */
-    static function &singleton($candID)
+    static public function &singleton($candID)
     {
         $candidateList =& $GLOBALS['__candidateObjects'];
         if (!isset($candidateList[$candID])) {
@@ -134,10 +135,17 @@ class Candidate
                      'PTName'    => $parameter_type,
                     )
                 );
+                // Sanitize values coming from the parameter_candidate table
+                // before injecting them into the HTML table.
                 if (!empty($row['Value'])) {
-                    $params[$row['Description']] = $row['Value'];
+                    $params[$row['Description']] = htmlentities(
+                        $row['Value'],
+                        ENT_QUOTES,
+                        'UTF-8'
+                    );
                 }
             }
+
             $this->candidateInfo['DisplayParameters'] = $params;
         }
 
@@ -578,58 +586,6 @@ class Candidate
     }
 
     /**
-     * Return the suggested visit label for the time point you are
-     * trying to register
-     *
-     * @return string Next suggested visit label
-     * @throws DatabaseException
-     */
-    public function getNextVisitLabel()
-    {
-        $factory = NDB_Factory::singleton();
-        $config  = $factory->config();
-
-        $visitLabelSettings = $config->getSetting('visitLabel');
-        $nextVisitLabel     = null;
-
-        $candID = $this->getCandID();
-
-        // make a local reference to the Database object
-        $db = $factory->database();
-
-        if ($visitLabelSettings['generation'] == 'user'
-            && !empty($visitLabelSettings['suggest'])
-        ) {
-            $existingVisitLabels = $this->getListOfVisitLabels();
-            $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitLabel
-                FROM session
-                WHERE CandID=:CaID AND (Active='Y' OR Active is null)
-                GROUP BY CandID";
-            $result = $db->pselectRow($query, array('CaID' => $candID));
-
-            $nextVisitLabel = $result['nextVisitLabel'];
-            if (!empty($existingVisitLabels)) {
-                while (in_array($nextVisitLabel, $existingVisitLabels)) {
-                    $nextVisitLabel++;
-                }
-            } else {
-                // display V1 as a suggested visit label when starting
-                // the 1st timepoint
-                $nextVisitLabel = '1';
-            }
-
-            $nextVisitLabel = str_replace(
-                '%value%',
-                $nextVisitLabel,
-                $visitLabelSettings['suggest']
-            );
-        }
-
-        //return the next visit No
-        return $nextVisitLabel;
-    }
-
-    /**
      * Generates list of valid subprojects for a the selected Candidate's
      * project
      *
@@ -681,6 +637,29 @@ class Candidate
         return $vLabel;
     }
 
+    /**
+     * Returns list of consents and their respective statuses for this candidate
+     *
+     * @return array List of consents and their associated values for this candidate
+     *               The keys of the arrays are the IDs of the consents
+     */
+    public function getConsents()
+    {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $candID = $this->getCandID();
+
+        $query = "SELECT ConsentID, Name, Status, DateGiven, DateWithdrawn
+            FROM candidate_consent_rel cc JOIN consent c USING (ConsentID)
+            WHERE CandidateID=:cid";
+        $where = array('cid' => $candID);
+        $key   = "ConsentID";
+
+        $consentList = $db->pselectWithIndexKey($query, $where, $key);
+
+        return $consentList;
+    }
 
     /**
     * Generates a new random CandID
