@@ -35,7 +35,7 @@ foreach ($_POST as $key => $value) {
             $DB->delete('Config', array('ID' => $key));
         } else {
             // if no duplicate value then do updating
-            if (duplicateNotExistsInDropdown($key, $value)) {
+            if (noDuplicateInDropdown($key, $value)) {
                 $DB->update(
                     'Config',
                     array('Value' => $value),
@@ -98,7 +98,7 @@ function countDuplicate($key,$value)
  *
  * @return boolean return true if there is no Duplicate value
  */
-function duplicateNotExistsInDropdown($id,$value)
+function noDuplicateInDropdown($id,$value)
 {
     $factory = NDB_Factory::singleton();
     $DB      = $factory->database();
