@@ -147,9 +147,9 @@ class Database
      */
     function connect(
         $database,
-        string $username,
-        string $password,
-        string $host,
+        ?string $username,
+        ?string $password,
+        ?string $host,
         bool   $trackChanges = true
     ) : bool {
 
