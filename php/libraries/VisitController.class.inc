@@ -4,7 +4,7 @@
  *
  * PHP Version 7
  *
- * @category Controler
+ * @category Controller
  * @package  Visits
  * @author   Mélanie Legault <melanie.legault2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
@@ -16,7 +16,7 @@ namespace LORIS;
 /**
  * Base class that contains method to access the visit of projects
  *
- * @category Controler
+ * @category Controller
  * @package  Visits
  * @author   Mélanie Legault <melanie.legault2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
