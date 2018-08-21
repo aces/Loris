@@ -413,9 +413,6 @@ class NDB_BVL_Instrument extends NDB_Page
             $this->addGroup($buttons, null, null, "&nbsp;");
         }
 
-        // get saved data to pre-populate form
-        $db = Database::singleton();
-
         $defaults = $this->loadInstanceData($this);
 
         // set the defaults (call private method _setDefaultsArray
