@@ -17,8 +17,10 @@ $user =& \User::singleton();
 if (!$user->hasPermission('document_repository_view')
     && !$user->hasPermission('document_repository_delete')
 ) {
-    header("HTTP/1.1 403 Forbidden");
-    exit(1);
+    http_response_code(403);
+    throw new LorisException("ERROR: $user is forbidden from viewing/deleting "
+        " files in the document repository."
+    );
 }
 require_once '../tools/generic_includes.php';
 
@@ -37,8 +39,8 @@ $partialPath = $_GET['File'];
 
 // Verify file exists in the database.
 if (!$downloader->isFileInDatabase($partialPath)) {
-    error_log("ERROR Requested file is not in the database");
-    http_response_code(400);
+    error_log("ERROR: Requested file is not in the database");
+    http_response_code(404);
     exit(2);
 }
 // All generic verification and sanitization occurs here.
