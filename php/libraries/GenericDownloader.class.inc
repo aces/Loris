@@ -1,6 +1,6 @@
 <?php
 /**
- * Class to provide "middleware" for file downloading functionality, taking care
+ * Class to provide file downloading functionality, taking care
  * of basic validation (e.g. checking that a file exists and is readable) as
  * well as providing protection against path traversal attacks.
  *
@@ -17,8 +17,8 @@ require_once '../php/libraries/FileDownloader.class.inc';
 /**
  * This serves as a generic base class for other modules in LORIS to extend as
  * needed. It implements the FileDownloader interface to provide core download
- * functionality and security. It does not actually provide any functiaonlity
- * related to retrieiving additional file information from the database as in
+ * functionality and security. It does not actually provide any functionlity
+ * related to retrieving additional file information from the database as in
  * practice this is done in an ad-hoc way across LORIS.  Therefore it is
  * suitable only when a file can be directly and simply retrieved from the
  * file system.
