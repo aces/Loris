@@ -18,7 +18,8 @@ if (!$user->hasPermission('document_repository_view')
     && !$user->hasPermission('document_repository_delete')
 ) {
     http_response_code(403);
-    throw new LorisException("ERROR: $user is forbidden from viewing/deleting "
+    throw new LorisException(
+        "ERROR: $user is forbidden from viewing/deleting "
         " files in the document repository."
     );
 }

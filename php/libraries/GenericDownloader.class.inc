@@ -122,7 +122,7 @@ class GenericDownloader implements FileDownloader
     /**
      * Protects against path traversal by resolving paths containing relative
      * characters. If relative characters are detected this function will log
-     * the incident.  The function will throw an exception if a path traversal 
+     * the incident.  The function will throw an exception if a path traversal
      * attempt is confirmed.
      *
      * @param string $userPath The full path supplied by the user.
@@ -146,8 +146,10 @@ class GenericDownloader implements FileDownloader
             || strpos($realUserPath, $this->realBasePath) !== 0
         ) {
             http_response_code(400);
-            throw new LorisException('ERROR: Likely path traversal attempt in '
-                . 'file download.');
+            throw new LorisException(
+                'ERROR: Likely path traversal attempt in '
+                . 'file download.'
+            );
         }
     }
 
