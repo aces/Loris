@@ -2046,7 +2046,7 @@ CREATE TABLE `visit` (
   `VisitID` int(10) unsigned NOT NULL auto_increment,
   `VisitName` varchar(100) NOT NULL,
   CONSTRAINT `visit_PK` PRIMARY KEY (`VisitID`),
-  CONSTRAINT `visit_name_UK` UNIQUE KEY (`VisitName`),
+  CONSTRAINT `visit_name_UK` UNIQUE KEY (`VisitName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `visit_project_subproject_rel` (
