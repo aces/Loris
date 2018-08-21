@@ -45,8 +45,8 @@ class Visit
      * @param string $id    The ID of the visit
      */
     public function __construct(
-        string $visit = null,
-        string $id    = null
+       ?string $visit = null,
+       ?string $id    = null
     ) {
         $this->visit = $visit;
         $this->id    = $id;
