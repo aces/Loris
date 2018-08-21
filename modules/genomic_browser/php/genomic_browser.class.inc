@@ -60,7 +60,7 @@ class Genomic_Browser extends \NDB_Menu_Filter
      * Function _setupVariables
      *
      * @note   overloaded function
-     * @return bool
+     * @return void
     */
     function _setupVariables()
     {
@@ -182,7 +182,6 @@ class Genomic_Browser extends \NDB_Menu_Filter
 
         $this->formToFilter = $ftf;
 
-        return true;
     }
 
     /**
@@ -190,7 +189,7 @@ class Genomic_Browser extends \NDB_Menu_Filter
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -265,7 +264,7 @@ class Genomic_Browser extends \NDB_Menu_Filter
      *
      * @note overloaded function
      *
-     * @return $query
+     * @return string
      */
     function _addValidFilters($prepared_key, $field, $val)
     {

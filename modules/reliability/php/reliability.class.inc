@@ -58,7 +58,6 @@ class Reliability extends \NDB_Menu_Filter
         }
         return false;
     }
-//@codingStandardsIgnoreEnd
     /**
      * GetSiteID Load
      *
@@ -78,9 +77,8 @@ class Reliability extends \NDB_Menu_Filter
     /**
      * _SetupVariables function
      *
-     * @return string
+     * @return void
      */
-//@codingStandardsIgnoreStart
     function _setupVariables()
     {
         $user =& \User::singleton();
@@ -188,7 +186,7 @@ class Reliability extends \NDB_Menu_Filter
                                'ProjectID'             => 'candidate.ProjectID',
                                     // 'Lock_record' => 'session.Lock_record'
                               );
-        return true;
+        return;
     }
 
     /**
@@ -196,7 +194,7 @@ class Reliability extends \NDB_Menu_Filter
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -391,13 +389,12 @@ class Reliability extends \NDB_Menu_Filter
         }
         return $list_of_thresholds;
     }
-    /**
- * _Populate_reliability_table function
-     *
-     * @return string
-     */
-//@codingStandardsIgnoreStart
 
+    /**
+     * _Populate_reliability_table function
+     *
+     * @return void
+     */
     function _populate_reliability_table()
     {
         $db =& \Database::singleton();
@@ -425,15 +422,12 @@ class Reliability extends \NDB_Menu_Filter
                 $this->cross_site_flagging($reliabilityInstrument['Testname'], $site, array_remove($site, $site_list), $db);
             }
         }
-
     }
-//@codingStandardsIgnoreEnd
-//@codingStandardsIgnoreStart
 
     /**
- * Within_site_flagging function
+     * Within_site_flagging function
      *
-     * @return string
+     * @return void
      */
     function within_site_flagging($instrument, $ratio, $current_site, $db)
     {
@@ -466,13 +460,12 @@ class Reliability extends \NDB_Menu_Filter
             }
         }
     }
-//@codingStandardsIgnoreEnd
+
     /**
- * Cross_site_flagging function
+     * Cross_site_flagging function
      *
-     * @return string
+     * @return void
      */
-//@codingStandardsIgnoreStart
     function cross_site_flagging($instrument, $current_site, $reliability_sites, $db)
     {
         $ratio = 0.1;
@@ -513,13 +506,12 @@ class Reliability extends \NDB_Menu_Filter
             $reliability_site_index = ($reliability_site_index + 1) % count($reliability_sites);
         }
     }
-//@codingStandardsIgnoreEnd
+
     /**
      * Get_current_index function
      *
      * @return array
      */
-//@codingStandardsIgnoreStart
     function get_current_index($instrument, $current_site, $reliability_sites, $db)
     {
         $site_name = array_flip($this->site_id);
@@ -543,13 +535,12 @@ class Reliability extends \NDB_Menu_Filter
             return $res % count($reliability_sites);
         }
     }
-//@codingStandardsIgnoreEnd
+
     /**
      * Swap candidates function
      *
      * @return array
      */
-//@codingStandardsIgnoreStart
     function _swap_candidates()
     {
         $user =& \User::singleton();
@@ -670,9 +661,8 @@ class Reliability extends \NDB_Menu_Filter
                   " for".$params_new['id_Replace'],
                );
     }
-//@codingStandardsIgnoreEnd
     /**
- * Add Candidate function
+     * Add Candidate function
      *
      * @return array
      */
@@ -730,7 +720,7 @@ class Reliability extends \NDB_Menu_Filter
     /**
      * Override toJSON to append a calculated field to the default JSON object
      *
-     * @return a json encoded string of the headers and data from this table
+     * @return string a json encoded string of the headers and data from this table
      */
     function toJSON()
     {
@@ -739,7 +729,6 @@ class Reliability extends \NDB_Menu_Filter
         $cohort    = \Utility::getSubprojectList();
 
         foreach ($tableData['Data'] as $key => $record) {
-
             // Calculate and set `Reliable` column
             $instrumentThreshold = isset($record[9], $threshold[$record[9]]) ?
                 $threshold[$record[9]] :
@@ -747,7 +736,7 @@ class Reliability extends \NDB_Menu_Filter
             $instrumentScore     = $record[10];
 
             // Map cohort id to a string value
-            $record[3] = $cohort[$record[3]];
+            $record[3] = $cohort[$record[3]] ?? 'Unknown';
 
             if ($instrumentScore == null) {
                 $isReliable = "";

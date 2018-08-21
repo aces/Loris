@@ -6,6 +6,7 @@ import ProgressBar from 'ProgressBar';
  * Form component allowing to upload MRI images to LORIS
  *
  * @author Alex Ilea
+ * @author Victoria Foing
  * @version 1.0.0
  * @since 2017/04/01
  *
@@ -16,19 +17,17 @@ class UploadForm extends React.Component {
     super(props);
 
     const form = JSON.parse(JSON.stringify(this.props.form));
-    form.IsPhantom.required = true;
-    form.candID.required = true;
-    form.pSCID.required = true;
-    form.visitLabel.required = true;
-    form.mri_file.required = true;
 
     this.state = {
       formData: {},
       form: form,
+      hasError: {},
+      errorMessage: {},
       uploadProgress: -1
     };
 
     this.onFormChange = this.onFormChange.bind(this);
+    this.getDisabledStatus = this.getDisabledStatus.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
   }
@@ -38,6 +37,10 @@ class UploadForm extends React.Component {
     this.onFormChange(this.state.form.IsPhantom.name, null);
   }
 
+  /*
+   Updates values in formData
+   Deletes CandID, PSCID, and VisitLabel values if Phantom Scans is set to No
+   */
   onFormChange(field, value) {
     if (!field) return;
 
@@ -45,14 +48,7 @@ class UploadForm extends React.Component {
     const formData = Object.assign({}, this.state.formData);
 
     if (field === 'IsPhantom') {
-      if (value === 'N') {
-        form.candID.disabled = false;
-        form.pSCID.disabled = false;
-        form.visitLabel.disabled = false;
-      } else {
-        form.candID.disabled = true;
-        form.pSCID.disabled = true;
-        form.visitLabel.disabled = true;
+      if (value !== 'N') {
         delete formData.candID;
         delete formData.pSCID;
         delete formData.visitLabel;
@@ -65,6 +61,17 @@ class UploadForm extends React.Component {
       form: form,
       formData: formData
     });
+  }
+
+  /*
+   Returns false if Phantom Scans is set to No, and true otherwise
+   Result disables the element that calls the function
+   */
+  getDisabledStatus(phantomScans) {
+    if (phantomScans === 'N') {
+      return false;
+    }
+    return true;
   }
 
   submitForm() {
@@ -186,7 +193,20 @@ class UploadForm extends React.Component {
         }.bind(this), false);
         return xhr;
       }.bind(this),
-      success: function(data) {
+      // Upon successful upload:
+      // - Resets errorMessage and hasError so no errors are displayed on form
+      // - Displays pop up window with success message
+      // - Returns to Browse tab
+      success: data => {
+        let errorMessage = this.state.errorMessage;
+        let hasError = this.state.hasError;
+        for (let i in errorMessage) {
+          if (errorMessage.hasOwnProperty(i)) {
+            errorMessage[i] = "";
+            hasError[i] = false;
+          }
+        }
+        this.setState({errorMessage: errorMessage, hasError: hasError});
         swal({
           title: "Upload Successful!",
           type: "success"
@@ -194,17 +214,29 @@ class UploadForm extends React.Component {
           window.location.assign(loris.BaseURL + "/imaging_uploader/");
         });
       },
-      error: function(err) {
-        const errMessage = "The following errors occured while " +
-          "attempting to display this page:";
-        let responseText = err.responseText;
-        if (responseText.indexOf(errMessage) > -1) {
-          responseText = responseText.replace('history.back()', 'location.reload()');
-          document.open();
-          document.write(responseText);
-          document.close();
+      // Upon errors in upload:
+      // - Displays pop up window with submission error message
+      // - Updates errorMessage and hasError so relevant errors are displayed on form
+      // - Returns to Upload tab
+      error: (error, textStatus, errorThrown) => {
+        swal({
+          title: "Submission error!",
+          type: "error"
+        });
+        let errorMessage = this.state.errorMessage;
+        let hasError = this.state.hasError;
+        errorMessage = (error.responseJSON || {}).errors || 'Submission error!';
+        for (let i in errorMessage) {
+          if (errorMessage.hasOwnProperty(i)) {
+            errorMessage[i] = errorMessage[i].toString();
+            if (errorMessage[i].length) {
+              hasError[i] = true;
+            } else {
+              hasError[i] = false;
+            }
+          }
         }
-        console.error(err);
+        this.setState({uploadProgress: -1, errorMessage: errorMessage, hasError: hasError});
       }
     });
   }
@@ -223,8 +255,23 @@ class UploadForm extends React.Component {
       (this.state.uploadProgress > -1) ? "btn btn-primary hide" : undefined
     );
 
-    const notes = "File name must be of type .tgz or tar.gz or .zip. " +
-      "Uploads cannot exceed " + this.props.maxUploadSize;
+    const notes = (
+        <span>
+          File cannot exceed {this.props.maxUploadSize}<br/>
+          File must be of type .tgz or tar.gz or .zip<br/>
+          For files that are not Phantom Scans, file name must begin with
+          <b> [PSCID]_[CandID]_[Visit Label]</b><br/>
+          For example, for CandID <i>100000</i>, PSCID <i>ABC123</i>, and
+          Visit Label <i>V1</i> the file name should be prefixed by:
+          <b> ABC123_100000_V1</b><br/>
+        </span>
+    );
+
+    // Returns individual form elements
+    // For CandID, PSCID, and Visit Label, disabled and required
+    // are updated depending on Phantom Scan value
+    // For all elements, hasError and errorMessage
+    // are updated depending on what values are submitted
     return (
       <div className="row">
         <div className="col-md-7">
@@ -232,10 +279,58 @@ class UploadForm extends React.Component {
           <br/>
           <FormElement
             name="upload_form"
-            formElements={form}
             fileUpload={true}
-            onUserInput={this.onFormChange}
           >
+            <SelectElement
+              name="IsPhantom"
+              label="Phantom Scans"
+              options={this.props.form.IsPhantom.options}
+              onUserInput={this.onFormChange}
+              required={true}
+              hasError={this.state.hasError.IsPhantom}
+              errorMessage={this.state.errorMessage.IsPhantom}
+              value={this.state.formData.IsPhantom}
+            />
+            <TextboxElement
+              name="candID"
+              label="CandID"
+              onUserInput={this.onFormChange}
+              disabled={this.getDisabledStatus(this.state.formData.IsPhantom)}
+              required={!this.getDisabledStatus(this.state.formData.IsPhantom)}
+              hasError={this.state.hasError.candID}
+              errorMessage={this.state.errorMessage.candID}
+              value={this.state.formData.candID}
+            />
+            <TextboxElement
+              name="pSCID"
+              label="PSCID"
+              onUserInput={this.onFormChange}
+              disabled={this.getDisabledStatus(this.state.formData.IsPhantom)}
+              required={!this.getDisabledStatus(this.state.formData.IsPhantom)}
+              hasError={this.state.hasError.pSCID}
+              errorMessage={this.state.errorMessage.pSCID}
+              value={this.state.formData.pSCID}
+            />
+            <SelectElement
+              name="visitLabel"
+              label="Visit Label"
+              options={this.props.form.visitLabel.options}
+              onUserInput={this.onFormChange}
+              disabled={this.getDisabledStatus(this.state.formData.IsPhantom)}
+              required={!this.getDisabledStatus(this.state.formData.IsPhantom)}
+              hasError={this.state.hasError.visitLabel}
+              errorMessage={this.state.errorMessage.visitLabel}
+              value={this.state.formData.visitLabel}
+            />
+            <FileElement
+              name="mri_file"
+              label="File to Upload"
+              onUserInput={this.onFormChange}
+              required={true}
+              hasError={this.state.hasError.mri_file}
+              errorMessage={this.state.errorMessage.mri_file}
+              value={this.state.formData.mri_file}
+            />
             <StaticElement
               label="Notes"
               text={notes}

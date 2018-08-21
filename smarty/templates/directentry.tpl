@@ -48,7 +48,7 @@
 <!--h1 align="right"><a href="javascript:open_help_section()" ><u>Help</u></a>  </h1-->
 {/if}
 {if $error_message != ""}
-            <p>The following errors occured while attempting to display this page:
+            <p>The following errors occurred while attempting to display this page:
 
             <ul>
     {section name=error loop=$error_message}
@@ -56,7 +56,7 @@
     {/section}
             </ul>
             
-            If this error persists, please <a target="mantis" href="{$mantis_url}">report a bug to your administrator</a>.</p>
+            If this error persists, please <a target="issue_tracker_url" href="{$issue_tracker_url}">report a bug to your administrator</a>.</p>
             <p><a href="javascript:history.back(-1)">Please click here to go back</a>.</p>
 {else}
 

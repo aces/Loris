@@ -537,13 +537,14 @@ $(function() {
       });
 
       $.ajax({
-          data: 'minc_id=' + minc_ids_arr[vol_id],
-          url: loris.BaseURL + '/brainbrowser/ajax/getMincName.php',
+          dataType: "json",
+          data: 'file_id=' + minc_ids_arr[vol_id],
+          url: loris.BaseURL + '/brainbrowser/ajax/getImageName.php',
           method: 'GET',
           success: function(data) {
-              var fileName = $("#filename-" + vol_id);
-              fileName.html(data);
-              fileName.data("title", data);
+              let fileName = $("#filename-" + vol_id);
+              fileName.html(data.filename);
+              fileName.data("title", data.filename);
               fileName.tooltip();
           }
       });
@@ -748,17 +749,53 @@ $(function() {
         minc_ids_arr = [minc_ids];
     }
 
+    let request;
     for (i = 0; i < minc_ids_arr.length; i += 1) {
 
-        minc_volumes.push({
-            type: 'minc',
-	    header_url: "",
-	    raw_data_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + minc_ids_arr[i],
-            template: {
+      request = $.ajax({
+        url: loris.BaseURL + "/brainbrowser/ajax/image.php",
+        data: 'file_id=' + minc_ids_arr[i],
+        method: 'GET',
+        success: function (response, status, jqXHR) {
+          let type   = jqXHR.getResponseHeader('Content-Type');
+          let fileid = jqXHR.getResponseHeader('X-FileID');
+          if (type === "application/x-mnc") {
+            minc_volumes.push({
+              type: 'minc',
+              raw_data_url: loris.BaseURL + "/brainbrowser/ajax/image.php?file_id=" + fileid,
+              template: {
                 element_id: "volume-ui-template4d",
                 viewer_insert_class: "volume-viewer-display"
-            }
-        });
+              }
+            });
+          } else if (type === "application/x-nii") {
+            minc_volumes.push({
+              type: 'nifti1',
+              nii_url: loris.BaseURL + "/brainbrowser/ajax/image.php?file_id=" + fileid,
+              template: {
+                element_id: "volume-ui-template4d",
+                viewer_insert_class: "volume-viewer-display"
+              }
+            });
+          } else {
+            let msg = "WARNING: The volume viewer only supports MINC and" +
+                      " NIfTI file types.";
+            $("#loading").html(msg);
+            console.group('warning message');
+              console.warn(msg);
+              console.warn("\nNot supported file was " + filename);
+            console.groupEnd();
+            console.log($("#loading").text());
+          }
+        },
+        error: function(jqXHR, status, errorThrown) {
+          if (errorThrown === "Not Found") {
+            let msg = "ERROR: file not found.";
+            $("#loading").html(msg);
+            console.error(msg);
+          }
+        }
+      });
     }
 
     if (getQueryVariable("overlay") === "true") {
@@ -768,13 +805,6 @@ $(function() {
                 viewer_insert_class: "overlay-viewer-display"
             }
         }
-    }
-
-    bboptions.volumes = minc_volumes;
-
-    viewer.setFileNames = function (filenames) {
-        for (i=0; i < filenames.length; i += 1) {
-       }
     }
 
     var color_map_config = BrainBrowser.config.get("color_maps")[0];
@@ -803,15 +833,14 @@ $(function() {
 
     viewer.setDefaultPanelSize(panelSize, panelSize);
 
-    ///////////////////
-    // Start rendering.
-    ///////////////////
-    viewer.render();
-
     /////////////////////
     // Load the volumes.
     /////////////////////
-    viewer.loadVolumes(bboptions);
+    request.then(function(filename) {
+      bboptions.volumes = minc_volumes;
+      viewer.render();                // start the rendering
+      viewer.loadVolumes(bboptions);  // load the volumes
+    });
 
   });
 

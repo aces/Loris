@@ -113,7 +113,7 @@ table th{
 }
 .frozenHeader{
   position   : absolute;
-  overflow-x : auto;
+  overflow-x : hidden;
 }
 .headerColm {
   background: #1c70b6;
@@ -305,6 +305,13 @@ display: block;
 }
 .btn-breadcrumb .btn:last-child {
   padding:6px 18px 6px 24px;
+}
+.btn-inline {
+    margin-right: 3px;
+    margin-bottom: 3px;
+}
+.btn-add-tag {
+    margin-top: 3px;
 }
 
 /** Primary button **/
