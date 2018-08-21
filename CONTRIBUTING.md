@@ -89,14 +89,13 @@ issues and/or Redmine tickets (if applicable).
 * Make sure you run PHP codesniffer using the standards file in
 docs/LorisCS.xml by running `vendor/bin/phpcs --standard=docs/LorisCS.xml
 <path_to_changed_files>` before sending any pull request,
-otherwise the automated tests will fail.  * Try and make all changes
-backwards-compatible with existing installations.  * If you must change
-something in a non-backwards-compatible way - or if it would affect
-the data or custom code of a study - document this in your pull request
-description and
-  tag it with ![](https://via.placeholder.com/15/d4c5f9/000000?text=+)
-  **Caveat for Existing Projects**. This helps us to document our
-  release notes.
+otherwise the automated tests will fail.  
+* Try and make all changes backwards-compatible with existing installations.  
+* If you must change something in a non-backwards-compatible way - or if it 
+would affect the data or custom code of a study - document this in your pull 
+request description and tag it with 
+![](https://via.placeholder.com/15/d4c5f9/000000?text=+) **Caveat for Existing 
+Projects**. This helps us to document our release notes.
 
 If you're unsure about any of the above, feel free to ask us for
 clarification via the mailing list.
