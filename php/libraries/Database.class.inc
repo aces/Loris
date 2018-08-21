@@ -638,7 +638,7 @@ class Database
         // The fetchAll function will return an empty set if no results are
         // found and FALSE on "failure". We don't expect this case so an
         // exception is thrown.
-        if (is_bool($rows)) {
+        if (is_bool($rows) && $rows === false) {
             $err = $prepared->errorInfo();
             throw new DatabaseException($err[2], $prepared->queryString, $params);
         }
