@@ -36,8 +36,6 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function setUp()
     {
         parent::setUp();
-        $window = new WebDriverWindow($this->webDriver);
-        $window->maximize();
         $this->DB->insert(
             "conflicts_resolved",
             array(

@@ -116,8 +116,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function testUserAccountEdits()
     {
-        $this->markTestSkipped("Skipping excessively slow test");
-        return;
         $this->_verifyUserModification(
             'user_accounts',
             'UnitTester',
@@ -251,18 +249,14 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $sitesOption->selectByValue("1");
         }
         $this->safeClick(WebDriverBy::Name('fire_away'));
-
-        $this->_accessUser($page, $userId);
-        $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
-        if ($field->getTagName() == 'input') {
-            $this->assertEquals($field->getAttribute('value'), $newValue);
-        } else {
-            $selectField = new WebDriverSelect($field);
-            $this->assertEquals(
-                $selectField->getFirstSelectedOption()->getText(),
+        $value = $this->DB->pselectrow(
+            "SELECT * FROM users WHERE UserID=:user_id",
+            array('user_id' => $userId)
+        );
+            $this->assertContains(
+                $value[$fieldName],
                 $newValue
             );
-        }
     }
     /**
      * Does one of two things: either accesses the My Preferences page of the
@@ -296,7 +290,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    private function _assertSearchBy($elementName,$testData,$expectedResults)
+    function _assertSearchBy($elementName,$testData,$expectedResults)
     {
         {
             $this->safeGet($this->url . "/user_accounts/");
@@ -318,7 +312,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    private function _assertUserTableContents($className, $expectedRows)
+    function _assertUserTableContents($className, $expectedRows)
     {
         $dataTable = $this->safeFindElement(
             WebDriverBy::ClassName($className)
@@ -362,7 +356,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    private function _assertUserReactTableContents($testData,$expectedRows)
+    function _assertUserReactTableContents($testData,$expectedRows)
     {
         $dataTable =  $this->safeGet($this->url . "/user_accounts/?format=json")
             ->getPageSource();

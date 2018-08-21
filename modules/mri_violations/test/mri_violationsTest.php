@@ -533,7 +533,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->findElement(
             WebDriverBy::Name("filter")
         )->click();
-        sleep(1);
+        //    sleep(1);
         $bodyText = $this->webDriver->executescript(
             "return document.querySelector(
                     '#datatable > div > div.table-header.panel-heading > div')
@@ -541,9 +541,15 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         );
 
         $this->assertContains("1 rows displayed of 1", $bodyText);
-        $this->webDriver->findElement(
-            WebDriverBy::Name("reset")
-        )->click();
+        //  $this->webDriver->findElement(
+        //      WebDriverBy::Name("reset")
+        //  )->click();
+        try{
+            $this->webDriver->findElement(
+                WebDriverBy::Name($searchBy)
+            )->clear();
+        } catch (Exception $e){
+        }
     }
     /**
      * Testing UI when page loads
