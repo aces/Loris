@@ -13,7 +13,7 @@ class Login_Test extends ApiTestCase
     {
     }
 
-    public function testLoginSuccess()
+    public function testLogin200()
     {
         $api_credentials = $this->factory->Config()->getSetting('api');
         $post_body       = array(
@@ -26,7 +26,7 @@ class Login_Test extends ApiTestCase
             $post_body
         );
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(200, $response->getStatusCode(), $response->getBody());
 
         $json = json_decode($response->getBody());
         $this->assertTrue(array_key_exists('token', $json));
@@ -41,7 +41,7 @@ class Login_Test extends ApiTestCase
             'Login.php?PrintLogin=true',
             $post_body
         );
-        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode(), $response->getBody());
 
         // Missing username key in request body
         $post_body = array(
@@ -53,7 +53,7 @@ class Login_Test extends ApiTestCase
             'Login.php?PrintLogin=true',
             $post_body
         );
-        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode(), $response->getBody());
 
         // Missing password key in request body
         $post_body = array(
@@ -65,7 +65,7 @@ class Login_Test extends ApiTestCase
             'Login.php?PrintLogin=true',
             $post_body
         );
-        $this->assertEquals(400, $response->getStatusCode());
+        $this->assertEquals(400, $response->getStatusCode(), $response->getBody());
     }
 
     public function testLogin401()
@@ -80,7 +80,7 @@ class Login_Test extends ApiTestCase
             'Login.php?PrintLogin=true',
             $post_body
         );
-        $this->assertEquals(401, $response->getStatusCode());
+        $this->assertEquals(401, $response->getStatusCode(), $response->getBody());
     }
 }
 
