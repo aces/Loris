@@ -77,6 +77,7 @@ if (preg_match(
     $getParams = explode("/", $url);
     $_REQUEST['PrintLogin'] = 'yes';
     include_once __DIR__ . "/api/v0.0.3-dev/Login.php";
+
 } else {
     var_dump($url);
     include_once __DIR__ . "/index.php";
