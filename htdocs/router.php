@@ -74,12 +74,8 @@ if (preg_match(
     '#^api/.*#',
     $url
 )) {
-    $getParams = explode("/", $url);
-    $_REQUEST['PrintLogin'] = 'yes';
-    include_once __DIR__ . "/api/v0.0.3-dev/Login.php";
-
+    include_once __DIR__ . $url;
 } else {
-    var_dump($url);
     include_once __DIR__ . "/index.php";
 }
 ?>

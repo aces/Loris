@@ -72,12 +72,16 @@ class HttpClient extends Client
                       "password" => $loris_password,
                      ];
 
-        $response   = $this->lorisPOST('login/', $post_body);
+        $response = $this->lorisPOST(
+            'Login.php?PrintLogin=true',
+            $post_body
+        );
+
         $statuscode = $response->getStatusCode();
 
         if ($statuscode != 200) {
             throw new \Exception(
-                $response->getReasonPhrase() . $response->getBody(),
+                $response->getReasonPhrase() . ' : ' .  $response->getBody(),
                 $statuscode
             );
         }
@@ -87,7 +91,7 @@ class HttpClient extends Client
         // If no JWT token returned, login failed.
         if (is_null($json) || !array_key_exists('token', $json)) {
             throw new \Exception(
-                $response->getReasonPhrase() . $response->getBody(),
+                $response->getReasonPhrase() . ' : ' .  $response->getBody(),
                 $statuscode
             );
         }

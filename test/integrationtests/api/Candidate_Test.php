@@ -11,9 +11,6 @@ class Canditate_Test extends ApiTestCase
 
         $config = $this->factory->Config(CONFIG_XML);
 
-//        $user = \User::factory('travis');
-//        $user->updatePassword('testpass');
-
         $api_credentials = $config->getSetting('api');
         $token           = $this->httpclient->getAuthorizationToken(
             $api_credentials['username'],
@@ -33,13 +30,17 @@ class Canditate_Test extends ApiTestCase
 
     public function testCandidatesGet()
     {
-        $response = $this->httpclient->lorisGET('candidates/');
+        $response = $this->httpclient->lorisGET(
+            'Candidates.php?PrintCandidates=true'
+        );
         $this->assertEquals(200, $response->getStatusCode());
     }
 
     public function testCandidatesCandIdGet()
     {
-        $response = $this->httpclient->lorisGET('candidates/105657');
+        $response = $this->httpclient->lorisGET(
+            'candidates/Candidate.php?CandID=105657&PrintCandidate=true'
+        );
         $this->assertEquals(200, $response->getStatusCode());
     }
 }

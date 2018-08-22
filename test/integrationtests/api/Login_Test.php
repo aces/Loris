@@ -1,29 +1,33 @@
 <?php
 namespace LORIS\integrationtests;
 
-require_once('ApiTestCase.php');
+require_once 'ApiTestCase.php';
 
 class Login_Test extends ApiTestCase
 {
-    public function setUp() 
+    public function setUp()
     {
     }
 
-    public function tearDown() 
+    public function tearDown()
     {
     }
 
     public function testLoginSuccess()
     {
         $api_credentials = $this->factory->Config()->getSetting('api');
-        $post_body = array(
-            'username' => $api_credentials['username'],
-            'password' => $api_credentials['password']
+        $post_body       = array(
+                            'username' => $api_credentials['username'],
+                            'password' => $api_credentials['password'],
+                           );
+
+        $response = $this->httpclient->lorisPOST(
+            'Login.php?PrintLogin=true',
+            $post_body
         );
-        
-        $response = $this->httpclient->lorisPOST('login/', $post_body);
+
         $this->assertEquals(200, $response->getStatusCode());
-        
+
         $json = json_decode($response->getBody());
         $this->assertTrue(array_key_exists('token', $json));
     }
@@ -31,40 +35,51 @@ class Login_Test extends ApiTestCase
     public function testLogin400()
     {
         // Empty request body
-        $post_body = array(
-        );
+        $post_body = array();
 
-        $response = $this->httpclient->lorisPOST('login/', $post_body);
+        $response = $this->httpclient->lorisPOST(
+            'Login.php?PrintLogin=true',
+            $post_body
+        );
         $this->assertEquals(400, $response->getStatusCode());
 
         // Missing username key in request body
         $post_body = array(
-            'missing_username_key' => 'foo',
-            'password' => 'bar'
-        );
+                      'missing_username_key' => 'foo',
+                      'password'             => 'bar',
+                     );
 
-        $response = $this->httpclient->lorisPOST('login/', $post_body);
+        $response = $this->httpclient->lorisPOST(
+            'Login.php?PrintLogin=true',
+            $post_body
+        );
         $this->assertEquals(400, $response->getStatusCode());
 
         // Missing password key in request body
         $post_body = array(
-            'username' => 'foo',
-            'missing_password_key' => 'bar'
-        );
+                      'username'             => 'foo',
+                      'missing_password_key' => 'bar',
+                     );
 
-        $response = $this->httpclient->lorisPOST('login/', $post_body);
+        $response = $this->httpclient->lorisPOST(
+            'Login.php?PrintLogin=true',
+            $post_body
+        );
         $this->assertEquals(400, $response->getStatusCode());
     }
 
     public function testLogin401()
     {
         $api_credentials = $this->factory->Config()->getSetting('api');
-        $post_body = array(
-            'username' => $api_credentials['username'],
-            'password' => 'wrong password'
-        );
+        $post_body       = array(
+                            'username' => $api_credentials['username'],
+                            'password' => 'wrong password',
+                           );
 
-        $response = $this->httpclient->lorisPOST('login/', $post_body);
+        $response = $this->httpclient->lorisPOST(
+            'Login.php?PrintLogin=true',
+            $post_body
+        );
         $this->assertEquals(401, $response->getStatusCode());
     }
 }
