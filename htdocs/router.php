@@ -74,7 +74,7 @@ if (preg_match(
     '#^api/.*#',
     $url
 )) {
-    $endpoint = explode('?', $url);
+    $endpoint = explode('?', $url)[0];
     include_once __DIR__ . $endpoint;
 } else {
     include_once __DIR__ . "/index.php";
