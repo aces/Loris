@@ -418,7 +418,6 @@ class ViewProject extends React.Component {
           value={this.state.formData.title}
         />
       );
-
     } else {
       title = (
         <div className="row">
