@@ -76,6 +76,7 @@ before_script:
     # after the config.xml is setup.
     - cd tools
     - echo "testpass" | php ./resetpassword.php admin
+    - echo "testpass" | php ./resetpassword.php travis
     - mysql LorisTest -e "UPDATE users SET Pending_approval='N', Password_expiry='2100-01-01' WHERE ID=1"
     - cd ..
     - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
