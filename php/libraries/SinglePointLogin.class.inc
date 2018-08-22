@@ -436,8 +436,7 @@ class SinglePointLogin
                   FROM user_login_history 
                   WHERE UserID = :username";
 
-        $row = $DB->pselectRow($query, array('username' => $username));
-        var_dump($row);
+        $row        = $DB->pselectRow($query, array('username' => $username));
         $last_login = new DateTime($row['Login_timestamp']);
         $time_now   = new DateTime("now");
         $interval   = $last_login->diff($time_now);
