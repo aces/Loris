@@ -86,7 +86,10 @@ class HttpClient extends Client
 
         // If no JWT token returned, login failed.
         if (is_null($json) || !array_key_exists('token', $json)) {
-            throw new \Exception("No token returned");
+            throw new \Exception(
+                $response->getReasonPhrase() . $response->getBody(),
+                $statuscode
+            );
         }
 
         return $json->token;
