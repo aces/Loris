@@ -27,7 +27,7 @@ class BatteryManagerAddForm extends React.Component {
   }
 
   componentDidMount() {
-    var self = this;
+    let self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
@@ -70,7 +70,7 @@ class BatteryManagerAddForm extends React.Component {
     }
 
     // Inform users about duplicate entries
-    var helpText = (
+    const helpText = (
       <span>
         You cannot add an entry if it has a duplicate entry in the test battery.<br/>
         If the duplicate entry is inactive, you will be given the option to activate it.
