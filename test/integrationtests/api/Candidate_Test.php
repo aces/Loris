@@ -10,15 +10,9 @@ class Canditate_Test extends ApiTestCase
         parent::__construct();
 
         $config = $this->factory->Config(CONFIG_XML);
-        $db     = $this->factory->database();
-        $users  = $db->pselect(
-            'SELECT * FROM users',
-            array()
-        );
-        var_dump($users);
 
-        $user = \User::factory('travis');
-        $user->updatePassword('testpass');
+//        $user = \User::factory('travis');
+//        $user->updatePassword('testpass');
 
         $api_credentials = $config->getSetting('api');
         $token           = $this->httpclient->getAuthorizationToken(

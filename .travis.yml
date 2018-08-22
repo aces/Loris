@@ -80,6 +80,7 @@ before_script:
     - cd ..
     - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
     - mysql LorisTest -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
+    - mysql LorisTest -e "UPDATE Config SET Value='Not so !S3cret99 aNy more' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='JWTKey')"
 
     # Set up the testing instrument environment
     - cp test/test_instrument/NDB_BVL_Instrument_testtest.class.inc project/instruments/NDB_BVL_Instrument_testtest.class.inc
