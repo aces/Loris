@@ -513,6 +513,8 @@ function editProject() : void
         showError('No Publication ID provided');
     }
 
+    $title            = isset($_REQUEST['title'])
+        ? $_REQUEST['title'] : null;
     $statusID         = isset($_REQUEST['status'])
         ? $_REQUEST['status'] : null;
     $rejectedReason   = isset($_REQUEST['rejectedReason'])
@@ -537,6 +539,9 @@ function editProject() : void
     // build array of changed values
     $toUpdate        = array();
     $leadInvToUpdate = array();
+    if ($pubData['Title'] !== $title) {
+        $toUpdate['Title'] = $title;
+    }
     if ($pubData['PublicationStatusID'] !== $statusID) {
         $toUpdate['PublicationStatusID'] = $statusID;
     }
