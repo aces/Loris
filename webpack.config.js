@@ -5,8 +5,8 @@ const fs = require('fs');
 const config = [{
   entry: {
     './htdocs/js/components/DynamicDataTable.js': './jsx/DynamicDataTable.js',
-    './htdocs/js/components/PaginationLinks.js': ['./jsx/PaginationLinks.js'],
-    './htdocs/js/components/StaticDataTable.js': ['./jsx/StaticDataTable.js'],
+    './htdocs/js/components/PaginationLinks.js': './jsx/PaginationLinks.js',
+    './htdocs/js/components/StaticDataTable.js': './jsx/StaticDataTable.js',
     './htdocs/js/components/Breadcrumbs.js': './jsx/Breadcrumbs.js',
     './htdocs/js/components/Form.js': './jsx/Form.js',
     './htdocs/js/components/Markdown.js': './jsx/Markdown.js',

@@ -2,27 +2,29 @@
 FileTypeSelect, FileInput, TextAreaInput, CheckboxInput, ProgressBar
 */
 
-let GenomicFileUploadModal = React.createClass({
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
-  propTypes: {
-    baseURL: React.PropTypes.string.isRequired,
-  },
-
-  getInitialState: function() {
-    return {
+class GenomicFileUploadModal extends Component {
+  constructor() {
+    super();
+    this.state = {
       readyForUpload: false,
       submited: false,
       uploadSummary: {},
     };
-  },
+    this.validateForm = this.validateForm.bind(this);
+    this.reloadPage = this.reloadPage.bind(this);
+    this.handleUploadSubmit = this.handleUploadSubmit.bind(this);
+  }
 
-  shouldComponentUpdate: function(nextProps, nextState) {
+  shouldComponentUpdate(nextProps, nextState) {
     return nextState.readyForUpload !== this.state.readyForUpload ||
                nextState.submited !== this.state.submited ||
                nextProps.id !== this.props.id;
-  },
+  }
 
-  validateForm: function(requiredInputs) {
+  validateForm(requiredInputs) {
     // this is always returning true... for now
     requiredInputs = requiredInputs || [];
     this.setState({
@@ -31,14 +33,14 @@ let GenomicFileUploadModal = React.createClass({
           return previousValue;
         }, true),
     });
-  },
+  }
 
-  reloadPage: function() {
+  reloadPage() {
     $('#modalContainer').modal('hide');
     $('#showdata').click();
-  },
+  }
 
-  handleUploadSubmit: function(event) {
+  handleUploadSubmit(event) {
     event.preventDefault();
     let self = this;
     let formData = new FormData(document.getElementById('uploadForm'));
@@ -86,9 +88,9 @@ let GenomicFileUploadModal = React.createClass({
     let url = this.props.baseURL + '/genomic_browser/ajax/genomic_file_upload.php';
     xhr.open('POST', url, true);
     xhr.send(formData);
-  },
+  }
 
-  render: function() {
+  render() {
     let footerButtons = [];
 
     if (this.state.submited) {
@@ -118,43 +120,42 @@ let GenomicFileUploadModal = React.createClass({
                 </div>
             </div>
         );
-  },
-});
+  }
+}
+GenomicFileUploadModal.propTypes = {
+  baseURL: PropTypes.string.isRequired,
+};
 
 let RGenomicFileUploadModal = React.createFactory(GenomicFileUploadModal);
 
-let UploadForm = React.createClass({
-
-  getInitialState: function() {
-    return {
+class UploadForm extends Component {
+  constructor() {
+    super();
+    this.state = {
       baseURL: '',
       fileType: '',
       useColumnHeaders: true, // Change this to false when we are ready to use Mapping files
     };
-  },
+    this.handleFileTypeChange = this.handleFileTypeChange.bind(this);
+    this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
+  }
 
-  getDefaultProps: function() {
-    return {
-      validate: null,
-    };
-  },
-
-  handleFileTypeChange: function(event) {
+  handleFileTypeChange(event) {
     event.preventDefault();
     this.setState({fileType: event.target.value});
-  },
+  }
 
-  handleCheckboxChange: function(event) {
+  handleCheckboxChange(event) {
     if (event.target.name === 'pscidColumn') {
       this.setState({useColumnHeaders: !this.state.useColumnHeaders});
     }
-  },
+  }
 
-  componentWillUpdate: function(prevProps, prevState) {
+  componentWillUpdate(prevProps, prevState) {
     this.props.validate();
-  },
+  }
 
-  render: function() {
+  render() {
     let instructions = [];
     let inputs = [];
 
@@ -180,36 +181,36 @@ let UploadForm = React.createClass({
     }
 
     return (
-            <form name="uploadForm" id="uploadForm" encType="multipart/form-data" method="POST">
-                <div className="row">
-                    {instructions}
-                    {inputs}
-                </div>
-            </form>
-        );
-  },
-});
+      <form name="uploadForm" id="uploadForm" encType="multipart/form-data" method="POST">
+          <div className="row">
+              {instructions}
+              {inputs}
+          </div>
+      </form>
+    );
+  }
+}
+UploadForm.defaultProps = {
+  validate: null,
+};
+UploadForm.propTypes = {
+  validate: PropTypes.func,
+};
 
-let FileTypeSelect = React.createClass({
-  getDefaultProps: function() {
-    return {
-      baseURL: '',
-      onFileTypeChange: null,
-      getFileType: null,
-    };
-  },
-
-  getInitialState: function() {
-    return {
+class FileTypeSelect extends Component {
+  constructor() {
+    super();
+    this.state = {
       availableFileType: [],
     };
-  },
+    this.getGenomicFileType = this.getGenomicFileType.bind(this);
+  }
 
-  componentDidMount: function() {
+  componentDidMount() {
     this.getGenomicFileType();
-  },
+  }
 
-  getGenomicFileType: function() {
+  getGenomicFileType() {
     let self = this;
     let xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
@@ -238,13 +239,12 @@ let FileTypeSelect = React.createClass({
     let url = this.props.baseURL + '/AjaxHelper.php?Module=genomic_browser&script=get_genomic_file_type.php';
     xhr.open('POST', url, true);
     xhr.send();
-  },
+  }
 
-  render: function() {
+  render() {
     let options = this.state.availableFileType.map(function(e) {
       return (<option key={e.genomicFileType} value={e.genomicFileType}>{e.genomicFileType}</option>);
-    }
-        );
+    });
 
     return (
             <div className="col-xs-12 form-group">
@@ -256,91 +256,117 @@ let FileTypeSelect = React.createClass({
                 </div>
             </div>
         );
-  },
-});
+  }
+}
+FileTypeSelect.propTypes = {
+  baseURL: PropTypes.string,
+  onFileTypeChange: PropTypes.func,
+  getFileType: PropTypes.func,
+};
+FileTypeSelect.defaultProps = {
+  baseURL: '',
+  onFileTypeChange: null,
+  getFileType: null,
+};
 
-let FileInput = React.createClass({
+class FileInput extends Component {
+  constructor() {
+    super();
+    this.state = {
 
-  propTypes: {
-    name: React.PropTypes.string,
-    label: React.PropTypes.string,
-  },
+    };
+  }
 
-  render: function() {
+  render() {
     return (
-            <div className="col-xs-12 form-group">
-                <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
-                <div className="col-xs-9">
-                    <input type="file" name={this.props.name} id={this.props.name} onChange={this.handleChange} className="fileUpload"/>
-                </div>
-            </div>
-        );
-  },
-});
+      <div className="col-xs-12 form-group">
+          <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
+          <div className="col-xs-9">
+              <input type="file" name={this.props.name} id={this.props.name} onChange={this.handleChange} className="fileUpload"/>
+          </div>
+      </div>
+    );
+  }
+}
+FileInput.propTypes = {
+  name: PropTypes.string,
+  label: PropTypes.string,
+};
 
-let TextAreaInput = React.createClass({
+class TextAreaInput extends Component {
+  constructor() {
+    super();
+    this.state = {
 
-  propTypes: {
-    name: React.PropTypes.string,
-    label: React.PropTypes.string,
-  },
-
-  render: function() {
+    };
+  }
+  render() {
     return (
-            <div className="col-xs-12 form-group">
-                <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
-                <div className="col-xs-9">
-                    <textarea cols="20" rows="3" name={this.props.name} onChange={this.handleChange} id={this.props.name} style={{border: '2px inset'}} className="ui-corner-all form-fields form-control input-sm" />
-                </div>
-            </div>
-        );
-  },
-});
+      <div className="col-xs-12 form-group">
+          <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
+          <div className="col-xs-9">
+              <textarea cols="20" rows="3" name={this.props.name} onChange={this.handleChange} id={this.props.name} style={{border: '2px inset'}} className="ui-corner-all form-fields form-control input-sm" />
+          </div>
+      </div>
+    );
+  }
+}
+TextAreaInput.propTypes = {
+  name: PropTypes.string,
+  label: PropTypes.string,
+};
 
-let CheckboxInput = React.createClass({
-  propTypes: {
-    name: React.PropTypes.string,
-  },
-  getInitialState: function() {
-    return {
+class CheckboxInput extends Component {
+  constructor() {
+    super();
+    this.state = {
       checked: this.props.checked || false,
     };
-  },
-  render: function() {
+  }
+
+  render() {
         // Add onClick={this.props.handleChange}  and checked={this.state.checked} when we support Mapping files
     return (
-            <div className="form-group col-sm-12">
-                <label className="col-xs-3"></label>
-                <div className="col-xs-9">
-                    <input className="user-success" name={this.props.name} id={this.props.name} type="checkbox" defaultChecked="true" style={{marginRight: '1em'}} />
-                    Use PSCID in column headers
-                    {this.props.label}
-                </div>
-            </div>
-        );
-  },
-});
+      <div className="form-group col-sm-12">
+          <label className="col-xs-3"></label>
+          <div className="col-xs-9">
+              <input className="user-success" name={this.props.name} id={this.props.name} type="checkbox" defaultChecked="true" style={{marginRight: '1em'}} />
+              Use PSCID in column headers
+              {this.props.label}
+          </div>
+      </div>
+    );
+  }
+}
+CheckboxInput.propTypes = {
+  name: PropTypes.string,
+};
 
-let ProgressBar = React.createClass({
+class ProgressBar extends Component {
+  constructor() {
+    super();
+    this.state = {
 
-  propTypes: {
-    name: React.PropTypes.string,
-    label: React.PropTypes.string,
-  },
+    };
+  }
 
-  render: function() {
+  render() {
     return (
-            <div className="col-xs-12 form-group">
-                <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
-                <div className="col-xs-9">
-                    <div className="progress" style={{height: '20px'}}>
-                        <div className="progress-bar progress-bar-success" id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"/>
-                    </div>
-                </div>
-            </div>
-        );
-  },
-});
+      <div className="col-xs-12 form-group">
+          <label className="col-xs-3" htmlFor={this.props.name}>{this.props.label}</label>
+          <div className="col-xs-9">
+              <div className="progress" style={{height: '20px'}}>
+                  <div className="progress-bar progress-bar-success" id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"/>
+              </div>
+          </div>
+      </div>
+    );
+  }
+}
+ProgressBar.propTypes = {
+  name: PropTypes.string,
+  label: PropTypes.string,
+};
 
 window.GenomicFileUploadModal = GenomicFileUploadModal;
 window.RGenomicFileUploadModal = RGenomicFileUploadModal;

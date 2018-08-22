@@ -9,6 +9,9 @@
  * builder.
  */
 
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
 /*
  * Note: This is a wrapper for Form.js (Only used in instrument builder)
  *
@@ -16,8 +19,15 @@
  * in an element and render's the HTML based on its type
  *
  */
-let LorisElement = React.createClass({
-  render: function() {
+class LorisElement extends Component {
+  constructor() {
+    super();
+    this.state = {
+
+    };
+  }
+
+  render() {
     let element = this.props.element;
     let elementHtml = '';
     switch (element.Type) {
@@ -68,25 +78,26 @@ let LorisElement = React.createClass({
     return (
       <div>{elementHtml}</div>
     );
-  },
-});
+  }
+}
 
 /*
  * This is the React class for the question text input
  */
-let QuestionText = React.createClass({
-    // Set default label for questionText input element
-  getDefaultProps: function() {
-    return {
-      inputLabel: 'Question Text',
+class QuestionText extends Component {
+  constructor() {
+    super();
+    this.state = {
+
     };
-  },
+    this.onChange = this.onChange.bind(this);
+  }
     // Keep track of the current input
-  onChange: function(e) {
+  onChange(e) {
     this.props.updateState({Description: e.target.value});
-  },
+  }
     // Render the HTML
-  render: function() {
+  render() {
     let errorMessage = '';
     let errorClass = 'form-group';
     if (this.props.element.error && this.props.element.error.questionText) {
@@ -108,21 +119,34 @@ let QuestionText = React.createClass({
         </div>
       </div>
     );
-  },
-});
+  }
+}
+QuestionText.propTypes = {
+  inputLabel: PropTypes.string,
+};
+QuestionText.defaultProps = {
+  inputLabel: 'Question Text',
+};
 
 /*
  * This is the React class for the question name input
  */
-let BasicOptions = React.createClass({
+class BasicOptions extends Component {
+  constructor() {
+    super();
+    this.state = {
+
+    };
+    this.onChange = this.onChange.bind(this);
+  }
   // Keep track of the current input
-  onChange: function(e) {
+  onChange(e) {
     // replace whitespaces with underscores
     let questionName = (e.target.value).trim().split(' ').join('_');
     this.props.updateState({Name: questionName});
-  },
+  }
   // Render the HTML
-  render: function() {
+  render() {
     let errorMessage = '';
     let errorClass = 'form-group';
     if (this.props.element.error && this.props.element.error.questionName) {
@@ -149,26 +173,29 @@ let BasicOptions = React.createClass({
         />
       </div>
     );
-  },
-});
+  }
+}
 
 /*
  * This is the React class for the Dropdown options
  */
-let DropdownOptions = React.createClass({
-  // Keep track the current option input
-  getInitialState: function() {
-    return {
+class DropdownOptions extends Component {
+  constructor() {
+    super();
+    this.state = {
       option: '',
     };
-  },
-  onChange: function(e) {
+    this.onChange = this.onChange.bind(this);
+    this.addOption = this.addOption.bind(this);
+    this.resetOptions = this.resetOptions.bind(this);
+  }
+  onChange(e) {
     this.setState({
       option: e.target.value,
     });
-  },
+  }
   // Add an option to the element
-  addOption: function() {
+  addOption() {
     let option = this.state.option.trim();
 
     // Check for empty options
@@ -198,15 +225,15 @@ let DropdownOptions = React.createClass({
 
     // clear input field
     this.state.option = '';
-  },
+  }
   // Reset the dropdown options
-  resetOptions: function() {
+  resetOptions() {
     let temp = Instrument.clone(this.props.element.Options);
     temp.Values = {};
     this.props.updateState({Options: temp});
-  },
+  }
   // Render the HTML
-  render: function() {
+  render() {
     let multi = '';
     let options = Instrument.clone(this.props.element.Options.Values);
     let errorMessage = '';
@@ -270,28 +297,30 @@ let DropdownOptions = React.createClass({
         </div>
       </div>
     );
-  },
-});
+  }
+}
 
 /*
  * This is the React class for the date options
  */
-let DateOptions = React.createClass({
-  // Initilize
-  getInitialState: function() {
-    return {
+class DateOptions extends Component {
+  constructor() {
+    super();
+    this.state = {
       dateFormat: {
         Date: 'Standard Date',
         BasicDate: 'Basic Date (does not include \'Not Answered\' option)',
         MonthYear: 'Month Year (does not include day of the month)',
       },
     };
-  },
-  componentDidMount: function() {
+    this.onChange = this.onChange.bind(this);
+  }
+
+  componentDidMount() {
     this.props.element.Options.dateFormat = '';
-  },
+  }
     // Keep track of the inputed years
-  onChange: function(e) {
+  onChange(e) {
     let options = Instrument.clone(this.props.element.Options);
     if (e.target.id === 'datemin' && e.target.value.length > 0) {
       options.MinDate = e.target.value + '-01-01';
@@ -301,9 +330,9 @@ let DateOptions = React.createClass({
       options.dateFormat = e.target.value;
     }
     this.props.updateState({Options: options});
-  },
+  }
   // Render the HTML
-  render: function() {
+  render() {
     // Truncate off the month and day from the date to only have the year.
     let minYear = this.props.element.Options.MinDate.split('-')[0];
     let maxYear = this.props.element.Options.MaxDate.split('-')[0];
@@ -373,16 +402,24 @@ let DateOptions = React.createClass({
         </div>
       </div>
     );
-  },
-});
+  }
+}
 
 /*
  * This is the React class for the numeric options
  */
-let NumericOptions = React.createClass({
+class NumericOptions extends Component {
+  constructor() {
+    super();
+    this.state = {
+
+    };
+    this.onChange = this.onChange.bind(this);
+  }
+
   // Keep track of the inputed numbers, casting them to
   // interger values.
-  onChange: function(e) {
+  onChange(e) {
     let options = Instrument.clone(this.props.element.Options);
 
     if (e.target.id === 'numericmin') {
@@ -391,9 +428,9 @@ let NumericOptions = React.createClass({
       options.MaxValue = parseInt(e.target.value, 10);
     }
     this.props.updateState({Options: options});
-  },
+  }
   // Render the HTML
-  render: function() {
+  render() {
     let errorMessage = '';
     let optionsClass = 'options form-group';
 
@@ -436,16 +473,23 @@ let NumericOptions = React.createClass({
         </div>
       </div>
     );
-  },
-});
+  }
+}
 
 /*
  * This is the React class for the dropdown for the
  *  different question types.
  */
-let ListElements = React.createClass({
+class ListElements extends Component {
+  constructor() {
+    super();
+    this.state = {
+
+    };
+    this.selectType = this.selectType.bind(this);
+  }
     // Set the desired question type
-  selectType: function(newId, newValue) {
+  selectType(newId, newValue) {
     let newState = {
       selected: {
         id: newId,
@@ -489,89 +533,88 @@ let ListElements = React.createClass({
         break;
     }
     this.props.updateState(newState);
-  },
+  }
     // Render the HTML
-  render: function() {
+  render() {
     return (
-            <div className="form-group">
-                <label htmlFor="selected-input" className="col-sm-2 control-label">Question Type:</label>
-                <div className="col-sm-4">
-                    <div className="btn-group">
-                        <button id="selected-input" type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                            <span id="search_concept">{this.props.value} </span>
-                            <span className="caret"></span>
-                        </button>
-                        <ul className="dropdown-menu" role="menu">
-                            <li>
-                                <div className="col-sm-12"><h5 className="">Information</h5></div>
-                            </li>
-                            <li onClick={this.selectType.bind(this, 'header', 'Header')}>
-                                <a id="header" className="option" title="Centered, header information">Header</a>
-                            </li>
-                            <li onClick={this.selectType.bind(this, 'label', 'Label')}>
-                                <a id="label" className="option" title="Unemphasized display text">Label</a>
-                            </li>
-                            <li onClick={this.selectType.bind(this, 'score', 'Scored Field')}>
-                                <a id="scored" className="option" title="Column which stores calculated data">Scored Field</a>
-                            </li>
-                            <li className="divider"></li>
-                            <li>
-                                <div className="col-sm-12"><h5 className="">Data entry</h5></div>
-                            </li>
-                            <li onClick={this.selectType.bind(this, 'textbox', 'Textbox')}>
-                                <a id="textbox" className="option" title="Text box for user data entry">Textbox</a>
-                            </li>
-                            <li onClick={this.selectType.bind(this, 'textarea', 'Textarea')}>
-                                <a id="textarea" className="option" title="Larger text area for data entry">Textarea</a>
-                            </li>
-                            <li onClick={this.selectType.bind(this, 'dropdown', 'Dropdown')}>
-                                <a id="dropdown" className="option" title="Dropdown menu for users to select data from">Dropdown</a>
-                            </li>
-                            <li onClick={this.selectType.bind(this, 'multiselect', 'Multiselect')}>
-                                <a id="multiselect" className="option" title="Data entry where multiple options may be selected">Multiselect</a>
-                            </li>
-                            <li onClick={this.selectType.bind(this, 'date', 'Date')}>
-                                <a id="date" className="option" title="User data entry of a date">Date</a>
-                            </li>
-                            <li onClick={this.selectType.bind(this, 'numeric', 'Numeric')}>
-                                <a id="numeric" className="option" title="User data entry of a number">Numeric</a>
-                            </li>
-                            <li className="divider"></li>
-                            <li>
-                                <div className="col-sm-12"><h5 className="">Formatting</h5></div>
-                            </li>
-                            <li onClick={this.selectType.bind(this, 'line', 'Blank Line')}>
-                                <a id="line" className="option" title="Empty line">Blank Line</a>
-                            </li>
-                            <li onClick={this.selectType.bind(this, 'page-break', 'Page Break')}>
-                                <a id="page-break" className="option" title="Start a new page">Page Break</a>
-                            </li>
-                        </ul>
-                    </div>
+        <div className="form-group">
+            <label htmlFor="selected-input" className="col-sm-2 control-label">Question Type:</label>
+            <div className="col-sm-4">
+                <div className="btn-group">
+                    <button id="selected-input" type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <span id="search_concept">{this.props.value} </span>
+                        <span className="caret"></span>
+                    </button>
+                    <ul className="dropdown-menu" role="menu">
+                        <li>
+                            <div className="col-sm-12"><h5 className="">Information</h5></div>
+                        </li>
+                        <li onClick={this.selectType.bind(this, 'header', 'Header')}>
+                            <a id="header" className="option" title="Centered, header information">Header</a>
+                        </li>
+                        <li onClick={this.selectType.bind(this, 'label', 'Label')}>
+                            <a id="label" className="option" title="Unemphasized display text">Label</a>
+                        </li>
+                        <li onClick={this.selectType.bind(this, 'score', 'Scored Field')}>
+                            <a id="scored" className="option" title="Column which stores calculated data">Scored Field</a>
+                        </li>
+                        <li className="divider"></li>
+                        <li>
+                            <div className="col-sm-12"><h5 className="">Data entry</h5></div>
+                        </li>
+                        <li onClick={this.selectType.bind(this, 'textbox', 'Textbox')}>
+                            <a id="textbox" className="option" title="Text box for user data entry">Textbox</a>
+                        </li>
+                        <li onClick={this.selectType.bind(this, 'textarea', 'Textarea')}>
+                            <a id="textarea" className="option" title="Larger text area for data entry">Textarea</a>
+                        </li>
+                        <li onClick={this.selectType.bind(this, 'dropdown', 'Dropdown')}>
+                            <a id="dropdown" className="option" title="Dropdown menu for users to select data from">Dropdown</a>
+                        </li>
+                        <li onClick={this.selectType.bind(this, 'multiselect', 'Multiselect')}>
+                            <a id="multiselect" className="option" title="Data entry where multiple options may be selected">Multiselect</a>
+                        </li>
+                        <li onClick={this.selectType.bind(this, 'date', 'Date')}>
+                            <a id="date" className="option" title="User data entry of a date">Date</a>
+                        </li>
+                        <li onClick={this.selectType.bind(this, 'numeric', 'Numeric')}>
+                            <a id="numeric" className="option" title="User data entry of a number">Numeric</a>
+                        </li>
+                        <li className="divider"></li>
+                        <li>
+                            <div className="col-sm-12"><h5 className="">Formatting</h5></div>
+                        </li>
+                        <li onClick={this.selectType.bind(this, 'line', 'Blank Line')}>
+                            <a id="line" className="option" title="Empty line">Blank Line</a>
+                        </li>
+                        <li onClick={this.selectType.bind(this, 'page-break', 'Page Break')}>
+                            <a id="page-break" className="option" title="Start a new page">Page Break</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        );
-  },
-});
+        </div>
+    );
+  }
+}
 
 /*
  * This is the React class for adding a new element or
  * editing an existing one
  */
-let AddElement = React.createClass({
-  // Keep track of the current element state
-  getInitialState: function() {
-    let state;
-    if (this.props.element) {
+class AddElement extends Component {
+  constructor() {
+    super();
+    if (this.props !== undefined && this.props.element) {
       // Editing an element, set to elements state
-      state = {
+      this.state = {
         Options: Instrument.clone(this.props.element.Options),
         Description: Instrument.clone(this.props.element.Description),
         Name: Instrument.clone(this.props.element.Name),
         selected: Instrument.clone(this.props.element.selected),
       };
     } else {
-      state = {
+      this.state = {
         Options: {},
         Description: '',
         Name: '',
@@ -581,14 +624,18 @@ let AddElement = React.createClass({
         },
       };
     }
-    return state;
-  },
+    this.updateState = this.updateState.bind(this);
+    this.addQuestion = this.addQuestion.bind(this);
+    this.addOption = this.addOption.bind(this);
+    this.resetOptions = this.resetOptions.bind(this);
+  }
+
   // Update element state
-  updateState: function(newState) {
+  updateState(newState) {
     this.setState(newState);
-  },
+  }
   // Add a question to the buildPane
-  addQuestion: function() {
+  addQuestion() {
     let selected = this.state.selected.id;
     let questionText = this.state.Description;
     let questionName = this.state.Name;
@@ -776,9 +823,9 @@ let AddElement = React.createClass({
         };
       });
     }
-  },
+  }
     // Add an option to the options array
-  addOption: function(multi) {
+  addOption(multi) {
     // Use a function to update the state to enqueue an atomic
     // update that consults the previous value of state before
     // setting any values
@@ -790,15 +837,15 @@ let AddElement = React.createClass({
         options: temp,
       };
     });
-  },
+  }
     // Reset the options array
-  resetOptions: function() {
+  resetOptions() {
     this.setState({
       options: [],
     });
-  },
+  }
     // Render the HTML
-  render: function() {
+  render() {
     let questionInput;
     let header = '';
     let buttons;
@@ -868,8 +915,8 @@ let AddElement = React.createClass({
         </div>
       </div>
     );
-  },
-});
+  }
+}
 
 window.LorisElement = LorisElement;
 window.QuestionText = QuestionText;

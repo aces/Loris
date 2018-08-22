@@ -1,29 +1,30 @@
 /* exported RPaginationLinks */
 
-let PaginationLinks = React.createClass({
-  mixins: [React.addons.PureRenderMixin],
-  propTypes: {
-    onChangePage: React.PropTypes.func,
-    Total: React.PropTypes.number.isRequired,
-  },
-  getDefaultProps: function() {
-    return {
-      RowsPerPage: 10,
-      Active: 1,
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
+class PaginationLinks extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+
     };
-  },
-  changePage: function(i) {
-    let that = this;
+    this.changePage = this.changePage.bind(this);
+  }
+
+  changePage(i) {
     return function(evt) {
       // Don't jump to the top of the page
       evt.preventDefault();
 
-      if (that.props.onChangePage) {
-        that.props.onChangePage(i);
+      if (this.props.onChangePage) {
+        this.props.onChangePage(i);
       }
     };
-  },
-  render: function() {
+  }
+
+  render() {
     let rowsPerPage = this.props.RowsPerPage;
     let pageLinks = [];
     let classList;
@@ -81,13 +82,22 @@ let PaginationLinks = React.createClass({
         </li>
       );
     }
+
     return (
-            <ul className="pagination pagination-table">
-                {pageLinks}
-            </ul>
-        );
-  },
-});
+      <ul className="pagination pagination-table">
+          {pageLinks}
+      </ul>
+    );
+  }
+}
+PaginationLinks.propTypes = {
+  onChangePage: PropTypes.func,
+  Total: PropTypes.number.isRequired,
+};
+PaginationLinks.defaultProps = {
+  RowsPerPage: 10,
+  Active: 1,
+};
 
 let RPaginationLinks = React.createFactory(PaginationLinks);
 

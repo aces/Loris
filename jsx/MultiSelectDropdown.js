@@ -5,11 +5,24 @@
  For generic SelectDropdown, see Select in Form.js
  */
 
-let SelectField = React.createClass({
-  toggleCheckbox: function() {
+import React, {Component} from 'react';
+
+class SelectField extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+
+    };
+
+    this.toggleCheckbox = this.toggleCheckbox.bind(this);
+  }
+
+  toggleCheckbox() {
     this.props.toggleCheckbox(this.props.label);
-  },
-  render: function() {
+  }
+
+  render() {
     let checked = (this.props.checked) ? 'checked' : '';
     let input;
     if (this.props.multi) {
@@ -26,17 +39,27 @@ let SelectField = React.createClass({
         </div>
       </li>
     );
-  },
-});
+  }
+}
 
-let SearchField = React.createClass({
-  clearFilter: function() {
+class SearchField extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+
+    };
+
+  }
+
+  clearFilter() {
     this.props.updateFilter('');
-  },
-  updateFilter: function(event) {
+  }
+  updateFilter(event) {
     this.props.updateFilter(event.target.value);
-  },
-  render: function() {
+  }
+
+  render() {
     return (
       <li className="dropdownSearch">
         <div className="input-group col-xs-12">
@@ -55,12 +78,15 @@ let SearchField = React.createClass({
         </div>
       </li>
     );
-  },
-});
+  }
+}
 
-let SelectDropdown = React.createClass({
-  getInitialState: function() {
-    return {
+class SelectDropdown extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
       filter: '',
       open: false,
       options: {
@@ -68,15 +94,18 @@ let SelectDropdown = React.createClass({
         V02: 'true',
       },
     };
-  },
-  toggleDropdown: function() {
+
+  }
+
+  toggleDropdown() {
     this.setState(function(state) {
       return {
         open: !state.open,
       };
     });
-  },
-  toggleCheckbox: function(key) {
+  }
+
+  toggleCheckbox(key) {
     if (this.props.multi) {
       let action = (this.props.options[key]) ? 'uncheck' : 'check';
       this.props.onFieldClick(key, action);
@@ -84,29 +113,33 @@ let SelectDropdown = React.createClass({
       this.props.onFieldClick(key);
       this.toggleDropdown();
     }
-  },
-  selectAll: function() {
+  }
+
+  selectAll() {
     for (let option in this.props.options) {
       if (!this.props.options[option]) {
         this.props.onFieldClick(option, 'check');
       }
     }
-  },
-  deselectAll: function() {
+  }
+
+  deselectAll() {
     for (let option in this.props.options) {
       if (this.props.options[option]) {
         this.props.onFieldClick(option, 'uncheck');
       }
     }
-  },
-  updateFilter: function(filter) {
+  }
+
+  updateFilter(filter) {
     this.setState(function(state) {
       return {
         filter: filter,
       };
     });
-  },
-  render: function() {
+  }
+
+  render() {
     let parentDivClass = 'btn-group col-xs-12';
     let selectLabel = 'None Selected';
     let selectCount = 0;
@@ -210,8 +243,8 @@ let SelectDropdown = React.createClass({
         </ul>
       </div>
     );
-  },
-});
+  }
+}
 
 window.SelectField = SelectField;
 window.SearchField = SearchField;
