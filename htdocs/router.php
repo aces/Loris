@@ -71,6 +71,7 @@ if (preg_match(
 
     include_once __DIR__ . "/main.php";
 } else {
+var_dump($url);
     include_once __DIR__ . "/index.php";
 }
 ?>

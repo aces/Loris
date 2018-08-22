@@ -36,7 +36,7 @@ use \Zend\Diactoros\Request;
 class HttpClient extends Client
 {
     public $loris_base_url;
-    private $_auth_token;
+    private $auth_token;
 
     /**
  * Create an HTTPClient.  The $url passed to this constructor should
@@ -96,12 +96,12 @@ class HttpClient extends Client
      *
      * @param string $token A JWT token encapsulating a valid LORIS session
      *
-     * @return HttpClient A cloned object with _auth_token set
+     * @return HttpClient A cloned object with auth_token set
      */
     public function withAuthorizationToken(string $token)
     {
         $new = clone $this;
-        $new->_auth_token = $token;
+        $new->auth_token = $token;
         return $new;
     }
 
@@ -173,6 +173,6 @@ class HttpClient extends Client
      */
     function loggedIn() : Bool
     {
-        return !empty($this->_auth_token);
+        return !empty($this->auth_token);
     }
 }
