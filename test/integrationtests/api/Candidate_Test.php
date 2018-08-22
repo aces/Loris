@@ -17,7 +17,7 @@ class Canditate_Test extends ApiTestCase
         );
         var_dump($users);
 
-        $user = \User::factory('admin');
+        $user = \User::factory('travis');
         $user->updatePassword('testpass');
 
         $api_credentials = $config->getSetting('api');
