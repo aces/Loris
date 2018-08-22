@@ -4,8 +4,6 @@
         verbose="true"
         colors="true">
     <testsuites>
-<!--
-TODO :: Uncomment this
         <testsuite name='LorisUnitTests'>
             <directory>./unittests/</directory>
             <directory>./unittests/api</directory>
@@ -15,13 +13,10 @@ TODO :: Uncomment this
             <directory>./integrationtests/</directory>
         </testsuite>
 
--->
         <testsuite name='LorisApiIntegrationTests'>
             <directory>./integrationtests/api/</directory>
         </testsuite>
 
-<!--
-TODO :: Uncomment this
         <testsuite name='LorisModuleIntegrationTests'>
             <directory>../modules/acknowledgements/test/</directory>
             <directory>../modules/brainbrowser/test/</directory>
@@ -61,7 +56,6 @@ TODO :: Uncomment this
             <directory>../test/test_instrument/</directory>
             <directory>../modules/bvl_feedback/test/</directory>
         </testsuite>
--->
     </testsuites>
     <!-- This is currently breaking the coverage.xml generation, so
          for now it's disabled, but eventually we'll want to make
