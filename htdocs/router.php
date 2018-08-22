@@ -75,7 +75,7 @@ if (preg_match(
     $url
 )) {
     $endpoint = explode('?', $url)[0];
-    include_once __DIR__ . $endpoint;
+    include_once __DIR__ . '/' . $endpoint;
 } else {
     include_once __DIR__ . "/index.php";
 }
