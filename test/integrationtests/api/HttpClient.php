@@ -76,7 +76,10 @@ class HttpClient extends Client
         $statuscode = $response->getStatusCode();
 
         if ($statuscode != 200) {
-            throw new \Exception($response->getReasonPhrase(), $statuscode);
+            throw new \Exception(
+                $response->getReasonPhrase() . $response->getBody(),
+                $statuscode
+            );
         }
 
         $json = json_decode($response->getBody());
