@@ -305,9 +305,13 @@ class SinglePointLogin
                   GROUP BY UserID";
         $row   = $DB->pselectRow($query, array('username' => $username));
 
+        var_dump('passwordAuthenticate');
+        var_dump($row);
+
         if (($row['User_count'] ?? 0) == 1) {
             // validate passsword
             $oldhash = $row['Password_hash'];
+            var_dump(array($password, $oldhash));
             if (password_verify($password, $oldhash)) {
                 if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
                     $user =& User::factory($username);
