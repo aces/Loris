@@ -36,7 +36,7 @@ use \Zend\Diactoros\Request;
 class HttpClient extends Client
 {
     public $loris_base_url;
-    private $auth_token;
+    private $_auth_token;
 
     /**
  * Create an HTTPClient.  The $url passed to this constructor should
@@ -72,10 +72,11 @@ class HttpClient extends Client
                       "password" => $loris_password,
                      ];
 
-        $response = $this->lorisPOST('login/', $post_body);
+        $response   = $this->lorisPOST('login/', $post_body);
+        $statuscode = $response->getStatusCode();
 
-        if (empty($response)) {
-            throw new \Exception("No token returned; empty response body");
+        if ($statuscode != 200) {
+            throw new \Exception($response->getReasonPhrase(), $statuscode);
         }
 
         $json = json_decode($response->getBody());
@@ -101,7 +102,7 @@ class HttpClient extends Client
     public function withAuthorizationToken(string $token)
     {
         $new = clone $this;
-        $new->auth_token = $token;
+        $new->_auth_token = $token;
         return $new;
     }
 
@@ -132,7 +133,7 @@ class HttpClient extends Client
         if ($this->loggedIn()) {
             $request = $request->withAddedHeader(
                 'Authorization',
-                "Bearer $this->auth_token"
+                "Bearer $this->_auth_token"
             );
         }
         return $this->sendRequest($request);
@@ -159,7 +160,7 @@ class HttpClient extends Client
         if ($this->loggedIn()) {
             $request = $request->withAddedHeader(
                 'Authorization',
-                "Bearer $this->auth_token"
+                "Bearer $this->_auth_token"
             );
         }
         return $this->sendRequest($request);
@@ -173,6 +174,6 @@ class HttpClient extends Client
      */
     function loggedIn() : Bool
     {
-        return !empty($this->auth_token);
+        return !empty($this->_auth_token);
     }
 }
