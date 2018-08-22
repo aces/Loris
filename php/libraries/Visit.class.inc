@@ -41,12 +41,12 @@ class Visit
     /**
      * The contructor
      *
-     * @param string $visit The visit name
-     * @param string $id    The ID of the visit
+     * @param string|null $visit The visit name
+     * @param string|null $id    The ID of the visit
      */
     public function __construct(
-       string|null $visit = null,
-       string|null $id    = null
+       ?string $visit = null,
+       ?string $id    = null
     ) {
         $this->visit = $visit;
         $this->id    = $id;
