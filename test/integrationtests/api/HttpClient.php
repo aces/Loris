@@ -39,7 +39,7 @@ class HttpClient extends Client
     private $_auth_token;
 
     /**
- * Create an HTTPClient.  The $url passed to this constructor should
+     * Create an HTTPClient.  The $url passed to this constructor should
      * include both a URL to a LORIS instance as well as the API prefix.
      * E.g. $url = "https://demo.loris.ca/api/v0.0.x/"
      *
@@ -59,9 +59,9 @@ class HttpClient extends Client
      * @return string JWT authorization when successful. Empty string otherwise.
      */
     function getAuthorizationToken(
-        $loris_username = '',
-        $loris_password = ''
-    ) : String {
+        string $loris_username = '',
+        string $loris_password = ''
+    ) : string {
 
         if (empty($loris_username) || empty($loris_password)) {
             throw new \Exception("Username or password is empty!");
@@ -100,7 +100,7 @@ class HttpClient extends Client
     }
 
     /**
-    * Helper function to create a new instance of this class with the
+     * Helper function to create a new instance of this class with the
      * auth_token variable initialized.  This allows authenticated requests and
      * allows the user to forget about managing their session as requests will
      * be sent with session information by default.
@@ -109,7 +109,7 @@ class HttpClient extends Client
      *
      * @return HttpClient A cloned object with auth_token set
      */
-    public function withAuthorizationToken(string $token)
+    public function withAuthorizationToken(string $token): HttpClient
     {
         $new = clone $this;
         $new->_auth_token = $token;
@@ -128,9 +128,9 @@ class HttpClient extends Client
      * @return ResponseInterface The HTTP response given by doPost.
      */
     function lorisPOST(
-        String $endpoint,
-        Array $post_body,
-        Array $headers = []
+        string $endpoint,
+        array $post_body,
+        array $headers = []
     ) : ResponseInterface {
         $request = (new Request())
             ->withUri(new Uri((string) $this->loris_base_url . $endpoint))
@@ -150,7 +150,7 @@ class HttpClient extends Client
     }
 
     /**
- * A wrapper for doGET that takes away some of the clutter when making a
+     * A wrapper for doGET that takes away some of the clutter when making a
      * request to LORIS.  Specfically this function will append the necessary url
      * and versioned API prefix.
      *
@@ -177,13 +177,14 @@ class HttpClient extends Client
     }
 
     /**
- * Whether the HTTPClient object has a valid session, represented by
+     * Whether the HTTPClient object has a valid session, represented by
      * auth_token
      *
      * @return bool Whether auth_token is set
      */
-    function loggedIn() : Bool
+    function loggedIn() : bool
     {
         return !empty($this->_auth_token);
     }
 }
+

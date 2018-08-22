@@ -154,6 +154,9 @@ class Client
         // Capture response isntead of printing it
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
+        // For VMs whit expired ssl certificate
+        //curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
         // Attach optional headers if present
         if (!empty($headers)) {
             curl_setopt(
