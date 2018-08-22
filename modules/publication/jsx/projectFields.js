@@ -324,7 +324,7 @@ class ProjectFormFields extends React.Component {
         <TagsElement
           name="usersWithEditPerm"
           id="usersWithEditPerm"
-          label="Users with Edit Permission"
+          label="LORIS Users with Edit Permission"
           options={this.props.users}
           useSearch={true}
           strictSearch={true}
