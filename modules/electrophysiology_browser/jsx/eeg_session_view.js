@@ -205,7 +205,7 @@ class EEGSessionView extends React.Component {
           <div>
             <FilePanel
               id={'filename_panel_' + i}
-              title={'FILENAME (' + this.state.database[i].file.name + ')'}
+              title={'(' + this.state.database[i].file.name + ')'}
               data={this.state.database[i].file}
             />
 
