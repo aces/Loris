@@ -135,13 +135,13 @@ class FilePanel extends React.Component {
     };
 
     return(
-      <Panel id={this.props.id} title={this.props.title}>
+      <Panel id={this.props.id} title={'FILENAME ' + this.props.title}>
         <div className={'container-fluid'}>
           <div className={'row'}>
-            <div className={'col-sm-4'} style={stylesFile.div.container.details}>
-              ..insert head image here..
-            </div>
-            <div className={'col-sm-4'} style={stylesFile.div.container.table}>
+            {/*<div className={'col-sm-4'} style={stylesFile.div.container.details}>*/}
+              {/*..insert head image here..*/}
+            {/*</div>*/}
+            <div className={'col-sm-6'} style={stylesFile.div.container.table}>
               <table style={stylesFile.table.style}>
                 <caption style={stylesFile.table.caption}>Task Name: FaceHousCheck</caption>
                 <tr style={stylesFile.table.row}>
@@ -174,7 +174,7 @@ class FilePanel extends React.Component {
                 </tr>
               </table>
             </div>
-            <div className={'col-sm-4'} style={stylesFile.div.container.download}>
+            <div className={'col-sm-6'} style={stylesFile.div.container.download}>
               <div className={'form-group row flex-v-center'}>
                 <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>EEG File</div>
                 <div className={'col-xs-2'}><button style={stylesFile.button.download}>Download</button></div>
@@ -199,11 +199,7 @@ class FilePanel extends React.Component {
           </div>
         </div>
 
-
-
-
-
-        <Panel id={this.props.id} title={this.props.title} style={stylesDetails.panel}>
+        <Panel id={this.props.id + '_details'} title={'DETAILS ' + this.props.title} style={stylesDetails.panel}>
           <div className={'container-fluid'}>
             <div className={'row'}>
               <div className={'col-xs-6'} style={stylesDetails.container.task}>
