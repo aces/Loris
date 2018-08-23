@@ -77,17 +77,16 @@ class UploadForm extends React.Component {
   submitForm() {
     // Validate required fields
     const data = this.state.formData;
-    const fileName = data.mri_file.name;
 
-    if (!data.mri_file || !data.IsPhantom) {
+    if (!data.mriFile || !data.IsPhantom) {
       return;
     }
-
     if (data.IsPhantom === 'N') {
       if (!data.candID || !data.pSCID || !data.visitLabel) {
         return;
       }
       // Make sure file follows PSCID_CandID_VL[_*].zip|.tgz|.tar.gz format
+      const fileName = data.mriFile.name;
       const pcv = data.pSCID + '_' + data.candID + '_' + data.visitLabel;
       const pcvu = pcv + '_';
       const properName = new RegExp("^" + pcv + ".(zip|tgz|tar.gz)");
@@ -101,8 +100,8 @@ class UploadForm extends React.Component {
           type: "error",
           confirmButtonText: "OK"
         });
-        let errorMessage = {mri_file: "File improperly named!"};
-        let hasError = {mri_file: true};
+        let errorMessage = {mriFile: "File improperly named!"};
+        let hasError = {mriFile: true};
         this.setState({errorMessage, hasError});
         return;
       }
@@ -274,7 +273,7 @@ class UploadForm extends React.Component {
     form.candID.value = this.state.formData.candID;
     form.pSCID.value = this.state.formData.pSCID;
     form.visitLabel.value = this.state.formData.visitLabel;
-    form.mri_file.value = this.state.formData.mri_file;
+    form.mriFile.value = this.state.formData.mriFile;
 
     // Hide button when progress bar is shown
     const btnClass = (
@@ -349,13 +348,13 @@ class UploadForm extends React.Component {
               value={this.state.formData.visitLabel}
             />
             <FileElement
-              name="mri_file"
+              name="mriFile"
               label="File to Upload"
               onUserInput={this.onFormChange}
               required={true}
-              hasError={this.state.hasError.mri_file}
-              errorMessage={this.state.errorMessage.mri_file}
-              value={this.state.formData.mri_file}
+              hasError={this.state.hasError.mriFile}
+              errorMessage={this.state.errorMessage.mriFile}
+              value={this.state.formData.mriFile}
             />
             <StaticElement
               label="Notes"
