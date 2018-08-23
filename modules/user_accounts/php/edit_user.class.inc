@@ -783,6 +783,33 @@ class Edit_User extends \NDB_Form
 
         //------------------------------------------------------------
 
+	// active time windows
+	$this->addSelect('ActiveTW','Active Time Windows', array('Y' => 'YesTW', 'N' => 'NoTW'));
+
+	$dateOptions = array(
+				'language'	=>	'en',
+				'format'	=>	'YMd',
+				'addEmptyOption' =>	'true'
+			);
+
+	$dateAttributes = ['class' => 'form-control input-sm input-date'];
+
+
+	$this->addBasicDate(
+				'active_from',
+				'Active from',
+				$dateOptions,
+				$dateAttributes
+			);
+
+
+	$this->addBasicDate(
+				'active_to',
+				'Active to',
+				$dateOptions,
+				$dateAttributes
+			);
+
         // checking if the account can be rejected (no password hash
         // pending approval)
 
@@ -1086,6 +1113,18 @@ class Edit_User extends \NDB_Form
                 'Radiologist' and 'Pending Approval').";
             }
         }
+
+        //======================================
+	//	Validate Active time Windows (from - to)
+	//
+	//	Note: the only validation included for the moment
+	//	is that the time form which the user is active 
+	//	should be less or equal to the time to it will be active. 
+        //======================================
+
+	if(($values['active_to'] != NULL) && ($values['active_from'] > $values['active_to'])){
+		$errors['active_timeWindows'] = "Please notice that the <i>\"Active from\"</i> date should be lesser or equal to the <i>\"Active to\"</i> date.";
+	}
         return $errors;
     }
 
