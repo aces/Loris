@@ -760,10 +760,9 @@ class NDB_Page implements RequestHandlerInterface
                   $baseurl . '/js/helpHandler.js',
                   $baseurl . '/js/modernizr/modernizr.min.js',
                   // Only load minified file on production, not sandboxes
-                  $baseurl . '/js/polyfills.js'
-        ,
-//                  $baseurl . '/js/react/react-with-addons' . $min . '.js',
-//                  $baseurl . '/js/react/react-dom' . $min . '.js',
+                  $baseurl . '/js/polyfills.js',
+                    // $baseurl . '/js/react/react-with-addons' . $min . '.js',
+                    // $baseurl . '/js/react/react-dom' . $min . '.js',
                   $baseurl . ($min === '') ?
                       '/js/react/react.development.js' :
                       '/js/react/react.production.js',
