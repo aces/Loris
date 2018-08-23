@@ -1,3 +1,4 @@
+import React, {Component} from 'react';
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 
@@ -5,7 +6,7 @@ import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
 import formatColumn from './columnFormatter';
 
-class ImagingUploader extends React.Component {
+class ImagingUploader extends Component {
   constructor(props) {
     super(props);
 
@@ -56,10 +57,10 @@ class ImagingUploader extends React.Component {
   render() {
     if (!this.state.isLoaded) {
       return (
-        <button className="btn-info has-spinner">
+        <button className='btn-info has-spinner'>
           Loading
           <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+            className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
           </span>
         </button>
       );
@@ -75,14 +76,14 @@ class ImagingUploader extends React.Component {
     }.bind(this);
 
     return (
-      <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
+      <Tabs tabs={tabList} defaultTab='browse' updateURL={true}>
         <TabPane TabId={tabList[0].id}>
-          <div className="row">
-            <div className="col-md-5">
+          <div className='row'>
+            <div className='col-md-5'>
               <FilterForm
-                Module="imaging_uploader"
-                name="imaging_filter"
-                id="imaging_filter"
+                Module='imaging_uploader'
+                name='imaging_filter'
+                id='imaging_filter'
                 ref={filterRef}
                 onUpdate={this.updateFilter}
                 filter={this.state.filter}
@@ -90,14 +91,14 @@ class ImagingUploader extends React.Component {
                 <TextboxElement {... this.state.Data.form.candID} />
                 <TextboxElement {... this.state.Data.form.pSCID} />
                 <SelectElement {... this.state.Data.form.visitLabel} />
-                <ButtonElement type="reset" label="Clear Filters" onUserInput={this.resetFilters}/>
+                <ButtonElement type='reset' label='Clear Filters' onUserInput={this.resetFilters}/>
               </FilterForm>
             </div>
-            <div className="col-md-7">
+            <div className='col-md-7'>
               <LogPanel />
             </div>
           </div>
-          <div id="mri_upload_table">
+          <div id='mri_upload_table'>
             <StaticDataTable
               Data={this.state.Data.Data}
               Headers={this.state.Data.Headers}

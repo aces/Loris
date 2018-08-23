@@ -1,10 +1,11 @@
+import React, {Component} from 'react';
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 
 import MediaUploadForm from './uploadForm';
 import formatColumn from './columnFormatter';
 
-class MediaIndex extends React.Component {
+class MediaIndex extends Component {
   constructor(props) {
     super(props);
 

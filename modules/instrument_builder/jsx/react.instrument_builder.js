@@ -13,8 +13,8 @@ import {Tabs, TabPane} from 'Tabs';
  * made instrument.
  */
 class LoadPane extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       disabled: true,
       // This is used to alert the user if the file was
@@ -124,8 +124,8 @@ class LoadPane extends Component {
  * This is the React class for saving the instrument
  */
 class SavePane extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       fileName: '',
       instrumentName: '',
@@ -202,8 +202,8 @@ class SavePane extends Component {
  * in the table.
  */
 class DisplayElements extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
     };
     this.getPlaceholder = this.getPlaceholder.bind(this);
@@ -353,8 +353,8 @@ class DisplayElements extends Component {
  * This is the React class for building the instrument
  */
 class BuildPane extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       // Keep track of the page groups
       Elements: [{
@@ -557,8 +557,8 @@ class BuildPane extends Component {
  * This is the React class for the instrument builder
  */
 class InstrumentBuilderApp extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
 
     };

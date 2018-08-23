@@ -27,8 +27,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 class FormElement extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.getFormElements = this.getFormElements.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -150,8 +150,8 @@ FormElement.defaultProps = {
  * React wrapper for a searchable dropdown
  */
 class SearchableDropdown extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.getKeyFromValue = this.getKeyFromValue.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
@@ -308,8 +308,8 @@ SearchableDropdown.defaultProps = {
  * React wrapper for a simple or 'multiple' <select> element.
  */
 class SelectElement extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -441,8 +441,8 @@ SelectElement.defaultProps = {
  */
 
 class TagsElement extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.handleChange = this.handleChange.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleAdd = this.handleAdd.bind(this);
@@ -698,8 +698,8 @@ TagsElement.defaultProps = {
  * React wrapper for a <textarea> element.
  */
 class TextareaElement extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -773,8 +773,8 @@ TextareaElement.defaultProps = {
  * React wrapper for a <input type="text"> element.
  */
 class TextboxElement extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
   }
@@ -862,8 +862,8 @@ TextboxElement.defaultProps = {
  * React wrapper for a <input type="date"> element.
  */
 class DateElement extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -937,8 +937,8 @@ DateElement.defaultProps = {
  * React wrapper for a <input type="time"> element.
  */
 class TimeElement extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.handleChange = this.handleChange.bind(this);
   }
@@ -1009,8 +1009,8 @@ TimeElement.defaultProps = {
  * React wrapper for a <input type="number"> element.
  */
 class NumericElement extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -1079,8 +1079,8 @@ NumericElement.defaultProps = {
  * React wrapper for a simple or 'multiple' <select> element.
  */
 class FileElement extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -1226,6 +1226,9 @@ FileElement.defaultProps = {
  * ```
  */
 class StaticElement extends Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
     return (
       <div className="row form-group">
@@ -1258,6 +1261,10 @@ StaticElement.defaultProps = {
  * Used to link plain/formated text to an href destination as part of a form
  */
 class LinkElement extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     return (
       <div className="row form-group">
@@ -1292,8 +1299,8 @@ LinkElement.defaultProps = {
  * React wrapper for <button> element, typically used to submit forms
  */
 class ButtonElement extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.handleClick = this.handleClick.bind(this);
   }
 
@@ -1338,6 +1345,9 @@ ButtonElement.defaultProps = {
  * Generic form element.
  */
 class LorisElement extends Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
     let elementProps = this.props.element;
     elementProps.ref = elementProps.name;

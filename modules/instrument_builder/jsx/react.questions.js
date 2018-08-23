@@ -20,8 +20,8 @@ import PropTypes from 'prop-types';
  *
  */
 class LorisElement extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
 
     };
@@ -85,8 +85,8 @@ class LorisElement extends Component {
  * This is the React class for the question text input
  */
 class QuestionText extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
 
     };
@@ -132,8 +132,8 @@ QuestionText.defaultProps = {
  * This is the React class for the question name input
  */
 class BasicOptions extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
 
     };
@@ -180,8 +180,8 @@ class BasicOptions extends Component {
  * This is the React class for the Dropdown options
  */
 class DropdownOptions extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       option: '',
     };
@@ -304,8 +304,8 @@ class DropdownOptions extends Component {
  * This is the React class for the date options
  */
 class DateOptions extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       dateFormat: {
         Date: 'Standard Date',
@@ -409,8 +409,8 @@ class DateOptions extends Component {
  * This is the React class for the numeric options
  */
 class NumericOptions extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
 
     };
@@ -481,8 +481,8 @@ class NumericOptions extends Component {
  *  different question types.
  */
 class ListElements extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
 
     };
@@ -603,8 +603,8 @@ class ListElements extends Component {
  * editing an existing one
  */
 class AddElement extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     if (this.props !== undefined && this.props.element) {
       // Editing an element, set to elements state
       this.state = {

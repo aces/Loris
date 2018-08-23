@@ -7,8 +7,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 class PagedRowHeader extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   render() {
@@ -28,8 +28,8 @@ PagedRowHeader.propType = {
 };
 
 class PagedTable extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       pageSize: 10,
       currentPage: 1,
@@ -112,8 +112,8 @@ PagedTable.propTypes = {
 };
 
 class IncompleteCandidatesRow extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
 
     };
@@ -167,8 +167,8 @@ IncompleteCandidatesRow.propTypes = {
 };
 
 class InstrumentConflictsRow extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
 
     };
@@ -209,8 +209,8 @@ InstrumentConflictsRow.proptypes = {
 };
 
 class BehaviouralFeedbackRow extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
 
     };
@@ -277,8 +277,8 @@ BehaviouralFeedbackRow.propTypes = {
 };
 
 class DefaultPanel extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       displayName: 'CandidatesPanelTable',
     };
@@ -300,8 +300,8 @@ DefaultPanel.propTypes = {
 };
 
 class IncompleteCandidates extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
     };
   }

@@ -49,7 +49,6 @@ class SearchField extends Component {
     this.state = {
 
     };
-
   }
 
   clearFilter() {
@@ -82,7 +81,6 @@ class SearchField extends Component {
 }
 
 class SelectDropdown extends Component {
-
   constructor(props) {
     super(props);
 
@@ -94,7 +92,6 @@ class SelectDropdown extends Component {
         V02: 'true',
       },
     };
-
   }
 
   toggleDropdown() {

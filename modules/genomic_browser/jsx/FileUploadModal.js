@@ -6,8 +6,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 class GenomicFileUploadModal extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       readyForUpload: false,
       submited: false,
@@ -129,8 +129,8 @@ GenomicFileUploadModal.propTypes = {
 let RGenomicFileUploadModal = React.createFactory(GenomicFileUploadModal);
 
 class UploadForm extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       baseURL: '',
       fileType: '',
@@ -198,8 +198,8 @@ UploadForm.propTypes = {
 };
 
 class FileTypeSelect extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       availableFileType: [],
     };
@@ -270,8 +270,8 @@ FileTypeSelect.defaultProps = {
 };
 
 class FileInput extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
 
     };
@@ -294,8 +294,8 @@ FileInput.propTypes = {
 };
 
 class TextAreaInput extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
 
     };
@@ -317,8 +317,8 @@ TextAreaInput.propTypes = {
 };
 
 class CheckboxInput extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       checked: this.props.checked || false,
     };
@@ -343,8 +343,8 @@ CheckboxInput.propTypes = {
 };
 
 class ProgressBar extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
 
     };
