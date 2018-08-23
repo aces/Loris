@@ -52,7 +52,7 @@ var config = [{
     './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js',
     './modules/acknowledgements/js/columnFormatter.js': './modules/acknowledgements/jsx/columnFormatter.js',
     './modules/battery_manager/js/batteryManagerIndex.js': './modules/battery_manager/jsx/batteryManagerIndex.js',
-    './modules/battery_manager/js/editEntryIndex.js': './modules/battery_manager/jsx/editEntryIndex.js'
+    './modules/battery_manager/js/editEntry.js': './modules/battery_manager/jsx/editEntry.js'
   },
   output: {
     path: './',

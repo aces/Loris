@@ -36,8 +36,9 @@ class Battery_Manager extends \NDB_Menu_Filter
     /**
      * Check user permissions
      *
-     * @return bool
      * @throws ConfigurationException
+     *
+     * @return Bool
      */
     function _hasAccess()
     {
@@ -60,18 +61,12 @@ class Battery_Manager extends \NDB_Menu_Filter
         parent::setup();
 
         $instruments = $this->makeKeySameAsValue(\Utility::getAllInstruments());
-
-        $stages = $this->getStageList();
-
+        $stages      = $this->getStageList();
         $subprojects = $this->makeKeySameAsValue(\Utility::getSubprojectList(null));
-
-        $visits = \Utility::getVisitList();
-
-        $sites = $this->makeKeySameAsValue(\Utility::getSiteList(false));
-
-        $firstVisit = $this->getYesNoList();
-
-        $active = $this->getYesNoList();
+        $visits      = \Utility::getVisitList();
+        $sites       = $this->makeKeySameAsValue(\Utility::getSiteList(false));
+        $firstVisit  = $this->getYesNoList();
+        $active      = $this->getYesNoList();
 
         // Filter Form Elements
         $this->addSelect('instrument', 'Instrument', $instruments);

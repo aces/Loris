@@ -459,12 +459,23 @@ class BatteryManagerEditForm extends React.Component {
 
 }
 
-BatteryManagerEditForm.propTypes = {
-  DataURL: React.PropTypes.string.isRequired,
-  activate: React.PropTypes.string.isRequired,
-  deactivate: React.PropTypes.string.isRequired,
-  checkForDuplicate: React.PropTypes.string.isRequired,
-  edit: React.PropTypes.string.isRequired
-};
+const args = QueryString.get(document.currentScript.src);
+$(function() {
+  const batteryManagerEditForm = (
+    <div className="page-edit-entry">
+      <div className="row">
+        <div className="col-md-9 col-lg-7">
+          <BatteryManagerEditForm
+            DataURL={`${loris.BaseURL}/battery_manager/ajax/get_form_data.php?form=edit&ID=${args.id}`}
+            checkForDuplicate={`${loris.BaseURL}/battery_manager/ajax/add_or_edit_entry.php?action=checkForDuplicate`}
+            activate={`${loris.BaseURL}/battery_manager/ajax/change_active_status.php?action=activate`}
+            deactivate={`${loris.BaseURL}/battery_manager/ajax/change_active_status.php?action=deactivate`}
+            edit={`${loris.BaseURL}/battery_manager/ajax/add_or_edit_entry.php?action=edit`}
+          />
+        </div>
+      </div>
+    </div>
+  );
 
-export default BatteryManagerEditForm;
+  ReactDOM.render(batteryManagerEditForm, document.getElementById("lorisworkspace"));
+});

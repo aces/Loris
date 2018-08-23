@@ -71,7 +71,7 @@ class Edit extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/battery_manager/js/editEntryIndex.js",
+             $baseURL . "/battery_manager/js/editEntry.js",
             )
         );
     }
