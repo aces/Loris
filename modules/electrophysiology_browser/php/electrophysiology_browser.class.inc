@@ -127,6 +127,7 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
 
 
 
+
     /**
      * Include additional JS files
      *
