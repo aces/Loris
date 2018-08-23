@@ -81,12 +81,13 @@ class UploadForm extends React.Component {
     if (!data.mriFile || !data.IsPhantom) {
       return;
     }
+
+    const fileName = data.mriFile.name;
     if (data.IsPhantom === 'N') {
       if (!data.candID || !data.pSCID || !data.visitLabel) {
         return;
       }
       // Make sure file follows PSCID_CandID_VL[_*].zip|.tgz|.tar.gz format
-      const fileName = data.mriFile.name;
       const pcv = data.pSCID + '_' + data.candID + '_' + data.visitLabel;
       const pcvu = pcv + '_';
       const properName = new RegExp("^" + pcv + ".(zip|tgz|tar.gz)");
