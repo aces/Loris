@@ -162,7 +162,8 @@ class EEGSessionView extends React.Component {
           }
           appState.database = database;
           this.setState(appState);
-          console.log(JSON.stringify(appState));
+          //console.log(JSON.stringify(appState));
+          console.log(appState.database);
         });
       }.bind(this),
       error: function(error) {
@@ -188,10 +189,10 @@ class EEGSessionView extends React.Component {
 
     if (!this.state.isLoaded) {
       return (
-        <button className="btn-info has-spinner">
+        <button className='btn-info has-spinner'>
           Loading
           <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+            className='glyphicon glyphicon-refresh glyphicon-refresh-animate'>
           </span>
         </button>
       );
@@ -204,15 +205,15 @@ class EEGSessionView extends React.Component {
           <div>
             <FilePanel
               id={'filename_panel_' + i}
-              title={'FILENAME (' + i + ')'}
+              title={'FILENAME (' + this.state.database[i].file.name + ')'}
               data={this.state.database[i].file}
             />
 
-            <DetailsPanel
-              id={'data_panel_' + i}
-              title={'DATA DETAILS (' + i + ')'}
-              data={this.state.database[i].file.details}
-            />
+            {/*<DetailsPanel*/}
+              {/*id={'data_panel_' + i}*/}
+              {/*title={'DATA DETAILS (' + i + ')'}*/}
+              {/*data={this.state.database[i].file.details}*/}
+            {/*/>*/}
           </div>
         );
       }
