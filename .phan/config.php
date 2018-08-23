@@ -39,8 +39,7 @@ return [
 		"PhanNonClassMethodCall",
 		"PhanTypeVoidAssignment",
 		"PhanTypeArraySuspicious",
-		"PhanRedefineFunctionInternal",
-		"PhanRedefineFunction",
+        "PhanRedefineFunctionInternal",
 	],
 	"analyzed_file_extensions" => ["php", "inc"],
 	"directory_list" => [
