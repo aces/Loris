@@ -101,6 +101,9 @@ class UploadForm extends React.Component {
           type: "error",
           confirmButtonText: "OK"
         });
+        let errorMessage = {mri_file: "File improperly named!"};
+        let hasError = {mri_file: true};
+        this.setState({errorMessage, hasError});
         return;
       }
     }
