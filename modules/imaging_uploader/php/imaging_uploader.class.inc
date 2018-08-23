@@ -130,7 +130,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                        'candID'     => array(),
                        'pSCID'      => array(),
                        'visitLabel' => array(),
-                       'mriFile'   => array($error_message),
+                       'mriFile'    => array($error_message),
                       );
             header('Content-Type: application/json; charset=UTF-8');
             exit(json_encode(['errors' => $errors]));
@@ -244,7 +244,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                    'candID'     => array(),
                    'pSCID'      => array(),
                    'visitLabel' => array(),
-                   'mriFile'   => array(),
+                   'mriFile'    => array(),
                   );
         // creates empty string variable to store error message for wrong file name
         $file_name_error = "";
