@@ -16,7 +16,7 @@ header("content-type:application/json");
 ini_set('default_charset', 'utf-8');
 
 $DB            = Database::singleton();
-$sexData    = array();
+$sexData       = array();
 $list_of_sites = Utility::getAssociativeSiteList(true, false);
 
 foreach ($list_of_sites as $siteID => $siteName) {

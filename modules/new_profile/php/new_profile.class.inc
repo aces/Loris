@@ -183,10 +183,10 @@ class New_Profile extends \NDB_Form
 
         // add sex
         $sexOptions = array(
-                          ''       => '',
-                          'Male'   => 'Male',
-                          'Female' => 'Female',
-                         );
+                       ''       => '',
+                       'Male'   => 'Male',
+                       'Female' => 'Female',
+                      );
         $this->addSelect('sex', 'Sex', $sexOptions);
 
         // sex rules
