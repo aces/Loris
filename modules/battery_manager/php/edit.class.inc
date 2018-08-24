@@ -26,11 +26,25 @@ class Edit extends \NDB_Form
     public $skipTemplate = true;
 
     /**
+     * Check user permissions
+     *
+     * @return bool
+     * @throws ConfigurationException
+     */
+    function _hasAccess()
+    {
+        //create user object
+        $user =& \User::singleton();
+
+        return $user->hasPermission('battery_manager_edit');
+    }
+
+    /**
      * Entry point for /battery_manager/edit/
      * Checks if entry id is provided and otherwise redirects to
      * /battery_manager/ page
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -75,19 +89,4 @@ class Edit extends \NDB_Form
             )
         );
     }
-
-    /**
-     * Check user permissions
-     *
-     * @return bool
-     * @throws ConfigurationException
-     */
-    function _hasAccess()
-    {
-        //create user object
-        $user =& \User::singleton();
-
-        return $user->hasPermission('battery_manager_edit');
-    }
-
 }

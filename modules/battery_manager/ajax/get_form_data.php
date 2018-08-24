@@ -13,8 +13,8 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-if (isset($_GET['form'])) {
-    $form = $_GET['form'];
+if (sanitize('form') !== null) {
+    $form = sanitize('form');
     if ($form === "add") {
         echo getAddFormData();
     } else if ($form === "edit") {
@@ -48,8 +48,8 @@ function getEditFormData()
     $editFormData['active'] = getYesNoList();
 
     // Add entry data using entry ID
-    if (isset($_GET['ID'])) {
-        $entryID = $_GET['ID'];
+    if (sanitize('ID') !== null) {
+        $entryID = sanitize('ID');
         $editFormData['batteryData'] = getEntryData($entryID);
     }
 
@@ -134,4 +134,17 @@ function getEntryData($entryID)
     $entry = $db->pselectRow($query, array( 'id' => $entryID));
 
     return $entry;
+}
+
+/**
+ * Sanitize GET variable
+ *
+ * @param string $field to sanitize
+ *
+ * @return string $sanitize[$field]
+ */
+function sanitize($field)
+{
+    $sanitize = array_map('htmlentities', $_GET);
+    return $sanitize[$field];
 }

@@ -16,8 +16,8 @@
 
 
 // Determine which action is called
-if (isset($_GET['action'])) {
-    $action = $_GET['action'];
+if (sanitize('action', 'get') !== null) {
+    $action = sanitize('action', 'get');
     if ($action == "checkForDuplicate") {
         echo checkForDuplicate();
     } else if ($action == "add") {
@@ -28,13 +28,14 @@ if (isset($_GET['action'])) {
 }
 
 /**
- * Return duplicate of entry if it exists and null otherwise
+ * Return string containing JSON representation of duplicate entry if it exists
+ * Return null otherwise
  *
- * @return json object or null
+ * @return string or null
  */
 function checkForDuplicate()
 {
-    $db =& \Database::singleton();
+    $db = \Database::singleton();
 
     // Retrieve values entered by user
     $form_data = getFormData();
@@ -75,7 +76,8 @@ function checkForDuplicate()
         $form_data
     );
 
-    // Return JSON representation of duplicate entry if it exists, null otherwise
+    // Return string containing JSON representation of duplicate entry if it exists
+    // Return null otherwise
     if ($entry) {
         return json_encode($entry);
     } else {
@@ -92,8 +94,8 @@ function checkForDuplicate()
  */
 function addEntry()
 {
-    $db   =& \Database::singleton();
-    $user =& User::singleton();
+    $db   = \Database::singleton();
+    $user = User::singleton();
     if (!$user->hasPermission('battery_manager_edit')) {
         header("HTTP/1.1 403 Forbidden");
         exit;
@@ -128,21 +130,21 @@ function addEntry()
  */
 function editEntry()
 {
-    $db   =& \Database::singleton();
-    $user =& User::singleton();
+    $db   = \Database::singleton();
+    $user = User::singleton();
     if (!$user->hasPermission('battery_manager_edit')) {
         header("HTTP/1.1 403 Forbidden");
         exit;
     }
 
     // Get ID of edited entry
-    $entryID = $_POST['id'];
+    $entryID = sanitize('id', 'post');
 
     // Retrieve values entered by user
     $form_data = getFormData();
 
     // Get active status of edited entry
-    $form_data['Active'] = $_POST['active'];
+    $form_data['Active'] = sanitize('active', 'post');
 
     // Check for duplicates on the back-end
     if (checkForDuplicate() !== null) {
@@ -154,7 +156,7 @@ function editEntry()
             $db->update('test_battery', $form_data, ['ID' => $entryID]);
         } catch (DatabaseException $e) {
             showError(
-                "Could not update entry "+$entryID+" in the Test Battery."
+                "Could not update entry in the Test Battery."
                 ." Please try again!"
             );
         }
@@ -169,15 +171,15 @@ function editEntry()
 function getFormData()
 {
     $form_data = array(
-                  'Test_name'    => $_POST['instrument'] ?? null,
-                  'AgeMinDays'   => $_POST['ageMinDays'] ?? null,
-                  'AgeMaxDays'   => $_POST['ageMaxDays'] ?? null,
-                  'Stage'        => $_POST['stage'] ?? null,
-                  'SubprojectID' => $_POST['subproject'] ?? null,
-                  'Visit_label'  => $_POST['visitLabel'] ?? null,
-                  'CenterID'     => $_POST['forSite'] ?? null,
-                  'firstVisit'   => $_POST['firstVisit'] ?? null,
-                  'instr_order'  => $_POST['instrumentOrder'] ?? null,
+                  'Test_name'    => sanitize('instrument', 'post') ?? null,
+                  'AgeMinDays'   => sanitize('ageMinDays', 'post') ?? null,
+                  'AgeMaxDays'   => sanitize('ageMaxDays', 'post') ?? null,
+                  'Stage'        => sanitize('stage', 'post') ?? null,
+                  'SubprojectID' => sanitize('subproject', 'post') ?? null,
+                  'Visit_label'  => sanitize('visitLabel', 'post') ?? null,
+                  'CenterID'     => sanitize('forSite', 'post') ?? null,
+                  'firstVisit'   => sanitize('firstVisit', 'post') ?? null,
+                  'instr_order'  => sanitize('instrumentOrder', 'post') ?? null,
                  );
 
     // Convert null strings to nulls
@@ -188,6 +190,23 @@ function getFormData()
     }
 
     return $form_data;
+}
+/**
+ * Sanitize GET and POST variables
+ *
+ * @param string $field   to sanitize
+ * @param string $request specifying whether request is get or post
+ *
+ * @return string $sanitize[$field]
+ */
+function sanitize($field, $request)
+{
+    if ($request === 'get') {
+        $sanitize = array_map('htmlentities', $_GET);
+    } else if ($request === 'post') {
+        $sanitize = array_map('htmlentities', $_POST);
+    }
+    return $sanitize[$field];
 }
 
 /**
@@ -204,4 +223,5 @@ function showError($message)
     }
     header('HTTP/1.1 500 Internal Server Error');
     header('Content-Type: application/json; charset=UTF-8');
+    exit($message);
 }

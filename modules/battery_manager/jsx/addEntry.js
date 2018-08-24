@@ -215,7 +215,7 @@ class BatteryManagerAddForm extends React.Component {
       success: callback,
       error: function(err) {
         console.error(err);
-        swal("Could not check", "", "error");
+        swal("Could not check", err.responseText, "error");
       }
     });
   }

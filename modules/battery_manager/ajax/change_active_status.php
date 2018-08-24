@@ -14,8 +14,8 @@
  */
 
 // Determine whether entry should be activated or deactivated
-if (isset($_GET['action'])) {
-    $action = $_GET['action'];
+if (sanitize('action', 'get') !== null) {
+    $action = sanitize('action', 'get');
     if ($action === "activate") {
         echo changeStatus('Y');
     } else if ($action === "deactivate") {
@@ -42,14 +42,25 @@ function changeStatus($value)
         "test_battery",
         array("Active" => $value),
         array(
-         "ID" => $_POST["ID"],
+         "ID" => sanitize('ID', 'post'),
         )
     );
 
     $new_entry = $DB->pselectRow(
-        " SELECT * FROM test_battery WHERE ID = :batteryID AND Active = :active",
+        " SELECT
+          ID,
+          Test_name,
+          AgeMinDays,
+          AgeMaxDays,
+          Active,
+          Stage,
+          SubprojectID,
+          Visit_label,
+          CenterID,
+          firstVisit,
+          instr_order FROM test_battery WHERE ID = :batteryID AND Active = :active",
         array(
-         "batteryID" => $_POST["ID"],
+         "batteryID" => sanitize('ID', 'post'),
          "active"    => $value,
         )
     );
@@ -59,5 +70,23 @@ function changeStatus($value)
         throw new Exception("Updated entry but could not fetch it");
     }
     return json_encode($new_entry);
+}
+
+/**
+ * Sanitize GET and POST variables
+ *
+ * @param string $field   to sanitize
+ * @param string $request specifying whether request is get or post
+ *
+ * @return string $sanitize[$field]
+ */
+function sanitize($field, $request)
+{
+    if ($request === "get") {
+        $sanitize = array_map('htmlentities', $_GET);
+    } else if ($request === "post") {
+        $sanitize = array_map('htmlentities', $_POST);
+    }
+    return $sanitize[$field];
 }
 ?>
