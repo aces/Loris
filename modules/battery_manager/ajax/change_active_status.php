@@ -38,11 +38,12 @@ function changeStatus($value)
 
     $DB = Database::singleton();
 
+    $entryID = sanitize('ID', 'post');
     $DB->update(
         "test_battery",
         array("Active" => $value),
         array(
-         "ID" => sanitize('ID', 'post'),
+         "ID" => $entryID,
         )
     );
 
@@ -60,16 +61,17 @@ function changeStatus($value)
           firstVisit,
           instr_order FROM test_battery WHERE ID = :batteryID AND Active = :active",
         array(
-         "batteryID" => sanitize('ID', 'post'),
+         "batteryID" => $entryID,
          "active"    => $value,
         )
     );
-
+   
     if (empty($new_entry)) {
-        echo "empty";
-        throw new Exception("Updated entry but could not fetch it");
+       header('HTTP/1.1 500 Internal Server Error');
+       exit("Could not update entry in the Test Battery.");
+    } else {
+       return json_encode($new_entry);
     }
-    return json_encode($new_entry);
 }
 
 /**

@@ -1,9 +1,9 @@
 <?php
 /**
- * Battery Manager entry adder and editer
+ * Battery Manager entry adder
  *
  * Checks Test Battery for duplicates
- * Handles insertions and updates in the Test Battery
+ * Handles insertions in the Test Battery
  *
  * PHP Version 7
  *
@@ -22,8 +22,6 @@ if (sanitize('action', 'get') !== null) {
         echo checkForDuplicate();
     } else if ($action == "add") {
         addEntry();
-    } else if ($action == "edit") {
-        editEntry();
     }
 }
 
@@ -117,48 +115,6 @@ function addEntry()
             $db->insert('test_battery', $form_data);
         } catch (DatabaseException $e) {
             showError("Could not add entry to the Test Battery. Please try again!");
-        }
-    }
-}
-
-/**
- * Handle updates in the test battery
- *
- * @throws DatabaseException
- *
- * @return void
- */
-function editEntry()
-{
-    $db   = \Database::singleton();
-    $user = User::singleton();
-    if (!$user->hasPermission('battery_manager_edit')) {
-        header("HTTP/1.1 403 Forbidden");
-        exit;
-    }
-
-    // Get ID of edited entry
-    $entryID = sanitize('id', 'post');
-
-    // Retrieve values entered by user
-    $form_data = getFormData();
-
-    // Get active status of edited entry
-    $form_data['Active'] = sanitize('active', 'post');
-
-    // Check for duplicates on the back-end
-    if (checkForDuplicate() !== null) {
-        header('HTTP/1.1 400 Bad Request');
-        exit("There exists a duplicate entry in the Test Battery.");
-    } else {
-        // Update entry in Test Battery
-        try {
-            $db->update('test_battery', $form_data, ['ID' => $entryID]);
-        } catch (DatabaseException $e) {
-            showError(
-                "Could not update entry in the Test Battery."
-                ." Please try again!"
-            );
         }
     }
 }

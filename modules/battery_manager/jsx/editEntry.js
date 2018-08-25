@@ -27,7 +27,7 @@ class BatteryManagerEditForm extends React.Component {
     this.giveOptions = this.giveOptions.bind(this);
     this.activateEntry = this.activateEntry.bind(this);
     this.deactivateEntry = this.deactivateEntry.bind(this);
-    this.editEntry = this.editEntry.bind(this);
+    this.addEntry = this.addEntry.bind(this);
   }
 
   componentDidMount() {
@@ -47,7 +47,6 @@ class BatteryManagerEditForm extends React.Component {
           forSite: data.batteryData.CenterID,
           firstVisit: data.batteryData.firstVisit,
           instrumentOrder: data.batteryData.instr_order,
-          active: data.batteryData.Active
         };
         self.setState({
           Data: data,
@@ -92,11 +91,11 @@ class BatteryManagerEditForm extends React.Component {
     // Inform users about duplicate entries
     var helpText = (
       <span>
-        You can activate or deactivate an entry by changing the Active value in the form.<br/><br/>
-        You cannot edit an entry to have the same values as another entry.<br/>
-        If the edited entry has the same values but a different Active value as another entry,<br/>
-        you can activate or deactivate the other entry based on the change you made.<br/>
-        In this case, the entry that was originally selected for editing will not be edited.<br/>
+        Editing an entry will deactivate the current entry and create a new entry.<br/>
+        You cannot edit an entry to have the same values as another active entry.<br/>
+        If the edited entry has the same values as another deactivated entry,<br/>
+        you can activate the other entry and deactivate the current entry.<br/>
+       <br/>
       </span>
     );
 
@@ -198,15 +197,6 @@ class BatteryManagerEditForm extends React.Component {
               max="127"
               value={this.state.formData.instrumentOrder}
             />
-            <SelectElement
-              name="active"
-              label="Active"
-              emptyOption={false}
-              options={this.state.Data.active}
-              onUserInput={this.setFormData}
-              ref="active"
-              value={this.state.formData.active}
-            />
           <ButtonElement label="Edit entry"/>
         </FormElement>
       </div>
@@ -255,185 +245,157 @@ class BatteryManagerEditForm extends React.Component {
   }
 
   /**
-   * Give options depending on duplicate entry:
-   * If there are no changes in the form, give no options
-   * If the entry is changed so that it has the same values and Active value as another entry, give no options
-   * If only the Active value has been changed, give option to activate or deactivate the current entry depending on the change made
-   * If the entry is changed so that it has the same values as another entry but a different Active value,
-   * give option to activate or deactivate the other entry depending on the change made
-   * If there is no duplicate entry, proceed to edit entry
+   * Give options depending on edits in the form:
+   * If there are no edits in the form, give no options
+   * If the edited entry becomes the same as another active entry, give no options
+   * If the edited entry becomes the same as another deactivated entry,
+   * give option to activate the other entry and deactivate the current entry
+   * If there is no duplicate entry, proceed to edit
    *
-   * @param {string} duplicateEntry returned by server
+   * @param {string} duplicate returned by server
    */
-  giveOptions(duplicateEntry) {
-    let editedEntry = this.state.formData;
-    // If duplicate entry exists, convert to JSON
-    if (Object.keys(duplicateEntry).length > 0) {
-      let duplicateEntryJSON = JSON.parse(duplicateEntry);
-          // Create object with ID of duplicate entry
-      let entryID = duplicateEntryJSON.ID;
-      let idObj = new FormData();
-      idObj.append("ID", entryID);
-      // Check if edited entry and duplicate entry have the same active status
-      if (editedEntry.active === duplicateEntryJSON.Active) {
-        // Initialize warning message to notify user about duplicate entry
-        let errorMessage = "The changes you made are identical to another entry in the table.";
-        // Check if edited entry and duplicate entry are actually the same entry and update warning message
-        if (editedEntry.id === duplicateEntryJSON.ID) {
-          errorMessage = "You did not make any changes to the current entry.";
-        }
-        // Give no options
-        swal({
-          title: "Duplicate entry!",
-          text: errorMessage,
-          type: "error"
-        });
-          // If edited entry is active and duplicate entry is not active, trigger activate popup
-      } else if (editedEntry.active === 'Y' && duplicateEntryJSON.Active === 'N') {
-                // Initialize warning message to notify user about inactive duplicate entry
-        let warningMessage = "The changes you made are identical to another entry in the table, with the exception of the Active status.\n " +
-                                     "Would you like to activate the other entry?\n Note: No changes will be made to the current entry.";
-                // Check if edited entry and duplicate entry are actually the same entry and update warning message
-        if (editedEntry.id === duplicateEntryJSON.ID) {
-          warningMessage = "You did not make any changes to the current entry except for the Active status.\n " +
-                                     "Would you like to activate this entry?";
-        }
-                // Give option to activate duplicate entry
-        swal({
-          title: "Activate entry?",
-          text: warningMessage,
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonText: 'Yes',
-          cancelButtonText: "Cancel",
-          closeOnConfirm: false
-        }, function() {
-                  // If user confirms activate popup, call activate function with ID
-          this.activateEntry(idObj);
-        }.bind(this));
-          // Else if edited entry is not active and duplicate entry is active, trigger deactivate popup
-      } else if (editedEntry.active === 'N' && duplicateEntryJSON.Active === 'Y') {
-                // Initialize warning message to notify user about active duplicate entry
-        let warningMessage = "The changes you made are identical to another entry in the table, with the exception of the Active status.\n " +
-                                     "Would you like to deactivate the other entry?\n Note: No changes will be made to the current entry.";
-                // Check if edited entry and duplicate entry are actually the same entry and update warning message
-        if (editedEntry.id === duplicateEntryJSON.ID) {
-          warningMessage = "You did not make any changes to the current entry except for the Active status.\n " +
-                                     "Would you like to deactivate this entry?";
-        }
-                // Give option to deactivate duplicate entry
-        swal({
-          title: "Deactivate entry?",
-          text: warningMessage,
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonText: 'Yes',
-          cancelButtonText: "Cancel",
-          closeOnConfirm: false
-        }, function() {
-                  // If user confirms deactivate popup, call deactivate function with ID
-          this.deactivateEntry(idObj);
-        }.bind(this));
+  giveOptions(duplicate) {
+    let formData = this.state.formData;
+    // Create object with ID of current entry to pass to functions later
+    let currentEntry = new FormData();
+    currentEntry.append("ID", formData.id)
+    // If there is a duplicate entry, process options
+    if (Object.keys(duplicate).length > 0) {
+      // Convert duplicate entry to JSON
+      let duplicateEntryJSON = JSON.parse(duplicate);
+      // Create object with ID of duplicate entry to pass to functions later
+      let duplicateEntry = new FormData(); 
+      duplicateEntry.append("ID", duplicateEntryJSON.ID);
+      // If there are no edits in the form, show error
+      if (formData.id === duplicateEntryJSON.ID) {
+          swal({
+            title: "Duplicate entry!",
+            text: "You did not make any changes to the current entry.",
+            type: "error"
+          });
+      } else {
+         // If the edited entry becomes the same as another active entry, show error
+         if (duplicateEntryJSON.Active === 'Y') {
+             swal({
+               title: "Duplicate entry!",
+               text: "This entry already already exists in the database.",
+               type: "error"
+             });
+         // If the edited entry becomes the same as another deactivated entry,
+         // show warning with option to activate other entry and deactivate current entry
+         } else if (duplicateEntryJSON.Active === 'N') {
+             swal({
+               title: "Deactivated entry!",
+               text: "A deactivated entry with these values already exists!\n Would you like to reactivate this entry and deactivate the current one?",
+               type: "warning",
+               showCancelButton: true,
+               confirmButtonText: 'Yes',
+               cancelButtonText: 'Cancel',
+               closeOnConfirm: false
+             }, function() {
+               // Call activate function which will activate the other duplicate entry and deactivate the current entry
+               this.activateEntry(duplicateEntry, currentEntry);
+             }.bind(this));
+         } 
       }
-        // If no duplicate entry exists, proceed with edit entry
-    } else {
-      this.editEntry();
+    }
+     // If there is no duplicate, proceed with edit (which adds new entry and deactivates current entry)
+     else {
+      // Create object with form data
+      let newEntry = new FormData();
+      for (let key in formData) {
+        if (formData.hasOwnProperty(key)) {
+          newEntry.append(key, formData[key]);
+        }
+      }
+      // Call add function, which will add the new entry and deactivate the current entry
+      this.addEntry(newEntry, currentEntry);
     }
   }
 
   /**
-   * Activate duplicate entry in the test battery
+   * Activate duplicate entry in Test Battery
+   * If successful, call deactivate function for current entry
    *
-   * @param {object} idObj containing id of entry
+   * @param {object} containing id of duplicate entry to be activated
+   * @param {object} containing id of entry to be deactivated
    */
-  activateEntry(idObj) {
+  activateEntry(duplicateEntry, currentEntry) {
+    // POST request to activate duplicate entry
     $.ajax({
       type: 'POST',
       url: this.props.activate,
-      data: idObj,
-      cache: false,
-      contentType: false,
-      processData: false
-    })
-      .done(function(data) {
-        swal({
-          title: "Activated!",
-          type: "success"
-        }, function() {
-          // return to browse tab upon success
-          window.location.assign(loris.BaseURL + "/battery_manager/");
-        });
-      })
-      .error(function(data) {
-        swal("Could not activate entry", "", "error");
-      });
-  }
-
-  /**
-   * Deactivate duplicate entry in the test battery
-   *
-   * @param {object} idObj containing id of entry
-   */
-  deactivateEntry(idObj) {
-    $.ajax({
-      type: 'POST',
-      url: this.props.deactivate,
-      data: idObj,
-      cache: false,
-      contentType: false,
-      processData: false
-    })
-      .done(function(data) {
-        swal({
-          title: "Deactivated!",
-          type: "success"
-        }, function() {
-          // return to browse tab upon success
-          window.location.assign(loris.BaseURL + "/battery_manager/");
-        });
-      })
-      .error(function(data) {
-        swal("Could not deactivate entry", "", "error");
-      });
-  }
-
-  /**
-   * Edit entry in the test battery
-   */
-  editEntry() {
-    // create object with form data
-    let formData = this.state.formData;
-    let formObj = new FormData();
-    for (let key in formData) {
-      if (formData.hasOwnProperty(key)) {
-        formObj.append(key, formData[key]);
-      }
-    }
-
-    $.ajax({
-      type: 'POST',
-      url: this.props.edit,
-      data: formObj,
+      data: duplicateEntry,
       cache: false,
       contentType: false,
       processData: false,
-      success: function(data) {
-        this.setState({
-          formData: {} // reset form data after successful entry
+    })
+      .done(function(data) {
+           // If successful activation, call deactivate function for current entry
+           this.deactivateEntry(currentEntry);
+        }.bind(this))
+        // If unsuccessful activation, display error message and prevent deactivate function from being called
+        .error(function(data) {
+          swal("Could not activate other entry","","error");
         });
-        swal({
-          title: "Edit Successful!",
-          type: "success"
-        }, function() {
-                 // return to browse tab upon success
-          window.location.assign(loris.BaseURL + "/battery_manager/");
+  }
+
+  /**
+   * Add new entry to Test Battery
+   * If successful, call deactivate function for current entry
+   *
+   * @param {object} containing entry to be added
+   * @param {object} containing entry of id to be deactivated
+   */
+  addEntry(newEntry, currentEntry) {
+    // POST request to add new entry
+    $.ajax({
+      type: 'POST',
+      url: this.props.add,
+      data: newEntry,
+      cache: false,
+      contentType: false,
+      processData: false,
+    })
+      .done(function(data) {
+           // If successful insertion, call deactivate function for current entry
+           this.deactivateEntry(currentEntry);
+        }.bind(this))
+        // If unsuccessful insertion, display error message and prevent deactivate function from being called
+        .error(function(data) {
+          swal("Could not add new entry","","error");
         });
-      }.bind(this),
-      error: function(err) {
-        console.error(err);
-        swal("Could not edit!", err.responseText, "error");
-      }
-    });
+  }
+  /**
+   * Deactivate entry in the Test Battery
+   * If successful, display final success message and return to Browse tab
+   *
+   * @param {object} containing id of entry to be deactivated
+   */
+  deactivateEntry(currentEntry) {
+        // POST request to deactivate current entry
+        $.ajax({
+          type: 'POST',
+          url: this.props.deactivate,
+          data: currentEntry,
+          cache: false,
+          contentType: false,
+          processData: false,
+        })
+          .done(function(data) {
+             // If successful deactivation, display final success message
+             swal({
+               title: "Edit successful!", 
+               type: "success"
+             }, function() {
+                // Return to browse tab upon success
+                window.location.assign(loris.BaseURL + "/battery_manager/");
+              }.bind(this));
+            })
+            // If unsucessful deactivation, display error message and keep user on edit form
+            .error(function(data) {
+              swal("Could not deactivate current entry","","error");
+            });
   }
 
   /**
@@ -467,10 +429,10 @@ $(function() {
         <div className="col-md-9 col-lg-7">
           <BatteryManagerEditForm
             DataURL={`${loris.BaseURL}/battery_manager/ajax/get_form_data.php?form=edit&ID=${args.id}`}
-            checkForDuplicate={`${loris.BaseURL}/battery_manager/ajax/add_or_edit_entry.php?action=checkForDuplicate`}
+            checkForDuplicate={`${loris.BaseURL}/battery_manager/ajax/add_entry.php?action=checkForDuplicate`}
             activate={`${loris.BaseURL}/battery_manager/ajax/change_active_status.php?action=activate`}
             deactivate={`${loris.BaseURL}/battery_manager/ajax/change_active_status.php?action=deactivate`}
-            edit={`${loris.BaseURL}/battery_manager/ajax/add_or_edit_entry.php?action=edit`}
+            add={`${loris.BaseURL}/battery_manager/ajax/add_entry.php?action=add`}
           />
         </div>
       </div>

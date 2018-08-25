@@ -35,7 +35,6 @@ function getAddFormData()
 
 /**
  * Get form data for Edit form
- * Add form element for Active status
  * Add entry data in json form
  *
  * @return json object
@@ -43,9 +42,6 @@ function getAddFormData()
 function getEditFormData()
 {
     $editFormData = getFormData();
-
-    // Add for element for Active status
-    $editFormData['active'] = getYesNoList();
 
     // Add entry data using entry ID
     if (sanitize('ID') !== null) {
