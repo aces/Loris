@@ -2,8 +2,9 @@
 
 ## Purpose
 
-The Battery Manager module allows users to **browse**, **add**, **edit**, and **activate/deactivate** entries 
-in the Test Battery. 
+The Battery Manager module allows users to **browse**, **add**, **edit**, **activate**, **deactivate** entries 
+in the Test Battery.
+The Test Battery is used to determine which Instruments are administered at different timepoints.
 
 ## Intended Users
 
@@ -11,7 +12,7 @@ The Battery Manager module is used by study administrators.
 
 ## Scope
 
-The Battery Manager module provides a tool for browsing, adding, editing, and activating/deactivating entries in the
+The Battery Manager module provides a tool for browsing, adding, editing, activating, and deactivating entries in the
 the Test Battery.
 
 ### Browse
@@ -22,32 +23,52 @@ Users can browse entries in the Test Battery and filter the entries using the `S
 ### Add
 
 The **add** functionality is under the `Add` tab.
-Users can add an entry by navigating to this tab and filling out the required fields.
+Users can add an entry by filling out the required fields.
 If the entry already exists in the Test Battery table, the entry cannot be added.
 
 ### Edit
 
 The **edit** functionality can be accessed in the Menu Table under the `Browse` tab.
-Users can edit an entry by clicking on the corresponding `Edit` link in the `Edit Metadata` column.
-This will take them to a new page with a form that is originally populated by the values of the entry and that can be edited.
-Users cannot edit an entry if they have made no changes in the form or if they have made changes to the point where the entry becomes the same as another entry in the Test Battery table.
+Users can navigate to an entry's edit window by clicking on the corresponding `Edit` link in the `Edit Metadata` column.
+The edit window will have a form that is populated with the values of that entry.
+Editing entails deactivating the original entry and creating a new entry with the edited values.
+The following rules apply when editing:
+- Users cannot edit an entry if they have made no changes in the form.
+- Users cannot edit an entry if it becomes the same as another active entry in the Test Battery.
+- If the edited entry becomes the same as another deactivated entry in the Test Battery,
+  users will be given the option to activate the other entry and deactivate the original one.
 
-### Activate/Deactivate
+### Activate
 
-The **activate/deactivate** functionalities can be accessed in the Menu Table under the `Browse` tab.
+The **activate** functionality can be accessed in the `Browse` tab, `Edit` window, and the `Add` tab..
 
-In the `Change Status` column, users can directly activate or deactivate an entry by pressing the **Activate** or **Deactivate** button.
+#### Browse tab
+In the `Change Status` column of the Menu Table, users can directly activate an entry by pressing the **Activate** button.
 
-In the `Edit Metadata` column, users can indirectly activate or deactivate an entry by navigating to the `Edit` form and changing the value of `Active`. Within an entry's `Edit` form, users can also indirectly activate or deactivate another entry if they edit an entry to the point where the entry becomes the same as another entry in the Test Battery but has a different `Active` value. In this case, the entry that was originally selected for editing will not be updated.
+#### Edit window
+In an entry's edit window, users can indirectly activate another entry.
+If they edit the entry so that it is the same as another deactivated entry, they will be given the option to activate the other entry.
 
-The **activate** functionality is also in the `Add` tab. If users add an entry that already exists in the Test Battery table but has been deactivated, they will be given the option to activate the existing entry.
+#### Add tab
+In the `Add tab`, users can indirectly activate another entry.
+If they add an entry that is the same as another deactivated entry, they will be given the option to activate the other entry.
+
+### Deactivate
+
+The **deactivate** functionality can be accessed in the `Browse` tab and the `Edit` window.
+
+#### Browse tab
+In the `Change Status` column of the Menu Table, users can directly deactivate an entry by pressing the **Deactivate** button.
+
+#### Edit window
+When users edit an entry, the older version of the entry will be deactivated.
 
 ## Permissions
 
 In order to use the Battery Manager module the user needs one or both of the following 
 permissions:
 
-- `battery_manager_view`: gives user a read-only access to Battery Manager module 
+- `battery_manager_view`: gives user read-only access to Battery Manager module 
 (browsing the Test Battery).
-- `battery_manager_edit`: gives user a edit access to Battery Manager module 
+- `battery_manager_edit`: gives user edit access to Battery Manager module 
 (add/edit/activate/deactivate entries in Test Battery).
