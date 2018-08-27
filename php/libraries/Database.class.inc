@@ -128,19 +128,17 @@ class Database
     }
 
     /**
-     * Creates the connection to the database
-     *
      * Creates the connection to the database server and selects the
      * desired database.  the connection is stored in the Database
      * object, and should never be accessed directly by the user.
      *
-     * @param string  $database     the database to select
-     * @param string  $username     the username with which to log into
+     * @param string       $database     the database to select
+     * @param string|null  $username     the username with which to log into
      *                              the database server
-     * @param string  $password     the password that matches the username
-     * @param string  $host         the name of the database server
-     * @param boolean $trackChanges whether to use the trackChanges mechanism on
-     *                              this connection (defaults to true)
+     * @param string|null  $password     the password that matches the username
+     * @param string|null  $host         the name of the database server
+     * @param boolean      $trackChanges whether to use the trackChanges 
+     *                              machanism on this connection
      *
      * @return bool True if DB connection established. False otherwise.
      * @access public
