@@ -56,7 +56,12 @@ class Instrument_List extends \NDB_Menu_Filter
     */
     function _hasAccess(\User $user) : bool
     {
-        return ($user->hasPermission('access_all_profiles')
+        if (isset($_REQUEST['sessionID'])) {
+            //These variable are only for checking the permissions.
+            $TimePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
+            $candID    = $TimePoint->getCandID();
+            $Candidate =& \Candidate::singleton($candID);
+            return ($user->hasPermission('access_all_profiles')
                 || (in_array(
                     $Candidate->getData('CenterID'),
                     $user->getData('CenterIDs')
@@ -69,7 +74,6 @@ class Instrument_List extends \NDB_Menu_Filter
                    )
             );
         }
-        // check user permissions
         return false;
     }
 

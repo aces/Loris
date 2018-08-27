@@ -240,7 +240,7 @@ class NDB_BVL_Instrument extends NDB_Page
             );
         }
 
-        $user   = User::singleton();
+        $user   = \User::singleton();
         $access = $obj->_hasAccess($user);
 
         // check that user has access

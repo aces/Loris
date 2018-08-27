@@ -35,11 +35,9 @@ class User_Accounts extends \NDB_Menu_Filter
      */
     function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
-
         return $user->hasPermission('user_accounts');
     }
+
     /**
     * Setup Variables
     *
