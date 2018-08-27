@@ -36,7 +36,7 @@ $uploadNotifier = new NDB_Notifier(
     "upload"
 );
 
-$action = $_POST['action'];
+$action = $_POST['action'] ?? null;
 
 //if user has document repository permission
 if ($userSingleton->hasPermission('document_repository_view')
@@ -52,6 +52,7 @@ if ($userSingleton->hasPermission('document_repository_view')
         $version    = $_POST['version']    !== '' ? $_POST['version'] : null;
 
         $fileSize = $_FILES["file"]["size"];
+        $fileName = $_FILES["file"]["name"];
         $fileType = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
 
         $uploadPath = "$base/modules/document_repository/user_uploads/$name/";
