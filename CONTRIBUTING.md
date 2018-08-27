@@ -5,7 +5,7 @@ do before contributing is probably sign up for the [LORIS developers'
 mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev).
 
 Your next step before issuing a pull request is to review our
-[Coding Standards](./docs/CodingStandards.md). If you are doing
+[Coding Standards](./docs/CodingStandards). If you are doing
 front-end development you should also check out our [React
 guidelines](./LORIS_react.README.md).
 
@@ -48,7 +48,7 @@ Code"](https://github.com/aces/Loris/wiki/Contributing-to-the-Code).
 
 ## Pull Request Title and Description
 
-To make it easier for reiewers to locate pull requests with wich they have
+To make it easier for reviewers to locate pull requests with which they have
 expertise, we request that new pull requests follow a few conventions.
 
 #### Title
