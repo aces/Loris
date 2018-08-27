@@ -54,7 +54,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             'Access Profile'      => '#bc2 > a:nth-child(2) > div',
             'Site'                => '#dynamictable > thead > tr > th:nth-child(2)',
             'PSCID'               => '#PSCID',
-            'Biological Sex'      => '#dynamictable > thead>tr>th.dynamictableNext',
+            'Sex'                 => '#dynamictable > thead>tr>th.dynamictableNext',
             'Entity Type'         => '#dynamictable > thead > tr > th:nth-child(6)',
             'Participant Status'  => '#dynamictable > thead > tr > th:nth-child(7)',
             'Subproject'          => '#dynamictable > thead > tr > th:nth-child(8)',
