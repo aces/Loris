@@ -103,16 +103,6 @@ class VisitTest extends TestCase
                                       array($v3, 3, 11)
                                      );
 
-        // insert data to DB
-        foreach ($this->_listOfVisit as $v) 
-        {
-            $this->DB->insert("visit" , array('VisitName' => $v->getName()));
-        }
-
-        foreach ($this->_listOfVisitProject as $vp)
-        {
-            $this->DB->insert("Visit_project_subproject", array('VisitID' => $vp[0], 'ProjectID' => $vp[1], 'SubProjectID' => $vp[2]));
-        }
     }
 
     function testVisit()
