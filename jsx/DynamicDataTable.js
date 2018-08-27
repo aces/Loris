@@ -1,8 +1,8 @@
 /* exported RDynamicDataTable */
 
-var DynamicDataTable = React.createClass({
+let DynamicDataTable = React.createClass({
   propTypes: {
-    DataURL: React.PropTypes.string.isRequired
+    DataURL: React.PropTypes.string.isRequired,
   },
 
   getInitialState: function() {
@@ -10,12 +10,12 @@ var DynamicDataTable = React.createClass({
       Headers: [],
       Data: [],
       isLoaded: false,
-      loadedData: 0
+      loadedData: 0,
     };
   },
   getDefaultProps: function() {
     return {
-      DataURL: ''
+      DataURL: '',
     };
   },
   componentDidMount: function() {
@@ -28,15 +28,15 @@ var DynamicDataTable = React.createClass({
     window.removeEventListener('update-datatable', this.fetchData);
   },
   fetchData: function() {
-    var that = this;
+    let that = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       cache: false,
       xhr: function() {
-        var xhr = new window.XMLHttpRequest();
-        xhr.addEventListener("progress", function(evt) {
+        let xhr = new window.XMLHttpRequest();
+        xhr.addEventListener('progress', function(evt) {
           that.setState({
-            loadedData: evt.loaded
+            loadedData: evt.loaded,
           });
         });
         return xhr;
@@ -45,13 +45,13 @@ var DynamicDataTable = React.createClass({
         that.setState({
           Headers: data.Headers,
           Data: data.Data,
-          isLoaded: true
+          isLoaded: true,
         });
       },
       error: function(data, errorCode, errorMsg) {
         console.error(errorCode + ': ' + errorMsg);
-        that.setState({error: "Error loading data"});
-      }
+        that.setState({error: 'Error loading data'});
+      },
     });
   },
   render: function() {
@@ -81,10 +81,10 @@ var DynamicDataTable = React.createClass({
                                  onSort={this.props.onSort}
                 />
             );
-  }
+  },
 });
 
-var RDynamicDataTable = React.createFactory(DynamicDataTable);
+let RDynamicDataTable = React.createFactory(DynamicDataTable);
 
 window.DynamicDataTable = DynamicDataTable;
 window.RDynamicDataTable = RDynamicDataTable;

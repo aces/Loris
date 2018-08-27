@@ -19,10 +19,13 @@
     <tr id="{{ id }}a" {{ #parentID }}class="{{ parentID }}a directoryRow" style="display:none"{{ /parentID }}>
         <td class="fileColumn" colspan="10">
             {{ #indent }}
-                <div class="fileDDD" style="{{ margin }}">
-                    <span style="padding: 8px" class='directory glyphicon glyphicon-chevron-right' data-container="body" data-toggle="popover" data-placement="right" data-content="{{ Comment }}">
-                        {{ name }}
-                    </span>
+                <div class = "document" style="{{ margin }}">
+                    <div class="line_element_container"><div class="line_element"></div><div></div></div>
+                    <div class="fileDDD">
+                        <span style="padding: 8px;" class='directory glyphicon glyphicon-chevron-right' data-container="body" data-toggle="popover" data-placement="right" data-content="{{ Comment }}">
+                            {{ name }}
+                        </span>
+                    </div>
                 </div>
             {{ /indent }}
             {{ ^indent }}
@@ -36,11 +39,13 @@
 <script id="file" type="x-tmpl-mustache">
     <tr class="{{ parentID }}a fileRow" {{ ^filtered }}style="display:none" {{ /filtered }}>
         <td class="blah fileColumn">
-            <div {{ ^filtered }}class="fileDDD" style="{{ margin }}"{{ /filtered }}><div style="padding-top: 8px">
-                <a href="{/literal}{$baseurl}{literal}/document_repository/ajax/GetFile.php?File={{ Data_dir }}" target="_blank" download="{{ File_name }}">
-                        {{ File_name }}
-                </a>({{ File_size }})
-            </div></div>
+            <div {{ ^filtered }}class="fileDDD" style="{{ margin }}"{{ /filtered }}>
+                <div class="document" style="padding-top: 8px">
+                    <div class="line_element_container"><div class="line_element"></div><div></div></div>
+		    <a href="{/literal}{$baseurl}{literal}/document_repository/ajax/GetFile.php?File={{ Data_dir }}" target="_blank" download="{{ File_name }}">{{ File_name }}</a>
+		    ({{ File_size }})
+                </div>
+            </div>
         </td>
         <td>
             {{ version }}
@@ -66,9 +71,11 @@
         <td nowrap="nowrap">
             <a href="#" id="{{ record_id }}" class="theeditlink">Edit</a>
         </td>
+        {{ #hasDeletePerm}}
         <td nowrap="nowrap">
             <a href="#" id="{{ record_id }}" class="thedeletelink">Delete</a>
         </td>
+        {{ /hasDeletePerm }}
     </tr>
 </script>
 {/literal}

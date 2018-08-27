@@ -28,9 +28,17 @@ class CouchDBMRIImporter
      */
     function __construct()
     {
-        $factory       = NDB_Factory::singleton();
+        $factory       = \NDB_Factory::singleton();
+        $config        = \NDB_Config::singleton();
+        $couchConfig   = $config->getSetting('CouchDB');
         $this->SQLDB   = $factory->Database();
-        $this->CouchDB = $factory->couchDB();
+        $this->CouchDB = $factory->couchDB(
+            $couchConfig['dbName'],
+            $couchConfig['hostname'],
+            $couchConfig['port'],
+            $couchConfig['admin'],
+            $couchConfig['adminpass']
+        );
     }
 
     /**

@@ -228,7 +228,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'OutputType'            => 'native',
              'AcquisitionProtocolID' => 45,
              'FileType'              => 'mnc',
-             'PendingStaging'        => 0,
              'InsertedByUserID'      => 'lorisadmin',
              'InsertTime'            => 1454951768,
              'SourcePipeline'        => null,
@@ -256,7 +255,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'OutputType'            => 'native',
              'AcquisitionProtocolID' => 44,
              'FileType'              => 'mnc',
-             'PendingStaging'        => 0,
              'InsertedByUserID'      => 'lorisadmin',
              'InsertTime'            => 1454951768,
              'SourcePipeline'        => null,
@@ -386,7 +384,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     {
         // Without permissions
         $this->setupPermissions(array(''));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
@@ -405,7 +402,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     {
         // With permission imaging_browser_phantom_ownsite
         $this->setupPermissions(array('imaging_browser_phantom_ownsite'));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
@@ -419,7 +415,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     {
         // With permission imaging_browser_view_allsites
         $this->setupPermissions(array('imaging_browser_view_allsites'));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
@@ -432,7 +427,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     {
         // With permission imaging_browser_phantom_allsites
         $this->setupPermissions(array('imaging_browser_phantom_allsites'));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
@@ -557,7 +551,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
     {
         // With permission imaging_browser_view_site
         $this->setupPermissions(array('imaging_browser_phantom_ownsite'));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
@@ -571,7 +564,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
         // With permission imaging_browser_view_allsites
         $this->setupPermissions(array('imaging_browser_view_allsites'));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );

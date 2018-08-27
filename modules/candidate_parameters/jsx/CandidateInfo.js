@@ -1,30 +1,30 @@
-var CandidateInfo = React.createClass(
+let CandidateInfo = React.createClass(
   {
     getInitialState: function() {
       return {
         caveatOptions: {
-          true: "True",
-          false: "False"
+          true: 'True',
+          false: 'False',
         },
         Data: [],
         formData: {},
         updateResult: null,
         errorMessage: null,
         isLoaded: false,
-        loadedData: 0
+        loadedData: 0,
       };
     },
     componentDidMount: function() {
-      var that = this;
+      let that = this;
       $.ajax(
         this.props.dataURL,
         {
           dataType: 'json',
           success: function(data) {
-            var formData = {
+            let formData = {
               flaggedCaveatemptor: data.flagged_caveatemptor,
               flaggedOther: data.flagged_other,
-              flaggedReason: data.flagged_reason
+              flaggedReason: data.flagged_reason,
             };
 
             // Add parameter values to formData
@@ -33,37 +33,38 @@ var CandidateInfo = React.createClass(
             that.setState({
               Data: data,
               isLoaded: true,
-              formData: formData
+              formData: formData,
             });
           },
           error: function(data, errorCode, errorMsg) {
             that.setState({
-              error: 'An error occurred when loading the form!'
+              error: 'An error occurred when loading the form!',
             });
-          }
+          },
         }
       );
     },
     setFormData: function(formElement, value) {
-      var formData = JSON.parse(JSON.stringify(this.state.formData));
+      let formData = JSON.parse(JSON.stringify(this.state.formData));
       formData[formElement] = value;
 
       // Reset 'reason' and 'other' fields
-      if (formElement === "flaggedCaveatemptor" && value === "false") {
+      if (formElement === 'flaggedCaveatemptor' && value === 'false') {
         formData.flaggedReason = '';
         formData.flaggedOther = '';
       }
 
       // Reset 'other' field
-      if (formElement === "flaggedReason" &&
-        this.state.Data.caveatReasonOptions[value] !== "Other") {
+      if (formElement === 'flaggedReason' &&
+        this.state.Data.caveatReasonOptions[value] !== 'Other') {
         formData.flaggedOther = '';
       }
 
       this.setState({
-        formData: formData
+        formData: formData,
       });
     },
+
     onSubmit: function(e) {
       e.preventDefault();
     },
@@ -89,26 +90,26 @@ var CandidateInfo = React.createClass(
         );
       }
 
-      var disabled = true;
-      var updateButton = null;
+      let disabled = true;
+      let updateButton = null;
       if (loris.userHasPermission('candidate_parameter_edit')) {
         disabled = false;
         updateButton = <ButtonElement label="Update"/>;
       }
-      var reasonDisabled = true;
-      var reasonRequired = false;
-      if (this.state.formData.flaggedCaveatemptor === "true") {
+      let reasonDisabled = true;
+      let reasonRequired = false;
+      if (this.state.formData.flaggedCaveatemptor === 'true') {
         reasonDisabled = false;
         reasonRequired = true;
       }
 
-      var reasonKey = null;
-      var specifyOther = null;
-      var otherDisabled = true;
-      var otherRequired = false;
-      for (var key in this.state.Data.caveatReasonOptions) {
+      let reasonKey = null;
+      let specifyOther = null;
+      let otherDisabled = true;
+      let otherRequired = false;
+      for (let key in this.state.Data.caveatReasonOptions) {
         if (this.state.Data.caveatReasonOptions.hasOwnProperty(key)) {
-          if (this.state.Data.caveatReasonOptions[key] === "Other") {
+          if (this.state.Data.caveatReasonOptions[key] === 'Other') {
             reasonKey = key;
             break;
           }
@@ -120,7 +121,7 @@ var CandidateInfo = React.createClass(
         otherDisabled = false;
       }
 
-      if (this.state.formData.flaggedCaveatemptor === "false") {
+      if (this.state.formData.flaggedCaveatemptor === 'false') {
         reasonDisabled = true;
         reasonRequired = false;
         otherDisabled = true;
@@ -138,22 +139,22 @@ var CandidateInfo = React.createClass(
           required={otherRequired}
         />;
       }
-      var extraParameterFields = [];
-      var extraParameters = this.state.Data.extra_parameters;
-      for (var key2 in extraParameters) {
+      let extraParameterFields = [];
+      let extraParameters = this.state.Data.extra_parameters;
+      for (let key2 in extraParameters) {
         if (extraParameters.hasOwnProperty(key2)) {
-          var paramTypeID = extraParameters[key2].ParameterTypeID;
-          var name = paramTypeID;
-          var value = this.state.formData[paramTypeID];
+          let paramTypeID = extraParameters[key2].ParameterTypeID;
+          let name = paramTypeID;
+          let value = this.state.formData[paramTypeID];
 
           switch (extraParameters[key2].Type.substring(0, 3)) {
-            case "enu":
-              var types = extraParameters[key2].Type.substring(5);
+            case 'enu':
+              let types = extraParameters[key2].Type.substring(5);
               types = types.slice(0, -1);
               types = types.replace(/'/g, '');
               types = types.split(',');
-              var selectOptions = {};
-              for (var key3 in types) {
+              let selectOptions = {};
+              for (let key3 in types) {
                 if (types.hasOwnProperty(key3)) {
                   selectOptions[types[key3]] = types[key3];
                 }
@@ -172,7 +173,7 @@ var CandidateInfo = React.createClass(
                 />
               );
               break;
-            case "dat":
+            case 'dat':
               extraParameterFields.push(
                 <DateElement
                   label={extraParameters[key2].Description}
@@ -201,16 +202,16 @@ var CandidateInfo = React.createClass(
         }
       }
 
-      var alertMessage = "";
-      var alertClass = "alert text-center hide";
+      let alertMessage = '';
+      let alertClass = 'alert text-center hide';
       if (this.state.updateResult) {
-        if (this.state.updateResult === "success") {
-          alertClass = "alert alert-success text-center";
-          alertMessage = "Update Successful!";
-        } else if (this.state.updateResult === "error") {
-          var errorMessage = this.state.errorMessage;
-          alertClass = "alert alert-danger text-center";
-          alertMessage = errorMessage ? errorMessage : "Failed to update!";
+        if (this.state.updateResult === 'success') {
+          alertClass = 'alert alert-success text-center';
+          alertMessage = 'Update Successful!';
+        } else if (this.state.updateResult === 'error') {
+          let errorMessage = this.state.errorMessage;
+          alertClass = 'alert alert-danger text-center';
+          alertMessage = errorMessage ? errorMessage : 'Failed to update!';
         }
       }
 
@@ -266,13 +267,13 @@ var CandidateInfo = React.createClass(
      */
     handleSubmit: function(e) {
       e.preventDefault();
-      var myFormData = this.state.formData;
+      let myFormData = this.state.formData;
       // Set form data and upload the media file
-      var self = this;
-      var formData = new FormData();
-      for (var key in myFormData) {
+      let self = this;
+      let formData = new FormData();
+      for (let key in myFormData) {
         if (myFormData.hasOwnProperty(key)) {
-          if (myFormData[key] !== "") {
+          if (myFormData[key] !== '') {
             formData.append(key, myFormData[key]);
           }
         }
@@ -291,23 +292,23 @@ var CandidateInfo = React.createClass(
           success: function(data) {
             self.setState(
               {
-                updateResult: "success"
+                updateResult: 'success',
               }
             );
             self.showAlertMessage();
           },
           error: function(err) {
-            if (err.responseText !== "") {
-              var errorMessage = JSON.parse(err.responseText).message;
+            if (err.responseText !== '') {
+              let errorMessage = JSON.parse(err.responseText).message;
               self.setState(
                 {
-                  updateResult: "error",
-                  errorMessage: errorMessage
+                  updateResult: 'error',
+                  errorMessage: errorMessage,
                 }
               );
               self.showAlertMessage();
             }
-          }
+          },
 
         }
       );
@@ -316,23 +317,23 @@ var CandidateInfo = React.createClass(
      * Display a success/error alert message after form submission
      */
     showAlertMessage: function() {
-      var self = this;
-      if (this.refs["alert-message"] === null) {
+      let self = this;
+      if (this.refs['alert-message'] === null) {
         return;
       }
 
-      var alertMsg = this.refs["alert-message"];
+      let alertMsg = this.refs['alert-message'];
       $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
         500,
         function() {
           self.setState(
             {
-              updateResult: null
+              updateResult: null,
             }
           );
         }
       );
-    }
+    },
 
   }
 );

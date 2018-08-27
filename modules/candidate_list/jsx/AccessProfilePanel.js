@@ -7,10 +7,10 @@ class AccessProfilePanel extends React.Component {
     this.state = {
       error: {
         message: '',
-        className: 'alert alert-danger text-center'
+        className: 'alert alert-danger text-center',
       },
       PSCID: '',
-      CandID: ''
+      CandID: '',
     };
 
     this.updateFormElement = this.updateFormElement.bind(this);
@@ -18,26 +18,26 @@ class AccessProfilePanel extends React.Component {
   }
 
   updateFormElement(formElement, value) {
-    var state = this.state;
+    let state = this.state;
     state[formElement] = value;
     this.setState(state);
   }
 
   validateAndSubmit() {
-    var state = this.state;
-    if (this.state.CandID === "") {
+    let state = this.state;
+    if (this.state.CandID === '') {
       state.error = {
         message: 'You must enter a DCCID!',
-        className: 'alert alert-danger text-center'
+        className: 'alert alert-danger text-center',
       };
       this.setState(state);
       return;
     }
 
-    if (this.state.PSCID === "") {
+    if (this.state.PSCID === '') {
       state.error = {
         message: 'You must enter a PSCID!',
-        className: 'alert alert-danger text-center'
+        className: 'alert alert-danger text-center',
       };
       this.setState(state);
       return;
@@ -46,29 +46,29 @@ class AccessProfilePanel extends React.Component {
       // Always include a validating message.. the callback for the ajax request will
       // update it after the ajax call returns.
     state.error = {
-      message: "Validating...",
-      className: 'alert alert-info text-center'
+      message: 'Validating...',
+      className: 'alert alert-info text-center',
     };
     this.setState(state);
 
-    $.get(loris.BaseURL + "/candidate_list/ajax/validateProfileIDs.php",
+    $.get(loris.BaseURL + '/candidate_list/ajax/validateProfileIDs.php',
       {
         CandID: state.CandID,
-        PSCID: state.PSCID
+        PSCID: state.PSCID,
       },
         function(data) {
           // ids are valid, submit accessProfileForm form
           if (data === '1') {
             state.error = {
-              message: "Opening profile...",
-              className: 'alert alert-info text-center'
+              message: 'Opening profile...',
+              className: 'alert alert-info text-center',
             };
-            window.location.href = loris.BaseURL + "/" + state.CandID;
+            window.location.href = loris.BaseURL + '/' + state.CandID;
           } else {
             // display error message
             state.error = {
-              message: "DCCID or PSCID is not valid",
-              className: 'alert alert-danger text-center'
+              message: 'DCCID or PSCID is not valid',
+              className: 'alert alert-danger text-center',
             };
           }
           this.setState(state);
@@ -76,7 +76,7 @@ class AccessProfilePanel extends React.Component {
   }
 
   render() {
-    var warning;
+    let warning;
     if (loris.userHasPermission('access_all_profiles')) {
       return <div />;
     }

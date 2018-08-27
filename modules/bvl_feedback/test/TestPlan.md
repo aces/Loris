@@ -5,7 +5,7 @@
  * Instrument List
  * Any instrument
 [Automation Test]
-2. Remove 'bvl_feedback' permission. Behavioural feedback button should no longer appear.
+2. Remove 'bvl_feedback' permission by unchecking 'Behavioural QC' in the User Accounts module. Behavioural feedback button should no longer appear.
 3. Click on the behavioural feedback button. A slide-out panel should appear on the right-hand side with the following:
  * Open Thread Summary
  * New profile level feedback

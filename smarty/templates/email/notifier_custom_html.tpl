@@ -43,7 +43,7 @@
                     <tr>
                         <td style="background-color:#ECF8FF">
                             <p>This is an automated message sent by the Loris system. To configure your notification settings,
-                                follow <a href="{$baseurl}/preferences/">this link to your preference page</a>.</p>
+                                follow <a href="{$baseurl}/user_accounts/my_preferences/">this link to your preference page</a>.</p>
                         </td>
                     </tr>
                     </tbody>

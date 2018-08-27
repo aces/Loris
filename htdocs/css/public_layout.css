@@ -28,10 +28,10 @@
 
 /* Stylesheet for login, reset password and request account pages */
 html, body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    font-family: 'PT Sans', sans-serif;
+  margin:0;
+  padding:0;
+  height: 100vh;
+  font-family: sans-serif;
 }
 
 h1, h2, h3, h4 {

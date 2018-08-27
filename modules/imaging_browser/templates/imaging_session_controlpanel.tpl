@@ -32,16 +32,18 @@
 
     <h3>Links</h3>
     <ul>
-        {if $mri_param_form_table_exists}
-            <li><a href="{$baseurl}/{$subject.candid}/{$subject.sessionID}/mri_parameter_form/?commentID={$subject.ParameterFormCommentID}">MRI Parameter Form</a></li>
-        {/if}
-        {if $rad_review_table_exists}
-            <li><a href="{$baseurl}/{$subject.candid}/{$subject.sessionID}/radiology_review/?commentID={$subject.RadiologyReviewCommentID}">Radiology Review</a></li>
-        {/if}
-        {foreach from=$subject.tarchiveids item=tarchive}
-        <li><a href="{$baseurl}/dicom_archive/viewDetails/?tarchiveID={$tarchive.TarchiveID}&backURL={$backURL|escape:"url"}">DICOM Archive {$tarchive.TarchiveID}</a></li>{/foreach}
-        {if $issue_tracker_url}
-            <li><a target="issue_tracker_url" href="{$issue_tracker_url}">Report a Bug</a></li>
+        {foreach from=$subject.links item=link}
+            <li><a href="{$baseurl}/instruments/{$link.BEName}/?commentID={$link.CommentID}&sessionID={$subject.sessionID}&candID={$subject.candid}">{$link.FEName}</a></li>
+        {/foreach}
+        {foreach from=$subject.tarchiveIDLoc key=tarchive item=tarchiveLoc}
+            <li><a href="{$baseurl}/dicom_archive/viewDetails/?tarchiveID={$tarchive}&backURL={$backURL|escape:"url"}">DICOM Archive {$tarchive}</a></li>
+            <li><a href="/mri/jiv/get_file.php?file={$tarchiveLoc}" class="btn btn-primary btn-small">
+                    <span class="glyphicon glyphicon-cloud-download"></span><span class="hidden-xs"> Download DICOM {$tarchive}</span>
+                </a>
+            </li>
+        {/foreach}
+        {if $mantis}
+            <li><a target="mantis" href="{$issue_tracker_url}">Report a Bug (Mantis)</a></li>
         {/if}
     </ul>
 

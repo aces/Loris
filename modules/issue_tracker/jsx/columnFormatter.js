@@ -15,7 +15,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   // Create the mapping between rowHeaders and rowData in a row object.
-  var row = {};
+  let row = {};
   rowHeaders.forEach(
     function(header, index) {
       row[header] = rowData[index];
@@ -26,8 +26,8 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   if (column === 'Title') {
     let cellLinks = [];
     cellLinks.push(
-      <a href={loris.BaseURL + "/issue_tracker/issue/?issueID=" +
-      row['Issue ID'] + "&backURL"}>
+      <a href={loris.BaseURL + '/issue_tracker/issue/?issueID=' +
+      row['Issue ID']}>
         {row.Title}
       </a>
     );
@@ -41,8 +41,8 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   if (column === 'Issue ID') {
     let cellLinks = [];
     cellLinks.push(
-      <a href={loris.BaseURL + "/issue_tracker/issue/?issueID=" +
-      row['Issue ID'] + "&backURL"}>
+      <a href={loris.BaseURL + '/issue_tracker/issue/?issueID=' +
+      row['Issue ID']}>
         {cell}
       </a>
     );
@@ -51,16 +51,16 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   if (column === 'Priority') {
     switch (cell) {
-      case "normal":
-        return <td style={{background: "#CCFFCC"}}>Normal</td>;
-      case "high":
-        return <td style={{background: "#EEEEAA"}}>High</td>;
-      case "urgent":
-        return <td style={{background: "#CC6600"}}>Urgent</td>;
-      case "immediate":
-        return <td style={{background: "#E4A09E"}}>Immediate</td>;
-      case "low":
-        return <td style={{background: "#99CCFF"}}>Low</td>;
+      case 'normal':
+        return <td style={{background: '#CCFFCC'}}>Normal</td>;
+      case 'high':
+        return <td style={{background: '#EEEEAA'}}>High</td>;
+      case 'urgent':
+        return <td style={{background: '#CC6600'}}>Urgent</td>;
+      case 'immediate':
+        return <td style={{background: '#E4A09E'}}>Immediate</td>;
+      case 'low':
+        return <td style={{background: '#99CCFF'}}>Low</td>;
       default:
         return <td>None</td>;
     }
@@ -69,8 +69,8 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   if (column === 'PSCID' && row.PSCID !== null) {
     let cellLinks = [];
     cellLinks.push(
-      <a href={loris.BaseURL + "/" +
-      row.CandID + "/"}>
+      <a href={loris.BaseURL + '/' +
+      row.CandID + '/'}>
         {cell}
       </a>
     );
@@ -84,8 +84,8 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   if (column === 'Visit Label' && row['Visit Label'] !== null) {
     let cellLinks = [];
     cellLinks.push(
-      <a href={loris.BaseURL + "/instrument_list/?candID=" +
-              row.CandID + "&sessionID=" + row.SessionID }>
+      <a href={loris.BaseURL + '/instrument_list/?candID=' +
+              row.CandID + '&sessionID=' + row.SessionID }>
         {cell}
       </a>
     );

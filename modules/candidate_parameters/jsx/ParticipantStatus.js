@@ -1,4 +1,4 @@
-var ParticipantStatus = React.createClass(
+let ParticipantStatus = React.createClass(
   {
     getInitialState: function() {
       return {
@@ -7,23 +7,26 @@ var ParticipantStatus = React.createClass(
         updateResult: null,
         errorMessage: null,
         isLoaded: false,
-        loadedData: 0
+        loadedData: 0,
       };
     },
     componentDidMount: function() {
-      var that = this;
+      this.fetchData();
+    },
+    fetchData: function() {
+      let that = this;
       $.ajax(
                 this.props.dataURL,
         {
           dataType: 'json',
           xhr: function() {
-            var xhr = new window.XMLHttpRequest();
+            let xhr = new window.XMLHttpRequest();
             xhr.addEventListener(
-                            "progress",
+                            'progress',
                             function(evt) {
                               that.setState(
                                 {
-                                  loadedData: evt.loaded
+                                  loadedData: evt.loaded,
                                 }
                                 );
                             }
@@ -40,31 +43,31 @@ var ParticipantStatus = React.createClass(
               {
                 Data: data,
                 formData: formData,
-                isLoaded: true
+                isLoaded: true,
               }
                         );
           },
           error: function(data, errorCode, errorMsg) {
             that.setState(
               {
-                error: 'An error occurred when loading the form!'
+                error: 'An error occurred when loading the form!',
               }
                         );
-          }
+          },
         }
             );
     },
     setFormData: function(formElement,
     value) {
-      var formData = this.state.formData;
-      var required = this.state.Data.required;
-      if (formElement === "participantStatus" && required.indexOf(value) < 0) {
-        formData.participantSuboptions = "";
+      let formData = this.state.formData;
+      let required = this.state.Data.required;
+      if (formElement === 'participantStatus' && required.indexOf(value) < 0) {
+        formData.participantSuboptions = '';
       }
       formData[formElement] = value;
       this.setState(
         {
-          formData: formData
+          formData: formData,
         }
             );
     },
@@ -91,17 +94,17 @@ var ParticipantStatus = React.createClass(
         );
       }
 
-      var disabled = true;
-      var updateButton = null;
+      let disabled = true;
+      let updateButton = null;
       if (loris.userHasPermission('candidate_parameter_edit')) {
         disabled = false;
         updateButton = <ButtonElement label ="Update" />;
       }
 
-      var required = this.state.Data.required;
-      var subOptions = {};
-      var suboptionsRequired = false;
-      var participantStatus = (
+      let required = this.state.Data.required;
+      let subOptions = {};
+      let suboptionsRequired = false;
+      let participantStatus = (
         this.state.formData.participantStatus ?
           this.state.formData.participantStatus :
           this.state.Data.participantStatus
@@ -112,38 +115,38 @@ var ParticipantStatus = React.createClass(
         suboptionsRequired = true;
       }
 
-      var formattedHistory = [];
-      for (var statusKey in this.state.Data.history) {
+      let formattedHistory = [];
+      for (let statusKey in this.state.Data.history) {
         if (this.state.Data.history.hasOwnProperty(statusKey)) {
-          var line = "";
-          for (var field in this.state.Data.history[statusKey]) {
+          let line = '';
+          for (let field in this.state.Data.history[statusKey]) {
             if (this.state.Data.history[statusKey].hasOwnProperty(field)) {
-              var current = this.state.Data.history[statusKey][field];
+              let current = this.state.Data.history[statusKey][field];
               if (current !== null) {
                 switch (field) {
                   case 'data_entry_date':
-                    line += "[";
+                    line += '[';
                     line += current;
-                    line += "] ";
+                    line += '] ';
                     break;
                   case 'entry_staff':
                     line += current;
-                    line += " ";
+                    line += ' ';
                     break;
                   case 'status':
-                    line += " Status: ";
+                    line += ' Status: ';
                     line += current;
-                    line += " ";
+                    line += ' ';
                     break;
                   case 'suboption':
-                    line += "Details: ";
+                    line += 'Details: ';
                     line += current;
-                    line += " ";
+                    line += ' ';
                     break;
                   case 'reason_specify':
-                    line += "Comments: ";
+                    line += 'Comments: ';
                     line += current;
-                    line += " ";
+                    line += ' ';
                     break;
                   default:
                 }
@@ -154,16 +157,16 @@ var ParticipantStatus = React.createClass(
         }
       }
 
-      var alertMessage = "";
-      var alertClass = "alert text-center hide";
+      let alertMessage = '';
+      let alertClass = 'alert text-center hide';
       if (this.state.updateResult) {
-        if (this.state.updateResult === "success") {
-          alertClass = "alert alert-success text-center";
-          alertMessage = "Update Successful!";
-        } else if (this.state.updateResult === "error") {
-          var errorMessage = this.state.errorMessage;
-          alertClass = "alert alert-danger text-center";
-          alertMessage = errorMessage ? errorMessage : "Failed to update!";
+        if (this.state.updateResult === 'success') {
+          alertClass = 'alert alert-success text-center';
+          alertMessage = 'Update Successful!';
+        } else if (this.state.updateResult === 'error') {
+          let errorMessage = this.state.errorMessage;
+          alertClass = 'alert alert-danger text-center';
+          alertMessage = errorMessage ? errorMessage : 'Failed to update!';
         }
       }
 
@@ -222,11 +225,15 @@ var ParticipantStatus = React.createClass(
      */
     handleSubmit: function(e) {
       e.preventDefault();
-      var myFormData = this.state.formData;
-      var self = this;
-      var formData = new FormData();
-      for (var key in myFormData) {
-        if (myFormData[key] !== "") {
+      let myFormData = this.state.formData;
+      let self = this;
+      let formData = new FormData();
+      for (let key in myFormData) {
+        if (myFormData.hasOwnProperty(key) &&
+          myFormData[key] !== '' &&
+          myFormData[key] !== null &&
+          myFormData[key] !== undefined
+        ) {
           formData.append(key, myFormData[key]);
         }
       }
@@ -244,23 +251,24 @@ var ParticipantStatus = React.createClass(
           success: function(data) {
             self.setState(
               {
-                updateResult: "success"
+                updateResult: 'success',
               }
                   );
             self.showAlertMessage();
+            self.fetchData();
           },
           error: function(err) {
-            if (err.responseText !== "") {
-              var errorMessage = JSON.parse(err.responseText).message;
+            if (err.responseText !== '') {
+              let errorMessage = JSON.parse(err.responseText).message;
               self.setState(
                 {
-                  updateResult: "error",
-                  errorMessage: errorMessage
+                  updateResult: 'error',
+                  errorMessage: errorMessage,
                 }
                       );
               self.showAlertMessage();
             }
-          }
+          },
         }
             );
     },
@@ -268,23 +276,23 @@ var ParticipantStatus = React.createClass(
      * Display a success/error alert message after form submission
      */
     showAlertMessage: function() {
-      var self = this;
-      if (this.refs["alert-message"] === null) {
+      let self = this;
+      if (this.refs['alert-message'] === null) {
         return;
       }
 
-      var alertMsg = this.refs["alert-message"];
+      let alertMsg = this.refs['alert-message'];
       $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
                 500,
                 function() {
                   self.setState(
                     {
-                      updateResult: null
+                      updateResult: null,
                     }
                     );
                 }
             );
-    }
+    },
 
   }
 );

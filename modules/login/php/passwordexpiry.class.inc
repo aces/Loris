@@ -146,7 +146,7 @@ class PasswordExpiry extends \NDB_Form
      *
      * @param array $values The values that were submitted to the page.
      *
-     * @return none
+     * @return void
      */
     function _process($values)
     {

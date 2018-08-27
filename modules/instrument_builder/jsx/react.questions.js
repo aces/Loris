@@ -4,9 +4,9 @@
 /* global Instrument */
 
 /**
- *	This file contains the React classes for instrument builder
- * 	module. It is used to add and edit questions in the instrument
- *	builder.
+ * This file contains the React classes for instrument builder
+ * module. It is used to add and edit questions in the instrument
+ * builder.
  */
 
 /*
@@ -16,10 +16,10 @@
  * in an element and render's the HTML based on its type
  *
  */
-var LorisElement = React.createClass({
+let LorisElement = React.createClass({
   render: function() {
-    var element = this.props.element;
-    var elementHtml = '';
+    let element = this.props.element;
+    let elementHtml = '';
     switch (element.Type) {
       case 'header':
         elementHtml = <h2>{element.Description}</h2>;
@@ -68,13 +68,19 @@ var LorisElement = React.createClass({
     return (
       <div>{elementHtml}</div>
     );
-  }
+  },
 });
 
 /*
- *	This is the React class for the question text input
+ * This is the React class for the question text input
  */
-var QuestionText = React.createClass({
+let QuestionText = React.createClass({
+    // Set default label for questionText input element
+  getDefaultProps: function() {
+    return {
+      inputLabel: 'Question Text',
+    };
+  },
     // Keep track of the current input
   onChange: function(e) {
     this.props.updateState({Description: e.target.value});
@@ -86,11 +92,11 @@ var QuestionText = React.createClass({
     if (this.props.element.error && this.props.element.error.questionText) {
       // If an error is present, display the error
       errorMessage = (<font className="form-error">{this.props.element.error.questionText}</font>);
-      errorClass += " has-error";
+      errorClass += ' has-error';
     }
     return (
       <div className={errorClass}>
-        <label className="col-sm-2 control-label">Question Text: </label>
+        <label className="col-sm-2 control-label">{this.props.inputLabel}: </label>
         <div className="col-sm-6">
           <input className="form-control col-xs-12"
             type="text" id="questionText"
@@ -102,13 +108,13 @@ var QuestionText = React.createClass({
         </div>
       </div>
     );
-  }
+  },
 });
 
 /*
- *	This is the React class for the question name input
+ * This is the React class for the question name input
  */
-var BasicOptions = React.createClass({
+let BasicOptions = React.createClass({
   // Keep track of the current input
   onChange: function(e) {
     // replace whitespaces with underscores
@@ -122,7 +128,7 @@ var BasicOptions = React.createClass({
     if (this.props.element.error && this.props.element.error.questionName) {
       // If an error is present, display the error
       errorMessage = (<font className="form-error">{this.props.element.error.questionName}</font>);
-      errorClass += " has-error";
+      errorClass += ' has-error';
     }
     return (
       <div>
@@ -143,34 +149,34 @@ var BasicOptions = React.createClass({
         />
       </div>
     );
-  }
+  },
 });
 
 /*
  * This is the React class for the Dropdown options
  */
-var DropdownOptions = React.createClass({
+let DropdownOptions = React.createClass({
   // Keep track the current option input
   getInitialState: function() {
     return {
-      option: ''
+      option: '',
     };
   },
   onChange: function(e) {
     this.setState({
-      option: e.target.value
+      option: e.target.value,
     });
   },
   // Add an option to the element
   addOption: function() {
-    var option = this.state.option.trim();
+    let option = this.state.option.trim();
 
     // Check for empty options
-    if (option === "") {
+    if (option === '') {
       let temp = (this.state.error) ? this.state.error : {};
-      temp.newSelectOption = "Dropdown options cannot be empty!";
+      temp.newSelectOption = 'Dropdown options cannot be empty!';
       this.setState({
-        error: temp
+        error: temp,
       });
       return;
     }
@@ -180,18 +186,18 @@ var DropdownOptions = React.createClass({
       let temp = this.state.error;
       delete temp.newSelectOption;
       this.setState({
-        error: temp
+        error: temp,
       });
     }
 
     // add to option list
     let temp = Instrument.clone(this.props.element.Options);
-    var key = Instrument.enumize(this.state.option);
+    let key = Instrument.enumize(this.state.option);
     temp.Values[key] = this.state.option;
     this.props.updateState({Options: temp});
 
     // clear input field
-    this.state.option = "";
+    this.state.option = '';
   },
   // Reset the dropdown options
   resetOptions: function() {
@@ -201,14 +207,14 @@ var DropdownOptions = React.createClass({
   },
   // Render the HTML
   render: function() {
-    var multi = '';
-    var options = Instrument.clone(this.props.element.Options.Values);
-    var errorMessage = '';
-    var dropdownClass = 'form-group';
+    let multi = '';
+    let options = Instrument.clone(this.props.element.Options.Values);
+    let errorMessage = '';
+    let dropdownClass = 'form-group';
 
     // Set the select option type
     if (this.props.element.Options.AllowMultiple) {
-      multi = "multiple";
+      multi = 'multiple';
     }
 
     // If an error is present, display the error
@@ -216,7 +222,7 @@ var DropdownOptions = React.createClass({
       errorMessage = (
         <span className="form-error">{this.state.error.newSelectOption}</span>
       );
-      dropdownClass += " has-error";
+      dropdownClass += ' has-error';
     }
 
     return (
@@ -264,33 +270,33 @@ var DropdownOptions = React.createClass({
         </div>
       </div>
     );
-  }
+  },
 });
 
 /*
  * This is the React class for the date options
  */
-var DateOptions = React.createClass({
+let DateOptions = React.createClass({
   // Initilize
   getInitialState: function() {
     return {
       dateFormat: {
-        Date: "Standard Date",
-        BasicDate: "Basic Date (does not include 'Not Answered' option)",
-        MonthYear: "Month Year (does not include day of the month)"
-      }
+        Date: 'Standard Date',
+        BasicDate: 'Basic Date (does not include \'Not Answered\' option)',
+        MonthYear: 'Month Year (does not include day of the month)',
+      },
     };
   },
   componentDidMount: function() {
-    this.props.element.Options.dateFormat = "";
+    this.props.element.Options.dateFormat = '';
   },
     // Keep track of the inputed years
   onChange: function(e) {
-    var options = Instrument.clone(this.props.element.Options);
+    let options = Instrument.clone(this.props.element.Options);
     if (e.target.id === 'datemin' && e.target.value.length > 0) {
-      options.MinDate = e.target.value + "-01-01";
+      options.MinDate = e.target.value + '-01-01';
     } else if (e.target.id === 'datemax' && e.target.value.length > 0) {
-      options.MaxDate = e.target.value + "-12-31";
+      options.MaxDate = e.target.value + '-12-31';
     } else if (e.target.id === 'dateFormat') {
       options.dateFormat = e.target.value;
     }
@@ -305,14 +311,14 @@ var DateOptions = React.createClass({
     let dateOptionsClass = 'options form-group';
     let errorMessage = '';
 
-    var dateFormatOptions = this.state.dateFormat;
+    let dateFormatOptions = this.state.dateFormat;
 
     if (this.props.element.error && this.props.element.error.dateOption) {
       // If an error is present, display the error
       errorMessage = (
         <span className="form-error">{this.props.element.error.dateOption}</span>
       );
-      dateOptionsClass += " has-error";
+      dateOptionsClass += ' has-error';
     }
 
     return (
@@ -367,17 +373,17 @@ var DateOptions = React.createClass({
         </div>
       </div>
     );
-  }
+  },
 });
 
 /*
- *	This is the React class for the numeric options
+ * This is the React class for the numeric options
  */
-var NumericOptions = React.createClass({
+let NumericOptions = React.createClass({
   // Keep track of the inputed numbers, casting them to
   // interger values.
   onChange: function(e) {
-    var options = Instrument.clone(this.props.element.Options);
+    let options = Instrument.clone(this.props.element.Options);
 
     if (e.target.id === 'numericmin') {
       options.MinValue = parseInt(e.target.value, 10);
@@ -388,13 +394,13 @@ var NumericOptions = React.createClass({
   },
   // Render the HTML
   render: function() {
-    var errorMessage = '';
-    var optionsClass = 'options form-group';
+    let errorMessage = '';
+    let optionsClass = 'options form-group';
 
         // If an error is present, display the error
     if (this.props.element.error && this.props.element.error.numeric) {
       errorMessage = (<span className="form-error">{this.props.element.error.numeric}</span>);
-      optionsClass += "options form-group has-error";
+      optionsClass += 'options form-group has-error';
     }
 
     return (
@@ -430,21 +436,21 @@ var NumericOptions = React.createClass({
         </div>
       </div>
     );
-  }
+  },
 });
 
 /*
- *	This is the React class for the dropdown for the
- * 	different question types.
+ * This is the React class for the dropdown for the
+ *  different question types.
  */
-var ListElements = React.createClass({
+let ListElements = React.createClass({
     // Set the desired question type
   selectType: function(newId, newValue) {
     let newState = {
       selected: {
         id: newId,
-        value: newValue
-      }
+        value: newValue,
+      },
     };
     let multi = false;
     let textSize = 'small';
@@ -455,7 +461,7 @@ var ListElements = React.createClass({
         // falls through
       case 'textbox':
         newState.Options = {
-          Type: textSize
+          Type: textSize,
         };
         break;
       case 'multiselect':
@@ -464,19 +470,19 @@ var ListElements = React.createClass({
       case 'dropdown':
         newState.Options = {
           Values: {},
-          AllowMultiple: multi
+          AllowMultiple: multi,
         };
         break;
       case 'date':
         newState.Options = {
           MinDate: '',
-          MaxDate: ''
+          MaxDate: '',
         };
         break;
       case 'numeric':
         newState.Options = {
           MinValue: 0,
-          MaxValue: 0
+          MaxValue: 0,
         };
         break;
       default:
@@ -499,45 +505,45 @@ var ListElements = React.createClass({
                             <li>
                                 <div className="col-sm-12"><h5 className="">Information</h5></div>
                             </li>
-                            <li onClick={this.selectType.bind(this, "header", "Header")}>
+                            <li onClick={this.selectType.bind(this, 'header', 'Header')}>
                                 <a id="header" className="option" title="Centered, header information">Header</a>
                             </li>
-                            <li onClick={this.selectType.bind(this, "label", "Label")}>
+                            <li onClick={this.selectType.bind(this, 'label', 'Label')}>
                                 <a id="label" className="option" title="Unemphasized display text">Label</a>
                             </li>
-                            <li onClick={this.selectType.bind(this, "score", "Scored Field")}>
+                            <li onClick={this.selectType.bind(this, 'score', 'Scored Field')}>
                                 <a id="scored" className="option" title="Column which stores calculated data">Scored Field</a>
                             </li>
                             <li className="divider"></li>
                             <li>
                                 <div className="col-sm-12"><h5 className="">Data entry</h5></div>
                             </li>
-                            <li onClick={this.selectType.bind(this, "textbox", "Textbox")}>
+                            <li onClick={this.selectType.bind(this, 'textbox', 'Textbox')}>
                                 <a id="textbox" className="option" title="Text box for user data entry">Textbox</a>
                             </li>
-                            <li onClick={this.selectType.bind(this, "textarea", "Textarea")}>
+                            <li onClick={this.selectType.bind(this, 'textarea', 'Textarea')}>
                                 <a id="textarea" className="option" title="Larger text area for data entry">Textarea</a>
                             </li>
-                            <li onClick={this.selectType.bind(this, "dropdown", "Dropdown")}>
+                            <li onClick={this.selectType.bind(this, 'dropdown', 'Dropdown')}>
                                 <a id="dropdown" className="option" title="Dropdown menu for users to select data from">Dropdown</a>
                             </li>
-                            <li onClick={this.selectType.bind(this, "multiselect", "Multiselect")}>
+                            <li onClick={this.selectType.bind(this, 'multiselect', 'Multiselect')}>
                                 <a id="multiselect" className="option" title="Data entry where multiple options may be selected">Multiselect</a>
                             </li>
-                            <li onClick={this.selectType.bind(this, "date", "Date")}>
+                            <li onClick={this.selectType.bind(this, 'date', 'Date')}>
                                 <a id="date" className="option" title="User data entry of a date">Date</a>
                             </li>
-                            <li onClick={this.selectType.bind(this, "numeric", "Numeric")}>
+                            <li onClick={this.selectType.bind(this, 'numeric', 'Numeric')}>
                                 <a id="numeric" className="option" title="User data entry of a number">Numeric</a>
                             </li>
                             <li className="divider"></li>
                             <li>
                                 <div className="col-sm-12"><h5 className="">Formatting</h5></div>
                             </li>
-                            <li onClick={this.selectType.bind(this, "line", "Blank Line")}>
+                            <li onClick={this.selectType.bind(this, 'line', 'Blank Line')}>
                                 <a id="line" className="option" title="Empty line">Blank Line</a>
                             </li>
-                            <li onClick={this.selectType.bind(this, "page-break", "Page Break")}>
+                            <li onClick={this.selectType.bind(this, 'page-break', 'Page Break')}>
                                 <a id="page-break" className="option" title="Start a new page">Page Break</a>
                             </li>
                         </ul>
@@ -545,24 +551,24 @@ var ListElements = React.createClass({
                 </div>
             </div>
         );
-  }
+  },
 });
 
 /*
- *	This is the React class for adding a new element or
- * 	editing an exsiting one
+ * This is the React class for adding a new element or
+ * editing an existing one
  */
-var AddElement = React.createClass({
+let AddElement = React.createClass({
   // Keep track of the current element state
   getInitialState: function() {
-    var state;
+    let state;
     if (this.props.element) {
       // Editing an element, set to elements state
       state = {
         Options: Instrument.clone(this.props.element.Options),
         Description: Instrument.clone(this.props.element.Description),
         Name: Instrument.clone(this.props.element.Name),
-        selected: Instrument.clone(this.props.element.selected)
+        selected: Instrument.clone(this.props.element.selected),
       };
     } else {
       state = {
@@ -571,8 +577,8 @@ var AddElement = React.createClass({
         Name: '',
         selected: {
           id: '',
-          value: 'Select One'
-        }
+          value: 'Select One',
+        },
       };
     }
     return state;
@@ -589,29 +595,29 @@ var AddElement = React.createClass({
     let hasError = false;
 
     if (questionName && questionName.indexOf('status') > -1) {
-      alert("Question name can't contain 'status' as part of the name!");
+      alert('Question name can\'t contain \'status\' as part of the name!');
       return;
     }
 
     if (!selected) {
       // Error, no element selected, alert the user and return
-      alert("No element type selected");
+      alert('No element type selected');
       return;
     }
 
     if (selected === 'date') {
       let min = this.state.Options.MinDate;
       let max = this.state.Options.MaxDate;
-
+      let minYear = parseInt(min, 10);
+      let maxYear = parseInt(max, 10);
       let minDate = Date.parse(min);
       let maxDate = Date.parse(max);
-
       if ((isNaN(minDate) && min !== '') || (isNaN(maxDate) && max !== '')) {
         let temp = (this.state.error) ? this.state.error : {};
 
-        temp.dateOption = "Invalid date provided";
+        temp.dateOption = 'Invalid date provided';
         this.setState({
-          error: temp
+          error: temp,
         });
         hasError = true;
       }
@@ -619,9 +625,18 @@ var AddElement = React.createClass({
       if (minDate > maxDate && min !== '' && max !== '') {
         let temp = (this.state.error) ? this.state.error : {};
 
-        temp.dateOption = "End year append befor start year";
+        temp.dateOption = 'End year append before start year';
         this.setState({
-          error: temp
+          error: temp,
+        });
+        hasError = true;
+      }
+      if (minYear > 9999 || minYear < 1000 || maxYear > 9999 || maxYear < 1000) {
+        let temp = (this.state.error) ? this.state.error : {};
+
+        temp.dateOption = 'The year must have exactly 4 digits. Please choose an integer number between 1000 and 9999.';
+        this.setState({
+          error: temp,
         });
         hasError = true;
       }
@@ -630,7 +645,7 @@ var AddElement = React.createClass({
         let temp = this.state.error;
         delete temp.dateOption;
         this.setState({
-          error: temp
+          error: temp,
         });
       }
     }
@@ -642,9 +657,9 @@ var AddElement = React.createClass({
 
       if (min >= max) {
         let temp = (this.state.error) ? this.state.error : {};
-        temp.numeric = "Max value must be larger than min value";
+        temp.numeric = 'Max value must be larger than min value';
         this.setState({
-          error: temp
+          error: temp,
         });
         hasError = true;
       }
@@ -654,7 +669,7 @@ var AddElement = React.createClass({
         let temp = this.state.error;
         delete temp.numeric;
         this.setState({
-          error: temp
+          error: temp,
         });
       }
     }
@@ -664,12 +679,12 @@ var AddElement = React.createClass({
         // for the questionText with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
       if (selected === 'page-break') {
-        temp.questionText = "Must use question text as page header";
+        temp.questionText = 'Must use question text as page header';
       } else {
-        temp.questionText = "No question text specified";
+        temp.questionText = 'No question text specified';
       }
       this.setState({
-        error: temp
+        error: temp,
       });
       hasError = true;
     }
@@ -680,18 +695,18 @@ var AddElement = React.createClass({
       let temp = this.state.error;
       delete temp.questionText;
       this.setState({
-        error: temp
+        error: temp,
       });
     }
 
-    if (questionName === '' && selected !== "header" && selected !== "label" &&
+    if (questionName === '' && selected !== 'header' && selected !== 'label' &&
       selected !== 'line' && selected !== 'page-break') {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionName with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
-      temp.questionName = "Must specifiy name for database to save value into";
+      temp.questionName = 'Must specifiy name for database to save value into';
       this.setState({
-        error: temp
+        error: temp,
       });
       hasError = true;
     } else if (this.state.error) {
@@ -699,7 +714,7 @@ var AddElement = React.createClass({
       let temp = this.state.error;
       delete temp.questionName;
       this.setState({
-        error: temp
+        error: temp,
       });
     }
     if (hasError) {
@@ -737,7 +752,7 @@ var AddElement = React.createClass({
       Description: questionText,
       Name: questionName,
       Options: this.state.Options,
-      selected: this.state.selected
+      selected: this.state.selected,
     };
 
     // Add/Update the Page's element array. The updateQuestion returns true
@@ -755,9 +770,9 @@ var AddElement = React.createClass({
       // for the questionName with message.
       this.setState(function(state) {
         let temp = (state.error) ? state.error : {};
-        temp.questionName = "Duplicate question name";
+        temp.questionName = 'Duplicate question name';
         return {
-          error: temp
+          error: temp,
         };
       });
     }
@@ -769,17 +784,17 @@ var AddElement = React.createClass({
     // setting any values
     this.setState(function(state) {
       let temp = state.options;
-      let option = multi ? $("#newmultiSelectOption").val() : $("#newSelectOption").val();
+      let option = multi ? $('#newmultiSelectOption').val() : $('#newSelectOption').val();
       temp.push(option);
       return {
-        options: temp
+        options: temp,
       };
     });
   },
     // Reset the options array
   resetOptions: function() {
     this.setState({
-      options: []
+      options: [],
     });
   },
     // Render the HTML
@@ -791,8 +806,10 @@ var AddElement = React.createClass({
     switch (this.state.selected.id) {
       case 'header':
       case 'label':
-      case 'page-break':
         questionInput = <QuestionText updateState={this.updateState} element={this.state}/>;
+        break;
+      case 'page-break':
+        questionInput = <QuestionText updateState={this.updateState} element={this.state} inputLabel={'Page Name'}/>;
         break;
       case 'score':
       case 'textbox':
@@ -851,7 +868,7 @@ var AddElement = React.createClass({
         </div>
       </div>
     );
-  }
+  },
 });
 
 window.LorisElement = LorisElement;
@@ -871,5 +888,5 @@ export default {
   DateOptions,
   NumericOptions,
   ListElements,
-  AddElement
+  AddElement,
 };

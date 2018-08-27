@@ -5,7 +5,6 @@ import MediaUploadForm from './uploadForm';
 import formatColumn from './columnFormatter';
 
 class MediaIndex extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -13,7 +12,7 @@ class MediaIndex extends React.Component {
 
     this.state = {
       isLoaded: false,
-      filter: {}
+      filter: {},
     };
 
     // Bind component instance to custom methods
@@ -33,17 +32,17 @@ class MediaIndex extends React.Component {
    */
   fetchData() {
     $.ajax(this.props.DataURL, {
-      method: "GET",
+      method: 'GET',
       dataType: 'json',
       success: function(data) {
         this.setState({
           Data: data,
-          isLoaded: true
+          isLoaded: true,
         });
       }.bind(this),
       error: function(error) {
         console.error(error);
-      }
+      },
     });
   }
 
@@ -70,11 +69,11 @@ class MediaIndex extends React.Component {
 
     let uploadTab;
     let tabList = [
-      {id: "browse", label: "Browse"}
+      {id: 'browse', label: 'Browse'},
     ];
 
     if (loris.userHasPermission('media_write')) {
-      tabList.push({id: "upload", label: "Upload"});
+      tabList.push({id: 'upload', label: 'Upload'});
       uploadTab = (
         <TabPane TabId={tabList[1].id}>
           <MediaUploadForm
@@ -122,5 +121,5 @@ $(function() {
     </div>
   );
 
-  ReactDOM.render(mediaIndex, document.getElementById("lorisworkspace"));
+  ReactDOM.render(mediaIndex, document.getElementById('lorisworkspace'));
 });

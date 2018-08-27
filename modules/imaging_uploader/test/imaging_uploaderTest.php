@@ -25,121 +25,102 @@ require_once __DIR__ .
  */
 class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
 {
-    /**
-     * Insert testing data
-     *
-     * @return void
-     */
-    function setUp()
-    {
-        parent::setUp();
-         $this->DB->insert(
-             "psc",
-             array(
-              'CenterID'  => '55',
-              'Name'      => 'TESTinPSC',
-              'Alias'     => 'tst',
-              'MRI_alias' => 'test',
-             )
-         );
-          $this->DB->insert(
-              "candidate",
-              array(
-               'CandID'    => '999999',
-               'CenterID'  => '55',
-               'UserID'    => '1',
-               'PSCID'     => '8889',
-               'ProjectID' => '7777',
-              )
-          );
-          $this->DB->insert(
-              "session",
-              array(
-               'ID'           => '111112',
-               'CandID'       => '999999',
-               'CenterID'     => '55',
-               'UserID'       => '1',
-               'MRIQCStatus'  => 'Pass',
-               'SubprojectID' => '6666',
-               'Visit'        => 'In Progress',
-               'Visit_label'  => 'TestVisitLabel',
-              )
-          );
-          $this->DB->insert(
-              'tarchive',
-              array(
-               'TarchiveID'             => 264,
-               'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000' .
-                 '012100912542610900000001',
-               'PatientID'              => 'BOL0003_000003_Test2',
-               'PatientName'            => 'BOL0003_000003_Test2',
-               'CenterName'             => 'Test site BOL',
-               'AcquisitionCount'       => 10,
-               'NonDicomFileCount'      => 3,
-               'DicomFileCount'         => 1000,
-               'CreatingUser'           => 'lorisdev',
-               'sumTypeVersion'         => 1,
-               'SourceLocation'         => '/data/incoming/BOL0003_000003_Test2',
-               'ScannerManufacturer'    => 'Siemens',
-               'ScannerModel'           => 'TrioTim',
-               'ScannerSerialNumber'    => '33336',
-               'ScannerSoftwareVersion' => 'syngo MR B17',
-               'uploadAttempt'          => 1,
-               'AcquisitionMetadata'    => 'metadata',
-               'SessionID'              => 111112,
-               'PendingTransfer'        => 1,
-              )
-          );
-          $this->DB->insert(
-              "mri_upload",
-              array(
-               'UploadID'                 => '9999999',
-               'UploadedBy'               => 'test',
-               'UploadDate'               => '2017-01-01',
-               'UploadLocation'           => '/data/incoming/test',
-               'DecompressedLocation'     => '/tmp/ImagingUpload-test',
-               'InsertionComplete'        => '0',
-               'Inserting'                => '0',
-               'PatientName'              => 'TestTestTest',
-               'number_of_mincInserted'   => '1',
-               'number_of_mincCreated'    => '1',
-               'TarchiveID'               => '264',
-               'SessionID'                => '111112',
-               'IsCandidateInfoValidated' => '1',
-               'IsTarchiveValidated'      => '0',
-               'IsPhantom'                => 'N',
-              )
-          );
-    }
-    /**
-     * Deleting the test data
-     *
-     * @return void
-     */
-    function tearDown()
-    {
-        parent::tearDown();
-        $this->DB->delete(
-            "mri_upload",
-            array('PatientName' => 'TestTestTest')
-        );
-        $this->DB->delete(
-            "tarchive",
-            array('TarchiveID' => '264')
-        );
-        $this->DB->delete(
-            "session",
-            array('CandID' => '999999')
-        );
-        $this->DB->delete(
-            "candidate",
-            array('CandID' => '999999')
-        );
-        $this->DB->delete(
-            "psc",
-            array('CenterID' => '55')
-        );
-    }
+    // expect UIs for Browse Tab
+    private $_loadingBrowseUI = array(
+                                 array(
+                                  "label"    => "CandID",
+                                  "selector" => "#imaging_filter>div",
+                                 ),
+                                 array(
+                                  "label"    => "PSCID",
+                                  "selector" => "#imaging_filter>div",
+                                 ),
+                                 array(
+                                  "label"    => "Visit Label",
+                                  "selector" => "#imaging_filter>div",
+                                 ),
+                                 array(
+                                  "label"    => "Logs to display",
+                                  "selector" => "#log_panel>div>form>div",
+                                 ),
+                                 // expected_headers
+                                 array(
+                                  "label"    => "No.",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "UploadID",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "Progress",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "CandID",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "PSCID",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "Visit Label",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "UploadLocation",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "UploadDate",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "UploadedBy",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "Tarchive Info",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "Number Of MincCreated",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                 array(
+                                  "label"    => "Number Of MincInserted",
+                                  "selector" => "#dynamictable > thead",
+                                 ),
+                                );
+    // expect UIs for Upload Tab
+    private $_loadingUploadUI = array(
+                                 array(
+                                  "label"    => "Upload an imaging scan",
+                                  "selector" => "#upload",
+                                 ),
+                                 array(
+                                  "label"    => "Phantom Scans",
+                                  "selector" => "#upload",
+                                 ),
+                                 array(
+                                  "label"    => "CandID",
+                                  "selector" => "#upload",
+                                 ),
+                                 array(
+                                  "label"    => "PSCID",
+                                  "selector" => "#upload",
+                                 ),
+                                 array(
+                                  "label"    => "Visit Label",
+                                  "selector" => "#upload",
+                                 ),
+                                 array(
+                                  "label"    => "File to Upload",
+                                  "selector" => "#upload",
+                                 ),
+                                );
+
     /**
      * Tests that, when loading the Imaging_uploader module, some
      * text appears in the body.
@@ -221,138 +202,41 @@ class ImagingUploaderTestIntegrationTest extends LorisIntegrationTest
          $this->assertEquals('', $bodyText2);
     }
     /**
-     * Tests that, when loading the Imaging_uploader module,
-     * input a test data, check it out after click filter button.
-     *
-     * @return void
-     */
-    function testImagingUploaderFilter()
+      * This function could test UI elements in each Tabs.
+      *
+      * @return void
+      */
+    function testLoadingUIS()
     {
-        $this->markTestSkipped("This method isn't working properly on travis.");
-        $this->safeGet($this->url . '/imaging_uploader/');
-        $this->webDriver->findElement(
-            WebDriverBy::name("CandID")
-        )->sendKeys("999999");
-
-        $this->webDriver->findElement(
-            WebDriverBy::name("filter")
-        )->click();
-        $this->safeGet($this->url . '/imaging_uploader/?format=json');
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains("TestVisitLabel", $bodyText);
-
-        $this->safeGet($this->url . '/imaging_uploader/');
-
-        $this->webDriver->findElement(
-            WebDriverBy::name("PSCID")
-        )->sendKeys("8889");
-
-        $this->webDriver->findElement(
-            WebDriverBy::name("filter")
-        )->click();
-        $this->safeGet($this->url . '/imaging_uploader/?format=json');
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains("TestVisitLabel", $bodyText);
-
-        $this->safeGet($this->url . '/imaging_uploader/');
-
-        $Visit_labelElement =  $this->safeFindElement(
-            WebDriverBy::Name("Visit_label")
-        );
-
-        $Visit_label = new WebDriverSelect($Visit_labelElement);
-        $Visit_label->selectByVisibleText("TestVisitLabel");
-
-        $this->webDriver->findElement(
-            WebDriverBy::name("filter")
-        )->click();
-        $this->safeGet($this->url . '/imaging_uploader/?format=json');
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains("TestVisitLabel", $bodyText);
-
-        $this->safeGet($this->url . '/imaging_uploader/');
-
-        $PhantomElement =  $this->safeFindElement(WebDriverBy::Name("IsPhantom"));
-        $Phantom        = new WebDriverSelect($PhantomElement);
-        $Phantom->selectByVisibleText("No");
-
-        $this->webDriver->findElement(
-            WebDriverBy::name("filter")
-        )->click();
-        $this->safeGet($this->url . '/imaging_uploader/?format=json');
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains("TestVisitLabel", $bodyText);
-
+        $this->_testPageUIs("/imaging_uploader/", $this->_loadingBrowseUI);
+        // click upload tab
+        $this->_testPageUIs("/imaging_uploader/#upload", $this->_loadingUploadUI);
     }
     /**
-     * Tests that, when uploading an empty file,
-     * some error text appears in the body.
-     *
-     * @return void
-     */
-    function testImagingUploaderwithoutData()
+      * This function could test UI elements in each Tabs.
+      *
+      * @param string $url this is for the url which needs to be tested.
+      * @param string $uis UI elements in each Tabs.
+      *
+      * @return void
+      */
+    function _testPageUIs($url,$uis)
     {
-        $this->markTestSkipped("This method isn't working properly on travis.");
-        $this->safeGet($this->url . '/imaging_uploader/');
-        $this->webDriver->findElement(
-            WebDriverBy::ID("upload")
-        )->click();
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains(
-            "mri_file: Make sure 'Are these Phantom Scans' is filled out.",
-            $bodyText
-        );
-    }
-    /**
-     * Tests that, when uploading a demo file,
-     * and the file name appears in the body.
-     *
-     * @return void
-     */
-    function testImagingUploaderwithData()
-    {
-        $this->markTestSkipped("This method isn't working properly on travis.");
-        $this->safeGet($this->url . '/imaging_uploader/');
-                $this->webDriver->findElement(
-                    WebDriverBy::Name("mri_file")
-                )->sendKeys("/TestVisitLabel.zip");
-                $this->webDriver->findElement(
-                    WebDriverBy::name("CandID")
-                )->sendKeys("999999");
-                $this->webDriver->findElement(
-                    WebDriverBy::name("PSCID")
-                )->sendKeys("8889");
+            $this->markTestSkipped("This method isn't working properly on travis.");
+            $this->safeGet($this->url . '/imaging_uploader/');
+        if ($url == "/imaging_uploader/#upload") {
+            $this->webDriver->findElement(
+                WebDriverBy::ID("tab-upload")
+            )->click();
+        }
 
-                $Visit_labelElement =  $this->safeFindElement(
-                    WebDriverBy::Name("Visit_label")
-                );
-                $Visit_label        = new WebDriverSelect($Visit_labelElement);
-                $Visit_label->selectByVisibleText("TestVisitLabel");
-
-                $PhantomElement =  $this->safeFindElement(
-                    WebDriverBy::Name("IsPhantom")
-                );
-                $Phantom        = new WebDriverSelect($PhantomElement);
-                $Phantom->selectByVisibleText("No");
-
-                $this->webDriver->findElement(
-                    WebDriverBy::ID("upload")
-                )->click();
-                $bodyText = $this->webDriver->findElement(
-                    WebDriverBy::cssSelector("body")
-                )->getText();
-                $this->assertContains("8889_999999_TestVisitLabel", $bodyText);
-
+        foreach ($uis as $ui ) {
+            $location = $ui['selector'];
+            $text     = $this->webDriver->executescript(
+                "return document.querySelector('$location').textContent"
+            );
+            $this->assertContains($ui['label'], $text);
+        }
     }
 }
 ?>
