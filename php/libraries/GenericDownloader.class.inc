@@ -59,7 +59,7 @@ class GenericDownloader implements FileDownloader
      *
      * @return none
      */
-    public function downloadFile(string $userPath): void
+    public function downloadFile(string $userPath)
     {
         // Ensure that every following test is conducted on a sanitized
         // (non-malicious) file path.
@@ -99,28 +99,21 @@ class GenericDownloader implements FileDownloader
             return;
         }
 
-        // Get mime type and do the file download.
-        $mimeType = $this->getContentType($fullPath);
-        // TODO: Remove this and use PSR7 handler instead.
-        header("Content-type: $mimeType");
-        header("Content-Disposition: attachment; filename=$fileName");
-        // TODO: Return StreamInterface instead.
-        $fp = fopen($fullPath, 'r');
-        fpassthru($fp);
-        fclose($fp);
+        $stream = new \Zend\Diactoros\Stream($fullPath);
+        return $stream->detach();
     }
 
     /**
      * Returns the MIME type given a file
      *
-     * @param string $filename The name of the file.
+     * @param string $fullPath The path to the file.
      *
      * @return string The MIME type of $filename.
      */
-    function getContentType(string $filePath): string
+    function getContentType(string $fullPath): string
     {
-        if (!is_file($filePath)) {
-            $pathForPrinting = htmlentities($filePath);
+        if (!is_file($fullPath)) {
+            $pathForPrinting = htmlentities($fullPath);
             throw new LorisException(
                 "Cannot get mimetype of $pathForPrinting because it is not a "
                 . "file!"

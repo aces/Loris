@@ -33,7 +33,7 @@ interface FileDownloader
      *
      * @return void
      */
-    function downloadFile(string $fullPath): void;
+    function downloadFile(string $fullPath);
 
     /**
      * Returns the MIME type given a file

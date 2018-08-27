@@ -45,4 +45,10 @@ if (!$downloader->isFileInDatabase($partialPath)) {
     exit(2);
 }
 // All generic verification and sanitization occurs here.
-$downloader->downloadFile($downloadBasePath . $partialPath);
+$contentType = $downloader->getContentType($downloadBasePath . $partialPath);
+$stream = $downloader->downloadFile($downloadBasePath . $partialPath);
+// TODO Replace this with middlware.
+header("Content-Type", $contentType);
+header("Content-Disposition: attachment; filename=" . basename($partialPath));
+fpassthru($stream);
+fclose($stream);
