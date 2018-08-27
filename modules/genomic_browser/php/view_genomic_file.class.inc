@@ -41,6 +41,7 @@ class View_Genomic_File extends \NDB_Form
     */
     function _hasAccess(\User $user) : bool
     {
+        // Add site control? See Imaging Browser example
         return ($user->hasPermission('genomic_browser_view_allsites') ||
                 $user->hasPermission('genomic_browser_view_site'));
     }
