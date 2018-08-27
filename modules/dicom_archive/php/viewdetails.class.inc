@@ -57,7 +57,7 @@ class ViewDetails extends \NDB_Form
         $this->DB         = \Database::singleton();
         $this->tarchiveID = $_REQUEST['tarchiveID'] ?? '';
 
-        $user = User::singleton();
+        $user = \User::singleton();
         if ((!empty($_REQUEST['tarchiveID'])) && ($this->_hasAccess($user))) {
             $tarchiveID = $_REQUEST['tarchiveID'];
             $this->tpl_data['archive']        = $this->_getTarchiveData(
