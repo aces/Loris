@@ -2,7 +2,7 @@
 /**
   * Document_repository module
   *
-  * PHP Version 5
+  * PHP Version 7
   *
   * @category Test
   * @package  Loris
@@ -63,21 +63,20 @@ if ($userSingleton->hasPermission('document_repository_view')
         // least equal to zero.
         if (intval($category) < 0) {
             http_response_code(400);
-            exit;
+            throw new LorisException(
+                "Category parameter must be a positive integer."
+            );
         }
 
         // Check to see if $fullPath is writable. If not, throw an error. If it
         // doesn't exist, create an uploads folder for the logged-in user.
         if (!is_writable($fullPath)) {
             if (file_exists($fullPath)) {
-                http_response_code(403);
-                error_log("Could not write to $fullPath. Check permissions");
-                exit;
+                http_response_code(500);
+                throw new LorisException(
+                    "User uploads path in Document Repository is not writable."
+                );
             }
-            error_log(
-                'Creating document repository upload folder for ' .
-                'user ' . $name
-            );
             mkdir($fullPath, 0770);
         }
 
@@ -87,7 +86,6 @@ if ($userSingleton->hasPermission('document_repository_view')
             $_FILES['file']['tmp_name'],
             $fullPath . $fileName
         )) {
-            error_log('File upload failed for unknown reasons.');
             http_response_code(500);
             echo('ERROR: Could not upload file. Contact your administrator');
         } else {
@@ -117,7 +115,7 @@ if ($userSingleton->hasPermission('document_repository_view')
             http_response_code(303);
             header('Location:' . $baseURL . '/document_repository/');
         }
-    } elseif ($action == 'edit') {
+    } else if ($action == 'edit') {
         $id         = $_POST['idEdit'];
         $category   = $_POST['categoryEdit'];
         $instrument = $_POST['instrumentEdit'];
@@ -131,7 +129,9 @@ if ($userSingleton->hasPermission('document_repository_view')
         // least equal to zero
         if (intval($category) < 0) {
             http_response_code(400);
-            exit;
+            throw new LorisException(
+                "Category parameter must be a positive integer."
+            );
         }
 
         $values = array(
