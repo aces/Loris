@@ -10,22 +10,21 @@
   * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
   * @link     https://github.com/aces/Loris
   */
-$userSingleton =& User::singleton();
+$userSingleton =& \User::singleton();
 if (!$userSingleton->hasPermission('document_repository_view')
     && !$userSingleton->hasPermission('document_repository_delete')
 ) {
     http_response_code(403);
     exit;
 }
-$factory = NDB_Factory::singleton();
+$factory = \NDB_Factory::singleton();
 $baseURL = $factory->settings()->getBaseURL();
 
 $config = $factory->config();
 $base   = $config->getSetting('base');
 $name   = $userSingleton->getUsername();
 
-// create Database object
-$DB =& Database::singleton();
+$DB = $factory->database();
 
 $editNotifier = new NDB_Notifier(
     "document_repository",
