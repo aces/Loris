@@ -44,7 +44,8 @@ class HelpEditor extends React.Component {
       method: "GET",
       dataType: 'json',
       success: function(data) {
-        this.setState({
+        loris.hiddenHeaders = data.hiddenHeaders ? data.hiddenHeaders : [];
+	this.setState({
           Data: data,
           isLoaded: true
         });
