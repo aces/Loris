@@ -782,7 +782,7 @@ object of the form:
                     "SliceThickness" : "3.5",
                     "Modality" : "MR",
                     "SeriesUID" : "3.4.5.6.1507",
-                }],
+                }]
         },
         {
             "Tarname" : "DCM_yyyy-mm-dd_ImagingUpload-hh-mm-def456.tar",
@@ -796,8 +796,8 @@ object of the form:
                 "SliceThickness" : "1",
                 "Modality" : "MR",
                 "SeriesUID" : "1.7.8.9.1296",
-                }],
-        },
+                }]
+        }
     ]    
 }
 ```
